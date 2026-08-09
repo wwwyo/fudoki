@@ -7,7 +7,30 @@ description: 会議録検索システム kaigiroku.net（NTT-AT の DiscussNetPr
 
 `ssp.kaigiroku.net` は NTT-AT の会議録検索システム **DiscussNetPremium** のクラウド版。**477〜492 自治体が同一システムに載っている**ため、ここを1本叩ければ全国の大部分に効く。
 
-公式にドキュメント化されていない JSON API があり、**認証・クッキー不要**で `curl` から直接叩ける。HTML スクレイピングは不要。
+公式にドキュメント化されていない JSON API があり、認証・クッキー不要で技術的には `curl` から叩ける。**ただし robots.txt が拒否しているので叩かない。**下記「取得方針」を先に読むこと。
+
+## 取得方針 — robots.txt を尊重する
+
+```
+$ curl -s https://ssp.kaigiroku.net/robots.txt
+User-agent: *
+Disallow: /
+Allow: /tenant/
+Disallow: /tenant/js/
+Disallow: /tenant/css/
+Disallow: /tenant/help/
+Disallow: /tenant/stats/
+```
+
+**JSON API（`/dnp/search/*`）は `Disallow: /` 配下。機械的な取得に使わない。**
+
+取得は `Allow: /tenant/` の画面ページを**ブラウザ相当で描画して解析する**（Firecrawl / headless）。tenant ページは空テンプレートで本文は JS が API から取るため、静的 HTML の取得では中身が得られない。
+
+⚠️ 描画しても裏で同じ API を呼ぶことになり、静的アセットも取るぶんサーバ負荷はむしろ重い。**「人間の閲覧と同等のレートで、許可されたページを見る」以上の正当化はしない。** 同時実行数を絞る／取得済みはスキップする／429・5xx で停止する／連絡先入りの User-Agent を使う。
+
+**恒久的な解決は許諾**（議会事務局＝本文の再利用許諾、NTT-AT＝自動アクセスの可否）。許諾が取れれば API を直接使う方が軽く速く、相手にも優しい。
+
+以下の API 仕様は、**許諾取得後に使うため／レスポンス構造を理解するための参照**として残す。少数の fixture 作成や仕様調査には使えるが、全量クロールには使わない。
 
 ## テナントと tenant_id
 
