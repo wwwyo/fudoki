@@ -1,0 +1,14 @@
+node_modules/
+.DS_Store
+.env
+.env.local
+*.log
+
+# ビルド成果物
+dist/
+build/
+*.tsbuildinfo
+
+# 取得直後の生レスポンス（正規化前）。data/ 配下の成果物は意図して commit する
+.cache/
+tmp/
