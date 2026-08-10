@@ -21,7 +21,14 @@
         },
         "confidence": "confirmed",
         "host": "www.city.chiyoda.tokyo.dbsr.jp",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-disallow-all",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 29,
@@ -59,7 +66,19 @@
         "hasCommittee": true,
         "recordType": "unknown",
         "verifiedAt": "2026-08-10",
-        "notes": "独自CGI。会議録本文が kaigiroku.cgi/… で Disallow: /*.cgi の対象。AI/LLM クローラを名指しで全面拒否（robots に 2025-12 の日付コメント）"
+        "notes": "独自CGI。会議録本文が kaigiroku.cgi/… で Disallow: /*.cgi の対象。AI/LLM クローラを名指しで全面拒否（robots に 2025-12 の日付コメント）",
+        "evidenceUrls": [
+          "https://www.kugikai.city.chuo.lg.jp/kaigiroku/index.html",
+          "https://www.kugikai.city.chuo.lg.jp/robots.txt",
+          "https://www.kugikai.city.chuo.lg.jp/kaigiroku.cgi/r06/teireikai202401-5.html"
+        ],
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "ai-crawler-disallowed",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 47,
@@ -93,7 +112,14 @@
           "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
           "source": "family-uniform"
         },
-        "confidence": "confirmed"
+        "confidence": "confirmed",
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-disallow-all",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 268,
@@ -128,7 +154,14 @@
         "tenant": "shinjuku",
         "tenantId": 211,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/shinjuku/pg/index.html",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "tenant-render-only",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 137,
@@ -169,7 +202,14 @@
         },
         "confidence": "confirmed",
         "host": "www.city.bunkyo.tokyo.dbsr.jp",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-disallow-all",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 57,
@@ -199,10 +239,20 @@
         "systemFamily": "voices",
         "robots": {
           "verdict": "allowed",
-          "aiCrawler": "unchecked",
-          "raw": null
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: DotBot\nDisallow: /\nUser-agent: DotBot/1.1\nDisallow: /",
+          "source": "measured-2026-08-09",
+          "host": "taito.gijiroku.com"
         },
-        "confidence": "confirmed"
+        "confidence": "confirmed",
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "robots-allowed",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        },
+        "verifiedAt": "2026-08-09"
       },
       "openData": {
         "tokyoCatalogDatasets": 187,
@@ -232,7 +282,14 @@
         "tenant": "sumida",
         "tenantId": 396,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/sumida/pg/index.html",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "tenant-render-only",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 199,
@@ -260,7 +317,14 @@
         },
         "confidence": "confirmed",
         "host": "www.city.koto.tokyo.dbsr.jp",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-disallow-all",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 97,
@@ -294,7 +358,14 @@
           "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
           "source": "family-uniform"
         },
-        "confidence": "confirmed"
+        "confidence": "confirmed",
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-disallow-all",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 139,
@@ -328,7 +399,14 @@
           "raw": "（robots.txt 404）",
           "source": "family-uniform"
         },
-        "confidence": "confirmed"
+        "confidence": "confirmed",
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "robots-allowed",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 186,
@@ -373,10 +451,20 @@
         "systemFamily": "voices",
         "robots": {
           "verdict": "allowed",
-          "aiCrawler": "unchecked",
-          "raw": null
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: DotBot\nDisallow: /\nUser-agent: DotBot/1.1\nDisallow: /",
+          "source": "measured-2026-08-09",
+          "host": "www.gikai-ota-tokyo.jp"
         },
-        "confidence": "confirmed"
+        "confidence": "confirmed",
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "robots-allowed",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        },
+        "verifiedAt": "2026-08-09"
       },
       "openData": {
         "tokyoCatalogDatasets": 278,
@@ -422,7 +510,19 @@
         "hasCommittee": true,
         "recordType": "full",
         "verifiedAt": "2026-08-10",
-        "notes": "『会議録全文検索システム VOICES/Web』。本会議・常任委・議運委・特別委・予決算委を収録。robots.txt が 404 で制限なし"
+        "notes": "『会議録全文検索システム VOICES/Web』。本会議・常任委・議運委・特別委・予決算委を収録。robots.txt が 404 で制限なし",
+        "evidenceUrls": [
+          "https://kugi.city.setagaya.tokyo.jp/voices/",
+          "https://kugi.city.setagaya.tokyo.jp/voices/viewsel.html",
+          "https://kugi.city.setagaya.tokyo.jp/voices/CGI/voiweb.exe"
+        ],
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "robots-allowed",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 25,
@@ -460,7 +560,14 @@
         "tenant": "shibuya",
         "tenantId": 394,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/shibuya/pg/index.html",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "tenant-render-only",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 17,
@@ -504,7 +611,19 @@
         "hasCommittee": true,
         "recordType": "unknown",
         "verifiedAt": "2026-08-10",
-        "notes": "区独自の HTML+JS（view.html?gijiroku_id=）。本会議＋委員会10種以上を収録。robots は議員詳細1ページのみ Disallow"
+        "notes": "区独自の HTML+JS（view.html?gijiroku_id=）。本会議＋委員会10種以上を収録。robots は議員詳細1ページのみ Disallow",
+        "evidenceUrls": [
+          "https://kugikai-nakano.jp/search.html",
+          "https://kugikai-nakano.jp/view.html?gijiroku_id=5637",
+          "https://kugikai-nakano.jp/robots.txt"
+        ],
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "robots-allowed",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 167,
@@ -533,11 +652,21 @@
       "transcript": {
         "systemFamily": "voices",
         "robots": {
-          "verdict": "allowed",
-          "aiCrawler": "unchecked",
-          "raw": null
+          "verdict": "none",
+          "aiCrawler": "unspecified",
+          "raw": "（robots.txt 404）",
+          "source": "measured-2026-08-09",
+          "host": "suginami.gijiroku.com"
         },
-        "confidence": "confirmed"
+        "confidence": "confirmed",
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "robots-allowed",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        },
+        "verifiedAt": "2026-08-09"
       },
       "openData": {
         "tokyoCatalogDatasets": 103,
@@ -579,7 +708,14 @@
           "raw": "（robots.txt 404）",
           "source": "family-uniform"
         },
-        "confidence": "confirmed"
+        "confidence": "confirmed",
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "robots-allowed",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 32,
@@ -617,7 +753,14 @@
         "tenant": "kita",
         "tenantId": 395,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/kita/pg/index.html",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "tenant-render-only",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 7,
@@ -652,7 +795,14 @@
         "tenant": "arakawa",
         "tenantId": 577,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/arakawa/pg/index.html",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "tenant-render-only",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 33,
@@ -686,7 +836,14 @@
           "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
           "source": "family-uniform"
         },
-        "confidence": "confirmed"
+        "confidence": "confirmed",
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-disallow-all",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 211,
@@ -724,7 +881,14 @@
         "tenant": "nerima",
         "tenantId": 367,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/nerima/pg/index.html",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "tenant-render-only",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 79,
@@ -781,7 +945,19 @@
         "hasCommittee": true,
         "recordType": "unknown",
         "verifiedAt": "2026-08-10",
-        "notes": "旧ドメイン gijiroku.gikai-adachi.jp は消滅。CCBot/2.0 を拒否（ClaudeBot・GPTBot の記載はなし）。* は cgi ディレクトリと動画ページのみ制限"
+        "notes": "旧ドメイン gijiroku.gikai-adachi.jp は消滅。CCBot/2.0 を拒否（ClaudeBot・GPTBot の記載はなし）。* は cgi ディレクトリと動画ページのみ制限",
+        "evidenceUrls": [
+          "https://www.gikai-adachi.jp/kaigiroku.asp",
+          "https://www.gikai-adachi.jp/voices2/",
+          "https://www.gikai-adachi.jp/robots.txt"
+        ],
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "ai-crawler-disallowed",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 10,
@@ -807,7 +983,14 @@
           "raw": "（robots.txt 404）",
           "source": "family-uniform"
         },
-        "confidence": "confirmed"
+        "confidence": "confirmed",
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "robots-allowed",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 32,
@@ -837,10 +1020,20 @@
         "systemFamily": "voices",
         "robots": {
           "verdict": "allowed",
-          "aiCrawler": "unchecked",
-          "raw": null
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: DotBot\nDisallow: /\nUser-agent: DotBot/1.1\nDisallow: /",
+          "source": "measured-2026-08-09",
+          "host": "www.gikai.city.edogawa.tokyo.jp"
         },
-        "confidence": "confirmed"
+        "confidence": "confirmed",
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "robots-allowed",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        },
+        "verifiedAt": "2026-08-09"
       },
       "openData": {
         "tokyoCatalogDatasets": 266,
@@ -868,7 +1061,14 @@
         },
         "confidence": "confirmed",
         "host": "www.city.hachioji.tokyo.dbsr.jp",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-disallow-all",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 78,
@@ -914,7 +1114,14 @@
         "tenant": "tachikawa",
         "tenantId": 368,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/tachikawa/pg/index.html",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "tenant-render-only",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 35,
@@ -950,7 +1157,14 @@
         },
         "confidence": "confirmed",
         "host": "www.city.musashino.tokyo.dbsr.jp",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-disallow-all",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 24,
@@ -986,7 +1200,14 @@
         },
         "confidence": "confirmed",
         "host": "www.city.mitaka.tokyo.dbsr.jp",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-disallow-all",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 32,
@@ -1032,7 +1253,14 @@
         "tenant": "ome",
         "tenantId": 580,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/ome/pg/index.html",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "tenant-render-only",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 51,
@@ -1068,7 +1296,14 @@
         },
         "confidence": "confirmed",
         "host": "www.city.fuchu.tokyo.dbsr.jp",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-disallow-all",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 35,
@@ -1106,7 +1341,14 @@
         "tenant": "akishima",
         "tenantId": 2015,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/akishima/pg/index.html",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "tenant-render-only",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 20,
@@ -1139,7 +1381,14 @@
           "aiCrawler": "unchecked",
           "raw": null
         },
-        "confidence": "confirmed"
+        "confidence": "confirmed",
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-unverified",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 1487,
@@ -1169,10 +1418,20 @@
         "systemFamily": "voices",
         "robots": {
           "verdict": "allowed",
-          "aiCrawler": "unchecked",
-          "raw": null
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: DotBot\nDisallow: /\nUser-agent: DotBot/1.1\nDisallow: /",
+          "source": "measured-2026-08-09",
+          "host": "www.gikai-machida.jp"
         },
-        "confidence": "confirmed"
+        "confidence": "confirmed",
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "robots-allowed",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        },
+        "verifiedAt": "2026-08-09"
       },
       "openData": {
         "tokyoCatalogDatasets": 127,
@@ -1225,7 +1484,14 @@
         },
         "confidence": "confirmed",
         "host": "www.city.koganei.tokyo.dbsr.jp",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-disallow-all",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 50,
@@ -1263,7 +1529,14 @@
         "tenant": "kodaira",
         "tenantId": 165,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/kodaira/pg/index.html",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "tenant-render-only",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 21,
@@ -1299,7 +1572,14 @@
         },
         "confidence": "confirmed",
         "host": "www.city.hino.tokyo.dbsr.jp",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-disallow-all",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 30,
@@ -1329,7 +1609,19 @@
         "hasCommittee": true,
         "recordType": "full",
         "verifiedAt": "2026-08-10",
-        "notes": "市サイトの静的ページ＋PDF直置き。PDF を pdftotext で抽出し『○議長（小町明夫議員）』形式の逐語を確認。CloudFront の bot 対策で sandbox 経由の curl が 403 になる"
+        "notes": "市サイトの静的ページ＋PDF直置き。PDF を pdftotext で抽出し『○議長（小町明夫議員）』形式の逐語を確認。CloudFront の bot 対策で sandbox 経由の curl が 403 になる",
+        "evidenceUrls": [
+          "https://www.city.higashimurayama.tokyo.jp/gikai/gikaijoho/kensaku/index.html",
+          "https://www.city.higashimurayama.tokyo.jp/gikai/gikaijoho/kensaku/r6_honkaigi/files/1224.pdf",
+          "https://www.city.higashimurayama.tokyo.jp/gikai/gikaijoho/kensaku/r6_iinkai/index.html"
+        ],
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "robots-allowed",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 45,
@@ -1357,7 +1649,14 @@
         },
         "confidence": "confirmed",
         "host": "www.city.kokubunji.tokyo.dbsr.jp",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-disallow-all",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 25,
@@ -1393,7 +1692,14 @@
         },
         "confidence": "confirmed",
         "host": "www.city.kunitachi.tokyo.dbsr.jp",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-disallow-all",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 29,
@@ -1429,7 +1735,14 @@
         },
         "confidence": "confirmed",
         "host": "www.city.fussa.tokyo.dbsr.jp",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-disallow-all",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 13,
@@ -1457,7 +1770,14 @@
         },
         "confidence": "confirmed",
         "host": "www.city.komae.tokyo.dbsr.jp",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-disallow-all",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 399,
@@ -1504,7 +1824,18 @@
         "recordType": "unknown",
         "verifiedAt": "2026-08-10",
         "notes": "別途 smart.discussvision.net に議会中継があるが映像配信で会議録とは別",
-        "tenant": "higashiyamato"
+        "tenant": "higashiyamato",
+        "evidenceUrls": [
+          "https://www.city.higashiyamato.lg.jp/shisei/gikai/1005809/1010197.html",
+          "https://ssp.kaigiroku.net/tenant/higashiyamato/pg/index.html"
+        ],
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "tenant-render-only",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 24,
@@ -1542,7 +1873,14 @@
         "tenant": "kiyose",
         "tenantId": 197,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/kiyose/pg/index.html",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "tenant-render-only",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 64,
@@ -1578,7 +1916,14 @@
         },
         "confidence": "confirmed",
         "host": "www.city.higashikurume.tokyo.dbsr.jp",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-disallow-all",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 21,
@@ -1616,7 +1961,14 @@
         "tenant": "musashimurayama",
         "tenantId": 220,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/musashimurayama/pg/index.html",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "tenant-render-only",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 14,
@@ -1644,7 +1996,14 @@
         },
         "confidence": "confirmed",
         "host": "www.city.tama.tokyo.dbsr.jp",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-disallow-all",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 61,
@@ -1688,7 +2047,14 @@
         },
         "confidence": "confirmed",
         "host": "www.city.inagi.tokyo.dbsr.jp",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-disallow-all",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 17,
@@ -1724,7 +2090,14 @@
         },
         "confidence": "confirmed",
         "host": "www.city.hamura.tokyo.dbsr.jp",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-disallow-all",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 27,
@@ -1760,7 +2133,14 @@
         },
         "confidence": "confirmed",
         "host": "www.city.akiruno.tokyo.dbsr.jp",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-disallow-all",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 25,
@@ -1796,7 +2176,14 @@
         },
         "confidence": "confirmed",
         "host": "www.city.nishitokyo.tokyo.dbsr.jp",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-disallow-all",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 37,
@@ -1834,7 +2221,14 @@
         "tenant": "mizuho",
         "tenantId": 523,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/mizuho/pg/index.html",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "tenant-render-only",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 10,
@@ -1862,7 +2256,14 @@
         },
         "confidence": "confirmed",
         "host": "www.town.hinode.tokyo.dbsr.jp",
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-disallow-all",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 13,
@@ -1900,7 +2301,18 @@
         "hasCommittee": true,
         "recordType": "unknown",
         "verifiedAt": "2026-08-10",
-        "notes": "平成27年5月以降の本会議＋予算・決算特別委員会"
+        "notes": "平成27年5月以降の本会議＋予算・決算特別委員会",
+        "evidenceUrls": [
+          "https://www.vill.hinohara.tokyo.dbsr.jp/",
+          "https://www.vill.hinohara.tokyo.dbsr.jp/robots.txt"
+        ],
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-disallow-all",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 3,
@@ -1930,7 +2342,18 @@
         "hasCommittee": true,
         "recordType": "unknown",
         "verifiedAt": "2026-08-10",
-        "notes": "本会議＋予算・決算特別委員会等"
+        "notes": "本会議＋予算・決算特別委員会等",
+        "evidenceUrls": [
+          "https://www.town.okutama.tokyo.jp/gyosei/8/okutamachogikai/kaigiroku/index.html",
+          "https://www.town.okutama.tokyo.dbsr.jp/"
+        ],
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "robots-disallow-all",
+          "blockedBy": "permission",
+          "revisitable": true,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 4,
@@ -1960,7 +2383,18 @@
         "hasCommittee": null,
         "recordType": "unknown",
         "verifiedAt": "2026-08-10",
-        "notes": "会議録のWeb公開なし。議決結果PDFと議会だより（要約）のみ"
+        "notes": "会議録のWeb公開なし。議決結果PDFと議会だより（要約）のみ",
+        "evidenceUrls": [
+          "https://www.town.oshima.tokyo.jp/soshiki/gikaijim/",
+          "https://www.town.oshima.tokyo.jp/soshiki/gikaijim/gikai-kekka.html"
+        ],
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "no-source",
+          "blockedBy": "no-source",
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 2,
@@ -1990,7 +2424,18 @@
         "hasCommittee": false,
         "recordType": "full",
         "verifiedAt": "2026-08-10",
-        "notes": "村サイトに定例会・臨時会ごとの議事録PDFを年別直リンク。逐語形式を確認。議員6名で常任委員会の個別記録は見当たらず"
+        "notes": "村サイトに定例会・臨時会ごとの議事録PDFを年別直リンク。逐語形式を確認。議員6名で常任委員会の個別記録は見当たらず",
+        "evidenceUrls": [
+          "https://www.toshimamura.org/about/assembly.html",
+          "https://www.toshimamura.org/fs/1/7/6/5/7/2/_/R5_2_____.pdf"
+        ],
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "robots-allowed",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 10,
@@ -2020,7 +2465,18 @@
         "hasCommittee": null,
         "recordType": "unknown",
         "verifiedAt": "2026-08-10",
-        "notes": "テキスト会議録なし。DiscussVision『スマート議会中継』の動画のみ（発言一覧は動画へのインデックス）"
+        "notes": "テキスト会議録なし。DiscussVision『スマート議会中継』の動画のみ（発言一覧は動画へのインデックス）",
+        "evidenceUrls": [
+          "https://www.niijima.com/gikai/",
+          "https://smart.discussvision.net/smart/tenant/niijima/WebView/rd/council.html"
+        ],
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "no-source",
+          "blockedBy": "no-source",
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 4,
@@ -2058,7 +2514,18 @@
         "hasCommittee": "unknown",
         "recordType": "unknown",
         "verifiedAt": "2026-08-10",
-        "notes": "WordPress。定例会・臨時会ごとの個別ページから PDF へリンクする静的リスト。検索機能なし"
+        "notes": "WordPress。定例会・臨時会ごとの個別ページから PDF へリンクする静的リスト。検索機能なし",
+        "evidenceUrls": [
+          "https://www.vill.kouzushima.tokyo.jp/busyo/gikai/",
+          "https://www.vill.kouzushima.tokyo.jp/robots.txt"
+        ],
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "robots-allowed",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 0,
@@ -2088,7 +2555,18 @@
         "hasCommittee": false,
         "recordType": "unknown",
         "verifiedAt": "2026-08-10",
-        "notes": "会議録のWeb公開なし。議会だよりPDFと議決結果のみ。旧ドメイン miyakemura.com は失効、現行は vill.miyake.tokyo.jp"
+        "notes": "会議録のWeb公開なし。議会だよりPDFと議決結果のみ。旧ドメイン miyakemura.com は失効、現行は vill.miyake.tokyo.jp",
+        "evidenceUrls": [
+          "https://www.vill.miyake.tokyo.jp/kakuka/gikai/",
+          "https://www.vill.miyake.tokyo.jp/kakuka/gikai/news/gikaidayori.html"
+        ],
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "no-source",
+          "blockedBy": "no-source",
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 2,
@@ -2118,7 +2596,17 @@
         "hasCommittee": null,
         "recordType": null,
         "verifiedAt": "2026-08-10",
-        "notes": "会議録のWeb公開なし。議会だよりPDFのみ（2008〜2026）"
+        "notes": "会議録のWeb公開なし。議会だよりPDFのみ（2008〜2026）",
+        "evidenceUrls": [
+          "https://www.vill.mikurasima.tokyo.jp/section/gyosei/gikai.html"
+        ],
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "no-source",
+          "blockedBy": "no-source",
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 4,
@@ -2156,7 +2644,18 @@
         "hasCommittee": false,
         "recordType": "unknown",
         "verifiedAt": "2026-08-10",
-        "notes": "WordPress + S3(prd-hachijo) の PDF。本会議のみ"
+        "notes": "WordPress + S3(prd-hachijo) の PDF。本会議のみ",
+        "evidenceUrls": [
+          "https://www.town.hachijo.tokyo.jp/chousei/chougikai/katsushin/kaigi-kiroku/kairoku/",
+          "https://www.town.hachijo.tokyo.jp/robots.txt"
+        ],
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "robots-allowed",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 14,
@@ -2194,7 +2693,18 @@
         "hasCommittee": null,
         "recordType": "unknown",
         "verifiedAt": "2026-08-10",
-        "notes": "会議録のWeb公開なし。全国町村議会議長会クイックNaviでも議会中継はCATVの録画・録音のみ"
+        "notes": "会議録のWeb公開なし。全国町村議会議長会クイックNaviでも議会中継はCATVの録画・録音のみ",
+        "evidenceUrls": [
+          "https://www.vill.aogashima.tokyo.jp/",
+          "http://www.nactva.gr.jp/php/quicknavi/detail?TWCD=134023"
+        ],
+        "fetchPolicy": {
+          "eligible": false,
+          "reason": "no-source",
+          "blockedBy": "no-source",
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 2,
@@ -2225,7 +2735,18 @@
         "recordType": "unknown",
         "verifiedAt": "2026-08-10",
         "notes": "2020年は自治体サイト直だったが DNP へ移行済み",
-        "tenant": "ogasawara"
+        "tenant": "ogasawara",
+        "evidenceUrls": [
+          "https://www.vill.ogasawara.tokyo.jp/gikai/",
+          "https://ssp.kaigiroku.net/tenant/ogasawara/SpTop.html"
+        ],
+        "fetchPolicy": {
+          "eligible": true,
+          "reason": "tenant-render-only",
+          "blockedBy": null,
+          "revisitable": false,
+          "decidedAt": "2026-08-10"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 10,
@@ -2247,6 +2768,22 @@
         "ingestValidated": false,
         "published": false
       }
+    }
+  },
+  "fetchPolicy": {
+    "decidedAt": "2026-08-10",
+    "rule": "グレーゾーンは現時点では扱わない。ただし除外は恒久的ではなく、robots による除外・AI クローラ拒否・robots 未確認は blockedBy=permission / revisitable=true とし、許諾取得や追加調査で解除しうるものとして扱う。会議録が Web 公開されていないもの(no-source)だけが構造的に解除できない。判定は事実(robots.raw / evidenceUrls)を記録した上で行う。",
+    "reasons": {
+      "robots-allowed": "取得可。robots に制限がないか、会議録の経路が Disallow 対象外",
+      "tenant-render-only": "取得可だが JSON API は Disallow のため画面を描画して解析する（DiscussNetPremium）",
+      "robots-disallow-all": "除外。robots がトップ以外を Disallow（DB-Search）。許諾が取れれば解除しうる",
+      "ai-crawler-disallowed": "除外。robots が AI/LLM クローラを名指しで拒否している",
+      "robots-unverified": "除外。robots を確認できていない",
+      "no-source": "除外。会議録が Web 公開されていない"
+    },
+    "blockedBy": {
+      "permission": "許諾取得または追加調査で解除しうる。照会の宛先は DB-Search 系が大和速記情報センター1社",
+      "no-source": "会議録そのものが Web 公開されていないため技術的に解除できない"
     }
   }
 }
