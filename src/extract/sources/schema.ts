@@ -22,10 +22,15 @@ export const RobotsVerdict = z.enum([
   'unknown',
 ])
 
-/** AI/LLM クローラ（GPTBot / ClaudeBot / CCBot 等）を名指しで拒否しているか */
+/**
+ * AI/LLM クローラを名指しで拒否しているか。
+ * ⚠️ 汎用スクレイパ対策のブロックリスト（DotBot / SemrushBot / AhrefsBot … の列に
+ * CCBot が紛れているだけ）は disallowed に含めない。AI/LLM を意図してセクション化
+ * しているもの（GPTBot / ClaudeBot / anthropic-ai / Google-Extended 等）だけを指す。
+ */
 export const AiCrawler = z.enum([
-  'disallowed', // 明示的に拒否している
-  'unspecified', // robots に AI 個別の指定がない
+  'disallowed', // AI/LLM を意図して拒否している
+  'unspecified', // AI 個別の指定がない（汎用ブロックリストに CCBot 等がある場合を含む）
   'unchecked', // 未確認
 ])
 
@@ -67,10 +72,10 @@ export const Transcript = z.object({
   transcriptUrl: z.url().nullable().optional(),
   robots: Robots,
   fetchPolicy: FetchPolicy,
-  /** 委員会記録も収録しているか。予算の実質審議は委員会で行われるため重要 */
-  hasCommittee: z.union([z.boolean(), z.literal('unknown')]).nullable().optional(),
-  /** full = 全文記録（逐語）、summary = 要点記録 */
-  recordType: z.enum(['full', 'summary', 'unknown']).nullable().optional(),
+  /** 委員会記録も収録しているか。予算の実質審議は委員会で行われるため重要。null = 未確認 */
+  hasCommittee: z.boolean().nullable(),
+  /** full = 全文記録（逐語）、summary = 要点記録、null = 未確認 */
+  recordType: z.enum(['full', 'summary']).nullable(),
   confidence: z.enum(['confirmed', 'probable', 'unverified', 'failed']),
   verifiedAt: z.iso.date().optional(),
   evidenceUrls: z.array(z.url()).optional(),
@@ -86,7 +91,8 @@ export const Transcript = z.object({
 export const OpenDataset = z.object({
   title: z.string(),
   formats: z.array(z.string()),
-  url: z.string(),
+  /** CKAN のリソース URL。スキームなしが混ざるため取り込み時に正規化する */
+  url: z.url().nullable(),
   license: z.string().nullable(),
   /** 同カテゴリで見つかったデータセット数 */
   count: z.number().int().positive(),

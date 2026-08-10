@@ -28,7 +28,9 @@
           "blockedBy": "permission",
           "revisitable": true,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 29,
@@ -64,9 +66,9 @@
         "confidence": "confirmed",
         "transcriptUrl": "https://www.kugikai.city.chuo.lg.jp/kaigiroku/index.html",
         "hasCommittee": true,
-        "recordType": "unknown",
+        "recordType": null,
         "verifiedAt": "2026-08-10",
-        "notes": "独自CGI。会議録本文が kaigiroku.cgi/… で Disallow: /*.cgi の対象。AI/LLM クローラを名指しで全面拒否（robots に 2025-12 の日付コメント）",
+        "notes": "独自CGI。robots.txt に `# --- AI・LLM ---` として GPTBot/ChatGPT-User/CCBot/ClaudeBot/anthropic-ai/PerplexityBot/Google-Extended/OAI-SearchBot 等を Disallow: / で列挙している。なお同ファイルには User-agent: * グループが存在せず、末尾の `Disallow: /*.cgi` 等は直前の VNPTBot グループに属するため、厳密には独自 UA に適用されるルールが無い（robots.txt の記述ミスと思われる）。技術的な抜け道は使わず、AI/LLM を拒否する明示的な意図を尊重して除外する。",
         "evidenceUrls": [
           "https://www.kugikai.city.chuo.lg.jp/kaigiroku/index.html",
           "https://www.kugikai.city.chuo.lg.jp/robots.txt",
@@ -105,21 +107,31 @@
       "name": "港区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131032",
       "transcript": {
-        "systemFamily": "db-search",
+        "systemFamily": "voices",
         "robots": {
-          "verdict": "disallow-all",
+          "verdict": "allowed",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
-          "source": "family-uniform"
+          "raw": "User-agent: DotBot|SemrushBot|AhrefsBot|BLEXBot|MJ12bot|Steeler|ltx71|Linguee|proximic|GrapeshotCrawler|Mappy|MegaIndex|Hatena|PaperLiBot|PetalBot|YandexBot|CCBot/2.0|LivelapBot|Cincraw|Go-http-client|BaiduSpider ほか計26 UA: Disallow: /\nUser-agent: *\nDisallow: /voices/cgi/\nDisallow: /voices2/cgi/\nDisallow: /gikai/cgi/\nDisallow: g07_Video_View.asp ほか動画ページ各種",
+          "source": "measured-2026-08-10",
+          "host": "gikai2.city.minato.tokyo.jp"
         },
         "confidence": "confirmed",
         "fetchPolicy": {
-          "eligible": false,
-          "reason": "robots-disallow-all",
-          "blockedBy": "permission",
-          "revisitable": true,
+          "eligible": true,
+          "reason": "robots-allowed",
+          "blockedBy": null,
+          "revisitable": false,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": true,
+        "recordType": null,
+        "transcriptUrl": "https://gikai2.city.minato.tokyo.jp/voices/g07v_search.asp",
+        "verifiedAt": "2026-08-10",
+        "evidenceUrls": [
+          "https://gikai2.city.minato.tokyo.jp/voices/g07v_search.asp",
+          "https://gikai2.city.minato.tokyo.jp/robots.txt"
+        ],
+        "notes": "2020年調査では DB-Search（asp.db-search.com）だったが VOICES/Web へ移行済み。VOICES/Web の標準 robots テンプレート。26 UA の汎用スクレイパ対策ブロックリストに CCBot/2.0 が含まれるが、AI/LLM を名指しでセクション化したものではない。* グループは cgi ディレクトリと動画ページのみ制限で、会議録本文（voices/g07v_*.asp 等）は対象外。"
       },
       "openData": {
         "tokyoCatalogDatasets": 268,
@@ -161,7 +173,9 @@
           "blockedBy": null,
           "revisitable": false,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 137,
@@ -209,7 +223,9 @@
           "blockedBy": "permission",
           "revisitable": true,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 57,
@@ -240,8 +256,8 @@
         "robots": {
           "verdict": "allowed",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: DotBot\nDisallow: /\nUser-agent: DotBot/1.1\nDisallow: /",
-          "source": "measured-2026-08-09",
+          "raw": "User-agent: DotBot|SemrushBot|AhrefsBot|BLEXBot|MJ12bot|Steeler|ltx71|Linguee|proximic|GrapeshotCrawler|Mappy|MegaIndex|Hatena|PaperLiBot|PetalBot|YandexBot|CCBot/2.0|LivelapBot|Cincraw|Go-http-client|BaiduSpider ほか計26 UA: Disallow: /\nUser-agent: *\nDisallow: /voices/cgi/\nDisallow: /voices2/cgi/\nDisallow: /gikai/cgi/\nDisallow: g07_Video_View.asp ほか動画ページ各種",
+          "source": "measured-2026-08-10",
           "host": "taito.gijiroku.com"
         },
         "confidence": "confirmed",
@@ -252,7 +268,10 @@
           "revisitable": false,
           "decidedAt": "2026-08-10"
         },
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-10",
+        "hasCommittee": null,
+        "recordType": null,
+        "notes": "VOICES/Web の標準 robots テンプレート。26 UA の汎用スクレイパ対策ブロックリストに CCBot/2.0 が含まれるが、AI/LLM を名指しでセクション化したものではない。* グループは cgi ディレクトリと動画ページのみ制限で、会議録本文（voices/g07v_*.asp 等）は対象外。"
       },
       "openData": {
         "tokyoCatalogDatasets": 187,
@@ -289,7 +308,9 @@
           "blockedBy": null,
           "revisitable": false,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 199,
@@ -324,7 +345,9 @@
           "blockedBy": "permission",
           "revisitable": true,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 97,
@@ -365,7 +388,9 @@
           "blockedBy": "permission",
           "revisitable": true,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 139,
@@ -406,7 +431,9 @@
           "blockedBy": null,
           "revisitable": false,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 186,
@@ -452,8 +479,8 @@
         "robots": {
           "verdict": "allowed",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: DotBot\nDisallow: /\nUser-agent: DotBot/1.1\nDisallow: /",
-          "source": "measured-2026-08-09",
+          "raw": "User-agent: DotBot|SemrushBot|AhrefsBot|BLEXBot|MJ12bot|Steeler|ltx71|Linguee|proximic|GrapeshotCrawler|Mappy|MegaIndex|Hatena|PaperLiBot|PetalBot|YandexBot|CCBot/2.0|LivelapBot|Cincraw|Go-http-client|BaiduSpider ほか計26 UA: Disallow: /\nUser-agent: *\nDisallow: /voices/cgi/\nDisallow: /voices2/cgi/\nDisallow: /gikai/cgi/\nDisallow: g07_Video_View.asp ほか動画ページ各種",
+          "source": "measured-2026-08-10",
           "host": "www.gikai-ota-tokyo.jp"
         },
         "confidence": "confirmed",
@@ -464,7 +491,10 @@
           "revisitable": false,
           "decidedAt": "2026-08-10"
         },
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-10",
+        "hasCommittee": null,
+        "recordType": null,
+        "notes": "VOICES/Web の標準 robots テンプレート。26 UA の汎用スクレイパ対策ブロックリストに CCBot/2.0 が含まれるが、AI/LLM を名指しでセクション化したものではない。* グループは cgi ディレクトリと動画ページのみ制限で、会議録本文（voices/g07v_*.asp 等）は対象外。"
       },
       "openData": {
         "tokyoCatalogDatasets": 278,
@@ -567,7 +597,9 @@
           "blockedBy": null,
           "revisitable": false,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 17,
@@ -609,7 +641,7 @@
         "confidence": "confirmed",
         "transcriptUrl": "https://kugikai-nakano.jp/search.html",
         "hasCommittee": true,
-        "recordType": "unknown",
+        "recordType": null,
         "verifiedAt": "2026-08-10",
         "notes": "区独自の HTML+JS（view.html?gijiroku_id=）。本会議＋委員会10種以上を収録。robots は議員詳細1ページのみ Disallow",
         "evidenceUrls": [
@@ -666,7 +698,9 @@
           "revisitable": false,
           "decidedAt": "2026-08-10"
         },
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-09",
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 103,
@@ -715,7 +749,9 @@
           "blockedBy": null,
           "revisitable": false,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 32,
@@ -760,7 +796,9 @@
           "blockedBy": null,
           "revisitable": false,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 7,
@@ -802,7 +840,9 @@
           "blockedBy": null,
           "revisitable": false,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 33,
@@ -829,21 +869,31 @@
       "name": "板橋区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131199",
       "transcript": {
-        "systemFamily": "db-search",
+        "systemFamily": "voices",
         "robots": {
-          "verdict": "disallow-all",
+          "verdict": "allowed",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
-          "source": "family-uniform"
+          "raw": "User-agent: DotBot|SemrushBot|AhrefsBot|BLEXBot|MJ12bot|Steeler|ltx71|Linguee|proximic|GrapeshotCrawler|Mappy|MegaIndex|Hatena|PaperLiBot|PetalBot|YandexBot|CCBot/2.0|LivelapBot|Cincraw|Go-http-client|BaiduSpider ほか計26 UA: Disallow: /\nUser-agent: *\nDisallow: /voices/cgi/\nDisallow: /voices2/cgi/\nDisallow: /gikai/cgi/\nDisallow: g07_Video_View.asp ほか動画ページ各種",
+          "source": "measured-2026-08-10",
+          "host": "itabashi.gijiroku.com"
         },
         "confidence": "confirmed",
         "fetchPolicy": {
-          "eligible": false,
-          "reason": "robots-disallow-all",
-          "blockedBy": "permission",
-          "revisitable": true,
+          "eligible": true,
+          "reason": "robots-allowed",
+          "blockedBy": null,
+          "revisitable": false,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": true,
+        "recordType": null,
+        "transcriptUrl": "https://itabashi.gijiroku.com/voices/g07v_search.asp",
+        "verifiedAt": "2026-08-10",
+        "evidenceUrls": [
+          "https://itabashi.gijiroku.com/voices/g07v_search.asp",
+          "https://itabashi.gijiroku.com/robots.txt"
+        ],
+        "notes": "2020年調査では DB-Search（asp.db-search.com）だったが VOICES/Web へ移行済み。VOICES/Web の標準 robots テンプレート。26 UA の汎用スクレイパ対策ブロックリストに CCBot/2.0 が含まれるが、AI/LLM を名指しでセクション化したものではない。* グループは cgi ディレクトリと動画ページのみ制限で、会議録本文（voices/g07v_*.asp 等）は対象外。"
       },
       "openData": {
         "tokyoCatalogDatasets": 211,
@@ -888,7 +938,9 @@
           "blockedBy": null,
           "revisitable": false,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 79,
@@ -936,26 +988,28 @@
       "transcript": {
         "systemFamily": "voices",
         "robots": {
-          "verdict": "partial",
-          "aiCrawler": "disallowed",
-          "raw": "User-agent: DotBot|SemrushBot|AhrefsBot|MJ12bot|PetalBot|YandexBot|CCBot/2.0|BaiduSpider ほか: Disallow: /\nUser-agent: *\nDisallow: /voices/cgi/ /voices2/cgi/ /gikai/cgi/ 各 Video_View.asp"
+          "verdict": "allowed",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: DotBot|SemrushBot|AhrefsBot|BLEXBot|MJ12bot|Steeler|ltx71|Linguee|proximic|GrapeshotCrawler|Mappy|MegaIndex|Hatena|PaperLiBot|PetalBot|YandexBot|CCBot/2.0|LivelapBot|Cincraw|Go-http-client|BaiduSpider ほか計26 UA: Disallow: /\nUser-agent: *\nDisallow: /voices/cgi/\nDisallow: /voices2/cgi/\nDisallow: /gikai/cgi/\nDisallow: g07_Video_View.asp ほか動画ページ各種",
+          "source": "measured-2026-08-10",
+          "host": "www.gikai-adachi.jp"
         },
         "confidence": "confirmed",
         "transcriptUrl": "https://www.gikai-adachi.jp/voices2/",
         "hasCommittee": true,
-        "recordType": "unknown",
+        "recordType": null,
         "verifiedAt": "2026-08-10",
-        "notes": "旧ドメイン gijiroku.gikai-adachi.jp は消滅。CCBot/2.0 を拒否（ClaudeBot・GPTBot の記載はなし）。* は cgi ディレクトリと動画ページのみ制限",
+        "notes": "旧ドメイン gijiroku.gikai-adachi.jp は消滅。CCBot/2.0 を拒否（ClaudeBot・GPTBot の記載はなし）。* は cgi ディレクトリと動画ページのみ制限 VOICES/Web の標準 robots テンプレート。26 UA の汎用スクレイパ対策ブロックリストに CCBot/2.0 が含まれるが、AI/LLM を名指しでセクション化したものではない。* グループは cgi ディレクトリと動画ページのみ制限で、会議録本文（voices/g07v_*.asp 等）は対象外。",
         "evidenceUrls": [
           "https://www.gikai-adachi.jp/kaigiroku.asp",
           "https://www.gikai-adachi.jp/voices2/",
           "https://www.gikai-adachi.jp/robots.txt"
         ],
         "fetchPolicy": {
-          "eligible": false,
-          "reason": "ai-crawler-disallowed",
-          "blockedBy": "permission",
-          "revisitable": true,
+          "eligible": true,
+          "reason": "robots-allowed",
+          "blockedBy": null,
+          "revisitable": false,
           "decidedAt": "2026-08-10"
         }
       },
@@ -990,7 +1044,9 @@
           "blockedBy": null,
           "revisitable": false,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 32,
@@ -1021,8 +1077,8 @@
         "robots": {
           "verdict": "allowed",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: DotBot\nDisallow: /\nUser-agent: DotBot/1.1\nDisallow: /",
-          "source": "measured-2026-08-09",
+          "raw": "User-agent: DotBot|SemrushBot|AhrefsBot|BLEXBot|MJ12bot|Steeler|ltx71|Linguee|proximic|GrapeshotCrawler|Mappy|MegaIndex|Hatena|PaperLiBot|PetalBot|YandexBot|CCBot/2.0|LivelapBot|Cincraw|Go-http-client|BaiduSpider ほか計26 UA: Disallow: /\nUser-agent: *\nDisallow: /voices/cgi/\nDisallow: /voices2/cgi/\nDisallow: /gikai/cgi/\nDisallow: g07_Video_View.asp ほか動画ページ各種",
+          "source": "measured-2026-08-10",
           "host": "www.gikai.city.edogawa.tokyo.jp"
         },
         "confidence": "confirmed",
@@ -1033,7 +1089,10 @@
           "revisitable": false,
           "decidedAt": "2026-08-10"
         },
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-10",
+        "hasCommittee": null,
+        "recordType": null,
+        "notes": "VOICES/Web の標準 robots テンプレート。26 UA の汎用スクレイパ対策ブロックリストに CCBot/2.0 が含まれるが、AI/LLM を名指しでセクション化したものではない。* グループは cgi ディレクトリと動画ページのみ制限で、会議録本文（voices/g07v_*.asp 等）は対象外。"
       },
       "openData": {
         "tokyoCatalogDatasets": 266,
@@ -1068,7 +1127,9 @@
           "blockedBy": "permission",
           "revisitable": true,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 78,
@@ -1121,7 +1182,9 @@
           "blockedBy": null,
           "revisitable": false,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 35,
@@ -1164,7 +1227,9 @@
           "blockedBy": "permission",
           "revisitable": true,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 24,
@@ -1207,7 +1272,9 @@
           "blockedBy": "permission",
           "revisitable": true,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 32,
@@ -1260,7 +1327,9 @@
           "blockedBy": null,
           "revisitable": false,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 51,
@@ -1303,7 +1372,9 @@
           "blockedBy": "permission",
           "revisitable": true,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 35,
@@ -1348,7 +1419,9 @@
           "blockedBy": null,
           "revisitable": false,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 20,
@@ -1379,8 +1452,8 @@
         "robots": {
           "verdict": "allowed",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: DotBot\nDisallow: /\nUser-agent: DotBot/1.1\nDisallow: /",
-          "source": "measured-2026-08-09",
+          "raw": "User-agent: DotBot|SemrushBot|AhrefsBot|BLEXBot|MJ12bot|Steeler|ltx71|Linguee|proximic|GrapeshotCrawler|Mappy|MegaIndex|Hatena|PaperLiBot|PetalBot|YandexBot|CCBot/2.0|LivelapBot|Cincraw|Go-http-client|BaiduSpider ほか計26 UA: Disallow: /\nUser-agent: *\nDisallow: /voices/cgi/\nDisallow: /voices2/cgi/\nDisallow: /gikai/cgi/\nDisallow: g07_Video_View.asp ほか動画ページ各種",
+          "source": "measured-2026-08-10",
           "host": "chofucity.gijiroku.com"
         },
         "confidence": "confirmed",
@@ -1391,7 +1464,10 @@
           "revisitable": false,
           "decidedAt": "2026-08-10"
         },
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-10",
+        "hasCommittee": null,
+        "recordType": null,
+        "notes": "VOICES/Web の標準 robots テンプレート。26 UA の汎用スクレイパ対策ブロックリストに CCBot/2.0 が含まれるが、AI/LLM を名指しでセクション化したものではない。* グループは cgi ディレクトリと動画ページのみ制限で、会議録本文（voices/g07v_*.asp 等）は対象外。"
       },
       "openData": {
         "tokyoCatalogDatasets": 1487,
@@ -1422,8 +1498,8 @@
         "robots": {
           "verdict": "allowed",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: DotBot\nDisallow: /\nUser-agent: DotBot/1.1\nDisallow: /",
-          "source": "measured-2026-08-09",
+          "raw": "User-agent: DotBot|SemrushBot|AhrefsBot|BLEXBot|MJ12bot|Steeler|ltx71|Linguee|proximic|GrapeshotCrawler|Mappy|MegaIndex|Hatena|PaperLiBot|PetalBot|YandexBot|CCBot/2.0|LivelapBot|Cincraw|Go-http-client|BaiduSpider ほか計26 UA: Disallow: /\nUser-agent: *\nDisallow: /voices/cgi/\nDisallow: /voices2/cgi/\nDisallow: /gikai/cgi/\nDisallow: g07_Video_View.asp ほか動画ページ各種",
+          "source": "measured-2026-08-10",
           "host": "www.gikai-machida.jp"
         },
         "confidence": "confirmed",
@@ -1434,7 +1510,10 @@
           "revisitable": false,
           "decidedAt": "2026-08-10"
         },
-        "verifiedAt": "2026-08-09"
+        "verifiedAt": "2026-08-10",
+        "hasCommittee": null,
+        "recordType": null,
+        "notes": "VOICES/Web の標準 robots テンプレート。26 UA の汎用スクレイパ対策ブロックリストに CCBot/2.0 が含まれるが、AI/LLM を名指しでセクション化したものではない。* グループは cgi ディレクトリと動画ページのみ制限で、会議録本文（voices/g07v_*.asp 等）は対象外。"
       },
       "openData": {
         "tokyoCatalogDatasets": 127,
@@ -1494,7 +1573,9 @@
           "blockedBy": "permission",
           "revisitable": true,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 50,
@@ -1539,7 +1620,9 @@
           "blockedBy": null,
           "revisitable": false,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 21,
@@ -1582,7 +1665,9 @@
           "blockedBy": "permission",
           "revisitable": true,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 30,
@@ -1659,7 +1744,9 @@
           "blockedBy": "permission",
           "revisitable": true,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 25,
@@ -1702,7 +1789,9 @@
           "blockedBy": "permission",
           "revisitable": true,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 29,
@@ -1745,7 +1834,9 @@
           "blockedBy": "permission",
           "revisitable": true,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 13,
@@ -1780,7 +1871,9 @@
           "blockedBy": "permission",
           "revisitable": true,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 399,
@@ -1824,7 +1917,7 @@
         "confidence": "confirmed",
         "transcriptUrl": "https://ssp.kaigiroku.net/tenant/higashiyamato/pg/index.html",
         "hasCommittee": true,
-        "recordType": "unknown",
+        "recordType": null,
         "verifiedAt": "2026-08-10",
         "notes": "別途 smart.discussvision.net に議会中継があるが映像配信で会議録とは別",
         "tenant": "higashiyamato",
@@ -1883,7 +1976,9 @@
           "blockedBy": null,
           "revisitable": false,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 64,
@@ -1926,7 +2021,9 @@
           "blockedBy": "permission",
           "revisitable": true,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 21,
@@ -1971,7 +2068,9 @@
           "blockedBy": null,
           "revisitable": false,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 14,
@@ -2006,7 +2105,9 @@
           "blockedBy": "permission",
           "revisitable": true,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 61,
@@ -2057,7 +2158,9 @@
           "blockedBy": "permission",
           "revisitable": true,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 17,
@@ -2100,7 +2203,9 @@
           "blockedBy": "permission",
           "revisitable": true,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 27,
@@ -2143,7 +2248,9 @@
           "blockedBy": "permission",
           "revisitable": true,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 25,
@@ -2186,7 +2293,9 @@
           "blockedBy": "permission",
           "revisitable": true,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 37,
@@ -2231,7 +2340,9 @@
           "blockedBy": null,
           "revisitable": false,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 10,
@@ -2266,7 +2377,9 @@
           "blockedBy": "permission",
           "revisitable": true,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "hasCommittee": null,
+        "recordType": null
       },
       "openData": {
         "tokyoCatalogDatasets": 13,
@@ -2302,7 +2415,7 @@
         "confidence": "confirmed",
         "transcriptUrl": "https://www.vill.hinohara.tokyo.dbsr.jp/",
         "hasCommittee": true,
-        "recordType": "unknown",
+        "recordType": null,
         "verifiedAt": "2026-08-10",
         "notes": "平成27年5月以降の本会議＋予算・決算特別委員会",
         "evidenceUrls": [
@@ -2343,7 +2456,7 @@
         "confidence": "confirmed",
         "transcriptUrl": "https://www.town.okutama.tokyo.dbsr.jp/",
         "hasCommittee": true,
-        "recordType": "unknown",
+        "recordType": null,
         "verifiedAt": "2026-08-10",
         "notes": "本会議＋予算・決算特別委員会等",
         "evidenceUrls": [
@@ -2384,7 +2497,7 @@
         "confidence": "confirmed",
         "transcriptUrl": null,
         "hasCommittee": null,
-        "recordType": "unknown",
+        "recordType": null,
         "verifiedAt": "2026-08-10",
         "notes": "会議録のWeb公開なし。議決結果PDFと議会だより（要約）のみ",
         "evidenceUrls": [
@@ -2466,7 +2579,7 @@
         "confidence": "probable",
         "transcriptUrl": null,
         "hasCommittee": null,
-        "recordType": "unknown",
+        "recordType": null,
         "verifiedAt": "2026-08-10",
         "notes": "テキスト会議録なし。DiscussVision『スマート議会中継』の動画のみ（発言一覧は動画へのインデックス）",
         "evidenceUrls": [
@@ -2514,8 +2627,8 @@
         },
         "confidence": "confirmed",
         "transcriptUrl": "https://www.vill.kouzushima.tokyo.jp/busyo/gikai/",
-        "hasCommittee": "unknown",
-        "recordType": "unknown",
+        "hasCommittee": null,
+        "recordType": null,
         "verifiedAt": "2026-08-10",
         "notes": "WordPress。定例会・臨時会ごとの個別ページから PDF へリンクする静的リスト。検索機能なし",
         "evidenceUrls": [
@@ -2556,7 +2669,7 @@
         "confidence": "confirmed",
         "transcriptUrl": null,
         "hasCommittee": false,
-        "recordType": "unknown",
+        "recordType": null,
         "verifiedAt": "2026-08-10",
         "notes": "会議録のWeb公開なし。議会だよりPDFと議決結果のみ。旧ドメイン miyakemura.com は失効、現行は vill.miyake.tokyo.jp",
         "evidenceUrls": [
@@ -2645,7 +2758,7 @@
         "confidence": "probable",
         "transcriptUrl": "https://www.town.hachijo.tokyo.jp/chousei/chougikai/katsushin/kaigi-kiroku/kairoku/",
         "hasCommittee": false,
-        "recordType": "unknown",
+        "recordType": null,
         "verifiedAt": "2026-08-10",
         "notes": "WordPress + S3(prd-hachijo) の PDF。本会議のみ",
         "evidenceUrls": [
@@ -2694,7 +2807,7 @@
         "confidence": "probable",
         "transcriptUrl": null,
         "hasCommittee": null,
-        "recordType": "unknown",
+        "recordType": null,
         "verifiedAt": "2026-08-10",
         "notes": "会議録のWeb公開なし。全国町村議会議長会クイックNaviでも議会中継はCATVの録画・録音のみ",
         "evidenceUrls": [
@@ -2735,7 +2848,7 @@
         "confidence": "confirmed",
         "transcriptUrl": "https://ssp.kaigiroku.net/tenant/ogasawara/SpTop.html",
         "hasCommittee": true,
-        "recordType": "unknown",
+        "recordType": null,
         "verifiedAt": "2026-08-10",
         "notes": "2020年は自治体サイト直だったが DNP へ移行済み",
         "tenant": "ogasawara",
@@ -2780,7 +2893,7 @@
       "robots-allowed": "取得可。robots に制限がないか、会議録の経路が Disallow 対象外",
       "tenant-render-only": "取得可だが JSON API は Disallow のため画面を描画して解析する（DiscussNetPremium）",
       "robots-disallow-all": "除外。robots がトップ以外を Disallow（DB-Search）。許諾が取れれば解除しうる",
-      "ai-crawler-disallowed": "除外。robots が AI/LLM クローラを名指しで拒否している",
+      "ai-crawler-disallowed": "除外。robots が AI/LLM クローラを名指しでセクション化して拒否している。汎用スクレイパ対策のブロックリストに CCBot 等が紛れているだけのものは該当させない",
       "robots-unverified": "除外。robots を確認できていない",
       "no-source": "除外。会議録が Web 公開されていない"
     },
