@@ -79,7 +79,11 @@ export const FetchPolicy = z.object({
 
 export const Transcript = z.object({
   systemFamily: SystemFamily,
-  transcriptUrl: z.url().nullable().optional(),
+  /**
+   * 取得の起点。**driver はここだけを見る**（entryUrl / host は由来を残すための補助で、
+   * 取得先の正ではない）。systemFamily が 'none' のときだけ null を取る。
+   */
+  transcriptUrl: z.url().nullable(),
   robots: Robots,
   fetchPolicy: FetchPolicy,
   /** 委員会記録も収録しているか。予算の実質審議は委員会で行われるため重要。null = 未確認 */
@@ -93,7 +97,9 @@ export const Transcript = z.object({
   /** DiscussNetPremium のテナント識別子 */
   tenant: z.string().optional(),
   tenantId: z.number().int().optional(),
+  /** 調査時に辿った入口。transcriptUrl の由来を残すためのもので取得には使わない */
   entryUrl: z.url().optional(),
+  /** robots.txt を取得したホスト。transcriptUrl のホストと一致するとは限らない */
   host: z.string().optional(),
 })
 
@@ -164,7 +170,17 @@ export type OpenData = z.infer<typeof OpenData>
 export type Jurisdiction = z.infer<typeof Jurisdiction>
 export type Manifest = z.infer<typeof Manifest>
 
-/** driver が取得対象を選ぶときの唯一の入口 */
-export function eligibleJurisdictions(m: Manifest): [string, Jurisdiction][] {
-  return Object.entries(m.jurisdictions).filter(([, j]) => j.transcript.fetchPolicy.eligible)
+/** driver が取得対象を選ぶときの唯一の入口。取得先 URL が必ず引ける形で返す */
+export function eligibleJurisdictions(m: Manifest): FetchTarget[] {
+  return Object.entries(m.jurisdictions).flatMap(([code, j]) => {
+    const url = j.transcript.transcriptUrl
+    // eligible なら transcriptUrl が非 null であることは validate が保証する
+    return j.transcript.fetchPolicy.eligible && url ? [{ code, url, jurisdiction: j }] : []
+  })
+}
+
+export type FetchTarget = {
+  code: string
+  url: string
+  jurisdiction: Jurisdiction
 }

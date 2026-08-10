@@ -97,6 +97,8 @@ footer{color:var(--muted);font-size:12px;padding:0 20px 40px;line-height:1.7}
 <script src="_data.js"></script>
 <script>
 const $=s=>document.querySelector(s);
+const ESC={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};
+const e=v=>String(v??'').replace(/[&<>"']/g,c=>ESC[c]);
 let sortK='code', sortAsc=true, filter=null, q='';
 
 const FAMS=['dnp','db-search','voices','kensakusystem','own-site','none'];
@@ -106,10 +108,10 @@ const yn=v=>v===true?'あり':v===false?'なし':'—';
 function odCell(r){
   const out=[];
   const add=(k,label)=>{ const v=r[k]; if(!v) return;
-    out.push(v.url?`<a class="pill p-mute" href="${v.url}" target="_blank" rel="noopener" title="${(v.title||'').replace(/"/g,'')}">${label}${v.n>1?' '+v.n:''}</a>`
+    out.push(v.url?`<a class="pill p-mute" href="${e(v.url)}" target="_blank" rel="noopener" title="${e(v.title)}">${label}${v.n>1?' '+v.n:''}</a>`
                       :`<span class="pill p-mute">${label}</span>`); };
   add('budget','予算'); add('roster','議員名簿'); add('proc','調達'); add('dayori','議会だより');
-  if(r.portal) out.push(`<span class="pill p-warn">独自${r.portal.type.toUpperCase()}</span>`);
+  if(r.portal) out.push(`<span class="pill p-warn">独自${e(r.portal.type).toUpperCase()}</span>`);
   return `<div class="od">${out.join('')||'<span class="fam">—</span>'}</div>`;
 }
 
@@ -120,32 +122,36 @@ function render(){
     const s=(r.name+r.fam+r.reason+(r.notes||'')+r.code).toLowerCase();
     return s.includes(q.toLowerCase());
   }).sort((a,b)=>{
-    let x=a[sortK],y=b[sortK];
-    if(typeof x==='boolean'){x=x?1:0;y=y?1:0;}
-    x=x??''; y=y??'';
-    return (x<y?-1:x>y?1:0)*(sortAsc?1:-1);
+    const x=a[sortK], y=b[sortK];
+    // null / undefined は昇降どちらでも常に末尾へ（「未確認」を「なし」や 0 と混ぜない）
+    const nx=x==null, ny=y==null;
+    if(nx||ny) return nx&&ny?0:(nx?1:-1);
+    const norm=v=>typeof v==='boolean'?(v?1:0):v;
+    const u=norm(x), v=norm(y);
+    if(typeof u==='number'&&typeof v==='number') return (u-v)*(sortAsc?1:-1);
+    return String(u).localeCompare(String(v),'ja')*(sortAsc?1:-1);
   });
   $('#tb').innerHTML=rows.map(r=>{
     const el=r.eligible?pill('○','p-ok'):pill('✗','p-ng');
     const ai=r.ai==='disallowed'?pill('拒否','p-ng'):r.ai==='unchecked'?pill('未確認','p-warn'):pill('—','p-mute');
     const vd={'allowed':'p-ok','none':'p-ok','partial':'p-warn','disallow-all':'p-ng'}[r.verdict]||'p-mute';
-    const nm=r.url?`<a href="${r.url}" target="_blank" rel="noopener">${r.name}</a>`:r.name;
-    return `<tr class="row" data-c="${r.code}">
-      <td class="code">${r.code}</td><td>${nm}</td>
-      <td class="fam">${r.fam}</td>
-      <td>${pill(r.verdict,vd)}</td><td>${ai}</td>
-      <td>${el}</td><td class="fam">${r.reason}${r.revisit?' <span class="pill p-warn">許諾で解除可</span>':''}</td>
-      <td class="fam">${yn(r.cmt)}</td><td class="fam">${r.rec||'—'}</td>
+    const nm=r.url?`<a href="${e(r.url)}" target="_blank" rel="noopener">${e(r.name)}</a>`:e(r.name);
+    return `<tr class="row" data-c="${e(r.code)}">
+      <td class="code">${e(r.code)}</td><td>${nm}</td>
+      <td class="fam">${e(r.fam)}</td>
+      <td>${pill(e(r.verdict),vd)}</td><td>${ai}</td>
+      <td>${el}</td><td class="fam">${e(r.reason)}${r.revisit?' <span class="pill p-warn">許諾で解除可</span>':''}</td>
+      <td class="fam">${yn(r.cmt)}</td><td class="fam">${e(r.rec)||'—'}</td>
       <td>${odCell(r)}</td><td class="code">${r.ds??'—'}</td>
     </tr>
-    <tr class="det" id="d-${r.code}" hidden><td colspan="11">
+    <tr class="det" id="d-${e(r.code)}" hidden><td colspan="11">
       <dl>
-        <dt>会議録URL</dt><dd>${r.url?`<a href="${r.url}" target="_blank" rel="noopener">${r.url}</a>`:'—'}</dd>
-        <dt>確度</dt><dd>${r.conf||'—'}</dd>
-        <dt>根拠URL</dt><dd>${r.ev.length?r.ev.map(u=>`<a href="${u}" target="_blank" rel="noopener">${u}</a>`).join('<br>'):'—'}</dd>
+        <dt>会議録URL</dt><dd>${r.url?`<a href="${e(r.url)}" target="_blank" rel="noopener">${e(r.url)}</a>`:'—'}</dd>
+        <dt>確度</dt><dd>${e(r.conf)||'—'}</dd>
+        <dt>根拠URL</dt><dd>${r.ev.length?r.ev.map(u=>`<a href="${e(u)}" target="_blank" rel="noopener">${e(u)}</a>`).join('<br>'):'—'}</dd>
       </dl>
-      ${r.notes?`<div class="note">${r.notes}</div>`:''}
-      ${r.raw?`<pre>${r.raw.replace(/</g,'&lt;')}</pre>`:''}
+      ${r.notes?`<div class="note">${e(r.notes)}</div>`:''}
+      ${r.raw?`<pre>${e(r.raw)}</pre>`:''}
     </td></tr>`;
   }).join('');
   $('#tb').querySelectorAll('tr.row').forEach(tr=>tr.onclick=()=>{
@@ -181,8 +187,8 @@ document.querySelectorAll('th[data-k]').forEach(th=>th.onclick=()=>{
   const k=th.dataset.k; sortAsc = (k===sortK)? !sortAsc : true; sortK=k; render();
 });
 $('#meta').textContent=`${META.generatedAt} 実測 / ${META.note.slice(0,90)}…`;
-$('#foot').innerHTML=`<b>fetchPolicy</b>: ${META.fetchPolicy.rule}<br><br>`+
-  Object.entries(META.fetchPolicy.reasons).map(([k,v])=>`<code>${k}</code> — ${v}`).join('<br>');
+$('#foot').innerHTML=`<b>fetchPolicy</b>: ${e(META.fetchPolicy.rule)}<br><br>`+
+  Object.entries(META.fetchPolicy.reasons).map(([k,v])=>`<code>${e(k)}</code> — ${e(v)}`).join('<br>');
 stats(); render();
 </script>
 </body>

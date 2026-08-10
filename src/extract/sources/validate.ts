@@ -1,5 +1,15 @@
 import { Manifest, eligibleJurisdictions } from './schema'
-import raw from './manifest.json'
+
+// 静的 import にすると JSON が壊れているときにパースエラーで異常終了し、
+// どこが壊れているかを出せない。読み込みも自分で握る。
+const path = new URL('./manifest.json', import.meta.url).pathname
+let raw: unknown
+try {
+  raw = JSON.parse(await Bun.file(path).text())
+} catch (e) {
+  console.error(`✗ manifest.json を JSON として読めません\n  ${e instanceof Error ? e.message : String(e)}`)
+  process.exit(1)
+}
 
 const parsed = Manifest.safeParse(raw)
 
@@ -20,6 +30,7 @@ for (const [code, j] of js) {
   const t = j.transcript
   if (!j.ocdId.endsWith(`city:${code}`)) errors.push(`${code} ${j.name}: ocdId が団体コードと不一致`)
   if (t.systemFamily === 'none' && t.transcriptUrl) errors.push(`${code} ${j.name}: systemFamily=none なのに transcriptUrl がある`)
+  if (t.fetchPolicy.eligible && !t.transcriptUrl) errors.push(`${code} ${j.name}: eligible なのに transcriptUrl が無い（driver が取得先を引けない）`)
   if (t.systemFamily === 'dnp' && !t.tenant) errors.push(`${code} ${j.name}: dnp なのに tenant が無い`)
   if (t.fetchPolicy.eligible !== (t.fetchPolicy.blockedBy === null)) errors.push(`${code} ${j.name}: eligible と blockedBy が矛盾`)
   if (t.fetchPolicy.revisitable && t.fetchPolicy.blockedBy !== 'permission') errors.push(`${code} ${j.name}: revisitable なのに blockedBy が permission でない`)
@@ -46,5 +57,10 @@ console.log(`  systemFamily   ${line(count((j) => j.transcript.systemFamily))}`)
 console.log(`  robots         ${line(count((j) => j.transcript.robots.verdict))}`)
 console.log(`  aiCrawler      ${line(count((j) => j.transcript.robots.aiCrawler))}`)
 console.log(`  reason         ${line(count((j) => j.transcript.fetchPolicy.reason))}`)
-console.log(`\n  取得対象       ${eligibleJurisdictions(m).length} 団体`)
+const targets = eligibleJurisdictions(m)
+if (targets.length !== js.filter(([, j]) => j.transcript.fetchPolicy.eligible).length) {
+  console.error('✗ eligible な団体のうち取得先 URL を引けないものがある')
+  process.exit(1)
+}
+console.log(`\n  取得対象       ${targets.length} 団体`)
 console.log(`  許諾で解除可   ${js.filter(([, j]) => j.transcript.fetchPolicy.revisitable).length} 団体`)
