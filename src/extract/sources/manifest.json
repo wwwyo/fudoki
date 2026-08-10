@@ -1,7 +1,7 @@
 {
   "$schema": "./manifest.schema.json",
   "generatedAt": "2026-08-10",
-  "note": "東京都62区市町村の会議録・オープンデータ源の調査結果。会議録システムは 2020年の地方議会会議録コーパスプロジェクト調査を出発点に現況を実測。CKAN は organization:t<団体コード> で全件取得して分類。",
+  "note": "東京都62区市町村の会議録・オープンデータ源の調査結果。会議録システムは 2020年の地方議会会議録コーパスプロジェクト調査を出発点に現況を実測。CKAN は organization:t<団体コード> で全件取得して分類。 フィールド名 transcript は SayIt(mySociety) の語彙に合わせたもの（Popolo に会議録を表す型は無く、Speech までしか定義されていない）。",
   "sources": {
     "corpusProject": "http://local-politics.jp/",
     "tokyoCatalog": "https://catalog.data.metro.tokyo.lg.jp/api/3/action/",
@@ -11,7 +11,7 @@
     "131016": {
       "name": "千代田区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131016",
-      "minutes": {
+      "transcript": {
         "systemFamily": "db-search",
         "robots": "disallow-all",
         "url2020": "http://asp.db-search.com/chiyoda/dsweb.cgi/",
@@ -43,7 +43,7 @@
     "131024": {
       "name": "中央区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131024",
-      "minutes": {
+      "transcript": {
         "systemFamily": "own-site",
         "robots": "allowed",
         "url2020": "http://www.kugikai.city.chuo.lg.jp/kaigiroku/index.html",
@@ -73,7 +73,7 @@
     "131032": {
       "name": "港区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131032",
-      "minutes": {
+      "transcript": {
         "systemFamily": "db-search",
         "robots": "disallow-all",
         "url2020": "http://asp.db-search.com/minatokugikai/dsweb.cgi/",
@@ -100,7 +100,7 @@
     "131041": {
       "name": "新宿区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131041",
-      "minutes": {
+      "transcript": {
         "systemFamily": "dnp",
         "robots": "tenant-only",
         "url2020": "http://www.kaigiroku.net/kensaku/shinjuku/shinjuku.html",
@@ -139,7 +139,7 @@
     "131059": {
       "name": "文京区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131059",
-      "minutes": {
+      "transcript": {
         "systemFamily": "db-search",
         "robots": "disallow-all",
         "url2020": "http://www.db-search.com/bunkyo/index.php/",
@@ -171,7 +171,7 @@
     "131067": {
       "name": "台東区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131067",
-      "minutes": {
+      "transcript": {
         "systemFamily": "voices",
         "robots": "allowed",
         "url2020": "http://taito.gijiroku.com/voices/index.asp",
@@ -193,7 +193,7 @@
     "131075": {
       "name": "墨田区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131075",
-      "minutes": {
+      "transcript": {
         "systemFamily": "dnp",
         "robots": "tenant-only",
         "url2020": "http://www.kaigiroku.net/kensaku/sumida/sumida.html",
@@ -219,7 +219,7 @@
     "131083": {
       "name": "江東区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131083",
-      "minutes": {
+      "transcript": {
         "systemFamily": "db-search",
         "robots": "disallow-all",
         "url2020": "http://asp.db-search.com/koto/",
@@ -251,7 +251,7 @@
     "131091": {
       "name": "品川区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131091",
-      "minutes": {
+      "transcript": {
         "systemFamily": "db-search",
         "robots": "disallow-all",
         "url2020": "http://asp.db-search.com/shinagawa/dsweb.cgi/",
@@ -281,7 +281,7 @@
     "131105": {
       "name": "目黒区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131105",
-      "minutes": {
+      "transcript": {
         "systemFamily": "kensakusystem",
         "robots": "allowed",
         "url2020": "http://www.kensakusystem.jp/meguro/sapphire.html",
@@ -326,7 +326,7 @@
     "131113": {
       "name": "大田区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131113",
-      "minutes": {
+      "transcript": {
         "systemFamily": "voices",
         "robots": "allowed",
         "url2020": "http://www.gikai-ota-tokyo.jp/ota/index2.html",
@@ -364,7 +364,7 @@
     "131121": {
       "name": "世田谷区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131121",
-      "minutes": {
+      "transcript": {
         "systemFamily": "own-site",
         "robots": "allowed",
         "url2020": "http://kugi.city.setagaya.tokyo.jp/voices/",
@@ -394,7 +394,7 @@
     "131130": {
       "name": "渋谷区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131130",
-      "minutes": {
+      "transcript": {
         "systemFamily": "dnp",
         "robots": "tenant-only",
         "url2020": "http://www.kaigiroku.net/kensaku/shibuya/shibuya.html",
@@ -434,7 +434,7 @@
     "131148": {
       "name": "中野区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131148",
-      "minutes": {
+      "transcript": {
         "systemFamily": "own-site",
         "robots": "allowed",
         "url2020": "http://kugikai-nakano.jp/search_itiran.html",
@@ -464,7 +464,7 @@
     "131156": {
       "name": "杉並区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131156",
-      "minutes": {
+      "transcript": {
         "systemFamily": "voices",
         "robots": "allowed",
         "url2020": "http://suginami.gijiroku.com/voices/index.asp",
@@ -502,7 +502,7 @@
     "131164": {
       "name": "豊島区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131164",
-      "minutes": {
+      "transcript": {
         "systemFamily": "kensakusystem",
         "robots": "allowed",
         "url2020": "http://www.kensakusystem.jp/toshima/",
@@ -532,7 +532,7 @@
     "131172": {
       "name": "北区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131172",
-      "minutes": {
+      "transcript": {
         "systemFamily": "dnp",
         "robots": "tenant-only",
         "url2020": "http://www.kaigiroku.net/kensaku/kita/kita.html",
@@ -563,7 +563,7 @@
     "131181": {
       "name": "荒川区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131181",
-      "minutes": {
+      "transcript": {
         "systemFamily": "dnp",
         "robots": "tenant-only",
         "url2020": "http://www.kaigiroku.net/arakawa/arakawa.html,https://www.city.arakawa.tokyo.jp/kugikai/cgi/kensaku/wwwsrch/wwwsrch.htm",
@@ -597,7 +597,7 @@
     "131199": {
       "name": "板橋区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131199",
-      "minutes": {
+      "transcript": {
         "systemFamily": "db-search",
         "robots": "disallow-all",
         "url2020": "http://asp.db-search.com/itabashi/",
@@ -627,7 +627,7 @@
     "131202": {
       "name": "練馬区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131202",
-      "minutes": {
+      "transcript": {
         "systemFamily": "dnp",
         "robots": "tenant-only",
         "url2020": "http://www.kaigiroku.net/kensaku/cgi-bin/WWWframeBase.exe?A=frameBase_etu&USR=tokners&PWD=&L=1&S=31&Y=",
@@ -680,7 +680,7 @@
     "131211": {
       "name": "足立区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131211",
-      "minutes": {
+      "transcript": {
         "systemFamily": "own-site",
         "robots": "allowed",
         "url2020": "http://gijiroku.gikai-adachi.jp/voices/index.asp",
@@ -702,7 +702,7 @@
     "131229": {
       "name": "葛飾区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131229",
-      "minutes": {
+      "transcript": {
         "systemFamily": "kensakusystem",
         "robots": "allowed",
         "url2020": "http://www.kensakusystem.jp/katsushika/sapphire.html",
@@ -732,7 +732,7 @@
     "131237": {
       "name": "江戸川区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131237",
-      "minutes": {
+      "transcript": {
         "systemFamily": "voices",
         "robots": "allowed",
         "url2020": "http://www.gikai.city.edogawa.tokyo.jp/voices/g08v_search.asp",
@@ -754,7 +754,7 @@
     "132012": {
       "name": "八王子市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132012",
-      "minutes": {
+      "transcript": {
         "systemFamily": "db-search",
         "robots": "disallow-all",
         "url2020": "http://asp.db-search.com/hachioji-c/dsweb.cgi/",
@@ -794,7 +794,7 @@
     "132021": {
       "name": "立川市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132021",
-      "minutes": {
+      "transcript": {
         "systemFamily": "dnp",
         "robots": "tenant-only",
         "url2020": "http://www.kaigiroku.net/kensaku/cgi-bin/WWWframeBase.exe?A=frameBase2&USR=toktacs&PWD=&L=1&S=31",
@@ -828,7 +828,7 @@
     "132039": {
       "name": "武蔵野市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132039",
-      "minutes": {
+      "transcript": {
         "systemFamily": "db-search",
         "robots": "disallow-all",
         "url2020": "http://asp.db-search.com/musashino-c/",
@@ -860,7 +860,7 @@
     "132047": {
       "name": "三鷹市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132047",
-      "minutes": {
+      "transcript": {
         "systemFamily": "db-search",
         "robots": "disallow-all",
         "url2020": "http://asp.db-search.com/mitaka-c/dsweb.cgi/?Template=Perusal",
@@ -900,7 +900,7 @@
     "132055": {
       "name": "青梅市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132055",
-      "minutes": {
+      "transcript": {
         "systemFamily": "dnp",
         "robots": "tenant-only",
         "url2020": "http://www.kaigiroku.net/kensaku/ome/ome.html",
@@ -934,7 +934,7 @@
     "132063": {
       "name": "府中市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132063",
-      "minutes": {
+      "transcript": {
         "systemFamily": "db-search",
         "robots": "disallow-all",
         "url2020": "http://asp.db-search.com/fuchu-c/",
@@ -966,7 +966,7 @@
     "132071": {
       "name": "昭島市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132071",
-      "minutes": {
+      "transcript": {
         "systemFamily": "dnp",
         "robots": "tenant-only",
         "url2020": "http://ssp.kaigiroku.net/tenant/akishima/pg/index.html",
@@ -1000,7 +1000,7 @@
     "132080": {
       "name": "調布市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132080",
-      "minutes": {
+      "transcript": {
         "systemFamily": "voices",
         "robots": "allowed",
         "url2020": "http://chofucity.gijiroku.com/voices/index2.html",
@@ -1030,7 +1030,7 @@
     "132098": {
       "name": "町田市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132098",
-      "minutes": {
+      "transcript": {
         "systemFamily": "voices",
         "robots": "allowed",
         "url2020": "http://www.gikai-machida.jp/voices/g08v_search.asp",
@@ -1077,7 +1077,7 @@
     "132101": {
       "name": "小金井市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132101",
-      "minutes": {
+      "transcript": {
         "systemFamily": "db-search",
         "robots": "disallow-all",
         "url2020": "http://asp.db-search.com/koganei-c/",
@@ -1109,7 +1109,7 @@
     "132110": {
       "name": "小平市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132110",
-      "minutes": {
+      "transcript": {
         "systemFamily": "dnp",
         "robots": "tenant-only",
         "url2020": "http://www.kaigiroku.net/kensaku/kodaira/kodaira.html",
@@ -1143,7 +1143,7 @@
     "132128": {
       "name": "日野市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132128",
-      "minutes": {
+      "transcript": {
         "systemFamily": "db-search",
         "robots": "disallow-all",
         "url2020": "http://asp.db-search.com/hino-c/",
@@ -1167,7 +1167,7 @@
     "132136": {
       "name": "東村山市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132136",
-      "minutes": {
+      "transcript": {
         "systemFamily": "own-site",
         "robots": "allowed",
         "url2020": "http://www.city.higashimurayama.tokyo.jp/gikai/gikaijoho/kensaku/",
@@ -1189,7 +1189,7 @@
     "132144": {
       "name": "国分寺市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132144",
-      "minutes": {
+      "transcript": {
         "systemFamily": "db-search",
         "robots": "disallow-all",
         "url2020": "http://asp.db-search.com/kokubunji-c/",
@@ -1221,7 +1221,7 @@
     "132152": {
       "name": "国立市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132152",
-      "minutes": {
+      "transcript": {
         "systemFamily": "db-search",
         "robots": "disallow-all",
         "url2020": "http://asp.db-search.com/kunitachi-c/",
@@ -1253,7 +1253,7 @@
     "132187": {
       "name": "福生市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132187",
-      "minutes": {
+      "transcript": {
         "systemFamily": "db-search",
         "robots": "disallow-all",
         "url2020": "http://asp.db-search.com/fussa-c/",
@@ -1277,7 +1277,7 @@
     "132195": {
       "name": "狛江市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132195",
-      "minutes": {
+      "transcript": {
         "systemFamily": "db-search",
         "robots": "disallow-all",
         "url2020": "http://asp.db-search.com/komae-c/",
@@ -1317,7 +1317,7 @@
     "132209": {
       "name": "東大和市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132209",
-      "minutes": {
+      "transcript": {
         "systemFamily": "own-site",
         "robots": "allowed",
         "url2020": "https://www.city.higashiyamato.lg.jp/index.cfm/36,0,381,661,html",
@@ -1347,7 +1347,7 @@
     "132217": {
       "name": "清瀬市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132217",
-      "minutes": {
+      "transcript": {
         "systemFamily": "dnp",
         "robots": "tenant-only",
         "url2020": "http://www.kaigiroku.net/kensaku/kiyose/kiyose.html",
@@ -1381,7 +1381,7 @@
     "132225": {
       "name": "東久留米市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132225",
-      "minutes": {
+      "transcript": {
         "systemFamily": "db-search",
         "robots": "disallow-all",
         "url2020": "http://asp.db-search.com/higashikurume-c/",
@@ -1413,7 +1413,7 @@
     "132233": {
       "name": "武蔵村山市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132233",
-      "minutes": {
+      "transcript": {
         "systemFamily": "dnp",
         "robots": "tenant-only",
         "url2020": "http://www.kaigiroku.net/kensaku/musashimurayama/musashimurayama.html",
@@ -1439,7 +1439,7 @@
     "132241": {
       "name": "多摩市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132241",
-      "minutes": {
+      "transcript": {
         "systemFamily": "db-search",
         "robots": "disallow-all",
         "url2020": "http://asp.db-search.com/tama-c/",
@@ -1479,7 +1479,7 @@
     "132250": {
       "name": "稲城市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132250",
-      "minutes": {
+      "transcript": {
         "systemFamily": "db-search",
         "robots": "disallow-all",
         "url2020": "http://asp.db-search.com/inagi-c/",
@@ -1511,7 +1511,7 @@
     "132276": {
       "name": "羽村市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132276",
-      "minutes": {
+      "transcript": {
         "systemFamily": "db-search",
         "robots": "disallow-all",
         "url2020": "http://asp.db-search.com/hamura-c/",
@@ -1543,7 +1543,7 @@
     "132284": {
       "name": "あきる野市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132284",
-      "minutes": {
+      "transcript": {
         "systemFamily": "db-search",
         "robots": "disallow-all",
         "url2020": "http://asp.db-search.com/akiruno-c/",
@@ -1575,7 +1575,7 @@
     "132292": {
       "name": "西東京市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132292",
-      "minutes": {
+      "transcript": {
         "systemFamily": "db-search",
         "robots": "disallow-all",
         "url2020": "http://asp.db-search.com/nishitokyo-c/dsweb.cgi/",
@@ -1607,7 +1607,7 @@
     "133035": {
       "name": "瑞穂町",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:133035",
-      "minutes": {
+      "transcript": {
         "systemFamily": "dnp",
         "robots": "tenant-only",
         "url2020": "http://www.kaigiroku.net/kensaku/mizuho/mizuho.html",
@@ -1633,7 +1633,7 @@
     "133051": {
       "name": "日の出町",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:133051",
-      "minutes": {
+      "transcript": {
         "systemFamily": "db-search",
         "robots": "disallow-all",
         "url2020": "http://www.db-search.com/hinode-t/index.php/",
@@ -1665,7 +1665,7 @@
     "133078": {
       "name": "檜原村",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:133078",
-      "minutes": {
+      "transcript": {
         "systemFamily": "own-site",
         "robots": "allowed",
         "url2020": "http://www.vill.hinohara.tokyo.jp/gikai/07_gikaidayori.html",
@@ -1687,7 +1687,7 @@
     "133086": {
       "name": "奥多摩町",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:133086",
-      "minutes": {
+      "transcript": {
         "systemFamily": "own-site",
         "robots": "allowed",
         "url2020": "http://www.town.okutama.tokyo.jp/gyose/gikai/kaigiroku.html",
@@ -1709,7 +1709,7 @@
     "133612": {
       "name": "大島町",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:133612",
-      "minutes": {
+      "transcript": {
         "systemFamily": "own-site",
         "robots": "unknown",
         "url2020": null,
@@ -1731,7 +1731,7 @@
     "133621": {
       "name": "利島村",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:133621",
-      "minutes": {
+      "transcript": {
         "systemFamily": "own-site",
         "robots": "allowed",
         "url2020": "http://www.toshimamura.org/about/assembly",
@@ -1753,7 +1753,7 @@
     "133639": {
       "name": "新島村",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:133639",
-      "minutes": {
+      "transcript": {
         "systemFamily": "own-site",
         "robots": "unknown",
         "url2020": null,
@@ -1783,7 +1783,7 @@
     "133647": {
       "name": "神津島村",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:133647",
-      "minutes": {
+      "transcript": {
         "systemFamily": "own-site",
         "robots": "allowed",
         "url2020": "http://vill.kouzushima.tokyo.jp/mt/mt-search.cgi?search=%E8%AD%B0%E4%BC%9A&IncludeBlogs=3&limit=20",
@@ -1805,7 +1805,7 @@
     "133817": {
       "name": "三宅村",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:133817",
-      "minutes": {
+      "transcript": {
         "systemFamily": "own-site",
         "robots": "allowed",
         "url2020": "http://www.miyakemura.com/content/list/gikai.html",
@@ -1827,7 +1827,7 @@
     "133825": {
       "name": "御蔵島村",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:133825",
-      "minutes": {
+      "transcript": {
         "systemFamily": "own-site",
         "robots": "allowed",
         "url2020": "http://www.mikurasima.jp/section/gyosei/gikai.html",
@@ -1857,7 +1857,7 @@
     "134015": {
       "name": "八丈町",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:134015",
-      "minutes": {
+      "transcript": {
         "systemFamily": "own-site",
         "robots": "allowed",
         "url2020": "http://www.town.hachijo.tokyo.jp/kakuka/gikai/gikaidayori.html,http://www.town.hachijo.tokyo.jp/kakuka/gikai/movie.html",
@@ -1887,7 +1887,7 @@
     "134023": {
       "name": "青ヶ島村",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:134023",
-      "minutes": {
+      "transcript": {
         "systemFamily": "own-site",
         "robots": "unknown",
         "url2020": null,
@@ -1909,7 +1909,7 @@
     "134210": {
       "name": "小笠原村",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:134210",
-      "minutes": {
+      "transcript": {
         "systemFamily": "own-site",
         "robots": "allowed",
         "url2020": "http://www.vill.ogasawara.tokyo.jp/gikai_kaigiroku/",

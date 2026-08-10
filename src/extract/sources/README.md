@@ -7,11 +7,15 @@
 ```
 jurisdictions.<団体コード>
 ├── name / ocdId
-├── minutes         会議録: systemFamily / robots / tenant / entryUrl / confidence
+├── transcript      会議録: systemFamily / robots / tenant / entryUrl / confidence
 ├── openData        東京都カタログ(CKAN)由来: budget / memberRoster / procurement / gikaiDayori
 │   └── ownPortal   独自ポータルがある場合: type(ckan|dcat|linkdata|html) / baseUrl
 └── status          driver / ingestValidated / published
 ```
+
+### なぜ `transcript` か
+
+会議録そのものを表す型は **Popolo には無い**（Popolo が定義するのは Speech まで）。会議録＝逐語記録を指す語として、mySociety の **SayIt が使う `transcript`** に合わせた。Akoma Ntoso 系の `debate` も候補だが、委員会記録や要点記録も含む本 PJ の対象には `transcript` の方が広く当たる。
 
 ### robots の値
 
