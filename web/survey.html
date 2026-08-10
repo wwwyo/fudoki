@@ -91,7 +91,7 @@ h3{font-size:14px;margin:26px 0 8px}
         <th data-k="code">コード</th>
         <th data-k="name">自治体</th>
         <th class="grp" data-k="fam">会議録システム</th>
-        <th data-k="eligible">取得</th>
+        <th data-k="fetch">取得</th>
         <th data-k="rec">記録種別</th>
         <th data-k="cmt">委員会</th>
         <th class="grp" data-k="_budget">予算・決算</th>
@@ -121,7 +121,7 @@ const pill=(t,c)=>`<span class="pill ${c}">${t}</span>`;
 const dash='<span class="dash">—</span>';
 
 // golden case 適性: 会議録が取得可 / 予算 / 議員名簿 が揃うほど高い
-const score=r=>(r.eligible?1:0)+(r.budget?1:0)+(r.roster?1:0);
+const score=r=>(r.fetch==='allow'?1:0)+(r.budget?1:0)+(r.roster?1:0);
 DATA.forEach(r=>{
   r._budget=r.budget?r.budget.n:0; r._roster=r.roster?1:0;
   r._dayori=r.dayori?1:0; r._portal=r.portal?r.portal.type:''; r._score=score(r);
@@ -135,7 +135,7 @@ function odCell(v,label){
 }
 function dayoriCell(v){
   if(!v) return dash;
-  const c=v.conf, cls=c==='conformant'?'p-ok':c==='variant'?'p-warn':'p-ng';
+  const c=v.scConf, cls=c==='conformant'?'p-ok':c==='variant'?'p-warn':'p-ng';
   const label=c==='conformant'?'標準':c==='variant'?'差異':c==='broken'?'壊れ':e(v.fmt||'?');
   const body=`<span class="pill ${cls}">${label}</span>`;
   const title=v.std?`${v.std}${v.scNote?' / '+v.scNote:''}`:'';
@@ -163,7 +163,7 @@ function render(){
     return String(u).localeCompare(String(v),'ja')*(sortAsc?1:-1);
   });
   $('#tb').innerHTML=rows.map(r=>{
-    const el=r.eligible?pill('○','p-ok'):pill('✗','p-ng');
+    const el=r.fetch==='allow'?pill('○','p-ok'):r.fetch==='review'?pill('照会','p-warn'):pill('✗','p-ng');
     const rec=r.rec==='full'?pill('全文','p-ok'):r.rec==='summary'?pill('要点','p-warn'):dash;
     const cmt=r.cmt===true?pill('あり','p-ok'):r.cmt===false?pill('なし','p-ng'):dash;
     const sc=r._score;
@@ -179,7 +179,7 @@ function render(){
       <td>${odCell(r.roster,'議員名簿')}</td>
       <td>${dayoriCell(r.dayori)}</td>
       <td>${portalCell(r.portal)}</td>
-      <td class="code">${r.ds??dash}</td>
+      <td class="code">${r.dsCount??dash}</td>
       <td class="grp"><span class="score">${pill(sc+'/3',scCls)}</span></td>
       <td>${cf||dash}</td>
     </tr>
@@ -189,9 +189,11 @@ function render(){
           <h4>会議録</h4>
           <dl>
             <dt>URL</dt><dd>${r.url?`<a href="${e(r.url)}" target="_blank" rel="noopener">${e(r.url)}</a>`:dash}</dd>
-            <dt>ベンダー</dt><dd>${e(r.fam)}${r.tenant?` / tenant=<code>${e(r.tenant)}</code> id=${e(r.tenantId)}`:''}</dd>
+            <dt>ベンダー</dt><dd>${e(r.fam)}${r.tenant?` / tenant=<code>${e(r.tenant)}</code>${r.tenantId!=null?` id=${e(r.tenantId)}`:' <span class="fam">（tenantId 未取得）</span>'}`:''}</dd>
             <dt>robots</dt><dd>${e(r.verdict)} / AIクローラ: ${e(r.ai)}</dd>
-            <dt>取得判定</dt><dd>${r.eligible?'○ 取得対象':'✗ 除外'} — ${e(r.reason)}${r.revisit?'（許諾で解除しうる）':''}</dd>
+            <dt>取得（fetch）</dt><dd>${r.fetch==='allow'?'○ 取得してよい':r.fetch==='review'?'照会待ち — 確認が済むまで取得しない':'✗ 取得しない'}${r.gateNote?`<br><span class="fam">${e(r.gateNote)}</span>`:''}</dd>
+            <dt>再配布（redistribute）</dt><dd>${r.redist==='allow'?'○':r.redist==='review'?'未確定 — 権利確認が済むまで公開しない':'✗'}</dd>
+            <dt>制約</dt><dd>${r.constraints.length?r.constraints.map(c=>`<code>${e(c)}</code>`).join(' '):dash}</dd>
             <dt>根拠URL</dt><dd>${r.ev.length?r.ev.map(u=>`<a href="${e(u)}" target="_blank" rel="noopener">${e(u)}</a>`).join('<br>'):dash}</dd>
           </dl>
         </div>
@@ -202,13 +204,13 @@ function render(){
             <dt>議員名簿</dt><dd>${r.roster?`${e(r.roster.title)}<br><span class="fam">${e(r.roster.fmt)} / ${e(r.roster.license)}</span>`:dash}</dd>
             <dt>調達</dt><dd>${r.proc?`${e(r.proc.title)}<br><span class="fam">${e(r.proc.fmt)}</span>`:`${dash} <span class="fam">共通の官公需APIで取得（下記参照）</span>`}</dd>
             <dt>議会だより</dt><dd>${r.dayori?`${e(r.dayori.title)}<br><span class="fam">${e(r.dayori.fmt)} / ${e(r.dayori.license)}</span>`+
-              (r.dayori.std?`<br><span class="fam">スキーマ: <code>${e(r.dayori.std)}</code> — ${e(r.dayori.conf)}${r.dayori.extra?` / 追加列: ${e(r.dayori.extra.join(', '))}`:''}${r.dayori.scNote?` / ${e(r.dayori.scNote)}`:''}</span>`:''):dash}</dd>
+              (r.dayori.std?`<br><span class="fam">スキーマ: <code>${e(r.dayori.std)}</code> — ${e(r.dayori.scConf)}${r.dayori.extra?` / 追加列: ${e(r.dayori.extra.join(', '))}`:''}${r.dayori.scNote?` / ${e(r.dayori.scNote)}`:''}</span>`:''):dash}</dd>
             <dt>独自ポータル</dt><dd>${r.portal?`${e(r.portal.type)} — <a href="${e(r.portal.baseUrl)}" target="_blank" rel="noopener">${e(r.portal.baseUrl)}</a>${r.portal.datasets!=null?` <span class="fam">${r.portal.datasets}件</span>`:''}`:dash}</dd>
           </dl>
         </div>
       </div>
       ${r.notes?`<div class="note">${e(r.notes)}</div>`:''}
-      ${r.raw?`<pre>${e(r.raw)}</pre>`:''}
+      ${r.obs?`<div class="note">robots 原文: <a href="${e(r.obs.requestUrl)}" target="_blank" rel="noopener">${e(r.obs.requestUrl)}</a> — HTTP ${e(r.obs.status)} / ${r.obs.sha256?`sha256 <code>${e(r.obs.sha256.slice(0,16))}</code>`:'本文なし'} / ${e(r.obs.fetchedAt)}<br>全文は <code>data/observations/robots.json</code></div>`:''}
     </td></tr>`;
   }).join('');
   $('#tb').querySelectorAll('tr.row').forEach(tr=>tr.onclick=()=>{
@@ -219,9 +221,9 @@ function render(){
 function boot(){
   const n=f=>DATA.filter(f).length;
   $('#stats').innerHTML=[
-    ['62','調査団体'],[n(r=>r.eligible),'会議録 取得可'],[n(r=>!r.eligible&&r.revisit),'許諾で解除可'],
+    ['62','調査団体'],[n(r=>r.fetch==='allow'),'取得してよい'],[n(r=>r.fetch==='review'),'照会待ち'],[n(r=>r.redist==='allow'),'再配布可'],
     [n(r=>r.budget),'予算あり'],[n(r=>r.roster),'議員名簿あり'],[n(r=>r.dayori),'議会だより'],
-    [n(r=>r.portal),'独自ポータル'],[n(r=>r.dayori&&r.dayori.conf==='conformant'),'議会だより標準準拠'],[n(r=>r._score>=2),'2/3 以上揃う'],
+    [n(r=>r.portal),'独自ポータル'],[n(r=>r.dayori&&r.dayori.scConf==='conformant'),'議会だより標準準拠'],[n(r=>r._score>=2),'2/3 以上揃う'],
   ].map(([b,s])=>`<div class="stat"><b>${b}</b><span>${s}</span></div>`).join('');
 
   $('#notice').innerHTML=
@@ -233,7 +235,7 @@ function boot(){
     `<b>記録種別と委員会の「—」は未確認</b>で、実際に取得しないと埋まらない。<br>`+
     `<b>議会だより</b>はデータセット名が揺れる（議会だより / めぐろ区議会だより / 区議会だより一覧 / 【事業案内】みたか議会だより）ため、`+
     `名称ではなく<b>CSV の列構成</b>で判定している。42団体中40団体が同一ヘッダで、これを `+
-    `<code>jp-municipal-bulletin/1.0</code> と名付けて管理している。`+
+    `<code>kotonoha/tokyo-municipal-bulletin-profile/0.1</code> と名付けて管理している。`+
     `<b>公式標準ではない</b>——デジタル庁の自治体標準オープンデータセットの定義書3種を実際に確認したが広報紙のテーマは無かった。`;
 
   const cs=$('#controls');
@@ -243,12 +245,12 @@ function boot(){
       cs.querySelectorAll('button.f').forEach(x=>x.setAttribute('aria-pressed','false'));
       b.setAttribute('aria-pressed',on?'false':'true'); filter=on?null:fn; render();};
     cs.appendChild(b);};
-  mk('会議録 取得可',r=>r.eligible);
+  mk('取得してよい',r=>r.fetch==='allow');
   mk('2/3 以上揃う',r=>r._score>=2);
   mk('予算あり',r=>!!r.budget);
   mk('議員名簿あり',r=>!!r.roster);
   mk('独自ポータル',r=>!!r.portal);
-  mk('許諾で解除可',r=>r.revisit);
+  mk('照会待ち',r=>r.fetch==='review');
   FAMS.forEach(f=>mk(f,r=>r.fam===f));
 
   $('#meta').textContent=`${META.generatedAt} 実測 / 団体コード（全国地方公共団体コード）が主キー`;
@@ -258,8 +260,8 @@ function boot(){
     `<b>会議録本文のオープンデータ</b> — 東京62団体で <b>0件</b>（「速記」「発言」で検索ヒット0）。都カタログにあるのは開催回数・議決件数といった数えられるものだけ。<br>`+
     `<b>CKAN / DCAT</b> — 都カタログ・港区・BODIK は CKAN、渋谷区は ArcGIS の DCAT-US フィード。標準APIで引けるので独自ポータルも同じコードで取れる。<br>`+
     `<b>ライセンス</b> — 都カタログ全9,648件中9,645件が CC-BY-4.0。<code>isopen</code> で機械判定できる。<br><br>`+
-    `<b>fetchPolicy</b>: ${e(META.fetchPolicy.rule)}<br>`+
-    Object.entries(META.fetchPolicy.reasons).map(([k,v])=>`<code>${e(k)}</code> — ${e(v)}`).join('<br>');
+    `<b>判断の方針（policy ${e(META.policy.version)}）</b>: ${e(META.policy.rule)}<br>`+
+    Object.entries(META.policy.constraints).map(([k,v])=>`<code>${e(k)}</code> — ${e(v)}`).join('<br>');
 
   $('#q').oninput=ev=>{q=ev.target.value;render()};
   document.querySelectorAll('th[data-k]').forEach(th=>th.onclick=()=>{

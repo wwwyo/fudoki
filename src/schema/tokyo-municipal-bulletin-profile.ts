@@ -1,10 +1,16 @@
 import { z } from 'zod'
 
 /**
- * # jp-municipal-bulletin/1.0
+ * # kotonoha/tokyo-municipal-bulletin-profile/0.1
  *
- * 日本の自治体が「議会だより」等の広報紙をオープンデータとして配布するときに
- * **事実上使われている CSV の共通形式**。
+ * 「議会だより」等の広報紙をオープンデータとして配布するときに
+ * **東京都内で事実上使われている CSV の共通形式**。
+ *
+ * ⚠️ **名前が `jp-*` でも `1.0` でもないのは意図的。**観測は東京都だけ、形式の作成主体も
+ * 不明で、40件の一致も生ヘッダ完全一致ではなく alias・BOM・空列・`_id` を除去した後の一致。
+ * 全国規模の標準を名乗れる根拠がまだ無い。`kotonoha/tokyo-municipal-bulletin-profile/0.1` へ上げてよいのは、
+ * 複数都道府県での観測・由来の調査・生 CSV fixture と hash の保存・全行検証・
+ * 列の意味と必須性と型と null 表現の定義・互換性ルール・外部からの確認、が揃ってから。
  *
  * ## これは何で、何ではないか
  *
@@ -28,7 +34,7 @@ import { z } from 'zod'
  * @see 実測の内訳は src/extract/sources/manifest.json の
  *      openData.gikaiDayori.schemaCheck を参照
  */
-export const BULLETIN_SCHEMA_ID = 'jp-municipal-bulletin/1.0' as const
+export const BULLETIN_SCHEMA_ID = 'kotonoha/tokyo-municipal-bulletin-profile/0.1' as const
 
 /** 正準の列名（この順序で現れる） */
 export const BULLETIN_COLUMNS = [
@@ -102,7 +108,7 @@ export type ConformanceResult = {
   columns: number
 }
 
-/** ヘッダ行を jp-municipal-bulletin/1.0 と突き合わせる */
+/** ヘッダ行を kotonoha/tokyo-municipal-bulletin-profile/0.1 と突き合わせる */
 export function checkConformance(header: readonly string[]): ConformanceResult {
   const cols = header.map(normalizeColumn).filter((c) => !IGNORED.has(c))
   const set = new Set(cols)

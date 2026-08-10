@@ -1,12 +1,12 @@
 /**
- * 議会だより CSV を実際に取得し、jp-municipal-bulletin/1.0 との適合を測る。
+ * 議会だより CSV を実際に取得し、このプロファイルとの適合を測る。
  * manifest の openData.gikaiDayori.schemaCheck はこのスクリプトの出力から作る
  * （手で書かない）。ネットワークを叩くので CI では回さない。
  *
  *   bun run scripts/check-bulletins.ts            # 結果を表示
  *   bun run scripts/check-bulletins.ts --write    # manifest へ書き戻す
  */
-import { checkConformance, toRow, BULLETIN_SCHEMA_ID } from '../src/schema/jp-municipal-bulletin'
+import { checkConformance, toRow, BULLETIN_SCHEMA_ID } from '../src/schema/tokyo-municipal-bulletin-profile'
 import { Manifest } from '../src/extract/sources/schema'
 
 const UA = 'kotonoha/0.1 (+https://github.com/wwwyo/kotonoha)'
@@ -79,30 +79,41 @@ for (const t of targets) {
   const [head, ...rest] = body.split(/\r?\n/)
   const header = splitCsvLine(head ?? '')
   const r = checkConformance(header)
-  // 1行パースして実際に読めることまで確かめる
-  let sample: string | null = null
-  const first = rest.find((l) => l.trim())
-  if (first) {
+  // ヘッダが合っていても中身が読めなければ適合とは言えないので、全行を通す
+  const rows = rest.filter((l) => l.trim())
+  const failures: string[] = []
+  for (const [i, line] of rows.entries()) {
     try {
-      sample = toRow(header, splitCsvLine(first)).名称
+      toRow(header, splitCsvLine(line))
     } catch (e) {
-      sample = `parse 失敗: ${e instanceof Error ? e.message.slice(0, 60) : e}`
+      failures.push(`${i + 2}行目: ${e instanceof Error ? e.message.slice(0, 60) : e}`)
+      if (failures.length >= 3) break
     }
   }
+  // parse に失敗する行があれば conformance を下げる（以前はログを出すだけで結果に反映していなかった）
+  const conformance = failures.length ? 'broken' : r.conformance
   results[t.code] = {
     standard: BULLETIN_SCHEMA_ID,
-    conformance: r.conformance,
+    conformance,
+    rows: rows.length,
+    rowFailures: failures.length ? failures : null,
     columns: r.columns,
     extraColumns: r.extra.length ? r.extra : null,
     checkedAt: new Date().toISOString().slice(0, 10),
-    note: r.conformance === 'conformant' ? null : `missing=${r.missing.join('/') || 'なし'} extra=${r.extra.join('/') || 'なし'}`,
+    note: failures.length
+      ? `${failures.length} 行が parse 失敗: ${failures[0]}`
+      : r.conformance === 'conformant'
+        ? null
+        : `missing=${r.missing.join('/') || 'なし'} extra=${r.extra.join('/') || 'なし'}`,
   }
-  if (r.conformance === 'conformant') conformant++
-  else {
+  if (conformance === 'conformant') conformant++
+  else if (conformance === 'broken') {
+    broken++
+    console.log(`  ✗ ${t.code} ${t.name} — ${failures.length} 行 parse 失敗  ${failures[0]}`)
+  } else {
     variant++
     console.log(`  △ ${t.code} ${t.name} — extra=${r.extra.join(', ') || 'なし'} missing=${r.missing.join(', ') || 'なし'}`)
   }
-  if (sample?.startsWith('parse 失敗')) console.log(`     ${sample}`)
 }
 
 console.log(`\n${BULLETIN_SCHEMA_ID}: 適合 ${conformant} / 差異 ${variant} / 取得不可 ${broken}  （計 ${targets.length}）`)

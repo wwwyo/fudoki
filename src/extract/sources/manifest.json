@@ -1,11 +1,17 @@
 {
-  "$schema": "./manifest.schema.json",
-  "generatedAt": "2026-08-10",
-  "note": "東京都62区市町村の会議録・オープンデータ源の調査結果。会議録システムは 2020年の地方議会会議録コーパスプロジェクト調査を出発点に現況を実測。CKAN は organization:t<団体コード> で全件取得して分類。 フィールド名 transcript は SayIt(mySociety) の語彙に合わせたもの（Popolo に会議録を表す型は無く、Speech までしか定義されていない）。 議会だよりはデータセット名が揺れる（議会だより / めぐろ区議会だより / 区議会だより一覧 等）ため、openData.gikaiDayori.schemaCheck は名称ではなく CSV の列構成で jp-municipal-bulletin/1.0 準拠を判定した実測結果を持つ（この形式は公式標準ではなく kotonoha が実測に名前を与えたもの。src/schema/jp-municipal-bulletin.ts 参照）。",
-  "sources": {
-    "corpusProject": "http://local-politics.jp/",
-    "tokyoCatalog": "https://catalog.data.metro.tokyo.lg.jp/api/3/action/",
-    "procurementApi": "https://www.kkj.go.jp/api/"
+  "policy": {
+    "version": "2026-08-10",
+    "decidedAt": "2026-08-10",
+    "rule": "取得（fetch）と再配布（redistribute）を別のゲートで判断する。fetch は robots.txt の実測と技術的到達性、redistribute は著作権・利用規約で決める。allow は判断が済んで実行してよい、review は未確定で実行しない、deny は構造的に不可または方針として行わない。robots の原文証跡は data/observations/robots.json。",
+    "constraints": {
+      "rep-path-disallowed": "robots.txt が会議録の経路を Disallow している",
+      "rep-render-still-disallowed": "画面は Allow だが描画すると Disallow の API を叩く（DiscussNetPremium）。実ブラウザでも自動実行する以上 REP の適用対象",
+      "terms-unverified": "利用規約を確認していない",
+      "copyright-unverified": "本文の著作権上の扱いが未確定（発言種別・非発言部分・編集著作物性）",
+      "publisher-ai-opt-out": "発行者が AI/LLM クローラを名指しで拒否している",
+      "technical-block": "CDN 等が UA で拒否する等、技術的に取得できない",
+      "no-source": "会議録が Web 公開されていない"
+    }
   },
   "jurisdictions": {
     "131016": {
@@ -17,21 +23,30 @@
         "robots": {
           "verdict": "disallow-all",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://www.city.chiyoda.tokyo.dbsr.jp/robots.txt",
+            "status": 200,
+            "sha256": "67955dd94916ef706802cbe97da17290a23c9422b9935c96d0a306bdf951948e",
+            "fetchedAt": "2026-08-10T05:59:17.892Z"
+          }
         },
         "confidence": "confirmed",
         "host": "www.city.chiyoda.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "robots-disallow-all",
-          "blockedBy": "permission",
-          "revisitable": true,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "review",
+          "constraints": [
+            "rep-path-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 29,
@@ -47,7 +62,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -71,7 +86,12 @@
         "robots": {
           "verdict": "partial",
           "aiCrawler": "disallowed",
-          "raw": "User-agent: Googlebot / Disallow:  … （検索エンジンは許可）\nUser-agent: GPTBot|ChatGPT-User|CCBot|ClaudeBot|anthropic-ai|PerplexityBot|Google-Extended|OAI-SearchBot|Bytespider|Amazonbot|Applebot-Extended: Disallow: /\nDisallow: /*.csi /*.cgi /*.php /*? /system/ /tmp/"
+          "observation": {
+            "requestUrl": "https://www.kugikai.city.chuo.lg.jp/robots.txt",
+            "status": 200,
+            "sha256": "c5084929da6b6e5a3ffb06ac0f2e789d78e4d24b7e84f9035327e5147515d1c4",
+            "fetchedAt": "2026-08-10T05:59:19.071Z"
+          }
         },
         "confidence": "confirmed",
         "hasCommittee": true,
@@ -83,12 +103,17 @@
           "https://www.kugikai.city.chuo.lg.jp/robots.txt",
           "https://www.kugikai.city.chuo.lg.jp/kaigiroku.cgi/r06/teireikai202401-5.html"
         ],
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "ai-crawler-disallowed",
-          "blockedBy": "permission",
-          "revisitable": true,
-          "decidedAt": "2026-08-10"
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "review",
+          "constraints": [
+            "publisher-ai-opt-out",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "REP 上は独自 UA に適用されるルールが無いが、発行者が AI 用途を名指しで拒否している意図を尊重して取得しない"
         }
       },
       "openData": {
@@ -105,7 +130,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -129,18 +154,15 @@
         "robots": {
           "verdict": "allowed",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: DotBot|SemrushBot|AhrefsBot|BLEXBot|MJ12bot|Steeler|ltx71|Linguee|proximic|GrapeshotCrawler|Mappy|MegaIndex|Hatena|PaperLiBot|PetalBot|YandexBot|CCBot/2.0|LivelapBot|Cincraw|Go-http-client|BaiduSpider ほか計26 UA: Disallow: /\nUser-agent: *\nDisallow: /voices/cgi/\nDisallow: /voices2/cgi/\nDisallow: /gikai/cgi/\nDisallow: g07_Video_View.asp ほか動画ページ各種",
-          "source": "measured-2026-08-10",
-          "host": "gikai2.city.minato.tokyo.jp"
+          "host": "gikai2.city.minato.tokyo.jp",
+          "observation": {
+            "requestUrl": "https://gikai2.city.minato.tokyo.jp/robots.txt",
+            "status": 200,
+            "sha256": "ec9f477d3823bc5b517a3e9a7e7968e5d1d4151ae64c746724b70358175f0978",
+            "fetchedAt": "2026-08-10T05:59:17.049Z"
+          }
         },
         "confidence": "confirmed",
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "robots-allowed",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": true,
         "recordType": null,
         "verifiedAt": "2026-08-10",
@@ -148,7 +170,18 @@
           "https://gikai2.city.minato.tokyo.jp/voices/g07v_search.asp",
           "https://gikai2.city.minato.tokyo.jp/robots.txt"
         ],
-        "notes": "2020年調査では DB-Search（asp.db-search.com）だったが VOICES/Web へ移行済み。VOICES/Web の標準 robots テンプレート。26 UA の汎用スクレイパ対策ブロックリストに CCBot/2.0 が含まれるが、AI/LLM を名指しでセクション化したものではない。* グループは cgi ディレクトリと動画ページのみ制限で、会議録本文（voices/g07v_*.asp 等）は対象外。"
+        "notes": "2020年調査では DB-Search（asp.db-search.com）だったが VOICES/Web へ移行済み。VOICES/Web の標準 robots テンプレート。26 UA の汎用スクレイパ対策ブロックリストに CCBot/2.0 が含まれるが、AI/LLM を名指しでセクション化したものではない。* グループは cgi ディレクトリと動画ページのみ制限で、会議録本文（voices/g07v_*.asp 等）は対象外。",
+        "gate": {
+          "fetch": "allow",
+          "redistribute": "review",
+          "constraints": [
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": null
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 268,
@@ -177,23 +210,32 @@
         "robots": {
           "verdict": "partial",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://ssp.kaigiroku.net/robots.txt",
+            "status": 200,
+            "sha256": "688ba9e6ebf63fba3a2026b65239d4bb03c3a1b56346a6ca2c1dacaaca16b467",
+            "fetchedAt": "2026-08-10T05:59:17.552Z"
+          }
         },
         "confidence": "confirmed",
         "tenant": "shinjuku",
         "tenantId": 211,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/shinjuku/pg/index.html",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "tenant-render-only",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "review",
+          "redistribute": "review",
+          "constraints": [
+            "rep-render-still-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 137,
@@ -209,7 +251,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -238,21 +280,30 @@
         "robots": {
           "verdict": "disallow-all",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://www.city.bunkyo.tokyo.dbsr.jp/robots.txt",
+            "status": 200,
+            "sha256": "67955dd94916ef706802cbe97da17290a23c9422b9935c96d0a306bdf951948e",
+            "fetchedAt": "2026-08-10T05:59:17.858Z"
+          }
         },
         "confidence": "confirmed",
         "host": "www.city.bunkyo.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "robots-disallow-all",
-          "blockedBy": "permission",
-          "revisitable": true,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "review",
+          "constraints": [
+            "rep-path-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 57,
@@ -284,23 +335,31 @@
         "robots": {
           "verdict": "allowed",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: DotBot|SemrushBot|AhrefsBot|BLEXBot|MJ12bot|Steeler|ltx71|Linguee|proximic|GrapeshotCrawler|Mappy|MegaIndex|Hatena|PaperLiBot|PetalBot|YandexBot|CCBot/2.0|LivelapBot|Cincraw|Go-http-client|BaiduSpider ほか計26 UA: Disallow: /\nUser-agent: *\nDisallow: /voices/cgi/\nDisallow: /voices2/cgi/\nDisallow: /gikai/cgi/\nDisallow: g07_Video_View.asp ほか動画ページ各種",
-          "source": "measured-2026-08-10",
-          "host": "taito.gijiroku.com"
+          "host": "taito.gijiroku.com",
+          "observation": {
+            "requestUrl": "https://taito.gijiroku.com/robots.txt",
+            "status": 200,
+            "sha256": "ec9f477d3823bc5b517a3e9a7e7968e5d1d4151ae64c746724b70358175f0978",
+            "fetchedAt": "2026-08-10T05:59:17.711Z"
+          }
         },
         "confidence": "confirmed",
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "robots-allowed",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
-        },
         "verifiedAt": "2026-08-10",
         "hasCommittee": null,
         "recordType": null,
         "notes": "VOICES/Web の標準 robots テンプレート。26 UA の汎用スクレイパ対策ブロックリストに CCBot/2.0 が含まれるが、AI/LLM を名指しでセクション化したものではない。* グループは cgi ディレクトリと動画ページのみ制限で、会議録本文（voices/g07v_*.asp 等）は対象外。",
-        "host": "taito.gijiroku.com"
+        "host": "taito.gijiroku.com",
+        "gate": {
+          "fetch": "allow",
+          "redistribute": "review",
+          "constraints": [
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": null
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 187,
@@ -324,23 +383,32 @@
         "robots": {
           "verdict": "partial",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://ssp.kaigiroku.net/robots.txt",
+            "status": 200,
+            "sha256": "688ba9e6ebf63fba3a2026b65239d4bb03c3a1b56346a6ca2c1dacaaca16b467",
+            "fetchedAt": "2026-08-10T05:59:17.552Z"
+          }
         },
         "confidence": "confirmed",
         "tenant": "sumida",
         "tenantId": 396,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/sumida/pg/index.html",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "tenant-render-only",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "review",
+          "redistribute": "review",
+          "constraints": [
+            "rep-render-still-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 199,
@@ -364,21 +432,30 @@
         "robots": {
           "verdict": "disallow-all",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://www.city.koto.tokyo.dbsr.jp/robots.txt",
+            "status": 200,
+            "sha256": "67955dd94916ef706802cbe97da17290a23c9422b9935c96d0a306bdf951948e",
+            "fetchedAt": "2026-08-10T05:59:18.398Z"
+          }
         },
         "confidence": "confirmed",
         "host": "www.city.koto.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "robots-disallow-all",
-          "blockedBy": "permission",
-          "revisitable": true,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "review",
+          "constraints": [
+            "rep-path-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 97,
@@ -394,7 +471,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -418,20 +495,29 @@
         "robots": {
           "verdict": "disallow-all",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://kaigiroku.city.shinagawa.tokyo.jp/robots.txt",
+            "status": 200,
+            "sha256": "67955dd94916ef706802cbe97da17290a23c9422b9935c96d0a306bdf951948e",
+            "fetchedAt": "2026-08-10T05:59:17.206Z"
+          }
         },
         "confidence": "confirmed",
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "robots-disallow-all",
-          "blockedBy": "permission",
-          "revisitable": true,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
         "recordType": null,
-        "host": "kaigiroku.city.shinagawa.tokyo.jp"
+        "host": "kaigiroku.city.shinagawa.tokyo.jp",
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "review",
+          "constraints": [
+            "rep-path-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 139,
@@ -447,7 +533,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -471,20 +557,28 @@
         "robots": {
           "verdict": "none",
           "aiCrawler": "unspecified",
-          "raw": "（robots.txt 404）",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://www.kensakusystem.jp/robots.txt",
+            "status": 404,
+            "sha256": null,
+            "fetchedAt": "2026-08-10T05:59:18.977Z"
+          }
         },
         "confidence": "confirmed",
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "robots-allowed",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
         "recordType": null,
-        "host": "www.kensakusystem.jp"
+        "host": "www.kensakusystem.jp",
+        "gate": {
+          "fetch": "allow",
+          "redistribute": "review",
+          "constraints": [
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": null
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 186,
@@ -509,7 +603,7 @@
           "license": "CC-BY-4.0",
           "count": 2,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -539,23 +633,31 @@
         "robots": {
           "verdict": "allowed",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: DotBot|SemrushBot|AhrefsBot|BLEXBot|MJ12bot|Steeler|ltx71|Linguee|proximic|GrapeshotCrawler|Mappy|MegaIndex|Hatena|PaperLiBot|PetalBot|YandexBot|CCBot/2.0|LivelapBot|Cincraw|Go-http-client|BaiduSpider ほか計26 UA: Disallow: /\nUser-agent: *\nDisallow: /voices/cgi/\nDisallow: /voices2/cgi/\nDisallow: /gikai/cgi/\nDisallow: g07_Video_View.asp ほか動画ページ各種",
-          "source": "measured-2026-08-10",
-          "host": "www.gikai-ota-tokyo.jp"
+          "host": "www.gikai-ota-tokyo.jp",
+          "observation": {
+            "requestUrl": "https://www.gikai-ota-tokyo.jp/robots.txt",
+            "status": 200,
+            "sha256": "ec9f477d3823bc5b517a3e9a7e7968e5d1d4151ae64c746724b70358175f0978",
+            "fetchedAt": "2026-08-10T05:59:18.810Z"
+          }
         },
         "confidence": "confirmed",
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "robots-allowed",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
-        },
         "verifiedAt": "2026-08-10",
         "hasCommittee": null,
         "recordType": null,
         "notes": "VOICES/Web の標準 robots テンプレート。26 UA の汎用スクレイパ対策ブロックリストに CCBot/2.0 が含まれるが、AI/LLM を名指しでセクション化したものではない。* グループは cgi ディレクトリと動画ページのみ制限で、会議録本文（voices/g07v_*.asp 等）は対象外。",
-        "host": "www.gikai-ota-tokyo.jp"
+        "host": "www.gikai-ota-tokyo.jp",
+        "gate": {
+          "fetch": "allow",
+          "redistribute": "review",
+          "constraints": [
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": null
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 278,
@@ -579,7 +681,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -603,7 +705,12 @@
         "robots": {
           "verdict": "none",
           "aiCrawler": "unspecified",
-          "raw": "none"
+          "observation": {
+            "requestUrl": "https://kugi.city.setagaya.tokyo.jp/robots.txt",
+            "status": 404,
+            "sha256": null,
+            "fetchedAt": "2026-08-10T05:59:17.265Z"
+          }
         },
         "confidence": "confirmed",
         "hasCommittee": true,
@@ -615,12 +722,16 @@
           "https://kugi.city.setagaya.tokyo.jp/voices/viewsel.html",
           "https://kugi.city.setagaya.tokyo.jp/voices/CGI/voiweb.exe"
         ],
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "robots-allowed",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
+        "gate": {
+          "fetch": "allow",
+          "redistribute": "review",
+          "constraints": [
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": null
         }
       },
       "openData": {
@@ -637,7 +748,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -661,23 +772,32 @@
         "robots": {
           "verdict": "partial",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://ssp.kaigiroku.net/robots.txt",
+            "status": 200,
+            "sha256": "688ba9e6ebf63fba3a2026b65239d4bb03c3a1b56346a6ca2c1dacaaca16b467",
+            "fetchedAt": "2026-08-10T05:59:17.552Z"
+          }
         },
         "confidence": "confirmed",
         "tenant": "shibuya",
         "tenantId": 394,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/shibuya/pg/index.html",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "tenant-render-only",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "review",
+          "redistribute": "review",
+          "constraints": [
+            "rep-render-still-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 17,
@@ -693,7 +813,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -723,7 +843,12 @@
         "robots": {
           "verdict": "partial",
           "aiCrawler": "unspecified",
-          "raw": "User-Agent: *\nDisallow: /giin_detail.html"
+          "observation": {
+            "requestUrl": "https://kugikai-nakano.jp/robots.txt",
+            "status": 200,
+            "sha256": "e7ad448c76d13902819db0cdb74e236c1bcd28ac66113f9ec257f312b3f9b26e",
+            "fetchedAt": "2026-08-10T05:59:17.482Z"
+          }
         },
         "confidence": "confirmed",
         "hasCommittee": true,
@@ -735,12 +860,16 @@
           "https://kugikai-nakano.jp/view.html?gijiroku_id=5637",
           "https://kugikai-nakano.jp/robots.txt"
         ],
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "robots-allowed",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
+        "gate": {
+          "fetch": "allow",
+          "redistribute": "review",
+          "constraints": [
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": null
         }
       },
       "openData": {
@@ -757,7 +886,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "variant",
             "columns": 20,
             "extraColumns": [
@@ -786,22 +915,30 @@
         "robots": {
           "verdict": "none",
           "aiCrawler": "unspecified",
-          "raw": "（robots.txt 404）",
-          "source": "measured-2026-08-09",
-          "host": "suginami.gijiroku.com"
+          "host": "suginami.gijiroku.com",
+          "observation": {
+            "requestUrl": "https://suginami.gijiroku.com/robots.txt",
+            "status": 404,
+            "sha256": null,
+            "fetchedAt": "2026-08-10T05:59:17.625Z"
+          }
         },
         "confidence": "confirmed",
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "robots-allowed",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
-        },
         "verifiedAt": "2026-08-09",
         "hasCommittee": null,
         "recordType": null,
-        "host": "suginami.gijiroku.com"
+        "host": "suginami.gijiroku.com",
+        "gate": {
+          "fetch": "allow",
+          "redistribute": "review",
+          "constraints": [
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": null
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 103,
@@ -825,7 +962,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -849,20 +986,28 @@
         "robots": {
           "verdict": "none",
           "aiCrawler": "unspecified",
-          "raw": "（robots.txt 404）",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://www.kensakusystem.jp/robots.txt",
+            "status": 404,
+            "sha256": null,
+            "fetchedAt": "2026-08-10T05:59:18.977Z"
+          }
         },
         "confidence": "confirmed",
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "robots-allowed",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
         "recordType": null,
-        "host": "www.kensakusystem.jp"
+        "host": "www.kensakusystem.jp",
+        "gate": {
+          "fetch": "allow",
+          "redistribute": "review",
+          "constraints": [
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": null
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 32,
@@ -878,7 +1023,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -902,23 +1047,32 @@
         "robots": {
           "verdict": "partial",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://ssp.kaigiroku.net/robots.txt",
+            "status": 200,
+            "sha256": "688ba9e6ebf63fba3a2026b65239d4bb03c3a1b56346a6ca2c1dacaaca16b467",
+            "fetchedAt": "2026-08-10T05:59:17.552Z"
+          }
         },
         "confidence": "confirmed",
         "tenant": "kita",
         "tenantId": 395,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/kita/pg/index.html",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "tenant-render-only",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "review",
+          "redistribute": "review",
+          "constraints": [
+            "rep-render-still-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 7,
@@ -947,23 +1101,32 @@
         "robots": {
           "verdict": "partial",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://ssp.kaigiroku.net/robots.txt",
+            "status": 200,
+            "sha256": "688ba9e6ebf63fba3a2026b65239d4bb03c3a1b56346a6ca2c1dacaaca16b467",
+            "fetchedAt": "2026-08-10T05:59:17.552Z"
+          }
         },
         "confidence": "confirmed",
         "tenant": "arakawa",
         "tenantId": 577,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/arakawa/pg/index.html",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "tenant-render-only",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "review",
+          "redistribute": "review",
+          "constraints": [
+            "rep-render-still-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 33,
@@ -979,7 +1142,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -1003,18 +1166,15 @@
         "robots": {
           "verdict": "allowed",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: DotBot|SemrushBot|AhrefsBot|BLEXBot|MJ12bot|Steeler|ltx71|Linguee|proximic|GrapeshotCrawler|Mappy|MegaIndex|Hatena|PaperLiBot|PetalBot|YandexBot|CCBot/2.0|LivelapBot|Cincraw|Go-http-client|BaiduSpider ほか計26 UA: Disallow: /\nUser-agent: *\nDisallow: /voices/cgi/\nDisallow: /voices2/cgi/\nDisallow: /gikai/cgi/\nDisallow: g07_Video_View.asp ほか動画ページ各種",
-          "source": "measured-2026-08-10",
-          "host": "itabashi.gijiroku.com"
+          "host": "itabashi.gijiroku.com",
+          "observation": {
+            "requestUrl": "https://itabashi.gijiroku.com/robots.txt",
+            "status": 200,
+            "sha256": "ec9f477d3823bc5b517a3e9a7e7968e5d1d4151ae64c746724b70358175f0978",
+            "fetchedAt": "2026-08-10T05:59:17.115Z"
+          }
         },
         "confidence": "confirmed",
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "robots-allowed",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": true,
         "recordType": null,
         "verifiedAt": "2026-08-10",
@@ -1022,7 +1182,18 @@
           "https://itabashi.gijiroku.com/voices/g07v_search.asp",
           "https://itabashi.gijiroku.com/robots.txt"
         ],
-        "notes": "2020年調査では DB-Search（asp.db-search.com）だったが VOICES/Web へ移行済み。VOICES/Web の標準 robots テンプレート。26 UA の汎用スクレイパ対策ブロックリストに CCBot/2.0 が含まれるが、AI/LLM を名指しでセクション化したものではない。* グループは cgi ディレクトリと動画ページのみ制限で、会議録本文（voices/g07v_*.asp 等）は対象外。"
+        "notes": "2020年調査では DB-Search（asp.db-search.com）だったが VOICES/Web へ移行済み。VOICES/Web の標準 robots テンプレート。26 UA の汎用スクレイパ対策ブロックリストに CCBot/2.0 が含まれるが、AI/LLM を名指しでセクション化したものではない。* グループは cgi ディレクトリと動画ページのみ制限で、会議録本文（voices/g07v_*.asp 等）は対象外。",
+        "gate": {
+          "fetch": "allow",
+          "redistribute": "review",
+          "constraints": [
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": null
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 211,
@@ -1038,7 +1209,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -1062,23 +1233,32 @@
         "robots": {
           "verdict": "partial",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://ssp.kaigiroku.net/robots.txt",
+            "status": 200,
+            "sha256": "688ba9e6ebf63fba3a2026b65239d4bb03c3a1b56346a6ca2c1dacaaca16b467",
+            "fetchedAt": "2026-08-10T05:59:17.552Z"
+          }
         },
         "confidence": "confirmed",
         "tenant": "nerima",
         "tenantId": 367,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/nerima/pg/index.html",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "tenant-render-only",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "review",
+          "redistribute": "review",
+          "constraints": [
+            "rep-render-still-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 79,
@@ -1113,7 +1293,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -1137,9 +1317,13 @@
         "robots": {
           "verdict": "allowed",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: DotBot|SemrushBot|AhrefsBot|BLEXBot|MJ12bot|Steeler|ltx71|Linguee|proximic|GrapeshotCrawler|Mappy|MegaIndex|Hatena|PaperLiBot|PetalBot|YandexBot|CCBot/2.0|LivelapBot|Cincraw|Go-http-client|BaiduSpider ほか計26 UA: Disallow: /\nUser-agent: *\nDisallow: /voices/cgi/\nDisallow: /voices2/cgi/\nDisallow: /gikai/cgi/\nDisallow: g07_Video_View.asp ほか動画ページ各種",
-          "source": "measured-2026-08-10",
-          "host": "www.gikai-adachi.jp"
+          "host": "www.gikai-adachi.jp",
+          "observation": {
+            "requestUrl": "https://www.gikai-adachi.jp/robots.txt",
+            "status": 200,
+            "sha256": "ec9f477d3823bc5b517a3e9a7e7968e5d1d4151ae64c746724b70358175f0978",
+            "fetchedAt": "2026-08-10T05:59:18.630Z"
+          }
         },
         "confidence": "confirmed",
         "hasCommittee": true,
@@ -1151,12 +1335,16 @@
           "https://www.gikai-adachi.jp/voices2/",
           "https://www.gikai-adachi.jp/robots.txt"
         ],
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "robots-allowed",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
+        "gate": {
+          "fetch": "allow",
+          "redistribute": "review",
+          "constraints": [
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": null
         }
       },
       "openData": {
@@ -1181,20 +1369,28 @@
         "robots": {
           "verdict": "none",
           "aiCrawler": "unspecified",
-          "raw": "（robots.txt 404）",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://www.kensakusystem.jp/robots.txt",
+            "status": 404,
+            "sha256": null,
+            "fetchedAt": "2026-08-10T05:59:18.977Z"
+          }
         },
         "confidence": "confirmed",
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "robots-allowed",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
         "recordType": null,
-        "host": "www.kensakusystem.jp"
+        "host": "www.kensakusystem.jp",
+        "gate": {
+          "fetch": "allow",
+          "redistribute": "review",
+          "constraints": [
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": null
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 32,
@@ -1210,7 +1406,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -1234,23 +1430,31 @@
         "robots": {
           "verdict": "allowed",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: DotBot|SemrushBot|AhrefsBot|BLEXBot|MJ12bot|Steeler|ltx71|Linguee|proximic|GrapeshotCrawler|Mappy|MegaIndex|Hatena|PaperLiBot|PetalBot|YandexBot|CCBot/2.0|LivelapBot|Cincraw|Go-http-client|BaiduSpider ほか計26 UA: Disallow: /\nUser-agent: *\nDisallow: /voices/cgi/\nDisallow: /voices2/cgi/\nDisallow: /gikai/cgi/\nDisallow: g07_Video_View.asp ほか動画ページ各種",
-          "source": "measured-2026-08-10",
-          "host": "www.gikai.city.edogawa.tokyo.jp"
+          "host": "www.gikai.city.edogawa.tokyo.jp",
+          "observation": {
+            "requestUrl": "https://www.gikai.city.edogawa.tokyo.jp/robots.txt",
+            "status": 200,
+            "sha256": "ec9f477d3823bc5b517a3e9a7e7968e5d1d4151ae64c746724b70358175f0978",
+            "fetchedAt": "2026-08-10T05:59:18.894Z"
+          }
         },
         "confidence": "confirmed",
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "robots-allowed",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
-        },
         "verifiedAt": "2026-08-10",
         "hasCommittee": null,
         "recordType": null,
         "notes": "VOICES/Web の標準 robots テンプレート。26 UA の汎用スクレイパ対策ブロックリストに CCBot/2.0 が含まれるが、AI/LLM を名指しでセクション化したものではない。* グループは cgi ディレクトリと動画ページのみ制限で、会議録本文（voices/g07v_*.asp 等）は対象外。",
-        "host": "www.gikai.city.edogawa.tokyo.jp"
+        "host": "www.gikai.city.edogawa.tokyo.jp",
+        "gate": {
+          "fetch": "allow",
+          "redistribute": "review",
+          "constraints": [
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": null
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 266,
@@ -1274,21 +1478,30 @@
         "robots": {
           "verdict": "disallow-all",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://www.city.hachioji.tokyo.dbsr.jp/robots.txt",
+            "status": 200,
+            "sha256": "67955dd94916ef706802cbe97da17290a23c9422b9935c96d0a306bdf951948e",
+            "fetchedAt": "2026-08-10T05:59:18.002Z"
+          }
         },
         "confidence": "confirmed",
         "host": "www.city.hachioji.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "robots-disallow-all",
-          "blockedBy": "permission",
-          "revisitable": true,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "review",
+          "constraints": [
+            "rep-path-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 78,
@@ -1312,7 +1525,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -1336,23 +1549,32 @@
         "robots": {
           "verdict": "partial",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://ssp.kaigiroku.net/robots.txt",
+            "status": 200,
+            "sha256": "688ba9e6ebf63fba3a2026b65239d4bb03c3a1b56346a6ca2c1dacaaca16b467",
+            "fetchedAt": "2026-08-10T05:59:17.552Z"
+          }
         },
         "confidence": "confirmed",
         "tenant": "tachikawa",
         "tenantId": 368,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/tachikawa/pg/index.html",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "tenant-render-only",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "review",
+          "redistribute": "review",
+          "constraints": [
+            "rep-render-still-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 35,
@@ -1368,7 +1590,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -1392,21 +1614,30 @@
         "robots": {
           "verdict": "disallow-all",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://www.city.musashino.tokyo.dbsr.jp/robots.txt",
+            "status": 200,
+            "sha256": "67955dd94916ef706802cbe97da17290a23c9422b9935c96d0a306bdf951948e",
+            "fetchedAt": "2026-08-10T05:59:18.510Z"
+          }
         },
         "confidence": "confirmed",
         "host": "www.city.musashino.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "robots-disallow-all",
-          "blockedBy": "permission",
-          "revisitable": true,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "review",
+          "constraints": [
+            "rep-path-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 24,
@@ -1422,7 +1653,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -1446,21 +1677,30 @@
         "robots": {
           "verdict": "disallow-all",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://www.city.mitaka.tokyo.dbsr.jp/robots.txt",
+            "status": 200,
+            "sha256": "67955dd94916ef706802cbe97da17290a23c9422b9935c96d0a306bdf951948e",
+            "fetchedAt": "2026-08-10T05:59:18.472Z"
+          }
         },
         "confidence": "confirmed",
         "host": "www.city.mitaka.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "robots-disallow-all",
-          "blockedBy": "permission",
-          "revisitable": true,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "review",
+          "constraints": [
+            "rep-path-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 32,
@@ -1484,7 +1724,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -1508,23 +1748,32 @@
         "robots": {
           "verdict": "partial",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://ssp.kaigiroku.net/robots.txt",
+            "status": 200,
+            "sha256": "688ba9e6ebf63fba3a2026b65239d4bb03c3a1b56346a6ca2c1dacaaca16b467",
+            "fetchedAt": "2026-08-10T05:59:17.552Z"
+          }
         },
         "confidence": "confirmed",
         "tenant": "ome",
         "tenantId": 580,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/ome/pg/index.html",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "tenant-render-only",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "review",
+          "redistribute": "review",
+          "constraints": [
+            "rep-render-still-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 51,
@@ -1540,7 +1789,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -1564,21 +1813,30 @@
         "robots": {
           "verdict": "disallow-all",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://www.city.fuchu.tokyo.dbsr.jp/robots.txt",
+            "status": 200,
+            "sha256": "67955dd94916ef706802cbe97da17290a23c9422b9935c96d0a306bdf951948e",
+            "fetchedAt": "2026-08-10T05:59:17.928Z"
+          }
         },
         "confidence": "confirmed",
         "host": "www.city.fuchu.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "robots-disallow-all",
-          "blockedBy": "permission",
-          "revisitable": true,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "review",
+          "constraints": [
+            "rep-path-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 35,
@@ -1594,7 +1852,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -1618,23 +1876,32 @@
         "robots": {
           "verdict": "partial",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://ssp.kaigiroku.net/robots.txt",
+            "status": 200,
+            "sha256": "688ba9e6ebf63fba3a2026b65239d4bb03c3a1b56346a6ca2c1dacaaca16b467",
+            "fetchedAt": "2026-08-10T05:59:17.552Z"
+          }
         },
         "confidence": "confirmed",
         "tenant": "akishima",
         "tenantId": 2015,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/akishima/pg/index.html",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "tenant-render-only",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "review",
+          "redistribute": "review",
+          "constraints": [
+            "rep-render-still-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 20,
@@ -1650,7 +1917,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -1674,23 +1941,31 @@
         "robots": {
           "verdict": "allowed",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: DotBot|SemrushBot|AhrefsBot|BLEXBot|MJ12bot|Steeler|ltx71|Linguee|proximic|GrapeshotCrawler|Mappy|MegaIndex|Hatena|PaperLiBot|PetalBot|YandexBot|CCBot/2.0|LivelapBot|Cincraw|Go-http-client|BaiduSpider ほか計26 UA: Disallow: /\nUser-agent: *\nDisallow: /voices/cgi/\nDisallow: /voices2/cgi/\nDisallow: /gikai/cgi/\nDisallow: g07_Video_View.asp ほか動画ページ各種",
-          "source": "measured-2026-08-10",
-          "host": "chofucity.gijiroku.com"
+          "host": "chofucity.gijiroku.com",
+          "observation": {
+            "requestUrl": "https://chofucity.gijiroku.com/robots.txt",
+            "status": 200,
+            "sha256": "ec9f477d3823bc5b517a3e9a7e7968e5d1d4151ae64c746724b70358175f0978",
+            "fetchedAt": "2026-08-10T05:59:16.907Z"
+          }
         },
         "confidence": "confirmed",
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "robots-allowed",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
-        },
         "verifiedAt": "2026-08-10",
         "hasCommittee": null,
         "recordType": null,
         "notes": "VOICES/Web の標準 robots テンプレート。26 UA の汎用スクレイパ対策ブロックリストに CCBot/2.0 が含まれるが、AI/LLM を名指しでセクション化したものではない。* グループは cgi ディレクトリと動画ページのみ制限で、会議録本文（voices/g07v_*.asp 等）は対象外。",
-        "host": "chofucity.gijiroku.com"
+        "host": "chofucity.gijiroku.com",
+        "gate": {
+          "fetch": "allow",
+          "redistribute": "review",
+          "constraints": [
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": null
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 1487,
@@ -1722,23 +1997,31 @@
         "robots": {
           "verdict": "allowed",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: DotBot|SemrushBot|AhrefsBot|BLEXBot|MJ12bot|Steeler|ltx71|Linguee|proximic|GrapeshotCrawler|Mappy|MegaIndex|Hatena|PaperLiBot|PetalBot|YandexBot|CCBot/2.0|LivelapBot|Cincraw|Go-http-client|BaiduSpider ほか計26 UA: Disallow: /\nUser-agent: *\nDisallow: /voices/cgi/\nDisallow: /voices2/cgi/\nDisallow: /gikai/cgi/\nDisallow: g07_Video_View.asp ほか動画ページ各種",
-          "source": "measured-2026-08-10",
-          "host": "www.gikai-machida.jp"
+          "host": "www.gikai-machida.jp",
+          "observation": {
+            "requestUrl": "https://www.gikai-machida.jp/robots.txt",
+            "status": 200,
+            "sha256": "ec9f477d3823bc5b517a3e9a7e7968e5d1d4151ae64c746724b70358175f0978",
+            "fetchedAt": "2026-08-10T05:59:18.725Z"
+          }
         },
         "confidence": "confirmed",
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "robots-allowed",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
-        },
         "verifiedAt": "2026-08-10",
         "hasCommittee": null,
         "recordType": null,
         "notes": "VOICES/Web の標準 robots テンプレート。26 UA の汎用スクレイパ対策ブロックリストに CCBot/2.0 が含まれるが、AI/LLM を名指しでセクション化したものではない。* グループは cgi ディレクトリと動画ページのみ制限で、会議録本文（voices/g07v_*.asp 等）は対象外。",
-        "host": "www.gikai-machida.jp"
+        "host": "www.gikai-machida.jp",
+        "gate": {
+          "fetch": "allow",
+          "redistribute": "review",
+          "constraints": [
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": null
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 127,
@@ -1771,7 +2054,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -1795,21 +2078,30 @@
         "robots": {
           "verdict": "disallow-all",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://www.city.koganei.tokyo.dbsr.jp/robots.txt",
+            "status": 200,
+            "sha256": "67955dd94916ef706802cbe97da17290a23c9422b9935c96d0a306bdf951948e",
+            "fetchedAt": "2026-08-10T05:59:18.246Z"
+          }
         },
         "confidence": "confirmed",
         "host": "www.city.koganei.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "robots-disallow-all",
-          "blockedBy": "permission",
-          "revisitable": true,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "review",
+          "constraints": [
+            "rep-path-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 50,
@@ -1825,7 +2117,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -1849,23 +2141,32 @@
         "robots": {
           "verdict": "partial",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://ssp.kaigiroku.net/robots.txt",
+            "status": 200,
+            "sha256": "688ba9e6ebf63fba3a2026b65239d4bb03c3a1b56346a6ca2c1dacaaca16b467",
+            "fetchedAt": "2026-08-10T05:59:17.552Z"
+          }
         },
         "confidence": "confirmed",
         "tenant": "kodaira",
         "tenantId": 165,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/kodaira/pg/index.html",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "tenant-render-only",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "review",
+          "redistribute": "review",
+          "constraints": [
+            "rep-render-still-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 21,
@@ -1881,7 +2182,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -1905,21 +2206,30 @@
         "robots": {
           "verdict": "disallow-all",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://www.city.hino.tokyo.dbsr.jp/robots.txt",
+            "status": 200,
+            "sha256": "67955dd94916ef706802cbe97da17290a23c9422b9935c96d0a306bdf951948e",
+            "fetchedAt": "2026-08-10T05:59:18.161Z"
+          }
         },
         "confidence": "confirmed",
         "host": "www.city.hino.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "robots-disallow-all",
-          "blockedBy": "permission",
-          "revisitable": true,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "review",
+          "constraints": [
+            "rep-path-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 30,
@@ -1943,7 +2253,12 @@
         "robots": {
           "verdict": "none",
           "aiCrawler": "unspecified",
-          "raw": "none"
+          "observation": {
+            "requestUrl": "https://www.city.higashimurayama.tokyo.jp/robots.txt",
+            "status": 403,
+            "sha256": null,
+            "fetchedAt": "2026-08-10T05:59:18.118Z"
+          }
         },
         "confidence": "confirmed",
         "hasCommittee": true,
@@ -1955,12 +2270,17 @@
           "https://www.city.higashimurayama.tokyo.jp/gikai/gikaijoho/kensaku/r6_honkaigi/files/1224.pdf",
           "https://www.city.higashimurayama.tokyo.jp/gikai/gikaijoho/kensaku/r6_iinkai/index.html"
         ],
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "robots-allowed",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
+        "gate": {
+          "fetch": "review",
+          "redistribute": "review",
+          "constraints": [
+            "technical-block",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "robots.txt を取得できず REP を確認できない"
         }
       },
       "openData": {
@@ -1985,21 +2305,30 @@
         "robots": {
           "verdict": "disallow-all",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://www.city.kokubunji.tokyo.dbsr.jp/robots.txt",
+            "status": 200,
+            "sha256": "67955dd94916ef706802cbe97da17290a23c9422b9935c96d0a306bdf951948e",
+            "fetchedAt": "2026-08-10T05:59:18.320Z"
+          }
         },
         "confidence": "confirmed",
         "host": "www.city.kokubunji.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "robots-disallow-all",
-          "blockedBy": "permission",
-          "revisitable": true,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "review",
+          "constraints": [
+            "rep-path-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 25,
@@ -2015,7 +2344,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -2039,21 +2368,30 @@
         "robots": {
           "verdict": "disallow-all",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://www.city.kunitachi.tokyo.dbsr.jp/robots.txt",
+            "status": 200,
+            "sha256": "67955dd94916ef706802cbe97da17290a23c9422b9935c96d0a306bdf951948e",
+            "fetchedAt": "2026-08-10T05:59:18.437Z"
+          }
         },
         "confidence": "confirmed",
         "host": "www.city.kunitachi.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "robots-disallow-all",
-          "blockedBy": "permission",
-          "revisitable": true,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "review",
+          "constraints": [
+            "rep-path-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 29,
@@ -2069,7 +2407,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -2093,21 +2431,30 @@
         "robots": {
           "verdict": "disallow-all",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://www.city.fussa.tokyo.dbsr.jp/robots.txt",
+            "status": 200,
+            "sha256": "67955dd94916ef706802cbe97da17290a23c9422b9935c96d0a306bdf951948e",
+            "fetchedAt": "2026-08-10T05:59:17.964Z"
+          }
         },
         "confidence": "confirmed",
         "host": "www.city.fussa.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "robots-disallow-all",
-          "blockedBy": "permission",
-          "revisitable": true,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "review",
+          "constraints": [
+            "rep-path-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 13,
@@ -2131,21 +2478,30 @@
         "robots": {
           "verdict": "disallow-all",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://www.city.komae.tokyo.dbsr.jp/robots.txt",
+            "status": 200,
+            "sha256": "67955dd94916ef706802cbe97da17290a23c9422b9935c96d0a306bdf951948e",
+            "fetchedAt": "2026-08-10T05:59:18.360Z"
+          }
         },
         "confidence": "confirmed",
         "host": "www.city.komae.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "robots-disallow-all",
-          "blockedBy": "permission",
-          "revisitable": true,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "review",
+          "constraints": [
+            "rep-path-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 399,
@@ -2169,7 +2525,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -2193,24 +2549,34 @@
         "robots": {
           "verdict": "partial",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/"
+          "observation": {
+            "requestUrl": "https://ssp.kaigiroku.net/robots.txt",
+            "status": 200,
+            "sha256": "688ba9e6ebf63fba3a2026b65239d4bb03c3a1b56346a6ca2c1dacaaca16b467",
+            "fetchedAt": "2026-08-10T05:59:17.552Z"
+          }
         },
         "confidence": "confirmed",
         "hasCommittee": true,
         "recordType": null,
         "verifiedAt": "2026-08-10",
-        "notes": "別途 smart.discussvision.net に議会中継があるが映像配信で会議録とは別",
+        "notes": "別途 smart.discussvision.net に議会中継があるが映像配信で会議録とは別 tenantId 未取得。取得するには Disallow 経路 /dnp/search/* を叩く必要があるため、照会が通るまで空のままにする。",
         "tenant": "higashiyamato",
         "evidenceUrls": [
           "https://www.city.higashiyamato.lg.jp/shisei/gikai/1005809/1010197.html",
           "https://ssp.kaigiroku.net/tenant/higashiyamato/pg/index.html"
         ],
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "tenant-render-only",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
+        "gate": {
+          "fetch": "review",
+          "redistribute": "review",
+          "constraints": [
+            "rep-render-still-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
         }
       },
       "openData": {
@@ -2227,7 +2593,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -2251,23 +2617,32 @@
         "robots": {
           "verdict": "partial",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://ssp.kaigiroku.net/robots.txt",
+            "status": 200,
+            "sha256": "688ba9e6ebf63fba3a2026b65239d4bb03c3a1b56346a6ca2c1dacaaca16b467",
+            "fetchedAt": "2026-08-10T05:59:17.552Z"
+          }
         },
         "confidence": "confirmed",
         "tenant": "kiyose",
         "tenantId": 197,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/kiyose/pg/index.html",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "tenant-render-only",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "review",
+          "redistribute": "review",
+          "constraints": [
+            "rep-render-still-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 64,
@@ -2283,7 +2658,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "broken",
             "columns": null,
             "extraColumns": null,
@@ -2307,21 +2682,30 @@
         "robots": {
           "verdict": "disallow-all",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://www.city.higashikurume.tokyo.dbsr.jp/robots.txt",
+            "status": 200,
+            "sha256": "67955dd94916ef706802cbe97da17290a23c9422b9935c96d0a306bdf951948e",
+            "fetchedAt": "2026-08-10T05:59:18.080Z"
+          }
         },
         "confidence": "confirmed",
         "host": "www.city.higashikurume.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "robots-disallow-all",
-          "blockedBy": "permission",
-          "revisitable": true,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "review",
+          "constraints": [
+            "rep-path-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 21,
@@ -2337,7 +2721,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -2361,23 +2745,32 @@
         "robots": {
           "verdict": "partial",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://ssp.kaigiroku.net/robots.txt",
+            "status": 200,
+            "sha256": "688ba9e6ebf63fba3a2026b65239d4bb03c3a1b56346a6ca2c1dacaaca16b467",
+            "fetchedAt": "2026-08-10T05:59:17.552Z"
+          }
         },
         "confidence": "confirmed",
         "tenant": "musashimurayama",
         "tenantId": 220,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/musashimurayama/pg/index.html",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "tenant-render-only",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "review",
+          "redistribute": "review",
+          "constraints": [
+            "rep-render-still-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 14,
@@ -2401,21 +2794,30 @@
         "robots": {
           "verdict": "disallow-all",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://www.city.tama.tokyo.dbsr.jp/robots.txt",
+            "status": 200,
+            "sha256": "67955dd94916ef706802cbe97da17290a23c9422b9935c96d0a306bdf951948e",
+            "fetchedAt": "2026-08-10T05:59:18.587Z"
+          }
         },
         "confidence": "confirmed",
         "host": "www.city.tama.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "robots-disallow-all",
-          "blockedBy": "permission",
-          "revisitable": true,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "review",
+          "constraints": [
+            "rep-path-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 61,
@@ -2439,7 +2841,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -2463,21 +2865,30 @@
         "robots": {
           "verdict": "disallow-all",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://www.city.inagi.tokyo.dbsr.jp/robots.txt",
+            "status": 200,
+            "sha256": "67955dd94916ef706802cbe97da17290a23c9422b9935c96d0a306bdf951948e",
+            "fetchedAt": "2026-08-10T05:59:18.207Z"
+          }
         },
         "confidence": "confirmed",
         "host": "www.city.inagi.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "robots-disallow-all",
-          "blockedBy": "permission",
-          "revisitable": true,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "review",
+          "constraints": [
+            "rep-path-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 17,
@@ -2493,7 +2904,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -2517,21 +2928,30 @@
         "robots": {
           "verdict": "disallow-all",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://www.city.hamura.tokyo.dbsr.jp/robots.txt",
+            "status": 200,
+            "sha256": "67955dd94916ef706802cbe97da17290a23c9422b9935c96d0a306bdf951948e",
+            "fetchedAt": "2026-08-10T05:59:18.043Z"
+          }
         },
         "confidence": "confirmed",
         "host": "www.city.hamura.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "robots-disallow-all",
-          "blockedBy": "permission",
-          "revisitable": true,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "review",
+          "constraints": [
+            "rep-path-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 27,
@@ -2547,7 +2967,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -2571,21 +2991,30 @@
         "robots": {
           "verdict": "disallow-all",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://www.city.akiruno.tokyo.dbsr.jp/robots.txt",
+            "status": 200,
+            "sha256": "67955dd94916ef706802cbe97da17290a23c9422b9935c96d0a306bdf951948e",
+            "fetchedAt": "2026-08-10T05:59:17.814Z"
+          }
         },
         "confidence": "confirmed",
         "host": "www.city.akiruno.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "robots-disallow-all",
-          "blockedBy": "permission",
-          "revisitable": true,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "review",
+          "constraints": [
+            "rep-path-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 25,
@@ -2601,7 +3030,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -2625,21 +3054,30 @@
         "robots": {
           "verdict": "disallow-all",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://www.city.nishitokyo.tokyo.dbsr.jp/robots.txt",
+            "status": 200,
+            "sha256": "67955dd94916ef706802cbe97da17290a23c9422b9935c96d0a306bdf951948e",
+            "fetchedAt": "2026-08-10T05:59:18.549Z"
+          }
         },
         "confidence": "confirmed",
         "host": "www.city.nishitokyo.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "robots-disallow-all",
-          "blockedBy": "permission",
-          "revisitable": true,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "review",
+          "constraints": [
+            "rep-path-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 37,
@@ -2655,7 +3093,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -2679,23 +3117,32 @@
         "robots": {
           "verdict": "partial",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://ssp.kaigiroku.net/robots.txt",
+            "status": 200,
+            "sha256": "688ba9e6ebf63fba3a2026b65239d4bb03c3a1b56346a6ca2c1dacaaca16b467",
+            "fetchedAt": "2026-08-10T05:59:17.552Z"
+          }
         },
         "confidence": "confirmed",
         "tenant": "mizuho",
         "tenantId": 523,
         "entryUrl": "https://ssp.kaigiroku.net/tenant/mizuho/pg/index.html",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "tenant-render-only",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "review",
+          "redistribute": "review",
+          "constraints": [
+            "rep-render-still-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 10,
@@ -2719,21 +3166,30 @@
         "robots": {
           "verdict": "disallow-all",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
-          "source": "family-uniform"
+          "observation": {
+            "requestUrl": "https://www.town.hinode.tokyo.dbsr.jp/robots.txt",
+            "status": 200,
+            "sha256": "67955dd94916ef706802cbe97da17290a23c9422b9935c96d0a306bdf951948e",
+            "fetchedAt": "2026-08-10T05:59:19.708Z"
+          }
         },
         "confidence": "confirmed",
         "host": "www.town.hinode.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09",
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "robots-disallow-all",
-          "blockedBy": "permission",
-          "revisitable": true,
-          "decidedAt": "2026-08-10"
-        },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "review",
+          "constraints": [
+            "rep-path-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 13,
@@ -2749,7 +3205,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -2773,7 +3229,12 @@
         "robots": {
           "verdict": "disallow-all",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$"
+          "observation": {
+            "requestUrl": "https://www.vill.hinohara.tokyo.dbsr.jp/robots.txt",
+            "status": 200,
+            "sha256": "67955dd94916ef706802cbe97da17290a23c9422b9935c96d0a306bdf951948e",
+            "fetchedAt": "2026-08-10T05:59:19.789Z"
+          }
         },
         "confidence": "confirmed",
         "hasCommittee": true,
@@ -2784,14 +3245,19 @@
           "https://www.vill.hinohara.tokyo.dbsr.jp/",
           "https://www.vill.hinohara.tokyo.dbsr.jp/robots.txt"
         ],
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "robots-disallow-all",
-          "blockedBy": "permission",
-          "revisitable": true,
-          "decidedAt": "2026-08-10"
-        },
-        "host": "www.vill.hinohara.tokyo.dbsr.jp"
+        "host": "www.vill.hinohara.tokyo.dbsr.jp",
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "review",
+          "constraints": [
+            "rep-path-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 3,
@@ -2815,7 +3281,12 @@
         "robots": {
           "verdict": "disallow-all",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$"
+          "observation": {
+            "requestUrl": "https://www.town.okutama.tokyo.dbsr.jp/robots.txt",
+            "status": 200,
+            "sha256": "67955dd94916ef706802cbe97da17290a23c9422b9935c96d0a306bdf951948e",
+            "fetchedAt": "2026-08-10T05:59:19.742Z"
+          }
         },
         "confidence": "confirmed",
         "hasCommittee": true,
@@ -2826,14 +3297,19 @@
           "https://www.town.okutama.tokyo.jp/gyosei/8/okutamachogikai/kaigiroku/index.html",
           "https://www.town.okutama.tokyo.dbsr.jp/"
         ],
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "robots-disallow-all",
-          "blockedBy": "permission",
-          "revisitable": true,
-          "decidedAt": "2026-08-10"
-        },
-        "host": "www.town.okutama.tokyo.dbsr.jp"
+        "host": "www.town.okutama.tokyo.dbsr.jp",
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "review",
+          "constraints": [
+            "rep-path-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
+        }
       },
       "openData": {
         "tokyoCatalogDatasets": 4,
@@ -2857,7 +3333,7 @@
         "robots": {
           "verdict": "none",
           "aiCrawler": "unspecified",
-          "raw": "none"
+          "observation": null
         },
         "confidence": "confirmed",
         "hasCommittee": null,
@@ -2868,12 +3344,15 @@
           "https://www.town.oshima.tokyo.jp/soshiki/gikaijim/",
           "https://www.town.oshima.tokyo.jp/soshiki/gikaijim/gikai-kekka.html"
         ],
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "no-source",
-          "blockedBy": "no-source",
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "deny",
+          "constraints": [
+            "no-source"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": null
         }
       },
       "openData": {
@@ -2898,7 +3377,12 @@
         "robots": {
           "verdict": "partial",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /kana/ /mobile/ /translate/"
+          "observation": {
+            "requestUrl": "https://www.toshimamura.org/robots.txt",
+            "status": 200,
+            "sha256": "eae1b315b28740bf152a23409ecf709b557862510c12dae7f5c2e014e6f8be50",
+            "fetchedAt": "2026-08-10T05:59:19.125Z"
+          }
         },
         "confidence": "confirmed",
         "hasCommittee": false,
@@ -2909,12 +3393,16 @@
           "https://www.toshimamura.org/about/assembly.html",
           "https://www.toshimamura.org/fs/1/7/6/5/7/2/_/R5_2_____.pdf"
         ],
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "robots-allowed",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
+        "gate": {
+          "fetch": "allow",
+          "redistribute": "review",
+          "constraints": [
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": null
         }
       },
       "openData": {
@@ -2939,7 +3427,7 @@
         "robots": {
           "verdict": "none",
           "aiCrawler": "unspecified",
-          "raw": "none"
+          "observation": null
         },
         "confidence": "probable",
         "hasCommittee": null,
@@ -2950,12 +3438,15 @@
           "https://www.niijima.com/gikai/",
           "https://smart.discussvision.net/smart/tenant/niijima/WebView/rd/council.html"
         ],
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "no-source",
-          "blockedBy": "no-source",
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "deny",
+          "constraints": [
+            "no-source"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": null
         }
       },
       "openData": {
@@ -2972,7 +3463,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -2996,7 +3487,12 @@
         "robots": {
           "verdict": "allowed",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /wpk/wp-admin/\nAllow: /wpk/wp-admin/admin-ajax.php"
+          "observation": {
+            "requestUrl": "https://www.vill.kouzushima.tokyo.jp/robots.txt",
+            "status": 200,
+            "sha256": "262089134c7b0032be585c8dcb5a88dd4b5d3348657fd402b38a44ebcd28519c",
+            "fetchedAt": "2026-08-10T05:59:19.825Z"
+          }
         },
         "confidence": "confirmed",
         "hasCommittee": null,
@@ -3007,12 +3503,16 @@
           "https://www.vill.kouzushima.tokyo.jp/busyo/gikai/",
           "https://www.vill.kouzushima.tokyo.jp/robots.txt"
         ],
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "robots-allowed",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
+        "gate": {
+          "fetch": "allow",
+          "redistribute": "review",
+          "constraints": [
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": null
         }
       },
       "openData": {
@@ -3037,7 +3537,7 @@
         "robots": {
           "verdict": "allowed",
           "aiCrawler": "unspecified",
-          "raw": "User-Agent: Googlebot"
+          "observation": null
         },
         "confidence": "confirmed",
         "hasCommittee": false,
@@ -3048,12 +3548,15 @@
           "https://www.vill.miyake.tokyo.jp/kakuka/gikai/",
           "https://www.vill.miyake.tokyo.jp/kakuka/gikai/news/gikaidayori.html"
         ],
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "no-source",
-          "blockedBy": "no-source",
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "deny",
+          "constraints": [
+            "no-source"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": null
         }
       },
       "openData": {
@@ -3078,7 +3581,7 @@
         "robots": {
           "verdict": "none",
           "aiCrawler": "unspecified",
-          "raw": "none"
+          "observation": null
         },
         "confidence": "confirmed",
         "hasCommittee": null,
@@ -3088,12 +3591,15 @@
         "evidenceUrls": [
           "https://www.vill.mikurasima.tokyo.jp/section/gyosei/gikai.html"
         ],
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "no-source",
-          "blockedBy": "no-source",
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "deny",
+          "constraints": [
+            "no-source"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": null
         }
       },
       "openData": {
@@ -3110,7 +3616,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -3134,7 +3640,12 @@
         "robots": {
           "verdict": "allowed",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /wp-admin/\nAllow: /wp-admin/admin-ajax.php"
+          "observation": {
+            "requestUrl": "https://www.town.hachijo.tokyo.jp/robots.txt",
+            "status": 200,
+            "sha256": "1356953afddaa7b7800e9081cce532989bf39eead64a0fbdb4c59803ee374068",
+            "fetchedAt": "2026-08-10T05:59:19.421Z"
+          }
         },
         "confidence": "probable",
         "hasCommittee": false,
@@ -3145,12 +3656,16 @@
           "https://www.town.hachijo.tokyo.jp/chousei/chougikai/katsushin/kaigi-kiroku/kairoku/",
           "https://www.town.hachijo.tokyo.jp/robots.txt"
         ],
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "robots-allowed",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
+        "gate": {
+          "fetch": "allow",
+          "redistribute": "review",
+          "constraints": [
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": null
         }
       },
       "openData": {
@@ -3167,7 +3682,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -3191,7 +3706,7 @@
         "robots": {
           "verdict": "none",
           "aiCrawler": "unspecified",
-          "raw": "none"
+          "observation": null
         },
         "confidence": "probable",
         "hasCommittee": null,
@@ -3202,12 +3717,15 @@
           "https://www.vill.aogashima.tokyo.jp/",
           "http://www.nactva.gr.jp/php/quicknavi/detail?TWCD=134023"
         ],
-        "fetchPolicy": {
-          "eligible": false,
-          "reason": "no-source",
-          "blockedBy": "no-source",
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
+        "gate": {
+          "fetch": "deny",
+          "redistribute": "deny",
+          "constraints": [
+            "no-source"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": null
         }
       },
       "openData": {
@@ -3232,24 +3750,34 @@
         "robots": {
           "verdict": "partial",
           "aiCrawler": "unspecified",
-          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/"
+          "observation": {
+            "requestUrl": "https://ssp.kaigiroku.net/robots.txt",
+            "status": 200,
+            "sha256": "688ba9e6ebf63fba3a2026b65239d4bb03c3a1b56346a6ca2c1dacaaca16b467",
+            "fetchedAt": "2026-08-10T05:59:17.552Z"
+          }
         },
         "confidence": "confirmed",
         "hasCommittee": true,
         "recordType": null,
         "verifiedAt": "2026-08-10",
-        "notes": "2020年は自治体サイト直だったが DNP へ移行済み",
+        "notes": "2020年は自治体サイト直だったが DNP へ移行済み tenantId 未取得。取得するには Disallow 経路 /dnp/search/* を叩く必要があるため、照会が通るまで空のままにする。",
         "tenant": "ogasawara",
         "evidenceUrls": [
           "https://www.vill.ogasawara.tokyo.jp/gikai/",
           "https://ssp.kaigiroku.net/tenant/ogasawara/SpTop.html"
         ],
-        "fetchPolicy": {
-          "eligible": true,
-          "reason": "tenant-render-only",
-          "blockedBy": null,
-          "revisitable": false,
-          "decidedAt": "2026-08-10"
+        "gate": {
+          "fetch": "review",
+          "redistribute": "review",
+          "constraints": [
+            "rep-render-still-disallowed",
+            "copyright-unverified",
+            "terms-unverified"
+          ],
+          "policyVersion": "2026-08-10",
+          "evaluatedAt": "2026-08-10",
+          "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
         }
       },
       "openData": {
@@ -3266,7 +3794,7 @@
           "license": "CC-BY-4.0",
           "count": 1,
           "schemaCheck": {
-            "standard": "jp-municipal-bulletin/1.0",
+            "standard": "kotonoha/tokyo-municipal-bulletin-profile/0.1",
             "conformance": "conformant",
             "columns": 16,
             "extraColumns": null,
@@ -3282,20 +3810,12 @@
       }
     }
   },
-  "fetchPolicy": {
-    "decidedAt": "2026-08-10",
-    "rule": "グレーゾーンは現時点では扱わない。ただし除外は恒久的ではなく、robots による除外・AI クローラ拒否・robots 未確認は blockedBy=permission / revisitable=true とし、許諾取得や追加調査で解除しうるものとして扱う。会議録が Web 公開されていないもの(no-source)だけが構造的に解除できない。判定は事実(robots.raw / evidenceUrls)を記録した上で行う。",
-    "reasons": {
-      "robots-allowed": "取得可。robots に制限がないか、会議録の経路が Disallow 対象外",
-      "tenant-render-only": "取得可だが JSON API は Disallow のため画面を描画して解析する（DiscussNetPremium）",
-      "robots-disallow-all": "除外。robots がトップ以外を Disallow（DB-Search）。許諾が取れれば解除しうる",
-      "ai-crawler-disallowed": "除外。robots が AI/LLM クローラを名指しでセクション化して拒否している。汎用スクレイパ対策のブロックリストに CCBot 等が紛れているだけのものは該当させない",
-      "robots-unverified": "除外。robots を確認できていない",
-      "no-source": "除外。会議録が Web 公開されていない"
-    },
-    "blockedBy": {
-      "permission": "許諾取得または追加調査で解除しうる。照会の宛先は DB-Search 系が大和速記情報センター1社",
-      "no-source": "会議録そのものが Web 公開されていないため技術的に解除できない"
-    }
+  "$schema": "./manifest.schema.json",
+  "generatedAt": "2026-08-10",
+  "note": "東京都62区市町村の会議録・オープンデータ源の調査結果。会議録システムは 2020年の地方議会会議録コーパスプロジェクト調査を出発点に現況を実測。CKAN は organization:t<団体コード> で全件取得して分類。 フィールド名 transcript は SayIt(mySociety) の語彙に合わせたもの（Popolo に会議録を表す型は無く、Speech までしか定義されていない）。 議会だよりはデータセット名が揺れる（議会だより / めぐろ区議会だより / 区議会だより一覧 等）ため、openData.gikaiDayori.schemaCheck は名称ではなく CSV の列構成で kotonoha/tokyo-municipal-bulletin-profile/0.1 準拠を判定した実測結果を持つ（この形式は公式標準ではなく kotonoha が実測に名前を与えたもの。src/schema/tokyo-municipal-bulletin-profile.ts 参照）。",
+  "sources": {
+    "corpusProject": "http://local-politics.jp/",
+    "tokyoCatalog": "https://catalog.data.metro.tokyo.lg.jp/api/3/action/",
+    "procurementApi": "https://www.kkj.go.jp/api/"
   }
 }

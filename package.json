@@ -4,7 +4,10 @@
   "type": "module",
   "scripts": {
     "validate": "bun run src/extract/sources/validate.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build:viewer": "bun run scripts/build-viewer-data.ts",
+    "fetch:robots": "bun run scripts/fetch-robots.ts",
+    "check:bulletins": "bun run scripts/check-bulletins.ts"
   },
   "dependencies": {
     "zod": "4.4.3"
