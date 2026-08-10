@@ -13,8 +13,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131016",
       "transcript": {
         "systemFamily": "db-search",
-        "robots": "disallow-all",
-        "url2020": "http://asp.db-search.com/chiyoda/dsweb.cgi/",
+        "robots": {
+          "verdict": "disallow-all",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "host": "www.city.chiyoda.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09"
@@ -45,9 +49,17 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131024",
       "transcript": {
         "systemFamily": "own-site",
-        "robots": "allowed",
-        "url2020": "http://www.kugikai.city.chuo.lg.jp/kaigiroku/index.html",
-        "confidence": "unverified"
+        "robots": {
+          "verdict": "partial",
+          "aiCrawler": "disallowed",
+          "raw": "User-agent: Googlebot / Disallow:  … （検索エンジンは許可）\nUser-agent: GPTBot|ChatGPT-User|CCBot|ClaudeBot|anthropic-ai|PerplexityBot|Google-Extended|OAI-SearchBot|Bytespider|Amazonbot|Applebot-Extended: Disallow: /\nDisallow: /*.csi /*.cgi /*.php /*? /system/ /tmp/"
+        },
+        "confidence": "confirmed",
+        "transcriptUrl": "https://www.kugikai.city.chuo.lg.jp/kaigiroku/index.html",
+        "hasCommittee": true,
+        "recordType": "unknown",
+        "verifiedAt": "2026-08-10",
+        "notes": "独自CGI。会議録本文が kaigiroku.cgi/… で Disallow: /*.cgi の対象。AI/LLM クローラを名指しで全面拒否（robots に 2025-12 の日付コメント）"
       },
       "openData": {
         "tokyoCatalogDatasets": 47,
@@ -75,8 +87,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131032",
       "transcript": {
         "systemFamily": "db-search",
-        "robots": "disallow-all",
-        "url2020": "http://asp.db-search.com/minatokugikai/dsweb.cgi/",
+        "robots": {
+          "verdict": "disallow-all",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed"
       },
       "openData": {
@@ -102,8 +118,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131041",
       "transcript": {
         "systemFamily": "dnp",
-        "robots": "tenant-only",
-        "url2020": "http://www.kaigiroku.net/kensaku/shinjuku/shinjuku.html",
+        "robots": {
+          "verdict": "partial",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "tenant": "shinjuku",
         "tenantId": 211,
@@ -141,8 +161,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131059",
       "transcript": {
         "systemFamily": "db-search",
-        "robots": "disallow-all",
-        "url2020": "http://www.db-search.com/bunkyo/index.php/",
+        "robots": {
+          "verdict": "disallow-all",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "host": "www.city.bunkyo.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09"
@@ -173,8 +197,11 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131067",
       "transcript": {
         "systemFamily": "voices",
-        "robots": "allowed",
-        "url2020": "http://taito.gijiroku.com/voices/index.asp",
+        "robots": {
+          "verdict": "allowed",
+          "aiCrawler": "unchecked",
+          "raw": null
+        },
         "confidence": "confirmed"
       },
       "openData": {
@@ -195,8 +222,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131075",
       "transcript": {
         "systemFamily": "dnp",
-        "robots": "tenant-only",
-        "url2020": "http://www.kaigiroku.net/kensaku/sumida/sumida.html",
+        "robots": {
+          "verdict": "partial",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "tenant": "sumida",
         "tenantId": 396,
@@ -221,8 +252,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131083",
       "transcript": {
         "systemFamily": "db-search",
-        "robots": "disallow-all",
-        "url2020": "http://asp.db-search.com/koto/",
+        "robots": {
+          "verdict": "disallow-all",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "host": "www.city.koto.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09"
@@ -253,8 +288,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131091",
       "transcript": {
         "systemFamily": "db-search",
-        "robots": "disallow-all",
-        "url2020": "http://asp.db-search.com/shinagawa/dsweb.cgi/",
+        "robots": {
+          "verdict": "disallow-all",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed"
       },
       "openData": {
@@ -283,8 +322,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131105",
       "transcript": {
         "systemFamily": "kensakusystem",
-        "robots": "allowed",
-        "url2020": "http://www.kensakusystem.jp/meguro/sapphire.html",
+        "robots": {
+          "verdict": "none",
+          "aiCrawler": "unspecified",
+          "raw": "（robots.txt 404）",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed"
       },
       "openData": {
@@ -328,8 +371,11 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131113",
       "transcript": {
         "systemFamily": "voices",
-        "robots": "allowed",
-        "url2020": "http://www.gikai-ota-tokyo.jp/ota/index2.html",
+        "robots": {
+          "verdict": "allowed",
+          "aiCrawler": "unchecked",
+          "raw": null
+        },
         "confidence": "confirmed"
       },
       "openData": {
@@ -365,10 +411,18 @@
       "name": "世田谷区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131121",
       "transcript": {
-        "systemFamily": "own-site",
-        "robots": "allowed",
-        "url2020": "http://kugi.city.setagaya.tokyo.jp/voices/",
-        "confidence": "unverified"
+        "systemFamily": "voices",
+        "robots": {
+          "verdict": "none",
+          "aiCrawler": "unspecified",
+          "raw": "none"
+        },
+        "confidence": "confirmed",
+        "transcriptUrl": "https://kugi.city.setagaya.tokyo.jp/voices/",
+        "hasCommittee": true,
+        "recordType": "full",
+        "verifiedAt": "2026-08-10",
+        "notes": "『会議録全文検索システム VOICES/Web』。本会議・常任委・議運委・特別委・予決算委を収録。robots.txt が 404 で制限なし"
       },
       "openData": {
         "tokyoCatalogDatasets": 25,
@@ -396,8 +450,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131130",
       "transcript": {
         "systemFamily": "dnp",
-        "robots": "tenant-only",
-        "url2020": "http://www.kaigiroku.net/kensaku/shibuya/shibuya.html",
+        "robots": {
+          "verdict": "partial",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "tenant": "shibuya",
         "tenantId": 394,
@@ -436,9 +494,17 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131148",
       "transcript": {
         "systemFamily": "own-site",
-        "robots": "allowed",
-        "url2020": "http://kugikai-nakano.jp/search_itiran.html",
-        "confidence": "unverified"
+        "robots": {
+          "verdict": "partial",
+          "aiCrawler": "unspecified",
+          "raw": "User-Agent: *\nDisallow: /giin_detail.html"
+        },
+        "confidence": "confirmed",
+        "transcriptUrl": "https://kugikai-nakano.jp/search.html",
+        "hasCommittee": true,
+        "recordType": "unknown",
+        "verifiedAt": "2026-08-10",
+        "notes": "区独自の HTML+JS（view.html?gijiroku_id=）。本会議＋委員会10種以上を収録。robots は議員詳細1ページのみ Disallow"
       },
       "openData": {
         "tokyoCatalogDatasets": 167,
@@ -466,8 +532,11 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131156",
       "transcript": {
         "systemFamily": "voices",
-        "robots": "allowed",
-        "url2020": "http://suginami.gijiroku.com/voices/index.asp",
+        "robots": {
+          "verdict": "allowed",
+          "aiCrawler": "unchecked",
+          "raw": null
+        },
         "confidence": "confirmed"
       },
       "openData": {
@@ -504,8 +573,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131164",
       "transcript": {
         "systemFamily": "kensakusystem",
-        "robots": "allowed",
-        "url2020": "http://www.kensakusystem.jp/toshima/",
+        "robots": {
+          "verdict": "none",
+          "aiCrawler": "unspecified",
+          "raw": "（robots.txt 404）",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed"
       },
       "openData": {
@@ -534,8 +607,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131172",
       "transcript": {
         "systemFamily": "dnp",
-        "robots": "tenant-only",
-        "url2020": "http://www.kaigiroku.net/kensaku/kita/kita.html",
+        "robots": {
+          "verdict": "partial",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "tenant": "kita",
         "tenantId": 395,
@@ -565,8 +642,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131181",
       "transcript": {
         "systemFamily": "dnp",
-        "robots": "tenant-only",
-        "url2020": "http://www.kaigiroku.net/arakawa/arakawa.html,https://www.city.arakawa.tokyo.jp/kugikai/cgi/kensaku/wwwsrch/wwwsrch.htm",
+        "robots": {
+          "verdict": "partial",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "tenant": "arakawa",
         "tenantId": 577,
@@ -599,8 +680,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131199",
       "transcript": {
         "systemFamily": "db-search",
-        "robots": "disallow-all",
-        "url2020": "http://asp.db-search.com/itabashi/",
+        "robots": {
+          "verdict": "disallow-all",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed"
       },
       "openData": {
@@ -629,8 +714,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131202",
       "transcript": {
         "systemFamily": "dnp",
-        "robots": "tenant-only",
-        "url2020": "http://www.kaigiroku.net/kensaku/cgi-bin/WWWframeBase.exe?A=frameBase_etu&USR=tokners&PWD=&L=1&S=31&Y=",
+        "robots": {
+          "verdict": "partial",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "tenant": "nerima",
         "tenantId": 367,
@@ -681,10 +770,18 @@
       "name": "足立区",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131211",
       "transcript": {
-        "systemFamily": "own-site",
-        "robots": "allowed",
-        "url2020": "http://gijiroku.gikai-adachi.jp/voices/index.asp",
-        "confidence": "unverified"
+        "systemFamily": "voices",
+        "robots": {
+          "verdict": "partial",
+          "aiCrawler": "disallowed",
+          "raw": "User-agent: DotBot|SemrushBot|AhrefsBot|MJ12bot|PetalBot|YandexBot|CCBot/2.0|BaiduSpider ほか: Disallow: /\nUser-agent: *\nDisallow: /voices/cgi/ /voices2/cgi/ /gikai/cgi/ 各 Video_View.asp"
+        },
+        "confidence": "confirmed",
+        "transcriptUrl": "https://www.gikai-adachi.jp/voices2/",
+        "hasCommittee": true,
+        "recordType": "unknown",
+        "verifiedAt": "2026-08-10",
+        "notes": "旧ドメイン gijiroku.gikai-adachi.jp は消滅。CCBot/2.0 を拒否（ClaudeBot・GPTBot の記載はなし）。* は cgi ディレクトリと動画ページのみ制限"
       },
       "openData": {
         "tokyoCatalogDatasets": 10,
@@ -704,8 +801,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131229",
       "transcript": {
         "systemFamily": "kensakusystem",
-        "robots": "allowed",
-        "url2020": "http://www.kensakusystem.jp/katsushika/sapphire.html",
+        "robots": {
+          "verdict": "none",
+          "aiCrawler": "unspecified",
+          "raw": "（robots.txt 404）",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed"
       },
       "openData": {
@@ -734,8 +835,11 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:131237",
       "transcript": {
         "systemFamily": "voices",
-        "robots": "allowed",
-        "url2020": "http://www.gikai.city.edogawa.tokyo.jp/voices/g08v_search.asp",
+        "robots": {
+          "verdict": "allowed",
+          "aiCrawler": "unchecked",
+          "raw": null
+        },
         "confidence": "confirmed"
       },
       "openData": {
@@ -756,8 +860,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132012",
       "transcript": {
         "systemFamily": "db-search",
-        "robots": "disallow-all",
-        "url2020": "http://asp.db-search.com/hachioji-c/dsweb.cgi/",
+        "robots": {
+          "verdict": "disallow-all",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "host": "www.city.hachioji.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09"
@@ -796,8 +904,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132021",
       "transcript": {
         "systemFamily": "dnp",
-        "robots": "tenant-only",
-        "url2020": "http://www.kaigiroku.net/kensaku/cgi-bin/WWWframeBase.exe?A=frameBase2&USR=toktacs&PWD=&L=1&S=31",
+        "robots": {
+          "verdict": "partial",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "tenant": "tachikawa",
         "tenantId": 368,
@@ -830,8 +942,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132039",
       "transcript": {
         "systemFamily": "db-search",
-        "robots": "disallow-all",
-        "url2020": "http://asp.db-search.com/musashino-c/",
+        "robots": {
+          "verdict": "disallow-all",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "host": "www.city.musashino.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09"
@@ -862,8 +978,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132047",
       "transcript": {
         "systemFamily": "db-search",
-        "robots": "disallow-all",
-        "url2020": "http://asp.db-search.com/mitaka-c/dsweb.cgi/?Template=Perusal",
+        "robots": {
+          "verdict": "disallow-all",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "host": "www.city.mitaka.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09"
@@ -902,8 +1022,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132055",
       "transcript": {
         "systemFamily": "dnp",
-        "robots": "tenant-only",
-        "url2020": "http://www.kaigiroku.net/kensaku/ome/ome.html",
+        "robots": {
+          "verdict": "partial",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "tenant": "ome",
         "tenantId": 580,
@@ -936,8 +1060,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132063",
       "transcript": {
         "systemFamily": "db-search",
-        "robots": "disallow-all",
-        "url2020": "http://asp.db-search.com/fuchu-c/",
+        "robots": {
+          "verdict": "disallow-all",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "host": "www.city.fuchu.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09"
@@ -968,8 +1096,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132071",
       "transcript": {
         "systemFamily": "dnp",
-        "robots": "tenant-only",
-        "url2020": "http://ssp.kaigiroku.net/tenant/akishima/pg/index.html",
+        "robots": {
+          "verdict": "partial",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "tenant": "akishima",
         "tenantId": 2015,
@@ -1002,8 +1134,11 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132080",
       "transcript": {
         "systemFamily": "voices",
-        "robots": "allowed",
-        "url2020": "http://chofucity.gijiroku.com/voices/index2.html",
+        "robots": {
+          "verdict": "allowed",
+          "aiCrawler": "unchecked",
+          "raw": null
+        },
         "confidence": "confirmed"
       },
       "openData": {
@@ -1032,8 +1167,11 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132098",
       "transcript": {
         "systemFamily": "voices",
-        "robots": "allowed",
-        "url2020": "http://www.gikai-machida.jp/voices/g08v_search.asp",
+        "robots": {
+          "verdict": "allowed",
+          "aiCrawler": "unchecked",
+          "raw": null
+        },
         "confidence": "confirmed"
       },
       "openData": {
@@ -1079,8 +1217,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132101",
       "transcript": {
         "systemFamily": "db-search",
-        "robots": "disallow-all",
-        "url2020": "http://asp.db-search.com/koganei-c/",
+        "robots": {
+          "verdict": "disallow-all",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "host": "www.city.koganei.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09"
@@ -1111,8 +1253,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132110",
       "transcript": {
         "systemFamily": "dnp",
-        "robots": "tenant-only",
-        "url2020": "http://www.kaigiroku.net/kensaku/kodaira/kodaira.html",
+        "robots": {
+          "verdict": "partial",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "tenant": "kodaira",
         "tenantId": 165,
@@ -1145,8 +1291,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132128",
       "transcript": {
         "systemFamily": "db-search",
-        "robots": "disallow-all",
-        "url2020": "http://asp.db-search.com/hino-c/",
+        "robots": {
+          "verdict": "disallow-all",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "host": "www.city.hino.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09"
@@ -1169,9 +1319,17 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132136",
       "transcript": {
         "systemFamily": "own-site",
-        "robots": "allowed",
-        "url2020": "http://www.city.higashimurayama.tokyo.jp/gikai/gikaijoho/kensaku/",
-        "confidence": "unverified"
+        "robots": {
+          "verdict": "none",
+          "aiCrawler": "unspecified",
+          "raw": "none"
+        },
+        "confidence": "confirmed",
+        "transcriptUrl": "https://www.city.higashimurayama.tokyo.jp/gikai/gikaijoho/kensaku/index.html",
+        "hasCommittee": true,
+        "recordType": "full",
+        "verifiedAt": "2026-08-10",
+        "notes": "市サイトの静的ページ＋PDF直置き。PDF を pdftotext で抽出し『○議長（小町明夫議員）』形式の逐語を確認。CloudFront の bot 対策で sandbox 経由の curl が 403 になる"
       },
       "openData": {
         "tokyoCatalogDatasets": 45,
@@ -1191,8 +1349,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132144",
       "transcript": {
         "systemFamily": "db-search",
-        "robots": "disallow-all",
-        "url2020": "http://asp.db-search.com/kokubunji-c/",
+        "robots": {
+          "verdict": "disallow-all",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "host": "www.city.kokubunji.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09"
@@ -1223,8 +1385,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132152",
       "transcript": {
         "systemFamily": "db-search",
-        "robots": "disallow-all",
-        "url2020": "http://asp.db-search.com/kunitachi-c/",
+        "robots": {
+          "verdict": "disallow-all",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "host": "www.city.kunitachi.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09"
@@ -1255,8 +1421,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132187",
       "transcript": {
         "systemFamily": "db-search",
-        "robots": "disallow-all",
-        "url2020": "http://asp.db-search.com/fussa-c/",
+        "robots": {
+          "verdict": "disallow-all",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "host": "www.city.fussa.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09"
@@ -1279,8 +1449,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132195",
       "transcript": {
         "systemFamily": "db-search",
-        "robots": "disallow-all",
-        "url2020": "http://asp.db-search.com/komae-c/",
+        "robots": {
+          "verdict": "disallow-all",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "host": "www.city.komae.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09"
@@ -1318,10 +1492,19 @@
       "name": "東大和市",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132209",
       "transcript": {
-        "systemFamily": "own-site",
-        "robots": "allowed",
-        "url2020": "https://www.city.higashiyamato.lg.jp/index.cfm/36,0,381,661,html",
-        "confidence": "unverified"
+        "systemFamily": "dnp",
+        "robots": {
+          "verdict": "partial",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/"
+        },
+        "confidence": "confirmed",
+        "transcriptUrl": "https://ssp.kaigiroku.net/tenant/higashiyamato/pg/index.html",
+        "hasCommittee": true,
+        "recordType": "unknown",
+        "verifiedAt": "2026-08-10",
+        "notes": "別途 smart.discussvision.net に議会中継があるが映像配信で会議録とは別",
+        "tenant": "higashiyamato"
       },
       "openData": {
         "tokyoCatalogDatasets": 24,
@@ -1349,8 +1532,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132217",
       "transcript": {
         "systemFamily": "dnp",
-        "robots": "tenant-only",
-        "url2020": "http://www.kaigiroku.net/kensaku/kiyose/kiyose.html",
+        "robots": {
+          "verdict": "partial",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "tenant": "kiyose",
         "tenantId": 197,
@@ -1383,8 +1570,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132225",
       "transcript": {
         "systemFamily": "db-search",
-        "robots": "disallow-all",
-        "url2020": "http://asp.db-search.com/higashikurume-c/",
+        "robots": {
+          "verdict": "disallow-all",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "host": "www.city.higashikurume.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09"
@@ -1415,8 +1606,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132233",
       "transcript": {
         "systemFamily": "dnp",
-        "robots": "tenant-only",
-        "url2020": "http://www.kaigiroku.net/kensaku/musashimurayama/musashimurayama.html",
+        "robots": {
+          "verdict": "partial",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "tenant": "musashimurayama",
         "tenantId": 220,
@@ -1441,8 +1636,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132241",
       "transcript": {
         "systemFamily": "db-search",
-        "robots": "disallow-all",
-        "url2020": "http://asp.db-search.com/tama-c/",
+        "robots": {
+          "verdict": "disallow-all",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "host": "www.city.tama.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09"
@@ -1481,8 +1680,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132250",
       "transcript": {
         "systemFamily": "db-search",
-        "robots": "disallow-all",
-        "url2020": "http://asp.db-search.com/inagi-c/",
+        "robots": {
+          "verdict": "disallow-all",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "host": "www.city.inagi.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09"
@@ -1513,8 +1716,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132276",
       "transcript": {
         "systemFamily": "db-search",
-        "robots": "disallow-all",
-        "url2020": "http://asp.db-search.com/hamura-c/",
+        "robots": {
+          "verdict": "disallow-all",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "host": "www.city.hamura.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09"
@@ -1545,8 +1752,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132284",
       "transcript": {
         "systemFamily": "db-search",
-        "robots": "disallow-all",
-        "url2020": "http://asp.db-search.com/akiruno-c/",
+        "robots": {
+          "verdict": "disallow-all",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "host": "www.city.akiruno.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09"
@@ -1577,8 +1788,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:132292",
       "transcript": {
         "systemFamily": "db-search",
-        "robots": "disallow-all",
-        "url2020": "http://asp.db-search.com/nishitokyo-c/dsweb.cgi/",
+        "robots": {
+          "verdict": "disallow-all",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "host": "www.city.nishitokyo.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09"
@@ -1609,8 +1824,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:133035",
       "transcript": {
         "systemFamily": "dnp",
-        "robots": "tenant-only",
-        "url2020": "http://www.kaigiroku.net/kensaku/mizuho/mizuho.html",
+        "robots": {
+          "verdict": "partial",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "tenant": "mizuho",
         "tenantId": 523,
@@ -1635,8 +1854,12 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:133051",
       "transcript": {
         "systemFamily": "db-search",
-        "robots": "disallow-all",
-        "url2020": "http://www.db-search.com/hinode-t/index.php/",
+        "robots": {
+          "verdict": "disallow-all",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$",
+          "source": "family-uniform"
+        },
         "confidence": "confirmed",
         "host": "www.town.hinode.tokyo.dbsr.jp",
         "verifiedAt": "2026-08-09"
@@ -1666,10 +1889,18 @@
       "name": "檜原村",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:133078",
       "transcript": {
-        "systemFamily": "own-site",
-        "robots": "allowed",
-        "url2020": "http://www.vill.hinohara.tokyo.jp/gikai/07_gikaidayori.html",
-        "confidence": "unverified"
+        "systemFamily": "db-search",
+        "robots": {
+          "verdict": "disallow-all",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$"
+        },
+        "confidence": "confirmed",
+        "transcriptUrl": "https://www.vill.hinohara.tokyo.dbsr.jp/",
+        "hasCommittee": true,
+        "recordType": "unknown",
+        "verifiedAt": "2026-08-10",
+        "notes": "平成27年5月以降の本会議＋予算・決算特別委員会"
       },
       "openData": {
         "tokyoCatalogDatasets": 3,
@@ -1688,10 +1919,18 @@
       "name": "奥多摩町",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:133086",
       "transcript": {
-        "systemFamily": "own-site",
-        "robots": "allowed",
-        "url2020": "http://www.town.okutama.tokyo.jp/gyose/gikai/kaigiroku.html",
-        "confidence": "unverified"
+        "systemFamily": "db-search",
+        "robots": {
+          "verdict": "disallow-all",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /$\nAllow: /index.php$\nAllow: /index.php/$"
+        },
+        "confidence": "confirmed",
+        "transcriptUrl": "https://www.town.okutama.tokyo.dbsr.jp/",
+        "hasCommittee": true,
+        "recordType": "unknown",
+        "verifiedAt": "2026-08-10",
+        "notes": "本会議＋予算・決算特別委員会等"
       },
       "openData": {
         "tokyoCatalogDatasets": 4,
@@ -1710,10 +1949,18 @@
       "name": "大島町",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:133612",
       "transcript": {
-        "systemFamily": "own-site",
-        "robots": "unknown",
-        "url2020": null,
-        "confidence": "unverified"
+        "systemFamily": "none",
+        "robots": {
+          "verdict": "none",
+          "aiCrawler": "unspecified",
+          "raw": "none"
+        },
+        "confidence": "confirmed",
+        "transcriptUrl": null,
+        "hasCommittee": null,
+        "recordType": "unknown",
+        "verifiedAt": "2026-08-10",
+        "notes": "会議録のWeb公開なし。議決結果PDFと議会だより（要約）のみ"
       },
       "openData": {
         "tokyoCatalogDatasets": 2,
@@ -1733,9 +1980,17 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:133621",
       "transcript": {
         "systemFamily": "own-site",
-        "robots": "allowed",
-        "url2020": "http://www.toshimamura.org/about/assembly",
-        "confidence": "unverified"
+        "robots": {
+          "verdict": "partial",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /kana/ /mobile/ /translate/"
+        },
+        "confidence": "confirmed",
+        "transcriptUrl": "https://www.toshimamura.org/about/assembly.html",
+        "hasCommittee": false,
+        "recordType": "full",
+        "verifiedAt": "2026-08-10",
+        "notes": "村サイトに定例会・臨時会ごとの議事録PDFを年別直リンク。逐語形式を確認。議員6名で常任委員会の個別記録は見当たらず"
       },
       "openData": {
         "tokyoCatalogDatasets": 10,
@@ -1754,10 +2009,18 @@
       "name": "新島村",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:133639",
       "transcript": {
-        "systemFamily": "own-site",
-        "robots": "unknown",
-        "url2020": null,
-        "confidence": "unverified"
+        "systemFamily": "none",
+        "robots": {
+          "verdict": "none",
+          "aiCrawler": "unspecified",
+          "raw": "none"
+        },
+        "confidence": "probable",
+        "transcriptUrl": null,
+        "hasCommittee": null,
+        "recordType": "unknown",
+        "verifiedAt": "2026-08-10",
+        "notes": "テキスト会議録なし。DiscussVision『スマート議会中継』の動画のみ（発言一覧は動画へのインデックス）"
       },
       "openData": {
         "tokyoCatalogDatasets": 4,
@@ -1785,9 +2048,17 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:133647",
       "transcript": {
         "systemFamily": "own-site",
-        "robots": "allowed",
-        "url2020": "http://vill.kouzushima.tokyo.jp/mt/mt-search.cgi?search=%E8%AD%B0%E4%BC%9A&IncludeBlogs=3&limit=20",
-        "confidence": "unverified"
+        "robots": {
+          "verdict": "allowed",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /wpk/wp-admin/\nAllow: /wpk/wp-admin/admin-ajax.php"
+        },
+        "confidence": "confirmed",
+        "transcriptUrl": "https://www.vill.kouzushima.tokyo.jp/busyo/gikai/",
+        "hasCommittee": "unknown",
+        "recordType": "unknown",
+        "verifiedAt": "2026-08-10",
+        "notes": "WordPress。定例会・臨時会ごとの個別ページから PDF へリンクする静的リスト。検索機能なし"
       },
       "openData": {
         "tokyoCatalogDatasets": 0,
@@ -1806,10 +2077,18 @@
       "name": "三宅村",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:133817",
       "transcript": {
-        "systemFamily": "own-site",
-        "robots": "allowed",
-        "url2020": "http://www.miyakemura.com/content/list/gikai.html",
-        "confidence": "unverified"
+        "systemFamily": "none",
+        "robots": {
+          "verdict": "allowed",
+          "aiCrawler": "unspecified",
+          "raw": "User-Agent: Googlebot"
+        },
+        "confidence": "confirmed",
+        "transcriptUrl": null,
+        "hasCommittee": false,
+        "recordType": "unknown",
+        "verifiedAt": "2026-08-10",
+        "notes": "会議録のWeb公開なし。議会だよりPDFと議決結果のみ。旧ドメイン miyakemura.com は失効、現行は vill.miyake.tokyo.jp"
       },
       "openData": {
         "tokyoCatalogDatasets": 2,
@@ -1828,10 +2107,18 @@
       "name": "御蔵島村",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:133825",
       "transcript": {
-        "systemFamily": "own-site",
-        "robots": "allowed",
-        "url2020": "http://www.mikurasima.jp/section/gyosei/gikai.html",
-        "confidence": "unverified"
+        "systemFamily": "none",
+        "robots": {
+          "verdict": "none",
+          "aiCrawler": "unspecified",
+          "raw": "none"
+        },
+        "confidence": "confirmed",
+        "transcriptUrl": null,
+        "hasCommittee": null,
+        "recordType": null,
+        "verifiedAt": "2026-08-10",
+        "notes": "会議録のWeb公開なし。議会だよりPDFのみ（2008〜2026）"
       },
       "openData": {
         "tokyoCatalogDatasets": 4,
@@ -1859,9 +2146,17 @@
       "ocdId": "ocd-division/country:jp/prefecture:13/city:134015",
       "transcript": {
         "systemFamily": "own-site",
-        "robots": "allowed",
-        "url2020": "http://www.town.hachijo.tokyo.jp/kakuka/gikai/gikaidayori.html,http://www.town.hachijo.tokyo.jp/kakuka/gikai/movie.html",
-        "confidence": "unverified"
+        "robots": {
+          "verdict": "allowed",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /wp-admin/\nAllow: /wp-admin/admin-ajax.php"
+        },
+        "confidence": "probable",
+        "transcriptUrl": "https://www.town.hachijo.tokyo.jp/chousei/chougikai/katsushin/kaigi-kiroku/kairoku/",
+        "hasCommittee": false,
+        "recordType": "unknown",
+        "verifiedAt": "2026-08-10",
+        "notes": "WordPress + S3(prd-hachijo) の PDF。本会議のみ"
       },
       "openData": {
         "tokyoCatalogDatasets": 14,
@@ -1888,10 +2183,18 @@
       "name": "青ヶ島村",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:134023",
       "transcript": {
-        "systemFamily": "own-site",
-        "robots": "unknown",
-        "url2020": null,
-        "confidence": "unverified"
+        "systemFamily": "none",
+        "robots": {
+          "verdict": "none",
+          "aiCrawler": "unspecified",
+          "raw": "none"
+        },
+        "confidence": "probable",
+        "transcriptUrl": null,
+        "hasCommittee": null,
+        "recordType": "unknown",
+        "verifiedAt": "2026-08-10",
+        "notes": "会議録のWeb公開なし。全国町村議会議長会クイックNaviでも議会中継はCATVの録画・録音のみ"
       },
       "openData": {
         "tokyoCatalogDatasets": 2,
@@ -1910,10 +2213,19 @@
       "name": "小笠原村",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:134210",
       "transcript": {
-        "systemFamily": "own-site",
-        "robots": "allowed",
-        "url2020": "http://www.vill.ogasawara.tokyo.jp/gikai_kaigiroku/",
-        "confidence": "unverified"
+        "systemFamily": "dnp",
+        "robots": {
+          "verdict": "partial",
+          "aiCrawler": "unspecified",
+          "raw": "User-agent: *\nDisallow: /\nAllow: /tenant/\nDisallow: /tenant/js/ /css/ /help/ /stats/"
+        },
+        "confidence": "confirmed",
+        "transcriptUrl": "https://ssp.kaigiroku.net/tenant/ogasawara/SpTop.html",
+        "hasCommittee": true,
+        "recordType": "unknown",
+        "verifiedAt": "2026-08-10",
+        "notes": "2020年は自治体サイト直だったが DNP へ移行済み",
+        "tenant": "ogasawara"
       },
       "openData": {
         "tokyoCatalogDatasets": 10,
