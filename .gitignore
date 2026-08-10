@@ -12,3 +12,6 @@ build/
 # 取得直後の生レスポンス（正規化前）。data/ 配下の成果物は意図して commit する
 .cache/
 tmp/
+
+# 調査ビューア用の生成物（manifest.json から再生成できる）
+web/_data.js
