@@ -390,7 +390,8 @@
           "decidedAt": "2026-08-10"
         },
         "hasCommittee": null,
-        "recordType": null
+        "recordType": null,
+        "host": "kaigiroku.city.shinagawa.tokyo.jp"
       },
       "openData": {
         "tokyoCatalogDatasets": 139,
@@ -1697,7 +1698,7 @@
         "hasCommittee": true,
         "recordType": "full",
         "verifiedAt": "2026-08-10",
-        "notes": "市サイトの静的ページ＋PDF直置き。PDF を pdftotext で抽出し『○議長（小町明夫議員）』形式の逐語を確認。CloudFront の bot 対策で sandbox 経由の curl が 403 になる",
+        "notes": "市サイトの静的ページ＋PDF直置き。PDF を pdftotext で抽出し『○議長（小町明夫議員）』形式の逐語を確認。CloudFront の bot 対策で sandbox 経由の curl が 403 になる ⚠️ CloudFront が UA でブロックする。実測(2026-08-10): 独自UA `kotonoha/0.1` → 403、`curl/8.0` → 403、ブラウザUA → 200。HTTP 直接取得では取れないため、実ブラウザでの描画経由が必要。",
         "evidenceUrls": [
           "https://www.city.higashimurayama.tokyo.jp/gikai/gikaijoho/kensaku/index.html",
           "https://www.city.higashimurayama.tokyo.jp/gikai/gikaijoho/kensaku/r6_honkaigi/files/1224.pdf",
@@ -2428,7 +2429,8 @@
           "blockedBy": "permission",
           "revisitable": true,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "host": "www.vill.hinohara.tokyo.dbsr.jp"
       },
       "openData": {
         "tokyoCatalogDatasets": 3,
@@ -2469,7 +2471,8 @@
           "blockedBy": "permission",
           "revisitable": true,
           "decidedAt": "2026-08-10"
-        }
+        },
+        "host": "www.town.okutama.tokyo.dbsr.jp"
       },
       "openData": {
         "tokyoCatalogDatasets": 4,
