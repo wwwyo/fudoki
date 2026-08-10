@@ -1,7 +1,7 @@
 {
   "$schema": "./manifest.schema.json",
   "generatedAt": "2026-08-10",
-  "note": "東京都62区市町村の会議録・オープンデータ源の調査結果。会議録システムは 2020年の地方議会会議録コーパスプロジェクト調査を出発点に現況を実測。CKAN は organization:t<団体コード> で全件取得して分類。 フィールド名 transcript は SayIt(mySociety) の語彙に合わせたもの（Popolo に会議録を表す型は無く、Speech までしか定義されていない）。",
+  "note": "東京都62区市町村の会議録・オープンデータ源の調査結果。会議録システムは 2020年の地方議会会議録コーパスプロジェクト調査を出発点に現況を実測。CKAN は organization:t<団体コード> で全件取得して分類。 フィールド名 transcript は SayIt(mySociety) の語彙に合わせたもの（Popolo に会議録を表す型は無く、Speech までしか定義されていない）。 議会だよりはデータセット名が揺れる（議会だより / めぐろ区議会だより / 区議会だより一覧 等）ため、openData.gikaiDayori.schemaCheck は名称ではなく CSV の列構成で jp-municipal-bulletin/1.0 準拠を判定した実測結果を持つ（この形式は公式標準ではなく kotonoha が実測に名前を与えたもの。src/schema/jp-municipal-bulletin.ts 参照）。",
   "sources": {
     "corpusProject": "http://local-politics.jp/",
     "tokyoCatalog": "https://catalog.data.metro.tokyo.lg.jp/api/3/action/",
@@ -45,7 +45,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/chiyoda/131016_chiyodaku_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -95,7 +103,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/chuo/131024_chuoku_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -191,7 +207,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/shinjyuku/131041_shinjyukuku_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         },
         "ownPortal": {
           "type": "linkdata",
@@ -368,7 +392,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/koto/131083_kotoku_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -413,7 +445,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/shinagawa/131091_shinagawaku_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -467,7 +507,15 @@
           ],
           "url": "https://data.bodik.jp/dataset/3261f592-309b-47ff-8fee-bb34cbeff6f0/resource/217003c1-2600-4280-b004-18d1a43fe552/download/131105_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 2
+          "count": 2,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         },
         "ownPortal": {
           "type": "ckan",
@@ -529,7 +577,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/ota/131113_otaku_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -579,7 +635,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/setagaya/131121_setagayaku_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -627,7 +691,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/shibuya/131130_shibuyaku_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         },
         "ownPortal": {
           "type": "dcat",
@@ -683,7 +755,20 @@
           ],
           "url": "https://www2.wagmap.jp/nakanodatamap/nakanodatamap/opendatafile/map_1/CSV/opendata_57001289.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "variant",
+            "columns": 20,
+            "extraColumns": [
+              "GIS用住所",
+              "経度",
+              "緯度",
+              "分類"
+            ],
+            "checkedAt": "2026-08-10",
+            "note": "missing=なし extra=GIS用住所/経度/緯度/分類"
+          }
         }
       },
       "status": {
@@ -738,7 +823,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/suginami/131156_suginamiku_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -783,7 +876,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/toshima/131164_toshimaku_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -876,7 +977,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/arakawa/131181_arakawaku_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -927,7 +1036,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/itabashi/131199_itabashiku_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -994,7 +1111,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/nerima/131202_nerimaku_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -1083,7 +1208,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/katsushika/131229_katsushikaku_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -1177,7 +1310,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/hachioji/132012_hachiojishi_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -1225,7 +1366,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/tachikawa/132021_tachikawashi_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -1271,7 +1420,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/musashino/132039_musashinoshi_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -1325,7 +1482,15 @@
           ],
           "url": "https://www.city.mitaka.lg.jp/c_service/111/attached/attach_111857_1.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -1373,7 +1538,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/ome/132055_omeshi_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -1419,7 +1592,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/fuchu/132063_fuchushi_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -1467,7 +1648,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/akishima/132071_akishimashi_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -1580,7 +1769,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/machida/132098_machidashi_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -1626,7 +1823,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/koganei/132101_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -1674,7 +1879,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/kodaira/132110_kodairashi_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -1800,7 +2013,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/kokubunji/132144_kokubunjishi_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -1846,7 +2067,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/kunitachi/132152_kunitachishi_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -1938,7 +2167,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/komae/132195_komaeshi_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -1988,7 +2225,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/higashiyamato/132209_higashiyamatoshi_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -2036,7 +2281,15 @@
           ],
           "url": "https://www.city.kiyose.lg.jp/opendata/opendata/opendataichiran/1014942.html",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "broken",
+            "columns": null,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": "CSV ではなく HTML が返る"
+          }
         }
       },
       "status": {
@@ -2082,7 +2335,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/higashikurume/132225_higashikurumeshi_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -2176,7 +2437,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/tama/132241_tamashi_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -2222,7 +2491,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/inagi/132250_inagishi_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -2268,7 +2545,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/hamura/132276_hamurashi_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -2314,7 +2599,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/akiruno/132284_akirunoshi_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -2360,7 +2653,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/nishitokyo/132292_nishitokyoshi_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -2446,7 +2747,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/hinode/133051_hinodemachi_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -2661,7 +2970,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/niijima/133639_niijimamura_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -2791,7 +3108,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/mikurajima/133825_mikurajimamura_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -2840,7 +3165,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/hachijo/134015_hachijomachi_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {
@@ -2931,7 +3264,15 @@
           ],
           "url": "https://www.opendata.metro.tokyo.lg.jp/ogasawara/134210_ogasawaramura_gikaidayori.csv",
           "license": "CC-BY-4.0",
-          "count": 1
+          "count": 1,
+          "schemaCheck": {
+            "standard": "jp-municipal-bulletin/1.0",
+            "conformance": "conformant",
+            "columns": 16,
+            "extraColumns": null,
+            "checkedAt": "2026-08-10",
+            "note": null
+          }
         }
       },
       "status": {

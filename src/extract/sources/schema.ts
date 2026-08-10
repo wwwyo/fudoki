@@ -103,6 +103,25 @@ export const Transcript = z.object({
   host: z.string().optional(),
 })
 
+/**
+ * 配布ファイルが既知のスキーマに沿っているかの実測結果。
+ * データセット名は自治体ごとに揺れる（「議会だより」「めぐろ区議会だより」「区議会だより一覧」
+ * 「【事業案内】みたか議会だより」）ため、**名称ではなく列構成で判定する**。
+ *
+ * ⚠️ `jp-municipal-bulletin/1.0` は kotonoha が実測にもとづいて名前を与えた de facto standard で、
+ * 公式の標準ではない。デジタル庁の自治体標準オープンデータセット（旧・推奨データセット）の
+ * 定義書には広報紙のテーマが存在しないことを確認済み。詳細は src/schema/jp-municipal-bulletin.ts。
+ */
+export const SchemaCheck = z.object({
+  standard: z.enum(['jp-municipal-bulletin/1.0', 'unknown']),
+  conformance: z.enum(['conformant', 'variant', 'broken', 'unchecked']),
+  columns: z.number().int().nullable().optional(),
+  /** 標準に無い追加列。variant の内訳を残す */
+  extraColumns: z.array(z.string()).nullable().optional(),
+  checkedAt: z.iso.date().optional(),
+  note: z.string().nullable().optional(),
+})
+
 /** 東京都オープンデータカタログ（CKAN）で見つかった1データセット */
 export const OpenDataset = z.object({
   title: z.string(),
@@ -112,6 +131,7 @@ export const OpenDataset = z.object({
   license: z.string().nullable(),
   /** 同カテゴリで見つかったデータセット数 */
   count: z.number().int().positive(),
+  schemaCheck: SchemaCheck.optional(),
 })
 
 /** 自治体が独自に持つポータル（東京都カタログとは別） */
