@@ -23,10 +23,20 @@ export const RobotsVerdict = z.enum([
 ])
 
 /**
- * AI/LLM クローラを名指しで拒否しているか。
- * ⚠️ 汎用スクレイパ対策のブロックリスト（DotBot / SemrushBot / AhrefsBot … の列に
- * CCBot が紛れているだけ）は disallowed に含めない。AI/LLM を意図してセクション化
- * しているもの（GPTBot / ClaudeBot / anthropic-ai / Google-Extended 等）だけを指す。
+ * AI/LLM クローラを「意図して」拒否しているか。
+ *
+ * 線引きは意図の明確さで行う。`# --- AI・LLM ---` のようにセクションを切って
+ * GPTBot / ClaudeBot / anthropic-ai / Google-Extended を列挙しているものは `disallowed`。
+ *
+ * ⚠️ CCBot（Common Crawl）は判断が割れる。本来は汎用の web アーカイブクローラだが、
+ * そのアーカイブが LLM の主要な学習データ源であるため、AI 対策として弾かれることもある。
+ * ただし DotBot / SemrushBot / AhrefsBot / MJ12bot と並ぶ「迷惑ボット対策の定型
+ * ブロックリスト」の中にある場合は AI 意図と断定できないため `unspecified` とする。
+ *
+ * なお **この値は取得可否の直接の根拠ではない**。robots.txt の仕様上、UA 指定の
+ * ルールはその UA にしか適用されず、kotonoha に効くのは `User-agent: *` グループだけ。
+ * この値は「相手が AI にどういう姿勢か」を記録するためのもので、判断は意図が
+ * 明確な場合にのみ尊重する。
  */
 export const AiCrawler = z.enum([
   'disallowed', // AI/LLM を意図して拒否している
