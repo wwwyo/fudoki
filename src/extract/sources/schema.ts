@@ -34,7 +34,7 @@ export const RobotsVerdict = z.enum([
  * ブロックリスト」の中にある場合は AI 意図と断定できないため `unspecified` とする。
  *
  * なお **この値は取得可否の直接の根拠ではない**。robots.txt の仕様上、UA 指定の
- * ルールはその UA にしか適用されず、kotonoha に効くのは `User-agent: *` グループだけ。
+ * ルールはその UA にしか適用されず、fudoki に効くのは `User-agent: *` グループだけ。
  * この値は「相手が AI にどういう姿勢か」を記録するためのもので、判断は意図が
  * 明確な場合にのみ尊重する。
  */
@@ -143,12 +143,12 @@ export const Transcript = z.object({
  * データセット名は自治体ごとに揺れる（「議会だより」「めぐろ区議会だより」「区議会だより一覧」
  * 「【事業案内】みたか議会だより」）ため、**名称ではなく列構成で判定する**。
  *
- * ⚠️ `kotonoha/tokyo-municipal-bulletin-profile/0.1` は kotonoha が実測に名前を与えた観測プロファイルで、
+ * ⚠️ `fudoki/tokyo-municipal-bulletin-profile/0.1` は fudoki が実測に名前を与えた観測プロファイルで、
  * 公式の標準ではない。デジタル庁の自治体標準オープンデータセット（旧・推奨データセット）の
  * 定義書には広報紙のテーマが存在しないことを確認済み。詳細は src/schema/tokyo-municipal-bulletin-profile.ts。
  */
 export const SchemaCheck = z.object({
-  standard: z.enum(['kotonoha/tokyo-municipal-bulletin-profile/0.1', 'unknown']),
+  standard: z.enum(['fudoki/tokyo-municipal-bulletin-profile/0.1', 'unknown']),
   conformance: z.enum(['conformant', 'variant', 'broken', 'unchecked']),
   columns: z.number().int().nullable().optional(),
   /** 標準に無い追加列。variant の内訳を残す */
