@@ -53,7 +53,11 @@ const NOT_ACTIVITY = ['事業者', '事業所', '事業年度'] as const
 
 const CATEGORY_AXES = ['目的別', '性質別'] as const
 const INDICATORS = ['比率', '指標', '財政力', '経常収支', '将来負担'] as const
-const AMOUNTS = ['予算額', '決算額', '金額', '予算計', '執行', '額'] as const
+/**
+ * 金額列。`額` の1文字を入れると他の語がすべてそれに吸収され、
+ * 「指摘金額」のような非予算データまで拾うので、具体的な語に限る。
+ */
+const AMOUNTS = ['予算額', '決算額', '金額', '予算計', '予算現額', '執行累計', '支出済額'] as const
 
 /** 表題に含まれれば予算資料の候補とみなす語。CKAN の全文検索が拾う無関係な資料を落とす */
 export const RELEVANT_TITLE_WORDS = ['予算', '決算', '歳出', '財政'] as const
