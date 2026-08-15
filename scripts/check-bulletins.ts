@@ -7,38 +7,15 @@
  *   bun run scripts/check-bulletins.ts --write    # manifest へ書き戻す
  */
 import { checkConformance, toRow, BULLETIN_SCHEMA_ID } from '../src/schema/tokyo-municipal-bulletin-profile'
-import { Manifest } from '../src/extract/sources/schema'
+import { UA, decodeText, loadManifest, MANIFEST_PATH, splitCsvLine } from './lib/source'
 
-const UA = 'fudoki/0.1 (+https://github.com/wwwyo/fudoki)'
-const MANIFEST = new URL('../src/extract/sources/manifest.json', import.meta.url).pathname
 const write = process.argv.includes('--write')
 
-const m = Manifest.parse(JSON.parse(await Bun.file(MANIFEST).text()))
+const m = await loadManifest()
 const targets = Object.entries(m.jurisdictions).flatMap(([code, j]) => {
   const g = j.openData.gikaiDayori
   return g?.url ? [{ code, name: j.name, url: g.url }] : []
 })
-
-/** ヘッダ1行だけ取れれば十分なので、行分割は素朴でよい（引用符内の改行は想定しない） */
-function splitCsvLine(line: string): string[] {
-  const out: string[] = []
-  let cur = '',
-    q = false
-  for (const ch of line) {
-    if (ch === '"') q = !q
-    else if (ch === ',' && !q) (out.push(cur), (cur = ''))
-    else cur += ch
-  }
-  out.push(cur)
-  return out
-}
-
-function decode(buf: ArrayBuffer): string {
-  const bytes = new Uint8Array(buf)
-  const utf8 = new TextDecoder('utf-8', { fatal: false }).decode(bytes)
-  // cp932 の CSV が UTF-8 として置換文字だらけになるケースを拾う
-  return utf8.includes('�') ? new TextDecoder('shift_jis').decode(bytes) : utf8
-}
 
 const results: Record<string, unknown> = {}
 let conformant = 0,
@@ -49,7 +26,7 @@ for (const t of targets) {
   let body: string
   try {
     const res = await fetch(t.url, { headers: { 'User-Agent': UA }, signal: AbortSignal.timeout(20_000) })
-    body = decode(await res.arrayBuffer())
+    body = decodeText(new Uint8Array(await res.arrayBuffer()))
   } catch (e) {
     results[t.code] = {
       standard: BULLETIN_SCHEMA_ID,
@@ -119,11 +96,11 @@ for (const t of targets) {
 console.log(`\n${BULLETIN_SCHEMA_ID}: 適合 ${conformant} / 差異 ${variant} / 取得不可 ${broken}  （計 ${targets.length}）`)
 
 if (write) {
-  const raw = JSON.parse(await Bun.file(MANIFEST).text())
+  const raw = JSON.parse(await Bun.file(MANIFEST_PATH).text())
   for (const [code, sc] of Object.entries(results)) {
     const g = raw.jurisdictions[code]?.openData?.gikaiDayori
     if (g) g.schemaCheck = sc
   }
-  await Bun.write(MANIFEST, JSON.stringify(raw, null, 2) + '\n')
+  await Bun.write(MANIFEST_PATH, JSON.stringify(raw, null, 2) + '\n')
   console.log('manifest へ書き戻した')
 }
