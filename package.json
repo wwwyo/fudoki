@@ -1,5 +1,5 @@
 {
-  "name": "kotonoha",
+  "name": "fudoki",
   "private": true,
   "type": "module",
   "scripts": {
@@ -7,7 +7,8 @@
     "typecheck": "tsc --noEmit",
     "build:viewer": "bun run scripts/build-viewer-data.ts",
     "fetch:robots": "bun run scripts/fetch-robots.ts",
-    "check:bulletins": "bun run scripts/check-bulletins.ts"
+    "check:bulletins": "bun run scripts/check-bulletins.ts",
+    "check:budget": "bun run scripts/check-budget-granularity.ts"
   },
   "dependencies": {
     "zod": "4.4.3"

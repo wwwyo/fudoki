@@ -1,14 +1,14 @@
 import { z } from 'zod'
 
 /**
- * # kotonoha/tokyo-municipal-bulletin-profile/0.1
+ * # fudoki/tokyo-municipal-bulletin-profile/0.1
  *
  * 「議会だより」等の広報紙をオープンデータとして配布するときに
  * **東京都内で事実上使われている CSV の共通形式**。
  *
  * ⚠️ **名前が `jp-*` でも `1.0` でもないのは意図的。**観測は東京都だけ、形式の作成主体も
  * 不明で、40件の一致も生ヘッダ完全一致ではなく alias・BOM・空列・`_id` を除去した後の一致。
- * 全国規模の標準を名乗れる根拠がまだ無い。`kotonoha/tokyo-municipal-bulletin-profile/0.1` へ上げてよいのは、
+ * 全国規模の標準を名乗れる根拠がまだ無い。`fudoki/tokyo-municipal-bulletin-profile/0.1` へ上げてよいのは、
  * 複数都道府県での観測・由来の調査・生 CSV fixture と hash の保存・全行検証・
  * 列の意味と必須性と型と null 表現の定義・互換性ルール・外部からの確認、が揃ってから。
  *
@@ -21,20 +21,20 @@ import { z } from 'zod'
  *   （旧・推奨データセット、政府相互運用性フレームワーク GIF の一部）の
  *   データ項目定義書A（2025-05-01）およびデータモデル型（2023-10-18 / 2023-03-31）を
  *   実際にダウンロードして全シートを確認したが、**広報紙のテーマは収録されていない**。
- * - したがって**この形式に公式な名前は存在せず、kotonoha が観測事実に名前を与えたもの**。
+ * - したがって**この形式に公式な名前は存在せず、fudoki が観測事実に名前を与えたもの**。
  *   一致の出所は未特定（東京都が区市町村へテンプレートを配っている可能性、
  *   ある自治体の形式が伝播した可能性などがあるが確認していない）。
  *
  * ## 特徴
  *
- * - 先頭列が **全国地方公共団体コード**。kotonoha の主キーとそのまま一致する
+ * - 先頭列が **全国地方公共団体コード**。fudoki の主キーとそのまま一致する
  * - `町字ID` はデジタル庁のアドレス・ベース・レジストリの語彙
  * - 本文は持たず、**発行号のメタデータと PDF への URL** だけを持つ
  *
  * @see 実測の内訳は src/extract/sources/manifest.json の
  *      openData.gikaiDayori.schemaCheck を参照
  */
-export const BULLETIN_SCHEMA_ID = 'kotonoha/tokyo-municipal-bulletin-profile/0.1' as const
+export const BULLETIN_SCHEMA_ID = 'fudoki/tokyo-municipal-bulletin-profile/0.1' as const
 
 /** 正準の列名（この順序で現れる） */
 export const BULLETIN_COLUMNS = [
@@ -83,7 +83,7 @@ export function normalizeColumn(name: string): string {
 }
 
 export const BulletinRow = z.object({
-  /** 全国地方公共団体コード（6桁）。kotonoha の主キー */
+  /** 全国地方公共団体コード（6桁）。fudoki の主キー */
   団体コード: z.string().regex(/^\d{6}$/),
   地方公共団体名: z.string(),
   /** 紙面の名称。「議会だより」「めぐろ区議会だより」など自治体ごとに揺れる */
@@ -108,7 +108,7 @@ export type ConformanceResult = {
   columns: number
 }
 
-/** ヘッダ行を kotonoha/tokyo-municipal-bulletin-profile/0.1 と突き合わせる */
+/** ヘッダ行を fudoki/tokyo-municipal-bulletin-profile/0.1 と突き合わせる */
 export function checkConformance(header: readonly string[]): ConformanceResult {
   const cols = header.map(normalizeColumn).filter((c) => !IGNORED.has(c))
   const set = new Set(cols)

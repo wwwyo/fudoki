@@ -9,7 +9,7 @@
 import { checkConformance, toRow, BULLETIN_SCHEMA_ID } from '../src/schema/tokyo-municipal-bulletin-profile'
 import { Manifest } from '../src/extract/sources/schema'
 
-const UA = 'kotonoha/0.1 (+https://github.com/wwwyo/kotonoha)'
+const UA = 'fudoki/0.1 (+https://github.com/wwwyo/fudoki)'
 const MANIFEST = new URL('../src/extract/sources/manifest.json', import.meta.url).pathname
 const write = process.argv.includes('--write')
 
