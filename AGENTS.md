@@ -10,7 +10,7 @@
 
 自治体の予算は全部公開されている。ただし PDF か、自治体ごとに違う形の CSV である。三鷹市の令和6年度に「いじめ問題対策協議会関係費」がいくら付いたかを知るには、資料を開いて人が探すしかない。他市と比べるなら他市の資料も開き、科目体系の違いを人が頭の中で吸収することになる。**年をまたぐ比較も、市をまたぐ比較も、事実上できない。**
 
-**「可視化」はもう価値ではない。** デジタル庁の[地方財政（市町村ごと）に関するダッシュボード](https://www.digital.go.jp/resources/japandashboard/municipal-finance)は、地方財政状況調査をもとに市区町村ごとの**目的別・性質別**（COFOG / GFSM 相当）を出し、自治体間の比較機能まで備えている。
+**「可視化」はもう価値ではない。** デジタル庁の[地方財政（市町村ごと）に関するダッシュボード](https://www.digital.go.jp/resources/japandashboard/municipal-finance)は、地方財政状況調査をもとに市区町村ごとの**目的別・性質別**を出し、自治体間の比較機能まで備えている（国内の分類体系であり、COFOG や GFSM と概念的に近いが正式な対応関係ではない）。
 
 欠けているのは**粒度**と**横断性**の2つだけである。
 
@@ -91,7 +91,7 @@ mySociety が TheyWorkForYou（UK専用サイト）と SayIt（汎用ツール�
 
 ## 制約
 
-以下は**③ 会議録に固有**の制約。①予算・②調達は公式に提供されているオープンデータ（①は全件 CC BY、②は robots 制限なし）なので、この節の判断を待たない。
+以下は**③ 会議録に固有**の制約。①予算・②調達は公式に提供されているオープンデータ（①はカタログで確認した範囲が CC BY、②は robots 制限なし）なので、この節の判断を待たない。
 
 **再利用の根拠は著作権法40条1項**（公開して行われた政治上の演説・陳述は、方法を問わず利用できる）。
 
@@ -105,13 +105,13 @@ mySociety が TheyWorkForYou（UK専用サイト）と SayIt（汎用ツール�
 
 ## 対象
 
-**東京都の全区市町村（62団体）を最初の網羅範囲**とする。識別子は総務省の全国地方公共団体コード（東京都のオープンデータ URL 自体がこの体系。例: 葛飾区 `131229`、狛江市 `132195`）。3レイヤはすべてこのキーで繋がる。
+**東京都の全区市町村（62団体）を最初の網羅範囲**とする。識別子は総務省の全国地方公共団体コード（東京都のオープンデータ URL 自体がこの体系。例: 葛飾区 `131229`、狛江市 `132195`）。3レイヤはこのキーで**自治体単位では**束ねられる。予算事業・公告・議案のレコード単位で繋ぐには、別に安定した識別子と写像が要る。
 
 ### 実装順は ① → ② → ③
 
 | | 経路 | 権利 | 実測 |
 |---|---|---|---|
-| **① 予算** | 東京都カタログ CKAN / 港区 / BODIK / 渋谷区 DCAT-US。届かない団体は各自治体の予算説明書（PDF）へ | **待ちなし**（CC BY） | 目以下に到達した団体を実測で確認（下記） |
+| **① 予算** | 東京都カタログ CKAN / 港区 / BODIK / 渋谷区 DCAT-US。届かない団体は各自治体の予算説明書（PDF）へ | **カタログ経由は待ちなし**（確認した範囲が CC BY）。**PDF は取得元ごとに確認が要る** — 公開されていることは再配布を許すことを意味しない | 目以下に到達した団体を実測で確認（下記） |
 | **② 公告** | [官公需情報ポータル 検索API](https://www.kkj.go.jp/api/) | **待ちなし**（robots 制限なし） | `CityCode` が団体コード、`ProjectDescription` に公告全文。**tender 段階まで**（下記） |
 | **③ 会議録** | 会議録システム（ベンダー別 driver） | **robots 判断と照会に依存** | `gate.fetch` は allow 17 / review 16 / deny 29、`gate.redistribute` は **allow 0** |
 
@@ -119,7 +119,7 @@ mySociety が TheyWorkForYou（UK専用サイト）と SayIt（汎用ツール�
 
 #### ① CKAN に事業単位のデータは存在する。ただし探し方が要る（2026-08-14 実測）
 
-`bun run check:budget` で CKAN を検索して候補 CSV を総ざらいし、現物の列構成で粒度を測った結果、**目以下に到達したものが実在した**。観測は `data/observations/budget-granularity.json` が SSOT。
+`bun run check:budget` で CKAN を全ページ検索し、母集団62団体に絞ったうえで候補 CSV 370件の列構成を測った結果、**目以下に到達したものが実在した**。観測は `data/observations/budget-granularity.json` が SSOT（全候補と失敗理由を保持し、団体ごとの最良は派生）。歳出の粒度を測るのが目的なので、**歳入ファイルは団体の代表にしない**。
 
 | 団体 | データセット | 列 | 規模 |
 |---|---|---|---|
@@ -129,7 +129,7 @@ mySociety が TheyWorkForYou（UK専用サイト）と SayIt（汎用ツール�
 
 **狛江のデータは執行額まで入っている**ので、FDP の budget phase（`approved` / `executed`）がそのまま埋まる。少なくともこの2団体については、**発生源が既に構造化して出している**（BOOST 型の「第三者が PDF から起こす」を要しない）。
 
-ただし**全団体ではない**。カタログ検索は `オープンデータ一覧` のようなノイズを大量に拾い、団体ごとに現物を当たる必要がある。「N団体で確認した」以上の主張をしない。
+ただし**全団体ではない**。粒度を判定できたのは6団体（うち事業単位は三鷹市と狛江市の2団体）で、残りは候補が見つからないか判定に至らなかった。「N団体で確認した」以上の主張をしない。
 
 ⚠️ **manifest の `openData.budget` は団体ごとの代表1件であって、母集団ではない。** 初版のこのスクリプトはそこだけを見て「事業単位のデータは0件」という誤った結論を出した（狛江は28件・多摩は20件のデータセットを持ち、代表1件がたまたま指標表だった）。**フィールド名を中身の保証と取り違えた（原則3違反）うえ、代表1件を母集団として扱った（原則4違反）。**
 
@@ -199,7 +199,7 @@ mySociety が TheyWorkForYou（UK専用サイト）と SayIt（汎用ツール�
 ## 技術スタック
 
 - Bun + TypeScript
-- 配布: Popolo 準拠 JSON（リポジトリに commit）+ MCP サーバ
+- 配布: 正本をリポジトリに commit。①は Fiscal Data Package、②は OCDS、③は Popolo
 
 ## セットアップ
 
@@ -217,11 +217,11 @@ bun install
 | [ParlParse](https://github.com/mysociety/parlparse) | UK議会のスクレイパ／パーサ。`pyscraper/` `members/` `rawdata/` の分離と、**議員マスタを独立させる**設計 |
 | [SayIt](https://www.mysociety.org/democracy/sayit/) | 議事録公開の汎用ツール。全文検索・話者フィルタ・**発言単位の permalink**・SEO という機能セット |
 | [Open States / Plural Open](https://open.pluralpolicy.com/) | 米50州の立法データを標準化して無料 API + bulk download で配布。Popolo ベースのスキーマ運用 |
-| [世界銀行 BOOST](https://www.worldbank.org/en/programs/boost-portal) | **立ち位置が一番近い**。政府の IFMIS や予算書から第三者が細粒度 DB を起こす型（90カ国超）。英国・ウクライナは発生源が構造化して出しているが、日本は出していないので fudoki はこちら側 |
+| [世界銀行 BOOST](https://www.worldbank.org/en/programs/boost-portal) | **立ち位置が一番近い**。政府の IFMIS や予算書から第三者が細粒度 DB を起こす型（90カ国超）。日本でも三鷹市と狛江市のように発生源が既に構造化して出している団体はあるが、実測では母集団62団体のうち事業単位に届いたのは2団体で、大半は第三者が起こす必要がある |
 | [ProZorro](https://prozorro.gov.ua/en) / [bi.prozorro.org](https://bi.prozorro.org/) | 調達データを OCDS で構造化し、公開 API と分析ダッシュボードを分離して出す型 |
 | [SNG-WOFI](https://www.sng-wofi.org/)（OECD/UCLG）・[Eurostat COFOG](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Government_expenditure_by_function_%E2%80%93_COFOG) | 国 × 地方政府合計 × COFOG は既に整備済み。**個別自治体 × 事業（目）× COFOG が空白**で、そこが fudoki の位置 |
 | [OC4IDS](https://standard.open-contracting.org/infrastructure/latest/en/)（v0.9.5、現役） | **事業（project）を単位に据えて、予算と調達を束ねる**モデル。対象はインフラだが、①と②を事業でつなぐ構造は fudoki に最も近い |
-| 米国 [FDTA](https://xbrl.us/home/priorities/efficiency/fdta/)（2022年法、最終規則 2026-06-09 公布・2026-10-01 施行） | **発生源に機械可読を義務づける**最新事例。対象は自治体の継続開示であって予算明細ではないが、供給側を動かす制度の型として参照する |
+| 米国 [FDTA](https://xbrl.us/home/priorities/efficiency/fdta/)（2022年法。共同規則は2026年に確定したが、公布日と施行時期は出典により記述が割れるので採用前に一次資料で確認する。規則単体では報告義務を変えず、各機関が個別要件へ適用して初めて効く） | **発生源に機械可読を義務づける**最新事例。対象は自治体の継続開示であって予算明細ではないが、供給側を動かす制度の型として参照する |
 
 ## skills
 
