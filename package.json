@@ -8,7 +8,10 @@
     "build:viewer": "bun run scripts/build-viewer-data.ts",
     "fetch:robots": "bun run scripts/fetch-robots.ts",
     "check:bulletins": "bun run scripts/check-bulletins.ts",
-    "check:budget": "bun run scripts/check-budget-granularity.ts"
+    "check:budget": "bun run scripts/check-budget-granularity.ts",
+    "check:budget-years": "bun run scripts/check-budget-years.ts",
+    "build:budget": "bun run scripts/build-budget.ts",
+    "fetch:fdp-taxonomy": "bun run scripts/fetch-fdp-taxonomy.ts"
   },
   "dependencies": {
     "zod": "4.4.3"

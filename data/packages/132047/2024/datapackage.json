@@ -1,0 +1,1032 @@
+{
+  "profile": "tabular-data-package",
+  "name": "jp-132047-budget-2024",
+  "title": "三鷹市 令和６年度予算（当初予算）",
+  "description": "三鷹市（全国地方公共団体コード 132047）の令和６年度当初予算を Fiscal Data Package 1.0.0 として構造化したもの。列の意味づけには Budget Standard Taxonomy の ColumnTypes を使う。収録範囲は原典の注記に従い「下水道事業会計除く」。金額は原典の千円を円へ正規化してある（原典の値と単位は別の列に残した）。",
+  "version": "1.0.0",
+  "created": "2026-08-16T03:36:13.592Z",
+  "countryCode": "JP",
+  "fiscalPeriod": {
+    "start": "2024-04-01",
+    "end": "2025-03-31"
+  },
+  "licenses": [
+    {
+      "name": "CC-BY-4.0",
+      "title": "Creative Commons Attribution 4.0",
+      "path": "https://creativecommons.org/licenses/by/4.0/"
+    }
+  ],
+  "attribution": "三鷹市「令和6年度予算データ」（東京都オープンデータカタログサイト）",
+  "sources": [
+    {
+      "title": "三鷹市「令和6年度予算データ」（東京都オープンデータカタログサイト）",
+      "path": "https://www.city.mitaka.lg.jp/c_service/074/"
+    },
+    {
+      "title": "令和６年度予算データ（歳出）※下水道事業会計除く",
+      "path": "https://www.city.mitaka.lg.jp/c_service/074/attached/attach_74103_8.csv",
+      "sha256": "f9dcbc7e871437691e4979572aeafaae2da333aba1b27beba8eee72153a5f10e",
+      "fetchedAt": "2026-08-16T03:16:13.213Z"
+    },
+    {
+      "title": "令和６年度予算データ（歳入）※下水道事業会計除く",
+      "path": "https://www.city.mitaka.lg.jp/c_service/074/attached/attach_74103_7.csv",
+      "sha256": "9ae9636703f90430eff0bcfc50e2812fe07a1fe180b7d9d993230d5a4f717910",
+      "fetchedAt": "2026-08-16T03:16:13.672Z"
+    },
+    {
+      "title": "令和６年度予算データ（歳出）※下水道事業会計除く",
+      "path": "https://www.city.mitaka.lg.jp/c_service/074/attached/attach_74103_8.csv",
+      "sha256": "f9dcbc7e871437691e4979572aeafaae2da333aba1b27beba8eee72153a5f10e",
+      "fetchedAt": "2026-08-16T03:16:13.213Z"
+    }
+  ],
+  "fudoki": {
+    "specification": {
+      "version": "1.0.0",
+      "url": "https://fiscal.datapackage.org/",
+      "profile": "https://fiscal.datapackage.org/profiles/fiscal-data-package.json"
+    },
+    "standardTaxonomy": "Budget Standard Taxonomy 1.0.0",
+    "cofog": {
+      "version": "COFOG 1999",
+      "divisions": "01〜10",
+      "source": {
+        "name": "UNSD Classification of the Functions of Government (COFOG)",
+        "url": "https://unstats.un.org/unsd/classifications/Family/Detail/4"
+      }
+    },
+    "note": "正本（expenditure / revenue）は原典を正規化しただけで fudoki の判断を含まない。COFOG の割り当ては派生（expenditure-cofog）にある。FDP は全要素が任意なので、COFOG 列を持たない正本も適合した FDP になる。"
+  },
+  "columnTypes": [
+    "https://specs.frictionlessdata.io/taxonomies/fiscal/budgets.json",
+    [
+      {
+        "name": "fund:code",
+        "dataType": "string",
+        "unique": true,
+        "description": "会計（一般会計・各特別会計）。administrative-classification は資金管理の責任を負う組織単位を指すもので、会計は資金の区分であり別概念。標準に該当する列型が無い"
+      },
+      {
+        "name": "fund:label",
+        "dataType": "string",
+        "labelOf": "fund:code",
+        "description": "会計の表示名"
+      },
+      {
+        "name": "fin-source:generic:level4:code",
+        "dataType": "string",
+        "unique": true,
+        "prior": "fin-source:generic:level3:code",
+        "description": "歳入の節。標準の fin-source は level3 までしか定義が無いため同じ命名規則で拡張した"
+      },
+      {
+        "name": "fin-source:generic:level4:label",
+        "dataType": "string",
+        "labelOf": "fin-source:generic:level4:code",
+        "description": "歳入の節の表示名"
+      },
+      {
+        "name": "fin-source:generic:level5:code",
+        "dataType": "string",
+        "unique": true,
+        "prior": "fin-source:generic:level4:code",
+        "description": "歳入の細節"
+      },
+      {
+        "name": "fin-source:generic:level5:label",
+        "dataType": "string",
+        "labelOf": "fin-source:generic:level5:code",
+        "description": "歳入の細節の表示名"
+      },
+      {
+        "name": "fin-source:generic:level6:code",
+        "dataType": "string",
+        "unique": true,
+        "prior": "fin-source:generic:level5:code",
+        "description": "歳入の細々節"
+      },
+      {
+        "name": "fin-source:generic:level6:label",
+        "dataType": "string",
+        "labelOf": "fin-source:generic:level6:code",
+        "description": "歳入の細々節の表示名"
+      },
+      {
+        "name": "fudoki:jurisdiction:code",
+        "dataType": "string",
+        "unique": true,
+        "description": "全国地方公共団体コード。外部データとの接続キー。FDP の geo:* は住所や地理コードを指すもので、行政主体の識別子ではない"
+      },
+      {
+        "name": "fudoki:jurisdiction:label",
+        "dataType": "string",
+        "labelOf": "fudoki:jurisdiction:code",
+        "description": "自治体名"
+      },
+      {
+        "name": "fudoki:source:cell",
+        "dataType": "string",
+        "description": "code と label へ分ける前の原典のセル。先頭のゼロや全角数字といった表記を保ち、code + label を連結して原文に戻ることを検証に使う"
+      },
+      {
+        "name": "fudoki:source:amount",
+        "dataType": "number",
+        "description": "原典の金額。円へ正規化する前の値"
+      },
+      {
+        "name": "fudoki:source:amount-unit",
+        "dataType": "string",
+        "description": "原典の金額の単位。FDP に倍率を表す ColumnType が無いため別列に残す"
+      },
+      {
+        "name": "fudoki:source:row",
+        "dataType": "integer",
+        "description": "原典の物理行番号。特定のスナップショット内でのみ意味を持つ証跡で、外部が参照する識別子ではない"
+      },
+      {
+        "name": "fudoki:hierarchy-path",
+        "dataType": "string",
+        "description": "階層のコードを連結した可読なパス。コードは兄弟間で一意とは限らないので識別子には使わない"
+      },
+      {
+        "name": "fudoki:cofog:status",
+        "dataType": "string",
+        "description": "分類の軸。assigned / unclassifiable / out-of-scope。分類できなかったものと、そもそも分類の対象でないものを区別する"
+      },
+      {
+        "name": "fudoki:cofog:consolidation",
+        "dataType": "string",
+        "description": "連結の軸。retained / eliminated。分類の軸とは別の問いなので1つの状態に畳まない"
+      },
+      {
+        "name": "fudoki:cofog:counterpart-id",
+        "dataType": "string",
+        "description": "消去する行の相手側 budget-line-id"
+      },
+      {
+        "name": "fudoki:cofog:basis",
+        "dataType": "string",
+        "description": "割り当ての根拠。割当済みと未分類のいずれについても残す"
+      },
+      {
+        "name": "fudoki:cofog:decided-at-level",
+        "dataType": "string",
+        "description": "款・項・目・事項のどの単位で割り当てが決まったか"
+      }
+    ]
+  ],
+  "resources": [
+    {
+      "name": "expenditure",
+      "path": "expenditure.csv",
+      "profile": "tabular-data-resource",
+      "title": "令和６年度歳出予算（正本）",
+      "description": "原典を正規化しただけで、fudoki の判断を含まない。原典1行が1行に対応する。",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "dialect": {
+        "delimiter": ",",
+        "lineTerminator": "\n",
+        "header": true
+      },
+      "fudokiSource": {
+        "url": "https://www.city.mitaka.lg.jp/c_service/074/attached/attach_74103_8.csv",
+        "sha256": "f9dcbc7e871437691e4979572aeafaae2da333aba1b27beba8eee72153a5f10e",
+        "fetchedAt": "2026-08-16T03:16:13.213Z",
+        "status": 200,
+        "encoding": "shift_jis",
+        "rows": 5613
+      },
+      "schema": {
+        "fields": [
+          {
+            "name": "budget_line_id",
+            "title": "予算行の識別子",
+            "type": "string",
+            "description": "団体コード・年度・direction・予算段階と、階層のセル全文から導いた安定キー",
+            "columnType": "budget-line-id"
+          },
+          {
+            "name": "jurisdiction_code",
+            "title": "全国地方公共団体コード",
+            "type": "string",
+            "columnType": "fudoki:jurisdiction:code"
+          },
+          {
+            "name": "jurisdiction_label",
+            "title": "地方公共団体名",
+            "type": "string",
+            "columnType": "fudoki:jurisdiction:label",
+            "labelOf": "fudoki:jurisdiction:code"
+          },
+          {
+            "name": "fiscal_year",
+            "title": "会計年度（西暦）",
+            "type": "integer",
+            "description": "原典に年度の列が無いため、CKAN のリソース名から解決して付与した",
+            "columnType": "date:fiscal-year"
+          },
+          {
+            "name": "direction",
+            "title": "支出と収入の別",
+            "type": "string",
+            "columnType": "direction"
+          },
+          {
+            "name": "phase_id",
+            "title": "予算段階",
+            "type": "string",
+            "columnType": "phase:id"
+          },
+          {
+            "name": "phase_label",
+            "title": "予算段階の表示名",
+            "type": "string",
+            "columnType": "phase:label",
+            "labelOf": "phase:id"
+          },
+          {
+            "name": "fund_code",
+            "title": "会計コード",
+            "type": "string",
+            "columnType": "fund:code"
+          },
+          {
+            "name": "fund_label",
+            "title": "会計名",
+            "type": "string",
+            "columnType": "fund:label",
+            "labelOf": "fund:code"
+          },
+          {
+            "name": "fund_source",
+            "title": "会計（原典のセル）",
+            "type": "string",
+            "columnType": "fudoki:source:cell"
+          },
+          {
+            "name": "kan_code",
+            "title": "款コード",
+            "type": "string",
+            "columnType": "functional-classification:generic:level1:code"
+          },
+          {
+            "name": "kan_label",
+            "title": "款名",
+            "type": "string",
+            "columnType": "functional-classification:generic:level1:label",
+            "labelOf": "functional-classification:generic:level1:code"
+          },
+          {
+            "name": "kan_source",
+            "title": "款（原典のセル）",
+            "type": "string",
+            "columnType": "fudoki:source:cell"
+          },
+          {
+            "name": "kou_code",
+            "title": "項コード",
+            "type": "string",
+            "columnType": "functional-classification:generic:level2:code"
+          },
+          {
+            "name": "kou_label",
+            "title": "項名",
+            "type": "string",
+            "columnType": "functional-classification:generic:level2:label",
+            "labelOf": "functional-classification:generic:level2:code"
+          },
+          {
+            "name": "kou_source",
+            "title": "項（原典のセル）",
+            "type": "string",
+            "columnType": "fudoki:source:cell"
+          },
+          {
+            "name": "moku_code",
+            "title": "目コード",
+            "type": "string",
+            "columnType": "functional-classification:generic:level3:code"
+          },
+          {
+            "name": "moku_label",
+            "title": "目名",
+            "type": "string",
+            "columnType": "functional-classification:generic:level3:label",
+            "labelOf": "functional-classification:generic:level3:code"
+          },
+          {
+            "name": "moku_source",
+            "title": "目（原典のセル）",
+            "type": "string",
+            "columnType": "fudoki:source:cell"
+          },
+          {
+            "name": "jikou_code",
+            "title": "事項コード",
+            "type": "string",
+            "columnType": "activity:generic:program:code"
+          },
+          {
+            "name": "jikou_label",
+            "title": "事項名",
+            "type": "string",
+            "columnType": "activity:generic:program:label",
+            "labelOf": "activity:generic:program:code"
+          },
+          {
+            "name": "jikou_source",
+            "title": "事項（原典のセル）",
+            "type": "string",
+            "columnType": "fudoki:source:cell"
+          },
+          {
+            "name": "setsu_code",
+            "title": "節コード",
+            "type": "string",
+            "columnType": "economic-classification:generic:level1:code"
+          },
+          {
+            "name": "setsu_label",
+            "title": "節名",
+            "type": "string",
+            "columnType": "economic-classification:generic:level1:label",
+            "labelOf": "economic-classification:generic:level1:code"
+          },
+          {
+            "name": "setsu_source",
+            "title": "節（原典のセル）",
+            "type": "string",
+            "columnType": "fudoki:source:cell"
+          },
+          {
+            "name": "saisaisetsu_code",
+            "title": "細々節コード",
+            "type": "string",
+            "columnType": "economic-classification:generic:level2:code"
+          },
+          {
+            "name": "saisaisetsu_label",
+            "title": "細々節名",
+            "type": "string",
+            "columnType": "economic-classification:generic:level2:label",
+            "labelOf": "economic-classification:generic:level2:code"
+          },
+          {
+            "name": "saisaisetsu_source",
+            "title": "細々節（原典のセル）",
+            "type": "string",
+            "columnType": "fudoki:source:cell"
+          },
+          {
+            "name": "hierarchy_path",
+            "title": "階層のコードパス",
+            "type": "string",
+            "description": "可読性のための列であって識別子ではない。三鷹市の歳出では細々節のコードが同じ節の下で再利用されるため（実測 710 箇所）、このパスが一意なのは節までで、細々節までは一意でない",
+            "columnType": "fudoki:hierarchy-path"
+          },
+          {
+            "name": "value",
+            "title": "金額（JPY）",
+            "type": "number",
+            "description": "原典の千円を円へ正規化した値",
+            "columnType": "value"
+          },
+          {
+            "name": "currency",
+            "title": "通貨",
+            "type": "string",
+            "columnType": "value-currency:code"
+          },
+          {
+            "name": "source_amount",
+            "title": "原典の金額",
+            "type": "number",
+            "columnType": "fudoki:source:amount"
+          },
+          {
+            "name": "source_amount_unit",
+            "title": "原典の金額の単位",
+            "type": "string",
+            "columnType": "fudoki:source:amount-unit"
+          },
+          {
+            "name": "source_row",
+            "title": "原典の物理行番号",
+            "type": "integer",
+            "description": "ヘッダを1行目として数える。特定のスナップショット内でのみ意味を持つ",
+            "columnType": "fudoki:source:row"
+          }
+        ],
+        "primaryKey": [
+          "budget_line_id"
+        ],
+        "fdpCompositeKey": [
+          "budget_line_id",
+          "jurisdiction_code",
+          "fiscal_year",
+          "direction",
+          "phase_id",
+          "fund_code",
+          "kan_code",
+          "kou_code",
+          "moku_code",
+          "jikou_code",
+          "setsu_code",
+          "saisaisetsu_code",
+          "currency"
+        ]
+      }
+    },
+    {
+      "name": "revenue",
+      "path": "revenue.csv",
+      "profile": "tabular-data-resource",
+      "title": "令和６年度歳入予算（正本）",
+      "description": "原典を正規化しただけで、fudoki の判断を含まない。歳出と階層の意味が違うため別リソースにしてある。",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "dialect": {
+        "delimiter": ",",
+        "lineTerminator": "\n",
+        "header": true
+      },
+      "fudokiSource": {
+        "url": "https://www.city.mitaka.lg.jp/c_service/074/attached/attach_74103_7.csv",
+        "sha256": "9ae9636703f90430eff0bcfc50e2812fe07a1fe180b7d9d993230d5a4f717910",
+        "fetchedAt": "2026-08-16T03:16:13.672Z",
+        "status": 200,
+        "encoding": "shift_jis",
+        "rows": 821
+      },
+      "schema": {
+        "fields": [
+          {
+            "name": "budget_line_id",
+            "title": "予算行の識別子",
+            "type": "string",
+            "description": "団体コード・年度・direction・予算段階と、階層のセル全文から導いた安定キー",
+            "columnType": "budget-line-id"
+          },
+          {
+            "name": "jurisdiction_code",
+            "title": "全国地方公共団体コード",
+            "type": "string",
+            "columnType": "fudoki:jurisdiction:code"
+          },
+          {
+            "name": "jurisdiction_label",
+            "title": "地方公共団体名",
+            "type": "string",
+            "columnType": "fudoki:jurisdiction:label",
+            "labelOf": "fudoki:jurisdiction:code"
+          },
+          {
+            "name": "fiscal_year",
+            "title": "会計年度（西暦）",
+            "type": "integer",
+            "description": "原典に年度の列が無いため、CKAN のリソース名から解決して付与した",
+            "columnType": "date:fiscal-year"
+          },
+          {
+            "name": "direction",
+            "title": "支出と収入の別",
+            "type": "string",
+            "columnType": "direction"
+          },
+          {
+            "name": "phase_id",
+            "title": "予算段階",
+            "type": "string",
+            "columnType": "phase:id"
+          },
+          {
+            "name": "phase_label",
+            "title": "予算段階の表示名",
+            "type": "string",
+            "columnType": "phase:label",
+            "labelOf": "phase:id"
+          },
+          {
+            "name": "fund_code",
+            "title": "会計コード",
+            "type": "string",
+            "columnType": "fund:code"
+          },
+          {
+            "name": "fund_label",
+            "title": "会計名",
+            "type": "string",
+            "columnType": "fund:label",
+            "labelOf": "fund:code"
+          },
+          {
+            "name": "fund_source",
+            "title": "会計（原典のセル）",
+            "type": "string",
+            "columnType": "fudoki:source:cell"
+          },
+          {
+            "name": "kan_code",
+            "title": "款コード",
+            "type": "string",
+            "columnType": "fin-source:generic:level1:code"
+          },
+          {
+            "name": "kan_label",
+            "title": "款名",
+            "type": "string",
+            "columnType": "fin-source:generic:level1:label",
+            "labelOf": "fin-source:generic:level1:code"
+          },
+          {
+            "name": "kan_source",
+            "title": "款（原典のセル）",
+            "type": "string",
+            "columnType": "fudoki:source:cell"
+          },
+          {
+            "name": "kou_code",
+            "title": "項コード",
+            "type": "string",
+            "columnType": "fin-source:generic:level2:code"
+          },
+          {
+            "name": "kou_label",
+            "title": "項名",
+            "type": "string",
+            "columnType": "fin-source:generic:level2:label",
+            "labelOf": "fin-source:generic:level2:code"
+          },
+          {
+            "name": "kou_source",
+            "title": "項（原典のセル）",
+            "type": "string",
+            "columnType": "fudoki:source:cell"
+          },
+          {
+            "name": "moku_code",
+            "title": "目コード",
+            "type": "string",
+            "columnType": "fin-source:generic:level3:code"
+          },
+          {
+            "name": "moku_label",
+            "title": "目名",
+            "type": "string",
+            "columnType": "fin-source:generic:level3:label",
+            "labelOf": "fin-source:generic:level3:code"
+          },
+          {
+            "name": "moku_source",
+            "title": "目（原典のセル）",
+            "type": "string",
+            "columnType": "fudoki:source:cell"
+          },
+          {
+            "name": "setsu_code",
+            "title": "節コード",
+            "type": "string",
+            "columnType": "fin-source:generic:level4:code"
+          },
+          {
+            "name": "setsu_label",
+            "title": "節名",
+            "type": "string",
+            "columnType": "fin-source:generic:level4:label",
+            "labelOf": "fin-source:generic:level4:code"
+          },
+          {
+            "name": "setsu_source",
+            "title": "節（原典のセル）",
+            "type": "string",
+            "columnType": "fudoki:source:cell"
+          },
+          {
+            "name": "saisetsu_code",
+            "title": "細節コード",
+            "type": "string",
+            "columnType": "fin-source:generic:level5:code"
+          },
+          {
+            "name": "saisetsu_label",
+            "title": "細節名",
+            "type": "string",
+            "columnType": "fin-source:generic:level5:label",
+            "labelOf": "fin-source:generic:level5:code"
+          },
+          {
+            "name": "saisetsu_source",
+            "title": "細節（原典のセル）",
+            "type": "string",
+            "columnType": "fudoki:source:cell"
+          },
+          {
+            "name": "saisaisetsu_code",
+            "title": "細々節コード",
+            "type": "string",
+            "columnType": "fin-source:generic:level6:code"
+          },
+          {
+            "name": "saisaisetsu_label",
+            "title": "細々節名",
+            "type": "string",
+            "columnType": "fin-source:generic:level6:label",
+            "labelOf": "fin-source:generic:level6:code"
+          },
+          {
+            "name": "saisaisetsu_source",
+            "title": "細々節（原典のセル）",
+            "type": "string",
+            "columnType": "fudoki:source:cell"
+          },
+          {
+            "name": "hierarchy_path",
+            "title": "階層のコードパス",
+            "type": "string",
+            "description": "可読性のための列であって識別子ではない。三鷹市の歳出では細々節のコードが同じ節の下で再利用されるため（実測 710 箇所）、このパスが一意なのは節までで、細々節までは一意でない",
+            "columnType": "fudoki:hierarchy-path"
+          },
+          {
+            "name": "value",
+            "title": "金額（JPY）",
+            "type": "number",
+            "description": "原典の千円を円へ正規化した値",
+            "columnType": "value"
+          },
+          {
+            "name": "currency",
+            "title": "通貨",
+            "type": "string",
+            "columnType": "value-currency:code"
+          },
+          {
+            "name": "source_amount",
+            "title": "原典の金額",
+            "type": "number",
+            "columnType": "fudoki:source:amount"
+          },
+          {
+            "name": "source_amount_unit",
+            "title": "原典の金額の単位",
+            "type": "string",
+            "columnType": "fudoki:source:amount-unit"
+          },
+          {
+            "name": "source_row",
+            "title": "原典の物理行番号",
+            "type": "integer",
+            "description": "ヘッダを1行目として数える。特定のスナップショット内でのみ意味を持つ",
+            "columnType": "fudoki:source:row"
+          }
+        ],
+        "primaryKey": [
+          "budget_line_id"
+        ],
+        "fdpCompositeKey": [
+          "budget_line_id",
+          "jurisdiction_code",
+          "fiscal_year",
+          "direction",
+          "phase_id",
+          "fund_code",
+          "kan_code",
+          "kou_code",
+          "moku_code",
+          "setsu_code",
+          "saisetsu_code",
+          "saisaisetsu_code",
+          "currency"
+        ]
+      }
+    },
+    {
+      "name": "expenditure-cofog",
+      "path": "expenditure-cofog.csv",
+      "profile": "tabular-data-resource",
+      "title": "令和６年度歳出予算（COFOG 付き・派生）",
+      "description": "正本へ COFOG を割り当てた派生。分類の軸（割当済み / 分類不能 / 対象外）と連結の軸（保持 / 消去）を別々に持つ。",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "dialect": {
+        "delimiter": ",",
+        "lineTerminator": "\n",
+        "header": true
+      },
+      "fudokiSource": {
+        "url": "https://www.city.mitaka.lg.jp/c_service/074/attached/attach_74103_8.csv",
+        "sha256": "f9dcbc7e871437691e4979572aeafaae2da333aba1b27beba8eee72153a5f10e",
+        "fetchedAt": "2026-08-16T03:16:13.213Z",
+        "status": 200,
+        "encoding": "shift_jis",
+        "rows": 5613
+      },
+      "schema": {
+        "fields": [
+          {
+            "name": "budget_line_id",
+            "title": "予算行の識別子",
+            "type": "string",
+            "description": "団体コード・年度・direction・予算段階と、階層のセル全文から導いた安定キー",
+            "columnType": "budget-line-id"
+          },
+          {
+            "name": "jurisdiction_code",
+            "title": "全国地方公共団体コード",
+            "type": "string",
+            "columnType": "fudoki:jurisdiction:code"
+          },
+          {
+            "name": "jurisdiction_label",
+            "title": "地方公共団体名",
+            "type": "string",
+            "columnType": "fudoki:jurisdiction:label",
+            "labelOf": "fudoki:jurisdiction:code"
+          },
+          {
+            "name": "fiscal_year",
+            "title": "会計年度（西暦）",
+            "type": "integer",
+            "description": "原典に年度の列が無いため、CKAN のリソース名から解決して付与した",
+            "columnType": "date:fiscal-year"
+          },
+          {
+            "name": "direction",
+            "title": "支出と収入の別",
+            "type": "string",
+            "columnType": "direction"
+          },
+          {
+            "name": "phase_id",
+            "title": "予算段階",
+            "type": "string",
+            "columnType": "phase:id"
+          },
+          {
+            "name": "phase_label",
+            "title": "予算段階の表示名",
+            "type": "string",
+            "columnType": "phase:label",
+            "labelOf": "phase:id"
+          },
+          {
+            "name": "fund_code",
+            "title": "会計コード",
+            "type": "string",
+            "columnType": "fund:code"
+          },
+          {
+            "name": "fund_label",
+            "title": "会計名",
+            "type": "string",
+            "columnType": "fund:label",
+            "labelOf": "fund:code"
+          },
+          {
+            "name": "fund_source",
+            "title": "会計（原典のセル）",
+            "type": "string",
+            "columnType": "fudoki:source:cell"
+          },
+          {
+            "name": "kan_code",
+            "title": "款コード",
+            "type": "string",
+            "columnType": "functional-classification:generic:level1:code"
+          },
+          {
+            "name": "kan_label",
+            "title": "款名",
+            "type": "string",
+            "columnType": "functional-classification:generic:level1:label",
+            "labelOf": "functional-classification:generic:level1:code"
+          },
+          {
+            "name": "kan_source",
+            "title": "款（原典のセル）",
+            "type": "string",
+            "columnType": "fudoki:source:cell"
+          },
+          {
+            "name": "kou_code",
+            "title": "項コード",
+            "type": "string",
+            "columnType": "functional-classification:generic:level2:code"
+          },
+          {
+            "name": "kou_label",
+            "title": "項名",
+            "type": "string",
+            "columnType": "functional-classification:generic:level2:label",
+            "labelOf": "functional-classification:generic:level2:code"
+          },
+          {
+            "name": "kou_source",
+            "title": "項（原典のセル）",
+            "type": "string",
+            "columnType": "fudoki:source:cell"
+          },
+          {
+            "name": "moku_code",
+            "title": "目コード",
+            "type": "string",
+            "columnType": "functional-classification:generic:level3:code"
+          },
+          {
+            "name": "moku_label",
+            "title": "目名",
+            "type": "string",
+            "columnType": "functional-classification:generic:level3:label",
+            "labelOf": "functional-classification:generic:level3:code"
+          },
+          {
+            "name": "moku_source",
+            "title": "目（原典のセル）",
+            "type": "string",
+            "columnType": "fudoki:source:cell"
+          },
+          {
+            "name": "jikou_code",
+            "title": "事項コード",
+            "type": "string",
+            "columnType": "activity:generic:program:code"
+          },
+          {
+            "name": "jikou_label",
+            "title": "事項名",
+            "type": "string",
+            "columnType": "activity:generic:program:label",
+            "labelOf": "activity:generic:program:code"
+          },
+          {
+            "name": "jikou_source",
+            "title": "事項（原典のセル）",
+            "type": "string",
+            "columnType": "fudoki:source:cell"
+          },
+          {
+            "name": "setsu_code",
+            "title": "節コード",
+            "type": "string",
+            "columnType": "economic-classification:generic:level1:code"
+          },
+          {
+            "name": "setsu_label",
+            "title": "節名",
+            "type": "string",
+            "columnType": "economic-classification:generic:level1:label",
+            "labelOf": "economic-classification:generic:level1:code"
+          },
+          {
+            "name": "setsu_source",
+            "title": "節（原典のセル）",
+            "type": "string",
+            "columnType": "fudoki:source:cell"
+          },
+          {
+            "name": "saisaisetsu_code",
+            "title": "細々節コード",
+            "type": "string",
+            "columnType": "economic-classification:generic:level2:code"
+          },
+          {
+            "name": "saisaisetsu_label",
+            "title": "細々節名",
+            "type": "string",
+            "columnType": "economic-classification:generic:level2:label",
+            "labelOf": "economic-classification:generic:level2:code"
+          },
+          {
+            "name": "saisaisetsu_source",
+            "title": "細々節（原典のセル）",
+            "type": "string",
+            "columnType": "fudoki:source:cell"
+          },
+          {
+            "name": "hierarchy_path",
+            "title": "階層のコードパス",
+            "type": "string",
+            "description": "可読性のための列であって識別子ではない。三鷹市の歳出では細々節のコードが同じ節の下で再利用されるため（実測 710 箇所）、このパスが一意なのは節までで、細々節までは一意でない",
+            "columnType": "fudoki:hierarchy-path"
+          },
+          {
+            "name": "value",
+            "title": "金額（JPY）",
+            "type": "number",
+            "description": "原典の千円を円へ正規化した値",
+            "columnType": "value"
+          },
+          {
+            "name": "currency",
+            "title": "通貨",
+            "type": "string",
+            "columnType": "value-currency:code"
+          },
+          {
+            "name": "source_amount",
+            "title": "原典の金額",
+            "type": "number",
+            "columnType": "fudoki:source:amount"
+          },
+          {
+            "name": "source_amount_unit",
+            "title": "原典の金額の単位",
+            "type": "string",
+            "columnType": "fudoki:source:amount-unit"
+          },
+          {
+            "name": "source_row",
+            "title": "原典の物理行番号",
+            "type": "integer",
+            "description": "ヘッダを1行目として数える。特定のスナップショット内でのみ意味を持つ",
+            "columnType": "fudoki:source:row"
+          },
+          {
+            "name": "cofog_division_code",
+            "title": "COFOG ディビジョンのコード",
+            "type": "string",
+            "description": "分類不能と対象外の行では空",
+            "columnType": "functional-classification:cofog:division:code"
+          },
+          {
+            "name": "cofog_division_label",
+            "title": "COFOG ディビジョン名",
+            "type": "string",
+            "columnType": "functional-classification:cofog:division:label",
+            "labelOf": "functional-classification:cofog:division:code"
+          },
+          {
+            "name": "cofog_status",
+            "title": "分類の軸",
+            "type": "string",
+            "description": "assigned / unclassifiable / out-of-scope",
+            "columnType": "fudoki:cofog:status"
+          },
+          {
+            "name": "cofog_consolidation",
+            "title": "連結の軸",
+            "type": "string",
+            "description": "retained / eliminated",
+            "columnType": "fudoki:cofog:consolidation"
+          },
+          {
+            "name": "cofog_consolidation_scope",
+            "title": "連結の範囲",
+            "type": "string",
+            "description": "消去する行にのみ入る",
+            "columnType": "fudoki:cofog:consolidation"
+          },
+          {
+            "name": "cofog_counterpart_ids",
+            "title": "相手側の行の識別子",
+            "type": "string",
+            "description": "消去する行の相手側（受け皿となる会計の他会計繰入金）の budget_line_id を `;` 区切りで並べたもの。⚠️ 行と行の対応は1対1ではない（歳出の細々節と歳入の細々節が同じ切り方をしていない）。金額が厳密に一致するのは会計の対どうしの合計であり、その突合結果はパイプライン報告にある",
+            "columnType": "fudoki:cofog:counterpart-id"
+          },
+          {
+            "name": "cofog_decided_at_level",
+            "title": "割り当てが決まった単位",
+            "type": "string",
+            "columnType": "fudoki:cofog:decided-at-level"
+          },
+          {
+            "name": "cofog_basis",
+            "title": "割り当ての根拠",
+            "type": "string",
+            "columnType": "fudoki:cofog:basis"
+          },
+          {
+            "name": "cofog_rule_id",
+            "title": "適用した規則",
+            "type": "string",
+            "columnType": "fudoki:cofog:basis"
+          }
+        ],
+        "primaryKey": [
+          "budget_line_id"
+        ],
+        "fdpCompositeKey": [
+          "budget_line_id",
+          "jurisdiction_code",
+          "fiscal_year",
+          "direction",
+          "phase_id",
+          "fund_code",
+          "kan_code",
+          "kou_code",
+          "moku_code",
+          "jikou_code",
+          "setsu_code",
+          "saisaisetsu_code",
+          "currency",
+          "cofog_division_code"
+        ]
+      }
+    }
+  ]
+}
