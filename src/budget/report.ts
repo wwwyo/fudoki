@@ -4,9 +4,16 @@
  * 変換が正しく動いたかを**人が判定できる**ようにするための出力物。
  * 各段について「何が入って何が出たか」「1行がどう変わったか」「何を検査して結果はどうか」の3つを出す。
  * 差分が0でない段があれば、そこが疑うべき場所になる。
+ *
+ * ## 集計は1箇所に置く
+ *
+ * 出力は Markdown（人が読む）と JSON（画面が読む）の2つあるが、**集計するのは `buildReportData` だけ**。
+ * Markdown 側でも集計すると、同じ数字が2通りに計算されて、いずれ食い違ったまま気づかなくなる。
+ * `buildReport` はデータを受け取って整形するだけにする。
  */
 import { CUSTOM_COLUMN_TYPES } from './columns'
 import { COFOG_DIVISIONS, COFOG_SOURCE, COFOG_VERSION, CONSOLIDATION_SCOPE, RULE_IDS } from './cofog'
+import type { Provenance } from './extract'
 import type { CanonicalTable, Row } from './load'
 import { NOT_YET_RECONCILED } from './published/mitaka-2024'
 import type { BudgetSource } from './source'
@@ -31,6 +38,8 @@ export type YearSurvey = {
 
 const yen = (n: number) => n.toLocaleString('ja-JP')
 const mark = (ok: boolean) => (ok ? '✓' : '✗')
+/** 連結キーの区切り。名称にも金額にも現れない制御文字を使う */
+const SEP = "\u001f"
 
 /**
  * 変換の各要素を3つに分ける。**2団体目で何を確かめるかを先に書いておく。**
@@ -66,7 +75,7 @@ const CAVEATS: { topic: string; body: string }[] = [
     topic: 'COFOG の割り当てが款の単位で成立するかは部分的（Design Doc Caveats 2）',
     body:
       '実データを通した結果、**款だけでは決まらない款が実在した**。衛生費（保健衛生費 → 07 / 清掃費 → 05）と土木費と教育費は項へ、' +
-      '公債費（元金 → 対象外 / 利子 → 01）と都市計画費と生涯学習費は目へ下げて決着した。どこまで下げれば決まるかは報告の「款で決まらず、下の単位まで下げたもの」を見ること。',
+      '公債費（元金 → 対象外 / 利子 → 01）と都市計画費と生涯学習費は目へ下げて決着した。どこまで下げれば決まるかは「款で決まらず、下の単位まで下げたもの」を見ること。',
   },
   {
     topic: 'PRD の「938件の事項」は事項の件数ではない',
@@ -134,258 +143,350 @@ function tally<T>(rows: readonly T[], key: (r: T) => string, value: (r: T) => nu
   return m
 }
 
-/** 1行が入力から出力へどう変わったかを、実物で見せる */
-function walkthrough(table: CanonicalTable, source: BudgetSource): string {
-  const row = table.rows[0]!
-  const levels = table.levels
-  const raw = [...levels.map((l) => row[`${l.key}_source`]), row.source_amount].join(',')
-  const lines = [
-    '```',
-    `原典  ${raw}`,
-    '```',
-    '',
-    '↓ Load',
-    '',
-    '| 出力の列 | 値 | どこから来たか |',
-    '|---|---|---|',
-    `| \`budget_line_id\` | \`${row.budget_line_id}\` | 団体コード・年度・direction・予算段階と、階層のセル全文から導出 |`,
-    `| \`fiscal_year\` | ${row.fiscal_year} | **原典に無い**。${table.provenance.fiscalYearBasis} |`,
-    `| \`direction\` | ${row.direction} | リソースごとの定数 |`,
-    `| \`phase_id\` | ${row.phase_id} | 取得元の設定（${source.phase.label}） |`,
-  ]
-  for (const l of levels) {
-    lines.push(`| \`${l.key}_code\` / \`${l.key}_label\` / \`${l.key}_source\` | \`${row[`${l.key}_code`]}\` / \`${row[`${l.key}_label`]}\` / \`${row[`${l.key}_source`]}\` | 原典の「${l.sourceColumn}」1セルを3列へ分離（連結すると原文へ戻る） |`)
+// ── 報告のデータ ─────────────────────────────────────────
+
+export type ReportData = {
+  meta: {
+    jurisdictionCode: string
+    jurisdictionName: string
+    fiscalYear: number
+    fiscalYearLabel: string
+    phase: { id: string; label: string }
+    coverageNote: string | null
+    license: BudgetSource['license']
+    attribution: string
+    landingPage: string
+    generatedAt: string
   }
-  lines.push(
-    `| \`value\` | ${yen(Number(row.value))} | 原典の ${yen(Number(row.source_amount))}${source.amountUnit.label} を ×${source.amountUnit.multiplier} して円へ正規化 |`,
-    `| \`source_amount\` / \`source_amount_unit\` | ${yen(Number(row.source_amount))} / ${row.source_amount_unit} | 原典の値と単位をそのまま保持 |`,
-    `| \`source_row\` | ${row.source_row} | 原典の物理行番号 |`,
-  )
-  return lines.join('\n')
+  summary: { total: number; passed: number; failed: number }
+  extract: Provenance[]
+  load: { direction: string; inputRows: number; outputRows: number; diff: number; absentLevelCells: number; irregularCells: number }[]
+  walkthrough: { sourceLine: string; fields: { column: string; value: string; origin: string }[] }
+  levels: { direction: string; items: { sourceColumn: string; vocabulary: string; distinctCodes: number; distinctPaths: number; columnType: string }[] }[]
+  transform: {
+    cofogVersion: string
+    cofogSource: typeof COFOG_SOURCE
+    ruleCount: number
+    inputRows: number
+    outputRows: number
+    consolidationScope: string
+    byState: { status: string; consolidation: string; division: string; divisionLabel: string; count: number; sum: number }[]
+    byKan: { fund: string; kan: string; division: string; divisionLabel: string; status: string; decidedAtLevel: string; sum: number; basis: string }[]
+    byLevel: { level: string; count: number; sum: number }[]
+    notAssigned: { status: string; fund: string; kan: string; sum: number; basis: string }[]
+    consolidationPairs: { from: string; to: string; eliminated: number; counterpart: number; ok: boolean; counterpartCount: number }[]
+  }
+  checks: Check[]
+  notYetReconciled: typeof NOT_YET_RECONCILED
+  customColumnTypes: typeof CUSTOM_COLUMN_TYPES
+  portability: typeof PORTABILITY
+  caveats: typeof CAVEATS
+  yearSurvey: YearSurvey | null
+  outputs: { path: string; description: string; bytes: number }[]
 }
 
-export function buildReport(args: {
+/** 1行が入力から出力へどう変わったかを、実物から組み立てる */
+function walkthroughOf(table: CanonicalTable, source: BudgetSource): ReportData['walkthrough'] {
+  const row = table.rows[0]!
+  const levels = table.levels
+  const fields: ReportData['walkthrough']['fields'] = [
+    { column: 'budget_line_id', value: String(row.budget_line_id), origin: '団体コード・年度・direction・予算段階と、階層のセル全文から導出' },
+    { column: 'fiscal_year', value: String(row.fiscal_year), origin: `原典に無い。${table.provenance.fiscalYearBasis}` },
+    { column: 'direction', value: String(row.direction), origin: 'リソースごとの定数' },
+    { column: 'phase_id', value: String(row.phase_id), origin: `取得元の設定（${source.phase.label}）` },
+  ]
+  for (const l of levels) {
+    fields.push({
+      column: `${l.key}_code / ${l.key}_label / ${l.key}_source`,
+      value: `${row[`${l.key}_code`]} / ${row[`${l.key}_label`]} / ${row[`${l.key}_source`]}`,
+      origin: `原典の「${l.sourceColumn}」1セルを3列へ分離（連結すると原文へ戻る）`,
+    })
+  }
+  fields.push(
+    { column: 'value', value: yen(Number(row.value)), origin: `原典の ${yen(Number(row.source_amount))}${source.amountUnit.label} を ×${source.amountUnit.multiplier} して円へ正規化` },
+    { column: 'source_amount / source_amount_unit', value: `${yen(Number(row.source_amount))} / ${row.source_amount_unit}`, origin: '原典の値と単位をそのまま保持' },
+    { column: 'source_row', value: String(row.source_row), origin: '原典の物理行番号' },
+  )
+  return { sourceLine: [...levels.map((l) => row[`${l.key}_source`]), row.source_amount].join(','), fields }
+}
+
+/** **集計はここだけ。** Markdown も画面もこの結果を読む */
+export function buildReportData(args: {
   source: BudgetSource
   expenditure: CanonicalTable
   revenue: CanonicalTable
   derived: DerivedTable
   checks: Check[]
   outputs: { path: string; description: string; bytes: number }[]
-  /** 他年度の互換性調査。無ければ節ごと出さない */
   yearSurvey: YearSurvey | null
-}): string {
-  const { source, expenditure, revenue, derived, checks, outputs } = args
+}): ReportData {
+  const { source, expenditure, revenue, derived, checks, outputs, yearSurvey } = args
   const tables = [expenditure, revenue]
-  const failed = checks.filter((c) => !c.ok)
+
+  const byState = tally(derived.rows, (r) => [r.cofog_status, r.cofog_consolidation, r.cofog_division_code].join(SEP), (r) => Number(r.value))
+  const byKan = tally(
+    derived.rows,
+    (r) => [r.fund_source, r.kan_source, r.cofog_division_code, r.cofog_status, r.cofog_decided_at_level, r.cofog_basis].join(SEP),
+    (r) => Number(r.value),
+  )
+  const byLevel = tally(derived.rows, (r) => String(r.cofog_decided_at_level), (r) => Number(r.value))
+  const notAssigned = tally(
+    derived.rows.filter((r) => r.cofog_status !== 'assigned'),
+    (r) => [r.cofog_status, r.fund_source, r.kan_source, r.cofog_basis].join(SEP),
+    (r) => Number(r.value),
+  )
+
+  return {
+    meta: {
+      jurisdictionCode: source.jurisdictionCode,
+      jurisdictionName: source.jurisdictionName,
+      fiscalYear: source.fiscalYear,
+      fiscalYearLabel: source.fiscalYearLabel,
+      phase: source.phase,
+      coverageNote: source.coverageNote,
+      license: source.license,
+      attribution: source.attribution,
+      landingPage: source.landingPage,
+      generatedAt: new Date().toISOString(),
+    },
+    summary: { total: checks.length, passed: checks.filter((c) => c.ok).length, failed: checks.filter((c) => !c.ok).length },
+    extract: tables.map((t) => t.provenance),
+    load: tables.map((t) => ({
+      direction: t.provenance.direction,
+      inputRows: t.provenance.rows,
+      outputRows: t.rows.length,
+      diff: t.rows.length - t.provenance.rows,
+      absentLevelCells: t.absentLevelCells,
+      irregularCells: t.irregularCells.length,
+    })),
+    walkthrough: walkthroughOf(expenditure, source),
+    levels: tables.map((t) => ({
+      direction: t.provenance.direction,
+      items: t.levels.map((l, i) => ({
+        sourceColumn: l.sourceColumn,
+        vocabulary: l.vocabulary === 'statutory' ? '地方自治法' : `${source.jurisdictionName}固有`,
+        distinctCodes: new Set(t.rows.map((r) => String(r[`${l.key}_code`]))).size,
+        distinctPaths: new Set(t.rows.map((r) => t.levels.slice(0, i + 1).map((p) => r[`${p.key}_source`]).join('/'))).size,
+        columnType: l.codeType,
+      })),
+    })),
+    transform: {
+      cofogVersion: COFOG_VERSION,
+      cofogSource: COFOG_SOURCE,
+      ruleCount: RULE_IDS.length,
+      inputRows: expenditure.rows.length,
+      outputRows: derived.rows.length,
+      consolidationScope: CONSOLIDATION_SCOPE,
+      byState: [...byState.keys()].sort().map((k) => {
+        const [status, consolidation, division] = k.split(SEP)
+        return { status: status!, consolidation: consolidation!, division: division!, divisionLabel: division ? (COFOG_DIVISIONS[division] ?? '') : '', ...byState.get(k)! }
+      }),
+      byKan: [...byKan.keys()].sort().map((k) => {
+        const [fund, kan, division, status, decidedAtLevel, basis] = k.split(SEP)
+        return { fund: fund!, kan: kan!, division: division!, divisionLabel: division ? (COFOG_DIVISIONS[division] ?? '') : '', status: status!, decidedAtLevel: decidedAtLevel!, sum: byKan.get(k)!.sum, basis: basis! }
+      }),
+      byLevel: ['会計', '款', '項', '目', '節', '（規則なし）'].flatMap((k) => {
+        const v = byLevel.get(k)
+        return v ? [{ level: k, ...v }] : []
+      }),
+      notAssigned: [...notAssigned.keys()].sort().map((k) => {
+        const [status, fund, kan, basis] = k.split(SEP)
+        return { status: status!, fund: fund!, kan: kan!, sum: notAssigned.get(k)!.sum, basis: basis! }
+      }),
+      consolidationPairs: derived.consolidationPairs.map((p) => ({
+        from: p.from,
+        to: p.to,
+        eliminated: p.eliminated,
+        counterpart: p.counterpart,
+        ok: p.eliminated === p.counterpart,
+        counterpartCount: p.counterpartIds.length,
+      })),
+    },
+    checks,
+    notYetReconciled: NOT_YET_RECONCILED,
+    customColumnTypes: CUSTOM_COLUMN_TYPES,
+    portability: PORTABILITY,
+    caveats: CAVEATS,
+    yearSurvey,
+    outputs,
+  }
+}
+
+// ── Markdown ────────────────────────────────────────────
+
+/** `buildReportData` の結果を整形するだけ。ここで集計しない */
+export function buildReport(d: ReportData): string {
   const L: string[] = []
+  const m = d.meta
 
-  L.push(`# パイプライン報告：${source.jurisdictionName} ${source.fiscalYearLabel}予算`)
+  L.push(`# パイプライン報告：${m.jurisdictionName} ${m.fiscalYearLabel}予算`)
   L.push('')
-  L.push(`> このファイルは \`bun run build:budget\` が生成する。手で編集しない。`)
+  L.push('> このファイルは `bun run build:budget` が生成する。手で編集しない。')
+  L.push('> 同じ内容を画面で見るなら `bun run dev`（`web/pipeline.html`）。')
   L.push('')
-  L.push(`- 団体: ${source.jurisdictionName}（全国地方公共団体コード \`${source.jurisdictionCode}\`）`)
-  L.push(`- 年度: ${source.fiscalYearLabel}（西暦 ${source.fiscalYear}）`)
-  L.push(`- 予算段階: ${source.phase.label}（\`${source.phase.id}\`）`)
-  L.push(`- 収録範囲: ${source.coverageNote ?? '注記なし'}`)
-  L.push(`- ライセンス: ${source.license.id} / 帰属表示「${source.attribution}」`)
+  L.push(`- 団体: ${m.jurisdictionName}（全国地方公共団体コード \`${m.jurisdictionCode}\`）`)
+  L.push(`- 年度: ${m.fiscalYearLabel}（西暦 ${m.fiscalYear}）`)
+  L.push(`- 予算段階: ${m.phase.label}（\`${m.phase.id}\`）`)
+  L.push(`- 収録範囲: ${m.coverageNote ?? '注記なし'}`)
+  L.push(`- ライセンス: ${m.license.id} / 帰属表示「${m.attribution}」`)
   L.push('')
-  L.push(`**検査 ${checks.length} 件中 ${checks.length - failed.length} 件が成功、${failed.length} 件が失敗。**`)
+  L.push(`**検査 ${d.summary.total} 件中 ${d.summary.passed} 件が成功、${d.summary.failed} 件が失敗。**`)
   L.push('')
 
-  // ── Extract ────────────────────────────────────────
   L.push('## Extract')
   L.push('')
   L.push('原典を無加工で取得し、URL・HTTP status・SHA-256・取得時刻を証跡として残す。取得物はリポジトリに置かない。')
   L.push('')
   L.push('| direction | リソース名 | status | バイト数 | 行数 | 文字コード | SHA-256 | 取得時刻 |')
   L.push('|---|---|---|---|---|---|---|---|')
-  for (const t of tables) {
-    const p = t.provenance
-    L.push(`| ${p.direction} | ${p.resourceName} | ${p.status} | ${yen(p.bytes)} | ${yen(p.rows)} | ${p.encoding} | \`${p.sha256}\` | ${p.fetchedAt} |`)
-  }
+  for (const p of d.extract) L.push(`| ${p.direction} | ${p.resourceName} | ${p.status} | ${yen(p.bytes)} | ${yen(p.rows)} | ${p.encoding} | \`${p.sha256}\` | ${p.fetchedAt} |`)
   L.push('')
   L.push('| direction | 取得 URL | 列構成 |')
   L.push('|---|---|---|')
-  for (const t of tables) L.push(`| ${t.provenance.direction} | ${t.provenance.requestUrl} | ${t.provenance.header.join(' / ')} |`)
+  for (const p of d.extract) L.push(`| ${p.direction} | ${p.requestUrl} | ${p.header.join(' / ')} |`)
   L.push('')
   L.push('**年度の由来**（原典に年度の列が無いため、解決の根拠を残す）')
   L.push('')
-  for (const t of tables) L.push(`- ${t.provenance.direction}: ${t.provenance.fiscalYearBasis}`)
+  for (const p of d.extract) L.push(`- ${p.direction}: ${p.fiscalYearBasis}`)
   L.push('')
   L.push('**検査**: HTTP status が 200 であること、先頭バイトが HTML でないこと、文字コードの判定結果。いずれも上表に出ている。')
   L.push('')
 
-  // ── Load ──────────────────────────────────────────
   L.push('## Load')
   L.push('')
   L.push('原典1行を正本1行へ写す。**ここまでは原典に無い情報を足さない。**')
   L.push('')
   L.push('| direction | 入力（原典の行数） | 出力（正本の行数） | 差分 | 階層なしのセル | 想定外のセル |')
   L.push('|---|---|---|---|---|---|')
-  for (const t of tables) {
-    const diff = t.rows.length - t.provenance.rows
-    L.push(`| ${t.provenance.direction} | ${yen(t.provenance.rows)} | ${yen(t.rows.length)} | ${diff === 0 ? '0' : `**${diff}**`} | ${yen(t.absentLevelCells)} | ${t.irregularCells.length} |`)
-  }
+  for (const l of d.load) L.push(`| ${l.direction} | ${yen(l.inputRows)} | ${yen(l.outputRows)} | ${l.diff === 0 ? '0' : `**${l.diff}**`} | ${yen(l.absentLevelCells)} | ${l.irregularCells} |`)
   L.push('')
-  L.push(`歳入の「階層なしのセル」は、細々節を持たない行を \`0\` で埋める三鷹市の表現。想定内なので件数だけ数える。`)
+  L.push('歳入の「階層なしのセル」は、細々節を持たない行を `0` で埋める三鷹市の表現。想定内なので件数だけ数える。')
   L.push('')
   L.push('### 1行がどう変わったか（歳出の先頭行）')
   L.push('')
-  L.push(walkthrough(expenditure, source))
+  L.push('```')
+  L.push(`原典  ${d.walkthrough.sourceLine}`)
+  L.push('```')
+  L.push('')
+  L.push('↓ Load')
+  L.push('')
+  L.push('| 出力の列 | 値 | どこから来たか |')
+  L.push('|---|---|---|')
+  // データは素の値を持ち、記号づけは整形側でやる（画面はバッククォートを要らないので）
+  for (const f of d.walkthrough.fields) {
+    const cols = f.column.split(' / ').map((c) => `\`${c}\``).join(' / ')
+    const vals = f.value.split(' / ').map((v) => `\`${v}\``).join(' / ')
+    L.push(`| ${cols} | ${vals} | ${f.origin.replace('原典に無い。', '**原典に無い**。')} |`)
+  }
   L.push('')
   L.push('### 階層の切り出し（それぞれ独立した切り口として取り出せる）')
   L.push('')
-  for (const t of tables) {
-    L.push(`**${t.provenance.direction}**`)
+  for (const g of d.levels) {
+    L.push(`**${g.direction}**`)
     L.push('')
     L.push('| 階層 | 語彙 | 異なり数 | ColumnType |')
     L.push('|---|---|---|---|')
-    for (const l of t.levels) {
-      const distinct = new Set(t.rows.map((r) => `${r[`${l.key}_code`]}`)).size
-      const paths = new Set(t.rows.map((r) => t.levels.slice(0, t.levels.indexOf(l) + 1).map((p) => r[`${p.key}_source`]).join('/'))).size
-      L.push(`| ${l.sourceColumn} | ${l.vocabulary === 'statutory' ? '地方自治法' : '三鷹市固有'} | コード ${distinct} / 完全修飾 ${paths} | \`${l.codeType}\` |`)
-    }
+    for (const i of g.items) L.push(`| ${i.sourceColumn} | ${i.vocabulary} | コード ${i.distinctCodes} / 完全修飾 ${i.distinctPaths} | \`${i.columnType}\` |`)
     L.push('')
   }
 
-  // ── Transform ──────────────────────────────────────
+  const t = d.transform
   L.push('## Transform')
   L.push('')
-  L.push(`正本へ COFOG を割り当てて派生を作る。**ここで初めて fudoki の判断が入る。**`)
+  L.push('正本へ COFOG を割り当てて派生を作る。**ここで初めて fudoki の判断が入る。**')
   L.push('')
-  L.push(`- 版: ${COFOG_VERSION}（ディビジョンの値域 \`01\`〜\`10\`）`)
-  L.push(`- コード表の取得元: [${COFOG_SOURCE.name}](${COFOG_SOURCE.url})`)
-  L.push(`- 規則の本数: ${RULE_IDS.length}（\`src/budget/cofog.ts\`）`)
-  L.push(`- 入力 ${yen(expenditure.rows.length)} 行 → 出力 ${yen(derived.rows.length)} 行（差分 ${derived.rows.length - expenditure.rows.length}）`)
+  L.push(`- 版: ${t.cofogVersion}（ディビジョンの値域 \`01\`〜\`10\`）`)
+  L.push(`- コード表の取得元: [${t.cofogSource.name}](${t.cofogSource.url})`)
+  L.push(`- 規則の本数: ${t.ruleCount}（\`src/budget/cofog.ts\`）`)
+  L.push(`- 入力 ${yen(t.inputRows)} 行 → 出力 ${yen(t.outputRows)} 行（差分 ${t.outputRows - t.inputRows}）`)
   L.push('')
   L.push('> Budget Standard Taxonomy が提供するのは COFOG を格納する語彙だけで、')
   L.push('> **日本の予算科目から COFOG への対応そのものは仕様側に存在しない。** 以下は fudoki 固有の判断である。')
   L.push('')
-
   L.push('### 状態の分布')
   L.push('')
   L.push('分類の軸と連結の軸は別の問い。1つの排他的な状態に畳むと、分類できなかったものと、そもそも分類の対象でないものが混ざる。')
   L.push('')
   L.push('| 分類の軸 | 連結の軸 | ディビジョン | 行数 | 金額（円） |')
   L.push('|---|---|---|---|---|')
-  const byState = tally(derived.rows, (r) => `${r.cofog_status}\t${r.cofog_consolidation}\t${r.cofog_division_code}`, (r) => Number(r.value))
-  for (const k of [...byState.keys()].sort()) {
-    const [status, cons, div] = k.split('\t')
-    const v = byState.get(k)!
-    L.push(`| ${status} | ${cons} | ${div ? `${div} ${COFOG_DIVISIONS[div]}` : '（空）'} | ${yen(v.count)} | ${yen(v.sum)} |`)
-  }
+  for (const s of t.byState) L.push(`| ${s.status} | ${s.consolidation} | ${s.division ? `${s.division} ${s.divisionLabel}` : '（空）'} | ${yen(s.count)} | ${yen(s.sum)} |`)
   L.push('')
-
   L.push('### 款ごとの割当先・状態・根拠')
   L.push('')
   L.push('款は一般会計で12件。入力と出力を並べれば人が妥当性を判定できる規模である。')
   L.push('')
   L.push('| 会計 | 款 | 割当先 | 状態 | 決まった単位 | 金額（円） | 根拠 |')
   L.push('|---|---|---|---|---|---|---|')
-  const byKan = tally(
-    derived.rows,
-    (r) => [r.fund_source, r.kan_source, r.cofog_division_code, r.cofog_status, r.cofog_decided_at_level, r.cofog_basis].join('\t'),
-    (r) => Number(r.value),
-  )
-  for (const k of [...byKan.keys()].sort()) {
-    const [fund, kan, div, status, level, basis] = k.split('\t')
-    L.push(`| ${fund} | ${kan} | ${div ? `${div} ${COFOG_DIVISIONS[div]}` : '—' } | ${status} | ${level} | ${yen(byKan.get(k)!.sum)} | ${basis} |`)
-  }
+  for (const k of t.byKan) L.push(`| ${k.fund} | ${k.kan} | ${k.division ? `${k.division} ${k.divisionLabel}` : '—'} | ${k.status} | ${k.decidedAtLevel} | ${yen(k.sum)} | ${k.basis} |`)
   L.push('')
-
   L.push('### 款で決まらず、下の単位まで下げたもの')
   L.push('')
   L.push('| 決まった単位 | 行数 | 金額（円） |')
   L.push('|---|---|---|')
-  const byLevel = tally(derived.rows, (r) => String(r.cofog_decided_at_level), (r) => Number(r.value))
-  for (const k of ['会計', '款', '項', '目', '節', '（規則なし）']) {
-    const v = byLevel.get(k)
-    if (v) L.push(`| ${k} | ${yen(v.count)} | ${yen(v.sum)} |`)
-  }
+  for (const l of t.byLevel) L.push(`| ${l.level} | ${yen(l.count)} | ${yen(l.sum)} |`)
   L.push('')
-
   L.push('### 連結の消去')
   L.push('')
-  L.push(`連結の範囲: ${CONSOLIDATION_SCOPE}`)
+  L.push(`連結の範囲: ${t.consolidationScope}`)
   L.push('')
   L.push('| 出し手 | 受け皿 | 消去した金額（円） | 相手側の合計（円） | 一致 | 相手側の行数 |')
   L.push('|---|---|---|---|---|---|')
-  for (const p of derived.consolidationPairs) {
-    L.push(`| ${p.from} | ${p.to} | ${yen(p.eliminated)} | ${yen(p.counterpart)} | ${mark(p.eliminated === p.counterpart)} | ${p.counterpartIds.length} |`)
-  }
+  for (const p of t.consolidationPairs) L.push(`| ${p.from} | ${p.to} | ${yen(p.eliminated)} | ${yen(p.counterpart)} | ${mark(p.ok)} | ${p.counterpartCount} |`)
   L.push('')
   L.push('> ⚠️ 歳出の繰出金と歳入の繰入金は**行と行が1対1に対応しない**（細々節の切り方が両者で違う）。')
   L.push('> 金額が厳密に一致するのは会計の対どうしの合計であり、上表がその突合結果である。')
-  L.push('> 各行の `cofog_counterpart_ids` には、受け皿側の該当行の識別子を `;` 区切りで並べてある。')
   L.push('')
-
   L.push('### 分類不能と対象外の内訳')
   L.push('')
   L.push('**分類不能の割合の低さは合否に使わない。** 成立範囲を正直に調べることが目的であり、割合を目標にすると判断が歪む。')
   L.push('')
   L.push('| 状態 | 会計 | 款 | 金額（円） | 理由 |')
   L.push('|---|---|---|---|---|')
-  const notAssigned = tally(
-    derived.rows.filter((r) => r.cofog_status !== 'assigned'),
-    (r) => [r.cofog_status, r.fund_source, r.kan_source, r.cofog_basis].join('\t'),
-    (r) => Number(r.value),
-  )
-  for (const k of [...notAssigned.keys()].sort()) {
-    const [status, fund, kan, basis] = k.split('\t')
-    L.push(`| ${status} | ${fund} | ${kan} | ${yen(notAssigned.get(k)!.sum)} | ${basis} |`)
-  }
+  for (const n of t.notAssigned) L.push(`| ${n.status} | ${n.fund} | ${n.kan} | ${yen(n.sum)} | ${n.basis} |`)
   L.push('')
 
-  // ── 検査 ──────────────────────────────────────────
   L.push('## 検査結果')
   L.push('')
   L.push('合計の突合だけに頼らない。1行の欠落と同額の行の重複は合計では相殺されて素通りするため、性質の異なる検査を並べる。')
   L.push('')
   L.push('| | 検査 | 結果 |')
   L.push('|---|---|---|')
-  for (const c of checks) L.push(`| ${mark(c.ok)} | ${c.name} | ${c.detail} |`)
+  for (const c of d.checks) L.push(`| ${mark(c.ok)} | ${c.name} | ${c.detail} |`)
   L.push('')
-  L.push(`### まだ突合していない範囲`)
+  L.push('### まだ突合していない範囲')
   L.push('')
-  L.push(`- **${NOT_YET_RECONCILED.scope}**`)
-  L.push(`  - 理由: ${NOT_YET_RECONCILED.reason}`)
-  L.push(`  - 出所の候補: ${NOT_YET_RECONCILED.wouldComeFrom}`)
-  L.push(`  - 現在の根拠: ${NOT_YET_RECONCILED.currentEvidence}`)
+  L.push(`- **${d.notYetReconciled.scope}**`)
+  L.push(`  - 理由: ${d.notYetReconciled.reason}`)
+  L.push(`  - 出所の候補: ${d.notYetReconciled.wouldComeFrom}`)
+  L.push(`  - 現在の根拠: ${d.notYetReconciled.currentEvidence}`)
   L.push('')
 
-  // ── 他年度の互換性 ───────────────────────────────────
-  if (args.yearSurvey) {
-    const s = args.yearSurvey
+  if (d.yearSurvey) {
     L.push('## 他年度との互換性（調査のみ。収録はしない）')
     L.push('')
-    L.push(`出所: \`data/observations/mitaka-budget-years.json\`（\`bun run check:budget-years\` が生成）`)
+    L.push('出所: `data/observations/mitaka-budget-years.json`（`bun run check:budget-years` が生成）')
     L.push('')
     L.push('| 年度 | direction | 行数 | 会計 | 収録範囲の注記 | 令和6年度と互換 | 判定根拠 | SHA-256 | 取得時刻 |')
     L.push('|---|---|---|---|---|---|---|---|---|')
-    for (const o of s.observations) {
-      L.push(
-        `| ${o.label} | ${o.direction} | ${o.rows ?? '—'} | ${o.funds?.length ?? '—'} | ${o.coverageNote ?? 'なし'} | ${o.compatible === null ? '?' : mark(o.compatible)} | ${o.basis} | \`${(o.sha256 ?? '').slice(0, 16)}…\` | ${o.fetchedAt} |`,
-      )
+    for (const o of d.yearSurvey.observations) {
+      L.push(`| ${o.label} | ${o.direction} | ${o.rows ?? '—'} | ${o.funds?.length ?? '—'} | ${o.coverageNote ?? 'なし'} | ${o.compatible === null ? '?' : mark(o.compatible)} | ${o.basis} | \`${(o.sha256 ?? '').slice(0, 16)}…\` | ${o.fetchedAt} |`)
     }
     L.push('')
     L.push('**会計の範囲が年度で変わる。** 令和2年度以降は下水道事業会計を除いた5会計、平成28年度から令和元年度は下水道事業特別会計を含む6会計である。')
-    L.push('リソース名の注記（`※下水道事業会計除く`）と、実際の会計一覧の差の両方で確認した。')
     L.push('')
-    L.push(`> ⚠️ ${s.caveat}`)
+    L.push(`> ⚠️ ${d.yearSurvey.caveat}`)
     L.push('')
   }
 
-  // ── 独自 ColumnType ─────────────────────────────────
   L.push('## 独自に定義した ColumnType')
   L.push('')
   L.push('標準の Budget Standard Taxonomy に無く、fudoki が定義したもの。descriptor の `columnTypes` にインラインで載せてある。')
   L.push('')
   L.push('| 名前 | dataType | unique | labelOf | なぜ独自定義が要るか |')
   L.push('|---|---|---|---|---|')
-  for (const c of CUSTOM_COLUMN_TYPES) L.push(`| \`${c.name}\` | ${c.dataType} | ${c.unique ? '✓' : ''} | ${c.labelOf ? `\`${c.labelOf}\`` : ''} | ${c.why} |`)
+  for (const c of d.customColumnTypes) L.push(`| \`${c.name}\` | ${c.dataType} | ${c.unique ? '✓' : ''} | ${c.labelOf ? `\`${c.labelOf}\`` : ''} | ${c.why} |`)
   L.push('')
 
-  // ── 展開 ──────────────────────────────────────────
   L.push('## 2団体目へ展開するときに何を確かめるか')
   L.push('')
   L.push('**「再利用可能と判明した」は1団体では言えない。** 判定できないものは判定できないと書く。')
@@ -395,35 +496,32 @@ export function buildReport(args: {
     L.push('')
     L.push('| 要素 | 2団体目で確かめること |')
     L.push('|---|---|')
-    for (const p of PORTABILITY.filter((x) => x.kind === kind)) L.push(`| ${p.element} | ${p.verifyNext} |`)
+    for (const p of d.portability.filter((x) => x.kind === kind)) L.push(`| ${p.element} | ${p.verifyNext} |`)
     L.push('')
   }
 
-  // ── Caveats ────────────────────────────────────────
   L.push('## Caveats')
   L.push('')
   L.push('確定できなかったこと、および設計文書と実データが食い違った点。**推測で埋めずに残す。**')
   L.push('')
-  for (const c of CAVEATS) {
+  for (const c of d.caveats) {
     L.push(`### ${c.topic}`)
     L.push('')
     L.push(c.body)
     L.push('')
   }
 
-  // ── 出力物 ─────────────────────────────────────────
   L.push('## 出力物')
   L.push('')
   L.push('| パス | バイト数 | 内容 |')
   L.push('|---|---|---|')
-  for (const o of outputs) L.push(`| \`${o.path}\` | ${yen(o.bytes)} | ${o.description} |`)
+  for (const o of d.outputs) L.push(`| \`${o.path}\` | ${yen(o.bytes)} | ${o.description} |`)
   L.push('')
   L.push('---')
   L.push('')
-  L.push(`生成: \`bun run build:budget\` / ${new Date().toISOString()}`)
+  L.push(`生成: \`bun run build:budget\` / ${m.generatedAt}`)
   L.push('')
   return L.join('\n')
 }
 
-/** 報告に載せる集計は派生から導く。ここに焼き込まない */
 export type { Row }

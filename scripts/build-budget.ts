@@ -11,7 +11,7 @@
 import { buildDescriptor, toCsv, type ResourceInput } from '../src/budget/fdp'
 import { extractResource } from '../src/budget/extract'
 import { load } from '../src/budget/load'
-import { buildReport } from '../src/budget/report'
+import { buildReport, buildReportData } from '../src/budget/report'
 import { MITAKA_FY2024, type BudgetSource } from '../src/budget/source'
 import { transform } from '../src/budget/transform'
 import { UNIQUE_TYPES, verifyAll } from '../src/budget/verify'
@@ -164,7 +164,11 @@ const surveyPath = new URL('../data/observations/mitaka-budget-years.json', impo
 const yearSurvey: YearSurvey | null = (await Bun.file(surveyPath).exists()) ? ((await Bun.file(surveyPath).json()) as YearSurvey) : null
 if (!yearSurvey) console.warn('  ⚠️ 他年度の互換性調査が無い。bun run check:budget-years --write を先に回すと報告に載る')
 
-await write(`${reportDir}${source.jurisdictionCode}-${source.fiscalYear}.md`, buildReport({ source, expenditure, revenue, derived, checks, outputs, yearSurvey }), 'パイプライン報告')
+// 集計は buildReportData だけが行い、Markdown（人が読む）と JSON（画面が読む）は同じ結果を整形する。
+// 二重に集計すると、同じ数字が2通りに計算されて、いずれ食い違ったまま気づかなくなる。
+const reportData = buildReportData({ source, expenditure, revenue, derived, checks, outputs, yearSurvey })
+await write(`${reportDir}${source.jurisdictionCode}-${source.fiscalYear}.json`, JSON.stringify(reportData, null, 2) + '\n', 'パイプライン報告（機械可読。画面はこれを読む）')
+await write(`${reportDir}${source.jurisdictionCode}-${source.fiscalYear}.md`, buildReport(reportData), 'パイプライン報告（人が読む）')
 
 console.log('')
 for (const o of outputs) console.log(`  書き出し ${o.path}（${o.bytes.toLocaleString()} バイト）`)

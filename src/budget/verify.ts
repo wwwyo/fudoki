@@ -74,22 +74,32 @@ function dependencies(table: CanonicalTable): Check[] {
   // code → label（同じ親の下で、同じコードが違う名称を持たないこと）。
   // ⚠️ これは全階層で成り立つ性質ではない。三鷹市の歳出の細々節は同じ節の下でコードを再利用する。
   // そこで階層ごとの宣言（codeUniqueAmongSiblings）と実測を**両方向で**突き合わせる。
-  const measured = new Map<string, { collisions: number; example: string }>()
-  const codeToLabel = new Map<string, string>()
+  // 数えるのは**衝突した（親, コード）の組の数**であって、行の出現回数ではない。
+  // 行で数えると同じ組を何度も足してしまい、「何箇所で衝突しているか」と一致しなくなる。
+  const labelsPerKey = new Map<string, Set<string>>()
+  const keyMeta = new Map<string, { level: string; sourceColumn: string; code: string }>()
   for (const row of table.rows) {
     for (const [i, l] of table.levels.entries()) {
       const parent = table.levels.slice(0, i).map((p) => row[`${p.key}_source`]).join('/')
       const key = [l.key, parent, row[`${l.key}_code`]].join(SEP)
-      const label = String(row[`${l.key}_label`])
-      const seen = codeToLabel.get(key)
-      if (seen === undefined) codeToLabel.set(key, label)
-      else if (seen !== label) {
-        const acc = measured.get(l.key) ?? { collisions: 0, example: `${l.sourceColumn} ${row[`${l.key}_code`]} が「${seen}」と「${label}」の両方に対応する` }
-        acc.collisions++
-        measured.set(l.key, acc)
+      let set = labelsPerKey.get(key)
+      if (!set) {
+        labelsPerKey.set(key, (set = new Set()))
+        keyMeta.set(key, { level: l.key, sourceColumn: l.sourceColumn, code: String(row[`${l.key}_code`]) })
       }
+      set.add(String(row[`${l.key}_label`]))
     }
   }
+
+  const measured = new Map<string, { collisions: number; example: string }>()
+  for (const [key, labels] of labelsPerKey) {
+    if (labels.size <= 1) continue
+    const meta = keyMeta.get(key)!
+    const acc = measured.get(meta.level) ?? { collisions: 0, example: `${meta.sourceColumn} ${meta.code} が「${[...labels].slice(0, 2).join('」と「')}」の両方に対応する` }
+    acc.collisions++
+    measured.set(meta.level, acc)
+  }
+  const codeToLabel = labelsPerKey
 
   const wrong: string[] = []
   for (const l of table.levels) {

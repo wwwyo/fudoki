@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>fudoki — 予算パイプライン</title>
+<style>
+:root{
+  --bg:#fbfaf8; --fg:#1c1a17; --muted:#6b665e; --line:#e3ded5;
+  --card:#fff; --ok:#2f7d4f; --ng:#b0453a; --warn:#9a6b1e; --accent:#3a5a8c;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#161513;--fg:#eae6df;--muted:#9b958a;--line:#2f2c27;--card:#1e1c19;
+        --ok:#6fbf8b;--ng:#e08b7f;--warn:#d7a54a;--accent:#8fb0dd}
+}
+:root[data-theme=dark]{--bg:#161513;--fg:#eae6df;--muted:#9b958a;--line:#2f2c27;--card:#1e1c19;
+  --ok:#6fbf8b;--ng:#e08b7f;--warn:#d7a54a;--accent:#8fb0dd}
+:root[data-theme=light]{--bg:#fbfaf8;--fg:#1c1a17;--muted:#6b665e;--line:#e3ded5;--card:#fff;
+  --ok:#2f7d4f;--ng:#b0453a;--warn:#9a6b1e;--accent:#3a5a8c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:14px/1.6 -apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",sans-serif}
+header{padding:22px 20px 12px;border-bottom:1px solid var(--line)}
+h1{margin:0 0 4px;font-size:19px;letter-spacing:.02em}
+.sub{color:var(--muted);font-size:12.5px}
+.wrap{padding:16px 20px 70px;max-width:1500px}
+h2{font-size:15px;margin:34px 0 4px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+h2:first-of-type{margin-top:20px}
+h3{font-size:13.5px;margin:22px 0 7px;color:var(--fg)}
+p.note{color:var(--muted);font-size:12.5px;line-height:1.7;margin:6px 0 10px;max-width:78ch}
+.mono{font-variant-numeric:tabular-nums}
+code{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:0 4px;font-size:12px}
+a{color:var(--accent)}
+
+/* ── パイプラインのフロー ───────────────────────── */
+/* 折り返すと「判断の境界」がどのノードの手前にあるか読めなくなるので、
+   幅が足りないときは折り返さずに横スクロールさせる */
+.flow{display:flex;align-items:stretch;gap:0;flex-wrap:nowrap;overflow-x:auto;
+  margin:14px 0 6px;padding-bottom:6px}
+.flow>*{flex:0 0 auto}
+.node{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 15px;min-width:172px;
+  cursor:pointer;text-align:left;color:inherit;font:inherit}
+.node:hover{border-color:var(--accent)}
+.node[aria-pressed=true]{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 22%,transparent)}
+.node .stage{font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.node .big{font-size:21px;font-variant-numeric:tabular-nums;line-height:1.25;margin:2px 0 1px}
+.node .cap{font-size:11.5px;color:var(--muted)}
+.arrow{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:0 9px;color:var(--muted);font-size:11px;min-width:74px}
+.arrow .glyph{font-size:17px;line-height:1}
+.arrow .lbl{margin-top:1px;text-align:center}
+.arrow.judge{color:var(--warn)}
+.arrow.judge .lbl{font-weight:600}
+.boundary{border-left:2px dashed color-mix(in srgb,var(--warn) 55%,transparent)}
+.legend-judge{background:color-mix(in srgb,var(--warn) 9%,transparent);
+  border:1px solid color-mix(in srgb,var(--warn) 30%,transparent);border-radius:8px;
+  padding:9px 13px;font-size:12.5px;line-height:1.7;margin:8px 0 0;max-width:88ch}
+.legend-judge b{color:var(--warn)}
+
+/* ── 統計 ─────────────────────────────────── */
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 13px;min-width:96px}
+.stat b{display:block;font-size:19px;line-height:1.2;font-variant-numeric:tabular-nums}
+.stat span{color:var(--muted);font-size:11.5px}
+.stat.bad b{color:var(--ng)}
+.stat.good b{color:var(--ok)}
+
+/* ── 表 ──────────────────────────────────── */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:9px;background:var(--card);margin:8px 0}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th{position:sticky;top:0;z-index:1;background:var(--card);text-align:left;font-weight:600;
+  padding:8px 10px;border-bottom:1.5px solid var(--line);white-space:nowrap;font-size:11.5px}
+td{padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+td.wide{min-width:min(46ch,50vw)}
+tr:last-child td{border-bottom:none}
+tr.clk{cursor:pointer}
+tr.clk:hover td{background:color-mix(in srgb,var(--accent) 7%,transparent)}
+
+.pill{display:inline-block;padding:1px 7px;border-radius:999px;font-size:11px;border:1px solid;white-space:nowrap}
+.p-ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 45%,transparent)}
+.p-ng{color:var(--ng);border-color:color-mix(in srgb,var(--ng) 45%,transparent)}
+.p-warn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 45%,transparent)}
+.p-mute{color:var(--muted);border-color:var(--line)}
+
+/* ── COFOG の帯 ────────────────────────────── */
+.bar{display:flex;height:26px;border-radius:6px;overflow:hidden;border:1px solid var(--line);margin:8px 0 6px}
+.bar div{min-width:2px}
+.bar div:hover{filter:brightness(1.14)}
+.legend{display:flex;flex-wrap:wrap;gap:5px 12px;font-size:11.5px;color:var(--muted);margin-bottom:4px}
+.legend span{display:inline-flex;align-items:center;gap:5px;cursor:default}
+.sw{width:10px;height:10px;border-radius:2px;display:inline-block}
+
+/* ── 明細ブラウザ ───────────────────────────── */
+.controls{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin:10px 0}
+input[type=search]{background:var(--card);border:1px solid var(--line);color:var(--fg);
+  border-radius:7px;padding:6px 11px;font-size:13px;min-width:260px}
+button.f{background:var(--card);border:1px solid var(--line);color:var(--fg);
+  border-radius:999px;padding:5px 12px;font-size:12.5px;cursor:pointer}
+button.f[aria-pressed=true]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.crumb{display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:12.5px;margin:8px 0}
+.crumb button{background:none;border:none;color:var(--accent);cursor:pointer;font:inherit;padding:2px 3px;border-radius:4px}
+.crumb button:hover{background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.crumb .sepc{color:var(--muted)}
+.crumb .cur{color:var(--fg);font-weight:600;padding:2px 3px}
+.leafbox{background:color-mix(in srgb,var(--accent) 5%,transparent);border:1px solid var(--line);
+  border-radius:9px;padding:13px 16px;margin:8px 0}
+.leafbox dl{display:grid;grid-template-columns:max-content 1fr;gap:5px 14px;margin:0}
+.leafbox dt{color:var(--muted);font-size:12px;white-space:nowrap}
+.leafbox dd{margin:0;font-size:12.5px;word-break:break-all}
+.hidden{display:none}
+.loading{color:var(--muted);font-size:13px;padding:26px 0}
+.err{color:var(--ng);font-size:13px;padding:16px;border:1px solid color-mix(in srgb,var(--ng) 40%,transparent);
+  border-radius:8px;background:color-mix(in srgb,var(--ng) 7%,transparent);line-height:1.7}
+details{border:1px solid var(--line);border-radius:8px;background:var(--card);padding:9px 13px;margin:7px 0}
+summary{cursor:pointer;font-size:13px;font-weight:600}
+details p{font-size:12.5px;line-height:1.75;color:var(--muted);margin:8px 0 2px;max-width:82ch}
+footer{color:var(--muted);font-size:12px;padding:26px 20px 40px;line-height:1.75;border-top:1px solid var(--line);margin-top:34px}
+</style>
+</head>
+<body>
+<header>
+  <h1>予算パイプライン — <span id="hTitle">…</span></h1>
+  <div class="sub" id="hSub">読み込み中</div>
+</header>
+
+<div class="wrap">
+  <div id="fatal" class="err hidden"></div>
+  <div id="app" class="hidden">
+
+    <div class="flow" id="flow"></div>
+    <div class="legend-judge">
+      <b>段の切れ目は「fudoki の判断が入るかどうか」で引いてある。</b>
+      Load までは原典に忠実な写しで、出力（正本）は原文と突き合わせて検証できる。
+      Transform で初めて解釈が入り、COFOG の割り当てのように<b>三鷹市が言っていないことを付け加える</b>。
+      両者を同じデータに混ぜると、市が公表した事実と fudoki の判断を利用者が区別できなくなる。
+    </div>
+    <div class="stats" id="stats"></div>
+
+    <!-- Extract -->
+    <h2 id="s-extract">Extract — 原典を無加工で取得する</h2>
+    <p class="note">レスポンスをバイト列のまま作業領域へ置き、取得 URL・HTTP status・SHA-256・取得時刻を証跡として残す。
+      取得物はリポジトリに置かない。残すのは証跡だけなので、再現性の意味は「原典から再生成できること」ではなく「成果物の版が残ること」になる。</p>
+    <div class="tablewrap"><table id="tExtract"></table></div>
+    <h3>年度の由来</h3>
+    <p class="note">原典に年度の列が無く、カタログのリソース名にしか現れない。取り違えても検出できなくなるので、解決を Load より前で行って根拠を残す。</p>
+    <div id="yearBasis"></div>
+
+    <!-- Load -->
+    <h2 id="s-load">Load — 原典1行を正本1行へ写す</h2>
+    <p class="note">コードと名称の分離、年度の付与、円への正規化、識別子の付与、ColumnType の割り当て。
+      階層は潰さず列として保持する。<b>ここまでは原典に無い情報を足さない。</b></p>
+    <div class="tablewrap"><table id="tLoad"></table></div>
+    <h3>1行がどう変わったか</h3>
+    <div class="tablewrap" style="background:var(--bg);border-style:dashed"><table><tbody>
+      <tr><td style="color:var(--muted);white-space:nowrap">原典</td><td class="mono" id="wtSource"></td></tr>
+    </tbody></table></div>
+    <div class="tablewrap"><table id="tWalk"></table></div>
+    <h3>階層の切り出し</h3>
+    <p class="note">会計・款・項・目・事項・節・細々節が、それぞれ独立した切り口として取り出せる。
+      「完全修飾」はコードだけでなく親までを含めて数えた異なり数で、<b>コードの異なり数より大きいのは、同じコードが別の親の下で再利用されている</b>ことを意味する。</p>
+    <div id="levels"></div>
+
+    <!-- Transform -->
+    <h2 id="s-transform">Transform — COFOG を割り当てる（fudoki の判断）</h2>
+    <p class="note" id="tfMeta"></p>
+    <p class="note">Budget Standard Taxonomy が提供するのは COFOG を<em>格納する語彙</em>だけで、
+      日本の予算科目から COFOG への対応そのものは仕様側に存在しない。以下はすべて fudoki 固有の判断である。</p>
+
+    <h3>ディビジョン別の金額</h3>
+    <div class="legend" id="cofogLegend"></div>
+    <div class="bar" id="cofogBar"></div>
+    <p class="note" id="cofogNote"></p>
+
+    <h3>状態の分布</h3>
+    <p class="note">分類の軸（割当済み / 分類不能 / 対象外）と連結の軸（保持 / 消去）は別の問い。
+      1つの排他的な状態に畳むと、<b>分類できなかったもの</b>と<b>そもそも分類の対象でないもの</b>が混ざる。
+      公債費の元金償還は「分類できない」のではなく「対象外」である。</p>
+    <div class="tablewrap"><table id="tState"></table></div>
+
+    <h3>款ごとの割当先・状態・根拠</h3>
+    <p class="note">款は一般会計で12件。入力と出力を並べれば人が妥当性を判定できる規模に保つ。</p>
+    <div class="tablewrap"><table id="tKan"></table></div>
+
+    <h3>どの単位で割り当てが決まったか</h3>
+    <p class="note">款だけで決まらなかった金額が、項・目のどこまで下げれば決まったかを示す。</p>
+    <div class="tablewrap"><table id="tLevel"></table></div>
+
+    <h3>連結の消去</h3>
+    <p class="note" id="consScope"></p>
+    <div class="tablewrap"><table id="tCons"></table></div>
+    <p class="note">⚠️ 歳出の繰出金と歳入の繰入金は<b>行と行が1対1に対応しない</b>（細々節の切り方が両者で違う）。
+      金額が厳密に一致するのは会計の対どうしの合計であり、上表がその突合結果である。</p>
+
+    <h3>分類不能と対象外の内訳</h3>
+    <p class="note"><b>分類不能の割合の低さは合否に使わない。</b> 成立範囲を正直に調べることが目的であり、
+      割合を目標にすると分類不能を減らす方向に判断が歪む。</p>
+    <div class="tablewrap"><table id="tNotAssigned"></table></div>
+
+    <!-- 検査 -->
+    <h2 id="s-checks">検査</h2>
+    <p class="note">合計の突合だけに頼らない。<b>1行の欠落と同額の行の重複は合計では相殺されて素通りする。</b>
+      性質の異なる検査を並べ、どれか1つが通っても他が落ちる状態を作る。検査が1つでも落ちると成果物は書き出されない。</p>
+    <div class="controls"><button class="f" id="failOnly" aria-pressed="false">失敗だけ表示</button></div>
+    <div class="tablewrap"><table id="tChecks"></table></div>
+    <div id="notRecon"></div>
+
+    <!-- 明細 -->
+    <h2 id="s-detail">明細を辿る</h2>
+    <p class="note">会計から細々節まで、階層を降りながら金額を見る。行をクリックすると1段深くなる。
+      事項名（例:「いじめ問題対策協議会関係費」）で絞り込むと、その金額がどこに付いているかを直接引ける。</p>
+    <div class="controls">
+      <button class="f" id="dirExp" aria-pressed="true">歳出（COFOG 付き）</button>
+      <button class="f" id="dirRev" aria-pressed="false">歳入</button>
+      <input type="search" id="q" placeholder="事項名・科目名で絞り込み（例: いじめ問題対策協議会）">
+      <span class="sub" id="qHit"></span>
+    </div>
+    <div class="crumb" id="crumb"></div>
+    <div id="detailBody"><div class="loading">明細を読み込み中…</div></div>
+
+    <!-- 他年度 -->
+    <h2 id="s-years">他年度との互換性（調査のみ。収録はしない）</h2>
+    <p class="note" id="yearsNote"></p>
+    <div class="tablewrap"><table id="tYears"></table></div>
+
+    <!-- Caveats -->
+    <h2 id="s-caveats">Caveats</h2>
+    <p class="note">確定できなかったこと、および設計文書と実データが食い違った点。<b>推測で埋めずに残す。</b></p>
+    <div id="caveats"></div>
+
+    <h2 id="s-columntypes">独自に定義した ColumnType</h2>
+    <p class="note">標準の Budget Standard Taxonomy に無く、fudoki が定義したもの。descriptor の <code>columnTypes</code> にインラインで載せてある。</p>
+    <div class="tablewrap"><table id="tCT"></table></div>
+
+    <h2 id="s-portability">2団体目へ展開するときに何を確かめるか</h2>
+    <p class="note"><b>「再利用可能と判明した」は1団体では言えない。</b> 判定できないものは判定できないと書く。</p>
+    <div id="portability"></div>
+  </div>
+</div>
+<footer id="foot"></footer>
+
+<script src="_pipeline.js"></script>
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+const ESC = {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};
+const e = v => String(v ?? '').replace(/[&<>"']/g, c => ESC[c]);
+const n = v => Number(v).toLocaleString('ja-JP');
+/** 円は桁が多いので、俯瞰する表では億・万に丸める。厳密な値は必ず併記する */
+const yenShort = v => {
+  const x = Number(v);
+  if (Math.abs(x) >= 1e8) return (x / 1e8).toFixed(x >= 1e10 ? 0 : 1) + '億円';
+  if (Math.abs(x) >= 1e4) return Math.round(x / 1e4).toLocaleString('ja-JP') + '万円';
+  return n(x) + '円';
+};
+const pill = (t, c) => `<span class="pill ${c}">${e(t)}</span>`;
+const ok = b => b ? pill('✓', 'p-ok') : pill('✗', 'p-ng');
+
+/** `_pipeline.js` が入れる。中身は data/reports の報告 JSON と、明細を列指向に詰め直したもの */
+const P = window.PIPELINE;
+
+/** COFOG 1999 のディビジョン。色はカテゴリ識別のためだけで、順序や大小の意味は持たせない */
+const DIV_COLOR = {
+  '01':'#7d8fb3','02':'#8a7d9e','03':'#a8776a','04':'#c19a4e','05':'#6f9e73',
+  '06':'#a2825e','07':'#c07f7f','08':'#9b8bb4','09':'#5f8fa8','10':'#b08a95',
+};
+
+/** 列指向で受け取ったものを、扱いやすい行オブジェクトへ戻す */
+function toRows(t) {
+  return t.rows.map(r => Object.fromEntries(t.columns.map((c, i) => [c, r[i]])));
+}
+
+const tbl = (head, bodyRows) =>
+  `<thead><tr>${head.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${bodyRows.join('')}</tbody>`;
+
+// ── 描画 ────────────────────────────────────────────
+let R = null, EXP = null, REV = null;
+
+function renderFlow() {
+  const exIn = R.extract.reduce((s, p) => s + p.rows, 0);
+  const loadOut = R.load.reduce((s, l) => s + l.outputRows, 0);
+  const diff = R.load.reduce((s, l) => s + l.diff, 0);
+  const t = R.transform;
+  const nodes = [
+    { stage: '外部', big: R.extract.length + ' ファイル', cap: '東京都カタログ CKAN', to: 's-extract' },
+    { stage: 'Extract', big: n(exIn) + ' 行', cap: 'SHA-256 と取得時刻を記録', to: 's-extract' },
+    { stage: 'Load ／ 正本', big: n(loadOut) + ' 行', cap: '判断を含まない写し', to: 's-load' },
+    { stage: 'Transform ／ 派生', big: n(t.outputRows) + ' 行', cap: 'COFOG 割当（歳出のみ）', to: 's-transform' },
+  ];
+  const arrows = [
+    { glyph: '→', lbl: '取得' },
+    { glyph: '→', lbl: '差分 ' + (diff === 0 ? '0' : diff) },
+    { glyph: '→', lbl: 'ここから判断', judge: true },
+  ];
+  let h = '';
+  nodes.forEach((nd, i) => {
+    if (i) {
+      const a = arrows[i - 1];
+      h += `<div class="arrow${a.judge ? ' judge' : ''}"><span class="glyph">${a.glyph}</span><span class="lbl">${e(a.lbl)}</span></div>`;
+    }
+    h += `<button class="node${i === 3 ? ' boundary' : ''}" data-to="${nd.to}">
+      <span class="stage">${e(nd.stage)}</span>
+      <span class="big">${e(nd.big)}</span>
+      <span class="cap">${e(nd.cap)}</span></button>`;
+  });
+  $('#flow').innerHTML = h;
+  $('#flow').querySelectorAll('.node').forEach(b =>
+    b.onclick = () => document.getElementById(b.dataset.to).scrollIntoView({ behavior: 'smooth', block: 'start' }));
+}
+
+function renderStats() {
+  const s = R.summary, t = R.transform;
+  const assigned = t.byState.filter(x => x.status === 'assigned').reduce((a, b) => a + b.sum, 0);
+  const total = t.byState.reduce((a, b) => a + b.sum, 0);
+  const eliminated = t.byState.filter(x => x.consolidation === 'eliminated').reduce((a, b) => a + b.sum, 0);
+  const cards = [
+    { b: `${s.passed}/${s.total}`, s: '検査に成功', cls: s.failed ? 'bad' : 'good' },
+    { b: yenShort(total), s: '歳出の総額（円）' },
+    { b: (assigned / total * 100).toFixed(1) + '%', s: 'COFOG 割当済み（金額比）' },
+    { b: yenShort(eliminated), s: '連結で消去' },
+    { b: t.ruleCount, s: '割当規則の本数' },
+  ];
+  $('#stats').innerHTML = cards.map(c =>
+    `<div class="stat ${c.cls || ''}"><b>${e(c.b)}</b><span>${e(c.s)}</span></div>`).join('');
+}
+
+function renderExtract() {
+  $('#tExtract').innerHTML = tbl(
+    ['direction', 'リソース名', 'status', '行数', 'バイト', '文字コード', 'SHA-256', '取得時刻'],
+    R.extract.map(p => `<tr>
+      <td>${e(p.direction)}</td>
+      <td><a href="${e(p.requestUrl)}" target="_blank" rel="noreferrer">${e(p.resourceName)}</a></td>
+      <td>${ok(p.status === 200)} ${p.status}</td>
+      <td class="num">${n(p.rows)}</td>
+      <td class="num">${n(p.bytes)}</td>
+      <td>${e(p.encoding)}</td>
+      <td class="mono" style="font-size:11px">${e(p.sha256.slice(0, 16))}…</td>
+      <td style="white-space:nowrap">${e(p.fetchedAt.replace('T', ' ').slice(0, 19))}</td></tr>`));
+  $('#yearBasis').innerHTML = R.extract.map(p =>
+    `<p class="note"><b>${e(p.direction)}</b>: ${e(p.fiscalYearBasis)}</p>`).join('');
+}
+
+function renderLoad() {
+  $('#tLoad').innerHTML = tbl(
+    ['direction', '入力（原典）', '出力（正本）', '差分', '階層なしのセル', '想定外のセル'],
+    R.load.map(l => `<tr>
+      <td>${e(l.direction)}</td><td class="num">${n(l.inputRows)}</td><td class="num">${n(l.outputRows)}</td>
+      <td class="num">${l.diff === 0 ? ok(true) + ' 0' : pill(l.diff, 'p-ng')}</td>
+      <td class="num">${n(l.absentLevelCells)}</td>
+      <td class="num">${l.irregularCells === 0 ? '0' : pill(l.irregularCells, 'p-warn')}</td></tr>`));
+  $('#wtSource').textContent = R.walkthrough.sourceLine;
+  $('#tWalk').innerHTML = tbl(['出力の列', '値', 'どこから来たか'],
+    R.walkthrough.fields.map(f => `<tr>
+      <td class="mono" style="white-space:nowrap;font-size:11.5px">${e(f.column)}</td>
+      <td class="mono">${e(f.value)}</td><td>${e(f.origin)}</td></tr>`));
+
+  $('#levels').innerHTML = R.levels.map(g => `
+    <h3 style="margin-top:14px">${e(g.direction)}</h3>
+    <div class="tablewrap"><table>${tbl(['階層', '語彙', 'コードの異なり', '完全修飾の異なり', 'ColumnType'],
+      g.items.map(i => `<tr>
+        <td>${e(i.sourceColumn)}</td>
+        <td>${pill(i.vocabulary, i.vocabulary === '地方自治法' ? 'p-mute' : 'p-warn')}</td>
+        <td class="num">${n(i.distinctCodes)}</td>
+        <td class="num">${n(i.distinctPaths)}</td>
+        <td class="mono" style="font-size:11px">${e(i.columnType)}</td></tr>`))}</table></div>`).join('');
+}
+
+function renderTransform() {
+  const t = R.transform;
+  $('#tfMeta').innerHTML = `版 <b>${e(t.cofogVersion)}</b>（ディビジョン <code>01</code>〜<code>10</code>） ／
+    コード表の取得元 <a href="${e(t.cofogSource.url)}" target="_blank" rel="noreferrer">${e(t.cofogSource.name)}</a> ／
+    規則 ${t.ruleCount} 本 ／ 入力 ${n(t.inputRows)} 行 → 出力 ${n(t.outputRows)} 行`;
+
+  const byDiv = new Map();
+  for (const s of t.byState) if (s.status === 'assigned') byDiv.set(s.division, (byDiv.get(s.division) ?? 0) + s.sum);
+  const divs = [...byDiv.entries()].sort();
+  const assigned = divs.reduce((a, [, v]) => a + v, 0);
+  $('#cofogBar').innerHTML = divs.map(([d, v]) =>
+    `<div style="width:${v / assigned * 100}%;background:${DIV_COLOR[d]}" title="${e(d)} ${e(R.transform.byState.find(s => s.division === d)?.divisionLabel ?? '')} ${n(v)} 円"></div>`).join('');
+  $('#cofogLegend').innerHTML = divs.map(([d, v]) => {
+    const lbl = t.byState.find(s => s.division === d)?.divisionLabel ?? '';
+    return `<span><i class="sw" style="background:${DIV_COLOR[d]}"></i>${e(d)} ${e(lbl)} ${yenShort(v)}</span>`;
+  }).join('');
+  const total = t.byState.reduce((a, b) => a + b.sum, 0);
+  $('#cofogNote').innerHTML = `帯は<b>割当済みのみ</b>（${n(assigned)} 円）。
+    これに分類不能と対象外を足すと原典の合計 ${n(total)} 円に戻る。帯の幅は割当済みの中での構成比であって、総額に対する比ではない。`;
+
+  $('#tState').innerHTML = tbl(['分類の軸', '連結の軸', 'ディビジョン', '行数', '金額（円）'],
+    t.byState.map(s => `<tr>
+      <td>${pill(s.status, s.status === 'assigned' ? 'p-ok' : s.status === 'unclassifiable' ? 'p-warn' : 'p-mute')}</td>
+      <td>${s.consolidation === 'eliminated' ? pill('消去', 'p-warn') : '<span class="p-mute">保持</span>'}</td>
+      <td>${s.division ? `<i class="sw" style="background:${DIV_COLOR[s.division]}"></i> ${e(s.division)} ${e(s.divisionLabel)}` : '<span style="color:var(--muted)">（空）</span>'}</td>
+      <td class="num">${n(s.count)}</td><td class="num">${n(s.sum)}</td></tr>`));
+
+  $('#tKan').innerHTML = tbl(['会計', '款', '割当先', '状態', '決まった単位', '金額（円）', '根拠'],
+    t.byKan.map(k => `<tr>
+      <td style="white-space:nowrap">${e(k.fund)}</td><td style="white-space:nowrap">${e(k.kan)}</td>
+      <td style="white-space:nowrap">${k.division ? `<i class="sw" style="background:${DIV_COLOR[k.division]}"></i> ${e(k.division)} ${e(k.divisionLabel)}` : '—'}</td>
+      <td>${pill(k.status, k.status === 'assigned' ? 'p-ok' : k.status === 'unclassifiable' ? 'p-warn' : 'p-mute')}</td>
+      <td>${e(k.decidedAtLevel)}</td><td class="num">${n(k.sum)}</td>
+      <td class="wide">${e(k.basis)}</td></tr>`));
+
+  $('#tLevel').innerHTML = tbl(['決まった単位', '行数', '金額（円）'],
+    t.byLevel.map(l => `<tr><td>${e(l.level)}</td><td class="num">${n(l.count)}</td><td class="num">${n(l.sum)}</td></tr>`));
+
+  $('#consScope').innerHTML = `連結の範囲: <b>${e(t.consolidationScope)}</b>`;
+  $('#tCons').innerHTML = tbl(['出し手', '受け皿', '消去した金額（円）', '相手側の合計（円）', '一致', '相手側の行数'],
+    t.consolidationPairs.map(p => `<tr>
+      <td>${e(p.from)}</td><td>${e(p.to)}</td>
+      <td class="num">${n(p.eliminated)}</td><td class="num">${n(p.counterpart)}</td>
+      <td>${ok(p.ok)}</td><td class="num">${p.counterpartCount}</td></tr>`));
+
+  $('#tNotAssigned').innerHTML = tbl(['状態', '会計', '款', '金額（円）', '理由'],
+    t.notAssigned.map(x => `<tr>
+      <td>${pill(x.status, x.status === 'unclassifiable' ? 'p-warn' : 'p-mute')}</td>
+      <td style="white-space:nowrap">${e(x.fund)}</td><td style="white-space:nowrap">${e(x.kan)}</td>
+      <td class="num">${n(x.sum)}</td><td class="wide">${e(x.basis)}</td></tr>`));
+}
+
+let failOnly = false;
+function renderChecks() {
+  const rows = R.checks.filter(c => !failOnly || !c.ok);
+  $('#tChecks').innerHTML = tbl(['', '検査', '結果'],
+    rows.map(c => `<tr><td>${ok(c.ok)}</td><td style="min-width:22ch">${e(c.name)}</td><td>${e(c.detail)}</td></tr>`));
+  const nr = R.notYetReconciled;
+  $('#notRecon').innerHTML = `<h3>まだ突合していない範囲</h3>
+    <div class="leafbox"><dl>
+      <dt>範囲</dt><dd><b>${e(nr.scope)}</b></dd>
+      <dt>理由</dt><dd>${e(nr.reason)}</dd>
+      <dt>出所の候補</dt><dd><a href="${e(nr.wouldComeFrom)}" target="_blank" rel="noreferrer">${e(nr.wouldComeFrom)}</a></dd>
+      <dt>現在の根拠</dt><dd>${e(nr.currentEvidence)}</dd></dl></div>`;
+}
+
+function renderYears() {
+  if (!R.yearSurvey) { $('#s-years').classList.add('hidden'); return; }
+  $('#yearsNote').innerHTML = `⚠️ ${e(R.yearSurvey.caveat)}`;
+  $('#tYears').innerHTML = tbl(['年度', 'direction', '行数', '会計', '収録範囲の注記', '互換', '判定根拠'],
+    R.yearSurvey.observations.map(o => `<tr>
+      <td style="white-space:nowrap">${e(o.label)}</td><td>${e(o.direction)}</td>
+      <td class="num">${o.rows == null ? '—' : n(o.rows)}</td>
+      <td class="num">${o.funds ? o.funds.length : '—'}</td>
+      <td>${o.coverageNote ? e(o.coverageNote) : '<span style="color:var(--muted)">なし</span>'}</td>
+      <td>${o.compatible == null ? pill('?', 'p-mute') : ok(o.compatible)}</td>
+      <td class="wide">${e(o.basis)}</td></tr>`));
+}
+
+function renderTail() {
+  $('#caveats').innerHTML = R.caveats.map(c =>
+    `<details><summary>${e(c.topic)}</summary><p>${e(c.body).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/`(.+?)`/g, '<code>$1</code>')}</p></details>`).join('');
+  $('#tCT').innerHTML = tbl(['名前', 'dataType', 'unique', 'labelOf', 'なぜ独自定義が要るか'],
+    R.customColumnTypes.map(c => `<tr>
+      <td class="mono" style="font-size:11.5px;white-space:nowrap">${e(c.name)}</td>
+      <td>${e(c.dataType)}</td><td>${c.unique ? '✓' : ''}</td>
+      <td class="mono" style="font-size:11px">${e(c.labelOf ?? '')}</td>
+      <td class="wide">${e(c.why)}</td></tr>`));
+  const kinds = ['再利用の候補', '三鷹市に固有', '一般性を判定できない'];
+  $('#portability').innerHTML = kinds.map(k => `
+    <h3>${e(k)}</h3>
+    <div class="tablewrap"><table>${tbl(['要素', '2団体目で確かめること'],
+      R.portability.filter(p => p.kind === k).map(p => `<tr><td>${e(p.element)}</td><td>${e(p.verifyNext)}</td></tr>`))}</table></div>`).join('');
+  const m = R.meta;
+  $('#foot').innerHTML = `正本 <code>data/packages/${P.code}/${P.year}/</code> ／ 証跡 <code>data/provenance/</code> ／
+    報告 <code>data/reports/${P.code}-${P.year}.json</code>（この画面は <code>bun run build:pipeline-view</code> が作る <code>web/_pipeline.js</code> 経由で読んでいる）<br>
+    原典: <a href="${e(m.landingPage)}" target="_blank" rel="noreferrer">${e(m.attribution)}</a> ／
+    ライセンス ${e(m.license.id)} ／ 生成 ${e(m.generatedAt.replace('T', ' ').slice(0, 19))}<br>
+    再生成は <code>bun run build:budget</code>。検査が1つでも落ちると成果物は書き出されない。`;
+}
+
+// ── 明細ブラウザ ─────────────────────────────────────
+let dir = 'expenditure', path = [], query = '';
+const LEVELS = {
+  expenditure: ['fund', 'kan', 'kou', 'moku', 'jikou', 'setsu', 'saisaisetsu'],
+  revenue: ['fund', 'kan', 'kou', 'moku', 'setsu', 'saisetsu', 'saisaisetsu'],
+};
+const LEVEL_JA = { fund: '会計', kan: '款', kou: '項', moku: '目', jikou: '事項', setsu: '節', saisetsu: '細節', saisaisetsu: '細々節' };
+
+function rowsFor() {
+  const src = dir === 'expenditure' ? EXP : REV;
+  const ls = LEVELS[dir];
+  let rows = src.filter(r => path.every((v, i) => r[ls[i] + '_source'] === v));
+  if (query) {
+    const q = query.toLowerCase();
+    rows = rows.filter(r => ls.some(l => String(r[l + '_label']).toLowerCase().includes(q)));
+  }
+  return rows;
+}
+
+function renderDetail() {
+  const ls = LEVELS[dir];
+  const rows = rowsFor();
+  const depth = path.length;
+
+  $('#crumb').innerHTML = [`<button data-i="0">全体</button>`,
+    ...path.map((v, i) => `<span class="sepc">›</span>` +
+      (i === path.length - 1 ? `<span class="cur">${e(v)}</span>` : `<button data-i="${i + 1}">${e(v)}</button>`))].join('');
+  $('#crumb').querySelectorAll('button').forEach(b =>
+    b.onclick = () => { path = path.slice(0, Number(b.dataset.i)); renderDetail(); });
+
+  const total = rows.reduce((s, r) => s + Number(r.value), 0);
+  $('#qHit').textContent = `${n(rows.length)} 行 / ${n(total)} 円`;
+
+  if (rows.length === 0) { $('#detailBody').innerHTML = `<p class="note">該当なし。</p>`; return; }
+
+  // 末端まで降りて1行だけになったら、その行の全項目を見せる
+  if (depth >= ls.length || rows.length === 1) { renderLeaf(rows[0]); return; }
+
+  const key = ls[depth] + '_source';
+  const groups = new Map();
+  for (const r of rows) {
+    const k = r[key];
+    const g = groups.get(k) ?? { count: 0, sum: 0, divs: new Map(), statuses: new Set() };
+    g.count++; g.sum += Number(r.value);
+    if (dir === 'expenditure') {
+      if (r.cofog_division_code) g.divs.set(r.cofog_division_code, (g.divs.get(r.cofog_division_code) ?? 0) + Number(r.value));
+      g.statuses.add(r.cofog_status);
+    }
+    groups.set(k, g);
+  }
+  const entries = [...groups.entries()].sort((a, b) => b[1].sum - a[1].sum);
+  const max = entries[0][1].sum;
+  const head = [LEVEL_JA[ls[depth]], '金額（円）', '構成', '行数'];
+  if (dir === 'expenditure') head.push('COFOG');
+
+  $('#detailBody').innerHTML = `<div class="tablewrap"><table>${tbl(head, entries.map(([k, g]) => {
+    const share = g.sum / max * 100;
+    let cofog = '';
+    if (dir === 'expenditure') {
+      const ds = [...g.divs.entries()].sort((a, b) => b[1] - a[1]);
+      cofog = `<td style="white-space:nowrap">` + (ds.length
+        ? ds.map(([d]) => `<i class="sw" style="background:${DIV_COLOR[d]}" title="${e(d)}"></i>`).join(' ') +
+          (ds.length === 1 ? ` ${e(ds[0][0])}` : ` <span style="color:var(--muted)">${ds.length} 区分</span>`)
+        : [...g.statuses].map(s => pill(s === 'out-of-scope' ? '対象外' : '分類不能', s === 'out-of-scope' ? 'p-mute' : 'p-warn')).join(' ')) + `</td>`;
+    }
+    return `<tr class="clk" data-k="${e(k)}">
+      <td>${e(k)}</td>
+      <td class="num">${n(g.sum)}</td>
+      <td style="min-width:110px"><div style="height:7px;border-radius:3px;background:color-mix(in srgb,var(--accent) 34%,transparent);width:${share}%"></div></td>
+      <td class="num">${n(g.count)}</td>${cofog}</tr>`;
+  }))}</table></div>`;
+  $('#detailBody').querySelectorAll('tr.clk').forEach(tr =>
+    tr.onclick = () => { path = [...path, tr.dataset.k]; renderDetail(); });
+}
+
+function renderLeaf(r) {
+  const ls = LEVELS[dir];
+  const rowsHtml = ls.map(l => `<dt>${LEVEL_JA[l]}</dt><dd>${e(r[l + '_source'])}</dd>`).join('');
+  const cofog = dir === 'expenditure' ? `
+    <dt>COFOG</dt><dd>${r.cofog_division_code
+      ? `<i class="sw" style="background:${DIV_COLOR[r.cofog_division_code]}"></i> ${e(r.cofog_division_code)} ${e(r.cofog_division_label)}`
+      : '<span style="color:var(--muted)">（空）</span>'} ${pill(r.cofog_status, r.cofog_status === 'assigned' ? 'p-ok' : r.cofog_status === 'unclassifiable' ? 'p-warn' : 'p-mute')}
+      ${r.cofog_consolidation === 'eliminated' ? pill('消去', 'p-warn') : ''}</dd>
+    <dt>決まった単位</dt><dd>${e(r.cofog_decided_at_level)}</dd>
+    <dt>割当の根拠</dt><dd>${e(r.cofog_basis)}</dd>
+    <dt>適用した規則</dt><dd><code>${e(r.cofog_rule_id)}</code></dd>` : '';
+  $('#detailBody').innerHTML = `<div class="leafbox"><dl>
+    <dt>budget_line_id</dt><dd class="mono">${e(r.budget_line_id)}</dd>
+    ${rowsHtml}
+    <dt>金額</dt><dd><b>${n(r.value)} 円</b>（原典 ${n(r.source_amount)} ${e(r.source_amount_unit)}）</dd>
+    <dt>年度 / 段階</dt><dd>${e(r.fiscal_year)} / ${e(r.phase_id)}</dd>
+    <dt>原典の行</dt><dd>${e(r.source_row)} 行目</dd>
+    ${cofog}</dl></div>`;
+}
+
+// ── 起動 ────────────────────────────────────────────
+(() => {
+  if (!P) {
+    $('#fatal').classList.remove('hidden');
+    $('#fatal').innerHTML = `<b>データがありません。</b><code>web/_pipeline.js</code> が読み込めませんでした。<br><br>
+      <code>bun run build:budget</code> で成果物を作ってから <code>bun run build:pipeline-view</code> を回してください
+      （<code>bun run dev</code> は両方まとめてやります）。`;
+    $('#hSub').textContent = '読み込み失敗';
+    return;
+  }
+  R = P.report;
+  const m = R.meta;
+  document.title = `fudoki — ${m.jurisdictionName} ${m.fiscalYearLabel}予算パイプライン`;
+  $('#hTitle').textContent = `${m.jurisdictionName} ${m.fiscalYearLabel}`;
+  $('#hSub').innerHTML = `全国地方公共団体コード <code>${e(m.jurisdictionCode)}</code> ／ ${e(m.phase.label)} ／
+    収録範囲 ${e(m.coverageNote ?? '注記なし')} ／ ${e(m.license.id)}`;
+  $('#app').classList.remove('hidden');
+
+  renderFlow(); renderStats(); renderExtract(); renderLoad(); renderTransform();
+  renderChecks(); renderYears(); renderTail();
+
+  $('#failOnly').onclick = () => {
+    failOnly = !failOnly;
+    $('#failOnly').setAttribute('aria-pressed', String(failOnly));
+    renderChecks();
+  };
+
+  EXP = toRows(P.expenditure); REV = toRows(P.revenue);
+
+  const setDir = d => {
+    dir = d; path = [];
+    $('#dirExp').setAttribute('aria-pressed', String(d === 'expenditure'));
+    $('#dirRev').setAttribute('aria-pressed', String(d === 'revenue'));
+    renderDetail();
+  };
+  $('#dirExp').onclick = () => setDir('expenditure');
+  $('#dirRev').onclick = () => setDir('revenue');
+  let timer;
+  $('#q').oninput = ev => {
+    clearTimeout(timer);
+    timer = setTimeout(() => { query = ev.target.value.trim(); path = []; renderDetail(); }, 140);
+  };
+  renderDetail();
+})();
+</script>
+</body>
+</html>

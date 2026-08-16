@@ -234,6 +234,9 @@ bun install
 正本は `data/packages/132047/2024/`、証跡は `data/provenance/`、パイプライン報告は `data/reports/`。
 生成は `bun run build:budget`（**検査が1つでも落ちたら成果物を書かずに落ちる**）。
 
+報告は Markdown（人が読む）と JSON（画面が読む）の2つを出すが、**集計するのは `buildReportData` の1箇所だけ**。
+`bun run dev` で `web/pipeline.html` が開き、段のフロー・検査・COFOG の割当・明細のドリルダウンを同じ数字で見られる。
+
 実データを通して分かった、設計時の想定と違った点。**2団体目でも同じ形で壊れうる。**
 
 - **⚠️ 仕様が「正準」と宣言する taxonomy の URL は 404**（2026-08-16 実測）。
@@ -267,3 +270,4 @@ bun install
 | `bun run check:budget-years` | 三鷹市の他年度が令和6年度と互換か（列構成・金額の型・引用符の有無・会計の範囲） |
 | `bun run fetch:fdp-taxonomy` | FDP の ColumnType 一覧を仕様の原文から起こして取り込む（正準 URL が 404 のため） |
 | `bun run build:budget` | ① 予算のパイプライン（Extract → Load → Transform → 検証 → 報告）。検査が落ちたら書き出さない |
+| `bun run dev` | ビューアのデータを生成して配信（`web/survey.html` と `web/pipeline.html`） |
