@@ -1,38 +1,67 @@
-# web — パイプラインビューア
+# web — ELT ダッシュボード
 
-`pipeline.html` は ① 予算レイヤのパイプラインと明細を見るための単一 HTML。
-データは `_pipeline.js` に埋め込む。**生成物なので gitignore**（正本は `data/` 配下にある）。
+Vite + React + TypeScript + shadcn/ui（Base UI）。
 
 ```bash
-bun run dev   # データを生成して http://localhost:4317/pipeline.html
+bun run dev      # リポジトリのルートから。データを生成して Vite を上げる
+bun run build:web
 ```
 
 先に `bun run build:budget` が要る（成果物が無いとデータを生成できない）。
 
-## 見せるもの
+## 何を見る道具か
 
-- **段のフロー** — 原典 → Extract → Load（正本）→ Transform（派生）。
-  Load と Transform の間に「ここから判断」の境界を引いてある。この境界が設計の中心で、
-  正本は原文と突き合わせて検証でき、COFOG の割り当てだけが fudoki の判断になる
-- 各段の入力・出力・差分、1行がどう変わったかの実例、検査30件の結果
-- COFOG のディビジョン別金額、款ごとの割当先と根拠、どの単位で決まったか、連結の消去
-- **明細を辿る** — 会計から細々節まで階層を降りる。事項名で絞り込める。
-  末端では `budget_line_id`・原典の行番号・割当の根拠・適用した規則まで出る
-- 他年度との互換性、Caveats、独自 ColumnType、2団体目で確かめること
+**ELT の全体像を把握する**。段の流れ、各段の入出力、どの検査がどこを守っているか、
+COFOG の判断がどこで入りどう割れたか、そして明細。
 
-## 集計は画面に持たせない
+## パイプラインの形はデータから来る
 
-数字はすべて `data/reports/*.json` に入っているものをそのまま出す。
-集計は `buildReportData`（`src/budget/report.ts`）の1箇所だけで行う。
+流れ図は `report.topology` を描くだけで、**段の名前も並びもこの画面に持たない**。
+
+旧ビューアは段を文字列で直書きしていたため、パイプラインを変えても図が変わらなかった。
+実装と表示が食い違っても誰も気づかない状態で、ELT の全体像を見る道具としては致命的だった。
+`src/budget/topology.ts` が段・ノード・辺を実行結果から導き、画面はそれを受け取る。
+
+帯の太さの単位は**行数ひとつ**に固定してある。行数と金額を同じ図に混ぜると、
+太さが何を表しているのか読めなくなる。金額は別の図が持つ。
+
+## 型はパイプライン本体から取る
+
+```ts
+import type { ReportData } from '@pipeline/report'   // → ../src/budget/report.ts
+```
+
+`web/` 側で形を写さない。`ReportData` のフィールド名を変えると **`web` の typecheck が落ちる**
+（検証済み: `decidedAtLevel` を改名すると `cofog-panel.tsx` がエラーになる）。
+
+旧ビューアは素の JS で 26 箇所を読んでいて、この検査が一切効いていなかった。
+
+⚠️ `typecheck` は `tsc -b` である必要がある。`tsconfig.json` は `files: []` の
+solution file なので、`tsc --noEmit` だと**参照先を辿らず何も検査しない**。
+scaffold の既定がそれだったため、しばらく無意味な「通過」を見ていた。
+
+## 色は意味を持たせる
+
+`--chart-1..5` は使わない（base-nova の chart 系はゼロ彩度のグレーで、
+判断の有無も分類の状態も区別できない）。`src/index.css` に概念名で定義する。
+
+| トークン | 意味 |
+|---|---|
+| `--stage-nojudgment` | 原典・正本。fudoki の判断が入っていない側 |
+| `--stage-judgment` | 派生。判断が入った側 |
+| `--judgment-boundary` | Load と Transform のあいだの境界 |
+| `--status-assigned` / `--status-unclassifiable` / `--status-out-of-scope` | 分類の軸 |
+
+COFOG のディビジョンは色で区別するが、**コードは必ず文字でも出す**
+（色だけだと色覚特性のある読者と読み上げに届かない）。
+
+## 集計しない
+
+数字はすべて `data/reports/*.json`（`buildReportData` の出力）をそのまま出す。
 画面側でも集計すると、同じ数字が2通りに計算されて、いずれ食い違ったまま気づかなくなる。
 
-## なぜ DuckDB-Wasm を使っていないか
+## データの受け渡し
 
-5,613 行の明細に WASM ランタイムを積むのは重すぎ、CDN 依存も増える。
-データを埋め込んだ単一 HTML なら即開けてオフラインでも動く。
-**発言データ（数十万行）を扱う段になったら DuckDB-Wasm を入れる**。
-
-## なぜ正本の CSV を直接 fetch していないか
-
-そうするとリポジトリのルートを配信するサーバが要り、成果物以外まで露出する。
-`_pipeline.js` は画面が使う列だけを列指向に詰め直した派生物で、`bun run build:pipeline-view` で再生成できる。
+`scripts/build-pipeline-view.ts` が `web/public/pipeline.json` を生成する（gitignore）。
+報告（90KB）と明細（列指向に詰め直した 5,613 + 821 行）を1ファイルに入れ、**入口を1つに保つ**。
+バンドルへ入れないのは、明細が数 MB あって初回表示までの待ちがそのぶん伸びるため。

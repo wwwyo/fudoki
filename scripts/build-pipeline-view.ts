@@ -1,10 +1,11 @@
 /**
- * `web/pipeline.html` が読むデータを生成する。
+ * `web/` のダッシュボードが読むデータを生成する。
  *
  * **中間物なので gitignore する**（正本は `data/packages/`、報告は `data/reports/` にあり、これはそこからの派生）。
  *
- * 埋め込みにするのは、ビューアを `web/` 配下だけで完結させるため。
- * リポジトリのルートを配信するサーバを別に立てると、成果物以外まで露出する。
+ * 出力を `web/public/` へ置くのは、明細が 2MB 前後あってバンドルに入れると
+ * 初回表示までの待ちがそのぶん伸びるため。報告（90KB 程度）も同じファイルに入れ、
+ * **データの入口を1つに保つ**。
  *
  *   bun run build:pipeline-view
  */
@@ -13,22 +14,25 @@ import { splitRows } from '../src/budget/extract'
 const CODE = '132047'
 const YEAR = '2024'
 const root = new URL('../', import.meta.url).pathname
-const OUT = `${root}web/_pipeline.js`
+const OUT = `${root}web/public/pipeline.json`
 
-/** 画面が使う列だけ抜く。全列を積むと 3MB を超え、読ませる価値のない列まで運ぶことになる */
+/**
+ * 画面が使う列だけ抜く。全列を積むと 3MB を超え、読ませる価値のない列まで運ぶことになる。
+ * ここに列名を書くので、正本の列名を変えたら**このスクリプトが落ちる**（黙って欠けない）。
+ */
 const KEEP_EXPENDITURE = [
   'budget_line_id', 'fiscal_year', 'phase_id', 'source_row',
   'fund_source', 'kan_source', 'kou_source', 'moku_source', 'jikou_source', 'setsu_source', 'saisaisetsu_source',
   'fund_label', 'kan_label', 'kou_label', 'moku_label', 'jikou_label', 'setsu_label', 'saisaisetsu_label',
   'value', 'source_amount', 'source_amount_unit',
   'cofog_division_code', 'cofog_division_label', 'cofog_status', 'cofog_consolidation', 'cofog_decided_at_level', 'cofog_basis', 'cofog_rule_id',
-]
+] as const
 const KEEP_REVENUE = [
   'budget_line_id', 'fiscal_year', 'phase_id', 'source_row',
   'fund_source', 'kan_source', 'kou_source', 'moku_source', 'setsu_source', 'saisetsu_source', 'saisaisetsu_source',
   'fund_label', 'kan_label', 'kou_label', 'moku_label', 'setsu_label', 'saisetsu_label', 'saisaisetsu_label',
   'value', 'source_amount', 'source_amount_unit',
-]
+] as const
 
 /**
  * 列名を1回だけ書き、行は値の配列で持つ。
@@ -42,7 +46,7 @@ function columnar(csv: string, keep: readonly string[]) {
     if (i < 0) throw new Error(`列 ${k} が見つからない。build:budget を先に回すこと`)
     return i
   })
-  return { columns: keep, rows: rows.slice(1).map((r) => idx.map((i) => r[i] ?? '')) }
+  return { columns: [...keep], rows: rows.slice(1).map((r) => idx.map((i) => r[i] ?? '')) }
 }
 
 const read = async (p: string) => {
@@ -55,8 +59,7 @@ const report = JSON.parse(await read(`${root}data/reports/${CODE}-${YEAR}.json`)
 const expenditure = columnar(await read(`${root}data/packages/${CODE}/${YEAR}/expenditure-cofog.csv`), KEEP_EXPENDITURE)
 const revenue = columnar(await read(`${root}data/packages/${CODE}/${YEAR}/revenue.csv`), KEEP_REVENUE)
 
-const payload = { code: CODE, year: YEAR, report, expenditure, revenue }
-await Bun.write(OUT, `window.PIPELINE=${JSON.stringify(payload)};\n`)
+await Bun.write(OUT, JSON.stringify({ code: CODE, year: YEAR, report, expenditure, revenue }))
 
 const bytes = (await Bun.file(OUT).arrayBuffer()).byteLength
 console.log(`${OUT} を生成した（歳出 ${expenditure.rows.length} 行 / 歳入 ${revenue.rows.length} 行 / ${(bytes / 1024 / 1024).toFixed(2)} MB）`)

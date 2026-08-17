@@ -230,9 +230,14 @@ bun install
 正本は `data/packages/132047/2024/`、証跡は `data/provenance/`、パイプライン報告は `data/reports/`。
 生成は `bun run build:budget`（**検査が1つでも落ちたら成果物を書かずに落ちる**）。
 
-報告は JSON で出し、読ませ方は `web/pipeline.html` が持つ（`bun run dev`）。
-段のフロー・検査・COFOG の割当・明細のドリルダウンを見られる。
+報告は JSON で出し、読ませ方は `web/`（Vite + React + shadcn/ui）が持つ（`bun run dev`）。
 **集計は `buildReportData` の1箇所だけ**で行う（画面側でも集計すると、同じ数字が2通りに計算されて、いずれ食い違ったまま気づかなくなる）。
+
+**パイプラインの形は `src/budget/topology.ts` がデータとして出す。**
+段・ノード・辺を実行結果から導き、画面はそれを描くだけにする。
+段の名前と並びを画面側に直書きすると、パイプラインを変えても図が変わらない状態になり、
+実装と表示が食い違っても誰も気づかない。
+画面の型は `@pipeline/report` でパイプライン本体から取るので、`ReportData` を変えると web の typecheck が落ちる。
 
 実データを通して分かった、設計時の想定と違った点。**2団体目でも同じ形で壊れうる。**
 
@@ -267,4 +272,4 @@ bun install
 | `bun run check:budget-years` | 三鷹市の他年度が令和6年度と互換か（列構成・金額の型・引用符の有無・会計の範囲） |
 | `bun run fetch:fdp-taxonomy` | FDP の ColumnType 一覧を仕様の原文から起こして取り込む（正準 URL が 404 のため） |
 | `bun run build:budget` | ① 予算のパイプライン（Extract → Load → Transform → 検証 → 報告）。検査が落ちたら書き出さない |
-| `bun run dev` | パイプラインビューアのデータを生成して配信（`web/pipeline.html`） |
+| `bun run dev` | ダッシュボードのデータを生成して Vite を上げる（`web/`） |
