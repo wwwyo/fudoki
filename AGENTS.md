@@ -152,6 +152,8 @@ mySociety が TheyWorkForYou（UK専用サイト）と SayIt（汎用ツール�
 
 ## パイプライン
 
+パイプラインの段構成・raw データの保存形式・dev サーバ起動で過去に踏んだ非自明な制約は `.agents/skills/pipeline-design/SKILL.md` を参照。
+
 生データを捨てない **ELT**。Transform のルールが変わっても再取得しない。
 
 3レイヤとも同じ3段を通す。
