@@ -101,7 +101,7 @@ mySociety が TheyWorkForYou（UK専用サイト）と SayIt（汎用ツール�
 
 会議単位・議題単位で発言を並べるのは問題ないが、「この議員の発言集」を生成物として出力しない。話者で絞り込む検索機能と、話者別に編集した著作物は別物なので、UI の実装時も意識する。
 
-各議会が独自に掲げる利用規約は著作権とは別レイヤーの契約であり、自治体ごとに異なる。取得元を追加するたび確認する（手順は `kaigiroku` skill）。法的な最終判断は専門家確認が要る。
+各議会が独自に掲げる利用規約は著作権とは別レイヤーの契約であり、自治体ごとに異なる。取得元を追加するたび確認する。法的な最終判断は専門家確認が要る。
 
 ## 対象
 
@@ -147,6 +147,8 @@ mySociety が TheyWorkForYou（UK専用サイト）と SayIt（汎用ツール�
 ### ③ 会議録の取得先
 
 会議録システムは自治体ごとに異なるので、取得先は団体コードごとに解決する。`kaigiroku.net`（DiscussNetPremium、全国477〜492自治体）が最大勢力だが、**東京の区市は未導入が多い**（練馬区は導入済み、品川区・世田谷区・杉並区・町田市・狛江市は未導入）。1本目の driver は規模ではなく**制約が確定している**ところから選ぶ（`kensakusystem` 系は robots.txt が 404＝制約が存在しない）。
+
+⚠️ **DiscussNetPremium（NTT-AT）は叩かない。** robots.txt が全経路を Disallow しており、画面は Allow でも描画すると裏で Disallow の API を叩く（`rep-render-still-disallowed`）。実ブラウザを使っても回避にならないので、**規模が最大でも対象から外す**。API の叩き方を記録した skill も削除した — 使わない手順を残すと、次に読んだ者が使えると受け取る。許諾を得られたときに改めて起こす。
 
 ## パイプライン
 
@@ -222,12 +224,6 @@ bun install
 | [SNG-WOFI](https://www.sng-wofi.org/)（OECD/UCLG）・[Eurostat COFOG](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Government_expenditure_by_function_%E2%80%93_COFOG) | 国 × 地方政府合計 × COFOG は既に整備済み。**個別自治体 × 事業（目）× COFOG が空白**で、そこが fudoki の位置 |
 | [OC4IDS](https://standard.open-contracting.org/infrastructure/latest/en/)（v0.9.5、現役） | **事業（project）を単位に据えて、予算と調達を束ねる**モデル。対象はインフラだが、①と②を事業でつなぐ構造は fudoki に最も近い |
 | 米国 [FDTA](https://xbrl.us/home/priorities/efficiency/fdta/)（2022年法。共同規則は2026年に確定したが、公布日と施行時期は出典により記述が割れるので採用前に一次資料で確認する。規則単体では報告義務を変えず、各機関が個別要件へ適用して初めて効く） | **発生源に機械可読を義務づける**最新事例。対象は自治体の継続開示であって予算明細ではないが、供給側を動かす制度の型として参照する |
-
-## skills
-
-| skill | 使う場面 |
-|---|---|
-| [kaigiroku](.agents/skills/kaigiroku/SKILL.md) | kaigiroku.net から会議録を取得する。API の叩き方・tenant_id・レスポンスの自治体差・規約確認 |
 
 ## ① 予算：1団体目（三鷹市 令和6年度）を FDP として配布済み
 
