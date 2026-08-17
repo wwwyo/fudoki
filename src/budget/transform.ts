@@ -41,7 +41,7 @@ function counterpartRows(revenue: CanonicalTable, fundLabel: string): Row[] {
   return revenue.rows.filter((r) => r.fund_label === fundLabel && String(r.kan_label).includes('繰入金') && !String(r.kou_label).includes('基金繰入金'))
 }
 
-export function transform(expenditure: CanonicalTable, revenue: CanonicalTable): DerivedTable {
+export function transform(jurisdictionCode: string, expenditure: CanonicalTable, revenue: CanonicalTable): DerivedTable {
   const counterpartCache = new Map<string, Row[]>()
   const getCounterpart = (fund: string) => {
     let hit = counterpartCache.get(fund)
@@ -51,7 +51,7 @@ export function transform(expenditure: CanonicalTable, revenue: CanonicalTable):
 
   const pairTotals = new Map<string, { from: string; to: string; eliminated: number }>()
   const rows: Row[] = expenditure.rows.map((r) => {
-    const a: Assignment & { ruleId: string } = assign({
+    const a: Assignment & { ruleId: string } = assign(jurisdictionCode, {
       fund: String(r.fund_label),
       kan: String(r.kan_label),
       kou: String(r.kou_label),

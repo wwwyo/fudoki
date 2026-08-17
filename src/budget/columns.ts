@@ -50,6 +50,13 @@ export type LevelSpec = {
    * 宣言が古くなっているか、原典が直された合図なので、どちらも気づきたい）。
    */
   codeUniqueAmongSiblings: boolean
+  /**
+   * 1セルの先頭に付くコードの桁数。**団体ごとに実測で埋める。**
+   *
+   * 三鷹市は2桁（`01議会費`）。桁数が違う団体でこの値を直さないと、
+   * コードと名称の分離が黙って失敗する（`irregularCells` に積まれるだけで止まらない）。
+   */
+  codeDigits: number
 }
 
 /**
@@ -59,13 +66,13 @@ export type LevelSpec = {
  * **名称を持つことは、その区分が1つの事業に対応することの証明にならない**（Caveats 1）。
  */
 const MITAKA_EXPENDITURE_LEVELS: LevelSpec[] = [
-  { key: 'fund', sourceColumn: '会計', vocabulary: 'jurisdiction-specific', codeType: 'fund:code', labelType: 'fund:label', codeUniqueAmongSiblings: true },
-  { key: 'kan', sourceColumn: '款', vocabulary: 'statutory', codeType: 'functional-classification:generic:level1:code', labelType: 'functional-classification:generic:level1:label', codeUniqueAmongSiblings: true },
-  { key: 'kou', sourceColumn: '項', vocabulary: 'statutory', codeType: 'functional-classification:generic:level2:code', labelType: 'functional-classification:generic:level2:label', codeUniqueAmongSiblings: true },
-  { key: 'moku', sourceColumn: '目', vocabulary: 'statutory', codeType: 'functional-classification:generic:level3:code', labelType: 'functional-classification:generic:level3:label', codeUniqueAmongSiblings: true },
-  { key: 'jikou', sourceColumn: '事項', vocabulary: 'jurisdiction-specific', codeType: 'activity:generic:program:code', labelType: 'activity:generic:program:label', codeUniqueAmongSiblings: true },
-  { key: 'setsu', sourceColumn: '節', vocabulary: 'statutory', codeType: 'economic-classification:generic:level1:code', labelType: 'economic-classification:generic:level1:label', codeUniqueAmongSiblings: true },
-  { key: 'saisaisetsu', sourceColumn: '細々節', vocabulary: 'jurisdiction-specific', codeType: 'economic-classification:generic:level2:code', labelType: 'economic-classification:generic:level2:label', codeUniqueAmongSiblings: false },
+  { key: 'fund', sourceColumn: '会計', vocabulary: 'jurisdiction-specific', codeType: 'fund:code', labelType: 'fund:label', codeUniqueAmongSiblings: true, codeDigits: 2 },
+  { key: 'kan', sourceColumn: '款', vocabulary: 'statutory', codeType: 'functional-classification:generic:level1:code', labelType: 'functional-classification:generic:level1:label', codeUniqueAmongSiblings: true, codeDigits: 2 },
+  { key: 'kou', sourceColumn: '項', vocabulary: 'statutory', codeType: 'functional-classification:generic:level2:code', labelType: 'functional-classification:generic:level2:label', codeUniqueAmongSiblings: true, codeDigits: 2 },
+  { key: 'moku', sourceColumn: '目', vocabulary: 'statutory', codeType: 'functional-classification:generic:level3:code', labelType: 'functional-classification:generic:level3:label', codeUniqueAmongSiblings: true, codeDigits: 2 },
+  { key: 'jikou', sourceColumn: '事項', vocabulary: 'jurisdiction-specific', codeType: 'activity:generic:program:code', labelType: 'activity:generic:program:label', codeUniqueAmongSiblings: true, codeDigits: 2 },
+  { key: 'setsu', sourceColumn: '節', vocabulary: 'statutory', codeType: 'economic-classification:generic:level1:code', labelType: 'economic-classification:generic:level1:label', codeUniqueAmongSiblings: true, codeDigits: 2 },
+  { key: 'saisaisetsu', sourceColumn: '細々節', vocabulary: 'jurisdiction-specific', codeType: 'economic-classification:generic:level2:code', labelType: 'economic-classification:generic:level2:label', codeUniqueAmongSiblings: false, codeDigits: 2 },
 ]
 
 /**
@@ -80,13 +87,13 @@ const MITAKA_EXPENDITURE_LEVELS: LevelSpec[] = [
  * 標準側が後から level4 を別の意味で定義すると衝突する（Caveats 参照）。
  */
 const MITAKA_REVENUE_LEVELS: LevelSpec[] = [
-  { key: 'fund', sourceColumn: '会計', vocabulary: 'jurisdiction-specific', codeType: 'fund:code', labelType: 'fund:label', codeUniqueAmongSiblings: true },
-  { key: 'kan', sourceColumn: '款', vocabulary: 'statutory', codeType: 'fin-source:generic:level1:code', labelType: 'fin-source:generic:level1:label', codeUniqueAmongSiblings: true },
-  { key: 'kou', sourceColumn: '項', vocabulary: 'statutory', codeType: 'fin-source:generic:level2:code', labelType: 'fin-source:generic:level2:label', codeUniqueAmongSiblings: true },
-  { key: 'moku', sourceColumn: '目', vocabulary: 'statutory', codeType: 'fin-source:generic:level3:code', labelType: 'fin-source:generic:level3:label', codeUniqueAmongSiblings: true },
-  { key: 'setsu', sourceColumn: '節', vocabulary: 'statutory', codeType: 'fin-source:generic:level4:code', labelType: 'fin-source:generic:level4:label', codeUniqueAmongSiblings: true },
-  { key: 'saisetsu', sourceColumn: '細節', vocabulary: 'jurisdiction-specific', codeType: 'fin-source:generic:level5:code', labelType: 'fin-source:generic:level5:label', codeUniqueAmongSiblings: true },
-  { key: 'saisaisetsu', sourceColumn: '細々節', vocabulary: 'jurisdiction-specific', codeType: 'fin-source:generic:level6:code', labelType: 'fin-source:generic:level6:label', codeUniqueAmongSiblings: true },
+  { key: 'fund', sourceColumn: '会計', vocabulary: 'jurisdiction-specific', codeType: 'fund:code', labelType: 'fund:label', codeUniqueAmongSiblings: true, codeDigits: 2 },
+  { key: 'kan', sourceColumn: '款', vocabulary: 'statutory', codeType: 'fin-source:generic:level1:code', labelType: 'fin-source:generic:level1:label', codeUniqueAmongSiblings: true, codeDigits: 2 },
+  { key: 'kou', sourceColumn: '項', vocabulary: 'statutory', codeType: 'fin-source:generic:level2:code', labelType: 'fin-source:generic:level2:label', codeUniqueAmongSiblings: true, codeDigits: 2 },
+  { key: 'moku', sourceColumn: '目', vocabulary: 'statutory', codeType: 'fin-source:generic:level3:code', labelType: 'fin-source:generic:level3:label', codeUniqueAmongSiblings: true, codeDigits: 2 },
+  { key: 'setsu', sourceColumn: '節', vocabulary: 'statutory', codeType: 'fin-source:generic:level4:code', labelType: 'fin-source:generic:level4:label', codeUniqueAmongSiblings: true, codeDigits: 2 },
+  { key: 'saisetsu', sourceColumn: '細節', vocabulary: 'jurisdiction-specific', codeType: 'fin-source:generic:level5:code', labelType: 'fin-source:generic:level5:label', codeUniqueAmongSiblings: true, codeDigits: 2 },
+  { key: 'saisaisetsu', sourceColumn: '細々節', vocabulary: 'jurisdiction-specific', codeType: 'fin-source:generic:level6:code', labelType: 'fin-source:generic:level6:label', codeUniqueAmongSiblings: true, codeDigits: 2 },
 ]
 
 /** 団体コードごとに宣言する。推測で足さない */

@@ -52,11 +52,11 @@ export default function App() {
   const assigned = t.byState.filter((x) => x.status === 'assigned').reduce((s, x) => s + x.sum, 0)
   const eliminated = t.byState.filter((x) => x.consolidation === 'eliminated').reduce((s, x) => s + x.sum, 0)
 
-  const stats = [
-    { label: '検査', value: `${report.summary.passed}/${report.summary.total}`, tone: report.summary.failed ? 'bad' : 'good' },
+  const stats: { label: string; value: string | number; tone?: string; hint?: string }[] = [
+    { label: '検査', value: `${report.summary.passed}/${report.summary.total}`, tone: report.summary.failed ? 'bad' : 'good', hint: '1つでも落ちると成果物を書き出さない' },
     { label: '歳出の総額', value: yenShort(total) },
-    { label: 'COFOG 割当済み（金額比）', value: `${((assigned / total) * 100).toFixed(1)}%` },
-    { label: '連結で消去', value: yenShort(eliminated) },
+    { label: 'COFOG 割当済み（金額比）', value: `${((assigned / total) * 100).toFixed(1)}%`, hint: 'COFOG は政府支出の機能別分類（教育、保健など10区分）。国際標準' },
+    { label: '連結で消去', value: yenShort(eliminated), hint: '会計間の繰出。市の全会計を足すとき二重に数えるので相殺する' },
     { label: '割当規則', value: `${t.ruleCount} 本` },
   ]
 
@@ -77,8 +77,9 @@ export default function App() {
           <div>
             <h1 className="text-xl font-semibold">原典がどう流れたか</h1>
             <p className="mt-1 max-w-[68ch] text-sm leading-relaxed text-muted-foreground">
-              帯の太さが行数。原典から正本までは太さが変わらず（差分0）、Transform で歳出だけが分類の状態へ分かれる。
-              歳入がそこへ入らないのは、COFOG が支出の機能別分類で、歳入には使えないため。
+              左から右へ、原典が正本を経て派生になるまで。矢印の脇の数字が流れた行数で、
+              原典から正本までは差分0（1行も落ちていない）。Transform では歳出だけが分類の3状態へ分かれ、
+              歳入は COFOG が支出の機能別分類であるため行き止まりになる。
               ノードを選ぶと、その段を守っている検査だけに絞れる。
             </p>
           </div>
@@ -107,6 +108,7 @@ export default function App() {
                   >
                     {s.value}
                   </CardTitle>
+                  {s.hint && <p className="mt-1 text-[11px] leading-tight text-muted-foreground">{s.hint}</p>}
                 </CardHeader>
               </Card>
             ))}
@@ -115,11 +117,11 @@ export default function App() {
 
         <Tabs defaultValue="stages">
           <TabsList>
-            <TabsTrigger value="stages">段の中身</TabsTrigger>
+            <TabsTrigger value="stages">段ごとの中身</TabsTrigger>
             <TabsTrigger value="cofog">COFOG の判断</TabsTrigger>
             <TabsTrigger value="checks">検査</TabsTrigger>
             <TabsTrigger value="detail">明細</TabsTrigger>
-            <TabsTrigger value="caveats">Caveats</TabsTrigger>
+            <TabsTrigger value="caveats">未確定のこと</TabsTrigger>
           </TabsList>
 
           <TabsContent value="stages" className="pt-4">

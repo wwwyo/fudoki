@@ -71,14 +71,27 @@ export type BudgetLine = {
 
 type Rule = {
   id: string
+  /**
+   * 適用する団体コード。**省略できるのは法定語彙にだけ当たる規則に限る。**
+   *
+   * 款と節は地方自治法にもとづく区分でどの自治体でも同じ語を使うが、
+   * 項・目・会計名は団体差がある（狛江市は目の下が「大事業 / 中事業 / 小事業」）。
+   * スコープを付けないと、他団体の同名でない科目に当たらないまま素通りし、
+   * **壊れずに大量が分類不能へ落ちる**。検査は通るので気づけない。
+   */
+  appliesTo?: string[]
   when: (l: BudgetLine) => boolean
   then: Omit<Assignment, 'counterpartFund'> & { counterpartFund?: string }
 }
+
+/** 三鷹市の項・目・会計名に依存する規則のスコープ */
+const MITAKA = ['132047']
 
 /** 繰出金は消去したうえで、受け皿の会計の機能で分類する */
 function transferRule(id: string, mokuKeyword: string, division: string, counterpartFund: string, why: string): Rule {
   return {
     id,
+    appliesTo: MITAKA,
     when: (l) => l.setsu === '繰出金' && l.moku.includes(mokuKeyword),
     then: {
       status: 'assigned',
@@ -104,7 +117,7 @@ const RULES: Rule[] = [
   transferRule('transfer-kaigo-hoken', '介護保険事業特別会計繰出金', '10', '介護保険事業特別会計', '長期介護の社会保険であり 10 社会保護'),
   transferRule('transfer-kouki', '後期高齢者医療特別会計繰出金', '07', '後期高齢者医療特別会計', '医療給付を担うため 07 保健'),
   {
-    id: 'transfer-to-general',
+    id: 'transfer-to-general', appliesTo: MITAKA,
     when: (l) => l.setsu === '繰出金' && l.moku.includes('一般会計繰出金'),
     then: {
       status: 'out-of-scope',
@@ -133,7 +146,7 @@ const RULES: Rule[] = [
     then: { status: 'out-of-scope', division: '', consolidation: 'retained', decidedAtLevel: '節', basis: '基金への積立。金融資産の取得であり COFOG の集計対象ではない' },
   },
   {
-    id: 'refund',
+    id: 'refund', appliesTo: MITAKA,
     when: (l) => l.kou === '償還金及び還付加算金',
     then: { status: 'out-of-scope', division: '', consolidation: 'retained', decidedAtLevel: '項', basis: '過誤納金の還付。歳入の戻しであり経費ではない' },
   },
@@ -147,45 +160,45 @@ const RULES: Rule[] = [
 
   // ── 目まで下げないと決まらないもの ──────────────────────────
   {
-    id: 'toshikeikaku-somu',
+    id: 'toshikeikaku-somu', appliesTo: MITAKA,
     when: (l) => l.kou === '都市計画費' && (l.moku === '都市計画総務費' || l.moku === '再開発事業費'),
     then: { status: 'assigned', division: '06', consolidation: 'retained', decidedAtLevel: '目', basis: '都市計画・市街地再開発。COFOG 06.2 地域開発' },
   },
   {
-    id: 'toshikeikaku-gairo',
+    id: 'toshikeikaku-gairo', appliesTo: MITAKA,
     when: (l) => l.kou === '都市計画費' && l.moku === '街路事業費',
     then: { status: 'assigned', division: '04', consolidation: 'retained', decidedAtLevel: '目', basis: '都市計画道路の整備。COFOG 04.5.1 道路交通' },
   },
   {
-    id: 'toshikeikaku-kouen',
+    id: 'toshikeikaku-kouen', appliesTo: MITAKA,
     when: (l) => l.kou === '都市計画費' && l.moku === '緑化公園費',
     then: { status: 'assigned', division: '08', consolidation: 'retained', decidedAtLevel: '目', basis: '公園・緑化。COFOG 08.1 レクリエーション及びスポーツのサービス' },
   },
   {
-    id: 'toshikeikaku-gesui',
+    id: 'toshikeikaku-gesui', appliesTo: MITAKA,
     when: (l) => l.kou === '都市計画費' && l.moku === '下水道事業支出金',
     then: { status: 'assigned', division: '05', consolidation: 'retained', decidedAtLevel: '目', basis: '下水道事業への支出。COFOG 05.2 排水管理。下水道事業会計は本パッケージの収録範囲外なので消去しない' },
   },
   {
-    id: 'shogaigakushu-toshokan',
+    id: 'shogaigakushu-toshokan', appliesTo: MITAKA,
     when: (l) => l.kou === '生涯学習費' && l.moku === '図書館費',
     then: { status: 'assigned', division: '08', consolidation: 'retained', decidedAtLevel: '目', basis: '図書館。COFOG 08.2 文化サービスが図書館を明示的に含むため、教育費の下にあっても 08 に置く' },
   },
   {
-    id: 'shogaigakushu-other',
+    id: 'shogaigakushu-other', appliesTo: MITAKA,
     when: (l) => l.kou === '生涯学習費',
     then: { status: 'assigned', division: '09', consolidation: 'retained', decidedAtLevel: '目', basis: '社会教育（生涯学習総務・青少年育成・生涯学習センター）。COFOG 09.5 水準が定義できない教育。08 文化サービスとの境界は判断であり、2団体目で再検討する' },
   },
 
   // ── 項で決まるもの ──────────────────────────────────
-  { id: 'eisei-hoken', when: (l) => l.kou === '保健衛生費', then: { status: 'assigned', division: '07', consolidation: 'retained', decidedAtLevel: '項', basis: '保健衛生。COFOG 07 保健' } },
-  { id: 'eisei-seiso', when: (l) => l.kou === '清掃費', then: { status: 'assigned', division: '05', consolidation: 'retained', decidedAtLevel: '項', basis: 'ごみ処理。COFOG 05.1 廃棄物管理' } },
-  { id: 'doboku-kanri', when: (l) => l.kou === '土木管理費', then: { status: 'assigned', division: '04', consolidation: 'retained', decidedAtLevel: '項', basis: '土木の管理部門。COFOG 04.5 運輸の管理にあたる' } },
-  { id: 'doboku-doro', when: (l) => l.kou === '道路橋梁費', then: { status: 'assigned', division: '04', consolidation: 'retained', decidedAtLevel: '項', basis: '道路・橋梁。COFOG 04.5.1 道路交通' } },
-  { id: 'doboku-kasen', when: (l) => l.kou === '河川費', then: { status: 'assigned', division: '05', consolidation: 'retained', decidedAtLevel: '項', basis: '河川・水路の管理。COFOG は治水を明示的に置いていないため 05 環境保護に寄せた判断で、04 経済業務にも読める' } },
-  { id: 'doboku-jutaku', when: (l) => l.kou === '住宅費', then: { status: 'assigned', division: '06', consolidation: 'retained', decidedAtLevel: '項', basis: '住宅。COFOG 06.1 住宅開発' } },
-  { id: 'kyoiku-somu', when: (l) => l.kou === '教育総務費' || l.kou === '小学校費' || l.kou === '中学校費', then: { status: 'assigned', division: '09', consolidation: 'retained', decidedAtLevel: '項', basis: '学校教育。COFOG 09.1〜09.2 初等・中等教育' } },
-  { id: 'kyoiku-sports', when: (l) => l.kou === 'スポーツ推進費', then: { status: 'assigned', division: '08', consolidation: 'retained', decidedAtLevel: '項', basis: 'スポーツ推進。COFOG 08.1 レクリエーション及びスポーツのサービス' } },
+  { id: 'eisei-hoken', appliesTo: MITAKA, when: (l) => l.kou === '保健衛生費', then: { status: 'assigned', division: '07', consolidation: 'retained', decidedAtLevel: '項', basis: '保健衛生。COFOG 07 保健' } },
+  { id: 'eisei-seiso', appliesTo: MITAKA, when: (l) => l.kou === '清掃費', then: { status: 'assigned', division: '05', consolidation: 'retained', decidedAtLevel: '項', basis: 'ごみ処理。COFOG 05.1 廃棄物管理' } },
+  { id: 'doboku-kanri', appliesTo: MITAKA, when: (l) => l.kou === '土木管理費', then: { status: 'assigned', division: '04', consolidation: 'retained', decidedAtLevel: '項', basis: '土木の管理部門。COFOG 04.5 運輸の管理にあたる' } },
+  { id: 'doboku-doro', appliesTo: MITAKA, when: (l) => l.kou === '道路橋梁費', then: { status: 'assigned', division: '04', consolidation: 'retained', decidedAtLevel: '項', basis: '道路・橋梁。COFOG 04.5.1 道路交通' } },
+  { id: 'doboku-kasen', appliesTo: MITAKA, when: (l) => l.kou === '河川費', then: { status: 'assigned', division: '05', consolidation: 'retained', decidedAtLevel: '項', basis: '河川・水路の管理。COFOG は治水を明示的に置いていないため 05 環境保護に寄せた判断で、04 経済業務にも読める' } },
+  { id: 'doboku-jutaku', appliesTo: MITAKA, when: (l) => l.kou === '住宅費', then: { status: 'assigned', division: '06', consolidation: 'retained', decidedAtLevel: '項', basis: '住宅。COFOG 06.1 住宅開発' } },
+  { id: 'kyoiku-somu', appliesTo: MITAKA, when: (l) => l.kou === '教育総務費' || l.kou === '小学校費' || l.kou === '中学校費', then: { status: 'assigned', division: '09', consolidation: 'retained', decidedAtLevel: '項', basis: '学校教育。COFOG 09.1〜09.2 初等・中等教育' } },
+  { id: 'kyoiku-sports', appliesTo: MITAKA, when: (l) => l.kou === 'スポーツ推進費', then: { status: 'assigned', division: '08', consolidation: 'retained', decidedAtLevel: '項', basis: 'スポーツ推進。COFOG 08.1 レクリエーション及びスポーツのサービス' } },
 
   // ── 款で決まるもの（一般会計） ─────────────────────────────
   { id: 'gikai', when: (l) => l.kan === '議会費', then: { status: 'assigned', division: '01', consolidation: 'retained', decidedAtLevel: '款', basis: '議会。COFOG 01.1 立法機関・行政機関' } },
@@ -197,14 +210,14 @@ const RULES: Rule[] = [
   { id: 'shobo', when: (l) => l.kan === '消防費', then: { status: 'assigned', division: '03', consolidation: 'retained', decidedAtLevel: '款', basis: '消防。COFOG 03.2 消防サービス' } },
 
   // ── 会計で決まるもの（特別会計） ────────────────────────────
-  { id: 'fund-kokuho', when: (l) => l.fund === '国民健康保険事業特別会計', then: { status: 'assigned', division: '07', consolidation: 'retained', decidedAtLevel: '会計', basis: '国民健康保険。医療給付とその運営であり COFOG 07 保健' } },
-  { id: 'fund-kouki', when: (l) => l.fund === '後期高齢者医療特別会計', then: { status: 'assigned', division: '07', consolidation: 'retained', decidedAtLevel: '会計', basis: '後期高齢者医療。医療給付とその運営であり COFOG 07 保健' } },
-  { id: 'fund-kaigo-service', when: (l) => l.fund === '介護サービス事業特別会計', then: { status: 'assigned', division: '10', consolidation: 'retained', decidedAtLevel: '会計', basis: '介護サービス事業。COFOG 10.2 高齢' } },
-  { id: 'fund-kaigo-hoken', when: (l) => l.fund === '介護保険事業特別会計', then: { status: 'assigned', division: '10', consolidation: 'retained', decidedAtLevel: '会計', basis: '介護保険。長期介護の社会保険であり COFOG 10.2 高齢' } },
+  { id: 'fund-kokuho', appliesTo: MITAKA, when: (l) => l.fund === '国民健康保険事業特別会計', then: { status: 'assigned', division: '07', consolidation: 'retained', decidedAtLevel: '会計', basis: '国民健康保険。医療給付とその運営であり COFOG 07 保健' } },
+  { id: 'fund-kouki', appliesTo: MITAKA, when: (l) => l.fund === '後期高齢者医療特別会計', then: { status: 'assigned', division: '07', consolidation: 'retained', decidedAtLevel: '会計', basis: '後期高齢者医療。医療給付とその運営であり COFOG 07 保健' } },
+  { id: 'fund-kaigo-service', appliesTo: MITAKA, when: (l) => l.fund === '介護サービス事業特別会計', then: { status: 'assigned', division: '10', consolidation: 'retained', decidedAtLevel: '会計', basis: '介護サービス事業。COFOG 10.2 高齢' } },
+  { id: 'fund-kaigo-hoken', appliesTo: MITAKA, when: (l) => l.fund === '介護保険事業特別会計', then: { status: 'assigned', division: '10', consolidation: 'retained', decidedAtLevel: '会計', basis: '介護保険。長期介護の社会保険であり COFOG 10.2 高齢' } },
 ]
 
-export function assign(line: BudgetLine): Assignment & { ruleId: string } {
-  const hit = RULES.find((r) => r.when(line))
+export function assign(jurisdictionCode: string, line: BudgetLine): Assignment & { ruleId: string } {
+  const hit = RULES.find((r) => (!r.appliesTo || r.appliesTo.includes(jurisdictionCode)) && r.when(line))
   if (!hit) {
     return {
       ruleId: '(none)',
@@ -221,3 +234,17 @@ export function assign(line: BudgetLine): Assignment & { ruleId: string } {
 
 /** 報告に規則の一覧を出すため。人が入力と出力を並べて妥当性を判定できる規模に保つ */
 export const RULE_IDS = RULES.map((r) => r.id)
+
+/**
+ * その団体に効く規則の本数と、そのうち何本が団体固有かを返す。
+ * 2団体目で「款の語彙は使い回せたが項以下は全部書き直しだった」を数で言えるようにする。
+ */
+export function ruleScope(jurisdictionCode: string) {
+  const applicable = RULES.filter((r) => !r.appliesTo || r.appliesTo.includes(jurisdictionCode))
+  return {
+    total: RULES.length,
+    applicable: applicable.length,
+    shared: applicable.filter((r) => !r.appliesTo).length,
+    jurisdictionSpecific: applicable.filter((r) => r.appliesTo).length,
+  }
+}

@@ -72,7 +72,7 @@ export function StageDetail({ report }: { report: ReportData }) {
               <TableRow>
                 <TableHead>direction</TableHead><TableHead className="text-right">入力</TableHead>
                 <TableHead className="text-right">出力</TableHead><TableHead className="text-right">差分</TableHead>
-                <TableHead className="text-right">階層なしのセル</TableHead><TableHead className="text-right">想定外のセル</TableHead>
+                <TableHead className="text-right" title="その階層を持たない行を、自治体がプレースホルダで埋めているセルの数（三鷹市の歳入は 0 で埋める）">階層なしのセル</TableHead><TableHead className="text-right" title="コード+名称の形でもプレースホルダでもないセル。0 でなければ原典の想定が外れている">想定外のセル</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -125,7 +125,7 @@ export function StageDetail({ report }: { report: ReportData }) {
                   <TableRow>
                     <TableHead>階層</TableHead><TableHead>語彙</TableHead>
                     <TableHead className="text-right">コード</TableHead><TableHead className="text-right">完全修飾</TableHead>
-                    <TableHead>ColumnType</TableHead>
+                    <TableHead title="FDP が列の意味を与える識別子。コロン区切りの階層で、どの標準のどの概念に対応するかを示す">ColumnType</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>

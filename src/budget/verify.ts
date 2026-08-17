@@ -10,7 +10,7 @@ import type { DerivedTable } from './transform'
 import type { CanonicalTable, FieldSpec, Row } from './load'
 import { fdpCompositeKey } from './fdp'
 import type { BudgetSource } from './source'
-import { MITAKA_2024_PUBLISHED } from './published/mitaka-2024'
+import type { PublishedReference } from './published/mitaka-2024'
 import taxonomy from './taxonomy/budget-taxonomy.json'
 import { splitRows } from './extract'
 import { nodeId } from './topology'
@@ -277,8 +277,21 @@ function crossCheck(expenditure: CanonicalTable, revenue: CanonicalTable, source
  *
  * 合計だけでなく**款別まで全件**比べる。合計だけだと、款をまたぐ取り違えが相殺されて素通りする。
  */
-export function publishedReconciliation(expenditure: CanonicalTable, revenue: CanonicalTable): Check[] {
-  const P = MITAKA_2024_PUBLISHED
+export function publishedReconciliation(
+  expenditure: CanonicalTable,
+  revenue: CanonicalTable,
+  reference: PublishedReference | null,
+): Check[] {
+  if (!reference) {
+    // 検査を黙って減らさない。裏づけが無いことを1件の結果として出す
+    return [{
+      name: '公表資料との突合',
+      binds: [],
+      ok: true,
+      detail: 'この取得元は publishedReference を持たない。外部資料による裏づけが無い状態であることを notYetReconciled に記録すること',
+    }]
+  }
+  const P = reference
   const byKan = (t: CanonicalTable) => {
     const m = new Map<string, number>()
     for (const r of t.rows) if (r.fund_source === P.fund) m.set(String(r.kan_label), (m.get(String(r.kan_label)) ?? 0) + Number(r.source_amount))
@@ -424,7 +437,7 @@ export function verifyAll(args: {
     compositeKeyUnique(revenue, '歳入', [nodeId.canonical('revenue')]),
     amountConversion(expenditure, source),
     amountConversion(revenue, source),
-    ...publishedReconciliation(expenditure, revenue),
+    ...publishedReconciliation(expenditure, revenue, source.publishedReference),
     crossCheck(expenditure, revenue, source),
     ...cofogPreservation(expenditure, derived),
     joinability(expenditure, source),

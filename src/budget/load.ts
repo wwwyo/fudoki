@@ -43,12 +43,13 @@ export type Cell = { code: string; label: string; source: string }
 /**
  * セルを分解する。
  *
+ * コードの桁数は階層ごとの宣言（`LevelSpec.codeDigits`）から受け取る。決め打ちにしない。
  * 三鷹市は2桁のコードに名称を直付けする。歳入の細々節だけは階層が無いことを `0` で表すため、
  * `NN名称` に当たらないセルは**コードとして丸ごと残し、名称を空にする**。
  * こうすると `code + label` が必ず原文に戻り、検証がそのまま効く。
  */
-export function splitCell(source: string): Cell {
-  const m = /^(\d{2})(.+)$/.exec(source)
+export function splitCell(source: string, codeDigits: number): Cell {
+  const m = new RegExp(`^(\\d{${codeDigits}})(.+)$`).exec(source)
   return m ? { code: m[1]!, label: m[2]!, source } : { code: source, label: '', source }
 }
 
@@ -149,7 +150,7 @@ export function load(source: BudgetSource, spec: BudgetSource['resources'][numbe
     if (raw.length !== levels.length + 1) throw new Error(`${rowNumber} 行目の列数が ${raw.length}（期待 ${levels.length + 1}）`)
 
     const cells = levels.map((l, j) => {
-      const cell = splitCell(raw[j]!)
+      const cell = splitCell(raw[j]!, l.codeDigits)
       if (cell.label === '') {
         if (absent.has(cell.source)) absentLevelCells++
         else irregularCells.push({ row: rowNumber, column: l.sourceColumn, cell: cell.source })

@@ -10,10 +10,10 @@
  * いずれ食い違ったまま気づかなくなる。
  */
 import { CUSTOM_COLUMN_TYPES } from './columns'
-import { COFOG_DIVISIONS, COFOG_SOURCE, COFOG_VERSION, CONSOLIDATION_SCOPE, RULE_IDS } from './cofog'
+import { COFOG_DIVISIONS, COFOG_SOURCE, COFOG_VERSION, CONSOLIDATION_SCOPE, RULE_IDS, ruleScope } from './cofog'
 import type { Provenance } from './extract'
 import type { CanonicalTable, Row } from './load'
-import { NOT_YET_RECONCILED } from './published/mitaka-2024'
+
 import type { BudgetSource } from './source'
 import type { DerivedTable } from './transform'
 import { buildTopology, type NodeKind, type Topology } from './topology'
@@ -171,6 +171,8 @@ export type ReportData = {
     cofogVersion: string
     cofogSource: typeof COFOG_SOURCE
     ruleCount: number
+    /** その団体に効く規則の内訳。2団体目で「款は使い回せたが項以下は書き直し」を数で言うため */
+    ruleScope: { total: number; applicable: number; shared: number; jurisdictionSpecific: number }
     inputRows: number
     outputRows: number
     consolidationScope: string
@@ -181,7 +183,7 @@ export type ReportData = {
     consolidationPairs: { from: string; to: string; eliminated: number; counterpart: number; ok: boolean; counterpartCount: number }[]
   }
   checks: Check[]
-  notYetReconciled: typeof NOT_YET_RECONCILED
+  notYetReconciled: BudgetSource['notYetReconciled']
   customColumnTypes: typeof CUSTOM_COLUMN_TYPES
   portability: typeof PORTABILITY
   caveats: typeof CAVEATS
@@ -286,6 +288,7 @@ export function buildReportData(args: {
       cofogVersion: COFOG_VERSION,
       cofogSource: COFOG_SOURCE,
       ruleCount: RULE_IDS.length,
+      ruleScope: ruleScope(source.jurisdictionCode),
       inputRows: expenditure.rows.length,
       outputRows: derived.rows.length,
       consolidationScope: CONSOLIDATION_SCOPE,
@@ -315,7 +318,7 @@ export function buildReportData(args: {
       })),
     },
     checks,
-    notYetReconciled: NOT_YET_RECONCILED,
+    notYetReconciled: source.notYetReconciled,
     customColumnTypes: CUSTOM_COLUMN_TYPES,
     portability: PORTABILITY,
     caveats: CAVEATS,

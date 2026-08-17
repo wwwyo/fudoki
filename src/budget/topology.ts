@@ -37,6 +37,11 @@ export type TopologyStage = {
 /**
  * 段の宣言。**ここが段の定義の唯一の出所**で、画面はこれを描くだけにする。
  * 責務と「やらないこと」は AGENTS.md のパイプライン節と同じ内容を持つ。
+ *
+ * ⚠️ **ELT という語の一般的な意味とはずれる。** 一般には Load が生のまま置き Transform で整形するが、
+ * この PJ で守りたい境界は整形の有無ではなく**判断の有無**である。
+ * だから標準（FDP）への正規化まで Load が持ち、Transform には判断だけが残る。
+ * Load の出力（正本）が標準に適合していながら原文と突き合わせて検証できるのは、この切り方による。
  */
 export const STAGES: TopologyStage[] = [
   {
@@ -49,14 +54,14 @@ export const STAGES: TopologyStage[] = [
   {
     id: 'load',
     label: 'Load',
-    responsibility: '取得物を一律の中間表現へ。親への参照を保持し、表記は原文のまま',
-    excludes: '名寄せ・表記統一・階層を潰すこと',
+    responsibility: '原典1行を1行のまま標準（FDP）の形へ。コードと名称の分離、単位の正規化、識別子の付与、列の意味づけ',
+    excludes: 'fudoki の判断を足すこと（分類、名寄せ、推定）。階層を潰すこと',
     introducesJudgment: false,
   },
   {
     id: 'transform',
     label: 'Transform',
-    responsibility: '標準へのマッピング。COFOG 写像、表記揺れの吸収',
+    responsibility: '判断が入る段。COFOG 写像、表記揺れの吸収',
     excludes: '取得',
     introducesJudgment: true,
   },

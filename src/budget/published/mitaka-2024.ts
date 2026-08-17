@@ -9,7 +9,40 @@
  * （合計行も一緒に持ち、款別の和が合計に一致することを検査に含める）。
  */
 
-export const MITAKA_2024_PUBLISHED = {
+/**
+ * 突合に使う公表資料の形。**団体ごとに1ファイル作る。**
+ *
+ * `BudgetSource.publishedReference` から参照され、`verifyAll` へ引数で渡る。
+ * ここを固定 import にすると、2団体目が三鷹市の公表値と比べられて必ず落ちる
+ * （検査が1つでも落ちると成果物を書かない設計なので、何も出力されなくなる）。
+ */
+export type PublishedReference = {
+  title: string
+  publisher: string
+  landingPage: string
+  documentUrl: string
+  sha256: string
+  bytes: number
+  retrievedAt: string
+  fiscalYear: number
+  /** 原典の会計セルと一致させる */
+  fund: string
+  phase: string
+  unit: string
+  total: number
+  expenditureByKan: { location: string; values: Record<string, number> }
+  revenueByKan: { location: string; values: Record<string, number> }
+}
+
+/** まだ外部資料で裏づけていない範囲。**「一致した」と書けるのは実際に比べたものだけ** */
+export type NotYetReconciled = {
+  scope: string
+  reason: string
+  wouldComeFrom: string
+  currentEvidence: string
+}
+
+export const MITAKA_2024_PUBLISHED: PublishedReference = {
   title: '令和6年度施政方針・予算概要(1)',
   publisher: '三鷹市（企画部 財政課）',
   landingPage: 'https://www.city.mitaka.lg.jp/c_service/024/024595.html',
@@ -72,7 +105,7 @@ export const MITAKA_2024_PUBLISHED = {
       市債: 1_366_000,
     } as Record<string, number>,
   },
-} as const
+}
 
 /**
  * まだ突合していない範囲。**「一致した」と書けるのは実際に比べたものだけ。**
@@ -81,9 +114,9 @@ export const MITAKA_2024_PUBLISHED = {
  * PRD の受け入れ条件は一般会計の合計と款別までなので条件は満たすが、
  * 特別会計は原典の内部整合（歳出と歳入の一致）しか根拠が無い状態である。
  */
-export const NOT_YET_RECONCILED = {
+export const MITAKA_2024_NOT_RECONCILED: NotYetReconciled = {
   scope: '特別会計（国民健康保険事業・介護サービス事業・介護保険事業・後期高齢者医療）の款別・項別',
   reason: '施政方針・予算概要は一般会計の款別までしか載せておらず、特別会計の款別は予算書にしかない',
   wouldComeFrom: 'https://www.city.mitaka.lg.jp/c_service/090/090334.html（過去の予算書）',
   currentEvidence: '歳出と歳入の会計別合計が一致することのみ（原典の内部整合であり、外部資料による裏づけではない）',
-} as const
+}

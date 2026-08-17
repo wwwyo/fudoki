@@ -4,6 +4,7 @@
  *   bun run build:budget              # 作業領域のキャッシュを使う（冪等）
  *   bun run build:budget --refetch    # 原典を取り直す。ハッシュが変われば警告する
  *   bun run build:budget --check      # 書き出さず検査だけ回す
+ *   bun run build:budget --source=132047:2024   # 取得元を選ぶ（src/budget/source.ts の SOURCES）
  *
  * ネットワークを叩くので CI では回さない。
  * **検査が1つでも落ちたら成果物を書かずに異常終了する**（欠落したまま合計が下がった正本を出さないため）。
@@ -12,7 +13,7 @@ import { buildDescriptor, toCsv, type ResourceInput } from '../src/budget/fdp'
 import { extractResource } from '../src/budget/extract'
 import { load } from '../src/budget/load'
 import { buildReportData } from '../src/budget/report'
-import { MITAKA_FY2024, type BudgetSource } from '../src/budget/source'
+import { resolveSource, type BudgetSource } from '../src/budget/source'
 import { transform } from '../src/budget/transform'
 import { UNIQUE_TYPES, verifyAll } from '../src/budget/verify'
 import type { YearSurvey } from '../src/budget/report'
@@ -20,7 +21,8 @@ import type { YearSurvey } from '../src/budget/report'
 const refetch = process.argv.includes('--refetch')
 const checkOnly = process.argv.includes('--check')
 
-const source: BudgetSource = MITAKA_FY2024
+/** 団体はレジストリから引く。スクリプト本体に団体名を焼き込まない */
+const source: BudgetSource = resolveSource(process.argv.find((a) => a.startsWith('--source='))?.split('=')[1])
 const outDir = new URL(`../data/packages/${source.jurisdictionCode}/${source.fiscalYear}/`, import.meta.url).pathname
 const provenanceDir = new URL('../data/provenance/', import.meta.url).pathname
 const reportDir = new URL('../data/reports/', import.meta.url).pathname
@@ -45,7 +47,7 @@ const revenue = load(source, revenueSpec, extracted.revenue)
 console.log(`Load: 歳出 ${expenditure.rows.length} 行 / 歳入 ${revenue.rows.length} 行`)
 
 // ── Transform ──────────────────────────────────────────
-const derived = transform(expenditure, revenue)
+const derived = transform(source.jurisdictionCode, expenditure, revenue)
 console.log(`Transform: 派生 ${derived.rows.length} 行 / 連結の対 ${derived.consolidationPairs.length} 件`)
 
 // ── descriptor ─────────────────────────────────────────

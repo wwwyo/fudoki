@@ -40,9 +40,11 @@ export function CofogPanel({ report }: { report: ReportData }) {
   return (
     <div className="flex flex-col gap-6">
       <p className="max-w-[72ch] text-sm leading-relaxed text-muted-foreground">
-        版 <span className="font-medium text-foreground">{t.cofogVersion}</span>（ディビジョン 01〜10）／
+        <span className="font-medium text-foreground">COFOG</span>（Classification of the Functions of Government）は政府支出の機能別分類で、
+        教育や保健といった<span className="font-medium text-foreground">10のディビジョン</span>（01〜10）に分ける国際標準。
+        版は {t.cofogVersion} ／
         コード表の取得元 <a className="underline" href={t.cofogSource.url} target="_blank" rel="noreferrer">{t.cofogSource.name}</a> ／
-        規則 {t.ruleCount} 本。
+        規則 {t.ruleCount} 本（うち{t.ruleScope.shared} 本は法定語彙にもとづく共通の規則、{t.ruleScope.jurisdictionSpecific} 本はこの団体固有）。
         Budget Standard Taxonomy が提供するのは COFOG を<em>格納する語彙</em>だけで、
         日本の予算科目から COFOG への対応そのものは仕様側に存在しない。以下はすべて fudoki 固有の判断である。
       </p>

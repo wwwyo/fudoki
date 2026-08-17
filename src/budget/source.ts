@@ -14,7 +14,15 @@
  * @see src/budget/columns.ts 原典の列と ColumnType の対応
  */
 
-/** 東京都オープンデータカタログ（CKAN）の package_search */
+import { MITAKA_2024_NOT_RECONCILED, MITAKA_2024_PUBLISHED, type NotYetReconciled, type PublishedReference } from './published/mitaka-2024'
+
+/**
+ * 東京都オープンデータカタログ（CKAN）の package_search。
+ *
+ * ⚠️ **東京都カタログ専用。** 団体の解決に `organization.name === 't' + 団体コード` という
+ * このカタログの命名規則を使う（src/budget/extract.ts）。都外の団体を足すときは、
+ * エンドポイントと団体の解決方式の両方を取得元ごとの設定へ出す必要がある。
+ */
 export const CKAN_ENDPOINT = 'https://catalog.data.metro.tokyo.lg.jp/api/3/action/package_search'
 
 /** 歳出か歳入か。FDP の `direction` にそのまま入る値 */
@@ -69,6 +77,18 @@ export type BudgetSource = {
   crossCheckExpenditureEqualsRevenue: boolean
   /** リソース名に現れる収録範囲の注記。年度で変わるため記録する */
   coverageNote: string | null
+  /**
+   * 突合に使う公表資料。**団体ごとに1つ固定する。**
+   *
+   * ここを固定 import にすると、2団体目が三鷹市の公表値と比べられて必ず落ちる。
+   * 検査が1つでも落ちたら成果物を書かない設計なので、そのとき何も出力されない。
+   *
+   * `null` は「外部資料による裏づけを持たない」という宣言で、その場合の根拠は
+   * `notYetReconciled` に書く。黙って検査を1本減らさないため必須にしてある。
+   */
+  publishedReference: PublishedReference | null
+  /** まだ外部資料で裏づけていない範囲。`publishedReference` が null なら全体が該当する */
+  notYetReconciled: NotYetReconciled
 }
 
 /**
@@ -96,7 +116,28 @@ export const MITAKA_FY2024: BudgetSource = {
   landingPage: 'https://www.city.mitaka.lg.jp/c_service/074/',
   crossCheckExpenditureEqualsRevenue: true,
   coverageNote: '下水道事業会計除く',
+  publishedReference: MITAKA_2024_PUBLISHED,
+  notYetReconciled: MITAKA_2024_NOT_RECONCILED,
 }
 
-// 突合に使う公表値は src/budget/published/mitaka-2024.ts にある（資料そのものと1対1で対応させるため、
-// 取得元の設定とは分けて置く）。
+/**
+ * 取得元のレジストリ。**団体を増やすときはここへ足す。**
+ * `scripts/build-budget.ts` はここから引くので、スクリプト本体を編集しなくてよい。
+ */
+export const SOURCES: Record<string, BudgetSource> = {
+  '132047:2024': MITAKA_FY2024,
+}
+
+/** `--source=<key>` で選ぶ。未指定なら1件しか無い場合に限りそれを使う */
+export function resolveSource(key: string | undefined): BudgetSource {
+  const keys = Object.keys(SOURCES)
+  if (key) {
+    const hit = SOURCES[key]
+    if (!hit) throw new Error(`取得元 ${key} が SOURCES に無い。候補: ${keys.join(', ')}`)
+    return hit
+  }
+  if (keys.length === 1) return SOURCES[keys[0]!]!
+  throw new Error(`取得元が ${keys.length} 件ある。--source=<key> で選ぶこと。候補: ${keys.join(', ')}`)
+}
+
+
