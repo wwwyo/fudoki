@@ -16,12 +16,171 @@
     },
     "attribution": "三鷹市「令和6年度予算データ」（東京都オープンデータカタログサイト）",
     "landingPage": "https://www.city.mitaka.lg.jp/c_service/074/",
-    "generatedAt": "2026-08-17T01:00:07.637Z"
+    "generatedAt": "2026-08-17T01:39:45.947Z"
   },
   "summary": {
     "total": 30,
     "passed": 30,
     "failed": 0
+  },
+  "topology": {
+    "stages": [
+      {
+        "id": "extract",
+        "label": "Extract",
+        "responsibility": "取得元からの取得。レスポンスを無加工で保存し、取得 URL・HTTP status・SHA-256・取得時刻を添える",
+        "excludes": "解釈・整形・結合",
+        "introducesJudgment": false
+      },
+      {
+        "id": "load",
+        "label": "Load",
+        "responsibility": "取得物を一律の中間表現へ。親への参照を保持し、表記は原文のまま",
+        "excludes": "名寄せ・表記統一・階層を潰すこと",
+        "introducesJudgment": false
+      },
+      {
+        "id": "transform",
+        "label": "Transform",
+        "responsibility": "標準へのマッピング。COFOG 写像、表記揺れの吸収",
+        "excludes": "取得",
+        "introducesJudgment": true
+      }
+    ],
+    "nodes": [
+      {
+        "id": "source:expenditure",
+        "stage": "extract",
+        "kind": "source",
+        "label": "歳出 原典",
+        "rows": 5613,
+        "direction": "expenditure",
+        "bytes": 605865,
+        "sha256": "f9dcbc7e871437691e4979572aeafaae2da333aba1b27beba8eee72153a5f10e"
+      },
+      {
+        "id": "canonical:expenditure",
+        "stage": "load",
+        "kind": "canonical",
+        "label": "歳出 正本",
+        "rows": 5613,
+        "direction": "expenditure",
+        "artifact": "expenditure.csv"
+      },
+      {
+        "id": "source:revenue",
+        "stage": "extract",
+        "kind": "source",
+        "label": "歳入 原典",
+        "rows": 821,
+        "direction": "revenue",
+        "bytes": 95618,
+        "sha256": "9ae9636703f90430eff0bcfc50e2812fe07a1fe180b7d9d993230d5a4f717910"
+      },
+      {
+        "id": "canonical:revenue",
+        "stage": "load",
+        "kind": "canonical",
+        "label": "歳入 正本",
+        "rows": 821,
+        "direction": "revenue",
+        "artifact": "revenue.csv"
+      },
+      {
+        "id": "derived:expenditure",
+        "stage": "transform",
+        "kind": "derived",
+        "label": "歳出 派生（COFOG）",
+        "rows": 5613,
+        "direction": "expenditure",
+        "artifact": "expenditure-cofog.csv"
+      },
+      {
+        "id": "state:assigned",
+        "stage": "transform",
+        "kind": "state",
+        "label": "割当済み",
+        "rows": 5586,
+        "status": "assigned",
+        "direction": "expenditure"
+      },
+      {
+        "id": "state:out-of-scope",
+        "stage": "transform",
+        "kind": "state",
+        "label": "対象外",
+        "rows": 22,
+        "status": "out-of-scope",
+        "direction": "expenditure"
+      },
+      {
+        "id": "state:unclassifiable",
+        "stage": "transform",
+        "kind": "state",
+        "label": "分類不能",
+        "rows": 5,
+        "status": "unclassifiable",
+        "direction": "expenditure"
+      }
+    ],
+    "edges": [
+      {
+        "id": "extract:expenditure",
+        "from": "source:expenditure",
+        "to": "canonical:expenditure",
+        "rows": 5613,
+        "kind": "copy",
+        "note": "差分 0"
+      },
+      {
+        "id": "extract:revenue",
+        "from": "source:revenue",
+        "to": "canonical:revenue",
+        "rows": 821,
+        "kind": "copy",
+        "note": "差分 0"
+      },
+      {
+        "id": "transform:expenditure",
+        "from": "canonical:expenditure",
+        "to": "derived:expenditure",
+        "rows": 5613,
+        "kind": "copy"
+      },
+      {
+        "id": "state:assigned",
+        "from": "derived:expenditure",
+        "to": "state:assigned",
+        "rows": 5586,
+        "kind": "split"
+      },
+      {
+        "id": "state:out-of-scope",
+        "from": "derived:expenditure",
+        "to": "state:out-of-scope",
+        "rows": 22,
+        "kind": "split"
+      },
+      {
+        "id": "state:unclassifiable",
+        "from": "derived:expenditure",
+        "to": "state:unclassifiable",
+        "rows": 5,
+        "kind": "split"
+      },
+      {
+        "id": "terminate:revenue",
+        "from": "canonical:revenue",
+        "to": null,
+        "rows": 821,
+        "kind": "terminate",
+        "note": "COFOG は支出の機能別分類なので歳入には使えない。歳入に分類軸は付けない"
+      }
+    ],
+    "writeGate": {
+      "blocksOnFailure": true,
+      "description": "検査が1つでも落ちたら成果物を書かずに異常終了する。欠落したまま合計が下がった正本を配らないため"
+    }
   },
   "extract": [
     {
@@ -1134,151 +1293,246 @@
   "checks": [
     {
       "name": "原典との多重集合一致",
+      "binds": [
+        "source:expenditure",
+        "canonical:expenditure"
+      ],
       "ok": true,
       "detail": "原典 5613 行と正本 5613 行が多重集合として一致"
     },
     {
       "name": "原典との多重集合一致",
+      "binds": [
+        "source:revenue",
+        "canonical:revenue"
+      ],
       "ok": true,
       "detail": "原典 821 行と正本 821 行が多重集合として一致"
     },
     {
       "name": "code + label が原文へ戻る",
+      "binds": [
+        "canonical:expenditure"
+      ],
       "ok": true,
       "detail": "5613 行 × 7 階層すべてで原文へ戻る"
     },
     {
       "name": "code + label が原文へ戻る",
+      "binds": [
+        "canonical:revenue"
+      ],
       "ok": true,
       "detail": "821 行 × 7 階層すべてで原文へ戻る"
     },
     {
       "name": "code → label の従属が階層ごとの宣言と一致",
+      "binds": [
+        "canonical:expenditure"
+      ],
       "ok": true,
       "detail": "9265 個の（親, コード）を検査。細々節は兄弟間で一意でない（実測 710 箇所。宣言どおり）。識別子はコードではなくセル全文から導いているため、この性質があっても一意性は保たれる"
     },
     {
       "name": "子 → 親が一意（任意の細々節から款まで辿れる）",
+      "binds": [
+        "canonical:expenditure"
+      ],
       "ok": true,
       "detail": "10165 個の階層ノードがそれぞれ1つの親を持つ"
     },
     {
       "name": "code → label の従属が階層ごとの宣言と一致",
+      "binds": [
+        "canonical:revenue"
+      ],
       "ok": true,
       "detail": "2447 個の（親, コード）を検査。全階層でコードが兄弟間で一意。識別子はコードではなくセル全文から導いているため、この性質があっても一意性は保たれる"
     },
     {
       "name": "子 → 親が一意（任意の細々節から款まで辿れる）",
+      "binds": [
+        "canonical:revenue"
+      ],
       "ok": true,
       "detail": "2442 個の階層ノードがそれぞれ1つの親を持つ"
     },
     {
       "name": "budget-line-id の衝突",
+      "binds": [
+        "canonical:expenditure"
+      ],
       "ok": true,
       "detail": "5613 件がすべて一意"
     },
     {
       "name": "budget-line-id の衝突",
+      "binds": [
+        "canonical:revenue"
+      ],
       "ok": true,
       "detail": "821 件がすべて一意"
     },
     {
       "name": "FDP の複合主キーが一意（歳出）",
+      "binds": [
+        "canonical:expenditure"
+      ],
       "ok": true,
       "detail": "13 列の組 budget_line_id, jurisdiction_code, fiscal_year, direction, phase_id, fund_code, kan_code, kou_code, moku_code, jikou_code, setsu_code, saisaisetsu_code, currency が 5613 件すべて一意"
     },
     {
       "name": "FDP の複合主キーが一意（歳入）",
+      "binds": [
+        "canonical:revenue"
+      ],
       "ok": true,
       "detail": "13 列の組 budget_line_id, jurisdiction_code, fiscal_year, direction, phase_id, fund_code, kan_code, kou_code, moku_code, setsu_code, saisetsu_code, saisaisetsu_code, currency が 821 件すべて一意"
     },
     {
       "name": "金額の円への正規化",
+      "binds": [
+        "canonical:expenditure"
+      ],
       "ok": true,
       "detail": "全 5613 行が ×1000。合計 122,908,044,000 円"
     },
     {
       "name": "金額の円への正規化",
+      "binds": [
+        "canonical:revenue"
+      ],
       "ok": true,
       "detail": "全 821 行が ×1000。合計 122,908,044,000 円"
     },
     {
       "name": "公表資料との突合（令和6年度施政方針・予算概要(1) 表 11「歳出予算の款別内訳」（歳出の款別内訳）・歳出の款別）",
+      "binds": [
+        "canonical:expenditure"
+      ],
       "ok": true,
       "detail": "12 款すべてが一致（千円単位。資料 SHA-256 243fd1534762…）"
     },
     {
       "name": "公表値の内部整合（歳出の款別の和 = 公表の合計）",
+      "binds": [],
       "ok": true,
       "detail": "83,187,972 / 83,187,972 千円"
     },
     {
       "name": "公表資料との突合（一般会計 歳出合計）",
+      "binds": [
+        "canonical:expenditure"
+      ],
       "ok": true,
       "detail": "変換後 83,187,972 千円 / 公表 83,187,972 千円（https://www.city.mitaka.lg.jp/c_service/024/attached/attach_24595_11.pdf）"
     },
     {
       "name": "公表資料との突合（令和6年度施政方針・予算概要(1) 表 7「歳入予算の款別内訳」（歳入の款別内訳）・歳入の款別）",
+      "binds": [
+        "canonical:revenue"
+      ],
       "ok": true,
       "detail": "22 款すべてが一致（千円単位。資料 SHA-256 243fd1534762…）"
     },
     {
       "name": "公表値の内部整合（歳入の款別の和 = 公表の合計）",
+      "binds": [],
       "ok": true,
       "detail": "83,187,972 / 83,187,972 千円"
     },
     {
       "name": "公表資料との突合（一般会計 歳入合計）",
+      "binds": [
+        "canonical:revenue"
+      ],
       "ok": true,
       "detail": "変換後 83,187,972 千円 / 公表 83,187,972 千円（https://www.city.mitaka.lg.jp/c_service/024/attached/attach_24595_11.pdf）"
     },
     {
       "name": "歳出と歳入の交差検算（会計ごと）",
+      "binds": [
+        "canonical:expenditure",
+        "canonical:revenue"
+      ],
       "ok": true,
       "detail": "5 会計すべてで一致。注意: 三鷹市の令和6年度当初予算について確認済みの条件付き検算であり、決算・企業会計・補正差分では成立しない"
     },
     {
       "name": "COFOG：原典の保存（全状態の合計 = 原典の合計）",
+      "binds": [
+        "derived:expenditure",
+        "state:assigned",
+        "state:out-of-scope",
+        "state:unclassifiable"
+      ],
       "ok": true,
       "detail": "5 組（年度 × 会計 × 予算段階 × direction）すべてで一致"
     },
     {
       "name": "COFOG：適格母集団の保存（割当済み + 分類不能 = 対象外を除いた合計）",
+      "binds": [
+        "derived:expenditure",
+        "state:assigned",
+        "state:out-of-scope",
+        "state:unclassifiable"
+      ],
       "ok": true,
       "detail": "5 組で一致。適格母集団 119,470,006,000 円"
     },
     {
       "name": "COFOG：1行あたりのディビジョンが1件以下",
+      "binds": [
+        "derived:expenditure"
+      ],
       "ok": true,
       "detail": "5613 行すべてで1件以下"
     },
     {
       "name": "COFOG：分類不能と対象外ではコードが空",
+      "binds": [
+        "derived:expenditure",
+        "state:assigned",
+        "state:out-of-scope",
+        "state:unclassifiable"
+      ],
       "ok": true,
       "detail": "空であることを確認"
     },
     {
       "name": "COFOG：消去する行に連結の範囲と相手側の識別子がある",
+      "binds": [
+        "derived:expenditure"
+      ],
       "ok": true,
       "detail": "消去 29 行すべてに記録あり"
     },
     {
       "name": "COFOG：消去した金額が相手側と一致",
+      "binds": [
+        "derived:expenditure",
+        "canonical:revenue"
+      ],
       "ok": true,
       "detail": "一般会計→国民健康保険事業特別会計 2,962,424,000 円 / 一般会計→介護サービス事業特別会計 178,401,000 円 / 一般会計→介護保険事業特別会計 2,389,749,000 円 / 一般会計→後期高齢者医療特別会計 2,141,699,000 円 / 介護保険事業特別会計→一般会計 60,303,000 円"
     },
     {
       "name": "外部データとの接続キー（団体コード × 年度）",
+      "binds": [
+        "canonical:expenditure"
+      ],
       "ok": true,
       "detail": "全行が jurisdiction_code=132047 と fiscal_year=2024 を持つ"
     },
     {
       "name": "Data Package / Table Schema への適合",
+      "binds": [],
       "ok": true,
       "detail": "パッケージ1件・リソース 3 件が構造要件を満たす"
     },
     {
       "name": "FDP の ColumnType への適合",
+      "binds": [],
       "ok": true,
       "detail": "標準 143 件 + 独自 20 件の ColumnType と照合して不整合なし"
     }

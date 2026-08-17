@@ -13,8 +13,19 @@ import type { BudgetSource } from './source'
 import { MITAKA_2024_PUBLISHED } from './published/mitaka-2024'
 import taxonomy from './taxonomy/budget-taxonomy.json'
 import { splitRows } from './extract'
+import { nodeId } from './topology'
 
-export type Check = { name: string; ok: boolean; detail: string }
+export type Check = {
+  name: string
+  ok: boolean
+  detail: string
+  /**
+   * この検査が守っているノード（src/budget/topology.ts の id）。
+   * 検査を平らな30件の一覧としてではなく、**どの段の何を守っているか**として
+   * 見せるために要る。空配列はパイプライン全体に掛かる検査。
+   */
+  binds: string[]
+}
 
 type ColumnTypeDef = { name: string; dataType: string; unique?: boolean; labelOf?: string; prior?: string }
 const STANDARD: ColumnTypeDef[] = taxonomy.columnTypes
@@ -34,6 +45,7 @@ const yen = (n: number) => n.toLocaleString('ja-JP')
  * 集合ではなく出現回数まで一致させる。
  */
 function multisetMatch(sourceText: string, table: CanonicalTable): Check {
+  const binds = [nodeId.source(table.direction), nodeId.canonical(table.direction)]
   const raw = splitRows(sourceText).slice(1)
   const tally = new Map<string, number>()
   for (const r of raw) tally.set(r.join(SEP), (tally.get(r.join(SEP)) ?? 0) + 1)
@@ -42,34 +54,36 @@ function multisetMatch(sourceText: string, table: CanonicalTable): Check {
   for (const row of table.rows) {
     const key = [...levels.map((l) => String(row[`${l.key}_source`])), String(row.source_amount)].join(SEP)
     const n = tally.get(key)
-    if (n === undefined) return { name: '原典との多重集合一致', ok: false, detail: `正本にあって原典に無い行がある: ${key.replace(new RegExp(SEP, "g"), ' | ')}` }
+    if (n === undefined) return { name: '原典との多重集合一致', binds, ok: false, detail: `正本にあって原典に無い行がある: ${key.replace(new RegExp(SEP, "g"), ' | ')}` }
     if (n === 1) tally.delete(key)
     else tally.set(key, n - 1)
   }
   if (tally.size > 0) {
     const left = [...tally].slice(0, 3).map(([k, n]) => `${k.replace(new RegExp(SEP, "g"), ' | ')} ×${n}`)
-    return { name: '原典との多重集合一致', ok: false, detail: `原典にあって正本に無い行が ${tally.size} 種: ${left.join(' / ')}` }
+    return { name: '原典との多重集合一致', binds, ok: false, detail: `原典にあって正本に無い行が ${tally.size} 種: ${left.join(' / ')}` }
   }
-  return { name: '原典との多重集合一致', ok: true, detail: `原典 ${raw.length} 行と正本 ${table.rows.length} 行が多重集合として一致` }
+  return { name: '原典との多重集合一致', binds, ok: true, detail: `原典 ${raw.length} 行と正本 ${table.rows.length} 行が多重集合として一致` }
 }
 
 /** `code + label` を連結して原典のセルへ戻る。分離が可逆であることを見る */
 function cellRoundTrip(table: CanonicalTable): Check {
+  const binds = [nodeId.canonical(table.direction)]
   for (const row of table.rows) {
     for (const l of table.levels) {
       const joined = `${row[`${l.key}_code`]}${row[`${l.key}_label`]}`
       const source = String(row[`${l.key}_source`])
       if (joined !== source) {
-        return { name: 'code + label が原文へ戻る', ok: false, detail: `原典 ${row.source_row} 行目 ${l.sourceColumn}: 「${joined}」≠「${source}」` }
+        return { name: 'code + label が原文へ戻る', binds, ok: false, detail: `原典 ${row.source_row} 行目 ${l.sourceColumn}: 「${joined}」≠「${source}」` }
       }
     }
   }
-  return { name: 'code + label が原文へ戻る', ok: true, detail: `${table.rows.length} 行 × ${table.levels.length} 階層すべてで原文へ戻る` }
+  return { name: 'code + label が原文へ戻る', binds, ok: true, detail: `${table.rows.length} 行 × ${table.levels.length} 階層すべてで原文へ戻る` }
 }
 
 /** code から label が一意に定まり、子から親も一意に定まる */
 function dependencies(table: CanonicalTable): Check[] {
   const out: Check[] = []
+  const binds = [nodeId.canonical(table.direction)]
 
   // code → label（同じ親の下で、同じコードが違う名称を持たないこと）。
   // ⚠️ これは全階層で成り立つ性質ではない。三鷹市の歳出の細々節は同じ節の下でコードを再利用する。
@@ -110,6 +124,7 @@ function dependencies(table: CanonicalTable): Check[] {
   const declaredNonUnique = table.levels.filter((l) => !l.codeUniqueAmongSiblings)
   out.push({
     name: 'code → label の従属が階層ごとの宣言と一致',
+    binds,
     ok: wrong.length === 0,
     detail:
       wrong.length === 0
@@ -135,6 +150,7 @@ function dependencies(table: CanonicalTable): Check[] {
   }
   out.push({
     name: '子 → 親が一意（任意の細々節から款まで辿れる）',
+    binds,
     ok: orphans.length === 0,
     detail: orphans.length === 0 ? `${childToParent.size} 個の階層ノードがそれぞれ1つの親を持つ` : orphans.join(' / '),
   })
@@ -143,6 +159,7 @@ function dependencies(table: CanonicalTable): Check[] {
 
 /** 識別子の衝突。Load 段で例外にしているので、ここは0件であることの記録 */
 function idCollisions(table: CanonicalTable): Check {
+  const binds = [nodeId.canonical(table.direction)]
   const seen = new Set<string>()
   let dup = 0
   for (const r of table.rows) {
@@ -150,11 +167,11 @@ function idCollisions(table: CanonicalTable): Check {
     if (seen.has(id)) dup++
     seen.add(id)
   }
-  return { name: 'budget-line-id の衝突', ok: dup === 0, detail: dup === 0 ? `${seen.size} 件がすべて一意` : `${dup} 件が衝突` }
+  return { name: 'budget-line-id の衝突', binds, ok: dup === 0, detail: dup === 0 ? `${seen.size} 件がすべて一意` : `${dup} 件が衝突` }
 }
 
 /** FDP の複合主キー（unique な ColumnType を持つ列の組）も重複しないこと */
-function compositeKeyUnique(table: { fields: FieldSpec[]; rows: Row[] }, label: string): Check {
+function compositeKeyUnique(table: { fields: FieldSpec[]; rows: Row[] }, label: string, binds: string[]): Check {
   const key = fdpCompositeKey(table.fields, UNIQUE_TYPES)
   const seen = new Set<string>()
   let dup = 0
@@ -163,19 +180,20 @@ function compositeKeyUnique(table: { fields: FieldSpec[]; rows: Row[] }, label: 
     if (seen.has(k)) dup++
     seen.add(k)
   }
-  return { name: `FDP の複合主キーが一意（${label}）`, ok: dup === 0, detail: dup === 0 ? `${key.length} 列の組 ${key.join(', ')} が ${seen.size} 件すべて一意` : `${dup} 件が重複` }
+  return { name: `FDP の複合主キーが一意（${label}）`, binds, ok: dup === 0, detail: dup === 0 ? `${key.length} 列の組 ${key.join(', ')} が ${seen.size} 件すべて一意` : `${dup} 件が重複` }
 }
 
 /** 円への正規化が桁あふれせず、原典の値と単位から復元できる */
 function amountConversion(table: CanonicalTable, source: BudgetSource): Check {
+  const binds = [nodeId.canonical(table.direction)]
   for (const r of table.rows) {
     const expected = Number(r.source_amount) * source.amountUnit.multiplier
     if (r.value !== expected || !Number.isSafeInteger(Number(r.value))) {
-      return { name: '金額の円への正規化', ok: false, detail: `原典 ${r.source_row} 行目: ${r.source_amount}${source.amountUnit.label} → ${r.value}` }
+      return { name: '金額の円への正規化', binds, ok: false, detail: `原典 ${r.source_row} 行目: ${r.source_amount}${source.amountUnit.label} → ${r.value}` }
     }
   }
   const total = table.rows.reduce((s, r) => s + Number(r.value), 0)
-  return { name: '金額の円への正規化', ok: true, detail: `全 ${table.rows.length} 行が ×${source.amountUnit.multiplier}。合計 ${yen(total)} 円` }
+  return { name: '金額の円への正規化', binds, ok: true, detail: `全 ${table.rows.length} 行が ×${source.amountUnit.multiplier}。合計 ${yen(total)} 円` }
 }
 
 /**
@@ -200,7 +218,7 @@ function descriptorConformance(descriptor: Record<string, unknown>): Check[] {
     if (names.size !== r.schema.fields.length) errors.push(`${r.name}: 列名が重複している`)
     for (const pk of r.schema.primaryKey) if (!names.has(pk)) errors.push(`${r.name}: primaryKey の ${pk} が fields に無い`)
   }
-  out.push({ name: 'Data Package / Table Schema への適合', ok: errors.length === 0, detail: errors.length === 0 ? `パッケージ1件・リソース ${resources.length} 件が構造要件を満たす` : errors.join(' / ') })
+  out.push({ name: 'Data Package / Table Schema への適合', binds: [], ok: errors.length === 0, detail: errors.length === 0 ? `パッケージ1件・リソース ${resources.length} 件が構造要件を満たす` : errors.join(' / ') })
 
   // ColumnType が taxonomy に存在し、dataType と labelOf が宣言と整合するか
   const typeErrors: string[] = []
@@ -222,6 +240,7 @@ function descriptorConformance(descriptor: Record<string, unknown>): Check[] {
   }
   out.push({
     name: 'FDP の ColumnType への適合',
+    binds: [],
     ok: typeErrors.length === 0,
     detail: typeErrors.length === 0 ? `標準 ${STANDARD.length} 件 + 独自 ${CUSTOM.length} 件の ColumnType と照合して不整合なし` : typeErrors.slice(0, 6).join(' / '),
   })
@@ -230,8 +249,9 @@ function descriptorConformance(descriptor: Record<string, unknown>): Check[] {
 
 /** 会計ごとの歳出と歳入の一致。**三鷹市の当該年度に限った条件付き検算** */
 function crossCheck(expenditure: CanonicalTable, revenue: CanonicalTable, source: BudgetSource): Check {
+  const crossBinds = [nodeId.canonical(expenditure.direction), nodeId.canonical(revenue.direction)]
   if (!source.crossCheckExpenditureEqualsRevenue) {
-    return { name: '歳出と歳入の交差検算', ok: true, detail: 'この取得元では成立が確認されていないため適用しない' }
+    return { name: '歳出と歳入の交差検算', binds: crossBinds, ok: true, detail: 'この取得元では成立が確認されていないため適用しない' }
   }
   const sum = (t: CanonicalTable) => {
     const m = new Map<string, number>()
@@ -243,6 +263,7 @@ function crossCheck(expenditure: CanonicalTable, revenue: CanonicalTable, source
   const bad = funds.filter((f) => (e.get(f) ?? 0) !== (r.get(f) ?? 0))
   return {
     name: '歳出と歳入の交差検算（会計ごと）',
+    binds: crossBinds,
     ok: bad.length === 0,
     detail:
       bad.length === 0
@@ -280,6 +301,7 @@ export function publishedReconciliation(expenditure: CanonicalTable, revenue: Ca
 
     out.push({
       name: `公表資料との突合（${P.title} ${table_.location}・${label}の款別）`,
+      binds: [nodeId.canonical(table.direction)],
       ok: diffs.length === 0,
       detail:
         diffs.length === 0
@@ -291,6 +313,7 @@ export function publishedReconciliation(expenditure: CanonicalTable, revenue: Ca
     const publishedSum = Object.values(expected).reduce((a, b) => a + b, 0)
     out.push({
       name: `公表値の内部整合（${label}の款別の和 = 公表の合計）`,
+      binds: [],
       ok: publishedSum === P.total,
       detail: `${yen(publishedSum)} / ${yen(P.total)} ${P.unit}`,
     })
@@ -298,6 +321,7 @@ export function publishedReconciliation(expenditure: CanonicalTable, revenue: Ca
     const converted = [...actual.values()].reduce((a, b) => a + b, 0)
     out.push({
       name: `公表資料との突合（一般会計 ${label}合計）`,
+      binds: [nodeId.canonical(table.direction)],
       ok: converted === P.total,
       detail: `変換後 ${yen(converted)} ${P.unit} / 公表 ${yen(P.total)} ${P.unit}（${P.documentUrl}）`,
     })
@@ -307,6 +331,9 @@ export function publishedReconciliation(expenditure: CanonicalTable, revenue: Ca
 
 /** COFOG の2つの保存則。**年度・会計・予算段階・direction ごとに見る**（全体合計だけだと会計間で相殺される） */
 function cofogPreservation(canonical: CanonicalTable, derived: DerivedTable): Check[] {
+  const d = canonical.direction
+  const derivedBinds = [nodeId.derived(d)]
+  const stateBinds = [nodeId.derived(d), ...[...new Set(derived.rows.map((r) => String(r.cofog_status)))].map(nodeId.state)]
   const groupKey = (r: Row) => [r.fiscal_year, r.fund_source, r.phase_id, r.direction].join(SEP)
   const before = new Map<string, number>()
   for (const r of canonical.rows) before.set(groupKey(r), (before.get(groupKey(r)) ?? 0) + Number(r.value))
@@ -329,28 +356,31 @@ function cofogPreservation(canonical: CanonicalTable, derived: DerivedTable): Ch
   const checks: Check[] = [
     {
       name: 'COFOG：原典の保存（全状態の合計 = 原典の合計）',
+      binds: stateBinds,
       ok: mismatched.length === 0,
       detail: mismatched.length === 0 ? `${before.size} 組（年度 × 会計 × 予算段階 × direction）すべてで一致` : mismatched.map(([k, v]) => `${k.replace(new RegExp(SEP, "g"), '/')}: ${yen(v)} ≠ ${yen(after.get(k) ?? 0)}`).join(' / '),
     },
     {
       name: 'COFOG：適格母集団の保存（割当済み + 分類不能 = 対象外を除いた合計）',
+      binds: stateBinds,
       ok: [...eligible].every(([k, v]) => assignedPlusUnclassifiable.get(k) === v),
       detail: `${eligible.size} 組で一致。適格母集団 ${yen([...eligible.values()].reduce((a, b) => a + b, 0))} 円`,
     },
   ]
 
   const multi = derived.rows.filter((r) => String(r.cofog_division_code).includes(';'))
-  checks.push({ name: 'COFOG：1行あたりのディビジョンが1件以下', ok: multi.length === 0, detail: multi.length === 0 ? `${derived.rows.length} 行すべてで1件以下` : `${multi.length} 行が複数持つ` })
+  checks.push({ name: 'COFOG：1行あたりのディビジョンが1件以下', binds: derivedBinds, ok: multi.length === 0, detail: multi.length === 0 ? `${derived.rows.length} 行すべてで1件以下` : `${multi.length} 行が複数持つ` })
 
   const leaked = derived.rows.filter((r) => r.cofog_status !== 'assigned' && r.cofog_division_code !== '')
-  checks.push({ name: 'COFOG：分類不能と対象外ではコードが空', ok: leaked.length === 0, detail: leaked.length === 0 ? '空であることを確認' : `${leaked.length} 行がコードを持つ` })
+  checks.push({ name: 'COFOG：分類不能と対象外ではコードが空', binds: stateBinds, ok: leaked.length === 0, detail: leaked.length === 0 ? '空であることを確認' : `${leaked.length} 行がコードを持つ` })
 
   const missingCounterpart = derived.rows.filter((r) => r.cofog_consolidation === 'eliminated' && (r.cofog_counterpart_ids === '' || r.cofog_consolidation_scope === ''))
-  checks.push({ name: 'COFOG：消去する行に連結の範囲と相手側の識別子がある', ok: missingCounterpart.length === 0, detail: missingCounterpart.length === 0 ? `消去 ${derived.rows.filter((r) => r.cofog_consolidation === 'eliminated').length} 行すべてに記録あり` : `${missingCounterpart.length} 行で欠落` })
+  checks.push({ name: 'COFOG：消去する行に連結の範囲と相手側の識別子がある', binds: derivedBinds, ok: missingCounterpart.length === 0, detail: missingCounterpart.length === 0 ? `消去 ${derived.rows.filter((r) => r.cofog_consolidation === 'eliminated').length} 行すべてに記録あり` : `${missingCounterpart.length} 行で欠落` })
 
   const unbalanced = derived.consolidationPairs.filter((p) => p.eliminated !== p.counterpart)
   checks.push({
     name: 'COFOG：消去した金額が相手側と一致',
+    binds: [nodeId.derived(d), nodeId.canonical('revenue')],
     ok: unbalanced.length === 0,
     detail:
       unbalanced.length === 0
@@ -365,6 +395,7 @@ function joinability(expenditure: CanonicalTable, source: BudgetSource): Check {
   const bad = expenditure.rows.filter((r) => r.jurisdiction_code !== source.jurisdictionCode || !Number.isInteger(r.fiscal_year))
   return {
     name: '外部データとの接続キー（団体コード × 年度）',
+    binds: [nodeId.canonical(expenditure.direction)],
     ok: bad.length === 0,
     detail: bad.length === 0 ? `全行が jurisdiction_code=${source.jurisdictionCode} と fiscal_year=${source.fiscalYear} を持つ` : `${bad.length} 行で欠落`,
   }
@@ -389,8 +420,8 @@ export function verifyAll(args: {
     ...dependencies(revenue),
     idCollisions(expenditure),
     idCollisions(revenue),
-    compositeKeyUnique(expenditure, '歳出'),
-    compositeKeyUnique(revenue, '歳入'),
+    compositeKeyUnique(expenditure, '歳出', [nodeId.canonical('expenditure')]),
+    compositeKeyUnique(revenue, '歳入', [nodeId.canonical('revenue')]),
     amountConversion(expenditure, source),
     amountConversion(revenue, source),
     ...publishedReconciliation(expenditure, revenue),

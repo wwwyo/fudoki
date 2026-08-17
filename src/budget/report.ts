@@ -16,6 +16,8 @@ import type { CanonicalTable, Row } from './load'
 import { NOT_YET_RECONCILED } from './published/mitaka-2024'
 import type { BudgetSource } from './source'
 import type { DerivedTable } from './transform'
+import { buildTopology, type NodeKind, type Topology } from './topology'
+import type { Direction } from './source'
 import type { Check } from './verify'
 
 /** `data/observations/mitaka-budget-years.json` の形。生成側と読む側で1箇所に置く */
@@ -156,6 +158,11 @@ export type ReportData = {
     generatedAt: string
   }
   summary: { total: number; passed: number; failed: number }
+  /**
+   * パイプラインの形。**画面はこれを描く**。
+   * 段の名前と並びを画面側に直書きすると、パイプラインを変えても図が変わらなくなる。
+   */
+  topology: Topology
   extract: Provenance[]
   load: { direction: string; inputRows: number; outputRows: number; diff: number; absentLevelCells: number; irregularCells: number }[]
   walkthrough: { sourceLine: string; fields: { column: string; value: string; origin: string }[] }
@@ -216,8 +223,10 @@ export function buildReportData(args: {
   checks: Check[]
   outputs: { path: string; description: string; bytes: number }[]
   yearSurvey: YearSurvey | null
+  /** どのノードがどのファイルとして配られるか。命名は呼び出し側が握る */
+  artifactOf: (kind: NodeKind, direction: Direction) => string | undefined
 }): ReportData {
-  const { source, expenditure, revenue, derived, checks, outputs, yearSurvey } = args
+  const { source, expenditure, revenue, derived, checks, outputs, yearSurvey, artifactOf } = args
   const tables = [expenditure, revenue]
 
   const byState = tally(derived.rows, (r) => [r.cofog_status, r.cofog_consolidation, r.cofog_division_code].join(SEP), (r) => Number(r.value))
@@ -247,6 +256,12 @@ export function buildReportData(args: {
       generatedAt: new Date().toISOString(),
     },
     summary: { total: checks.length, passed: checks.filter((c) => c.ok).length, failed: checks.filter((c) => !c.ok).length },
+    topology: buildTopology({
+      canonical: [expenditure, revenue],
+      derived,
+      derivedDirection: expenditure.direction,
+      artifactOf,
+    }),
     extract: tables.map((t) => t.provenance),
     load: tables.map((t) => ({
       direction: t.provenance.direction,

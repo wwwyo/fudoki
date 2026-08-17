@@ -166,7 +166,13 @@ if (!yearSurvey) console.warn('  ⚠️ 他年度の互換性調査が無い。b
 
 // 集計は buildReportData に閉じ込める。表示側でも集計すると、同じ数字が2通りに計算されて、
 // いずれ食い違ったまま気づかなくなる。
-const reportData = buildReportData({ source, expenditure, revenue, derived, checks, outputs, yearSurvey })
+// ノードとファイルの対応は resources の命名が握る。topology 側に名前を持たせない
+const artifactOf = (kind: 'source' | 'canonical' | 'derived' | 'state', d: 'expenditure' | 'revenue') => {
+  if (kind === 'canonical') return `${d}.csv`
+  if (kind === 'derived') return `${d}-cofog.csv`
+  return undefined
+}
+const reportData = buildReportData({ source, expenditure, revenue, derived, checks, outputs, yearSurvey, artifactOf })
 await write(`${reportDir}${source.jurisdictionCode}-${source.fiscalYear}.json`, JSON.stringify(reportData, null, 2) + '\n', 'パイプライン報告。読ませ方は web/pipeline.html が持つ')
 
 console.log('')
