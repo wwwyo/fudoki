@@ -5,7 +5,6 @@
   "scripts": {
     "validate": "bun run src/extract/sources/validate.ts",
     "typecheck": "tsc --noEmit",
-    "build:viewer": "bun run scripts/build-viewer-data.ts",
     "fetch:robots": "bun run scripts/fetch-robots.ts",
     "check:bulletins": "bun run scripts/check-bulletins.ts",
     "check:budget": "bun run scripts/check-budget-granularity.ts",
@@ -13,7 +12,7 @@
     "build:budget": "bun run scripts/build-budget.ts",
     "fetch:fdp-taxonomy": "bun run scripts/fetch-fdp-taxonomy.ts",
     "build:pipeline-view": "bun run scripts/build-pipeline-view.ts",
-    "dev": "bun run build:viewer && bun run build:pipeline-view && python3 -m http.server 4317 --directory web"
+    "dev": "bun run build:pipeline-view && python3 -m http.server 4317 --directory web"
   },
   "dependencies": {
     "zod": "4.4.3"

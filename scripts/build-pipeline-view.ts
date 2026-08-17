@@ -1,8 +1,7 @@
 /**
  * `web/pipeline.html` が読むデータを生成する。
  *
- * survey.html が `_data.js` を持つのと同じ型。**中間物なので gitignore する**
- * （正本は `data/packages/`、報告は `data/reports/` にあり、これはそこからの派生）。
+ * **中間物なので gitignore する**（正本は `data/packages/`、報告は `data/reports/` にあり、これはそこからの派生）。
  *
  * 埋め込みにするのは、ビューアを `web/` 配下だけで完結させるため。
  * リポジトリのルートを配信するサーバを別に立てると、成果物以外まで露出する。

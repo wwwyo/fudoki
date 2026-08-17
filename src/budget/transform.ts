@@ -28,7 +28,7 @@ const COFOG_FIELDS: FieldSpec[] = [
     columnType: 'fudoki:cofog:counterpart-id',
     description:
       '消去する行の相手側（受け皿となる会計の他会計繰入金）の budget_line_id を `;` 区切りで並べたもの。' +
-      '⚠️ 行と行の対応は1対1ではない（歳出の細々節と歳入の細々節が同じ切り方をしていない）。' +
+      '注意: 行と行の対応は1対1ではない（歳出の細々節と歳入の細々節が同じ切り方をしていない）。' +
       '金額が厳密に一致するのは会計の対どうしの合計であり、その突合結果はパイプライン報告にある',
   },
   { name: 'cofog_decided_at_level', title: '割り当てが決まった単位', type: 'string', columnType: 'fudoki:cofog:decided-at-level' },

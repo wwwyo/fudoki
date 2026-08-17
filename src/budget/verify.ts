@@ -246,7 +246,7 @@ function crossCheck(expenditure: CanonicalTable, revenue: CanonicalTable, source
     ok: bad.length === 0,
     detail:
       bad.length === 0
-        ? `${funds.length} 会計すべてで一致。⚠️ 三鷹市の令和6年度当初予算について確認済みの条件付き検算であり、決算・企業会計・補正差分では成立しない`
+        ? `${funds.length} 会計すべてで一致。注意: 三鷹市の令和6年度当初予算について確認済みの条件付き検算であり、決算・企業会計・補正差分では成立しない`
         : bad.map((f) => `${f}: 歳出 ${yen(e.get(f) ?? 0)} ≠ 歳入 ${yen(r.get(f) ?? 0)}`).join(' / '),
   }
 }

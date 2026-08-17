@@ -1,15 +1,13 @@
 /**
- * # パイプライン報告
+ * # パイプライン報告のデータ
  *
  * 変換が正しく動いたかを**人が判定できる**ようにするための出力物。
- * 各段について「何が入って何が出たか」「1行がどう変わったか」「何を検査して結果はどうか」の3つを出す。
+ * 各段について「何が入って何が出たか」「1行がどう変わったか」「何を検査して結果はどうか」の3つを持つ。
  * 差分が0でない段があれば、そこが疑うべき場所になる。
  *
- * ## 集計は1箇所に置く
- *
- * 出力は Markdown（人が読む）と JSON（画面が読む）の2つあるが、**集計するのは `buildReportData` だけ**。
- * Markdown 側でも集計すると、同じ数字が2通りに計算されて、いずれ食い違ったまま気づかなくなる。
- * `buildReport` はデータを受け取って整形するだけにする。
+ * ここが出すのは JSON だけで、読ませ方は `web/pipeline.html` が持つ。
+ * **集計をこの1箇所に閉じ込めるため**で、表示側でも集計すると同じ数字が2通りに計算されて、
+ * いずれ食い違ったまま気づかなくなる。
  */
 import { CUSTOM_COLUMN_TYPES } from './columns'
 import { COFOG_DIVISIONS, COFOG_SOURCE, COFOG_VERSION, CONSOLIDATION_SCOPE, RULE_IDS } from './cofog'
@@ -37,7 +35,6 @@ export type YearSurvey = {
 }
 
 const yen = (n: number) => n.toLocaleString('ja-JP')
-const mark = (ok: boolean) => (ok ? '✓' : '✗')
 /** 連結キーの区切り。名称にも金額にも現れない制御文字を使う */
 const SEP = "\u001f"
 
@@ -310,218 +307,6 @@ export function buildReportData(args: {
     yearSurvey,
     outputs,
   }
-}
-
-// ── Markdown ────────────────────────────────────────────
-
-/** `buildReportData` の結果を整形するだけ。ここで集計しない */
-export function buildReport(d: ReportData): string {
-  const L: string[] = []
-  const m = d.meta
-
-  L.push(`# パイプライン報告：${m.jurisdictionName} ${m.fiscalYearLabel}予算`)
-  L.push('')
-  L.push('> このファイルは `bun run build:budget` が生成する。手で編集しない。')
-  L.push('> 同じ内容を画面で見るなら `bun run dev`（`web/pipeline.html`）。')
-  L.push('')
-  L.push(`- 団体: ${m.jurisdictionName}（全国地方公共団体コード \`${m.jurisdictionCode}\`）`)
-  L.push(`- 年度: ${m.fiscalYearLabel}（西暦 ${m.fiscalYear}）`)
-  L.push(`- 予算段階: ${m.phase.label}（\`${m.phase.id}\`）`)
-  L.push(`- 収録範囲: ${m.coverageNote ?? '注記なし'}`)
-  L.push(`- ライセンス: ${m.license.id} / 帰属表示「${m.attribution}」`)
-  L.push('')
-  L.push(`**検査 ${d.summary.total} 件中 ${d.summary.passed} 件が成功、${d.summary.failed} 件が失敗。**`)
-  L.push('')
-
-  L.push('## Extract')
-  L.push('')
-  L.push('原典を無加工で取得し、URL・HTTP status・SHA-256・取得時刻を証跡として残す。取得物はリポジトリに置かない。')
-  L.push('')
-  L.push('| direction | リソース名 | status | バイト数 | 行数 | 文字コード | SHA-256 | 取得時刻 |')
-  L.push('|---|---|---|---|---|---|---|---|')
-  for (const p of d.extract) L.push(`| ${p.direction} | ${p.resourceName} | ${p.status} | ${yen(p.bytes)} | ${yen(p.rows)} | ${p.encoding} | \`${p.sha256}\` | ${p.fetchedAt} |`)
-  L.push('')
-  L.push('| direction | 取得 URL | 列構成 |')
-  L.push('|---|---|---|')
-  for (const p of d.extract) L.push(`| ${p.direction} | ${p.requestUrl} | ${p.header.join(' / ')} |`)
-  L.push('')
-  L.push('**年度の由来**（原典に年度の列が無いため、解決の根拠を残す）')
-  L.push('')
-  for (const p of d.extract) L.push(`- ${p.direction}: ${p.fiscalYearBasis}`)
-  L.push('')
-  L.push('**検査**: HTTP status が 200 であること、先頭バイトが HTML でないこと、文字コードの判定結果。いずれも上表に出ている。')
-  L.push('')
-
-  L.push('## Load')
-  L.push('')
-  L.push('原典1行を正本1行へ写す。**ここまでは原典に無い情報を足さない。**')
-  L.push('')
-  L.push('| direction | 入力（原典の行数） | 出力（正本の行数） | 差分 | 階層なしのセル | 想定外のセル |')
-  L.push('|---|---|---|---|---|---|')
-  for (const l of d.load) L.push(`| ${l.direction} | ${yen(l.inputRows)} | ${yen(l.outputRows)} | ${l.diff === 0 ? '0' : `**${l.diff}**`} | ${yen(l.absentLevelCells)} | ${l.irregularCells} |`)
-  L.push('')
-  L.push('歳入の「階層なしのセル」は、細々節を持たない行を `0` で埋める三鷹市の表現。想定内なので件数だけ数える。')
-  L.push('')
-  L.push('### 1行がどう変わったか（歳出の先頭行）')
-  L.push('')
-  L.push('```')
-  L.push(`原典  ${d.walkthrough.sourceLine}`)
-  L.push('```')
-  L.push('')
-  L.push('↓ Load')
-  L.push('')
-  L.push('| 出力の列 | 値 | どこから来たか |')
-  L.push('|---|---|---|')
-  // データは素の値を持ち、記号づけは整形側でやる（画面はバッククォートを要らないので）
-  for (const f of d.walkthrough.fields) {
-    const cols = f.column.split(' / ').map((c) => `\`${c}\``).join(' / ')
-    const vals = f.value.split(' / ').map((v) => `\`${v}\``).join(' / ')
-    L.push(`| ${cols} | ${vals} | ${f.origin.replace('原典に無い。', '**原典に無い**。')} |`)
-  }
-  L.push('')
-  L.push('### 階層の切り出し（それぞれ独立した切り口として取り出せる）')
-  L.push('')
-  for (const g of d.levels) {
-    L.push(`**${g.direction}**`)
-    L.push('')
-    L.push('| 階層 | 語彙 | 異なり数 | ColumnType |')
-    L.push('|---|---|---|---|')
-    for (const i of g.items) L.push(`| ${i.sourceColumn} | ${i.vocabulary} | コード ${i.distinctCodes} / 完全修飾 ${i.distinctPaths} | \`${i.columnType}\` |`)
-    L.push('')
-  }
-
-  const t = d.transform
-  L.push('## Transform')
-  L.push('')
-  L.push('正本へ COFOG を割り当てて派生を作る。**ここで初めて fudoki の判断が入る。**')
-  L.push('')
-  L.push(`- 版: ${t.cofogVersion}（ディビジョンの値域 \`01\`〜\`10\`）`)
-  L.push(`- コード表の取得元: [${t.cofogSource.name}](${t.cofogSource.url})`)
-  L.push(`- 規則の本数: ${t.ruleCount}（\`src/budget/cofog.ts\`）`)
-  L.push(`- 入力 ${yen(t.inputRows)} 行 → 出力 ${yen(t.outputRows)} 行（差分 ${t.outputRows - t.inputRows}）`)
-  L.push('')
-  L.push('> Budget Standard Taxonomy が提供するのは COFOG を格納する語彙だけで、')
-  L.push('> **日本の予算科目から COFOG への対応そのものは仕様側に存在しない。** 以下は fudoki 固有の判断である。')
-  L.push('')
-  L.push('### 状態の分布')
-  L.push('')
-  L.push('分類の軸と連結の軸は別の問い。1つの排他的な状態に畳むと、分類できなかったものと、そもそも分類の対象でないものが混ざる。')
-  L.push('')
-  L.push('| 分類の軸 | 連結の軸 | ディビジョン | 行数 | 金額（円） |')
-  L.push('|---|---|---|---|---|')
-  for (const s of t.byState) L.push(`| ${s.status} | ${s.consolidation} | ${s.division ? `${s.division} ${s.divisionLabel}` : '（空）'} | ${yen(s.count)} | ${yen(s.sum)} |`)
-  L.push('')
-  L.push('### 款ごとの割当先・状態・根拠')
-  L.push('')
-  L.push('款は一般会計で12件。入力と出力を並べれば人が妥当性を判定できる規模である。')
-  L.push('')
-  L.push('| 会計 | 款 | 割当先 | 状態 | 決まった単位 | 金額（円） | 根拠 |')
-  L.push('|---|---|---|---|---|---|---|')
-  for (const k of t.byKan) L.push(`| ${k.fund} | ${k.kan} | ${k.division ? `${k.division} ${k.divisionLabel}` : '—'} | ${k.status} | ${k.decidedAtLevel} | ${yen(k.sum)} | ${k.basis} |`)
-  L.push('')
-  L.push('### 款で決まらず、下の単位まで下げたもの')
-  L.push('')
-  L.push('| 決まった単位 | 行数 | 金額（円） |')
-  L.push('|---|---|---|')
-  for (const l of t.byLevel) L.push(`| ${l.level} | ${yen(l.count)} | ${yen(l.sum)} |`)
-  L.push('')
-  L.push('### 連結の消去')
-  L.push('')
-  L.push(`連結の範囲: ${t.consolidationScope}`)
-  L.push('')
-  L.push('| 出し手 | 受け皿 | 消去した金額（円） | 相手側の合計（円） | 一致 | 相手側の行数 |')
-  L.push('|---|---|---|---|---|---|')
-  for (const p of t.consolidationPairs) L.push(`| ${p.from} | ${p.to} | ${yen(p.eliminated)} | ${yen(p.counterpart)} | ${mark(p.ok)} | ${p.counterpartCount} |`)
-  L.push('')
-  L.push('> ⚠️ 歳出の繰出金と歳入の繰入金は**行と行が1対1に対応しない**（細々節の切り方が両者で違う）。')
-  L.push('> 金額が厳密に一致するのは会計の対どうしの合計であり、上表がその突合結果である。')
-  L.push('')
-  L.push('### 分類不能と対象外の内訳')
-  L.push('')
-  L.push('**分類不能の割合の低さは合否に使わない。** 成立範囲を正直に調べることが目的であり、割合を目標にすると判断が歪む。')
-  L.push('')
-  L.push('| 状態 | 会計 | 款 | 金額（円） | 理由 |')
-  L.push('|---|---|---|---|---|')
-  for (const n of t.notAssigned) L.push(`| ${n.status} | ${n.fund} | ${n.kan} | ${yen(n.sum)} | ${n.basis} |`)
-  L.push('')
-
-  L.push('## 検査結果')
-  L.push('')
-  L.push('合計の突合だけに頼らない。1行の欠落と同額の行の重複は合計では相殺されて素通りするため、性質の異なる検査を並べる。')
-  L.push('')
-  L.push('| | 検査 | 結果 |')
-  L.push('|---|---|---|')
-  for (const c of d.checks) L.push(`| ${mark(c.ok)} | ${c.name} | ${c.detail} |`)
-  L.push('')
-  L.push('### まだ突合していない範囲')
-  L.push('')
-  L.push(`- **${d.notYetReconciled.scope}**`)
-  L.push(`  - 理由: ${d.notYetReconciled.reason}`)
-  L.push(`  - 出所の候補: ${d.notYetReconciled.wouldComeFrom}`)
-  L.push(`  - 現在の根拠: ${d.notYetReconciled.currentEvidence}`)
-  L.push('')
-
-  if (d.yearSurvey) {
-    L.push('## 他年度との互換性（調査のみ。収録はしない）')
-    L.push('')
-    L.push('出所: `data/observations/mitaka-budget-years.json`（`bun run check:budget-years` が生成）')
-    L.push('')
-    L.push('| 年度 | direction | 行数 | 会計 | 収録範囲の注記 | 令和6年度と互換 | 判定根拠 | SHA-256 | 取得時刻 |')
-    L.push('|---|---|---|---|---|---|---|---|---|')
-    for (const o of d.yearSurvey.observations) {
-      L.push(`| ${o.label} | ${o.direction} | ${o.rows ?? '—'} | ${o.funds?.length ?? '—'} | ${o.coverageNote ?? 'なし'} | ${o.compatible === null ? '?' : mark(o.compatible)} | ${o.basis} | \`${(o.sha256 ?? '').slice(0, 16)}…\` | ${o.fetchedAt} |`)
-    }
-    L.push('')
-    L.push('**会計の範囲が年度で変わる。** 令和2年度以降は下水道事業会計を除いた5会計、平成28年度から令和元年度は下水道事業特別会計を含む6会計である。')
-    L.push('')
-    L.push(`> ⚠️ ${d.yearSurvey.caveat}`)
-    L.push('')
-  }
-
-  L.push('## 独自に定義した ColumnType')
-  L.push('')
-  L.push('標準の Budget Standard Taxonomy に無く、fudoki が定義したもの。descriptor の `columnTypes` にインラインで載せてある。')
-  L.push('')
-  L.push('| 名前 | dataType | unique | labelOf | なぜ独自定義が要るか |')
-  L.push('|---|---|---|---|---|')
-  for (const c of d.customColumnTypes) L.push(`| \`${c.name}\` | ${c.dataType} | ${c.unique ? '✓' : ''} | ${c.labelOf ? `\`${c.labelOf}\`` : ''} | ${c.why} |`)
-  L.push('')
-
-  L.push('## 2団体目へ展開するときに何を確かめるか')
-  L.push('')
-  L.push('**「再利用可能と判明した」は1団体では言えない。** 判定できないものは判定できないと書く。')
-  L.push('')
-  for (const kind of ['再利用の候補', '三鷹市に固有', '一般性を判定できない'] as const) {
-    L.push(`### ${kind}`)
-    L.push('')
-    L.push('| 要素 | 2団体目で確かめること |')
-    L.push('|---|---|')
-    for (const p of d.portability.filter((x) => x.kind === kind)) L.push(`| ${p.element} | ${p.verifyNext} |`)
-    L.push('')
-  }
-
-  L.push('## Caveats')
-  L.push('')
-  L.push('確定できなかったこと、および設計文書と実データが食い違った点。**推測で埋めずに残す。**')
-  L.push('')
-  for (const c of d.caveats) {
-    L.push(`### ${c.topic}`)
-    L.push('')
-    L.push(c.body)
-    L.push('')
-  }
-
-  L.push('## 出力物')
-  L.push('')
-  L.push('| パス | バイト数 | 内容 |')
-  L.push('|---|---|---|')
-  for (const o of d.outputs) L.push(`| \`${o.path}\` | ${yen(o.bytes)} | ${o.description} |`)
-  L.push('')
-  L.push('---')
-  L.push('')
-  L.push(`生成: \`bun run build:budget\` / ${m.generatedAt}`)
-  L.push('')
-  return L.join('\n')
 }
 
 export type { Row }
