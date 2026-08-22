@@ -106,7 +106,9 @@ if __name__ == "__main__":
     out = ROOT / "data" / "budget" / "observations" / "mitaka-budget-years.json"
     out.write_text(json.dumps({
         "note": "取り込めるかを名前ではなく実物で判定する。列構成・金額の型・引用符・会計の範囲。",
-        "generatedBy": "uv run python -m ingestion.survey_years",
+        # モジュール名から導く。**文字列で書くとファイルを移したとき直し忘れる**
+        # （実際 ingestion/ から ingestion/budget/ へ移したとき、ここだけ古いままだった）。
+        "generatedBy": f"uv run python -m {__spec__.name if __spec__ else __name__}",
         "baseline": BASELINE,
         "caveat": "互換と判定しても、実際に取り込むまで通ることの保証にはならない。",
         "observations": obs,
