@@ -1,0 +1,13 @@
+version: 2
+seeds:
+  - name: published_reference
+    description: |
+      公表資料（令和6年度施政方針・予算概要(1)）から書き写した款別の値。
+      **原典とは別の経路で作られた資料**なので、突合すると取り込みの誤りを外から検出できる。
+      合計だけの検算は誤りが打ち消し合うと通ってしまうため、款別で持つ。
+    config:
+      column_types: {jurisdiction_code: varchar, fiscal_year: integer, direction: varchar, kan_label: varchar, amount_thousand_yen: bigint}
+  - name: published_reference_meta
+    description: 公表資料そのものの出所。PDF の SHA-256 とバイト数を含む
+    config:
+      column_types: {jurisdiction_code: varchar, fiscal_year: integer, total_thousand_yen: bigint, bytes: bigint}
