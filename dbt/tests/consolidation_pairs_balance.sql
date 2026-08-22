@@ -9,7 +9,7 @@ with paid as (
         e.fund_label             as from_fund,
         sum(e.source_amount)     as amount
     from {{ ref('core_budget_cofog') }} as c
-    inner join {{ ref('stg_132047__expenditure') }} as e using (source_row)
+    inner join {{ ref('stg_132047__expenditure') }} as e using (budget_line_id)
     where c.cofog_consolidation = 'eliminated'
     group by 1, 2
 ),
@@ -20,7 +20,7 @@ received as (
         c.cofog_counterpart_fund as from_fund,
         sum(r.source_amount)     as amount
     from {{ ref('core_revenue_consolidation') }} as c
-    inner join {{ ref('stg_132047__revenue') }} as r using (source_row)
+    inner join {{ ref('stg_132047__revenue') }} as r using (budget_line_id)
     where c.cofog_consolidation = 'eliminated'
     group by 1, 2
 )

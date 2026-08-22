@@ -17,8 +17,6 @@ export type PipelineData = {
   report: ReportData
   expenditure: ColumnarTable
   revenue: ColumnarTable
-  /** 派生。**正本と別ファイルで配る**ものを、画面でも別テーブルとして見せる */
-  cofog: ColumnarTable
 }
 
 /** 明細の1行。列は配布する CSV のヘッダがそのまま決める */

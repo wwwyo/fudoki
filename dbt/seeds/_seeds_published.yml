@@ -1,6 +1,10 @@
 version: 2
 seeds:
   - name: published_reference
+    meta:
+      # **外部資料の書き写し。判断ではない。** 突合の相手として持つだけで、
+      # これを使った下流に fudoki の解釈は入らない。
+      role: external-reference
     description: |
       公表資料（令和6年度施政方針・予算概要(1)）から書き写した款別の値。
       **原典とは別の経路で作られた資料**なので、突合すると取り込みの誤りを外から検出できる。
@@ -8,6 +12,8 @@ seeds:
     config:
       column_types: {jurisdiction_code: varchar, fiscal_year: integer, direction: varchar, kan_label: varchar, amount_thousand_yen: bigint}
   - name: published_reference_meta
+    meta:
+      role: external-reference
     description: 公表資料そのものの出所。PDF の SHA-256 とバイト数を含む
     config:
       column_types: {jurisdiction_code: varchar, fiscal_year: integer, total_thousand_yen: bigint, bytes: bigint}

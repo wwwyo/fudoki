@@ -71,16 +71,38 @@ const STAGES: Stage[] = [
 type DbtNode = {
   name: string; resource_type: string; path?: string; description?: string
   config?: { location?: string }; depends_on?: { nodes?: string[] }
+  meta?: { role?: 'judgment-rule' | 'external-reference' }
 }
 type Manifest = { nodes: Record<string, DbtNode>; sources: Record<string, DbtNode> }
 type RunResults = { results: { unique_id: string; status: string; failures: number | null; message: string | null }[] }
 
-/** 段はノードの置き場から決まる。宣言と実装がずれないのはこれが理由 */
+/**
+ * 段はノードの置き場から決まる。宣言と実装がずれないのはこれが理由。
+ *
+ * ⚠️ **未知の置き場を core に落とさない。** 落とすと、段を1つ増やしたときに
+ * 黙って core に混ざり、判断の境界を誤って表示する。宣言されていなければ止める。
+ */
 function stageOf(n: DbtNode): Stage['id'] {
   if (n.resource_type === 'source') return 'ingestion'
   if (n.resource_type === 'seed') return 'core'
   const hit = STAGES.find((s) => (n.path ?? '').startsWith(`${s.id}/`))
-  return hit?.id ?? 'core'
+  if (!hit) throw new Error(`モデル ${n.name}（${n.path}）の置き場が段の宣言に無い`)
+  return hit.id
+}
+
+/**
+ * このノード自身が判断を持ち込むか。
+ *
+ * **seed は置き場では決まらない。** 規則表（COFOG の割当）は判断そのものだが、
+ * 公表資料の書き写しは判断ではない。dbt の meta.role で宣言させ、未宣言なら止める。
+ */
+function introducesJudgment(n: DbtNode, stage: Stage['id']): boolean {
+  if (n.resource_type === 'seed') {
+    const role = n.meta?.role
+    if (!role) throw new Error(`seed ${n.name} に meta.role の宣言が無い（judgment-rule / external-reference）`)
+    return role === 'judgment-rule'
+  }
+  return stage === 'core'
 }
 
 function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
@@ -104,13 +126,29 @@ function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
     const stage = stageOf(n)
     return {
       id, label: n.name, kind: n.resource_type as Node['kind'], stage, rows,
-      description: (n.description ?? '').trim(), introducesJudgment: stage === 'core',
+      description: (n.description ?? '').trim(),
+      introducesJudgment: introducesJudgment(n, stage),
+      containsJudgment: false, // 下で上流から伝播させる
       artifact: loc ?? null,
     }
   })
 
   const edges = models.flatMap(([id, n]) =>
     (n.depends_on?.nodes ?? []).filter((d) => ids.has(d)).map((from) => ({ from, to: id, kind: 'flow' })))
+
+  // **判断は下流へ伝播する。** COFOG を含む派生の配布物は、それ自身が規則を
+  // 適用していなくても判断を含む。ここを伝播させないと、配布物が「判断なし」と
+  // 表示され、正本と派生を分けている意味が画面から消える。
+  const byId = new Map(nodes.map((n) => [n.id, n]))
+  const upstream = new Map<string, string[]>()
+  for (const e of edges) upstream.set(e.to, [...(upstream.get(e.to) ?? []), e.from])
+  const resolve = (id: string, seen = new Set<string>()): boolean => {
+    const n = byId.get(id)
+    if (!n || seen.has(id)) return false
+    seen.add(id)
+    return n.introducesJudgment || (upstream.get(id) ?? []).some((u) => resolve(u, seen))
+  }
+  for (const n of nodes) n.containsJudgment = resolve(n.id)
 
   const order = STAGES.map((s) => s.id)
   nodes.sort((a, b) => order.indexOf(a.stage) - order.indexOf(b.stage) || a.label.localeCompare(b.label))
@@ -170,7 +208,7 @@ function buildTransform(): ReportData['transform'] {
     byState: withLabel(q(`
       select c.cofog_status status, c.cofog_division division, c.cofog_consolidation consolidation,
              count(*) count, sum(s.source_amount) * 1000 sum
-      from core_budget_cofog c join stg_132047__expenditure s using (source_row)
+      from core_budget_cofog c join stg_132047__expenditure s using (budget_line_id)
       -- 同点で並びが揺れないよう、決着のつく列まで指定する。
       -- 報告は commit するので、非決定的だと中身が同じでも毎回差分が出る。
       group by all order by sum desc, status, division, consolidation`, ['count', 'sum'])),
@@ -181,29 +219,29 @@ function buildTransform(): ReportData['transform'] {
       select s.fund_source fund, s.kan_source kan, c.cofog_division division, c.cofog_status status,
              c.cofog_decided_at_level decidedAtLevel, c.cofog_rule_id ruleId,
              sum(s.source_amount) * 1000 sum, any_value(r.basis) basis
-      from core_budget_cofog c join stg_132047__expenditure s using (source_row)
+      from core_budget_cofog c join stg_132047__expenditure s using (budget_line_id)
       left join cofog_rules r on r.rule_id = c.cofog_rule_id
       group by 1, 2, 3, 4, 5, 6 order by sum desc, fund, kan, ruleId`, ['sum'])),
     byLevel: q(`
       select c.cofog_decided_at_level "level", count(*) count, sum(s.source_amount) * 1000 sum
-      from core_budget_cofog c join stg_132047__expenditure s using (source_row)
+      from core_budget_cofog c join stg_132047__expenditure s using (budget_line_id)
       group by 1 order by sum desc, "level"`, ['count', 'sum']),
     notAssigned: q(`
       select c.cofog_status status, s.fund_source fund, s.kan_source kan, c.cofog_rule_id ruleId,
              sum(s.source_amount) * 1000 sum, any_value(r.basis) basis
-      from core_budget_cofog c join stg_132047__expenditure s using (source_row)
+      from core_budget_cofog c join stg_132047__expenditure s using (budget_line_id)
       left join cofog_rules r on r.rule_id = c.cofog_rule_id
       where c.cofog_status <> 'assigned' group by 1, 2, 3, 4
       order by sum desc, fund, kan, ruleId`, ['sum']),
     consolidationPairs: q(`
       with paid as (
         select e.fund_label frm, c.cofog_counterpart_fund it, sum(e.source_amount) * 1000 amt
-        from core_budget_cofog c join stg_132047__expenditure e using (source_row)
+        from core_budget_cofog c join stg_132047__expenditure e using (budget_line_id)
         where c.cofog_consolidation = 'eliminated' group by 1, 2),
       got as (
         select c.cofog_counterpart_fund frm, r.fund_label it,
                sum(r.source_amount) * 1000 amt, count(*) cnt
-        from core_revenue_consolidation c join stg_132047__revenue r using (source_row)
+        from core_revenue_consolidation c join stg_132047__revenue r using (budget_line_id)
         where c.cofog_consolidation = 'eliminated' group by 1, 2)
       select p.frm "from", p.it "to", p.amt eliminated, g.amt counterpart,
              g.cnt counterpartCount, p.amt = g.amt ok
@@ -249,10 +287,15 @@ function build(code = '132047'): ReportData {
     .sort()
     .map((f) => readJson<Provenance>(join(provDir, f)))
 
-  const sources = Bun.YAML === undefined ? null : null // TOML は下で読む
-  void sources
-  const toml = readFileSync(join(ROOT, 'ingestion/sources.toml'), 'utf8')
-  const pick = (k: string) => toml.match(new RegExp(`^${k} = "(.*)"$`, 'm'))?.[1] ?? ''
+  // ⚠️ **TOML を正規表現で読まない。** 最初に一致した key を返すので、
+  // 2団体目を足した時点で `code` に関係なく先頭の団体の名称・ライセンスを使う。
+  const sources = Bun.TOML.parse(readFileSync(join(ROOT, 'ingestion/sources.toml'), 'utf8')) as
+    Record<string, { jurisdiction_name?: string; phase_id?: string; phase_label?: string
+                     license_id?: string; attribution?: string; landing_page?: string }>
+  const entries = Object.entries(sources).filter(([k]) => k.startsWith(`${code}:`))
+  if (entries.length === 0) throw new Error(`取得元 ${code}:* が ingestion/sources.toml に無い`)
+  const src = entries[0]![1]
+  const pick = (k: keyof typeof src) => src[k] ?? ''
 
   const checks = buildChecks(manifest, results)
   return {
@@ -279,14 +322,38 @@ function build(code = '132047'): ReportData {
     transform: buildTransform(),
     checks,
     ...STATIC,
+    // 年度調査は観測ファイルを直接読む。**static に写すと、再調査しても画面が変わらない。**
+    // 実際 static の generatedBy は削除済みのスクリプト名を指したままになっていた。
+    yearSurvey: readJson<ReportData['yearSurvey']>(join(ROOT, 'data/observations/mitaka-budget-years.json')),
   }
 }
 
-/** 明細。**配布する CSV そのものを読む** — テーブル経由だと画面と配布物がずれうる */
-function columnar(csv: string) {
-  const rows = q<Record<string, unknown>>(`select * from read_csv('${csv}', header = true, all_varchar = true)`)
+/**
+ * 明細。**配布する CSV を読み、画面用に join した射影を作る。**
+ *
+ * 配布物は正本（判断なし）と派生（判断あり）を別ファイルにしてある。
+ * 画面はその両方を見せたいので、利用者が `budget_line_id` で join して得るのと
+ * 同じものをここで組む。**配布物を太らせて画面に合わせない** —
+ * それをやると正本に判断が混ざる。
+ *
+ * `*_source`（原典のセル全文）は配布物から落としてある（code‖label で復元できるため）。
+ * 画面は階層の絞り込みに使うので、ここで組み立て直す。
+ */
+function detailProjection(canonical: string, levels: string[], phaseId: string) {
+  const src = levels.map((l) => `${l}_code || ${l}_label as ${l}_source`).join(', ')
+  const rows = q<Record<string, unknown>>(`
+    select c.*, ${src},
+           '${phaseId}' as phase_id, '千円' as source_amount_unit,
+           d.cofog_status, d.cofog_division as cofog_division_code,
+           d.cofog_consolidation, d.cofog_decided_at_level, r.basis as cofog_basis
+    from read_csv('${canonical}', header = true, all_varchar = true) c
+    left join read_csv('${join(ROOT, 'data/packages/derived/cofog.csv')}', header = true, all_varchar = true) d
+      using (budget_line_id)
+    left join read_csv('${join(ROOT, 'data/packages/derived/cofog_rules.csv')}', header = true, all_varchar = true) r
+      on r.rule_id = d.cofog_rule_id
+    order by c.source_row`)
   const columns = rows.length ? Object.keys(rows[0]!) : []
-  return { columns, rows: rows.map((r) => columns.map((c) => String(r[c] ?? ''))) }
+  return { columns, rows: rows.map((x) => columns.map((c) => String(x[c] ?? ''))) }
 }
 
 const report = build()
@@ -294,9 +361,10 @@ writeFileSync(join(ROOT, 'data/reports/132047.json'), `${JSON.stringify(report, 
 writeFileSync(join(ROOT, 'web/public/pipeline.json'), `${JSON.stringify({
   code: '132047',
   report,
-  expenditure: columnar(join(ROOT, 'data/packages/132047/expenditure.csv')),
-  revenue: columnar(join(ROOT, 'data/packages/132047/revenue.csv')),
-  cofog: columnar(join(ROOT, 'data/packages/derived/cofog.csv')),
+  expenditure: detailProjection(join(ROOT, 'data/packages/132047/expenditure.csv'),
+    ['fund', 'kan', 'kou', 'moku', 'jikou', 'setsu', 'saisaisetsu'], report.meta.phase.id),
+  revenue: detailProjection(join(ROOT, 'data/packages/132047/revenue.csv'),
+    ['fund', 'kan', 'kou', 'moku', 'setsu', 'saisetsu', 'saisaisetsu'], report.meta.phase.id),
 })}\n`)
 const s = report.summary
 console.log(`ok  検査 ${s.passed}/${s.total}（警告 ${s.warned}）  ノード ${report.topology.nodes.length}  辺 ${report.topology.edges.length}`)

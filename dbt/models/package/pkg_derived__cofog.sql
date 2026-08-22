@@ -31,7 +31,7 @@ select
     c.cofog_rule_id,
     c.cofog_counterpart_fund
 from {{ ref('core_budget_cofog') }} as c
-inner join {{ ref('stg_132047__expenditure') }} as s using (source_row)
+inner join {{ ref('stg_132047__expenditure') }} as s using (budget_line_id)
 
 union all
 
@@ -47,7 +47,7 @@ select
     c.cofog_rule_id,
     c.cofog_counterpart_fund
 from {{ ref('core_revenue_consolidation') }} as c
-inner join {{ ref('stg_132047__revenue') }} as s using (source_row)
+inner join {{ ref('stg_132047__revenue') }} as s using (budget_line_id)
 
 -- **並びを固定する。** 指定しないと実行ごとに行順が変わり、
 -- 中身が同じでも git に毎回 2,048 行の差分が出る。

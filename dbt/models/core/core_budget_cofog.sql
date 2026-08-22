@@ -34,9 +34,12 @@ rules as (
 
 matched as (
     select
-        l.source_row,
+        l.budget_line_id,
         r.*,
-        row_number() over (partition by l.source_row order by r.priority) as rn
+        -- ⚠️ **source_row で束ねない。** 原典の行番号は1リソース内でしか一意でなく、
+        -- 2年度目を足した時点で年度をまたいで衝突する。budget_line_id は
+        -- 団体・年度・direction・段階を含むので、増やしても衝突しない。
+        row_number() over (partition by l.budget_line_id order by r.priority) as rn
     from lines as l
     inner join rules as r
         -- 団体スコープ。空は法定語彙にだけ当たる規則で、どの団体にも効く。
@@ -60,6 +63,7 @@ select
     l.jurisdiction_code,
     l.fiscal_year,
     l.direction,
+    l.budget_line_id,
     l.source_row,
     coalesce(m.status, 'unclassifiable')          as cofog_status,
     coalesce(m.division, '')                      as cofog_division,
@@ -70,4 +74,4 @@ select
     coalesce(m.basis, 'どの規則にも当たらなかった。捨てずに分類不能として残す') as cofog_basis
 from lines as l
 left join matched as m
-    on l.source_row = m.source_row and m.rn = 1
+    on l.budget_line_id = m.budget_line_id and m.rn = 1

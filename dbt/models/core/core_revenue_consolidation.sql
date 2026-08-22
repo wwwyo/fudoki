@@ -22,6 +22,7 @@ select
     jurisdiction_code,
     fiscal_year,
     direction,
+    budget_line_id,
     source_row,
     -- 分類の軸は歳入に存在しない。空にするのではなく、そう明示する。
     'not-applicable'                                     as cofog_status,

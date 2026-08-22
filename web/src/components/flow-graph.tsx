@@ -125,7 +125,9 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
             const failed = cs.filter((c) => !c.ok && c.severity === 'error').length
             const warned = cs.filter((c) => !c.ok && c.severity === 'warn').length
             const dim = related ? !related.has(node.id) : false
-            const on = node.introducesJudgment
+            // **「含む」で色を塗る。** 派生の配布物はそれ自身が規則を適用していなくても
+    // 判断を含む。持ち込むかどうかで塗ると、配布物が「判断なし」に見える。
+    const on = node.containsJudgment
             return (
               <g
                 key={node.id}
@@ -178,7 +180,7 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
         </span>
         <span className="inline-flex items-center gap-1.5">
           <i aria-hidden className="h-3 w-1 rounded-sm" style={{ background: 'var(--color-stage-judgment)' }} />
-          fudoki の判断が入る
+fudoki の判断を含む（上流から伝播する）
         </span>
         <span className="inline-flex items-center gap-1.5">
           <i aria-hidden className="size-2.5 rounded-full" style={{ background: 'var(--color-chart-2)' }} />
@@ -193,9 +195,10 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
           <div className="flex flex-wrap items-baseline gap-2">
             <span className="font-mono font-medium">{detail.label}</span>
             <Badge variant="outline">{KIND_JA[detail.kind]}</Badge>
-            <Badge variant={detail.introducesJudgment ? 'destructive' : 'secondary'}>
-              {detail.introducesJudgment ? '判断あり' : '判断なし'}
+            <Badge variant={detail.containsJudgment ? 'destructive' : 'secondary'}>
+              {detail.containsJudgment ? '判断を含む' : '判断を含まない'}
             </Badge>
+            {detail.introducesJudgment && <Badge variant="outline">ここで判断が入る</Badge>}
             {detail.artifact && (
               <code className="text-[11px] text-muted-foreground">{detail.artifact.replace('../data/', 'data/')}</code>
             )}

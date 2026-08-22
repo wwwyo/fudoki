@@ -2,6 +2,9 @@ version: 2
 
 seeds:
   - name: cofog_rules
+    meta:
+      # **判断そのもの。** これを適用した下流は fudoki の言い分を含む。
+      role: judgment-rule
     description: |
       COFOG の割り当て規則。**fudoki の判断そのもの**なのでデータとして持つ。
       priority の小さい順に見て最初に当たったものを採る（具体的な規則ほど先）。

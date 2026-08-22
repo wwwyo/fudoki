@@ -2,7 +2,7 @@
 with e as (
     select c.*, s.source_amount
     from {{ ref('core_budget_cofog') }} as c
-    inner join {{ ref('stg_132047__expenditure') }} as s using (source_row)
+    inner join {{ ref('stg_132047__expenditure') }} as s using (budget_line_id)
 )
 
 -- 1. 原典の保存。全状態の合計が原典の合計に戻る（分類で金額が消えていない）

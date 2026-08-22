@@ -25,7 +25,16 @@ export type Node = {
   stage: Stage['id']
   rows: number | null
   description: string
+  /** このノード自身が判断を持ち込むか（規則を適用する core のモデルと、判断を宣言した seed） */
   introducesJudgment: boolean
+  /**
+   * このノードのデータが判断を含むか。**上流から伝播する。**
+   *
+   * 2つを分けないと、COFOG を含む派生の配布物が「判断なし」と表示され、
+   * 公表資料の書き写しが「判断あり」と表示される（実際にそうなっていた）。
+   * 画面が説明している不変条件そのものを、画面が誤って伝えることになる。
+   */
+  containsJudgment: boolean
   /** 配布物として書き出されるファイル。package 段のノードだけ持つ */
   artifact: string | null
 }

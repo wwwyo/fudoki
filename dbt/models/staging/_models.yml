@@ -5,8 +5,10 @@ models:
     description: 三鷹市 歳出。原典と1対1。判断を含まない
     columns:
       - name: source_row
-        description: 原典の行番号（ヘッダを1行目とする）
-        data_tests: [unique, not_null]
+        description: |
+          原典の行番号（ヘッダを1行目とする）。**1リソース内でしか一意でない。**
+          年度をまたぐと衝突するので、join にも一意性検査にも使わない（証跡として持つだけ）。
+        data_tests: [not_null]
       - name: source_amount
         description: 原典の値。単位は千円のまま
         data_tests: [not_null]
@@ -20,7 +22,7 @@ models:
     description: 三鷹市 歳入。原典と1対1。判断を含まない
     columns:
       - name: source_row
-        data_tests: [unique, not_null]
+        data_tests: [not_null]
       - name: source_amount
         data_tests: [not_null]
       - name: budget_line_id
