@@ -62,8 +62,17 @@ def build_topology(manifest: dict, results: dict, con: duckdb.DuckDBPyConnection
             # 原典は DuckDB にテーブルとして存在しない（Parquet を直接読む）ので証跡から取る
             rows = sum(p["rows"] for p in provenance if p["direction"] == n["name"])
         else:
+            loc = (n.get("config") or {}).get("location")
             try:
-                rows = con.execute(f'select count(*) from "{n["name"]}"').fetchone()[0]
+                if loc:
+                    # package 段は外部ファイルとして書き出される。DuckDB のビューは
+                    # dbt の作業ディレクトリ基準の相対パスなので、実ファイルを直接数える。
+                    csv_path = (ROOT / "dbt" / loc).resolve()
+                    rows = con.execute(
+                        "select count(*) from read_csv(?, header = true, all_varchar = true)", [str(csv_path)]
+                    ).fetchone()[0]
+                else:
+                    rows = con.execute(f'select count(*) from "{n["name"]}"').fetchone()[0]
             except duckdb.Error:
                 rows = None
         nodes.append({
@@ -122,6 +131,12 @@ def q(con: duckdb.DuckDBPyConnection, sql: str) -> list[dict]:
     return [dict(zip(cols, row, strict=True)) for row in cur.fetchall()]
 
 
+COFOG_DIVISIONS = {
+    "01": "一般公共サービス", "02": "防衛", "03": "公共の秩序及び安全", "04": "経済業務", "05": "環境保護",
+    "06": "住宅及び地域アメニティ", "07": "保健", "08": "娯楽、文化及び宗教", "09": "教育", "10": "社会保護",
+}
+
+
 def build_transform(con: duckdb.DuckDBPyConnection) -> dict:
     """COFOG の判断。**ここが fudoki が自治体の言っていないことを付け加えた唯一の場所**なので、
     何をどこへ割り当て、なぜそう決めたかを根拠まで出す。
@@ -131,18 +146,24 @@ def build_transform(con: duckdb.DuckDBPyConnection) -> dict:
     """
     rules = q(con, """select count(*) as "n",
                       count(*) filter (where coalesce(applies_to, '') = '') as "shared" from cofog_rules""")[0]
+    def label_divisions(rows: list[dict]) -> list[dict]:
+        for r in rows:
+            r["divisionLabel"] = COFOG_DIVISIONS.get(r.get("division") or "", "")
+        return rows
+
     return {
         "cofogVersion": "COFOG 1999",
         "cofogSource": {"name": "UNSD Classification of the Functions of Government (COFOG)",
                         "url": "https://unstats.un.org/unsd/classifications/Family/Detail/4"},
         "ruleCount": rules["n"],
         "ruleScope": {"shared": rules["shared"], "jurisdictionSpecific": rules["n"] - rules["shared"]},
-        "byState": q(con, """
-            select c.cofog_status "status", c.cofog_division "division", c.cofog_consolidation "consolidation",
+        "byState": label_divisions(q(con, """
+            select c.cofog_status "status", c.cofog_division "division",
+                   c.cofog_consolidation "consolidation",
                    count(*) "count", sum(s.source_amount) * 1000 "sum"
             from core_budget_cofog c join stg_132047__expenditure s using (source_row)
-            group by all order by sum desc"""),
-        "byKan": q(con, """
+            group by all order by sum desc""")),
+        "byKan": label_divisions(q(con, """
             select s.fund_source "fund", s.kan_source "kan", c.cofog_division "division", c.cofog_status "status",
                    c.cofog_decided_at_level "decidedAtLevel", c.cofog_rule_id "ruleId",
                    sum(s.source_amount) * 1000 "sum", any_value(r.basis) "basis"
@@ -151,7 +172,7 @@ def build_transform(con: duckdb.DuckDBPyConnection) -> dict:
             -- **規則ごとに分ける。** 併合すると basis が合計に対応しなくなる
             -- （国民健康保険への繰出と後期高齢者医療への繰出が1行に潰れ、
             -- 片方の根拠だけが両方の金額に付いた状態になっていた）。
-            group by 1, 2, 3, 4, 5, 6 order by sum desc"""),
+            group by 1, 2, 3, 4, 5, 6 order by sum desc""")),
         "byLevel": q(con, """
             select c.cofog_decided_at_level "level", count(*) "count", sum(s.source_amount) * 1000 "sum"
             from core_budget_cofog c join stg_132047__expenditure s using (source_row)

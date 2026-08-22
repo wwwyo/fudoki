@@ -3,17 +3,18 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "validate": "bun run src/extract/sources/validate.ts",
-    "typecheck": "tsc --noEmit",
-    "fetch:robots": "bun run scripts/fetch-robots.ts",
-    "check:bulletins": "bun run scripts/check-bulletins.ts",
+    "build:web": "bun run report && bun run --cwd web build",
     "check:budget": "bun run scripts/check-budget-granularity.ts",
     "check:budget-years": "bun run scripts/check-budget-years.ts",
-    "build:budget": "bun run scripts/build-budget.ts",
+    "check:bulletins": "bun run scripts/check-bulletins.ts",
+    "dbt": "cd dbt && DBT_PROFILES_DIR=. uv run dbt build",
+    "dev": "bun run report && bun run --cwd web dev",
     "fetch:fdp-taxonomy": "bun run scripts/fetch-fdp-taxonomy.ts",
-    "build:pipeline-view": "bun run scripts/build-pipeline-view.ts",
-    "dev": "bun run build:pipeline-view && bun run --cwd web dev",
-    "build:web": "bun run build:pipeline-view && bun run --cwd web build"
+    "fetch:robots": "bun run scripts/fetch-robots.ts",
+    "pipeline": "uv run python -m ingestion.fetch 132047:2024 && bun run dbt && uv run python -m package.build && uv run python -m report.build",
+    "report": "uv run python -m report.build",
+    "typecheck": "tsc --noEmit",
+    "validate": "bun run src/extract/sources/validate.ts"
   },
   "dependencies": {
     "zod": "4.4.3"

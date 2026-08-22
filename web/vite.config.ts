@@ -10,7 +10,6 @@ export default defineConfig({
     alias: {
       "@": path.resolve(import.meta.dirname, "./src"),
       // 報告の型はパイプライン本体から取る（web/ 側で写しを持たない）
-      "@pipeline": path.resolve(import.meta.dirname, "../src/budget"),
     },
   },
 })

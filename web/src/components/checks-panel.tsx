@@ -20,7 +20,7 @@ export function ChecksPanel({ report, selectedNode, onClearNode }: Props) {
 
   let rows = report.checks
   if (selectedNode) rows = rows.filter((c) => c.binds.includes(selectedNode))
-  if (failOnly) rows = rows.filter((c) => !c.ok)
+  if (failOnly) rows = rows.filter((c) => !c.ok && c.severity === 'error')
 
   const nr = report.notYetReconciled
   const unbound = unboundChecks(report)
@@ -30,7 +30,8 @@ export function ChecksPanel({ report, selectedNode, onClearNode }: Props) {
       <p className="max-w-[72ch] text-sm leading-relaxed text-muted-foreground">
         合計の突合だけに頼らない。<span className="font-medium text-foreground">1行の欠落と同額の行の重複は合計では相殺されて素通りする。</span>
         性質の異なる検査を並べ、どれか1つが通っても他が落ちる状態を作る。
-        検査が1つでも落ちると成果物は書き出されない（{report.topology.writeGate.description}）。
+        検査が1つでも落ちると <code>dbt build</code> が止まり、下流のモデルも配布物も作られない。
+        欠落したまま合計だけ下がった正本を配らないため。
       </p>
 
       <div className="flex flex-wrap items-center gap-2">
@@ -55,7 +56,14 @@ export function ChecksPanel({ report, selectedNode, onClearNode }: Props) {
               <TableRow><TableCell colSpan={4} className="text-sm text-muted-foreground">該当なし。</TableCell></TableRow>
             ) : rows.map((c, i) => (
               <TableRow key={i}>
-                <TableCell><Badge variant={c.ok ? 'secondary' : 'destructive'}>{c.ok ? '成功' : '失敗'}</Badge></TableCell>
+                <TableCell>
+                  {/* 警告と失敗を分ける。警告は落とさないが毎回見える検査で、
+                      原典の状態を報告するためのもの（前後に空白のあるセルなど）。
+                      失敗と同じ色で出すと、直すべきものと知っておくべきものが混ざる。 */}
+                  <Badge variant={c.ok ? 'secondary' : c.severity === 'warn' ? 'outline' : 'destructive'}>
+                    {c.ok ? '成功' : c.severity === 'warn' ? '警告' : '失敗'}
+                  </Badge>
+                </TableCell>
                 <TableCell className="min-w-[20ch] text-sm">{c.name}</TableCell>
                 <TableCell className="whitespace-nowrap text-xs text-muted-foreground">
                   {c.binds.length === 0 ? 'パッケージ全体'

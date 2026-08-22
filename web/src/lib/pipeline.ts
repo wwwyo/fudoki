@@ -1,27 +1,28 @@
 /**
  * ダッシュボードが読むデータの入口。
  *
- * **型はパイプライン本体から取る**（`@pipeline/report`）。ここで形を手で写すと、
- * `ReportData` のフィールド名を変えた瞬間に画面が黙って壊れる。
- * 実際、旧ビューアは素の JS で 26 箇所を読んでいて、その検査が一切効いていなかった。
+ * **型の正本は `@/lib/report`。** パイプラインが Python + dbt へ移ったので、
+ * 契約を画面側が持つ。生成側（`report/build.py`）がこの形を満たすことは
+ * Python 側の検査で確かめる。型を手で写した状態を放置すると、
+ * 生成側のキーを変えた瞬間に画面が黙って壊れる。
  */
-import type { ReportData } from '@pipeline/report'
-import type { Topology, TopologyNode, TopologyEdge, StageId } from '@pipeline/topology'
+import type { ReportData, Topology, Node, Edge, Stage, Check } from '@/lib/report'
 
-export type { ReportData, Topology, TopologyNode, TopologyEdge, StageId }
+export type { ReportData, Topology, Node, Edge, Stage, Check }
 
 /** 列指向で運ぶ。行ごとにキーを繰り返すと、ファイルの大半が列名になる */
 export type ColumnarTable = { columns: string[]; rows: string[][] }
 
 export type PipelineData = {
   code: string
-  year: string
   report: ReportData
   expenditure: ColumnarTable
   revenue: ColumnarTable
+  /** 派生。**正本と別ファイルで配る**ものを、画面でも別テーブルとして見せる */
+  cofog: ColumnarTable
 }
 
-/** 明細の1行。列は生成側（scripts/build-pipeline-view.ts）が決める */
+/** 明細の1行。列は配布する CSV のヘッダがそのまま決める */
 export type DetailRow = Record<string, string>
 
 export function toRows(t: ColumnarTable): DetailRow[] {
@@ -29,8 +30,7 @@ export function toRows(t: ColumnarTable): DetailRow[] {
 }
 
 /**
- * 生成物を取りに行く。`bun run dev` は build:pipeline-view を回してから Vite を上げるので、
- * キャッシュされた古い数字を掴まないようにする。
+ * 生成物を取りに行く。キャッシュされた古い数字を掴まないようにする。
  * 直したのに古い値が出たままだと、直ったかどうかの判断そのものができない。
  */
 export async function loadPipeline(): Promise<PipelineData> {
@@ -38,7 +38,7 @@ export async function loadPipeline(): Promise<PipelineData> {
   if (!res.ok) {
     throw new Error(
       `pipeline.json を読めません（HTTP ${res.status}）。` +
-        `bun run build:budget のあと bun run build:pipeline-view を回してください`,
+        `cd dbt && dbt build のあと uv run python -m report.build を回してください`,
     )
   }
   return (await res.json()) as PipelineData
@@ -72,7 +72,13 @@ export const STATUS_JA: Record<string, string> = {
   assigned: '割当済み',
   unclassifiable: '分類不能',
   'out-of-scope': '対象外',
+  // 歳入。COFOG は支出の機能別分類なので分類の軸そのものが無い。
+  // 「分類できなかった」と混ぜないために別の状態にしてある。
+  'not-applicable': '分類の軸なし',
 }
+
+/** 段ごとの並び順。dbt の置き場が段を決めるので、画面はこの順に並べるだけ */
+export const STAGE_ORDER: Stage['id'][] = ['ingestion', 'staging', 'core', 'package']
 
 /** 検査をノードごとに引けるようにする。「どの段の何を守っているか」で見せるため */
 export function checksByNode(report: ReportData) {

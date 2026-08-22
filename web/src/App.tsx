@@ -65,7 +65,7 @@ export default function App() {
       <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background/95 px-4 backdrop-blur">
         <div className="flex min-w-0 items-center gap-2">
           <span className="truncate font-medium">{m.jurisdictionName}</span>
-          <span className="truncate text-sm text-muted-foreground">{m.fiscalYearLabel} · {m.phase.label}</span>
+          <span className="truncate text-sm text-muted-foreground">{m.fiscalYears.join("・")}年度 · {m.phase.label}</span>
         </div>
         <Badge variant={report.summary.failed ? 'destructive' : 'secondary'} className="ml-auto shrink-0">
           検査 {report.summary.passed}/{report.summary.total}
@@ -76,22 +76,24 @@ export default function App() {
         <section className="flex flex-col gap-4">
           <div>
             <h1 className="text-xl font-semibold">原典がどう流れたか</h1>
-            <p className="mt-1 max-w-[68ch] text-sm leading-relaxed text-muted-foreground">
-              左から右へ、原典が正本を経て派生になるまで。矢印の脇の数字が流れた行数で、
-              原典から正本までは差分0（1行も落ちていない）。Transform では歳出だけが分類の3状態へ分かれ、
-              歳入は COFOG が支出の機能別分類であるため行き止まりになる。
-              ノードを選ぶと、その段を守っている検査だけに絞れる。
+            <p className="mt-1 max-w-[76ch] text-sm leading-relaxed text-muted-foreground">
+              左から右へ4段。<span className="font-medium text-foreground">段はモデルの置き場が決めていて、この画面は持っていない</span> —
+              図は dbt の <code>manifest.json</code> をそのまま描く。ディレクトリを動かせば図も動く。
+              <span className="font-medium text-foreground">core から先が fudoki の言い分</span>で、
+              そこまでは原典と突き合わせて検証できる。ノードを選ぶと、その段を守っている検査だけに絞れる。
             </p>
           </div>
 
-          <FlowGraph topology={report.topology} report={report} onSelectNode={setSelectedNode} />
+          <FlowGraph topology={report.topology} report={report} onSelectNode={setSelectedNode} selected={selectedNode} />
 
           <Alert>
             <AlertTitle>段の切れ目は「fudoki の判断が入るかどうか」で引いてある</AlertTitle>
             <AlertDescription>
-              Load までは原典に忠実な写しで、出力（正本）は原文と突き合わせて検証できる。
-              Transform で初めて解釈が入り、COFOG の割り当てのように三鷹市が言っていないことを付け加える。
+              staging までは原典に忠実な写しで、出力（正本）は原典と突き合わせて検証できる。
+              core で初めて解釈が入り、COFOG の割り当てのように三鷹市が言っていないことを付け加える。
               両者を同じデータに混ぜると、市が公表した事実と fudoki の判断を利用者が区別できなくなる。
+              だから配布物も <code>data/packages/132047/</code>（正本）と <code>data/packages/derived/</code>（派生）に分けてある。
+              境界はディレクトリ名では守れないので、原典との多重集合一致を検査で縛っている。
             </AlertDescription>
           </Alert>
 
@@ -142,8 +144,8 @@ export default function App() {
         </Tabs>
 
         <footer className="border-t pt-6 text-xs leading-relaxed text-muted-foreground">
-          正本 <code>data/packages/{data.code}/{data.year}/</code> ／ 証跡 <code>data/provenance/</code> ／
-          報告 <code>data/reports/{data.code}-{data.year}.json</code>
+          正本 <code>data/packages/{data.code}/</code> ／ 派生 <code>data/packages/derived/</code> ／ 原典 <code>data/raw/</code> ／
+          報告 <code>data/reports/{data.code}.json</code>
           <br />
           原典: <a className="underline" href={m.landingPage} target="_blank" rel="noreferrer">{m.attribution}</a>
           {' '}／ {m.license.id} ／ 生成 {m.generatedAt.replace('T', ' ').slice(0, 19)}
