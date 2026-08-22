@@ -1,127 +1,210 @@
 /**
- * パイプラインの流れ図。node と edge で組む。
+ * パイプラインの流れ図。**実際に線を引く。**
  *
- * **系統は dbt の `manifest.json` から来る。** 段の名前も並びもノードの依存も
- * ここには持たない。以前は `topology.ts` が宣言しており、パイプラインを変えても
- * 図が変わらない状態を2度作った。いまはモデルの置き場が段を決めるので、
- * ディレクトリを動かせば図も動く。
+ * 系統は dbt の `manifest.json` から来る。段の名前も並びもノードの依存もここには持たない。
  *
- * 列が段、列の中のカードがノード。**判断が入る段（core）だけ枠の色を変える** —
- * この図で一番伝えたいのは「どこから先が fudoki の言い分か」なので。
+ * ## なぜ SVG で描くか
+ *
+ * 前はカードを4列に並べただけで、辺を1本も描いていなかった。
+ * ノードに名前・行数・成果物・検査を全部載せていたので、**文字の表にしか見えず
+ * 「何がどこへ流れるか」が読めなかった**。
+ * ノードは名前と行数だけにして、依存は線で見せ、詳細は選んだときに出す。
  */
-import { Fragment } from 'react'
-import type { Node, ReportData, Stage, Topology } from '@/lib/pipeline'
+import { useMemo, useState } from 'react'
+import type { Node, ReportData, Topology } from '@/lib/pipeline'
 import { STAGE_ORDER, checksByNode, yen } from '@/lib/pipeline'
 import { Badge } from '@/components/ui/badge'
-import { cn } from '@/lib/utils'
 
 type Props = { topology: Topology; report: ReportData; onSelectNode?: (id: string | null) => void; selected: string | null }
 
+const COL_W = 210
+const COL_GAP = 78
+const NODE_H = 46
+const NODE_GAP = 14
+const HEAD_H = 34
+
 const KIND_JA: Record<Node['kind'], string> = { source: '原典', model: 'モデル', seed: '規則表' }
 
-function NodeCard({
-  node, checks, active, onClick,
-}: { node: Node; checks: ReportData['checks']; active: boolean; onClick: () => void }) {
-  const failed = checks.filter((c) => !c.ok && c.severity === 'error').length
-  const warned = checks.filter((c) => c.severity === 'warn' && !c.ok).length
-  const judged = node.introducesJudgment
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={active}
-      title={node.description || undefined}
-      className={cn(
-        'w-full rounded-lg border bg-card p-2.5 text-left transition-colors hover:border-foreground/30',
-        judged && 'border-[var(--color-stage-judgment)]/60',
-        active && 'ring-2 ring-offset-1',
-      )}
-    >
-      <span className="flex items-center gap-1.5">
-        <i
-          aria-hidden
-          className="size-2 shrink-0 rounded-sm"
-          style={{ background: judged ? 'var(--color-stage-judgment)' : 'var(--color-stage-nojudgment)' }}
-        />
-        <span className="truncate font-mono text-[11px] font-medium">{node.label}</span>
-      </span>
-      <span className="mt-1 flex items-baseline gap-1.5">
-        <span className="text-base leading-none font-semibold tabular-nums">
-          {node.rows === null ? '—' : yen(node.rows)}
-        </span>
-        <span className="text-[10px] text-muted-foreground">行 · {KIND_JA[node.kind]}</span>
-      </span>
-      {node.artifact && (
-        <span className="mt-1 block truncate font-mono text-[10px] text-muted-foreground">
-          {node.artifact.replace('../data/', '')}
-        </span>
-      )}
-      {checks.length > 0 && (
-        <span className="mt-1.5 block">
-          <Badge variant={failed ? 'destructive' : warned ? 'outline' : 'secondary'} className="text-[10px]">
-            検査 {checks.length - failed - warned}/{checks.length}
-          </Badge>
-        </span>
-      )}
-    </button>
-  )
-}
-
 export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
+  const [hover, setHover] = useState<string | null>(null)
   const checks = checksByNode(report)
-  const stageOf = (id: Stage['id']) => topology.stages.find((s) => s.id === id)
-  const select = (id: string) => onSelectNode?.(selected === id ? null : id)
+
+  /** 段が列、段の中の並びが行。位置はここで決まるので、辺は座標を引くだけでよい */
+  const layout = useMemo(() => {
+    const pos = new Map<string, { x: number; y: number; node: Node }>()
+    STAGE_ORDER.forEach((sid, col) => {
+      topology.nodes
+        .filter((n) => n.stage === sid)
+        .forEach((n, row) => {
+          pos.set(n.id, { x: col * (COL_W + COL_GAP), y: HEAD_H + row * (NODE_H + NODE_GAP), node: n })
+        })
+    })
+    const rows = Math.max(...STAGE_ORDER.map((s) => topology.nodes.filter((n) => n.stage === s).length))
+    return {
+      pos,
+      width: STAGE_ORDER.length * COL_W + (STAGE_ORDER.length - 1) * COL_GAP,
+      height: HEAD_H + rows * (NODE_H + NODE_GAP),
+    }
+  }, [topology])
+
+  const active = selected ?? hover
+  /** 選んだノードに繋がる辺だけを強調する。12本を同じ濃さで描くと結局読めない */
+  const related = useMemo(() => {
+    if (!active) return null
+    const s = new Set<string>([active])
+    for (const e of topology.edges) {
+      if (e.from === active) s.add(e.to)
+      if (e.to === active) s.add(e.from)
+    }
+    return s
+  }, [active, topology.edges])
+
+  const detail = selected ? layout.pos.get(selected)?.node : null
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="grid gap-3 md:grid-cols-4">
-        {STAGE_ORDER.map((sid, i) => {
-          const stage = stageOf(sid)
-          const nodes = topology.nodes.filter((n) => n.stage === sid)
-          return (
-            <Fragment key={sid}>
-              <section className="flex flex-col gap-2">
-                <header className="flex flex-col gap-0.5">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-xs text-muted-foreground tabular-nums">{i + 1}</span>
-                    <h3 className="text-sm font-medium">{stage?.label}</h3>
-                    {stage?.introducesJudgment && (
-                      <span
-                        className="rounded-sm px-1 py-0.5 text-[10px]"
-                        style={{
-                          background: 'color-mix(in oklab, var(--color-judgment-boundary) 18%, transparent)',
-                          color: 'var(--color-judgment-boundary)',
-                        }}
-                      >
-                        ここから判断
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-[11px] leading-tight text-muted-foreground">{stage?.responsibility}</p>
-                  <p className="text-[11px] leading-tight text-muted-foreground">
-                    <span className="font-medium text-foreground">やらないこと</span>: {stage?.excludes}
-                  </p>
-                </header>
-                <div className="flex flex-col gap-1.5">
-                  {nodes.map((n) => (
-                    <NodeCard
-                      key={n.id}
-                      node={n}
-                      checks={checks.get(n.id) ?? []}
-                      active={selected === n.id}
-                      onClick={() => select(n.id)}
+      <div className="overflow-x-auto">
+        <svg
+          width={layout.width}
+          height={layout.height}
+          viewBox={`0 0 ${layout.width} ${layout.height}`}
+          className="max-w-full"
+          role="img"
+          aria-label={`パイプラインの依存グラフ。${topology.nodes.length} ノード、${topology.edges.length} 辺`}
+        >
+          <defs>
+            <marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0,0 L8,4 L0,8 z" fill="currentColor" />
+            </marker>
+          </defs>
+
+          {/* 段の見出し */}
+          {STAGE_ORDER.map((sid, col) => {
+            const stage = topology.stages.find((s) => s.id === sid)
+            return (
+              <g key={sid} transform={`translate(${col * (COL_W + COL_GAP)}, 0)`}>
+                <text x={0} y={14} className="fill-muted-foreground text-[11px] tabular-nums">{col + 1}</text>
+                <text x={14} y={14} className="fill-foreground text-[13px] font-medium">{stage?.label}</text>
+                {stage?.introducesJudgment && (
+                  <text x={14} y={28} className="text-[10px]" fill="var(--color-judgment-boundary)">
+                    ここから fudoki の判断
+                  </text>
+                )}
+              </g>
+            )
+          })}
+
+          {/* 辺。ベジェで引く */}
+          <g className="text-muted-foreground">
+            {topology.edges.map((e, i) => {
+              const a = layout.pos.get(e.from)
+              const b = layout.pos.get(e.to)
+              if (!a || !b) return null
+              const x1 = a.x + COL_W
+              const y1 = a.y + NODE_H / 2
+              const x2 = b.x - 6
+              const y2 = b.y + NODE_H / 2
+              const dim = related ? !(related.has(e.from) && related.has(e.to)) : false
+              return (
+                <path
+                  key={i}
+                  d={`M${x1},${y1} C${x1 + COL_GAP * 0.55},${y1} ${x2 - COL_GAP * 0.55},${y2} ${x2},${y2}`}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={dim ? 1 : 1.6}
+                  opacity={dim ? 0.16 : 0.55}
+                  markerEnd="url(#arrow)"
+                />
+              )
+            })}
+          </g>
+
+          {/* ノード。名前と行数だけ。詳細は選んだときに下へ出す */}
+          {[...layout.pos.values()].map(({ x, y, node }) => {
+            const cs = checks.get(node.id) ?? []
+            const failed = cs.filter((c) => !c.ok && c.severity === 'error').length
+            const warned = cs.filter((c) => !c.ok && c.severity === 'warn').length
+            const dim = related ? !related.has(node.id) : false
+            const on = node.introducesJudgment
+            return (
+              <g
+                key={node.id}
+                transform={`translate(${x}, ${y})`}
+                opacity={dim ? 0.3 : 1}
+                onMouseEnter={() => setHover(node.id)}
+                onMouseLeave={() => setHover(null)}
+                onClick={() => onSelectNode?.(selected === node.id ? null : node.id)}
+                className="cursor-pointer"
+              >
+                <rect
+                  width={COL_W} height={NODE_H} rx={7}
+                  className="fill-card"
+                  stroke={on ? 'var(--color-stage-judgment)' : 'var(--color-border)'}
+                  strokeWidth={selected === node.id ? 2.4 : 1.2}
+                />
+                <rect
+                  width={4} height={NODE_H} rx={2}
+                  fill={on ? 'var(--color-stage-judgment)' : 'var(--color-stage-nojudgment)'}
+                />
+                <text x={14} y={19} className="fill-foreground text-[11.5px] font-medium">
+                  {node.label.length > 26 ? `${node.label.slice(0, 25)}…` : node.label}
+                </text>
+                <text x={14} y={35} className="fill-muted-foreground text-[11px] tabular-nums">
+                  {node.rows === null ? '—' : yen(node.rows)} 行 · {KIND_JA[node.kind]}
+                </text>
+                {cs.length > 0 && (
+                  <>
+                    <circle
+                      cx={COL_W - 16} cy={NODE_H / 2} r={7}
+                      fill={failed ? 'var(--color-destructive)' : warned ? 'var(--color-status-unclassifiable)' : 'var(--color-chart-2)'}
+                      opacity={0.9}
                     />
-                  ))}
-                </div>
-              </section>
-            </Fragment>
-          )
-        })}
+                    <text x={COL_W - 16} y={NODE_H / 2 + 3.5} textAnchor="middle" className="fill-background text-[9px] font-semibold">
+                      {cs.length}
+                    </text>
+                  </>
+                )}
+              </g>
+            )
+          })}
+        </svg>
       </div>
-      <p className="text-[11px] text-muted-foreground">
-        系統の出所: <code>{topology.source}</code> ／ ノード {topology.nodes.length} · 辺 {topology.edges.length}。
-        ノードを選ぶと、その段を守っている検査だけに絞れる。
-      </p>
+
+      {/* 凡例。色が何を言っているかを文字でも出す */}
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-[11px] text-muted-foreground">
+        <span className="inline-flex items-center gap-1.5">
+          <i aria-hidden className="h-3 w-1 rounded-sm" style={{ background: 'var(--color-stage-nojudgment)' }} />
+          判断を含まない（原典と突き合わせて検証できる）
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <i aria-hidden className="h-3 w-1 rounded-sm" style={{ background: 'var(--color-stage-judgment)' }} />
+          fudoki の判断が入る
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <i aria-hidden className="size-2.5 rounded-full" style={{ background: 'var(--color-chart-2)' }} />
+          そのノードを守っている検査の数
+        </span>
+        <span>系統の出所: <code>{topology.source}</code></span>
+      </div>
+
+      {/* 選んだノードの中身。ノード上に置くと図が文字の表に戻る */}
+      {detail && (
+        <div className="rounded-lg border bg-muted/30 p-3 text-sm">
+          <div className="flex flex-wrap items-baseline gap-2">
+            <span className="font-mono font-medium">{detail.label}</span>
+            <Badge variant="outline">{KIND_JA[detail.kind]}</Badge>
+            <Badge variant={detail.introducesJudgment ? 'destructive' : 'secondary'}>
+              {detail.introducesJudgment ? '判断あり' : '判断なし'}
+            </Badge>
+            {detail.artifact && (
+              <code className="text-[11px] text-muted-foreground">{detail.artifact.replace('../data/', 'data/')}</code>
+            )}
+          </div>
+          {detail.description && (
+            <p className="mt-1.5 max-w-[80ch] whitespace-pre-line text-muted-foreground">{detail.description}</p>
+          )}
+        </div>
+      )}
     </div>
   )
 }

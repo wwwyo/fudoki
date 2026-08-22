@@ -13,7 +13,9 @@ fudoki は日本の地方自治体の**支出を事業単位まで**構造化し
 
 東京都三鷹市の令和6年度当初予算（歳出 5,613行、歳入 821行）を [Fiscal Data Package](https://fiscal.datapackage.org/) 1.0.0 として配布している。
 
-- 正本と派生: [`data/packages/132047/2024/`](./data/packages/132047/2024/)
+- 原典: [`data/raw/`](./data/raw/)（Parquet。取得の単位ごとに partition）
+- 正本: [`data/packages/132047/`](./data/packages/132047/)（判断を含まない）
+- 派生: [`data/packages/derived/`](./data/packages/derived/)（COFOG の割当と、その規則35行）
 - 取得の証跡: [`data/provenance/`](./data/provenance/)
 - パイプライン報告: [`data/reports/`](./data/reports/)
 
@@ -28,11 +30,11 @@ fudoki は日本の地方自治体の**支出を事業単位まで**構造化し
 mise install
 bun install
 
-bun run build:budget   # 原典を取得して正本と派生を生成（検査30件が通らないと書き出さない）
+bun run pipeline       # 取得 → dbt → 配布物 → 報告（検査が落ちたら下流を作らない）
 bun run dev            # ダッシュボードを開く（http://localhost:5173）
 ```
 
-`build:budget` はネットワークを叩くので CI では回さない。
+`pipeline` はネットワークを叩くので CI では回さない。原典が既にあれば取得は skip する。
 生成済みの成果物はリポジトリに commit してあるので、動かさずに中身だけ見ることもできる。
 
 ## 用語
@@ -74,7 +76,8 @@ bun run dev            # ダッシュボードを開く（http://localhost:5173�
 - [AGENTS.md](./AGENTS.md): 設計方針、実測にもとづく判断、パーサ設計の原則
 - [data/packages/README.md](./data/packages/README.md): 正本と派生の読み方
 - [web/README.md](./web/README.md): ダッシュボードの構成
-- [src/budget/README.md](./src/budget/README.md): パイプラインの読む順序と、2団体目を足す手順
+- [dbt/models/](./dbt/models/): staging（判断なし）と core（判断あり）。層の境界はテストで縛っている
+- [ingestion/sources.toml](./ingestion/sources.toml): 取得元の定義。2団体目はここに足す
 
 名前は『風土記』から。
 713年の官命により、諸国へ地名の由来や産物を**同じ様式で報告させて集めた**地誌で、各自治体から同じ形式でデータを集めるという本 PJ の構造がそのまま重なる。

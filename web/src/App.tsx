@@ -1,7 +1,7 @@
 /**
  * ELT の全体像を見るダッシュボード。
  *
- * 集計はしない。数字はすべて `data/reports/*.json`（`buildReportData` の出力）を
+ * 集計はしない。数字はすべて `data/reports/*.json`（`report/build.py` の出力）を
  * そのまま出す。画面側でも集計すると、同じ数字が2通りに計算されて、いずれ食い違う。
  */
 import { useEffect, useMemo, useState } from 'react'

@@ -7,7 +7,7 @@ bun run dev      # リポジトリのルートから。データを生成して 
 bun run build:web
 ```
 
-先に `bun run build:budget` が要る（成果物が無いとデータを生成できない）。
+先に `bun run pipeline` が要る（成果物が無いと報告を作れない）。
 
 ## 何を見る道具か
 
@@ -20,7 +20,7 @@ COFOG の判断がどこで入りどう割れたか、そして明細。
 
 旧ビューアは段を文字列で直書きしていたため、パイプラインを変えても図が変わらなかった。
 実装と表示が食い違っても誰も気づかない状態で、ELT の全体像を見る道具としては致命的だった。
-`src/budget/topology.ts` が段・ノード・辺を実行結果から導き、画面はそれを受け取る。
+段・ノード・辺は dbt の `manifest.json` から来る（`report/build.py`）。画面はそれを描くだけ。
 
 帯の太さの単位は**行数ひとつ**に固定してある。行数と金額を同じ図に混ぜると、
 太さが何を表しているのか読めなくなる。金額は別の図が持つ。
@@ -28,7 +28,7 @@ COFOG の判断がどこで入りどう割れたか、そして明細。
 ## 型はパイプライン本体から取る
 
 ```ts
-import type { ReportData } from '@pipeline/report'   // → ../src/budget/report.ts
+import type { ReportData } from '@/lib/report'   // 型の正本は画面側が持つ
 ```
 
 `web/` 側で形を写さない。`ReportData` のフィールド名を変えると **`web` の typecheck が落ちる**
@@ -57,7 +57,7 @@ COFOG のディビジョンは色で区別するが、**コードは必ず文字
 
 ## 集計しない
 
-数字はすべて `data/reports/*.json`（`buildReportData` の出力）をそのまま出す。
+数字はすべて `data/reports/*.json`（`report/build.py` の出力）をそのまま出す。
 画面側でも集計すると、同じ数字が2通りに計算されて、いずれ食い違ったまま気づかなくなる。
 
 ## データの受け渡し
