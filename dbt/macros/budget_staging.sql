@@ -29,6 +29,18 @@
 {%- set extra = var('budget_extra_key_columns')[code][direction] -%}
 {%- set extra_columns = var('budget_extra_key_source_columns')[code][direction] -%}
 {%- set style = var('budget_code_style')[code] -%}
+{#-
+  ⚠️ **`code-only` の団体は名称の宣言を省略できない。**
+  `.get(code, {})` で既定値に落とすと、宣言を忘れた団体は**全階層の label が空**のまま
+  配布物が出来上がり、label_column_determines_level は宣言のキーを回すので
+  検査対象がゼロになって通ってしまう。AGENTS.md の「足し忘れはエラーで止まる」が破れる。
+  `prefix2` は名称がセルに同居するので、宣言が無いのが正しい。
+-#}
+{%- if style == 'code-only' and code not in var('budget_label_columns') -%}
+  {{ exceptions.raise_compiler_error(
+      code ~ ': budget_code_style が code-only なのに budget_label_columns の宣言が無い。'
+      ~ '名称を持つ列がどの階層に対応するかを宣言すること（宣言できないなら名称は空だと明示する）') }}
+{%- endif -%}
 {%- set labels = var('budget_label_columns').get(code, {}).get(direction, {}) -%}
 {%- set extra_labels = var('budget_extra_key_labels').get(code, {}).get(direction, {}) -%}
 {%- set amounts = var('budget_amounts')[code][direction] -%}

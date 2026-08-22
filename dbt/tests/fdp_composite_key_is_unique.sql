@@ -1,22 +1,18 @@
 -- **FDP の複合主キーが一意であること。**
--- budget_line_id はハッシュなので、衝突していないことを別の経路でも確かめる。
--- 階層のコードと名称を全部並べたものが一意なら、識別子の導出が壊れていても検出できる。
+--
+-- ⚠️ `budget_line_id` そのものの一意性は `_models.yml` の `unique` が見ている。
+-- ここが見るのは**逆向き**で、「異なる完全修飾キーが同じ行に潰れていないか」である。
+-- 識別子がハッシュなので、導出が壊れていても別の経路で検出できるようにしてある。
 --
 -- 階層の定義は dbt_project.yml の `budget_levels` が正本（団体ごとに違う）。
 -- ⚠️ **階層だけでは一意にならない団体がある。** 狛江市は所属と予算区分まで含めて
 -- 初めて一意になる（実測 2023 歳出で階層だけだと 2,224 行が 1,855 通りに潰れる）。
 -- 追加の同一性の列は `budget_extra_key_columns` が宣言し、識別子の材料でもある。
-{% set jurisdictions = var('budget_levels') %}
-{% set blocks = [] %}
-{% for code, dirs in jurisdictions.items() %}
-  {% for direction, levels in dirs.items() %}
-    {% do blocks.append((code, direction, levels)) %}
-  {% endfor %}
-{% endfor %}
-
-{% for code, direction, levels in blocks %}
+{% for code, direction in budget_units() %}
 {% set parts = [] %}
-{% for lv in levels %}{% do parts.append(lv ~ '_code') %}{% do parts.append(lv ~ '_label') %}{% endfor %}
+{% for lv in var('budget_levels')[code][direction] %}
+  {% do parts.append(lv ~ '_code') %}{% do parts.append(lv ~ '_label') %}
+{% endfor %}
 {% for k in var('budget_extra_key_columns')[code][direction] %}
   {% do parts.append(k ~ '_code') %}{% do parts.append(k ~ '_label') %}
 {% endfor %}

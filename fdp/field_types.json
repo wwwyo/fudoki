@@ -120,7 +120,7 @@
         "name": "fudoki:budget-class:code",
         "dataType": "string",
         "unique": true,
-        "description": "予算区分（現年度・繰越明許・事故繰越）。同じ科目に複数の区分が並ぶので行の同一性の一部になる。FDP の phase は予算の段階を指すもので、繰越の区分とは別概念であり標準に該当する列型が無い"
+        "description": "予算区分（現年度・繰越明許・事故繰越）。⚠️ 同じ科目に複数の区分が並ぶ団体では行の同一性の一部になる。FDP の phase は予算の段階を指すもので、繰越の区分とは別概念であり標準に該当する列型が無い"
       },
       {
         "name": "fudoki:budget-class:label",
@@ -370,7 +370,8 @@
       "name": "saisetsu_code",
       "title": "細節コード",
       "type": "string",
-      "columnType": "fin-source:generic:level5:code"
+      "columnType": "fin-source:generic:level5:code",
+      "description": "歳入の細節"
     },
     "saisetsu_label": {
       "name": "saisetsu_label",
@@ -552,21 +553,21 @@
       "name": "match_kan_code",
       "title": "款コードの条件",
       "type": "string",
-      "description": "款の名称ではなくコードで当てる条件。名称の列を持たない団体（狛江市）のために要る。空は「問わない」"
+      "description": "款の名称ではなくコードで当てる条件。原典が款の名称の列を持たない団体のために要る。空は「問わない」"
     },
     "org_code": {
       "name": "org_code",
       "title": "所属コード",
       "type": "string",
       "columnType": "administrative-classification:generic:level1:code",
-      "description": "予算を執行する部課。狛江市は階層だけでは行が一意にならず、所属まで含めて初めて一意になる"
+      "description": "予算を執行する部課。⚠️ 階層だけでは行が一意にならない団体があり、そこでは行の同一性の一部になる"
     },
     "org_label": {
       "name": "org_label",
       "title": "所属名",
       "type": "string",
       "columnType": "administrative-classification:generic:level1:label",
-      "description": "狛江市の歳入には所属名称の列が原典に無いため空",
+      "description": "所属の名称。⚠️ 原典が所属名称の列を持たない側（direction）では空",
       "labelOf": "administrative-classification:generic:level1:code"
     },
     "budget_class_code": {
@@ -588,14 +589,14 @@
       "title": "大事業コード",
       "type": "string",
       "columnType": "activity:generic:program:code",
-      "description": "狛江市の事業階層の第1段。⚠️ コードは目をまたいで再利用される（実測 6年度で 42 通りのコードが 694 通りの目・大事業の組を作る）ので、これ単独では識別子にならない"
+      "description": "事業階層の第1段。⚠️ コードが目をまたいで再利用される団体があるので、これ単独では識別子にならない（識別子は budget_line_id）"
     },
     "daijigyo_label": {
       "name": "daijigyo_label",
       "title": "大事業名",
       "type": "string",
       "columnType": "activity:generic:program:label",
-      "description": "⚠️ **狛江市の原典に大事業の名称は無い。** 常に空。事業の粒度には届いているが、その事業が何かは原典から分からない",
+      "description": "事業階層の第1段の名称。⚠️ 原典が名称の列を持たない団体では空になる。空であることは取り込みで落としたのではなく、原典に無いことを表す",
       "labelOf": "activity:generic:program:code"
     },
     "chujigyo_code": {
@@ -603,28 +604,30 @@
       "title": "中事業コード",
       "type": "string",
       "columnType": "activity:generic:subprogram:code",
-      "description": "⚠️ 狛江市では全行がプレースホルダ（`0`）。列としては存在するが1件も使われていない（実測 6 年度）"
+      "description": "事業階層の第2段。⚠️ 列を持つが1行も使っていない団体では、その階層を持たない行のプレースホルダで埋まる"
     },
     "chujigyo_label": {
       "name": "chujigyo_label",
       "title": "中事業名",
       "type": "string",
       "columnType": "activity:generic:subprogram:label",
-      "labelOf": "activity:generic:subprogram:code"
+      "labelOf": "activity:generic:subprogram:code",
+      "description": "事業階層の第2段の名称。原典が名称の列を持たない団体では空"
     },
     "shojigyo_code": {
       "name": "shojigyo_code",
       "title": "小事業コード",
       "type": "string",
       "columnType": "activity:generic:project:code",
-      "description": "⚠️ 狛江市では全行がプレースホルダ（`0`）"
+      "description": "事業階層の第3段。⚠️ 列を持つが1行も使っていない団体では、その階層を持たない行のプレースホルダで埋まる"
     },
     "shojigyo_label": {
       "name": "shojigyo_label",
       "title": "小事業名",
       "type": "string",
       "columnType": "activity:generic:project:label",
-      "labelOf": "activity:generic:project:code"
+      "labelOf": "activity:generic:project:code",
+      "description": "事業階層の第3段の名称。原典が名称の列を持たない団体では空"
     }
   }
 }

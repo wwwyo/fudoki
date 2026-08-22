@@ -6,16 +6,8 @@
 --
 -- 期待する direction の集合と突き合わせるので、片側が消えても検出できる
 -- （inner join だけだと消えた direction ごと比較から外れる）。
-{% set codes = var('budget_levels').keys() | list %}
-{% set expected = [] %}
-{% for code in codes %}
-  {% for direction in var('budget_levels')[code].keys() %}
-    {% do expected.append((code, direction)) %}
-  {% endfor %}
-{% endfor %}
-
 with actual as (
-    {% for code, direction in expected %}
+    {% for code, direction in budget_units() %}
     select '{{ code }}' as jurisdiction, '{{ direction }}' as direction, count(*) as rows
     from {{ ref('stg_' ~ code ~ '__' ~ direction) }}
     {% if not loop.last %}union all{% endif %}
@@ -23,7 +15,7 @@ with actual as (
 ),
 
 wanted as (
-    {% for code, direction in expected %}
+    {% for code, direction in budget_units() %}
     select '{{ code }}' as jurisdiction, '{{ direction }}' as direction
     {% if not loop.last %}union all{% endif %}
     {% endfor %}

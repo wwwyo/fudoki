@@ -1,0 +1,770 @@
+{
+  "note": "原典が何を持っているかの実測。**判定は列名ではなく中身で行う**（パーサ設計の原則3）。列があることは、その階層が使われていることも名称を持っていることも意味しない。",
+  "generatedBy": "ingestion/budget/survey_structure.py（bun run survey:structure <団体コード>）",
+  "reads": "data/budget/raw/jurisdiction=132195/（取得の証跡は provenance.json）",
+  "declarationSource": "dbt/dbt_project.yml の vars（列の構造と金額の正本）",
+  "jurisdictionCode": "132195",
+  "directions": [
+    {
+      "direction": "expenditure",
+      "rows": 13461,
+      "years": [
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023
+      ],
+      "columns": [
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "所属",
+        "所属名称",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "大事業",
+        "中事業",
+        "小事業",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算額(円)",
+        "充流用等増減額(円)",
+        "予算計(円)",
+        "執行累計(円)",
+        "予算残額(円)",
+        "執行率(％)"
+      ],
+      "declaredLevels": [
+        "会計",
+        "款",
+        "項",
+        "目",
+        "大事業",
+        "中事業",
+        "小事業",
+        "節",
+        "細節",
+        "細々節"
+      ],
+      "levelUsage": {
+        "会計": {
+          "rows": 13461,
+          "nonPlaceholder": 13461
+        },
+        "款": {
+          "rows": 13461,
+          "nonPlaceholder": 13461
+        },
+        "項": {
+          "rows": 13461,
+          "nonPlaceholder": 13461
+        },
+        "目": {
+          "rows": 13461,
+          "nonPlaceholder": 13461
+        },
+        "大事業": {
+          "rows": 13461,
+          "nonPlaceholder": 13461
+        },
+        "中事業": {
+          "rows": 13461,
+          "nonPlaceholder": 0
+        },
+        "小事業": {
+          "rows": 13461,
+          "nonPlaceholder": 0
+        },
+        "節": {
+          "rows": 13461,
+          "nonPlaceholder": 13461
+        },
+        "細節": {
+          "rows": 13461,
+          "nonPlaceholder": 0
+        },
+        "細々節": {
+          "rows": 13461,
+          "nonPlaceholder": 0
+        }
+      },
+      "codeReuse": {
+        "会計": {
+          "distinctCodes": 6,
+          "distinctPaths": 6,
+          "maxCodeDigits": 2
+        },
+        "款": {
+          "distinctCodes": 13,
+          "distinctPaths": 41,
+          "maxCodeDigits": 2
+        },
+        "項": {
+          "distinctCodes": 7,
+          "distinctPaths": 74,
+          "maxCodeDigits": 1
+        },
+        "目": {
+          "distinctCodes": 11,
+          "distinctPaths": 183,
+          "maxCodeDigits": 2
+        },
+        "大事業": {
+          "distinctCodes": 42,
+          "distinctPaths": 694,
+          "maxCodeDigits": 2
+        },
+        "中事業": {
+          "distinctCodes": 1,
+          "distinctPaths": 694,
+          "maxCodeDigits": 1
+        },
+        "小事業": {
+          "distinctCodes": 1,
+          "distinctPaths": 694,
+          "maxCodeDigits": 1
+        },
+        "節": {
+          "distinctCodes": 28,
+          "distinctPaths": 4015,
+          "maxCodeDigits": 2
+        },
+        "細節": {
+          "distinctCodes": 1,
+          "distinctPaths": 4015,
+          "maxCodeDigits": 1
+        },
+        "細々節": {
+          "distinctCodes": 1,
+          "distinctPaths": 4015,
+          "maxCodeDigits": 1
+        }
+      },
+      "rowIdentity": {
+        "scope": "2023年度",
+        "rows": 2224,
+        "byLevelsOnly": 1855,
+        "byLevelsAndExtra": 2224,
+        "extraColumns": [
+          "所属",
+          "予算区分"
+        ]
+      },
+      "leafLabelColumn": {
+        "level": "節",
+        "column": "科目名称",
+        "byYear": {
+          "2018": {
+            "codes": 26,
+            "codesWithMultipleNames": 0
+          },
+          "2019": {
+            "codes": 26,
+            "codesWithMultipleNames": 0
+          },
+          "2020": {
+            "codes": 25,
+            "codesWithMultipleNames": 0
+          },
+          "2021": {
+            "codes": 25,
+            "codesWithMultipleNames": 0
+          },
+          "2022": {
+            "codes": 25,
+            "codesWithMultipleNames": 0
+          },
+          "2023": {
+            "codes": 26,
+            "codesWithMultipleNames": 0
+          }
+        }
+      }
+    },
+    {
+      "direction": "revenue",
+      "rows": 4219,
+      "years": [
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023
+      ],
+      "columns": [
+        "所属コード",
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算現額(千円)",
+        "調定累計(円)",
+        "収入累計(円)",
+        "不納欠損額(円)",
+        "還付未済額(円)",
+        "収入未済額(円)",
+        "予算残額(円)",
+        "予算比(％)",
+        "収入率(％)"
+      ],
+      "declaredLevels": [
+        "会計",
+        "款",
+        "項",
+        "目",
+        "節",
+        "細節",
+        "細々節"
+      ],
+      "levelUsage": {
+        "会計": {
+          "rows": 4219,
+          "nonPlaceholder": 4219
+        },
+        "款": {
+          "rows": 4219,
+          "nonPlaceholder": 4219
+        },
+        "項": {
+          "rows": 4219,
+          "nonPlaceholder": 4219
+        },
+        "目": {
+          "rows": 4219,
+          "nonPlaceholder": 4219
+        },
+        "節": {
+          "rows": 4219,
+          "nonPlaceholder": 4219
+        },
+        "細節": {
+          "rows": 4219,
+          "nonPlaceholder": 4218
+        },
+        "細々節": {
+          "rows": 4219,
+          "nonPlaceholder": 0
+        }
+      },
+      "codeReuse": {
+        "会計": {
+          "distinctCodes": 6,
+          "distinctPaths": 6,
+          "maxCodeDigits": 2
+        },
+        "款": {
+          "distinctCodes": 22,
+          "distinctPaths": 62,
+          "maxCodeDigits": 2
+        },
+        "項": {
+          "distinctCodes": 6,
+          "distinctPaths": 118,
+          "maxCodeDigits": 1
+        },
+        "目": {
+          "distinctCodes": 7,
+          "distinctPaths": 231,
+          "maxCodeDigits": 1
+        },
+        "節": {
+          "distinctCodes": 9,
+          "distinctPaths": 462,
+          "maxCodeDigits": 1
+        },
+        "細節": {
+          "distinctCodes": 35,
+          "distinctPaths": 1324,
+          "maxCodeDigits": 2
+        },
+        "細々節": {
+          "distinctCodes": 1,
+          "distinctPaths": 1324,
+          "maxCodeDigits": 1
+        }
+      },
+      "rowIdentity": {
+        "scope": "2023年度",
+        "rows": 742,
+        "byLevelsOnly": 596,
+        "byLevelsAndExtra": 742,
+        "extraColumns": [
+          "所属コード",
+          "予算区分"
+        ]
+      },
+      "leafLabelColumn": {
+        "level": "細節",
+        "column": "科目名称",
+        "byYear": {
+          "2018": {
+            "codes": 21,
+            "codesWithMultipleNames": 13
+          },
+          "2019": {
+            "codes": 24,
+            "codesWithMultipleNames": 13
+          },
+          "2020": {
+            "codes": 28,
+            "codesWithMultipleNames": 19
+          },
+          "2021": {
+            "codes": 27,
+            "codesWithMultipleNames": 15
+          },
+          "2022": {
+            "codes": 32,
+            "codesWithMultipleNames": 14
+          },
+          "2023": {
+            "codes": 34,
+            "codesWithMultipleNames": 21
+          }
+        }
+      }
+    }
+  ],
+  "kanCodeEvidence": {
+    "note": "款コードに対応する名称は原典に無い。地方自治法施行規則別記の歳出款の番号だと言えるかを、所属名称と節名称から裏づける。⚠️ 原典が明示しているわけではない",
+    "scope": "2023年度 一般会計",
+    "amountColumn": "予算計(円)",
+    "byKan": {
+      "1": {
+        "statutoryName": "議会費",
+        "rows": 20,
+        "amountYen": 317081000,
+        "topDepartments": [
+          "（議会）・議会事務局",
+          "総務部・職員課"
+        ],
+        "topSetsuNames": [
+          "職員手当等",
+          "共済費",
+          "旅費",
+          "需用費"
+        ]
+      },
+      "2": {
+        "statutoryName": "総務費",
+        "rows": 352,
+        "amountYen": 4021687600,
+        "topDepartments": [
+          "企画財政部・政策室",
+          "総務部・職員課",
+          "市民生活部・市民課"
+        ],
+        "topSetsuNames": [
+          "需用費",
+          "委託料",
+          "役務費",
+          "負担金、補助及び交付金"
+        ]
+      },
+      "3": {
+        "statutoryName": "民生費",
+        "rows": 506,
+        "amountYen": 18824586620,
+        "topDepartments": [
+          "福祉保健部・高齢障がい課",
+          "子ども家庭部・子ども政策課",
+          "福祉保健部・福祉相談課"
+        ],
+        "topSetsuNames": [
+          "委託料",
+          "需用費",
+          "役務費",
+          "扶助費"
+        ]
+      },
+      "4": {
+        "statutoryName": "衛生費",
+        "rows": 186,
+        "amountYen": 2996277000,
+        "topDepartments": [
+          "福祉保健部・健康推進課",
+          "環境部・環境政策課",
+          "環境部・清掃課"
+        ],
+        "topSetsuNames": [
+          "委託料",
+          "需用費",
+          "役務費",
+          "報償費"
+        ]
+      },
+      "5": {
+        "statutoryName": "労働費",
+        "rows": 4,
+        "amountYen": 3228000,
+        "topDepartments": [
+          "市民生活部・地域活性課",
+          "福祉保健部・保険年金課"
+        ],
+        "topSetsuNames": [
+          "旅費",
+          "負担金、補助及び交付金",
+          "需用費"
+        ]
+      },
+      "6": {
+        "statutoryName": "農林水産業費",
+        "rows": 25,
+        "amountYen": 41555000,
+        "topDepartments": [
+          "（農業）・農業委員会事務局",
+          "市民生活部・地域活性課",
+          "総務部・職員課"
+        ],
+        "topSetsuNames": [
+          "負担金、補助及び交付金",
+          "報償費",
+          "旅費",
+          "需用費"
+        ]
+      },
+      "7": {
+        "statutoryName": "商工費",
+        "rows": 30,
+        "amountYen": 178493000,
+        "topDepartments": [
+          "市民生活部・地域活性課",
+          "総務部・職員課"
+        ],
+        "topSetsuNames": [
+          "負担金、補助及び交付金",
+          "委託料",
+          "需用費",
+          "旅費"
+        ]
+      },
+      "8": {
+        "statutoryName": "土木費",
+        "rows": 130,
+        "amountYen": 2757583745,
+        "topDepartments": [
+          "都市建設部・道路交通課",
+          "都市建設部・整備課",
+          "環境部・環境政策課"
+        ],
+        "topSetsuNames": [
+          "委託料",
+          "需用費",
+          "負担金、補助及び交付金",
+          "役務費"
+        ]
+      },
+      "9": {
+        "statutoryName": "消防費",
+        "rows": 33,
+        "amountYen": 1201098698,
+        "topDepartments": [
+          "総務部・安心安全課",
+          "総務部・職員課"
+        ],
+        "topSetsuNames": [
+          "負担金、補助及び交付金",
+          "需用費",
+          "委託料",
+          "報酬"
+        ]
+      },
+      "10": {
+        "statutoryName": "教育費",
+        "rows": 754,
+        "amountYen": 4716659570,
+        "topDepartments": [
+          "教育部・学校教育課",
+          "教育部・指導室",
+          "教育部・教育支援課"
+        ],
+        "topSetsuNames": [
+          "需用費",
+          "報償費",
+          "備品購入費",
+          "役務費"
+        ]
+      },
+      "11": {
+        "statutoryName": "公債費",
+        "rows": 2,
+        "amountYen": 1557414000,
+        "topDepartments": [
+          "企画財政部・財政課"
+        ],
+        "topSetsuNames": [
+          "償還金、利子及び割引料"
+        ]
+      },
+      "12": {
+        "statutoryName": "諸支出金",
+        "rows": 2,
+        "amountYen": 363615000,
+        "topDepartments": [
+          "企画財政部・財政課"
+        ],
+        "topSetsuNames": [
+          "積立金"
+        ]
+      },
+      "13": {
+        "statutoryName": "予備費",
+        "rows": 1,
+        "amountYen": 23761662,
+        "topDepartments": [
+          "企画財政部・財政課"
+        ],
+        "topSetsuNames": [
+          "予備費"
+        ]
+      }
+    }
+  },
+  "expenditureRevenueBalance": {
+    "note": "歳出と歳入の合計の差。単位が違う場合は円へ揃えてから比べる（狛江市は歳入の予算現額が千円単位なので円未満は原理的に合わない）。**原典の内部整合であって、外部資料による裏づけではない。**",
+    "byYearAndFund": [
+      {
+        "year": 2018,
+        "fund": "一般会計",
+        "expenditureYen": 29688889000,
+        "revenueYen": 29688889000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2018,
+        "fund": "介護保険特別会計",
+        "expenditureYen": 6509842000,
+        "revenueYen": 6509842000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2018,
+        "fund": "公共下水道特別会計",
+        "expenditureYen": 1935531000,
+        "revenueYen": 1935531000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2018,
+        "fund": "国民健康保険特別会計",
+        "expenditureYen": 8727789000,
+        "revenueYen": 8727789000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2018,
+        "fund": "後期高齢者医療特別会計",
+        "expenditureYen": 2012464000,
+        "revenueYen": 2012464000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2018,
+        "fund": "駐車場事業特別会計",
+        "expenditureYen": 25062000,
+        "revenueYen": 25062000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2019,
+        "fund": "一般会計",
+        "expenditureYen": 30546825000,
+        "revenueYen": 30546825000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2019,
+        "fund": "介護保険特別会計",
+        "expenditureYen": 6705495000,
+        "revenueYen": 6705495000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2019,
+        "fund": "公共下水道特別会計",
+        "expenditureYen": 1873685000,
+        "revenueYen": 1873685000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2019,
+        "fund": "国民健康保険特別会計",
+        "expenditureYen": 8197394000,
+        "revenueYen": 8197394000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2019,
+        "fund": "後期高齢者医療特別会計",
+        "expenditureYen": 2045454000,
+        "revenueYen": 2045454000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2019,
+        "fund": "駐車場事業特別会計",
+        "expenditureYen": 24514000,
+        "revenueYen": 24514000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2020,
+        "fund": "一般会計",
+        "expenditureYen": 41532676000,
+        "revenueYen": 41532676000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2020,
+        "fund": "介護保険特別会計",
+        "expenditureYen": 6993250000,
+        "revenueYen": 6993250000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2020,
+        "fund": "国民健康保険特別会計",
+        "expenditureYen": 7857733000,
+        "revenueYen": 7857733000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2020,
+        "fund": "後期高齢者医療特別会計",
+        "expenditureYen": 2096975000,
+        "revenueYen": 2096975000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2020,
+        "fund": "駐車場事業特別会計",
+        "expenditureYen": 22652000,
+        "revenueYen": 22652000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2021,
+        "fund": "一般会計",
+        "expenditureYen": 36580297415,
+        "revenueYen": 36580298000,
+        "differenceYen": -585
+      },
+      {
+        "year": 2021,
+        "fund": "介護保険特別会計",
+        "expenditureYen": 7240268000,
+        "revenueYen": 7240268000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2021,
+        "fund": "国民健康保険特別会計",
+        "expenditureYen": 8015054000,
+        "revenueYen": 8015054000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2021,
+        "fund": "後期高齢者医療特別会計",
+        "expenditureYen": 2084179000,
+        "revenueYen": 2084179000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2021,
+        "fund": "駐車場事業特別会計",
+        "expenditureYen": 139180000,
+        "revenueYen": 139180000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2022,
+        "fund": "一般会計",
+        "expenditureYen": 38566647000,
+        "revenueYen": 38566647000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2022,
+        "fund": "介護保険特別会計",
+        "expenditureYen": 7341505000,
+        "revenueYen": 7341505000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2022,
+        "fund": "国民健康保険特別会計",
+        "expenditureYen": 8036000000,
+        "revenueYen": 8036000000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2022,
+        "fund": "後期高齢者医療特別会計",
+        "expenditureYen": 2250657000,
+        "revenueYen": 2250657000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2022,
+        "fund": "駐車場事業特別会計",
+        "expenditureYen": 307448000,
+        "revenueYen": 307448000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2023,
+        "fund": "一般会計",
+        "expenditureYen": 37003040895,
+        "revenueYen": 37003041000,
+        "differenceYen": -105
+      },
+      {
+        "year": 2023,
+        "fund": "介護保険特別会計",
+        "expenditureYen": 7575089000,
+        "revenueYen": 7575089000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2023,
+        "fund": "国民健康保険特別会計",
+        "expenditureYen": 8214085000,
+        "revenueYen": 8214085000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2023,
+        "fund": "後期高齢者医療特別会計",
+        "expenditureYen": 2382253000,
+        "revenueYen": 2382253000,
+        "differenceYen": 0
+      },
+      {
+        "year": 2023,
+        "fund": "駐車場事業特別会計",
+        "expenditureYen": 57857000,
+        "revenueYen": 57857000,
+        "differenceYen": 0
+      }
+    ]
+  }
+}

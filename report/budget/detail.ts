@@ -67,9 +67,7 @@ export const DETAIL_BASE_COLUMNS = [
   'cofog_division_code',
   'cofog_consolidation',
   'cofog_decided_at_level',
-  'cofog_division_label',
   'cofog_rule_id',
-  'cofog_basis',
 ] as const
 
 export type DetailColumn = (typeof DETAIL_BASE_COLUMNS)[number] | LevelColumn<Level>
@@ -85,8 +83,21 @@ export type DetailColumn = (typeof DETAIL_BASE_COLUMNS)[number] | LevelColumn<Le
  */
 export type DetailRow = Record<DetailColumn, string>
 
-/** 列指向で運ぶ。行ごとにキーを繰り返すとファイルの大半が列名になる */
-export type DetailTable = { columns: DetailColumn[]; rows: string[][] }
+/**
+ * 列指向で運ぶ。行ごとにキーを繰り返すとファイルの大半が列名になる。
+ *
+ * ⚠️ **異なり数の少ない列を行に複製しない。**
+ * 割当の根拠（`cofog_basis`）を行へ入れていたとき、狛江市の歳出の明細 23.7 MB のうち
+ * **7.0 MB がこの1列**だった（異なり値は19個で、`cofog_rule_id` が全行にあるので情報量はゼロ）。
+ * 規則表として1回だけ運び、`cofog_rule_id` で引く。配布物の派生パッケージと同じ形。
+ * ディビジョン名も同じ理由で運ばない（画面が `COFOG_DIVISIONS` を持っている）。
+ */
+export type DetailTable = {
+  columns: DetailColumn[]
+  rows: string[][]
+  /** 割当の根拠。`cofog_rule_id` → 根拠。行に複製せず1回だけ運ぶ */
+  ruleBasis: Record<string, string>
+}
 
 /** その (団体, direction) で揃っているべき列。階層は報告が渡した並びから作る */
 export function expectedColumns(levels: readonly Level[]): string[] {
@@ -117,6 +128,16 @@ export function assertDetailColumns(
  */
 export function cell(row: DetailRow, column: DetailColumn): string {
   return row[column] ?? ''
+}
+
+/** 割当の根拠を引く。行には入っておらず、規則表から引く */
+export function basisOf(table: DetailTable, row: DetailRow): string {
+  return table.ruleBasis[cell(row, 'cofog_rule_id')] ?? ''
+}
+
+/** COFOG ディビジョンの表示名。行には入っておらず、宣言から引く */
+export function divisionLabelOf(row: DetailRow): string {
+  return COFOG_DIVISIONS[cell(row, 'cofog_division_code')] ?? ''
 }
 
 /** 階層の値を読む。`level` が階層名の集合に無ければコンパイルが落ちる */

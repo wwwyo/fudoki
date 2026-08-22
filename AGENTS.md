@@ -355,7 +355,7 @@ bun run dev         # 報告を作り直してダッシュボードを上げる
 結果として、fudoki の出発点である「いじめ問題対策協議会関係費にいくら付いたか」は狛江市では答えられない。
 **「事業単位に届いた2団体」という言い方は、狛江市について過大である。**
 
-実測は `data/budget/observations/komae-budget-structure.json` が SSOT（`bun run survey:komae`）。
+実測は `data/budget/observations/132195-budget-structure.json` が SSOT（`bun run survey:structure 132195`）。
 
 - **⚠️ 列があることは使われていることを意味しない。** カタログの列構成には
   「大事業・中事業・小事業」が並ぶが、**中事業・小事業は6年度 13,461 行すべて `0`**。
@@ -414,9 +414,10 @@ bun run dev         # 報告を作り直してダッシュボードを上げる
 7. `dbt/seeds/budget/cofog_rules.csv` に規則を足す。名称が無い団体は `match_kan_code` で当て、
    何の款かとその出所を `basis` に書く
 8. `fdp/build.py` の `IMPLEMENTED` と `fdp/field_types.json`（新しい列の ColumnType）
-9. `report/budget/static.ts` の `BY_JURISDICTION` に caveats と notYetReconciled
-   （**宣言が無ければ report が止まる**。他団体の caveats を流用させないため）
-10. `bun run pipeline` / `bun run typecheck`（root と web）/ `bun run validate` を通し、
+9. `report/budget/static.ts` の `BY_JURISDICTION` に caveats・notYetReconciled・consolidationScope
+   （**宣言が無ければ report が止まる**。他団体の文言を流用させないため）
+10. `bun run survey:structure <団体コード>` で観測を残す（主張の出所になる）
+11. `bun run pipeline` / `bun run typecheck`（root と web）/ `bun run validate` を通し、
     `data/budget/` の生成物を commit する（CI が `git diff --exit-code` で見る）
 
 足し忘れは**エラーで止まる**ようにしてある。黙って欠ける事故は起きない。
@@ -430,6 +431,8 @@ bun run dev         # 報告を作り直してダッシュボードを上げる
 | 段階・単位の宣言と配布物の食い違い | `fdp/build.py` の `verify_against_csv` |
 | `static.ts` の団体固有の内容 | `report/budget/build.ts`（既定値で埋めない） |
 | 明細の列 | `report/budget/detail.ts`（生成時）と `web/src/lib/pipeline.ts`（読み込み時） |
+| `budget_label_columns`（code-only の団体） | `macros/budget_staging.sql`（宣言が無ければコンパイルエラー） |
+| 原典を取ったのに宣言していない | `dbt/tests/declarations_cover_raw.sql`（**原典の側を母集団にする唯一の検査**） |
 
 未確定のまま残したことは、パイプライン報告の Caveats 節にある。
 
@@ -450,7 +453,7 @@ bun run dev         # 報告を作り直してダッシュボードを上げる
 | `check:bulletins` | `data/transcripts/bulletins.json` の `schemaCheck` 節 |
 | `fetch:fdp-taxonomy` | `fdp/budget-taxonomy.json` |
 | `survey:budget-years` | `data/budget/observations/mitaka-budget-years.json` |
-| `survey:komae` | `data/budget/observations/komae-budget-structure.json` |
+| `survey:structure` | `data/budget/observations/<団体コード>-budget-structure.json` |
 | `validate` | （検査。`data/transcripts/gates.json` を宣言と、`data/shared/jurisdictions.json` とコード集合で突き合わせる） |
 
 ネットワークを叩くので CI では回さない。いずれも観測を `data/observations/` に残し、要約ではなく原文・URL・status・SHA-256・取得時刻を SSOT にする。
@@ -461,7 +464,7 @@ bun run dev         # 報告を作り直してダッシュボードを上げる
 | `bun run check:bulletins` | 議会だより CSV が観測プロファイルに適合するか（列構成で判定） |
 | `bun run check:budget` | 予算系オープンデータが**どの粒度まで届いているか**（列構成で判定。名前では判定しない） |
 | `bun run survey:budget-years` | 三鷹市の他年度が令和6年度と互換か（列構成・金額の型・引用符の有無・会計の範囲） |
-| `bun run survey:komae` | 狛江市の原典が何を持っているか（階層が実際に使われているか・コードの再利用・行の同一性・款コードの裏づけ・歳出と歳入の一致）。**原典を読むだけでネットワークを叩かない** |
+| `bun run survey:structure 132195` | 狛江市の原典が何を持っているか（階層が実際に使われているか・コードの再利用・行の同一性・款コードの裏づけ・歳出と歳入の一致）。**原典を読むだけでネットワークを叩かない** |
 | `bun run pipeline` | 取得 → dbt → 配布物 → 報告。**検査が1つでも落ちたら下流を作らない** |
 | `bun run dev` | 報告を作り直してダッシュボードを上げる（`web/`） |
 | `bun run fetch:fdp-taxonomy` | FDP の ColumnType 一覧を仕様の原文から起こして取り込む（正準 URL が 404 のため） |

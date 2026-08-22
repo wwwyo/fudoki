@@ -5,27 +5,10 @@
     "fiscalYears": [
       2024
     ],
-    "sourceDocument": "当初予算",
     "phase": {
       "id": "approved",
       "label": "当初予算"
     },
-    "phases": [
-      {
-        "id": "approved",
-        "label": "当初予算",
-        "direction": "expenditure",
-        "sourceColumn": "08予算額",
-        "unit": "千円"
-      },
-      {
-        "id": "approved",
-        "label": "当初予算",
-        "direction": "revenue",
-        "sourceColumn": "08予算額",
-        "unit": "千円"
-      }
-    ],
     "license": {
       "id": "CC-BY-4.0",
       "url": "https://creativecommons.org/licenses/by/4.0/"
@@ -35,8 +18,8 @@
     "generatedAt": "2026-08-22T06:44:52+00:00"
   },
   "summary": {
-    "total": 40,
-    "passed": 39,
+    "total": 41,
+    "passed": 40,
     "failed": 0,
     "warned": 1
   },
@@ -1651,6 +1634,16 @@
       "detail": ""
     },
     {
+      "name": "declarations_cover_raw",
+      "description": "",
+      "binds": [],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
       "name": "derived_package_covers_core",
       "description": "",
       "binds": [
@@ -2105,6 +2098,7 @@
       "verifyNext": "狛江市の歳入も会計/款/項/目/節/細節/細々節の7階層で、三鷹市と同じ形だった。標準の3階層では足りないことが2団体で確かめられたので、拡張自体をやめる案は消えた"
     }
   ],
+  "consolidationScope": "三鷹市の全会計（本パッケージ収録分。下水道事業会計を除く）",
   "notYetReconciled": {
     "scope": "特別会計（国民健康保険事業・介護サービス事業・介護保険事業・後期高齢者医療）の款別・項別",
     "reason": "施政方針・予算概要は一般会計の款別までしか載せておらず、特別会計の款別は予算書にしかない",
@@ -2279,7 +2273,7 @@
       "name": "fudoki:budget-class:code",
       "dataType": "string",
       "unique": true,
-      "why": "予算区分（現年度・繰越明許・事故繰越）。同じ科目に複数の区分が並ぶので行の同一性の一部になる。FDP の phase は予算の段階を指すもので、繰越の区分とは別概念であり標準に該当する列型が無い"
+      "why": "予算区分（現年度・繰越明許・事故繰越）。⚠️ 同じ科目に複数の区分が並ぶ団体では行の同一性の一部になる。FDP の phase は予算の段階を指すもので、繰越の区分とは別概念であり標準に該当する列型が無い"
     },
     {
       "name": "fudoki:budget-class:label",

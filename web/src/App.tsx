@@ -25,8 +25,10 @@ export default function App() {
   // 見ている団体。**1団体だけを前提にしない** — 以前は pipeline.json が単一団体の形で、
   // 2団体目を足したら生成側が例外で止まるようにしてあった。
   const [code, setCode] = useState<string | null>(null)
-  // 明細は報告の 50 倍あるので、タブを開いたときだけ取りに行く。団体ごとに読み直す。
-  const [detail, setDetail] = useState<Record<string, DetailData>>({})
+  // 明細は報告の 50 倍あるので、タブを開いたときだけ取りに行く。
+  // ⚠️ **団体をまたいで溜めない。** 溜めると切り替えるたびに 40,383 行の表が積み上がり、
+  // 解放されない（対象は最終的に62団体になる）。見ている団体の分だけ持つ。
+  const [detail, setDetail] = useState<{ code: string; data: DetailData } | null>(null)
   const [detailError, setDetailError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -36,7 +38,7 @@ export default function App() {
   }, [])
 
   const current = data?.jurisdictions.find((j) => j.code === code) ?? data?.jurisdictions[0]
-  const loaded = code ? detail[code] : undefined
+  const loaded = detail?.code === code ? detail.data : undefined
 
   const rows = useMemo(
     () => (loaded ? { expenditure: toRows(loaded.expenditure), revenue: toRows(loaded.revenue) } : null),
@@ -67,7 +69,7 @@ export default function App() {
   const stats: { label: string; value: string | number; tone?: string; hint?: string }[] = [
     { label: '検査', value: `${report.summary.passed}/${report.summary.total}`, tone: report.summary.failed ? 'bad' : 'good', hint: '1つでも落ちると成果物を書き出さない' },
     // ⚠️ 団体で意味が違う。三鷹市は当初予算額、狛江市は決算の予算現額（全会計・全年度の合計）。
-    { label: `歳出の総額（${report.meta.sourceDocument}）`, value: yenShort(total) },
+    { label: `歳出の総額（${m.phase.label}）`, value: yenShort(total) },
     { label: 'COFOG 割当済み（金額比）', value: `${((assigned / total) * 100).toFixed(1)}%`, hint: 'COFOG は政府支出の機能別分類（教育、保健など10区分）。国際標準' },
     // ⚠️ 消去が成立しない団体がある（狛江市は相手の会計が原典から決まらない）。
     // 「相殺する」と決め打ちで書くと、消去していない団体で嘘になる。
@@ -96,7 +98,7 @@ export default function App() {
           <span className="truncate text-sm text-muted-foreground">
             {m.fiscalYears.length > 2
               ? `${m.fiscalYears[0]}〜${m.fiscalYears.at(-1)}年度`
-              : `${m.fiscalYears.join('・')}年度`} · {m.sourceDocument}
+              : `${m.fiscalYears.join('・')}年度`} · {m.phase.label}
           </span>
         </div>
         <Badge variant={report.summary.failed ? 'destructive' : 'secondary'} className="ml-auto shrink-0">
@@ -146,9 +148,9 @@ export default function App() {
         <Tabs
           defaultValue="stages"
           onValueChange={(v) => {
-            if (v === 'detail' && code && !detail[code] && !detailError) {
+            if (v === 'detail' && code && !loaded && !detailError) {
               loadDetail(report)
-                .then((d) => setDetail((prev) => ({ ...prev, [code]: d })))
+                .then((data) => setDetail({ code, data }))
                 .catch((e: Error) => setDetailError(e.message))
             }
           }}
@@ -185,6 +187,7 @@ export default function App() {
                   expenditure: levelsOf(report, 'expenditure'),
                   revenue: levelsOf(report, 'revenue'),
                 }}
+                tables={{ expenditure: loaded!.expenditure, revenue: loaded!.revenue }}
               />
             ) : (
               <p className="text-sm text-muted-foreground">明細を読み込み中…</p>

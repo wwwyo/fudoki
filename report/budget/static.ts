@@ -15,7 +15,10 @@
 import type { ReportData } from './schema'
 
 type Shared = Pick<ReportData, 'portability'>
-type PerJurisdiction = Pick<ReportData, 'notYetReconciled' | 'caveats'>
+type PerJurisdiction = Pick<ReportData, 'notYetReconciled' | 'caveats'> & {
+  /** 連結の範囲。**消去が成立しない団体がある**ので、団体ごとに何をしたかを書く */
+  consolidationScope: string
+}
 
 export const SHARED: Shared = {
   "portability": [
@@ -94,6 +97,7 @@ export const SHARED: Shared = {
  */
 export const BY_JURISDICTION: Record<string, PerJurisdiction> = {
   "132047": {
+    "consolidationScope": "三鷹市の全会計（本パッケージ収録分。下水道事業会計を除く）",
   "notYetReconciled": {
     "scope": "特別会計（国民健康保険事業・介護サービス事業・介護保険事業・後期高齢者医療）の款別・項別",
     "reason": "施政方針・予算概要は一般会計の款別までしか載せておらず、特別会計の款別は予算書にしかない",
@@ -152,6 +156,10 @@ export const BY_JURISDICTION: Record<string, PerJurisdiction> = {
   ],
   },
   "132195": {
+    "consolidationScope":
+      "狛江市は消去していない。繰入金がどの会計から来たかが原典から決まらないため"
+      + "（款・項・目に名称が無く、都からの繰入金が同じ款に同居する）。"
+      + "全会計を合計すると会計間の移転を二重に含む",
   "notYetReconciled": {
     "scope": "全会計・全年度の款別",
     "reason": "狛江市について款別の値を書き写せる公表資料をまだ見つけていない。原典には款の名称すら無いので、突合するには款コードと名称の対応を持つ資料が要る",

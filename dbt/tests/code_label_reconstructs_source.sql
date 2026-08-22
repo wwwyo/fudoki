@@ -16,17 +16,17 @@
 --
 -- ⚠️ **`<>` ではなく `is distinct from`。** どちらかが NULL だと比較結果も NULL になり、
 -- WHERE に残らない。NULL に壊れた行が不一致として報告されなくなる。
-{% set codes = var('budget_levels').keys() | list | sort %}
-{% set blocks = [] %}
-{% for code in codes %}{% for direction in var('budget_levels')[code].keys() %}
-  {% do blocks.append((code, direction)) %}
-{% endfor %}{% endfor %}
+{% set checks = [] %}
+{% for code, direction in budget_units() %}
+  {% for lv in var('budget_levels')[code][direction] %}
+    {% do checks.append((code, direction, lv)) %}
+  {% endfor %}
+{% endfor %}
 
-{% for code, direction in blocks %}
+{% for code, direction, lv in checks %}
 {%- set style = var('budget_code_style')[code] -%}
-{#- その階層を持たない行のプレースホルダは検査から外す（コードではないため） -#}
+{#- その階層を持たない行のプレースホルダは検査から外す（コードではないため）。団体ごとに決まる -#}
 {%- set absent = var('budget_absent_level_markers')[code] | map('string') | map('replace', "'", "''") | list -%}
-{% for lv in var('budget_levels')[code][direction] %}
 select '{{ code }}' as jurisdiction, '{{ direction }}' as direction, '{{ lv }}' as level,
        source_row, {{ lv }}_source as source
 from {{ ref('stg_' ~ code ~ '__' ~ direction) }}
@@ -38,7 +38,5 @@ where {{ lv }}_source not in ({% for m in absent %}'{{ m }}'{% if not loop.last 
   and ({{ lv }}_code is distinct from {{ lv }}_source
        or not regexp_full_match({{ lv }}_code, '\d+'))
 {%- endif %}
-union all
+{% if not loop.last %}union all{% endif %}
 {% endfor %}
-{% endfor %}
-select null, null, null, null, null where false

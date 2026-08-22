@@ -6,19 +6,11 @@
 -- ⚠️ **階層だけでなく、追加の同一性の列と全部の金額も入れる。**
 -- 狛江市は所属と予算区分まで含めて初めて行が一意になり、金額は1行に3つある。
 -- 一部の列だけで比べると、取り違えが打ち消し合って通ってしまう。
-{% set codes = var('budget_levels').keys() | list | sort %}
-{% set blocks = [] %}
-{% for code in codes %}{% for direction in var('budget_levels')[code].keys() %}
-  {% do blocks.append((code, direction)) %}
-{% endfor %}{% endfor %}
-
 with raw_cells as (
-    {% for code, direction in blocks %}
+    {% for code, direction in budget_units() %}
     select '{{ code }}' as jurisdiction, '{{ direction }}' as direction, [
-        {%- for c in var('budget_source_columns')[code][direction] %}
-        {{ trim_cell('"' ~ c ~ '"') }},
-        {%- endfor %}
-        {%- for c in var('budget_extra_key_source_columns')[code][direction] %}
+        {%- for c in var('budget_source_columns')[code][direction]
+              + var('budget_extra_key_source_columns')[code][direction] %}
         {{ trim_cell('"' ~ c ~ '"') }},
         {%- endfor %}
         {%- for a in var('budget_amounts')[code][direction] %}
@@ -30,7 +22,7 @@ with raw_cells as (
     {% endfor %}
 ),
 staged_cells as (
-    {% for code, direction in blocks %}
+    {% for code, direction in budget_units() %}
     select '{{ code }}' as jurisdiction, direction, [
         {%- for lv in var('budget_levels')[code][direction] %}
         {{ lv }}_source,

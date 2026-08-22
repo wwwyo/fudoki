@@ -5,8 +5,8 @@
  * この画面の中心機能がマウス専用になる。
  */
 import { useMemo, useState } from 'react'
-import type { Direction, DetailRow, Level } from '@/lib/pipeline'
-import { LEVEL_JA, cell, levelCell } from '@/lib/pipeline'
+import type { Direction, DetailRow, DetailTable, Level } from '@/lib/pipeline'
+import { LEVEL_JA, basisOf, cell, divisionLabelOf, levelCell } from '@/lib/pipeline'
 import { DIVISION_COLOR, STATUS_JA, yen } from '@/lib/pipeline'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -20,12 +20,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
  * **画面は階層名を直書きしない。**
  */
 export function DetailBrowser({
-  code, expenditure, revenue, levels,
+  code, expenditure, revenue, levels, tables,
 }: {
   code: string
   expenditure: DetailRow[]
   revenue: DetailRow[]
   levels: Record<Direction, Level[]>
+  /** 規則表（割当の根拠）を引くために持つ。根拠は行に複製していない */
+  tables: Record<Direction, DetailTable>
 }) {
   const [dir, setDir] = useState<Direction>('expenditure')
   // key で切り替える。path と query は団体・direction ごとの状態なので、
@@ -36,16 +38,30 @@ export function DetailBrowser({
       dir={dir}
       source={dir === 'expenditure' ? expenditure : revenue}
       levels={levels[dir]}
+      table={tables[dir]}
       onSwitch={setDir}
     />
   )
 }
 
 function Browser({
-  dir, source, levels, onSwitch,
-}: { dir: Direction; source: DetailRow[]; levels: Level[]; onSwitch: (d: Direction) => void }) {
+  dir, source, levels, table, onSwitch,
+}: {
+  dir: Direction; source: DetailRow[]; levels: Level[]
+  table: DetailTable; onSwitch: (d: Direction) => void
+}) {
   const [path, setPath] = useState<string[]>([])
   const [query, setQuery] = useState('')
+
+  /**
+   * 名称を持たない階層。**団体名を直書きしない** — データから分かる。
+   * 狛江市は款・項・目・大事業に名称の列が原典に無いが、それは狛江市の性質であって
+   * 画面の性質ではない。三鷹市のタブに狛江市の注意書きが出ていた。
+   */
+  const [named, unnamed] = useMemo(() => {
+    const has = (l: Level) => source.some((r) => levelCell(r, l, 'label') !== '')
+    return [levels.filter(has), levels.filter((l) => !has(l))]
+  }, [source, levels])
 
   /**
    * ⚠️ **予算段階を混ぜて足さない。**
@@ -103,8 +119,12 @@ function Browser({
     <div className="flex flex-col gap-3">
       <p className="max-w-[72ch] text-sm text-muted-foreground">
         行を選ぶと1段深くなる。名称で絞り込むと、その金額がどこに付いているかを直接引ける。
-        {' '}⚠️ 名称は原典が持っている階層にしか無い（狛江市は款・項・目・大事業に名称の列が無く、
-        絞り込めるのは会計名と科目名だけ）。
+        {unnamed.length > 0 && (
+          <>
+            {' '}⚠️ この団体の原典は{unnamed.map((l) => LEVEL_JA[l]).join('・')}に名称の列を持たないので、
+            絞り込めるのは{named.map((l) => LEVEL_JA[l]).join('・')}だけ。
+          </>
+        )}
       </p>
 
       <div className="flex flex-wrap items-center gap-2">
@@ -141,7 +161,7 @@ function Browser({
       {rows.length === 0 ? (
         <p className="text-sm text-muted-foreground">該当なし。</p>
       ) : groups === null ? (
-        <LeafCard row={rows[0]!} levels={levels} dir={dir} />
+        <LeafCard row={rows[0]!} levels={levels} dir={dir} table={table} />
       ) : (
         <div className="overflow-x-auto rounded-lg border">
           <Table>
@@ -196,8 +216,8 @@ function Browser({
 }
 
 function LeafCard({
-  row, levels, dir,
-}: { row: DetailRow; levels: readonly Level[]; dir: Direction }) {
+  row, levels, dir, table,
+}: { row: DetailRow; levels: readonly Level[]; dir: Direction; table: DetailTable }) {
   const items: [string, React.ReactNode][] = [
     ['budget_line_id', <span className="font-mono text-xs">{cell(row, 'budget_line_id')}</span>],
     ...levels.map((l) => [LEVEL_JA[l]!, levelCell(row, l, 'source')] as [string, React.ReactNode]),
@@ -210,12 +230,12 @@ function LeafCard({
       ['COFOG', cell(row, 'cofog_division_code')
         ? <span className="inline-flex items-center gap-1.5">
             <i aria-hidden className="size-2.5 rounded-sm" style={{ background: DIVISION_COLOR[cell(row, 'cofog_division_code')] }} />
-            <span className="font-medium">{cell(row, 'cofog_division_code')}</span> {cell(row, 'cofog_division_label')}
+            <span className="font-medium">{cell(row, 'cofog_division_code')}</span> {divisionLabelOf(row)}
             <Badge variant="outline">{STATUS_JA[cell(row, 'cofog_status')] ?? cell(row, 'cofog_status')}</Badge>
           </span>
         : <Badge variant="outline">{STATUS_JA[cell(row, 'cofog_status')] ?? cell(row, 'cofog_status')}</Badge>],
       ['決まった単位', cell(row, 'cofog_decided_at_level')],
-      ['割当の根拠', cell(row, 'cofog_basis')],
+      ['割当の根拠', basisOf(table, row)],
       ['適用した規則', <code className="text-xs">{cell(row, 'cofog_rule_id')}</code>],
     )
   }

@@ -10,48 +10,10 @@
       2022,
       2023
     ],
-    "sourceDocument": "決算",
     "phase": {
       "id": "settlement",
       "label": "決算"
     },
-    "phases": [
-      {
-        "id": "adjusted-before-transfer",
-        "label": "補正後予算額（流用・充用前）",
-        "direction": "expenditure",
-        "sourceColumn": "予算額(円)",
-        "unit": "円"
-      },
-      {
-        "id": "adjusted",
-        "label": "予算現額",
-        "direction": "expenditure",
-        "sourceColumn": "予算計(円)",
-        "unit": "円"
-      },
-      {
-        "id": "executed",
-        "label": "執行済額",
-        "direction": "expenditure",
-        "sourceColumn": "執行累計(円)",
-        "unit": "円"
-      },
-      {
-        "id": "adjusted",
-        "label": "予算現額",
-        "direction": "revenue",
-        "sourceColumn": "予算現額(千円)",
-        "unit": "千円"
-      },
-      {
-        "id": "executed",
-        "label": "収入済額",
-        "direction": "revenue",
-        "sourceColumn": "収入累計(円)",
-        "unit": "円"
-      }
-    ],
     "license": {
       "id": "CC-BY-4.0",
       "url": "https://creativecommons.org/licenses/by/4.0/"
@@ -61,8 +23,8 @@
     "generatedAt": "2026-08-22T08:16:58+00:00"
   },
   "summary": {
-    "total": 40,
-    "passed": 39,
+    "total": 41,
+    "passed": 40,
     "failed": 0,
     "warned": 1
   },
@@ -1961,6 +1923,16 @@
       "detail": ""
     },
     {
+      "name": "declarations_cover_raw",
+      "description": "",
+      "binds": [],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
       "name": "derived_package_covers_core",
       "description": "",
       "binds": [
@@ -2415,6 +2387,7 @@
       "verifyNext": "狛江市の歳入も会計/款/項/目/節/細節/細々節の7階層で、三鷹市と同じ形だった。標準の3階層では足りないことが2団体で確かめられたので、拡張自体をやめる案は消えた"
     }
   ],
+  "consolidationScope": "狛江市は消去していない。繰入金がどの会計から来たかが原典から決まらないため（款・項・目に名称が無く、都からの繰入金が同じ款に同居する）。全会計を合計すると会計間の移転を二重に含む",
   "notYetReconciled": {
     "scope": "全会計・全年度の款別",
     "reason": "狛江市について款別の値を書き写せる公表資料をまだ見つけていない。原典には款の名称すら無いので、突合するには款コードと名称の対応を持つ資料が要る",
@@ -2585,7 +2558,7 @@
       "name": "fudoki:budget-class:code",
       "dataType": "string",
       "unique": true,
-      "why": "予算区分（現年度・繰越明許・事故繰越）。同じ科目に複数の区分が並ぶので行の同一性の一部になる。FDP の phase は予算の段階を指すもので、繰越の区分とは別概念であり標準に該当する列型が無い"
+      "why": "予算区分（現年度・繰越明許・事故繰越）。⚠️ 同じ科目に複数の区分が並ぶ団体では行の同一性の一部になる。FDP の phase は予算の段階を指すもので、繰越の区分とは別概念であり標準に該当する列型が無い"
     },
     {
       "name": "fudoki:budget-class:label",

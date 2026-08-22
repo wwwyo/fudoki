@@ -5,10 +5,10 @@
 --
 -- これが落ちたら staging に判断が混ざった合図で、intermediate 層を切る時期。
 --
--- 団体の一覧は dbt_project.yml の `budget_levels` から取る。手で並べない。
-{% set codes = var('budget_levels').keys() | list | sort %}
+-- ⚠️ **宣言に無い raw はここでは見つからない**（宣言が母集団なので空振りする）。
+-- そちらは declarations_cover_raw.sql が原典の partition と突き合わせる。
 with raw_counts as (
-    {% for code in codes %}
+    {% for code in var('budget_levels').keys() | list | sort %}
     select '{{ code }}' as jurisdiction, direction, count(*) as n
     from read_parquet('../data/budget/raw/jurisdiction={{ code }}/year=*/phase=*/direction=*/data.parquet',
                       hive_partitioning=true)
@@ -17,12 +17,11 @@ with raw_counts as (
     {% endfor %}
 ),
 staged as (
-    {% for code in codes %}{% for direction in var('budget_levels')[code].keys() %}
+    {% for code, direction in budget_units() %}
     select '{{ code }}' as jurisdiction, '{{ direction }}' as direction, count(*) as n
     from {{ ref('stg_' ~ code ~ '__' ~ direction) }}
-    union all
-    {% endfor %}{% endfor %}
-    select null, null, null where false
+    {% if not loop.last %}union all{% endif %}
+    {% endfor %}
 )
 select
     coalesce(r.jurisdiction, s.jurisdiction) as jurisdiction,

@@ -10,7 +10,7 @@
  */
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import type { Provenance, ReportData } from './schema'
+import type { Check, Provenance, ReportData, Topology } from './schema'
 import { ROOT, TARGET, buildChecks, buildTopology, q, readJson, type Manifest, type RunResults } from '../lineage'
 import { BY_JURISDICTION, SHARED } from './static'
 import {
@@ -21,10 +21,7 @@ import {
 const withLabel = <T extends { division: string }>(rows: T[]) =>
   rows.map((r) => ({ ...r, divisionLabel: COFOG_DIVISIONS[r.division] ?? '' }))
 
-/** SQL に埋めるディビジョン表。**宣言から作る** — 手で書くと片方だけ直る */
-const DIVISION_VALUES = Object.entries(COFOG_DIVISIONS)
-  .map(([code, label]) => `('${code}','${label}')`)
-  .join(',')
+
 
 /** 階層と金額の宣言。**正本は dbt_project.yml**（dbt のモデルと検査が同じものを見る） */
 type Amount = {
@@ -38,6 +35,18 @@ const DBT_VARS = Bun.YAML.parse(
   budget_amounts: Record<string, Record<Direction, Amount[]>>
 } }
 const levelsOf = (code: string, direction: Direction) => DBT_VARS.vars.budget_levels[code]![direction]
+
+/**
+ * 団体に固有の手書きの内容。**既定値で埋めない。**
+ * 埋めると、三鷹市について書いた文が狛江市の報告に出たまま気づけない。
+ * 以前 `consolidationScope` だけがここを通らず `'（未宣言）'` で素通りし、
+ * それが画面の統計カードの説明としてそのまま出る状態だった。
+ */
+function perJurisdiction(code: string) {
+  const hit = BY_JURISDICTION[code]
+  if (!hit) throw new Error(`${code} の団体固有の宣言が report/budget/static.ts に無い`)
+  return hit
+}
 
 /**
  * FDP に無い概念のために自作した ColumnType。**正本は `fdp/field_types.json`。**
@@ -59,15 +68,6 @@ const YEAR_SURVEY: Record<string, ReportData['yearSurvey']> = {
     join(ROOT, 'data/budget/observations/mitaka-budget-years.json')),
 }
 const amountsOf = (code: string, direction: Direction) => DBT_VARS.vars.budget_amounts[code]![direction]
-
-/** その団体・direction で集計に使う段階（`primary`）。決算書は1行に複数の金額を持つ */
-function primaryAmount(code: string, direction: Direction): Amount {
-  const hit = amountsOf(code, direction).filter((a) => a.primary)
-  if (hit.length !== 1) {
-    throw new Error(`${code}/${direction}: budget_amounts の primary が ${hit.length} 件`)
-  }
-  return hit[0]!
-}
 
 /**
  * COFOG の判断。**fudoki が自治体の言っていないことを付け加えた唯一の場所**なので、
@@ -134,20 +134,8 @@ function buildTransform(code: string): ReportData['transform'] {
              g.cnt counterpartCount, p.amt = g.amt ok
       from paid p join got g on p.frm = g.frm and p.it = g.it
       order by eliminated desc, "from", "to"`, ['eliminated', 'counterpart', 'counterpartCount']),
-    consolidationScope: CONSOLIDATION_SCOPE[code] ?? '（未宣言）',
+    consolidationScope: perJurisdiction(code).consolidationScope,
   }
-}
-
-/**
- * 連結の範囲。**団体ごとに違う**ので、報告の文言をここで宣言する。
- * 消去が成立しない団体（相手の会計が原典から決まらない）はそう書く。
- */
-const CONSOLIDATION_SCOPE: Record<string, string> = {
-  '132047': '三鷹市の全会計（本パッケージ収録分。下水道事業会計を除く）',
-  '132195':
-    '狛江市は消去していない。繰入金がどの会計から来たかが原典から決まらないため'
-    + '（款・項・目に名称が無く、都からの繰入金が同じ款に同居する）。'
-    + '全会計を合計すると会計間の移転を二重に含む',
 }
 
 /**
@@ -212,7 +200,14 @@ function provenanceOf(dir: string): Provenance[] {
  */
 const ALL_PROVENANCE = provenanceOf(join(ROOT, 'data/budget/raw'))
 
-function build(code: string, manifest: Manifest, results: RunResults): ReportData {
+/**
+ * 系統と検査は**団体で変わらない**（パイプラインは1本で、どの団体のノードも同じ図に出る）。
+ * ⚠️ 団体ごとに呼ぶと、入力が同じなのに DuckDB を起こし直して全配布物を数え直す。
+ * 62団体だと配布物の走査が O(N²) になり、出力も同じ 8.9 KB を N 回書くことになる。
+ */
+function build(
+  code: string, topology: Topology, checks: Check[],
+): ReportData {
   const prov = provenanceOf(join(ROOT, 'data/budget/raw', `jurisdiction=${code}`))
 
   const entries = Object.entries(SOURCES).filter(([k]) => k.startsWith(`${code}:`))
@@ -220,20 +215,15 @@ function build(code: string, manifest: Manifest, results: RunResults): ReportDat
   const src = entries[0]![1]
   const pick = (k: keyof typeof src) => src[k] ?? ''
 
-  const checks = buildChecks(manifest, results)
   return {
     meta: {
       jurisdictionCode: code,
       jurisdictionName: pick('jurisdiction_name'),
       fiscalYears: [...new Set(prov.map((p) => p.fiscal_year))].sort(),
-      // 原典の文書の種類。**行が持つ予算段階とは別の軸**で、
-      // 三鷹市は当初予算、狛江市は決算（1行が予算現額と執行済額の両方を持つ）。
-      sourceDocument: pick('phase_label'),
+      // **原典の文書の種類**（当初予算 / 決算）。行が持つ予算段階とは別の軸で、
+      // 狛江市の決算書は1行が予算現額と執行済額の両方を持つ。
+      // 行の段階は配布物の列にあり、画面はデータから拾う（段階の数が団体ごとに違うため）。
       phase: { id: pick('phase_id'), label: pick('phase_label') },
-      phases: DIRECTIONS.flatMap((direction) =>
-        amountsOf(code, direction).map((a) => ({
-          id: a.phase, label: a.phase_label, direction, sourceColumn: a.source, unit: a.unit,
-        }))),
       license: { id: pick('license_id'), url: 'https://creativecommons.org/licenses/by/4.0/' },
       attribution: pick('attribution'),
       landingPage: pick('landing_page'),
@@ -246,7 +236,7 @@ function build(code: string, manifest: Manifest, results: RunResults): ReportDat
       failed: checks.filter((c) => !c.ok && c.severity === 'error').length,
       warned: checks.filter((c) => c.status === 'warn').length,
     },
-    topology: buildTopology(manifest, ALL_PROVENANCE),
+    topology,
     ingestion: prov,
     detailLevels: DIRECTIONS.map((direction) => ({ direction, levels: levelsOf(code, direction) })),
     levels: buildLevels(code),
@@ -255,9 +245,7 @@ function build(code: string, manifest: Manifest, results: RunResults): ReportDat
     ...SHARED,
     // ⚠️ **団体固有の内容は宣言が無ければ止める。** 既定値で埋めると、
     // 三鷹市について書いた caveats が狛江市の報告に出たまま気づけない。
-    ...(BY_JURISDICTION[code] ?? (() => {
-      throw new Error(`${code} の caveats / notYetReconciled が report/budget/static.ts に無い`)
-    })()),
+    ...perJurisdiction(code),
     // FDP に無い概念のために自作した ColumnType。**正本は fdp/field_types.json**
     // （descriptor もそこから作る）。報告へ写すと片方だけ直る。
     customColumnTypes: CUSTOM_COLUMN_TYPES,
@@ -292,17 +280,16 @@ function detailProjection(code: string, direction: Direction): DetailTable {
   const constants = single
     ? `, '${amounts[0]!.phase_label}' as phase_label, '${amounts[0]!.unit}' as source_amount_unit`
     : ''
+  // ⚠️ **異なり数の少ない列を行へ join しない。** 根拠（basis）は19種類しかないのに
+  // 行へ入れると狛江市の歳出だけで 7.0 MB になる（`cofog_rule_id` が全行にあるので情報量ゼロ）。
+  // ディビジョン名も画面が宣言として持っている。どちらも規則表・宣言から引く。
   const rows = q<Record<string, unknown>>(`
     select c.*, ${src}${constants},
            d.cofog_status, d.cofog_division as cofog_division_code,
-           d.cofog_consolidation, d.cofog_decided_at_level, d.cofog_rule_id,
-           coalesce(v.label, '') as cofog_division_label, r.basis as cofog_basis
+           d.cofog_consolidation, d.cofog_decided_at_level, d.cofog_rule_id
     from read_csv('${canonical}', header = true, all_varchar = true) c
     left join read_csv('${join(ROOT, 'data/budget/packages/derived/cofog.csv')}', header = true, all_varchar = true) d
       using (budget_line_id)
-    left join read_csv('${join(ROOT, 'data/budget/packages/derived/cofog_rules.csv')}', header = true, all_varchar = true) r
-      on r.rule_id = d.cofog_rule_id
-    left join (values ${DIVISION_VALUES}) as v(code, label) on v.code = d.cofog_division
     order by c.fiscal_year, c.source_row, c.phase_id`)
   const columns = rows.length ? Object.keys(rows[0]!) : []
   // **宣言した列が欠けていたら落とす。** 画面が黙って空になるより、生成が止まるほうがよい。
@@ -310,19 +297,48 @@ function detailProjection(code: string, direction: Direction): DetailTable {
   return {
     columns: columns as DetailTable['columns'],
     rows: rows.map((x) => columns.map((c) => String(x[c] ?? ''))),
+    ruleBasis: RULE_BASIS,
   }
 }
+
+/** 割当の根拠。**規則ごとに1つ**なので行に複製せず、明細と一緒に1回だけ運ぶ */
+const RULE_BASIS: Record<string, string> = Object.fromEntries(
+  q<{ rule_id: string; basis: string }>(
+    `select rule_id, basis from read_csv('${join(ROOT, 'data/budget/packages/derived/cofog_rules.csv')}',
+     header = true, all_varchar = true)`,
+  ).map((r) => [r.rule_id, r.basis]),
+)
 
 const manifest = readJson<Manifest>(join(TARGET, 'manifest.json'))
 const results = readJson<RunResults>(join(TARGET, 'run_results.json'))
 
-const reports = CODES.map((code) => ({ code, report: build(code, manifest, results) }))
+// **団体で変わらないものは1回だけ作る。**
+const topology = buildTopology(manifest, ALL_PROVENANCE)
+const checks = buildChecks(manifest, results)
+
+const reports = CODES.map((code) => ({ code, report: build(code, topology, checks) }))
 for (const { code, report } of reports) {
   writeFileSync(join(ROOT, `data/budget/reports/${code}.json`), `${JSON.stringify(report, null, 2)}\n`)
 }
 // **報告と明細を分けて書く。** 明細は報告の 50 倍あり（2.4MB 対 0.05MB）、
 // 既定のタブは明細を使わない。1つにまとめると、報告だけ見る利用者にも全部を運ぶことになる。
-writeFileSync(join(ROOT, 'web/public/pipeline.json'), `${JSON.stringify({ jurisdictions: reports })}\n`)
+//
+// ⚠️ **団体で変わらないものを団体の数だけ運ばない。**
+// 系統・検査・移植性の判定・独自 ColumnType はどの団体でも同じ内容で、
+// 2団体でも 151.7 KB のうち 29.1 KB（19%）がバイト一致していた。62団体なら系統だけで約 11 MB になる。
+// しかも pipeline.json は明細タブを開かなくても読まれる**既定の payload** である。
+// 画面側（`loadPipeline`）が読み込み時に組み直すので、下流の型は変わらない。
+//
+// ⚠️ `data/budget/reports/<団体>.json` のほうは**分けない。**
+// あちらは配布する成果物なので、1ファイルで完結しているほうが利用者に要る。
+const { portability, customColumnTypes } = reports[0]!.report
+writeFileSync(join(ROOT, 'web/public/pipeline.json'), `${JSON.stringify({
+  shared: { topology, checks, portability, customColumnTypes },
+  jurisdictions: reports.map(({ code, report }) => {
+    const { topology: _1, checks: _2, portability: _3, customColumnTypes: _4, ...rest } = report
+    return { code, report: rest }
+  }),
+})}\n`)
 
 for (const { code } of reports) {
   for (const direction of DIRECTIONS) {

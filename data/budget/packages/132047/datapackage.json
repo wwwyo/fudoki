@@ -126,7 +126,7 @@
         "name": "fudoki:budget-class:code",
         "dataType": "string",
         "unique": true,
-        "description": "予算区分（現年度・繰越明許・事故繰越）。同じ科目に複数の区分が並ぶので行の同一性の一部になる。FDP の phase は予算の段階を指すもので、繰越の区分とは別概念であり標準に該当する列型が無い"
+        "description": "予算区分（現年度・繰越明許・事故繰越）。⚠️ 同じ科目に複数の区分が並ぶ団体では行の同一性の一部になる。FDP の phase は予算の段階を指すもので、繰越の区分とは別概念であり標準に該当する列型が無い"
       },
       {
         "name": "fudoki:budget-class:label",
@@ -512,7 +512,8 @@
             "name": "saisetsu_code",
             "title": "細節コード",
             "type": "string",
-            "columnType": "fin-source:generic:level5:code"
+            "columnType": "fin-source:generic:level5:code",
+            "description": "歳入の細節"
           },
           {
             "name": "saisetsu_label",

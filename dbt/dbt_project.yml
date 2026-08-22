@@ -99,16 +99,13 @@ vars:
   # **歳出と歳入の合計が一致するという検算を、どの団体で有効にするか。**
   # ⚠️ 一般の不変条件ではない。決算・企業会計・補正差分・会計範囲の異なる抽出では成立しない。
   # 団体を足すときは、まず実測してからここに1ブロック足す（宣言が無い団体は検算されない）。
-  # multiplier は staging の source_amount（primary の段階）を円へ直す倍率。
+  # ⚠️ **倍率はここに書かない。** `budget_amounts` の primary が既に持っているので、
+  # 二重に持つと単位を直したときに検算だけ古い倍率で掛け続けて通る。
   budget_expenditure_revenue_balance:
     "132047":
-      expenditure_multiplier: 1000
-      revenue_multiplier: 1000
       # 当初予算どうしなので丸めが無く、1円でも違えば落とす
       tolerance_yen: 1
     "132195":
-      expenditure_multiplier: 1
-      revenue_multiplier: 1000
       # 歳入の予算現額が千円単位なので、円未満は原理的に一致しない
       tolerance_yen: 1000
 

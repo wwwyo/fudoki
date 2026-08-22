@@ -38,13 +38,7 @@ export type LevelGroup = {
 }
 
 export type ReportData = ReportEnvelope & {
-  meta: ReportEnvelope['meta'] & {
-    fiscalYears: number[]
-    /** 原典の文書の種類（当初予算 / 決算）。行が持つ予算段階とは別の軸 */
-    sourceDocument: string
-    /** 配布物が持つ予算段階。決算書は原典1行を段階ごとの行へ展開してある */
-    phases: { id: string; label: string; direction: Direction; sourceColumn: string; unit: string }[]
-  }
+  meta: ReportEnvelope['meta'] & { fiscalYears: number[] }
   /**
    * 明細の階層。**正本は dbt_project.yml の `budget_levels`** で、生成側が読んで載せる。
    * 画面は階層名を直書きせず、これを回す（団体ごとに並びが違うため）。

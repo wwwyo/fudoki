@@ -137,18 +137,22 @@ def amounts_of(code: str, direction: str) -> list[dict]:
     return DBT_VARS["budget_amounts"][code][direction]
 
 
-def verify_against_csv(path: pathlib.Path, body: bytes, amounts: list[dict]) -> None:
-    """宣言と配布物が食い違っていないか。**descriptor だけ正しい状態を作らない。**"""
-    header = header_of(body)
+def verify_against_csv(path: pathlib.Path, amounts: list[dict]) -> None:
+    """宣言と配布物が食い違っていないか。**descriptor だけ正しい状態を作らない。**
+
+    ⚠️ ヘッダは `DictReader.fieldnames` から取る。**同じファイルを読み直さない**
+    （`header_of` の docstring が言っている不変条件を、呼び出し側が破っていた）。
+    """
     multi = len(amounts) > 1
-    if multi and "phase_id" not in header:
-        raise RuntimeError(f"{path.name}: 予算段階が {len(amounts)} 種類あるのに phase_id の列が無い")
-    if multi and "source_amount_unit" not in header:
-        raise RuntimeError(f"{path.name}: 予算段階が複数あるのに source_amount_unit の列が無い")
-    if not multi and "phase_id" not in header:
-        raise RuntimeError(f"{path.name}: phase_id の列が無い")
     with path.open(encoding="utf-8", newline="") as f:
         rows = csv.DictReader(f)
+        header = rows.fieldnames or []
+        if "phase_id" not in header:
+            raise RuntimeError(f"{path.name}: phase_id の列が無い")
+        if multi and "source_amount_unit" not in header:
+            raise RuntimeError(
+                f"{path.name}: 予算段階が {len(amounts)} 種類あるのに source_amount_unit の列が無い"
+            )
         seen: set[tuple[str, str]] = set()
         for r in rows:
             unit = r.get("source_amount_unit", amounts[0]["unit"])
@@ -230,7 +234,7 @@ def build_jurisdiction(code: str) -> None:
             r["fudokiPhases"] = [{"id": a["phase"], "label": a["phase_label"],
                                   "sourceColumn": a["source"], "sourceAmountUnit": a["unit"]}
                                  for a in amounts[name]]
-        verify_against_csv(path, path.read_bytes(), amounts[name])
+        verify_against_csv(path, amounts[name])
         pkg["resources"].append(r)
     (d / "datapackage.json").write_text(json.dumps(pkg, ensure_ascii=False, indent=2) + "\n")
     print(f"ok  {code}  {len(pkg['resources'])} リソース  {sum(r['bytes'] for r in pkg['resources']):,} バイト")
@@ -259,19 +263,20 @@ def build_derived() -> None:
     print(f"ok  derived  {len(pkg['resources'])} リソース  {sum(r['bytes'] for r in pkg['resources']):,} バイト")
 
 
-# 実装済みの団体。**`sources.toml` の集合と一致しない状態で書き出さない。**
-# 一致を見ないと、2団体目を登録しても三鷹市だけを生成して正常終了し、
-# 欠けたまま配布物が出来上がる（パイプライン全体は後段の report で止まるが、
-# `python -m fdp.build` を単体で回すと気づけない）。
-IMPLEMENTED = {"132047", "132195"}
-
 if __name__ == "__main__":
+    # **団体の一覧を手で持たない。** 取得元（sources.toml）と変換の宣言（dbt_project.yml）が
+    # それぞれ正本なので、生成対象はその一致として決まる。
+    # ⚠️ 以前は3つ目の手書きリスト（IMPLEMENTED）があり、団体を足すたびに
+    # 3箇所へ登録することになっていた。しかも突き合わせは sources.toml とだけで、
+    # **dbt の宣言との食い違いは誰も見ていなかった**（KeyError で落ちるだけ）。
     registered = {s.jurisdiction_code for s in load_sources().values()}
-    if registered != IMPLEMENTED:
+    declared = set(DBT_VARS["budget_levels"])
+    if registered != declared:
         raise SystemExit(
-            f"sources.toml の団体 {sorted(registered)} と実装済み {sorted(IMPLEMENTED)} が一致しない。"
+            f"取得元（sources.toml）の団体 {sorted(registered)} と "
+            f"変換の宣言（dbt_project.yml の budget_levels）{sorted(declared)} が一致しない。"
             f"配布物を欠けたまま書き出さないため停止する"
         )
-    for code in sorted(IMPLEMENTED):
+    for code in sorted(registered):
         build_jurisdiction(code)
     build_derived()

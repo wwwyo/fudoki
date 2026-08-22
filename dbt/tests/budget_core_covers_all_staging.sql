@@ -7,18 +7,15 @@
 -- 歳出（core_budget_cofog）と歳入（core_revenue_consolidation）の両方を見る。
 -- 片方だけだと、歳入の union を直し忘れたときに通ってしまう。
 --
--- 団体の一覧は dbt_project.yml の `budget_levels` から取る。
+-- 収録の単位は macros/budget_units.sql が1箇所で持つ。
 -- ⚠️ `graph.nodes` から数える書き方は採らない — パース時に ref() を解決できず、
 -- 完全再パースになった時点で落ちる（部分パースの間だけ通っていた）。
-{% set codes = var('budget_levels').keys() | list | sort %}
-
 with staged as (
-    {% for code in codes %}{% for direction in var('budget_levels')[code].keys() %}
+    {% for code, direction in budget_units() %}
     select '{{ direction }}' as direction, count(*) as rows
     from {{ ref('stg_' ~ code ~ '__' ~ direction) }}
-    union all
-    {% endfor %}{% endfor %}
-    select null, null where false
+    {% if not loop.last %}union all{% endif %}
+    {% endfor %}
 ),
 
 staged_total as (

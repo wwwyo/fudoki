@@ -41,6 +41,15 @@ UA = "fudoki/0.1 (+https://github.com/wwwyo/fudoki)"
 MAX_BYTES = 20 * 1024 * 1024
 
 
+class Truncated(Exception):
+    """応答が途中で切れた。**再試行してよい失敗。**
+
+    ⚠️ 取得元の異常（MAX_BYTES 超過）とは別物なので例外を分ける。
+    以前は両方 RuntimeError で、docstring は「Content-Length 突合で落ちたものを再試行する」と
+    書いてあったのに実際には即死していた（説明と実装が食い違っていた）。
+    """
+
+
 @dataclass
 class Fetched:
     url: str
@@ -63,7 +72,7 @@ def http_get(url: str, attempts: int = 12) -> Fetched:
     for i in range(attempts):
         try:
             return _http_get_once(url)
-        except (http.client.IncompleteRead, urllib.error.URLError, TimeoutError) as e:
+        except (Truncated, http.client.IncompleteRead, urllib.error.URLError, TimeoutError) as e:
             last = e
             print(f"retry {i + 1}/{attempts}  {type(e).__name__}  {url}")
             time.sleep(min(2 ** i, 8))
@@ -78,7 +87,7 @@ def _http_get_once(url: str) -> Fetched:
         body = res.read()
         declared = res.headers.get("Content-Length")
         if declared is not None and len(body) != int(declared):
-            raise RuntimeError(f"Content-Length {declared} に対し {len(body)} バイトしか取れていない: {url}")
+            raise Truncated(f"Content-Length {declared} に対し {len(body)} バイトしか取れていない: {url}")
         if len(body) > MAX_BYTES:
             raise RuntimeError(f"{MAX_BYTES} バイトを超えた。取得元の異常: {url}")
         return Fetched(
@@ -88,6 +97,34 @@ def _http_get_once(url: str) -> Fetched:
             sha256=hashlib.sha256(body).hexdigest(),
             fetched_at=datetime.now(UTC).isoformat(timespec="seconds"),
         )
+
+
+# CKAN の検索結果。**(カタログ, 団体) ごとに1回だけ引く。**
+# ⚠️ データセット名ごとに引くと、狛江市は年度 × direction で12回になる。
+# 応答は 1.4MB 級で IncompleteRead を頻発させる当のリクエストなので、
+# 回数がそのまま失敗の確率と待ち時間になる（実測 2 → 14 回に増えていた）。
+# 団体で絞れば1回で全データセットが返り、名前の一致は元から手元で見ている。
+_SEARCH_CACHE: dict[str, list[dict]] = {}
+
+
+def datasets_of(src: Source) -> list[dict]:
+    """その団体のデータセット一覧。同じ団体を何度引いても取得は1回。"""
+    org = src.catalog.org_prefix + src.jurisdiction_code
+    key = f"{src.catalog.endpoint}\x1f{org}"
+    if key not in _SEARCH_CACHE:
+        # fq でカタログ側に絞らせる。q での全文検索と違い、団体が確定するので
+        # 「同名データセットが別の団体にもある」場合の取り違えも起きない。
+        query = urllib.parse.quote(f"organization:{org}")
+        got = http_get(f"{src.catalog.endpoint}?fq={query}&rows=1000")
+        result = json.loads(got.body).get("result", {})
+        found, returned = result.get("count", 0), result.get("results", [])
+        if found > len(returned):
+            raise RuntimeError(
+                f"{org} のデータセットが {found} 件あるのに {len(returned)} 件しか返っていない。"
+                f"rows を増やすこと（先頭だけを見て「無い」と判定しないため）"
+            )
+        _SEARCH_CACHE[key] = returned
+    return _SEARCH_CACHE[key]
 
 
 def resolve_resource(src: Source, spec: Resource) -> str:
@@ -102,14 +139,9 @@ def resolve_resource(src: Source, spec: Resource) -> str:
     先頭を採る実装だと、CKAN の並び順が変わった日に配布物の中身が入れ替わる。
     候補が複数のまま残ったら `resource_url_contains` の宣言を要求して止める。
     """
-    catalog: Catalog = src.catalog
     dataset_title = src.dataset_title_for(spec)
-    q = urllib.parse.quote(dataset_title)
-    got = http_get(f"{catalog.endpoint}?q={q}&rows=300")
-    results = json.loads(got.body).get("result", {}).get("results", [])
-    org = catalog.org_prefix + src.jurisdiction_code
-    pkgs = [p for p in results
-            if (p.get("organization") or {}).get("name") == org and p.get("title") == dataset_title]
+    org = src.catalog.org_prefix + src.jurisdiction_code
+    pkgs = [p for p in datasets_of(src) if p.get("title") == dataset_title]
     if not pkgs:
         raise RuntimeError(f"データセット「{dataset_title}」が {src.jurisdiction_name}（{org}）に見つからない")
 
@@ -127,9 +159,15 @@ def resolve_resource(src: Source, spec: Resource) -> str:
                 f"resource_url_contains=「{src.resource_url_contains}」を含む URL が無い"
             )
     if len(urls) > 1:
+        if src.resource_url_contains is None:
+            raise RuntimeError(
+                f"データセット「{dataset_title}」のリソース「{spec.resource_name}」が {len(urls)} 件ある: {urls}。"
+                f"どれを採るかを sources.toml の resource_url_contains で宣言すること"
+            )
         raise RuntimeError(
-            f"データセット「{dataset_title}」のリソース「{spec.resource_name}」が {len(urls)} 件ある: {urls}。"
-            f"どれを採るかを sources.toml の resource_url_contains で宣言すること"
+            f"resource_url_contains=「{src.resource_url_contains}」で絞っても "
+            f"リソース「{spec.resource_name}」が {len(urls)} 件残る: {urls}。"
+            f"一意になる部分文字列へ変えること"
         )
     return urls[0]
 

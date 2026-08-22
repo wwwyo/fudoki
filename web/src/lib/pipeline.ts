@@ -11,7 +11,7 @@ import type { Direction, DetailRow, DetailTable, Level } from '@report/budget/de
 export type { ReportData, Topology, Node, Edge, Stage, Check }
 
 export type { Direction, DetailColumn, DetailRow, DetailTable, Level } from '@report/budget/detail'
-export { LEVEL_JA, DIRECTIONS, cell, levelCell } from '@report/budget/detail'
+export { LEVEL_JA, basisOf, cell, divisionLabelOf, levelCell } from '@report/budget/detail'
 import { DIRECTIONS, expectedColumns } from '@report/budget/detail'
 
 /**
@@ -21,6 +21,15 @@ import { DIRECTIONS, expectedColumns } from '@report/budget/detail'
  */
 export type PipelineData = {
   jurisdictions: { code: string; report: ReportData }[]
+}
+
+/** 団体で変わらない部分。**団体の数だけ運ばない**ので、生成側が1つに畳んである */
+type Shared = Pick<ReportData, 'topology' | 'checks' | 'portability' | 'customColumnTypes'>
+
+/** ファイル上の形。読み込み時に `PipelineData` へ組み直す */
+type PipelineFile = {
+  shared: Shared
+  jurisdictions: { code: string; report: Omit<ReportData, keyof Shared> }[]
 }
 
 /** 明細。**報告とは別ファイルで運ぶ** — 報告の 50 倍あり、既定のタブでは使わない */
@@ -80,9 +89,16 @@ export async function loadPipeline(): Promise<PipelineData> {
         `bun run pipeline を回してください`,
     )
   }
-  const data = (await res.json()) as PipelineData
-  assertShape(data)
-  return data
+  const file = (await res.json()) as PipelineFile
+  assertShape(file)
+  // 団体で変わらない部分を各団体へ戻す。**下流は完全な ReportData だけを見る**ので、
+  // 運び方（畳んであるか)を画面のあちこちが知らずに済む。
+  return {
+    jurisdictions: file.jurisdictions.map(({ code, report }) => ({
+      code,
+      report: { ...report, ...file.shared } as ReportData,
+    })),
+  }
 }
 
 /**
@@ -93,14 +109,20 @@ export async function loadPipeline(): Promise<PipelineData> {
  * 画面が黙って空になる（実際に一度そうなった）。
  * 型を信じるのではなく、境界で確かめて、ずれていたら理由を出して止める。
  */
-function assertShape(d: PipelineData): void {
+function assertShape(d: PipelineFile): void {
   const problems: string[] = []
+  if (!d.shared) problems.push('shared が無い（団体ごとに複製していた古い形かもしれません）')
+  else {
+    for (const k of ['topology', 'checks', 'portability', 'customColumnTypes'] as const) {
+      if (d.shared[k] === undefined) problems.push(`shared.${k} が無い`)
+    }
+  }
   if (!Array.isArray(d.jurisdictions)) problems.push('jurisdictions が無い（1団体だけの古い形かもしれません）')
   else if (d.jurisdictions.length === 0) problems.push('jurisdictions が空')
   for (const j of d.jurisdictions ?? []) {
     if (j.code === undefined) problems.push('jurisdictions[].code が無い')
     if (!j.report) { problems.push(`${j.code}: report が無い`); continue }
-    for (const k of ['meta', 'summary', 'topology', 'ingestion', 'detailLevels', 'levels', 'transform', 'checks'] as const) {
+    for (const k of ['meta', 'summary', 'ingestion', 'detailLevels', 'levels', 'transform'] as const) {
       if (j.report[k] === undefined) problems.push(`${j.code}: report.${k} が無い`)
     }
   }

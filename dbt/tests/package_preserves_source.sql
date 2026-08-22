@@ -12,19 +12,18 @@
 -- ⚠️ **1行が原典の1行とは限らない。** 決算書は1行に複数段階の金額を持ち、
 -- package はそれを段階ごとの行へ展開する。だから staging 側も同じように展開して比べる。
 -- 展開の仕方は `budget_amounts` の宣言が持つ。
-{% set codes = var('budget_levels').keys() | list | sort %}
-
 {#-
   ⚠️ **read_csv は dbt に依存として見えない。**
   ref() を書かないと、配布物がまだ書かれていないうちにこの検査が走る
   （実際に「ファイルが無い」で落ちた）。SQL では使わないが依存として宣言する。
 -#}
-{% for code in codes %}{% for direction in var('budget_levels')[code].keys() %}
+{% for code, direction in budget_units() %}
 -- depends_on: {{ ref('pkg_' ~ code ~ '__' ~ direction) }}
-{% endfor %}{% endfor %}
+{% endfor %}
 
 with from_package as (
-    {% for code in codes %}{% for direction, lv in var('budget_levels')[code].items() %}
+    {% for code, direction in budget_units() %}
+    {% set lv = var('budget_levels')[code][direction] %}
     select
         '{{ code }}' as jurisdiction, fiscal_year, phase_id, '{{ direction }}' as direction,
         -- ⚠️ 空のコード（階層なしのプレースホルダ）は CSV から読み戻すと NULL になる。
@@ -39,15 +38,14 @@ with from_package as (
     from read_csv('../data/budget/packages/{{ code }}/{{ direction }}.csv',
                   header = true, all_varchar = true)
     group by 1, 2, 3, 4, 5
-    union all
-    {% endfor %}{% endfor %}
-    select null, null, null, null, null, null where false
+    {% if not loop.last %}union all{% endif %}
+    {% endfor %}
 ),
 
 from_staging as (
-    {% for code in codes %}{% for direction, lv in var('budget_levels')[code].items() %}
+    {% for code, direction, a in budget_amount_units() %}
+    {% set lv = var('budget_levels')[code][direction] %}
     {% set style = var('budget_code_style')[code] %}
-    {% for a in var('budget_amounts')[code][direction] %}
     select
         jurisdiction_code as jurisdiction, fiscal_year, '{{ a["phase"] }}' as phase_id, direction,
         -- code-only の団体は原文セル = コードで、名称は別列から来る。
@@ -58,10 +56,8 @@ from_staging as (
         count(*) as n
     from {{ ref('stg_' ~ code ~ '__' ~ direction) }}
     group by 1, 2, 3, 4, 5
-    union all
+    {% if not loop.last %}union all{% endif %}
     {% endfor %}
-    {% endfor %}{% endfor %}
-    select null, null, null, null, null, null where false
 )
 
 select

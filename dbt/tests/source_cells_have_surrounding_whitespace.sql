@@ -7,12 +7,8 @@
 -- 誰も知らないまま1団体目を配っていた。
 --
 -- 件数が増えたら原典側の入力運用が変わった合図でもある。
-{% set blocks = [] %}
-{% for code in var('budget_levels').keys() | list | sort %}
-  {% for direction in var('budget_levels')[code].keys() %}{% do blocks.append((code, direction)) %}{% endfor %}
-{% endfor %}
 with cells as (
-    {% for code, direction in blocks %}
+    {% for code, direction in budget_units() %}
     select '{{ code }}' as jurisdiction, direction, source_row, unnest([
         {% for c in var('budget_source_columns')[code][direction]
               + var('budget_extra_key_source_columns')[code][direction] %}
