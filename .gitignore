@@ -29,6 +29,9 @@ dbt/dbt_packages/
 # 実行時に data/raw/ の Parquet から組む一時ファイル。正は Parquet 側
 data/raw.duckdb
 
+# 調査の観測はスクリプトの隣に書き出すローカル作業ファイル（commit するのは原典・証跡・配布物だけ）
+ingestion/**/observations/
+
 # Python / dbt
 .venv/
 __pycache__/

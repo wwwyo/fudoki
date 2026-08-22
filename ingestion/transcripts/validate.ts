@@ -3,7 +3,7 @@ import { loadJurisdictions } from '../shared/jurisdictions'
 
 // 静的 import にすると JSON が壊れているときにパースエラーで異常終了し、
 // どこが壊れているかを出せない。読み込みも自分で握る。
-const path = new URL('../../data/transcripts/gates.json', import.meta.url).pathname
+const path = new URL('./gates.json', import.meta.url).pathname
 let raw: unknown
 try {
   raw = JSON.parse(await Bun.file(path).text())
@@ -34,7 +34,7 @@ const nameOf = (code: string) => registry.jurisdictions[code]?.name ?? '(registr
 // スキーマでは表現できない整合性をここで見る
 const errors: string[] = []
 for (const code of Object.keys(m.jurisdictions))
-  if (!(code in registry.jurisdictions)) errors.push(`${code}: gates にあるが data/shared/jurisdictions.json に無い`)
+  if (!(code in registry.jurisdictions)) errors.push(`${code}: gates にあるが ingestion/shared/jurisdictions.json に無い`)
 for (const code of Object.keys(registry.jurisdictions))
   if (!(code in m.jurisdictions)) errors.push(`${code} ${nameOf(code)}: registry にあるが gates に無い`)
 

@@ -10,7 +10,7 @@ import { Gates } from '../transcripts/gates'
 export const UA = 'fudoki/0.1 (+https://github.com/wwwyo/fudoki)'
 
 /** 書き戻すスクリプトが同じパスを参照できるよう公開する */
-export const GATES_PATH = new URL('../../data/transcripts/gates.json', import.meta.url).pathname
+export const GATES_PATH = new URL('../transcripts/gates.json', import.meta.url).pathname
 
 /** ③会議録のゲート判定。**①予算には掛からない**（根拠が著作権法40条1項と各議会の規約） */
 export async function loadGates() {

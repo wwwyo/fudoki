@@ -1,7 +1,7 @@
 /**
  * ELT の全体像を見るダッシュボード。
  *
- * 集計はしない。数字はすべて `data/budget/reports/*.json`（`report/budget/build.ts` の出力）を
+ * 集計はしない。数字はすべて `pipeline.json`（`report/budget/build.ts` の出力）を
  * そのまま出す。画面側でも集計すると、同じ数字が2通りに計算されて、いずれ食い違う。
  */
 import { useEffect, useMemo, useState } from 'react'
@@ -89,7 +89,7 @@ export default function App() {
               staging までは原典に忠実な写しで、出力（正本）は原典と突き合わせて検証できる。
               core で初めて解釈が入り、COFOG の割り当てのように三鷹市が言っていないことを付け加える。
               両者を同じデータに混ぜると、市が公表した事実と fudoki の判断を利用者が区別できなくなる。
-              だから配布物も <code>data/budget/packages/132047/</code>（正本）と <code>data/budget/packages/derived/</code>（派生）に分けてある。
+              だから配布物も <code>data/budget/datapackages/132047/</code>（正本）と <code>data/budget/datapackages/derived/</code>（派生）に分けてある。
               境界はディレクトリ名では守れないので、原典との多重集合一致を検査で縛っている。
             </AlertDescription>
           </Alert>
@@ -157,8 +157,7 @@ export default function App() {
         </Tabs>
 
         <footer className="border-t pt-6 text-xs leading-relaxed text-muted-foreground">
-          正本 <code>data/budget/packages/{data.code}/</code> ／ 派生 <code>data/budget/packages/derived/</code> ／ 原典 <code>data/budget/raw/</code> ／
-          報告 <code>data/budget/reports/{data.code}.json</code>
+          正本 <code>data/budget/datapackages/{data.code}/</code> ／ 派生 <code>data/budget/datapackages/derived/</code> ／ 原典 <code>data/budget/raw/</code>
           <br />
           原典: <a className="underline" href={m.landingPage} target="_blank" rel="noreferrer">{m.attribution}</a>
           {' '}／ {m.license.id} ／ 生成 {m.generatedAt.replace('T', ' ').slice(0, 19)}

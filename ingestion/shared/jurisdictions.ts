@@ -28,7 +28,7 @@ export const Registry = z.object({
 export type Jurisdiction = z.infer<typeof Jurisdiction>
 export type Registry = z.infer<typeof Registry>
 
-export const REGISTRY_PATH = new URL('../../data/shared/jurisdictions.json', import.meta.url).pathname
+export const REGISTRY_PATH = new URL('./jurisdictions.json', import.meta.url).pathname
 
 export async function loadJurisdictions(): Promise<Registry> {
   return Registry.parse(JSON.parse(await Bun.file(REGISTRY_PATH).text()))

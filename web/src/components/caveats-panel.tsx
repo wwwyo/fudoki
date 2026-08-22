@@ -46,41 +46,6 @@ export function CaveatsPanel({ report }: { report: ReportData }) {
         </div>
       </section>
 
-      {report.yearSurvey && (
-        <section className="flex flex-col gap-2">
-          <h3 className="font-medium">他年度との互換性（調査のみ。収録はしない）</h3>
-          <p className="max-w-[72ch] text-sm text-muted-foreground">{report.yearSurvey.caveat}</p>
-          <div className="overflow-x-auto rounded-lg border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>年度</TableHead><TableHead>direction</TableHead><TableHead className="text-right">行数</TableHead>
-                  <TableHead className="text-right">会計</TableHead><TableHead>収録範囲</TableHead>
-                  <TableHead>互換</TableHead><TableHead>判定根拠</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {report.yearSurvey.observations.map((o, i) => (
-                  <TableRow key={i}>
-                    <TableCell className="whitespace-nowrap">{o.label}</TableCell>
-                    <TableCell>{o.direction}</TableCell>
-                    <TableCell className="text-right tabular-nums">{o.rows ?? '—'}</TableCell>
-                    <TableCell className="text-right tabular-nums">{o.funds?.length ?? '—'}</TableCell>
-                    <TableCell className="text-xs">{o.coverageNote ?? '—'}</TableCell>
-                    <TableCell>
-                      <Badge variant={o.compatible == null ? 'outline' : o.compatible ? 'secondary' : 'destructive'}>
-                        {o.compatible == null ? '未判定' : o.compatible ? '互換' : '非互換'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-xs text-muted-foreground">{o.basis}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </section>
-      )}
-
       <section className="flex flex-col gap-2">
         <h3 className="font-medium">独自に定義した ColumnType</h3>
         <div className="overflow-x-auto rounded-lg border">

@@ -30,7 +30,7 @@ from ingestion.budget.sources import Catalog, Source, resolve
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 # 層ごとに名前空間を切る。②調達は OCDS、③会議録は Popolo と、
-# 標準も descriptor も別なので、同じ packages/ には収まらない。
+# 標準も descriptor も別なので、同じ datapackages/ には収まらない。
 LAYER = "budget"
 RAW = ROOT / "data" / LAYER / "raw"
 

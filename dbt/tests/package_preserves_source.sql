@@ -20,7 +20,7 @@ with from_package as (
         [{% for l in lv %}coalesce({{ l }}_code, '') || coalesce({{ l }}_label, ''){% if not loop.last %}, {% endif %}{% endfor %},
          cast(source_amount as varchar)] as cells,
         count(*) as n
-    from read_csv('../data/budget/packages/{{ code }}/{{ direction }}.csv',
+    from read_csv('../data/budget/datapackages/{{ code }}/{{ direction }}.csv',
                   header = true, all_varchar = false)
     group by 1, 2, 3, 4, 5
     {% if not loop.last %}union all{% endif %}

@@ -1,6 +1,6 @@
 """dbt の出力を Fiscal Data Package として配れる形にする。
 
-（配布物そのものは data/budget/packages/ にある。ここはそれを組み立てる側）
+（配布物そのものは data/budget/datapackages/ にある。ここはそれを組み立てる側）
 
 **データは dbt が既に書いている**（`materialized: external`）。
 ここが足すのは datapackage.json だけ、つまり**列の意味づけと出所**である。
@@ -20,7 +20,7 @@ import pathlib
 from ingestion.budget.sources import load_sources
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-PACKAGES = ROOT / "data" / "budget" / "packages"
+PACKAGES = ROOT / "data" / "budget" / "datapackages"
 RAW = ROOT / "data" / "budget" / "raw"
 TYPES = json.loads((pathlib.Path(__file__).parent / "field_types.json").read_text())
 # FDP の ColumnType 一覧。**仕様が「正準」と宣言する URL は 404** なので、

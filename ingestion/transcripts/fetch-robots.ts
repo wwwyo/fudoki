@@ -1,16 +1,16 @@
 /**
  * manifest に載っている取得先ホストの robots.txt を実際に取得し、
- * **原文そのまま**を証跡として保存する。
+ * **原文そのまま**をローカルへ書き出す（commit しない。gates.json には
+ * 判定と SHA-256 だけを持たせ、原文は必要になったとき取り直す）。
  *
  * 要約を持つと RFC 9309 準拠の再判定ができなくなるため、raw は加工しない。
- * 説明用の要約が要るなら別フィールドに置く。
  *
  *   bun run fetch:robots            # 取得して差分を表示
- *   bun run fetch:robots -- --write    # data/transcripts/observations/robots.json へ保存
+ *   bun run fetch:robots -- --write    # ingestion/transcripts/observations/robots.json へ保存（gitignore）
  */
 import { UA, loadGates } from '../lib/source'
 
-const OUT = new URL('../../data/transcripts/observations/robots.json', import.meta.url).pathname
+const OUT = new URL('./observations/robots.json', import.meta.url).pathname
 const write = process.argv.includes('--write')
 
 const m = await loadGates()

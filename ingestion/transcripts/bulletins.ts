@@ -35,7 +35,7 @@ export const Bulletins = z.object({
 export type OpenDataset = z.infer<typeof OpenDataset>
 export type Bulletins = z.infer<typeof Bulletins>
 
-export const BULLETINS_PATH = new URL('../../data/transcripts/bulletins.json', import.meta.url).pathname
+export const BULLETINS_PATH = new URL('./bulletins.json', import.meta.url).pathname
 
 export async function loadBulletins(): Promise<Bulletins> {
   return Bulletins.parse(JSON.parse(await Bun.file(BULLETINS_PATH).text()))

@@ -96,9 +96,9 @@ export const Robots = z.object({
   verdict: RobotsVerdict,
   aiCrawler: AiCrawler,
   /**
-   * 原文証跡（`data/transcripts/observations/robots.json`）への参照。
-   * 原文をここに要約して持つと RFC 9309 準拠の再判定ができなくなるため、
-   * manifest 側は判定と参照だけを持ち、原文は observations が single source of truth。
+   * 判定の根拠にした robots.txt の観測（取得 URL・status・SHA-256・取得時刻）。
+   * 原文はリポジトリに持たない — 再判定するときは `bun run fetch:robots` で取り直し、
+   * ここの SHA-256 と突き合わせれば「判定時と同じ原文か」を確かめられる。
    * null は robots.txt を読めなかったことを表す。
    */
   observation: z

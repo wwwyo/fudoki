@@ -1,4 +1,4 @@
-{{ config(materialized = 'external', location = '../data/budget/packages/132047/revenue.csv', format = 'csv') }}
+{{ config(materialized = 'external', location = '../data/budget/datapackages/132047/revenue.csv', format = 'csv') }}
 -- 正本（歳入）。**団体ごと・全年度で1リソース。**
 --
 -- (団体, 年度) ごとに分けると全量で 558 パッケージになり、

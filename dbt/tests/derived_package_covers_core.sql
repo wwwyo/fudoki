@@ -11,7 +11,7 @@ with in_core as (
 
 in_package as (
     select budget_line_id
-    from read_csv('../data/budget/packages/derived/cofog.csv', header = true, all_varchar = true)
+    from read_csv('../data/budget/datapackages/derived/cofog.csv', header = true, all_varchar = true)
 )
 
 select 'core にあって配布物に無い' as problem, count(*) as n

@@ -1,6 +1,6 @@
 # sources — 会議録・オープンデータ源の manifest と driver
 
-## transcript-gates.json
+## gates.json
 
 東京都62区市町村の会議録システム・オープンデータ源の調査結果。**団体コード（全国地方公共団体コード）を主キー**にする。
 
@@ -31,9 +31,9 @@ jurisdictions.<団体コード>
 
 `redistribute` は現在 **`allow` が0団体**。著作権法40条1項を主要な候補根拠としているが、発言種別・会議の公開性・非発言部分・配布形態の確認が済んでいない。
 
-**robots.txt の原文は manifest に持たない。**`data/observations/robots.json` が single source of truth で、manifest 側は `robots.observation` として取得 URL・HTTP status・SHA-256・取得時刻だけを参照する。要約を manifest に持つと RFC 9309 準拠の再判定ができなくなるため。原文は `bun run fetch:robots -- --write` で取り直せる。
+**robots.txt の原文はリポジトリに持たない。** manifest 側は `robots.observation` として取得 URL・HTTP status・SHA-256・取得時刻だけを持つ。要約を manifest に持つと RFC 9309 準拠の再判定ができなくなるため、再判定するときは `bun run fetch:robots -- --write` で原文を取り直し（ローカル書き出し、commit しない）、SHA-256 で判定時と同じ原文かを確かめる。
 
-SHA-256 が一致することで「ベンダーごとに robots が一様」は主張ではなく事実になっている — dbsr.jp の22ホストが同一の75バイト、VOICES の4ホストが同一の1621バイト。
+SHA-256 の一致で「ベンダーごとに robots が一様」を確かめた実測（2026-08-09）— dbsr.jp の22ホストが同一の75バイト、VOICES の4ホストが同一の1621バイト。
 
 ### 調査の出所
 

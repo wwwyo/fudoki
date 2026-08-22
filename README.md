@@ -14,10 +14,10 @@ fudoki は日本の地方自治体の**支出を事業単位まで**構造化し
 東京都三鷹市の令和6年度当初予算（歳出 5,613行、歳入 821行）を [Fiscal Data Package](https://fiscal.datapackage.org/) 1.0.0 として配布している。
 
 - 原典: [`data/budget/raw/`](./data/budget/raw/)（Parquet。取得の単位ごとに partition）
-- 正本: [`data/budget/packages/132047/`](./data/budget/packages/132047/)（判断を含まない）
-- 派生: [`data/budget/packages/derived/`](./data/budget/packages/derived/)（COFOG の割当と、その規則35行）
-- 取得の証跡: [`data/provenance/`](./data/provenance/)
-- パイプライン報告: [`data/budget/reports/`](./data/budget/reports/)
+- 正本: [`data/budget/datapackages/132047/`](./data/budget/datapackages/132047/)（判断を含まない）
+- 派生: [`data/budget/datapackages/derived/`](./data/budget/datapackages/derived/)（COFOG の割当と、その規則35行）
+- 取得の証跡: 原典の隣の `provenance.json`（URL・status・SHA-256・取得時刻）
+- パイプライン報告: `bun run dev` で生成してダッシュボードで見る
 
 たとえば「いじめ問題対策協議会関係費」は 311,000円で、教育費 > 教育総務費 > 教育指導費 の下にある。
 これを機械で引けるようにするのが目的である。
@@ -74,7 +74,7 @@ bun run dev            # ダッシュボードを開く（http://localhost:5173�
 ## もっと読む
 
 - [AGENTS.md](./AGENTS.md): 設計方針、実測にもとづく判断、パーサ設計の原則
-- [data/packages/README.md](./data/packages/README.md): 正本と派生の読み方
+- [data/budget/datapackages/README.md](./data/budget/datapackages/README.md): 正本と派生の読み方
 - [web/README.md](./web/README.md): ダッシュボードの構成
 - [dbt/models/](./dbt/models/): staging（判断なし）と core（判断あり）。層の境界はテストで縛っている
 - [ingestion/budget/sources.toml](./ingestion/budget/sources.toml): 取得元の定義。2団体目はここに足す

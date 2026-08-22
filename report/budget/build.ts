@@ -175,9 +175,6 @@ function build(code: string): ReportData {
     transform: buildTransform(),
     checks,
     ...STATIC,
-    // 年度調査は観測ファイルを直接読む。**static に写すと、再調査しても画面が変わらない。**
-    // 実際 static の generatedBy は削除済みのスクリプト名を指したままになっていた。
-    yearSurvey: readJson<ReportData['yearSurvey']>(join(ROOT, 'data/budget/observations/mitaka-budget-years.json')),
   }
 }
 
@@ -202,9 +199,9 @@ function detailProjection(direction: Direction, canonical: string, phaseId: stri
            d.cofog_consolidation, d.cofog_decided_at_level, d.cofog_rule_id,
            coalesce(v.label, '') as cofog_division_label, r.basis as cofog_basis
     from read_csv('${canonical}', header = true, all_varchar = true) c
-    left join read_csv('${join(ROOT, 'data/budget/packages/derived/cofog.csv')}', header = true, all_varchar = true) d
+    left join read_csv('${join(ROOT, 'data/budget/datapackages/derived/cofog.csv')}', header = true, all_varchar = true) d
       using (budget_line_id)
-    left join read_csv('${join(ROOT, 'data/budget/packages/derived/cofog_rules.csv')}', header = true, all_varchar = true) r
+    left join read_csv('${join(ROOT, 'data/budget/datapackages/derived/cofog_rules.csv')}', header = true, all_varchar = true) r
       on r.rule_id = d.cofog_rule_id
     left join (values ${DIVISION_VALUES}) as v(code, label) on v.code = d.cofog_division
     order by c.source_row`)
@@ -232,7 +229,6 @@ if (CODES.length !== 1) {
 const code = CODES[0]!
 
 const report = build(code)
-writeFileSync(join(ROOT, `data/budget/reports/${code}.json`), `${JSON.stringify(report, null, 2)}\n`)
 // **報告と明細を分けて書く。** 明細は報告の 50 倍あり（2.4MB 対 0.05MB）、
 // 既定のタブは明細を使わない。1つにまとめると、報告だけ見る利用者にも全部を運ぶことになる。
 writeFileSync(join(ROOT, 'web/public/pipeline.json'), `${JSON.stringify({ code, report })}\n`)
@@ -240,7 +236,7 @@ writeFileSync(join(ROOT, 'web/public/pipeline.json'), `${JSON.stringify({ code, 
 for (const direction of ['expenditure', 'revenue'] as const) {
   const table = detailProjection(
     direction,
-    join(ROOT, `data/budget/packages/${code}/${direction}.csv`),
+    join(ROOT, `data/budget/datapackages/${code}/${direction}.csv`),
     report.meta.phase.id,
   )
   writeFileSync(join(ROOT, `web/public/detail-${direction}.json`), `${JSON.stringify(table)}\n`)

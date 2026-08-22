@@ -82,7 +82,7 @@ mySociety が TheyWorkForYou（UK専用サイト）と SayIt（汎用ツール�
 
 **正本はリポジトリ、API やダッシュボードはそこから生成する派生物**、という向きを崩さない。API を出すこと自体は歓迎する（Open States は bulk download と API を併存させ、ProZorro は公開 API と分析ダッシュボードを分離している）。**やらないのは配布を API 単独にすること** — 自前で CKAN 等を運用する形にすると、そのサーバが止まった時点で chiholog と同じ死に方をする。repo に置けば版が git 履歴に残り、「いつ時点の正本か」も追える。
 
-**原典・正本・証跡・検証結果をすべてリポジトリに置く。** 原典は Parquet で `data/raw/` へ、取得の単位（団体コード・年度・direction）で partition する。全量（62団体 × 9年度）で 79 MB と実測しており、git repo として普通の範囲に収まる。
+**原典・証跡・配布物をリポジトリに置く。** 原典は Parquet で `data/raw/` へ、取得の単位（団体コード・年度・direction）で partition する。全量（62団体 × 9年度）で 79 MB と実測しており、git repo として普通の範囲に収まる。調査の観測とパイプライン報告は commit しない（再実行で得られるローカル作業ファイル。主張には調査日を添える）。
 
 ⚠️ **③会議録の原典は置けない。** `gate.redistribute` は allow 0 団体である。**raw を commit できるのは再配布可と判定済みの取得元だけ**で、これはコードで縛る（`gate.redistribute !== 'allow'` なら書き出さない）。①予算は CC BY なので置ける。
 
@@ -119,17 +119,17 @@ mySociety が TheyWorkForYou（UK専用サイト）と SayIt（汎用ツール�
 | **② 公告** | [官公需情報ポータル 検索API](https://www.kkj.go.jp/api/) | **待ちなし**（robots 制限なし） | `CityCode` が団体コード、`ProjectDescription` に公告全文。**tender 段階まで**（下記） |
 | **③ 会議録** | 会議録システム（ベンダー別 driver） | **robots 判断と照会に依存** | `gate.fetch` は allow 17 / review 16 / deny 29、`gate.redistribute` は **allow 0** |
 
-⚠️ **`ingestion/transcript-gates.json` の gate は③会議録にしか掛からない。**
+⚠️ **`ingestion/transcripts/gates.json` の gate は③会議録にしか掛からない。**
 根拠が著作権法40条1項と各議会の利用規約なので、①予算には適用されない。
 実際、三鷹市は会議録が `fetch: deny / redistribute: review` だが、予算は CC BY で配布している。
-①の再配布可否はカタログのライセンスで決まり、`ingestion/sources.toml` の `redistribute` がそれを持つ。
+①の再配布可否はカタログのライセンスで決まり、`ingestion/budget/sources.toml` の `redistribute` がそれを持つ。
 **この2つを繋ぐと三鷹市の予算が止まる。**
 
 **①だけで単体の存在価値は成立する**（「なぜ作るか」）。②と③は将来展望の3つ目、データを厚くする方向にあたる。順序の理由は権利の障害の軽さで、③だけが robots 判断と許諾照会に依存し、再配布が0団体である。
 
 #### ① CKAN に事業単位のデータは存在する。ただし探し方が要る（2026-08-14 実測）
 
-`bun run check:budget` で CKAN を全ページ検索し、母集団62団体に絞ったうえで候補 CSV 370件の列構成を測った結果、**目以下に到達したものが実在した**。観測は `data/observations/budget-granularity.json` が SSOT（全候補と失敗理由を保持し、団体ごとの最良は派生）。歳出の粒度を測るのが目的なので、**歳入ファイルは団体の代表にしない**。
+`bun run check:budget` で CKAN を全ページ検索し、母集団62団体に絞ったうえで候補 CSV 370件の列構成を測った結果、**目以下に到達したものが実在した**（2026-08-14 実測。観測は commit しない — 再確認するときは同スクリプトを回す。全候補と失敗理由を持ち、団体ごとの最良は派生）。歳出の粒度を測るのが目的なので、**歳入ファイルは団体の代表にしない**。
 
 | 団体 | データセット | 列 | 規模 |
 |---|---|---|---|
@@ -187,24 +187,26 @@ core の出力（派生）は自治体が言っていないことを含むので
 
 ## data/ の中身
 
+**data/ に置くのは、外の世界のスナップショットと配布物だけ**（raw・provenance・packages）。
+fudoki が決めた入力（取得先・ゲート・団体マスタ）はコードの隣、つまり `ingestion/` に置く。
+調査の観測はスクリプトの隣（`ingestion/**/observations/`、gitignore）へ書き出し、
+パイプライン報告は `web/public/` へ直接書く（どちらも再実行で得られるローカル生成物）。
+
 | | 何 | 書く | commit |
 |---|---|---|---|
-| `raw/` | **原典**。Parquet。取得の単位ごとに partition | `ingestion/fetch.py` | ○ |
+| `raw/` | **原典**。Parquet。取得の単位ごとに partition | `ingestion/budget/fetch.py` | ○ |
+| raw の隣の `provenance.json` | **取得の証跡**。URL・status・SHA-256・取得時刻・ヘッダ・行数 | `ingestion/budget/fetch.py` | ○ |
 | `packages/` | **配布物**。正本（団体ごと）と派生（団体をまたいで1つ） | dbt の package モデル + `fdp/build.py` | ○ |
-| `provenance/` | **取得の証跡**。URL・status・SHA-256・取得時刻・ヘッダ・行数 | `ingestion/fetch.py` | ○ |
-| `reports/` | **パイプライン報告**。画面を開かなくても読める | `report/budget/build.ts` | ○ |
-| `observations/` | **調査の観測**。robots 原文、粒度調査、年度調査 | `scripts/`、`survey_years.py` | ○ |
 | `fudoki.duckdb` | 実行時に組む一時ファイル | dbt | gitignore |
 
-**層に依存しないものは `data/shared/` に置く。**
-団体の同一性（名称・ocdId）は①②③すべてが同じキーで束ねるので、どれか1層のファイルに同居させない。
+**団体の同一性（名称・ocdId）は `ingestion/shared/jurisdictions.json`。**
+①②③すべてが同じキーで束ねるので、どれか1層のファイルに同居させない。
 ⚠️ 以前は③会議録のゲート判定ファイルに同居しており、**予算の粒度調査が母集団を得るためだけに③のファイルを読んでいた**。
 設計上は分離していたのに、③が落ちたら①も動かない状態だった。
 
-⚠️ **`observations/` はこの文書の主張の出所である。**
-「事業単位に届いたのは2団体」「取得してよい17団体」「9年度中17リソースが互換」は
-すべてここの観測から出ている。要約ではなく原文・URL・status・SHA-256・取得時刻を残し、
-主張を裏取りできる状態にしてある。
+⚠️ **この文書の実測の主張（「事業単位に届いたのは2団体」「取得してよい17団体」「9年度中17リソースが互換」）は
+調査スクリプトの観測から出ている。** 観測は commit しないので、主張には実測日を添え、
+再確認するときは該当スクリプトを回して観測を取り直す。
 
 ## パーサ設計の原則
 
@@ -231,7 +233,7 @@ core の出力（派生）は自治体が言っていないことを含むので
 条件に合わないものを除外する hard filter は「1件を救うために正解を大量に落とす」典型的な失敗をする。話者の名寄せでも、照合できない話者を**捨てずに confidence を付けて残す**。捨てた瞬間、下流にはその発言が存在しなかったことしか伝わらない。
 
 **7. 一次レスポンスは全部保存する。**
-後から欲しくなった項目を取り直すより、最初に丸ごと持つ方が安い。robots.txt で既に採っている型（原文 + 取得URL + HTTP status + SHA-256 + 取得時刻）を Extract 全体に適用する。
+後から欲しくなった項目を取り直すより、最初に丸ごと持つ方が安い。raw + provenance で既に採っている型（原文 + 取得URL + HTTP status + SHA-256 + 取得時刻）を Extract 全体に適用する。
 
 ### 測れる状態を先に作る
 
@@ -294,8 +296,8 @@ bun run dev         # 報告を作り直してダッシュボードを上げる
 | | 単位 | 中身 |
 |---|---|---|
 | `data/raw/` | (団体, 年度, direction) | 原典。Parquet。判断ゼロ |
-| `data/packages/<団体>/` | 団体ごと・**全年度** | 正本。その団体の科目体系のまま |
-| `data/packages/derived/` | **団体をまたいで1つ** | 派生。COFOG の割当と規則表 |
+| `data/budget/datapackages/<団体>/` | 団体ごと・**全年度** | 正本。その団体の科目体系のまま |
+| `data/budget/datapackages/derived/` | **団体をまたいで1つ** | 派生。COFOG の割当と規則表 |
 
 団体をまたいで正本を1つにしない理由は、階層の構成が団体ごとに違い（三鷹市は事項、狛江市は大事業・中事業・小事業）、
 揃えることが「同じ概念だ」という**判断**になるため。揃える判断も COFOG も派生の側にあるので、**横断は派生でだけ成立する**。
@@ -355,16 +357,16 @@ bun run dev         # 報告を作り直してダッシュボードを上げる
 以前は `scripts/` に集めていたが、中身は補助スクリプトではなく
 生成物の意味を決める domain code（ゲートのスキーマ、粒度の分類規則、taxonomy の生成）だった。
 
-| script | 生む commit 済みファイル |
-|---|---|
-| `check:budget` | `data/observations/budget-granularity.json` |
-| `fetch:robots` | `data/observations/robots.json` |
-| `check:bulletins` | `data/transcripts/bulletins.json` の `schemaCheck` 節 |
-| `fetch:fdp-taxonomy` | `fdp/budget-taxonomy.json` |
-| `survey:budget-years` | `data/observations/mitaka-budget-years.json` |
-| `validate` | （検査。`data/transcripts/gates.json` を宣言と、`data/shared/jurisdictions.json` とコード集合で突き合わせる） |
+| script | 生むファイル | commit |
+|---|---|---|
+| `check:budget` | `ingestion/budget/observations/budget-granularity.json` | しない（ローカル観測） |
+| `fetch:robots` | `ingestion/transcripts/observations/robots.json` | しない（ローカル観測） |
+| `check:bulletins` | `ingestion/transcripts/bulletins.json` の `schemaCheck` 節 | ○（取得先マニフェストへの書き戻し） |
+| `fetch:fdp-taxonomy` | `fdp/budget-taxonomy.json` | ○ |
+| `survey:budget-years` | `ingestion/budget/observations/mitaka-budget-years.json` | しない（ローカル観測） |
+| `validate` | （検査。`ingestion/transcripts/gates.json` を宣言と、`ingestion/shared/jurisdictions.json` とコード集合で突き合わせる） | — |
 
-ネットワークを叩くので CI では回さない。いずれも観測を `data/observations/` に残し、要約ではなく原文・URL・status・SHA-256・取得時刻を SSOT にする。
+ネットワークを叩くので CI では回さない。観測はローカルに書き出し、原文・URL・status・SHA-256・取得時刻を丸ごと持つ（要約しない）。
 
 | script | 何を測るか |
 |---|---|
