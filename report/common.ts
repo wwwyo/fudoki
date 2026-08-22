@@ -1,0 +1,98 @@
+/**
+ * 層に依存しない報告の型。①予算・②調達・③会議録で共通。
+ *
+ * **画面が読む契約はここが正本**で、生成側（各層の build.ts）がこの形で出す。
+ *
+ * 生成側と画面が同じ型を見るので、食い違いはコンパイラが捕まえる。
+ */
+
+/** 段。**dbt のモデルの置き場がそのまま段になる**（report/build.py の STAGES） */
+export type Stage = {
+  id: 'ingestion' | 'staging' | 'core' | 'package'
+  label: string
+  responsibility: string
+  excludes: string
+  /** fudoki の判断が入る段か。境界はここにある */
+  introducesJudgment: boolean
+}
+
+/** ノード = dbt のモデル・ソース・seed。手で並べていない */
+export type Node = {
+  id: string
+  label: string
+  kind: 'model' | 'source' | 'seed'
+  stage: Stage['id']
+  rows: number | null
+  description: string
+  /** このノード自身が判断を持ち込むか（規則を適用する core のモデルと、判断を宣言した seed） */
+  introducesJudgment: boolean
+  /**
+   * このノードのデータが判断を含むか。**上流から伝播する。**
+   *
+   * 2つを分けないと、COFOG を含む派生の配布物が「判断なし」と表示され、
+   * 公表資料の書き写しが「判断あり」と表示される（実際にそうなっていた）。
+   * 画面が説明している不変条件そのものを、画面が誤って伝えることになる。
+   */
+  containsJudgment: boolean
+  /** 配布物として書き出されるファイル。package 段のノードだけ持つ */
+  artifact: string | null
+}
+
+export type Edge = { from: string; to: string; kind: string }
+
+export type Topology = {
+  stages: Stage[]
+  nodes: Node[]
+  edges: Edge[]
+  /** 系統の出所。手書きでないことを画面にも出す */
+  source: string
+}
+
+/** 検査。**紐づけ（binds）も dbt が知っている**（test の depends_on） */
+export type Check = {
+  name: string
+  description: string
+  binds: string[]
+  ok: boolean
+  severity: 'error' | 'warn'
+  status: string
+  failures: number | null
+  detail: string
+}
+
+/** 取得の証跡。原典1リソースにつき1件 */
+export type Provenance = {
+  jurisdiction_code: string
+  fiscal_year: number
+  direction: string
+  resource_name: string
+  fiscal_year_basis: string
+  request_url: string
+  status: number
+  bytes: number
+  sha256: string
+  fetched_at: string
+  encoding: string
+  header: string[]
+  rows: number
+  roundtrip_verified: boolean
+}
+
+
+/** どの層の報告でも共通の外枠 */
+export type ReportEnvelope = {
+  meta: {
+    jurisdictionCode: string
+    jurisdictionName: string
+    phase: { id: string; label: string }
+    license: { id: string; url: string }
+    attribution: string
+    landingPage: string
+    /** 実行時刻ではなく原典の取得時刻。回すたびに差分が出ないようにする */
+    generatedAt: string
+  }
+  summary: { total: number; passed: number; failed: number; warned: number }
+  topology: Topology
+  ingestion: Provenance[]
+  checks: Check[]
+}

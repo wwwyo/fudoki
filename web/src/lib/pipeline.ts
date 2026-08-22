@@ -5,7 +5,7 @@
  * 食い違いはコンパイラが捕まえる。型を2箇所で宣言すると、
  * 生成側のキーを変えた瞬間に画面が黙って壊れる（実際にその状態を作った）。
  */
-import type { ReportData, Topology, Node, Edge, Stage, Check } from '@report/schema'
+import type { ReportData, Topology, Node, Edge, Stage, Check } from '@report/budget/schema'
 
 export type { ReportData, Topology, Node, Edge, Stage, Check }
 
