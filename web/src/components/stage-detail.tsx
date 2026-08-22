@@ -10,7 +10,7 @@ export function StageDetail({ report }: { report: ReportData }) {
       <section className="flex flex-col gap-2">
         <h3 className="font-medium">ingestion — 取得の証跡</h3>
         <p className="max-w-[70ch] text-sm leading-relaxed text-muted-foreground">
-          原典は <code>data/raw/</code> に Parquet で置く。あわせて URL・status・SHA-256・取得時刻を残すので、
+          原典は <code>data/budget/raw/</code> に Parquet で置く。あわせて URL・status・SHA-256・取得時刻を<strong>取得物の隣に</strong>残すので、
           <span className="font-medium text-foreground">原典から成果物を再生成できること</span>が再現性の意味になる。
           <span className="font-medium text-foreground">「無加工」は主張ではなく検査</span>にしてある — 文字コードの復号が可逆か、
           Parquet からセルを繋いで原文に戻るか、の2つを通してから書き出す。
