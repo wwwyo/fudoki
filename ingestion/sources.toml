@@ -1,0 +1,36 @@
+# 取得元の定義。「どの自治体の、どの年度の、どのリソースを取るか」だけを置く。
+# 変換規則は持たない（それは dbt 側の役割）。
+#
+# TOML にしてあるのは Python（tomllib）と Bun の両方が依存なしで読めるため。
+# 定義を2言語で二重持ちすると、片方だけ直して気づかない状態を作る。
+
+[catalog.tokyo]
+# ⚠️ 東京都カタログ専用。団体の解決に `organization.name == "t" + 団体コード` という
+# このカタログの命名規則を使う。都外の団体を足すときは解決方式ごと分ける必要がある。
+endpoint = "https://catalog.data.metro.tokyo.lg.jp/api/3/action/package_search"
+org_prefix = "t"
+
+["132047:2024"]
+catalog = "tokyo"
+jurisdiction_code = "132047"
+jurisdiction_name = "三鷹市"
+fiscal_year = 2024
+# 原典に年度の列が無く、カタログのリソース名にしか現れない。照合に使う。
+fiscal_year_label = "令和６年度"
+phase_id = "approved"
+phase_label = "当初予算"
+dataset_title = "【予算・決算】予算情報"
+encoding = "shift_jis"
+# 再配布の可否。allow 以外は raw を書き出さない（③会議録は allow 0 団体）。
+redistribute = "allow"
+license_id = "CC-BY-4.0"
+attribution = "三鷹市「令和6年度予算データ」（東京都オープンデータカタログサイト）"
+landing_page = "https://www.city.mitaka.lg.jp/c_service/074/"
+
+[["132047:2024".resources]]
+direction = "expenditure"
+resource_name = "令和６年度予算データ（歳出）※下水道事業会計除く"
+
+[["132047:2024".resources]]
+direction = "revenue"
+resource_name = "令和６年度予算データ（歳入）※下水道事業会計除く"

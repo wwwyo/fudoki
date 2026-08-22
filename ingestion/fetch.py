@@ -1,0 +1,176 @@
+"""原典を取得して data/raw/ へ Parquet で落とす。
+
+解釈・整形・結合はしない。列はすべて VARCHAR のまま置く（型推論は判断なので staging の仕事）。
+
+**「無加工」を主張ではなく検査にする。** Parquet からセルを連結して原文を復元し、
+取得したバイト列と SHA-256 が一致することを確認してから書き出す。
+一致しなければ落とす（気づかないまま加工された原典を配らないため）。
+
+冪等。同じ SHA-256 の Parquet が既にあれば取得しない。
+"""
+
+from __future__ import annotations
+
+import csv
+import hashlib
+import io
+import json
+import pathlib
+import sys
+import tomllib
+import urllib.parse
+import urllib.request
+from dataclasses import dataclass
+from datetime import UTC, datetime
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+SOURCES = ROOT / "ingestion" / "sources.toml"
+RAW = ROOT / "data" / "raw"
+PROVENANCE = ROOT / "data" / "provenance"
+
+UA = "fudoki/0.1 (+https://github.com/wwwyo/fudoki)"
+MAX_BYTES = 20 * 1024 * 1024
+
+
+@dataclass
+class Fetched:
+    url: str
+    status: int
+    body: bytes
+    sha256: str
+    fetched_at: str
+
+
+def http_get(url: str) -> Fetched:
+    req = urllib.request.Request(url, headers={"User-Agent": UA})
+    with urllib.request.urlopen(req, timeout=40) as res:  # noqa: S310  (取得元は sources.toml の固定 https)
+        body = res.read(MAX_BYTES + 1)
+        if len(body) > MAX_BYTES:
+            raise RuntimeError(f"{MAX_BYTES} バイトを超えた。取得元の異常: {url}")
+        return Fetched(
+            url=url,
+            status=res.status,
+            body=body,
+            sha256=hashlib.sha256(body).hexdigest(),
+            fetched_at=datetime.now(UTC).isoformat(timespec="seconds"),
+        )
+
+
+def resolve_resource(cfg: dict, catalog: dict, resource_name: str) -> str:
+    """CKAN からリソース URL を引く。
+
+    リソース URL は自治体側の CMS が振る内部番号で資料の差し替えで動くが、
+    データセット名とリソース名は安定している。だから URL を直書きせず毎回解決する。
+    """
+    q = urllib.parse.quote(cfg["dataset_title"])
+    got = http_get(f"{catalog['endpoint']}?q={q}&rows=300")
+    results = json.loads(got.body).get("result", {}).get("results", [])
+    org = catalog["org_prefix"] + cfg["jurisdiction_code"]
+    pkg = next(
+        (p for p in results
+         if (p.get("organization") or {}).get("name") == org and p.get("title") == cfg["dataset_title"]),
+        None,
+    )
+    if pkg is None:
+        raise RuntimeError(f"データセット「{cfg['dataset_title']}」が {cfg['jurisdiction_name']}（{org}）に見つからない")
+    res = next((r for r in pkg.get("resources", []) if r.get("name") == resource_name), None)
+    if res is None:
+        names = [r.get("name") for r in pkg.get("resources", [])]
+        raise RuntimeError(f"リソース「{resource_name}」が無い。あるのは: {names}")
+    return res["url"]
+
+
+def parse_rows(text: str) -> tuple[list[str], list[list[str]]]:
+    """CSV を行と列に割る。**セルを trim しない**（空白の除去も加工なので staging の仕事）。"""
+    rows = list(csv.reader(io.StringIO(text, newline="")))
+    while rows and not any(c.strip() for c in rows[-1]):
+        rows.pop()
+    if not rows:
+        raise RuntimeError("行が無い")
+    return rows[0], rows[1:]
+
+
+def reconstruct(header: list[str], rows: list[list[str]], newline: str, trailing: str) -> str:
+    """復元。原典が引用符を使っていない前提で、使っていたらここで一致しなくなり検知できる。"""
+    return newline.join(",".join(r) for r in [header, *rows]) + trailing
+
+
+def ingest(key: str) -> None:
+    doc = tomllib.loads(SOURCES.read_text())
+    cfg = doc[key]
+    catalog = doc["catalog"][cfg["catalog"]]
+
+    if cfg["redistribute"] != "allow":
+        raise RuntimeError(
+            f"{key} は redistribute={cfg['redistribute']}。再配布可と判定した取得元しか raw を書き出さない"
+        )
+
+    for spec in cfg["resources"]:
+        direction = spec["direction"]
+        out_dir = RAW / f"jurisdiction={cfg['jurisdiction_code']}" / f"year={cfg['fiscal_year']}" / f"direction={direction}"
+        out = out_dir / "data.parquet"
+        prov_path = PROVENANCE / f"{cfg['jurisdiction_code']}-{cfg['fiscal_year']}-{direction}.json"
+
+        # 年度の唯一の出所はリソース名。照合できなければ収録しない。
+        if cfg["fiscal_year_label"] not in spec["resource_name"]:
+            raise RuntimeError(f"リソース名「{spec['resource_name']}」に年度表記「{cfg['fiscal_year_label']}」が無い")
+
+        url = resolve_resource(cfg, catalog, spec["resource_name"])
+        got = http_get(url)
+        if got.status != 200:
+            raise RuntimeError(f"HTTP {got.status}: {url}")
+
+        if prov_path.exists() and json.loads(prov_path.read_text()).get("sha256") == got.sha256 and out.exists():
+            print(f"skip  {direction}  同じ SHA-256 の Parquet が既にある")
+            continue
+
+        text = got.body.decode(cfg["encoding"]).lstrip("﻿")
+        newline = "\r\n" if "\r\n" in text else "\n"
+        header, rows = parse_rows(text)
+
+        # 無加工の検査。復元して原文と一致しなければ書き出さない。
+        stripped = text.lstrip("﻿")
+        trailing = stripped[len(stripped.rstrip("\r\n")):]
+        rebuilt = reconstruct(header, rows, newline, trailing)
+        if rebuilt != stripped:
+            raise RuntimeError(
+                f"{direction}: Parquet から原文を復元できない（引用符や改行を含む可能性）。"
+                f"原文 {len(stripped)} 文字 / 復元 {len(rebuilt)} 文字"
+            )
+
+        import duckdb  # noqa: PLC0415  (取得だけしたいときに import させない)
+
+        out_dir.mkdir(parents=True, exist_ok=True)
+        con = duckdb.connect()
+        con.execute("CREATE TABLE t (source_row BIGINT, cells VARCHAR[])")
+        con.executemany("INSERT INTO t VALUES (?, ?)", [(i + 2, r) for i, r in enumerate(rows)])
+        # 列名は原典のヘッダそのまま。全列 VARCHAR（型推論は判断なので staging へ）。
+        cols = ", ".join(f'cells[{i + 1}] AS "{h}"' for i, h in enumerate(header))
+        con.execute(f"COPY (SELECT source_row, {cols} FROM t ORDER BY source_row) TO '{out}' (FORMAT parquet, COMPRESSION zstd)")
+        con.close()
+
+        PROVENANCE.mkdir(parents=True, exist_ok=True)
+        prov_path.write_text(json.dumps({
+            "jurisdiction_code": cfg["jurisdiction_code"],
+            "fiscal_year": cfg["fiscal_year"],
+            "direction": direction,
+            "dataset_title": cfg["dataset_title"],
+            "resource_name": spec["resource_name"],
+            "fiscal_year_basis": f"CKAN のリソース名「{spec['resource_name']}」の「{cfg['fiscal_year_label']}」から解決",
+            "request_url": got.url,
+            "status": got.status,
+            "bytes": len(got.body),
+            "sha256": got.sha256,
+            "fetched_at": got.fetched_at,
+            "encoding": cfg["encoding"],
+            "header": header,
+            "rows": len(rows),
+            "roundtrip_verified": True,
+            "license_id": cfg["license_id"],
+            "attribution": cfg["attribution"],
+        }, ensure_ascii=False, indent=2) + "\n")
+        print(f"ok    {direction}  {len(rows)} 行  {len(got.body)} バイト  sha256={got.sha256[:16]}…  復元一致")
+
+
+if __name__ == "__main__":
+    ingest(sys.argv[1] if len(sys.argv) > 1 else "132047:2024")

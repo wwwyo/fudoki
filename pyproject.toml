@@ -1,0 +1,21 @@
+[project]
+name = "fudoki-ingestion"
+version = "0.1.0"
+description = "fudoki の取得層。取得元から原典を無加工のまま data/raw/ へ Parquet で落とす"
+# dbt-duckdb 1.11.0 は classifiers が 3.13 止まりで 3.14 を宣言していないため上限を切る
+requires-python = ">=3.13,<3.14"
+# exact ピン留め（supply chain リスクを避けるため範囲指定は使わない）
+# 更新は uv add --exclude-newer <7日前> で cooldown を明示する
+dependencies = [
+    "dbt-core==1.12.2",
+    "dbt-duckdb==1.11.0",
+    "duckdb==1.5.5",
+]
+
+[build-system]
+requires = ["uv_build>=0.12,<0.13"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "ingestion"
+module-root = ""
