@@ -18,8 +18,8 @@
     "generatedAt": "2026-08-22T03:33:40+00:00"
   },
   "summary": {
-    "total": 30,
-    "passed": 29,
+    "total": 28,
+    "passed": 27,
     "failed": 0,
     "warned": 1
   },
@@ -1246,16 +1246,16 @@
       },
       {
         "status": "unclassifiable",
-        "fund": "07介護保険事業特別会計",
-        "kan": "06予備費",
+        "fund": "06介護サービス事業特別会計",
+        "kan": "03予備費",
         "ruleId": "contingency",
         "sum": 3000000,
         "basis": "予備費。COFOG の対象だが、執行されるまで機能が決まらないため割り当ての根拠が無い"
       },
       {
         "status": "unclassifiable",
-        "fund": "06介護サービス事業特別会計",
-        "kan": "03予備費",
+        "fund": "07介護保険事業特別会計",
+        "kan": "06予備費",
         "ruleId": "contingency",
         "sum": 3000000,
         "basis": "予備費。COFOG の対象だが、執行されるまで機能が決まらないため割り当ての根拠が無い"
@@ -1468,31 +1468,6 @@
       "binds": [
         "model.fudoki.stg_132047__expenditure",
         "model.fudoki.stg_132047__revenue"
-      ],
-      "ok": true,
-      "severity": "error",
-      "status": "pass",
-      "failures": 0,
-      "detail": ""
-    },
-    {
-      "name": "identifiers_match_published",
-      "description": "",
-      "binds": [
-        "model.fudoki.stg_132047__expenditure",
-        "model.fudoki.stg_132047__revenue"
-      ],
-      "ok": true,
-      "severity": "error",
-      "status": "pass",
-      "failures": 0,
-      "detail": ""
-    },
-    {
-      "name": "migration_matches_typescript",
-      "description": "",
-      "binds": [
-        "model.fudoki.core_budget_cofog"
       ],
       "ok": true,
       "severity": "error",
@@ -1893,6 +1868,14 @@
     }
   ],
   "caveats": [
+    {
+      "topic": "TypeScript 版との同一性を示す検査は、TypeScript 版とともに削除した",
+      "body": "移行の正しさは、識別子（歳出 5,613 行・歳入 821 行すべて一致）と COFOG の割当（status / division / consolidation / 決まった単位 / 規則 ID がすべて一致）を 1行ずつ突き合わせて示した。証明そのものは git 履歴に残る（識別子は 944866c、COFOG は 83bd132）。**これ以降、識別子が変わっていないことを保証するのは検査ではなく成果物そのもの**である — 正本をリポジトリに commit しているので、導出を変えれば data/packages/132047/expenditure.csv の diff として必ず現れる。"
+    },
+    {
+      "topic": "配布形式は CSV のまま。全量では作り直しになりうる",
+      "body": "62団体 × 9年度への外挿は CSV 1.1 GB / gzip 156 MB / Parquet 141 MB。gzip は Data Package の仕様に compression プロパティが無く、Parquet は format が「csv, xls, json etc.」と開いているだけで明記が無い。**1団体しか無い段階で外挿値だけを根拠に標準から外れる判断はしない。** 実際に増えたときに決める。"
+    },
     {
       "topic": "事項を事業として扱う妥当性が未検証（Design Doc Caveats 1）",
       "body": "名称を持つことは、その区分が1つの事業に対応することの証明にならない。複数の活動をまとめた事項や管理的な費目が含まれうる。自治体横断の「事業」概念として確定するのは2団体目以降とする。現状は `activity:generic:program` に置いてあるが、これは候補としての割り当てである。"

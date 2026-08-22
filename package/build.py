@@ -21,6 +21,16 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 PACKAGES = ROOT / "data" / "packages"
 PROVENANCE = ROOT / "data" / "provenance"
 TYPES = json.loads((pathlib.Path(__file__).parent / "field_types.json").read_text())
+# FDP の ColumnType 一覧。**仕様が「正準」と宣言する URL は 404** なので、
+# 仕様の原文（Markdown）から起こして持っている（scripts/fetch-fdp-taxonomy.ts）。
+# 「止まったら自分で維持する」が保険ではなく既定の運用だという方針の実例。
+TAXONOMY = json.loads((pathlib.Path(__file__).parent / "budget-taxonomy.json").read_text())
+STANDARD_COLUMN_TYPES = {c["name"] for c in TAXONOMY["columnTypes"]}
+# FDP に無い概念のために自作したもの。**宣言から引く**（ハードコードすると
+# 宣言と食い違い、自作した覚えのない名前が通ってしまう）。
+# 自作は最小限に留める — 標準に載ること自体が相互運用性の主張なので、
+# 増やすほど主張が弱くなる。
+DECLARED_CUSTOM = {c["name"] for c in TYPES["columnTypes"][1]}
 
 
 def header_of(path: pathlib.Path) -> list[str]:
@@ -29,6 +39,7 @@ def header_of(path: pathlib.Path) -> list[str]:
 
 
 def schema_for(path: pathlib.Path, primary_key: list[str]) -> dict:
+    """列に意味づけを与える。**宣言の無い列は配らない。**"""
     fields = []
     for name in header_of(path):
         spec = TYPES["fields"].get(name)
@@ -38,6 +49,24 @@ def schema_for(path: pathlib.Path, primary_key: list[str]) -> dict:
                 f"package/field_types.json に定義を足すこと"
             )
         fields.append(spec)
+
+    # Table Schema への適合。型が無い列や主キーに無い列があれば配らない。
+    for f in fields:
+        if "type" not in f:
+            raise RuntimeError(f"{path.name} の列「{f['name']}」に type が無い（Table Schema 違反）")
+    missing = [k for k in primary_key if k not in {f["name"] for f in fields}]
+    if missing:
+        raise RuntimeError(f"{path.name} の primaryKey {missing} が列に無い（Table Schema 違反）")
+
+    # ColumnType への適合。標準の語彙にも自作の宣言にも無いものは、意味が誰にも伝わらない。
+    for f in fields:
+        ct = f.get("columnType")
+        if ct is None or ct in STANDARD_COLUMN_TYPES or ct in DECLARED_CUSTOM:
+            continue
+        raise RuntimeError(
+            f"{path.name} の列「{f['name']}」の columnType「{ct}」が "
+            f"Budget Standard Taxonomy にも自作の宣言にも無い"
+        )
     return {"fields": fields, "primaryKey": primary_key}
 
 
