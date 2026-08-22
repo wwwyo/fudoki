@@ -238,10 +238,6 @@ export function fetchTargets(m: Manifest): FetchTarget[] {
   })
 }
 
-/** 正規化データを公開してよい対象。取得可否とは別のゲート */
-export function redistributableJurisdictions(m: Manifest): [string, Jurisdiction][] {
-  return Object.entries(m.jurisdictions).filter(([, j]) => j.transcript.gate.redistribute === 'allow')
-}
 
 export type FetchTarget = {
   code: string

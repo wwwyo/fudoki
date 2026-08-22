@@ -185,6 +185,22 @@ core の出力（派生）は自治体が言っていないことを含むので
 
 **ingestion は冪等**にする（同じ入力なら同じ出力、既存があればスキップ）。**staging 以降は原典だけから何度でも再生成できる**こと。この2つが崩れると、表記ルールを直すたびに全自治体を再クロールすることになる。
 
+## data/ の中身
+
+| | 何 | 書く | commit |
+|---|---|---|---|
+| `raw/` | **原典**。Parquet。取得の単位ごとに partition | `ingestion/fetch.py` | ○ |
+| `packages/` | **配布物**。正本（団体ごと）と派生（団体をまたいで1つ） | dbt の package モデル + `package/build.py` | ○ |
+| `provenance/` | **取得の証跡**。URL・status・SHA-256・取得時刻・ヘッダ・行数 | `ingestion/fetch.py` | ○ |
+| `reports/` | **パイプライン報告**。画面を開かなくても読める | `web/scripts/build-report.ts` | ○ |
+| `observations/` | **調査の観測**。robots 原文、粒度調査、年度調査 | `scripts/`、`survey_years.py` | ○ |
+| `fudoki.duckdb` | 実行時に組む一時ファイル | dbt | gitignore |
+
+⚠️ **`observations/` はこの文書の主張の出所である。**
+「事業単位に届いたのは2団体」「取得してよい17団体」「9年度中17リソースが互換」は
+すべてここの観測から出ている。要約ではなく原文・URL・status・SHA-256・取得時刻を残し、
+主張を裏取りできる状態にしてある。
+
 ## パーサ設計の原則
 
 自治体の公開資料を横断して構造化した別 PJ の実測から得た原則。**driver を1本も書く前にここを決める** — どれも後から変えると配布済みの成果物が壊れる種類の決定で、公共財として配る以上その破壊は外部に波及する。
@@ -312,6 +328,20 @@ bun run dev         # 報告を作り直してダッシュボードを上げる
 未確定のまま残したことは、パイプライン報告の Caveats 節にある。
 
 ## スクリプト
+
+`scripts/` はパイプラインから1つも使われていない。それでも置いてあるのは、
+**commit した生成物には生成手段を残す**という基準による。
+生成物だけ残して作り方を消すと、そのファイルは誰も作り直せず検証もできない出所不明のデータになる。
+方針3（fork できる、自分で維持する）が直接効く場所である。
+
+| script | 生む commit 済みファイル |
+|---|---|
+| `check:budget` | `data/observations/budget-granularity.json` |
+| `fetch:robots` | `data/observations/robots.json` |
+| `check:bulletins` | `ingestion/transcript-gates.json` の `schemaCheck` 節 |
+| `fetch:fdp-taxonomy` | `package/budget-taxonomy.json` |
+| `survey:budget-years` | `data/observations/mitaka-budget-years.json` |
+| `validate` | （検査。`transcript-gates.json` を宣言と突き合わせる） |
 
 ネットワークを叩くので CI では回さない。いずれも観測を `data/observations/` に残し、要約ではなく原文・URL・status・SHA-256・取得時刻を SSOT にする。
 
