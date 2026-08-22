@@ -56,3 +56,17 @@ export type ReportData = ReportEnvelope & {
   portability: { element: string; kind: string; verifyNext: string }[]
   caveats: { topic: string; body: string }[]
 }
+
+/**
+ * ノード1つの中身の先頭数行。**グラフでノードを選んだときに画面が読む。**
+ * 報告本体に入れないのは、13ノード分を常に運ぶと報告が明細と同じ太り方をするため
+ * （`web/public/preview/<ノードid>.json` に分けて置き、選んだときだけ取りに行く）。
+ */
+export type NodePreview = {
+  id: string
+  columns: string[]
+  rows: string[][]
+  /** 何行で切ったか。全行は totalRows（グラフのノードと同じ数字）を見る */
+  limit: number
+  totalRows: number | null
+}

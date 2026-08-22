@@ -15,6 +15,7 @@ import type { Node, ReportData, Topology } from '@/lib/pipeline'
 import { STAGE_ORDER, checksByNode, yen } from '@/lib/pipeline'
 import { Info } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { NodePreviewPanel } from '@/components/node-preview'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 type Props = { topology: Topology; report: ReportData; onSelectNode?: (id: string | null) => void; selected: string | null }
@@ -231,6 +232,7 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
           {detail.description && (
             <p className="mt-1.5 max-w-[80ch] whitespace-pre-line text-muted-foreground">{detail.description}</p>
           )}
+          <NodePreviewPanel nodeId={detail.id} topology={topology} />
         </div>
       )}
     </div>

@@ -4,9 +4,9 @@
  * 数値は core への問い合わせで作る。**集計はここ1箇所だけ**で行う
  * （画面側でも集計すると、同じ数字が2通りに計算されていずれ食い違う）。
  */
-import { readFileSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import type { Provenance, ReportData } from './schema'
+import type { NodePreview, Provenance, ReportData } from './schema'
 import { ROOT, TARGET, buildChecks, buildTopology, q, readJson, type Manifest, type RunResults } from '../lineage'
 import { STATIC } from './static'
 import {
@@ -241,5 +241,33 @@ for (const direction of ['expenditure', 'revenue'] as const) {
   )
   writeFileSync(join(ROOT, `web/public/detail-${direction}.json`), `${JSON.stringify(table)}\n`)
 }
+/**
+ * ノードごとの中身の先頭。グラフでノードを選んだときに画面が出す。
+ * **原典（source）は raw の Parquet を直接読む** — 加工前の姿を見せるのが目的なので、
+ * staging 以降のテーブルで代用しない。
+ */
+function previewFrom(node: ReportData['topology']['nodes'][number]): string {
+  if (node.kind === 'source')
+    return `read_parquet('${join(ROOT, 'data/budget/raw')}/jurisdiction=${code}/**/direction=${node.label}/data.parquet')`
+  // package 段は外部 CSV。DuckDB のビューは dbt の作業ディレクトリ基準なので実ファイルを読む
+  if (node.artifact) return `read_csv('${join(ROOT, 'dbt', node.artifact)}', header = true, all_varchar = true)`
+  return `"${node.label}"`
+}
+
+const PREVIEW_ROWS = 20
+mkdirSync(join(ROOT, 'web/public/preview'), { recursive: true })
+for (const node of report.topology.nodes) {
+  const rows = q<Record<string, unknown>>(`select * from ${previewFrom(node)} limit ${PREVIEW_ROWS}`)
+  const columns = rows.length ? Object.keys(rows[0]!) : []
+  const preview: NodePreview = {
+    id: node.id,
+    columns,
+    rows: rows.map((r) => columns.map((c) => (r[c] == null ? '' : String(r[c])))),
+    limit: PREVIEW_ROWS,
+    totalRows: node.rows,
+  }
+  writeFileSync(join(ROOT, 'web/public/preview', `${node.id}.json`), `${JSON.stringify(preview)}\n`)
+}
+
 const s = report.summary
-console.log(`ok  検査 ${s.passed}/${s.total}（警告 ${s.warned}）  ノード ${report.topology.nodes.length}  辺 ${report.topology.edges.length}`)
+console.log(`ok  検査 ${s.passed}/${s.total}（警告 ${s.warned}）  ノード ${report.topology.nodes.length}  辺 ${report.topology.edges.length}  プレビュー ${report.topology.nodes.length} 件`)

@@ -5,10 +5,10 @@
  * 食い違いはコンパイラが捕まえる。型を2箇所で宣言すると、
  * 生成側のキーを変えた瞬間に画面が黙って壊れる（実際にその状態を作った）。
  */
-import type { ReportData, Topology, Node, Edge, Stage, Check } from '@report/budget/schema'
+import type { ReportData, Topology, Node, Edge, Stage, Check, NodePreview } from '@report/budget/schema'
 import type { Direction, DetailRow, DetailTable } from '@report/budget/detail'
 
-export type { ReportData, Topology, Node, Edge, Stage, Check }
+export type { ReportData, Topology, Node, Edge, Stage, Check, NodePreview }
 
 export type { Direction, DetailColumn, DetailRow, DetailTable, Level } from '@report/budget/detail'
 export { LEVELS, cell, levelCell } from '@report/budget/detail'
@@ -46,6 +46,13 @@ export async function loadDetail(): Promise<DetailData> {
     }),
   )
   return { expenditure, revenue } as DetailData
+}
+
+/** ノードの中身の先頭数行。**グラフでノードを選んだときだけ**取りに行く */
+export async function loadNodePreview(id: string): Promise<NodePreview> {
+  const res = await fetch(`${import.meta.env.BASE_URL}preview/${id}.json`, { cache: 'no-store' })
+  if (!res.ok) throw new Error(`preview/${id}.json を読めません（HTTP ${res.status}）。bun run report を回し直してください`)
+  return (await res.json()) as NodePreview
 }
 
 /**
