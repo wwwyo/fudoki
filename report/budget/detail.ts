@@ -19,6 +19,19 @@ export const LEVELS = {
   revenue: ['fund', 'kan', 'kou', 'moku', 'setsu', 'saisetsu', 'saisaisetsu'],
 } as const
 
+/** 階層の日本語名。**階層の定義と同じ場所に置く** — 離すと片方だけ直る */
+export const LEVEL_JA: Record<string, string> = {
+  fund: '会計', kan: '款', kou: '項', moku: '目',
+  jikou: '事項', setsu: '節', saisetsu: '細節', saisaisetsu: '細々節',
+}
+
+/** COFOG 1999 のディビジョン。**ここが唯一の定義**で、SQL に埋める値もここから作る */
+export const COFOG_DIVISIONS: Record<string, string> = {
+  '01': '一般公共サービス', '02': '防衛', '03': '公共の秩序及び安全', '04': '経済業務',
+  '05': '環境保護', '06': '住宅及び地域アメニティ', '07': '保健',
+  '08': '娯楽、文化及び宗教', '09': '教育', '10': '社会保護',
+}
+
 export type Direction = keyof typeof LEVELS
 export type Level<D extends Direction = Direction> = (typeof LEVELS)[D][number]
 

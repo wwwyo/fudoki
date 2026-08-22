@@ -9,14 +9,18 @@ import { join } from 'node:path'
 import type { Provenance, ReportData } from './schema'
 import { ROOT, TARGET, buildChecks, buildTopology, q, readJson, type Manifest, type RunResults } from '../lineage'
 import { STATIC } from './static'
-import { LEVELS, assertDetailColumns, type Direction, type DetailTable } from './detail'
+import {
+  COFOG_DIVISIONS, LEVELS, LEVEL_JA, assertDetailColumns,
+  type Direction, type DetailTable,
+} from './detail'
 
-const DIVISIONS: Record<string, string> = {
-  '01': '一般公共サービス', '02': '防衛', '03': '公共の秩序及び安全', '04': '経済業務', '05': '環境保護',
-  '06': '住宅及び地域アメニティ', '07': '保健', '08': '娯楽、文化及び宗教', '09': '教育', '10': '社会保護',
-}
 const withLabel = <T extends { division: string }>(rows: T[]) =>
-  rows.map((r) => ({ ...r, divisionLabel: DIVISIONS[r.division] ?? '' }))
+  rows.map((r) => ({ ...r, divisionLabel: COFOG_DIVISIONS[r.division] ?? '' }))
+
+/** SQL に埋めるディビジョン表。**宣言から作る** — 手で書くと片方だけ直る */
+const DIVISION_VALUES = Object.entries(COFOG_DIVISIONS)
+  .map(([code, label]) => `('${code}','${label}')`)
+  .join(',')
 
 /**
  * COFOG の判断。**fudoki が自治体の言っていないことを付け加えた唯一の場所**なので、
@@ -86,29 +90,54 @@ function buildTransform(): ReportData['transform'] {
  * 完全修飾のほうが大きければ、**同じコードが別の親の下で再利用されている**。
  * 識別子をコードのパスで作れない根拠がこれ。
  */
-function buildLevels(): ReportData['levels'] {
-  const specs: [string, [string, string][]][] = [
-    ['expenditure', [['fund', '会計'], ['kan', '款'], ['kou', '項'], ['moku', '目'],
-                     ['jikou', '事項'], ['setsu', '節'], ['saisaisetsu', '細々節']]],
-    ['revenue', [['fund', '会計'], ['kan', '款'], ['kou', '項'], ['moku', '目'],
-                 ['setsu', '節'], ['saisetsu', '細節'], ['saisaisetsu', '細々節']]],
-  ]
-  return specs.map(([direction, levels]) => ({
-    direction,
-    items: levels.map(([lv, label], i) => {
-      const path = levels.slice(0, i + 1).map(([p]) => `${p}_source`).join(' || ')
-      const r = q<{ codes: number; paths: number }>(
-        `select count(distinct ${lv}_code) codes, count(distinct ${path}) paths from stg_132047__${direction}`,
-        ['codes', 'paths'])[0]!
-      return {
-        sourceColumn: label, distinctCodes: r.codes, distinctPaths: r.paths,
-        codeReusedUnderDifferentParents: r.paths > r.codes,
-      }
-    }),
-  }))
+function buildLevels(code: string): ReportData['levels'] {
+  // 階層の定義は `./detail` の LEVELS が正本。ここで書き直すと、
+  // 階層が変わったとき明細画面と統計で数と順序が食い違う。
+  return (Object.keys(LEVELS) as Direction[]).map((direction) => {
+    const levels = LEVELS[direction]
+    // **direction ごとに1クエリ。** 階層ごとに投げると DuckDB CLI の
+    // プロセス起動が 14 回になり、その大半が warehouse の開き直しに消える。
+    const select = levels
+      .map((lv, i) => {
+        const path = levels.slice(0, i + 1).map((p) => `${p}_source`).join(' || ')
+        return `count(distinct ${lv}_code) c${i}, count(distinct ${path}) p${i}`
+      })
+      .join(', ')
+    const nums = levels.flatMap((_, i) => [`c${i}`, `p${i}`])
+    const r = q<Record<string, number>>(`select ${select} from stg_${code}__${direction}`, nums)[0]!
+    return {
+      direction,
+      items: levels.map((lv, i) => ({
+        sourceColumn: LEVEL_JA[lv] ?? lv,
+        distinctCodes: r[`c${i}`]!,
+        distinctPaths: r[`p${i}`]!,
+        codeReusedUnderDifferentParents: r[`p${i}`]! > r[`c${i}`]!,
+      })),
+    }
+  })
 }
 
-function build(code = '132047'): ReportData {
+type SourceEntry = {
+  jurisdiction_name?: string; phase_id?: string; phase_label?: string
+  license_id?: string; attribution?: string; landing_page?: string
+}
+
+/**
+ * 取得元の定義。**団体コードを直書きしない** — `sources.toml` が正本。
+ *
+ * ⚠️ TOML を正規表現で読まない。最初に一致した key を返すので、
+ * 2団体目を足した時点で先頭の団体の名称・ライセンスを使ってしまう。
+ */
+const SOURCES = Bun.TOML.parse(
+  readFileSync(join(ROOT, 'ingestion/budget/sources.toml'), 'utf8'),
+) as Record<string, SourceEntry>
+
+/** `sources.toml` に登録された団体コード */
+const CODES = [...new Set(
+  Object.keys(SOURCES).filter((k) => /^\d{6}:/.test(k)).map((k) => k.split(':')[0]!),
+)].sort()
+
+function build(code: string): ReportData {
   const manifest = readJson<Manifest>(join(TARGET, 'manifest.json'))
   const results = readJson<RunResults>(join(TARGET, 'run_results.json'))
   // 証跡は取得物の隣にある。**この2つは不可分**なので同じ場所から読む。
@@ -116,12 +145,7 @@ function build(code = '132047'): ReportData {
   const provenance = new Bun.Glob('**/provenance.json').scanSync({ cwd: rawDir, absolute: true })
   const prov = [...provenance].sort().map((f) => readJson<Provenance>(f))
 
-  // ⚠️ **TOML を正規表現で読まない。** 最初に一致した key を返すので、
-  // 2団体目を足した時点で `code` に関係なく先頭の団体の名称・ライセンスを使う。
-  const sources = Bun.TOML.parse(readFileSync(join(ROOT, 'ingestion/budget/sources.toml'), 'utf8')) as
-    Record<string, { jurisdiction_name?: string; phase_id?: string; phase_label?: string
-                     license_id?: string; attribution?: string; landing_page?: string }>
-  const entries = Object.entries(sources).filter(([k]) => k.startsWith(`${code}:`))
+  const entries = Object.entries(SOURCES).filter(([k]) => k.startsWith(`${code}:`))
   if (entries.length === 0) throw new Error(`取得元 ${code}:* が ingestion/sources.toml に無い`)
   const src = entries[0]![1]
   const pick = (k: keyof typeof src) => src[k] ?? ''
@@ -147,7 +171,7 @@ function build(code = '132047'): ReportData {
     },
     topology: buildTopology(manifest, prov),
     ingestion: prov,
-    levels: buildLevels(),
+    levels: buildLevels(code),
     transform: buildTransform(),
     checks,
     ...STATIC,
@@ -182,10 +206,7 @@ function detailProjection(direction: Direction, canonical: string, phaseId: stri
       using (budget_line_id)
     left join read_csv('${join(ROOT, 'data/budget/packages/derived/cofog_rules.csv')}', header = true, all_varchar = true) r
       on r.rule_id = d.cofog_rule_id
-    left join (values ('01','一般公共サービス'),('02','防衛'),('03','公共の秩序及び安全'),
-                      ('04','経済業務'),('05','環境保護'),('06','住宅及び地域アメニティ'),
-                      ('07','保健'),('08','娯楽、文化及び宗教'),('09','教育'),('10','社会保護'))
-      as v(code, label) on v.code = d.cofog_division
+    left join (values ${DIVISION_VALUES}) as v(code, label) on v.code = d.cofog_division
     order by c.source_row`)
   const columns = rows.length ? Object.keys(rows[0]!) : []
   // **宣言した列が欠けていたら落とす。** 画面が黙って空になるより、生成が止まるほうがよい。
@@ -196,15 +217,33 @@ function detailProjection(direction: Direction, canonical: string, phaseId: stri
   }
 }
 
-const report = build()
-writeFileSync(join(ROOT, 'data/budget/reports/132047.json'), `${JSON.stringify(report, null, 2)}\n`)
-writeFileSync(join(ROOT, 'web/public/pipeline.json'), `${JSON.stringify({
-  code: '132047',
-  report,
-  expenditure: detailProjection('expenditure',
-    join(ROOT, 'data/budget/packages/132047/expenditure.csv'), report.meta.phase.id),
-  revenue: detailProjection('revenue',
-    join(ROOT, 'data/budget/packages/132047/revenue.csv'), report.meta.phase.id),
-})}\n`)
+/**
+ * ⚠️ **画面はまだ1団体しか扱えない。**
+ * `pipeline.json` が単一団体の形（`{code, report}`）で、切り替えの導線も無い。
+ * 2団体目を足したらここで止まるので、黙って先頭の団体だけ配る事故は起きない。
+ * 直すときは dbt の core を団体横断へ一般化するのと同じ回でやる（AGENTS.md の Caveats）。
+ */
+if (CODES.length !== 1) {
+  throw new Error(
+    `sources.toml に ${CODES.length} 団体（${CODES.join(', ')}）ある。` +
+      `報告と画面は1団体しか扱えないので、複数団体へ広げる実装が要る`,
+  )
+}
+const code = CODES[0]!
+
+const report = build(code)
+writeFileSync(join(ROOT, `data/budget/reports/${code}.json`), `${JSON.stringify(report, null, 2)}\n`)
+// **報告と明細を分けて書く。** 明細は報告の 50 倍あり（2.4MB 対 0.05MB）、
+// 既定のタブは明細を使わない。1つにまとめると、報告だけ見る利用者にも全部を運ぶことになる。
+writeFileSync(join(ROOT, 'web/public/pipeline.json'), `${JSON.stringify({ code, report })}\n`)
+
+for (const direction of ['expenditure', 'revenue'] as const) {
+  const table = detailProjection(
+    direction,
+    join(ROOT, `data/budget/packages/${code}/${direction}.csv`),
+    report.meta.phase.id,
+  )
+  writeFileSync(join(ROOT, `web/public/detail-${direction}.json`), `${JSON.stringify(table)}\n`)
+}
 const s = report.summary
 console.log(`ok  検査 ${s.passed}/${s.total}（警告 ${s.warned}）  ノード ${report.topology.nodes.length}  辺 ${report.topology.edges.length}`)

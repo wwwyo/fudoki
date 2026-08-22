@@ -2,9 +2,13 @@
 
 解釈・整形・結合はしない。列はすべて VARCHAR のまま置く（型推論は判断なので staging の仕事）。
 
-**「無加工」を主張ではなく検査にする。** Parquet からセルを連結して原文を復元し、
-取得したバイト列と SHA-256 が一致することを確認してから書き出す。
-一致しなければ落とす（気づかないまま加工された原典を配らないため）。
+**「無加工」を主張ではなく検査にする。** 3つ通してから確定する。
+
+1. 文字コードの復号が可逆か（原文バイトへ戻るか）
+2. セル数がヘッダと揃っているか（揃っていないと列への射影で余りが落ちる）
+3. 書き出した Parquet を読み戻して、原典の行と一致するか
+
+どれか落ちたら書き出さない（気づかないまま加工された原典を配らないため）。
 
 冪等。同じ SHA-256 の Parquet が既にあれば取得しない。
 """
@@ -145,6 +149,16 @@ def ingest(key: str) -> None:
         newline = "\r\n" if "\r\n" in text else "\n"
         header, rows = parse_rows(text)
 
+        # ⚠️ **セル数がヘッダと揃っているか先に見る。**
+        # 揃っていない行を列へ射影すると余りが黙って落ちる。
+        # 復元の検査は parse 済みの行を使うので、この落ち方は検出できない。
+        odd = [(i + 2, len(r)) for i, r in enumerate(rows) if len(r) != len(header)]
+        if odd:
+            raise RuntimeError(
+                f"{direction}: セル数がヘッダ（{len(header)}列）と違う行がある: "
+                f"{odd[:5]}{' ほか' if len(odd) > 5 else ''}"
+            )
+
         # 無加工の検査。復元して原文と一致しなければ書き出さない。
         trailing = text[len(text.rstrip("\r\n")):]
         rebuilt = reconstruct(header, rows, newline, trailing)
@@ -163,6 +177,22 @@ def ingest(key: str) -> None:
         # 列名は原典のヘッダそのまま。全列 VARCHAR（型推論は判断なので staging へ）。
         cols = ", ".join(f'cells[{i + 1}] AS "{h}"' for i, h in enumerate(header))
         con.execute(f"COPY (SELECT source_row, {cols} FROM t ORDER BY source_row) TO '{out}' (FORMAT parquet, COMPRESSION zstd)")
+
+        # **書いた Parquet を読み戻して確かめる。**
+        # ここまでの検査は parse 済みの行しか見ておらず、書き出しで
+        # 空文字が NULL になるような取りこぼしを検出できない。
+        back = con.execute(
+            f"SELECT {', '.join(f'\"{h}\"' for h in header)} FROM read_parquet('{out}') ORDER BY source_row"
+        ).fetchall()
+        if [list(r) for r in back] != rows:
+            diff = next(
+                (i + 2 for i, (a, b) in enumerate(zip(back, rows, strict=True)) if list(a) != b),
+                None,
+            )
+            raise RuntimeError(
+                f"{direction}: 書き出した Parquet が原典の行と一致しない"
+                f"（最初の相違は {diff} 行目）"
+            )
         con.close()
 
         prov_path.write_text(json.dumps({

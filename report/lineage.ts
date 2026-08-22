@@ -110,19 +110,35 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
   const models = Object.entries(all).filter(([, n]) => ['model', 'source', 'seed'].includes(n.resource_type))
   const ids = new Set(models.map(([id]) => id))
 
+  // **行数は1クエリでまとめて数える。** ノードごとに投げると DuckDB CLI の
+  // プロセス起動が13回になり、その大半が同じ warehouse を開き直すのに消える。
+  // 原典（source）は DuckDB にテーブルとして存在しないので証跡から取る。
+  const counted = models.filter(([, n]) => n.resource_type !== 'source')
+  const rowCounts = new Map<string, number>(
+    counted.length === 0 ? [] :
+      Object.entries(
+        q<Record<string, number>>(
+          `select ${counted
+            .map(([, n], i) => {
+              const loc = n.config?.location
+              // package 段は外部ファイルとして書き出される。DuckDB のビューは dbt の
+              // 作業ディレクトリ基準の相対パスなので、実ファイルを直接数える。
+              const from = loc
+                ? `read_csv('${join(ROOT, 'dbt', loc)}', header = true, all_varchar = true)`
+                : `"${n.name}"`
+              return `(select count(*) from ${from}) n${i}`
+            })
+            .join(', ')}`,
+          counted.map((_, i) => `n${i}`),
+        )[0] ?? {},
+      ).map(([k, v]) => [counted[Number(k.slice(1))]![0], v]),
+  )
+
   const nodes: Node[] = models.map(([id, n]) => {
     const loc = n.config?.location
-    let rows: number | null = null
-    if (n.resource_type === 'source') {
-      rows = provenance.filter((p) => p.direction === n.name).reduce((s, p) => s + p.rows, 0)
-    } else if (loc) {
-      // package 段は外部ファイルとして書き出される。DuckDB のビューは dbt の
-      // 作業ディレクトリ基準の相対パスなので、実ファイルを直接数える。
-      const csv = join(ROOT, 'dbt', loc)
-      rows = (q<{ n: number }>(`select count(*) n from read_csv('${csv}', header = true, all_varchar = true)`, ['n'])[0]?.n) ?? null
-    } else {
-      rows = (q<{ n: number }>(`select count(*) n from "${n.name}"`, ['n'])[0]?.n) ?? null
-    }
+    const rows = n.resource_type === 'source'
+      ? provenance.filter((p) => p.direction === n.name).reduce((s, p) => s + p.rows, 0)
+      : rowCounts.get(id) ?? null
     const stage = stageOf(n)
     return {
       id, label: n.name, kind: n.resource_type as Node['kind'], stage, rows,

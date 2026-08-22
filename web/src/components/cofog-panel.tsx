@@ -9,19 +9,8 @@
 import type { ReportData } from '@/lib/pipeline'
 import { DIVISION_COLOR, STATUS_JA, yen, yenShort } from '@/lib/pipeline'
 import { Badge } from '@/components/ui/badge'
+import { Division } from '@/components/division'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-
-/** 色は識別の補助。コードは必ず文字でも出す（色だけだと色覚特性のある読者と読み上げに届かない） */
-function Division({ code, label }: { code: string; label?: string }) {
-  if (!code) return <span className="text-muted-foreground">—</span>
-  return (
-    <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
-      <i aria-hidden className="size-2.5 shrink-0 rounded-sm" style={{ background: DIVISION_COLOR[code] }} />
-      <span className="font-medium">{code}</span>
-      {label && <span className="text-muted-foreground">{label}</span>}
-    </span>
-  )
-}
 
 const statusVariant = (s: string) => (s === 'assigned' ? 'secondary' : s === 'unclassifiable' ? 'outline' : 'outline')
 

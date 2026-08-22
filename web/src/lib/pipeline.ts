@@ -17,8 +17,35 @@ import { expectedColumns } from '@report/budget/detail'
 export type PipelineData = {
   code: string
   report: ReportData
+}
+
+/** 明細。**報告とは別ファイルで運ぶ** — 報告の 50 倍あり、既定のタブでは使わない */
+export type DetailData = {
   expenditure: DetailTable<'expenditure'>
   revenue: DetailTable<'revenue'>
+}
+
+/**
+ * 明細を取りに行く。**明細タブを開いたときだけ**読む。
+ * 報告（0.06MB）と一緒に運ぶと、報告しか見ない利用者にも 3.5MB を運ぶことになる。
+ */
+export async function loadDetail(): Promise<DetailData> {
+  const [expenditure, revenue] = await Promise.all(
+    (['expenditure', 'revenue'] as const).map(async (dir) => {
+      const res = await fetch(`${import.meta.env.BASE_URL}detail-${dir}.json`, { cache: 'no-store' })
+      if (!res.ok) throw new Error(`detail-${dir}.json を読めません（HTTP ${res.status}）`)
+      const t = (await res.json()) as DetailTable
+      const missing = expectedColumns(dir).filter((c) => !(t.columns as string[]).includes(c))
+      if (missing.length > 0) {
+        throw new Error(
+          `detail-${dir}.json が宣言と食い違っています（列が無い: ${missing.join(', ')}）。` +
+            `bun run pipeline を回し直してください`,
+        )
+      }
+      return t
+    }),
+  )
+  return { expenditure, revenue } as DetailData
 }
 
 /**
@@ -41,7 +68,7 @@ export async function loadPipeline(): Promise<PipelineData> {
   if (!res.ok) {
     throw new Error(
       `pipeline.json を読めません（HTTP ${res.status}）。` +
-        `cd dbt && dbt build のあと uv run python -m report.build を回してください`,
+        `bun run pipeline を回してください`,
     )
   }
   const data = (await res.json()) as PipelineData
@@ -59,19 +86,13 @@ export async function loadPipeline(): Promise<PipelineData> {
  */
 function assertShape(d: PipelineData): void {
   const problems: string[] = []
-  for (const k of ['code', 'report', 'expenditure', 'revenue'] as const) {
+  for (const k of ['code', 'report'] as const) {
     if (d[k] === undefined) problems.push(`${k} が無い`)
   }
   if (d.report) {
     for (const k of ['meta', 'summary', 'topology', 'ingestion', 'levels', 'transform', 'checks'] as const) {
       if (d.report[k] === undefined) problems.push(`report.${k} が無い`)
     }
-  }
-  for (const dir of ['expenditure', 'revenue'] as const) {
-    const t = d[dir]
-    if (!t?.columns) { problems.push(`${dir} の列が無い`); continue }
-    const missing = expectedColumns(dir).filter((c) => !(t.columns as string[]).includes(c))
-    if (missing.length > 0) problems.push(`${dir} に列が無い: ${missing.join(', ')}`)
   }
   if (problems.length > 0) {
     throw new Error(

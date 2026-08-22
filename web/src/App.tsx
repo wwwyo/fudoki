@@ -15,20 +15,23 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { loadPipeline, toRows, yenShort, type PipelineData } from '@/lib/pipeline'
+import { loadDetail, loadPipeline, toRows, yenShort, type DetailData, type PipelineData } from '@/lib/pipeline'
 
 export default function App() {
   const [data, setData] = useState<PipelineData | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [selectedNode, setSelectedNode] = useState<string | null>(null)
+  // 明細は報告の 50 倍あるので、タブを開いたときだけ取りに行く
+  const [detail, setDetail] = useState<DetailData | null>(null)
+  const [detailError, setDetailError] = useState<string | null>(null)
 
   useEffect(() => {
     loadPipeline().then(setData).catch((e: Error) => setError(e.message))
   }, [])
 
   const rows = useMemo(
-    () => (data ? { expenditure: toRows(data.expenditure), revenue: toRows(data.revenue) } : null),
-    [data],
+    () => (detail ? { expenditure: toRows(detail.expenditure), revenue: toRows(detail.revenue) } : null),
+    [detail],
   )
 
   if (error) {
@@ -41,7 +44,7 @@ export default function App() {
       </main>
     )
   }
-  if (!data || !rows) {
+  if (!data) {
     return <main className="p-6 text-sm text-muted-foreground">読み込み中…</main>
   }
 
@@ -117,7 +120,14 @@ export default function App() {
           </div>
         </section>
 
-        <Tabs defaultValue="stages">
+        <Tabs
+          defaultValue="stages"
+          onValueChange={(v) => {
+            if (v === 'detail' && !detail && !detailError) {
+              loadDetail().then(setDetail).catch((e: Error) => setDetailError(e.message))
+            }
+          }}
+        >
           <TabsList>
             <TabsTrigger value="stages">段ごとの中身</TabsTrigger>
             <TabsTrigger value="cofog">COFOG の判断</TabsTrigger>
@@ -136,7 +146,16 @@ export default function App() {
             <ChecksPanel report={report} selectedNode={selectedNode} onClearNode={() => setSelectedNode(null)} />
           </TabsContent>
           <TabsContent value="detail" className="pt-4">
-            <DetailBrowser expenditure={rows.expenditure} revenue={rows.revenue} />
+            {detailError ? (
+              <Alert variant="destructive">
+                <AlertTitle>明細を読み込めませんでした</AlertTitle>
+                <AlertDescription>{detailError}</AlertDescription>
+              </Alert>
+            ) : rows ? (
+              <DetailBrowser expenditure={rows.expenditure} revenue={rows.revenue} />
+            ) : (
+              <p className="text-sm text-muted-foreground">明細を読み込み中…</p>
+            )}
           </TabsContent>
           <TabsContent value="caveats" className="pt-4">
             <CaveatsPanel report={report} />

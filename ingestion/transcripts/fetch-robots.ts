@@ -5,17 +5,15 @@
  * 要約を持つと RFC 9309 準拠の再判定ができなくなるため、raw は加工しない。
  * 説明用の要約が要るなら別フィールドに置く。
  *
- *   bun run scripts/fetch-robots.ts            # 取得して差分を表示
- *   bun run scripts/fetch-robots.ts --write    # data/transcripts/observations/robots.json へ保存
+ *   bun run fetch:robots            # 取得して差分を表示
+ *   bun run fetch:robots -- --write    # data/transcripts/observations/robots.json へ保存
  */
-import { Gates } from './gates'
-import { UA } from '../lib/source'
+import { UA, loadGates } from '../lib/source'
 
-const MANIFEST = new URL('../../data/transcripts/gates.json', import.meta.url).pathname
 const OUT = new URL('../../data/transcripts/observations/robots.json', import.meta.url).pathname
 const write = process.argv.includes('--write')
 
-const m = Gates.parse(JSON.parse(await Bun.file(MANIFEST).text()))
+const m = await loadGates()
 
 /** 取得先ホストごとに1回だけ引く（DB-Search の dbsr.jp のように同一テンプレートが多数ある） */
 const hosts = new Map<string, string[]>()

@@ -13,11 +13,11 @@ fudoki は日本の地方自治体の**支出を事業単位まで**構造化し
 
 東京都三鷹市の令和6年度当初予算（歳出 5,613行、歳入 821行）を [Fiscal Data Package](https://fiscal.datapackage.org/) 1.0.0 として配布している。
 
-- 原典: [`data/raw/`](./data/raw/)（Parquet。取得の単位ごとに partition）
-- 正本: [`data/packages/132047/`](./data/packages/132047/)（判断を含まない）
-- 派生: [`data/packages/derived/`](./data/packages/derived/)（COFOG の割当と、その規則35行）
+- 原典: [`data/budget/raw/`](./data/budget/raw/)（Parquet。取得の単位ごとに partition）
+- 正本: [`data/budget/packages/132047/`](./data/budget/packages/132047/)（判断を含まない）
+- 派生: [`data/budget/packages/derived/`](./data/budget/packages/derived/)（COFOG の割当と、その規則35行）
 - 取得の証跡: [`data/provenance/`](./data/provenance/)
-- パイプライン報告: [`data/reports/`](./data/reports/)
+- パイプライン報告: [`data/budget/reports/`](./data/budget/reports/)
 
 たとえば「いじめ問題対策協議会関係費」は 311,000円で、教育費 > 教育総務費 > 教育指導費 の下にある。
 これを機械で引けるようにするのが目的である。
@@ -44,7 +44,7 @@ bun run dev            # ダッシュボードを開く（http://localhost:5173�
 
 | 日本語 | コード上の識別子 | 意味 |
 |---|---|---|
-| **原典** | `source` | 自治体が公開したファイルそのまま。`data/raw/` に Parquet で置く |
+| **原典** | `source` | 自治体が公開したファイルそのまま。`data/budget/raw/` に Parquet で置く |
 | **正本** | `canonical` | 原典を取り込んで検証しただけのもの。**fudoki の判断を含まない**ので、原文と突き合わせて検証できる |
 | **派生** | `derived` | 正本に COFOG を割り当てたもの。**ここから fudoki の判断が入る** |
 
@@ -77,7 +77,7 @@ bun run dev            # ダッシュボードを開く（http://localhost:5173�
 - [data/packages/README.md](./data/packages/README.md): 正本と派生の読み方
 - [web/README.md](./web/README.md): ダッシュボードの構成
 - [dbt/models/](./dbt/models/): staging（判断なし）と core（判断あり）。層の境界はテストで縛っている
-- [ingestion/sources.toml](./ingestion/sources.toml): 取得元の定義。2団体目はここに足す
+- [ingestion/budget/sources.toml](./ingestion/budget/sources.toml): 取得元の定義。2団体目はここに足す
 
 名前は『風土記』から。
 713年の官命により、諸国へ地名の由来や産物を**同じ様式で報告させて集めた**地誌で、各自治体から同じ形式でデータを集めるという本 PJ の構造がそのまま重なる。

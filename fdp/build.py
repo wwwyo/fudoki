@@ -35,15 +35,16 @@ STANDARD_COLUMN_TYPES = {c["name"] for c in TAXONOMY["columnTypes"]}
 DECLARED_CUSTOM = {c["name"] for c in TYPES["columnTypes"][1]}
 
 
-def header_of(path: pathlib.Path) -> list[str]:
-    with path.open(encoding="utf-8", newline="") as f:
-        return next(csv.reader(f))
+def header_of(body: bytes) -> list[str]:
+    """既に読んだバイト列からヘッダを切り出す。同じファイルを2回開かない"""
+    first = body.split(b"\n", 1)[0].decode("utf-8")
+    return next(csv.reader([first]))
 
 
-def schema_for(path: pathlib.Path, primary_key: list[str]) -> dict:
+def schema_for(path: pathlib.Path, body: bytes, primary_key: list[str]) -> dict:
     """列に意味づけを与える。**宣言の無い列は配らない。**"""
     fields = []
-    for name in header_of(path):
+    for name in header_of(body):
         spec = TYPES["fields"].get(name)
         if spec is None:
             raise RuntimeError(
@@ -86,7 +87,7 @@ def resource(path: pathlib.Path, name: str, title: str, description: str, primar
         "bytes": len(body),
         "hash": "sha256:" + hashlib.sha256(body).hexdigest(),
         "dialect": {"delimiter": ",", "header": True},
-        "schema": schema_for(path, primary_key),
+        "schema": schema_for(path, body, primary_key),
     }
 
 

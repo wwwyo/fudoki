@@ -38,10 +38,12 @@ select
     -- 三鷹市の細々節は同じ節の下でコードを再利用しており（実測 710 箇所・1,615 行）、
     -- コードのパスだと 5,613 行が 4,708 通りにしかならない。
     -- 区切りは U+001F（原典に現れない制御文字）。
-    'approved' as phase_id,
-    jurisdiction_code || ':' || fiscal_year || ':' || direction || ':approved:'
+    -- **phase は partition から取る。** 固定値にすると、補正予算を足したとき
+    -- partition の phase と staging の phase が食い違う（取得側は既に phase で切っている）。
+    phase as phase_id,
+    jurisdiction_code || ':' || fiscal_year || ':' || direction || ':' || phase || ':'
         || substr(sha256(
-            jurisdiction_code || chr(31) || fiscal_year || chr(31) || direction || chr(31) || 'approved'
+            jurisdiction_code || chr(31) || fiscal_year || chr(31) || direction || chr(31) || phase
             || chr(31) || fund_source || chr(31) || kan_source || chr(31) || kou_source || chr(31) || moku_source || chr(31) || setsu_source || chr(31) || saisetsu_source || chr(31) || saisaisetsu_source
         ), 1, 16) as budget_line_id,
     cast("08予算額" as bigint) as source_amount

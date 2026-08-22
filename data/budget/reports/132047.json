@@ -15,11 +15,11 @@
     },
     "attribution": "三鷹市「令和6年度予算データ」（東京都オープンデータカタログサイト）",
     "landingPage": "https://www.city.mitaka.lg.jp/c_service/074/",
-    "generatedAt": "2026-08-22T05:47:55+00:00"
+    "generatedAt": "2026-08-22T06:44:52+00:00"
   },
   "summary": {
-    "total": 27,
-    "passed": 26,
+    "total": 29,
+    "passed": 28,
     "failed": 0,
     "warned": 1
   },
@@ -206,6 +206,21 @@
         "kind": "flow"
       },
       {
+        "from": "model.fudoki.stg_132047__expenditure",
+        "to": "model.fudoki.core_budget_cofog",
+        "kind": "flow"
+      },
+      {
+        "from": "seed.fudoki.cofog_rules",
+        "to": "model.fudoki.core_budget_cofog",
+        "kind": "flow"
+      },
+      {
+        "from": "seed.fudoki.cofog_rules",
+        "to": "model.fudoki.pkg_derived__cofog_rules",
+        "kind": "flow"
+      },
+      {
         "from": "model.fudoki.core_budget_cofog",
         "to": "model.fudoki.pkg_derived__cofog",
         "kind": "flow"
@@ -226,16 +241,6 @@
         "kind": "flow"
       },
       {
-        "from": "model.fudoki.stg_132047__revenue",
-        "to": "model.fudoki.pkg_132047__revenue",
-        "kind": "flow"
-      },
-      {
-        "from": "seed.fudoki.cofog_rules",
-        "to": "model.fudoki.pkg_derived__cofog_rules",
-        "kind": "flow"
-      },
-      {
         "from": "source.fudoki.raw_132047.expenditure",
         "to": "model.fudoki.stg_132047__expenditure",
         "kind": "flow"
@@ -246,18 +251,13 @@
         "kind": "flow"
       },
       {
-        "from": "model.fudoki.stg_132047__expenditure",
-        "to": "model.fudoki.core_budget_cofog",
-        "kind": "flow"
-      },
-      {
-        "from": "seed.fudoki.cofog_rules",
-        "to": "model.fudoki.core_budget_cofog",
-        "kind": "flow"
-      },
-      {
         "from": "source.fudoki.raw_132047.revenue",
         "to": "model.fudoki.stg_132047__revenue",
+        "kind": "flow"
+      },
+      {
+        "from": "model.fudoki.stg_132047__revenue",
+        "to": "model.fudoki.pkg_132047__revenue",
         "kind": "flow"
       }
     ],
@@ -275,7 +275,7 @@
       "status": 200,
       "bytes": 605865,
       "sha256": "f9dcbc7e871437691e4979572aeafaae2da333aba1b27beba8eee72153a5f10e",
-      "fetched_at": "2026-08-22T05:47:51+00:00",
+      "fetched_at": "2026-08-22T06:44:46+00:00",
       "encoding": "cp932",
       "header": [
         "01会計",
@@ -303,7 +303,7 @@
       "status": 200,
       "bytes": 95618,
       "sha256": "9ae9636703f90430eff0bcfc50e2812fe07a1fe180b7d9d993230d5a4f717910",
-      "fetched_at": "2026-08-22T05:47:55+00:00",
+      "fetched_at": "2026-08-22T06:44:52+00:00",
       "encoding": "cp932",
       "header": [
         "01会計",
@@ -1476,6 +1476,19 @@
       "detail": ""
     },
     {
+      "name": "derived_package_covers_core",
+      "description": "",
+      "binds": [
+        "model.fudoki.core_budget_cofog",
+        "model.fudoki.core_revenue_consolidation"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
       "name": "expenditure_equals_revenue_by_fund",
       "description": "",
       "binds": [
@@ -1490,6 +1503,19 @@
     },
     {
       "name": "fdp_composite_key_is_unique",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132047__expenditure",
+        "model.fudoki.stg_132047__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "inputs_are_not_empty",
       "description": "",
       "binds": [
         "model.fudoki.stg_132047__expenditure",
@@ -1614,6 +1640,7 @@
       "name": "published_reference_matches",
       "description": "",
       "binds": [
+        "seed.fudoki.published_reference_meta",
         "model.fudoki.stg_132047__expenditure",
         "model.fudoki.stg_132047__revenue",
         "seed.fudoki.published_reference"

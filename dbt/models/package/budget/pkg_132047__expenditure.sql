@@ -13,6 +13,7 @@
 select
     budget_line_id,
     fiscal_year,
+    phase_id,
     source_row,
     fund_code,
     fund_label,
@@ -34,4 +35,5 @@ select
     source_amount * 1000 as value,
     source_amount
 from {{ ref('stg_132047__expenditure') }}
-order by source_row
+-- 年度をまたぐと source_row だけでは並びが決まらない
+order by fiscal_year, source_row
