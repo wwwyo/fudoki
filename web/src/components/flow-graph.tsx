@@ -111,8 +111,8 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
                   d={`M${x1},${y1} C${x1 + COL_GAP * 0.55},${y1} ${x2 - COL_GAP * 0.55},${y2} ${x2},${y2}`}
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth={dim ? 1 : 1.6}
-                  opacity={dim ? 0.16 : 0.55}
+                  strokeWidth={dim ? 1 : related ? 2.2 : 1.6}
+                  opacity={dim ? 0.12 : related ? 0.85 : 0.55}
                   markerEnd="url(#arrow)"
                 />
               )
@@ -125,9 +125,16 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
             const failed = cs.filter((c) => !c.ok && c.severity === 'error').length
             const warned = cs.filter((c) => !c.ok && c.severity === 'warn').length
             const dim = related ? !related.has(node.id) : false
+            const focused = active === node.id
             // **「含む」で色を塗る。** 派生の配布物はそれ自身が規則を適用していなくても
-    // 判断を含む。持ち込むかどうかで塗ると、配布物が「判断なし」に見える。
-    const on = node.containsJudgment
+            // 判断を含む。持ち込むかどうかで塗ると、配布物が「判断なし」に見える。
+            const on = node.containsJudgment
+            const accent = on ? 'var(--color-stage-judgment)' : 'var(--color-stage-nojudgment)'
+            // 色が何を言っているかは凡例を置かず、hover と選択で文字にして読ませる
+            const hint = [
+              on ? 'fudoki の判断を含む' : '判断を含まない（原典と突き合わせて検証できる）',
+              cs.length > 0 ? `このノードを守っている検査 ${cs.length} 件` : null,
+            ].filter(Boolean).join(' / ')
             return (
               <g
                 key={node.id}
@@ -138,20 +145,26 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
                 onClick={() => onSelectNode?.(selected === node.id ? null : node.id)}
                 className="cursor-pointer"
               >
+                <title>{`${node.label} — ${hint}`}</title>
+                {/* 選んでいるノードは輪郭を太くするだけでは足りない。
+                    背後に色を敷いて、離れた位置からでもどれを見ているか分かるようにする */}
+                {focused && (
+                  <rect
+                    x={-5} y={-5} width={COL_W + 10} height={NODE_H + 10} rx={10}
+                    fill={accent} opacity={0.16}
+                  />
+                )}
                 <rect
                   width={COL_W} height={NODE_H} rx={7}
                   className="fill-card"
-                  stroke={on ? 'var(--color-stage-judgment)' : 'var(--color-border)'}
-                  strokeWidth={selected === node.id ? 2.4 : 1.2}
+                  stroke={focused ? accent : on ? 'var(--color-stage-judgment)' : 'var(--color-border)'}
+                  strokeWidth={focused ? 2.5 : 1.2}
                 />
-                <rect
-                  width={4} height={NODE_H} rx={2}
-                  fill={on ? 'var(--color-stage-judgment)' : 'var(--color-stage-nojudgment)'}
-                />
-                <text x={14} y={19} className="fill-foreground text-[11.5px] font-medium">
+                <rect width={focused ? 6 : 4} height={NODE_H} rx={2} fill={accent} />
+                <text x={16} y={19} className="fill-foreground text-[11.5px] font-medium">
                   {node.label.length > 26 ? `${node.label.slice(0, 25)}…` : node.label}
                 </text>
-                <text x={14} y={35} className="fill-muted-foreground text-[11px] tabular-nums">
+                <text x={16} y={35} className="fill-muted-foreground text-[11px] tabular-nums">
                   {node.rows === null ? '—' : yen(node.rows)} 行 · {KIND_JA[node.kind]}
                 </text>
                 {cs.length > 0 && (
@@ -170,23 +183,6 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
             )
           })}
         </svg>
-      </div>
-
-      {/* 凡例。色が何を言っているかを文字でも出す */}
-      <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-[11px] text-muted-foreground">
-        <span className="inline-flex items-center gap-1.5">
-          <i aria-hidden className="h-3 w-1 rounded-sm" style={{ background: 'var(--color-stage-nojudgment)' }} />
-          判断を含まない（原典と突き合わせて検証できる）
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <i aria-hidden className="h-3 w-1 rounded-sm" style={{ background: 'var(--color-stage-judgment)' }} />
-fudoki の判断を含む（上流から伝播する）
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <i aria-hidden className="size-2.5 rounded-full" style={{ background: 'var(--color-chart-2)' }} />
-          そのノードを守っている検査の数
-        </span>
-        <span>系統の出所: <code>{topology.source}</code></span>
       </div>
 
       {/* 選んだノードの中身。ノード上に置くと図が文字の表に戻る */}
