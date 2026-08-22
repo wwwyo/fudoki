@@ -10,7 +10,9 @@ clean-targets: ["target", "dbt_packages"]
 models:
   fudoki:
     staging:
-      # staging は原典と1対1。view のままにして、実体を持たせない。
-      +materialized: view
+      # 実体を持たせる。view にすると Parquet への相対パスが dbt の作業ディレクトリに
+      # 縛られ、他所から DuckDB を開いたときに解決できない。
+      # DuckDB 自体が捨てられるビルド生成物なので、自己完結させたほうがよい。
+      +materialized: table
     core:
       +materialized: table

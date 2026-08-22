@@ -1,0 +1,896 @@
+{
+  "notYetReconciled": {
+    "scope": "特別会計（国民健康保険事業・介護サービス事業・介護保険事業・後期高齢者医療）の款別・項別",
+    "reason": "施政方針・予算概要は一般会計の款別までしか載せておらず、特別会計の款別は予算書にしかない",
+    "wouldComeFrom": "https://www.city.mitaka.lg.jp/c_service/090/090334.html（過去の予算書）",
+    "currentEvidence": "歳出と歳入の会計別合計が一致することのみ（原典の内部整合であり、外部資料による裏づけではない）"
+  },
+  "customColumnTypes": [
+    {
+      "name": "fund:code",
+      "dataType": "string",
+      "unique": true,
+      "why": "会計（一般会計・各特別会計）。administrative-classification は資金管理の責任を負う組織単位を指すもので、会計は資金の区分であり別概念。標準に該当する列型が無い"
+    },
+    {
+      "name": "fund:label",
+      "dataType": "string",
+      "labelOf": "fund:code",
+      "why": "会計の表示名"
+    },
+    {
+      "name": "fin-source:generic:level4:code",
+      "dataType": "string",
+      "unique": true,
+      "prior": "fin-source:generic:level3:code",
+      "why": "歳入の節。標準の fin-source は level3 までしか定義が無いため同じ命名規則で拡張した"
+    },
+    {
+      "name": "fin-source:generic:level4:label",
+      "dataType": "string",
+      "labelOf": "fin-source:generic:level4:code",
+      "why": "歳入の節の表示名"
+    },
+    {
+      "name": "fin-source:generic:level5:code",
+      "dataType": "string",
+      "unique": true,
+      "prior": "fin-source:generic:level4:code",
+      "why": "歳入の細節"
+    },
+    {
+      "name": "fin-source:generic:level5:label",
+      "dataType": "string",
+      "labelOf": "fin-source:generic:level5:code",
+      "why": "歳入の細節の表示名"
+    },
+    {
+      "name": "fin-source:generic:level6:code",
+      "dataType": "string",
+      "unique": true,
+      "prior": "fin-source:generic:level5:code",
+      "why": "歳入の細々節"
+    },
+    {
+      "name": "fin-source:generic:level6:label",
+      "dataType": "string",
+      "labelOf": "fin-source:generic:level6:code",
+      "why": "歳入の細々節の表示名"
+    },
+    {
+      "name": "fudoki:jurisdiction:code",
+      "dataType": "string",
+      "unique": true,
+      "why": "全国地方公共団体コード。外部データとの接続キー。FDP の geo:* は住所や地理コードを指すもので、行政主体の識別子ではない"
+    },
+    {
+      "name": "fudoki:jurisdiction:label",
+      "dataType": "string",
+      "labelOf": "fudoki:jurisdiction:code",
+      "why": "自治体名"
+    },
+    {
+      "name": "fudoki:source:cell",
+      "dataType": "string",
+      "why": "code と label へ分ける前の原典のセル。先頭のゼロや全角数字といった表記を保ち、code + label を連結して原文に戻ることを検証に使う"
+    },
+    {
+      "name": "fudoki:source:amount",
+      "dataType": "number",
+      "why": "原典の金額。円へ正規化する前の値"
+    },
+    {
+      "name": "fudoki:source:amount-unit",
+      "dataType": "string",
+      "why": "原典の金額の単位。FDP に倍率を表す ColumnType が無いため別列に残す"
+    },
+    {
+      "name": "fudoki:source:row",
+      "dataType": "integer",
+      "why": "原典の物理行番号。特定のスナップショット内でのみ意味を持つ証跡で、外部が参照する識別子ではない"
+    },
+    {
+      "name": "fudoki:hierarchy-path",
+      "dataType": "string",
+      "why": "階層のコードを連結した可読なパス。コードは兄弟間で一意とは限らないので識別子には使わない"
+    },
+    {
+      "name": "fudoki:cofog:status",
+      "dataType": "string",
+      "why": "分類の軸。assigned / unclassifiable / out-of-scope。分類できなかったものと、そもそも分類の対象でないものを区別する"
+    },
+    {
+      "name": "fudoki:cofog:consolidation",
+      "dataType": "string",
+      "why": "連結の軸。retained / eliminated。分類の軸とは別の問いなので1つの状態に畳まない"
+    },
+    {
+      "name": "fudoki:cofog:counterpart-id",
+      "dataType": "string",
+      "why": "消去する行の相手側 budget-line-id"
+    },
+    {
+      "name": "fudoki:cofog:basis",
+      "dataType": "string",
+      "why": "割り当ての根拠。割当済みと未分類のいずれについても残す"
+    },
+    {
+      "name": "fudoki:cofog:decided-at-level",
+      "dataType": "string",
+      "why": "款・項・目・事項のどの単位で割り当てが決まったか"
+    }
+  ],
+  "portability": [
+    {
+      "element": "CKAN からのリソース解決と証跡の記録（Extract）",
+      "kind": "再利用の候補",
+      "verifyNext": "東京都カタログ以外（BODIK・独自 DCAT）でも同じ形で引けるか"
+    },
+    {
+      "element": "完全修飾パスから識別子を導く方式",
+      "kind": "再利用の候補",
+      "verifyNext": "階層の深さが違う団体でも一意になるか。狛江市は事業階層が3段ある"
+    },
+    {
+      "element": "原典の値と単位を別列に残したうえで円へ正規化する方式",
+      "kind": "再利用の候補",
+      "verifyNext": "単位が円の団体（狛江市は「予算額(円)」）で倍率1が素通りするか"
+    },
+    {
+      "element": "検査の並べ方（多重集合一致・従属関係・複合主キー・公表値突合）",
+      "kind": "再利用の候補",
+      "verifyNext": "公表資料が款別を載せない団体でも代替の外部突合が立つか"
+    },
+    {
+      "element": "COFOG の2軸（分類 / 連結）と規則エンジンの形",
+      "kind": "再利用の候補",
+      "verifyNext": "規則の本数が団体ごとに増えるか、款の語彙が共通で使い回せるか"
+    },
+    {
+      "element": "「事項」を事業階層として宣言すること",
+      "kind": "三鷹市に固有",
+      "verifyNext": "狛江市は「大事業 / 中事業 / 小事業」。宣言の粒度が団体ごとに違う前提で足りるか"
+    },
+    {
+      "element": "歳入の細々節を `0` で埋めるプレースホルダ",
+      "kind": "三鷹市に固有",
+      "verifyNext": "他団体が空文字・全角ゼロ・ハイフンなど別の表現を使うか"
+    },
+    {
+      "element": "2桁コード + 名称という1セルの書式",
+      "kind": "三鷹市に固有",
+      "verifyNext": "桁数が違う団体、コードと名称が別列の団体でセル分解の宣言が要るか"
+    },
+    {
+      "element": "歳出と歳入の合計一致という検算",
+      "kind": "三鷹市に固有",
+      "verifyNext": "当初予算以外や企業会計を持つ団体では成立しない。取得元ごとの設定で切れているか"
+    },
+    {
+      "element": "款 → COFOG ディビジョンの対応そのもの",
+      "kind": "一般性を判定できない",
+      "verifyNext": "款の名称は法定なので共通のはずだが、項・目の名称は団体差がある。項以下の規則が何本必要になるか"
+    },
+    {
+      "element": "事項が1つの事業に対応するという前提",
+      "kind": "一般性を判定できない",
+      "verifyNext": "複数の活動をまとめた事項や管理的な費目が混ざっていないか。2団体目で概念として確定させる"
+    },
+    {
+      "element": "`fin-source:generic:level4〜6` という標準の拡張",
+      "kind": "一般性を判定できない",
+      "verifyNext": "他団体の歳入も6階層か。3階層で足りるなら拡張自体をやめられる"
+    }
+  ],
+  "caveats": [
+    {
+      "topic": "事項を事業として扱う妥当性が未検証（Design Doc Caveats 1）",
+      "body": "名称を持つことは、その区分が1つの事業に対応することの証明にならない。複数の活動をまとめた事項や管理的な費目が含まれうる。自治体横断の「事業」概念として確定するのは2団体目以降とする。現状は `activity:generic:program` に置いてあるが、これは候補としての割り当てである。"
+    },
+    {
+      "topic": "COFOG の割り当てが款の単位で成立するかは部分的（Design Doc Caveats 2）",
+      "body": "実データを通した結果、**款だけでは決まらない款が実在した**。衛生費（保健衛生費 → 07 / 清掃費 → 05）と土木費と教育費は項へ、公債費（元金 → 対象外 / 利子 → 01）と都市計画費と生涯学習費は目へ下げて決着した。どこまで下げれば決まるかは「款で決まらず、下の単位まで下げたもの」を見ること。"
+    },
+    {
+      "topic": "PRD の「938件の事項」は事項の件数ではない",
+      "body": "実測すると、938 は**事項のセル文字列（コード + 名称）の異なり数**であって、階層としての事項の件数ではない。完全修飾で数えると全会計 996 件・一般会計 913 件、名称の異なり数は全会計 918 件・一般会計 856 件になる。ただし「すべて名称を持つ」という主張自体は正しい（名称が空の事項は0件）。三鷹市を選んだ判断は変わらないが、数字は置き換える必要がある。"
+    },
+    {
+      "topic": "Design Doc は歳入を6階層としていたが、原典は7階層",
+      "body": "原典の歳入は会計/款/項/目/節/細節に加えて**細々節を持つ**。821 行中 18 行が実際に使っており、細々節を落とすと識別子が7組衝突する。Design Doc の記述ではなく実物の列で判定した（パーサ設計の原則3）。"
+    },
+    {
+      "topic": "識別子はコードのパスでは作れなかった",
+      "body": "Design Doc は「`款01/項03/目01` の形で連結する」としていたが、三鷹市の細々節は**同じ節の下でコードを再利用する**（実測 710 箇所・1,615 行）。コードのパスでは 5,613 行が 4,708 通りにしかならない。そこでパスの構成要素を**セル全文（コード + 名称）**に取った。副作用として、自治体が名称を直すと識別子が変わる。コードだけなら耐えられたはずの変更なので、これは失ったものである。"
+    },
+    {
+      "topic": "仕様が正準と宣言する taxonomy の URL が 404",
+      "body": "`https://specs.frictionlessdata.io/taxonomies/fiscal/budgets.json` は 404 を返す（2026-08-16 実測）。ColumnType の一覧を機械可読な形で参照する経路が存在しないため、仕様の原文（Markdown）から起こして `src/budget/taxonomy/` に取り込み、fudoki 側で保守する。descriptor の `columnTypes` は仕様どおりこの URL を指しているが、**利用者がこれを辿っても取得できない**。"
+    },
+    {
+      "topic": "`fin-source:generic:level4〜6` は標準の名前空間を fudoki が拡張したもの",
+      "body": "歳入の階層は6段あるが、標準の `fin-source:generic` は level3 までしか定義が無い。`prior` を繋いで順序が保たれるよう同じ命名規則で拡張した。標準側が後から level4 を別の意味で定義すると衝突する。FDP は 2024-03 で更新が止まっているため当面は起きないと見ているが、独自の名前空間に逃がす選択肢もあった。"
+    },
+    {
+      "topic": "繰出金と繰入金は行どうしが1対1に対応しない",
+      "body": "歳出の繰出金と歳入の繰入金は細々節の切り方が違うため、行の対応は N 対 M になる。金額が厳密に一致するのは**会計の対どうしの合計**で、そこは5対すべてで一致した。各行の `cofog_counterpart_ids` には受け皿側の該当行の識別子を並べてあるが、これは「その行1件の相手」ではなく**相手のグループ**である。"
+    },
+    {
+      "topic": "特別会計は外部資料で裏づけていない",
+      "body": "施政方針・予算概要は一般会計の款別までしか載せていない。特別会計の款別を突合するには予算書（別資料）が要る。現状の根拠は歳出と歳入の会計別合計が一致することだけで、これは原典の内部整合であって外部からの裏づけではない。"
+    },
+    {
+      "topic": "河川費と生涯学習費の割り当ては判断の幅がある",
+      "body": "COFOG は治水を明示的に置いていないため、河川費（15,852千円）は 05 環境保護に寄せたが 04 経済業務にも読める。生涯学習費のうち図書館費は COFOG 08.2 が図書館を明示的に含むため 08 に置き、それ以外（生涯学習総務・青少年育成・生涯学習センター）は社会教育として 09 に置いた。いずれも根拠を `cofog_basis` に書いてあるので、判断を変えたければそこを見て変えられる。"
+    }
+  ],
+  "yearSurvey": {
+    "note": "三鷹市の予算データについて、令和6年度以外の年度が令和6年度と互換かを実測したもの。収録するのは令和6年度だけで、他年度は調査までが対象。判定は資料名ではなく実物の列構成と中身で行う。",
+    "generatedBy": "scripts/check-budget-years.ts",
+    "baseline": {
+      "fiscalYear": 2024,
+      "columns": {
+        "expenditure": [
+          "会計",
+          "款",
+          "項",
+          "目",
+          "事項",
+          "節",
+          "細々節"
+        ],
+        "revenue": [
+          "会計",
+          "款",
+          "項",
+          "目",
+          "節",
+          "細節",
+          "細々節"
+        ]
+      }
+    },
+    "caveat": "互換と判定したのは列構成と金額の型まで。予算段階は原典にもリソース名にも現れないため、この観測だけでは収録可否は決まらない。",
+    "observations": [
+      {
+        "year": 2024,
+        "label": "令和６年度",
+        "direction": "expenditure",
+        "resourceName": "令和６年度予算データ（歳出）※下水道事業会計除く",
+        "url": "https://www.city.mitaka.lg.jp/c_service/074/attached/attach_74103_8.csv",
+        "coverageNote": "下水道事業会計除く",
+        "fetchedAt": "2026-08-16T03:34:05.408Z",
+        "status": 200,
+        "bytes": 605865,
+        "sha256": "f9dcbc7e871437691e4979572aeafaae2da333aba1b27beba8eee72153a5f10e",
+        "rows": 5613,
+        "columns": [
+          "会計",
+          "款",
+          "項",
+          "目",
+          "事項",
+          "節",
+          "細々節",
+          "予算額"
+        ],
+        "funds": [
+          "01一般会計",
+          "02国民健康保険事業特別会計",
+          "06介護サービス事業特別会計",
+          "07介護保険事業特別会計",
+          "09後期高齢者医療特別会計"
+        ],
+        "amountAllIntegers": true,
+        "quotedRows": 0,
+        "totalRaw": 122908044,
+        "compatible": true,
+        "basis": "列構成が令和6年度と一致（会計/款/項/目/事項/節/細々節/予算額）。金額列は全て整数。引用符なし。会計 5 件"
+      },
+      {
+        "year": 2024,
+        "label": "令和６年度",
+        "direction": "revenue",
+        "resourceName": "令和６年度予算データ（歳入）※下水道事業会計除く",
+        "url": "https://www.city.mitaka.lg.jp/c_service/074/attached/attach_74103_7.csv",
+        "coverageNote": "下水道事業会計除く",
+        "fetchedAt": "2026-08-16T03:34:05.408Z",
+        "status": 200,
+        "bytes": 95618,
+        "sha256": "9ae9636703f90430eff0bcfc50e2812fe07a1fe180b7d9d993230d5a4f717910",
+        "rows": 821,
+        "columns": [
+          "会計",
+          "款",
+          "項",
+          "目",
+          "節",
+          "細節",
+          "細々節",
+          "予算額"
+        ],
+        "funds": [
+          "01一般会計",
+          "02国民健康保険事業特別会計",
+          "06介護サービス事業特別会計",
+          "07介護保険事業特別会計",
+          "09後期高齢者医療特別会計"
+        ],
+        "amountAllIntegers": true,
+        "quotedRows": 0,
+        "totalRaw": 122908044,
+        "compatible": true,
+        "basis": "列構成が令和6年度と一致（会計/款/項/目/節/細節/細々節/予算額）。金額列は全て整数。引用符なし。会計 5 件"
+      },
+      {
+        "year": 2023,
+        "label": "令和５年度",
+        "direction": "expenditure",
+        "resourceName": "令和５年度予算データ（歳出）※下水道事業会計除く",
+        "url": "https://www.city.mitaka.lg.jp/c_service/074/attached/attach_74103_10.csv",
+        "coverageNote": "下水道事業会計除く",
+        "fetchedAt": "2026-08-16T03:34:05.408Z",
+        "status": 200,
+        "bytes": 601277,
+        "sha256": "bfa6e7f581b0f87d2530b8bfdff34cb227c5cef75ca75e7ed12633656afdcf0f",
+        "rows": 5571,
+        "columns": [
+          "会計",
+          "款",
+          "項",
+          "目",
+          "事項",
+          "節",
+          "細々節",
+          "予算額"
+        ],
+        "funds": [
+          "01一般会計",
+          "02国民健康保険事業特別会計",
+          "06介護サービス事業特別会計",
+          "07介護保険事業特別会計",
+          "09後期高齢者医療特別会計"
+        ],
+        "amountAllIntegers": true,
+        "quotedRows": 0,
+        "totalRaw": 117148435,
+        "compatible": true,
+        "basis": "列構成が令和6年度と一致（会計/款/項/目/事項/節/細々節/予算額）。金額列は全て整数。引用符なし。会計 5 件"
+      },
+      {
+        "year": 2023,
+        "label": "令和５年度",
+        "direction": "revenue",
+        "resourceName": "令和５年度予算データ（歳入）※下水道事業会計除く",
+        "url": "https://www.city.mitaka.lg.jp/c_service/074/attached/attach_74103_9.csv",
+        "coverageNote": "下水道事業会計除く",
+        "fetchedAt": "2026-08-16T03:34:05.438Z",
+        "status": 200,
+        "bytes": 92283,
+        "sha256": "68385d243d468e000a15ae971613328e776a7ba138a58ef8dea84d2593b03ec9",
+        "rows": 797,
+        "columns": [
+          "会計",
+          "款",
+          "項",
+          "目",
+          "節",
+          "細節",
+          "細々節",
+          "予算額"
+        ],
+        "funds": [
+          "01一般会計",
+          "02国民健康保険事業特別会計",
+          "06介護サービス事業特別会計",
+          "07介護保険事業特別会計",
+          "09後期高齢者医療特別会計"
+        ],
+        "amountAllIntegers": true,
+        "quotedRows": 0,
+        "totalRaw": 117148435,
+        "compatible": true,
+        "basis": "列構成が令和6年度と一致（会計/款/項/目/節/細節/細々節/予算額）。金額列は全て整数。引用符なし。会計 5 件"
+      },
+      {
+        "year": 2022,
+        "label": "令和４年度",
+        "direction": "expenditure",
+        "resourceName": "令和４年度予算データ（歳出）※下水道事業会計除く",
+        "url": "https://www.city.mitaka.lg.jp/c_service/074/attached/attach_74103_12.csv",
+        "coverageNote": "下水道事業会計除く",
+        "fetchedAt": "2026-08-16T03:34:05.459Z",
+        "status": 200,
+        "bytes": 596788,
+        "sha256": "060f1f247f26e8cc5005a0fd49bcb98ffe9bf12f4e3b0dc8d2611c4ee95f903f",
+        "rows": 5518,
+        "columns": [
+          "会計",
+          "款",
+          "項",
+          "目",
+          "事項",
+          "節",
+          "細々節",
+          "予算額"
+        ],
+        "funds": [
+          "01一般会計",
+          "02国民健康保険事業特別会計",
+          "06介護サービス事業特別会計",
+          "07介護保険事業特別会計",
+          "09後期高齢者医療特別会計"
+        ],
+        "amountAllIntegers": true,
+        "quotedRows": 0,
+        "totalRaw": 113571993,
+        "compatible": true,
+        "basis": "列構成が令和6年度と一致（会計/款/項/目/事項/節/細々節/予算額）。金額列は全て整数。引用符なし。会計 5 件"
+      },
+      {
+        "year": 2022,
+        "label": "令和４年度",
+        "direction": "revenue",
+        "resourceName": "令和４年度予算データ（歳入）※下水道事業会計除く",
+        "url": "https://www.city.mitaka.lg.jp/c_service/074/attached/attach_74103_11.csv",
+        "coverageNote": "下水道事業会計除く",
+        "fetchedAt": "2026-08-16T03:34:05.478Z",
+        "status": 200,
+        "bytes": 102828,
+        "sha256": "84460d1671d2436c68c806e5478b373b81b626340c8b62b45df62a7fa7f4519a",
+        "rows": 786,
+        "columns": [
+          "会計",
+          "款",
+          "項",
+          "目",
+          "節",
+          "細節",
+          "細々節",
+          "予算額"
+        ],
+        "funds": [
+          "01一般会計",
+          "02国民健康保険事業特別会計",
+          "06介護サービス事業特別会計",
+          "07介護保険事業特別会計",
+          "09後期高齢者医療特別会計"
+        ],
+        "amountAllIntegers": true,
+        "quotedRows": 786,
+        "totalRaw": 113571993,
+        "compatible": false,
+        "basis": "786 行に引用符付きのセルがある。現在の Load は引用符を見つけたら生成を止めるので、収録には引用符を解釈するパーサが要る"
+      },
+      {
+        "year": 2021,
+        "label": "令和３年度",
+        "direction": "expenditure",
+        "resourceName": "令和３年度予算データ（歳出）※下水道事業会計除く",
+        "url": "https://www.city.mitaka.lg.jp/c_service/095/attached/attach_95608_2.csv",
+        "coverageNote": "下水道事業会計除く",
+        "fetchedAt": "2026-08-16T03:34:05.481Z",
+        "status": 200,
+        "bytes": 588709,
+        "sha256": "104a29b4a8c53a38a8700fd483500739534da96ec8de6a9fb4d4291102243568",
+        "rows": 5419,
+        "columns": [
+          "会計",
+          "款",
+          "項",
+          "目",
+          "事項",
+          "節",
+          "細々節",
+          "予算額"
+        ],
+        "funds": [
+          "01一般会計",
+          "02国民健康保険事業特別会計",
+          "06介護サービス事業特別会計",
+          "07介護保険事業特別会計",
+          "09後期高齢者医療特別会計"
+        ],
+        "amountAllIntegers": true,
+        "quotedRows": 0,
+        "totalRaw": 110505706,
+        "compatible": true,
+        "basis": "列構成が令和6年度と一致（会計/款/項/目/事項/節/細々節/予算額）。金額列は全て整数。引用符なし。会計 5 件"
+      },
+      {
+        "year": 2021,
+        "label": "令和３年度",
+        "direction": "revenue",
+        "resourceName": "令和３年度予算データ（歳入）※下水道事業会計除く",
+        "url": "https://www.city.mitaka.lg.jp/c_service/095/attached/attach_95608_1.csv",
+        "coverageNote": "下水道事業会計除く",
+        "fetchedAt": "2026-08-16T03:34:05.501Z",
+        "status": 200,
+        "bytes": 89953,
+        "sha256": "2578b047c4c9d1537330aa68e84cc14bb1d890774eca88e78f2ac685a0910e86",
+        "rows": 776,
+        "columns": [
+          "会計",
+          "款",
+          "項",
+          "目",
+          "節",
+          "細節",
+          "細々節",
+          "予算額"
+        ],
+        "funds": [
+          "01一般会計",
+          "02国民健康保険事業特別会計",
+          "06介護サービス事業特別会計",
+          "07介護保険事業特別会計",
+          "09後期高齢者医療特別会計"
+        ],
+        "amountAllIntegers": true,
+        "quotedRows": 0,
+        "totalRaw": 110505706,
+        "compatible": true,
+        "basis": "列構成が令和6年度と一致（会計/款/項/目/節/細節/細々節/予算額）。金額列は全て整数。引用符なし。会計 5 件"
+      },
+      {
+        "year": 2020,
+        "label": "令和２年度",
+        "direction": "expenditure",
+        "resourceName": "令和２年度予算データ（歳出）※下水道事業会計除く",
+        "url": "https://www.city.mitaka.lg.jp/c_service/095/attached/attach_95608_4.csv",
+        "coverageNote": "下水道事業会計除く",
+        "fetchedAt": "2026-08-16T03:34:05.504Z",
+        "status": 200,
+        "bytes": 564628,
+        "sha256": "572a4195864cbaf64523c42f004ba47738c29866191fc76397ed232204b3b365",
+        "rows": 5232,
+        "columns": [
+          "会計",
+          "款",
+          "項",
+          "目",
+          "事項",
+          "節",
+          "細々節",
+          "予算額"
+        ],
+        "funds": [
+          "01一般会計",
+          "02国民健康保険事業特別会計",
+          "06介護サービス事業特別会計",
+          "07介護保険事業特別会計",
+          "09後期高齢者医療特別会計"
+        ],
+        "amountAllIntegers": true,
+        "quotedRows": 0,
+        "totalRaw": 109065655,
+        "compatible": true,
+        "basis": "列構成が令和6年度と一致（会計/款/項/目/事項/節/細々節/予算額）。金額列は全て整数。引用符なし。会計 5 件"
+      },
+      {
+        "year": 2020,
+        "label": "令和２年度",
+        "direction": "revenue",
+        "resourceName": "令和２年度予算データ（歳入）※下水道事業会計除く",
+        "url": "https://www.city.mitaka.lg.jp/c_service/095/attached/attach_95608_3.csv",
+        "coverageNote": "下水道事業会計除く",
+        "fetchedAt": "2026-08-16T03:34:05.524Z",
+        "status": 200,
+        "bytes": 84984,
+        "sha256": "b840dcb39a3320854fb2bf8f0ad6e78c98a7c33aa94ecf537b01684ffd3d7b3e",
+        "rows": 738,
+        "columns": [
+          "会計",
+          "款",
+          "項",
+          "目",
+          "節",
+          "細節",
+          "細々節",
+          "予算額"
+        ],
+        "funds": [
+          "01一般会計",
+          "02国民健康保険事業特別会計",
+          "06介護サービス事業特別会計",
+          "07介護保険事業特別会計",
+          "09後期高齢者医療特別会計"
+        ],
+        "amountAllIntegers": true,
+        "quotedRows": 0,
+        "totalRaw": 109065655,
+        "compatible": true,
+        "basis": "列構成が令和6年度と一致（会計/款/項/目/節/細節/細々節/予算額）。金額列は全て整数。引用符なし。会計 5 件"
+      },
+      {
+        "year": 2019,
+        "label": "令和元年度",
+        "direction": "expenditure",
+        "resourceName": "令和元年度予算データ（歳出）",
+        "url": "https://www.city.mitaka.lg.jp/c_service/095/attached/attach_95608_6.csv",
+        "coverageNote": null,
+        "fetchedAt": "2026-08-16T03:34:05.527Z",
+        "status": 200,
+        "bytes": 568821,
+        "sha256": "623f840033f29b3a972567a5910731286a6c0fec8d34830e4de00e839dd39bff",
+        "rows": 5248,
+        "columns": [
+          "会計",
+          "款",
+          "項",
+          "目",
+          "事項",
+          "節",
+          "細々節",
+          "予算額"
+        ],
+        "funds": [
+          "01一般会計",
+          "02国民健康保険事業特別会計",
+          "03下水道事業特別会計",
+          "06介護サービス事業特別会計",
+          "07介護保険事業特別会計",
+          "09後期高齢者医療特別会計"
+        ],
+        "amountAllIntegers": true,
+        "quotedRows": 0,
+        "totalRaw": 108855683,
+        "compatible": true,
+        "basis": "列構成が令和6年度と一致（会計/款/項/目/事項/節/細々節/予算額）。金額列は全て整数。引用符なし。会計 6 件"
+      },
+      {
+        "year": 2019,
+        "label": "令和元年度",
+        "direction": "revenue",
+        "resourceName": "令和元年度予算データ（歳入）",
+        "url": "https://www.city.mitaka.lg.jp/c_service/095/attached/attach_95608_5.csv",
+        "coverageNote": null,
+        "fetchedAt": "2026-08-16T03:34:05.543Z",
+        "status": 200,
+        "bytes": 88418,
+        "sha256": "4c963171f838340144527370ba01c1807bb3bb1427cda5ee1f6d12b4c3b9be05",
+        "rows": 761,
+        "columns": [
+          "会計",
+          "款",
+          "項",
+          "目",
+          "節",
+          "細節",
+          "細々節",
+          "予算額"
+        ],
+        "funds": [
+          "01一般会計",
+          "02国民健康保険事業特別会計",
+          "03下水道事業特別会計",
+          "06介護サービス事業特別会計",
+          "07介護保険事業特別会計",
+          "09後期高齢者医療特別会計"
+        ],
+        "amountAllIntegers": true,
+        "quotedRows": 0,
+        "totalRaw": 108855683,
+        "compatible": true,
+        "basis": "列構成が令和6年度と一致（会計/款/項/目/節/細節/細々節/予算額）。金額列は全て整数。引用符なし。会計 6 件"
+      },
+      {
+        "year": 2018,
+        "label": "平成30年度",
+        "direction": "expenditure",
+        "resourceName": "平成30年度予算データ（歳出）",
+        "url": "https://www.city.mitaka.lg.jp/c_service/095/attached/attach_95608_8.csv",
+        "coverageNote": null,
+        "fetchedAt": "2026-08-16T03:34:05.547Z",
+        "status": 200,
+        "bytes": 548739,
+        "sha256": "32e4dba0f4c6ea30e8a59a77d5b7e0d1530f61a49083852b9d1ca8135abe3380",
+        "rows": 5065,
+        "columns": [
+          "会計",
+          "款",
+          "項",
+          "目",
+          "事項",
+          "節",
+          "細々節",
+          "予算額"
+        ],
+        "funds": [
+          "01一般会計",
+          "02国民健康保険事業特別会計",
+          "03下水道事業特別会計",
+          "06介護サービス事業特別会計",
+          "07介護保険事業特別会計",
+          "09後期高齢者医療特別会計"
+        ],
+        "amountAllIntegers": true,
+        "quotedRows": 0,
+        "totalRaw": 108265944,
+        "compatible": true,
+        "basis": "列構成が令和6年度と一致（会計/款/項/目/事項/節/細々節/予算額）。金額列は全て整数。引用符なし。会計 6 件"
+      },
+      {
+        "year": 2018,
+        "label": "平成30年度",
+        "direction": "revenue",
+        "resourceName": "平成30年度予算データ（歳入）",
+        "url": "https://www.city.mitaka.lg.jp/c_service/095/attached/attach_95608_7.csv",
+        "coverageNote": null,
+        "fetchedAt": "2026-08-16T03:34:05.566Z",
+        "status": 200,
+        "bytes": 90443,
+        "sha256": "0063691d5e257f17391d41ce566077335f3ac7e41256ba1055ccf8dda40fc794",
+        "rows": 778,
+        "columns": [
+          "会計",
+          "款",
+          "項",
+          "目",
+          "節",
+          "細節",
+          "細々節",
+          "予算額"
+        ],
+        "funds": [
+          "01一般会計",
+          "02国民健康保険事業特別会計",
+          "03下水道事業特別会計",
+          "06介護サービス事業特別会計",
+          "07介護保険事業特別会計",
+          "09後期高齢者医療特別会計"
+        ],
+        "amountAllIntegers": true,
+        "quotedRows": 0,
+        "totalRaw": 108265944,
+        "compatible": true,
+        "basis": "列構成が令和6年度と一致（会計/款/項/目/節/細節/細々節/予算額）。金額列は全て整数。引用符なし。会計 6 件"
+      },
+      {
+        "year": 2017,
+        "label": "平成29年度",
+        "direction": "expenditure",
+        "resourceName": "平成29年度予算データ（歳出）",
+        "url": "https://www.city.mitaka.lg.jp/c_service/095/attached/attach_95608_10.csv",
+        "coverageNote": null,
+        "fetchedAt": "2026-08-16T03:34:05.570Z",
+        "status": 200,
+        "bytes": 550557,
+        "sha256": "1de7ad1644f337b867263207e5972eaba2dc58ec37fa29e0cbc22d1840dc4bab",
+        "rows": 5074,
+        "columns": [
+          "会計",
+          "款",
+          "項",
+          "目",
+          "事項",
+          "節",
+          "細々節",
+          "予算額"
+        ],
+        "funds": [
+          "01一般会計",
+          "02国民健康保険事業特別会計",
+          "03下水道事業特別会計",
+          "06介護サービス事業特別会計",
+          "07介護保険事業特別会計",
+          "09後期高齢者医療特別会計"
+        ],
+        "amountAllIntegers": true,
+        "quotedRows": 0,
+        "totalRaw": 109725410,
+        "compatible": true,
+        "basis": "列構成が令和6年度と一致（会計/款/項/目/事項/節/細々節/予算額）。金額列は全て整数。引用符なし。会計 6 件"
+      },
+      {
+        "year": 2017,
+        "label": "平成29年度",
+        "direction": "revenue",
+        "resourceName": "平成29年度予算データ（歳入）",
+        "url": "https://www.city.mitaka.lg.jp/c_service/095/attached/attach_95608_9.csv",
+        "coverageNote": null,
+        "fetchedAt": "2026-08-16T03:34:05.587Z",
+        "status": 200,
+        "bytes": 91364,
+        "sha256": "33c9a74874f122d5306f78429b0f67be42120f80c511306176d8f892eb4f3428",
+        "rows": 785,
+        "columns": [
+          "会計",
+          "款",
+          "項",
+          "目",
+          "節",
+          "細節",
+          "細々節",
+          "予算額"
+        ],
+        "funds": [
+          "01一般会計",
+          "02国民健康保険事業特別会計",
+          "03下水道事業特別会計",
+          "06介護サービス事業特別会計",
+          "07介護保険事業特別会計",
+          "09後期高齢者医療特別会計"
+        ],
+        "amountAllIntegers": true,
+        "quotedRows": 0,
+        "totalRaw": 109725410,
+        "compatible": true,
+        "basis": "列構成が令和6年度と一致（会計/款/項/目/節/細節/細々節/予算額）。金額列は全て整数。引用符なし。会計 6 件"
+      },
+      {
+        "year": 2016,
+        "label": "平成28年度",
+        "direction": "expenditure",
+        "resourceName": "平成28年度予算データ（歳出）",
+        "url": "https://www.city.mitaka.lg.jp/c_service/095/attached/attach_95608_12.csv",
+        "coverageNote": null,
+        "fetchedAt": "2026-08-16T03:34:05.590Z",
+        "status": 200,
+        "bytes": 543108,
+        "sha256": "e64f45a198b1ce880dd4e3a79bcd5b4b7c7e37015da6e634e1f62e46516dac4a",
+        "rows": 5029,
+        "columns": [
+          "会計",
+          "款",
+          "項",
+          "目",
+          "事項",
+          "節",
+          "細々節",
+          "予算額"
+        ],
+        "funds": [
+          "01一般会計",
+          "02国民健康保険事業特別会計",
+          "03下水道事業特別会計",
+          "06介護サービス事業特別会計",
+          "07介護保険事業特別会計",
+          "09後期高齢者医療特別会計"
+        ],
+        "amountAllIntegers": true,
+        "quotedRows": 0,
+        "totalRaw": 110740359,
+        "compatible": true,
+        "basis": "列構成が令和6年度と一致（会計/款/項/目/事項/節/細々節/予算額）。金額列は全て整数。引用符なし。会計 6 件"
+      },
+      {
+        "year": 2016,
+        "label": "平成28年度",
+        "direction": "revenue",
+        "resourceName": "平成28年度予算データ（歳入）",
+        "url": "https://www.city.mitaka.lg.jp/c_service/095/attached/attach_95608_11.csv",
+        "coverageNote": null,
+        "fetchedAt": "2026-08-16T03:34:05.607Z",
+        "status": 200,
+        "bytes": 89121,
+        "sha256": "21f9ee846aa197eb36a22b99e76f1e3b42b4c4b41f8facbbfeed11956c1999a0",
+        "rows": 770,
+        "columns": [
+          "会計",
+          "款",
+          "項",
+          "目",
+          "節",
+          "細節",
+          "細々節",
+          "予算額"
+        ],
+        "funds": [
+          "01一般会計",
+          "02国民健康保険事業特別会計",
+          "03下水道事業特別会計",
+          "06介護サービス事業特別会計",
+          "07介護保険事業特別会計",
+          "09後期高齢者医療特別会計"
+        ],
+        "amountAllIntegers": true,
+        "quotedRows": 0,
+        "totalRaw": 110740359,
+        "compatible": true,
+        "basis": "列構成が令和6年度と一致（会計/款/項/目/節/細節/細々節/予算額）。金額列は全て整数。引用符なし。会計 6 件"
+      }
+    ]
+  },
+  "_comment": "報告のうち、実行結果から導けない内容。判断・調査・宣言なので手で書く。数値は report/build.py が dbt の manifest.json / run_results.json と core への問い合わせから導く。"
+}
