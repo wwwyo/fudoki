@@ -4,16 +4,17 @@
  * `fetch-robots` / `check-bulletins` / `check-budget-granularity` が同じ処理を
  * 個別に持っていたため切り出した。3本目で同じものを書いた時点が共通化の合図だった。
  */
-import { Manifest } from '../transcripts/gates'
+import { Gates } from '../transcripts/gates'
 
 /** 全スクリプトで同じ UA を名乗る。相手が名指しで拒否できる状態を保つため */
 export const UA = 'fudoki/0.1 (+https://github.com/wwwyo/fudoki)'
 
 /** 書き戻すスクリプトが同じパスを参照できるよう公開する */
-export const MANIFEST_PATH = new URL('../../data/transcripts/gates.json', import.meta.url).pathname
+export const GATES_PATH = new URL('../../data/transcripts/gates.json', import.meta.url).pathname
 
-export async function loadManifest() {
-  return Manifest.parse(JSON.parse(await Bun.file(MANIFEST_PATH).text()))
+/** ③会議録のゲート判定。**①予算には掛からない**（根拠が著作権法40条1項と各議会の規約） */
+export async function loadGates() {
+  return Gates.parse(JSON.parse(await Bun.file(GATES_PATH).text()))
 }
 
 /** CSV は cp932 で配られることがある。置換文字が出たら読み直す */

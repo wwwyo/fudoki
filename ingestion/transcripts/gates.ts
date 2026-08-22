@@ -147,44 +147,13 @@ export const Transcript = z.object({
  * 公式の標準ではない。デジタル庁の自治体標準オープンデータセット（旧・推奨データセット）の
  * 定義書には広報紙のテーマが存在しないことを確認済み。詳細は src/schema/tokyo-municipal-bulletin-profile.ts。
  */
-export const SchemaCheck = z.object({
-  standard: z.enum(['fudoki/tokyo-municipal-bulletin-profile/0.1', 'unknown']),
-  conformance: z.enum(['conformant', 'variant', 'broken', 'unchecked']),
-  columns: z.number().int().nullable().optional(),
-  /** 標準に無い追加列。variant の内訳を残す */
-  extraColumns: z.array(z.string()).nullable().optional(),
-  checkedAt: z.iso.date().optional(),
-  note: z.string().nullable().optional(),
-})
-
-/** 東京都オープンデータカタログ（CKAN）で見つかった1データセット */
-export const OpenDataset = z.object({
+/** 議会だより以外のオープンデータ1件。ここでは議員名簿だけが該当する */
+const OpenDataset = z.object({
   title: z.string(),
   formats: z.array(z.string()),
-  /** CKAN のリソース URL。スキームなしが混ざるため取り込み時に正規化する */
   url: z.url().nullable(),
   license: z.string().nullable(),
-  /** 同カテゴリで見つかったデータセット数 */
   count: z.number().int().positive(),
-  schemaCheck: SchemaCheck.optional(),
-})
-
-/** 自治体が独自に持つポータル（東京都カタログとは別） */
-export const OwnPortal = z.object({
-  type: z.enum(['ckan', 'dcat', 'linkdata', 'html']),
-  baseUrl: z.url(),
-  feed: z.string().optional(),
-  orgFilter: z.string().optional(),
-  datasets: z.number().int().nullable(),
-})
-
-export const OpenData = z.object({
-  tokyoCatalogDatasets: z.number().int().nonnegative(),
-  budget: OpenDataset.nullable(),
-  memberRoster: OpenDataset.nullable(),
-  procurement: OpenDataset.nullable(),
-  gikaiDayori: OpenDataset.nullable(),
-  ownPortal: OwnPortal.optional(),
 })
 
 export const Status = z.object({
@@ -194,15 +163,13 @@ export const Status = z.object({
 })
 
 export const Jurisdiction = z.object({
-  name: z.string(),
-  /** Open Civic Data 形式の識別子。本家未登録の市区町村は同形式で自前定義 */
-  ocdId: z.string().regex(/^ocd-division\/country:jp\/prefecture:\d{2}\/city:\d{6}$/),
   transcript: Transcript,
-  openData: OpenData,
   status: Status,
+  /** 議員名簿。③に属するので残す */
+  memberRoster: OpenDataset.optional(),
 })
 
-export const Manifest = z.object({
+export const Gates = z.object({
   $schema: z.string().optional(),
   generatedAt: z.iso.date(),
   note: z.string(),
@@ -223,15 +190,14 @@ export type Gate = z.infer<typeof Gate>
 export type SystemFamily = z.infer<typeof SystemFamily>
 export type RobotsVerdict = z.infer<typeof RobotsVerdict>
 export type Transcript = z.infer<typeof Transcript>
-export type OpenData = z.infer<typeof OpenData>
 export type Jurisdiction = z.infer<typeof Jurisdiction>
-export type Manifest = z.infer<typeof Manifest>
+export type Gates = z.infer<typeof Gates>
 
 /**
  * driver が取得対象を選ぶときの唯一の入口。取得先 URL が必ず引ける形で返す。
  * `gate.fetch === 'allow'` だけを通す（review / deny は含めない）。
  */
-export function fetchTargets(m: Manifest): FetchTarget[] {
+export function fetchTargets(m: Gates): FetchTarget[] {
   return Object.entries(m.jurisdictions).flatMap(([code, j]) => {
     const url = j.transcript.transcriptUrl
     return j.transcript.gate.fetch === 'allow' && url ? [{ code, url, jurisdiction: j }] : []

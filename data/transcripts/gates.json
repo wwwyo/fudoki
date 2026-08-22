@@ -13,10 +13,15 @@
       "no-source": "会議録が Web 公開されていない"
     }
   },
+  "note": "東京都62区市町村の会議録・オープンデータ源の調査結果。会議録システムは 2020年の地方議会会議録コーパスプロジェクト調査を出発点に現況を実測。CKAN は organization:t<団体コード> で全件取得して分類。 フィールド名 transcript は SayIt(mySociety) の語彙に合わせたもの（Popolo に会議録を表す型は無く、Speech までしか定義されていない）。 議会だよりはデータセット名が揺れる（議会だより / めぐろ区議会だより / 区議会だより一覧 等）ため、openData.gikaiDayori.schemaCheck は名称ではなく CSV の列構成で fudoki/tokyo-municipal-bulletin-profile/0.1 準拠を判定した実測結果を持つ（この形式は公式標準ではなく fudoki が実測に名前を与えたもの。src/schema/tokyo-municipal-bulletin-profile.ts 参照）。",
+  "sources": {
+    "corpusProject": "http://local-politics.jp/",
+    "tokyoCatalog": "https://catalog.data.metro.tokyo.lg.jp/api/3/action/",
+    "procurementApi": "https://www.kkj.go.jp/api/"
+  },
+  "generatedAt": "2026-08-10",
   "jurisdictions": {
     "131016": {
-      "name": "千代田区",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:131016",
       "transcript": {
         "systemFamily": "db-search",
         "transcriptUrl": "https://www.city.chiyoda.tokyo.dbsr.jp/",
@@ -48,29 +53,6 @@
           "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 29,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/chiyoda/131016_chiyodaku_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -78,8 +60,6 @@
       }
     },
     "131024": {
-      "name": "中央区",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:131024",
       "transcript": {
         "systemFamily": "own-site",
         "transcriptUrl": "https://www.kugikai.city.chuo.lg.jp/kaigiroku/index.html",
@@ -116,29 +96,6 @@
           "note": "REP 上は独自 UA に適用されるルールが無いが、発行者が AI 用途を名指しで拒否している意図を尊重して取得しない"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 47,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/chuo/131024_chuoku_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -146,8 +103,6 @@
       }
     },
     "131032": {
-      "name": "港区",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:131032",
       "transcript": {
         "systemFamily": "voices",
         "transcriptUrl": "https://gikai2.city.minato.tokyo.jp/voices/g07v_search.asp",
@@ -183,18 +138,6 @@
           "note": null
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 268,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": null,
-        "ownPortal": {
-          "type": "ckan",
-          "baseUrl": "https://opendata.city.minato.tokyo.jp",
-          "datasets": 560
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -202,8 +145,6 @@
       }
     },
     "131041": {
-      "name": "新宿区",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:131041",
       "transcript": {
         "systemFamily": "dnp",
         "transcriptUrl": "https://ssp.kaigiroku.net/tenant/shinjuku/pg/index.html",
@@ -237,34 +178,6 @@
           "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 137,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/shinjyuku/131041_shinjyukuku_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        },
-        "ownPortal": {
-          "type": "linkdata",
-          "baseUrl": "https://linkdata.org",
-          "datasets": null
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -272,8 +185,6 @@
       }
     },
     "131059": {
-      "name": "文京区",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:131059",
       "transcript": {
         "systemFamily": "db-search",
         "transcriptUrl": "https://www.city.bunkyo.tokyo.dbsr.jp/",
@@ -305,21 +216,6 @@
           "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 57,
-        "budget": {
-          "title": "予算総括表",
-          "formats": [
-            "ZIP"
-          ],
-          "url": "https://www.city.bunkyo.lg.jp/documents/6059/yosansokatsuhyo_excel.zip",
-          "license": "CC-BY-4.0",
-          "count": 2
-        },
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": null
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -327,8 +223,6 @@
       }
     },
     "131067": {
-      "name": "台東区",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:131067",
       "transcript": {
         "systemFamily": "voices",
         "transcriptUrl": "https://taito.gijiroku.com/voices/index.asp",
@@ -361,13 +255,6 @@
           "note": null
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 187,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": null
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -375,8 +262,6 @@
       }
     },
     "131075": {
-      "name": "墨田区",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:131075",
       "transcript": {
         "systemFamily": "dnp",
         "transcriptUrl": "https://ssp.kaigiroku.net/tenant/sumida/pg/index.html",
@@ -410,13 +295,6 @@
           "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 199,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": null
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -424,8 +302,6 @@
       }
     },
     "131083": {
-      "name": "江東区",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:131083",
       "transcript": {
         "systemFamily": "db-search",
         "transcriptUrl": "https://www.city.koto.tokyo.dbsr.jp/",
@@ -457,29 +333,6 @@
           "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 97,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/koto/131083_kotoku_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -487,8 +340,6 @@
       }
     },
     "131091": {
-      "name": "品川区",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:131091",
       "transcript": {
         "systemFamily": "db-search",
         "transcriptUrl": "https://kaigiroku.city.shinagawa.tokyo.jp/",
@@ -519,29 +370,6 @@
           "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 139,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/shinagawa/131091_shinagawaku_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -549,8 +377,6 @@
       }
     },
     "131105": {
-      "name": "目黒区",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:131105",
       "transcript": {
         "systemFamily": "kensakusystem",
         "transcriptUrl": "https://www.kensakusystem.jp/meguro/",
@@ -580,44 +406,6 @@
           "note": null
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 186,
-        "budget": {
-          "title": "財政状況資料集",
-          "formats": [
-            "XLSM",
-            "XLSX"
-          ],
-          "url": "https://data.bodik.jp/dataset/498accc5-4a1b-44e1-b9df-29e9dd722107/resource/4b39cdc0-0a27-4d0b-a343-4c3f535e6026/download/131105_2011_zaiseijokyoshiryo.xlsx",
-          "license": "CC-BY-4.0",
-          "count": 1
-        },
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "めぐろ区議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://data.bodik.jp/dataset/3261f592-309b-47ff-8fee-bb34cbeff6f0/resource/217003c1-2600-4280-b004-18d1a43fe552/download/131105_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 2,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        },
-        "ownPortal": {
-          "type": "ckan",
-          "baseUrl": "https://data.bodik.jp",
-          "orgFilter": "131105",
-          "datasets": 169
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -625,8 +413,6 @@
       }
     },
     "131113": {
-      "name": "大田区",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:131113",
       "transcript": {
         "systemFamily": "voices",
         "transcriptUrl": "https://www.gikai-ota-tokyo.jp/ota/",
@@ -659,37 +445,6 @@
           "note": null
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 278,
-        "budget": {
-          "title": "大田区データ概要(令和5年度一般会計の決算額)",
-          "formats": [
-            "XLSX"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/ota/R6/131113_R6_108_ootakudetagaiyou_reiwa5nendoippankaikeinokessangaku.xlsx",
-          "license": "CC-BY-4.0",
-          "count": 22
-        },
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/ota/131113_otaku_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -697,8 +452,6 @@
       }
     },
     "131121": {
-      "name": "世田谷区",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:131121",
       "transcript": {
         "systemFamily": "voices",
         "transcriptUrl": "https://kugi.city.setagaya.tokyo.jp/voices/",
@@ -734,29 +487,6 @@
           "note": null
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 25,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/setagaya/131121_setagayaku_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -764,8 +494,6 @@
       }
     },
     "131130": {
-      "name": "渋谷区",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:131130",
       "transcript": {
         "systemFamily": "dnp",
         "transcriptUrl": "https://ssp.kaigiroku.net/tenant/shibuya/pg/index.html",
@@ -799,35 +527,6 @@
           "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 17,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/shibuya/131130_shibuyaku_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        },
-        "ownPortal": {
-          "type": "dcat",
-          "baseUrl": "https://city-shibuya-data.opendata.arcgis.com",
-          "feed": "/api/feed/dcat-us/1.1.json",
-          "datasets": 122
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -835,8 +534,6 @@
       }
     },
     "131148": {
-      "name": "中野区",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:131148",
       "transcript": {
         "systemFamily": "own-site",
         "transcriptUrl": "https://kugikai-nakano.jp/search.html",
@@ -872,34 +569,6 @@
           "note": null
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 167,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www2.wagmap.jp/nakanodatamap/nakanodatamap/opendatafile/map_1/CSV/opendata_57001289.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "variant",
-            "columns": 20,
-            "extraColumns": [
-              "GIS用住所",
-              "経度",
-              "緯度",
-              "分類"
-            ],
-            "checkedAt": "2026-08-10",
-            "note": "missing=なし extra=GIS用住所/経度/緯度/分類"
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -907,8 +576,6 @@
       }
     },
     "131156": {
-      "name": "杉並区",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:131156",
       "transcript": {
         "systemFamily": "voices",
         "transcriptUrl": "https://suginami.gijiroku.com/voices/index.asp",
@@ -940,37 +607,6 @@
           "note": null
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 103,
-        "budget": {
-          "title": "歳入予算",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.city.suginami.tokyo.jp/documents/18016/sainyu.csv",
-          "license": "CC-BY-4.0",
-          "count": 4
-        },
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "区議会だより一覧",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/suginami/131156_suginamiku_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -978,8 +614,6 @@
       }
     },
     "131164": {
-      "name": "豊島区",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:131164",
       "transcript": {
         "systemFamily": "kensakusystem",
         "transcriptUrl": "https://www.kensakusystem.jp/toshima/",
@@ -1009,29 +643,6 @@
           "note": null
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 32,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/toshima/131164_toshimaku_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -1039,8 +650,6 @@
       }
     },
     "131172": {
-      "name": "北区",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:131172",
       "transcript": {
         "systemFamily": "dnp",
         "transcriptUrl": "https://ssp.kaigiroku.net/tenant/kita/pg/index.html",
@@ -1074,18 +683,6 @@
           "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 7,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": null,
-        "ownPortal": {
-          "type": "html",
-          "baseUrl": "https://www.city.kita.lg.jp/city-information/disclosure/1014461.html",
-          "datasets": null
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -1093,8 +690,6 @@
       }
     },
     "131181": {
-      "name": "荒川区",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:131181",
       "transcript": {
         "systemFamily": "dnp",
         "transcriptUrl": "https://ssp.kaigiroku.net/tenant/arakawa/pg/index.html",
@@ -1128,29 +723,6 @@
           "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 33,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/arakawa/131181_arakawaku_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -1158,8 +730,6 @@
       }
     },
     "131199": {
-      "name": "板橋区",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:131199",
       "transcript": {
         "systemFamily": "voices",
         "transcriptUrl": "https://itabashi.gijiroku.com/voices/g07v_search.asp",
@@ -1195,29 +765,6 @@
           "note": null
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 211,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/itabashi/131199_itabashiku_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -1225,8 +772,6 @@
       }
     },
     "131202": {
-      "name": "練馬区",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:131202",
       "transcript": {
         "systemFamily": "dnp",
         "transcriptUrl": "https://ssp.kaigiroku.net/tenant/nerima/pg/index.html",
@@ -1260,48 +805,6 @@
           "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 79,
-        "budget": {
-          "title": "財政状況資料集",
-          "formats": [
-            "XLS",
-            "XLSX"
-          ],
-          "url": "https://www.city.nerima.tokyo.jp/kusei/tokei/opendata/opendatasite/tokei_kusei/hikaku.files/h25_hikaku.xlsx",
-          "license": "CC-BY-4.0",
-          "count": 8
-        },
-        "memberRoster": null,
-        "procurement": {
-          "title": "調達情報",
-          "formats": [
-            "CSV",
-            "XLS",
-            "XLSX"
-          ],
-          "url": "https://www.city.nerima.tokyo.jp/kusei/tokei/opendata/opendatasite/tokei_kusei/tyoutatujouhou.files/131202_kentiku.csv",
-          "license": "CC-BY-4.0",
-          "count": 1
-        },
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/nerima/131202_nerimaku_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -1309,8 +812,6 @@
       }
     },
     "131211": {
-      "name": "足立区",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:131211",
       "transcript": {
         "systemFamily": "voices",
         "transcriptUrl": "https://www.gikai-adachi.jp/voices2/",
@@ -1347,13 +848,6 @@
           "note": null
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 10,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": null
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -1361,8 +855,6 @@
       }
     },
     "131229": {
-      "name": "葛飾区",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:131229",
       "transcript": {
         "systemFamily": "kensakusystem",
         "transcriptUrl": "https://www.kensakusystem.jp/katsushika/",
@@ -1392,29 +884,6 @@
           "note": null
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 32,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/katsushika/131229_katsushikaku_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -1422,8 +891,6 @@
       }
     },
     "131237": {
-      "name": "江戸川区",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:131237",
       "transcript": {
         "systemFamily": "voices",
         "transcriptUrl": "https://www.gikai.city.edogawa.tokyo.jp/",
@@ -1456,13 +923,6 @@
           "note": null
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 266,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": null
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -1470,8 +930,6 @@
       }
     },
     "132012": {
-      "name": "八王子市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132012",
       "transcript": {
         "systemFamily": "db-search",
         "transcriptUrl": "https://www.city.hachioji.tokyo.dbsr.jp/",
@@ -1503,37 +961,6 @@
           "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 78,
-        "budget": {
-          "title": "平成24年度予算の概要",
-          "formats": [
-            "PDF"
-          ],
-          "url": "https://www.city.hachioji.tokyo.jp/contents/open/002/p005883_d/fil/h24sainyuu.pdf",
-          "license": "CC-BY-4.0",
-          "count": 1
-        },
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/hachioji/132012_hachiojishi_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -1541,8 +968,6 @@
       }
     },
     "132021": {
-      "name": "立川市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132021",
       "transcript": {
         "systemFamily": "dnp",
         "transcriptUrl": "https://ssp.kaigiroku.net/tenant/tachikawa/pg/index.html",
@@ -1576,29 +1001,6 @@
           "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 35,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/tachikawa/132021_tachikawashi_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -1606,8 +1008,6 @@
       }
     },
     "132039": {
-      "name": "武蔵野市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132039",
       "transcript": {
         "systemFamily": "db-search",
         "transcriptUrl": "https://www.city.musashino.tokyo.dbsr.jp/",
@@ -1639,29 +1039,6 @@
           "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 24,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/musashino/132039_musashinoshi_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -1669,8 +1046,6 @@
       }
     },
     "132047": {
-      "name": "三鷹市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132047",
       "transcript": {
         "systemFamily": "db-search",
         "transcriptUrl": "https://www.city.mitaka.tokyo.dbsr.jp/",
@@ -1702,37 +1077,6 @@
           "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 32,
-        "budget": {
-          "title": "【予算・決算】市税の概要",
-          "formats": [
-            "PDF"
-          ],
-          "url": "https://www.city.mitaka.lg.jp/c_service/078/attached/attach_78398_1.pdf",
-          "license": "CC-BY-4.0",
-          "count": 4
-        },
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "【事業案内】みたか議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.city.mitaka.lg.jp/c_service/111/attached/attach_111857_1.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -1740,8 +1084,6 @@
       }
     },
     "132055": {
-      "name": "青梅市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132055",
       "transcript": {
         "systemFamily": "dnp",
         "transcriptUrl": "https://ssp.kaigiroku.net/tenant/ome/pg/index.html",
@@ -1775,29 +1117,6 @@
           "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 51,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/ome/132055_omeshi_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -1805,8 +1124,6 @@
       }
     },
     "132063": {
-      "name": "府中市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132063",
       "transcript": {
         "systemFamily": "db-search",
         "transcriptUrl": "https://www.city.fuchu.tokyo.dbsr.jp/",
@@ -1838,29 +1155,6 @@
           "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 35,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/fuchu/132063_fuchushi_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -1868,8 +1162,6 @@
       }
     },
     "132071": {
-      "name": "昭島市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132071",
       "transcript": {
         "systemFamily": "dnp",
         "transcriptUrl": "https://ssp.kaigiroku.net/tenant/akishima/pg/index.html",
@@ -1903,29 +1195,6 @@
           "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 20,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/akishima/132071_akishimashi_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -1933,8 +1202,6 @@
       }
     },
     "132080": {
-      "name": "調布市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132080",
       "transcript": {
         "systemFamily": "voices",
         "transcriptUrl": "https://chofucity.gijiroku.com/voices/",
@@ -1967,21 +1234,6 @@
           "note": null
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 1487,
-        "budget": {
-          "title": "(令和6年)普通会計歳入歳出決算額",
-          "formats": [
-            "XLS"
-          ],
-          "url": "https://www.city.chofu.lg.jp/documents/16704/6_05_040.xls",
-          "license": "CC-BY-4.0",
-          "count": 39
-        },
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": null
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -1989,8 +1241,6 @@
       }
     },
     "132098": {
-      "name": "町田市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132098",
       "transcript": {
         "systemFamily": "voices",
         "transcriptUrl": "https://www.gikai-machida.jp/voices/g07_Congress.asp",
@@ -2023,55 +1273,23 @@
           "note": null
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 127,
-        "budget": {
-          "title": "歳入歳出決算書",
-          "formats": [
-            "PDF"
-          ],
-          "url": "https://www.city.machida.tokyo.jp/shisei/opendata/zaiseizeimu/sainyusaishutsukessansho.files/2020_kessansho.pdf",
-          "license": "CC-BY-4.0",
-          "count": 3
-        },
-        "memberRoster": {
-          "title": "町田市議会議員名簿",
-          "formats": [
-            "CSV",
-            "PDF"
-          ],
-          "url": "https://www.city.machida.tokyo.jp/shisei/opendata/senkyo/giinmeibo.files/giinmeibo.csv",
-          "license": "CC-BY-4.0",
-          "count": 1
-        },
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/machida/132098_machidashi_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
         "published": false
+      },
+      "memberRoster": {
+        "title": "町田市議会議員名簿",
+        "formats": [
+          "CSV",
+          "PDF"
+        ],
+        "url": "https://www.city.machida.tokyo.jp/shisei/opendata/senkyo/giinmeibo.files/giinmeibo.csv",
+        "license": "CC-BY-4.0",
+        "count": 1
       }
     },
     "132101": {
-      "name": "小金井市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132101",
       "transcript": {
         "systemFamily": "db-search",
         "transcriptUrl": "https://www.city.koganei.tokyo.dbsr.jp/",
@@ -2103,29 +1321,6 @@
           "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 50,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/koganei/132101_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -2133,8 +1328,6 @@
       }
     },
     "132110": {
-      "name": "小平市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132110",
       "transcript": {
         "systemFamily": "dnp",
         "transcriptUrl": "https://ssp.kaigiroku.net/tenant/kodaira/pg/index.html",
@@ -2168,29 +1361,6 @@
           "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 21,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/kodaira/132110_kodairashi_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -2198,8 +1368,6 @@
       }
     },
     "132128": {
-      "name": "日野市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132128",
       "transcript": {
         "systemFamily": "db-search",
         "transcriptUrl": "https://www.city.hino.tokyo.dbsr.jp/",
@@ -2231,13 +1399,6 @@
           "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 30,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": null
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -2245,8 +1406,6 @@
       }
     },
     "132136": {
-      "name": "東村山市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132136",
       "transcript": {
         "systemFamily": "own-site",
         "transcriptUrl": "https://www.city.higashimurayama.tokyo.jp/gikai/gikaijoho/kensaku/index.html",
@@ -2283,13 +1442,6 @@
           "note": "robots.txt を取得できず REP を確認できない"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 45,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": null
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -2297,8 +1449,6 @@
       }
     },
     "132144": {
-      "name": "国分寺市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132144",
       "transcript": {
         "systemFamily": "db-search",
         "transcriptUrl": "https://www.city.kokubunji.tokyo.dbsr.jp/",
@@ -2330,29 +1480,6 @@
           "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 25,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/kokubunji/132144_kokubunjishi_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -2360,8 +1487,6 @@
       }
     },
     "132152": {
-      "name": "国立市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132152",
       "transcript": {
         "systemFamily": "db-search",
         "transcriptUrl": "https://www.city.kunitachi.tokyo.dbsr.jp/",
@@ -2393,29 +1518,6 @@
           "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 29,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/kunitachi/132152_kunitachishi_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -2423,8 +1525,6 @@
       }
     },
     "132187": {
-      "name": "福生市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132187",
       "transcript": {
         "systemFamily": "db-search",
         "transcriptUrl": "https://www.city.fussa.tokyo.dbsr.jp/",
@@ -2456,13 +1556,6 @@
           "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 13,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": null
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -2470,8 +1563,6 @@
       }
     },
     "132195": {
-      "name": "狛江市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132195",
       "transcript": {
         "systemFamily": "db-search",
         "transcriptUrl": "https://www.city.komae.tokyo.dbsr.jp/",
@@ -2503,37 +1594,6 @@
           "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 399,
-        "budget": {
-          "title": "令和3年度普通会計決算概況26市比較",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_R5futukaikei26hikaku.csv",
-          "license": "CC-BY-4.0",
-          "count": 28
-        },
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/komae/132195_komaeshi_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -2541,8 +1601,6 @@
       }
     },
     "132209": {
-      "name": "東大和市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132209",
       "transcript": {
         "systemFamily": "dnp",
         "transcriptUrl": "https://ssp.kaigiroku.net/tenant/higashiyamato/pg/index.html",
@@ -2579,29 +1637,6 @@
           "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 24,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/higashiyamato/132209_higashiyamatoshi_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -2609,8 +1644,6 @@
       }
     },
     "132217": {
-      "name": "清瀬市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132217",
       "transcript": {
         "systemFamily": "dnp",
         "transcriptUrl": "https://ssp.kaigiroku.net/tenant/kiyose/pg/index.html",
@@ -2644,29 +1677,6 @@
           "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 64,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "HTML"
-          ],
-          "url": "https://www.city.kiyose.lg.jp/opendata/opendata/opendataichiran/1014942.html",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "broken",
-            "columns": null,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": "CSV ではなく HTML が返る"
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -2674,8 +1684,6 @@
       }
     },
     "132225": {
-      "name": "東久留米市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132225",
       "transcript": {
         "systemFamily": "db-search",
         "transcriptUrl": "https://www.city.higashikurume.tokyo.dbsr.jp/",
@@ -2707,29 +1715,6 @@
           "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 21,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/higashikurume/132225_higashikurumeshi_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -2737,8 +1722,6 @@
       }
     },
     "132233": {
-      "name": "武蔵村山市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132233",
       "transcript": {
         "systemFamily": "dnp",
         "transcriptUrl": "https://ssp.kaigiroku.net/tenant/musashimurayama/pg/index.html",
@@ -2772,13 +1755,6 @@
           "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 14,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": null
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -2786,8 +1762,6 @@
       }
     },
     "132241": {
-      "name": "多摩市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132241",
       "transcript": {
         "systemFamily": "db-search",
         "transcriptUrl": "https://www.city.tama.tokyo.dbsr.jp/",
@@ -2819,37 +1793,6 @@
           "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 61,
-        "budget": {
-          "title": "多摩市下水道事業会計決算書（平成29年度）",
-          "formats": [
-            "PDF"
-          ],
-          "url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/002/458/29gesui_financial_statements.pdf",
-          "license": "CC-BY-4.0",
-          "count": 20
-        },
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/tama/132241_tamashi_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -2857,8 +1800,6 @@
       }
     },
     "132250": {
-      "name": "稲城市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132250",
       "transcript": {
         "systemFamily": "db-search",
         "transcriptUrl": "https://www.city.inagi.tokyo.dbsr.jp/",
@@ -2890,29 +1831,6 @@
           "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 17,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/inagi/132250_inagishi_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -2920,8 +1838,6 @@
       }
     },
     "132276": {
-      "name": "羽村市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132276",
       "transcript": {
         "systemFamily": "db-search",
         "transcriptUrl": "https://www.city.hamura.tokyo.dbsr.jp/",
@@ -2953,29 +1869,6 @@
           "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 27,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/hamura/132276_hamurashi_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -2983,8 +1876,6 @@
       }
     },
     "132284": {
-      "name": "あきる野市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132284",
       "transcript": {
         "systemFamily": "db-search",
         "transcriptUrl": "https://www.city.akiruno.tokyo.dbsr.jp/",
@@ -3016,29 +1907,6 @@
           "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 25,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/akiruno/132284_akirunoshi_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -3046,8 +1914,6 @@
       }
     },
     "132292": {
-      "name": "西東京市",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:132292",
       "transcript": {
         "systemFamily": "db-search",
         "transcriptUrl": "https://www.city.nishitokyo.tokyo.dbsr.jp/",
@@ -3079,29 +1945,6 @@
           "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 37,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/nishitokyo/132292_nishitokyoshi_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -3109,8 +1952,6 @@
       }
     },
     "133035": {
-      "name": "瑞穂町",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:133035",
       "transcript": {
         "systemFamily": "dnp",
         "transcriptUrl": "https://ssp.kaigiroku.net/tenant/mizuho/pg/index.html",
@@ -3144,13 +1985,6 @@
           "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 10,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": null
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -3158,8 +1992,6 @@
       }
     },
     "133051": {
-      "name": "日の出町",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:133051",
       "transcript": {
         "systemFamily": "db-search",
         "transcriptUrl": "https://www.town.hinode.tokyo.dbsr.jp/",
@@ -3191,29 +2023,6 @@
           "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 13,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/hinode/133051_hinodemachi_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -3221,8 +2030,6 @@
       }
     },
     "133078": {
-      "name": "檜原村",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:133078",
       "transcript": {
         "systemFamily": "db-search",
         "transcriptUrl": "https://www.vill.hinohara.tokyo.dbsr.jp/",
@@ -3259,13 +2066,6 @@
           "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 3,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": null
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -3273,8 +2073,6 @@
       }
     },
     "133086": {
-      "name": "奥多摩町",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:133086",
       "transcript": {
         "systemFamily": "db-search",
         "transcriptUrl": "https://www.town.okutama.tokyo.dbsr.jp/",
@@ -3311,13 +2109,6 @@
           "note": "robots.txt が全経路を Disallow。許諾を得れば解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 4,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": null
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -3325,8 +2116,6 @@
       }
     },
     "133612": {
-      "name": "大島町",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:133612",
       "transcript": {
         "systemFamily": "none",
         "transcriptUrl": null,
@@ -3355,13 +2144,6 @@
           "note": null
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 2,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": null
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -3369,8 +2151,6 @@
       }
     },
     "133621": {
-      "name": "利島村",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:133621",
       "transcript": {
         "systemFamily": "own-site",
         "transcriptUrl": "https://www.toshimamura.org/about/assembly.html",
@@ -3405,13 +2185,6 @@
           "note": null
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 10,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": null
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -3419,8 +2192,6 @@
       }
     },
     "133639": {
-      "name": "新島村",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:133639",
       "transcript": {
         "systemFamily": "none",
         "transcriptUrl": null,
@@ -3449,29 +2220,6 @@
           "note": null
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 4,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/niijima/133639_niijimamura_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -3479,8 +2227,6 @@
       }
     },
     "133647": {
-      "name": "神津島村",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:133647",
       "transcript": {
         "systemFamily": "own-site",
         "transcriptUrl": "https://www.vill.kouzushima.tokyo.jp/busyo/gikai/",
@@ -3515,13 +2261,6 @@
           "note": null
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 0,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": null
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -3529,8 +2268,6 @@
       }
     },
     "133817": {
-      "name": "三宅村",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:133817",
       "transcript": {
         "systemFamily": "none",
         "transcriptUrl": null,
@@ -3559,13 +2296,6 @@
           "note": null
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 2,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": null
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -3573,8 +2303,6 @@
       }
     },
     "133825": {
-      "name": "御蔵島村",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:133825",
       "transcript": {
         "systemFamily": "none",
         "transcriptUrl": null,
@@ -3602,29 +2330,6 @@
           "note": null
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 4,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/mikurajima/133825_mikurajimamura_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -3632,8 +2337,6 @@
       }
     },
     "134015": {
-      "name": "八丈町",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:134015",
       "transcript": {
         "systemFamily": "own-site",
         "transcriptUrl": "https://www.town.hachijo.tokyo.jp/chousei/chougikai/katsushin/kaigi-kiroku/kairoku/",
@@ -3668,29 +2371,6 @@
           "note": null
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 14,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/hachijo/134015_hachijomachi_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -3698,8 +2378,6 @@
       }
     },
     "134023": {
-      "name": "青ヶ島村",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:134023",
       "transcript": {
         "systemFamily": "none",
         "transcriptUrl": null,
@@ -3728,13 +2406,6 @@
           "note": null
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 2,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": null
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
@@ -3742,8 +2413,6 @@
       }
     },
     "134210": {
-      "name": "小笠原村",
-      "ocdId": "ocd-division/country:jp/prefecture:13/city:134210",
       "transcript": {
         "systemFamily": "dnp",
         "transcriptUrl": "https://ssp.kaigiroku.net/tenant/ogasawara/SpTop.html",
@@ -3780,42 +2449,11 @@
           "note": "画面は Allow だが描画すると Disallow の /dnp/search/* を叩く。ベンダー・議会事務局への照会で解除しうる"
         }
       },
-      "openData": {
-        "tokyoCatalogDatasets": 10,
-        "budget": null,
-        "memberRoster": null,
-        "procurement": null,
-        "gikaiDayori": {
-          "title": "議会だより",
-          "formats": [
-            "CSV"
-          ],
-          "url": "https://www.opendata.metro.tokyo.lg.jp/ogasawara/134210_ogasawaramura_gikaidayori.csv",
-          "license": "CC-BY-4.0",
-          "count": 1,
-          "schemaCheck": {
-            "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
-            "conformance": "conformant",
-            "columns": 16,
-            "extraColumns": null,
-            "checkedAt": "2026-08-10",
-            "note": null
-          }
-        }
-      },
       "status": {
         "driver": "not-started",
         "ingestValidated": false,
         "published": false
       }
     }
-  },
-  "$schema": "./manifest.schema.json",
-  "generatedAt": "2026-08-10",
-  "note": "東京都62区市町村の会議録・オープンデータ源の調査結果。会議録システムは 2020年の地方議会会議録コーパスプロジェクト調査を出発点に現況を実測。CKAN は organization:t<団体コード> で全件取得して分類。 フィールド名 transcript は SayIt(mySociety) の語彙に合わせたもの（Popolo に会議録を表す型は無く、Speech までしか定義されていない）。 議会だよりはデータセット名が揺れる（議会だより / めぐろ区議会だより / 区議会だより一覧 等）ため、openData.gikaiDayori.schemaCheck は名称ではなく CSV の列構成で fudoki/tokyo-municipal-bulletin-profile/0.1 準拠を判定した実測結果を持つ（この形式は公式標準ではなく fudoki が実測に名前を与えたもの。src/schema/tokyo-municipal-bulletin-profile.ts 参照）。",
-  "sources": {
-    "corpusProject": "http://local-politics.jp/",
-    "tokyoCatalog": "https://catalog.data.metro.tokyo.lg.jp/api/3/action/",
-    "procurementApi": "https://www.kkj.go.jp/api/"
   }
 }

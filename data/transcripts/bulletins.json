@@ -1,0 +1,724 @@
+{
+  "note": "議会だより CSV の所在と、観測プロファイルへの適合判定。適合は `bun run check:bulletins` が実測して書き戻す（手で書かない）。",
+  "datasets": {
+    "131016": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/chiyoda/131016_chiyodaku_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "131024": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/chuo/131024_chuoku_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "131041": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/shinjyuku/131041_shinjyukuku_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "131083": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/koto/131083_kotoku_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "131091": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/shinagawa/131091_shinagawaku_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "131105": {
+      "title": "めぐろ区議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://data.bodik.jp/dataset/3261f592-309b-47ff-8fee-bb34cbeff6f0/resource/217003c1-2600-4280-b004-18d1a43fe552/download/131105_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 2,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "131113": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/ota/131113_otaku_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "131121": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/setagaya/131121_setagayaku_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "131130": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/shibuya/131130_shibuyaku_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "131148": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www2.wagmap.jp/nakanodatamap/nakanodatamap/opendatafile/map_1/CSV/opendata_57001289.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "variant",
+        "columns": 20,
+        "extraColumns": [
+          "GIS用住所",
+          "経度",
+          "緯度",
+          "分類"
+        ],
+        "checkedAt": "2026-08-10",
+        "note": "missing=なし extra=GIS用住所/経度/緯度/分類"
+      }
+    },
+    "131156": {
+      "title": "区議会だより一覧",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/suginami/131156_suginamiku_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "131164": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/toshima/131164_toshimaku_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "131181": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/arakawa/131181_arakawaku_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "131199": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/itabashi/131199_itabashiku_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "131202": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/nerima/131202_nerimaku_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "131229": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/katsushika/131229_katsushikaku_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "132012": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/hachioji/132012_hachiojishi_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "132021": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/tachikawa/132021_tachikawashi_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "132039": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/musashino/132039_musashinoshi_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "132047": {
+      "title": "【事業案内】みたか議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.city.mitaka.lg.jp/c_service/111/attached/attach_111857_1.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "132055": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/ome/132055_omeshi_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "132063": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/fuchu/132063_fuchushi_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "132071": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/akishima/132071_akishimashi_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "132098": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/machida/132098_machidashi_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "132101": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/koganei/132101_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "132110": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/kodaira/132110_kodairashi_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "132144": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/kokubunji/132144_kokubunjishi_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "132152": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/kunitachi/132152_kunitachishi_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "132195": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/komae/132195_komaeshi_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "132209": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/higashiyamato/132209_higashiyamatoshi_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "132217": {
+      "title": "議会だより",
+      "formats": [
+        "HTML"
+      ],
+      "url": "https://www.city.kiyose.lg.jp/opendata/opendata/opendataichiran/1014942.html",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "broken",
+        "columns": null,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": "CSV ではなく HTML が返る"
+      }
+    },
+    "132225": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/higashikurume/132225_higashikurumeshi_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "132241": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/tama/132241_tamashi_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "132250": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/inagi/132250_inagishi_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "132276": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/hamura/132276_hamurashi_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "132284": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/akiruno/132284_akirunoshi_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "132292": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/nishitokyo/132292_nishitokyoshi_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "133051": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/hinode/133051_hinodemachi_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "133639": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/niijima/133639_niijimamura_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "133825": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/mikurajima/133825_mikurajimamura_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "134015": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/hachijo/134015_hachijomachi_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    },
+    "134210": {
+      "title": "議会だより",
+      "formats": [
+        "CSV"
+      ],
+      "url": "https://www.opendata.metro.tokyo.lg.jp/ogasawara/134210_ogasawaramura_gikaidayori.csv",
+      "license": "CC-BY-4.0",
+      "count": 1,
+      "schemaCheck": {
+        "standard": "fudoki/tokyo-municipal-bulletin-profile/0.1",
+        "conformance": "conformant",
+        "columns": 16,
+        "extraColumns": null,
+        "checkedAt": "2026-08-10",
+        "note": null
+      }
+    }
+  }
+}

@@ -196,6 +196,11 @@ core の出力（派生）は自治体が言っていないことを含むので
 | `observations/` | **調査の観測**。robots 原文、粒度調査、年度調査 | `scripts/`、`survey_years.py` | ○ |
 | `fudoki.duckdb` | 実行時に組む一時ファイル | dbt | gitignore |
 
+**層に依存しないものは `data/shared/` に置く。**
+団体の同一性（名称・ocdId）は①②③すべてが同じキーで束ねるので、どれか1層のファイルに同居させない。
+⚠️ 以前は③会議録のゲート判定ファイルに同居しており、**予算の粒度調査が母集団を得るためだけに③のファイルを読んでいた**。
+設計上は分離していたのに、③が落ちたら①も動かない状態だった。
+
 ⚠️ **`observations/` はこの文書の主張の出所である。**
 「事業単位に届いたのは2団体」「取得してよい17団体」「9年度中17リソースが互換」は
 すべてここの観測から出ている。要約ではなく原文・URL・status・SHA-256・取得時刻を残し、
@@ -341,10 +346,10 @@ bun run dev         # 報告を作り直してダッシュボードを上げる
 |---|---|
 | `check:budget` | `data/observations/budget-granularity.json` |
 | `fetch:robots` | `data/observations/robots.json` |
-| `check:bulletins` | `ingestion/transcript-gates.json` の `schemaCheck` 節 |
+| `check:bulletins` | `data/transcripts/bulletins.json` の `schemaCheck` 節 |
 | `fetch:fdp-taxonomy` | `fdp/budget-taxonomy.json` |
 | `survey:budget-years` | `data/observations/mitaka-budget-years.json` |
-| `validate` | （検査。`transcript-gates.json` を宣言と突き合わせる） |
+| `validate` | （検査。`data/transcripts/gates.json` を宣言と、`data/shared/jurisdictions.json` とコード集合で突き合わせる） |
 
 ネットワークを叩くので CI では回さない。いずれも観測を `data/observations/` に残し、要約ではなく原文・URL・status・SHA-256・取得時刻を SSOT にする。
 

@@ -8,14 +8,14 @@
  *   bun run scripts/fetch-robots.ts            # 取得して差分を表示
  *   bun run scripts/fetch-robots.ts --write    # data/transcripts/observations/robots.json へ保存
  */
-import { Manifest } from './gates'
+import { Gates } from './gates'
 import { UA } from '../lib/source'
 
 const MANIFEST = new URL('../../data/transcripts/gates.json', import.meta.url).pathname
 const OUT = new URL('../../data/transcripts/observations/robots.json', import.meta.url).pathname
 const write = process.argv.includes('--write')
 
-const m = Manifest.parse(JSON.parse(await Bun.file(MANIFEST).text()))
+const m = Gates.parse(JSON.parse(await Bun.file(MANIFEST).text()))
 
 /** 取得先ホストごとに1回だけ引く（DB-Search の dbsr.jp のように同一テンプレートが多数ある） */
 const hosts = new Map<string, string[]>()

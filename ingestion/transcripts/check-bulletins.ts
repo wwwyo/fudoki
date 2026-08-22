@@ -7,15 +7,14 @@
  *   bun run scripts/check-bulletins.ts --write    # manifest へ書き戻す
  */
 import { checkConformance, toRow, BULLETIN_SCHEMA_ID } from './bulletin-profile'
-import { UA, decodeText, loadManifest, MANIFEST_PATH, splitCsvLine } from '../lib/source'
+import { UA, decodeText, splitCsvLine } from '../lib/source'
+import { BULLETINS_PATH, loadBulletins } from './bulletins'
 
 const write = process.argv.includes('--write')
 
-const m = await loadManifest()
-const targets = Object.entries(m.jurisdictions).flatMap(([code, j]) => {
-  const g = j.openData.gikaiDayori
-  return g?.url ? [{ code, name: j.name, url: g.url }] : []
-})
+const b = await loadBulletins()
+const targets = Object.entries(b.datasets).flatMap(([code, g]) =>
+  g.url ? [{ code, name: g.title, url: g.url }] : [])
 
 const results: Record<string, unknown> = {}
 let conformant = 0,
@@ -96,11 +95,11 @@ for (const t of targets) {
 console.log(`\n${BULLETIN_SCHEMA_ID}: 適合 ${conformant} / 差異 ${variant} / 取得不可 ${broken}  （計 ${targets.length}）`)
 
 if (write) {
-  const raw = JSON.parse(await Bun.file(MANIFEST_PATH).text())
+  const raw = JSON.parse(await Bun.file(BULLETINS_PATH).text())
   for (const [code, sc] of Object.entries(results)) {
     const g = raw.jurisdictions[code]?.openData?.gikaiDayori
     if (g) g.schemaCheck = sc
   }
-  await Bun.write(MANIFEST_PATH, JSON.stringify(raw, null, 2) + '\n')
+  await Bun.write(BULLETINS_PATH, JSON.stringify(raw, null, 2) + '\n')
   console.log('manifest へ書き戻した')
 }

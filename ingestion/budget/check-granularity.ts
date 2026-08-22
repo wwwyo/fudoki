@@ -9,9 +9,9 @@
  * 判定規則は scripts/lib/budget-granularity-profile.ts が持つ。
  *
  * ⚠️ 過去に2度、母集団の取り方で誤った結論を出している。
- * 1度目は manifest の `openData.budget`（団体ごとの代表1件）だけを見て「事業単位のデータは0件」と判定した。
+ * 1度目は `data/budget/opendata.json` の代表1件（団体ごとの代表1件）だけを見て「事業単位のデータは0件」と判定した。
  * 2度目は organization が `t` + 6桁なら何でも団体として数え、東京都の部局や都外まで混ぜた（42件中25件が圏外）。
- * **母集団は manifest の団体コードとの積で必ず絞る。**
+ * **母集団は団体registry のコードとの積で必ず絞る。**
  *
  * 出力は data/budget/observations/budget-granularity.json。**全候補と失敗理由だけを持つ**。
  * 団体ごとの最良は観測から導けるので焼き込まない（要約ではなく観測を SSOT にする）。
@@ -27,7 +27,8 @@ import {
   type Direction,
   type Granularity,
 } from './granularity-profile'
-import { UA, countDataRows, decodeText, fetchCapped, loadManifest, mapWithConcurrency, sha256, sniffContent, splitCsvLine } from '../lib/source'
+import { UA, countDataRows, decodeText, fetchCapped, mapWithConcurrency, sha256, sniffContent, splitCsvLine } from '../lib/source'
+import { loadJurisdictions } from '../shared/jurisdictions'
 
 const CKAN = 'https://catalog.data.metro.tokyo.lg.jp/api/3/action/package_search'
 const OUT = new URL('../../data/budget/observations/budget-granularity.json', import.meta.url).pathname
@@ -55,9 +56,12 @@ async function search(q: string): Promise<{ rows: CkanPackage[]; total: number }
   }
 }
 
-const manifest = await loadManifest()
-/** 母集団は manifest の団体コードに限る。都の部局や都外を混ぜない */
-const JURISDICTIONS = new Set(Object.keys(manifest.jurisdictions))
+const registry = await loadJurisdictions()
+/**
+ * 母集団は団体registry のコードに限る。都の部局や都外を混ぜない。
+ * **③会議録のゲート判定は読まない** — 根拠が違ううえ、③が落ちたら①も動かなくなる。
+ */
+const JURISDICTIONS = new Set(Object.keys(registry.jurisdictions))
 
 const found = await Promise.all(QUERIES.map(search))
 const searchStats = Object.fromEntries(QUERIES.map((q, i) => [q, found[i]!.total]))
@@ -153,7 +157,7 @@ if (write) {
     OUT,
     JSON.stringify(
       {
-        note: 'カタログに予算がどの粒度で出ているかの調査。本番の取得は市町村ごとの pipeline で行い、最終的には公式サイトの PDF から取る。判定はデータセット名ではなく列構成で行う（原則3）。母集団は manifest の団体コードに限る（原則4）。団体ごとの最良はこの観測から導けるので焼き込まない。',
+        note: 'カタログに予算がどの粒度で出ているかの調査。本番の取得は市町村ごとの pipeline で行い、最終的には公式サイトの PDF から取る。判定はデータセット名ではなく列構成で行う（原則3）。母集団は団体registry のコードに限る（原則4）。団体ごとの最良はこの観測から導けるので焼き込まない。',
         generatedBy: 'scripts/check-budget-granularity.ts',
         queries: searchStats,
         population: JURISDICTIONS.size,

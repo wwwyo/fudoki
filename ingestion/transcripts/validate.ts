@@ -1,4 +1,5 @@
-import { Manifest, fetchTargets } from './gates'
+import { Gates, fetchTargets } from './gates'
+import { loadJurisdictions } from '../shared/jurisdictions'
 
 // 静的 import にすると JSON が壊れているときにパースエラーで異常終了し、
 // どこが壊れているかを出せない。読み込みも自分で握る。
@@ -11,7 +12,7 @@ try {
   process.exit(1)
 }
 
-const parsed = Manifest.safeParse(raw)
+const parsed = Gates.safeParse(raw)
 
 if (!parsed.success) {
   console.error('✗ manifest.json がスキーマに適合していません\n')
@@ -24,29 +25,42 @@ if (!parsed.success) {
 const m = parsed.data
 const js = Object.entries(m.jurisdictions)
 
+// 名称と識別子は層に依存しないので共有の registry にある。
+// **両者のコード集合が一致することもここで見る** — 片方だけ足すと、
+// ③のゲートに載っていない団体や、名前を引けない団体が生まれる。
+const registry = await loadJurisdictions()
+const nameOf = (code: string) => registry.jurisdictions[code]?.name ?? '(registry に無い)'
+
 // スキーマでは表現できない整合性をここで見る
 const errors: string[] = []
+for (const code of Object.keys(m.jurisdictions))
+  if (!(code in registry.jurisdictions)) errors.push(`${code}: gates にあるが data/shared/jurisdictions.json に無い`)
+for (const code of Object.keys(registry.jurisdictions))
+  if (!(code in m.jurisdictions)) errors.push(`${code} ${nameOf(code)}: registry にあるが gates に無い`)
+
 for (const [code, j] of js) {
   const t = j.transcript
-  if (!j.ocdId.endsWith(`city:${code}`)) errors.push(`${code} ${j.name}: ocdId が団体コードと不一致`)
-  if (t.systemFamily === 'none' && t.transcriptUrl) errors.push(`${code} ${j.name}: systemFamily=none なのに transcriptUrl がある`)
-  if (t.gate.fetch === 'allow' && !t.transcriptUrl) errors.push(`${code} ${j.name}: fetch=allow なのに transcriptUrl が無い（driver が取得先を引けない）`)
-  if (t.systemFamily === 'dnp' && !t.tenant) errors.push(`${code} ${j.name}: dnp なのに tenant が無い`)
+  const name = nameOf(code)
+  const ocdId = registry.jurisdictions[code]?.ocdId
+  if (ocdId && !ocdId.endsWith(`city:${code}`)) errors.push(`${code} ${name}: ocdId が団体コードと不一致`)
+  if (t.systemFamily === 'none' && t.transcriptUrl) errors.push(`${code} ${name}: systemFamily=none なのに transcriptUrl がある`)
+  if (t.gate.fetch === 'allow' && !t.transcriptUrl) errors.push(`${code} ${name}: fetch=allow なのに transcriptUrl が無い（driver が取得先を引けない）`)
+  if (t.systemFamily === 'dnp' && !t.tenant) errors.push(`${code} ${name}: dnp なのに tenant が無い`)
   // driver は tenant 名ではなく tenantId で API を叩く。
   // ただし tenantId の取得自体が Disallow 経路への問い合わせなので、
   // 照会が通って fetch=allow になる時点までは欠けていてよい。
   if (t.systemFamily === 'dnp' && t.gate.fetch === 'allow' && t.tenantId === undefined)
-    errors.push(`${code} ${j.name}: fetch=allow の dnp なのに tenantId が無い`)
+    errors.push(`${code} ${name}: fetch=allow の dnp なのに tenantId が無い`)
   if (t.gate.fetch === 'allow' && t.gate.constraints.some((c) => c === 'rep-path-disallowed' || c === 'rep-render-still-disallowed' || c === 'publisher-ai-opt-out' || c === 'technical-block' || c === 'no-source'))
-    errors.push(`${code} ${j.name}: fetch=allow なのに取得を止める constraint がある`)
-  if (t.gate.fetch !== 'allow' && t.gate.constraints.length === 0) errors.push(`${code} ${j.name}: fetch=${t.gate.fetch} なのに理由（constraints）が無い`)
+    errors.push(`${code} ${name}: fetch=allow なのに取得を止める constraint がある`)
+  if (t.gate.fetch !== 'allow' && t.gate.constraints.length === 0) errors.push(`${code} ${name}: fetch=${t.gate.fetch} なのに理由（constraints）が無い`)
   // 再配布は著作権・規約の確認が済むまで allow にできない
   if (t.gate.redistribute === 'allow' && t.gate.constraints.some((c) => c === 'copyright-unverified' || c === 'terms-unverified'))
-    errors.push(`${code} ${j.name}: redistribute=allow なのに権利関係が未確認`)
-  if (t.robots.aiCrawler === 'disallowed' && t.gate.fetch === 'allow') errors.push(`${code} ${j.name}: AI クローラ拒否なのに fetch=allow`)
-  if (t.gate.policyVersion !== m.policy.version) errors.push(`${code} ${j.name}: policyVersion が現在の policy (${m.policy.version}) と異なる`)
+    errors.push(`${code} ${name}: redistribute=allow なのに権利関係が未確認`)
+  if (t.robots.aiCrawler === 'disallowed' && t.gate.fetch === 'allow') errors.push(`${code} ${name}: AI クローラ拒否なのに fetch=allow`)
+  if (t.gate.policyVersion !== m.policy.version) errors.push(`${code} ${name}: policyVersion が現在の policy (${m.policy.version}) と異なる`)
   for (const c of t.gate.constraints)
-    if (!(c in m.policy.constraints)) errors.push(`${code} ${j.name}: constraint ${c} が policy に定義されていない`)
+    if (!(c in m.policy.constraints)) errors.push(`${code} ${name}: constraint ${c} が policy に定義されていない`)
 }
 
 if (errors.length) {
@@ -64,7 +78,7 @@ const line = (o: Record<string, number>) =>
     .map(([k, v]) => `${k}=${v}`)
     .join('  ')
 
-console.log(`✓ manifest.json は妥当（${js.length} 団体・${m.generatedAt} 実測）\n`)
+console.log(`✓ gates.json は妥当（${js.length} 団体・${m.generatedAt} 実測）\n`)
 console.log(`  systemFamily   ${line(count((j) => j.transcript.systemFamily))}`)
 console.log(`  robots         ${line(count((j) => j.transcript.robots.verdict))}`)
 console.log(`  aiCrawler      ${line(count((j) => j.transcript.robots.aiCrawler))}`)
