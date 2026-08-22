@@ -119,6 +119,12 @@ mySociety が TheyWorkForYou（UK専用サイト）と SayIt（汎用ツール�
 | **② 公告** | [官公需情報ポータル 検索API](https://www.kkj.go.jp/api/) | **待ちなし**（robots 制限なし） | `CityCode` が団体コード、`ProjectDescription` に公告全文。**tender 段階まで**（下記） |
 | **③ 会議録** | 会議録システム（ベンダー別 driver） | **robots 判断と照会に依存** | `gate.fetch` は allow 17 / review 16 / deny 29、`gate.redistribute` は **allow 0** |
 
+⚠️ **`ingestion/transcript-gates.json` の gate は③会議録にしか掛からない。**
+根拠が著作権法40条1項と各議会の利用規約なので、①予算には適用されない。
+実際、三鷹市は会議録が `fetch: deny / redistribute: review` だが、予算は CC BY で配布している。
+①の再配布可否はカタログのライセンスで決まり、`ingestion/sources.toml` の `redistribute` がそれを持つ。
+**この2つを繋ぐと三鷹市の予算が止まる。**
+
 **①だけで単体の存在価値は成立する**（「なぜ作るか」）。②と③は将来展望の3つ目、データを厚くする方向にあたる。順序の理由は権利の障害の軽さで、③だけが robots 判断と許諾照会に依存し、再配布が0団体である。
 
 #### ① CKAN に事業単位のデータは存在する。ただし探し方が要る（2026-08-14 実測）

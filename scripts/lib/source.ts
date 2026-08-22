@@ -4,13 +4,13 @@
  * `fetch-robots` / `check-bulletins` / `check-budget-granularity` が同じ処理を
  * 個別に持っていたため切り出した。3本目で同じものを書いた時点が共通化の合図だった。
  */
-import { Manifest } from '../../src/extract/sources/schema'
+import { Manifest } from './gates'
 
 /** 全スクリプトで同じ UA を名乗る。相手が名指しで拒否できる状態を保つため */
 export const UA = 'fudoki/0.1 (+https://github.com/wwwyo/fudoki)'
 
 /** 書き戻すスクリプトが同じパスを参照できるよう公開する */
-export const MANIFEST_PATH = new URL('../../src/extract/sources/manifest.json', import.meta.url).pathname
+export const MANIFEST_PATH = new URL('../../ingestion/transcript-gates.json', import.meta.url).pathname
 
 export async function loadManifest() {
   return Manifest.parse(JSON.parse(await Bun.file(MANIFEST_PATH).text()))

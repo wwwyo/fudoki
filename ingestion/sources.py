@@ -41,6 +41,7 @@ class Source:
     dataset_title: str
     encoding: str
     redistribute: str
+    redistribute_basis: str
     license_id: str
     attribution: str
     landing_page: str
@@ -50,7 +51,9 @@ class Source:
     def may_publish_raw(self) -> bool:
         """原典をリポジトリへ置いてよいか。
 
-        ③会議録は `gate.redistribute` が allow 0 団体なので、ここで止まる。
+        根拠は `redistribute_basis`（①予算はカタログのライセンス）。
+        ③会議録の gate（`transcript-gates.json`）とは根拠が違うので繋がない —
+        三鷹市は会議録が review だが予算は CC BY で、繋ぐと予算が止まる。
         「公開されている」ことは「再配布してよい」ことを意味しない。
         """
         return self.redistribute == "allow"

@@ -24,8 +24,12 @@ dataset_title = "【予算・決算】予算情報"
 # （`01Ⅰ型事業委託料` の Ⅰ = U+2160、CP932 で 0x8754）。
 # 素の shift_jis は NEC 特殊文字を受け付けず復号に失敗する。
 encoding = "cp932"
-# 再配布の可否。allow 以外は raw を書き出さない（③会議録は allow 0 団体）。
+# 再配布の可否。allow 以外は raw を書き出さない。
+# ⚠️ **根拠はカタログのライセンス**であって、ingestion/transcript-gates.json の
+# gate（③会議録。著作権法40条1項と各議会の利用規約が根拠）とは別の判断である。
+# 三鷹市は会議録が redistribute=review だが、予算は CC BY なので配布できる。混同しないこと。
 redistribute = "allow"
+redistribute_basis = "東京都オープンデータカタログのライセンス表示（CC BY 4.0）"
 license_id = "CC-BY-4.0"
 attribution = "三鷹市「令和6年度予算データ」（東京都オープンデータカタログサイト）"
 landing_page = "https://www.city.mitaka.lg.jp/c_service/074/"

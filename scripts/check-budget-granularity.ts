@@ -6,7 +6,7 @@
  * これはその前段として「CSV で出ている団体はどこか、どこまで届いているか」を測るためのもの。
  *
  * 判定は列構成で行う（データセット名では判定しない。パーサ設計の原則3）。
- * 判定規則は src/schema/budget-granularity-profile.ts が持つ。
+ * 判定規則は scripts/lib/budget-granularity-profile.ts が持つ。
  *
  * ⚠️ 過去に2度、母集団の取り方で誤った結論を出している。
  * 1度目は manifest の `openData.budget`（団体ごとの代表1件）だけを見て「事業単位のデータは0件」と判定した。
@@ -26,7 +26,7 @@ import {
   RELEVANT_TITLE_WORDS,
   type Direction,
   type Granularity,
-} from '../src/schema/budget-granularity-profile'
+} from './lib/budget-granularity-profile'
 import { UA, countDataRows, decodeText, fetchCapped, loadManifest, mapWithConcurrency, sha256, sniffContent, splitCsvLine } from './lib/source'
 
 const CKAN = 'https://catalog.data.metro.tokyo.lg.jp/api/3/action/package_search'

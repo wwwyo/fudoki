@@ -8,10 +8,10 @@
  *   bun run scripts/fetch-robots.ts            # 取得して差分を表示
  *   bun run scripts/fetch-robots.ts --write    # data/observations/robots.json へ保存
  */
-import { Manifest } from '../src/extract/sources/schema'
+import { Manifest } from './lib/gates'
 import { UA } from './lib/source'
 
-const MANIFEST = new URL('../src/extract/sources/manifest.json', import.meta.url).pathname
+const MANIFEST = new URL('../ingestion/transcript-gates.json', import.meta.url).pathname
 const OUT = new URL('../data/observations/robots.json', import.meta.url).pathname
 const write = process.argv.includes('--write')
 

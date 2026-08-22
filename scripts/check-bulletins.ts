@@ -6,7 +6,7 @@
  *   bun run scripts/check-bulletins.ts            # 結果を表示
  *   bun run scripts/check-bulletins.ts --write    # manifest へ書き戻す
  */
-import { checkConformance, toRow, BULLETIN_SCHEMA_ID } from '../src/schema/tokyo-municipal-bulletin-profile'
+import { checkConformance, toRow, BULLETIN_SCHEMA_ID } from './lib/bulletin-profile'
 import { UA, decodeText, loadManifest, MANIFEST_PATH, splitCsvLine } from './lib/source'
 
 const write = process.argv.includes('--write')

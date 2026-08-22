@@ -1,6 +1,6 @@
 # sources — 会議録・オープンデータ源の manifest と driver
 
-## manifest.json
+## transcript-gates.json
 
 東京都62区市町村の会議録システム・オープンデータ源の調査結果。**団体コード（全国地方公共団体コード）を主キー**にする。
 
