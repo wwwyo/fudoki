@@ -1,0 +1,39 @@
+name: fudoki
+version: "0.1.0"
+profile: fudoki
+model-paths: ["models"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  fudoki:
+    staging:
+      # 実体を持たせる。view にすると Parquet への相対パスが dbt の作業ディレクトリに
+      # 縛られ、他所から DuckDB を開いたときに解決できない。
+      # DuckDB 自体が捨てられるビルド生成物なので、自己完結させたほうがよい。
+      +materialized: table
+    core:
+      +materialized: table
+
+vars:
+  # 階層の定義。**団体ごとに違う**（三鷹市は目と節の間に「事項」、
+  # 歳入は節と細々節の間に「細節」。狛江市は目の下が大事業・中事業・小事業）。
+  # 検査が5箇所で手書きしていたのをここへ寄せた。団体を足すときはここに1ブロック足す。
+  budget_levels:
+    "132047":
+      expenditure: [fund, kan, kou, moku, jikou, setsu, saisaisetsu]
+      revenue: [fund, kan, kou, moku, setsu, saisetsu, saisaisetsu]
+  # 原典の列名。取り込み時のヘッダそのままなので階層名とは別に持つ。
+  budget_source_columns:
+    "132047":
+      expenditure: ["01会計", "02款", "03項", "04目", "05事項", "06節", "07細々節"]
+      revenue: ["01会計", "02款", "03項", "04目", "05節", "06細節", "07細々節"]
+
+  # その階層を持たない行を、自治体がプレースホルダで埋めているセル。
+  # 三鷹市は `0`（歳入 821 行のうち細々節を持つのは 18 行だけで、残り 803 行がこれ）。
+  # ⚠️ **TypeScript 版にはこの宣言があったが、dbt へ移すときに落としていた。**
+  # 宣言が無いと「先頭2桁がコード」の検査がこのセルで落ちる。
+  budget_absent_level_markers:
+    "132047": ["0"]

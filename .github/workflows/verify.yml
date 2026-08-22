@@ -1,0 +1,70 @@
+# パイプラインの検査を CI で回す。
+#
+# **ネットワークを叩く取得（ingestion）は回さない。**
+# 原典を Parquet で commit してあるので、変換・配布物の生成・検査はそこから再現できる。
+# 「原典から成果物を再生成できる」という再現性の定義が、そのまま CI の内容になる。
+#
+# 最後に `git diff --exit-code` で、再生成しても commit 済みの成果物と一致することを確かめる。
+# 一致しなければ、コードと配布物のどちらかが手で触られている。
+name: verify
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  # ①予算のパイプライン。取得（ingestion）はネットワークを叩くので回さない。
+  budget:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: jdx/mise-action@v3
+        with:
+          version: 2026.8.6
+
+      - name: 依存を入れる
+        run: |
+          uv sync --frozen
+          bun install --frozen-lockfile
+          bun install --cwd web --frozen-lockfile
+
+      - name: 型検査
+        run: |
+          bun run typecheck
+          bun run --cwd web typecheck
+
+      - name: 変換と検査（dbt）
+        run: bun run dbt
+
+      - name: 配布物を組み立てる
+        run: uv run python -m fdp.build
+
+      - name: 報告を作る
+        run: bun run report
+
+      - name: 画面をビルドする
+        run: bun run --cwd web build
+
+      - name: 再生成しても commit 済みの成果物と一致するか
+        run: |
+          if ! git diff --exit-code -- data/budget/; then
+            echo "::error::再生成した成果物が commit 済みのものと一致しない。"
+            echo "::error::bun run pipeline を回して差分を commit してください。"
+            exit 1
+          fi
+
+  # ①予算のパイプラインとは別物。**commit 済みデータが宣言と食い違っていないか**を見る。
+  # ③会議録のゲート判定は取得も変換もまだ実装が無いが、判定そのものは commit してあるので、
+  # 誰かが編集したときに壊れるのを止める必要がある。
+  data-guards:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: jdx/mise-action@v3
+        with:
+          version: 2026.8.6
+      - run: bun install --frozen-lockfile
+
+      - name: ③会議録のゲート判定（62団体）を宣言と、団体 registry とコード集合で突き合わせる
+        run: bun run validate
