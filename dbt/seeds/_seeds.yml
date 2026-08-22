@@ -1,0 +1,40 @@
+version: 2
+
+seeds:
+  - name: cofog_rules
+    description: |
+      COFOG の割り当て規則。**fudoki の判断そのもの**なのでデータとして持つ。
+      priority の小さい順に見て最初に当たったものを採る（具体的な規則ほど先）。
+      applies_to が空の規則は法定語彙（款・節）にだけ当たるので、どの団体にも効く。
+    config:
+      # 団体コードは数値ではなく識別子。推論に任せると先頭ゼロが落ち、
+      # match_* も値によって型が揺れる。
+      column_types:
+        priority: integer
+        rule_id: varchar
+        applies_to: varchar
+        match_fund: varchar
+        match_kan: varchar
+        match_kou: varchar
+        match_moku: varchar
+        moku_mode: varchar
+        match_setsu: varchar
+        status: varchar
+        division: varchar
+        consolidation: varchar
+        decided_at_level: varchar
+        counterpart_fund: varchar
+        basis: varchar
+    columns:
+      - name: rule_id
+        data_tests: [unique, not_null]
+      - name: priority
+        data_tests: [unique, not_null]
+      - name: status
+        data_tests:
+          - accepted_values:
+              values: [assigned, unclassifiable, out-of-scope]
+      - name: consolidation
+        data_tests:
+          - accepted_values:
+              values: [retained, eliminated]

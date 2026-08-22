@@ -17,14 +17,14 @@ import io
 import json
 import pathlib
 import sys
-import tomllib
 import urllib.parse
 import urllib.request
 from dataclasses import dataclass
 from datetime import UTC, datetime
 
+from ingestion.sources import Catalog, Source, resolve
+
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-SOURCES = ROOT / "ingestion" / "sources.toml"
 RAW = ROOT / "data" / "raw"
 PROVENANCE = ROOT / "data" / "provenance"
 
@@ -61,23 +61,24 @@ def http_get(url: str) -> Fetched:
         )
 
 
-def resolve_resource(cfg: dict, catalog: dict, resource_name: str) -> str:
+def resolve_resource(src: Source, resource_name: str) -> str:
     """CKAN からリソース URL を引く。
 
     リソース URL は自治体側の CMS が振る内部番号で資料の差し替えで動くが、
     データセット名とリソース名は安定している。だから URL を直書きせず毎回解決する。
     """
-    q = urllib.parse.quote(cfg["dataset_title"])
-    got = http_get(f"{catalog['endpoint']}?q={q}&rows=300")
+    catalog: Catalog = src.catalog
+    q = urllib.parse.quote(src.dataset_title)
+    got = http_get(f"{catalog.endpoint}?q={q}&rows=300")
     results = json.loads(got.body).get("result", {}).get("results", [])
-    org = catalog["org_prefix"] + cfg["jurisdiction_code"]
+    org = catalog.org_prefix + src.jurisdiction_code
     pkg = next(
         (p for p in results
-         if (p.get("organization") or {}).get("name") == org and p.get("title") == cfg["dataset_title"]),
+         if (p.get("organization") or {}).get("name") == org and p.get("title") == src.dataset_title),
         None,
     )
     if pkg is None:
-        raise RuntimeError(f"データセット「{cfg['dataset_title']}」が {cfg['jurisdiction_name']}（{org}）に見つからない")
+        raise RuntimeError(f"データセット「{src.dataset_title}」が {src.jurisdiction_name}（{org}）に見つからない")
     res = next((r for r in pkg.get("resources", []) if r.get("name") == resource_name), None)
     if res is None:
         names = [r.get("name") for r in pkg.get("resources", [])]
@@ -101,26 +102,24 @@ def reconstruct(header: list[str], rows: list[list[str]], newline: str, trailing
 
 
 def ingest(key: str) -> None:
-    doc = tomllib.loads(SOURCES.read_text())
-    cfg = doc[key]
-    catalog = doc["catalog"][cfg["catalog"]]
+    src = resolve(key)
 
-    if cfg["redistribute"] != "allow":
+    if not src.may_publish_raw:
         raise RuntimeError(
-            f"{key} は redistribute={cfg['redistribute']}。再配布可と判定した取得元しか raw を書き出さない"
+            f"{key} は redistribute={src.redistribute}。再配布可と判定した取得元しか raw を書き出さない"
         )
 
-    for spec in cfg["resources"]:
-        direction = spec["direction"]
-        out_dir = RAW / f"jurisdiction={cfg['jurisdiction_code']}" / f"year={cfg['fiscal_year']}" / f"direction={direction}"
+    for spec in src.resources:
+        direction = spec.direction
+        out_dir = RAW / f"jurisdiction={src.jurisdiction_code}" / f"year={src.fiscal_year}" / f"direction={direction}"
         out = out_dir / "data.parquet"
-        prov_path = PROVENANCE / f"{cfg['jurisdiction_code']}-{cfg['fiscal_year']}-{direction}.json"
+        prov_path = PROVENANCE / f"{src.jurisdiction_code}-{src.fiscal_year}-{direction}.json"
 
         # 年度の唯一の出所はリソース名。照合できなければ収録しない。
-        if cfg["fiscal_year_label"] not in spec["resource_name"]:
-            raise RuntimeError(f"リソース名「{spec['resource_name']}」に年度表記「{cfg['fiscal_year_label']}」が無い")
+        if src.fiscal_year_label not in spec.resource_name:
+            raise RuntimeError(f"リソース名「{spec.resource_name}」に年度表記「{src.fiscal_year_label}」が無い")
 
-        url = resolve_resource(cfg, catalog, spec["resource_name"])
+        url = resolve_resource(src, spec.resource_name)
         got = http_get(url)
         if got.status != 200:
             raise RuntimeError(f"HTTP {got.status}: {url}")
@@ -129,23 +128,23 @@ def ingest(key: str) -> None:
             print(f"skip  {direction}  同じ SHA-256 の Parquet が既にある")
             continue
 
-        text = got.body.decode(cfg["encoding"])
+        text = got.body.decode(src.encoding)
         # 復号が可逆か検査する。文字コードを取り違えると黙って別の字に化けるので、
         # 「読めた」ことを成功と見なさない。
-        if text.encode(cfg["encoding"]) != got.body:
-            raise RuntimeError(f"{direction}: {cfg['encoding']} での復号が可逆でない。文字コードの指定が誤っている")
-        text = text.lstrip("﻿")
+        if text.encode(src.encoding) != got.body:
+            raise RuntimeError(f"{direction}: {src.encoding} での復号が可逆でない。文字コードの指定が誤っている")
+        text = text.lstrip("\ufeff")
+
         newline = "\r\n" if "\r\n" in text else "\n"
         header, rows = parse_rows(text)
 
         # 無加工の検査。復元して原文と一致しなければ書き出さない。
-        stripped = text.lstrip("﻿")
-        trailing = stripped[len(stripped.rstrip("\r\n")):]
+        trailing = text[len(text.rstrip("\r\n")):]
         rebuilt = reconstruct(header, rows, newline, trailing)
-        if rebuilt != stripped:
+        if rebuilt != text:
             raise RuntimeError(
                 f"{direction}: Parquet から原文を復元できない（引用符や改行を含む可能性）。"
-                f"原文 {len(stripped)} 文字 / 復元 {len(rebuilt)} 文字"
+                f"原文 {len(text)} 文字 / 復元 {len(rebuilt)} 文字"
             )
 
         import duckdb  # noqa: PLC0415  (取得だけしたいときに import させない)
@@ -161,23 +160,23 @@ def ingest(key: str) -> None:
 
         PROVENANCE.mkdir(parents=True, exist_ok=True)
         prov_path.write_text(json.dumps({
-            "jurisdiction_code": cfg["jurisdiction_code"],
-            "fiscal_year": cfg["fiscal_year"],
+            "jurisdiction_code": src.jurisdiction_code,
+            "fiscal_year": src.fiscal_year,
             "direction": direction,
-            "dataset_title": cfg["dataset_title"],
-            "resource_name": spec["resource_name"],
-            "fiscal_year_basis": f"CKAN のリソース名「{spec['resource_name']}」の「{cfg['fiscal_year_label']}」から解決",
+            "dataset_title": src.dataset_title,
+            "resource_name": spec.resource_name,
+            "fiscal_year_basis": f"CKAN のリソース名「{spec.resource_name}」の「{src.fiscal_year_label}」から解決",
             "request_url": got.url,
             "status": got.status,
             "bytes": len(got.body),
             "sha256": got.sha256,
             "fetched_at": got.fetched_at,
-            "encoding": cfg["encoding"],
+            "encoding": src.encoding,
             "header": header,
             "rows": len(rows),
             "roundtrip_verified": True,
-            "license_id": cfg["license_id"],
-            "attribution": cfg["attribution"],
+            "license_id": src.license_id,
+            "attribution": src.attribution,
         }, ensure_ascii=False, indent=2) + "\n")
         print(f"ok    {direction}  {len(rows)} 行  {len(got.body)} バイト  sha256={got.sha256[:16]}…  復元一致")
 
