@@ -6,24 +6,30 @@
  * 生成側のキーを変えた瞬間に画面が黙って壊れる（実際にその状態を作った）。
  */
 import type { ReportData, Topology, Node, Edge, Stage, Check } from '@report/budget/schema'
+import type { Direction, DetailRow, DetailTable } from '@report/budget/detail'
 
 export type { ReportData, Topology, Node, Edge, Stage, Check }
 
-/** 列指向で運ぶ。行ごとにキーを繰り返すと、ファイルの大半が列名になる */
-export type ColumnarTable = { columns: string[]; rows: string[][] }
+export type { Direction, DetailColumn, DetailRow, DetailTable, Level } from '@report/budget/detail'
+export { LEVELS, cell, levelCell } from '@report/budget/detail'
+import { expectedColumns } from '@report/budget/detail'
 
 export type PipelineData = {
   code: string
   report: ReportData
-  expenditure: ColumnarTable
-  revenue: ColumnarTable
+  expenditure: DetailTable<'expenditure'>
+  revenue: DetailTable<'revenue'>
 }
 
-/** 明細の1行。列は配布する CSV のヘッダがそのまま決める */
-export type DetailRow = Record<string, string>
-
-export function toRows(t: ColumnarTable): DetailRow[] {
-  return t.rows.map((r) => Object.fromEntries(t.columns.map((c, i) => [c, r[i] ?? ''])))
+/**
+ * 列指向を行指向へ。**列名は `@report/budget/detail` の宣言に縛られる** —
+ * 宣言に無い列を読むとコンパイルが落ちる。
+ * 以前は Record<string, string> だったので、配布物から列を落としても画面が黙って空になった。
+ */
+export function toRows<D extends Direction>(t: DetailTable<D>): DetailRow<D>[] {
+  return t.rows.map(
+    (r) => Object.fromEntries(t.columns.map((c, i) => [c, r[i] ?? ''])) as DetailRow<D>,
+  )
 }
 
 /**
@@ -38,7 +44,41 @@ export async function loadPipeline(): Promise<PipelineData> {
         `cd dbt && dbt build のあと uv run python -m report.build を回してください`,
     )
   }
-  return (await res.json()) as PipelineData
+  const data = (await res.json()) as PipelineData
+  assertShape(data)
+  return data
+}
+
+/**
+ * 読み込んだ JSON が宣言どおりかを**実行時に**確かめる。
+ *
+ * 型は生成側と画面側の両方に効くが、**間に挟まる JSON には効かない。**
+ * 古い pipeline.json を掴むと、型が「ある」と言っている列が実際には無い状態になり、
+ * 画面が黙って空になる（実際に一度そうなった）。
+ * 型を信じるのではなく、境界で確かめて、ずれていたら理由を出して止める。
+ */
+function assertShape(d: PipelineData): void {
+  const problems: string[] = []
+  for (const k of ['code', 'report', 'expenditure', 'revenue'] as const) {
+    if (d[k] === undefined) problems.push(`${k} が無い`)
+  }
+  if (d.report) {
+    for (const k of ['meta', 'summary', 'topology', 'ingestion', 'levels', 'transform', 'checks'] as const) {
+      if (d.report[k] === undefined) problems.push(`report.${k} が無い`)
+    }
+  }
+  for (const dir of ['expenditure', 'revenue'] as const) {
+    const t = d[dir]
+    if (!t?.columns) { problems.push(`${dir} の列が無い`); continue }
+    const missing = expectedColumns(dir).filter((c) => !(t.columns as string[]).includes(c))
+    if (missing.length > 0) problems.push(`${dir} に列が無い: ${missing.join(', ')}`)
+  }
+  if (problems.length > 0) {
+    throw new Error(
+      `pipeline.json が宣言と食い違っています。bun run pipeline を回し直してください。\n` +
+        problems.map((p) => `  - ${p}`).join('\n'),
+    )
+  }
 }
 
 export const yen = (v: number | string) => Number(v).toLocaleString('ja-JP')

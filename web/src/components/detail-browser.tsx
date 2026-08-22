@@ -5,57 +5,69 @@
  * この画面の中心機能がマウス専用になる。
  */
 import { useMemo, useState } from 'react'
-import type { DetailRow } from '@/lib/pipeline'
+import type { Direction, DetailRow, Level } from '@/lib/pipeline'
+import { LEVELS, cell, levelCell } from '@/lib/pipeline'
 import { DIVISION_COLOR, STATUS_JA, yen } from '@/lib/pipeline'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
-type Direction = 'expenditure' | 'revenue'
-
-const LEVELS: Record<Direction, string[]> = {
-  expenditure: ['fund', 'kan', 'kou', 'moku', 'jikou', 'setsu', 'saisaisetsu'],
-  revenue: ['fund', 'kan', 'kou', 'moku', 'setsu', 'saisetsu', 'saisaisetsu'],
-}
 const LEVEL_JA: Record<string, string> = {
   fund: '会計', kan: '款', kou: '項', moku: '目', jikou: '事項', setsu: '節', saisetsu: '細節', saisaisetsu: '細々節',
 }
 
-export function DetailBrowser({ expenditure, revenue }: { expenditure: DetailRow[]; revenue: DetailRow[] }) {
+/**
+ * 歳出と歳入は階層の構成が違う（歳出は「事項」、歳入は「細節」）ので、
+ * **direction で generic にする。** 片方にしか無い列を読むとコンパイルが落ちる。
+ */
+export function DetailBrowser({
+  expenditure, revenue,
+}: { expenditure: DetailRow<'expenditure'>[]; revenue: DetailRow<'revenue'>[] }) {
   const [dir, setDir] = useState<Direction>('expenditure')
+  // key で切り替える。path と query は direction ごとの状態なので、
+  // 切り替えたら捨てるのが正しい。
+  return dir === 'expenditure'
+    ? <Browser key="expenditure" dir="expenditure" source={expenditure} onSwitch={setDir} />
+    : <Browser key="revenue" dir="revenue" source={revenue} onSwitch={setDir} />
+}
+
+function Browser<D extends Direction>({
+  dir, source, onSwitch,
+}: { dir: D; source: DetailRow<D>[]; onSwitch: (d: Direction) => void }) {
   const [path, setPath] = useState<string[]>([])
   const [query, setQuery] = useState('')
 
   const levels = LEVELS[dir]
-  const source = dir === 'expenditure' ? expenditure : revenue
 
   const rows = useMemo(() => {
-    let r = source.filter((row) => path.every((v, i) => row[`${levels[i]}_source`] === v))
+    let r = source.filter((row) => path.every((v, i) => levelCell(row, levels[i] as Level<D>, 'source') === v))
     if (query) {
       const q = query.toLowerCase()
-      r = r.filter((row) => levels.some((l) => (row[`${l}_label`] ?? '').toLowerCase().includes(q)))
+      r = r.filter((row) => levels.some((l) => levelCell(row, l as Level<D>, 'label').toLowerCase().includes(q)))
     }
     return r
   }, [source, path, query, levels])
 
-  const total = rows.reduce((s, r) => s + Number(r.value), 0)
+  const total = rows.reduce((s, r) => s + Number(cell(r, 'value')), 0)
   const depth = path.length
-  const setDirection = (d: Direction) => { setDir(d); setPath([]) }
+  const setDirection = onSwitch
 
   const groups = useMemo(() => {
     if (depth >= levels.length || rows.length <= 1) return null
-    const key = `${levels[depth]}_source`
+    const key = levels[depth] as Level<D>
     const m = new Map<string, { count: number; sum: number; divs: Map<string, number>; statuses: Set<string> }>()
     for (const r of rows) {
-      const g = m.get(r[key]!) ?? { count: 0, sum: 0, divs: new Map(), statuses: new Set() }
+      const k = levelCell(r, key, 'source')
+      const g = m.get(k) ?? { count: 0, sum: 0, divs: new Map(), statuses: new Set() }
       g.count++
-      g.sum += Number(r.value)
+      g.sum += Number(cell(r, 'value'))
       if (dir === 'expenditure') {
-        if (r.cofog_division_code) g.divs.set(r.cofog_division_code, (g.divs.get(r.cofog_division_code) ?? 0) + Number(r.value))
-        g.statuses.add(r.cofog_status!)
+        const div = cell(r, 'cofog_division_code')
+        if (div) g.divs.set(div, (g.divs.get(div) ?? 0) + Number(cell(r, 'value')))
+        g.statuses.add(cell(r, 'cofog_status'))
       }
-      m.set(r[key]!, g)
+      m.set(k, g)
     }
     return [...m.entries()].sort((a, b) => b[1].sum - a[1].sum)
   }, [rows, depth, levels, dir])
@@ -150,26 +162,28 @@ export function DetailBrowser({ expenditure, revenue }: { expenditure: DetailRow
   )
 }
 
-function LeafCard({ row, levels, dir }: { row: DetailRow; levels: string[]; dir: Direction }) {
+function LeafCard<D extends Direction>({
+  row, levels, dir,
+}: { row: DetailRow<D>; levels: readonly Level<D>[]; dir: D }) {
   const items: [string, React.ReactNode][] = [
-    ['budget_line_id', <span className="font-mono text-xs">{row.budget_line_id}</span>],
-    ...levels.map((l) => [LEVEL_JA[l]!, row[`${l}_source`]] as [string, React.ReactNode]),
-    ['金額', <><span className="font-medium">{yen(row.value!)} 円</span>（原典 {yen(row.source_amount!)} {row.source_amount_unit}）</>],
-    ['年度 / 段階', `${row.fiscal_year} / ${row.phase_id}`],
-    ['原典の行', `${row.source_row} 行目`],
+    ['budget_line_id', <span className="font-mono text-xs">{cell(row, 'budget_line_id')}</span>],
+    ...levels.map((l) => [LEVEL_JA[l]!, levelCell(row, l, 'source')] as [string, React.ReactNode]),
+    ['金額', <><span className="font-medium">{yen(cell(row, 'value'))} 円</span>（原典 {yen(cell(row, 'source_amount'))} {cell(row, 'source_amount_unit')}）</>],
+    ['年度 / 段階', `${cell(row, 'fiscal_year')} / ${cell(row, 'phase_id')}`],
+    ['原典の行', `${cell(row, 'source_row')} 行目`],
   ]
   if (dir === 'expenditure') {
     items.push(
-      ['COFOG', row.cofog_division_code
+      ['COFOG', cell(row, 'cofog_division_code')
         ? <span className="inline-flex items-center gap-1.5">
-            <i aria-hidden className="size-2.5 rounded-sm" style={{ background: DIVISION_COLOR[row.cofog_division_code] }} />
-            <span className="font-medium">{row.cofog_division_code}</span> {row.cofog_division_label}
-            <Badge variant="outline">{STATUS_JA[row.cofog_status!] ?? row.cofog_status}</Badge>
+            <i aria-hidden className="size-2.5 rounded-sm" style={{ background: DIVISION_COLOR[cell(row, 'cofog_division_code')] }} />
+            <span className="font-medium">{cell(row, 'cofog_division_code')}</span> {cell(row, 'cofog_division_label')}
+            <Badge variant="outline">{STATUS_JA[cell(row, 'cofog_status')] ?? cell(row, 'cofog_status')}</Badge>
           </span>
-        : <Badge variant="outline">{STATUS_JA[row.cofog_status!] ?? row.cofog_status}</Badge>],
-      ['決まった単位', row.cofog_decided_at_level],
-      ['割当の根拠', row.cofog_basis],
-      ['適用した規則', <code className="text-xs">{row.cofog_rule_id}</code>],
+        : <Badge variant="outline">{STATUS_JA[cell(row, 'cofog_status')] ?? cell(row, 'cofog_status')}</Badge>],
+      ['決まった単位', cell(row, 'cofog_decided_at_level')],
+      ['割当の根拠', cell(row, 'cofog_basis')],
+      ['適用した規則', <code className="text-xs">{cell(row, 'cofog_rule_id')}</code>],
     )
   }
   return (

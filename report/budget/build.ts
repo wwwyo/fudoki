@@ -9,6 +9,7 @@ import { join } from 'node:path'
 import type { Provenance, ReportData } from './schema'
 import { ROOT, TARGET, buildChecks, buildTopology, q, readJson, type Manifest, type RunResults } from '../lineage'
 import { STATIC } from './static'
+import { LEVELS, assertDetailColumns, type Direction, type DetailTable } from './detail'
 
 const DIVISIONS: Record<string, string> = {
   '01': '一般公共サービス', '02': '防衛', '03': '公共の秩序及び安全', '04': '経済業務', '05': '環境保護',
@@ -167,21 +168,32 @@ function build(code = '132047'): ReportData {
  * `*_source`（原典のセル全文）は配布物から落としてある（code‖label で復元できるため）。
  * 画面は階層の絞り込みに使うので、ここで組み立て直す。
  */
-function detailProjection(canonical: string, levels: string[], phaseId: string) {
+function detailProjection(direction: Direction, canonical: string, phaseId: string): DetailTable {
+  const levels = LEVELS[direction]
   const src = levels.map((l) => `${l}_code || ${l}_label as ${l}_source`).join(', ')
   const rows = q<Record<string, unknown>>(`
     select c.*, ${src},
            '${phaseId}' as phase_id, '千円' as source_amount_unit,
            d.cofog_status, d.cofog_division as cofog_division_code,
-           d.cofog_consolidation, d.cofog_decided_at_level, r.basis as cofog_basis
+           d.cofog_consolidation, d.cofog_decided_at_level, d.cofog_rule_id,
+           coalesce(v.label, '') as cofog_division_label, r.basis as cofog_basis
     from read_csv('${canonical}', header = true, all_varchar = true) c
     left join read_csv('${join(ROOT, 'data/budget/packages/derived/cofog.csv')}', header = true, all_varchar = true) d
       using (budget_line_id)
     left join read_csv('${join(ROOT, 'data/budget/packages/derived/cofog_rules.csv')}', header = true, all_varchar = true) r
       on r.rule_id = d.cofog_rule_id
+    left join (values ('01','一般公共サービス'),('02','防衛'),('03','公共の秩序及び安全'),
+                      ('04','経済業務'),('05','環境保護'),('06','住宅及び地域アメニティ'),
+                      ('07','保健'),('08','娯楽、文化及び宗教'),('09','教育'),('10','社会保護'))
+      as v(code, label) on v.code = d.cofog_division
     order by c.source_row`)
   const columns = rows.length ? Object.keys(rows[0]!) : []
-  return { columns, rows: rows.map((x) => columns.map((c) => String(x[c] ?? ''))) }
+  // **宣言した列が欠けていたら落とす。** 画面が黙って空になるより、生成が止まるほうがよい。
+  assertDetailColumns(direction, columns)
+  return {
+    columns: columns as DetailTable['columns'],
+    rows: rows.map((x) => columns.map((c) => String(x[c] ?? ''))),
+  }
 }
 
 const report = build()
@@ -189,10 +201,10 @@ writeFileSync(join(ROOT, 'data/budget/reports/132047.json'), `${JSON.stringify(r
 writeFileSync(join(ROOT, 'web/public/pipeline.json'), `${JSON.stringify({
   code: '132047',
   report,
-  expenditure: detailProjection(join(ROOT, 'data/budget/packages/132047/expenditure.csv'),
-    ['fund', 'kan', 'kou', 'moku', 'jikou', 'setsu', 'saisaisetsu'], report.meta.phase.id),
-  revenue: detailProjection(join(ROOT, 'data/budget/packages/132047/revenue.csv'),
-    ['fund', 'kan', 'kou', 'moku', 'setsu', 'saisetsu', 'saisaisetsu'], report.meta.phase.id),
+  expenditure: detailProjection('expenditure',
+    join(ROOT, 'data/budget/packages/132047/expenditure.csv'), report.meta.phase.id),
+  revenue: detailProjection('revenue',
+    join(ROOT, 'data/budget/packages/132047/revenue.csv'), report.meta.phase.id),
 })}\n`)
 const s = report.summary
 console.log(`ok  検査 ${s.passed}/${s.total}（警告 ${s.warned}）  ノード ${report.topology.nodes.length}  辺 ${report.topology.edges.length}`)
