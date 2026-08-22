@@ -14,7 +14,6 @@ import csv
 import hashlib
 import json
 import pathlib
-from datetime import UTC, datetime
 
 from ingestion.sources import load_sources
 
@@ -60,14 +59,26 @@ def resource(path: pathlib.Path, name: str, title: str, description: str, primar
     }
 
 
+def latest_fetch() -> str:
+    """収録した原典のうち最も新しい取得時刻。パッケージの版がいつ時点かを表す"""
+    stamps = [json.loads(p.read_text())["fetched_at"] for p in PROVENANCE.glob("*-*-*.json")]
+    if not stamps:
+        raise RuntimeError("証跡が1つも無い。先に ingestion を回すこと")
+    return max(stamps)
+
+
 def base(name: str, title: str, description: str) -> dict:
+    created = latest_fetch()
     return {
         "profile": "tabular-data-package",
         "name": name,
         "title": title,
         "description": description,
         "version": "0.1.0",
-        "created": datetime.now(UTC).isoformat(timespec="seconds"),
+        # 生成した時刻ではなく**原典を取得した時刻**を入れる。
+        # 実行した瞬間を入れると、中身が同じでも回すたびに差分が出る。
+        # 意味としても「いつ時点の原典から作られたか」のほうが利用者に要る。
+        "created": created,
         "countryCode": "JP",
         "columnTypes": TYPES["columnTypes"],
         "fudoki": TYPES["fudoki"],

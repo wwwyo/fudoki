@@ -42,3 +42,8 @@ select
     c.cofog_counterpart_fund
 from {{ ref('core_revenue_consolidation') }} as c
 inner join {{ ref('stg_132047__revenue') }} as s using (source_row)
+
+-- **並びを固定する。** 指定しないと実行ごとに行順が変わり、
+-- 中身が同じでも git に毎回 2,048 行の差分が出る。
+-- リポジトリで配る以上、決定的でない成果物は「変わっていない」を主張できない。
+order by jurisdiction_code, fiscal_year, direction, budget_line_id
