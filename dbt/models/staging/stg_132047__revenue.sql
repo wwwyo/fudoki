@@ -9,13 +9,13 @@ select
     cast(year as integer)         as fiscal_year,
     direction,
     source_row,
-    "01会計"    as fund_source,
-    "02款"      as kan_source,
-    "03項"      as kou_source,
-    "04目"      as moku_source,
-    "05節"      as setsu_source,
-    "06細節"    as saisetsu_source,
-    "07細々節"  as saisaisetsu_source,
+    {{ trim_cell('"01会計"') }} as fund_source,
+    {{ trim_cell('"02款"') }} as kan_source,
+    {{ trim_cell('"03項"') }} as kou_source,
+    {{ trim_cell('"04目"') }} as moku_source,
+    {{ trim_cell('"05節"') }} as setsu_source,
+    {{ trim_cell('"06細節"') }} as saisetsu_source,
+    {{ trim_cell('"07細々節"') }} as saisaisetsu_source,
     -- コードと名称の分離。三鷹市は先頭2桁がコード（実測）。
     -- 桁数は団体ごとに違いうるので、団体別モデルの中に閉じる。
     regexp_extract(fund_source, '^(\d{2})') as fund_code,
@@ -33,5 +33,16 @@ select
     regexp_extract(saisaisetsu_source, '^(\d{2})') as saisaisetsu_code,
     regexp_replace(saisaisetsu_source, '^\d{2}', '') as saisaisetsu_label
 ,
+    -- 識別子。**公開 API の一部**なので導出を変えると permalink が全滅する。
+    -- 構成要素はコードのパスではなく**セル全文**（コード + 名称）。
+    -- 三鷹市の細々節は同じ節の下でコードを再利用しており（実測 710 箇所・1,615 行）、
+    -- コードのパスだと 5,613 行が 4,708 通りにしかならない。
+    -- 区切りは U+001F（原典に現れない制御文字）。
+    'approved' as phase_id,
+    jurisdiction_code || ':' || fiscal_year || ':' || direction || ':approved:'
+        || substr(sha256(
+            jurisdiction_code || chr(31) || fiscal_year || chr(31) || direction || chr(31) || 'approved'
+            || chr(31) || fund_source || chr(31) || kan_source || chr(31) || kou_source || chr(31) || moku_source || chr(31) || setsu_source || chr(31) || saisetsu_source || chr(31) || saisaisetsu_source
+        ), 1, 16) as budget_line_id,
     cast("08予算額" as bigint) as source_amount
 from {{ source('raw_132047', 'revenue') }}
