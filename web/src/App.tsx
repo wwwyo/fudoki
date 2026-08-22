@@ -30,6 +30,9 @@ export default function App() {
   // 解放されない（対象は最終的に62団体になる）。見ている団体の分だけ持つ。
   const [detail, setDetail] = useState<{ code: string; data: DetailData } | null>(null)
   const [detailError, setDetailError] = useState<string | null>(null)
+  // 開いているタブ。**明細の取得はタブを開いた瞬間だけの出来事ではない** —
+  // 明細を見ている最中に団体を切り替えても取りに行く必要がある。
+  const [tab, setTab] = useState('stages')
 
   useEffect(() => {
     loadPipeline()
@@ -39,6 +42,24 @@ export default function App() {
 
   const current = data?.jurisdictions.find((j) => j.code === code) ?? data?.jurisdictions[0]
   const loaded = detail?.code === code ? detail.data : undefined
+
+  /**
+   * 明細を取りに行く条件は「明細タブを見ていて、その団体の分をまだ持っていない」。
+   *
+   * ⚠️ **タブを開く操作に紐づけない。** 紐づけると、明細タブを開いたまま団体を切り替えたとき
+   * 取得が走らず「明細を読み込み中…」のまま止まる（操作しないと復帰できない）。
+   * 見ているものと持っているものの差で決めれば、どちらの順序でも同じ結果になる。
+   */
+  useEffect(() => {
+    if (tab !== 'detail' || !current || loaded || detailError) return
+    let stale = false
+    const target = current.code
+    loadDetail(current.report)
+      .then((d) => { if (!stale) setDetail({ code: target, data: d }) })
+      .catch((e: Error) => { if (!stale) setDetailError(e.message) })
+    // 取得中に団体を切り替えたら、遅れて届いた前の団体の明細を捨てる
+    return () => { stale = true }
+  }, [tab, current, loaded, detailError])
 
   const rows = useMemo(
     () => (loaded ? { expenditure: toRows(loaded.expenditure), revenue: toRows(loaded.revenue) } : null),
@@ -145,16 +166,7 @@ export default function App() {
           </div>
         </section>
 
-        <Tabs
-          defaultValue="stages"
-          onValueChange={(v) => {
-            if (v === 'detail' && code && !loaded && !detailError) {
-              loadDetail(report)
-                .then((data) => setDetail({ code, data }))
-                .catch((e: Error) => setDetailError(e.message))
-            }
-          }}
-        >
+        <Tabs value={tab} onValueChange={setTab}>
           <TabsList>
             <TabsTrigger value="stages">段ごとの中身</TabsTrigger>
             <TabsTrigger value="cofog">COFOG の判断</TabsTrigger>

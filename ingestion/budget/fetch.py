@@ -38,6 +38,9 @@ LAYER = "budget"
 RAW = ROOT / "data" / LAYER / "raw"
 
 UA = "fudoki/0.1 (+https://github.com/wwwyo/fudoki)"
+# 再試行してよい HTTP ステータス。取得元側の一時的な状態だけを入れる。
+# 4xx はこちらの設定ミス（リソース名の誤り等）なので、待たせず即座に失敗させる。
+RETRYABLE_STATUS = frozenset({429, 500, 502, 503, 504})
 MAX_BYTES = 20 * 1024 * 1024
 
 
@@ -72,10 +75,18 @@ def http_get(url: str, attempts: int = 12) -> Fetched:
     for i in range(attempts):
         try:
             return _http_get_once(url)
+        except urllib.error.HTTPError as e:
+            # ⚠️ HTTPError は URLError を継承しているので、下の except より先に置く。
+            # 順序を逆にすると 404 が「一時的な失敗」として 12 回再試行される。
+            if e.code not in RETRYABLE_STATUS:
+                raise
+            last = e
+            print(f"retry {i + 1}/{attempts}  HTTP {e.code}  {url}")
+            time.sleep(min(2**i, 8))
         except (Truncated, http.client.IncompleteRead, urllib.error.URLError, TimeoutError) as e:
             last = e
             print(f"retry {i + 1}/{attempts}  {type(e).__name__}  {url}")
-            time.sleep(min(2 ** i, 8))
+            time.sleep(min(2**i, 8))
     raise RuntimeError(f"{attempts} 回試して取得できない: {url}") from last
 
 
