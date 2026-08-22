@@ -5,15 +5,28 @@ fudoki が配布するデータ。**リポジトリに置いてあるこれが�
 ## 中身
 
 ```
-132047/2024/
-  datapackage.json      Fiscal Data Package 1.0.0 の descriptor
-  expenditure.csv       歳出（正本）
-  revenue.csv           歳入（正本）
-  expenditure-cofog.csv 歳出 + COFOG（派生）
-  checksums.json        再生成の一致判定に使うハッシュと、その判定規則
+132047/                   ← 正本。団体ごと・全年度
+  datapackage.json        Fiscal Data Package 1.0.0 の descriptor
+  expenditure.csv         歳出
+  revenue.csv             歳入
+
+derived/                  ← 派生。団体をまたいで1つ
+  datapackage.json
+  cofog.csv               識別子 + COFOG の判断
+  cofog_rules.csv         判断の規則そのもの（35行）
 ```
 
-パスは `<全国地方公共団体コード>/<会計年度（西暦）>/`。
+**パスが言うのは正本か派生かだけ。** 中身が何かは `datapackage.json` の `title` と
+`description` が言う。パスに中身（cofog）を書くと ②調達・③会議録の派生が増えたときに嘘になり、
+カバレッジ（tokyo）を書くと対象を広げたときに地域で切ることになって横断できなくなる。
+年度で切ってはいけないのと同じ理由である。
+
+正本のパスは `<全国地方公共団体コード>/`。**年度でディレクトリを切らない** —
+年度を分けると「年をまたぐ比較ができない」という PJ の出発点を成果物の形で再現してしまう。
+年度は `fiscal_year` 列で区別する。
+
+原典そのものは `data/raw/` に Parquet で置いてある（取得の単位ごとに partition）。
+正本と join すれば、正規化の前の原文を突き合わせられる。
 
 ## 正本と派生を分けてある
 

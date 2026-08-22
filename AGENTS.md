@@ -276,7 +276,7 @@ uv run python -m package.build                 # → data/packages/*/datapackage
 |---|---|---|
 | `data/raw/` | (団体, 年度, direction) | 原典。Parquet。判断ゼロ |
 | `data/packages/<団体>/` | 団体ごと・**全年度** | 正本。その団体の科目体系のまま |
-| `data/packages/tokyo/` | **東京全体で1つ** | 派生。COFOG の割当と規則表 |
+| `data/packages/derived/` | **団体をまたいで1つ** | 派生。COFOG の割当と規則表 |
 
 団体をまたいで正本を1つにしない理由は、階層の構成が団体ごとに違い（三鷹市は事項、狛江市は大事業・中事業・小事業）、
 揃えることが「同じ概念だ」という**判断**になるため。揃える判断も COFOG も派生の側にあるので、**横断は派生でだけ成立する**。

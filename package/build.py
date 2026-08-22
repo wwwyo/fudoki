@@ -98,7 +98,7 @@ def build_jurisdiction(code: str) -> None:
         f"{srcs[0].jurisdiction_name} 予算（事業単位）",
         "自治体が公開した予算データを Fiscal Data Package の形にしたもの。"
         "**fudoki の判断は含まない**（分類・名寄せ・推定を一切していない）。"
-        "COFOG の割当は派生パッケージ tokyo/ にあり、budget_line_id で join する。"
+        "COFOG の割当は派生パッケージ derived/ にあり、budget_line_id で join する。"
         "原典そのものは data/raw/ に Parquet で入っている。",
     )
     pkg["fiscalPeriod"] = {"start": f"{years[0]}-04-01", "end": f"{years[-1] + 1}-03-31"}
@@ -126,10 +126,10 @@ def build_jurisdiction(code: str) -> None:
 
 def build_derived() -> None:
     """派生。**東京全体で1パッケージ。** ここから先は fudoki の判断。"""
-    d = PACKAGES / "tokyo"
+    d = PACKAGES / "derived"
     pkg = base(
-        "fudoki-budget-tokyo-cofog",
-        "東京都区市町村 予算の COFOG 割当（派生）",
+        "fudoki-budget-cofog",
+        "予算の COFOG 割当（派生）",
         "**fudoki の判断**。自治体が言っていないことを付け加えている。"
         "正本とは budget_line_id で join する。"
         "根拠は cofog_rules に規則として出してあり、cofog_rule_id で引ける。"
@@ -142,7 +142,7 @@ def build_derived() -> None:
                  "判断の中身そのもの。35行読めば何をどう決めたか確かめられる", ["rule_id"]),
     ]
     (d / "datapackage.json").write_text(json.dumps(pkg, ensure_ascii=False, indent=2) + "\n")
-    print(f"ok  tokyo  {len(pkg['resources'])} リソース  {sum(r['bytes'] for r in pkg['resources']):,} バイト")
+    print(f"ok  derived  {len(pkg['resources'])} リソース  {sum(r['bytes'] for r in pkg['resources']):,} バイト")
 
 
 if __name__ == "__main__":

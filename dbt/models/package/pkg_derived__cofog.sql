@@ -1,5 +1,11 @@
-{{ config(materialized = 'external', location = '../data/packages/tokyo/cofog.csv', format = 'csv') }}
--- 派生。**東京全体で1リソース。**
+{{ config(materialized = 'external', location = '../data/packages/derived/cofog.csv', format = 'csv') }}
+-- 派生。**団体をまたいで1リソース。**
+--
+-- 置き場を `derived/` にしているのは、**正本か派生かがパスで区別される必要がある**から。
+-- 中身が COFOG であることは datapackage.json の title と description が言うので、
+-- パスに書かない（②調達・③会議録の派生が増えたときに嘘になる）。
+-- カバレッジも書かない。対象を東京の外へ広げたときに地域で切ると、
+-- 年度で切ってはいけないのと同じ理由で横断できなくなる。
 --
 -- 団体をまたいで1つにできるのは、ここが判断の側だから。
 -- 三鷹市は事項、狛江市は大事業・中事業・小事業と階層の構成が違うので、
