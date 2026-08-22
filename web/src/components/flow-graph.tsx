@@ -13,7 +13,9 @@
 import { useMemo, useState } from 'react'
 import type { Node, ReportData, Topology } from '@/lib/pipeline'
 import { STAGE_ORDER, checksByNode, yen } from '@/lib/pipeline'
+import { Info } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 type Props = { topology: Topology; report: ReportData; onSelectNode?: (id: string | null) => void; selected: string | null }
 
@@ -21,7 +23,8 @@ const COL_W = 210
 const COL_GAP = 78
 const NODE_H = 46
 const NODE_GAP = 14
-const HEAD_H = 34
+/** focus ring がはみ出す分の余白。入れないと端のノードで ring が切れる */
+const PAD = 8
 
 const KIND_JA: Record<Node['kind'], string> = { source: '原典', model: 'モデル', seed: '規則表' }
 
@@ -36,14 +39,14 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
       topology.nodes
         .filter((n) => n.stage === sid)
         .forEach((n, row) => {
-          pos.set(n.id, { x: col * (COL_W + COL_GAP), y: HEAD_H + row * (NODE_H + NODE_GAP), node: n })
+          pos.set(n.id, { x: PAD + col * (COL_W + COL_GAP), y: PAD + row * (NODE_H + NODE_GAP), node: n })
         })
     })
     const rows = Math.max(...STAGE_ORDER.map((s) => topology.nodes.filter((n) => n.stage === s).length))
     return {
       pos,
-      width: STAGE_ORDER.length * COL_W + (STAGE_ORDER.length - 1) * COL_GAP,
-      height: HEAD_H + rows * (NODE_H + NODE_GAP),
+      width: PAD * 2 + STAGE_ORDER.length * COL_W + (STAGE_ORDER.length - 1) * COL_GAP,
+      height: PAD * 2 + rows * (NODE_H + NODE_GAP),
     }
   }, [topology])
 
@@ -64,11 +67,40 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
   return (
     <div className="flex flex-col gap-3">
       <div className="overflow-x-auto">
+        {/* 段の見出しは HTML で出す。SVG の中だと tooltip を素直に置けない。
+            列幅を SVG と揃えるため、どちらも固定幅で横スクロールさせる */}
+        <div
+          className="grid pb-2"
+          style={{
+            width: layout.width,
+            paddingLeft: PAD,
+            gridTemplateColumns: `repeat(${STAGE_ORDER.length}, ${COL_W}px)`,
+            columnGap: COL_GAP,
+          }}
+        >
+          {STAGE_ORDER.map((sid, col) => {
+            const stage = topology.stages.find((s) => s.id === sid)
+            return (
+              <div key={sid} className="flex items-center gap-1.5">
+                <span className="text-xs text-muted-foreground tabular-nums">{col + 1}</span>
+                <span className="text-[13px] font-medium">{stage?.label}</span>
+                <Tooltip>
+                  <TooltipTrigger
+                    className="text-muted-foreground hover:text-foreground focus-visible:ring-ring/50 rounded-full focus-visible:ring-[3px] focus-visible:outline-none"
+                    aria-label={`${stage?.label} の説明`}
+                  >
+                    <Info aria-hidden className="size-3.5" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-[36ch]">{stage?.responsibility}</TooltipContent>
+                </Tooltip>
+              </div>
+            )
+          })}
+        </div>
         <svg
           width={layout.width}
           height={layout.height}
           viewBox={`0 0 ${layout.width} ${layout.height}`}
-          className="max-w-full"
           role="img"
           aria-label={`パイプラインの依存グラフ。${topology.nodes.length} ノード、${topology.edges.length} 辺`}
         >
@@ -77,22 +109,6 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
               <path d="M0,0 L8,4 L0,8 z" fill="currentColor" />
             </marker>
           </defs>
-
-          {/* 段の見出し */}
-          {STAGE_ORDER.map((sid, col) => {
-            const stage = topology.stages.find((s) => s.id === sid)
-            return (
-              <g key={sid} transform={`translate(${col * (COL_W + COL_GAP)}, 0)`}>
-                <text x={0} y={14} className="fill-muted-foreground text-[11px] tabular-nums">{col + 1}</text>
-                <text x={14} y={14} className="fill-foreground text-[13px] font-medium">{stage?.label}</text>
-                {stage?.introducesJudgment && (
-                  <text x={14} y={28} className="text-[10px]" fill="var(--color-judgment-boundary)">
-                    ここから fudoki の判断
-                  </text>
-                )}
-              </g>
-            )
-          })}
 
           {/* 辺。ベジェで引く */}
           <g className="text-muted-foreground">
@@ -143,24 +159,37 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
                 onMouseEnter={() => setHover(node.id)}
                 onMouseLeave={() => setHover(null)}
                 onClick={() => onSelectNode?.(selected === node.id ? null : node.id)}
-                className="cursor-pointer"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    onSelectNode?.(selected === node.id ? null : node.id)
+                  }
+                }}
+                onFocus={() => setHover(node.id)}
+                onBlur={() => setHover(null)}
+                tabIndex={0}
+                role="button"
+                aria-pressed={selected === node.id}
+                aria-label={`${node.label} — ${hint}`}
+                className="cursor-pointer focus:outline-none"
               >
                 <title>{`${node.label} — ${hint}`}</title>
-                {/* 選んでいるノードは輪郭を太くするだけでは足りない。
-                    背後に色を敷いて、離れた位置からでもどれを見ているか分かるようにする */}
-                {focused && (
-                  <rect
-                    x={-5} y={-5} width={COL_W + 10} height={NODE_H + 10} rx={10}
-                    fill={accent} opacity={0.16}
-                  />
-                )}
                 <rect
                   width={COL_W} height={NODE_H} rx={7}
                   className="fill-card"
-                  stroke={focused ? accent : on ? 'var(--color-stage-judgment)' : 'var(--color-border)'}
-                  strokeWidth={focused ? 2.5 : 1.2}
+                  stroke={on ? 'var(--color-stage-judgment)' : 'var(--color-border)'}
+                  strokeWidth={1.2}
                 />
-                <rect width={focused ? 6 : 4} height={NODE_H} rx={2} fill={accent} />
+                {/* 選択は focus ring で示す。ノード自体の太さや色を変えると、
+                    その太さ・色が持っている意味（判断を含むか）と混ざる。
+                    間隔と太さは shadcn の ring-offset-2 / ring-[3px] に合わせる */}
+                {focused && (
+                  <rect
+                    x={-5} y={-5} width={COL_W + 10} height={NODE_H + 10} rx={11}
+                    fill="none" stroke="var(--color-ring)" strokeWidth={3}
+                  />
+                )}
+                <rect width={4} height={NODE_H} rx={2} fill={accent} />
                 <text x={16} y={19} className="fill-foreground text-[11.5px] font-medium">
                   {node.label.length > 26 ? `${node.label.slice(0, 25)}…` : node.label}
                 </text>
