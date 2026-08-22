@@ -1,0 +1,20 @@
+version: 2
+
+models:
+  - name: stg_132047__expenditure
+    description: 三鷹市 歳出。原典と1対1。判断を含まない
+    columns:
+      - name: source_row
+        description: 原典の行番号（ヘッダを1行目とする）
+        data_tests: [unique, not_null]
+      - name: source_amount
+        description: 原典の値。単位は千円のまま
+        data_tests: [not_null]
+
+  - name: stg_132047__revenue
+    description: 三鷹市 歳入。原典と1対1。判断を含まない
+    columns:
+      - name: source_row
+        data_tests: [unique, not_null]
+      - name: source_amount
+        data_tests: [not_null]

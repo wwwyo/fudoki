@@ -44,7 +44,12 @@ class Fetched:
 def http_get(url: str) -> Fetched:
     req = urllib.request.Request(url, headers={"User-Agent": UA})
     with urllib.request.urlopen(req, timeout=40) as res:  # noqa: S310  (取得元は sources.toml の固定 https)
-        body = res.read(MAX_BYTES + 1)
+        # 引数なしの read() を使う。分割して読むと、途中で接続が切れても
+        # 短いレスポンスとして黙って通ってしまう（IncompleteRead が上がらない）。
+        body = res.read()
+        declared = res.headers.get("Content-Length")
+        if declared is not None and len(body) != int(declared):
+            raise RuntimeError(f"Content-Length {declared} に対し {len(body)} バイトしか取れていない: {url}")
         if len(body) > MAX_BYTES:
             raise RuntimeError(f"{MAX_BYTES} バイトを超えた。取得元の異常: {url}")
         return Fetched(
@@ -124,7 +129,12 @@ def ingest(key: str) -> None:
             print(f"skip  {direction}  同じ SHA-256 の Parquet が既にある")
             continue
 
-        text = got.body.decode(cfg["encoding"]).lstrip("﻿")
+        text = got.body.decode(cfg["encoding"])
+        # 復号が可逆か検査する。文字コードを取り違えると黙って別の字に化けるので、
+        # 「読めた」ことを成功と見なさない。
+        if text.encode(cfg["encoding"]) != got.body:
+            raise RuntimeError(f"{direction}: {cfg['encoding']} での復号が可逆でない。文字コードの指定が誤っている")
+        text = text.lstrip("﻿")
         newline = "\r\n" if "\r\n" in text else "\n"
         header, rows = parse_rows(text)
 

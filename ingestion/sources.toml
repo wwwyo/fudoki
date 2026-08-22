@@ -20,7 +20,10 @@ fiscal_year_label = "令和６年度"
 phase_id = "approved"
 phase_label = "当初予算"
 dataset_title = "【予算・決算】予算情報"
-encoding = "shift_jis"
+# ⚠️ shift_jis ではなく cp932。原典に機種依存文字が入っている
+# （`01Ⅰ型事業委託料` の Ⅰ = U+2160、CP932 で 0x8754）。
+# 素の shift_jis は NEC 特殊文字を受け付けず復号に失敗する。
+encoding = "cp932"
 # 再配布の可否。allow 以外は raw を書き出さない（③会議録は allow 0 団体）。
 redistribute = "allow"
 license_id = "CC-BY-4.0"

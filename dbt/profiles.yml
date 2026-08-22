@@ -1,0 +1,9 @@
+# DuckDB のファイルは実行時に組む一時物で、正は data/raw/ の Parquet 側にある。
+# .gitignore 済み。
+fudoki:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ../data/fudoki.duckdb
+      threads: 4

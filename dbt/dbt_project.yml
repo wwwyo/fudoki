@@ -1,0 +1,16 @@
+name: fudoki
+version: "0.1.0"
+profile: fudoki
+model-paths: ["models"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  fudoki:
+    staging:
+      # staging は原典と1対1。view のままにして、実体を持たせない。
+      +materialized: view
+    core:
+      +materialized: table

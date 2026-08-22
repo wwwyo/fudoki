@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  # 取得の単位（団体コード, 年度, direction）ごとに1ソース。
+  # **団体ごとに列が違う**（三鷹市には事項があり多摩市には無い）ので、
+  # 団体をまたいで1つのソースにはできない。団体を足すときはこのブロックを足す。
+  - name: raw_132047
+    description: 三鷹市。原典の Parquet を直接読む
+    meta:
+      external_location: "read_parquet('../data/raw/jurisdiction=132047/year=*/direction={name}/data.parquet', hive_partitioning=true)"
+    tables:
+      - name: expenditure
+      - name: revenue

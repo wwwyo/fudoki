@@ -28,3 +28,14 @@ dbt/dbt_packages/
 
 # 実行時に data/raw/ の Parquet から組む一時ファイル。正は Parquet 側
 data/raw.duckdb
+
+# Python / dbt
+.venv/
+__pycache__/
+dbt/target/
+dbt/logs/
+dbt/dbt_packages/
+# DuckDB は実行時に組む一時ファイル。正は data/raw/ の Parquet 側にある
+data/fudoki.duckdb
+data/fudoki.duckdb.wal
+dbt/.user.yml
