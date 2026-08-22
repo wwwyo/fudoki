@@ -1,0 +1,2570 @@
+{
+  "meta": {
+    "jurisdictionCode": "132195",
+    "jurisdictionName": "狛江市",
+    "fiscalYears": [
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023
+    ],
+    "phase": {
+      "id": "settlement",
+      "label": "決算"
+    },
+    "license": {
+      "id": "CC-BY-4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）",
+    "landingPage": "https://www.city.komae.tokyo.jp/index.cfm/32,0,224,1108,html",
+    "generatedAt": "2026-08-22T08:16:58+00:00"
+  },
+  "summary": {
+    "total": 41,
+    "passed": 40,
+    "failed": 0,
+    "warned": 1
+  },
+  "topology": {
+    "stages": [
+      {
+        "id": "ingestion",
+        "label": "ingestion",
+        "introducesJudgment": false,
+        "responsibility": "取得元から取り、無加工のまま Parquet で置く。取得 URL・status・SHA-256・取得時刻を添える",
+        "excludes": "解釈・整形・結合"
+      },
+      {
+        "id": "staging",
+        "label": "staging",
+        "introducesJudgment": false,
+        "responsibility": "原典と1対1。列名の付け替えと型付けだけ",
+        "excludes": "判断（分類・名寄せ・推定）。行を増減させること"
+      },
+      {
+        "id": "core",
+        "label": "core",
+        "introducesJudgment": true,
+        "responsibility": "判断が入る段。COFOG 写像、連結の消去",
+        "excludes": "取得"
+      },
+      {
+        "id": "package",
+        "label": "package",
+        "introducesJudgment": false,
+        "responsibility": "配布物へ。Fiscal Data Package の形にする",
+        "excludes": "判断"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "source.fudoki.raw_132047.expenditure",
+        "label": "expenditure",
+        "kind": "source",
+        "stage": "ingestion",
+        "rows": 5613,
+        "description": "",
+        "introducesJudgment": false,
+        "containsJudgment": false,
+        "artifact": null
+      },
+      {
+        "id": "source.fudoki.raw_132195.expenditure",
+        "label": "expenditure",
+        "kind": "source",
+        "stage": "ingestion",
+        "rows": 13461,
+        "description": "",
+        "introducesJudgment": false,
+        "containsJudgment": false,
+        "artifact": null
+      },
+      {
+        "id": "source.fudoki.raw_132047.revenue",
+        "label": "revenue",
+        "kind": "source",
+        "stage": "ingestion",
+        "rows": 821,
+        "description": "",
+        "introducesJudgment": false,
+        "containsJudgment": false,
+        "artifact": null
+      },
+      {
+        "id": "source.fudoki.raw_132195.revenue",
+        "label": "revenue",
+        "kind": "source",
+        "stage": "ingestion",
+        "rows": 4219,
+        "description": "",
+        "introducesJudgment": false,
+        "containsJudgment": false,
+        "artifact": null
+      },
+      {
+        "id": "model.fudoki.stg_132047__expenditure",
+        "label": "stg_132047__expenditure",
+        "kind": "model",
+        "stage": "staging",
+        "rows": 5613,
+        "description": "三鷹市 歳出。原典と1対1。判断を含まない",
+        "introducesJudgment": false,
+        "containsJudgment": false,
+        "artifact": null
+      },
+      {
+        "id": "model.fudoki.stg_132047__revenue",
+        "label": "stg_132047__revenue",
+        "kind": "model",
+        "stage": "staging",
+        "rows": 821,
+        "description": "三鷹市 歳入。原典と1対1。判断を含まない",
+        "introducesJudgment": false,
+        "containsJudgment": false,
+        "artifact": null
+      },
+      {
+        "id": "model.fudoki.stg_132195__expenditure",
+        "label": "stg_132195__expenditure",
+        "kind": "model",
+        "stage": "staging",
+        "rows": 13461,
+        "description": "狛江市 歳出（決算書）。原典と1対1。判断を含まない",
+        "introducesJudgment": false,
+        "containsJudgment": false,
+        "artifact": null
+      },
+      {
+        "id": "model.fudoki.stg_132195__revenue",
+        "label": "stg_132195__revenue",
+        "kind": "model",
+        "stage": "staging",
+        "rows": 4219,
+        "description": "狛江市 歳入（決算書）。原典と1対1。判断を含まない",
+        "introducesJudgment": false,
+        "containsJudgment": false,
+        "artifact": null
+      },
+      {
+        "id": "seed.fudoki.cofog_rules",
+        "label": "cofog_rules",
+        "kind": "seed",
+        "stage": "core",
+        "rows": 54,
+        "description": "COFOG の割り当て規則。**fudoki の判断そのもの**なのでデータとして持つ。\npriority の小さい順に見て最初に当たったものを採る（具体的な規則ほど先）。\napplies_to が空の規則は法定語彙（款・節）にだけ当たるので、どの団体にも効く。\n⚠️ **名称で当たらない団体がある。** 狛江市は款・項・目に名称の列が原典に無いので、\n名称を条件にした規則は1本も当たらない。名称を捏造せず `match_kan_code` で当て、\n何の款かとその出所を basis に書く。",
+        "introducesJudgment": true,
+        "containsJudgment": true,
+        "artifact": null
+      },
+      {
+        "id": "model.fudoki.core_budget_cofog",
+        "label": "core_budget_cofog",
+        "kind": "model",
+        "stage": "core",
+        "rows": 19074,
+        "description": "",
+        "introducesJudgment": true,
+        "containsJudgment": true,
+        "artifact": null
+      },
+      {
+        "id": "model.fudoki.core_budget_lines",
+        "label": "core_budget_lines",
+        "kind": "model",
+        "stage": "core",
+        "rows": 19074,
+        "description": "",
+        "introducesJudgment": true,
+        "containsJudgment": true,
+        "artifact": null
+      },
+      {
+        "id": "model.fudoki.core_revenue_consolidation",
+        "label": "core_revenue_consolidation",
+        "kind": "model",
+        "stage": "core",
+        "rows": 5040,
+        "description": "",
+        "introducesJudgment": true,
+        "containsJudgment": true,
+        "artifact": null
+      },
+      {
+        "id": "model.fudoki.core_revenue_lines",
+        "label": "core_revenue_lines",
+        "kind": "model",
+        "stage": "core",
+        "rows": 5040,
+        "description": "",
+        "introducesJudgment": true,
+        "containsJudgment": true,
+        "artifact": null
+      },
+      {
+        "id": "seed.fudoki.published_reference",
+        "label": "published_reference",
+        "kind": "seed",
+        "stage": "core",
+        "rows": 34,
+        "description": "公表資料（令和6年度施政方針・予算概要(1)）から書き写した款別の値。\n**原典とは別の経路で作られた資料**なので、突合すると取り込みの誤りを外から検出できる。\n合計だけの検算は誤りが打ち消し合うと通ってしまうため、款別で持つ。",
+        "introducesJudgment": false,
+        "containsJudgment": false,
+        "artifact": null
+      },
+      {
+        "id": "seed.fudoki.published_reference_meta",
+        "label": "published_reference_meta",
+        "kind": "seed",
+        "stage": "core",
+        "rows": 1,
+        "description": "公表資料そのものの出所。PDF の SHA-256 とバイト数を含む",
+        "introducesJudgment": false,
+        "containsJudgment": false,
+        "artifact": null
+      },
+      {
+        "id": "model.fudoki.pkg_132047__expenditure",
+        "label": "pkg_132047__expenditure",
+        "kind": "model",
+        "stage": "package",
+        "rows": 5613,
+        "description": "",
+        "introducesJudgment": false,
+        "containsJudgment": false,
+        "artifact": "../data/budget/packages/132047/expenditure.csv"
+      },
+      {
+        "id": "model.fudoki.pkg_132047__revenue",
+        "label": "pkg_132047__revenue",
+        "kind": "model",
+        "stage": "package",
+        "rows": 821,
+        "description": "",
+        "introducesJudgment": false,
+        "containsJudgment": false,
+        "artifact": "../data/budget/packages/132047/revenue.csv"
+      },
+      {
+        "id": "model.fudoki.pkg_132195__expenditure",
+        "label": "pkg_132195__expenditure",
+        "kind": "model",
+        "stage": "package",
+        "rows": 40383,
+        "description": "",
+        "introducesJudgment": false,
+        "containsJudgment": false,
+        "artifact": "../data/budget/packages/132195/expenditure.csv"
+      },
+      {
+        "id": "model.fudoki.pkg_132195__revenue",
+        "label": "pkg_132195__revenue",
+        "kind": "model",
+        "stage": "package",
+        "rows": 8438,
+        "description": "",
+        "introducesJudgment": false,
+        "containsJudgment": false,
+        "artifact": "../data/budget/packages/132195/revenue.csv"
+      },
+      {
+        "id": "model.fudoki.pkg_derived__cofog",
+        "label": "pkg_derived__cofog",
+        "kind": "model",
+        "stage": "package",
+        "rows": 24114,
+        "description": "",
+        "introducesJudgment": false,
+        "containsJudgment": true,
+        "artifact": "../data/budget/packages/derived/cofog.csv"
+      },
+      {
+        "id": "model.fudoki.pkg_derived__cofog_rules",
+        "label": "pkg_derived__cofog_rules",
+        "kind": "model",
+        "stage": "package",
+        "rows": 54,
+        "description": "",
+        "introducesJudgment": false,
+        "containsJudgment": true,
+        "artifact": "../data/budget/packages/derived/cofog_rules.csv"
+      }
+    ],
+    "edges": [
+      {
+        "from": "model.fudoki.core_budget_cofog",
+        "to": "model.fudoki.pkg_derived__cofog",
+        "kind": "flow"
+      },
+      {
+        "from": "model.fudoki.core_budget_lines",
+        "to": "model.fudoki.core_budget_cofog",
+        "kind": "flow"
+      },
+      {
+        "from": "model.fudoki.core_revenue_consolidation",
+        "to": "model.fudoki.pkg_derived__cofog",
+        "kind": "flow"
+      },
+      {
+        "from": "model.fudoki.core_revenue_lines",
+        "to": "model.fudoki.core_revenue_consolidation",
+        "kind": "flow"
+      },
+      {
+        "from": "model.fudoki.stg_132047__expenditure",
+        "to": "model.fudoki.core_budget_lines",
+        "kind": "flow"
+      },
+      {
+        "from": "model.fudoki.stg_132047__expenditure",
+        "to": "model.fudoki.pkg_132047__expenditure",
+        "kind": "flow"
+      },
+      {
+        "from": "model.fudoki.stg_132047__revenue",
+        "to": "model.fudoki.core_revenue_lines",
+        "kind": "flow"
+      },
+      {
+        "from": "model.fudoki.stg_132047__revenue",
+        "to": "model.fudoki.pkg_132047__revenue",
+        "kind": "flow"
+      },
+      {
+        "from": "model.fudoki.stg_132195__expenditure",
+        "to": "model.fudoki.core_budget_lines",
+        "kind": "flow"
+      },
+      {
+        "from": "model.fudoki.stg_132195__expenditure",
+        "to": "model.fudoki.pkg_132195__expenditure",
+        "kind": "flow"
+      },
+      {
+        "from": "model.fudoki.stg_132195__revenue",
+        "to": "model.fudoki.core_revenue_lines",
+        "kind": "flow"
+      },
+      {
+        "from": "model.fudoki.stg_132195__revenue",
+        "to": "model.fudoki.pkg_132195__revenue",
+        "kind": "flow"
+      },
+      {
+        "from": "seed.fudoki.cofog_rules",
+        "to": "model.fudoki.core_budget_cofog",
+        "kind": "flow"
+      },
+      {
+        "from": "seed.fudoki.cofog_rules",
+        "to": "model.fudoki.pkg_derived__cofog_rules",
+        "kind": "flow"
+      },
+      {
+        "from": "source.fudoki.raw_132047.expenditure",
+        "to": "model.fudoki.stg_132047__expenditure",
+        "kind": "flow"
+      },
+      {
+        "from": "source.fudoki.raw_132047.revenue",
+        "to": "model.fudoki.stg_132047__revenue",
+        "kind": "flow"
+      },
+      {
+        "from": "source.fudoki.raw_132195.expenditure",
+        "to": "model.fudoki.stg_132195__expenditure",
+        "kind": "flow"
+      },
+      {
+        "from": "source.fudoki.raw_132195.revenue",
+        "to": "model.fudoki.stg_132195__revenue",
+        "kind": "flow"
+      }
+    ],
+    "source": "dbt/target/manifest.json（手書きではない）"
+  },
+  "ingestion": [
+    {
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2018,
+      "direction": "expenditure",
+      "dataset_title": "決算書歳出データ（2018）",
+      "resource_name": "決算書歳出データ（2018）",
+      "fiscal_year_basis": "CKAN のリソース名「決算書歳出データ（2018）」の「（2018）」から解決",
+      "request_url": "https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_kessan2018saisyutu.csv",
+      "status": 200,
+      "bytes": 322262,
+      "sha256": "3e4362668b58219b0bceeb88704ecd489ce1f0bcc9372c68470c4f6f5483b85f",
+      "fetched_at": "2026-08-22T08:11:46+00:00",
+      "encoding": "utf-8",
+      "header": [
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "所属",
+        "所属名称",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "大事業",
+        "中事業",
+        "小事業",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算額(円)",
+        "充流用等増減額(円)",
+        "予算計(円)",
+        "執行累計(円)",
+        "予算残額(円)",
+        "執行率(％)"
+      ],
+      "rows": 2178,
+      "roundtrip_verified": true,
+      "license_id": "CC-BY-4.0",
+      "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+    },
+    {
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2018,
+      "direction": "revenue",
+      "dataset_title": "決算書歳入データ（2018）",
+      "resource_name": "決算書歳入データ（2018）",
+      "fiscal_year_basis": "CKAN のリソース名「決算書歳入データ（2018）」の「（2018）」から解決",
+      "request_url": "https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_kessan2018sainyu.csv",
+      "status": 200,
+      "bytes": 91545,
+      "sha256": "61737c1ac430d3d900f7d43ec1cd6fbaa37f1df28c459ab0b05c9202cc205c6e",
+      "fetched_at": "2026-08-22T08:12:40+00:00",
+      "encoding": "utf-8",
+      "header": [
+        "所属コード",
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算現額(千円)",
+        "調定累計(円)",
+        "収入累計(円)",
+        "不納欠損額(円)",
+        "還付未済額(円)",
+        "収入未済額(円)",
+        "予算残額(円)",
+        "予算比(％)",
+        "収入率(％)"
+      ],
+      "rows": 667,
+      "roundtrip_verified": true,
+      "license_id": "CC-BY-4.0",
+      "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+    },
+    {
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2019,
+      "direction": "expenditure",
+      "dataset_title": "決算書歳出データ（2019）",
+      "resource_name": "決算書歳出データ（2019）",
+      "fiscal_year_basis": "CKAN のリソース名「決算書歳出データ（2019）」の「（2019）」から解決",
+      "request_url": "https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_kessan2019saisyutu.csv",
+      "status": 200,
+      "bytes": 327455,
+      "sha256": "0418cd63aaa4ed040ea4f3c3c19e648a62154c96e1631fa7bc32d9fefa3b07b8",
+      "fetched_at": "2026-08-22T08:10:11+00:00",
+      "encoding": "utf-8",
+      "header": [
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "所属",
+        "所属名称",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "大事業",
+        "中事業",
+        "小事業",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算額(円)",
+        "充流用等増減額(円)",
+        "予算計(円)",
+        "執行累計(円)",
+        "予算残額(円)",
+        "執行率(％)"
+      ],
+      "rows": 2211,
+      "roundtrip_verified": true,
+      "license_id": "CC-BY-4.0",
+      "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+    },
+    {
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2019,
+      "direction": "revenue",
+      "dataset_title": "決算書歳入データ（2019）",
+      "resource_name": "決算書歳入データ（2019）",
+      "fiscal_year_basis": "CKAN のリソース名「決算書歳入データ（2019）」の「（2019）」から解決",
+      "request_url": "https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_kessan2019sainyu.csv",
+      "status": 200,
+      "bytes": 95906,
+      "sha256": "a27d7fa3e8723b392c33d37532553f8b37905f6f03920b47d5afb89720480dd7",
+      "fetched_at": "2026-08-22T08:13:13+00:00",
+      "encoding": "utf-8",
+      "header": [
+        "所属コード",
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算現額(千円)",
+        "調定累計(円)",
+        "収入累計(円)",
+        "不納欠損額(円)",
+        "還付未済額(円)",
+        "収入未済額(円)",
+        "予算残額(円)",
+        "予算比(％)",
+        "収入率(％)"
+      ],
+      "rows": 697,
+      "roundtrip_verified": true,
+      "license_id": "CC-BY-4.0",
+      "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+    },
+    {
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2020,
+      "direction": "expenditure",
+      "dataset_title": "決算書歳出データ（2020）",
+      "resource_name": "決算書歳出データ（2020）",
+      "fiscal_year_basis": "CKAN のリソース名「決算書歳出データ（2020）」の「（2020）」から解決",
+      "request_url": "https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_kessan2020saisyutu.csv",
+      "status": 200,
+      "bytes": 340053,
+      "sha256": "afa77efd530603b989dc55706ce8789dd07b0325d271717359fb99122ff93cf2",
+      "fetched_at": "2026-08-22T08:16:54+00:00",
+      "encoding": "utf-8",
+      "header": [
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "所属",
+        "所属名称",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "大事業",
+        "中事業",
+        "小事業",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算額(円)",
+        "充流用等増減額(円)",
+        "予算計(円)",
+        "執行累計(円)",
+        "予算残額(円)",
+        "執行率(％)"
+      ],
+      "rows": 2298,
+      "roundtrip_verified": true,
+      "license_id": "CC-BY-4.0",
+      "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+    },
+    {
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2020,
+      "direction": "revenue",
+      "dataset_title": "決算書歳入データ（2020）",
+      "resource_name": "決算書歳入データ（2020）",
+      "fiscal_year_basis": "CKAN のリソース名「決算書歳入データ（2020）」の「（2020）」から解決",
+      "request_url": "https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_kessan2020sainyu.csv",
+      "status": 200,
+      "bytes": 96357,
+      "sha256": "2639b9d6daa13b3d23090300e76d9198990f67d4fa2ff406274dd1e45a52544d",
+      "fetched_at": "2026-08-22T08:16:58+00:00",
+      "encoding": "utf-8",
+      "header": [
+        "所属コード",
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算現額(千円)",
+        "調定累計(円)",
+        "収入累計(円)",
+        "不納欠損額(円)",
+        "還付未済額(円)",
+        "収入未済額(円)",
+        "予算残額(円)",
+        "予算比(％)",
+        "収入率(％)"
+      ],
+      "rows": 700,
+      "roundtrip_verified": true,
+      "license_id": "CC-BY-4.0",
+      "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+    },
+    {
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2021,
+      "direction": "expenditure",
+      "dataset_title": "決算書歳出データ（2021）",
+      "resource_name": "決算書歳出データ（2021）",
+      "fiscal_year_basis": "CKAN のリソース名「決算書歳出データ（2021）」の「（2021）」から解決",
+      "request_url": "https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_kessan2021saisyutu.csv",
+      "status": 200,
+      "bytes": 336665,
+      "sha256": "cf4d7de8ed8e819b25c3ac69541ef7cdb69fa32550d04f89b48e8958643f290f",
+      "fetched_at": "2026-08-22T08:10:19+00:00",
+      "encoding": "utf-8",
+      "header": [
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "所属",
+        "所属名称",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "大事業",
+        "中事業",
+        "小事業",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算額(円)",
+        "充流用等増減額(円)",
+        "予算計(円)",
+        "執行累計(円)",
+        "予算残額(円)",
+        "執行率(％)"
+      ],
+      "rows": 2266,
+      "roundtrip_verified": true,
+      "license_id": "CC-BY-4.0",
+      "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+    },
+    {
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2021,
+      "direction": "revenue",
+      "dataset_title": "決算書歳入データ（2021）",
+      "resource_name": "決算書歳入データ（2021）",
+      "fiscal_year_basis": "CKAN のリソース名「決算書歳入データ（2021）」の「（2021）」から解決",
+      "request_url": "https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_kessan2021sainyu.csv",
+      "status": 200,
+      "bytes": 96667,
+      "sha256": "5e2772fb2d152e46ba2bdd3f76244697f1afd0de654fb2463dab74283456f320",
+      "fetched_at": "2026-08-22T08:15:34+00:00",
+      "encoding": "utf-8",
+      "header": [
+        "所属コード",
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算現額(千円)",
+        "調定累計(円)",
+        "収入累計(円)",
+        "不納欠損額(円)",
+        "還付未済額(円)",
+        "収入未済額(円)",
+        "予算残額(円)",
+        "予算比(％)",
+        "収入率(％)"
+      ],
+      "rows": 698,
+      "roundtrip_verified": true,
+      "license_id": "CC-BY-4.0",
+      "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+    },
+    {
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2022,
+      "direction": "expenditure",
+      "dataset_title": "決算書歳出データ（2022）",
+      "resource_name": "決算書歳出データ（2022）",
+      "fiscal_year_basis": "CKAN のリソース名「決算書歳出データ（2022）」の「（2022）」から解決",
+      "request_url": "https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_kessan2022saisyutu.csv",
+      "status": 200,
+      "bytes": 288651,
+      "sha256": "c3e8be28ec3241d9ed8ef2237e566c02b41027739bdf6929a11fd7c919c49ae3",
+      "fetched_at": "2026-08-22T08:10:28+00:00",
+      "encoding": "cp932",
+      "header": [
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "所属",
+        "所属名称",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "大事業",
+        "中事業",
+        "小事業",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算額(円)",
+        "充流用等増減額(円)",
+        "予算計(円)",
+        "執行累計(円)",
+        "予算残額(円)",
+        "執行率(％)"
+      ],
+      "rows": 2284,
+      "roundtrip_verified": true,
+      "license_id": "CC-BY-4.0",
+      "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+    },
+    {
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2022,
+      "direction": "revenue",
+      "dataset_title": "決算書歳入データ（2022）",
+      "resource_name": "決算書歳入データ（2022）",
+      "fiscal_year_basis": "CKAN のリソース名「決算書歳入データ（2022）」の「（2022）」から解決",
+      "request_url": "https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_kessan2022sainyu.csv",
+      "status": 200,
+      "bytes": 85030,
+      "sha256": "23fb6e8444d7ded7af91e6d289a42701dca1f94e1c2aace1e1fe55d899828ec8",
+      "fetched_at": "2026-08-22T08:10:33+00:00",
+      "encoding": "cp932",
+      "header": [
+        "所属コード",
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算現額(千円)",
+        "調定累計(円)",
+        "収入累計(円)",
+        "不納欠損額(円)",
+        "還付未済額(円)",
+        "収入未済額(円)",
+        "予算残額(円)",
+        "予算比(％)",
+        "収入率(％)"
+      ],
+      "rows": 715,
+      "roundtrip_verified": true,
+      "license_id": "CC-BY-4.0",
+      "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+    },
+    {
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2023,
+      "direction": "expenditure",
+      "dataset_title": "決算書歳出データ（2023）",
+      "resource_name": "決算書歳出データ（2023）",
+      "fiscal_year_basis": "CKAN のリソース名「決算書歳出データ（2023）」の「（2023）」から解決",
+      "request_url": "https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_kessan2023saisyutu.csv",
+      "status": 200,
+      "bytes": 280581,
+      "sha256": "26c342106b395d8a459076e137129d98a97b8cb15b97adc29d35a3638143814d",
+      "fetched_at": "2026-08-22T08:10:35+00:00",
+      "encoding": "cp932",
+      "header": [
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "所属",
+        "所属名称",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "大事業",
+        "中事業",
+        "小事業",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算額(円)",
+        "充流用等増減額(円)",
+        "予算計(円)",
+        "執行累計(円)",
+        "予算残額(円)",
+        "執行率(％)"
+      ],
+      "rows": 2224,
+      "roundtrip_verified": true,
+      "license_id": "CC-BY-4.0",
+      "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+    },
+    {
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2023,
+      "direction": "revenue",
+      "dataset_title": "決算書歳入データ（2023）",
+      "resource_name": "決算書歳入データ（2023）",
+      "fiscal_year_basis": "CKAN のリソース名「決算書歳入データ（2023）」の「（2023）」から解決",
+      "request_url": "https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_kessan2023sainyu.csv",
+      "status": 200,
+      "bytes": 88167,
+      "sha256": "14d5d00db95a9d81de10f72c4792c9dc06f3d7ad17209b13893edbcf5012533b",
+      "fetched_at": "2026-08-22T08:16:42+00:00",
+      "encoding": "cp932",
+      "header": [
+        "所属コード",
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算現額(千円)",
+        "調定累計(円)",
+        "収入累計(円)",
+        "不納欠損額(円)",
+        "還付未済額(円)",
+        "収入未済額(円)",
+        "予算残額(円)",
+        "予算比(％)",
+        "収入率(％)"
+      ],
+      "rows": 742,
+      "roundtrip_verified": true,
+      "license_id": "CC-BY-4.0",
+      "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+    }
+  ],
+  "detailLevels": [
+    {
+      "direction": "expenditure",
+      "levels": [
+        "fund",
+        "kan",
+        "kou",
+        "moku",
+        "daijigyo",
+        "chujigyo",
+        "shojigyo",
+        "setsu",
+        "saisetsu",
+        "saisaisetsu"
+      ]
+    },
+    {
+      "direction": "revenue",
+      "levels": [
+        "fund",
+        "kan",
+        "kou",
+        "moku",
+        "setsu",
+        "saisetsu",
+        "saisaisetsu"
+      ]
+    }
+  ],
+  "levels": [
+    {
+      "direction": "expenditure",
+      "items": [
+        {
+          "sourceColumn": "会計",
+          "distinctCodes": 6,
+          "distinctPaths": 6,
+          "codeReusedUnderDifferentParents": false
+        },
+        {
+          "sourceColumn": "款",
+          "distinctCodes": 13,
+          "distinctPaths": 41,
+          "codeReusedUnderDifferentParents": true
+        },
+        {
+          "sourceColumn": "項",
+          "distinctCodes": 7,
+          "distinctPaths": 74,
+          "codeReusedUnderDifferentParents": true
+        },
+        {
+          "sourceColumn": "目",
+          "distinctCodes": 11,
+          "distinctPaths": 183,
+          "codeReusedUnderDifferentParents": true
+        },
+        {
+          "sourceColumn": "大事業",
+          "distinctCodes": 42,
+          "distinctPaths": 694,
+          "codeReusedUnderDifferentParents": true
+        },
+        {
+          "sourceColumn": "中事業",
+          "distinctCodes": 1,
+          "distinctPaths": 694,
+          "codeReusedUnderDifferentParents": true
+        },
+        {
+          "sourceColumn": "小事業",
+          "distinctCodes": 1,
+          "distinctPaths": 694,
+          "codeReusedUnderDifferentParents": true
+        },
+        {
+          "sourceColumn": "節",
+          "distinctCodes": 28,
+          "distinctPaths": 4015,
+          "codeReusedUnderDifferentParents": true
+        },
+        {
+          "sourceColumn": "細節",
+          "distinctCodes": 1,
+          "distinctPaths": 4015,
+          "codeReusedUnderDifferentParents": true
+        },
+        {
+          "sourceColumn": "細々節",
+          "distinctCodes": 1,
+          "distinctPaths": 4015,
+          "codeReusedUnderDifferentParents": true
+        }
+      ]
+    },
+    {
+      "direction": "revenue",
+      "items": [
+        {
+          "sourceColumn": "会計",
+          "distinctCodes": 6,
+          "distinctPaths": 6,
+          "codeReusedUnderDifferentParents": false
+        },
+        {
+          "sourceColumn": "款",
+          "distinctCodes": 22,
+          "distinctPaths": 62,
+          "codeReusedUnderDifferentParents": true
+        },
+        {
+          "sourceColumn": "項",
+          "distinctCodes": 6,
+          "distinctPaths": 118,
+          "codeReusedUnderDifferentParents": true
+        },
+        {
+          "sourceColumn": "目",
+          "distinctCodes": 7,
+          "distinctPaths": 231,
+          "codeReusedUnderDifferentParents": true
+        },
+        {
+          "sourceColumn": "節",
+          "distinctCodes": 9,
+          "distinctPaths": 462,
+          "codeReusedUnderDifferentParents": true
+        },
+        {
+          "sourceColumn": "細節",
+          "distinctCodes": 35,
+          "distinctPaths": 1324,
+          "codeReusedUnderDifferentParents": true
+        },
+        {
+          "sourceColumn": "細々節",
+          "distinctCodes": 1,
+          "distinctPaths": 1324,
+          "codeReusedUnderDifferentParents": true
+        }
+      ]
+    }
+  ],
+  "transform": {
+    "cofogVersion": "COFOG 1999",
+    "cofogSource": {
+      "name": "UNSD Classification of the Functions of Government (COFOG)",
+      "url": "https://unstats.un.org/unsd/classifications/Family/Detail/4"
+    },
+    "ruleCount": 30,
+    "ruleScope": {
+      "shared": 11,
+      "jurisdictionSpecific": 19
+    },
+    "byState": [
+      {
+        "status": "assigned",
+        "division": "10",
+        "consolidation": "retained",
+        "count": 3498,
+        "sum": 127501668270,
+        "divisionLabel": "社会保護"
+      },
+      {
+        "status": "unclassifiable",
+        "division": "",
+        "consolidation": "retained",
+        "count": 6443,
+        "sum": 83462211643,
+        "divisionLabel": ""
+      },
+      {
+        "status": "assigned",
+        "division": "07",
+        "consolidation": "retained",
+        "count": 547,
+        "sum": 61920035000,
+        "divisionLabel": "保健"
+      },
+      {
+        "status": "assigned",
+        "division": "01",
+        "consolidation": "retained",
+        "count": 2245,
+        "sum": 29301463408,
+        "divisionLabel": "一般公共サービス"
+      },
+      {
+        "status": "assigned",
+        "division": "03",
+        "consolidation": "retained",
+        "count": 206,
+        "sum": 7137672898,
+        "divisionLabel": "公共の秩序及び安全"
+      },
+      {
+        "status": "out-of-scope",
+        "division": "",
+        "consolidation": "retained",
+        "count": 52,
+        "sum": 7065411598,
+        "divisionLabel": ""
+      },
+      {
+        "status": "assigned",
+        "division": "05",
+        "consolidation": "retained",
+        "count": 61,
+        "sum": 3809216000,
+        "divisionLabel": "環境保護"
+      },
+      {
+        "status": "assigned",
+        "division": "04",
+        "consolidation": "retained",
+        "count": 409,
+        "sum": 2392111493,
+        "divisionLabel": "経済業務"
+      }
+    ],
+    "byKan": [
+      {
+        "fund": "1一般会計",
+        "kan": "3",
+        "division": "10",
+        "status": "assigned",
+        "decidedAtLevel": "款",
+        "ruleId": "komae-kan-minsei",
+        "sum": 85782849270,
+        "basis": "狛江市 款3 民生費。COFOG 10 社会保護",
+        "divisionLabel": "社会保護"
+      },
+      {
+        "fund": "14介護保険特別会計",
+        "kan": "2",
+        "division": "10",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-kaigo",
+        "sum": 38960778000,
+        "basis": "狛江市 介護保険特別会計。長期介護の社会保険であり COFOG 10.2 高齢",
+        "divisionLabel": "社会保護"
+      },
+      {
+        "fund": "11国民健康保険特別会計",
+        "kan": "2",
+        "division": "07",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-kokuho",
+        "sum": 31205076566,
+        "basis": "狛江市 国民健康保険特別会計。医療給付とその運営であり COFOG 07 保健。特別会計は款の体系が一般会計と違うので、款より先に会計で決める",
+        "divisionLabel": "保健"
+      },
+      {
+        "fund": "1一般会計",
+        "kan": "10",
+        "division": "",
+        "status": "unclassifiable",
+        "decidedAtLevel": "款",
+        "ruleId": "komae-kan-kyoiku",
+        "sum": 27464234937,
+        "basis": "狛江市 款10 教育費。三鷹市では項へ下げて学校教育（09）・スポーツ推進（08）に、さらに目へ下げて図書館（08）と社会教育（09）に分かれた。狛江市の原典には項・目の名称が無く、款だけでは決まらない",
+        "divisionLabel": ""
+      },
+      {
+        "fund": "1一般会計",
+        "kan": "2",
+        "division": "01",
+        "status": "assigned",
+        "decidedAtLevel": "款",
+        "ruleId": "komae-kan-somu",
+        "sum": 27433253697,
+        "basis": "狛江市 款2 総務費。COFOG 01 一般公共サービス",
+        "divisionLabel": "一般公共サービス"
+      },
+      {
+        "fund": "1一般会計",
+        "kan": "3",
+        "division": "",
+        "status": "unclassifiable",
+        "decidedAtLevel": "節",
+        "ruleId": "komae-transfer",
+        "sum": 17726762000,
+        "basis": "狛江市の会計間繰出。**受け皿の会計が原典から決まらない**（目に名称が無く、繰出先を書いた列も無い）。三鷹市のように受け皿の機能へ割り当てることも、連結で消去することもできないので、捨てずに分類不能として残す。全会計を合計すると会計間の移転を二重に含む",
+        "divisionLabel": ""
+      },
+      {
+        "fund": "11国民健康保険特別会計",
+        "kan": "3",
+        "division": "07",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-kokuho",
+        "sum": 16041319570,
+        "basis": "狛江市 国民健康保険特別会計。医療給付とその運営であり COFOG 07 保健。特別会計は款の体系が一般会計と違うので、款より先に会計で決める",
+        "divisionLabel": "保健"
+      },
+      {
+        "fund": "1一般会計",
+        "kan": "4",
+        "division": "",
+        "status": "unclassifiable",
+        "decidedAtLevel": "款",
+        "ruleId": "komae-kan-eisei",
+        "sum": 15426972611,
+        "basis": "狛江市 款4 衛生費。三鷹市では項へ下げて保健衛生費（07 保健）と清掃費（05 廃棄物管理）に分かれた。狛江市の原典には項の名称が無く、款だけでは決まらない。捨てずに分類不能として残す",
+        "divisionLabel": ""
+      },
+      {
+        "fund": "34後期高齢者医療特別会計",
+        "kan": "2",
+        "division": "07",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-kouki",
+        "sum": 12006968000,
+        "basis": "狛江市 後期高齢者医療特別会計。医療給付とその運営であり COFOG 07 保健",
+        "divisionLabel": "保健"
+      },
+      {
+        "fund": "1一般会計",
+        "kan": "8",
+        "division": "",
+        "status": "unclassifiable",
+        "decidedAtLevel": "款",
+        "ruleId": "komae-kan-doboku",
+        "sum": 11105874055,
+        "basis": "狛江市 款8 土木費。三鷹市では項へ下げて道路橋梁費（04）・河川費（05）・都市計画費（06 と 04 と 08 に分岐）・住宅費（06）に分かれた。狛江市の原典には項の名称が無く、款だけでは決まらない",
+        "divisionLabel": ""
+      },
+      {
+        "fund": "1一般会計",
+        "kan": "11",
+        "division": "",
+        "status": "unclassifiable",
+        "decidedAtLevel": "款",
+        "ruleId": "komae-kan-kosai",
+        "sum": 10302635000,
+        "basis": "狛江市 款11 公債費。三鷹市では目へ下げて元金償還（COFOG の対象外）と利子（01.7 公債取引）に分かれた。狛江市の原典には目の名称が無く、款だけでは決まらない。**対象外にはしない** — 分類できないことと対象でないことは別の問いで、畳むと適格母集団が壊れる",
+        "divisionLabel": ""
+      },
+      {
+        "fund": "1一般会計",
+        "kan": "9",
+        "division": "03",
+        "status": "assigned",
+        "decidedAtLevel": "款",
+        "ruleId": "komae-kan-shobo",
+        "sum": 7137672898,
+        "basis": "狛江市 款9 消防費。COFOG 03.2 消防サービス",
+        "divisionLabel": "公共の秩序及び安全"
+      },
+      {
+        "fund": "21公共下水道特別会計",
+        "kan": "2",
+        "division": "05",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-sewer",
+        "sum": 2771185000,
+        "basis": "狛江市 公共下水道特別会計（2018〜2019年度のみ収録。2020年度から公営企業会計へ移行し原典から消える）。COFOG 05.2 排水管理",
+        "divisionLabel": "環境保護"
+      },
+      {
+        "fund": "1一般会計",
+        "kan": "2",
+        "division": "",
+        "status": "out-of-scope",
+        "decidedAtLevel": "節",
+        "ruleId": "fund-accumulation",
+        "sum": 2489218000,
+        "basis": "基金への積立。金融資産の取得であり COFOG の集計対象ではない",
+        "divisionLabel": ""
+      },
+      {
+        "fund": "1一般会計",
+        "kan": "12",
+        "division": "",
+        "status": "out-of-scope",
+        "decidedAtLevel": "節",
+        "ruleId": "fund-accumulation",
+        "sum": 2283460151,
+        "basis": "基金への積立。金融資産の取得であり COFOG の集計対象ではない",
+        "divisionLabel": ""
+      },
+      {
+        "fund": "1一般会計",
+        "kan": "1",
+        "division": "01",
+        "status": "assigned",
+        "decidedAtLevel": "款",
+        "ruleId": "komae-kan-gikai",
+        "sum": 1868209711,
+        "basis": "狛江市 款1 議会費。COFOG 01.1 立法機関・行政機関。款のコードは地方自治法施行規則別記の歳出款の番号と一致する。名称ではなくコードで当てているのは、狛江市の原典に款の名称の列が無いため。対応は実測で裏づけた（款11 の節は償還金・利子及び割引料のみ、款13 の節は予備費、所属も款ごとに整合）",
+        "divisionLabel": "一般公共サービス"
+      },
+      {
+        "fund": "14介護保険特別会計",
+        "kan": "3",
+        "division": "10",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-kaigo",
+        "sum": 1667075092,
+        "basis": "狛江市 介護保険特別会計。長期介護の社会保険であり COFOG 10.2 高齢",
+        "divisionLabel": "社会保護"
+      },
+      {
+        "fund": "1一般会計",
+        "kan": "7",
+        "division": "04",
+        "status": "assigned",
+        "decidedAtLevel": "款",
+        "ruleId": "komae-kan-shoko",
+        "sum": 1528855000,
+        "basis": "狛江市 款7 商工費。COFOG 04.7 その他の産業",
+        "divisionLabel": "経済業務"
+      },
+      {
+        "fund": "1一般会計",
+        "kan": "8",
+        "division": "",
+        "status": "unclassifiable",
+        "decidedAtLevel": "節",
+        "ruleId": "komae-transfer",
+        "sum": 1385810000,
+        "basis": "狛江市の会計間繰出。**受け皿の会計が原典から決まらない**（目に名称が無く、繰出先を書いた列も無い）。三鷹市のように受け皿の機能へ割り当てることも、連結で消去することもできないので、捨てずに分類不能として残す。全会計を合計すると会計間の移転を二重に含む",
+        "divisionLabel": ""
+      },
+      {
+        "fund": "1一般会計",
+        "kan": "8",
+        "division": "",
+        "status": "out-of-scope",
+        "decidedAtLevel": "節",
+        "ruleId": "fund-accumulation",
+        "sum": 1294189000,
+        "basis": "基金への積立。金融資産の取得であり COFOG の集計対象ではない",
+        "divisionLabel": ""
+      },
+      {
+        "fund": "11国民健康保険特別会計",
+        "kan": "4",
+        "division": "07",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-kokuho",
+        "sum": 749763000,
+        "basis": "狛江市 国民健康保険特別会計。医療給付とその運営であり COFOG 07 保健。特別会計は款の体系が一般会計と違うので、款より先に会計で決める",
+        "divisionLabel": "保健"
+      },
+      {
+        "fund": "14介護保険特別会計",
+        "kan": "5",
+        "division": "",
+        "status": "out-of-scope",
+        "decidedAtLevel": "節",
+        "ruleId": "fund-accumulation",
+        "sum": 646630000,
+        "basis": "基金への積立。金融資産の取得であり COFOG の集計対象ではない",
+        "divisionLabel": ""
+      },
+      {
+        "fund": "14介護保険特別会計",
+        "kan": "1",
+        "division": "10",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-kaigo",
+        "sum": 620911000,
+        "basis": "狛江市 介護保険特別会計。長期介護の社会保険であり COFOG 10.2 高齢",
+        "divisionLabel": "社会保護"
+      },
+      {
+        "fund": "21公共下水道特別会計",
+        "kan": "3",
+        "division": "05",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-sewer",
+        "sum": 576743000,
+        "basis": "狛江市 公共下水道特別会計（2018〜2019年度のみ収録。2020年度から公営企業会計へ移行し原典から消える）。COFOG 05.2 排水管理",
+        "divisionLabel": "環境保護"
+      },
+      {
+        "fund": "22駐車場事業特別会計",
+        "kan": "1",
+        "division": "04",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-parking",
+        "sum": 567291000,
+        "basis": "狛江市 駐車場事業特別会計。駐車場の運営であり COFOG 04.5.1 道路交通",
+        "divisionLabel": "経済業務"
+      },
+      {
+        "fund": "11国民健康保険特別会計",
+        "kan": "6",
+        "division": "07",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-kokuho",
+        "sum": 468991197,
+        "basis": "狛江市 国民健康保険特別会計。医療給付とその運営であり COFOG 07 保健。特別会計は款の体系が一般会計と違うので、款より先に会計で決める",
+        "divisionLabel": "保健"
+      },
+      {
+        "fund": "21公共下水道特別会計",
+        "kan": "1",
+        "division": "05",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-sewer",
+        "sum": 459850923,
+        "basis": "狛江市 公共下水道特別会計（2018〜2019年度のみ収録。2020年度から公営企業会計へ移行し原典から消える）。COFOG 05.2 排水管理",
+        "divisionLabel": "環境保護"
+      },
+      {
+        "fund": "14介護保険特別会計",
+        "kan": "8",
+        "division": "10",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-kaigo",
+        "sum": 411344600,
+        "basis": "狛江市 介護保険特別会計。長期介護の社会保険であり COFOG 10.2 高齢",
+        "divisionLabel": "社会保護"
+      },
+      {
+        "fund": "34後期高齢者医療特別会計",
+        "kan": "3",
+        "division": "07",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-kouki",
+        "sum": 411229000,
+        "basis": "狛江市 後期高齢者医療特別会計。医療給付とその運営であり COFOG 07 保健",
+        "divisionLabel": "保健"
+      },
+      {
+        "fund": "1一般会計",
+        "kan": "4",
+        "division": "",
+        "status": "out-of-scope",
+        "decidedAtLevel": "節",
+        "ruleId": "fund-accumulation",
+        "sum": 351912447,
+        "basis": "基金への積立。金融資産の取得であり COFOG の集計対象ではない",
+        "divisionLabel": ""
+      },
+      {
+        "fund": "11国民健康保険特別会計",
+        "kan": "1",
+        "division": "07",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-kokuho",
+        "sum": 316432000,
+        "basis": "狛江市 国民健康保険特別会計。医療給付とその運営であり COFOG 07 保健。特別会計は款の体系が一般会計と違うので、款より先に会計で決める",
+        "divisionLabel": "保健"
+      },
+      {
+        "fund": "34後期高齢者医療特別会計",
+        "kan": "1",
+        "division": "07",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-kouki",
+        "sum": 311487000,
+        "basis": "狛江市 後期高齢者医療特別会計。医療給付とその運営であり COFOG 07 保健",
+        "divisionLabel": "保健"
+      },
+      {
+        "fund": "1一般会計",
+        "kan": "6",
+        "division": "04",
+        "status": "assigned",
+        "decidedAtLevel": "款",
+        "ruleId": "komae-kan-norin",
+        "sum": 266618493,
+        "basis": "狛江市 款6 農林水産業費。COFOG 04.2 農林水産業",
+        "divisionLabel": "経済業務"
+      },
+      {
+        "fund": "11国民健康保険特別会計",
+        "kan": "7",
+        "division": "07",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-kokuho",
+        "sum": 261188928,
+        "basis": "狛江市 国民健康保険特別会計。医療給付とその運営であり COFOG 07 保健。特別会計は款の体系が一般会計と違うので、款より先に会計で決める",
+        "divisionLabel": "保健"
+      },
+      {
+        "fund": "34後期高齢者医療特別会計",
+        "kan": "4",
+        "division": "07",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-kouki",
+        "sum": 137447800,
+        "basis": "狛江市 後期高齢者医療特別会計。医療給付とその運営であり COFOG 07 保健",
+        "divisionLabel": "保健"
+      },
+      {
+        "fund": "14介護保険特別会計",
+        "kan": "7",
+        "division": "10",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-kaigo",
+        "sum": 54741000,
+        "basis": "狛江市 介護保険特別会計。長期介護の社会保険であり COFOG 10.2 高齢",
+        "divisionLabel": "社会保護"
+      },
+      {
+        "fund": "1一般会計",
+        "kan": "13",
+        "division": "",
+        "status": "unclassifiable",
+        "decidedAtLevel": "款",
+        "ruleId": "komae-kan-yobi",
+        "sum": 49923040,
+        "basis": "狛江市 款13 予備費。COFOG の対象だが、執行されるまで機能が決まらないため割り当ての根拠が無い（三鷹市の contingency と同じ理由）",
+        "divisionLabel": ""
+      },
+      {
+        "fund": "1一般会計",
+        "kan": "5",
+        "division": "04",
+        "status": "assigned",
+        "decidedAtLevel": "款",
+        "ruleId": "komae-kan-rodo",
+        "sum": 19925000,
+        "basis": "狛江市 款5 労働費。COFOG 04.1.2 一般労働業務",
+        "divisionLabel": "経済業務"
+      },
+      {
+        "fund": "22駐車場事業特別会計",
+        "kan": "2",
+        "division": "04",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-parking",
+        "sum": 9422000,
+        "basis": "狛江市 駐車場事業特別会計。駐車場の運営であり COFOG 04.5.1 道路交通",
+        "divisionLabel": "経済業務"
+      },
+      {
+        "fund": "34後期高齢者医療特別会計",
+        "kan": "5",
+        "division": "07",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-kouki",
+        "sum": 4850200,
+        "basis": "狛江市 後期高齢者医療特別会計。医療給付とその運営であり COFOG 07 保健",
+        "divisionLabel": "保健"
+      },
+      {
+        "fund": "14介護保険特別会計",
+        "kan": "9",
+        "division": "10",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-kaigo",
+        "sum": 3957308,
+        "basis": "狛江市 介護保険特別会計。長期介護の社会保険であり COFOG 10.2 高齢",
+        "divisionLabel": "社会保護"
+      },
+      {
+        "fund": "11国民健康保険特別会計",
+        "kan": "8",
+        "division": "07",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-kokuho",
+        "sum": 2781739,
+        "basis": "狛江市 国民健康保険特別会計。医療給付とその運営であり COFOG 07 保健。特別会計は款の体系が一般会計と違うので、款より先に会計で決める",
+        "divisionLabel": "保健"
+      },
+      {
+        "fund": "11国民健康保険特別会計",
+        "kan": "5",
+        "division": "07",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-kokuho",
+        "sum": 2500000,
+        "basis": "狛江市 国民健康保険特別会計。医療給付とその運営であり COFOG 07 保健。特別会計は款の体系が一般会計と違うので、款より先に会計で決める",
+        "divisionLabel": "保健"
+      },
+      {
+        "fund": "21公共下水道特別会計",
+        "kan": "4",
+        "division": "05",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-sewer",
+        "sum": 1437077,
+        "basis": "狛江市 公共下水道特別会計（2018〜2019年度のみ収録。2020年度から公営企業会計へ移行し原典から消える）。COFOG 05.2 排水管理",
+        "divisionLabel": "環境保護"
+      },
+      {
+        "fund": "14介護保険特別会計",
+        "kan": "4",
+        "division": "10",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-kaigo",
+        "sum": 6000,
+        "basis": "狛江市 介護保険特別会計。長期介護の社会保険であり COFOG 10.2 高齢",
+        "divisionLabel": "社会保護"
+      },
+      {
+        "fund": "14介護保険特別会計",
+        "kan": "6",
+        "division": "10",
+        "status": "assigned",
+        "decidedAtLevel": "会計",
+        "ruleId": "komae-fund-kaigo",
+        "sum": 6000,
+        "basis": "狛江市 介護保険特別会計。長期介護の社会保険であり COFOG 10.2 高齢",
+        "divisionLabel": "社会保護"
+      },
+      {
+        "fund": "11国民健康保険特別会計",
+        "kan": "5",
+        "division": "",
+        "status": "out-of-scope",
+        "decidedAtLevel": "節",
+        "ruleId": "fund-accumulation",
+        "sum": 2000,
+        "basis": "基金への積立。金融資産の取得であり COFOG の集計対象ではない",
+        "divisionLabel": ""
+      }
+    ],
+    "byLevel": [
+      {
+        "level": "款",
+        "count": 12241,
+        "sum": 188387023712
+      },
+      {
+        "level": "会計",
+        "count": 1145,
+        "sum": 108024783000
+      },
+      {
+        "level": "節",
+        "count": 75,
+        "sum": 26177983598
+      }
+    ],
+    "notAssigned": [
+      {
+        "status": "unclassifiable",
+        "fund": "1一般会計",
+        "kan": "10",
+        "ruleId": "komae-kan-kyoiku",
+        "sum": 27464234937,
+        "basis": "狛江市 款10 教育費。三鷹市では項へ下げて学校教育（09）・スポーツ推進（08）に、さらに目へ下げて図書館（08）と社会教育（09）に分かれた。狛江市の原典には項・目の名称が無く、款だけでは決まらない"
+      },
+      {
+        "status": "unclassifiable",
+        "fund": "1一般会計",
+        "kan": "3",
+        "ruleId": "komae-transfer",
+        "sum": 17726762000,
+        "basis": "狛江市の会計間繰出。**受け皿の会計が原典から決まらない**（目に名称が無く、繰出先を書いた列も無い）。三鷹市のように受け皿の機能へ割り当てることも、連結で消去することもできないので、捨てずに分類不能として残す。全会計を合計すると会計間の移転を二重に含む"
+      },
+      {
+        "status": "unclassifiable",
+        "fund": "1一般会計",
+        "kan": "4",
+        "ruleId": "komae-kan-eisei",
+        "sum": 15426972611,
+        "basis": "狛江市 款4 衛生費。三鷹市では項へ下げて保健衛生費（07 保健）と清掃費（05 廃棄物管理）に分かれた。狛江市の原典には項の名称が無く、款だけでは決まらない。捨てずに分類不能として残す"
+      },
+      {
+        "status": "unclassifiable",
+        "fund": "1一般会計",
+        "kan": "8",
+        "ruleId": "komae-kan-doboku",
+        "sum": 11105874055,
+        "basis": "狛江市 款8 土木費。三鷹市では項へ下げて道路橋梁費（04）・河川費（05）・都市計画費（06 と 04 と 08 に分岐）・住宅費（06）に分かれた。狛江市の原典には項の名称が無く、款だけでは決まらない"
+      },
+      {
+        "status": "unclassifiable",
+        "fund": "1一般会計",
+        "kan": "11",
+        "ruleId": "komae-kan-kosai",
+        "sum": 10302635000,
+        "basis": "狛江市 款11 公債費。三鷹市では目へ下げて元金償還（COFOG の対象外）と利子（01.7 公債取引）に分かれた。狛江市の原典には目の名称が無く、款だけでは決まらない。**対象外にはしない** — 分類できないことと対象でないことは別の問いで、畳むと適格母集団が壊れる"
+      },
+      {
+        "status": "out-of-scope",
+        "fund": "1一般会計",
+        "kan": "2",
+        "ruleId": "fund-accumulation",
+        "sum": 2489218000,
+        "basis": "基金への積立。金融資産の取得であり COFOG の集計対象ではない"
+      },
+      {
+        "status": "out-of-scope",
+        "fund": "1一般会計",
+        "kan": "12",
+        "ruleId": "fund-accumulation",
+        "sum": 2283460151,
+        "basis": "基金への積立。金融資産の取得であり COFOG の集計対象ではない"
+      },
+      {
+        "status": "unclassifiable",
+        "fund": "1一般会計",
+        "kan": "8",
+        "ruleId": "komae-transfer",
+        "sum": 1385810000,
+        "basis": "狛江市の会計間繰出。**受け皿の会計が原典から決まらない**（目に名称が無く、繰出先を書いた列も無い）。三鷹市のように受け皿の機能へ割り当てることも、連結で消去することもできないので、捨てずに分類不能として残す。全会計を合計すると会計間の移転を二重に含む"
+      },
+      {
+        "status": "out-of-scope",
+        "fund": "1一般会計",
+        "kan": "8",
+        "ruleId": "fund-accumulation",
+        "sum": 1294189000,
+        "basis": "基金への積立。金融資産の取得であり COFOG の集計対象ではない"
+      },
+      {
+        "status": "out-of-scope",
+        "fund": "14介護保険特別会計",
+        "kan": "5",
+        "ruleId": "fund-accumulation",
+        "sum": 646630000,
+        "basis": "基金への積立。金融資産の取得であり COFOG の集計対象ではない"
+      },
+      {
+        "status": "out-of-scope",
+        "fund": "1一般会計",
+        "kan": "4",
+        "ruleId": "fund-accumulation",
+        "sum": 351912447,
+        "basis": "基金への積立。金融資産の取得であり COFOG の集計対象ではない"
+      },
+      {
+        "status": "unclassifiable",
+        "fund": "1一般会計",
+        "kan": "13",
+        "ruleId": "komae-kan-yobi",
+        "sum": 49923040,
+        "basis": "狛江市 款13 予備費。COFOG の対象だが、執行されるまで機能が決まらないため割り当ての根拠が無い（三鷹市の contingency と同じ理由）"
+      },
+      {
+        "status": "out-of-scope",
+        "fund": "11国民健康保険特別会計",
+        "kan": "5",
+        "ruleId": "fund-accumulation",
+        "sum": 2000,
+        "basis": "基金への積立。金融資産の取得であり COFOG の集計対象ではない"
+      }
+    ],
+    "consolidationPairs": [],
+    "consolidationScope": "狛江市は消去していない。繰入金がどの会計から来たかが原典から決まらないため（款・項・目に名称が無く、都からの繰入金が同じ款に同居する）。全会計を合計すると会計間の移転を二重に含む"
+  },
+  "checks": [
+    {
+      "name": "source_cells_have_surrounding_whitespace",
+      "description": "",
+      "binds": [
+        "source.fudoki.raw_132047.expenditure",
+        "source.fudoki.raw_132047.revenue",
+        "source.fudoki.raw_132195.expenditure",
+        "source.fudoki.raw_132195.revenue"
+      ],
+      "ok": false,
+      "severity": "warn",
+      "status": "warn",
+      "failures": 3,
+      "detail": "Got 3 results, configured to warn if != 0"
+    },
+    {
+      "name": "accepted_values_cofog_rules_consolidation__retained__eliminated",
+      "description": "",
+      "binds": [
+        "seed.fudoki.cofog_rules"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "accepted_values_cofog_rules_status__assigned__unclassifiable__out_of_scope",
+      "description": "",
+      "binds": [
+        "seed.fudoki.cofog_rules"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "amount_normalization",
+      "description": "",
+      "binds": [
+        "model.fudoki.pkg_132047__expenditure",
+        "model.fudoki.pkg_132047__revenue",
+        "model.fudoki.pkg_132195__expenditure",
+        "model.fudoki.pkg_132195__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "budget_core_covers_all_staging",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132047__expenditure",
+        "model.fudoki.stg_132047__revenue",
+        "model.fudoki.stg_132195__expenditure",
+        "model.fudoki.stg_132195__revenue",
+        "model.fudoki.core_budget_cofog",
+        "model.fudoki.core_revenue_consolidation"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "canonical_preserves_source",
+      "description": "",
+      "binds": [
+        "source.fudoki.raw_132047.expenditure",
+        "source.fudoki.raw_132047.revenue",
+        "source.fudoki.raw_132195.expenditure",
+        "source.fudoki.raw_132195.revenue",
+        "model.fudoki.stg_132047__expenditure",
+        "model.fudoki.stg_132047__revenue",
+        "model.fudoki.stg_132195__expenditure",
+        "model.fudoki.stg_132195__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "code_determines_label",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132047__expenditure",
+        "model.fudoki.stg_132047__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "code_label_reconstructs_source",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132047__expenditure",
+        "model.fudoki.stg_132047__revenue",
+        "model.fudoki.stg_132195__expenditure",
+        "model.fudoki.stg_132195__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "cofog_invariants",
+      "description": "",
+      "binds": [
+        "model.fudoki.core_budget_cofog",
+        "model.fudoki.core_budget_lines"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "consolidation_pairs_balance",
+      "description": "",
+      "binds": [
+        "model.fudoki.core_budget_cofog",
+        "model.fudoki.core_budget_lines",
+        "model.fudoki.core_revenue_consolidation",
+        "model.fudoki.core_revenue_lines"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "declarations_cover_raw",
+      "description": "",
+      "binds": [],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "derived_package_covers_core",
+      "description": "",
+      "binds": [
+        "model.fudoki.pkg_derived__cofog",
+        "model.fudoki.core_budget_cofog",
+        "model.fudoki.core_revenue_consolidation"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "expenditure_equals_revenue_by_fund",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132047__expenditure",
+        "model.fudoki.stg_132047__revenue",
+        "model.fudoki.stg_132195__expenditure",
+        "model.fudoki.stg_132195__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "fdp_composite_key_is_unique",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132047__expenditure",
+        "model.fudoki.stg_132047__revenue",
+        "model.fudoki.stg_132195__expenditure",
+        "model.fudoki.stg_132195__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "inputs_are_not_empty",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132047__expenditure",
+        "model.fudoki.stg_132047__revenue",
+        "model.fudoki.stg_132195__expenditure",
+        "model.fudoki.stg_132195__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "label_column_determines_level",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132195__expenditure",
+        "model.fudoki.stg_132195__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "not_null_cofog_rules_priority",
+      "description": "",
+      "binds": [
+        "seed.fudoki.cofog_rules"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "not_null_cofog_rules_rule_id",
+      "description": "",
+      "binds": [
+        "seed.fudoki.cofog_rules"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "not_null_stg_132047__expenditure_budget_line_id",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132047__expenditure"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "not_null_stg_132047__expenditure_source_amount",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132047__expenditure"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "not_null_stg_132047__expenditure_source_row",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132047__expenditure"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "not_null_stg_132047__revenue_budget_line_id",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132047__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "not_null_stg_132047__revenue_source_amount",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132047__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "not_null_stg_132047__revenue_source_row",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132047__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "not_null_stg_132195__expenditure_budget_line_id",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132195__expenditure"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "not_null_stg_132195__expenditure_source_amount",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132195__expenditure"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "not_null_stg_132195__expenditure_source_row",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132195__expenditure"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "not_null_stg_132195__revenue_budget_line_id",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132195__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "not_null_stg_132195__revenue_source_amount",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132195__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "not_null_stg_132195__revenue_source_row",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132195__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "package_preserves_source",
+      "description": "",
+      "binds": [
+        "model.fudoki.pkg_132047__expenditure",
+        "model.fudoki.pkg_132047__revenue",
+        "model.fudoki.pkg_132195__expenditure",
+        "model.fudoki.pkg_132195__revenue",
+        "model.fudoki.stg_132047__expenditure",
+        "model.fudoki.stg_132047__revenue",
+        "model.fudoki.stg_132195__expenditure",
+        "model.fudoki.stg_132195__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "published_reference_is_internally_consistent",
+      "description": "",
+      "binds": [
+        "seed.fudoki.published_reference",
+        "seed.fudoki.published_reference_meta"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "published_reference_matches",
+      "description": "",
+      "binds": [
+        "seed.fudoki.published_reference_meta",
+        "model.fudoki.stg_132047__expenditure",
+        "model.fudoki.stg_132047__revenue",
+        "seed.fudoki.published_reference"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "source_year_matches_partition",
+      "description": "",
+      "binds": [
+        "source.fudoki.raw_132195.expenditure",
+        "source.fudoki.raw_132195.revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "staging_is_one_to_one",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132047__expenditure",
+        "model.fudoki.stg_132047__revenue",
+        "model.fudoki.stg_132195__expenditure",
+        "model.fudoki.stg_132195__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "unique_cofog_rules_priority",
+      "description": "",
+      "binds": [
+        "seed.fudoki.cofog_rules"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "unique_cofog_rules_rule_id",
+      "description": "",
+      "binds": [
+        "seed.fudoki.cofog_rules"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "unique_stg_132047__expenditure_budget_line_id",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132047__expenditure"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "unique_stg_132047__revenue_budget_line_id",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132047__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "unique_stg_132195__expenditure_budget_line_id",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132195__expenditure"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "unique_stg_132195__revenue_budget_line_id",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132195__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    }
+  ],
+  "portability": [
+    {
+      "element": "CKAN からのリソース解決と証跡の記録（ingestion）",
+      "kind": "2団体で成立",
+      "verifyNext": "同じ東京都カタログの2団体で同じ経路が通った。⚠️ ただし**同名のデータセットが2件ある**取得元が実在した（狛江市の 2018〜2021 は /komae/R05/ と /komae/ に中身の違う同名データセットがある）。先頭を採る実装だと日によって配布物の中身が入れ替わるので、複数当たったら止めて宣言を要求する形にした。都外カタログ（BODIK・独自 DCAT）は未確認"
+    },
+    {
+      "element": "完全修飾パスから識別子を導く方式",
+      "kind": "2団体で成立。ただし材料が足りなかった",
+      "verifyNext": "⚠️ **狛江市は階層だけでは一意にならなかった。** 所属（部課）と予算区分（現年度・繰越明許・事故繰越）まで含めて初めて一意になる（階層だけだと 2023 歳出 2,224 行が 1,855 通りに潰れる）。材料を宣言（budget_extra_key_columns）で足せる形にした。3団体目で「階層 + 何か」以外の同一性が出るかは未確認"
+    },
+    {
+      "element": "原典の値と単位を別列に残したうえで円へ正規化する方式",
+      "kind": "2団体で成立。ただし単位は1つではなかった",
+      "verifyNext": "⚠️ **同じリソースの中で単位が割れる**ことがあった（狛江市の歳入は予算現額が千円で収入累計が円）。単位を datapackage.json の定数にできるのは1種類のときだけで、複数なら行の列に持つ形へ変えた"
+    },
+    {
+      "element": "検査の並べ方（多重集合一致・従属関係・複合主キー・公表値突合）",
+      "kind": "2団体で成立。ただし公表値突合だけ立たない",
+      "verifyNext": "⚠️ 狛江市には款別の公表値を書き写せる資料をまだ見つけていない。代わりに**原典の内部整合**（歳出の予算計と歳入の予算現額が年度・会計別に一致）が6年度すべてで成立した。これは外部からの裏づけではない"
+    },
+    {
+      "element": "COFOG の2軸（分類 / 連結）と規則エンジンの形",
+      "kind": "2団体で成立",
+      "verifyNext": "分類の軸と連結の軸を分けてあったので、**消去できない団体**（狛江市）をそのまま表現できた。1つの状態に畳んでいたら「分類不能」と「消去しない」が混ざっていた"
+    },
+    {
+      "element": "款の名称 → COFOG ディビジョンの対応",
+      "kind": "名称があれば再利用できる。無い団体がある",
+      "verifyNext": "⚠️ **狛江市の原典には款・項・目の名称の列そのものが無い。** 数字コードだけである。名称で当たる規則は1本も当たらないので、款コードで当てる規則を19本足した。コードが法定の款番号と一致することは実測で裏づけた（款11 の節が償還金・利子及び割引料のみ、款13 の節が予備費、所属も款ごとに整合、歳入は科目名称が款の内容と一致）"
+    },
+    {
+      "element": "項・目まで下げれば COFOG が決まるという見込み",
+      "kind": "団体によっては下げられない",
+      "verifyNext": "⚠️ **狛江市は項・目の名称が無いので、款で決まらないものは決まらない。** 衛生費・土木費・教育費・公債費がそのまま分類不能に落ち、金額では歳出の 25.9%（会計間の繰出を含む）にあたる。**構造の粒度（事業まで届く）と意味の粒度（名称がある）は別物**で、狛江市は前者が三鷹市より細かく後者が粗い"
+    },
+    {
+      "element": "事業階層を1つの列型（activity:generic:program）に置くこと",
+      "kind": "一般性を判定できない",
+      "verifyNext": "⚠️ 狛江市の「大事業」は**名称を持たない**ので、事業として何なのかが原典から分からない。コードも目をまたいで再利用される（6年度で 42 通りのコードが 694 通りの目・大事業の組を作る）。列としては中事業・小事業もあるが全行 `0` で1件も使われていない。三鷹市の「事項」と同じ概念かは、名称のある資料（決算書 PDF）と突き合わせないと決められない"
+    },
+    {
+      "element": "歳出と歳入の合計一致という検算",
+      "kind": "2団体で成立。ただし条件が違う",
+      "verifyNext": "三鷹市は当初予算どうしで差 0、狛江市は決算の予算計と予算現額で一致するが**歳入が千円単位なので円未満は原理的に合わない**（実測で差が出たのは6年度12対のうち2対、いずれも 1,000 円未満）。許容差を取得元ごとの宣言にした"
+    },
+    {
+      "element": "セルからコードと名称を取り出す書式",
+      "kind": "団体ごとに宣言が要る",
+      "verifyNext": "三鷹市は1セルに「2桁コード + 名称」、狛江市はセルがコードだけ。宣言（budget_code_style）で切り替える形にした。3団体目で3つ目の書式が出るかは未確認。⚠️ 一般則へ昇華しないこと（パーサ設計の原則5）"
+    },
+    {
+      "element": "その階層を持たない行のプレースホルダ `0`",
+      "kind": "2団体で一致",
+      "verifyNext": "三鷹市も狛江市も `0` だった。空文字・全角ゼロ・ハイフンを使う団体が出るかは未確認なので、宣言（budget_absent_level_markers）のままにしてある"
+    },
+    {
+      "element": "1リソース = 1予算段階という前提",
+      "kind": "決算書では成立しない",
+      "verifyNext": "⚠️ **決算書は1行が複数段階の金額を持つ**（狛江市の歳出は予算額・予算計・執行累計）。FDP は `value` の列型を1つしか持たず段階を行の列で表すので、package 段で段階ごとの行へ展開する形にした。主キーも (budget_line_id, phase_id) になる"
+    },
+    {
+      "element": "`fin-source:generic:level4〜6` という標準の拡張",
+      "kind": "2団体で必要だった",
+      "verifyNext": "狛江市の歳入も会計/款/項/目/節/細節/細々節の7階層で、三鷹市と同じ形だった。標準の3階層では足りないことが2団体で確かめられたので、拡張自体をやめる案は消えた"
+    }
+  ],
+  "consolidationScope": "狛江市は消去していない。繰入金がどの会計から来たかが原典から決まらないため（款・項・目に名称が無く、都からの繰入金が同じ款に同居する）。全会計を合計すると会計間の移転を二重に含む",
+  "notYetReconciled": {
+    "scope": "全会計・全年度の款別",
+    "reason": "狛江市について款別の値を書き写せる公表資料をまだ見つけていない。原典には款の名称すら無いので、突合するには款コードと名称の対応を持つ資料が要る",
+    "wouldComeFrom": "https://www.city.komae.tokyo.jp/index.cfm/32,0,224,1108,html（決算に関する資料）",
+    "currentEvidence": "歳出の予算計と歳入の予算現額が年度・会計別に一致すること（6年度すべて。差は千円未満の丸めのみ）。原典の内部整合であり、外部資料による裏づけではない"
+  },
+  "caveats": [
+    {
+      "topic": "款・項・目に名称が無い。事業の粒度には届いているが、その事業が何かは分からない",
+      "body": "狛江市の原典で名称の列を持つのは**会計（会計名称）と行の最下位階層（科目名称）だけ**である。款・項・目・大事業はすべて数字コードだけの列で、名称が存在しない。結果として「2023年度の一般会計 款3 項1 目1 大事業37 に 11.8 億円」までは引けるが、それが何の事業かは原典から分からない。fudoki の出発点である『いじめ問題対策協議会関係費にいくら付いたか』という問いは、狛江市についてはこのデータでは答えられない。**名称を補うには決算書 PDF など別の取得元が要る。** 捏造はしない。"
+    },
+    {
+      "topic": "中事業・小事業・細節・細々節は列としてあるが、1件も使われていない",
+      "body": "カタログの列構成では「大事業・中事業・小事業」の3階層があるように見えるが、実測では6年度 13,461 行すべてで中事業と小事業が `0`（その階層を持たない行のプレースホルダ）だった。歳出の細節・細々節、歳入の細々節も同じである。**実際に使われている事業階層は大事業の1段だけ。** 宣言からは落としていない — 落とすと原典との1対1が崩れ、翌年度から使われ始めたときに黙って欠ける。"
+    },
+    {
+      "topic": "款で決まらない COFOG は、狛江市では決まらないまま残る",
+      "body": "三鷹市では項・目の名称を見て決着した款（衛生費・土木費・教育費・公債費）が、狛江市では項・目に名称が無いため**款のまま分類不能に落ちる。** 金額では歳出（予算現額、6年度・全会計）の 25.9% にあたる。これは分類器の精度ではなく原典の情報量の問題なので、規則を増やしても動かない。⚠️ **分類不能と対象外を畳まないこと** — 公債費の元金償還は三鷹市では「対象外」だったが、狛江市では元金と利子を区別できないので「分類不能」である。畳むと適格母集団が壊れる。"
+    },
+    {
+      "topic": "会計間の繰出・繰入を消去していない。全会計の合計は二重計上を含む",
+      "body": "三鷹市は目の名称に受け皿の会計名が入っているので、繰出金と繰入金を対にして消去できた。狛江市は目に名称が無く、さらに**東京都からの繰入金（都繰入金）が一般会計繰入金と同じ款に同居する**ので、名称の部分一致でも切り分けられない。受け皿を推測して消去するより、消去しないで状態として残すほうを採った（パーサ設計の原則6）。⚠️ 狛江市の全会計合計（一般会計 + 5特別会計）は会計間の移転を二重に含む。一般会計の繰出金は6年度で 191 億円ある。"
+    },
+    {
+      "topic": "款コードが法定の款番号だという対応は、実測で裏づけたが原典が明示してはいない",
+      "body": "狛江市の款コードに名称が無いので、COFOG の規則は款コードで当てている。コードが地方自治法施行規則別記の歳出款の番号（1 議会費 〜 13 予備費）と一致することは、次の実測で裏づけた。(1) 款が 1〜13 の13通りで法定の款数と一致する、(2) 款11 の節が償還金・利子及び割引料のみ、款13 の節が予備費のみ、(3) 所属が款ごとに整合する（款1 は議会事務局、款10 は教育部、款9 は安心安全課）、(4) 歳入は科目名称が款の内容と直接一致する（款14 の下に市有地使用料 → 使用料及び手数料）。**それでも原典が『款2は総務費』と書いているわけではない。** 対応が違っていた場合、COFOG の割当がまるごとずれる。"
+    },
+    {
+      "topic": "同名のデータセットが2件あり、中身が違う",
+      "body": "2018〜2021 年度は `/komae/R05/` 配下と `/komae/` 配下に**同じ名前のデータセット**があり、SHA-256 が一致しない。差は所属名称の改称（企画財政部・未来戦略室 → 情報政策課）と執行率の表記（`-` と `****`）で、R05 側が新しい。fudoki は `resource_url_contains` で R05 側を明示的に選んでいる。⚠️ **どちらが公式に最新かを狛江市が宣言しているわけではない。** 古い側だけを見ている利用者と数字が食い違いうる。"
+    },
+    {
+      "topic": "`adjusted-before-transfer` は fudoki が宣言した予算段階",
+      "body": "狛江市の歳出は1行に予算額・予算計・執行累計の3つを持つ。予算計 = 予算額 + 充流用等増減額 が全行で成立するので、予算計が流用・充用まで反映した予算現額、予算額はその前の額である。FDP の慣行（proposed / approved / adjusted / executed）に前者に当たる段階が無いため `adjusted-before-transfer` を宣言した。`phase:id` は仕様上ただの文字列なので適合はするが、**他の実装がこの id を知っているわけではない。**"
+    },
+    {
+      "topic": "予算額は当初予算ではない",
+      "body": "「予算額(円)」を当初予算と読むと間違える。2023年度の一般会計は 370 億円で、狛江市が公表している令和5年度当初予算（一般会計）とは一致しない。全会計合計でも 予算額 と 予算計 が完全に同額（充流用等増減額が全体で相殺する）なので、予算額は補正まで反映した後の額である。**したがって三鷹市の当初予算と狛江市の予算額を並べても、同じ段階どうしの比較にならない。**"
+    },
+    {
+      "topic": "文字コードが年度で変わる",
+      "body": "2018〜2021 年度は UTF-8（BOM 付き）、2022〜2023 年度は CP932 だった。取得元ごとに宣言してあり、復号が可逆であることを毎回検査している。⚠️ 年度を足すときに前年度の設定を写すと落ちる。"
+    },
+    {
+      "topic": "款別の公表値と突き合わせていない",
+      "body": "三鷹市は施政方針・予算概要の款別の値を書き写して外部突合の相手にしているが、狛江市について同じことができる資料をまだ見つけていない。現状の根拠は**原典の内部整合**（歳出の予算計と歳入の予算現額が年度・会計別に一致することが6年度すべてで成立、差は千円未満の丸めのみ）だけで、これは外部からの裏づけではない。"
+    },
+    {
+      "topic": "公共下水道特別会計は 2020 年度から原典に現れない",
+      "body": "2018〜2019 年度には公共下水道特別会計があるが、2020 年度以降は無い（公営企業会計へ移行したため）。年度をまたいで会計別に合計すると、この2年度だけ範囲が広い。三鷹市も年度で会計の範囲が変わる（令和2年度以降は5会計、平成28〜令和元年度は下水道事業特別会計を含む6会計）ので、これは団体固有ではなく年度をまたぐ比較の一般的な注意にあたる。"
+    }
+  ],
+  "customColumnTypes": [
+    {
+      "name": "fund:code",
+      "dataType": "string",
+      "unique": true,
+      "why": "会計（一般会計・各特別会計）。administrative-classification は資金管理の責任を負う組織単位を指すもので、会計は資金の区分であり別概念。標準に該当する列型が無い"
+    },
+    {
+      "name": "fund:label",
+      "dataType": "string",
+      "labelOf": "fund:code",
+      "why": "会計の表示名"
+    },
+    {
+      "name": "fin-source:generic:level4:code",
+      "dataType": "string",
+      "unique": true,
+      "prior": "fin-source:generic:level3:code",
+      "why": "歳入の節。標準の fin-source は level3 までしか定義が無いため同じ命名規則で拡張した"
+    },
+    {
+      "name": "fin-source:generic:level4:label",
+      "dataType": "string",
+      "labelOf": "fin-source:generic:level4:code",
+      "why": "歳入の節の表示名"
+    },
+    {
+      "name": "fin-source:generic:level5:code",
+      "dataType": "string",
+      "unique": true,
+      "prior": "fin-source:generic:level4:code",
+      "why": "歳入の細節"
+    },
+    {
+      "name": "fin-source:generic:level5:label",
+      "dataType": "string",
+      "labelOf": "fin-source:generic:level5:code",
+      "why": "歳入の細節の表示名"
+    },
+    {
+      "name": "fin-source:generic:level6:code",
+      "dataType": "string",
+      "unique": true,
+      "prior": "fin-source:generic:level5:code",
+      "why": "歳入の細々節"
+    },
+    {
+      "name": "fin-source:generic:level6:label",
+      "dataType": "string",
+      "labelOf": "fin-source:generic:level6:code",
+      "why": "歳入の細々節の表示名"
+    },
+    {
+      "name": "fudoki:jurisdiction:code",
+      "dataType": "string",
+      "unique": true,
+      "why": "全国地方公共団体コード。外部データとの接続キー。FDP の geo:* は住所や地理コードを指すもので、行政主体の識別子ではない"
+    },
+    {
+      "name": "fudoki:jurisdiction:label",
+      "dataType": "string",
+      "labelOf": "fudoki:jurisdiction:code",
+      "why": "自治体名"
+    },
+    {
+      "name": "fudoki:source:cell",
+      "dataType": "string",
+      "why": "code と label へ分ける前の原典のセル。先頭のゼロや全角数字といった表記を保ち、code + label を連結して原文に戻ることを検証に使う"
+    },
+    {
+      "name": "fudoki:source:amount",
+      "dataType": "number",
+      "why": "原典の金額。円へ正規化する前の値"
+    },
+    {
+      "name": "fudoki:source:amount-unit",
+      "dataType": "string",
+      "why": "原典の金額の単位。FDP に倍率を表す ColumnType が無いため別列に残す"
+    },
+    {
+      "name": "fudoki:source:row",
+      "dataType": "integer",
+      "why": "原典の物理行番号。特定のスナップショット内でのみ意味を持つ証跡で、外部が参照する識別子ではない"
+    },
+    {
+      "name": "fudoki:hierarchy-path",
+      "dataType": "string",
+      "why": "階層のコードを連結した可読なパス。コードは兄弟間で一意とは限らないので識別子には使わない"
+    },
+    {
+      "name": "fudoki:cofog:status",
+      "dataType": "string",
+      "why": "分類の軸。assigned / unclassifiable / out-of-scope。分類できなかったものと、そもそも分類の対象でないものを区別する"
+    },
+    {
+      "name": "fudoki:cofog:consolidation",
+      "dataType": "string",
+      "why": "連結の軸。retained / eliminated。分類の軸とは別の問いなので1つの状態に畳まない"
+    },
+    {
+      "name": "fudoki:cofog:counterpart-id",
+      "dataType": "string",
+      "why": "消去する行の相手側 budget-line-id"
+    },
+    {
+      "name": "fudoki:cofog:basis",
+      "dataType": "string",
+      "why": "割り当ての根拠。割当済みと未分類のいずれについても残す"
+    },
+    {
+      "name": "fudoki:cofog:decided-at-level",
+      "dataType": "string",
+      "why": "款・項・目・事項のどの単位で割り当てが決まったか"
+    },
+    {
+      "name": "fudoki:budget-class:code",
+      "dataType": "string",
+      "unique": true,
+      "why": "予算区分（現年度・繰越明許・事故繰越）。⚠️ 同じ科目に複数の区分が並ぶ団体では行の同一性の一部になる。FDP の phase は予算の段階を指すもので、繰越の区分とは別概念であり標準に該当する列型が無い"
+    },
+    {
+      "name": "fudoki:budget-class:label",
+      "dataType": "string",
+      "labelOf": "fudoki:budget-class:code",
+      "why": "予算区分の表示名"
+    }
+  ]
+}

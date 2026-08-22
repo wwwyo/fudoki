@@ -1,11 +1,48 @@
--- **歳出と歳入の交差検算（会計ごと）。**
+-- **歳出と歳入の交差検算（年度・会計ごと）。**
 --
--- ⚠️ **一般の不変条件ではない。** 三鷹市の令和6年度当初予算について、
--- 同一の会計・年度・予算段階・収録範囲で成立することを実測で確認した条件付き検算。
--- 決算・企業会計・補正差分・会計範囲の異なる抽出では成立しない。
--- 団体を増やすときは、まずこれが成立するかを実測してから有効にする。
-with e as (select fund_label, sum(source_amount) as amount from {{ ref('stg_132047__expenditure') }} group by 1),
-     r as (select fund_label, sum(source_amount) as amount from {{ ref('stg_132047__revenue') }} group by 1)
-select coalesce(e.fund_label, r.fund_label) as fund, e.amount as 歳出, r.amount as 歳入
-from e full outer join r using (fund_label)
-where coalesce(e.amount, -1) is distinct from coalesce(r.amount, -2)
+-- ⚠️ **一般の不変条件ではない。取得元ごとに実測してから有効にする。**
+-- 成立を確かめた団体と、許す差（丸め）だけを `budget_expenditure_revenue_balance` が宣言する。
+-- **倍率はここでは宣言しない** — `budget_amounts` の primary が既に持っており、
+-- 二重に持つと単位を直したときに検算だけ古い倍率で掛け続けて通ってしまう。
+--
+--   三鷹市 132047  令和6年度当初予算。同一の会計・年度・予算段階・収録範囲で完全一致（差 0）
+--   狛江市 132195  2018〜2023 決算。歳出の予算計と歳入の予算現額が年度・会計別に一致する。
+--                  ただし**歳入の予算現額は千円単位**なので円未満が丸められる。
+--                  実測で差が出たのは 2021 一般会計（-585円）と 2023 一般会計（-105円）の2件で、
+--                  どちらも 1,000 円未満。だから許容差を 1,000 円未満としてある。
+--                  執行済額はここで比べない（歳出の執行と歳入の収入は釣り合う性質のものではない）。
+--
+-- ⚠️ **年度ごとに比べる。** 全年度を合計してから比べると、ある年度の過大と
+-- 別の年度の過小が打ち消し合って通ってしまう。
+{% set spec = var('budget_expenditure_revenue_balance') %}
+{% set units = [] %}
+{% for code, direction in budget_units() %}
+  {% if code in spec %}
+    {% set primary = var('budget_amounts')[code][direction] | selectattr('primary') | list %}
+    {% do units.append((code, direction, primary[0]['multiplier'])) %}
+  {% endif %}
+{% endfor %}
+
+with sums as (
+    {% for code, direction, multiplier in units %}
+    select '{{ code }}' as jurisdiction, fiscal_year, fund_label,
+           '{{ direction }}' as direction, sum(source_amount * {{ multiplier }}) as amount
+    from {{ ref('stg_' ~ code ~ '__' ~ direction) }} group by 1, 2, 3, 4
+    {% if not loop.last %}union all{% endif %}
+    {% endfor %}
+),
+
+paired as (
+    select
+        jurisdiction, fiscal_year, fund_label,
+        sum(amount) filter (where direction = 'expenditure') as 歳出,
+        sum(amount) filter (where direction = 'revenue')     as 歳入
+    from sums group by 1, 2, 3
+)
+
+select *, 歳出 - 歳入 as 差
+from paired
+where 歳出 is null or 歳入 is null
+   or abs(歳出 - 歳入) >= case jurisdiction
+      {% for code in spec.keys() %}when '{{ code }}' then {{ spec[code]['tolerance_yen'] }} {% endfor %}
+   end

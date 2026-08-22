@@ -15,23 +15,55 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { loadDetail, loadPipeline, toRows, yenShort, type DetailData, type PipelineData } from '@/lib/pipeline'
+import { Button } from '@/components/ui/button'
+import { levelsOf, loadDetail, loadPipeline, toRows, yenShort, type DetailData, type PipelineData } from '@/lib/pipeline'
 
 export default function App() {
   const [data, setData] = useState<PipelineData | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [selectedNode, setSelectedNode] = useState<string | null>(null)
-  // 明細は報告の 50 倍あるので、タブを開いたときだけ取りに行く
-  const [detail, setDetail] = useState<DetailData | null>(null)
+  // 見ている団体。**1団体だけを前提にしない** — 以前は pipeline.json が単一団体の形で、
+  // 2団体目を足したら生成側が例外で止まるようにしてあった。
+  const [code, setCode] = useState<string | null>(null)
+  // 明細は報告の 50 倍あるので、タブを開いたときだけ取りに行く。
+  // ⚠️ **団体をまたいで溜めない。** 溜めると切り替えるたびに 40,383 行の表が積み上がり、
+  // 解放されない（対象は最終的に62団体になる）。見ている団体の分だけ持つ。
+  const [detail, setDetail] = useState<{ code: string; data: DetailData } | null>(null)
   const [detailError, setDetailError] = useState<string | null>(null)
+  // 開いているタブ。**明細の取得はタブを開いた瞬間だけの出来事ではない** —
+  // 明細を見ている最中に団体を切り替えても取りに行く必要がある。
+  const [tab, setTab] = useState('stages')
 
   useEffect(() => {
-    loadPipeline().then(setData).catch((e: Error) => setError(e.message))
+    loadPipeline()
+      .then((d) => { setData(d); setCode(d.jurisdictions[0]?.code ?? null) })
+      .catch((e: Error) => setError(e.message))
   }, [])
 
+  const current = data?.jurisdictions.find((j) => j.code === code) ?? data?.jurisdictions[0]
+  const loaded = detail?.code === code ? detail.data : undefined
+
+  /**
+   * 明細を取りに行く条件は「明細タブを見ていて、その団体の分をまだ持っていない」。
+   *
+   * ⚠️ **タブを開く操作に紐づけない。** 紐づけると、明細タブを開いたまま団体を切り替えたとき
+   * 取得が走らず「明細を読み込み中…」のまま止まる（操作しないと復帰できない）。
+   * 見ているものと持っているものの差で決めれば、どちらの順序でも同じ結果になる。
+   */
+  useEffect(() => {
+    if (tab !== 'detail' || !current || loaded || detailError) return
+    let stale = false
+    const target = current.code
+    loadDetail(current.report)
+      .then((d) => { if (!stale) setDetail({ code: target, data: d }) })
+      .catch((e: Error) => { if (!stale) setDetailError(e.message) })
+    // 取得中に団体を切り替えたら、遅れて届いた前の団体の明細を捨てる
+    return () => { stale = true }
+  }, [tab, current, loaded, detailError])
+
   const rows = useMemo(
-    () => (detail ? { expenditure: toRows(detail.expenditure), revenue: toRows(detail.revenue) } : null),
-    [detail],
+    () => (loaded ? { expenditure: toRows(loaded.expenditure), revenue: toRows(loaded.revenue) } : null),
+    [loaded],
   )
 
   if (error) {
@@ -44,11 +76,11 @@ export default function App() {
       </main>
     )
   }
-  if (!data) {
+  if (!data || !current) {
     return <main className="p-6 text-sm text-muted-foreground">読み込み中…</main>
   }
 
-  const { report } = data
+  const { report } = current
   const m = report.meta
   const t = report.transform
   const total = t.byState.reduce((s, x) => s + x.sum, 0)
@@ -57,9 +89,12 @@ export default function App() {
 
   const stats: { label: string; value: string | number; tone?: string; hint?: string }[] = [
     { label: '検査', value: `${report.summary.passed}/${report.summary.total}`, tone: report.summary.failed ? 'bad' : 'good', hint: '1つでも落ちると成果物を書き出さない' },
-    { label: '歳出の総額', value: yenShort(total) },
+    // ⚠️ 団体で意味が違う。三鷹市は当初予算額、狛江市は決算の予算現額（全会計・全年度の合計）。
+    { label: `歳出の総額（${m.phase.label}）`, value: yenShort(total) },
     { label: 'COFOG 割当済み（金額比）', value: `${((assigned / total) * 100).toFixed(1)}%`, hint: 'COFOG は政府支出の機能別分類（教育、保健など10区分）。国際標準' },
-    { label: '連結で消去', value: yenShort(eliminated), hint: '会計間の繰出。市の全会計を足すとき二重に数えるので相殺する' },
+    // ⚠️ 消去が成立しない団体がある（狛江市は相手の会計が原典から決まらない）。
+    // 「相殺する」と決め打ちで書くと、消去していない団体で嘘になる。
+    { label: '連結で消去', value: yenShort(eliminated), hint: t.consolidationScope },
     { label: '割当規則', value: `${t.ruleCount} 本` },
   ]
 
@@ -67,8 +102,25 @@ export default function App() {
     <div className="min-h-dvh bg-background text-foreground">
       <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background/95 px-4 backdrop-blur">
         <div className="flex min-w-0 items-center gap-2">
-          <span className="truncate font-medium">{m.jurisdictionName}</span>
-          <span className="truncate text-sm text-muted-foreground">{m.fiscalYears.join("・")}年度 · {m.phase.label}</span>
+          {data.jurisdictions.length > 1 && (
+            <nav aria-label="団体" className="flex shrink-0 gap-1">
+              {data.jurisdictions.map((j) => (
+                <Button
+                  key={j.code}
+                  size="sm"
+                  variant={j.code === current.code ? 'default' : 'outline'}
+                  onClick={() => { setCode(j.code); setSelectedNode(null); setDetailError(null) }}
+                >
+                  {j.report.meta.jurisdictionName}
+                </Button>
+              ))}
+            </nav>
+          )}
+          <span className="truncate text-sm text-muted-foreground">
+            {m.fiscalYears.length > 2
+              ? `${m.fiscalYears[0]}〜${m.fiscalYears.at(-1)}年度`
+              : `${m.fiscalYears.join('・')}年度`} · {m.phase.label}
+          </span>
         </div>
         <Badge variant={report.summary.failed ? 'destructive' : 'secondary'} className="ml-auto shrink-0">
           検査 {report.summary.passed}/{report.summary.total}
@@ -87,9 +139,9 @@ export default function App() {
             <AlertTitle>段の切れ目は「fudoki の判断が入るかどうか」で引いてある</AlertTitle>
             <AlertDescription>
               staging までは原典に忠実な写しで、出力（正本）は原典と突き合わせて検証できる。
-              core で初めて解釈が入り、COFOG の割り当てのように三鷹市が言っていないことを付け加える。
+              core で初めて解釈が入り、COFOG の割り当てのように{m.jurisdictionName}が言っていないことを付け加える。
               両者を同じデータに混ぜると、市が公表した事実と fudoki の判断を利用者が区別できなくなる。
-              だから配布物も <code>data/budget/packages/132047/</code>（正本）と <code>data/budget/packages/derived/</code>（派生）に分けてある。
+              だから配布物も <code>data/budget/packages/{current.code}/</code>（正本）と <code>data/budget/packages/derived/</code>（派生）に分けてある。
               境界はディレクトリ名では守れないので、原典との多重集合一致を検査で縛っている。
             </AlertDescription>
           </Alert>
@@ -114,14 +166,7 @@ export default function App() {
           </div>
         </section>
 
-        <Tabs
-          defaultValue="stages"
-          onValueChange={(v) => {
-            if (v === 'detail' && !detail && !detailError) {
-              loadDetail().then(setDetail).catch((e: Error) => setDetailError(e.message))
-            }
-          }}
-        >
+        <Tabs value={tab} onValueChange={setTab}>
           <TabsList>
             <TabsTrigger value="stages">段ごとの中身</TabsTrigger>
             <TabsTrigger value="cofog">COFOG の判断</TabsTrigger>
@@ -146,7 +191,16 @@ export default function App() {
                 <AlertDescription>{detailError}</AlertDescription>
               </Alert>
             ) : rows ? (
-              <DetailBrowser expenditure={rows.expenditure} revenue={rows.revenue} />
+              <DetailBrowser
+                code={current.code}
+                expenditure={rows.expenditure}
+                revenue={rows.revenue}
+                levels={{
+                  expenditure: levelsOf(report, 'expenditure'),
+                  revenue: levelsOf(report, 'revenue'),
+                }}
+                tables={{ expenditure: loaded!.expenditure, revenue: loaded!.revenue }}
+              />
             ) : (
               <p className="text-sm text-muted-foreground">明細を読み込み中…</p>
             )}
@@ -157,8 +211,8 @@ export default function App() {
         </Tabs>
 
         <footer className="border-t pt-6 text-xs leading-relaxed text-muted-foreground">
-          正本 <code>data/budget/packages/{data.code}/</code> ／ 派生 <code>data/budget/packages/derived/</code> ／ 原典 <code>data/budget/raw/</code> ／
-          報告 <code>data/budget/reports/{data.code}.json</code>
+          正本 <code>data/budget/packages/{current.code}/</code> ／ 派生 <code>data/budget/packages/derived/</code> ／ 原典 <code>data/budget/raw/</code> ／
+          報告 <code>data/budget/reports/{current.code}.json</code>
           <br />
           原典: <a className="underline" href={m.landingPage} target="_blank" rel="noreferrer">{m.attribution}</a>
           {' '}／ {m.license.id} ／ 生成 {m.generatedAt.replace('T', ' ').slice(0, 19)}

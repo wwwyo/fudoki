@@ -11,16 +11,26 @@ fudoki は日本の地方自治体の**支出を事業単位まで**構造化し
 
 ## いま手に入るもの
 
-東京都三鷹市の令和6年度当初予算（歳出 5,613行、歳入 821行）を [Fiscal Data Package](https://fiscal.datapackage.org/) 1.0.0 として配布している。
+東京都の2団体を [Fiscal Data Package](https://fiscal.datapackage.org/) 1.0.0 として配布している。
+
+- **三鷹市** 令和6年度当初予算（歳出 5,613行、歳入 821行）
+- **狛江市** 2018〜2023年度決算（歳出 13,461行、歳入 4,219行）
+
+⚠️ **狛江市は事業階層（大事業）まで届いているが、款・項・目・大事業に名称の列が原典に無い。**
+「何にいくら」は引けるが「その事業が何か」は原典から分からない。詳細は AGENTS.md。
 
 - 原典: [`data/budget/raw/`](./data/budget/raw/)（Parquet。取得の単位ごとに partition）
-- 正本: [`data/budget/packages/132047/`](./data/budget/packages/132047/)（判断を含まない）
-- 派生: [`data/budget/packages/derived/`](./data/budget/packages/derived/)（COFOG の割当と、その規則35行）
-- 取得の証跡: [`data/provenance/`](./data/provenance/)
+- 正本: [`data/budget/packages/132047/`](./data/budget/packages/132047/) ／ [`132195/`](./data/budget/packages/132195/)（判断を含まない。**団体ごとに科目体系のまま**）
+- 派生: [`data/budget/packages/derived/`](./data/budget/packages/derived/)（COFOG の割当と、その規則表。**団体をまたいで1つ**）
+- 取得の証跡: 取得物の隣（`data/budget/raw/**/provenance.json`）
 - パイプライン報告: [`data/budget/reports/`](./data/budget/reports/)
 
-たとえば「いじめ問題対策協議会関係費」は 311,000円で、教育費 > 教育総務費 > 教育指導費 の下にある。
+たとえば三鷹市の「いじめ問題対策協議会関係費」は 311,000円で、教育費 > 教育総務費 > 教育指導費 の下にある。
 これを機械で引けるようにするのが目的である。
+
+⚠️ **同じことが狛江市ではできない。** 狛江市の原典は事業階層まで届いているのに名称を持たないので、
+引けるのは「一般会計 款3 項1 目1 大事業37 に 11.8 億円」までである。
+**公開されているデータの粒度と、そこから問いに答えられるかは別**というのが2団体目の一番大きな発見だった。
 
 ## 5分で動かす
 
@@ -53,6 +63,8 @@ bun run dev            # ダッシュボードを開く（http://localhost:5173�
 
 予算の科目は **款 > 項 > 目 > 節** の階層で、款が最も粗い（地方自治法にもとづく区分）。
 「事業単位まで」というのは目とその下の事業階層に届くという意味で、既存のダッシュボードは款と項で止まっている。
+事業階層の名前は団体ごとに違う（三鷹市は「事項」、狛江市は「大事業・中事業・小事業」）。
+**揃えることは fudoki の判断**なので、正本は団体ごとの形のままにしてあり、横断は派生の側でだけ成立する。
 
 **COFOG**（Classification of the Functions of Government）は政府支出の機能別分類で、教育や保健といった10のディビジョンに分ける国際標準である。
 自治体をまたぐ比較にも将来の国際比較にも同じ写像が効くので、粒度と対にして作っている。
@@ -63,7 +75,7 @@ bun run dev            # ダッシュボードを開く（http://localhost:5173�
 
 | レイヤ | 標準 | 状態 |
 |---|---|---|
-| ① 何にいくら（予算） | [Fiscal Data Package](https://fiscal.datapackage.org/) | 1団体目を配布済み |
+| ① 何にいくら（予算） | [Fiscal Data Package](https://fiscal.datapackage.org/) | 2団体を配布済み |
 | ② いつ何が公告されたか（調達） | [OCDS](https://standard.open-contracting.org/) | 未着手 |
 | ③ どう決まったか（会議録） | [Popolo](https://www.popoloproject.com/) | 権利判定のみ（再配布可の団体は0） |
 

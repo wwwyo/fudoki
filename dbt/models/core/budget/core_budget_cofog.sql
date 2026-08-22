@@ -1,4 +1,4 @@
--- **ここから先が fudoki の判断。** 三鷹市が言っていないことを付け加える段。
+-- **ここから先が fudoki の判断。** 自治体が言っていないことを付け加える段。
 --
 -- 状態は2つの軸に分ける。分類の軸（割当済み / 分類不能 / 対象外）と
 -- 連結の軸（保持 / 消去）は問いが違う。1つの排他的な状態に畳むと、
@@ -8,8 +8,11 @@
 -- 規則は上から順に見て最初に当たったものを採る（具体的な規則ほど priority が小さい）。
 -- 当たらなかった行は捨てず「（規則なし）」として分類不能に落とす（パーサ設計の原則6）。
 -- 捨てた瞬間、下流にはその金額が存在しなかったことしか伝わらない。
+-- ⚠️ **団体ごとの staging を直接参照しない。** 参照すると団体を足すたびにここが増え、
+-- 足し忘れが黙って派生から落ちる。団体の union は core_budget_lines が1箇所で持ち、
+-- 足し忘れは tests/budget_core_covers_all_staging.sql が落とす。
 with lines as (
-    select * from {{ ref('stg_132047__expenditure') }}
+    select * from {{ ref('core_budget_lines') }}
 ),
 
 rules as (
@@ -22,6 +25,10 @@ rules as (
         coalesce(match_kou, '')        as match_kou,
         coalesce(match_moku, '')       as match_moku,
         coalesce(moku_mode, 'eq')      as moku_mode,
+        -- ⚠️ **コードでの照合。** 狛江市は款・項・目に名称の列が原典に無く、
+        -- 名称でしか当たらない規則では1行も分類できない。名称を捏造せず、
+        -- コードで当てて根拠（basis）に何の款かとその出所を書く。
+        coalesce(match_kan_code, '')   as match_kan_code,
         coalesce(match_setsu, '')      as match_setsu,
         status,
         coalesce(division, '')         as division,
@@ -48,6 +55,7 @@ matched as (
         on (r.applies_to = '' or r.applies_to = l.jurisdiction_code)
         and (r.match_fund = '' or l.fund_label = r.match_fund)
         and (r.match_kan = '' or l.kan_label = r.match_kan)
+        and (r.match_kan_code = '' or l.kan_code = r.match_kan_code)
         and (r.match_kou = '' or list_contains(str_split(r.match_kou, '|'), l.kou_label))
         and (
             r.match_moku = ''
