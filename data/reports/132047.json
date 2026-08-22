@@ -28,30 +28,30 @@
       {
         "id": "ingestion",
         "label": "ingestion",
+        "introducesJudgment": false,
         "responsibility": "取得元から取り、無加工のまま Parquet で置く。取得 URL・status・SHA-256・取得時刻を添える",
-        "excludes": "解釈・整形・結合",
-        "introducesJudgment": false
+        "excludes": "解釈・整形・結合"
       },
       {
         "id": "staging",
         "label": "staging",
+        "introducesJudgment": false,
         "responsibility": "原典と1対1。列名の付け替えと型付けだけ",
-        "excludes": "判断（分類・名寄せ・推定）。行を増減させること",
-        "introducesJudgment": false
+        "excludes": "判断（分類・名寄せ・推定）。行を増減させること"
       },
       {
         "id": "core",
         "label": "core",
+        "introducesJudgment": true,
         "responsibility": "判断が入る段。COFOG 写像、連結の消去",
-        "excludes": "取得",
-        "introducesJudgment": true
+        "excludes": "取得"
       },
       {
         "id": "package",
         "label": "package",
+        "introducesJudgment": false,
         "responsibility": "配布物へ。Fiscal Data Package の形にする",
-        "excludes": "判断",
-        "introducesJudgment": false
+        "excludes": "判断"
       }
     ],
     "nodes": [
@@ -1092,8 +1092,8 @@
         "divisionLabel": ""
       },
       {
-        "fund": "09後期高齢者医療特別会計",
-        "kan": "05予備費",
+        "fund": "07介護保険事業特別会計",
+        "kan": "06予備費",
         "division": "",
         "status": "unclassifiable",
         "decidedAtLevel": "款",
@@ -1103,8 +1103,8 @@
         "divisionLabel": ""
       },
       {
-        "fund": "07介護保険事業特別会計",
-        "kan": "06予備費",
+        "fund": "09後期高齢者医療特別会計",
+        "kan": "05予備費",
         "division": "",
         "status": "unclassifiable",
         "decidedAtLevel": "款",

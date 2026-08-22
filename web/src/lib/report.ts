@@ -116,7 +116,16 @@ export type ReportData = {
   checks: Check[]
   notYetReconciled: { scope: string; reason: string; wouldComeFrom: string; currentEvidence: string }
   /** FDP に無い概念のために自作した ColumnType。**自作は最小限に留めた根拠を出す** */
-  customColumnTypes: { name: string; dataType: string; unique: boolean; why: string }[]
+  customColumnTypes: {
+    name: string
+    dataType: string
+    unique?: boolean
+    /** FDP の語彙。コード列に対する名称列であることを示す */
+    labelOf?: string
+    /** FDP の語彙。階層の親を指す */
+    prior?: string
+    why: string
+  }[]
   /** 2団体目で壊れうる箇所と、次に何を実測すれば確かめられるか */
   portability: { element: string; kind: string; verifyNext: string }[]
   caveats: { topic: string; body: string }[]
@@ -126,11 +135,14 @@ export type ReportData = {
     baseline: Record<string, unknown>
     caveat: string
     observations: {
-      year: number; label: string; direction: string; resourceName: string; url: string
-      coverageNote: string | null; rows: number | null; columns: string[]
+      year: number; label: string; direction: string
+      resourceName?: string; url?: string; coverageNote?: string | null
+      fetchedAt?: string; status?: number; bytes?: number; sha256?: string
+      rows?: number; columns?: string[]
       /** 収録されている会計。年度で範囲が変わる（平成28〜令和元は下水道事業特別会計を含む6会計） */
-      funds: string[] | null
-      quotedRows: number; compatible: boolean | null; basis: string
+      funds?: string[]
+      amountAllIntegers?: boolean; quotedRows?: number; totalRaw?: number | null
+      compatible: boolean | null; basis: string
     }[]
   }
 }

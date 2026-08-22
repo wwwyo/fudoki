@@ -223,7 +223,8 @@ core の出力（派生）は自治体が言っていないことを含むので
 
 - **取得（ingestion）**: Python。原典を Parquet で `data/raw/` へ落とす。「無加工」は主張ではなく検査（復号の可逆性・原文の復元）
 - **変換**: dbt（dbt-core + dbt-duckdb）。DuckDB は実行時に組む一時ファイルで、正は Parquet 側
-- **配布パッケージの生成と画面**: Bun + TypeScript
+- **配布パッケージの生成**: Python（`package/`）
+- **報告の生成と画面**: Bun + TypeScript。報告の出力を `ReportData` 型に固定し、**生成側と画面側の食い違いをコンパイラに捕まえさせる**
 - 配布: 原典・正本・派生をリポジトリに commit。①は Fiscal Data Package、②は OCDS、③は Popolo
 
 **系統（lineage）は dbt の `manifest.json` から取る。** 手で書かない。
@@ -283,7 +284,7 @@ bun run dev         # 報告を作り直してダッシュボードを上げる
 **系統は dbt の `manifest.json` から取る。** 段はモデルの置き場（`staging` / `core` / `package`）が決めるので、
 ディレクトリを動かせば画面の図も動く。以前は `topology.ts` が宣言しており、パイプラインを変えても図が変わらない状態を2度作った。
 
-**集計は `report/build.py` の1箇所だけ**で行う（画面側でも集計すると、同じ数字が2通りに計算されて、いずれ食い違う）。
+**集計は `web/scripts/build-report.ts` の1箇所だけ**で行う（画面側でも集計すると、同じ数字が2通りに計算されて、いずれ食い違う）。
 
 実データを通して分かった、設計時の想定と違った点。**2団体目でも同じ形で壊れうる。**
 

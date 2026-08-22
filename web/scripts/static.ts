@@ -1,4 +1,14 @@
-{
+/**
+ * 報告のうち、**実行結果から導けない内容**。判断・調査・宣言なので手で書く。
+ *
+ * JSON ではなく TS にしてあるのは、`ReportData` の該当部分として
+ * 型検査を通すため。JSON だと形を変えても画面が壊れるまで気づかない。
+ */
+import type { ReportData } from '../src/lib/report'
+
+type Static = Pick<ReportData, 'notYetReconciled' | 'customColumnTypes' | 'portability' | 'caveats' | 'yearSurvey'>
+
+export const STATIC: Static = {
   "notYetReconciled": {
     "scope": "特別会計（国民健康保険事業・介護サービス事業・介護保険事業・後期高齢者医療）の款別・項別",
     "reason": "施政方針・予算概要は一般会計の款別までしか載せておらず、特別会計の款別は予算書にしかない",
@@ -899,6 +909,5 @@
         "basis": "列構成が令和6年度と一致（会計/款/項/目/節/細節/細々節/予算額）。金額列は全て整数。引用符なし。会計 6 件"
       }
     ]
-  },
-  "_comment": "報告のうち、実行結果から導けない内容。判断・調査・宣言なので手で書く。数値は report/build.py が dbt の manifest.json / run_results.json と core への問い合わせから導く。"
+  }
 }
