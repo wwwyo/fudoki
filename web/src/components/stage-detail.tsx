@@ -28,8 +28,9 @@ export function StageDetail({ report }: { report: ReportData }) {
       <section className="flex flex-col gap-2">
         <h3 className="font-medium">Extract — 取得の証跡</h3>
         <p className="max-w-[68ch] text-sm text-muted-foreground">
-          取得物はリポジトリに置かない。残すのは URL・status・SHA-256・取得時刻だけなので、
-          再現性の意味は「原典から再生成できること」ではなく「成果物の版が残ること」になる。
+          原典は <code>data/raw/</code> に Parquet で置く（取得の単位ごとに partition）。
+          あわせて URL・status・SHA-256・取得時刻を証跡として残すので、
+          <strong>原典から成果物を再生成できること</strong>が再現性の意味になる。
         </p>
         <div className="overflow-x-auto rounded-lg border">
           <Table>

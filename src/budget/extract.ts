@@ -7,8 +7,8 @@
  * **冪等にする。** 既に同じバイト列が作業領域にあれば取得しない。
  * ここが冪等でないと、表記ルールを1つ直すたびに全自治体を再クロールすることになる。
  *
- * 取得物はリポジトリのツリーへ置かない。残すのは URL・status・SHA-256・取得時刻の証跡だけで、
- * これにより再現性の意味が「原典から再生成できること」から「成果物の版が残ること」へ変わる。
+ * ⚠️ この TS 版は `ingestion/fetch.py` へ移行済みで、削除待ちである。
+ * 原典は `data/raw/` に Parquet で置く方針に変わった（AGENTS.md 方針3）。
  */
 import { UA, decodeText, fetchCapped, sha256, sniffContent } from '../../scripts/lib/source'
 import { CKAN_ENDPOINT, type BudgetSource, type Direction } from './source'

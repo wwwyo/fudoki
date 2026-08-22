@@ -258,8 +258,39 @@ uv add --exclude-newer $(date -v-7d +%Y-%m-%d) <package>
 
 ## ① 予算：1団体目（三鷹市 令和6年度）を FDP として配布済み
 
-🚧 **以下は現在の実装（TypeScript 単体）。「パイプライン」節の構成へ移行中。**
-移行の正しさは、三鷹市が歳出 5,613 行・一般会計 83,187,972 千円・割当済み 5,586 行を再現し、検査30件が通ることで測る。
+🚧 **移行中。** ingestion（Python）→ dbt（staging / core）→ package までは通っており、
+既存の TypeScript 版と**同じ結果を出すことを検査で示してある**。
+残っているのは画面を dbt の `manifest.json` 由来に切り替えることと、TypeScript 版の削除。
+
+### 新しい構成（動いている）
+
+```bash
+uv run python -m ingestion.fetch 132047:2024   # 原典 → data/raw/*.parquet
+cd dbt && dbt build                            # staging → core（検査25件）
+uv run python -m package.build                 # → data/packages/*/datapackage.json
+```
+
+配布物の割り方は**正本／派生の境界がそのまま**になっている。
+
+| | 単位 | 中身 |
+|---|---|---|
+| `data/raw/` | (団体, 年度, direction) | 原典。Parquet。判断ゼロ |
+| `data/packages/<団体>/` | 団体ごと・**全年度** | 正本。その団体の科目体系のまま |
+| `data/packages/tokyo/` | **東京全体で1つ** | 派生。COFOG の割当と規則表 |
+
+団体をまたいで正本を1つにしない理由は、階層の構成が団体ごとに違い（三鷹市は事項、狛江市は大事業・中事業・小事業）、
+揃えることが「同じ概念だ」という**判断**になるため。揃える判断も COFOG も派生の側にあるので、**横断は派生でだけ成立する**。
+
+移行で実データが教えたこと。
+
+- **原典に機種依存文字がある。** `01Ⅰ型事業委託料` の Ⅰ（U+2160、CP932 で 0x8754）。素の `shift_jis` では復号できない
+- **原典に全角スペースが混じる。** `01郵便料　`。TS 版が `.trim()` で黙って落としており、1団体目を配るまで誰も知らなかった（全 45,038 セル中3セル）。いまは警告として毎回出る
+- **HTTP を分割して読むと切り捨てが成功扱いになる。** 実際に 2.3MB のうち約 30KB を失っていた
+- **歳出と歳入で階層の構成が違う。** どちらも7階層だが、歳出は目と節の間に「事項」、歳入は節と細々節の間に「細節」
+
+### 旧実装（削除待ち）
+
+以下は TypeScript 単体の版で、画面がまだこちらに依存している。
 
 正本は `data/packages/132047/2024/`、証跡は `data/provenance/`、パイプライン報告は `data/reports/`。
 生成は `bun run build:budget`（**検査が1つでも落ちたら成果物を書かずに落ちる**）。
@@ -307,3 +338,17 @@ uv add --exclude-newer $(date -v-7d +%Y-%m-%d) <package>
 | `bun run fetch:fdp-taxonomy` | FDP の ColumnType 一覧を仕様の原文から起こして取り込む（正準 URL が 404 のため） |
 | `bun run build:budget` | ① 予算のパイプライン（Extract → Load → Transform → 検証 → 報告）。検査が落ちたら書き出さない |
 | `bun run dev` | ダッシュボードのデータを生成して Vite を上げる（`web/`） |
+| `uv run python -m ingestion.fetch <key>` | 原典を取得して `data/raw/` へ Parquet で置く。冪等 |
+| `cd dbt && dbt build` | staging → core。検査25件（うち1件は警告レベル） |
+| `uv run python -m package.build` | dbt の出力に `datapackage.json` を付けて配布物にする |
+
+## 未確定（移行に伴うもの）
+
+- **配布形式は CSV のまま。** 全量（62団体 × 9年度）への外挿は CSV 1.1 GB / gzip 156 MB / Parquet 141 MB。
+  gzip は Data Package の仕様に `compression` プロパティが無く、Parquet は `format` が「csv, xls, json etc.」と開いているだけで明記が無い。
+  **62団体のうち1団体しか無い段階で、外挿値だけを根拠に標準から外れる判断はしない。** 実際に増えたときに決める
+- **1パッケージに複数年度を入れて FDP のバリデータが通るか未確認。**
+  `date:fiscal-year` はそのための ColumnType なので通るはずだが確認する
+- **TypeScript 版と同一結果であることの検査は、TypeScript 版を消すときに一緒に消える。**
+  そのとき保証されなくなるのは「配布済みの識別子と割当が変わっていないこと」で、
+  証明そのものは git 履歴（`944866c` 識別子、`83bd132` COFOG）に残る
