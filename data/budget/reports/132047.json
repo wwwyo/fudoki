@@ -18,8 +18,8 @@
     "generatedAt": "2026-08-22T06:44:52+00:00"
   },
   "summary": {
-    "total": 29,
-    "passed": 28,
+    "total": 30,
+    "passed": 29,
     "failed": 0,
     "warned": 1
   },
@@ -201,6 +201,16 @@
     ],
     "edges": [
       {
+        "from": "source.fudoki.raw_132047.expenditure",
+        "to": "model.fudoki.stg_132047__expenditure",
+        "kind": "flow"
+      },
+      {
+        "from": "source.fudoki.raw_132047.revenue",
+        "to": "model.fudoki.stg_132047__revenue",
+        "kind": "flow"
+      },
+      {
         "from": "model.fudoki.stg_132047__revenue",
         "to": "model.fudoki.core_revenue_consolidation",
         "kind": "flow"
@@ -221,6 +231,11 @@
         "kind": "flow"
       },
       {
+        "from": "model.fudoki.stg_132047__expenditure",
+        "to": "model.fudoki.pkg_132047__expenditure",
+        "kind": "flow"
+      },
+      {
         "from": "model.fudoki.core_budget_cofog",
         "to": "model.fudoki.pkg_derived__cofog",
         "kind": "flow"
@@ -238,21 +253,6 @@
       {
         "from": "model.fudoki.stg_132047__revenue",
         "to": "model.fudoki.pkg_derived__cofog",
-        "kind": "flow"
-      },
-      {
-        "from": "source.fudoki.raw_132047.expenditure",
-        "to": "model.fudoki.stg_132047__expenditure",
-        "kind": "flow"
-      },
-      {
-        "from": "model.fudoki.stg_132047__expenditure",
-        "to": "model.fudoki.pkg_132047__expenditure",
-        "kind": "flow"
-      },
-      {
-        "from": "source.fudoki.raw_132047.revenue",
-        "to": "model.fudoki.stg_132047__revenue",
         "kind": "flow"
       },
       {
@@ -1615,6 +1615,19 @@
       "name": "not_null_stg_132047__revenue_source_row",
       "description": "",
       "binds": [
+        "model.fudoki.stg_132047__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "package_preserves_source",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132047__expenditure",
         "model.fudoki.stg_132047__revenue"
       ],
       "ok": true,

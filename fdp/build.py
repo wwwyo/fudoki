@@ -138,6 +138,14 @@ def build_jurisdiction(code: str) -> None:
     pkg["attribution"] = srcs[0].attribution
     pkg["sources"] = [{"title": s.attribution, "path": s.landing_page} for s in srcs]
     # 全行同じ値なのでリソースの列から外し、ここに持たせた定数。
+    # ⚠️ **phase を package 全体の定数にしてよいのは1つしか無いときだけ。**
+    # 補正予算を足すと行ごとに phase が違うので、定数にすると descriptor が嘘になる。
+    phases = {(s.phase_id, s.phase_label) for s in srcs}
+    if len(phases) != 1:
+        raise SystemExit(
+            f"{code} に予算段階が {len(phases)} 種類ある（{sorted(p[0] for p in phases)}）。"
+            f"descriptor は単一 phase を前提にしているので、複数を許す構造へ変えてから配る"
+        )
     pkg["constants"] = {
         "jurisdictionCode": code,
         "jurisdictionName": srcs[0].jurisdiction_name,
@@ -179,6 +187,19 @@ def build_derived() -> None:
     print(f"ok  derived  {len(pkg['resources'])} リソース  {sum(r['bytes'] for r in pkg['resources']):,} バイト")
 
 
+# 実装済みの団体。**`sources.toml` の集合と一致しない状態で書き出さない。**
+# 一致を見ないと、2団体目を登録しても三鷹市だけを生成して正常終了し、
+# 欠けたまま配布物が出来上がる（パイプライン全体は後段の report で止まるが、
+# `python -m fdp.build` を単体で回すと気づけない）。
+IMPLEMENTED = {"132047"}
+
 if __name__ == "__main__":
-    build_jurisdiction("132047")
+    registered = {s.jurisdiction_code for s in load_sources().values()}
+    if registered != IMPLEMENTED:
+        raise SystemExit(
+            f"sources.toml の団体 {sorted(registered)} と実装済み {sorted(IMPLEMENTED)} が一致しない。"
+            f"配布物を欠けたまま書き出さないため停止する"
+        )
+    for code in sorted(IMPLEMENTED):
+        build_jurisdiction(code)
     build_derived()
