@@ -78,13 +78,7 @@ export default function App() {
       <main className="mx-auto flex max-w-[1500px] flex-col gap-8 p-4 pb-24">
         <section className="flex flex-col gap-4">
           <div>
-            <h1 className="text-xl font-semibold">原典がどう流れたか</h1>
-            <p className="mt-1 max-w-[76ch] text-sm leading-relaxed text-muted-foreground">
-              左から右へ4段。<span className="font-medium text-foreground">段はモデルの置き場が決めていて、この画面は持っていない</span> —
-              図は dbt の <code>manifest.json</code> をそのまま描く。ディレクトリを動かせば図も動く。
-              <span className="font-medium text-foreground">core から先が fudoki の言い分</span>で、
-              そこまでは原典と突き合わせて検証できる。ノードを選ぶと、その段を守っている検査だけに絞れる。
-            </p>
+            <h1 className="text-xl font-semibold">どの段で何行になり、どこから判断が入るか</h1>
           </div>
 
           <FlowGraph topology={report.topology} report={report} onSelectNode={setSelectedNode} selected={selectedNode} />

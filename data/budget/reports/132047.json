@@ -201,13 +201,28 @@
     ],
     "edges": [
       {
-        "from": "source.fudoki.raw_132047.expenditure",
-        "to": "model.fudoki.stg_132047__expenditure",
+        "from": "model.fudoki.core_budget_cofog",
+        "to": "model.fudoki.pkg_derived__cofog",
         "kind": "flow"
       },
       {
-        "from": "source.fudoki.raw_132047.revenue",
-        "to": "model.fudoki.stg_132047__revenue",
+        "from": "model.fudoki.core_revenue_consolidation",
+        "to": "model.fudoki.pkg_derived__cofog",
+        "kind": "flow"
+      },
+      {
+        "from": "model.fudoki.stg_132047__expenditure",
+        "to": "model.fudoki.core_budget_cofog",
+        "kind": "flow"
+      },
+      {
+        "from": "model.fudoki.stg_132047__expenditure",
+        "to": "model.fudoki.pkg_132047__expenditure",
+        "kind": "flow"
+      },
+      {
+        "from": "model.fudoki.stg_132047__expenditure",
+        "to": "model.fudoki.pkg_derived__cofog",
         "kind": "flow"
       },
       {
@@ -216,8 +231,13 @@
         "kind": "flow"
       },
       {
-        "from": "model.fudoki.stg_132047__expenditure",
-        "to": "model.fudoki.core_budget_cofog",
+        "from": "model.fudoki.stg_132047__revenue",
+        "to": "model.fudoki.pkg_132047__revenue",
+        "kind": "flow"
+      },
+      {
+        "from": "model.fudoki.stg_132047__revenue",
+        "to": "model.fudoki.pkg_derived__cofog",
         "kind": "flow"
       },
       {
@@ -231,33 +251,13 @@
         "kind": "flow"
       },
       {
-        "from": "model.fudoki.stg_132047__expenditure",
-        "to": "model.fudoki.pkg_132047__expenditure",
+        "from": "source.fudoki.raw_132047.expenditure",
+        "to": "model.fudoki.stg_132047__expenditure",
         "kind": "flow"
       },
       {
-        "from": "model.fudoki.core_budget_cofog",
-        "to": "model.fudoki.pkg_derived__cofog",
-        "kind": "flow"
-      },
-      {
-        "from": "model.fudoki.stg_132047__expenditure",
-        "to": "model.fudoki.pkg_derived__cofog",
-        "kind": "flow"
-      },
-      {
-        "from": "model.fudoki.core_revenue_consolidation",
-        "to": "model.fudoki.pkg_derived__cofog",
-        "kind": "flow"
-      },
-      {
-        "from": "model.fudoki.stg_132047__revenue",
-        "to": "model.fudoki.pkg_derived__cofog",
-        "kind": "flow"
-      },
-      {
-        "from": "model.fudoki.stg_132047__revenue",
-        "to": "model.fudoki.pkg_132047__revenue",
+        "from": "source.fudoki.raw_132047.revenue",
+        "to": "model.fudoki.stg_132047__revenue",
         "kind": "flow"
       }
     ],

@@ -168,6 +168,9 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
 
   const order = STAGES.map((s) => s.id)
   nodes.sort((a, b) => order.indexOf(a.stage) - order.indexOf(b.stage) || a.label.localeCompare(b.label))
+  // **辺も並べる。** dbt の manifest はノードの順序が実行ごとに変わりうるので、
+  // そのまま出すと中身が同じでも報告に差分が出る（CI の決定性検査がこれで落ちた）。
+  edges.sort((a, b) => a.from.localeCompare(b.from) || a.to.localeCompare(b.to))
   return { stages: STAGES, nodes, edges, source: 'dbt/target/manifest.json（手書きではない）' }
 }
 
