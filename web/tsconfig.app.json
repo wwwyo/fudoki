@@ -22,10 +22,11 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      // 報告の型の正本は report/schema.ts。生成側と画面が同じ型を見るので、
+      // 食い違いはコンパイラが捕まえる。
+      "@report/*": ["../report/*"]
     }
   },
-  // scripts も含める。**含めないと生成側の型が検査されず、
-  // 「コンパイラが契約を守る」という前提そのものが偽になる**（実際に一度そうなっていた）。
-  "include": ["src", "scripts"]
+  "include": ["src"]
 }

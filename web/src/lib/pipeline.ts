@@ -1,12 +1,11 @@
 /**
  * ダッシュボードが読むデータの入口。
  *
- * **型の正本は `@/lib/report`。** パイプラインが Python + dbt へ移ったので、
- * 契約を画面側が持つ。生成側（`report/build.py`）がこの形を満たすことは
- * Python 側の検査で確かめる。型を手で写した状態を放置すると、
- * 生成側のキーを変えた瞬間に画面が黙って壊れる。
+ * **型の正本は `report/schema.ts`。** 生成側（`report/build.ts`）と画面が同じ型を見るので、
+ * 食い違いはコンパイラが捕まえる。型を2箇所で宣言すると、
+ * 生成側のキーを変えた瞬間に画面が黙って壊れる（実際にその状態を作った）。
  */
-import type { ReportData, Topology, Node, Edge, Stage, Check } from '@/lib/report'
+import type { ReportData, Topology, Node, Edge, Stage, Check } from '@report/schema'
 
 export type { ReportData, Topology, Node, Edge, Stage, Check }
 

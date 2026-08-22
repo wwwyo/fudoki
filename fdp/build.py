@@ -1,5 +1,7 @@
 """dbt の出力を Fiscal Data Package として配れる形にする。
 
+（配布物そのものは data/packages/ にある。ここはそれを組み立てる側）
+
 **データは dbt が既に書いている**（`materialized: external`）。
 ここが足すのは datapackage.json だけ、つまり**列の意味づけと出所**である。
 
@@ -46,7 +48,7 @@ def schema_for(path: pathlib.Path, primary_key: list[str]) -> dict:
         if spec is None:
             raise RuntimeError(
                 f"{path.name} の列「{name}」に ColumnType の宣言が無い。"
-                f"package/field_types.json に定義を足すこと"
+                f"fdp/field_types.json に定義を足すこと"
             )
         fields.append(spec)
 

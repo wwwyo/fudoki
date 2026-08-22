@@ -21,10 +21,10 @@
  */
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import type { Check, Node, Provenance, ReportData, Stage, Topology } from '../src/lib/report'
+import type { Check, Node, Provenance, ReportData, Stage, Topology } from './schema'
 import { STATIC } from './static'
 
-const ROOT = resolve(import.meta.dirname, '../..')
+const ROOT = resolve(import.meta.dirname, '..')
 const TARGET = join(ROOT, 'dbt/target')
 const WAREHOUSE = join(ROOT, 'data/fudoki.duckdb')
 

@@ -4,7 +4,7 @@
  * JSON ではなく TS にしてあるのは、`ReportData` の該当部分として
  * 型検査を通すため。JSON だと形を変えても画面が壊れるまで気づかない。
  */
-import type { ReportData } from '../src/lib/report'
+import type { ReportData } from './schema'
 
 type Static = Pick<ReportData, 'notYetReconciled' | 'customColumnTypes' | 'portability' | 'caveats' | 'yearSurvey'>
 

@@ -190,9 +190,9 @@ core の出力（派生）は自治体が言っていないことを含むので
 | | 何 | 書く | commit |
 |---|---|---|---|
 | `raw/` | **原典**。Parquet。取得の単位ごとに partition | `ingestion/fetch.py` | ○ |
-| `packages/` | **配布物**。正本（団体ごと）と派生（団体をまたいで1つ） | dbt の package モデル + `package/build.py` | ○ |
+| `packages/` | **配布物**。正本（団体ごと）と派生（団体をまたいで1つ） | dbt の package モデル + `fdp/build.py` | ○ |
 | `provenance/` | **取得の証跡**。URL・status・SHA-256・取得時刻・ヘッダ・行数 | `ingestion/fetch.py` | ○ |
-| `reports/` | **パイプライン報告**。画面を開かなくても読める | `web/scripts/build-report.ts` | ○ |
+| `reports/` | **パイプライン報告**。画面を開かなくても読める | `report/build.ts` | ○ |
 | `observations/` | **調査の観測**。robots 原文、粒度調査、年度調査 | `scripts/`、`survey_years.py` | ○ |
 | `fudoki.duckdb` | 実行時に組む一時ファイル | dbt | gitignore |
 
@@ -239,7 +239,7 @@ core の出力（派生）は自治体が言っていないことを含むので
 
 - **取得（ingestion）**: Python。原典を Parquet で `data/raw/` へ落とす。「無加工」は主張ではなく検査（復号の可逆性・原文の復元）
 - **変換**: dbt（dbt-core + dbt-duckdb）。DuckDB は実行時に組む一時ファイルで、正は Parquet 側
-- **配布パッケージの生成**: Python（`package/`）
+- **配布パッケージの生成**: Python（`fdp/`）
 - **報告の生成と画面**: Bun + TypeScript。報告の出力を `ReportData` 型に固定し、**生成側と画面側の食い違いをコンパイラに捕まえさせる**
 - 配布: 原典・正本・派生をリポジトリに commit。①は Fiscal Data Package、②は OCDS、③は Popolo
 
@@ -300,7 +300,7 @@ bun run dev         # 報告を作り直してダッシュボードを上げる
 **系統は dbt の `manifest.json` から取る。** 段はモデルの置き場（`staging` / `core` / `package`）が決めるので、
 ディレクトリを動かせば画面の図も動く。以前は `topology.ts` が宣言しており、パイプラインを変えても図が変わらない状態を2度作った。
 
-**集計は `web/scripts/build-report.ts` の1箇所だけ**で行う（画面側でも集計すると、同じ数字が2通りに計算されて、いずれ食い違う）。
+**集計は `report/build.ts` の1箇所だけ**で行う（画面側でも集計すると、同じ数字が2通りに計算されて、いずれ食い違う）。
 
 実データを通して分かった、設計時の想定と違った点。**2団体目でも同じ形で壊れうる。**
 
@@ -315,7 +315,7 @@ bun run dev         # 報告を作り直してダッシュボードを上げる
   年度の唯一の出所がリソース名なので、ここを間違えると年度を取り違える
 - **⚠️ 歳出と歳入で階層の構成が違う。** どちらも7階層だが、歳出は目と節の間に「事項」、歳入は節と細々節の間に「細節」
 - **⚠️ 仕様が「正準」と宣言する taxonomy の URL は 404。**
-  仕様の原文から起こして `package/budget-taxonomy.json` に持つ（`bun run fetch:fdp-taxonomy`）。
+  仕様の原文から起こして `fdp/budget-taxonomy.json` に持つ（`bun run fetch:fdp-taxonomy`）。
   「止まったら自分で維持する」が既定の運用だという最初の実例
 - **⚠️ コードのパスでは識別子を作れない。** 三鷹市の細々節は同じ節の下でコードを再利用する（実測 710 箇所・1,615 行）。
   パスの構成要素を**セル全文**（コード + 名称）に取ってある。副作用として、自治体が名称を直すと識別子が変わる
@@ -339,7 +339,7 @@ bun run dev         # 報告を作り直してダッシュボードを上げる
 | `check:budget` | `data/observations/budget-granularity.json` |
 | `fetch:robots` | `data/observations/robots.json` |
 | `check:bulletins` | `ingestion/transcript-gates.json` の `schemaCheck` 節 |
-| `fetch:fdp-taxonomy` | `package/budget-taxonomy.json` |
+| `fetch:fdp-taxonomy` | `fdp/budget-taxonomy.json` |
 | `survey:budget-years` | `data/observations/mitaka-budget-years.json` |
 | `validate` | （検査。`transcript-gates.json` を宣言と突き合わせる） |
 

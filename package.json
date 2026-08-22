@@ -10,8 +10,8 @@
     "dev": "bun run report && bun run --cwd web dev",
     "fetch:fdp-taxonomy": "bun run scripts/fetch-fdp-taxonomy.ts",
     "fetch:robots": "bun run scripts/fetch-robots.ts",
-    "pipeline": "uv run python -m ingestion.fetch 132047:2024 && bun run dbt && uv run python -m package.build && bun run report",
-    "report": "bun run web/scripts/build-report.ts",
+    "pipeline": "uv run python -m ingestion.fetch 132047:2024 && bun run dbt && uv run python -m fdp.build && bun run report",
+    "report": "bun run report/build.ts",
     "survey:budget-years": "uv run python -m ingestion.survey_years",
     "typecheck": "tsc --noEmit",
     "validate": "bun run scripts/validate-gates.ts"
