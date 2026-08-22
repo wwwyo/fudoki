@@ -22,9 +22,9 @@ import urllib.request
 from dataclasses import dataclass
 from datetime import UTC, datetime
 
-from ingestion.sources import Catalog, Source, resolve
+from ingestion.budget.sources import Catalog, Source, resolve
 
-ROOT = pathlib.Path(__file__).resolve().parent.parent
+ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 # 層ごとに名前空間を切る。②調達は OCDS、③会議録は Popolo と、
 # 標準も descriptor も別なので、同じ packages/ には収まらない。
 LAYER = "budget"

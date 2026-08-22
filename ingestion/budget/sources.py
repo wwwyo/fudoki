@@ -10,7 +10,7 @@ import tomllib
 from dataclasses import dataclass
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 SOURCES_TOML = Path(__file__).resolve().parent / "sources.toml"
 
 

@@ -17,7 +17,7 @@ import hashlib
 import json
 import pathlib
 
-from ingestion.sources import load_sources
+from ingestion.budget.sources import load_sources
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 PACKAGES = ROOT / "data" / "budget" / "packages"

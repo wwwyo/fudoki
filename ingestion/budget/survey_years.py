@@ -15,8 +15,8 @@ import pathlib
 import re
 import sys
 
-from ingestion.fetch import ROOT, http_get, resolve_resource
-from ingestion.sources import Resource, Source, resolve
+from ingestion.budget.fetch import ROOT, http_get, resolve_resource
+from ingestion.budget.sources import Resource, Source, resolve
 
 # 令和6年度の列構成。ここと違えば取り込みの前提が崩れている。
 BASELINE = {

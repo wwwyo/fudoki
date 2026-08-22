@@ -14,10 +14,10 @@
  *
  *   bun run scripts/fetch-fdp-taxonomy.ts
  */
-import { UA, sha256 } from './lib/source'
+import { UA, sha256 } from '../ingestion/lib/source'
 
 const SPEC_URL = 'https://raw.githubusercontent.com/frictionlessdata/datapackage-fiscal/main/content/docs/specifications/fiscal-data-package-budgets.md'
-const OUT = new URL('../fdp/budget-taxonomy.json', import.meta.url).pathname
+const OUT = new URL('./budget-taxonomy.json', import.meta.url).pathname
 /** 仕様が正準と宣言しているが 404 を返す URL。事実として残す */
 const DECLARED_CANONICAL = 'https://specs.frictionlessdata.io/taxonomies/fiscal/budgets.json'
 

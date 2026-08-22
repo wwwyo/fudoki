@@ -26,11 +26,11 @@ import {
   RELEVANT_TITLE_WORDS,
   type Direction,
   type Granularity,
-} from './lib/budget-granularity-profile'
-import { UA, countDataRows, decodeText, fetchCapped, loadManifest, mapWithConcurrency, sha256, sniffContent, splitCsvLine } from './lib/source'
+} from './granularity-profile'
+import { UA, countDataRows, decodeText, fetchCapped, loadManifest, mapWithConcurrency, sha256, sniffContent, splitCsvLine } from '../lib/source'
 
 const CKAN = 'https://catalog.data.metro.tokyo.lg.jp/api/3/action/package_search'
-const OUT = new URL('../data/budget/observations/budget-granularity.json', import.meta.url).pathname
+const OUT = new URL('../../data/budget/observations/budget-granularity.json', import.meta.url).pathname
 const QUERIES = ['歳出', '当初予算', '決算書', '予算データ']
 const PAGE = 300
 const MAX_BYTES = 20 * 1024 * 1024

@@ -4,17 +4,17 @@
   "type": "module",
   "scripts": {
     "build:web": "bun run report && bun run --cwd web build",
-    "check:budget": "bun run scripts/check-budget-granularity.ts",
-    "check:bulletins": "bun run scripts/check-bulletins.ts",
+    "check:budget": "bun run ingestion/budget/check-granularity.ts",
+    "check:bulletins": "bun run ingestion/transcripts/check-bulletins.ts",
     "dbt": "cd dbt && DBT_PROFILES_DIR=. uv run dbt build",
     "dev": "bun run report && bun run --cwd web dev",
-    "fetch:fdp-taxonomy": "bun run scripts/fetch-fdp-taxonomy.ts",
-    "fetch:robots": "bun run scripts/fetch-robots.ts",
-    "pipeline": "uv run python -m ingestion.fetch 132047:2024 && bun run dbt && uv run python -m fdp.build && bun run report",
+    "fetch:fdp-taxonomy": "bun run fdp/fetch-taxonomy.ts",
+    "fetch:robots": "bun run ingestion/transcripts/fetch-robots.ts",
+    "pipeline": "uv run python -m ingestion.budget.fetch 132047:2024 && bun run dbt && uv run python -m fdp.build && bun run report",
     "report": "bun run report/build.ts",
-    "survey:budget-years": "uv run python -m ingestion.survey_years",
+    "survey:budget-years": "uv run python -m ingestion.budget.survey_years",
     "typecheck": "tsc --noEmit",
-    "validate": "bun run scripts/validate-gates.ts"
+    "validate": "bun run ingestion/transcripts/validate.ts"
   },
   "dependencies": {
     "zod": "4.4.3"

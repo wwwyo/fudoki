@@ -18,8 +18,8 @@
     "generatedAt": "2026-08-22T05:47:55+00:00"
   },
   "summary": {
-    "total": 26,
-    "passed": 25,
+    "total": 27,
+    "passed": 26,
     "failed": 0,
     "warned": 1
   },
@@ -201,6 +201,11 @@
     ],
     "edges": [
       {
+        "from": "model.fudoki.stg_132047__revenue",
+        "to": "model.fudoki.core_revenue_consolidation",
+        "kind": "flow"
+      },
+      {
         "from": "model.fudoki.core_budget_cofog",
         "to": "model.fudoki.pkg_derived__cofog",
         "kind": "flow"
@@ -221,18 +226,13 @@
         "kind": "flow"
       },
       {
-        "from": "model.fudoki.stg_132047__expenditure",
-        "to": "model.fudoki.core_budget_cofog",
+        "from": "model.fudoki.stg_132047__revenue",
+        "to": "model.fudoki.pkg_132047__revenue",
         "kind": "flow"
       },
       {
         "from": "seed.fudoki.cofog_rules",
-        "to": "model.fudoki.core_budget_cofog",
-        "kind": "flow"
-      },
-      {
-        "from": "model.fudoki.stg_132047__expenditure",
-        "to": "model.fudoki.pkg_132047__expenditure",
+        "to": "model.fudoki.pkg_derived__cofog_rules",
         "kind": "flow"
       },
       {
@@ -241,23 +241,23 @@
         "kind": "flow"
       },
       {
-        "from": "model.fudoki.stg_132047__revenue",
-        "to": "model.fudoki.core_revenue_consolidation",
+        "from": "model.fudoki.stg_132047__expenditure",
+        "to": "model.fudoki.pkg_132047__expenditure",
         "kind": "flow"
       },
       {
-        "from": "model.fudoki.stg_132047__revenue",
-        "to": "model.fudoki.pkg_132047__revenue",
+        "from": "model.fudoki.stg_132047__expenditure",
+        "to": "model.fudoki.core_budget_cofog",
+        "kind": "flow"
+      },
+      {
+        "from": "seed.fudoki.cofog_rules",
+        "to": "model.fudoki.core_budget_cofog",
         "kind": "flow"
       },
       {
         "from": "source.fudoki.raw_132047.revenue",
         "to": "model.fudoki.stg_132047__revenue",
-        "kind": "flow"
-      },
-      {
-        "from": "seed.fudoki.cofog_rules",
-        "to": "model.fudoki.pkg_derived__cofog_rules",
         "kind": "flow"
       }
     ],
@@ -1386,6 +1386,19 @@
       "binds": [
         "model.fudoki.pkg_132047__expenditure",
         "model.fudoki.pkg_132047__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "budget_core_covers_all_staging",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132047__expenditure",
+        "model.fudoki.core_budget_cofog"
       ],
       "ok": true,
       "severity": "error",

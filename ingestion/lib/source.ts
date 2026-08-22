@@ -4,7 +4,7 @@
  * `fetch-robots` / `check-bulletins` / `check-budget-granularity` が同じ処理を
  * 個別に持っていたため切り出した。3本目で同じものを書いた時点が共通化の合図だった。
  */
-import { Manifest } from './gates'
+import { Manifest } from '../transcripts/gates'
 
 /** 全スクリプトで同じ UA を名乗る。相手が名指しで拒否できる状態を保つため */
 export const UA = 'fudoki/0.1 (+https://github.com/wwwyo/fudoki)'

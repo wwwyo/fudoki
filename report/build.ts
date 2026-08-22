@@ -288,7 +288,7 @@ function build(code = '132047'): ReportData {
 
   // ⚠️ **TOML を正規表現で読まない。** 最初に一致した key を返すので、
   // 2団体目を足した時点で `code` に関係なく先頭の団体の名称・ライセンスを使う。
-  const sources = Bun.TOML.parse(readFileSync(join(ROOT, 'ingestion/sources.toml'), 'utf8')) as
+  const sources = Bun.TOML.parse(readFileSync(join(ROOT, 'ingestion/budget/sources.toml'), 'utf8')) as
     Record<string, { jurisdiction_name?: string; phase_id?: string; phase_label?: string
                      license_id?: string; attribution?: string; landing_page?: string }>
   const entries = Object.entries(sources).filter(([k]) => k.startsWith(`${code}:`))
