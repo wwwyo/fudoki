@@ -1,8 +1,8 @@
 {
   "profile": "tabular-data-package",
   "name": "fudoki-budget-132047",
-  "title": "三鷹市 予算（事業単位）",
-  "description": "自治体が公開した予算データを Fiscal Data Package の形にしたもの。**fudoki の判断は含まない**（分類・名寄せ・推定を一切していない）。COFOG の割当は派生パッケージ derived/ にあり、budget_line_id で join する。原典そのものは data/budget/raw/ に Parquet で入っている。",
+  "title": "三鷹市 当初予算（事業単位）",
+  "description": "自治体が公開した当初予算データを Fiscal Data Package の形にしたもの。**fudoki の判断は含まない**（分類・名寄せ・推定を一切していない）。COFOG の割当は派生パッケージ derived/ にあり、budget_line_id で join する。原典そのものは data/budget/raw/ に Parquet で入っている。",
   "version": "0.1.0",
   "created": "2026-08-22T06:44:52+00:00",
   "countryCode": "JP",
@@ -121,6 +121,18 @@
         "name": "fudoki:cofog:decided-at-level",
         "dataType": "string",
         "description": "款・項・目・事項のどの単位で割り当てが決まったか"
+      },
+      {
+        "name": "fudoki:budget-class:code",
+        "dataType": "string",
+        "unique": true,
+        "description": "予算区分（現年度・繰越明許・事故繰越）。同じ科目に複数の区分が並ぶので行の同一性の一部になる。FDP の phase は予算の段階を指すもので、繰越の区分とは別概念であり標準に該当する列型が無い"
+      },
+      {
+        "name": "fudoki:budget-class:label",
+        "dataType": "string",
+        "labelOf": "fudoki:budget-class:code",
+        "description": "予算区分の表示名"
       }
     ]
   ],
@@ -171,6 +183,9 @@
       "multiplier": 1000
     }
   },
+  "fudokiSourceDocument": [
+    "当初予算"
+  ],
   "provenance": [
     {
       "jurisdiction_code": "132047",

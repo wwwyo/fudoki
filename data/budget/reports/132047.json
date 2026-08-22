@@ -5,10 +5,27 @@
     "fiscalYears": [
       2024
     ],
+    "sourceDocument": "当初予算",
     "phase": {
       "id": "approved",
       "label": "当初予算"
     },
+    "phases": [
+      {
+        "id": "approved",
+        "label": "当初予算",
+        "direction": "expenditure",
+        "sourceColumn": "08予算額",
+        "unit": "千円"
+      },
+      {
+        "id": "approved",
+        "label": "当初予算",
+        "direction": "revenue",
+        "sourceColumn": "08予算額",
+        "unit": "千円"
+      }
+    ],
     "license": {
       "id": "CC-BY-4.0",
       "url": "https://creativecommons.org/licenses/by/4.0/"
@@ -18,8 +35,8 @@
     "generatedAt": "2026-08-22T06:44:52+00:00"
   },
   "summary": {
-    "total": 30,
-    "passed": 29,
+    "total": 40,
+    "passed": 39,
     "failed": 0,
     "warned": 1
   },
@@ -67,11 +84,33 @@
         "artifact": null
       },
       {
+        "id": "source.fudoki.raw_132195.expenditure",
+        "label": "expenditure",
+        "kind": "source",
+        "stage": "ingestion",
+        "rows": 13461,
+        "description": "",
+        "introducesJudgment": false,
+        "containsJudgment": false,
+        "artifact": null
+      },
+      {
         "id": "source.fudoki.raw_132047.revenue",
         "label": "revenue",
         "kind": "source",
         "stage": "ingestion",
         "rows": 821,
+        "description": "",
+        "introducesJudgment": false,
+        "containsJudgment": false,
+        "artifact": null
+      },
+      {
+        "id": "source.fudoki.raw_132195.revenue",
+        "label": "revenue",
+        "kind": "source",
+        "stage": "ingestion",
+        "rows": 4219,
         "description": "",
         "introducesJudgment": false,
         "containsJudgment": false,
@@ -100,12 +139,34 @@
         "artifact": null
       },
       {
+        "id": "model.fudoki.stg_132195__expenditure",
+        "label": "stg_132195__expenditure",
+        "kind": "model",
+        "stage": "staging",
+        "rows": 13461,
+        "description": "狛江市 歳出（決算書）。原典と1対1。判断を含まない",
+        "introducesJudgment": false,
+        "containsJudgment": false,
+        "artifact": null
+      },
+      {
+        "id": "model.fudoki.stg_132195__revenue",
+        "label": "stg_132195__revenue",
+        "kind": "model",
+        "stage": "staging",
+        "rows": 4219,
+        "description": "狛江市 歳入（決算書）。原典と1対1。判断を含まない",
+        "introducesJudgment": false,
+        "containsJudgment": false,
+        "artifact": null
+      },
+      {
         "id": "seed.fudoki.cofog_rules",
         "label": "cofog_rules",
         "kind": "seed",
         "stage": "core",
-        "rows": 35,
-        "description": "COFOG の割り当て規則。**fudoki の判断そのもの**なのでデータとして持つ。\npriority の小さい順に見て最初に当たったものを採る（具体的な規則ほど先）。\napplies_to が空の規則は法定語彙（款・節）にだけ当たるので、どの団体にも効く。",
+        "rows": 54,
+        "description": "COFOG の割り当て規則。**fudoki の判断そのもの**なのでデータとして持つ。\npriority の小さい順に見て最初に当たったものを採る（具体的な規則ほど先）。\napplies_to が空の規則は法定語彙（款・節）にだけ当たるので、どの団体にも効く。\n⚠️ **名称で当たらない団体がある。** 狛江市は款・項・目に名称の列が原典に無いので、\n名称を条件にした規則は1本も当たらない。名称を捏造せず `match_kan_code` で当て、\n何の款かとその出所を basis に書く。",
         "introducesJudgment": true,
         "containsJudgment": true,
         "artifact": null
@@ -115,7 +176,18 @@
         "label": "core_budget_cofog",
         "kind": "model",
         "stage": "core",
-        "rows": 5613,
+        "rows": 19074,
+        "description": "",
+        "introducesJudgment": true,
+        "containsJudgment": true,
+        "artifact": null
+      },
+      {
+        "id": "model.fudoki.core_budget_lines",
+        "label": "core_budget_lines",
+        "kind": "model",
+        "stage": "core",
+        "rows": 19074,
         "description": "",
         "introducesJudgment": true,
         "containsJudgment": true,
@@ -126,7 +198,18 @@
         "label": "core_revenue_consolidation",
         "kind": "model",
         "stage": "core",
-        "rows": 821,
+        "rows": 5040,
+        "description": "",
+        "introducesJudgment": true,
+        "containsJudgment": true,
+        "artifact": null
+      },
+      {
+        "id": "model.fudoki.core_revenue_lines",
+        "label": "core_revenue_lines",
+        "kind": "model",
+        "stage": "core",
+        "rows": 5040,
         "description": "",
         "introducesJudgment": true,
         "containsJudgment": true,
@@ -177,11 +260,33 @@
         "artifact": "../data/budget/packages/132047/revenue.csv"
       },
       {
+        "id": "model.fudoki.pkg_132195__expenditure",
+        "label": "pkg_132195__expenditure",
+        "kind": "model",
+        "stage": "package",
+        "rows": 40383,
+        "description": "",
+        "introducesJudgment": false,
+        "containsJudgment": false,
+        "artifact": "../data/budget/packages/132195/expenditure.csv"
+      },
+      {
+        "id": "model.fudoki.pkg_132195__revenue",
+        "label": "pkg_132195__revenue",
+        "kind": "model",
+        "stage": "package",
+        "rows": 8438,
+        "description": "",
+        "introducesJudgment": false,
+        "containsJudgment": false,
+        "artifact": "../data/budget/packages/132195/revenue.csv"
+      },
+      {
         "id": "model.fudoki.pkg_derived__cofog",
         "label": "pkg_derived__cofog",
         "kind": "model",
         "stage": "package",
-        "rows": 6434,
+        "rows": 24114,
         "description": "",
         "introducesJudgment": false,
         "containsJudgment": true,
@@ -192,7 +297,7 @@
         "label": "pkg_derived__cofog_rules",
         "kind": "model",
         "stage": "package",
-        "rows": 35,
+        "rows": 54,
         "description": "",
         "introducesJudgment": false,
         "containsJudgment": true,
@@ -206,13 +311,23 @@
         "kind": "flow"
       },
       {
+        "from": "model.fudoki.core_budget_lines",
+        "to": "model.fudoki.core_budget_cofog",
+        "kind": "flow"
+      },
+      {
         "from": "model.fudoki.core_revenue_consolidation",
         "to": "model.fudoki.pkg_derived__cofog",
         "kind": "flow"
       },
       {
+        "from": "model.fudoki.core_revenue_lines",
+        "to": "model.fudoki.core_revenue_consolidation",
+        "kind": "flow"
+      },
+      {
         "from": "model.fudoki.stg_132047__expenditure",
-        "to": "model.fudoki.core_budget_cofog",
+        "to": "model.fudoki.core_budget_lines",
         "kind": "flow"
       },
       {
@@ -221,13 +336,8 @@
         "kind": "flow"
       },
       {
-        "from": "model.fudoki.stg_132047__expenditure",
-        "to": "model.fudoki.pkg_derived__cofog",
-        "kind": "flow"
-      },
-      {
         "from": "model.fudoki.stg_132047__revenue",
-        "to": "model.fudoki.core_revenue_consolidation",
+        "to": "model.fudoki.core_revenue_lines",
         "kind": "flow"
       },
       {
@@ -236,8 +346,23 @@
         "kind": "flow"
       },
       {
-        "from": "model.fudoki.stg_132047__revenue",
-        "to": "model.fudoki.pkg_derived__cofog",
+        "from": "model.fudoki.stg_132195__expenditure",
+        "to": "model.fudoki.core_budget_lines",
+        "kind": "flow"
+      },
+      {
+        "from": "model.fudoki.stg_132195__expenditure",
+        "to": "model.fudoki.pkg_132195__expenditure",
+        "kind": "flow"
+      },
+      {
+        "from": "model.fudoki.stg_132195__revenue",
+        "to": "model.fudoki.core_revenue_lines",
+        "kind": "flow"
+      },
+      {
+        "from": "model.fudoki.stg_132195__revenue",
+        "to": "model.fudoki.pkg_132195__revenue",
         "kind": "flow"
       },
       {
@@ -258,6 +383,16 @@
       {
         "from": "source.fudoki.raw_132047.revenue",
         "to": "model.fudoki.stg_132047__revenue",
+        "kind": "flow"
+      },
+      {
+        "from": "source.fudoki.raw_132195.expenditure",
+        "to": "model.fudoki.stg_132195__expenditure",
+        "kind": "flow"
+      },
+      {
+        "from": "source.fudoki.raw_132195.revenue",
+        "to": "model.fudoki.stg_132195__revenue",
         "kind": "flow"
       }
     ],
@@ -319,6 +454,32 @@
       "roundtrip_verified": true,
       "license_id": "CC-BY-4.0",
       "attribution": "三鷹市「令和6年度予算データ」（東京都オープンデータカタログサイト）"
+    }
+  ],
+  "detailLevels": [
+    {
+      "direction": "expenditure",
+      "levels": [
+        "fund",
+        "kan",
+        "kou",
+        "moku",
+        "jikou",
+        "setsu",
+        "saisaisetsu"
+      ]
+    },
+    {
+      "direction": "revenue",
+      "levels": [
+        "fund",
+        "kan",
+        "kou",
+        "moku",
+        "setsu",
+        "saisetsu",
+        "saisaisetsu"
+      ]
     }
   ],
   "levels": [
@@ -1348,7 +1509,9 @@
       "description": "",
       "binds": [
         "source.fudoki.raw_132047.expenditure",
-        "source.fudoki.raw_132047.revenue"
+        "source.fudoki.raw_132047.revenue",
+        "source.fudoki.raw_132195.expenditure",
+        "source.fudoki.raw_132195.revenue"
       ],
       "ok": false,
       "severity": "warn",
@@ -1385,7 +1548,9 @@
       "description": "",
       "binds": [
         "model.fudoki.pkg_132047__expenditure",
-        "model.fudoki.pkg_132047__revenue"
+        "model.fudoki.pkg_132047__revenue",
+        "model.fudoki.pkg_132195__expenditure",
+        "model.fudoki.pkg_132195__revenue"
       ],
       "ok": true,
       "severity": "error",
@@ -1398,7 +1563,11 @@
       "description": "",
       "binds": [
         "model.fudoki.stg_132047__expenditure",
-        "model.fudoki.core_budget_cofog"
+        "model.fudoki.stg_132047__revenue",
+        "model.fudoki.stg_132195__expenditure",
+        "model.fudoki.stg_132195__revenue",
+        "model.fudoki.core_budget_cofog",
+        "model.fudoki.core_revenue_consolidation"
       ],
       "ok": true,
       "severity": "error",
@@ -1412,8 +1581,12 @@
       "binds": [
         "source.fudoki.raw_132047.expenditure",
         "source.fudoki.raw_132047.revenue",
+        "source.fudoki.raw_132195.expenditure",
+        "source.fudoki.raw_132195.revenue",
         "model.fudoki.stg_132047__expenditure",
-        "model.fudoki.stg_132047__revenue"
+        "model.fudoki.stg_132047__revenue",
+        "model.fudoki.stg_132195__expenditure",
+        "model.fudoki.stg_132195__revenue"
       ],
       "ok": true,
       "severity": "error",
@@ -1439,7 +1612,9 @@
       "description": "",
       "binds": [
         "model.fudoki.stg_132047__expenditure",
-        "model.fudoki.stg_132047__revenue"
+        "model.fudoki.stg_132047__revenue",
+        "model.fudoki.stg_132195__expenditure",
+        "model.fudoki.stg_132195__revenue"
       ],
       "ok": true,
       "severity": "error",
@@ -1452,7 +1627,7 @@
       "description": "",
       "binds": [
         "model.fudoki.core_budget_cofog",
-        "model.fudoki.stg_132047__expenditure"
+        "model.fudoki.core_budget_lines"
       ],
       "ok": true,
       "severity": "error",
@@ -1465,9 +1640,9 @@
       "description": "",
       "binds": [
         "model.fudoki.core_budget_cofog",
-        "model.fudoki.stg_132047__expenditure",
+        "model.fudoki.core_budget_lines",
         "model.fudoki.core_revenue_consolidation",
-        "model.fudoki.stg_132047__revenue"
+        "model.fudoki.core_revenue_lines"
       ],
       "ok": true,
       "severity": "error",
@@ -1479,6 +1654,7 @@
       "name": "derived_package_covers_core",
       "description": "",
       "binds": [
+        "model.fudoki.pkg_derived__cofog",
         "model.fudoki.core_budget_cofog",
         "model.fudoki.core_revenue_consolidation"
       ],
@@ -1493,7 +1669,9 @@
       "description": "",
       "binds": [
         "model.fudoki.stg_132047__expenditure",
-        "model.fudoki.stg_132047__revenue"
+        "model.fudoki.stg_132047__revenue",
+        "model.fudoki.stg_132195__expenditure",
+        "model.fudoki.stg_132195__revenue"
       ],
       "ok": true,
       "severity": "error",
@@ -1506,7 +1684,9 @@
       "description": "",
       "binds": [
         "model.fudoki.stg_132047__expenditure",
-        "model.fudoki.stg_132047__revenue"
+        "model.fudoki.stg_132047__revenue",
+        "model.fudoki.stg_132195__expenditure",
+        "model.fudoki.stg_132195__revenue"
       ],
       "ok": true,
       "severity": "error",
@@ -1519,7 +1699,22 @@
       "description": "",
       "binds": [
         "model.fudoki.stg_132047__expenditure",
-        "model.fudoki.stg_132047__revenue"
+        "model.fudoki.stg_132047__revenue",
+        "model.fudoki.stg_132195__expenditure",
+        "model.fudoki.stg_132195__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "label_column_determines_level",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132195__expenditure",
+        "model.fudoki.stg_132195__revenue"
       ],
       "ok": true,
       "severity": "error",
@@ -1624,11 +1819,89 @@
       "detail": ""
     },
     {
+      "name": "not_null_stg_132195__expenditure_budget_line_id",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132195__expenditure"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "not_null_stg_132195__expenditure_source_amount",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132195__expenditure"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "not_null_stg_132195__expenditure_source_row",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132195__expenditure"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "not_null_stg_132195__revenue_budget_line_id",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132195__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "not_null_stg_132195__revenue_source_amount",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132195__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "not_null_stg_132195__revenue_source_row",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132195__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
       "name": "package_preserves_source",
       "description": "",
       "binds": [
+        "model.fudoki.pkg_132047__expenditure",
+        "model.fudoki.pkg_132047__revenue",
+        "model.fudoki.pkg_132195__expenditure",
+        "model.fudoki.pkg_132195__revenue",
         "model.fudoki.stg_132047__expenditure",
-        "model.fudoki.stg_132047__revenue"
+        "model.fudoki.stg_132047__revenue",
+        "model.fudoki.stg_132195__expenditure",
+        "model.fudoki.stg_132195__revenue"
       ],
       "ok": true,
       "severity": "error",
@@ -1665,11 +1938,26 @@
       "detail": ""
     },
     {
+      "name": "source_year_matches_partition",
+      "description": "",
+      "binds": [
+        "source.fudoki.raw_132195.expenditure",
+        "source.fudoki.raw_132195.revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
       "name": "staging_is_one_to_one",
       "description": "",
       "binds": [
         "model.fudoki.stg_132047__expenditure",
-        "model.fudoki.stg_132047__revenue"
+        "model.fudoki.stg_132047__revenue",
+        "model.fudoki.stg_132195__expenditure",
+        "model.fudoki.stg_132195__revenue"
       ],
       "ok": true,
       "severity": "error",
@@ -1724,6 +2012,97 @@
       "status": "pass",
       "failures": 0,
       "detail": ""
+    },
+    {
+      "name": "unique_stg_132195__expenditure_budget_line_id",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132195__expenditure"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    },
+    {
+      "name": "unique_stg_132195__revenue_budget_line_id",
+      "description": "",
+      "binds": [
+        "model.fudoki.stg_132195__revenue"
+      ],
+      "ok": true,
+      "severity": "error",
+      "status": "pass",
+      "failures": 0,
+      "detail": ""
+    }
+  ],
+  "portability": [
+    {
+      "element": "CKAN からのリソース解決と証跡の記録（ingestion）",
+      "kind": "2団体で成立",
+      "verifyNext": "同じ東京都カタログの2団体で同じ経路が通った。⚠️ ただし**同名のデータセットが2件ある**取得元が実在した（狛江市の 2018〜2021 は /komae/R05/ と /komae/ に中身の違う同名データセットがある）。先頭を採る実装だと日によって配布物の中身が入れ替わるので、複数当たったら止めて宣言を要求する形にした。都外カタログ（BODIK・独自 DCAT）は未確認"
+    },
+    {
+      "element": "完全修飾パスから識別子を導く方式",
+      "kind": "2団体で成立。ただし材料が足りなかった",
+      "verifyNext": "⚠️ **狛江市は階層だけでは一意にならなかった。** 所属（部課）と予算区分（現年度・繰越明許・事故繰越）まで含めて初めて一意になる（階層だけだと 2023 歳出 2,224 行が 1,855 通りに潰れる）。材料を宣言（budget_extra_key_columns）で足せる形にした。3団体目で「階層 + 何か」以外の同一性が出るかは未確認"
+    },
+    {
+      "element": "原典の値と単位を別列に残したうえで円へ正規化する方式",
+      "kind": "2団体で成立。ただし単位は1つではなかった",
+      "verifyNext": "⚠️ **同じリソースの中で単位が割れる**ことがあった（狛江市の歳入は予算現額が千円で収入累計が円）。単位を datapackage.json の定数にできるのは1種類のときだけで、複数なら行の列に持つ形へ変えた"
+    },
+    {
+      "element": "検査の並べ方（多重集合一致・従属関係・複合主キー・公表値突合）",
+      "kind": "2団体で成立。ただし公表値突合だけ立たない",
+      "verifyNext": "⚠️ 狛江市には款別の公表値を書き写せる資料をまだ見つけていない。代わりに**原典の内部整合**（歳出の予算計と歳入の予算現額が年度・会計別に一致）が6年度すべてで成立した。これは外部からの裏づけではない"
+    },
+    {
+      "element": "COFOG の2軸（分類 / 連結）と規則エンジンの形",
+      "kind": "2団体で成立",
+      "verifyNext": "分類の軸と連結の軸を分けてあったので、**消去できない団体**（狛江市）をそのまま表現できた。1つの状態に畳んでいたら「分類不能」と「消去しない」が混ざっていた"
+    },
+    {
+      "element": "款の名称 → COFOG ディビジョンの対応",
+      "kind": "名称があれば再利用できる。無い団体がある",
+      "verifyNext": "⚠️ **狛江市の原典には款・項・目の名称の列そのものが無い。** 数字コードだけである。名称で当たる規則は1本も当たらないので、款コードで当てる規則を19本足した。コードが法定の款番号と一致することは実測で裏づけた（款11 の節が償還金・利子及び割引料のみ、款13 の節が予備費、所属も款ごとに整合、歳入は科目名称が款の内容と一致）"
+    },
+    {
+      "element": "項・目まで下げれば COFOG が決まるという見込み",
+      "kind": "団体によっては下げられない",
+      "verifyNext": "⚠️ **狛江市は項・目の名称が無いので、款で決まらないものは決まらない。** 衛生費・土木費・教育費・公債費がそのまま分類不能に落ち、金額では歳出の 25.9%（会計間の繰出を含む）にあたる。**構造の粒度（事業まで届く）と意味の粒度（名称がある）は別物**で、狛江市は前者が三鷹市より細かく後者が粗い"
+    },
+    {
+      "element": "事業階層を1つの列型（activity:generic:program）に置くこと",
+      "kind": "一般性を判定できない",
+      "verifyNext": "⚠️ 狛江市の「大事業」は**名称を持たない**ので、事業として何なのかが原典から分からない。コードも目をまたいで再利用される（6年度で 42 通りのコードが 694 通りの目・大事業の組を作る）。列としては中事業・小事業もあるが全行 `0` で1件も使われていない。三鷹市の「事項」と同じ概念かは、名称のある資料（決算書 PDF）と突き合わせないと決められない"
+    },
+    {
+      "element": "歳出と歳入の合計一致という検算",
+      "kind": "2団体で成立。ただし条件が違う",
+      "verifyNext": "三鷹市は当初予算どうしで差 0、狛江市は決算の予算計と予算現額で一致するが**歳入が千円単位なので円未満は原理的に合わない**（実測で差が出たのは6年度12対のうち2対、いずれも 1,000 円未満）。許容差を取得元ごとの宣言にした"
+    },
+    {
+      "element": "セルからコードと名称を取り出す書式",
+      "kind": "団体ごとに宣言が要る",
+      "verifyNext": "三鷹市は1セルに「2桁コード + 名称」、狛江市はセルがコードだけ。宣言（budget_code_style）で切り替える形にした。3団体目で3つ目の書式が出るかは未確認。⚠️ 一般則へ昇華しないこと（パーサ設計の原則5）"
+    },
+    {
+      "element": "その階層を持たない行のプレースホルダ `0`",
+      "kind": "2団体で一致",
+      "verifyNext": "三鷹市も狛江市も `0` だった。空文字・全角ゼロ・ハイフンを使う団体が出るかは未確認なので、宣言（budget_absent_level_markers）のままにしてある"
+    },
+    {
+      "element": "1リソース = 1予算段階という前提",
+      "kind": "決算書では成立しない",
+      "verifyNext": "⚠️ **決算書は1行が複数段階の金額を持つ**（狛江市の歳出は予算額・予算計・執行累計）。FDP は `value` の列型を1つしか持たず段階を行の列で表すので、package 段で段階ごとの行へ展開する形にした。主キーも (budget_line_id, phase_id) になる"
+    },
+    {
+      "element": "`fin-source:generic:level4〜6` という標準の拡張",
+      "kind": "2団体で必要だった",
+      "verifyNext": "狛江市の歳入も会計/款/項/目/節/細節/細々節の7階層で、三鷹市と同じ形だった。標準の3階層では足りないことが2団体で確かめられたので、拡張自体をやめる案は消えた"
     }
   ],
   "notYetReconciled": {
@@ -1732,6 +2111,56 @@
     "wouldComeFrom": "https://www.city.mitaka.lg.jp/c_service/090/090334.html（過去の予算書）",
     "currentEvidence": "歳出と歳入の会計別合計が一致することのみ（原典の内部整合であり、外部資料による裏づけではない）"
   },
+  "caveats": [
+    {
+      "topic": "TypeScript 版との同一性を示す検査は、TypeScript 版とともに削除した",
+      "body": "移行の正しさは、識別子（歳出 5,613 行・歳入 821 行すべて一致）と COFOG の割当（status / division / consolidation / 決まった単位 / 規則 ID がすべて一致）を 1行ずつ突き合わせて示した。証明そのものは git 履歴に残る（識別子は 944866c、COFOG は 83bd132）。**これ以降、識別子が変わっていないことを保証するのは検査ではなく成果物そのもの**である — 正本をリポジトリに commit しているので、導出を変えれば data/budget/packages/132047/expenditure.csv の diff として必ず現れる。"
+    },
+    {
+      "topic": "配布形式は CSV のまま。全量では作り直しになりうる",
+      "body": "62団体 × 9年度への外挿は CSV 1.1 GB / gzip 156 MB / Parquet 141 MB。gzip は Data Package の仕様に compression プロパティが無く、Parquet は format が「csv, xls, json etc.」と開いているだけで明記が無い。**1団体しか無い段階で外挿値だけを根拠に標準から外れる判断はしない。** 実際に増えたときに決める。"
+    },
+    {
+      "topic": "事項を事業として扱う妥当性が未検証（Design Doc Caveats 1）",
+      "body": "名称を持つことは、その区分が1つの事業に対応することの証明にならない。複数の活動をまとめた事項や管理的な費目が含まれうる。自治体横断の「事業」概念として確定するのは2団体目以降とする。現状は `activity:generic:program` に置いてあるが、これは候補としての割り当てである。"
+    },
+    {
+      "topic": "COFOG の割り当てが款の単位で成立するかは部分的（Design Doc Caveats 2）",
+      "body": "実データを通した結果、**款だけでは決まらない款が実在した**。衛生費（保健衛生費 → 07 / 清掃費 → 05）と土木費と教育費は項へ、公債費（元金 → 対象外 / 利子 → 01）と都市計画費と生涯学習費は目へ下げて決着した。どこまで下げれば決まるかは「款で決まらず、下の単位まで下げたもの」を見ること。"
+    },
+    {
+      "topic": "PRD の「938件の事項」は事項の件数ではない",
+      "body": "実測すると、938 は**事項のセル文字列（コード + 名称）の異なり数**であって、階層としての事項の件数ではない。完全修飾で数えると全会計 996 件・一般会計 913 件、名称の異なり数は全会計 918 件・一般会計 856 件になる。ただし「すべて名称を持つ」という主張自体は正しい（名称が空の事項は0件）。三鷹市を選んだ判断は変わらないが、数字は置き換える必要がある。"
+    },
+    {
+      "topic": "Design Doc は歳入を6階層としていたが、原典は7階層",
+      "body": "原典の歳入は会計/款/項/目/節/細節に加えて**細々節を持つ**。821 行中 18 行が実際に使っており、細々節を落とすと識別子が7組衝突する。Design Doc の記述ではなく実物の列で判定した（パーサ設計の原則3）。"
+    },
+    {
+      "topic": "識別子はコードのパスでは作れなかった",
+      "body": "Design Doc は「`款01/項03/目01` の形で連結する」としていたが、三鷹市の細々節は**同じ節の下でコードを再利用する**（実測 710 箇所・1,615 行）。コードのパスでは 5,613 行が 4,708 通りにしかならない。そこでパスの構成要素を**セル全文（コード + 名称）**に取った。副作用として、自治体が名称を直すと識別子が変わる。コードだけなら耐えられたはずの変更なので、これは失ったものである。"
+    },
+    {
+      "topic": "仕様が正準と宣言する taxonomy の URL が 404",
+      "body": "`https://specs.frictionlessdata.io/taxonomies/fiscal/budgets.json` は 404 を返す（2026-08-16 実測）。ColumnType の一覧を機械可読な形で参照する経路が存在しないため、仕様の原文（Markdown）から起こして `src/budget/taxonomy/` に取り込み、fudoki 側で保守する。descriptor の `columnTypes` は仕様どおりこの URL を指しているが、**利用者がこれを辿っても取得できない**。"
+    },
+    {
+      "topic": "`fin-source:generic:level4〜6` は標準の名前空間を fudoki が拡張したもの",
+      "body": "歳入の階層は6段あるが、標準の `fin-source:generic` は level3 までしか定義が無い。`prior` を繋いで順序が保たれるよう同じ命名規則で拡張した。標準側が後から level4 を別の意味で定義すると衝突する。FDP は 2024-03 で更新が止まっているため当面は起きないと見ているが、独自の名前空間に逃がす選択肢もあった。"
+    },
+    {
+      "topic": "繰出金と繰入金は行どうしが1対1に対応しない",
+      "body": "歳出の繰出金と歳入の繰入金は細々節の切り方が違うため、行の対応は N 対 M になる。金額が厳密に一致するのは**会計の対どうしの合計**で、そこは5対すべてで一致した。各行の `cofog_counterpart_ids` には受け皿側の該当行の識別子を並べてあるが、これは「その行1件の相手」ではなく**相手のグループ**である。"
+    },
+    {
+      "topic": "特別会計は外部資料で裏づけていない",
+      "body": "施政方針・予算概要は一般会計の款別までしか載せていない。特別会計の款別を突合するには予算書（別資料）が要る。現状の根拠は歳出と歳入の会計別合計が一致することだけで、これは原典の内部整合であって外部からの裏づけではない。"
+    },
+    {
+      "topic": "河川費と生涯学習費の割り当ては判断の幅がある",
+      "body": "COFOG は治水を明示的に置いていないため、河川費（15,852千円）は 05 環境保護に寄せたが 04 経済業務にも読める。生涯学習費のうち図書館費は COFOG 08.2 が図書館を明示的に含むため 08 に置き、それ以外（生涯学習総務・青少年育成・生涯学習センター）は社会教育として 09 に置いた。いずれも根拠を `cofog_basis` に書いてあるので、判断を変えたければそこを見て変えられる。"
+    }
+  ],
   "customColumnTypes": [
     {
       "name": "fund:code",
@@ -1845,118 +2274,18 @@
       "name": "fudoki:cofog:decided-at-level",
       "dataType": "string",
       "why": "款・項・目・事項のどの単位で割り当てが決まったか"
-    }
-  ],
-  "portability": [
-    {
-      "element": "CKAN からのリソース解決と証跡の記録（Extract）",
-      "kind": "再利用の候補",
-      "verifyNext": "東京都カタログ以外（BODIK・独自 DCAT）でも同じ形で引けるか"
     },
     {
-      "element": "完全修飾パスから識別子を導く方式",
-      "kind": "再利用の候補",
-      "verifyNext": "階層の深さが違う団体でも一意になるか。狛江市は事業階層が3段ある"
+      "name": "fudoki:budget-class:code",
+      "dataType": "string",
+      "unique": true,
+      "why": "予算区分（現年度・繰越明許・事故繰越）。同じ科目に複数の区分が並ぶので行の同一性の一部になる。FDP の phase は予算の段階を指すもので、繰越の区分とは別概念であり標準に該当する列型が無い"
     },
     {
-      "element": "原典の値と単位を別列に残したうえで円へ正規化する方式",
-      "kind": "再利用の候補",
-      "verifyNext": "単位が円の団体（狛江市は「予算額(円)」）で倍率1が素通りするか"
-    },
-    {
-      "element": "検査の並べ方（多重集合一致・従属関係・複合主キー・公表値突合）",
-      "kind": "再利用の候補",
-      "verifyNext": "公表資料が款別を載せない団体でも代替の外部突合が立つか"
-    },
-    {
-      "element": "COFOG の2軸（分類 / 連結）と規則エンジンの形",
-      "kind": "再利用の候補",
-      "verifyNext": "規則の本数が団体ごとに増えるか、款の語彙が共通で使い回せるか"
-    },
-    {
-      "element": "「事項」を事業階層として宣言すること",
-      "kind": "三鷹市に固有",
-      "verifyNext": "狛江市は「大事業 / 中事業 / 小事業」。宣言の粒度が団体ごとに違う前提で足りるか"
-    },
-    {
-      "element": "歳入の細々節を `0` で埋めるプレースホルダ",
-      "kind": "三鷹市に固有",
-      "verifyNext": "他団体が空文字・全角ゼロ・ハイフンなど別の表現を使うか"
-    },
-    {
-      "element": "2桁コード + 名称という1セルの書式",
-      "kind": "三鷹市に固有",
-      "verifyNext": "桁数が違う団体、コードと名称が別列の団体でセル分解の宣言が要るか"
-    },
-    {
-      "element": "歳出と歳入の合計一致という検算",
-      "kind": "三鷹市に固有",
-      "verifyNext": "当初予算以外や企業会計を持つ団体では成立しない。取得元ごとの設定で切れているか"
-    },
-    {
-      "element": "款 → COFOG ディビジョンの対応そのもの",
-      "kind": "一般性を判定できない",
-      "verifyNext": "款の名称は法定なので共通のはずだが、項・目の名称は団体差がある。項以下の規則が何本必要になるか"
-    },
-    {
-      "element": "事項が1つの事業に対応するという前提",
-      "kind": "一般性を判定できない",
-      "verifyNext": "複数の活動をまとめた事項や管理的な費目が混ざっていないか。2団体目で概念として確定させる"
-    },
-    {
-      "element": "`fin-source:generic:level4〜6` という標準の拡張",
-      "kind": "一般性を判定できない",
-      "verifyNext": "他団体の歳入も6階層か。3階層で足りるなら拡張自体をやめられる"
-    }
-  ],
-  "caveats": [
-    {
-      "topic": "TypeScript 版との同一性を示す検査は、TypeScript 版とともに削除した",
-      "body": "移行の正しさは、識別子（歳出 5,613 行・歳入 821 行すべて一致）と COFOG の割当（status / division / consolidation / 決まった単位 / 規則 ID がすべて一致）を 1行ずつ突き合わせて示した。証明そのものは git 履歴に残る（識別子は 944866c、COFOG は 83bd132）。**これ以降、識別子が変わっていないことを保証するのは検査ではなく成果物そのもの**である — 正本をリポジトリに commit しているので、導出を変えれば data/budget/packages/132047/expenditure.csv の diff として必ず現れる。"
-    },
-    {
-      "topic": "配布形式は CSV のまま。全量では作り直しになりうる",
-      "body": "62団体 × 9年度への外挿は CSV 1.1 GB / gzip 156 MB / Parquet 141 MB。gzip は Data Package の仕様に compression プロパティが無く、Parquet は format が「csv, xls, json etc.」と開いているだけで明記が無い。**1団体しか無い段階で外挿値だけを根拠に標準から外れる判断はしない。** 実際に増えたときに決める。"
-    },
-    {
-      "topic": "事項を事業として扱う妥当性が未検証（Design Doc Caveats 1）",
-      "body": "名称を持つことは、その区分が1つの事業に対応することの証明にならない。複数の活動をまとめた事項や管理的な費目が含まれうる。自治体横断の「事業」概念として確定するのは2団体目以降とする。現状は `activity:generic:program` に置いてあるが、これは候補としての割り当てである。"
-    },
-    {
-      "topic": "COFOG の割り当てが款の単位で成立するかは部分的（Design Doc Caveats 2）",
-      "body": "実データを通した結果、**款だけでは決まらない款が実在した**。衛生費（保健衛生費 → 07 / 清掃費 → 05）と土木費と教育費は項へ、公債費（元金 → 対象外 / 利子 → 01）と都市計画費と生涯学習費は目へ下げて決着した。どこまで下げれば決まるかは「款で決まらず、下の単位まで下げたもの」を見ること。"
-    },
-    {
-      "topic": "PRD の「938件の事項」は事項の件数ではない",
-      "body": "実測すると、938 は**事項のセル文字列（コード + 名称）の異なり数**であって、階層としての事項の件数ではない。完全修飾で数えると全会計 996 件・一般会計 913 件、名称の異なり数は全会計 918 件・一般会計 856 件になる。ただし「すべて名称を持つ」という主張自体は正しい（名称が空の事項は0件）。三鷹市を選んだ判断は変わらないが、数字は置き換える必要がある。"
-    },
-    {
-      "topic": "Design Doc は歳入を6階層としていたが、原典は7階層",
-      "body": "原典の歳入は会計/款/項/目/節/細節に加えて**細々節を持つ**。821 行中 18 行が実際に使っており、細々節を落とすと識別子が7組衝突する。Design Doc の記述ではなく実物の列で判定した（パーサ設計の原則3）。"
-    },
-    {
-      "topic": "識別子はコードのパスでは作れなかった",
-      "body": "Design Doc は「`款01/項03/目01` の形で連結する」としていたが、三鷹市の細々節は**同じ節の下でコードを再利用する**（実測 710 箇所・1,615 行）。コードのパスでは 5,613 行が 4,708 通りにしかならない。そこでパスの構成要素を**セル全文（コード + 名称）**に取った。副作用として、自治体が名称を直すと識別子が変わる。コードだけなら耐えられたはずの変更なので、これは失ったものである。"
-    },
-    {
-      "topic": "仕様が正準と宣言する taxonomy の URL が 404",
-      "body": "`https://specs.frictionlessdata.io/taxonomies/fiscal/budgets.json` は 404 を返す（2026-08-16 実測）。ColumnType の一覧を機械可読な形で参照する経路が存在しないため、仕様の原文（Markdown）から起こして `src/budget/taxonomy/` に取り込み、fudoki 側で保守する。descriptor の `columnTypes` は仕様どおりこの URL を指しているが、**利用者がこれを辿っても取得できない**。"
-    },
-    {
-      "topic": "`fin-source:generic:level4〜6` は標準の名前空間を fudoki が拡張したもの",
-      "body": "歳入の階層は6段あるが、標準の `fin-source:generic` は level3 までしか定義が無い。`prior` を繋いで順序が保たれるよう同じ命名規則で拡張した。標準側が後から level4 を別の意味で定義すると衝突する。FDP は 2024-03 で更新が止まっているため当面は起きないと見ているが、独自の名前空間に逃がす選択肢もあった。"
-    },
-    {
-      "topic": "繰出金と繰入金は行どうしが1対1に対応しない",
-      "body": "歳出の繰出金と歳入の繰入金は細々節の切り方が違うため、行の対応は N 対 M になる。金額が厳密に一致するのは**会計の対どうしの合計**で、そこは5対すべてで一致した。各行の `cofog_counterpart_ids` には受け皿側の該当行の識別子を並べてあるが、これは「その行1件の相手」ではなく**相手のグループ**である。"
-    },
-    {
-      "topic": "特別会計は外部資料で裏づけていない",
-      "body": "施政方針・予算概要は一般会計の款別までしか載せていない。特別会計の款別を突合するには予算書（別資料）が要る。現状の根拠は歳出と歳入の会計別合計が一致することだけで、これは原典の内部整合であって外部からの裏づけではない。"
-    },
-    {
-      "topic": "河川費と生涯学習費の割り当ては判断の幅がある",
-      "body": "COFOG は治水を明示的に置いていないため、河川費（15,852千円）は 05 環境保護に寄せたが 04 経済業務にも読める。生涯学習費のうち図書館費は COFOG 08.2 が図書館を明示的に含むため 08 に置き、それ以外（生涯学習総務・青少年育成・生涯学習センター）は社会教育として 09 に置いた。いずれも根拠を `cofog_basis` に書いてあるので、判断を変えたければそこを見て変えられる。"
+      "name": "fudoki:budget-class:label",
+      "dataType": "string",
+      "labelOf": "fudoki:budget-class:code",
+      "why": "予算区分の表示名"
     }
   ],
   "yearSurvey": {

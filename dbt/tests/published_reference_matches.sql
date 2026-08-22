@@ -2,19 +2,24 @@
 -- 款別で比べる。合計だけだと誤りが打ち消し合ったときに通ってしまう。
 -- ⚠️ **公表値がある年度・予算段階だけを比べる。**
 -- 全年度を合計して単年度の公表値と比べると、2年度目を足した時点で必ず落ちる。
+-- ⚠️ **公表値がある団体・年度・予算段階だけを比べる。**
+-- 団体コードで絞らないと、2団体目を足した時点で狛江市の款まで突合の対象になる。
 with scope as (
-    select distinct fiscal_year, 'approved' as phase_id from {{ ref('published_reference_meta') }}
+    select distinct jurisdiction_code, fiscal_year, 'approved' as phase_id
+    from {{ ref('published_reference_meta') }}
 ),
 
 ours as (
     select 'expenditure' as direction, kan_label, sum(source_amount) as amount
     from {{ ref('stg_132047__expenditure') }} as s
-    inner join scope using (fiscal_year, phase_id)
+    inner join scope on scope.jurisdiction_code = s.jurisdiction_code
+        and scope.fiscal_year = s.fiscal_year and scope.phase_id = s.phase_id
     where s.fund_source = '01一般会計' group by 2
     union all
     select 'revenue', kan_label, sum(source_amount)
     from {{ ref('stg_132047__revenue') }} as s
-    inner join scope using (fiscal_year, phase_id)
+    inner join scope on scope.jurisdiction_code = s.jurisdiction_code
+        and scope.fiscal_year = s.fiscal_year and scope.phase_id = s.phase_id
     where s.fund_source = '01一般会計' group by 2
 )
 select

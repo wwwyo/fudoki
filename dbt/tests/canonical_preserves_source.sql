@@ -1,29 +1,55 @@
 -- **原典との多重集合一致。** 行数だけでなく中身の集合が一致すること。
 -- 行数が合っていても取り違えや重複があれば落ちる。
--- staging で trim しているので、原典側も trim して比べる（差は3セルと実測済み）。
+-- staging で trim しているので、原典側も trim して比べる（三鷹市は差が3セルと実測済み）。
+--
+-- 比べる列は宣言から作る（`budget_source_columns` と `budget_amounts`）。
+-- ⚠️ **階層だけでなく、追加の同一性の列と全部の金額も入れる。**
+-- 狛江市は所属と予算区分まで含めて初めて行が一意になり、金額は1行に3つある。
+-- 一部の列だけで比べると、取り違えが打ち消し合って通ってしまう。
+{% set codes = var('budget_levels').keys() | list | sort %}
+{% set blocks = [] %}
+{% for code in codes %}{% for direction in var('budget_levels')[code].keys() %}
+  {% do blocks.append((code, direction)) %}
+{% endfor %}{% endfor %}
+
 with raw_cells as (
-    select 'expenditure' as direction,
-        [{{ trim_cell('"01会計"') }}, {{ trim_cell('"02款"') }}, {{ trim_cell('"03項"') }}, {{ trim_cell('"04目"') }},
-         {{ trim_cell('"05事項"') }}, {{ trim_cell('"06節"') }}, {{ trim_cell('"07細々節"') }}, "08予算額"] as cells
-    from {{ source('raw_132047', 'expenditure') }}
-    union all
-    select 'revenue',
-        [{{ trim_cell('"01会計"') }}, {{ trim_cell('"02款"') }}, {{ trim_cell('"03項"') }}, {{ trim_cell('"04目"') }},
-         {{ trim_cell('"05節"') }}, {{ trim_cell('"06細節"') }}, {{ trim_cell('"07細々節"') }}, "08予算額"] as cells
-    from {{ source('raw_132047', 'revenue') }}
+    {% for code, direction in blocks %}
+    select '{{ code }}' as jurisdiction, '{{ direction }}' as direction, [
+        {%- for c in var('budget_source_columns')[code][direction] %}
+        {{ trim_cell('"' ~ c ~ '"') }},
+        {%- endfor %}
+        {%- for c in var('budget_extra_key_source_columns')[code][direction] %}
+        {{ trim_cell('"' ~ c ~ '"') }},
+        {%- endfor %}
+        {%- for a in var('budget_amounts')[code][direction] %}
+        "{{ a['source'] }}"{% if not loop.last %},{% endif %}
+        {%- endfor %}
+    ] as cells
+    from {{ source('raw_' ~ code, direction) }}
+    {% if not loop.last %}union all{% endif %}
+    {% endfor %}
 ),
 staged_cells as (
-    select direction, [fund_source, kan_source, kou_source, moku_source, jikou_source, setsu_source,
-                       saisaisetsu_source, cast(source_amount as varchar)] as cells
-    from {{ ref('stg_132047__expenditure') }}
-    union all
-    select direction, [fund_source, kan_source, kou_source, moku_source, setsu_source, saisetsu_source,
-                       saisaisetsu_source, cast(source_amount as varchar)] as cells
-    from {{ ref('stg_132047__revenue') }}
+    {% for code, direction in blocks %}
+    select '{{ code }}' as jurisdiction, direction, [
+        {%- for lv in var('budget_levels')[code][direction] %}
+        {{ lv }}_source,
+        {%- endfor %}
+        {%- for k in var('budget_extra_key_columns')[code][direction] %}
+        {{ k }}_source,
+        {%- endfor %}
+        {%- for a in var('budget_amounts')[code][direction] %}
+        cast({{ a['name'] }} as varchar){% if not loop.last %},{% endif %}
+        {%- endfor %}
+    ] as cells
+    from {{ ref('stg_' ~ code ~ '__' ~ direction) }}
+    {% if not loop.last %}union all{% endif %}
+    {% endfor %}
 ),
 counted as (
-    select direction, cells, count(*) as n from raw_cells group by 1, 2
+    select jurisdiction, direction, cells, count(*) as n from raw_cells group by 1, 2, 3
     union all
-    select direction, cells, -count(*) from staged_cells group by 1, 2
+    select jurisdiction, direction, cells, -count(*) from staged_cells group by 1, 2, 3
 )
-select direction, cells, sum(n) as 差 from counted group by 1, 2 having sum(n) <> 0
+select jurisdiction, direction, cells, sum(n) as 差
+from counted group by 1, 2, 3 having sum(n) <> 0

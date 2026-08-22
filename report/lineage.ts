@@ -105,6 +105,21 @@ function introducesJudgment(n: DbtNode, stage: Stage['id']): boolean {
   return stage === 'core'
 }
 
+/**
+ * 原典（source）の行数を証跡から引く。
+ *
+ * ⚠️ **direction だけで引かない。** ソースは団体ごとに1つあり、名前はどちらも
+ * `expenditure` / `revenue` である。direction だけで突き合わせると、
+ * 狛江市の原典ノードに三鷹市の行数が出る（実際にそうなっていた）。
+ * ソースの識別子（`source.fudoki.raw_132195.expenditure`）から団体コードを取る。
+ */
+function sourceRows(id: string, name: string, provenance: Provenance[]): number | null {
+  const code = /\.raw_(\d{6})\./.exec(id)?.[1]
+  if (!code) throw new Error(`ソース ${id} の名前から団体コードを取れない（raw_<団体コード> の形にすること）`)
+  const rows = provenance.filter((p) => p.jurisdiction_code === code && p.direction === name)
+  return rows.length === 0 ? null : rows.reduce((s, p) => s + p.rows, 0)
+}
+
 export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
   const all = { ...m.nodes, ...m.sources }
   const models = Object.entries(all).filter(([, n]) => ['model', 'source', 'seed'].includes(n.resource_type))
@@ -137,7 +152,7 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
   const nodes: Node[] = models.map(([id, n]) => {
     const loc = n.config?.location
     const rows = n.resource_type === 'source'
-      ? provenance.filter((p) => p.direction === n.name).reduce((s, p) => s + p.rows, 0)
+      ? sourceRows(id, n.name, provenance)
       : rowCounts.get(id) ?? null
     const stage = stageOf(n)
     return {

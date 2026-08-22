@@ -17,16 +17,19 @@ from __future__ import annotations
 
 import csv
 import hashlib
+import http.client
 import io
 import json
 import pathlib
 import sys
+import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from dataclasses import dataclass
 from datetime import UTC, datetime
 
-from ingestion.budget.sources import Catalog, Source, resolve
+from ingestion.budget.sources import Catalog, Resource, Source, load_sources, resolve
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 # 層ごとに名前空間を切る。②調達は OCDS、③会議録は Popolo と、
@@ -47,7 +50,27 @@ class Fetched:
     fetched_at: str
 
 
-def http_get(url: str) -> Fetched:
+def http_get(url: str, attempts: int = 12) -> Fetched:
+    """取得する。**短く読めたら成功にしない。**
+
+    ⚠️ 東京都カタログの検索 API は 5MB 級の応答を返すことがあり、
+    実測で `IncompleteRead` が半分ほどの確率で出た（2026-08-22）。
+    ここで諦めると取得が日によって落ちるので、切れた取得だけを繰り返す。
+    切り捨てを成功として扱わないための仕組み（引数なしの read と Content-Length 突合）は
+    そのままで、そこが落ちたものを再試行しているだけである。
+    """
+    last: Exception | None = None
+    for i in range(attempts):
+        try:
+            return _http_get_once(url)
+        except (http.client.IncompleteRead, urllib.error.URLError, TimeoutError) as e:
+            last = e
+            print(f"retry {i + 1}/{attempts}  {type(e).__name__}  {url}")
+            time.sleep(min(2 ** i, 8))
+    raise RuntimeError(f"{attempts} 回試して取得できない: {url}") from last
+
+
+def _http_get_once(url: str) -> Fetched:
     req = urllib.request.Request(url, headers={"User-Agent": UA})
     with urllib.request.urlopen(req, timeout=40) as res:  # noqa: S310  (取得元は sources.toml の固定 https)
         # 引数なしの read() を使う。分割して読むと、途中で接続が切れても
@@ -67,29 +90,48 @@ def http_get(url: str) -> Fetched:
         )
 
 
-def resolve_resource(src: Source, resource_name: str) -> str:
+def resolve_resource(src: Source, spec: Resource) -> str:
     """CKAN からリソース URL を引く。
 
     リソース URL は自治体側の CMS が振る内部番号で資料の差し替えで動くが、
     データセット名とリソース名は安定している。だから URL を直書きせず毎回解決する。
+
+    ⚠️ **同名のデータセットが複数あるとき、黙って先頭を採らない。**
+    狛江市は `/komae/R05/` と `/komae/` に同名のデータセットがあり、
+    中身が違う（所属名称の改称、執行率が `-` と `****`）。
+    先頭を採る実装だと、CKAN の並び順が変わった日に配布物の中身が入れ替わる。
+    候補が複数のまま残ったら `resource_url_contains` の宣言を要求して止める。
     """
     catalog: Catalog = src.catalog
-    q = urllib.parse.quote(src.dataset_title)
+    dataset_title = src.dataset_title_for(spec)
+    q = urllib.parse.quote(dataset_title)
     got = http_get(f"{catalog.endpoint}?q={q}&rows=300")
     results = json.loads(got.body).get("result", {}).get("results", [])
     org = catalog.org_prefix + src.jurisdiction_code
-    pkg = next(
-        (p for p in results
-         if (p.get("organization") or {}).get("name") == org and p.get("title") == src.dataset_title),
-        None,
-    )
-    if pkg is None:
-        raise RuntimeError(f"データセット「{src.dataset_title}」が {src.jurisdiction_name}（{org}）に見つからない")
-    res = next((r for r in pkg.get("resources", []) if r.get("name") == resource_name), None)
-    if res is None:
-        names = [r.get("name") for r in pkg.get("resources", [])]
-        raise RuntimeError(f"リソース「{resource_name}」が無い。あるのは: {names}")
-    return res["url"]
+    pkgs = [p for p in results
+            if (p.get("organization") or {}).get("name") == org and p.get("title") == dataset_title]
+    if not pkgs:
+        raise RuntimeError(f"データセット「{dataset_title}」が {src.jurisdiction_name}（{org}）に見つからない")
+
+    urls = sorted({r["url"] for p in pkgs for r in p.get("resources", [])
+                   if r.get("name") == spec.resource_name})
+    if not urls:
+        names = sorted({r.get("name") for p in pkgs for r in p.get("resources", [])})
+        raise RuntimeError(f"リソース「{spec.resource_name}」が無い。あるのは: {names}")
+
+    if src.resource_url_contains is not None:
+        urls = [u for u in urls if src.resource_url_contains in u]
+        if not urls:
+            raise RuntimeError(
+                f"リソース「{spec.resource_name}」に "
+                f"resource_url_contains=「{src.resource_url_contains}」を含む URL が無い"
+            )
+    if len(urls) > 1:
+        raise RuntimeError(
+            f"データセット「{dataset_title}」のリソース「{spec.resource_name}」が {len(urls)} 件ある: {urls}。"
+            f"どれを採るかを sources.toml の resource_url_contains で宣言すること"
+        )
+    return urls[0]
 
 
 def parse_rows(text: str) -> tuple[list[str], list[list[str]]]:
@@ -130,7 +172,7 @@ def ingest(key: str) -> None:
         if src.fiscal_year_label not in spec.resource_name:
             raise RuntimeError(f"リソース名「{spec.resource_name}」に年度表記「{src.fiscal_year_label}」が無い")
 
-        url = resolve_resource(src, spec.resource_name)
+        url = resolve_resource(src, spec)
         got = http_get(url)
         if got.status != 200:
             raise RuntimeError(f"HTTP {got.status}: {url}")
@@ -199,7 +241,7 @@ def ingest(key: str) -> None:
             "jurisdiction_code": src.jurisdiction_code,
             "fiscal_year": src.fiscal_year,
             "direction": direction,
-            "dataset_title": src.dataset_title,
+            "dataset_title": src.dataset_title_for(spec),
             "resource_name": spec.resource_name,
             "fiscal_year_basis": f"CKAN のリソース名「{spec.resource_name}」の「{src.fiscal_year_label}」から解決",
             "request_url": got.url,
@@ -218,4 +260,10 @@ def ingest(key: str) -> None:
 
 
 if __name__ == "__main__":
-    ingest(sys.argv[1] if len(sys.argv) > 1 else "132047:2024")
+    # 引数なしなら **`sources.toml` に登録された取得元すべて**。
+    # ⚠️ 呼び出し側に取得元を並べさせない — 並べさせると、
+    # 取得元を足したのに pipeline に足し忘れた状態が黙って通る。
+    keys = sys.argv[1:] or sorted(load_sources())
+    for key in keys:
+        print(f"--- {key}")
+        ingest(key)

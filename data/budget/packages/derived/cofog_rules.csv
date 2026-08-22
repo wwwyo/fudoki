@@ -1,36 +1,55 @@
-priority,rule_id,applies_to,match_fund,match_kan,match_kou,match_moku,moku_mode,match_setsu,status,division,consolidation,decided_at_level,counterpart_fund,basis
-1,transfer-kokuho,132047,,,,国民健康保険事業特別会計繰出金,contains,繰出金,assigned,07,eliminated,目,国民健康保険事業特別会計,同一主体内の会計間繰出。連結時は消去する。分類は受け皿である国民健康保険事業特別会計の機能に対応し、医療給付を担うため 07 保健
-2,transfer-kaigo-service,132047,,,,介護サービス事業特別会計繰出金,contains,繰出金,assigned,10,eliminated,目,介護サービス事業特別会計,同一主体内の会計間繰出。連結時は消去する。分類は受け皿である介護サービス事業特別会計の機能に対応し、介護サービスの提供であり 10 社会保護
-3,transfer-kaigo-hoken,132047,,,,介護保険事業特別会計繰出金,contains,繰出金,assigned,10,eliminated,目,介護保険事業特別会計,同一主体内の会計間繰出。連結時は消去する。分類は受け皿である介護保険事業特別会計の機能に対応し、長期介護の社会保険であり 10 社会保護
-4,transfer-kouki,132047,,,,後期高齢者医療特別会計繰出金,contains,繰出金,assigned,07,eliminated,目,後期高齢者医療特別会計,同一主体内の会計間繰出。連結時は消去する。分類は受け皿である後期高齢者医療特別会計の機能に対応し、医療給付を担うため 07 保健
-5,transfer-to-general,132047,,,,一般会計繰出金,contains,繰出金,out-of-scope,,eliminated,目,一般会計,特別会計から一般会計への精算返還。同一主体内の移転として消去する。COFOG の対象である経費・非金融資産への純投資のいずれでもないため分類の対象外
-6,debt-principal,,,公債費,,元金,eq,,out-of-scope,,retained,目,,市債の元金償還。金融負債の返済であり、COFOG の対象である経費・非金融資産への純投資のいずれでもない
-7,debt-interest,,,公債費,,利子,eq,,assigned,01,retained,目,,市債利子。COFOG 01.7 公債取引にあたる
-8,fund-accumulation,,,,,,eq,積立金,out-of-scope,,retained,節,,基金への積立。金融資産の取得であり COFOG の集計対象ではない
-9,refund,132047,,,償還金及び還付加算金,,eq,,out-of-scope,,retained,項,,過誤納金の還付。歳入の戻しであり経費ではない
-10,contingency,,,予備費,,,eq,,unclassifiable,,retained,款,,予備費。COFOG の対象だが、執行されるまで機能が決まらないため割り当ての根拠が無い
-11,toshikeikaku-somu,132047,,,都市計画費,都市計画総務費|再開発事業費,eq,,assigned,06,retained,目,,都市計画・市街地再開発。COFOG 06.2 地域開発
-12,toshikeikaku-gairo,132047,,,都市計画費,街路事業費,eq,,assigned,04,retained,目,,都市計画道路の整備。COFOG 04.5.1 道路交通
-13,toshikeikaku-kouen,132047,,,都市計画費,緑化公園費,eq,,assigned,08,retained,目,,公園・緑化。COFOG 08.1 レクリエーション及びスポーツのサービス
-14,toshikeikaku-gesui,132047,,,都市計画費,下水道事業支出金,eq,,assigned,05,retained,目,,下水道事業への支出。COFOG 05.2 排水管理。下水道事業会計は本パッケージの収録範囲外なので消去しない
-15,shogaigakushu-toshokan,132047,,,生涯学習費,図書館費,eq,,assigned,08,retained,目,,図書館。COFOG 08.2 文化サービスが図書館を明示的に含むため、教育費の下にあっても 08 に置く
-16,shogaigakushu-other,132047,,,生涯学習費,,eq,,assigned,09,retained,目,,社会教育（生涯学習総務・青少年育成・生涯学習センター）。COFOG 09.5 水準が定義できない教育。08 文化サービスとの境界は判断であり、2団体目で再検討する
-17,eisei-hoken,132047,,,保健衛生費,,eq,,assigned,07,retained,項,,保健衛生。COFOG 07 保健
-18,eisei-seiso,132047,,,清掃費,,eq,,assigned,05,retained,項,,ごみ処理。COFOG 05.1 廃棄物管理
-19,doboku-kanri,132047,,,土木管理費,,eq,,assigned,04,retained,項,,土木の管理部門。COFOG 04.5 運輸の管理にあたる
-20,doboku-doro,132047,,,道路橋梁費,,eq,,assigned,04,retained,項,,道路・橋梁。COFOG 04.5.1 道路交通
-21,doboku-kasen,132047,,,河川費,,eq,,assigned,05,retained,項,,河川・水路の管理。COFOG は治水を明示的に置いていないため 05 環境保護に寄せた判断で、04 経済業務にも読める
-22,doboku-jutaku,132047,,,住宅費,,eq,,assigned,06,retained,項,,住宅。COFOG 06.1 住宅開発
-23,kyoiku-somu,132047,,,教育総務費|小学校費|中学校費,,eq,,assigned,09,retained,項,,学校教育。COFOG 09.1〜09.2 初等・中等教育
-24,kyoiku-sports,132047,,,スポーツ推進費,,eq,,assigned,08,retained,項,,スポーツ推進。COFOG 08.1 レクリエーション及びスポーツのサービス
-25,gikai,,,議会費,,,eq,,assigned,01,retained,款,,議会。COFOG 01.1 立法機関・行政機関
-26,somu,,,総務費,,,eq,,assigned,01,retained,款,,総務・徴税・戸籍・選挙・統計・監査。COFOG 01 一般公共サービス
-27,minsei,,,民生費,,,eq,,assigned,10,retained,款,,社会福祉・児童福祉・生活保護。COFOG 10 社会保護
-28,rodo,,,労働費,,,eq,,assigned,04,retained,款,,労働諸費。COFOG 04.1.2 一般労働業務
-29,norin,,,農林費,,,eq,,assigned,04,retained,款,,農業。COFOG 04.2 農林水産業
-30,shoko,,,商工費,,,eq,,assigned,04,retained,款,,商工業。COFOG 04.7 その他の産業
-31,shobo,,,消防費,,,eq,,assigned,03,retained,款,,消防。COFOG 03.2 消防サービス
-32,fund-kokuho,132047,国民健康保険事業特別会計,,,,eq,,assigned,07,retained,会計,,国民健康保険。医療給付とその運営であり COFOG 07 保健
-33,fund-kouki,132047,後期高齢者医療特別会計,,,,eq,,assigned,07,retained,会計,,後期高齢者医療。医療給付とその運営であり COFOG 07 保健
-34,fund-kaigo-service,132047,介護サービス事業特別会計,,,,eq,,assigned,10,retained,会計,,介護サービス事業。COFOG 10.2 高齢
-35,fund-kaigo-hoken,132047,介護保険事業特別会計,,,,eq,,assigned,10,retained,会計,,介護保険。長期介護の社会保険であり COFOG 10.2 高齢
+priority,rule_id,applies_to,match_fund,match_kan,match_kou,match_kan_code,match_moku,moku_mode,match_setsu,status,division,consolidation,decided_at_level,counterpart_fund,basis
+1,transfer-kokuho,132047,,,,,国民健康保険事業特別会計繰出金,contains,繰出金,assigned,07,eliminated,目,国民健康保険事業特別会計,同一主体内の会計間繰出。連結時は消去する。分類は受け皿である国民健康保険事業特別会計の機能に対応し、医療給付を担うため 07 保健
+2,transfer-kaigo-service,132047,,,,,介護サービス事業特別会計繰出金,contains,繰出金,assigned,10,eliminated,目,介護サービス事業特別会計,同一主体内の会計間繰出。連結時は消去する。分類は受け皿である介護サービス事業特別会計の機能に対応し、介護サービスの提供であり 10 社会保護
+3,transfer-kaigo-hoken,132047,,,,,介護保険事業特別会計繰出金,contains,繰出金,assigned,10,eliminated,目,介護保険事業特別会計,同一主体内の会計間繰出。連結時は消去する。分類は受け皿である介護保険事業特別会計の機能に対応し、長期介護の社会保険であり 10 社会保護
+4,transfer-kouki,132047,,,,,後期高齢者医療特別会計繰出金,contains,繰出金,assigned,07,eliminated,目,後期高齢者医療特別会計,同一主体内の会計間繰出。連結時は消去する。分類は受け皿である後期高齢者医療特別会計の機能に対応し、医療給付を担うため 07 保健
+5,transfer-to-general,132047,,,,,一般会計繰出金,contains,繰出金,out-of-scope,,eliminated,目,一般会計,特別会計から一般会計への精算返還。同一主体内の移転として消去する。COFOG の対象である経費・非金融資産への純投資のいずれでもないため分類の対象外
+6,debt-principal,,,公債費,,,元金,eq,,out-of-scope,,retained,目,,市債の元金償還。金融負債の返済であり、COFOG の対象である経費・非金融資産への純投資のいずれでもない
+7,debt-interest,,,公債費,,,利子,eq,,assigned,01,retained,目,,市債利子。COFOG 01.7 公債取引にあたる
+8,fund-accumulation,,,,,,,eq,積立金,out-of-scope,,retained,節,,基金への積立。金融資産の取得であり COFOG の集計対象ではない
+9,refund,132047,,,償還金及び還付加算金,,,eq,,out-of-scope,,retained,項,,過誤納金の還付。歳入の戻しであり経費ではない
+10,contingency,,,予備費,,,,eq,,unclassifiable,,retained,款,,予備費。COFOG の対象だが、執行されるまで機能が決まらないため割り当ての根拠が無い
+11,toshikeikaku-somu,132047,,,都市計画費,,都市計画総務費|再開発事業費,eq,,assigned,06,retained,目,,都市計画・市街地再開発。COFOG 06.2 地域開発
+12,toshikeikaku-gairo,132047,,,都市計画費,,街路事業費,eq,,assigned,04,retained,目,,都市計画道路の整備。COFOG 04.5.1 道路交通
+13,toshikeikaku-kouen,132047,,,都市計画費,,緑化公園費,eq,,assigned,08,retained,目,,公園・緑化。COFOG 08.1 レクリエーション及びスポーツのサービス
+14,toshikeikaku-gesui,132047,,,都市計画費,,下水道事業支出金,eq,,assigned,05,retained,目,,下水道事業への支出。COFOG 05.2 排水管理。下水道事業会計は本パッケージの収録範囲外なので消去しない
+15,shogaigakushu-toshokan,132047,,,生涯学習費,,図書館費,eq,,assigned,08,retained,目,,図書館。COFOG 08.2 文化サービスが図書館を明示的に含むため、教育費の下にあっても 08 に置く
+16,shogaigakushu-other,132047,,,生涯学習費,,,eq,,assigned,09,retained,目,,社会教育（生涯学習総務・青少年育成・生涯学習センター）。COFOG 09.5 水準が定義できない教育。08 文化サービスとの境界は判断であり、2団体目で再検討する
+17,eisei-hoken,132047,,,保健衛生費,,,eq,,assigned,07,retained,項,,保健衛生。COFOG 07 保健
+18,eisei-seiso,132047,,,清掃費,,,eq,,assigned,05,retained,項,,ごみ処理。COFOG 05.1 廃棄物管理
+19,doboku-kanri,132047,,,土木管理費,,,eq,,assigned,04,retained,項,,土木の管理部門。COFOG 04.5 運輸の管理にあたる
+20,doboku-doro,132047,,,道路橋梁費,,,eq,,assigned,04,retained,項,,道路・橋梁。COFOG 04.5.1 道路交通
+21,doboku-kasen,132047,,,河川費,,,eq,,assigned,05,retained,項,,河川・水路の管理。COFOG は治水を明示的に置いていないため 05 環境保護に寄せた判断で、04 経済業務にも読める
+22,doboku-jutaku,132047,,,住宅費,,,eq,,assigned,06,retained,項,,住宅。COFOG 06.1 住宅開発
+23,kyoiku-somu,132047,,,教育総務費|小学校費|中学校費,,,eq,,assigned,09,retained,項,,学校教育。COFOG 09.1〜09.2 初等・中等教育
+24,kyoiku-sports,132047,,,スポーツ推進費,,,eq,,assigned,08,retained,項,,スポーツ推進。COFOG 08.1 レクリエーション及びスポーツのサービス
+25,gikai,,,議会費,,,,eq,,assigned,01,retained,款,,議会。COFOG 01.1 立法機関・行政機関
+26,somu,,,総務費,,,,eq,,assigned,01,retained,款,,総務・徴税・戸籍・選挙・統計・監査。COFOG 01 一般公共サービス
+27,minsei,,,民生費,,,,eq,,assigned,10,retained,款,,社会福祉・児童福祉・生活保護。COFOG 10 社会保護
+28,rodo,,,労働費,,,,eq,,assigned,04,retained,款,,労働諸費。COFOG 04.1.2 一般労働業務
+29,norin,,,農林費,,,,eq,,assigned,04,retained,款,,農業。COFOG 04.2 農林水産業
+30,shoko,,,商工費,,,,eq,,assigned,04,retained,款,,商工業。COFOG 04.7 その他の産業
+31,shobo,,,消防費,,,,eq,,assigned,03,retained,款,,消防。COFOG 03.2 消防サービス
+32,fund-kokuho,132047,国民健康保険事業特別会計,,,,,eq,,assigned,07,retained,会計,,国民健康保険。医療給付とその運営であり COFOG 07 保健
+33,fund-kouki,132047,後期高齢者医療特別会計,,,,,eq,,assigned,07,retained,会計,,後期高齢者医療。医療給付とその運営であり COFOG 07 保健
+34,fund-kaigo-service,132047,介護サービス事業特別会計,,,,,eq,,assigned,10,retained,会計,,介護サービス事業。COFOG 10.2 高齢
+35,fund-kaigo-hoken,132047,介護保険事業特別会計,,,,,eq,,assigned,10,retained,会計,,介護保険。長期介護の社会保険であり COFOG 10.2 高齢
+36,komae-fund-kokuho,132195,国民健康保険特別会計,,,,,eq,,assigned,07,retained,会計,,狛江市 国民健康保険特別会計。医療給付とその運営であり COFOG 07 保健。特別会計は款の体系が一般会計と違うので、款より先に会計で決める
+37,komae-fund-kaigo,132195,介護保険特別会計,,,,,eq,,assigned,10,retained,会計,,狛江市 介護保険特別会計。長期介護の社会保険であり COFOG 10.2 高齢
+38,komae-fund-kouki,132195,後期高齢者医療特別会計,,,,,eq,,assigned,07,retained,会計,,狛江市 後期高齢者医療特別会計。医療給付とその運営であり COFOG 07 保健
+39,komae-fund-parking,132195,駐車場事業特別会計,,,,,eq,,assigned,04,retained,会計,,狛江市 駐車場事業特別会計。駐車場の運営であり COFOG 04.5.1 道路交通
+40,komae-fund-sewer,132195,公共下水道特別会計,,,,,eq,,assigned,05,retained,会計,,狛江市 公共下水道特別会計（2018〜2019年度のみ収録。2020年度から公営企業会計へ移行し原典から消える）。COFOG 05.2 排水管理
+41,komae-transfer,132195,一般会計,,,,,eq,繰出金,unclassifiable,,retained,節,,狛江市の会計間繰出。**受け皿の会計が原典から決まらない**（目に名称が無く、繰出先を書いた列も無い）。三鷹市のように受け皿の機能へ割り当てることも、連結で消去することもできないので、捨てずに分類不能として残す。全会計を合計すると会計間の移転を二重に含む
+42,komae-kan-gikai,132195,一般会計,,,1,,eq,,assigned,01,retained,款,,狛江市 款1 議会費。COFOG 01.1 立法機関・行政機関。款のコードは地方自治法施行規則別記の歳出款の番号と一致する。名称ではなくコードで当てているのは、狛江市の原典に款の名称の列が無いため。対応は実測で裏づけた（款11 の節は償還金・利子及び割引料のみ、款13 の節は予備費、所属も款ごとに整合）
+43,komae-kan-somu,132195,一般会計,,,2,,eq,,assigned,01,retained,款,,狛江市 款2 総務費。COFOG 01 一般公共サービス
+44,komae-kan-minsei,132195,一般会計,,,3,,eq,,assigned,10,retained,款,,狛江市 款3 民生費。COFOG 10 社会保護
+45,komae-kan-eisei,132195,一般会計,,,4,,eq,,unclassifiable,,retained,款,,狛江市 款4 衛生費。三鷹市では項へ下げて保健衛生費（07 保健）と清掃費（05 廃棄物管理）に分かれた。狛江市の原典には項の名称が無く、款だけでは決まらない。捨てずに分類不能として残す
+46,komae-kan-rodo,132195,一般会計,,,5,,eq,,assigned,04,retained,款,,狛江市 款5 労働費。COFOG 04.1.2 一般労働業務
+47,komae-kan-norin,132195,一般会計,,,6,,eq,,assigned,04,retained,款,,狛江市 款6 農林水産業費。COFOG 04.2 農林水産業
+48,komae-kan-shoko,132195,一般会計,,,7,,eq,,assigned,04,retained,款,,狛江市 款7 商工費。COFOG 04.7 その他の産業
+49,komae-kan-doboku,132195,一般会計,,,8,,eq,,unclassifiable,,retained,款,,狛江市 款8 土木費。三鷹市では項へ下げて道路橋梁費（04）・河川費（05）・都市計画費（06 と 04 と 08 に分岐）・住宅費（06）に分かれた。狛江市の原典には項の名称が無く、款だけでは決まらない
+50,komae-kan-shobo,132195,一般会計,,,9,,eq,,assigned,03,retained,款,,狛江市 款9 消防費。COFOG 03.2 消防サービス
+51,komae-kan-kyoiku,132195,一般会計,,,10,,eq,,unclassifiable,,retained,款,,狛江市 款10 教育費。三鷹市では項へ下げて学校教育（09）・スポーツ推進（08）に、さらに目へ下げて図書館（08）と社会教育（09）に分かれた。狛江市の原典には項・目の名称が無く、款だけでは決まらない
+52,komae-kan-kosai,132195,一般会計,,,11,,eq,,unclassifiable,,retained,款,,狛江市 款11 公債費。三鷹市では目へ下げて元金償還（COFOG の対象外）と利子（01.7 公債取引）に分かれた。狛江市の原典には目の名称が無く、款だけでは決まらない。**対象外にはしない** — 分類できないことと対象でないことは別の問いで、畳むと適格母集団が壊れる
+53,komae-kan-shoshishutsu,132195,一般会計,,,12,,eq,,unclassifiable,,retained,款,,狛江市 款12 諸支出金。基金への積立は節の規則（fund-accumulation）が先に当たって対象外になる。それ以外は目の名称が無く決まらない
+54,komae-kan-yobi,132195,一般会計,,,13,,eq,,unclassifiable,,retained,款,,狛江市 款13 予備費。COFOG の対象だが、執行されるまで機能が決まらないため割り当ての根拠が無い（三鷹市の contingency と同じ理由）

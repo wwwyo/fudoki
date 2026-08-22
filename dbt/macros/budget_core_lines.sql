@@ -1,0 +1,53 @@
+{#
+  団体をまたいだ共通の形へ揃える。**ここが2団体目で初めて必要になった判断。**
+
+  「三鷹市の款と狛江市の款は同じ概念だ」と決めるのは fudoki の判断なので、
+  staging には置けない（staging は原典と1対1で、判断を含まない）。
+  AGENTS.md が「intermediate を切るのは2団体目で科目名の表記が割れたとき」と
+  言っている、その時点にあたる。段を増やさず core に置いているのは、
+  core の責務がまさに「団体をまたぐ整形」だから。
+
+  ⚠️ **共通の形は最大公約数であって、正本ではない。**
+  三鷹市の事項も狛江市の大事業もここには出てこない。
+  階層の全部が要るときは団体ごとの staging か配布物（正本）を見る。
+  ここは COFOG の規則を当てるための面で、款・項・目・節までしか要らない。
+
+  ⚠️ **金額は `budget_amounts` で primary と宣言した段階だけを取る。**
+  決算書は1行に複数段階の金額を持つので、どれで集計するかを宣言に持たせないと
+  団体ごとに違う段階を足し合わせた数字が出る。
+#}
+{% macro budget_core_lines(direction) %}
+{%- set codes = var('budget_levels').keys() | list | sort -%}
+{%- for code in codes %}
+{%- set amounts = var('budget_amounts')[code][direction] -%}
+{%- set primary = amounts | selectattr('primary') | list -%}
+{%- if primary | length != 1 -%}
+  {{ exceptions.raise_compiler_error(
+      code ~ '/' ~ direction ~ ': budget_amounts の primary が ' ~ primary | length
+      ~ ' 件。集計に使う段階は団体・direction ごとに1つでなければならない') }}
+{%- endif -%}
+select
+    jurisdiction_code,
+    fiscal_year,
+    direction,
+    phase_id,
+    budget_line_id,
+    source_row,
+    fund_code,
+    fund_label,
+    kan_code,
+    kan_label,
+    kou_code,
+    kou_label,
+    moku_code,
+    moku_label,
+    setsu_code,
+    setsu_label,
+    source_amount,
+    -- 円へ正規化した値。倍率は原典の単位の宣言から来る（三鷹市は千円、狛江市は円と千円）
+    source_amount * {{ primary[0]['multiplier'] }} as amount_yen
+from {{ ref('stg_' ~ code ~ '__' ~ direction) }}
+{% if not loop.last %}union all
+{% endif %}
+{%- endfor %}
+{% endmacro %}

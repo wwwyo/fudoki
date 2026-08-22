@@ -4,7 +4,7 @@
   "title": "予算の COFOG 割当（派生）",
   "description": "**fudoki の判断**。自治体が言っていないことを付け加えている。正本とは budget_line_id で join する。根拠は cofog_rules に規則として出してあり、cofog_rule_id で引ける。分類不能の割合の低さは品質の指標ではない（成立範囲を正直に調べるのが目的）。",
   "version": "0.1.0",
-  "created": "2026-08-22T06:44:52+00:00",
+  "created": "2026-08-22T08:16:58+00:00",
   "countryCode": "JP",
   "columnTypes": [
     "https://specs.frictionlessdata.io/taxonomies/fiscal/budgets.json",
@@ -121,6 +121,18 @@
         "name": "fudoki:cofog:decided-at-level",
         "dataType": "string",
         "description": "款・項・目・事項のどの単位で割り当てが決まったか"
+      },
+      {
+        "name": "fudoki:budget-class:code",
+        "dataType": "string",
+        "unique": true,
+        "description": "予算区分（現年度・繰越明許・事故繰越）。同じ科目に複数の区分が並ぶので行の同一性の一部になる。FDP の phase は予算の段階を指すもので、繰越の区分とは別概念であり標準に該当する列型が無い"
+      },
+      {
+        "name": "fudoki:budget-class:label",
+        "dataType": "string",
+        "labelOf": "fudoki:budget-class:code",
+        "description": "予算区分の表示名"
       }
     ]
   ],
@@ -151,8 +163,8 @@
       "format": "csv",
       "mediatype": "text/csv",
       "encoding": "utf-8",
-      "bytes": 711170,
-      "hash": "sha256:a4f9bf8eba6cfc6d5cd959d36974cdb6256c689ce00d314cdc873dd6c285b059",
+      "bytes": 2839128,
+      "hash": "sha256:c5b3f4f1e7d211a650a643ecb0dc1c46be5ca9a1d1cc03e6cea460f039935a78",
       "dialect": {
         "delimiter": ",",
         "header": true
@@ -235,12 +247,12 @@
       "path": "cofog_rules.csv",
       "profile": "tabular-data-resource",
       "title": "割り当て規則",
-      "description": "判断の中身そのもの。35行読めば何をどう決めたか確かめられる",
+      "description": "判断の中身そのもの。規則表を読めば何をどう決めたか確かめられる",
       "format": "csv",
       "mediatype": "text/csv",
       "encoding": "utf-8",
-      "bytes": 6441,
-      "hash": "sha256:70a104ad4acaf6b5cb6edda20762ee2dbb9f9e6b3e036fa498e0daa17bea0d32",
+      "bytes": 11359,
+      "hash": "sha256:db931eb6e6f853681a8b367a882d9496c4957670fcdc4920b556f05a053ecce5",
       "dialect": {
         "delimiter": ",",
         "header": true
@@ -282,6 +294,12 @@
             "title": "項の条件",
             "type": "string",
             "description": "`|` 区切りはいずれかに一致"
+          },
+          {
+            "name": "match_kan_code",
+            "title": "款コードの条件",
+            "type": "string",
+            "description": "款の名称ではなくコードで当てる条件。名称の列を持たない団体（狛江市）のために要る。空は「問わない」"
           },
           {
             "name": "match_moku",

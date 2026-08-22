@@ -6,48 +6,71 @@
  */
 import { useMemo, useState } from 'react'
 import type { Direction, DetailRow, Level } from '@/lib/pipeline'
-import { LEVELS, cell, levelCell } from '@/lib/pipeline'
+import { LEVEL_JA, cell, levelCell } from '@/lib/pipeline'
 import { DIVISION_COLOR, STATUS_JA, yen } from '@/lib/pipeline'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
-const LEVEL_JA: Record<string, string> = {
-  fund: '会計', kan: '款', kou: '項', moku: '目', jikou: '事項', setsu: '節', saisetsu: '細節', saisaisetsu: '細々節',
-}
-
 /**
- * 歳出と歳入は階層の構成が違う（歳出は「事項」、歳入は「細節」）ので、
- * **direction で generic にする。** 片方にしか無い列を読むとコンパイルが落ちる。
+ * ⚠️ **階層の並びは団体ごとにも direction ごとにも違う**
+ * （三鷹市の歳出は「事項」、狛江市は「大事業・中事業・小事業」、歳入は「細節」）。
+ * 正本は dbt_project.yml の宣言で、報告（`detailLevels`）を通って渡ってくる。
+ * **画面は階層名を直書きしない。**
  */
 export function DetailBrowser({
-  expenditure, revenue,
-}: { expenditure: DetailRow<'expenditure'>[]; revenue: DetailRow<'revenue'>[] }) {
+  code, expenditure, revenue, levels,
+}: {
+  code: string
+  expenditure: DetailRow[]
+  revenue: DetailRow[]
+  levels: Record<Direction, Level[]>
+}) {
   const [dir, setDir] = useState<Direction>('expenditure')
-  // key で切り替える。path と query は direction ごとの状態なので、
+  // key で切り替える。path と query は団体・direction ごとの状態なので、
   // 切り替えたら捨てるのが正しい。
-  return dir === 'expenditure'
-    ? <Browser key="expenditure" dir="expenditure" source={expenditure} onSwitch={setDir} />
-    : <Browser key="revenue" dir="revenue" source={revenue} onSwitch={setDir} />
+  return (
+    <Browser
+      key={`${code}:${dir}`}
+      dir={dir}
+      source={dir === 'expenditure' ? expenditure : revenue}
+      levels={levels[dir]}
+      onSwitch={setDir}
+    />
+  )
 }
 
-function Browser<D extends Direction>({
-  dir, source, onSwitch,
-}: { dir: D; source: DetailRow<D>[]; onSwitch: (d: Direction) => void }) {
+function Browser({
+  dir, source, levels, onSwitch,
+}: { dir: Direction; source: DetailRow[]; levels: Level[]; onSwitch: (d: Direction) => void }) {
   const [path, setPath] = useState<string[]>([])
   const [query, setQuery] = useState('')
 
-  const levels = LEVELS[dir]
+  /**
+   * ⚠️ **予算段階を混ぜて足さない。**
+   * 決算書は原典1行を段階ごとの行へ展開してあるので（狛江市は予算現額・執行済額ほか）、
+   * 段階で絞らずに合計すると、同じ金額を段階の数だけ足した意味の無い数字が出る
+   * （実際に 3,226 億円の団体で 9,481 億円と表示された）。
+   * 段階はデータから取る — 団体ごとに何段階あるかが違う。
+   */
+  const phases = useMemo(() => {
+    const m = new Map<string, string>()
+    for (const r of source) m.set(cell(r, 'phase_id'), cell(r, 'phase_label'))
+    return [...m.entries()].map(([id, label]) => ({ id, label }))
+  }, [source])
+  const [phase, setPhase] = useState<string | null>(null)
+  const activePhase = phase && phases.some((p) => p.id === phase) ? phase : phases[0]?.id ?? null
 
   const rows = useMemo(() => {
-    let r = source.filter((row) => path.every((v, i) => levelCell(row, levels[i] as Level<D>, 'source') === v))
+    let r = source.filter((row) => cell(row, 'phase_id') === activePhase)
+    r = r.filter((row) => path.every((v, i) => levelCell(row, levels[i]!, 'source') === v))
     if (query) {
       const q = query.toLowerCase()
-      r = r.filter((row) => levels.some((l) => levelCell(row, l as Level<D>, 'label').toLowerCase().includes(q)))
+      r = r.filter((row) => levels.some((l) => levelCell(row, l, 'label').toLowerCase().includes(q)))
     }
     return r
-  }, [source, path, query, levels])
+  }, [source, path, query, levels, activePhase])
 
   const total = rows.reduce((s, r) => s + Number(cell(r, 'value')), 0)
   const depth = path.length
@@ -55,7 +78,7 @@ function Browser<D extends Direction>({
 
   const groups = useMemo(() => {
     if (depth >= levels.length || rows.length <= 1) return null
-    const key = levels[depth] as Level<D>
+    const key = levels[depth]!
     const m = new Map<string, { count: number; sum: number; divs: Map<string, number>; statuses: Set<string> }>()
     for (const r of rows) {
       const k = levelCell(r, key, 'source')
@@ -73,19 +96,29 @@ function Browser<D extends Direction>({
   }, [rows, depth, levels, dir])
 
   const max = groups?.[0]?.[1].sum ?? 1
-  const nextJa = LEVEL_JA[levels[depth + 1] ?? ''] ?? '明細'
+  const next = levels[depth + 1]
+  const nextJa = next ? LEVEL_JA[next] : '明細'
 
   return (
     <div className="flex flex-col gap-3">
       <p className="max-w-[72ch] text-sm text-muted-foreground">
-        行の科目名を選ぶと1段深くなる。事項名（例:「いじめ問題対策協議会関係費」）で絞り込むと、
-        その金額がどこに付いているかを直接引ける。
+        行を選ぶと1段深くなる。名称で絞り込むと、その金額がどこに付いているかを直接引ける。
+        {' '}⚠️ 名称は原典が持っている階層にしか無い（狛江市は款・項・目・大事業に名称の列が無く、
+        絞り込めるのは会計名と科目名だけ）。
       </p>
 
       <div className="flex flex-wrap items-center gap-2">
         <Button size="sm" variant={dir === 'expenditure' ? 'default' : 'outline'} onClick={() => setDirection('expenditure')}>歳出</Button>
         <Button size="sm" variant={dir === 'revenue' ? 'default' : 'outline'} onClick={() => setDirection('revenue')}>歳入</Button>
-        <Input className="max-w-xs" type="search" placeholder="事項名・科目名で絞り込み" aria-label="科目名で絞り込み"
+        {phases.length > 1 && (
+          <span className="flex flex-wrap items-center gap-1" role="group" aria-label="予算段階">
+            {phases.map((p) => (
+              <Button key={p.id} size="sm" variant={p.id === activePhase ? 'default' : 'outline'}
+                onClick={() => { setPhase(p.id); setPath([]) }}>{p.label}</Button>
+            ))}
+          </span>
+        )}
+        <Input className="max-w-xs" type="search" placeholder="科目名で絞り込み" aria-label="科目名で絞り込み"
           value={query} onChange={(e) => { setQuery(e.target.value); setPath([]) }} />
         <span className="text-xs tabular-nums text-muted-foreground">{yen(rows.length)} 行 / {yen(total)} 円</span>
       </div>
@@ -162,14 +195,14 @@ function Browser<D extends Direction>({
   )
 }
 
-function LeafCard<D extends Direction>({
+function LeafCard({
   row, levels, dir,
-}: { row: DetailRow<D>; levels: readonly Level<D>[]; dir: D }) {
+}: { row: DetailRow; levels: readonly Level[]; dir: Direction }) {
   const items: [string, React.ReactNode][] = [
     ['budget_line_id', <span className="font-mono text-xs">{cell(row, 'budget_line_id')}</span>],
     ...levels.map((l) => [LEVEL_JA[l]!, levelCell(row, l, 'source')] as [string, React.ReactNode]),
     ['金額', <><span className="font-medium">{yen(cell(row, 'value'))} 円</span>（原典 {yen(cell(row, 'source_amount'))} {cell(row, 'source_amount_unit')}）</>],
-    ['年度 / 段階', `${cell(row, 'fiscal_year')} / ${cell(row, 'phase_id')}`],
+    ['年度 / 段階', `${cell(row, 'fiscal_year')} / ${cell(row, 'phase_label')}（${cell(row, 'phase_id')}）`],
     ['原典の行', `${cell(row, 'source_row')} 行目`],
   ]
   if (dir === 'expenditure') {

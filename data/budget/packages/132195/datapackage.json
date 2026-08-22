@@ -1,0 +1,1198 @@
+{
+  "profile": "tabular-data-package",
+  "name": "fudoki-budget-132195",
+  "title": "狛江市 決算（事業単位）",
+  "description": "自治体が公開した決算データを Fiscal Data Package の形にしたもの。**fudoki の判断は含まない**（分類・名寄せ・推定を一切していない）。COFOG の割当は派生パッケージ derived/ にあり、budget_line_id で join する。原典そのものは data/budget/raw/ に Parquet で入っている。",
+  "version": "0.1.0",
+  "created": "2026-08-22T08:16:58+00:00",
+  "countryCode": "JP",
+  "columnTypes": [
+    "https://specs.frictionlessdata.io/taxonomies/fiscal/budgets.json",
+    [
+      {
+        "name": "fund:code",
+        "dataType": "string",
+        "unique": true,
+        "description": "会計（一般会計・各特別会計）。administrative-classification は資金管理の責任を負う組織単位を指すもので、会計は資金の区分であり別概念。標準に該当する列型が無い"
+      },
+      {
+        "name": "fund:label",
+        "dataType": "string",
+        "labelOf": "fund:code",
+        "description": "会計の表示名"
+      },
+      {
+        "name": "fin-source:generic:level4:code",
+        "dataType": "string",
+        "unique": true,
+        "prior": "fin-source:generic:level3:code",
+        "description": "歳入の節。標準の fin-source は level3 までしか定義が無いため同じ命名規則で拡張した"
+      },
+      {
+        "name": "fin-source:generic:level4:label",
+        "dataType": "string",
+        "labelOf": "fin-source:generic:level4:code",
+        "description": "歳入の節の表示名"
+      },
+      {
+        "name": "fin-source:generic:level5:code",
+        "dataType": "string",
+        "unique": true,
+        "prior": "fin-source:generic:level4:code",
+        "description": "歳入の細節"
+      },
+      {
+        "name": "fin-source:generic:level5:label",
+        "dataType": "string",
+        "labelOf": "fin-source:generic:level5:code",
+        "description": "歳入の細節の表示名"
+      },
+      {
+        "name": "fin-source:generic:level6:code",
+        "dataType": "string",
+        "unique": true,
+        "prior": "fin-source:generic:level5:code",
+        "description": "歳入の細々節"
+      },
+      {
+        "name": "fin-source:generic:level6:label",
+        "dataType": "string",
+        "labelOf": "fin-source:generic:level6:code",
+        "description": "歳入の細々節の表示名"
+      },
+      {
+        "name": "fudoki:jurisdiction:code",
+        "dataType": "string",
+        "unique": true,
+        "description": "全国地方公共団体コード。外部データとの接続キー。FDP の geo:* は住所や地理コードを指すもので、行政主体の識別子ではない"
+      },
+      {
+        "name": "fudoki:jurisdiction:label",
+        "dataType": "string",
+        "labelOf": "fudoki:jurisdiction:code",
+        "description": "自治体名"
+      },
+      {
+        "name": "fudoki:source:cell",
+        "dataType": "string",
+        "description": "code と label へ分ける前の原典のセル。先頭のゼロや全角数字といった表記を保ち、code + label を連結して原文に戻ることを検証に使う"
+      },
+      {
+        "name": "fudoki:source:amount",
+        "dataType": "number",
+        "description": "原典の金額。円へ正規化する前の値"
+      },
+      {
+        "name": "fudoki:source:amount-unit",
+        "dataType": "string",
+        "description": "原典の金額の単位。FDP に倍率を表す ColumnType が無いため別列に残す"
+      },
+      {
+        "name": "fudoki:source:row",
+        "dataType": "integer",
+        "description": "原典の物理行番号。特定のスナップショット内でのみ意味を持つ証跡で、外部が参照する識別子ではない"
+      },
+      {
+        "name": "fudoki:hierarchy-path",
+        "dataType": "string",
+        "description": "階層のコードを連結した可読なパス。コードは兄弟間で一意とは限らないので識別子には使わない"
+      },
+      {
+        "name": "fudoki:cofog:status",
+        "dataType": "string",
+        "description": "分類の軸。assigned / unclassifiable / out-of-scope。分類できなかったものと、そもそも分類の対象でないものを区別する"
+      },
+      {
+        "name": "fudoki:cofog:consolidation",
+        "dataType": "string",
+        "description": "連結の軸。retained / eliminated。分類の軸とは別の問いなので1つの状態に畳まない"
+      },
+      {
+        "name": "fudoki:cofog:counterpart-id",
+        "dataType": "string",
+        "description": "消去する行の相手側 budget-line-id"
+      },
+      {
+        "name": "fudoki:cofog:basis",
+        "dataType": "string",
+        "description": "割り当ての根拠。割当済みと未分類のいずれについても残す"
+      },
+      {
+        "name": "fudoki:cofog:decided-at-level",
+        "dataType": "string",
+        "description": "款・項・目・事項のどの単位で割り当てが決まったか"
+      },
+      {
+        "name": "fudoki:budget-class:code",
+        "dataType": "string",
+        "unique": true,
+        "description": "予算区分（現年度・繰越明許・事故繰越）。同じ科目に複数の区分が並ぶので行の同一性の一部になる。FDP の phase は予算の段階を指すもので、繰越の区分とは別概念であり標準に該当する列型が無い"
+      },
+      {
+        "name": "fudoki:budget-class:label",
+        "dataType": "string",
+        "labelOf": "fudoki:budget-class:code",
+        "description": "予算区分の表示名"
+      }
+    ]
+  ],
+  "fudoki": {
+    "specification": {
+      "version": "1.0.0",
+      "url": "https://fiscal.datapackage.org/",
+      "profile": "https://fiscal.datapackage.org/profiles/fiscal-data-package.json"
+    },
+    "standardTaxonomy": "Budget Standard Taxonomy 1.0.0",
+    "cofog": {
+      "version": "COFOG 1999",
+      "divisions": "01〜10",
+      "source": {
+        "name": "UNSD Classification of the Functions of Government (COFOG)",
+        "url": "https://unstats.un.org/unsd/classifications/Family/Detail/4"
+      }
+    },
+    "note": "正本（expenditure / revenue）は原典を正規化しただけで fudoki の判断を含まない。COFOG の割り当ては派生（expenditure-cofog）にある。FDP は全要素が任意なので、COFOG 列を持たない正本も適合した FDP になる。"
+  },
+  "fiscalPeriod": {
+    "start": "2018-04-01",
+    "end": "2024-03-31"
+  },
+  "licenses": [
+    {
+      "name": "CC-BY-4.0",
+      "path": "https://creativecommons.org/licenses/by/4.0/"
+    }
+  ],
+  "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）",
+  "sources": [
+    {
+      "title": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）",
+      "path": "https://www.city.komae.tokyo.jp/index.cfm/32,0,224,1108,html"
+    },
+    {
+      "title": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）",
+      "path": "https://www.city.komae.tokyo.jp/index.cfm/32,0,224,1108,html"
+    },
+    {
+      "title": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）",
+      "path": "https://www.city.komae.tokyo.jp/index.cfm/32,0,224,1108,html"
+    },
+    {
+      "title": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）",
+      "path": "https://www.city.komae.tokyo.jp/index.cfm/32,0,224,1108,html"
+    },
+    {
+      "title": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）",
+      "path": "https://www.city.komae.tokyo.jp/index.cfm/32,0,224,1108,html"
+    },
+    {
+      "title": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）",
+      "path": "https://www.city.komae.tokyo.jp/index.cfm/32,0,224,1108,html"
+    }
+  ],
+  "constants": {
+    "jurisdictionCode": "132195",
+    "jurisdictionName": "狛江市",
+    "currency": "JPY"
+  },
+  "fudokiSourceDocument": [
+    "決算"
+  ],
+  "provenance": [
+    {
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2018,
+      "direction": "expenditure",
+      "dataset_title": "決算書歳出データ（2018）",
+      "resource_name": "決算書歳出データ（2018）",
+      "fiscal_year_basis": "CKAN のリソース名「決算書歳出データ（2018）」の「（2018）」から解決",
+      "request_url": "https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_kessan2018saisyutu.csv",
+      "status": 200,
+      "bytes": 322262,
+      "sha256": "3e4362668b58219b0bceeb88704ecd489ce1f0bcc9372c68470c4f6f5483b85f",
+      "fetched_at": "2026-08-22T08:11:46+00:00",
+      "encoding": "utf-8",
+      "header": [
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "所属",
+        "所属名称",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "大事業",
+        "中事業",
+        "小事業",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算額(円)",
+        "充流用等増減額(円)",
+        "予算計(円)",
+        "執行累計(円)",
+        "予算残額(円)",
+        "執行率(％)"
+      ],
+      "rows": 2178,
+      "roundtrip_verified": true,
+      "license_id": "CC-BY-4.0",
+      "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+    },
+    {
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2018,
+      "direction": "revenue",
+      "dataset_title": "決算書歳入データ（2018）",
+      "resource_name": "決算書歳入データ（2018）",
+      "fiscal_year_basis": "CKAN のリソース名「決算書歳入データ（2018）」の「（2018）」から解決",
+      "request_url": "https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_kessan2018sainyu.csv",
+      "status": 200,
+      "bytes": 91545,
+      "sha256": "61737c1ac430d3d900f7d43ec1cd6fbaa37f1df28c459ab0b05c9202cc205c6e",
+      "fetched_at": "2026-08-22T08:12:40+00:00",
+      "encoding": "utf-8",
+      "header": [
+        "所属コード",
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算現額(千円)",
+        "調定累計(円)",
+        "収入累計(円)",
+        "不納欠損額(円)",
+        "還付未済額(円)",
+        "収入未済額(円)",
+        "予算残額(円)",
+        "予算比(％)",
+        "収入率(％)"
+      ],
+      "rows": 667,
+      "roundtrip_verified": true,
+      "license_id": "CC-BY-4.0",
+      "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+    },
+    {
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2019,
+      "direction": "expenditure",
+      "dataset_title": "決算書歳出データ（2019）",
+      "resource_name": "決算書歳出データ（2019）",
+      "fiscal_year_basis": "CKAN のリソース名「決算書歳出データ（2019）」の「（2019）」から解決",
+      "request_url": "https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_kessan2019saisyutu.csv",
+      "status": 200,
+      "bytes": 327455,
+      "sha256": "0418cd63aaa4ed040ea4f3c3c19e648a62154c96e1631fa7bc32d9fefa3b07b8",
+      "fetched_at": "2026-08-22T08:10:11+00:00",
+      "encoding": "utf-8",
+      "header": [
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "所属",
+        "所属名称",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "大事業",
+        "中事業",
+        "小事業",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算額(円)",
+        "充流用等増減額(円)",
+        "予算計(円)",
+        "執行累計(円)",
+        "予算残額(円)",
+        "執行率(％)"
+      ],
+      "rows": 2211,
+      "roundtrip_verified": true,
+      "license_id": "CC-BY-4.0",
+      "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+    },
+    {
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2019,
+      "direction": "revenue",
+      "dataset_title": "決算書歳入データ（2019）",
+      "resource_name": "決算書歳入データ（2019）",
+      "fiscal_year_basis": "CKAN のリソース名「決算書歳入データ（2019）」の「（2019）」から解決",
+      "request_url": "https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_kessan2019sainyu.csv",
+      "status": 200,
+      "bytes": 95906,
+      "sha256": "a27d7fa3e8723b392c33d37532553f8b37905f6f03920b47d5afb89720480dd7",
+      "fetched_at": "2026-08-22T08:13:13+00:00",
+      "encoding": "utf-8",
+      "header": [
+        "所属コード",
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算現額(千円)",
+        "調定累計(円)",
+        "収入累計(円)",
+        "不納欠損額(円)",
+        "還付未済額(円)",
+        "収入未済額(円)",
+        "予算残額(円)",
+        "予算比(％)",
+        "収入率(％)"
+      ],
+      "rows": 697,
+      "roundtrip_verified": true,
+      "license_id": "CC-BY-4.0",
+      "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+    },
+    {
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2020,
+      "direction": "expenditure",
+      "dataset_title": "決算書歳出データ（2020）",
+      "resource_name": "決算書歳出データ（2020）",
+      "fiscal_year_basis": "CKAN のリソース名「決算書歳出データ（2020）」の「（2020）」から解決",
+      "request_url": "https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_kessan2020saisyutu.csv",
+      "status": 200,
+      "bytes": 340053,
+      "sha256": "afa77efd530603b989dc55706ce8789dd07b0325d271717359fb99122ff93cf2",
+      "fetched_at": "2026-08-22T08:16:54+00:00",
+      "encoding": "utf-8",
+      "header": [
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "所属",
+        "所属名称",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "大事業",
+        "中事業",
+        "小事業",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算額(円)",
+        "充流用等増減額(円)",
+        "予算計(円)",
+        "執行累計(円)",
+        "予算残額(円)",
+        "執行率(％)"
+      ],
+      "rows": 2298,
+      "roundtrip_verified": true,
+      "license_id": "CC-BY-4.0",
+      "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+    },
+    {
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2020,
+      "direction": "revenue",
+      "dataset_title": "決算書歳入データ（2020）",
+      "resource_name": "決算書歳入データ（2020）",
+      "fiscal_year_basis": "CKAN のリソース名「決算書歳入データ（2020）」の「（2020）」から解決",
+      "request_url": "https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_kessan2020sainyu.csv",
+      "status": 200,
+      "bytes": 96357,
+      "sha256": "2639b9d6daa13b3d23090300e76d9198990f67d4fa2ff406274dd1e45a52544d",
+      "fetched_at": "2026-08-22T08:16:58+00:00",
+      "encoding": "utf-8",
+      "header": [
+        "所属コード",
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算現額(千円)",
+        "調定累計(円)",
+        "収入累計(円)",
+        "不納欠損額(円)",
+        "還付未済額(円)",
+        "収入未済額(円)",
+        "予算残額(円)",
+        "予算比(％)",
+        "収入率(％)"
+      ],
+      "rows": 700,
+      "roundtrip_verified": true,
+      "license_id": "CC-BY-4.0",
+      "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+    },
+    {
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2021,
+      "direction": "expenditure",
+      "dataset_title": "決算書歳出データ（2021）",
+      "resource_name": "決算書歳出データ（2021）",
+      "fiscal_year_basis": "CKAN のリソース名「決算書歳出データ（2021）」の「（2021）」から解決",
+      "request_url": "https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_kessan2021saisyutu.csv",
+      "status": 200,
+      "bytes": 336665,
+      "sha256": "cf4d7de8ed8e819b25c3ac69541ef7cdb69fa32550d04f89b48e8958643f290f",
+      "fetched_at": "2026-08-22T08:10:19+00:00",
+      "encoding": "utf-8",
+      "header": [
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "所属",
+        "所属名称",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "大事業",
+        "中事業",
+        "小事業",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算額(円)",
+        "充流用等増減額(円)",
+        "予算計(円)",
+        "執行累計(円)",
+        "予算残額(円)",
+        "執行率(％)"
+      ],
+      "rows": 2266,
+      "roundtrip_verified": true,
+      "license_id": "CC-BY-4.0",
+      "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+    },
+    {
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2021,
+      "direction": "revenue",
+      "dataset_title": "決算書歳入データ（2021）",
+      "resource_name": "決算書歳入データ（2021）",
+      "fiscal_year_basis": "CKAN のリソース名「決算書歳入データ（2021）」の「（2021）」から解決",
+      "request_url": "https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_kessan2021sainyu.csv",
+      "status": 200,
+      "bytes": 96667,
+      "sha256": "5e2772fb2d152e46ba2bdd3f76244697f1afd0de654fb2463dab74283456f320",
+      "fetched_at": "2026-08-22T08:15:34+00:00",
+      "encoding": "utf-8",
+      "header": [
+        "所属コード",
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算現額(千円)",
+        "調定累計(円)",
+        "収入累計(円)",
+        "不納欠損額(円)",
+        "還付未済額(円)",
+        "収入未済額(円)",
+        "予算残額(円)",
+        "予算比(％)",
+        "収入率(％)"
+      ],
+      "rows": 698,
+      "roundtrip_verified": true,
+      "license_id": "CC-BY-4.0",
+      "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+    },
+    {
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2022,
+      "direction": "expenditure",
+      "dataset_title": "決算書歳出データ（2022）",
+      "resource_name": "決算書歳出データ（2022）",
+      "fiscal_year_basis": "CKAN のリソース名「決算書歳出データ（2022）」の「（2022）」から解決",
+      "request_url": "https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_kessan2022saisyutu.csv",
+      "status": 200,
+      "bytes": 288651,
+      "sha256": "c3e8be28ec3241d9ed8ef2237e566c02b41027739bdf6929a11fd7c919c49ae3",
+      "fetched_at": "2026-08-22T08:10:28+00:00",
+      "encoding": "cp932",
+      "header": [
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "所属",
+        "所属名称",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "大事業",
+        "中事業",
+        "小事業",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算額(円)",
+        "充流用等増減額(円)",
+        "予算計(円)",
+        "執行累計(円)",
+        "予算残額(円)",
+        "執行率(％)"
+      ],
+      "rows": 2284,
+      "roundtrip_verified": true,
+      "license_id": "CC-BY-4.0",
+      "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+    },
+    {
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2022,
+      "direction": "revenue",
+      "dataset_title": "決算書歳入データ（2022）",
+      "resource_name": "決算書歳入データ（2022）",
+      "fiscal_year_basis": "CKAN のリソース名「決算書歳入データ（2022）」の「（2022）」から解決",
+      "request_url": "https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_kessan2022sainyu.csv",
+      "status": 200,
+      "bytes": 85030,
+      "sha256": "23fb6e8444d7ded7af91e6d289a42701dca1f94e1c2aace1e1fe55d899828ec8",
+      "fetched_at": "2026-08-22T08:10:33+00:00",
+      "encoding": "cp932",
+      "header": [
+        "所属コード",
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算現額(千円)",
+        "調定累計(円)",
+        "収入累計(円)",
+        "不納欠損額(円)",
+        "還付未済額(円)",
+        "収入未済額(円)",
+        "予算残額(円)",
+        "予算比(％)",
+        "収入率(％)"
+      ],
+      "rows": 715,
+      "roundtrip_verified": true,
+      "license_id": "CC-BY-4.0",
+      "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+    },
+    {
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2023,
+      "direction": "expenditure",
+      "dataset_title": "決算書歳出データ（2023）",
+      "resource_name": "決算書歳出データ（2023）",
+      "fiscal_year_basis": "CKAN のリソース名「決算書歳出データ（2023）」の「（2023）」から解決",
+      "request_url": "https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_kessan2023saisyutu.csv",
+      "status": 200,
+      "bytes": 280581,
+      "sha256": "26c342106b395d8a459076e137129d98a97b8cb15b97adc29d35a3638143814d",
+      "fetched_at": "2026-08-22T08:10:35+00:00",
+      "encoding": "cp932",
+      "header": [
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "所属",
+        "所属名称",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "大事業",
+        "中事業",
+        "小事業",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算額(円)",
+        "充流用等増減額(円)",
+        "予算計(円)",
+        "執行累計(円)",
+        "予算残額(円)",
+        "執行率(％)"
+      ],
+      "rows": 2224,
+      "roundtrip_verified": true,
+      "license_id": "CC-BY-4.0",
+      "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+    },
+    {
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2023,
+      "direction": "revenue",
+      "dataset_title": "決算書歳入データ（2023）",
+      "resource_name": "決算書歳入データ（2023）",
+      "fiscal_year_basis": "CKAN のリソース名「決算書歳入データ（2023）」の「（2023）」から解決",
+      "request_url": "https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_kessan2023sainyu.csv",
+      "status": 200,
+      "bytes": 88167,
+      "sha256": "14d5d00db95a9d81de10f72c4792c9dc06f3d7ad17209b13893edbcf5012533b",
+      "fetched_at": "2026-08-22T08:16:42+00:00",
+      "encoding": "cp932",
+      "header": [
+        "所属コード",
+        "年度",
+        "予算区分",
+        "予算区分名称",
+        "対象年月",
+        "会計",
+        "会計名称",
+        "款",
+        "項",
+        "目",
+        "節",
+        "細節",
+        "細々節",
+        "科目名称",
+        "予算現額(千円)",
+        "調定累計(円)",
+        "収入累計(円)",
+        "不納欠損額(円)",
+        "還付未済額(円)",
+        "収入未済額(円)",
+        "予算残額(円)",
+        "予算比(％)",
+        "収入率(％)"
+      ],
+      "rows": 742,
+      "roundtrip_verified": true,
+      "license_id": "CC-BY-4.0",
+      "attribution": "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+    }
+  ],
+  "resources": [
+    {
+      "name": "expenditure",
+      "path": "expenditure.csv",
+      "profile": "tabular-data-resource",
+      "title": "歳出",
+      "description": "原典1行を予算段階ごとの行へ展開している。判断を含まない",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "bytes": 9775196,
+      "hash": "sha256:98e83c515b94359e9ba9c02815d05f03b768685225a50ea058ac6eb656e88a01",
+      "dialect": {
+        "delimiter": ",",
+        "header": true
+      },
+      "schema": {
+        "fields": [
+          {
+            "name": "budget_line_id",
+            "title": "予算行の識別子",
+            "type": "string",
+            "description": "団体コード・年度・direction・予算段階と、階層のセル全文から導いた安定キー",
+            "columnType": "budget-line-id"
+          },
+          {
+            "name": "fiscal_year",
+            "title": "会計年度（西暦）",
+            "type": "integer",
+            "description": "原典に年度の列が無いため、CKAN のリソース名から解決して付与した",
+            "columnType": "date:fiscal-year"
+          },
+          {
+            "name": "phase_id",
+            "title": "予算段階",
+            "type": "string",
+            "columnType": "phase:id"
+          },
+          {
+            "name": "phase_label",
+            "title": "予算段階の表示名",
+            "type": "string",
+            "columnType": "phase:label",
+            "labelOf": "phase:id"
+          },
+          {
+            "name": "source_row",
+            "title": "原典の物理行番号",
+            "type": "integer",
+            "description": "ヘッダを1行目として数える。特定のスナップショット内でのみ意味を持つ",
+            "columnType": "fudoki:source:row"
+          },
+          {
+            "name": "org_code",
+            "title": "所属コード",
+            "type": "string",
+            "columnType": "administrative-classification:generic:level1:code",
+            "description": "予算を執行する部課。狛江市は階層だけでは行が一意にならず、所属まで含めて初めて一意になる"
+          },
+          {
+            "name": "org_label",
+            "title": "所属名",
+            "type": "string",
+            "columnType": "administrative-classification:generic:level1:label",
+            "description": "狛江市の歳入には所属名称の列が原典に無いため空",
+            "labelOf": "administrative-classification:generic:level1:code"
+          },
+          {
+            "name": "budget_class_code",
+            "title": "予算区分コード",
+            "type": "string",
+            "columnType": "fudoki:budget-class:code",
+            "description": "0=現年度 / 1=繰越明許 / 2=事故繰越"
+          },
+          {
+            "name": "budget_class_label",
+            "title": "予算区分",
+            "type": "string",
+            "columnType": "fudoki:budget-class:label",
+            "labelOf": "fudoki:budget-class:code"
+          },
+          {
+            "name": "fund_code",
+            "title": "会計コード",
+            "type": "string",
+            "columnType": "fund:code"
+          },
+          {
+            "name": "fund_label",
+            "title": "会計名",
+            "type": "string",
+            "columnType": "fund:label",
+            "labelOf": "fund:code"
+          },
+          {
+            "name": "kan_code",
+            "title": "款コード",
+            "type": "string",
+            "columnType": "functional-classification:generic:level1:code"
+          },
+          {
+            "name": "kan_label",
+            "title": "款名",
+            "type": "string",
+            "columnType": "functional-classification:generic:level1:label",
+            "labelOf": "functional-classification:generic:level1:code"
+          },
+          {
+            "name": "kou_code",
+            "title": "項コード",
+            "type": "string",
+            "columnType": "functional-classification:generic:level2:code"
+          },
+          {
+            "name": "kou_label",
+            "title": "項名",
+            "type": "string",
+            "columnType": "functional-classification:generic:level2:label",
+            "labelOf": "functional-classification:generic:level2:code"
+          },
+          {
+            "name": "moku_code",
+            "title": "目コード",
+            "type": "string",
+            "columnType": "functional-classification:generic:level3:code"
+          },
+          {
+            "name": "moku_label",
+            "title": "目名",
+            "type": "string",
+            "columnType": "functional-classification:generic:level3:label",
+            "labelOf": "functional-classification:generic:level3:code"
+          },
+          {
+            "name": "daijigyo_code",
+            "title": "大事業コード",
+            "type": "string",
+            "columnType": "activity:generic:program:code",
+            "description": "狛江市の事業階層の第1段。⚠️ コードは目をまたいで再利用される（実測 6年度で 42 通りのコードが 694 通りの目・大事業の組を作る）ので、これ単独では識別子にならない"
+          },
+          {
+            "name": "daijigyo_label",
+            "title": "大事業名",
+            "type": "string",
+            "columnType": "activity:generic:program:label",
+            "description": "⚠️ **狛江市の原典に大事業の名称は無い。** 常に空。事業の粒度には届いているが、その事業が何かは原典から分からない",
+            "labelOf": "activity:generic:program:code"
+          },
+          {
+            "name": "chujigyo_code",
+            "title": "中事業コード",
+            "type": "string",
+            "columnType": "activity:generic:subprogram:code",
+            "description": "⚠️ 狛江市では全行がプレースホルダ（`0`）。列としては存在するが1件も使われていない（実測 6 年度）"
+          },
+          {
+            "name": "chujigyo_label",
+            "title": "中事業名",
+            "type": "string",
+            "columnType": "activity:generic:subprogram:label",
+            "labelOf": "activity:generic:subprogram:code"
+          },
+          {
+            "name": "shojigyo_code",
+            "title": "小事業コード",
+            "type": "string",
+            "columnType": "activity:generic:project:code",
+            "description": "⚠️ 狛江市では全行がプレースホルダ（`0`）"
+          },
+          {
+            "name": "shojigyo_label",
+            "title": "小事業名",
+            "type": "string",
+            "columnType": "activity:generic:project:label",
+            "labelOf": "activity:generic:project:code"
+          },
+          {
+            "name": "setsu_code",
+            "title": "節コード",
+            "type": "string",
+            "columnType": "economic-classification:generic:level1:code"
+          },
+          {
+            "name": "setsu_label",
+            "title": "節名",
+            "type": "string",
+            "columnType": "economic-classification:generic:level1:label",
+            "labelOf": "economic-classification:generic:level1:code"
+          },
+          {
+            "name": "saisetsu_code",
+            "title": "細節コード",
+            "type": "string",
+            "columnType": "fin-source:generic:level5:code"
+          },
+          {
+            "name": "saisetsu_label",
+            "title": "細節名",
+            "type": "string",
+            "columnType": "fin-source:generic:level5:label",
+            "labelOf": "fin-source:generic:level5:code"
+          },
+          {
+            "name": "saisaisetsu_code",
+            "title": "細々節コード",
+            "type": "string",
+            "columnType": "economic-classification:generic:level2:code"
+          },
+          {
+            "name": "saisaisetsu_label",
+            "title": "細々節名",
+            "type": "string",
+            "columnType": "economic-classification:generic:level2:label",
+            "labelOf": "economic-classification:generic:level2:code"
+          },
+          {
+            "name": "value",
+            "title": "金額（JPY）",
+            "type": "number",
+            "description": "原典の千円を円へ正規化した値",
+            "columnType": "value"
+          },
+          {
+            "name": "source_amount",
+            "title": "原典の金額",
+            "type": "number",
+            "columnType": "fudoki:source:amount"
+          },
+          {
+            "name": "source_amount_unit",
+            "title": "原典の金額の単位",
+            "type": "string",
+            "columnType": "fudoki:source:amount-unit"
+          }
+        ],
+        "primaryKey": [
+          "budget_line_id",
+          "phase_id"
+        ]
+      },
+      "fudokiPhases": [
+        {
+          "id": "adjusted-before-transfer",
+          "label": "補正後予算額（流用・充用前）",
+          "sourceColumn": "予算額(円)",
+          "sourceAmountUnit": "円"
+        },
+        {
+          "id": "adjusted",
+          "label": "予算現額",
+          "sourceColumn": "予算計(円)",
+          "sourceAmountUnit": "円"
+        },
+        {
+          "id": "executed",
+          "label": "執行済額",
+          "sourceColumn": "執行累計(円)",
+          "sourceAmountUnit": "円"
+        }
+      ]
+    },
+    {
+      "name": "revenue",
+      "path": "revenue.csv",
+      "profile": "tabular-data-resource",
+      "title": "歳入",
+      "description": "原典1行を予算段階ごとの行へ展開している。判断を含まない",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "bytes": 1692661,
+      "hash": "sha256:c56b720d0006c123a8b51621b596580a7519510df4fa2af8b9ac9fbeb9496cc3",
+      "dialect": {
+        "delimiter": ",",
+        "header": true
+      },
+      "schema": {
+        "fields": [
+          {
+            "name": "budget_line_id",
+            "title": "予算行の識別子",
+            "type": "string",
+            "description": "団体コード・年度・direction・予算段階と、階層のセル全文から導いた安定キー",
+            "columnType": "budget-line-id"
+          },
+          {
+            "name": "fiscal_year",
+            "title": "会計年度（西暦）",
+            "type": "integer",
+            "description": "原典に年度の列が無いため、CKAN のリソース名から解決して付与した",
+            "columnType": "date:fiscal-year"
+          },
+          {
+            "name": "phase_id",
+            "title": "予算段階",
+            "type": "string",
+            "columnType": "phase:id"
+          },
+          {
+            "name": "phase_label",
+            "title": "予算段階の表示名",
+            "type": "string",
+            "columnType": "phase:label",
+            "labelOf": "phase:id"
+          },
+          {
+            "name": "source_row",
+            "title": "原典の物理行番号",
+            "type": "integer",
+            "description": "ヘッダを1行目として数える。特定のスナップショット内でのみ意味を持つ",
+            "columnType": "fudoki:source:row"
+          },
+          {
+            "name": "org_code",
+            "title": "所属コード",
+            "type": "string",
+            "columnType": "administrative-classification:generic:level1:code",
+            "description": "予算を執行する部課。狛江市は階層だけでは行が一意にならず、所属まで含めて初めて一意になる"
+          },
+          {
+            "name": "org_label",
+            "title": "所属名",
+            "type": "string",
+            "columnType": "administrative-classification:generic:level1:label",
+            "description": "狛江市の歳入には所属名称の列が原典に無いため空",
+            "labelOf": "administrative-classification:generic:level1:code"
+          },
+          {
+            "name": "budget_class_code",
+            "title": "予算区分コード",
+            "type": "string",
+            "columnType": "fudoki:budget-class:code",
+            "description": "0=現年度 / 1=繰越明許 / 2=事故繰越"
+          },
+          {
+            "name": "budget_class_label",
+            "title": "予算区分",
+            "type": "string",
+            "columnType": "fudoki:budget-class:label",
+            "labelOf": "fudoki:budget-class:code"
+          },
+          {
+            "name": "fund_code",
+            "title": "会計コード",
+            "type": "string",
+            "columnType": "fund:code"
+          },
+          {
+            "name": "fund_label",
+            "title": "会計名",
+            "type": "string",
+            "columnType": "fund:label",
+            "labelOf": "fund:code"
+          },
+          {
+            "name": "kan_code",
+            "title": "款コード",
+            "type": "string",
+            "columnType": "functional-classification:generic:level1:code"
+          },
+          {
+            "name": "kan_label",
+            "title": "款名",
+            "type": "string",
+            "columnType": "functional-classification:generic:level1:label",
+            "labelOf": "functional-classification:generic:level1:code"
+          },
+          {
+            "name": "kou_code",
+            "title": "項コード",
+            "type": "string",
+            "columnType": "functional-classification:generic:level2:code"
+          },
+          {
+            "name": "kou_label",
+            "title": "項名",
+            "type": "string",
+            "columnType": "functional-classification:generic:level2:label",
+            "labelOf": "functional-classification:generic:level2:code"
+          },
+          {
+            "name": "moku_code",
+            "title": "目コード",
+            "type": "string",
+            "columnType": "functional-classification:generic:level3:code"
+          },
+          {
+            "name": "moku_label",
+            "title": "目名",
+            "type": "string",
+            "columnType": "functional-classification:generic:level3:label",
+            "labelOf": "functional-classification:generic:level3:code"
+          },
+          {
+            "name": "setsu_code",
+            "title": "節コード",
+            "type": "string",
+            "columnType": "economic-classification:generic:level1:code"
+          },
+          {
+            "name": "setsu_label",
+            "title": "節名",
+            "type": "string",
+            "columnType": "economic-classification:generic:level1:label",
+            "labelOf": "economic-classification:generic:level1:code"
+          },
+          {
+            "name": "saisetsu_code",
+            "title": "細節コード",
+            "type": "string",
+            "columnType": "fin-source:generic:level5:code"
+          },
+          {
+            "name": "saisetsu_label",
+            "title": "細節名",
+            "type": "string",
+            "columnType": "fin-source:generic:level5:label",
+            "labelOf": "fin-source:generic:level5:code"
+          },
+          {
+            "name": "saisaisetsu_code",
+            "title": "細々節コード",
+            "type": "string",
+            "columnType": "economic-classification:generic:level2:code"
+          },
+          {
+            "name": "saisaisetsu_label",
+            "title": "細々節名",
+            "type": "string",
+            "columnType": "economic-classification:generic:level2:label",
+            "labelOf": "economic-classification:generic:level2:code"
+          },
+          {
+            "name": "value",
+            "title": "金額（JPY）",
+            "type": "number",
+            "description": "原典の千円を円へ正規化した値",
+            "columnType": "value"
+          },
+          {
+            "name": "source_amount",
+            "title": "原典の金額",
+            "type": "number",
+            "columnType": "fudoki:source:amount"
+          },
+          {
+            "name": "source_amount_unit",
+            "title": "原典の金額の単位",
+            "type": "string",
+            "columnType": "fudoki:source:amount-unit"
+          }
+        ],
+        "primaryKey": [
+          "budget_line_id",
+          "phase_id"
+        ]
+      },
+      "fudokiPhases": [
+        {
+          "id": "adjusted",
+          "label": "予算現額",
+          "sourceColumn": "予算現額(千円)",
+          "sourceAmountUnit": "千円"
+        },
+        {
+          "id": "executed",
+          "label": "収入済額",
+          "sourceColumn": "収入累計(円)",
+          "sourceAmountUnit": "円"
+        }
+      ]
+    }
+  ]
+}

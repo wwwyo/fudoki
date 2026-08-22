@@ -24,14 +24,14 @@ export function CaveatsPanel({ report }: { report: ReportData }) {
       </section>
 
       <section className="flex flex-col gap-2">
-        <h3 className="font-medium">2団体目へ展開するときに何を確かめるか</h3>
+        <h3 className="font-medium">他団体へ展開できるか（2団体目を通した結果）</h3>
         <p className="max-w-[72ch] text-sm text-muted-foreground">
-          「再利用可能と判明した」は1団体では言えない。判定できないものは判定できないと書く。
+          「再利用可能と判明した」は1団体では言えない。2団体目（狛江市）を通して分かったことと、まだ判定できないことを分けて書く。
         </p>
         <div className="overflow-x-auto rounded-lg border">
           <Table>
             <TableHeader>
-              <TableRow><TableHead>区分</TableHead><TableHead>要素</TableHead><TableHead>2団体目で確かめること</TableHead></TableRow>
+              <TableRow><TableHead>区分</TableHead><TableHead>要素</TableHead><TableHead>根拠 / 次に確かめること</TableHead></TableRow>
             </TableHeader>
             <TableBody>
               {report.portability.map((p, i) => (

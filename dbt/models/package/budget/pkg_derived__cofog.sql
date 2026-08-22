@@ -19,35 +19,36 @@
 -- 根拠（basis）もここには置かない。**規則ごとに1つ**なので行に複製すると
 -- ファイルの大半が同じ文字列の繰り返しになる（実測 1,150 KB のうち大半）。
 -- cofog_rules.csv に規則表として出し、cofog_rule_id で join する。
+-- ⚠️ **団体ごとの staging を join しない。** join すると団体を足すたびに union が増え、
+-- 足し忘れが配布物から黙って落ちる。core は core_budget_lines / core_revenue_lines で
+-- 既に団体をまたいでおり、そこに届いているかは budget_core_covers_all_staging が縛る。
 select
-    c.jurisdiction_code,
-    c.fiscal_year,
-    c.direction,
-    s.budget_line_id,
-    c.cofog_status,
-    c.cofog_division,
-    c.cofog_consolidation,
-    c.cofog_decided_at_level,
-    c.cofog_rule_id,
-    c.cofog_counterpart_fund
-from {{ ref('core_budget_cofog') }} as c
-inner join {{ ref('stg_132047__expenditure') }} as s using (budget_line_id)
+    jurisdiction_code,
+    fiscal_year,
+    direction,
+    budget_line_id,
+    cofog_status,
+    cofog_division,
+    cofog_consolidation,
+    cofog_decided_at_level,
+    cofog_rule_id,
+    cofog_counterpart_fund
+from {{ ref('core_budget_cofog') }}
 
 union all
 
 select
-    c.jurisdiction_code,
-    c.fiscal_year,
-    c.direction,
-    s.budget_line_id,
-    c.cofog_status,
-    c.cofog_division,
-    c.cofog_consolidation,
-    c.cofog_decided_at_level,
-    c.cofog_rule_id,
-    c.cofog_counterpart_fund
-from {{ ref('core_revenue_consolidation') }} as c
-inner join {{ ref('stg_132047__revenue') }} as s using (budget_line_id)
+    jurisdiction_code,
+    fiscal_year,
+    direction,
+    budget_line_id,
+    cofog_status,
+    cofog_division,
+    cofog_consolidation,
+    cofog_decided_at_level,
+    cofog_rule_id,
+    cofog_counterpart_fund
+from {{ ref('core_revenue_consolidation') }}
 
 -- **並びを固定する。** 指定しないと実行ごとに行順が変わり、
 -- 中身が同じでも git に毎回 2,048 行の差分が出る。

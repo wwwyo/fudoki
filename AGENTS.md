@@ -141,6 +141,11 @@ mySociety が TheyWorkForYou（UK専用サイト）と SayIt（汎用ツール�
 
 ただし**全団体ではない**。粒度を判定できたのは6団体（うち事業単位は三鷹市と狛江市の2団体）で、残りは候補が見つからないか判定に至らなかった。「N団体で確認した」以上の主張をしない。
 
+⚠️ **さらに、この表の「事業列がある」は名称があることを意味しない。** 狛江市を実際に収録して分かったのは、
+大事業・中事業・小事業のうち**使われているのは大事業だけ**で、しかも**名称の列が原典に無い**ということだった
+（列構成での判定は正しかったが、判定できるのは列の有無までである）。
+名称の有無まで測るには実物を収録するしかない。詳細は「2団体目で分かったこと」の節。
+
 ⚠️ **manifest の `openData.budget` は団体ごとの代表1件であって、母集団ではない。** 初版のこのスクリプトはそこだけを見て「事業単位のデータは0件」という誤った結論を出した（狛江は28件・多摩は20件のデータセットを持ち、代表1件がたまたま指標表だった）。**フィールド名を中身の保証と取り違えた（原則3違反）うえ、代表1件を母集団として扱った（原則4違反）。**
 
 #### ② 官公需 API は tender までしか埋めない（2026-08-14 実測）
@@ -202,7 +207,7 @@ core の出力（派生）は自治体が言っていないことを含むので
 設計上は分離していたのに、③が落ちたら①も動かない状態だった。
 
 ⚠️ **`observations/` はこの文書の主張の出所である。**
-「事業単位に届いたのは2団体」「取得してよい17団体」「9年度中17リソースが互換」は
+「事業単位に届いたのは2団体」「狛江市の中事業・小事業は全行 `0`」「取得してよい17団体」「9年度中17リソースが互換」は
 すべてここの観測から出ている。要約ではなく原文・URL・status・SHA-256・取得時刻を残し、
 主張を裏取りできる状態にしてある。
 
@@ -276,13 +281,13 @@ uv add --exclude-newer $(date -v-7d +%Y-%m-%d) <package>
 | [ParlParse](https://github.com/mysociety/parlparse) | UK議会のスクレイパ／パーサ。`pyscraper/` `members/` `rawdata/` の分離と、**議員マスタを独立させる**設計 |
 | [SayIt](https://www.mysociety.org/democracy/sayit/) | 議事録公開の汎用ツール。全文検索・話者フィルタ・**発言単位の permalink**・SEO という機能セット |
 | [Open States / Plural Open](https://open.pluralpolicy.com/) | 米50州の立法データを標準化して無料 API + bulk download で配布。Popolo ベースのスキーマ運用 |
-| [世界銀行 BOOST](https://www.worldbank.org/en/programs/boost-portal) | **立ち位置が一番近い**。政府の IFMIS や予算書から第三者が細粒度 DB を起こす型（90カ国超）。日本でも三鷹市と狛江市のように発生源が既に構造化して出している団体はあるが、実測では母集団62団体のうち事業単位に届いたのは2団体で、大半は第三者が起こす必要がある |
+| [世界銀行 BOOST](https://www.worldbank.org/en/programs/boost-portal) | **立ち位置が一番近い**。政府の IFMIS や予算書から第三者が細粒度 DB を起こす型（90カ国超）。日本でも三鷹市と狛江市のように発生源が既に構造化して出している団体はあるが、実測では母集団62団体のうち事業単位に届いたのは2団体で、大半は第三者が起こす必要がある。⚠️ しかも狛江市は**事業に名称が無い**ので、名称を補うには結局 BOOST 型（PDF から第三者が起こす）が要る |
 | [ProZorro](https://prozorro.gov.ua/en) / [bi.prozorro.org](https://bi.prozorro.org/) | 調達データを OCDS で構造化し、公開 API と分析ダッシュボードを分離して出す型 |
 | [SNG-WOFI](https://www.sng-wofi.org/)（OECD/UCLG）・[Eurostat COFOG](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Government_expenditure_by_function_%E2%80%93_COFOG) | 国 × 地方政府合計 × COFOG は既に整備済み。**個別自治体 × 事業（目）× COFOG が空白**で、そこが fudoki の位置 |
 | [OC4IDS](https://standard.open-contracting.org/infrastructure/latest/en/)（v0.9.5、現役） | **事業（project）を単位に据えて、予算と調達を束ねる**モデル。対象はインフラだが、①と②を事業でつなぐ構造は fudoki に最も近い |
 | 米国 [FDTA](https://xbrl.us/home/priorities/efficiency/fdta/)（2022年法。共同規則は2026年に確定したが、公布日と施行時期は出典により記述が割れるので採用前に一次資料で確認する。規則単体では報告義務を変えず、各機関が個別要件へ適用して初めて効く） | **発生源に機械可読を義務づける**最新事例。対象は自治体の継続開示であって予算明細ではないが、供給側を動かす制度の型として参照する |
 
-## ① 予算：1団体目（三鷹市 令和6年度）を FDP として配布済み
+## ① 予算：2団体（三鷹市 令和6年度当初予算 / 狛江市 2018〜2023年度決算）を FDP として配布済み
 
 ```bash
 bun run pipeline    # 取得 → dbt → 配布物 → 報告
@@ -343,6 +348,89 @@ bun run dev         # 報告を作り直してダッシュボードを上げる
 - **令和4年度の歳入だけ引用符付きのセルがある**（786行）。収録には引用符を解釈するパーサが要る（`bun run survey:budget-years`）
 - **歳出と歳入の合計一致は9年度すべてで成立した。** ただし当初予算に限った条件付き検算のままにしてある
 
+### 2団体目（狛江市 132195）で分かったこと
+
+**構造の粒度と意味の粒度は別物だった。** 狛江市は事業階層（大事業）まで届いているのに、
+**款・項・目・大事業に名称の列が原典に無い**（数字コードだけ）。名称を持つのは会計と最下位階層だけである。
+結果として、fudoki の出発点である「いじめ問題対策協議会関係費にいくら付いたか」は狛江市では答えられない。
+**「事業単位に届いた2団体」という言い方は、狛江市について過大である。**
+
+実測は `data/budget/observations/komae-budget-structure.json` が SSOT（`bun run survey:komae`）。
+
+- **⚠️ 列があることは使われていることを意味しない。** カタログの列構成には
+  「大事業・中事業・小事業」が並ぶが、**中事業・小事業は6年度 13,461 行すべて `0`**。
+  歳出の細節・細々節、歳入の細々節も同じ。実際に使われている事業階層は大事業の1段だけ
+- **⚠️ 階層だけでは行が一意にならない。** 所属（部課）と予算区分（現年度・繰越明許・事故繰越）まで
+  含めて初めて一意になる（2023 歳出 2,224 行が階層だけだと 1,855 通りに潰れる）。
+  識別子の材料でもあるので、宣言（`budget_extra_key_columns`）を落とすと budget_line_id が衝突する
+- **⚠️ 決算書は1行が複数段階の金額を持つ。** 歳出は予算額 / 予算計 / 執行累計。
+  FDP は `value` の列型を1つしか持たず段階を**行の列**で表すので、package 段で段階ごとの行へ展開する。
+  主キーも `(budget_line_id, phase_id)` になる。`予算計 = 予算額 + 充流用等増減額` は全行で成立した
+- **⚠️ 「予算額」は当初予算ではない。** 補正まで反映した後の額で、三鷹市の当初予算と並べても同じ段階の比較にならない
+- **⚠️ 同じリソースの中で単位が割れる。** 歳入の予算現額だけ千円で、他はすべて円。
+  単位を descriptor の定数にできるのは1種類のときだけ
+- **⚠️ 文字コードが年度で変わる。** 2018〜2021 は UTF-8（BOM 付き）、2022〜2023 は CP932
+- **⚠️ 同名のデータセットが2件あり、中身が違う。** 2018〜2021 は `/komae/R05/` と `/komae/` に
+  同名で SHA-256 の違うものがある（所属名称の改称、執行率の `-` と `****`）。R05 側が新しい。
+  **先頭を採る実装だと、CKAN の並びが変わった日に配布物の中身が入れ替わる。**
+  複数当たったら止めて `resource_url_contains` の宣言を要求する形にした
+- **⚠️ CKAN の検索 API は `IncompleteRead` を返す。** 5MB 級の応答で実測 5割ほど。
+  切り捨てを成功にしない仕組みはそのままに、切れた取得だけを再試行する
+- **款で決まらない COFOG は、狛江市では決まらないまま残る。** 三鷹市が項・目の名称で決着した
+  衛生費・土木費・教育費・公債費が、狛江市では名称が無いため款のまま分類不能に落ちる（金額で 25.9%）。
+  ⚠️ **分類不能と対象外を畳まないこと** — 公債費の元金償還は三鷹市では「対象外」だが、
+  狛江市は元金と利子を区別できないので「分類不能」である
+- **会計間の繰出・繰入を消去していない。** 受け皿の会計が原典から決まらず、
+  都からの繰入金が一般会計繰入金と同じ款に同居する。推測して消去するより残すほうを採った（原則6）。
+  ⚠️ **狛江市の全会計合計は会計間の移転を二重に含む**（一般会計の繰出金は6年度で 191 億円）
+- **款コードが法定の款番号だという対応は、実測で裏づけたが原典が明示してはいない。**
+  款が 1〜13 で法定の款数と一致し、款11 の節が償還金・利子及び割引料のみ、款13 の節が予備費のみ、
+  所属が款ごとに整合し、歳入は科目名称が款の内容と直接一致する。**それでも原典は「款2は総務費」と書いていない**
+- **歳出の予算計と歳入の予算現額は年度・会計別に一致した**（6年度 32 対）。
+  ただし歳入が千円単位なので円未満は原理的に合わない（差が出たのは2対、いずれも 1,000 円未満）
+- **公共下水道特別会計は 2020 年度から原典に現れない**（公営企業会計へ移行）
+
+### 2団体目を足す手順
+
+**団体差はすべて宣言に出す。** モデルを団体ごとに写経しない（片方だけ直る）。
+
+1. **実測してから決める**（推測で埋めない。原則3・原則4）
+   兄弟間でコードが一意か、コードの桁数、その階層が無い行のプレースホルダ、文字コード、
+   階層だけで行が一意になるか、金額が何段階あるか、単位。
+   観測は `data/budget/observations/` に残し、要約ではなく数字を SSOT にする
+2. `ingestion/budget/sources.toml` に取得元を足す（歳出と歳入でデータセットが別なら
+   `dataset_title` はリソース側に置く。同名のデータセットが複数あるなら `resource_url_contains`）
+3. `uv run python -m ingestion.budget.fetch <団体>:<年度>` で取得。
+   **引数なしなら登録済みの全取得元**を回す（`bun run pipeline` はこれを使う）
+4. `dbt/dbt_project.yml` の vars に1ブロックずつ足す。
+   `budget_levels` / `budget_source_columns` / `budget_extra_key_columns` /
+   `budget_extra_key_source_columns` / `budget_absent_level_markers` / `budget_code_style` /
+   `budget_label_columns` / `budget_extra_key_labels` / `budget_amounts` /
+   `budget_source_year_columns` / `budget_expenditure_revenue_balance`
+5. `dbt/models/staging/budget/_sources.yml` にソースを、`stg_<団体>__{expenditure,revenue}.sql` に
+   `{{ budget_staging('<団体>', '<direction>') }}` の1行を書く（本体はマクロが宣言から組み立てる）
+6. `dbt/models/package/budget/pkg_<団体>__*.sql` を書く。**正本は団体ごとの形のまま**で、
+   共通化しない（揃えることが判断になる）
+7. `dbt/seeds/budget/cofog_rules.csv` に規則を足す。名称が無い団体は `match_kan_code` で当て、
+   何の款かとその出所を `basis` に書く
+8. `fdp/build.py` の `IMPLEMENTED` と `fdp/field_types.json`（新しい列の ColumnType）
+9. `report/budget/static.ts` の `BY_JURISDICTION` に caveats と notYetReconciled
+   （**宣言が無ければ report が止まる**。他団体の caveats を流用させないため）
+10. `bun run pipeline` / `bun run typecheck`（root と web）/ `bun run validate` を通し、
+    `data/budget/` の生成物を commit する（CI が `git diff --exit-code` で見る）
+
+足し忘れは**エラーで止まる**ようにしてある。黙って欠ける事故は起きない。
+
+| 足し忘れたもの | 止める場所 |
+|---|---|
+| staging を足して core の union を直し忘れた | `dbt/tests/budget_core_covers_all_staging.sql` |
+| core を足して派生の union を直し忘れた | `dbt/tests/derived_package_covers_core.sql` |
+| `fdp/build.py` の `IMPLEMENTED` | `sources.toml` の集合と一致しないと停止 |
+| 新しい列の ColumnType | `fdp/build.py`（宣言の無い列は配らない） |
+| 段階・単位の宣言と配布物の食い違い | `fdp/build.py` の `verify_against_csv` |
+| `static.ts` の団体固有の内容 | `report/budget/build.ts`（既定値で埋めない） |
+| 明細の列 | `report/budget/detail.ts`（生成時）と `web/src/lib/pipeline.ts`（読み込み時） |
+
 未確定のまま残したことは、パイプライン報告の Caveats 節にある。
 
 ## スクリプト
@@ -357,11 +445,12 @@ bun run dev         # 報告を作り直してダッシュボードを上げる
 
 | script | 生む commit 済みファイル |
 |---|---|
-| `check:budget` | `data/observations/budget-granularity.json` |
-| `fetch:robots` | `data/observations/robots.json` |
+| `check:budget` | `data/budget/observations/budget-granularity.json` |
+| `fetch:robots` | `data/transcripts/observations/robots.json` |
 | `check:bulletins` | `data/transcripts/bulletins.json` の `schemaCheck` 節 |
 | `fetch:fdp-taxonomy` | `fdp/budget-taxonomy.json` |
-| `survey:budget-years` | `data/observations/mitaka-budget-years.json` |
+| `survey:budget-years` | `data/budget/observations/mitaka-budget-years.json` |
+| `survey:komae` | `data/budget/observations/komae-budget-structure.json` |
 | `validate` | （検査。`data/transcripts/gates.json` を宣言と、`data/shared/jurisdictions.json` とコード集合で突き合わせる） |
 
 ネットワークを叩くので CI では回さない。いずれも観測を `data/observations/` に残し、要約ではなく原文・URL・status・SHA-256・取得時刻を SSOT にする。
@@ -372,6 +461,7 @@ bun run dev         # 報告を作り直してダッシュボードを上げる
 | `bun run check:bulletins` | 議会だより CSV が観測プロファイルに適合するか（列構成で判定） |
 | `bun run check:budget` | 予算系オープンデータが**どの粒度まで届いているか**（列構成で判定。名前では判定しない） |
 | `bun run survey:budget-years` | 三鷹市の他年度が令和6年度と互換か（列構成・金額の型・引用符の有無・会計の範囲） |
+| `bun run survey:komae` | 狛江市の原典が何を持っているか（階層が実際に使われているか・コードの再利用・行の同一性・款コードの裏づけ・歳出と歳入の一致）。**原典を読むだけでネットワークを叩かない** |
 | `bun run pipeline` | 取得 → dbt → 配布物 → 報告。**検査が1つでも落ちたら下流を作らない** |
 | `bun run dev` | 報告を作り直してダッシュボードを上げる（`web/`） |
 | `bun run fetch:fdp-taxonomy` | FDP の ColumnType 一覧を仕様の原文から起こして取り込む（正準 URL が 404 のため） |
@@ -380,9 +470,21 @@ bun run dev         # 報告を作り直してダッシュボードを上げる
 
 - **配布形式は CSV のまま。** 全量（62団体 × 9年度）への外挿は CSV 1.1 GB / gzip 156 MB / Parquet 141 MB。
   gzip は Data Package の仕様に `compression` プロパティが無く、Parquet は `format` が「csv, xls, json etc.」と開いているだけで明記が無い。
-  **62団体のうち1団体しか無い段階で、外挿値だけを根拠に標準から外れる判断はしない。** 実際に増えたときに決める
+  **62団体のうち2団体しか無い段階で、外挿値だけを根拠に標準から外れる判断はしない。** 実際に増えたときに決める。
+  ⚠️ 狛江市の正本は 9.8 MB（歳出）で、三鷹市の 1.4 MB より1桁大きい。
+  年度が6倍あることと、決算書を予算段階ごとの行へ展開していることの両方が効いている
 - **1パッケージに複数年度を入れて FDP のバリデータが通るか未確認。**
   `date:fiscal-year` はそのための ColumnType なので通るはずだが確認する
+- **`adjusted-before-transfer` は fudoki が宣言した予算段階。**
+  FDP の慣行（proposed / approved / adjusted / executed）に該当が無い（狛江市の「予算額」は
+  流用・充用を反映する前の額）。`phase:id` は仕様上ただの文字列なので適合はするが、
+  **他の実装がこの id を知っているわけではない**
+- **狛江市を款別の公表資料と突き合わせていない。**
+  書き写せる資料をまだ見つけていない。現状の根拠は原典の内部整合（歳出と歳入の一致）だけで、
+  外部からの裏づけではない
+- **狛江市の款・項・目の名称を補う経路が無い。**
+  決算書 PDF など別の取得元が要る。名称の無いまま配ることは、事業単位の使途を読めるという
+  fudoki の主張を狛江市については満たしていない
 - **TypeScript 版と同一結果であることの検査は、TypeScript 版を消すときに一緒に消える。**
   そのとき保証されなくなるのは「配布済みの識別子と割当が変わっていないこと」で、
   証明そのものは git 履歴（`944866c` 識別子、`83bd132` COFOG）に残る
