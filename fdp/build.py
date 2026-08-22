@@ -1,6 +1,6 @@
 """dbt の出力を Fiscal Data Package として配れる形にする。
 
-（配布物そのものは data/packages/ にある。ここはそれを組み立てる側）
+（配布物そのものは data/budget/packages/ にある。ここはそれを組み立てる側）
 
 **データは dbt が既に書いている**（`materialized: external`）。
 ここが足すのは datapackage.json だけ、つまり**列の意味づけと出所**である。
@@ -20,8 +20,8 @@ import pathlib
 from ingestion.sources import load_sources
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-PACKAGES = ROOT / "data" / "packages"
-PROVENANCE = ROOT / "data" / "provenance"
+PACKAGES = ROOT / "data" / "budget" / "packages"
+RAW = ROOT / "data" / "budget" / "raw"
 TYPES = json.loads((pathlib.Path(__file__).parent / "field_types.json").read_text())
 # FDP の ColumnType 一覧。**仕様が「正準」と宣言する URL は 404** なので、
 # 仕様の原文（Markdown）から起こして持っている（scripts/fetch-fdp-taxonomy.ts）。
@@ -92,7 +92,7 @@ def resource(path: pathlib.Path, name: str, title: str, description: str, primar
 
 def latest_fetch() -> str:
     """収録した原典のうち最も新しい取得時刻。パッケージの版がいつ時点かを表す"""
-    stamps = [json.loads(p.read_text())["fetched_at"] for p in PROVENANCE.glob("*-*-*.json")]
+    stamps = [json.loads(p.read_text())["fetched_at"] for p in RAW.glob("**/provenance.json")]
     if not stamps:
         raise RuntimeError("証跡が1つも無い。先に ingestion を回すこと")
     return max(stamps)
@@ -130,7 +130,7 @@ def build_jurisdiction(code: str) -> None:
         "自治体が公開した予算データを Fiscal Data Package の形にしたもの。"
         "**fudoki の判断は含まない**（分類・名寄せ・推定を一切していない）。"
         "COFOG の割当は派生パッケージ derived/ にあり、budget_line_id で join する。"
-        "原典そのものは data/raw/ に Parquet で入っている。",
+        "原典そのものは data/budget/raw/ に Parquet で入っている。",
     )
     pkg["fiscalPeriod"] = {"start": f"{years[0]}-04-01", "end": f"{years[-1] + 1}-03-31"}
     pkg["licenses"] = [{"name": srcs[0].license_id, "path": "https://creativecommons.org/licenses/by/4.0/"}]
@@ -144,8 +144,10 @@ def build_jurisdiction(code: str) -> None:
         "currency": "JPY",
         "sourceAmountUnit": {"label": "千円", "multiplier": 1000},
     }
+    # 証跡は取得物の隣にある（data/budget/raw/.../provenance.json）
     pkg["provenance"] = [
-        json.loads(p.read_text()) for p in sorted(PROVENANCE.glob(f"{code}-*-*.json"))
+        json.loads(p.read_text())
+        for p in sorted(RAW.glob(f"jurisdiction={code}/**/provenance.json"))
     ]
     pkg["resources"] = [
         resource(d / "expenditure.csv", "expenditure", "歳出", "原典1行が1行。判断を含まない", ["budget_line_id"]),

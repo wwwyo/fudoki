@@ -195,7 +195,7 @@ export const STATIC: Static = {
   "caveats": [
     {
       "topic": "TypeScript 版との同一性を示す検査は、TypeScript 版とともに削除した",
-      "body": "移行の正しさは、識別子（歳出 5,613 行・歳入 821 行すべて一致）と COFOG の割当（status / division / consolidation / 決まった単位 / 規則 ID がすべて一致）を 1行ずつ突き合わせて示した。証明そのものは git 履歴に残る（識別子は 944866c、COFOG は 83bd132）。**これ以降、識別子が変わっていないことを保証するのは検査ではなく成果物そのもの**である — 正本をリポジトリに commit しているので、導出を変えれば data/packages/132047/expenditure.csv の diff として必ず現れる。"
+      "body": "移行の正しさは、識別子（歳出 5,613 行・歳入 821 行すべて一致）と COFOG の割当（status / division / consolidation / 決まった単位 / 規則 ID がすべて一致）を 1行ずつ突き合わせて示した。証明そのものは git 履歴に残る（識別子は 944866c、COFOG は 83bd132）。**これ以降、識別子が変わっていないことを保証するのは検査ではなく成果物そのもの**である — 正本をリポジトリに commit しているので、導出を変えれば data/budget/packages/132047/expenditure.csv の diff として必ず現れる。"
     },
     {
       "topic": "配布形式は CSV のまま。全量では作り直しになりうる",

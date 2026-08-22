@@ -6,7 +6,7 @@
 -- これが落ちたら staging に判断が混ざった合図で、intermediate 層を切る時期。
 with raw_counts as (
     select direction, count(*) as n
-    from read_parquet('../data/raw/jurisdiction=132047/year=*/direction=*/data.parquet', hive_partitioning=true)
+    from read_parquet('../data/budget/raw/jurisdiction=132047/year=*/phase=*/direction=*/data.parquet', hive_partitioning=true)
     group by direction
 ),
 staged as (

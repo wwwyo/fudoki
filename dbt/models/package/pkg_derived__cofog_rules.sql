@@ -1,4 +1,4 @@
-{{ config(materialized = 'external', location = '../data/packages/derived/cofog_rules.csv', format = 'csv') }}
+{{ config(materialized = 'external', location = '../data/budget/packages/derived/cofog_rules.csv', format = 'csv') }}
 -- 割り当て規則そのものを配る。**判断の中身を読めるようにするため。**
 --
 -- 派生の各行は cofog_rule_id でここを指す。根拠を行に複製せずに済むうえ、

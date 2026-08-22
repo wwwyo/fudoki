@@ -2,7 +2,7 @@ import { Manifest, fetchTargets } from './lib/gates'
 
 // 静的 import にすると JSON が壊れているときにパースエラーで異常終了し、
 // どこが壊れているかを出せない。読み込みも自分で握る。
-const path = new URL('../ingestion/transcript-gates.json', import.meta.url).pathname
+const path = new URL('../data/transcripts/gates.json', import.meta.url).pathname
 let raw: unknown
 try {
   raw = JSON.parse(await Bun.file(path).text())

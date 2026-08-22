@@ -7,7 +7,7 @@ sources:
   - name: raw_132047
     description: 三鷹市。原典の Parquet を直接読む
     meta:
-      external_location: "read_parquet('../data/raw/jurisdiction=132047/year=*/direction={name}/data.parquet', hive_partitioning=true)"
+      external_location: "read_parquet('../data/budget/raw/jurisdiction=132047/year=*/phase=*/direction={name}/data.parquet', hive_partitioning=true)"
     tables:
       - name: expenditure
       - name: revenue

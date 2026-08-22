@@ -1,4 +1,4 @@
-"""原典を取得して data/raw/ へ Parquet で落とす。
+"""原典を取得して data/budget/raw/ へ Parquet で落とす。
 
 解釈・整形・結合はしない。列はすべて VARCHAR のまま置く（型推論は判断なので staging の仕事）。
 
@@ -25,8 +25,10 @@ from datetime import UTC, datetime
 from ingestion.sources import Catalog, Source, resolve
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-RAW = ROOT / "data" / "raw"
-PROVENANCE = ROOT / "data" / "provenance"
+# 層ごとに名前空間を切る。②調達は OCDS、③会議録は Popolo と、
+# 標準も descriptor も別なので、同じ packages/ には収まらない。
+LAYER = "budget"
+RAW = ROOT / "data" / LAYER / "raw"
 
 UA = "fudoki/0.1 (+https://github.com/wwwyo/fudoki)"
 MAX_BYTES = 20 * 1024 * 1024
@@ -111,9 +113,14 @@ def ingest(key: str) -> None:
 
     for spec in src.resources:
         direction = spec.direction
-        out_dir = RAW / f"jurisdiction={src.jurisdiction_code}" / f"year={src.fiscal_year}" / f"direction={direction}"
+        # ⚠️ **phase を含める。** 当初予算と補正予算は同じ (団体, 年度, direction) を持つ。
+        # 含めないと後から補正を足したとき、黙って上書きされる。
+        out_dir = (RAW / f"jurisdiction={src.jurisdiction_code}" / f"year={src.fiscal_year}"
+                   / f"phase={src.phase_id}" / f"direction={direction}")
         out = out_dir / "data.parquet"
-        prov_path = PROVENANCE / f"{src.jurisdiction_code}-{src.fiscal_year}-{direction}.json"
+        # 証跡は取得物の隣に置く。**この2つは不可分**で、別の木に分けると
+        # どの Parquet がどの取得に対応するかがパスの規約でしか繋がらなくなる。
+        prov_path = out_dir / "provenance.json"
 
         # 年度の唯一の出所はリソース名。照合できなければ収録しない。
         if src.fiscal_year_label not in spec.resource_name:
@@ -158,7 +165,6 @@ def ingest(key: str) -> None:
         con.execute(f"COPY (SELECT source_row, {cols} FROM t ORDER BY source_row) TO '{out}' (FORMAT parquet, COMPRESSION zstd)")
         con.close()
 
-        PROVENANCE.mkdir(parents=True, exist_ok=True)
         prov_path.write_text(json.dumps({
             "jurisdiction_code": src.jurisdiction_code,
             "fiscal_year": src.fiscal_year,

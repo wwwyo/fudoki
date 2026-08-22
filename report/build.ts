@@ -281,11 +281,10 @@ function buildLevels(): ReportData['levels'] {
 function build(code = '132047'): ReportData {
   const manifest = readJson<Manifest>(join(TARGET, 'manifest.json'))
   const results = readJson<RunResults>(join(TARGET, 'run_results.json'))
-  const provDir = join(ROOT, 'data/provenance')
-  const provenance = readdirSync(provDir)
-    .filter((f) => f.startsWith(`${code}-`) && f.endsWith('.json'))
-    .sort()
-    .map((f) => readJson<Provenance>(join(provDir, f)))
+  // 証跡は取得物の隣にある。**この2つは不可分**なので同じ場所から読む。
+  const rawDir = join(ROOT, 'data/budget/raw', `jurisdiction=${code}`)
+  const provenance = new Bun.Glob('**/provenance.json').scanSync({ cwd: rawDir, absolute: true })
+  const prov = [...provenance].sort().map((f) => readJson<Provenance>(f))
 
   // ⚠️ **TOML を正規表現で読まない。** 最初に一致した key を返すので、
   // 2団体目を足した時点で `code` に関係なく先頭の団体の名称・ライセンスを使う。
@@ -302,13 +301,13 @@ function build(code = '132047'): ReportData {
     meta: {
       jurisdictionCode: code,
       jurisdictionName: pick('jurisdiction_name'),
-      fiscalYears: [...new Set(provenance.map((p) => p.fiscal_year))].sort(),
+      fiscalYears: [...new Set(prov.map((p) => p.fiscal_year))].sort(),
       phase: { id: pick('phase_id'), label: pick('phase_label') },
       license: { id: pick('license_id'), url: 'https://creativecommons.org/licenses/by/4.0/' },
       attribution: pick('attribution'),
       landingPage: pick('landing_page'),
       // 実行時刻ではなく原典の取得時刻。回すたびに差分が出ないようにする。
-      generatedAt: provenance.map((p) => p.fetched_at).sort().at(-1) ?? '',
+      generatedAt: prov.map((p) => p.fetched_at).sort().at(-1) ?? '',
     },
     summary: {
       total: checks.length,
@@ -316,15 +315,15 @@ function build(code = '132047'): ReportData {
       failed: checks.filter((c) => !c.ok && c.severity === 'error').length,
       warned: checks.filter((c) => c.status === 'warn').length,
     },
-    topology: buildTopology(manifest, provenance),
-    ingestion: provenance,
+    topology: buildTopology(manifest, prov),
+    ingestion: prov,
     levels: buildLevels(),
     transform: buildTransform(),
     checks,
     ...STATIC,
     // 年度調査は観測ファイルを直接読む。**static に写すと、再調査しても画面が変わらない。**
     // 実際 static の generatedBy は削除済みのスクリプト名を指したままになっていた。
-    yearSurvey: readJson<ReportData['yearSurvey']>(join(ROOT, 'data/observations/mitaka-budget-years.json')),
+    yearSurvey: readJson<ReportData['yearSurvey']>(join(ROOT, 'data/budget/observations/mitaka-budget-years.json')),
   }
 }
 
@@ -347,9 +346,9 @@ function detailProjection(canonical: string, levels: string[], phaseId: string) 
            d.cofog_status, d.cofog_division as cofog_division_code,
            d.cofog_consolidation, d.cofog_decided_at_level, r.basis as cofog_basis
     from read_csv('${canonical}', header = true, all_varchar = true) c
-    left join read_csv('${join(ROOT, 'data/packages/derived/cofog.csv')}', header = true, all_varchar = true) d
+    left join read_csv('${join(ROOT, 'data/budget/packages/derived/cofog.csv')}', header = true, all_varchar = true) d
       using (budget_line_id)
-    left join read_csv('${join(ROOT, 'data/packages/derived/cofog_rules.csv')}', header = true, all_varchar = true) r
+    left join read_csv('${join(ROOT, 'data/budget/packages/derived/cofog_rules.csv')}', header = true, all_varchar = true) r
       on r.rule_id = d.cofog_rule_id
     order by c.source_row`)
   const columns = rows.length ? Object.keys(rows[0]!) : []
@@ -357,13 +356,13 @@ function detailProjection(canonical: string, levels: string[], phaseId: string) 
 }
 
 const report = build()
-writeFileSync(join(ROOT, 'data/reports/132047.json'), `${JSON.stringify(report, null, 2)}\n`)
+writeFileSync(join(ROOT, 'data/budget/reports/132047.json'), `${JSON.stringify(report, null, 2)}\n`)
 writeFileSync(join(ROOT, 'web/public/pipeline.json'), `${JSON.stringify({
   code: '132047',
   report,
-  expenditure: detailProjection(join(ROOT, 'data/packages/132047/expenditure.csv'),
+  expenditure: detailProjection(join(ROOT, 'data/budget/packages/132047/expenditure.csv'),
     ['fund', 'kan', 'kou', 'moku', 'jikou', 'setsu', 'saisaisetsu'], report.meta.phase.id),
-  revenue: detailProjection(join(ROOT, 'data/packages/132047/revenue.csv'),
+  revenue: detailProjection(join(ROOT, 'data/budget/packages/132047/revenue.csv'),
     ['fund', 'kan', 'kou', 'moku', 'setsu', 'saisetsu', 'saisaisetsu'], report.meta.phase.id),
 })}\n`)
 const s = report.summary

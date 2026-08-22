@@ -1,4 +1,4 @@
-{{ config(materialized = 'external', location = '../data/packages/derived/cofog.csv', format = 'csv') }}
+{{ config(materialized = 'external', location = '../data/budget/packages/derived/cofog.csv', format = 'csv') }}
 -- 派生。**団体をまたいで1リソース。**
 --
 -- 置き場を `derived/` にしているのは、**正本か派生かがパスで区別される必要がある**から。

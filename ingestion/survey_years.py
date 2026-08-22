@@ -1,7 +1,7 @@
 """三鷹市の他年度が令和6年度と互換かを測る。
 
 **取り込めるかどうかを名前ではなく実物で判定する。** 列構成・金額の型・引用符の有無・会計の範囲。
-結果は `data/observations/` に残す（要約ではなく観測が SSOT）。
+結果は `data/budget/observations/` に残す（要約ではなく観測が SSOT）。
 
 ネットワークを叩くので CI では回さない。
 """
@@ -103,7 +103,7 @@ def _dir_of(name: str) -> str | None:
 if __name__ == "__main__":
     src = resolve(sys.argv[1] if len(sys.argv) > 1 else "132047:2024")
     obs = [survey_one(src, y, label, d) for y, label in YEARS for d in ("expenditure", "revenue")]
-    out = ROOT / "data" / "observations" / "mitaka-budget-years.json"
+    out = ROOT / "data" / "budget" / "observations" / "mitaka-budget-years.json"
     out.write_text(json.dumps({
         "note": "取り込めるかを名前ではなく実物で判定する。列構成・金額の型・引用符・会計の範囲。",
         "generatedBy": "uv run python -m ingestion.survey_years",

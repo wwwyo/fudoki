@@ -31,7 +31,7 @@ import { z } from 'zod'
  * - `町字ID` はデジタル庁のアドレス・ベース・レジストリの語彙
  * - 本文は持たず、**発行号のメタデータと PDF への URL** だけを持つ
  *
- * @see 実測の内訳は ingestion/transcript-gates.json の
+ * @see 実測の内訳は data/transcripts/gates.json の
  *      openData.gikaiDayori.schemaCheck を参照
  */
 export const BULLETIN_SCHEMA_ID = 'fudoki/tokyo-municipal-bulletin-profile/0.1' as const

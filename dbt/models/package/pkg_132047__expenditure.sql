@@ -1,4 +1,4 @@
-{{ config(materialized = 'external', location = '../data/packages/132047/expenditure.csv', format = 'csv') }}
+{{ config(materialized = 'external', location = '../data/budget/packages/132047/expenditure.csv', format = 'csv') }}
 -- 正本（歳出）。**団体ごと・全年度で1リソース。**
 --
 -- (団体, 年度) ごとに分けると全量で 558 パッケージになり、
@@ -7,7 +7,7 @@
 --
 -- 落とした列と、その理由。
 --   *_source        code と label から復元できる（不一致0件を実測）。
---                   原典そのものは data/raw/ に Parquet で入っているので join できる
+--                   原典そのものは data/budget/raw/ に Parquet で入っているので join できる
 --   hierarchy_path  コード列から導出できる
 --   団体・phase・通貨・direction  全行同じ値。datapackage.json のメタデータに属する
 select

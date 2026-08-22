@@ -10,7 +10,7 @@ import { Manifest } from './gates'
 export const UA = 'fudoki/0.1 (+https://github.com/wwwyo/fudoki)'
 
 /** 書き戻すスクリプトが同じパスを参照できるよう公開する */
-export const MANIFEST_PATH = new URL('../../ingestion/transcript-gates.json', import.meta.url).pathname
+export const MANIFEST_PATH = new URL('../../data/transcripts/gates.json', import.meta.url).pathname
 
 export async function loadManifest() {
   return Manifest.parse(JSON.parse(await Bun.file(MANIFEST_PATH).text()))

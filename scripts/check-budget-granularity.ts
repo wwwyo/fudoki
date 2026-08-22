@@ -13,7 +13,7 @@
  * 2度目は organization が `t` + 6桁なら何でも団体として数え、東京都の部局や都外まで混ぜた（42件中25件が圏外）。
  * **母集団は manifest の団体コードとの積で必ず絞る。**
  *
- * 出力は data/observations/budget-granularity.json。**全候補と失敗理由だけを持つ**。
+ * 出力は data/budget/observations/budget-granularity.json。**全候補と失敗理由だけを持つ**。
  * 団体ごとの最良は観測から導けるので焼き込まない（要約ではなく観測を SSOT にする）。
  *
  *   bun run scripts/check-budget-granularity.ts            # 結果を表示
@@ -30,7 +30,7 @@ import {
 import { UA, countDataRows, decodeText, fetchCapped, loadManifest, mapWithConcurrency, sha256, sniffContent, splitCsvLine } from './lib/source'
 
 const CKAN = 'https://catalog.data.metro.tokyo.lg.jp/api/3/action/package_search'
-const OUT = new URL('../data/observations/budget-granularity.json', import.meta.url).pathname
+const OUT = new URL('../data/budget/observations/budget-granularity.json', import.meta.url).pathname
 const QUERIES = ['歳出', '当初予算', '決算書', '予算データ']
 const PAGE = 300
 const MAX_BYTES = 20 * 1024 * 1024

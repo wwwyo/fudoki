@@ -52,7 +52,7 @@ class Source:
         """原典をリポジトリへ置いてよいか。
 
         根拠は `redistribute_basis`（①予算はカタログのライセンス）。
-        ③会議録の gate（`transcript-gates.json`）とは根拠が違うので繋がない —
+        ③会議録の gate（`data/transcripts/gates.json`）とは根拠が違うので繋がない —
         三鷹市は会議録が review だが予算は CC BY で、繋ぐと予算が止まる。
         「公開されている」ことは「再配布してよい」ことを意味しない。
         """
