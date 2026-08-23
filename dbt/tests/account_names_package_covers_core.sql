@@ -36,6 +36,8 @@ in_package as (
     {% endfor %}
 )
 
-select 'core にあって配布物に無い' as problem, * from (select * from in_core except select * from in_package)
+-- ⚠️ **EXCEPT ではなく EXCEPT ALL。** EXCEPT は集合演算なので、配布物に同じ行が
+-- 2行あっても重複を消して比較し、core 1行 vs 配布物2行が通ってしまう。
+select 'core にあって配布物に無い' as problem, * from (select * from in_core except all select * from in_package)
 union all
-select '配布物にあって core に無い', * from (select * from in_package except select * from in_core)
+select '配布物にあって core に無い', * from (select * from in_package except all select * from in_core)

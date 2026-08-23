@@ -5,7 +5,10 @@
 -- account_map_covers_lines は「入力側に対応があるか」しか見ないため素通りし、
 -- 配布物の master_* が null のまま静かに欠ける。
 with map as (
-    select * from {{ ref('account_map') }} where master_kan_code is not null
+    -- ⚠️ master_kan_code が無いのに master_kou_code だけある行も不正（親の無い項参照）。
+    -- kan で絞ってから見ると、その形の行が検査を素通りする。
+    select * from {{ ref('account_map') }}
+    where master_kan_code is not null or master_kou_code is not null
 ),
 
 master_kan as (

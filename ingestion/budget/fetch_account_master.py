@@ -162,7 +162,10 @@ def extract(pdf: pathlib.Path, direction: str) -> list[dict]:
                         pending_mark = False
                 # コードを出した階層が折返しを受け取る
                 open_side, open_level = "muni", muni[-1]["level"]
-            elif open_side == "muni" and open_level and not segs:
+            # ⚠️ **判定は市町村セグメントの有無。** `not segs` にすると、同じ行に
+            # 都道府県のセグメントがあるだけで市町村の折返しが捨てられ、名称の末尾が欠ける
+            # （2段組は左右の行が同じ y に整列するので、この同居は普通に起きる）。
+            elif open_side == "muni" and open_level and not muni:
                 # ⚠️ **折返しの帰属は x で決める。** 歳入では都道府県の目の名称（x=364〜425）が
                 # 市町村の項の名称域と重なるが、都道府県の折返しは open_side が pref のときに
                 # ここへ来ない（上の分岐で捨てられる）。市町村の折返しとして受けるのは、
