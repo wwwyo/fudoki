@@ -14,7 +14,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { loadDetail, loadPipeline, toRows, yenShort, type DetailData, type PipelineData } from '@/lib/pipeline'
+import { loadDetail, loadPipeline, toRows, type DetailData, type PipelineData } from '@/lib/pipeline'
 
 export default function App() {
   const [data, setData] = useState<PipelineData | null>(null)
@@ -52,14 +52,21 @@ export default function App() {
   const t = report.transform
   const total = t.byState.reduce((s, x) => s + x.sum, 0)
   const assigned = t.byState.filter((x) => x.status === 'assigned').reduce((s, x) => s + x.sum, 0)
-  const eliminated = t.byState.filter((x) => x.consolidation === 'eliminated').reduce((s, x) => s + x.sum, 0)
+
+  // このページの目的は「配布データが正しいか」を判別できることなので、
+  // サマリも検証の指標だけを出す（総額のような分析の数字は明細タブが持つ）
+  const prov = report.ingestion
+  const roundtripOk = prov.filter((p) => p.roundtrip_verified).length
+  const rowsOf = (label: string) => report.topology.nodes.find((n) => n.label === label)?.rows
+  const rowsIntact = (['expenditure', 'revenue'] as const).every(
+    (d) => rowsOf(d) === rowsOf(`stg_${data.code}__${d}`) && rowsOf(d) === rowsOf(`pkg_${data.code}__${d}`),
+  )
 
   const stats: { label: string; value: string | number; tone?: string; hint?: string }[] = [
     { label: '検査', value: `${report.summary.passed}/${report.summary.total}`, tone: report.summary.failed ? 'bad' : 'good', hint: '1つでも落ちると成果物を書き出さない' },
-    { label: '歳出の総額', value: yenShort(total) },
-    { label: 'COFOG 割当済み（金額比）', value: `${((assigned / total) * 100).toFixed(1)}%`, hint: 'COFOG は政府支出の機能別分類（教育、保健など10区分）。国際標準' },
-    { label: '連結で消去', value: yenShort(eliminated), hint: '会計間の繰出。市の全会計を足すとき二重に数えるので相殺する' },
-    { label: '割当規則', value: `${t.ruleCount} 本` },
+    { label: '原文の復元', value: `${roundtripOk}/${prov.length}`, tone: roundtripOk === prov.length ? 'good' : 'bad', hint: 'cp932 の復号が可逆で、保存した Parquet から原文に戻ること' },
+    { label: '行数の一致', value: rowsIntact ? '一致' : '不一致', tone: rowsIntact ? 'good' : 'bad', hint: '取得元 → staging → 配布物で行が増減していないこと' },
+    { label: 'COFOG 割当（金額比）', value: `${((assigned / total) * 100).toFixed(1)}%`, hint: 'fudoki の判断が及ぶ範囲。根拠は「COFOG の判断」タブ' },
   ]
 
   return (
@@ -77,7 +84,8 @@ export default function App() {
       <main className="mx-auto flex max-w-[1500px] flex-col gap-8 p-4 pb-24">
         <section className="flex flex-col gap-4">
           <div>
-            <h1 className="text-xl font-semibold">ELT パイプライン</h1>
+            <h1 className="text-xl font-semibold">配布データの検証</h1>
+            <p className="text-sm text-muted-foreground">取得元の CSV から配布物まで、各段の中身を突き合わせて確かめられる</p>
           </div>
 
           <FlowGraph topology={report.topology} report={report} onSelectNode={setSelectedNode} selected={selectedNode} />
@@ -103,7 +111,7 @@ export default function App() {
         </section>
 
         <Tabs
-          defaultValue="stages"
+          defaultValue="checks"
           onValueChange={(v) => {
             if (v === 'detail' && !detail && !detailError) {
               loadDetail().then(setDetail).catch((e: Error) => setDetailError(e.message))
@@ -111,21 +119,22 @@ export default function App() {
           }}
         >
           <TabsList>
-            {/* データの中身はグラフのノード選択が出す。ここに残るのは証跡と階層の実測 */}
+            {/* 検証の順に並べる: 何を保証しているか（検査）→ どこから来たか（証跡）
+                → fudoki は何を足したか（COFOG）→ 1行ずつ確かめる（明細） */}
+            <TabsTrigger value="checks">検査</TabsTrigger>
             <TabsTrigger value="stages">証跡</TabsTrigger>
             <TabsTrigger value="cofog">COFOG の判断</TabsTrigger>
-            <TabsTrigger value="checks">検査</TabsTrigger>
             <TabsTrigger value="detail">明細</TabsTrigger>
           </TabsList>
 
+          <TabsContent value="checks" className="pt-4">
+            <ChecksPanel report={report} selectedNode={selectedNode} onClearNode={() => setSelectedNode(null)} />
+          </TabsContent>
           <TabsContent value="stages" className="pt-4">
             <StageDetail report={report} />
           </TabsContent>
           <TabsContent value="cofog" className="pt-4">
             <CofogPanel report={report} />
-          </TabsContent>
-          <TabsContent value="checks" className="pt-4">
-            <ChecksPanel report={report} selectedNode={selectedNode} onClearNode={() => setSelectedNode(null)} />
           </TabsContent>
           <TabsContent value="detail" className="pt-4">
             {detailError ? (
