@@ -79,7 +79,7 @@
       {
         "name": "fudoki:source:amount-unit",
         "dataType": "string",
-        "description": "原典の金額の単位。FDP に倍率を表す ColumnType が無いため別列に残す"
+        "description": "原典の金額の単位。FDP に倍率を表す ColumnType が無いため、単位を別に持つ"
       },
       {
         "name": "fudoki:source:row",
@@ -343,7 +343,7 @@
       "title": "原典の金額の単位",
       "type": "string",
       "columnType": "fudoki:source:amount-unit",
-      "description": "円に直すには 1000 を掛ける。FDP に倍率を表す ColumnType が無いため、倍率そのものはこの説明文にしか置き場が無い"
+      "description": "原典の金額の単位。円へ直す倍率は取得元ごとに違うので、この配布物の値は description が示す"
     },
     "source_row": {
       "name": "source_row",

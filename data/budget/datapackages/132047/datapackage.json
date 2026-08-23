@@ -2,7 +2,7 @@
   "profile": "tabular-data-package",
   "name": "fudoki-budget-132047",
   "title": "三鷹市 予算（事業単位）",
-  "description": "自治体が公開した予算データを Fiscal Data Package の形にしたもの。**fudoki の判断は含まない**（分類・名寄せ・推定を一切していない）。COFOG の割当は派生パッケージ derived/ にあり、budget_line_id で join する。原典そのものは data/budget/raw/ に Parquet で入っている。\n\n## 出典表示（CC BY 4.0 §3(a)(1)(A)）\n\n次の一文をそのまま使うこと。\n\n> 三鷹市「令和6年度予算データ」（東京都オープンデータカタログサイト）\n\n機械可読な同じ内容は `sources[].title`（原典）と `contributors`（加工者）にある。\n\n## 改変（CC BY 4.0 §3(a)(1)(B)）\n\n原典に対して次のことをしている。\n\n- セルの前後の空白を除去した\n- コードと名称が同居するセルを分けた\n- 金額を円へ正規化した（原典の値と単位も残してある）\n\n原典そのものは `data/budget/raw/` に Parquet で保全してあるので、改変の前後を突き合わせられる。\n\n取得の証跡（取得 URL・HTTP status・SHA-256・取得時刻・ヘッダ・行数）は、原典の隣（`data/budget/raw/**/provenance.json`）にある。リソースの `sources[].path` は、その証跡が記録している取得 URL そのものである。\n\n## 全行で同じ値の列\n\n団体・予算段階の表示名・通貨・原典の単位・歳出と歳入の別は行ごとに変わらないので、CSV の列から外して `schema.extraFields` に定数として置いてある（仕様の Constant Fields）。非正規化した形へ戻すときは、その列を全行に補う。\n\nFDP は全要素が任意なので、COFOG 列を持たないこのパッケージも適合した FDP である。",
+  "description": "自治体が公開した予算データを Fiscal Data Package の形にしたもの。**fudoki の判断は含まない**（分類・名寄せ・推定を一切していない）。COFOG の割当は派生パッケージ derived/ にあり、budget_line_id で join する。原典そのものは data/budget/raw/ に Parquet で入っている。\n\n## 出典表示（CC BY 4.0 §3(a)(1)(A)）\n\n次の一文をそのまま使うこと。\n\n> 三鷹市「令和6年度予算データ」（東京都オープンデータカタログサイト）\n\n機械可読な同じ内容は `sources[].title`（原典）と `contributors`（加工者）にある。\n\n## 改変（CC BY 4.0 §3(a)(1)(B)）\n\n原典に対して次のことをしている。\n\n- セルの前後の空白を除去した\n- コードと名称が同居するセルを分けた\n- 金額を円へ正規化した（原典の値と単位も残してある）\n\n原典そのものは `data/budget/raw/` に Parquet で保全してあるので、改変の前後を突き合わせられる。\n\n取得の証跡（取得 URL・HTTP status・SHA-256・取得時刻・ヘッダ・行数）は、原典の隣（`data/budget/raw/**/provenance.json`）にある。\n\nリソースの `sources[].path` は、その証跡が記録している取得 URL そのものである。正本は団体ごと・全年度で1リソースなので、年度の数だけ並ぶ。\n\n## 全行で同じ値の列\n\n全国地方公共団体コード、地方公共団体名、予算段階の表示名、通貨、原典の金額の単位、支出と収入の別は行ごとに変わらないので、CSV の列から外して `schema.extraFields` に定数として置いてある（仕様の Constant Fields）。金額は原典の単位（千円）のままで、円へ直すには 1000 を掛ける。非正規化した形へ戻すときは、その列を全行に補う。\n\nFDP は全要素が任意なので、COFOG 列を持たないこのパッケージも適合した FDP である。",
   "homepage": "https://github.com/wwwyo/fudoki",
   "version": "0.1.0",
   "created": "2026-08-22T06:44:52+00:00",
@@ -86,7 +86,7 @@
       {
         "name": "fudoki:source:amount-unit",
         "dataType": "string",
-        "description": "原典の金額の単位。FDP に倍率を表す ColumnType が無いため別列に残す"
+        "description": "原典の金額の単位。FDP に倍率を表す ColumnType が無いため、単位を別に持つ"
       },
       {
         "name": "fudoki:source:row",
@@ -344,7 +344,7 @@
             "title": "原典の金額の単位",
             "type": "string",
             "columnType": "fudoki:source:amount-unit",
-            "description": "円に直すには 1000 を掛ける。FDP に倍率を表す ColumnType が無いため、倍率そのものはこの説明文にしか置き場が無い",
+            "description": "原典の金額の単位。円へ直す倍率は取得元ごとに違うので、この配布物の値は description が示す",
             "constant": "千円"
           },
           {
@@ -358,7 +358,7 @@
       },
       "sources": [
         {
-          "title": "【予算・決算】予算情報／令和６年度予算データ（歳出）※下水道事業会計除く",
+          "title": "2024年度／【予算・決算】予算情報／令和６年度予算データ（歳出）※下水道事業会計除く",
           "path": "https://www.city.mitaka.lg.jp/c_service/074/attached/attach_74103_8.csv"
         }
       ]
@@ -551,7 +551,7 @@
             "title": "原典の金額の単位",
             "type": "string",
             "columnType": "fudoki:source:amount-unit",
-            "description": "円に直すには 1000 を掛ける。FDP に倍率を表す ColumnType が無いため、倍率そのものはこの説明文にしか置き場が無い",
+            "description": "原典の金額の単位。円へ直す倍率は取得元ごとに違うので、この配布物の値は description が示す",
             "constant": "千円"
           },
           {
@@ -565,7 +565,7 @@
       },
       "sources": [
         {
-          "title": "【予算・決算】予算情報／令和６年度予算データ（歳入）※下水道事業会計除く",
+          "title": "2024年度／【予算・決算】予算情報／令和６年度予算データ（歳入）※下水道事業会計除く",
           "path": "https://www.city.mitaka.lg.jp/c_service/074/attached/attach_74103_7.csv"
         }
       ]

@@ -24,6 +24,9 @@ dataset_title = "【予算・決算】予算情報"
 # （`01Ⅰ型事業委託料` の Ⅰ = U+2160、CP932 で 0x8754）。
 # 素の shift_jis は NEC 特殊文字を受け付けず復号に失敗する。
 encoding = "cp932"
+# 原典の金額の単位。円へ直す倍率と対で持つ。**団体ごとに違う**ので宣言する。
+source_amount_unit = "千円"
+source_amount_multiplier = 1000
 # 再配布の可否。allow 以外は raw を書き出さない。
 # ⚠️ **根拠はカタログのライセンス**であって、ingestion/transcript-gates.json の
 # gate（③会議録。著作権法40条1項と各議会の利用規約が根拠）とは別の判断である。

@@ -40,6 +40,12 @@ class Source:
     phase_label: str
     dataset_title: str
     encoding: str
+    # 原典の金額の単位と、円へ直す倍率。**取得元ごとに違う**（encoding と同じ原典の性質）。
+    # ⚠️ 以前は倍率が fdp/field_types.json の**全団体共通の**フィールド宣言に入っており、
+    # 単位が円の団体を足すと「円に直すには 1000 を掛ける」がその団体の配布物にも付いた。
+    # 金額の誤読を誘う種類の食い違いで、止める機構が無かった。
+    source_amount_unit: str
+    source_amount_multiplier: int
     redistribute: str
     redistribute_basis: str
     license_id: str
@@ -67,6 +73,8 @@ class Source:
             raise ValueError(f"{self.key}: license_id が空。不明なら NOASSERTION と書くこと")
         if not self.redistribute_basis:
             raise ValueError(f"{self.key}: redistribute_basis が空。判断の根拠を書くこと")
+        if self.source_amount_multiplier < 1:
+            raise ValueError(f"{self.key}: source_amount_multiplier は1以上（{self.source_amount_multiplier}）")
         if self.raw_form not in ("verbatim", "extracted"):
             raise ValueError(f"{self.key}: raw_form は verbatim か extracted（{self.raw_form}）")
         # ⚠️ **原文を置けるのは再配布可のときだけ。**

@@ -19,8 +19,7 @@ provenance.json と同じ内容を descriptor へ写しただけだった。
 仕様本文が Profile として挙げる fiscal.datapackage.org/profiles/fiscal-data-package.json は
 0.3 世代のままで、1.0.0 が廃止した `model`（measures / dimensions）を required に持つ。
 検査に使えないので descriptor の `profile` には下層の Tabular Data Package v1 を宣言し、
-この事実は AGENTS.md と data/LICENSE に記録してある（配布物には載せない —
-利用者の行動が変わらないため）。
+この事実は AGENTS.md に記録してある（配布物には載せない — 利用者の行動が変わらないため）。
 """
 
 from __future__ import annotations
@@ -86,10 +85,16 @@ RAW = ROOT / "data" / "budget" / "raw"
 # 取得の証跡（provenance.json）を descriptor へ写すのをやめた代わりに、
 # **どこを見れば証跡があるか**を利用者へ伝える経路がここになる。
 HOMEPAGE = "https://github.com/wwwyo/fudoki"
+# ⚠️ **正本にしか成り立たない一文を混ぜない。** 派生のリソースは `sources` を持たないので、
+# 「`sources[].path` が取得 URL」と書くと存在しないフィールドを案内することになる。
+CANONICAL_SOURCES_NOTE = (
+    "リソースの `sources[].path` は、その証跡が記録している取得 URL そのものである。"
+    "正本は団体ごと・全年度で1リソースなので、年度の数だけ並ぶ。"
+)
 PROVENANCE_NOTE = (
     "取得の証跡（取得 URL・HTTP status・SHA-256・取得時刻・ヘッダ・行数）は、"
     "原典の隣（`data/budget/raw/**/provenance.json`）にある。"
-    "リソースの `sources[].path` は、その証跡が記録している取得 URL そのものである。"
+
 )
 TYPES = json.loads((pathlib.Path(__file__).parent / "field_types.json").read_text())
 # FDP の ColumnType 一覧。**仕様が「正準」と宣言する URL は 404** なので、
@@ -277,6 +282,23 @@ def build_jurisdiction(code: str) -> None:
             f"descriptor は単一 phase を前提にしているので、複数を許す構造へ変えてから配る"
         )
 
+    # ⚠️ **単位は団体差。** 直書きすると、円で公開する団体を足したとき黙って嘘になる。
+    # 年度で単位が割れている団体も、1つの配布物には収められない。
+    units = {(s.source_amount_unit, s.source_amount_multiplier) for s in srcs}
+    if len(units) != 1:
+        raise SystemExit(
+            f"{code}: 原典の金額の単位が {sorted(units)} と揃っていない。"
+            f"1つの配布物に複数の単位は収められないので、分けて配ること"
+        )
+    unit, multiplier = units.pop()
+
+    constants = {
+        "jurisdiction_code": code,
+        "jurisdiction_label": srcs[0].jurisdiction_name,
+        "phase_label": srcs[0].phase_label,
+        "currency": "JPY",
+        "source_amount_unit": unit,
+    }
     pkg = base(
         f"fudoki-budget-{code}",
         f"{srcs[0].jurisdiction_name} 予算（事業単位）",
@@ -289,9 +311,16 @@ def build_jurisdiction(code: str) -> None:
             CANONICAL_MODIFICATIONS,
             [
                 PROVENANCE_NOTE,
+                CANONICAL_SOURCES_NOTE,
+                # ⚠️ **定数の一覧を散文で書き写さない。** 書き写すと、定数を1つ足したとき
+                # descriptor は正しいまま説明文だけが黙ってずれる。宣言（`field_types.json` の
+                # `title`）から組み立てれば、出所が1つのままになる。
                 "## 全行で同じ値の列\n\n"
-                "団体・予算段階の表示名・通貨・原典の単位・歳出と歳入の別は行ごとに変わらないので、"
-                "CSV の列から外して `schema.extraFields` に定数として置いてある（仕様の Constant Fields）。"
+                + "、".join(field_spec(d / "expenditure.csv", n)["title"]
+                             for n in [*constants, "direction"])
+                + "は行ごとに変わらないので、CSV の列から外して `schema.extraFields` に"
+                "定数として置いてある（仕様の Constant Fields）。"
+                f"金額は原典の単位（{unit}）のままで、円へ直すには {multiplier} を掛ける。"
                 "非正規化した形へ戻すときは、その列を全行に補う。",
                 "FDP は全要素が任意なので、COFOG 列を持たないこのパッケージも適合した FDP である。",
             ],
@@ -311,22 +340,25 @@ def build_jurisdiction(code: str) -> None:
     # ⚠️ 以前は独自の `constants` に置いていたが、仕様が Constant Fields として
     # まさにこれを規定していた（`extraFields` の項目に `constant` を持たせる）。
     # 独自プロパティのままだと、標準しか読まない実装からは団体コードも通貨も見えない。
-    constants = {
-        "jurisdiction_code": code,
-        "jurisdiction_label": srcs[0].jurisdiction_name,
-        "phase_label": srcs[0].phase_label,
-        "currency": "JPY",
-        "source_amount_unit": "千円",
-    }
-    prov = {json.loads(p.read_text())["direction"]: json.loads(p.read_text())
-            for p in sorted(RAW.glob(f"jurisdiction={code}/**/provenance.json"))}
+    # ⚠️ **direction ごとに1件ではない。** 正本は団体ごと・全年度で1リソースなので、
+    # 同じ direction の証跡が年度の数だけある。dict のキーを direction にすると
+    # 最後の1件で上書きされ、**残りが黙って消える**（1年度しか無いうちは表面化しない）。
+    prov: dict[str, list[dict]] = {}
+    for path in sorted(RAW.glob(f"jurisdiction={code}/**/provenance.json")):
+        entry = json.loads(path.read_text())
+        prov.setdefault(entry["direction"], []).append(entry)
 
     def origin(direction: str) -> list[dict]:
-        """この1ファイルの取得元。**証跡の写しではなく、証跡への入口を1つだけ置く。**"""
-        p = prov.get(direction)
-        if p is None:
+        """この1ファイルを構成する原典。**年度の数だけある。**
+
+        証跡の写しではなく入口を置く。SHA-256・取得時刻・HTTP status は
+        `data/budget/raw/**/provenance.json` にあり、その在り処は description が示す。
+        """
+        entries = prov.get(direction)
+        if not entries:
             raise RuntimeError(f"{code}/{direction} の証跡が無い。先に ingestion を回すこと")
-        return [{"title": f"{p['dataset_title']}／{p['resource_name']}", "path": p["request_url"]}]
+        return [{"title": f"{e['fiscal_year']}年度／{e['dataset_title']}／{e['resource_name']}",
+                 "path": e["request_url"]} for e in entries]
 
     pkg["resources"] = [
         resource(d / "expenditure.csv", "expenditure", "歳出", "原典1行が1行。判断を含まない",
