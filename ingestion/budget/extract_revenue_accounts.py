@@ -31,7 +31,7 @@ from ingestion.lib.http import http_get
 ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 OUT = ROOT / "data" / "budget" / "raw" / "revenue-accounts"
 # 抽出器の版。**出力を変える修正をしたら上げる。**
-EXTRACTOR_VERSION = "6"
+EXTRACTOR_VERSION = "7"
 
 AMOUNT = re.compile(r"^[\d,]+$")
 
@@ -76,6 +76,7 @@ def _lines(pdf_path: pathlib.Path, spec: dict):
     amt_lo, amt_hi = (float(v) for v in spec["amount"])
     if spec["mode"] == "text":
         for page in pdftext.chars_of(pdf_path, int(spec["first_page"]), int(spec["last_page"])):
+            yield None, "", ""       # ページ境界の印。折返しをページ越しに繋がせない
             rows = _rows_with_y(page, 1.0)
             header_bottom = max((y for y, row in rows
                                  if (lambda s: "款" in s and "項" in s and "目" in s
@@ -95,6 +96,7 @@ def _lines(pdf_path: pathlib.Path, spec: dict):
         cols = {"subject": (0.0, name_end), "amount": (amt_lo, amt_hi)}
         for page in ocr.column_words_of(pdf_path, int(spec["first_page"]), int(spec["last_page"]),
                                         cols, digits={"amount"}, top=top):
+            yield None, "", ""       # ページ境界の印
             merged = [(x, y, "subject", w) for x, y, w in page["subject"]] + \
                      [(x, y, "amount", w) for x, y, w in page["amount"]]
             # 語を y でクラスタする（rows_of は文字粒度の想定なのでここで直に組む）
@@ -125,6 +127,9 @@ def extract(pdf_path: pathlib.Path, spec: dict) -> list[dict]:
     kan_name = kou_name = ""
     open_level: str | None = None
     for first_x, subject_text, amount_s in _lines(pdf_path, spec):
+        if first_x is None:          # ページ境界。折返しはページをまたがない
+            open_level = None
+            continue
         text = unicodedata.normalize("NFKC", subject_text)
         m = re.match(r"^(\d+)(\D.*)?$", text)
         level = next((lv for lv, (lo, hi) in bands.items() if lo <= first_x < hi), None)
@@ -162,11 +167,15 @@ def extract(pdf_path: pathlib.Path, spec: dict) -> list[dict]:
 
 def summarize(rows: list[dict]) -> dict:
     named = sum(1 for r in rows if r["_kan_name"] and r["_kou_name"] and r["moku_name"])
+    keys = [(r["kan_code"], r["kou_code"], r["moku_code"]) for r in rows]
     return {
         "moku": len(rows),
         "named": named,
         "withAmount": sum(1 for r in rows if r["choutei_yen"] is not None),
         "kan": len({r["kan_code"] for r in rows}),
+        # 保証範囲を機械可読に。OCR 経路はここが弱い（金額を読めない行・コードの重複）ことが
+        # そのまま「名称に使わない」判断の根拠になる
+        "duplicateKeys": len(keys) - len(set(keys)),
     }
 
 

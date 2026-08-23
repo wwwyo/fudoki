@@ -82,7 +82,8 @@ kan_map as (
 ),
 
 kou_map as (
-    select jurisdiction_code, direction, kan_code, kou_name, kind, master_kan_code, master_kou_code, basis
+    select jurisdiction_code, direction, kan_code, kou_name, fiscal_year_from,
+           kind, master_kan_code, master_kou_code, basis
     from {{ ref('account_map') }} where kou_name != ''
 )
 
@@ -131,5 +132,7 @@ left join kou_map as xm
     and xm.direction = a.direction
     and xm.kan_code = a.kan_code
     and xm.kou_name = a.kou_name
+    -- ⚠️ 款と同じ年度条件。項だけ無条件だと、款体系が違う年度に項の対応が誤適用される
+    and (nullif(xm.fiscal_year_from, '') is null or a.fiscal_year >= cast(xm.fiscal_year_from as integer))
 left join master_kou as mc2
     on mc2.direction = a.direction and mc2.kan_code = xm.master_kan_code and mc2.kou_code = xm.master_kou_code

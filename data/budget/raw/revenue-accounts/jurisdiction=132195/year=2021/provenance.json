@@ -12,7 +12,7 @@
     1,
     19
   ],
-  "extractor": "ingestion/budget/extract_revenue_accounts.py@6+tesseract-5.5.3@600dpi",
+  "extractor": "ingestion/budget/extract_revenue_accounts.py@7+tesseract-5.5.3@600dpi",
   "mode": "ocr",
   "verification": "ocr + downstream-amount-reconciliation",
   "roundtrip_verified": false,
@@ -20,7 +20,8 @@
     "moku": 42,
     "named": 42,
     "withAmount": 12,
-    "kan": 11
+    "kan": 11,
+    "duplicateKeys": 11
   },
   "raw_form": "extracted",
   "redistribute": "review",
