@@ -1,0 +1,42 @@
+{
+  "jurisdiction_code": "132195",
+  "fiscal_year": 2021,
+  "document_title": "令和3年度　歳出事項別明細",
+  "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,130245,c,html/130245/saisyutu.pdf",
+  "status": 200,
+  "bytes": 2000533,
+  "sha256": "0023f7ba5a65095b52f1d7988585a8838f412af15dc3d35b939d2b15a605eb69",
+  "fetched_at": "2026-08-23T04:47:40+00:00",
+  "pages": [
+    1,
+    219
+  ],
+  "extractor": "ingestion/budget/extract_projects.py@3",
+  "verification": "hierarchy-totals + name-stability",
+  "verification_note": "PDF のバイト列は保存していない（再配布の判断が別のため）。無加工であることは検査できないので、階層の合計突合と、dbt 側の原典 CSV との結合率で縛る",
+  "roundtrip_verified": false,
+  "extracted": {
+    "projects": 533,
+    "projectsReconciled": 526,
+    "moku": 101,
+    "mokuHeadersFound": 101,
+    "mokuNotReconciled": 1,
+    "totalThousandYen": 33051569,
+    "notReconciled": [
+      {
+        "moku": "2-1-11",
+        "printedThousandYen": 418077,
+        "extractedThousandYen": 187642
+      }
+    ],
+    "nameStable": true,
+    "kan_name": 533,
+    "kou_name": 533,
+    "moku_name": 533,
+    "unstableNames": []
+  },
+  "raw_form": "extracted",
+  "redistribute": "review",
+  "redistribute_basis": "市サイトの著作権表示（https://www.city.komae.tokyo.jp/index.cfm/4,19790,10,html）。事実に著作権が及ぶかは解釈が割れるので照会中",
+  "license_id": "NOASSERTION"
+}

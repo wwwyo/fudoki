@@ -4,17 +4,29 @@
 -- FDP の正規化まで実装していたのは、宣言が守られているかを誰も検査していなかったから。
 --
 -- これが落ちたら staging に判断が混ざった合図で、intermediate 層を切る時期。
+--
+-- ⚠️ **宣言に無い raw はここでは見つからない**（宣言が母集団なので空振りする）。
+-- そちらは declarations_cover_raw.sql が原典の partition と突き合わせる。
 with raw_counts as (
-    select direction, count(*) as n
-    from read_parquet('../data/budget/raw/jurisdiction=132047/year=*/phase=*/direction=*/data.parquet', hive_partitioning=true)
-    group by direction
+    {% for code in var('budget_levels').keys() | list | sort %}
+    select '{{ code }}' as jurisdiction, direction, count(*) as n
+    from read_parquet('../data/budget/raw/jurisdiction={{ code }}/year=*/phase=*/direction=*/data.parquet',
+                      hive_partitioning=true)
+    group by 1, 2
+    {% if not loop.last %}union all{% endif %}
+    {% endfor %}
 ),
 staged as (
-    select 'expenditure' as direction, count(*) as n from {{ ref('stg_132047__expenditure') }}
-    union all
-    select 'revenue', count(*) from {{ ref('stg_132047__revenue') }}
+    {% for code, direction in budget_units() %}
+    select '{{ code }}' as jurisdiction, '{{ direction }}' as direction, count(*) as n
+    from {{ ref('stg_' ~ code ~ '__' ~ direction) }}
+    {% if not loop.last %}union all{% endif %}
+    {% endfor %}
 )
-select r.direction, r.n as raw_rows, s.n as staged_rows
-from raw_counts r
-join staged s using (direction)
-where r.n <> s.n
+select
+    coalesce(r.jurisdiction, s.jurisdiction) as jurisdiction,
+    coalesce(r.direction, s.direction)       as direction,
+    r.n as raw_rows, s.n as staged_rows
+from raw_counts as r
+full outer join staged as s using (jurisdiction, direction)
+where coalesce(r.n, -1) is distinct from coalesce(s.n, -2)

@@ -25,15 +25,123 @@ vars:
     "132047":
       expenditure: [fund, kan, kou, moku, jikou, setsu, saisaisetsu]
       revenue: [fund, kan, kou, moku, setsu, saisetsu, saisaisetsu]
+    "132195":
+      # ⚠️ 中事業・小事業・細節・細々節は**列としては存在するが全行 `0`**（実測 6 年度）。
+      # 使われていない階層でも宣言から落とさない — 落とすと原典との1対1が崩れ、
+      # 翌年度から使われ始めたときに黙って欠ける。
+      expenditure: [fund, kan, kou, moku, daijigyo, chujigyo, shojigyo, setsu, saisetsu, saisaisetsu]
+      revenue: [fund, kan, kou, moku, setsu, saisetsu, saisaisetsu]
+
   # 原典の列名。取り込み時のヘッダそのままなので階層名とは別に持つ。
   budget_source_columns:
     "132047":
       expenditure: ["01会計", "02款", "03項", "04目", "05事項", "06節", "07細々節"]
       revenue: ["01会計", "02款", "03項", "04目", "05節", "06細節", "07細々節"]
+    "132195":
+      expenditure: ["会計", "款", "項", "目", "大事業", "中事業", "小事業", "節", "細節", "細々節"]
+      revenue: ["会計", "款", "項", "目", "節", "細節", "細々節"]
+
+  # **階層だけでは行が一意にならない団体の、追加の同一性の列。**
+  # ⚠️ 狛江市は所属（部課）と予算区分（現年度・繰越明許・事故繰越）まで含めて初めて一意になる。
+  # 実測（2023 歳出）で階層だけだと 2,224 行が 1,855 通りに潰れる。
+  # 識別子の材料でもあるので、宣言を落とすと budget_line_id が衝突する。
+  budget_extra_key_columns:
+    "132047": {expenditure: [], revenue: []}
+    "132195":
+      expenditure: [org, budget_class]
+      revenue: [org, budget_class]
+  budget_extra_key_source_columns:
+    "132047": {expenditure: [], revenue: []}
+    "132195":
+      # ⚠️ 歳出は「所属」、歳入は「所属コード」。同じ概念で列名が違う。
+      expenditure: ["所属", "予算区分"]
+      revenue: ["所属コード", "予算区分"]
 
   # その階層を持たない行を、自治体がプレースホルダで埋めているセル。
   # 三鷹市は `0`（歳入 821 行のうち細々節を持つのは 18 行だけで、残り 803 行がこれ）。
+  # 狛江市も `0`（中事業・小事業・細節・細々節は全行これ）。
   # ⚠️ **TypeScript 版にはこの宣言があったが、dbt へ移すときに落としていた。**
   # 宣言が無いと「先頭2桁がコード」の検査がこのセルで落ちる。
   budget_absent_level_markers:
     "132047": ["0"]
+    "132195": ["0"]
+
+  # **セルからコードと名称を取り出す書式。団体ごとに違う。**
+  #   prefix2   1セルに「2桁コード + 名称」が入っている（三鷹市）
+  #   code-only セルはコードだけで、名称の列が階層ごとには存在しない（狛江市）。
+  #             名称を持つのは会計と、行の最下位階層（科目名称）だけ。
+  # ⚠️ ここを一般則にしない（パーサ設計の原則5）。宣言が無い団体は検査で落ちる。
+  budget_code_style:
+    "132047": prefix2
+    "132195": code-only
+
+  # **code-only の団体で、名称を持つ列がどの階層に対応するか。**
+  # 狛江市の「科目名称」は行の最下位階層の名称で、歳出は節、歳入は細節にあたる。
+  # ⚠️ これは推測ではなく実測（2023 歳出は節コード→科目名称が1対1、
+  # 歳入は細節までのパス→科目名称が1対1）。対応が崩れたら
+  # tests/label_column_determines_level.sql が落ちる。
+  budget_label_columns:
+    "132195":
+      expenditure: {fund: "会計名称", setsu: "科目名称"}
+      revenue: {fund: "会計名称", saisetsu: "科目名称"}
+  # 追加の同一性の列のうち、名称を持つもの。
+  # ⚠️ 歳入には所属名称の列が無い（歳出にはある）。無いものを埋めない。
+  budget_extra_key_labels:
+    "132195":
+      expenditure: {org: "所属名称", budget_class: "予算区分名称"}
+      revenue: {budget_class: "予算区分名称"}
+
+  # 原典が年度の列を持つ団体と、その列名。
+  # ⚠️ 三鷹市には無い（リソース名だけが年度の出所）。無い団体はここに書かない。
+  budget_source_year_columns:
+    "132195": "年度"
+
+  # **歳出と歳入の合計が一致するという検算を、どの団体で有効にするか。**
+  # ⚠️ 一般の不変条件ではない。決算・企業会計・補正差分・会計範囲の異なる抽出では成立しない。
+  # 団体を足すときは、まず実測してからここに1ブロック足す（宣言が無い団体は検算されない）。
+  # ⚠️ **倍率はここに書かない。** `budget_amounts` の primary が既に持っているので、
+  # 二重に持つと単位を直したときに検算だけ古い倍率で掛け続けて通る。
+  budget_expenditure_revenue_balance:
+    "132047":
+      # 当初予算どうしなので丸めが無く、1円でも違えば落とす
+      tolerance_yen: 1
+    "132195":
+      # 歳入の予算現額が千円単位なので、円未満は原理的に一致しない
+      tolerance_yen: 1000
+
+  # **金額。原典の列を FDP の phase へ対応づける。**
+  #
+  # FDP は phase を**行の列**として持つ設計で、`value` の列型は1つしかない。
+  # だから金額が複数ある決算書は、package 段で段階ごとの行へ展開する。
+  #
+  # phase の語彙は FDP の慣行（proposed / approved / adjusted / executed）に寄せるが、
+  # `phase:id` は仕様上ただの文字列なので、該当が無いものは fudoki が宣言する
+  # （狛江市の「予算額」は流用・充用を反映する前の額で、標準に対応する段階が無い）。
+  #
+  #   name       staging の列名
+  #   source     原典の列名
+  #   unit       原典の単位（⚠️ 狛江市は歳入の予算現額だけ千円で、他はすべて円）
+  #   multiplier 円へ直す倍率
+  #   phase      FDP の phase:id / phase_label はその表示名
+  #   primary    COFOG の集計と検算に使う段階。**団体・direction ごとに1つ**
+  budget_amounts:
+    "132047":
+      expenditure:
+        - {name: source_amount, source: "08予算額", unit: 千円, multiplier: 1000,
+           phase: approved, phase_label: 当初予算, primary: true}
+      revenue:
+        - {name: source_amount, source: "08予算額", unit: 千円, multiplier: 1000,
+           phase: approved, phase_label: 当初予算, primary: true}
+    "132195":
+      expenditure:
+        - {name: source_amount_before_transfer, source: "予算額(円)", unit: 円, multiplier: 1,
+           phase: adjusted-before-transfer, phase_label: 補正後予算額（流用・充用前）, primary: false}
+        - {name: source_amount, source: "予算計(円)", unit: 円, multiplier: 1,
+           phase: adjusted, phase_label: 予算現額, primary: true}
+        - {name: source_amount_executed, source: "執行累計(円)", unit: 円, multiplier: 1,
+           phase: executed, phase_label: 執行済額, primary: false}
+      revenue:
+        - {name: source_amount, source: "予算現額(千円)", unit: 千円, multiplier: 1000,
+           phase: adjusted, phase_label: 予算現額, primary: true}
+        - {name: source_amount_executed, source: "収入累計(円)", unit: 円, multiplier: 1,
+           phase: executed, phase_label: 収入済額, primary: false}

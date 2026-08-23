@@ -11,16 +11,28 @@ fudoki は日本の地方自治体の**支出を事業単位まで**構造化し
 
 ## いま手に入るもの
 
-東京都三鷹市の令和6年度当初予算（歳出 5,613行、歳入 821行）を [Fiscal Data Package](https://fiscal.datapackage.org/) 1.0.0 として配布している。
+東京都の2団体を [Fiscal Data Package](https://fiscal.datapackage.org/) 1.0.0 として配布している。
 
-- 原典: [`data/budget/raw/`](./data/budget/raw/)（Parquet。取得の単位ごとに partition）
-- 正本: [`data/budget/datapackages/132047/`](./data/budget/datapackages/132047/)（判断を含まない）
-- 派生: [`data/budget/datapackages/derived/`](./data/budget/datapackages/derived/)（COFOG の割当と、その規則35行）
-- 取得の証跡: 原典の隣の `provenance.json`（URL・status・SHA-256・取得時刻）
-- パイプライン報告: `bun run dev` で生成してダッシュボードで見る
+- **三鷹市** 令和6年度当初予算（歳出 5,613行、歳入 821行）
+- **狛江市** 2018〜2023年度決算（歳出 13,461行、歳入 4,219行）
 
-たとえば「いじめ問題対策協議会関係費」は 311,000円で、教育費 > 教育総務費 > 教育指導費 の下にある。
+狛江市は事業の名称が決算資料 PDF にしかないので、そこから起こして事業へ対応づけている。
+名称が付くのは一般会計の 2020年度以降で、対象となる事業の 98.2%（金額で 92.2%）にあたる。
+
+| | 置き場 | 中身 |
+|---|---|---|
+| 原典 | [`data/budget/raw/`](./data/budget/raw/) | Parquet。取得の単位ごとに partition |
+| 配布物 | [`132047/`](./data/budget/datapackages/132047/) ／ [`132195/`](./data/budget/datapackages/132195/) | 団体ごと。正本（歳出・歳入）と判断（COFOG・その規則表・事業名）を別リソースで |
+| 証跡 | 原典の隣の `provenance.json` | URL・status・SHA-256・取得時刻 |
+| 報告 | `bun run dev` | ダッシュボードで見る |
+
+たとえば三鷹市の「いじめ問題対策協議会関係費」は 311,000円で、教育費 > 教育総務費 > 教育指導費 の下にある。
 これを機械で引けるようにするのが目的である。
+狛江市でも「いじめ問題等対策推進」を 2020〜2023 の4年度ぶん引ける。
+
+**公開されているデータの粒度と、そこから問いに答えられるかは別**というのが2団体目の一番大きな発見だった。
+狛江市のオープンデータは事業まで届いているのに名称を持たないので、CSV だけでは何の事業か分からない。
+成立範囲・判断の内容・確からしさは [AGENTS.md](./AGENTS.md) とパイプライン報告の Caveats にある。
 
 ## 5分で動かす
 
@@ -46,13 +58,17 @@ bun run dev            # ダッシュボードを開く（http://localhost:5173�
 |---|---|---|
 | **原典** | `source` | 自治体が公開したファイルそのまま。`data/budget/raw/` に Parquet で置く |
 | **正本** | `canonical` | 原典を取り込んで検証しただけのもの。**fudoki の判断を含まない**ので、原文と突き合わせて検証できる |
-| **派生** | `derived` | 正本に COFOG を割り当てたもの。**ここから fudoki の判断が入る** |
+| **判断** | `judgment` | 正本に COFOG や事業名を割り当てたもの。**ここから fudoki の判断が入る** |
 
-正本と派生を混ぜると、市が公表した事実と fudoki の判断を利用者が区別できなくなる。
-だから別のファイルとして配る。
+正本と判断を混ぜると、市が公表した事実と fudoki の判断を利用者が区別できなくなる。
+だから同じ団体のパッケージの中で、別のファイルとして配る。
 
 予算の科目は **款 > 項 > 目 > 節** の階層で、款が最も粗い（地方自治法にもとづく区分）。
 「事業単位まで」というのは目とその下の事業階層に届くという意味で、既存のダッシュボードは款と項で止まっている。
+事業階層の名前は団体ごとに違う（三鷹市は「事項」、狛江市は「大事業・中事業・小事業」）。
+**揃えることは fudoki の判断**なので、正本は団体ごとの形のままにしてあり、揃えた側（COFOG）を別リソースに置いている。
+
+科目の名称が原典に無い団体（狛江市）は、市が公開している決算書 PDF の見出しから名称を解決している。これも判断なので、出所は規則の根拠に書いてある。
 
 **COFOG**（Classification of the Functions of Government）は政府支出の機能別分類で、教育や保健といった10のディビジョンに分ける国際標準である。
 自治体をまたぐ比較にも将来の国際比較にも同じ写像が効くので、粒度と対にして作っている。
@@ -63,7 +79,7 @@ bun run dev            # ダッシュボードを開く（http://localhost:5173�
 
 | レイヤ | 標準 | 状態 |
 |---|---|---|
-| ① 何にいくら（予算） | [Fiscal Data Package](https://fiscal.datapackage.org/) | 1団体目を配布済み |
+| ① 何にいくら（予算） | [Fiscal Data Package](https://fiscal.datapackage.org/) | 2団体を配布済み |
 | ② いつ何が公告されたか（調達） | [OCDS](https://standard.open-contracting.org/) | 未着手 |
 | ③ どう決まったか（会議録） | [Popolo](https://www.popoloproject.com/) | 権利判定のみ（再配布可の団体は0） |
 
@@ -74,7 +90,7 @@ bun run dev            # ダッシュボードを開く（http://localhost:5173�
 ## もっと読む
 
 - [AGENTS.md](./AGENTS.md): 設計方針、実測にもとづく判断、パーサ設計の原則
-- [data/budget/datapackages/README.md](./data/budget/datapackages/README.md): 正本と派生の読み方
+- [data/budget/datapackages/README.md](./data/budget/datapackages/README.md): 配布物の読み方
 - [web/README.md](./web/README.md): ダッシュボードの構成
 - [dbt/models/](./dbt/models/): staging（判断なし）と core（判断あり）。層の境界はテストで縛っている
 - [ingestion/budget/sources.toml](./ingestion/budget/sources.toml): 取得元の定義。2団体目はここに足す
@@ -89,8 +105,8 @@ bun run dev            # ダッシュボードを開く（http://localhost:5173�
 | 層 | 誰のものか | ライセンス |
 |---|---|---|
 | コード（`ingestion/` `dbt/` `fdp/` `report/` `web/`） | fudoki | [MIT](./LICENSE) |
-| fudoki の判断（`data/budget/datapackages/derived/`） | fudoki | CC BY 4.0 |
-| 原典と正本（`data/budget/raw/` `datapackages/<団体コード>/`） | **各自治体** | 原典のライセンス（現在はすべて CC BY 4.0） |
+| fudoki の判断（`datapackages/<団体コード>/cofog*.csv` `project_names.csv`） | fudoki | CC BY 4.0 |
+| 原典と正本（`data/budget/raw/` `datapackages/<団体コード>/expenditure.csv` `revenue.csv`） | **各自治体** | 原典のライセンス（現在はすべて CC BY 4.0） |
 
 ⚠️ **原典のライセンスは fudoki が選んだものではない。**
 著作権を持たないものにライセンスは与えられないので、正本の表示は原典に付いてくる条件を

@@ -1,39 +1,38 @@
-# 正本と派生
+# 配布物
 
 fudoki が配布するデータ。**リポジトリに置いてあるこれが正本**で、API やダッシュボードを作る場合もここから生成する派生物として扱う。
 
 ## 中身
 
 ```
-132047/                   ← 正本。団体ごと・全年度
+132195/                   ← 団体ごと・全年度
   datapackage.json        Fiscal Data Package 1.0.0 の descriptor
-  expenditure.csv         歳出
-  revenue.csv             歳入
-
-derived/                  ← 派生。団体をまたいで1つ
-  datapackage.json
-  cofog.csv               識別子 + COFOG の判断
-  cofog_rules.csv         判断の規則そのもの（35行）
+  expenditure.csv         歳出        ┐ 正本。判断を含まない
+  revenue.csv             歳入        ┘
+  cofog.csv               識別子 + COFOG の判断          ┐
+  cofog_rules.csv         判断の規則そのもの              │ 判断
+  project_names.csv       原典に無い事業名の対応づけ      ┘
 ```
 
-**パスが言うのは正本か派生かだけ。** 中身が何かは `datapackage.json` の `title` と
-`description` が言う。パスに中身（cofog）を書くと ②調達・③会議録の派生が増えたときに嘘になり、
-カバレッジ（tokyo）を書くと対象を広げたときに地域で切ることになって横断できなくなる。
-年度で切ってはいけないのと同じ理由である。
+**ディレクトリは団体で切る。** 正本と判断はリソース（ファイル）で分かれる。
+判断だけを団体をまたいで1つに集めることはしない — 団体ごとのファイルは
+`read_csv('data/budget/datapackages/*/cofog.csv')` の1行で横断でき、
+畳むと**団体ごとに違うライセンスと出典を1つの表示に潰す**害だけが残るため。
+横断の問い合わせは API 側の仕事である。
 
-正本のパスは `<全国地方公共団体コード>/`。**年度でディレクトリを切らない** —
+パスは `<全国地方公共団体コード>/`。**年度でディレクトリを切らない** —
 年度を分けると「年をまたぐ比較ができない」という PJ の出発点を成果物の形で再現してしまう。
 年度は `fiscal_year` 列で区別する。
 
 原典そのものは `data/raw/` に Parquet で置いてある（取得の単位ごとに partition）。
 正本と join すれば、正規化の前の原文を突き合わせられる。
 
-## 正本と派生を分けてある
+## 正本と判断を分けてある
 
 - **正本**（`expenditure.csv` / `revenue.csv`）は原典を正規化しただけで、**fudoki の判断を含まない**。原典1行が1行に対応し、原文と突き合わせて検証できる
-- **派生**（`expenditure-cofog.csv`）は正本へ COFOG を割り当てたもの。**ここからが fudoki の判断**
+- **判断**（`cofog.csv` / `cofog_rules.csv` / `project_names.csv`）は正本へ COFOG や事業名を割り当てたもの。**ここからが fudoki の判断**。`budget_line_id` などのキーで正本へ join する
 
-混ぜると、市が公表した事実と fudoki の判断を利用者が区別できなくなる。
+同じ表に混ぜると、市が公表した事実と fudoki の判断を利用者が区別できなくなる。
 FDP は全要素が任意なので、COFOG 列を持たない正本も適合した FDP になる。
 
 ## 金額

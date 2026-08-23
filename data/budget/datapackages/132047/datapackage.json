@@ -1,8 +1,8 @@
 {
   "profile": "tabular-data-package",
   "name": "fudoki-budget-132047",
-  "title": "三鷹市 予算（事業単位）",
-  "description": "自治体が公開した予算データを Fiscal Data Package の形にしたもの。**fudoki の判断は含まない**（分類・名寄せ・推定を一切していない）。COFOG の割当は派生パッケージ derived/ にあり、budget_line_id で join する。原典そのものは data/budget/raw/ に Parquet で入っている。\n\n## 出典表示（CC BY 4.0 §3(a)(1)(A)）\n\n次の一文をそのまま使うこと。\n\n> 三鷹市「令和6年度予算データ」（東京都オープンデータカタログサイト）\n\n機械可読な同じ内容は `sources[].title`（原典）と `contributors`（加工者）にある。\n\n## 改変（CC BY 4.0 §3(a)(1)(B)）\n\n原典に対して次のことをしている。\n\n- セルの前後の空白を除去した\n- コードと名称が同居するセルを分けた\n- 金額を円へ正規化した（原典の値と単位も残してある）\n\n原典そのものは `data/budget/raw/` に Parquet で保全してあるので、改変の前後を突き合わせられる。\n\n取得の証跡（取得 URL・HTTP status・SHA-256・取得時刻・ヘッダ・行数）は、原典の隣（`data/budget/raw/**/provenance.json`）にある。\n\nリソースの `sources[].path` は、その証跡が記録している取得 URL そのものである。正本は団体ごと・全年度で1リソースなので、年度の数だけ並ぶ。\n\n## 全行で同じ値の列\n\n全国地方公共団体コード、地方公共団体名、予算段階の表示名、通貨、原典の金額の単位、支出と収入の別は行ごとに変わらないので、CSV の列から外して `schema.extraFields` に定数として置いてある（仕様の Constant Fields）。金額は原典の単位（千円）のままで、円へ直すには 1000 を掛ける。非正規化した形へ戻すときは、その列を全行に補う。\n\nFDP は全要素が任意なので、COFOG 列を持たないこのパッケージも適合した FDP である。",
+  "title": "三鷹市 当初予算（事業単位）",
+  "description": "自治体が公開した当初予算データを Fiscal Data Package の形にしたもの。歳出・歳入のリソースは**原典を正規化しただけで、fudoki の判断を含まない**（分類・名寄せ・推定を一切していない）。COFOG の割当と事業名の対応づけは fudoki の判断で、同じパッケージの別リソースにしてある（budget_line_id などのキーで join する）。原典そのものは data/budget/raw/ に Parquet で入っている。\n\n## 出典表示（CC BY 4.0 §3(a)(1)(A)）\n\n次の一文をそのまま使うこと。\n\n> 三鷹市「令和6年度予算データ」（東京都オープンデータカタログサイト）\n\n機械可読な同じ内容は `sources[].title`（原典）と `contributors`（加工者）にある。\n\n## 改変（CC BY 4.0 §3(a)(1)(B)）\n\n原典に対して次のことをしている。\n\n- セルの前後の空白を除去した\n- コードと名称が同居するセルを分けた\n- 金額を円へ正規化した（原典の値と単位も残してある）\n- 原典の各行に COFOG の分類と連結の判断を付け加えた（自治体が言っていないこと）\n\n原典そのものは `data/budget/raw/` に Parquet で保全してあるので、改変の前後を突き合わせられる。\n\n取得の証跡（取得 URL・HTTP status・SHA-256・取得時刻・ヘッダ・行数）は、原典の隣（`data/budget/raw/**/provenance.json`）にある。\n\nリソースの `sources[].path` は、その証跡が記録している取得 URL そのものである。正本は団体ごと・全年度で1リソースなので、年度の数だけ並ぶ。\n\n## 全行で同じ値の列\n\n全国地方公共団体コード、地方公共団体名、通貨、予算段階の表示名、原典の金額の単位、支出と収入の別は行ごとに変わらないので、CSV の列から外して `schema.extraFields` に定数として置いてある（仕様の Constant Fields）。非正規化した形へ戻すときは、その列を全行に補う。\n\n## 金額の段階と単位\n\n- expenditure: 当初予算（approved）は原典の 千円 で、円へ直すには 1000 を掛ける\n- revenue: 当初予算（approved）は原典の 千円 で、円へ直すには 1000 を掛ける\n\n段階が複数ある場合は原典1行を段階ごとの行へ展開してあるので、主キーは budget_line_id と phase_id の組になる。",
   "homepage": "https://github.com/wwwyo/fudoki",
   "version": "0.1.0",
   "created": "2026-08-22T06:44:52+00:00",
@@ -122,6 +122,18 @@
         "name": "fudoki:cofog:decided-at-level",
         "dataType": "string",
         "description": "款・項・目・事項のどの単位で割り当てが決まったか"
+      },
+      {
+        "name": "fudoki:budget-class:code",
+        "dataType": "string",
+        "unique": true,
+        "description": "予算区分（現年度・繰越明許・事故繰越）。⚠️ 同じ科目に複数の区分が並ぶ団体では行の同一性の一部になる。FDP の phase は予算の段階を指すもので、繰越の区分とは別概念であり標準に該当する列型が無い"
+      },
+      {
+        "name": "fudoki:budget-class:label",
+        "dataType": "string",
+        "labelOf": "fudoki:budget-class:code",
+        "description": "予算区分の表示名"
       }
     ]
   ],
@@ -325,19 +337,19 @@
             "constant": "三鷹市"
           },
           {
+            "name": "currency",
+            "title": "通貨",
+            "type": "string",
+            "columnType": "value-currency:code",
+            "constant": "JPY"
+          },
+          {
             "name": "phase_label",
             "title": "予算段階の表示名",
             "type": "string",
             "columnType": "phase:label",
             "labelOf": "phase:id",
             "constant": "当初予算"
-          },
-          {
-            "name": "currency",
-            "title": "通貨",
-            "type": "string",
-            "columnType": "value-currency:code",
-            "constant": "JPY"
           },
           {
             "name": "source_amount_unit",
@@ -476,7 +488,8 @@
             "name": "saisetsu_code",
             "title": "細節コード",
             "type": "string",
-            "columnType": "fin-source:generic:level5:code"
+            "columnType": "fin-source:generic:level5:code",
+            "description": "歳入の細節"
           },
           {
             "name": "saisetsu_label",
@@ -532,19 +545,19 @@
             "constant": "三鷹市"
           },
           {
+            "name": "currency",
+            "title": "通貨",
+            "type": "string",
+            "columnType": "value-currency:code",
+            "constant": "JPY"
+          },
+          {
             "name": "phase_label",
             "title": "予算段階の表示名",
             "type": "string",
             "columnType": "phase:label",
             "labelOf": "phase:id",
             "constant": "当初予算"
-          },
-          {
-            "name": "currency",
-            "title": "通貨",
-            "type": "string",
-            "columnType": "value-currency:code",
-            "constant": "JPY"
           },
           {
             "name": "source_amount_unit",
@@ -569,6 +582,215 @@
           "path": "https://www.city.mitaka.lg.jp/c_service/074/attached/attach_74103_7.csv"
         }
       ]
+    },
+    {
+      "name": "cofog",
+      "path": "cofog.csv",
+      "profile": "tabular-data-resource",
+      "title": "COFOG の割当（fudoki の判断）",
+      "description": "自治体が言っていないことを付け加えている。正本とは budget_line_id で join する。根拠は cofog_rules に規則として出してあり、cofog_rule_id で引ける。分類不能の割合の低さは品質の指標ではない（成立範囲を正直に調べるのが目的）",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "bytes": 666114,
+      "hash": "sha256:493c3872d8042252206432075387977699ad13c7666e62729e4de3b61488d99b",
+      "dialect": {
+        "delimiter": ",",
+        "header": true
+      },
+      "schema": {
+        "fields": [
+          {
+            "name": "fiscal_year",
+            "title": "会計年度（西暦）",
+            "type": "integer",
+            "description": "原典に年度の列が無いため、CKAN のリソース名から解決して付与した",
+            "columnType": "date:fiscal-year"
+          },
+          {
+            "name": "direction",
+            "title": "支出と収入の別",
+            "type": "string",
+            "columnType": "direction"
+          },
+          {
+            "name": "budget_line_id",
+            "title": "予算行の識別子",
+            "type": "string",
+            "description": "団体コード・年度・direction・予算段階と、階層のセル全文から導いた安定キー",
+            "columnType": "budget-line-id"
+          },
+          {
+            "name": "cofog_status",
+            "title": "分類の軸",
+            "type": "string",
+            "description": "assigned / unclassifiable / out-of-scope",
+            "columnType": "fudoki:cofog:status"
+          },
+          {
+            "name": "cofog_division",
+            "title": "COFOG ディビジョン",
+            "type": "string",
+            "description": "割当済みのときだけ入る。分類不能・対象外・歳入では空",
+            "columnType": "functional-classification:cofog:division:code"
+          },
+          {
+            "name": "cofog_consolidation",
+            "title": "連結の軸",
+            "type": "string",
+            "description": "retained / eliminated",
+            "columnType": "fudoki:cofog:consolidation"
+          },
+          {
+            "name": "cofog_decided_at_level",
+            "title": "割り当てが決まった単位",
+            "type": "string",
+            "columnType": "fudoki:cofog:decided-at-level"
+          },
+          {
+            "name": "cofog_rule_id",
+            "title": "適用した規則",
+            "type": "string",
+            "columnType": "fudoki:cofog:basis"
+          },
+          {
+            "name": "cofog_counterpart_fund",
+            "title": "消去の相手側の会計",
+            "type": "string",
+            "description": "連結で消去する行にのみ入る。歳出なら受け皿、歳入なら出し手"
+          }
+        ],
+        "primaryKey": [
+          "budget_line_id"
+        ]
+      }
+    },
+    {
+      "name": "cofog_rules",
+      "path": "cofog_rules.csv",
+      "profile": "tabular-data-resource",
+      "title": "COFOG の割り当て規則（fudoki の判断）",
+      "description": "判断の中身そのもの。結果だけを配ると、利用者は検算できても判断を検討できない。その団体に効く規則だけを収めている（applies_to が空の規則はどの団体にも効く）",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "bytes": 6492,
+      "hash": "sha256:bb0b08f58551966a222dfcc498320562c1d390d89f2afa38ce81a2995cde5903",
+      "dialect": {
+        "delimiter": ",",
+        "header": true
+      },
+      "schema": {
+        "fields": [
+          {
+            "name": "priority",
+            "title": "適用順",
+            "type": "integer",
+            "description": "小さいほど先に見る。最初に当たった規則を採る"
+          },
+          {
+            "name": "rule_id",
+            "title": "規則の識別子",
+            "type": "string",
+            "description": "派生の cofog_rule_id がこれを指す"
+          },
+          {
+            "name": "applies_to",
+            "title": "適用する団体コード",
+            "type": "string",
+            "description": "空なら法定語彙（款・節）にだけ当たる規則で、どの団体にも効く"
+          },
+          {
+            "name": "match_fund",
+            "title": "会計の条件",
+            "type": "string",
+            "description": "空は「問わない」"
+          },
+          {
+            "name": "match_kan",
+            "title": "款の条件",
+            "type": "string",
+            "description": "空は「問わない」"
+          },
+          {
+            "name": "match_kou",
+            "title": "項の条件",
+            "type": "string",
+            "description": "`|` 区切りはいずれかに一致"
+          },
+          {
+            "name": "match_kan_code",
+            "title": "款コードの条件",
+            "type": "string",
+            "description": "款の名称ではなくコードで当てる条件。原典が款の名称の列を持たない団体のために要る。空は「問わない」"
+          },
+          {
+            "name": "match_moku",
+            "title": "目の条件",
+            "type": "string",
+            "description": "moku_mode が contains なら部分一致、eq なら `|` 区切りのいずれかに一致"
+          },
+          {
+            "name": "moku_mode",
+            "title": "目の照合方法",
+            "type": "string",
+            "description": "eq または contains"
+          },
+          {
+            "name": "match_setsu",
+            "title": "節の条件",
+            "type": "string",
+            "description": "空は「問わない」"
+          },
+          {
+            "name": "status",
+            "title": "分類の軸",
+            "type": "string",
+            "description": "assigned / unclassifiable / out-of-scope"
+          },
+          {
+            "name": "division",
+            "title": "割当先のディビジョン",
+            "type": "string",
+            "description": "assigned のときだけ入る"
+          },
+          {
+            "name": "consolidation",
+            "title": "連結の軸",
+            "type": "string",
+            "description": "retained / eliminated"
+          },
+          {
+            "name": "decided_at_level",
+            "title": "決まった単位",
+            "type": "string",
+            "description": "会計 / 款 / 項 / 目 / 節。款だけで決まらない範囲を測るために持つ"
+          },
+          {
+            "name": "counterpart_fund",
+            "title": "消去の相手側",
+            "type": "string",
+            "description": "eliminated のときだけ入る"
+          },
+          {
+            "name": "basis",
+            "title": "根拠",
+            "type": "string",
+            "description": "なぜその割当にしたか。**fudoki の判断そのもの**なので配布物に出す"
+          }
+        ],
+        "primaryKey": [
+          "rule_id"
+        ]
+      }
     }
-  ]
+  ],
+  "cofog": {
+    "version": "COFOG 1999",
+    "divisions": "01〜10",
+    "source": {
+      "name": "UNSD Classification of the Functions of Government (COFOG)",
+      "url": "https://unstats.un.org/unsd/classifications/Family/Detail/4"
+    }
+  }
 }

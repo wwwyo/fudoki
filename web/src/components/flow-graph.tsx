@@ -158,7 +158,7 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
             const warned = cs.filter((c) => !c.ok && c.severity === 'warn').length
             const dim = related ? !related.has(node.id) : false
             const focused = active === node.id
-            // **「含む」で色を塗る。** 派生の配布物はそれ自身が規則を適用していなくても
+            // **「含む」で色を塗る。** 判断の配布物はそれ自身が規則を適用していなくても
             // 判断を含む。持ち込むかどうかで塗ると、配布物が「判断なし」に見える。
             const on = node.containsJudgment
             const accent = on ? 'var(--color-stage-judgment)' : 'var(--color-stage-nojudgment)'

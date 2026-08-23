@@ -4,35 +4,18 @@
 -- 原典が1 direction 落ちた、取得が失敗した、といったときに
 -- 検査は全部緑のまま配布物だけ空になる。それを塞ぐ。
 --
--- 期待する direction の集合と突き合わせるので、片側が消えても検出できる
--- （inner join だけだと消えた direction ごと比較から外れる）。
-{% set codes = var('budget_levels').keys() | list %}
-{% set expected = [] %}
-{% for code in codes %}
-  {% for direction in var('budget_levels')[code].keys() %}
-    {% do expected.append((code, direction)) %}
-  {% endfor %}
-{% endfor %}
-
-with actual as (
-    {% for code, direction in expected %}
+-- ⚠️ **以前ここは原理的に落ちない検査だった。**
+-- 宣言（`budget_units()`）から作った `wanted` と `actual` を full outer join していたが、
+-- 両方とも同じ Jinja のループから生成され、`count(*)` は必ず1行返すので、
+-- join が差を出すことがなかった。**宣言に無いものは宣言と突き合わせても見つからない。**
+-- 宣言と原典のずれは declarations_cover_raw.sql が原典の側を母集団にして見る。
+-- ここが見るのは「宣言した単位に中身があるか」だけでよい。
+select jurisdiction, direction, rows
+from (
+    {% for code, direction in budget_units() %}
     select '{{ code }}' as jurisdiction, '{{ direction }}' as direction, count(*) as rows
     from {{ ref('stg_' ~ code ~ '__' ~ direction) }}
     {% if not loop.last %}union all{% endif %}
     {% endfor %}
-),
-
-wanted as (
-    {% for code, direction in expected %}
-    select '{{ code }}' as jurisdiction, '{{ direction }}' as direction
-    {% if not loop.last %}union all{% endif %}
-    {% endfor %}
 )
-
-select
-    coalesce(w.jurisdiction, a.jurisdiction) as jurisdiction,
-    coalesce(w.direction, a.direction)       as direction,
-    coalesce(a.rows, 0)                      as rows
-from wanted as w
-full outer join actual as a using (jurisdiction, direction)
-where coalesce(a.rows, 0) = 0
+where rows = 0
