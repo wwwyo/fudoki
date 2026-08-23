@@ -121,19 +121,18 @@
   "fudoki": {
     "specification": {
       "version": "1.0.0",
-      "url": "https://fiscal.datapackage.org/",
-      "profile": "https://fiscal.datapackage.org/profiles/fiscal-data-package.json"
-    },
-    "standardTaxonomy": "Budget Standard Taxonomy 1.0.0",
-    "cofog": {
-      "version": "COFOG 1999",
-      "divisions": "01〜10",
-      "source": {
-        "name": "UNSD Classification of the Functions of Government (COFOG)",
-        "url": "https://unstats.un.org/unsd/classifications/Family/Detail/4"
-      }
-    },
-    "note": "正本（expenditure / revenue）は原典を正規化しただけで fudoki の判断を含まない。COFOG の割り当ては派生パッケージ derived/ にある。FDP は全要素が任意なので、COFOG 列を持たない正本も適合した FDP になる。"
+      "url": "https://fiscal.datapackage.org/specifications/fiscal-data-package/",
+      "profile": null,
+      "profileNote": "1.0.0 に対応する profile JSON は存在しない（2026-08-23 実測）。仕様本文が Profile として挙げる https://fiscal.datapackage.org/profiles/fiscal-data-package.json は 0.3 世代のままで、1.0.0 が廃止した model（measures / dimensions）を required に持つ。リポジトリ frictionlessdata/datapackage-fiscal でもこのファイルは 2024-01-05 の bootstrap 以降更新されておらず、1.0.0 の語彙を検査できる JSON Schema はどこにも無い。したがって descriptor の profile には下層の Tabular Data Package v1（tabular-data-package）を宣言し、1.0.0 への適合は仕様本文に照らして人が確かめる。"
+    }
+  },
+  "cofog": {
+    "version": "COFOG 1999",
+    "divisions": "01〜10",
+    "source": {
+      "name": "UNSD Classification of the Functions of Government (COFOG)",
+      "url": "https://unstats.un.org/unsd/classifications/Family/Detail/4"
+    }
   },
   "fields": {
     "budget_line_id": {
@@ -345,7 +344,8 @@
       "name": "source_amount_unit",
       "title": "原典の金額の単位",
       "type": "string",
-      "columnType": "fudoki:source:amount-unit"
+      "columnType": "fudoki:source:amount-unit",
+      "description": "円に直すには 1000 を掛ける。FDP に倍率を表す ColumnType が無いため、倍率そのものはこの説明文にしか置き場が無い"
     },
     "source_row": {
       "name": "source_row",

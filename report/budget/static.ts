@@ -223,7 +223,11 @@ export const STATIC: Static = {
     },
     {
       "topic": "仕様が正準と宣言する taxonomy の URL が 404",
-      "body": "`https://specs.frictionlessdata.io/taxonomies/fiscal/budgets.json` は 404 を返す（2026-08-16 実測）。ColumnType の一覧を機械可読な形で参照する経路が存在しないため、仕様の原文（Markdown）から起こして `src/budget/taxonomy/` に取り込み、fudoki 側で保守する。descriptor の `columnTypes` は仕様どおりこの URL を指しているが、**利用者がこれを辿っても取得できない**。"
+      "body": "`https://specs.frictionlessdata.io/taxonomies/fiscal/budgets.json` は 404 を返す（2026-08-16 実測）。ColumnType の一覧を機械可読な形で参照する経路が存在しないため、仕様の原文（Markdown）から起こして `fdp/budget-taxonomy.json` に取り込み、fudoki 側で保守する。descriptor の `columnTypes` は仕様どおりこの URL を指しているが、**利用者がこれを辿っても取得できない**。"
+    },
+    {
+      "topic": "1.0.0 の profile JSON が存在しないので、適合を機械に検査させられない",
+      "body": "仕様本文が Profile として挙げる `https://fiscal.datapackage.org/profiles/fiscal-data-package.json` は 0.3 世代のままで、**1.0.0 が廃止した `model`（measures / dimensions）を required に持つ**（2026-08-23 実測）。repo `frictionlessdata/datapackage-fiscal` でもこのファイルは 2024-01-05 の bootstrap 以降更新されていない。したがって `datapackage.json` の `profile` には下層の Tabular Data Package v1 を宣言し、**1.0.0 への適合は仕様本文に照らして人が確かめている**。バリデータで担保されていないことは弱点として残る。"
     },
     {
       "topic": "`fin-source:generic:level4〜6` は標準の名前空間を fudoki が拡張したもの",
