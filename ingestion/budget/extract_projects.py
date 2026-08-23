@@ -27,13 +27,13 @@ from __future__ import annotations
 import json
 import pathlib
 import re
-import subprocess
 import sys
 import unicodedata
 from collections import defaultdict
 
 from ingestion.budget.sources import load_project_names
 from ingestion.lib.http import http_get
+from ingestion.lib.pdf import chars_of as _chars, column_of, rows_of as _rows_of
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 OUT = ROOT / "data" / "budget" / "raw" / "project-names"
@@ -42,69 +42,6 @@ OUT = ROOT / "data" / "budget" / "raw" / "project-names"
 EXTRACTOR_VERSION = "3"
 
 NUMBER = re.compile(r"^[\d,]+$")
-
-
-def _rows_of(page: list[tuple[float, float, str]], tolerance: float = 1.0) -> list[list[tuple[float, str]]]:
-    """1ページの文字を**視覚的な行**へまとめる。
-
-    ⚠️ **固定グリッド（`round(y / 2)`）で丸めてはいけない。**
-    pdftotext は語ごとに yMin を返し、同じ行の語でも CJK と ASCII の混在で 0.5pt ほどずれる。
-    行が丸めの境界をまたぐと**1つの行が2つに割れ**、名前の先頭1文字が前の行に落ちる。
-    実測で 2020年度の 528 行のうち 66 行（12.5%）の名前が壊れていた
-    （`議会関係費` が `人件費議` と `会関係費` に割れる、など）。
-    ページ全体の 9,346 行のうち 805 行（8.6%）が割れていた。
-
-    y を並べて、隣との差が `tolerance` を超えたところで行を切る。
-    ⚠️ **境界に乗っていないことを確かめる。** 許容幅を変えて抽出し直し、名前が変わるなら
-    その行は行のまとめ方に依存している（`ingest` の nameStable 検査）。
-    """
-    if not page:
-        return []
-    ys = sorted({y for _, y, _ in page})
-    groups: list[list[float]] = [[ys[0]]]
-    for y in ys[1:]:
-        if y - groups[-1][-1] > tolerance:
-            groups.append([])
-        groups[-1].append(y)
-    index = {y: i for i, g in enumerate(groups) for y in g}
-    rows: list[list[tuple[float, str]]] = [[] for _ in groups]
-    for x, y, c in page:
-        rows[index[y]].append((x, c))
-    return rows
-
-
-def _column(x: float, columns: dict[str, tuple[float, float]]) -> str | None:
-    """x 座標がどの列か。**範囲は宣言から来る**（`sources.toml` の `columns`）。
-
-    ⚠️ **組版はコードの定数ではない。** ここに書くと、別の組版の資料を足したとき
-    「4年度とも同じだから共通で足りている」という前提が黙って壊れる。
-    範囲は取得元ごとの事実なので、取得元の宣言と同じ場所に置く。
-    """
-    for name, (lo, hi) in columns.items():
-        if lo <= x < hi:
-            return name
-    return None
-
-
-def _chars(pdf: pathlib.Path, first: int, last: int):
-    """ページごとに (x, y, 1文字) を返す。語を文字数で割って文字の x を出す"""
-    xml = subprocess.run(  # noqa: S603
-        ["pdftotext", "-bbox-layout", "-f", str(first), "-l", str(last), str(pdf), "-"],
-        capture_output=True, check=True,
-    ).stdout.decode()
-    for page in xml.split("<page ")[1:]:
-        seen: set = set()
-        out = []
-        for m in re.finditer(
-            r'<word xMin="([\d.]+)" yMin="([\d.]+)" xMax="([\d.]+)"[^>]*>(.*?)</word>', page
-        ):
-            x0, y, x1, text = float(m[1]), float(m[2]), float(m[3]), m[4]
-            if (x0, y, text) in seen:   # bbox は同じ語を2回吐くことがある
-                continue
-            seen.add((x0, y, text))
-            width = (x1 - x0) / max(len(text), 1)
-            out.extend((x0 + width * i, y, c) for i, c in enumerate(text))
-        yield out
 
 
 def extract(pdf: pathlib.Path, first: int, last: int,
@@ -126,7 +63,7 @@ def extract(pdf: pathlib.Path, first: int, last: int,
         for line in _rows_of(page, tolerance):
             cells = defaultdict(str)
             for x, c in sorted(line):
-                col = _column(x, columns)
+                col = column_of(x, columns)
                 if col:
                     cells[col] += c
             name, amount = cells["mei"].strip(), cells["kingaku"].strip()
@@ -143,7 +80,7 @@ def extract(pdf: pathlib.Path, first: int, last: int,
             # （原則3「資料名ではなく中身の粒度で判定する」を自分で破っていた）。
             found, buf, bx = [], "", None
             for x, c in sorted(line):
-                if _column(x, columns) != "code":
+                if column_of(x, columns) != "code":
                     continue
                 if bx is None:
                     bx = x
@@ -164,7 +101,7 @@ def extract(pdf: pathlib.Path, first: int, last: int,
             # 「保健衛生」という実在しない科目名になる。**規則を当てる相手なので、
             # 切れた名前は静かに当たらないか、悪くすると別の科目に当たる。**
             if not found and label_open:
-                cont = "".join(c for x, c in sorted(line) if _column(x, columns) == "code").strip()
+                cont = "".join(c for x, c in sorted(line) if column_of(x, columns) == "code").strip()
                 if cont and not any(ch.isdigit() for ch in unicodedata.normalize("NFKC", cont)):
                     if label_open == "kan":
                         kan_name = (kan_name or "") + cont

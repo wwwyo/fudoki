@@ -2,7 +2,7 @@
   "profile": "tabular-data-package",
   "name": "fudoki-budget-132195",
   "title": "狛江市 決算（事業単位）",
-  "description": "自治体が公開した決算データを Fiscal Data Package の形にしたもの。歳出・歳入のリソースは**原典を正規化しただけで、fudoki の判断を含まない**（分類・名寄せ・推定を一切していない）。COFOG の割当と事業名の対応づけは fudoki の判断で、同じパッケージの別リソースにしてある（budget_line_id などのキーで join する）。原典そのものは data/budget/raw/ に Parquet で入っている。\n\n## 出典表示（CC BY 4.0 §3(a)(1)(A)）\n\n次の一文をそのまま使うこと。\n\n> 狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）\n\n機械可読な同じ内容は `sources[].title`（原典）と `contributors`（加工者）にある。\n\n## 改変（CC BY 4.0 §3(a)(1)(B)）\n\n原典に対して次のことをしている。\n\n- セルの前後の空白を除去した\n- コードと名称が同居するセルを分けた\n- 金額を円へ正規化した（原典の値と単位も残してある）\n- 原典の各行に COFOG の分類と連結の判断を付け加えた（自治体が言っていないこと）\n- 原典に無い事業名を決算資料 PDF の事項別明細から起こし、同じ目の中で金額が一致する大事業へ対応づけた（自治体がこの対応を宣言しているわけではない）\n\n原典そのものは `data/budget/raw/` に Parquet で保全してあるので、改変の前後を突き合わせられる。\n\n取得の証跡（取得 URL・HTTP status・SHA-256・取得時刻・ヘッダ・行数）は、原典の隣（`data/budget/raw/**/provenance.json`）にある。\n\nリソースの `sources[].path` は、その証跡が記録している取得 URL そのものである。正本は団体ごと・全年度で1リソースなので、年度の数だけ並ぶ。\n\n## 全行で同じ値の列\n\n全国地方公共団体コード、地方公共団体名、通貨、支出と収入の別は行ごとに変わらないので、CSV の列から外して `schema.extraFields` に定数として置いてある（仕様の Constant Fields）。非正規化した形へ戻すときは、その列を全行に補う。\n\n## 金額の段階と単位\n\n- expenditure: 補正後予算額（流用・充用前）（adjusted-before-transfer）は原典の 円 で、円へ直すには 1 を掛ける、予算現額（adjusted）は原典の 円 で、円へ直すには 1 を掛ける、執行済額（executed）は原典の 円 で、円へ直すには 1 を掛ける\n- revenue: 予算現額（adjusted）は原典の 千円 で、円へ直すには 1000 を掛ける、収入済額（executed）は原典の 円 で、円へ直すには 1 を掛ける\n\n段階が複数ある場合は原典1行を段階ごとの行へ展開してあるので、主キーは budget_line_id と phase_id の組になる。\n\n## 事業名の出所\n\n原典の CSV に事業の名称が無いため、市が公開している決算資料 PDF から起こした。⚠️ **その PDF は再配布の可否が未確定である**（`licenses` には入れていない）。配っているのは抽出した事実（事業名・コード・金額）であって原文の複製ではないが、列の出所を辿れるよう `sources` に出典として並べてある。\n\n- 令和2年度　歳出事項別明細\n- 令和3年度　歳出事項別明細\n- 令和4年度　歳出事項別明細\n- 令和５年度主要な施策の成果説明書・決算資料（うち 一般会計歳入歳出（事項別）決算状況）",
+  "description": "自治体が公開した決算データを Fiscal Data Package の形にしたもの。歳出・歳入のリソースは**原典を正規化しただけで、fudoki の判断を含まない**（分類・名寄せ・推定を一切していない）。COFOG の割当と事業名の対応づけは fudoki の判断で、同じパッケージの別リソースにしてある（budget_line_id などのキーで join する）。原典そのものは data/budget/raw/ に Parquet で入っている。\n\n## 出典表示（CC BY 4.0 §3(a)(1)(A)）\n\n次の一文をそのまま使うこと。\n\n> 狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）\n\n機械可読な同じ内容は `sources[].title`（原典）と `contributors`（加工者）にある。\n\n## 改変（CC BY 4.0 §3(a)(1)(B)）\n\n原典に対して次のことをしている。\n\n- セルの前後の空白を除去した\n- コードと名称が同居するセルを分けた\n- 金額を円へ正規化した（原典の値と単位も残してある）\n- 原典の各行に COFOG の分類と連結の判断を付け加えた（自治体が言っていないこと）\n- 科目に法定マスタ（地方自治法施行規則 別記の区分）への対応を付け加えた（コードのずれと表記差の吸収は fudoki の判断）\n- 原典に無い事業名を決算資料 PDF の事項別明細から起こし、同じ目の中で金額が一致する大事業へ対応づけた（自治体がこの対応を宣言しているわけではない）\n\n原典そのものは `data/budget/raw/` に Parquet で保全してあるので、改変の前後を突き合わせられる。\n\n取得の証跡（取得 URL・HTTP status・SHA-256・取得時刻・ヘッダ・行数）は、原典の隣（`data/budget/raw/**/provenance.json`）にある。\n\nリソースの `sources[].path` は、その証跡が記録している取得 URL そのものである。正本は団体ごと・全年度で1リソースなので、年度の数だけ並ぶ。\n\n## 全行で同じ値の列\n\n全国地方公共団体コード、地方公共団体名、通貨、支出と収入の別は行ごとに変わらないので、CSV の列から外して `schema.extraFields` に定数として置いてある（仕様の Constant Fields）。非正規化した形へ戻すときは、その列を全行に補う。\n\n## 金額の段階と単位\n\n- expenditure: 補正後予算額（流用・充用前）（adjusted-before-transfer）は原典の 円 で、円へ直すには 1 を掛ける、予算現額（adjusted）は原典の 円 で、円へ直すには 1 を掛ける、執行済額（executed）は原典の 円 で、円へ直すには 1 を掛ける\n- revenue: 予算現額（adjusted）は原典の 千円 で、円へ直すには 1000 を掛ける、収入済額（executed）は原典の 円 で、円へ直すには 1 を掛ける\n\n段階が複数ある場合は原典1行を段階ごとの行へ展開してあるので、主キーは budget_line_id と phase_id の組になる。\n\n## 事業名の出所\n\n原典の CSV に事業の名称が無いため、市が公開している決算資料 PDF から起こした。⚠️ **その PDF は再配布の可否が未確定である**（`licenses` には入れていない）。配っているのは抽出した事実（事業名・コード・金額）であって原文の複製ではないが、列の出所を辿れるよう `sources` に出典として並べてある。\n\n- 令和2年度　歳出事項別明細\n- 令和3年度　歳出事項別明細\n- 令和4年度　歳出事項別明細\n- 令和５年度主要な施策の成果説明書・決算資料（うち 一般会計歳入歳出（事項別）決算状況）",
   "homepage": "https://github.com/wwwyo/fudoki",
   "version": "0.1.0",
   "created": "2026-08-22T08:16:58+00:00",
@@ -134,6 +134,41 @@
         "dataType": "string",
         "labelOf": "fudoki:budget-class:code",
         "description": "予算区分の表示名"
+      },
+      {
+        "name": "fudoki:name-source",
+        "dataType": "string",
+        "description": "科目名称の出所（事実か fudoki の判断か）"
+      },
+      {
+        "name": "fudoki:master:kan:code",
+        "dataType": "integer",
+        "description": "法定マスタ（地方自治法施行規則 別記）の款番号"
+      },
+      {
+        "name": "fudoki:master:kan:label",
+        "dataType": "string",
+        "description": "法定マスタの款の名称"
+      },
+      {
+        "name": "fudoki:master:kou:code",
+        "dataType": "integer",
+        "description": "法定マスタの項番号"
+      },
+      {
+        "name": "fudoki:master:kou:label",
+        "dataType": "string",
+        "description": "法定マスタの項の名称"
+      },
+      {
+        "name": "fudoki:master:kind",
+        "dataType": "string",
+        "description": "法定マスタへの対応の種別（map / addition）"
+      },
+      {
+        "name": "fudoki:master:basis",
+        "dataType": "string",
+        "description": "法定マスタへの対応の根拠"
       }
     ]
   ],
@@ -852,8 +887,8 @@
       "format": "csv",
       "mediatype": "text/csv",
       "encoding": "utf-8",
-      "bytes": 11984,
-      "hash": "sha256:7fcf44c1fab55081d0f740ffef17457312cd825f8c37d22740a6cbcdc769f320",
+      "bytes": 11963,
+      "hash": "sha256:b55d3f2a88106d176d7c616d73c08d423d9ea42615119e98dac3b901754ed76c",
       "dialect": {
         "delimiter": ",",
         "header": true
@@ -959,6 +994,145 @@
         ],
         "primaryKey": [
           "rule_id"
+        ]
+      }
+    },
+    {
+      "name": "account_names",
+      "path": "account_names.csv",
+      "profile": "tabular-data-resource",
+      "title": "科目の名称と法定マスタへの対応（fudoki の判断を含む）",
+      "description": "款・項・目の名称のカタログと、地方自治法施行規則 別記の区分への対応。**款のコードは団体ごとに法定とずれる**（災害復旧費を持たない市では以降が詰まる）ので、団体をまたぐ比較は master_kan_code / master_kou_code で行う。名称の出所（原典か、決算書 PDF から fudoki が解決したか）は name_source が言う",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "bytes": 170710,
+      "hash": "sha256:b571b6d515e35ced7642760c02826db8fce4d99e98033bf7160aaa3773dcd965",
+      "dialect": {
+        "delimiter": ",",
+        "header": true
+      },
+      "schema": {
+        "fields": [
+          {
+            "name": "fiscal_year",
+            "title": "会計年度（西暦）",
+            "type": "integer",
+            "description": "原典に年度の列が無いため、CKAN のリソース名から解決して付与した",
+            "columnType": "date:fiscal-year"
+          },
+          {
+            "name": "direction",
+            "title": "支出と収入の別",
+            "type": "string",
+            "columnType": "direction"
+          },
+          {
+            "name": "fund_code",
+            "title": "会計コード",
+            "type": "string",
+            "columnType": "fund:code"
+          },
+          {
+            "name": "fund_label",
+            "title": "会計名",
+            "type": "string",
+            "columnType": "fund:label",
+            "labelOf": "fund:code"
+          },
+          {
+            "name": "kan_code",
+            "title": "款コード",
+            "type": "string",
+            "columnType": "functional-classification:generic:level1:code"
+          },
+          {
+            "name": "kan_name",
+            "title": "款の名称",
+            "type": "string",
+            "description": "出所は name_source（原典の文字列か、決算書 PDF から fudoki が解決したか）",
+            "columnType": "functional-classification:generic:level1:label",
+            "labelOf": "functional-classification:generic:level1:code"
+          },
+          {
+            "name": "kou_code",
+            "title": "項コード",
+            "type": "string",
+            "columnType": "functional-classification:generic:level2:code"
+          },
+          {
+            "name": "kou_name",
+            "title": "項の名称",
+            "type": "string",
+            "columnType": "functional-classification:generic:level2:label",
+            "labelOf": "functional-classification:generic:level2:code"
+          },
+          {
+            "name": "moku_code",
+            "title": "目コード",
+            "type": "string",
+            "columnType": "functional-classification:generic:level3:code"
+          },
+          {
+            "name": "moku_name",
+            "title": "目の名称",
+            "type": "string",
+            "columnType": "functional-classification:generic:level3:label",
+            "labelOf": "functional-classification:generic:level3:code"
+          },
+          {
+            "name": "name_source",
+            "title": "名称の出所",
+            "type": "string",
+            "description": "source-csv = 原典の文字列そのまま（事実）。settlement-pdf = 決算書 PDF の見出しから fudoki が解決した（判断）",
+            "columnType": "fudoki:name-source"
+          },
+          {
+            "name": "master_kan_code",
+            "title": "法定マスタの款コード",
+            "type": "integer",
+            "description": "地方自治法施行規則 別記「歳入歳出予算の款項の区分及び目の区分」（第15条関係）市町村・歳出 の款番号。団体のコードは法定とずれるので、横断はこちらで行う",
+            "columnType": "fudoki:master:kan:code"
+          },
+          {
+            "name": "master_kan_name",
+            "title": "法定マスタの款の名称",
+            "type": "string",
+            "columnType": "fudoki:master:kan:label"
+          },
+          {
+            "name": "master_kou_code",
+            "title": "法定マスタの項コード",
+            "type": "integer",
+            "columnType": "fudoki:master:kou:code"
+          },
+          {
+            "name": "master_kou_name",
+            "title": "法定マスタの項の名称",
+            "type": "string",
+            "columnType": "fudoki:master:kou:label"
+          },
+          {
+            "name": "master_kind",
+            "title": "対応の種別",
+            "type": "string",
+            "description": "map = マスタの区分と同じだと fudoki が決めた。addition = 法定に無い団体固有の追加区分（様式の備考1）。空 = 様式の対象外（特別会計・歳入）か名称を解決できない年度",
+            "columnType": "fudoki:master:kind"
+          },
+          {
+            "name": "master_basis",
+            "title": "対応の根拠",
+            "type": "string",
+            "columnType": "fudoki:master:basis"
+          }
+        ],
+        "primaryKey": [
+          "fiscal_year",
+          "direction",
+          "fund_code",
+          "kan_code",
+          "kou_code",
+          "moku_code"
         ]
       }
     },
