@@ -85,10 +85,6 @@ function PreviewSection({ loaded: l }: { loaded: Loaded }) {
       <div className="flex min-w-0 flex-wrap items-baseline gap-2">
         <Badge variant={l.role === '出力' ? 'secondary' : 'outline'}>{l.role === '入力' ? '入力（データ元）' : '出力（変換後）'}</Badge>
         <span className="truncate font-mono text-xs font-medium">{l.preview.title ?? l.label}</span>
-        <span className="shrink-0 text-[11px] text-muted-foreground tabular-nums">
-          先頭 {Math.min(l.preview.limit, l.preview.rows.length)} 行
-          {l.preview.totalRows !== null && ` / 全 ${l.preview.totalRows.toLocaleString()} 行`}
-        </span>
         {l.preview.sourceUrl && (
           <a
             className="min-w-0 truncate text-[11px] text-muted-foreground underline"
