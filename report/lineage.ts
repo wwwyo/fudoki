@@ -160,7 +160,9 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
     const ps = provenance.filter((p) => p.direction === src.label)
     if (ps.length === 0) continue
     nodes.push({
-      id: `${src.id}.origin`, label: ps[0]!.resource_name, kind: 'origin', stage: 'origin',
+      // ノードには見出しだけ出す。「※下水道事業会計除く」のような注記は
+      // 選んだときのプレビュー（title が正式名）と description に残る
+      id: `${src.id}.origin`, label: ps[0]!.resource_name.split('※')[0]!.trim(), kind: 'origin', stage: 'origin',
       rows: ps.reduce((s, p) => s + p.rows, 0),
       description: `${ps[0]!.request_url}\n取得: ${ps[0]!.fetched_at}`,
       introducesJudgment: false, containsJudgment: false, artifact: null,

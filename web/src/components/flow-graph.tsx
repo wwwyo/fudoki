@@ -29,6 +29,20 @@ const PAD = 8
 
 const KIND_JA: Record<Node['kind'], string> = { origin: '取得元', source: '原典', model: 'モデル', seed: '規則表' }
 
+/**
+ * ノード幅に収まるよう表示幅で切り詰める。**文字数で切ると全角で突き抜ける**
+ * （取得元ノードのリソース名は全角で、26文字 ≒ 300px になりノードを越えた）。
+ * 全角を2、半角を1と数える。上限はノード幅 210px・フォント 11.5px からの実測値
+ */
+function fitLabel(label: string, maxUnits = 31): string {
+  let units = 0
+  for (let i = 0; i < label.length; i++) {
+    units += label.charCodeAt(i) > 0xff ? 2 : 1
+    if (units > maxUnits) return `${label.slice(0, i)}…`
+  }
+  return label
+}
+
 export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
   const [hover, setHover] = useState<string | null>(null)
   const checks = checksByNode(report)
@@ -193,7 +207,7 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
                 )}
                 <rect width={4} height={NODE_H} rx={2} fill={accent} />
                 <text x={16} y={19} className="fill-foreground text-[11.5px] font-medium">
-                  {node.label.length > 26 ? `${node.label.slice(0, 25)}…` : node.label}
+                  {fitLabel(node.label)}
                 </text>
                 <text x={16} y={35} className="fill-muted-foreground text-[11px] tabular-nums">
                   {node.rows === null ? '—' : yen(node.rows)} 行 · {KIND_JA[node.kind]}
