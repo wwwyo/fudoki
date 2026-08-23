@@ -55,6 +55,10 @@ FONT = Path(os.environ.get("FONT", _DEFAULT_FONT))
 # 対はマークの基準線に出る — 短冊が並ぶ「地面」だけが丹になる。
 INK, RULE, PAPER = "#2f5d43", "#c1553a", "#f4f1e6"
 INK_DARK, RULE_DARK = "#8fbfa2", "#e08267"
+# 「風土記」の文字は**本文色**で組む。マークが色を持ち、文字は持たない。
+# 両方に色を付けると、どちらがブランドの主張なのかが割れる。
+# 値は画面の `--foreground`（`oklch(0.145 0 0)` / `oklch(0.985 0 0)`）と同じ。
+TEXT, TEXT_DARK = "#0a0a0a", "#fafafa"
 
 # マークの意匠。同じ基準線に並ぶ、長さの違う短冊（木簡 / 棒グラフ）。32 単位系。
 BARS = [(2, 14, 14), (8, 6, 22), (14, 18, 10), (20, 2, 26), (26, 11, 17)]
@@ -139,6 +143,16 @@ THEME = f"""
     f'  {mark(1, 0, 0, themed=True)}\n</svg>\n'
 )
 
+# ---- mark.svg / mark-dark.svg：マーク単体 ----
+# ファビコンと同じ意匠だが、**テーマの追い方が違うので別ファイルにする**。
+# ファビコンはブラウザのタブが OS 設定に従うのでメディアクエリでよく、
+# こちらは画面のテーマ（クラス）に合わせるので 2 枚に分けてクラスで出し分ける。
+for name, ink, rule in [("mark.svg", INK, RULE), ("mark-dark.svg", INK_DARK, RULE_DARK)]:
+    (PUBLIC / name).write_text(
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="風土記">\n'
+        f"  {mark(1, 0, 0, ink=ink, rule=rule)}\n</svg>\n"
+    )
+
 # ---- logo.svg / logo-dark.svg：マーク + 「風土記」の横組み ----
 # ⚠️ 字面の中心（draw が計算する ink bbox の中心）に合わせると、重心が上に見える。
 # マークは下端の基準線が「地面」として読まれるぶん視覚的な重さが下にあるのに対し、
@@ -150,15 +164,18 @@ THEME = f"""
 # `prefers-color-scheme` は OS 設定しか見ない。1枚にすると、OS がライトのまま
 # 画面をダークにしたときにロゴだけ取り残される。ファビコンは逆に
 # ブラウザのタブが OS 設定に従うので、あちらはメディアクエリのままでよい。
-H, GAP, TEXT, TEXT_DY = 40, 9, 30, 0.055
+H, GAP, TEXT_SIZE, TEXT_DY = 40, 9, 30, 0.055
 tx = 32 * (H / 32) + GAP
-W = tx + measure("風土記", TEXT, 0.03)
-for name, ink, rule in [("logo.svg", INK, RULE), ("logo-dark.svg", INK_DARK, RULE_DARK)]:
+W = tx + measure("風土記", TEXT_SIZE, 0.03)
+for name, ink, rule, text in [
+    ("logo.svg", INK, RULE, TEXT),
+    ("logo-dark.svg", INK_DARK, RULE_DARK, TEXT_DARK),
+]:
     (PUBLIC / name).write_text(
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W:.0f} {H}" role="img" aria-label="風土記">\n'
         f"  <title>風土記</title>\n"
         f"  {mark(H / 32, 0, 0, ink=ink, rule=rule)}\n"
-        f'  <g fill="{ink}">{draw("風土記", TEXT, tx, H / 2 + TEXT * TEXT_DY, 0.03)}</g>\n</svg>\n'
+        f'  <g fill="{text}">{draw("風土記", TEXT_SIZE, tx, H / 2 + TEXT_SIZE * TEXT_DY, 0.03)}</g>\n</svg>\n'
     )
 
 # ---- og.png：1200x630。SVG を経由して焼く ----
@@ -170,7 +187,7 @@ og = (
     f'<svg xmlns="http://www.w3.org/2000/svg" width="{OW}" height="{OH}" viewBox="0 0 {OW} {OH}">\n'
     f'  <rect width="{OW}" height="{OH}" fill="{PAPER}"/>\n'
     f'  {mark(OG_MARK / 32, ox, cy - OG_MARK / 2)}\n'
-    f'  <g fill="{INK}">{draw("風土記", OG_TEXT, ox + OG_MARK + OG_GAP, cy + OG_TEXT * TEXT_DY, 0.04)}</g>\n'
+    f'  <g fill="{TEXT}">{draw("風土記", OG_TEXT, ox + OG_MARK + OG_GAP, cy + OG_TEXT * TEXT_DY, 0.04)}</g>\n'
     "</svg>\n"
 )
 (HERE / "og.svg").write_text(og)

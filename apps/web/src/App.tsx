@@ -131,8 +131,8 @@ export default function App() {
       <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background/95 px-4 backdrop-blur">
         {/* ⚠️ ロゴを1枚にしない。`<img>` の中のメディアクエリは OS 設定しか見ないので、
             OS がライトのまま画面をダークにするとロゴだけ取り残される */}
-        <img src="/logo.svg" alt="風土記" className="h-6 w-auto shrink-0 dark:hidden" />
-        <img src="/logo-dark.svg" alt="" aria-hidden className="hidden h-6 w-auto shrink-0 dark:block" />
+        <img src="/mark.svg" alt="風土記" className="size-6 shrink-0 dark:hidden" />
+        <img src="/mark-dark.svg" alt="" aria-hidden className="hidden size-6 shrink-0 dark:block" />
         <Badge variant={report.summary.failed ? 'destructive' : 'secondary'} className="ml-auto shrink-0">
           検査 {report.summary.passed}/{report.summary.total}
         </Badge>
