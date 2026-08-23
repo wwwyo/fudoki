@@ -45,3 +45,48 @@ seeds:
         data_tests:
           - accepted_values:
               values: [retained, eliminated]
+
+  - name: account_master
+    meta:
+      role: legal-reference
+    description: |
+      法定の科目マスタ。地方自治法施行規則 別記「歳入歳出予算の款項の区分及び目の区分」
+      （第15条関係）の市町村・歳出の表を原文の PDF から起こしたもの
+      （`ingestion/budget/fetch_account_master.py` が生成。手で編集しない）。
+      **なぜ要るか: 款のコードは団体ごとにずれている。** 法定の款11は災害復旧費だが、
+      それを持たない三鷹市・狛江市はどちらも 11 が公債費で、以降が詰まっている。
+      コードでは団体をまたいで比較できないので、このマスタと対応表（account_map）を介す。
+      ⚠️ 適用範囲は**一般会計だけ**（様式の備考6: 特別会計は長が定めた区分による）。
+      is_personnel_moku は様式の※印（一般職の給料・職員手当等・共済費を計上する目。備考2）。
+    config:
+      column_types:
+        direction: varchar
+        kan_code: integer
+        kan_name: varchar
+        kou_code: integer
+        kou_name: varchar
+        moku_code: integer
+        moku_name: varchar
+        is_personnel_moku: boolean
+        basis: varchar
+
+  - name: account_map
+    meta:
+      role: judgment-rule
+    description: |
+      団体の科目コード・名称と法定マスタ（account_master）の対応。**fudoki の判断。**
+      kind=map はマスタの区分と同じだと決めたもの、kind=addition は法定に無い
+      団体固有の追加区分（施行規則の備考1が行政権能の差による追加を認めている）。
+      款の対応行は kou_name が空。項の行は自動対応（名称の完全一致）で決まらないものだけ持つ。
+      ⚠️ **ここに無い款が一般会計の歳出に現れたらパイプラインが止まる**
+      （tests/account_map_covers_lines.sql）。黙って未対応のまま配らないため。
+    config:
+      column_types:
+        jurisdiction_code: varchar
+        direction: varchar
+        kan_code: varchar
+        kou_name: varchar
+        kind: varchar
+        master_kan_code: integer
+        master_kou_code: integer
+        basis: varchar
