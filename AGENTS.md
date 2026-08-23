@@ -110,6 +110,23 @@ CC BY が求める帰属を下流が落とす。層ごとの宣言は `data/LICE
 
 **正本はリポジトリ、API やダッシュボードはそこから生成する派生物**、という向きを崩さない。API を出すこと自体は歓迎する（Open States は bulk download と API を併存させ、ProZorro は公開 API と分析ダッシュボードを分離している）。**やらないのは配布を API 単独にすること** — 自前で CKAN 等を運用する形にすると、そのサーバが止まった時点で chiholog と同じ死に方をする。repo に置けば版が git 履歴に残り、「いつ時点の正本か」も追える。
 
+**ダッシュボードは `https://fudoki.dev/` で配信する。** これは派生物であって正本ではない。
+画面が止まっても配布物は repo に残る、という向きが保てる限りドメインを持つこと自体は問題にならない。
+配布物の絶対 URL（`canonical` / `og:image` / `sitemap.xml`）はこのドメインを指す。
+⚠️ **ルートパス（`https://fudoki.dev/`）で配信する前提**なので、`vite.config.ts` の `base` は `/` のままでよい。
+`base` に効くのは**パス**であって DNS 名ではない。`www.fudoki.dev` のようなサブドメインへ移しても `/` のまま。
+サブパス（`example.github.io/fudoki/` のような形）へ移すときだけ、`base` と上記3箇所を同時に変える
+（片方だけだと静的アセットが 404 になる）。
+置き場は Cloudflare。apex をそのまま向けられるのは Cloudflare が CNAME flattening をするからで、
+`CNAME` ファイルは要らない（GitHub Pages なら要る）。
+
+⚠️ **ホスティング側でビルドさせることはできない。** 画面は `pipeline.json` と `preview/` を読むが、
+どちらも commit していない（再実行で得られるローカル生成物）。生成には `bun run report` が要り、
+それは `dbt/target/manifest.json` を読むので、**dbt を回さないと画面のデータが存在しない**。
+clone しただけの環境では作れないので、**CI で組んでから成果物を投げる**。
+`.github/workflows/verify.yml` が既に `dbt build` → `report` → `web build` を回しているため、
+必要なものは CI 上に揃っている。
+
 **原典・証跡・配布物をリポジトリに置く。** 原典は Parquet で `data/raw/` へ、取得の単位（団体コード・年度・direction）で partition する。全量（62団体 × 9年度）で 79 MB と実測しており、git repo として普通の範囲に収まる。調査の観測とパイプライン報告は commit しない（再実行で得られるローカル作業ファイル。主張には調査日を添える）。
 
 ⚠️ **③会議録の原典は置けない。** `gate.redistribute` は allow 0 団体である。**raw を commit できるのは再配布可と判定済みの取得元だけ**で、これはコードで縛る（`gate.redistribute !== 'allow'` なら書き出さない）。①予算は CC BY なので置ける。
@@ -234,7 +251,7 @@ PDF の抽出は1本あたり数十秒かかるので、**抽出を走らせる�
 **data/ に置くのは、外の世界のスナップショットと配布物だけ**（raw・provenance・packages）。
 fudoki が決めた入力（取得先・ゲート・団体マスタ）はコードの隣、つまり `ingestion/` に置く。
 調査の観測はスクリプトの隣（`ingestion/**/observations/`、gitignore）へ書き出し、
-パイプライン報告は `web/public/` へ直接書く（どちらも再実行で得られるローカル生成物）。
+パイプライン報告は `apps/web/public/` へ直接書く（どちらも再実行で得られるローカル生成物）。
 
 | | 何 | 書く | commit |
 |---|---|---|---|
@@ -565,7 +582,7 @@ CC BY が求める帰属と改変の明示には標準のプロパティが無�
 | `bun run survey:budget-years` | 三鷹市の他年度が令和6年度と互換か（列構成・金額の型・引用符の有無・会計の範囲） |
 | `bun run survey:structure 132195` | 狛江市の原典が何を持っているか（階層が実際に使われているか・コードの再利用・行の同一性・款コードの裏づけ・歳出と歳入の一致）。**原典を読むだけでネットワークを叩かない** |
 | `bun run pipeline` | 取得 → dbt → 配布物 → 報告。**検査が1つでも落ちたら下流を作らない** |
-| `bun run dev` | 報告を作り直してダッシュボードを上げる（`web/`） |
+| `bun run dev` | 報告を作り直してダッシュボードを上げる（`apps/web/`） |
 | `bun run fetch:fdp-taxonomy` | FDP の ColumnType 一覧を仕様の原文から起こして取り込む（正準 URL が 404 のため） |
 
 ## 未確定（移行に伴うもの）

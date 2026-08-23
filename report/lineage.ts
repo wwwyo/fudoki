@@ -176,7 +176,7 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
   })
 
   // 取得元。dbt は知らないので証跡から組む。id を「source ノードid + .origin」にしてあるのは
-  // プレビュー（web/public/preview/<id>.json）が同じ規約で書かれるため
+  // プレビュー（apps/web/public/preview/<id>.json）が同じ規約で書かれるため
   for (const src of nodes.filter((n) => n.kind === 'source')) {
     // ⚠️ **direction だけで引かない。** 2団体目からは `expenditure` という名前の
     // ソースが団体ごとにあり、direction だけで絞ると三鷹市の取得元ノードに

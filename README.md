@@ -91,7 +91,7 @@ bun run dev            # ダッシュボードを開く（http://localhost:5173�
 
 - [AGENTS.md](./AGENTS.md): 設計方針、実測にもとづく判断、パーサ設計の原則
 - [data/budget/datapackages/README.md](./data/budget/datapackages/README.md): 配布物の読み方
-- [web/README.md](./web/README.md): ダッシュボードの構成
+- [apps/web/README.md](./apps/web/README.md): ダッシュボードの構成
 - [dbt/models/](./dbt/models/): staging（判断なし）と core（判断あり）。層の境界はテストで縛っている
 - [ingestion/budget/sources.toml](./ingestion/budget/sources.toml): 取得元の定義。2団体目はここに足す
 
@@ -104,7 +104,7 @@ bun run dev            # ダッシュボードを開く（http://localhost:5173�
 
 | 層 | 誰のものか | ライセンス |
 |---|---|---|
-| コード（`ingestion/` `dbt/` `fdp/` `report/` `web/`） | fudoki | [MIT](./LICENSE) |
+| コード（`ingestion/` `dbt/` `fdp/` `report/` `apps/web/`） | fudoki | [MIT](./LICENSE) |
 | fudoki の判断（`datapackages/<団体コード>/cofog*.csv` `project_names.csv`） | fudoki | CC BY 4.0 |
 | 原典と正本（`data/budget/raw/` `datapackages/<団体コード>/expenditure.csv` `revenue.csv`） | **各自治体** | 原典のライセンス（現在はすべて CC BY 4.0） |
 

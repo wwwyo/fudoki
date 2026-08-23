@@ -5,14 +5,14 @@
  * 食い違いはコンパイラが捕まえる。型を2箇所で宣言すると、
  * 生成側のキーを変えた瞬間に画面が黙って壊れる（実際にその状態を作った）。
  */
-import type { ReportData, Topology, Node, Edge, Stage, Check, NodePreview } from '@report/budget/schema'
-import type { Direction, DetailRow, DetailTable, Level } from '@report/budget/detail'
+import type { ReportData, Topology, Node, Edge, Stage, Check, NodePreview } from '@fudoki/report/budget/schema'
+import type { Direction, DetailRow, DetailTable, Level } from '@fudoki/report/budget/detail'
 
 export type { ReportData, Topology, Node, Edge, Stage, Check, NodePreview }
 
-export type { Direction, DetailColumn, DetailRow, DetailTable, Level } from '@report/budget/detail'
-export { LEVEL_JA, basisOf, cell, divisionLabelOf, levelCell } from '@report/budget/detail'
-import { DIRECTIONS, expectedColumns } from '@report/budget/detail'
+export type { Direction, DetailColumn, DetailRow, DetailTable, Level } from '@fudoki/report/budget/detail'
+export { LEVEL_JA, basisOf, cell, divisionLabelOf, levelCell } from '@fudoki/report/budget/detail'
+import { DIRECTIONS, expectedColumns } from '@fudoki/report/budget/detail'
 
 /**
  * ⚠️ **複数団体を運ぶ。**
@@ -86,7 +86,7 @@ export async function loadNodePreview(id: string): Promise<NodePreview> {
 }
 
 /**
- * 列指向を行指向へ。**列名は `@report/budget/detail` の宣言に縛られる** —
+ * 列指向を行指向へ。**列名は `@fudoki/report/budget/detail` の宣言に縛られる** —
  * 宣言に無い列を読むとコンパイルが落ちる。
  * 以前は Record<string, string> だったので、配布物から列を落としても画面が黙って空になった。
  */

@@ -22,10 +22,9 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@/*": ["./src/*"],
-      // 報告の型の正本は report/schema.ts。生成側と画面が同じ型を見るので、
-      // 食い違いはコンパイラが捕まえる。
-      "@report/*": ["../report/*"]
+      "@/*": ["./src/*"]
+      // 報告の型の正本は report/。workspace 依存 @fudoki/report として読むので、
+      // 生成側と画面の食い違いはコンパイラが捕まえる。
     }
   },
   "include": ["src"]

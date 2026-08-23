@@ -26,13 +26,13 @@ jobs:
       - name: 依存を入れる
         run: |
           uv sync --frozen
+          # workspaces なので root の install が apps/web の依存も入れる
           bun install --frozen-lockfile
-          bun install --cwd web --frozen-lockfile
 
       - name: 型検査
         run: |
           bun run typecheck
-          bun run --cwd web typecheck
+          bun run --cwd apps/web typecheck
 
       - name: 変換と検査（dbt）
         run: bun run dbt
@@ -44,7 +44,7 @@ jobs:
         run: bun run report
 
       - name: 画面をビルドする
-        run: bun run --cwd web build
+        run: bun run --cwd apps/web build
 
       - name: 再生成しても commit 済みの成果物と一致するか
         run: |

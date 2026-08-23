@@ -332,7 +332,7 @@ const reports = CODES.map((code) => ({ code, report: build(code, topology, check
 // しかも pipeline.json は明細タブを開かなくても読まれる**既定の payload** である。
 // 画面側（`loadPipeline`）が読み込み時に組み直すので、下流の型は変わらない。
 const { portability, customColumnTypes } = reports[0]!.report
-writeFileSync(join(ROOT, 'web/public/pipeline.json'), `${JSON.stringify({
+writeFileSync(join(ROOT, 'apps/web/public/pipeline.json'), `${JSON.stringify({
   shared: { topology, checks, portability, customColumnTypes },
   jurisdictions: reports.map(({ code, report }) => {
     const { topology: _1, checks: _2, portability: _3, customColumnTypes: _4, ...rest } = report
@@ -344,7 +344,7 @@ for (const { code } of reports) {
   for (const direction of DIRECTIONS) {
     const table = detailProjection(code, direction)
     writeFileSync(
-      join(ROOT, `web/public/detail-${code}-${direction}.json`),
+      join(ROOT, `apps/web/public/detail-${code}-${direction}.json`),
       `${JSON.stringify(table)}\n`,
     )
   }
@@ -375,7 +375,7 @@ function previewFrom(node: ReportData['topology']['nodes'][number]): string {
 
 // **プレビューは団体で分けない。** 系統が1本なので、ノードの集合も1つ。
 const PREVIEW_ROWS = 20
-mkdirSync(join(ROOT, 'web/public/preview'), { recursive: true })
+mkdirSync(join(ROOT, 'apps/web/public/preview'), { recursive: true })
 // 取得元（origin）は DuckDB に無い。下の「取得元 CSV」節が fetch して書く
 for (const node of topology.nodes.filter((n) => n.kind !== 'origin')) {
   const rows = q<Record<string, unknown>>(`select * from ${previewFrom(node)} limit ${PREVIEW_ROWS}`)
@@ -387,7 +387,7 @@ for (const node of topology.nodes.filter((n) => n.kind !== 'origin')) {
     limit: PREVIEW_ROWS,
     totalRows: node.rows,
   }
-  writeFileSync(join(ROOT, 'web/public/preview', `${node.id}.json`), `${JSON.stringify(preview)}\n`)
+  writeFileSync(join(ROOT, 'apps/web/public/preview', `${node.id}.json`), `${JSON.stringify(preview)}\n`)
 }
 
 /**
@@ -430,7 +430,7 @@ for (const node of topology.nodes.filter((n) => n.kind === 'source')) {
     sourceUrl: p.request_url,
     fetchedAt: p.fetched_at,
   }
-  writeFileSync(join(ROOT, 'web/public/preview', `${node.id}.origin.json`), `${JSON.stringify(preview)}\n`)
+  writeFileSync(join(ROOT, 'apps/web/public/preview', `${node.id}.origin.json`), `${JSON.stringify(preview)}\n`)
 }
 
 for (const { code, report } of reports) {

@@ -9,8 +9,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "./src"),
-      "@report": path.resolve(import.meta.dirname, "../report"),
-      // 報告の型はパイプライン本体から取る（web/ 側で写しを持たない）
+      // 報告の型は workspace 依存 @fudoki/report から取る（web 側で写しを持たない）
     },
   },
 })
