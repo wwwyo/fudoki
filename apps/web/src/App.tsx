@@ -75,6 +75,18 @@ export default function App() {
     [loaded],
   )
 
+  // 系統は全団体で1本だが、図は見ている団体の分だけ出す（共有ノードは残す）。
+  // 帰属はノードの jurisdictionCode（生成側が付ける）で引く — id の命名規則を画面で推定しない。
+  // ⚠️ useMemo は参照の安定のため。毎 render で作り直すと、topology を依存に持つ
+  // プレビューの fetch がタブ切替のたびに再発火する（同じ JSON の取り直し）
+  const visibleTopology = useMemo(() => {
+    if (!current) return null
+    const topo = current.report.topology
+    const nodes = topo.nodes.filter((n) => (n.jurisdictionCode ?? current.code) === current.code)
+    const ids = new Set(nodes.map((n) => n.id))
+    return { ...topo, nodes, edges: topo.edges.filter((e) => ids.has(e.from) && ids.has(e.to)) }
+  }, [current])
+
   if (error) {
     return (
       <main className="mx-auto max-w-2xl p-6">
@@ -85,25 +97,13 @@ export default function App() {
       </main>
     )
   }
-  if (!data || !current) {
+  if (!data || !current || !visibleTopology) {
     return <main className="p-6 text-sm text-muted-foreground">読み込み中…</main>
   }
 
   const { report } = current
   const m = report.meta
   const t = report.transform
-
-  // 系統は全団体で1本だが、図は見ている団体の分だけ出す。
-  // 全団体を1枚に重ねると、選んでいない団体の取得元・raw・staging が混ざって読めない。
-  // 団体を持つノード（id に raw_<コード> か _<コード>__ を含む）だけ絞り、共有ノードは残す
-  const codeOf = (id: string) => /raw_(\d{6})/.exec(id)?.[1] ?? /_(\d{6})__/.exec(id)?.[1] ?? null
-  const visibleNodes = report.topology.nodes.filter((n) => (codeOf(n.id) ?? current.code) === current.code)
-  const visibleIds = new Set(visibleNodes.map((n) => n.id))
-  const visibleTopology = {
-    ...report.topology,
-    nodes: visibleNodes,
-    edges: report.topology.edges.filter((e) => visibleIds.has(e.from) && visibleIds.has(e.to)),
-  }
   const total = t.byState.reduce((s, x) => s + x.sum, 0)
   const assigned = t.byState.filter((x) => x.status === 'assigned').reduce((s, x) => s + x.sum, 0)
 

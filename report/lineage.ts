@@ -168,6 +168,8 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
     const stage = stageOf(n)
     return {
       id, label: n.name, kind: n.resource_type as Node['kind'], stage, rows,
+      // 団体の帰属はここで1回だけ id / 名前から決める。画面はこのフィールドで絞る
+      jurisdictionCode: /\.raw_(\d{6})/.exec(id)?.[1] ?? /_(\d{6})__/.exec(n.name)?.[1] ?? null,
       description: (n.description ?? '').trim(),
       introducesJudgment: introducesJudgment(n, stage),
       containsJudgment: false, // 下で上流から伝播させる
@@ -194,6 +196,7 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
       : base
     nodes.push({
       id: `${src.id}.origin`, label, kind: 'origin', stage: 'origin',
+      jurisdictionCode: code ?? null,
       rows: ps.reduce((s, p) => s + p.rows, 0),
       description: `${ps[0]!.request_url}${ps.length > 1 ? `\nほか ${ps.length - 1} リソース` : ''}\n取得: ${ps[0]!.fetched_at}`,
       introducesJudgment: false, containsJudgment: false, artifact: null,
