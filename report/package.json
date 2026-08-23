@@ -5,7 +5,8 @@
   "type": "module",
   "description": "報告の生成と、その出力の型。型の正本はここで、apps/web は workspace 依存として同じ型を読む",
   "exports": {
-    "./*": "./*.ts"
+    "./budget/schema": "./budget/schema.ts",
+    "./budget/detail": "./budget/detail.ts"
   },
   "dependencies": {
     "zod": "4.4.3"

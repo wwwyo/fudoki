@@ -5,9 +5,9 @@ commit した生成物には生成手段を残す、という repo の決めご�
 
 | 出力 | 用途 |
 |---|---|
-| `web/public/favicon.svg` | マーク単体（タブ・16〜32px） |
-| `web/public/logo.svg` | マーク + 「風土記」の横組み |
-| `web/public/og.png` | 1200x630。OGP のカード |
+| `apps/web/public/favicon.svg` | マーク単体（タブ・16〜32px） |
+| `apps/web/public/logo.svg` | マーク + 「風土記」の横組み |
+| `apps/web/public/og.png` | 1200x630。OGP のカード |
 
 **文字は `<text>` ではなく outline を path に焼く。** 閲覧側にフォントが無ければ
 別の字形で出る、という状態はロゴとして成立しない。焼いた時点で SVG は
