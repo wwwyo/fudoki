@@ -1,6 +1,6 @@
 """法定の科目マスタを、地方自治法施行規則 別記の原文から起こす。
 
-別記「歳入歳出予算の款項の区分及び目の区分」（第15条関係）の**市町村・歳出**の表を
+別記「歳入歳出予算の款項の区分及び目の区分」（第15条関係）の**市町村**の表（歳入・歳出）を
 e-Gov の添付 PDF から抽出し、`dbt/seeds/budget/account_master.csv` を生成する。
 
 **なぜマスタが要るか。** 款のコードは団体ごとにずれている。法定の款11は災害復旧費だが、
@@ -41,62 +41,113 @@ OUT = ROOT / "dbt" / "seeds" / "budget" / "account_master.csv"
 # 現行の法令 XML から辿れる src が空のため、e-Gov のデータ直リンクを指す。
 URL = "https://laws.e-gov.go.jp/data/MinisterialOrdinance/322M40000008029/608139_1/pict/2FH00000040617.pdf"
 SHA256 = "181ab2fde4b7bcb82a0dc6951603dd29e4c78228bba30c12667f310c657b535b"
-BASIS = "地方自治法施行規則 別記「歳入歳出予算の款項の区分及び目の区分」（第15条関係）市町村・歳出"
+BASIS = "地方自治法施行規則 別記「歳入歳出予算の款項の区分及び目の区分」（第15条関係）市町村"
 
-# 市町村・歳出の表のページと、市町村側の列の x 範囲（2026-08-23 実測）。
-# 左半分（x<285）は都道府県の表なので読まない。
-FIRST_PAGE, LAST_PAGE = 13, 25
-# ⚠️ 境界は列見出しではなく**実際の語の端**から取る。見出しの中間で切ると、
-# 「災害復旧費」の3文字目（x=341.6）が款列から漏れて「災害旧費」になった。
-# 款名の語の右端は 352.5、項コードの左端は 360 なので、その間の 355 で切る。
-COLUMNS = {"kan": (285.0, 355.0), "kou": (355.0, 425.0), "moku": (425.0, 545.0)}
+# 表ごとの宣言（2026-08-23〜24 実測）。
+# ⚠️ **歳入と歳出で都道府県欄の張り出しが違う。** 歳出の都道府県欄は x<290 に収まるが、
+# 歳入は目のコードが x=348、名称が x=364〜425 まで来て、市町村欄の款・項の帯と重なる。
+# 固定の x 境界では欄を切れないので、**両欄のコード位置を追跡して行を欄に帰属させる**。
+# code_bands はコード（数字）の開始 x の帯。名称はコードの後ろ、次のコード帯の手前まで。
+TABLES = {
+    "revenue": {
+        "pages": (1, 12),
+        "start": "1市",           # 市町村欄の最初の款「1 市（町村）税」
+        "pref_bands": {"kan": (140.0, 158.0), "kou": (240.0, 258.0), "moku": (343.0, 358.0)},
+        "muni_bands": {"kan": (290.0, 315.0), "kou": (358.0, 372.0), "moku": (425.0, 445.0)},
+    },
+    "expenditure": {
+        "pages": (13, 25),
+        "start": "1議会費",
+        "pref_bands": {"kan": (110.0, 125.0), "kou": (168.0, 182.0), "moku": (240.0, 255.0)},
+        "muni_bands": {"kan": (290.0, 325.0), "kou": (355.0, 370.0), "moku": (425.0, 445.0)},
+    },
+}
 MARK = "※"
 
 
-def extract(pdf: pathlib.Path) -> list[dict]:
+def _segments(line: list[tuple[float, str]], spec: dict):
+    """1行を (欄, 階層, コード, 名称) のセグメントへ割る。
+
+    コード（数字）の開始 x がどの帯に入るかで欄と階層が決まり、
+    名称はその後ろ、次のコード帯に入る数字の手前まで。
+    **x の固定境界で名称を切らない** — 名称の右端は階層ごとに揺れ、
+    歳入では都道府県の名称が市町村の帯まで張り出す。
+    """
+    bands = [("pref", lv, lo, hi) for lv, (lo, hi) in spec["pref_bands"].items()] + \
+            [("muni", lv, lo, hi) for lv, (lo, hi) in spec["muni_bands"].items()]
+    # ⚠️ **都道府県のセグメントの名称は市町村欄の手前で打ち切る。**
+    # 打ち切らないと、都道府県のコード行に市町村の折返しが同居したとき
+    # （2段組は左右の行がほぼ同じ y に整列する）、市町村側の文字を吸い込む。
+    muni_lo = spec["muni_bands"]["kan"][0]
+    chars = sorted(line)
+    segs: list[dict] = []
+    cur: dict | None = None
+    prev_digit = False
+    for x, c in chars:
+        if cur is not None and cur["side"] == "pref" and x >= muni_lo:
+            cur = None
+        is_digit = unicodedata.normalize("NFKC", c).isdigit()
+        if is_digit and not prev_digit:
+            hit = next(((side, lv) for side, lv, lo, hi in bands if lo <= x < hi), None)
+            if hit:
+                cur = {"side": hit[0], "level": hit[1], "code": c, "name": "", "x": x}
+                segs.append(cur)
+                prev_digit = True
+                continue
+        if cur is None:
+            prev_digit = False
+            continue
+        if is_digit and prev_digit:
+            cur["code"] += c
+        else:
+            prev_digit = False
+            if c != ".":
+                cur["name"] += c
+    return segs
+
+
+def extract(pdf: pathlib.Path, direction: str) -> list[dict]:
     """(款, 項, 目) を出現順に返す。名称の折返し（`農林水/産業費`）は次行から繋ぐ"""
+    spec = TABLES[direction]
+    first, last = spec["pages"]
     rows: list[dict] = []
     kan = kou = None
     kan_name = kou_name = ""
     started = False
-    open_level: str | None = None    # 名称の折返しを受け取る階層
+    open_side: str | None = None     # 名称の折返しを受け取る欄（pref / muni）
+    open_level: str | None = None
     pending_mark = False             # ※は目の1行上に単独で印字される。次の目に付ける
-    for page in chars_of(pdf, FIRST_PAGE, LAST_PAGE, redistill=True):
+    kou_lo = spec["muni_bands"]["kou"][0]
+    moku_lo = spec["muni_bands"]["moku"][0]
+    for page in chars_of(pdf, first, last, redistill=True):
         for line in rows_of(page, tolerance=2.0):
-            cells: dict[str, str] = {}
-            for x, c in sorted(line):
-                col = column_of(x, COLUMNS)
-                if col:
-                    cells[col] = cells.get(col, "") + c
-            text = "".join(cells.values())
-            # 歳出の表は市町村側の「款1 議会費」から始まる。それより上（歳入の備考の
-            # 右端など）と、表の後の備考は読まない。
-            if not started:
-                started = cells.get("kan", "").startswith("1議会費")
-                if not started:
-                    continue
+            text = "".join(c for x, c in sorted(line))
             if text.startswith("備考"):
                 return rows
+            segs = _segments(line, spec)
+            muni = [s for s in segs if s["side"] == "muni"]
+            if not started:
+                started = any(s["level"] == "kan" and (s["code"] + s["name"]).startswith(spec["start"])
+                              for s in muni)
+                if not started:
+                    continue
 
-            # ⚠️ **※は目と同じ行にない。** 目の1行上に単独で印字される（実測 y差 -17）。
-            # 「この行は※だけ」を保留にして、次に出た目へ付ける。
-            if text.strip() == MARK:
+            # ⚠️ **判定は市町村欄の文字だけで行う。** 2段組は左右の行が同じ y に整列するので、
+            # 行の全文字で見ると都道府県欄の内容が混ざり、※の単独行判定が壊れる
+            # （実際に※が 32→10 個へ減った）。
+            muni_text = "".join(c for x, c in sorted(line) if x >= spec["muni_bands"]["kan"][0])
+            if muni_text.strip() == MARK:
                 pending_mark = True
                 continue
 
-            emitted = False
-            for level in ("kan", "kou", "moku"):
-                cell = cells.get(level, "").strip()
-                if not cell:
-                    continue
-                m = re.match(r"^(\d+)(.*)$", unicodedata.normalize("NFKC", cell))
-                if m:
-                    code, name = int(m.group(1)), m.group(2)
+            if muni:
+                for s in muni:
+                    code, name = int(s["code"]), s["name"].strip()
                     mark = MARK in name
                     name = name.replace(MARK, "")
-                    if level == "kan":
+                    if s["level"] == "kan":
                         kan, kan_name, kou, kou_name = code, name, None, ""
-                    elif level == "kou":
+                    elif s["level"] == "kou":
                         kou, kou_name = code, name
                     else:
                         rows.append({"kan_code": kan, "kou_code": kou, "moku_code": code,
@@ -104,23 +155,25 @@ def extract(pdf: pathlib.Path) -> list[dict]:
                                      "is_personnel_moku": mark or pending_mark,
                                      "_kan_name": kan_name, "_kou_name": kou_name})
                         pending_mark = False
-                    open_level = level
-                    emitted = True
-                elif open_level and not emitted:
-                    # コードの無いセルは、直前に開いた階層の名称の折返し
-                    cont = cell.replace(MARK, "")
-                    if MARK in cell and rows and open_level == "moku":
-                        rows[-1]["is_personnel_moku"] = True
+                # コードを出した階層が折返しを受け取る
+                open_side, open_level = "muni", muni[-1]["level"]
+            elif open_side == "muni" and open_level and not segs:
+                # ⚠️ **折返しの帰属は x で決める。** 歳入では都道府県の目の名称（x=364〜425）が
+                # 市町村の項の名称域と重なるが、都道府県の折返しは open_side が pref のときに
+                # ここへ来ない（上の分岐で捨てられる）。市町村の折返しとして受けるのは、
+                # 開いている階層の名称域より右の文字だけ。
+                lo = {"kan": 300.0, "kou": kou_lo, "moku": moku_lo}[open_level]
+                cont = "".join(c for x, c in sorted(line) if x >= lo)
+                if MARK in cont and rows and open_level == "moku":
+                    rows[-1]["is_personnel_moku"] = True
+                cont = cont.replace(MARK, "").strip()
+                if cont:
                     if open_level == "kan":
                         kan_name += cont
-                        # 折返し確定後の名前を、その款でまだ目が出ていない場合に備えて保持
                     elif open_level == "kou":
                         kou_name += cont
                     elif rows:
                         rows[-1]["moku_name"] += cont
-                    emitted = True
-            if not emitted:
-                open_level = None
             # 折返しで確定した親名を、既に積んだ行へも反映する
             for r in rows:
                 if r["kan_code"] == kan and r["_kan_name"] != kan_name:
@@ -147,23 +200,24 @@ def main() -> None:
         raise RuntimeError(
             f"原文の SHA-256 が変わっている（{got.sha256}）。改正を確認してから SHA256 を更新すること"
         )
-    with tempfile.NamedTemporaryFile(suffix=".pdf") as f:
-        f.write(got.body)
-        f.flush()
-        rows = extract(pathlib.Path(f.name))
-    verify(rows)
     with OUT.open("w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
         w.writerow(["direction", "kan_code", "kan_name", "kou_code", "kou_name",
                     "moku_code", "moku_name", "is_personnel_moku", "basis"])
-        for r in rows:
-            w.writerow(["expenditure", r["kan_code"], r["_kan_name"], r["kou_code"],
-                        r["_kou_name"], r["moku_code"], r["moku_name"],
-                        str(r["is_personnel_moku"]).lower(), BASIS])
-    kans = sorted({(r["kan_code"], r["_kan_name"]) for r in rows})
-    print(f"ok  {len(rows)} 目 / {len(kans)} 款  →  {OUT.relative_to(ROOT)}")
-    for k, n in kans:
-        print(f"    {k:>2} {n}")
+        with tempfile.NamedTemporaryFile(suffix=".pdf") as pf:
+            pf.write(got.body)
+            pf.flush()
+            for direction in ("revenue", "expenditure"):
+                rows = extract(pathlib.Path(pf.name), direction)
+                verify(rows)
+                for r in rows:
+                    w.writerow([direction, r["kan_code"], r["_kan_name"], r["kou_code"],
+                                r["_kou_name"], r["moku_code"], r["moku_name"],
+                                str(r["is_personnel_moku"]).lower(), BASIS])
+                kans = sorted({(r["kan_code"], r["_kan_name"]) for r in rows})
+                print(f"ok  {direction}  {len(rows)} 目 / {len(kans)} 款")
+                for k, n in kans:
+                    print(f"    {k:>2} {n}")
 
 
 if __name__ == "__main__":

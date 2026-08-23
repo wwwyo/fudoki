@@ -6,8 +6,10 @@
 -- master_* は地方自治法施行規則 別記の区分への対応で、**コードは団体ごとに
 -- 法定とずれる**（法定の款11 災害復旧費を持たない市では以降が詰まる）ため、
 -- コードではなくこの対応を介して団体をまたいで比較する。
--- master_kind = addition は法定に無い団体固有の区分（様式の備考1が認める追加）。
--- 特別会計と歳入に master_* が付かないのは様式の対象が一般会計の歳出だけのため。
+-- master_kind = addition は法定に無い区分（様式の備考が認める追加）、
+-- historical は現行様式から削除された旧法定区分。
+-- 様式は歳入・歳出の両方を定める。master_* が付かないのは、特別会計（様式の対象外）と、
+-- **科目の名称がまだ得られていない団体 × 方向**（名称の根拠なしにコードで対応づけない）。
 select
     fiscal_year, direction, fund_code, fund_label,
     kan_code, kan_name, kou_code, kou_name, moku_code, moku_name,
