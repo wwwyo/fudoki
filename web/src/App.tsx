@@ -93,7 +93,7 @@ export default function App() {
 
       <main className="mx-auto flex max-w-[1500px] flex-col gap-8 p-4 pb-24">
         <section className="flex flex-col gap-4">
-          <h1 className="text-xl font-semibold">配布データの検証</h1>
+          <h1 className="text-xl font-semibold">ELT パイプライン</h1>
 
           <FlowGraph topology={report.topology} report={report} onSelectNode={setSelectedNode} selected={selectedNode} />
 
