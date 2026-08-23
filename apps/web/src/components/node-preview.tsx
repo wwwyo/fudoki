@@ -9,7 +9,6 @@
 import { useEffect, useState } from 'react'
 import type { NodePreview, Topology } from '@/lib/pipeline'
 import { loadNodePreview } from '@/lib/pipeline'
-import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 type Loaded = { label: string; role: '入力' | '出力'; preview: NodePreview }
@@ -62,43 +61,40 @@ export function NodePreviewPanel({ nodeId, topology }: { nodeId: string; topolog
   return (
     // 入力（データ元）と出力（変換後）を左右に並べて、変換の前後を突き合わせて読めるようにする。
     // 入力の無いノード（原典）は出力だけを全幅で出す
-    // 入力・出力を1つずつ独立した card にし、grid の行の高さに stretch させて揃える。
-    // 見出しは1行固定（URL は truncate）— 折り返しで高さが割れると表の上端がずれる
+    // card は subgrid で親の行トラック（見出し / URL / 表）を共有する。
+    // URL 行が片方にしか無くても、両カラムの表の上端が同じトラックに揃う
     <div className={`grid items-stretch gap-3 ${inputs.length > 0 ? 'lg:grid-cols-2' : ''}`}>
-      {inputs.length > 0 && (
-        <div className="flex min-w-0 flex-col gap-3">
-          {inputs.map((l, i) => (
-            <PreviewSection key={i} loaded={l} />
-          ))}
-        </div>
-      )}
-      <div className="flex min-w-0 flex-col gap-3">
-        {outputs.map((l, i) => (
-          <PreviewSection key={i} loaded={l} stretch />
-        ))}
-      </div>
+      {inputs.map((l, i) => (
+        <PreviewSection key={`in-${i}`} loaded={l} className="lg:col-start-1" />
+      ))}
+      {outputs.map((l, i) => (
+        <PreviewSection key={`out-${i}`} loaded={l} className={inputs.length > 0 ? 'lg:col-start-2 lg:row-start-1' : ''} />
+      ))}
     </div>
   )
 }
 
-function PreviewSection({ loaded: l, stretch }: { loaded: Loaded; stretch?: boolean }) {
+function PreviewSection({ loaded: l, className = '' }: { loaded: Loaded; className?: string }) {
   return (
-    <section className={`flex min-w-0 flex-col gap-2 rounded-lg border bg-card p-3 ${stretch ? 'flex-1' : ''}`}>
+    <section
+      className={`flex min-w-0 flex-col gap-2 rounded-lg border bg-card p-3 lg:grid lg:grid-rows-subgrid lg:row-span-3 ${className}`}
+    >
       <div className="flex min-w-0 items-baseline gap-2">
-        <Badge variant={l.role === '出力' ? 'secondary' : 'outline'}>{l.role === '入力' ? '入力（データ元）' : '出力（変換後）'}</Badge>
-        <span className="shrink-0 truncate font-mono text-xs font-medium">{l.preview.title ?? l.label}</span>
-        {l.preview.sourceUrl && (
-          <a
-            className="min-w-0 flex-1 truncate text-[11px] text-muted-foreground underline"
-            href={l.preview.sourceUrl}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {l.preview.sourceUrl}
-          </a>
-        )}
+        <h4 className="shrink-0 text-xs font-medium text-muted-foreground">{l.role === '入力' ? '入力（データ元）' : '出力（変換後）'}</h4>
+        <span className="min-w-0 truncate font-mono text-xs font-medium">{l.preview.title ?? l.label}</span>
       </div>
-      <div className={`overflow-auto rounded-md border bg-background ${stretch ? 'min-h-72 flex-1 basis-72' : 'h-72'}`}>
+      {l.preview.sourceUrl && (
+        <a
+          className="break-all text-[11px] text-muted-foreground underline"
+          href={l.preview.sourceUrl}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {l.preview.sourceUrl}
+        </a>
+      )}
+      {/* 表は常に3トラック目。URL の無い card は2トラック目が空くが、位置は動かない */}
+      <div className="min-h-96 flex-1 basis-96 overflow-auto rounded-md border bg-background lg:row-start-3">
         <Table>
           <TableHeader>
             <TableRow>

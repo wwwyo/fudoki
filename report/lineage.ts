@@ -155,7 +155,7 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
   })
 
   // 取得元。dbt は知らないので証跡から組む。id を「source ノードid + .origin」にしてあるのは
-  // プレビュー（web/public/preview/<id>.json）が同じ規約で書かれるため
+  // プレビュー（apps/web/public/preview/<id>.json）が同じ規約で書かれるため
   for (const src of nodes.filter((n) => n.kind === 'source')) {
     const ps = provenance.filter((p) => p.direction === src.label)
     if (ps.length === 0) continue

@@ -247,7 +247,7 @@ const code = CODES[0]!
 const report = build(code)
 // **報告と明細を分けて書く。** 明細は報告の 50 倍あり（2.4MB 対 0.05MB）、
 // 既定のタブは明細を使わない。1つにまとめると、報告だけ見る利用者にも全部を運ぶことになる。
-writeFileSync(join(ROOT, 'web/public/pipeline.json'), `${JSON.stringify({ code, report })}\n`)
+writeFileSync(join(ROOT, 'apps/web/public/pipeline.json'), `${JSON.stringify({ code, report })}\n`)
 
 for (const direction of ['expenditure', 'revenue'] as const) {
   const table = detailProjection(
@@ -255,7 +255,7 @@ for (const direction of ['expenditure', 'revenue'] as const) {
     join(ROOT, `data/budget/datapackages/${code}/${direction}.csv`),
     report.meta.phase.id,
   )
-  writeFileSync(join(ROOT, `web/public/detail-${direction}.json`), `${JSON.stringify(table)}\n`)
+  writeFileSync(join(ROOT, `apps/web/public/detail-${direction}.json`), `${JSON.stringify(table)}\n`)
 }
 /**
  * ノードごとの中身の先頭。グラフでノードを選んだときに画面が出す。
@@ -271,7 +271,7 @@ function previewFrom(node: ReportData['topology']['nodes'][number]): string {
 }
 
 const PREVIEW_ROWS = 20
-mkdirSync(join(ROOT, 'web/public/preview'), { recursive: true })
+mkdirSync(join(ROOT, 'apps/web/public/preview'), { recursive: true })
 // 取得元（origin）は DuckDB に無い。下の「取得元 CSV」節が fetch して書く
 for (const node of report.topology.nodes.filter((n) => n.kind !== 'origin')) {
   const rows = q<Record<string, unknown>>(`select * from ${previewFrom(node)} limit ${PREVIEW_ROWS}`)
@@ -283,7 +283,7 @@ for (const node of report.topology.nodes.filter((n) => n.kind !== 'origin')) {
     limit: PREVIEW_ROWS,
     totalRows: node.rows,
   }
-  writeFileSync(join(ROOT, 'web/public/preview', `${node.id}.json`), `${JSON.stringify(preview)}\n`)
+  writeFileSync(join(ROOT, 'apps/web/public/preview', `${node.id}.json`), `${JSON.stringify(preview)}\n`)
 }
 
 /**
@@ -322,7 +322,7 @@ for (const node of report.topology.nodes.filter((n) => n.kind === 'source')) {
     sourceUrl: p.request_url,
     fetchedAt: p.fetched_at,
   }
-  writeFileSync(join(ROOT, 'web/public/preview', `${node.id}.origin.json`), `${JSON.stringify(preview)}\n`)
+  writeFileSync(join(ROOT, 'apps/web/public/preview', `${node.id}.origin.json`), `${JSON.stringify(preview)}\n`)
 }
 
 const s = report.summary

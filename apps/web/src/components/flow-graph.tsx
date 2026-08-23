@@ -27,7 +27,8 @@ const NODE_GAP = 14
 /** focus ring がはみ出す分の余白。入れないと端のノードで ring が切れる */
 const PAD = 8
 
-const KIND_JA: Record<Node['kind'], string> = { origin: '取得元', source: '原典', model: 'モデル', seed: '規則表' }
+// model は dbt の用語なので画面には出さない（どの段かは列が言っている）
+const KIND_JA: Record<Node['kind'], string> = { origin: '取得元', source: 'raw', model: '', seed: '規則表' }
 
 /**
  * ノード幅に収まるよう表示幅で切り詰める。**文字数で切ると全角で突き抜ける**
@@ -206,7 +207,7 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
                   {fitLabel(node.label)}
                 </text>
                 <text x={16} y={35} className="fill-muted-foreground text-[11px] tabular-nums">
-                  {node.rows === null ? '—' : yen(node.rows)} 行 · {KIND_JA[node.kind]}
+                  {node.rows === null ? '—' : yen(node.rows)} 行{KIND_JA[node.kind] && ` · ${KIND_JA[node.kind]}`}
                 </text>
                 {cs.length > 0 && (
                   <>
@@ -231,7 +232,7 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
         <div className="flex flex-col gap-2 text-sm">
           <div className="flex flex-wrap items-baseline gap-2">
             <span className="font-mono font-medium">{detail.label}</span>
-            <Badge variant="outline">{KIND_JA[detail.kind]}</Badge>
+            {KIND_JA[detail.kind] && <Badge variant="outline">{KIND_JA[detail.kind]}</Badge>}
             {detail.artifact && (
               <code className="text-[11px] text-muted-foreground">{detail.artifact.replace('../data/', 'data/')}</code>
             )}
