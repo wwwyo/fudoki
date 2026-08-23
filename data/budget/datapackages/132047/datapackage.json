@@ -139,8 +139,21 @@
         "url": "https://unstats.un.org/unsd/classifications/Family/Detail/4"
       }
     },
-    "note": "正本（expenditure / revenue）は原典を正規化しただけで fudoki の判断を含まない。COFOG の割り当ては派生（expenditure-cofog）にある。FDP は全要素が任意なので、COFOG 列を持たない正本も適合した FDP になる。"
+    "note": "正本（expenditure / revenue）は原典を正規化しただけで fudoki の判断を含まない。COFOG の割り当ては派生（expenditure-cofog）にある。FDP は全要素が任意なので、COFOG 列を持たない正本も適合した FDP になる。",
+    "rights": {
+      "thisPackage": "原典のライセンスを素通ししている。**fudoki が選んだものではない**",
+      "holder": "三鷹市",
+      "basis": "東京都オープンデータカタログのライセンス表示（CC BY 4.0）",
+      "note": "fudoki は原典の著作権を持たないので、ライセンスを付け替えることはできない。リポジトリ直下の LICENSE（MIT）はコードに対するもので、この配布物には及ばない"
+    }
   },
+  "modified": true,
+  "modifications": [
+    "セルの前後の空白を除去した（原典に全角スペースが混じるため）",
+    "コードと名称が同居するセルを分けた（分けたものを繋ぐと原文に戻ることを検査している）",
+    "金額を円へ正規化した（原典の値と単位も併せて残してある）",
+    "1行が複数の予算段階を持つ原典を、段階ごとの行へ展開した"
+  ],
   "fiscalPeriod": {
     "start": "2024-04-01",
     "end": "2025-03-31"
@@ -148,6 +161,7 @@
   "licenses": [
     {
       "name": "CC-BY-4.0",
+      "title": "Creative Commons Attribution 4.0 International",
       "path": "https://creativecommons.org/licenses/by/4.0/"
     }
   ],

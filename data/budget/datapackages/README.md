@@ -70,3 +70,8 @@ URL・取得日時・SHA-256 は `data/provenance/` にある。
 ## ライセンスと帰属
 
 原典は CC BY 4.0。各パッケージの `datapackage.json` の `licenses` と `attribution` を見ること。
+
+⚠️ **正本のライセンスは原典のものを素通ししている**（fudoki が選んだものではない）。
+派生（`derived/`）だけが fudoki 自身の著作物で、CC BY 4.0 で配っている。
+リポジトリ直下の `LICENSE`（MIT）はコードに対するもので、ここには及ばない。
+詳しくは [data/LICENSE](../../LICENSE) を参照。

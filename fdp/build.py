@@ -20,6 +20,25 @@ import pathlib
 from ingestion.budget.sources import load_sources
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+# ライセンスの表示。**1箇所で持つ** — 正本（素通し）と派生（fudoki の選択）で
+# 意味は違うが、表示する内容が食い違うと利用者はどちらを信じるか決められない。
+LICENSE_CC_BY_4 = {
+    "name": "CC-BY-4.0",
+    "title": "Creative Commons Attribution 4.0 International",
+    "path": "https://creativecommons.org/licenses/by/4.0/",
+}
+# CC BY 4.0 §3(a)(1)(B) が求める「改変した旨」の表示。
+# ⚠️ **正本と派生で内容が違う。** 同じ文言を使い回すと、派生が単位換算をしたことになる。
+CANONICAL_MODIFICATIONS = [
+    "セルの前後の空白を除去した（原典に全角スペースが混じるため）",
+    "コードと名称が同居するセルを分けた（分けたものを繋ぐと原文に戻ることを検査している）",
+    "金額を円へ正規化した（原典の値と単位も併せて残してある）",
+    "1行が複数の予算段階を持つ原典を、段階ごとの行へ展開した",
+]
+DERIVED_MODIFICATIONS = [
+    "原典の各行に COFOG の分類と連結の判断を付け加えた（自治体が言っていないこと）",
+    "識別子は原典の階層のセル全文から導いており、原典そのものは複製していない",
+]
 PACKAGES = ROOT / "data" / "budget" / "datapackages"
 RAW = ROOT / "data" / "budget" / "raw"
 TYPES = json.loads((pathlib.Path(__file__).parent / "field_types.json").read_text())
@@ -99,7 +118,7 @@ def latest_fetch() -> str:
     return max(stamps)
 
 
-def base(name: str, title: str, description: str) -> dict:
+def base(name: str, title: str, description: str, modifications: list[str]) -> dict:
     created = latest_fetch()
     return {
         "profile": "tabular-data-package",
@@ -114,15 +133,26 @@ def base(name: str, title: str, description: str) -> dict:
         "countryCode": "JP",
         "columnTypes": TYPES["columnTypes"],
         "fudoki": TYPES["fudoki"],
+        # ⚠️ **CC BY 4.0 は改変したらその旨を示すことを求める（§3(a)(1)(B)）。**
+        # fudoki は原典を改変している（前後空白の除去、コードと名称の分離、
+        # 円への正規化、予算段階ごとの行への展開）ので、黙って配らない。
+        # 何をどう変えたかは AGENTS.md と dbt のモデルに書いてある。
+        "modified": True,
+        "modifications": modifications,
     }
 
 
 def build_jurisdiction(code: str) -> None:
     """正本。**団体ごと・全年度で1パッケージ。** 判断を含まない。"""
     d = PACKAGES / code
-    srcs = [s for s in load_sources().values() if s.jurisdiction_code == code]
+    # ⚠️ **配布する取得元だけを見る。** `redistribute` が allow でないものは raw すら
+    # 書き出していないので、この配布物には1行も入っていない。混ぜると、
+    # 取得だけして配っていない資料（照会待ちの PDF など）のライセンスが
+    # 配布物の表示に影響し、配れるはずのものまで止まる。
+    srcs = [s for s in load_sources().values()
+            if s.jurisdiction_code == code and s.may_publish_raw]
     if not srcs:
-        raise RuntimeError(f"団体 {code} の取得元が sources.toml に無い")
+        raise RuntimeError(f"団体 {code} に再配布可の取得元が sources.toml に無い")
     years = sorted(s.fiscal_year for s in srcs)
 
     pkg = base(
@@ -132,10 +162,24 @@ def build_jurisdiction(code: str) -> None:
         "**fudoki の判断は含まない**（分類・名寄せ・推定を一切していない）。"
         "COFOG の割当は派生パッケージ derived/ にあり、budget_line_id で join する。"
         "原典そのものは data/budget/raw/ に Parquet で入っている。",
+        CANONICAL_MODIFICATIONS,
     )
     pkg["fiscalPeriod"] = {"start": f"{years[0]}-04-01", "end": f"{years[-1] + 1}-03-31"}
-    pkg["licenses"] = [{"name": srcs[0].license_id, "path": "https://creativecommons.org/licenses/by/4.0/"}]
+    # **正本は原典のライセンスを素通しする。fudoki が選ぶものではない。**
+    # 著作権を持たないものにライセンスを付与することはできないので、
+    # ここに書くのは「この配布物にどの条件が付いてくるか」であって、fudoki の意思表示ではない。
+    licenses = sorted({s.license_id for s in srcs})
+    if licenses != ["CC-BY-4.0"]:
+        raise SystemExit(f"{code}: 原典のライセンスが {licenses} で揃っていない。素通しの表示を分ける必要がある")
+    pkg["licenses"] = [LICENSE_CC_BY_4]
     pkg["attribution"] = srcs[0].attribution
+    pkg["fudoki"] = {**pkg["fudoki"], "rights": {
+        "thisPackage": "原典のライセンスを素通ししている。**fudoki が選んだものではない**",
+        "holder": srcs[0].jurisdiction_name,
+        "basis": srcs[0].redistribute_basis,
+        "note": "fudoki は原典の著作権を持たないので、ライセンスを付け替えることはできない。"
+                "リポジトリ直下の LICENSE（MIT）はコードに対するもので、この配布物には及ばない",
+    }}
     pkg["sources"] = [{"title": s.attribution, "path": s.landing_page} for s in srcs]
     # 全行同じ値なのでリソースの列から外し、ここに持たせた定数。
     # ⚠️ **phase を package 全体の定数にしてよいのは1つしか無いときだけ。**
@@ -176,7 +220,33 @@ def build_derived() -> None:
         "正本とは budget_line_id で join する。"
         "根拠は cofog_rules に規則として出してあり、cofog_rule_id で引ける。"
         "分類不能の割合の低さは品質の指標ではない（成立範囲を正直に調べるのが目的）。",
+        DERIVED_MODIFICATIONS,
     )
+    srcs = [s for s in load_sources().values() if s.may_publish_raw]
+    # **派生は fudoki 自身の著作物なので、ライセンスを選ぶのは fudoki である。**
+    # ⚠️ ただし選べる範囲は原典に縛られる。CC BY は継承を求めないので今は CC BY 4.0 を選べるが、
+    # 原典に CC BY-SA の団体が入った時点で派生も BY-SA にするほかなくなる。
+    # だから「fudoki は CC BY 4.0 と決めた」ではなく「原典が許す範囲で CC BY 4.0 を選んでいる」
+    # と読めるように、原典のライセンス一覧を併記する。
+    upstream = sorted({s.license_id for s in srcs})
+    if upstream != ["CC-BY-4.0"]:
+        raise SystemExit(
+            f"配布している原典のライセンスが {upstream} で、CC BY 4.0 だけではない。"
+            f"派生を CC BY 4.0 で配ってよいかは継承条件しだいなので、確認してから配ること"
+        )
+    pkg["licenses"] = [LICENSE_CC_BY_4]
+    pkg["attribution"] = (
+        "fudoki（COFOG の割当と規則表）。"
+        "原典: " + "／".join(sorted({s.attribution for s in srcs}))
+    )
+    pkg["sources"] = [{"title": s.attribution, "path": s.landing_page} for s in srcs]
+    pkg["fudoki"] = {**pkg["fudoki"], "rights": {
+        "thisPackage": "fudoki の判断（COFOG の割当と規則）。CC BY 4.0 で配布する",
+        "derivedFrom": upstream,
+        "note": "原典に継承（ShareAlike）を求めるライセンスが混ざった場合、"
+                "この選択は成り立たなくなる。原典のライセンスは団体ごとに "
+                "ingestion/budget/sources.toml が持つ",
+    }}
     pkg["resources"] = [
         resource(d / "cofog.csv", "cofog", "COFOG の割当",
                  "識別子と判断だけ。正本の列を複製しない", ["budget_line_id"]),
@@ -194,7 +264,9 @@ def build_derived() -> None:
 IMPLEMENTED = {"132047"}
 
 if __name__ == "__main__":
-    registered = {s.jurisdiction_code for s in load_sources().values()}
+    # 配布物を作る対象は「再配布可と判定した取得元を持つ団体」。
+    # ⚠️ 取得元の総数と比べない — 照会待ちの取得元を登録しただけで止まってしまう。
+    registered = {s.jurisdiction_code for s in load_sources().values() if s.may_publish_raw}
     if registered != IMPLEMENTED:
         raise SystemExit(
             f"sources.toml の団体 {sorted(registered)} と実装済み {sorted(IMPLEMENTED)} が一致しない。"
