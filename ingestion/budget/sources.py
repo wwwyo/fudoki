@@ -46,10 +46,31 @@ class Source:
     attribution: str
     landing_page: str
     resources: tuple[Resource, ...]
+    # `data/budget/raw/` に何を置くか。**団体ごとに保証の強さが違う。**
+    #   verbatim   原文そのもの。復号の可逆性と原文の復元を検査できる
+    #   extracted  原文から抽出した事実。**不可逆**なので復元は検査できない
+    raw_form: str = "verbatim"
+
+    def __post_init__(self) -> None:
+        if self.raw_form not in ("verbatim", "extracted"):
+            raise ValueError(f"{self.key}: raw_form は verbatim か extracted（{self.raw_form}）")
+        # ⚠️ **原文を置けるのは再配布可のときだけ。**
+        # 抽出した事実（事業名・金額・コード）は著作物ではないので配れるが、
+        # 原文そのものは別で、再配布可と判定できていなければ置けない。
+        if self.raw_form == "verbatim" and self.redistribute != "allow":
+            raise ValueError(
+                f"{self.key}: redistribute={self.redistribute} なのに raw_form=verbatim。"
+                f"原文をリポジトリへ置けるのは再配布可と判定した取得元だけ"
+            )
 
     @property
-    def may_publish_raw(self) -> bool:
-        """原典をリポジトリへ置いてよいか。
+    def may_publish_verbatim(self) -> bool:
+        """**原文そのもの**をリポジトリへ置いてよいか。
+
+        ⚠️ **「配布物を作ってよいか」ではない。** 抽出した事実は著作物ではないので、
+        ここが False でも配布物は作れる（著作権法2条1項1号は著作物を
+        「思想又は感情を創作的に表現したもの」と定義しており、事業名と金額はそれにあたらない）。
+        止まるのは原文の複製だけである。
 
         根拠は `redistribute_basis`（①予算はカタログのライセンス）。
         ③会議録の gate（`ingestion/transcripts/gates.json`）とは根拠が違うので繋がない —

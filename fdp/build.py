@@ -27,6 +27,38 @@ LICENSE_CC_BY_4 = {
     "title": "Creative Commons Attribution 4.0 International",
     "path": "https://creativecommons.org/licenses/by/4.0/",
 }
+def rights_of(srcs: list) -> dict:
+    """この配布物にどのライセンスが付くか、そしてそれは誰が決めたのか。
+
+    **2通りある。** 混ぜて1つの表示にすると、利用者はどちらか分からない。
+
+      素通し   原典が CC BY で提供している。fudoki は選んでいないし、選べない
+      fudoki   原典に利用許諾が無い（PDF など）。だが**抽出した事実は著作物ではない**ので、
+               原典のライセンスは付いてこない。配布物の選択と構成は fudoki のものなので、
+               fudoki が CC BY 4.0 を選んでいる
+
+    ⚠️ 後者で配れるのは**事実だけ**である。原文の散文（事業説明など）を持ってくると
+    表現の複製になり、この整理は成り立たない。抽出する側がそこを守る必要がある。
+    """
+    licensed = sorted({s.license_id for s in srcs if s.license_id != "NOASSERTION"})
+    unlicensed = sorted({s.attribution for s in srcs if s.license_id == "NOASSERTION"})
+    if any(lic not in ("CC-BY-4.0",) for lic in licensed):
+        raise SystemExit(
+            f"原典のライセンスに {licensed} が含まれる。CC BY 4.0 以外は継承条件が違いうるので、"
+            f"配布物のライセンスを決め直してから配ること"
+        )
+    if licensed and not unlicensed:
+        return {"basis": "素通し", "upstream": licensed,
+                "note": "原典のライセンスをそのまま表示している。**fudoki が選んだものではない**。"
+                        "fudoki は原典の著作権を持たないので、付け替えることはできない"}
+    return {"basis": "fudoki の選択", "upstream": licensed,
+            "factsFrom": unlicensed,
+            "note": "利用許諾の無い資料から**事実**（事業名・金額・コード）を抽出した部分を含む。"
+                    "事実は著作物ではない（著作権法2条1項1号）ので原典のライセンスは付いてこず、"
+                    "選択と構成にあたる部分を fudoki が CC BY 4.0 で配っている。"
+                    "原文そのものはリポジトリに置いていない"}
+
+
 # CC BY 4.0 §3(a)(1)(B) が求める「改変した旨」の表示。
 # ⚠️ **正本と派生で内容が違う。** 同じ文言を使い回すと、派生が単位換算をしたことになる。
 CANONICAL_MODIFICATIONS = [
@@ -145,14 +177,12 @@ def base(name: str, title: str, description: str, modifications: list[str]) -> d
 def build_jurisdiction(code: str) -> None:
     """正本。**団体ごと・全年度で1パッケージ。** 判断を含まない。"""
     d = PACKAGES / code
-    # ⚠️ **配布する取得元だけを見る。** `redistribute` が allow でないものは raw すら
-    # 書き出していないので、この配布物には1行も入っていない。混ぜると、
-    # 取得だけして配っていない資料（照会待ちの PDF など）のライセンスが
-    # 配布物の表示に影響し、配れるはずのものまで止まる。
-    srcs = [s for s in load_sources().values()
-            if s.jurisdiction_code == code and s.may_publish_raw]
+    # ⚠️ **`redistribute` で絞らない。** 原文を置けない取得元でも、そこから抽出した
+    # 事実は配布物に入る（事業名と金額は著作物ではない）。絞ると、PDF から起こした
+    # 団体の配布物が丸ごと空になる。止めるべきなのは原文の複製だけで、それは取得側が見ている。
+    srcs = [s for s in load_sources().values() if s.jurisdiction_code == code]
     if not srcs:
-        raise RuntimeError(f"団体 {code} に再配布可の取得元が sources.toml に無い")
+        raise RuntimeError(f"団体 {code} の取得元が sources.toml に無い")
     years = sorted(s.fiscal_year for s in srcs)
 
     pkg = base(
@@ -165,20 +195,17 @@ def build_jurisdiction(code: str) -> None:
         CANONICAL_MODIFICATIONS,
     )
     pkg["fiscalPeriod"] = {"start": f"{years[0]}-04-01", "end": f"{years[-1] + 1}-03-31"}
-    # **正本は原典のライセンスを素通しする。fudoki が選ぶものではない。**
-    # 著作権を持たないものにライセンスを付与することはできないので、
-    # ここに書くのは「この配布物にどの条件が付いてくるか」であって、fudoki の意思表示ではない。
-    licenses = sorted({s.license_id for s in srcs})
-    if licenses != ["CC-BY-4.0"]:
-        raise SystemExit(f"{code}: 原典のライセンスが {licenses} で揃っていない。素通しの表示を分ける必要がある")
     pkg["licenses"] = [LICENSE_CC_BY_4]
     pkg["attribution"] = srcs[0].attribution
     pkg["fudoki"] = {**pkg["fudoki"], "rights": {
-        "thisPackage": "原典のライセンスを素通ししている。**fudoki が選んだものではない**",
+        **rights_of(srcs),
         "holder": srcs[0].jurisdiction_name,
-        "basis": srcs[0].redistribute_basis,
-        "note": "fudoki は原典の著作権を持たないので、ライセンスを付け替えることはできない。"
-                "リポジトリ直下の LICENSE（MIT）はコードに対するもので、この配布物には及ばない",
+        # 再配布可と判断した根拠。**判断の中身を読めるようにする** —
+        # 「allow だから配った」だけでは、誰も判断を検討できない。
+        "redistributionBasis": sorted({s.redistribute_basis for s in srcs}),
+        "repositoryLicense": "リポジトリ直下の LICENSE（MIT）はコードに対するもので、この配布物には及ばない",
+        # `raw/` の保証は団体で違う。原文を置いた団体だけ「原典と1対1」が成立する。
+        "rawForm": sorted({s.raw_form for s in srcs}),
     }}
     pkg["sources"] = [{"title": s.attribution, "path": s.landing_page} for s in srcs]
     # 全行同じ値なのでリソースの列から外し、ここに持たせた定数。
@@ -222,18 +249,12 @@ def build_derived() -> None:
         "分類不能の割合の低さは品質の指標ではない（成立範囲を正直に調べるのが目的）。",
         DERIVED_MODIFICATIONS,
     )
-    srcs = [s for s in load_sources().values() if s.may_publish_raw]
+    srcs = list(load_sources().values())
     # **派生は fudoki 自身の著作物なので、ライセンスを選ぶのは fudoki である。**
     # ⚠️ ただし選べる範囲は原典に縛られる。CC BY は継承を求めないので今は CC BY 4.0 を選べるが、
     # 原典に CC BY-SA の団体が入った時点で派生も BY-SA にするほかなくなる。
     # だから「fudoki は CC BY 4.0 と決めた」ではなく「原典が許す範囲で CC BY 4.0 を選んでいる」
     # と読めるように、原典のライセンス一覧を併記する。
-    upstream = sorted({s.license_id for s in srcs})
-    if upstream != ["CC-BY-4.0"]:
-        raise SystemExit(
-            f"配布している原典のライセンスが {upstream} で、CC BY 4.0 だけではない。"
-            f"派生を CC BY 4.0 で配ってよいかは継承条件しだいなので、確認してから配ること"
-        )
     pkg["licenses"] = [LICENSE_CC_BY_4]
     pkg["attribution"] = (
         "fudoki（COFOG の割当と規則表）。"
@@ -241,11 +262,11 @@ def build_derived() -> None:
     )
     pkg["sources"] = [{"title": s.attribution, "path": s.landing_page} for s in srcs]
     pkg["fudoki"] = {**pkg["fudoki"], "rights": {
-        "thisPackage": "fudoki の判断（COFOG の割当と規則）。CC BY 4.0 で配布する",
-        "derivedFrom": upstream,
-        "note": "原典に継承（ShareAlike）を求めるライセンスが混ざった場合、"
-                "この選択は成り立たなくなる。原典のライセンスは団体ごとに "
-                "ingestion/budget/sources.toml が持つ",
+        **rights_of(srcs),
+        "thisPackage": "COFOG の割当と規則そのものは fudoki の判断で、CC BY 4.0 で配布する",
+        "note2": "⚠️ 原典に継承（ShareAlike）を求めるライセンスが混ざった場合、"
+                 "この選択は成り立たなくなる（rights_of が停止する）。"
+                 "原典のライセンスは団体ごとに ingestion/budget/sources.toml が持つ",
     }}
     pkg["resources"] = [
         resource(d / "cofog.csv", "cofog", "COFOG の割当",
@@ -265,8 +286,7 @@ IMPLEMENTED = {"132047"}
 
 if __name__ == "__main__":
     # 配布物を作る対象は「再配布可と判定した取得元を持つ団体」。
-    # ⚠️ 取得元の総数と比べない — 照会待ちの取得元を登録しただけで止まってしまう。
-    registered = {s.jurisdiction_code for s in load_sources().values() if s.may_publish_raw}
+    registered = {s.jurisdiction_code for s in load_sources().values()}
     if registered != IMPLEMENTED:
         raise SystemExit(
             f"sources.toml の団体 {sorted(registered)} と実装済み {sorted(IMPLEMENTED)} が一致しない。"

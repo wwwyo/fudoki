@@ -141,10 +141,19 @@
     },
     "note": "正本（expenditure / revenue）は原典を正規化しただけで fudoki の判断を含まない。COFOG の割り当ては派生（expenditure-cofog）にある。FDP は全要素が任意なので、COFOG 列を持たない正本も適合した FDP になる。",
     "rights": {
-      "thisPackage": "原典のライセンスを素通ししている。**fudoki が選んだものではない**",
+      "basis": "素通し",
+      "upstream": [
+        "CC-BY-4.0"
+      ],
+      "note": "原典のライセンスをそのまま表示している。**fudoki が選んだものではない**。fudoki は原典の著作権を持たないので、付け替えることはできない",
       "holder": "三鷹市",
-      "basis": "東京都オープンデータカタログのライセンス表示（CC BY 4.0）",
-      "note": "fudoki は原典の著作権を持たないので、ライセンスを付け替えることはできない。リポジトリ直下の LICENSE（MIT）はコードに対するもので、この配布物には及ばない"
+      "redistributionBasis": [
+        "東京都オープンデータカタログのライセンス表示（CC BY 4.0）"
+      ],
+      "repositoryLicense": "リポジトリ直下の LICENSE（MIT）はコードに対するもので、この配布物には及ばない",
+      "rawForm": [
+        "verbatim"
+      ]
     }
   },
   "modified": true,
