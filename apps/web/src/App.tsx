@@ -16,7 +16,6 @@ import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/ca
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Info } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { levelsOf, loadDetail, loadPipeline, toRows, type DetailData, type PipelineData } from '@/lib/pipeline'
 
 export default function App() {
@@ -119,20 +118,23 @@ export default function App() {
   return (
     <div className="min-h-dvh bg-background text-foreground">
       <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background/95 px-4 backdrop-blur">
-        <div className="flex min-w-0 items-center gap-2">
-          {data.jurisdictions.length > 1 && (
-            <nav aria-label="団体" className="flex shrink-0 gap-1">
+        <div className="flex min-w-0 items-center gap-3">
+          <img src="/logo.svg" alt="風土記" className="h-6 w-auto shrink-0" />
+          {data.jurisdictions.length > 1 ? (
+            <select
+              aria-label="団体"
+              value={current.code}
+              onChange={(e) => { setCode(e.target.value); setSelectedNode(null); setDetailError(null) }}
+              className="border-input h-8 shrink-0 rounded-md border bg-background px-2 text-sm focus-visible:ring-ring/50 focus-visible:ring-[3px] focus-visible:outline-none"
+            >
               {data.jurisdictions.map((j) => (
-                <Button
-                  key={j.code}
-                  size="sm"
-                  variant={j.code === current.code ? 'default' : 'outline'}
-                  onClick={() => { setCode(j.code); setSelectedNode(null); setDetailError(null) }}
-                >
+                <option key={j.code} value={j.code}>
                   {j.report.meta.jurisdictionName}
-                </Button>
+                </option>
               ))}
-            </nav>
+            </select>
+          ) : (
+            <span className="shrink-0 text-sm font-medium">{m.jurisdictionName}</span>
           )}
           <span className="truncate text-sm text-muted-foreground">
             {m.fiscalYears.length > 2

@@ -24,7 +24,6 @@ css: unocss
 <!-- 2. Problem: 1枚1メッセージ。数字も装飾もなし -->
 
 <div class="h-full flex flex-col justify-center">
-  <p class="f-label mb-4">Problem</p>
   <h1>自治体の予算は全部公開されている。<br>しかし機械で読めない。</h1>
   <div class="mt-8 space-y-3 text-sm">
 
@@ -41,11 +40,9 @@ css: unocss
 <!-- 3. Solution: 何をするかを1文 + パイプライン図 -->
 
 <div class="h-full flex flex-col justify-center">
-  <p class="f-label mb-4">Solution</p>
   <h1>集めて、同じ様式に編んで、標準形式で配る。</h1>
-  <div class="mt-6 f-card h-52 flex items-center justify-center">
-    <!-- TODO: fudoki.dev パイプライン画面のスクリーンショットに差し替え -->
-    <span class="f-caption">（パイプライン画面のスクリーンショット）</span>
+  <div class="mt-6 f-card !p-2 overflow-hidden">
+    <img src="/pipeline.png" class="w-full" alt="ELT パイプライン: 取得元 → ingestion → staging → core → package" />
   </div>
   <div class="grid grid-cols-2 gap-4 mt-4 text-sm">
     <div class="f-nojudgment">自治体が公表した事実（原典・正本）</div>
@@ -58,7 +55,6 @@ css: unocss
 <!-- 4. Demo: 実物。URL と、事業単位で引ける実例 -->
 
 <div class="h-full flex flex-col justify-center">
-  <p class="f-label mb-4">Demo</p>
   <h1>事業単位の使途が、機械で引ける。</h1>
   <div class="mt-6 f-card">
     <div class="f-mono">「いじめ問題対策協議会関係費」はいくら?</div>
@@ -70,29 +66,25 @@ css: unocss
 
 ---
 
-<!-- 5. Traction: 実測値だけ。stat カード3枚 -->
+<!-- 5. Technology: 技術軸。宣言・層・検査 -->
 
 <div class="h-full flex flex-col justify-center">
-  <p class="f-label mb-4">Traction</p>
-  <h1>2団体、55,255行を配布中。</h1>
-  <div class="grid grid-cols-3 gap-4 mt-8">
+  <h1>自治体を足す作業は、宣言を1つ書くだけ。</h1>
+  <div class="grid grid-cols-3 gap-4 mt-8 text-sm">
     <div class="f-card">
-      <div class="f-label">団体</div>
-      <div class="f-stat">2</div>
-      <div class="f-caption">三鷹市・狛江市</div>
+      <div class="f-label">自治体差は宣言で吸収</div>
+      <p class="!mt-2">金額の単位、文字コード、科目の書式。自治体ごとの癖はコードに埋めず <span class="f-mono">sources.toml</span> に宣言する</p>
     </div>
     <div class="f-card">
-      <div class="f-label">配布行数</div>
-      <div class="f-stat">55,255</div>
-      <div class="f-caption">歳出・歳入・事業名</div>
+      <div class="f-label">事実と判断を層で分離</div>
+      <p class="!mt-2">自治体が公表した事実（正本）と風土記の判断（COFOG 割当）を分け、境界は dbt のテストで守る</p>
     </div>
     <div class="f-card">
-      <div class="f-label">年度</div>
-      <div class="f-stat">7</div>
-      <div class="f-caption">予算1 + 決算6</div>
+      <div class="f-label">検査が落ちたら配らない</div>
+      <p class="!mt-2">原文の復元・行数の一致など42検査。1つでも落ちると下流の配布物を作らない</p>
     </div>
   </div>
-  <p class="f-caption mt-8">Fiscal Data Package 1.0.0 + COFOG。団体を足す作業は「宣言を1つ書く」に閉じた。</p>
+  <p class="f-caption mt-8">ingestion(Python) → Parquet / DuckDB → dbt → Fiscal Data Package 1.0.0（国際標準）。</p>
 </div>
 
 ---
@@ -100,28 +92,38 @@ css: unocss
 <!-- 6. Why now: AI。MCP で直接引ける -->
 
 <div class="h-full flex flex-col justify-center">
-  <p class="f-label mb-4">Why now</p>
   <h1>AI は PDF の予算書に答えられない。<br>構造化データなら答えられる。</h1>
-  <div class="mt-8 f-card">
-    <div class="f-mono">"狛江市の2023年度、教育費の事業別内訳は?" → 風土記 MCP → 表</div>
+  <div class="mt-4 f-card !p-3 overflow-hidden">
+    <img src="/mcp-demo.png" class="w-full max-h-64 object-contain" alt="Claude が fudoki MCP で三鷹市のいじめ対策費を引いて答える" />
   </div>
-  <p class="f-caption mt-6">API と MCP サーバで提供。国際標準の語彙（COFOG）だから、AI が学習済みの分類で答えられる。</p>
+  <p class="f-caption mt-3">API と MCP サーバで提供。国際標準の語彙（COFOG）だから、AI が学習済みの分類で答えられる。</p>
 </div>
 
 ---
 
-<!-- 7. Vision: 市場と行き先。自治体版 Open States -->
+<!-- 7. 将来の展望（最終スライド） -->
 
 <div class="h-full flex flex-col justify-center">
-  <p class="f-label mb-4">Vision</p>
   <h1>自治体財政の Open States になる。</h1>
-  <div class="mt-8 space-y-3 text-sm">
+  <div class="grid grid-cols-3 gap-4 mt-8 text-sm">
+    <div class="f-card">
+      <div class="f-label">① 何にいくら</div>
+      <p class="!mt-2">予算・決算<br><span class="f-mono">Fiscal Data Package</span></p>
+    </div>
+    <div class="f-card">
+      <div class="f-label">② いつ何が公告されたか</div>
+      <p class="!mt-2">調達<br><span class="f-mono">OCDS</span></p>
+    </div>
+    <div class="f-card">
+      <div class="f-label">③ どう決まったか</div>
+      <p class="!mt-2">議会の会議録<br><span class="f-mono">Popolo</span></p>
+    </div>
+  </div>
+  <div class="mt-8 space-y-2 text-sm">
 
-  1. **いま**: 東京都内の自治体から。パイプラインと配布は OSS（MIT）
-  2. **次**: 団体を増やす。個別自治体 × 事業単位 × 国際分類は世界にまだ無い
-  3. **その先**: 風土記をデータベースとした個別の課題解決プロダクト
+  - 3つのレイヤを既存の国際標準に載せ、同じキーで繋ぐ。東京都内から全国へ
+  - 個別の課題解決プロダクトは、このデータベースの上に作っていく
 
   </div>
-  <div class="mt-8 f-caption">運営者が消えても止まらない: 正本はリポジトリ、CI で更新、fork 可能。</div>
-  <p class="mt-4 f-mono">https://fudoki.dev ／ github.com/wwwyo/fudoki</p>
+  <p class="mt-8 f-mono">https://fudoki.dev ／ github.com/wwwyo/fudoki</p>
 </div>

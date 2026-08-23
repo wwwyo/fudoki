@@ -124,25 +124,30 @@ THEME = f"""
 )
 
 # ---- logo.svg：マーク + 「風土記」の横組み ----
-H, GAP, TEXT = 40, 14, 30
+# ⚠️ 字面の中心（draw が計算する ink bbox の中心）に合わせると、重心が上に見える。
+# マークは下端の基準線が「地面」として読まれるぶん視覚的な重さが下にあるのに対し、
+# 明朝の「風土記」は横画が上半分に密集していて、幾何的な中心より上に重さが寄るため。
+# 光学的に下へ寄せる。TEXT_DY はこの補正で、字面の高さに対する比で持つ。
+H, GAP, TEXT, TEXT_DY = 40, 9, 30, 0.055
 tx = 32 * (H / 32) + GAP
 W = tx + measure("風土記", TEXT, 0.03)
 (PUBLIC / "logo.svg").write_text(
     f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W:.0f} {H}" role="img" aria-label="風土記">\n'
     f"  <title>風土記</title>{THEME}\n"
     f'  {mark(H / 32, 0, 0, "ink")}\n'
-    f'  <g class="ink">{draw("風土記", TEXT, tx, H / 2, 0.03)}</g>\n</svg>\n'
+    f'  <g class="ink">{draw("風土記", TEXT, tx, H / 2 + TEXT * TEXT_DY, 0.03)}</g>\n</svg>\n'
 )
 
 # ---- og.png：1200x630。SVG を経由して焼く ----
 OW, OH = 1200, 630
-block = 96 + 36 + measure("風土記", 88, 0.04)
+OG_MARK, OG_TEXT, OG_GAP = 96, 88, 26
+block = OG_MARK + OG_GAP + measure("風土記", OG_TEXT, 0.04)
 ox, cy = (OW - block) / 2, OH / 2
 og = (
     f'<svg xmlns="http://www.w3.org/2000/svg" width="{OW}" height="{OH}" viewBox="0 0 {OW} {OH}">\n'
     f'  <rect width="{OW}" height="{OH}" fill="{PAPER}"/>\n'
-    f'  <g fill="{INK}">{mark(96 / 32, ox, cy - 48)}</g>\n'
-    f'  <g fill="{INK}">{draw("風土記", 88, ox + 96 + 36, cy, 0.04)}</g>\n'
+    f'  <g fill="{INK}">{mark(OG_MARK / 32, ox, cy - OG_MARK / 2)}</g>\n'
+    f'  <g fill="{INK}">{draw("風土記", OG_TEXT, ox + OG_MARK + OG_GAP, cy + OG_TEXT * TEXT_DY, 0.04)}</g>\n'
     "</svg>\n"
 )
 (HERE / "og.svg").write_text(og)
