@@ -60,6 +60,24 @@
 | 1.0-rc.1（2018） | `specs.frictionlessdata.io` | 旧（Data Package v1 サイト） |
 | **1.0.0** | **`fiscal.datapackage.org`** | **現行**。repo は `frictionlessdata/datapackage-fiscal` |
 
+⚠️ **現行サイトのドメインにありながら中身が旧版のファイルがある。**
+`fiscal.datapackage.org/profiles/fiscal-data-package.json` は 1.0.0 の profile ではない（2026-08-23 実測）。
+`model`（`measures` / `dimensions`）を required に持っており、これは 1.0.0 が廃止した 0.3 の語彙である。
+repo でもこのファイルは 2024-01-05 の bootstrap 以降 1 度も更新されていない。
+**1.0.0 に対応する profile JSON は存在しない** — 1.0.0 への適合を機械に検査させる経路が無く、
+仕様本文（`/specifications/fiscal-data-package/`）に照らして人が確かめるしかない。
+
+⚠️ **ただし `profile` の値はこれとは別の話である。** `datapackage.json` の
+`profile: "tabular-data-package"` は profile JSON が無いための妥協ではなく、**正しい値**である。
+FDP の profile は Tabular Data Package を `allOf` で継承しており、継承元の `profile` は
+enum で `tabular-data-package` に固定されているので、FDP の URL を入れると継承元に違反する。
+**「これは FDP である」を宣言する口は仕様の設計上どこにも無い**ので、
+`fudoki.specification` は間に合わせではなく構造的に標準へ寄せられないものにあたる。
+⚠️ **この事実は配布物に書かない。** 読んでも利用者のすることは変わらない
+（`profile` が何に照らして検査すべきかを既に言っている）ので、fudoki の調査メモにあたる。
+配布物に載せるのは「FDP 1.0.0 に沿って作った」という版の宣言（`fudoki.specification`）までで、
+`profile` は下層の Tabular Data Package しか言わないため標準フィールドでは代替できない。
+
 ⚠️ **採用した3標準のうち2つが止まっている**（最終コミット、2026-08-15 実測）。
 
 | | 最終コミット |
@@ -319,6 +337,18 @@ bun run dev         # 報告を作り直してダッシュボードを上げる
 
 **系統は dbt の `manifest.json` から取る。** 段はモデルの置き場（`staging` / `core` / `package`）が決めるので、
 ディレクトリを動かせば画面の図も動く。以前は `topology.ts` が宣言しており、パイプラインを変えても図が変わらない状態を2度作った。
+
+**descriptor に独自プロパティを足さない。** 足すほど、標準しか読まない実装から見える情報が減る
+（読み手はその property の名前を知らない）。足す前に必ず仕様本文を当たること。
+実際、独自の `constants` として持っていたものは仕様の **Constant Fields**
+（リソースの `schema.extraFields` の各項目に `constant` を持たせる）そのものだったし、
+`provenance` は取得物の隣の provenance.json を descriptor へ写しただけだった。
+CC BY が求める帰属と改変の明示には標準のプロパティが無いが、
+これも独自フィールドではなく標準の `description`（Markdown 可）と
+`sources` / `contributors` に載せる（整理は [data/LICENSE](./data/LICENSE)）。
+
+**パッケージ直下の `columnTypes` とリソースの `schema.fields[].columnType` は重複ではない。**
+前者は仕様が定める _ColumnType_ definition package の置き場（宣言）で、後者は個々の列がそこを指す参照である。
 
 **集計は `report/budget/build.ts` の1箇所だけ**で行う（画面側でも集計すると、同じ数字が2通りに計算されて、いずれ食い違う）。
 

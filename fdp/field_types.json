@@ -79,7 +79,7 @@
       {
         "name": "fudoki:source:amount-unit",
         "dataType": "string",
-        "description": "原典の金額の単位。FDP に倍率を表す ColumnType が無いため別列に残す"
+        "description": "原典の金額の単位。FDP に倍率を表す ColumnType が無いため、単位を別に持つ"
       },
       {
         "name": "fudoki:source:row",
@@ -121,19 +121,16 @@
   "fudoki": {
     "specification": {
       "version": "1.0.0",
-      "url": "https://fiscal.datapackage.org/",
-      "profile": "https://fiscal.datapackage.org/profiles/fiscal-data-package.json"
-    },
-    "standardTaxonomy": "Budget Standard Taxonomy 1.0.0",
-    "cofog": {
-      "version": "COFOG 1999",
-      "divisions": "01〜10",
-      "source": {
-        "name": "UNSD Classification of the Functions of Government (COFOG)",
-        "url": "https://unstats.un.org/unsd/classifications/Family/Detail/4"
-      }
-    },
-    "note": "正本（expenditure / revenue）は原典を正規化しただけで fudoki の判断を含まない。COFOG の割り当ては派生パッケージ derived/ にある。FDP は全要素が任意なので、COFOG 列を持たない正本も適合した FDP になる。"
+      "url": "https://fiscal.datapackage.org/specifications/fiscal-data-package/"
+    }
+  },
+  "cofog": {
+    "version": "COFOG 1999",
+    "divisions": "01〜10",
+    "source": {
+      "name": "UNSD Classification of the Functions of Government (COFOG)",
+      "url": "https://unstats.un.org/unsd/classifications/Family/Detail/4"
+    }
   },
   "fields": {
     "budget_line_id": {
@@ -345,7 +342,8 @@
       "name": "source_amount_unit",
       "title": "原典の金額の単位",
       "type": "string",
-      "columnType": "fudoki:source:amount-unit"
+      "columnType": "fudoki:source:amount-unit",
+      "description": "原典の金額の単位。円へ直す倍率は取得元ごとに違うので、この配布物の値は description が示す"
     },
     "source_row": {
       "name": "source_row",

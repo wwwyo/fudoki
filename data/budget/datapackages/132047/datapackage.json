@@ -2,7 +2,8 @@
   "profile": "tabular-data-package",
   "name": "fudoki-budget-132047",
   "title": "三鷹市 予算（事業単位）",
-  "description": "自治体が公開した予算データを Fiscal Data Package の形にしたもの。**fudoki の判断は含まない**（分類・名寄せ・推定を一切していない）。COFOG の割当は派生パッケージ derived/ にあり、budget_line_id で join する。原典そのものは data/budget/raw/ に Parquet で入っている。",
+  "description": "自治体が公開した予算データを Fiscal Data Package の形にしたもの。**fudoki の判断は含まない**（分類・名寄せ・推定を一切していない）。COFOG の割当は派生パッケージ derived/ にあり、budget_line_id で join する。原典そのものは data/budget/raw/ に Parquet で入っている。\n\n## 出典表示（CC BY 4.0 §3(a)(1)(A)）\n\n次の一文をそのまま使うこと。\n\n> 三鷹市「令和6年度予算データ」（東京都オープンデータカタログサイト）\n\n機械可読な同じ内容は `sources[].title`（原典）と `contributors`（加工者）にある。\n\n## 改変（CC BY 4.0 §3(a)(1)(B)）\n\n原典に対して次のことをしている。\n\n- セルの前後の空白を除去した\n- コードと名称が同居するセルを分けた\n- 金額を円へ正規化した（原典の値と単位も残してある）\n\n原典そのものは `data/budget/raw/` に Parquet で保全してあるので、改変の前後を突き合わせられる。\n\n取得の証跡（取得 URL・HTTP status・SHA-256・取得時刻・ヘッダ・行数）は、原典の隣（`data/budget/raw/**/provenance.json`）にある。\n\nリソースの `sources[].path` は、その証跡が記録している取得 URL そのものである。正本は団体ごと・全年度で1リソースなので、年度の数だけ並ぶ。\n\n## 全行で同じ値の列\n\n全国地方公共団体コード、地方公共団体名、予算段階の表示名、通貨、原典の金額の単位、支出と収入の別は行ごとに変わらないので、CSV の列から外して `schema.extraFields` に定数として置いてある（仕様の Constant Fields）。金額は原典の単位（千円）のままで、円へ直すには 1000 を掛ける。非正規化した形へ戻すときは、その列を全行に補う。\n\nFDP は全要素が任意なので、COFOG 列を持たないこのパッケージも適合した FDP である。",
+  "homepage": "https://github.com/wwwyo/fudoki",
   "version": "0.1.0",
   "created": "2026-08-22T06:44:52+00:00",
   "countryCode": "JP",
@@ -85,7 +86,7 @@
       {
         "name": "fudoki:source:amount-unit",
         "dataType": "string",
-        "description": "原典の金額の単位。FDP に倍率を表す ColumnType が無いため別列に残す"
+        "description": "原典の金額の単位。FDP に倍率を表す ColumnType が無いため、単位を別に持つ"
       },
       {
         "name": "fudoki:source:row",
@@ -127,26 +128,9 @@
   "fudoki": {
     "specification": {
       "version": "1.0.0",
-      "url": "https://fiscal.datapackage.org/",
-      "profile": "https://fiscal.datapackage.org/profiles/fiscal-data-package.json"
-    },
-    "standardTaxonomy": "Budget Standard Taxonomy 1.0.0",
-    "cofog": {
-      "version": "COFOG 1999",
-      "divisions": "01〜10",
-      "source": {
-        "name": "UNSD Classification of the Functions of Government (COFOG)",
-        "url": "https://unstats.un.org/unsd/classifications/Family/Detail/4"
-      }
-    },
-    "note": "正本（expenditure / revenue）は原典を正規化しただけで fudoki の判断を含まない。COFOG の割り当ては派生パッケージ derived/ にある。FDP は全要素が任意なので、COFOG 列を持たない正本も適合した FDP になる。"
+      "url": "https://fiscal.datapackage.org/specifications/fiscal-data-package/"
+    }
   },
-  "modified": true,
-  "modifications": [
-    "セルの前後の空白を除去した",
-    "コードと名称が同居するセルを分けた",
-    "金額を円へ正規化した（原典の値と単位も残してある）"
-  ],
   "fiscalPeriod": {
     "start": "2024-04-01",
     "end": "2025-03-31"
@@ -158,84 +142,17 @@
       "path": "https://creativecommons.org/licenses/by/4.0/"
     }
   ],
-  "attribution": "三鷹市「令和6年度予算データ」（東京都オープンデータカタログサイト）",
+  "contributors": [
+    {
+      "title": "fudoki",
+      "path": "https://github.com/wwwyo/fudoki",
+      "role": "wrangler"
+    }
+  ],
   "sources": [
     {
       "title": "三鷹市「令和6年度予算データ」（東京都オープンデータカタログサイト）",
       "path": "https://www.city.mitaka.lg.jp/c_service/074/"
-    }
-  ],
-  "constants": {
-    "jurisdictionCode": "132047",
-    "jurisdictionName": "三鷹市",
-    "phase": {
-      "id": "approved",
-      "label": "当初予算"
-    },
-    "currency": "JPY",
-    "sourceAmountUnit": {
-      "label": "千円",
-      "multiplier": 1000
-    }
-  },
-  "provenance": [
-    {
-      "jurisdiction_code": "132047",
-      "fiscal_year": 2024,
-      "direction": "expenditure",
-      "dataset_title": "【予算・決算】予算情報",
-      "resource_name": "令和６年度予算データ（歳出）※下水道事業会計除く",
-      "fiscal_year_basis": "CKAN のリソース名「令和６年度予算データ（歳出）※下水道事業会計除く」の「令和６年度」から解決",
-      "request_url": "https://www.city.mitaka.lg.jp/c_service/074/attached/attach_74103_8.csv",
-      "status": 200,
-      "bytes": 605865,
-      "sha256": "f9dcbc7e871437691e4979572aeafaae2da333aba1b27beba8eee72153a5f10e",
-      "fetched_at": "2026-08-22T06:44:46+00:00",
-      "encoding": "cp932",
-      "header": [
-        "01会計",
-        "02款",
-        "03項",
-        "04目",
-        "05事項",
-        "06節",
-        "07細々節",
-        "08予算額"
-      ],
-      "rows": 5613,
-      "raw_form": "verbatim",
-      "roundtrip_verified": true,
-      "license_id": "CC-BY-4.0",
-      "attribution": "三鷹市「令和6年度予算データ」（東京都オープンデータカタログサイト）"
-    },
-    {
-      "jurisdiction_code": "132047",
-      "fiscal_year": 2024,
-      "direction": "revenue",
-      "dataset_title": "【予算・決算】予算情報",
-      "resource_name": "令和６年度予算データ（歳入）※下水道事業会計除く",
-      "fiscal_year_basis": "CKAN のリソース名「令和６年度予算データ（歳入）※下水道事業会計除く」の「令和６年度」から解決",
-      "request_url": "https://www.city.mitaka.lg.jp/c_service/074/attached/attach_74103_7.csv",
-      "status": 200,
-      "bytes": 95618,
-      "sha256": "9ae9636703f90430eff0bcfc50e2812fe07a1fe180b7d9d993230d5a4f717910",
-      "fetched_at": "2026-08-22T06:44:52+00:00",
-      "encoding": "cp932",
-      "header": [
-        "01会計",
-        "02款",
-        "03項",
-        "04目",
-        "05節",
-        "06細節",
-        "07細々節",
-        "08予算額"
-      ],
-      "rows": 821,
-      "raw_form": "verbatim",
-      "roundtrip_verified": true,
-      "license_id": "CC-BY-4.0",
-      "attribution": "三鷹市「令和6年度予算データ」（東京都オープンデータカタログサイト）"
     }
   ],
   "resources": [
@@ -390,8 +307,61 @@
         ],
         "primaryKey": [
           "budget_line_id"
+        ],
+        "extraFields": [
+          {
+            "name": "jurisdiction_code",
+            "title": "全国地方公共団体コード",
+            "type": "string",
+            "columnType": "fudoki:jurisdiction:code",
+            "constant": "132047"
+          },
+          {
+            "name": "jurisdiction_label",
+            "title": "地方公共団体名",
+            "type": "string",
+            "columnType": "fudoki:jurisdiction:label",
+            "labelOf": "fudoki:jurisdiction:code",
+            "constant": "三鷹市"
+          },
+          {
+            "name": "phase_label",
+            "title": "予算段階の表示名",
+            "type": "string",
+            "columnType": "phase:label",
+            "labelOf": "phase:id",
+            "constant": "当初予算"
+          },
+          {
+            "name": "currency",
+            "title": "通貨",
+            "type": "string",
+            "columnType": "value-currency:code",
+            "constant": "JPY"
+          },
+          {
+            "name": "source_amount_unit",
+            "title": "原典の金額の単位",
+            "type": "string",
+            "columnType": "fudoki:source:amount-unit",
+            "description": "原典の金額の単位。円へ直す倍率は取得元ごとに違うので、この配布物の値は description が示す",
+            "constant": "千円"
+          },
+          {
+            "name": "direction",
+            "title": "支出と収入の別",
+            "type": "string",
+            "columnType": "direction",
+            "constant": "expenditure"
+          }
         ]
-      }
+      },
+      "sources": [
+        {
+          "title": "2024年度／【予算・決算】予算情報／令和６年度予算データ（歳出）※下水道事業会計除く",
+          "path": "https://www.city.mitaka.lg.jp/c_service/074/attached/attach_74103_8.csv"
+        }
+      ]
     },
     {
       "name": "revenue",
@@ -544,8 +514,61 @@
         ],
         "primaryKey": [
           "budget_line_id"
+        ],
+        "extraFields": [
+          {
+            "name": "jurisdiction_code",
+            "title": "全国地方公共団体コード",
+            "type": "string",
+            "columnType": "fudoki:jurisdiction:code",
+            "constant": "132047"
+          },
+          {
+            "name": "jurisdiction_label",
+            "title": "地方公共団体名",
+            "type": "string",
+            "columnType": "fudoki:jurisdiction:label",
+            "labelOf": "fudoki:jurisdiction:code",
+            "constant": "三鷹市"
+          },
+          {
+            "name": "phase_label",
+            "title": "予算段階の表示名",
+            "type": "string",
+            "columnType": "phase:label",
+            "labelOf": "phase:id",
+            "constant": "当初予算"
+          },
+          {
+            "name": "currency",
+            "title": "通貨",
+            "type": "string",
+            "columnType": "value-currency:code",
+            "constant": "JPY"
+          },
+          {
+            "name": "source_amount_unit",
+            "title": "原典の金額の単位",
+            "type": "string",
+            "columnType": "fudoki:source:amount-unit",
+            "description": "原典の金額の単位。円へ直す倍率は取得元ごとに違うので、この配布物の値は description が示す",
+            "constant": "千円"
+          },
+          {
+            "name": "direction",
+            "title": "支出と収入の別",
+            "type": "string",
+            "columnType": "direction",
+            "constant": "revenue"
+          }
         ]
-      }
+      },
+      "sources": [
+        {
+          "title": "2024年度／【予算・決算】予算情報／令和６年度予算データ（歳入）※下水道事業会計除く",
+          "path": "https://www.city.mitaka.lg.jp/c_service/074/attached/attach_74103_7.csv"
+        }
+      ]
     }
   ]
 }

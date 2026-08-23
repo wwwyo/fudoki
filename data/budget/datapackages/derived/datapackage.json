@@ -2,7 +2,8 @@
   "profile": "tabular-data-package",
   "name": "fudoki-budget-cofog",
   "title": "予算の COFOG 割当（派生）",
-  "description": "**fudoki の判断**。自治体が言っていないことを付け加えている。正本とは budget_line_id で join する。根拠は cofog_rules に規則として出してあり、cofog_rule_id で引ける。分類不能の割合の低さは品質の指標ではない（成立範囲を正直に調べるのが目的）。",
+  "description": "**fudoki の判断**。自治体が言っていないことを付け加えている。正本とは budget_line_id で join する。根拠は cofog_rules に規則として出してあり、cofog_rule_id で引ける。分類不能の割合の低さは品質の指標ではない（成立範囲を正直に調べるのが目的）。\n\n## 出典表示（CC BY 4.0 §3(a)(1)(A)）\n\n次の一文をそのまま使うこと。\n\n> fudoki（COFOG の割当と規則表）。原典: 三鷹市「令和6年度予算データ」（東京都オープンデータカタログサイト）\n\n機械可読な同じ内容は `sources[].title`（原典）と `contributors`（加工者）にある。\n\n## 改変（CC BY 4.0 §3(a)(1)(B)）\n\n原典に対して次のことをしている。\n\n- 原典の各行に COFOG の分類と連結の判断を付け加えた（自治体が言っていないこと）\n\n原典そのものは `data/budget/raw/` に Parquet で保全してあるので、改変の前後を突き合わせられる。\n\n取得の証跡（取得 URL・HTTP status・SHA-256・取得時刻・ヘッダ・行数）は、原典の隣（`data/budget/raw/**/provenance.json`）にある。",
+  "homepage": "https://github.com/wwwyo/fudoki",
   "version": "0.1.0",
   "created": "2026-08-22T06:44:52+00:00",
   "countryCode": "JP",
@@ -85,7 +86,7 @@
       {
         "name": "fudoki:source:amount-unit",
         "dataType": "string",
-        "description": "原典の金額の単位。FDP に倍率を表す ColumnType が無いため別列に残す"
+        "description": "原典の金額の単位。FDP に倍率を表す ColumnType が無いため、単位を別に持つ"
       },
       {
         "name": "fudoki:source:row",
@@ -127,10 +128,8 @@
   "fudoki": {
     "specification": {
       "version": "1.0.0",
-      "url": "https://fiscal.datapackage.org/",
-      "profile": "https://fiscal.datapackage.org/profiles/fiscal-data-package.json"
+      "url": "https://fiscal.datapackage.org/specifications/fiscal-data-package/"
     },
-    "standardTaxonomy": "Budget Standard Taxonomy 1.0.0",
     "cofog": {
       "version": "COFOG 1999",
       "divisions": "01〜10",
@@ -138,13 +137,8 @@
         "name": "UNSD Classification of the Functions of Government (COFOG)",
         "url": "https://unstats.un.org/unsd/classifications/Family/Detail/4"
       }
-    },
-    "note": "正本（expenditure / revenue）は原典を正規化しただけで fudoki の判断を含まない。COFOG の割り当ては派生パッケージ derived/ にある。FDP は全要素が任意なので、COFOG 列を持たない正本も適合した FDP になる。"
+    }
   },
-  "modified": true,
-  "modifications": [
-    "原典の各行に COFOG の分類と連結の判断を付け加えた（自治体が言っていないこと）"
-  ],
   "licenses": [
     {
       "name": "CC-BY-4.0",
@@ -152,7 +146,13 @@
       "path": "https://creativecommons.org/licenses/by/4.0/"
     }
   ],
-  "attribution": "fudoki（COFOG の割当と規則表）。原典: 三鷹市「令和6年度予算データ」（東京都オープンデータカタログサイト）",
+  "contributors": [
+    {
+      "title": "fudoki",
+      "path": "https://github.com/wwwyo/fudoki",
+      "role": "author"
+    }
+  ],
   "sources": [
     {
       "title": "三鷹市「令和6年度予算データ」（東京都オープンデータカタログサイト）",

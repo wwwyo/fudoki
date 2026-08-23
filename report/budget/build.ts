@@ -10,6 +10,20 @@ import { decodeText, fetchCapped, sha256, splitCsvLine } from '../../ingestion/l
 import type { NodePreview, Provenance, ReportData } from './schema'
 import { ROOT, TARGET, buildChecks, buildTopology, q, readJson, type Manifest, type RunResults } from '../lineage'
 import { STATIC } from './static'
+
+/**
+ * 自作した ColumnType。**`fdp/field_types.json` が正本**で、配布物の descriptor も
+ * そこから作る。
+ *
+ * ⚠️ 以前は `static.ts` に20件を丸写ししていた（名前・dataType・説明文まで完全一致）。
+ * 1件足すたびに2ファイルを直す必要があり、片方だけ直しても型検査もテストも通るので、
+ * 配布物と画面の「なぜこの列型を自作したか」が黙ってずれる形だった。
+ */
+const CUSTOM_COLUMN_TYPES: ReportData['customColumnTypes'] =
+  (JSON.parse(readFileSync(join(ROOT, 'fdp/field_types.json'), 'utf8')) as {
+    columnTypes: [string, { name: string; dataType: string; unique?: boolean
+                            labelOf?: string; prior?: string; description: string }[]]
+  }).columnTypes[1].map(({ description, ...rest }) => ({ ...rest, why: description }))
 import {
   COFOG_DIVISIONS, LEVELS, LEVEL_JA, assertDetailColumns,
   type Direction, type DetailTable,
@@ -176,6 +190,7 @@ function build(code: string): ReportData {
     transform: buildTransform(),
     checks,
     ...STATIC,
+    customColumnTypes: CUSTOM_COLUMN_TYPES,
   }
 }
 

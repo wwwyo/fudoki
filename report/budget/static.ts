@@ -6,7 +6,7 @@
  */
 import type { ReportData } from './schema'
 
-type Static = Pick<ReportData, 'notYetReconciled' | 'customColumnTypes' | 'portability' | 'caveats'>
+type Static = Pick<ReportData, 'notYetReconciled' | 'portability' | 'caveats'>
 
 export const STATIC: Static = {
   "notYetReconciled": {
@@ -15,121 +15,6 @@ export const STATIC: Static = {
     "wouldComeFrom": "https://www.city.mitaka.lg.jp/c_service/090/090334.html（過去の予算書）",
     "currentEvidence": "歳出と歳入の会計別合計が一致することのみ（原典の内部整合であり、外部資料による裏づけではない）"
   },
-  "customColumnTypes": [
-    {
-      "name": "fund:code",
-      "dataType": "string",
-      "unique": true,
-      "why": "会計（一般会計・各特別会計）。administrative-classification は資金管理の責任を負う組織単位を指すもので、会計は資金の区分であり別概念。標準に該当する列型が無い"
-    },
-    {
-      "name": "fund:label",
-      "dataType": "string",
-      "labelOf": "fund:code",
-      "why": "会計の表示名"
-    },
-    {
-      "name": "fin-source:generic:level4:code",
-      "dataType": "string",
-      "unique": true,
-      "prior": "fin-source:generic:level3:code",
-      "why": "歳入の節。標準の fin-source は level3 までしか定義が無いため同じ命名規則で拡張した"
-    },
-    {
-      "name": "fin-source:generic:level4:label",
-      "dataType": "string",
-      "labelOf": "fin-source:generic:level4:code",
-      "why": "歳入の節の表示名"
-    },
-    {
-      "name": "fin-source:generic:level5:code",
-      "dataType": "string",
-      "unique": true,
-      "prior": "fin-source:generic:level4:code",
-      "why": "歳入の細節"
-    },
-    {
-      "name": "fin-source:generic:level5:label",
-      "dataType": "string",
-      "labelOf": "fin-source:generic:level5:code",
-      "why": "歳入の細節の表示名"
-    },
-    {
-      "name": "fin-source:generic:level6:code",
-      "dataType": "string",
-      "unique": true,
-      "prior": "fin-source:generic:level5:code",
-      "why": "歳入の細々節"
-    },
-    {
-      "name": "fin-source:generic:level6:label",
-      "dataType": "string",
-      "labelOf": "fin-source:generic:level6:code",
-      "why": "歳入の細々節の表示名"
-    },
-    {
-      "name": "fudoki:jurisdiction:code",
-      "dataType": "string",
-      "unique": true,
-      "why": "全国地方公共団体コード。外部データとの接続キー。FDP の geo:* は住所や地理コードを指すもので、行政主体の識別子ではない"
-    },
-    {
-      "name": "fudoki:jurisdiction:label",
-      "dataType": "string",
-      "labelOf": "fudoki:jurisdiction:code",
-      "why": "自治体名"
-    },
-    {
-      "name": "fudoki:source:cell",
-      "dataType": "string",
-      "why": "code と label へ分ける前の原典のセル。先頭のゼロや全角数字といった表記を保ち、code + label を連結して原文に戻ることを検証に使う"
-    },
-    {
-      "name": "fudoki:source:amount",
-      "dataType": "number",
-      "why": "原典の金額。円へ正規化する前の値"
-    },
-    {
-      "name": "fudoki:source:amount-unit",
-      "dataType": "string",
-      "why": "原典の金額の単位。FDP に倍率を表す ColumnType が無いため別列に残す"
-    },
-    {
-      "name": "fudoki:source:row",
-      "dataType": "integer",
-      "why": "原典の物理行番号。特定のスナップショット内でのみ意味を持つ証跡で、外部が参照する識別子ではない"
-    },
-    {
-      "name": "fudoki:hierarchy-path",
-      "dataType": "string",
-      "why": "階層のコードを連結した可読なパス。コードは兄弟間で一意とは限らないので識別子には使わない"
-    },
-    {
-      "name": "fudoki:cofog:status",
-      "dataType": "string",
-      "why": "分類の軸。assigned / unclassifiable / out-of-scope。分類できなかったものと、そもそも分類の対象でないものを区別する"
-    },
-    {
-      "name": "fudoki:cofog:consolidation",
-      "dataType": "string",
-      "why": "連結の軸。retained / eliminated。分類の軸とは別の問いなので1つの状態に畳まない"
-    },
-    {
-      "name": "fudoki:cofog:counterpart-id",
-      "dataType": "string",
-      "why": "消去する行の相手側 budget-line-id"
-    },
-    {
-      "name": "fudoki:cofog:basis",
-      "dataType": "string",
-      "why": "割り当ての根拠。割当済みと未分類のいずれについても残す"
-    },
-    {
-      "name": "fudoki:cofog:decided-at-level",
-      "dataType": "string",
-      "why": "款・項・目・事項のどの単位で割り当てが決まったか"
-    }
-  ],
   "portability": [
     {
       "element": "CKAN からのリソース解決と証跡の記録（Extract）",
@@ -223,7 +108,11 @@ export const STATIC: Static = {
     },
     {
       "topic": "仕様が正準と宣言する taxonomy の URL が 404",
-      "body": "`https://specs.frictionlessdata.io/taxonomies/fiscal/budgets.json` は 404 を返す（2026-08-16 実測）。ColumnType の一覧を機械可読な形で参照する経路が存在しないため、仕様の原文（Markdown）から起こして `src/budget/taxonomy/` に取り込み、fudoki 側で保守する。descriptor の `columnTypes` は仕様どおりこの URL を指しているが、**利用者がこれを辿っても取得できない**。"
+      "body": "`https://specs.frictionlessdata.io/taxonomies/fiscal/budgets.json` は 404 を返す（2026-08-16 実測）。ColumnType の一覧を機械可読な形で参照する経路が存在しないため、仕様の原文（Markdown）から起こして `fdp/budget-taxonomy.json` に取り込み、fudoki 側で保守する。descriptor の `columnTypes` は仕様どおりこの URL を指しているが、**利用者がこれを辿っても取得できない**。"
+    },
+    {
+      "topic": "1.0.0 の profile JSON が存在しないので、適合を機械に検査させられない",
+      "body": "仕様本文が Profile として挙げる `https://fiscal.datapackage.org/profiles/fiscal-data-package.json` は 0.3 世代のままで、**1.0.0 が廃止した `model`（measures / dimensions）を required に持つ**（2026-08-23 実測）。repo `frictionlessdata/datapackage-fiscal` でもこのファイルは 2024-01-05 の bootstrap 以降更新されていない。**1.0.0 への適合は仕様本文に照らして人が確かめている**ので、バリデータで担保されていないことは弱点として残る。⚠️ なお `datapackage.json` の `profile: \"tabular-data-package\"` はこれとは別の話で、妥協ではなく正しい値である（FDP の profile は Tabular Data Package を継承しており、継承元の `profile` が enum で固定されているため、FDP の URL は入れられない）。"
     },
     {
       "topic": "`fin-source:generic:level4〜6` は標準の名前空間を fudoki が拡張したもの",
