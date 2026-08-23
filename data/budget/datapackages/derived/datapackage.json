@@ -139,21 +139,11 @@
         "url": "https://unstats.un.org/unsd/classifications/Family/Detail/4"
       }
     },
-    "note": "正本（expenditure / revenue）は原典を正規化しただけで fudoki の判断を含まない。COFOG の割り当ては派生（expenditure-cofog）にある。FDP は全要素が任意なので、COFOG 列を持たない正本も適合した FDP になる。",
-    "rights": {
-      "basis": "素通し",
-      "upstream": [
-        "CC-BY-4.0"
-      ],
-      "note": "原典のライセンスをそのまま表示している。**fudoki が選んだものではない**。fudoki は原典の著作権を持たないので、付け替えることはできない",
-      "thisPackage": "COFOG の割当と規則そのものは fudoki の判断で、CC BY 4.0 で配布する",
-      "note2": "⚠️ 原典に継承（ShareAlike）を求めるライセンスが混ざった場合、この選択は成り立たなくなる（rights_of が停止する）。原典のライセンスは団体ごとに ingestion/budget/sources.toml が持つ"
-    }
+    "note": "正本（expenditure / revenue）は原典を正規化しただけで fudoki の判断を含まない。COFOG の割り当ては派生パッケージ derived/ にある。FDP は全要素が任意なので、COFOG 列を持たない正本も適合した FDP になる。"
   },
   "modified": true,
   "modifications": [
-    "原典の各行に COFOG の分類と連結の判断を付け加えた（自治体が言っていないこと）",
-    "識別子は原典の階層のセル全文から導いており、原典そのものは複製していない"
+    "原典の各行に COFOG の分類と連結の判断を付け加えた（自治体が言っていないこと）"
   ],
   "licenses": [
     {

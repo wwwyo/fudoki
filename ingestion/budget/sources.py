@@ -46,12 +46,27 @@ class Source:
     attribution: str
     landing_page: str
     resources: tuple[Resource, ...]
-    # `data/budget/raw/` に何を置くか。**団体ごとに保証の強さが違う。**
-    #   verbatim   原文そのもの。復号の可逆性と原文の復元を検査できる
-    #   extracted  原文から抽出した事実。**不可逆**なので復元は検査できない
+    # `data/budget/raw/` に何を置くか。**ここがこの宣言の正本**（文書は要約）。
+    #
+    #   verbatim   原文そのもの。復号の可逆性と原文の復元を検査できる。
+    #              置けるのは redistribute=allow のときだけ（下の不変条件）
+    #   extracted  原文から抽出した事実。**不可逆**なので復元は検査できない。
+    #              再現性の保証は「証跡と抽出コードから取り直せること」に変わる
+    #
+    # ⚠️ dbt の原典突合の検査（staging_is_one_to_one / canonical_preserves_source /
+    # package_preserves_source）は raw が原文であることを前提にしている。
+    # extracted を通すときは、その3本を分岐させるか別の検査に差し替える必要がある。
     raw_form: str = "verbatim"
 
     def __post_init__(self) -> None:
+        # ⚠️ **値も検証する。** `alow` のような綴り違いが通ると、
+        # 再配布の判断を見ない経路（extracted）ではそのまま権利表示まで流れる。
+        if self.redistribute not in ("allow", "review", "deny"):
+            raise ValueError(f"{self.key}: redistribute は allow / review / deny（{self.redistribute}）")
+        if not self.license_id:
+            raise ValueError(f"{self.key}: license_id が空。不明なら NOASSERTION と書くこと")
+        if not self.redistribute_basis:
+            raise ValueError(f"{self.key}: redistribute_basis が空。判断の根拠を書くこと")
         if self.raw_form not in ("verbatim", "extracted"):
             raise ValueError(f"{self.key}: raw_form は verbatim か extracted（{self.raw_form}）")
         # ⚠️ **原文を置けるのは再配布可のときだけ。**

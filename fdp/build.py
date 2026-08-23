@@ -28,48 +28,41 @@ LICENSE_CC_BY_4 = {
     "path": "https://creativecommons.org/licenses/by/4.0/",
 }
 def rights_of(srcs: list) -> dict:
-    """この配布物にどのライセンスが付くか、そしてそれは誰が決めたのか。
+    """**利用者の行動が変わることだけを書く。** 変わらないなら何も書かない。
 
-    **2通りある。** 混ぜて1つの表示にすると、利用者はどちらか分からない。
+    ⚠️ 以前はここに「そのライセンスを誰が決めたか（原典 / fudoki）」を出していたが、
+    それを知っても利用者のすることは変わらない（`licenses` と `attribution` で足りる）。
+    fudoki が自分の正しさを確認するための情報であって、配布物に載せるものではない。
+    その整理は data/LICENSE にある。
 
-      素通し   原典が CC BY で提供している。fudoki は選んでいないし、選べない
-      fudoki   原典に利用許諾が無い（PDF など）。だが**抽出した事実は著作物ではない**ので、
-               原典のライセンスは付いてこない。配布物の選択と構成は fudoki のものなので、
-               fudoki が CC BY 4.0 を選んでいる
-
-    ⚠️ 後者で配れるのは**事実だけ**である。原文の散文（事業説明など）を持ってくると
-    表現の複製になり、この整理は成り立たない。抽出する側がそこを守る必要がある。
+    残るのは1つだけ。**利用許諾の無い資料から事実を抽出した部分があるか。**
+    事実に原典のライセンスは付いてこないが、利用者が原典そのものに当たり直すときは
+    条件が違うので、出所を知らせる必要がある。
     """
-    licensed = sorted({s.license_id for s in srcs if s.license_id != "NOASSERTION"})
-    unlicensed = sorted({s.attribution for s in srcs if s.license_id == "NOASSERTION"})
-    if any(lic not in ("CC-BY-4.0",) for lic in licensed):
+    if not srcs:
+        raise SystemExit("取得元が空。権利の判断ができない")
+    others = sorted({s.license_id for s in srcs} - {"NOASSERTION", "CC-BY-4.0"})
+    if others:
         raise SystemExit(
-            f"原典のライセンスに {licensed} が含まれる。CC BY 4.0 以外は継承条件が違いうるので、"
+            f"原典のライセンスに {others} が含まれる。CC BY 4.0 以外は継承条件が違いうるので、"
             f"配布物のライセンスを決め直してから配ること"
         )
-    if licensed and not unlicensed:
-        return {"basis": "素通し", "upstream": licensed,
-                "note": "原典のライセンスをそのまま表示している。**fudoki が選んだものではない**。"
-                        "fudoki は原典の著作権を持たないので、付け替えることはできない"}
-    return {"basis": "fudoki の選択", "upstream": licensed,
-            "factsFrom": unlicensed,
-            "note": "利用許諾の無い資料から**事実**（事業名・金額・コード）を抽出した部分を含む。"
-                    "事実は著作物ではない（著作権法2条1項1号）ので原典のライセンスは付いてこず、"
-                    "選択と構成にあたる部分を fudoki が CC BY 4.0 で配っている。"
-                    "原文そのものはリポジトリに置いていない"}
+    unlicensed = sorted({s.attribution for s in srcs if s.license_id == "NOASSERTION"})
+    return {"factsFrom": unlicensed} if unlicensed else {}
 
 
 # CC BY 4.0 §3(a)(1)(B) が求める「改変した旨」の表示。
-# ⚠️ **正本と派生で内容が違う。** 同じ文言を使い回すと、派生が単位換算をしたことになる。
+# ⚠️ **やっていない改変を書かない。** 一度、原典1行が複数の予算段階を持つ団体のための
+# 「段階ごとの行へ展開した」を全団体共通のリストへ入れており、1行1金額の三鷹市にも付いていた。
+# 改変の明示は CC BY が求めているものなので、嘘を書くと表示そのものの信用が落ちる。
+# 団体で改変が変わるなら、そのときリストを団体ごとに分けること。
 CANONICAL_MODIFICATIONS = [
-    "セルの前後の空白を除去した（原典に全角スペースが混じるため）",
-    "コードと名称が同居するセルを分けた（分けたものを繋ぐと原文に戻ることを検査している）",
-    "金額を円へ正規化した（原典の値と単位も併せて残してある）",
-    "1行が複数の予算段階を持つ原典を、段階ごとの行へ展開した",
+    "セルの前後の空白を除去した",
+    "コードと名称が同居するセルを分けた",
+    "金額を円へ正規化した（原典の値と単位も残してある）",
 ]
 DERIVED_MODIFICATIONS = [
     "原典の各行に COFOG の分類と連結の判断を付け加えた（自治体が言っていないこと）",
-    "識別子は原典の階層のセル全文から導いており、原典そのものは複製していない",
 ]
 PACKAGES = ROOT / "data" / "budget" / "datapackages"
 RAW = ROOT / "data" / "budget" / "raw"
@@ -165,10 +158,9 @@ def base(name: str, title: str, description: str, modifications: list[str]) -> d
         "countryCode": "JP",
         "columnTypes": TYPES["columnTypes"],
         "fudoki": TYPES["fudoki"],
-        # ⚠️ **CC BY 4.0 は改変したらその旨を示すことを求める（§3(a)(1)(B)）。**
-        # fudoki は原典を改変している（前後空白の除去、コードと名称の分離、
-        # 円への正規化、予算段階ごとの行への展開）ので、黙って配らない。
-        # 何をどう変えたかは AGENTS.md と dbt のモデルに書いてある。
+        # CC BY 4.0 §3(a)(1)(B) が求める「改変した旨」の表示。
+        # ⚠️ `modified` と `attribution` は FDP の標準プロパティに無い（実測で確認）。
+        # 帰属と改変の明示は CC BY の義務なのに標準側に置き場が無いので、独自で持つほかない。
         "modified": True,
         "modifications": modifications,
     }
@@ -177,12 +169,22 @@ def base(name: str, title: str, description: str, modifications: list[str]) -> d
 def build_jurisdiction(code: str) -> None:
     """正本。**団体ごと・全年度で1パッケージ。** 判断を含まない。"""
     d = PACKAGES / code
-    # ⚠️ **`redistribute` で絞らない。** 原文を置けない取得元でも、そこから抽出した
-    # 事実は配布物に入る（事業名と金額は著作物ではない）。絞ると、PDF から起こした
-    # 団体の配布物が丸ごと空になる。止めるべきなのは原文の複製だけで、それは取得側が見ている。
+    # ⚠️ **`redistribute` で絞らない。** 原文を置けない取得元でも、そこから抽出した事実は
+    # 配布物に入る。絞ると、PDF から起こした団体の配布物が丸ごと空になる。理屈は data/LICENSE。
     srcs = [s for s in load_sources().values() if s.jurisdiction_code == code]
     if not srcs:
         raise RuntimeError(f"団体 {code} の取得元が sources.toml に無い")
+    # ⚠️ **抽出した事実を配る経路は、下流がまだ原文前提のままである。**
+    # dbt の原典突合（staging_is_one_to_one / canonical_preserves_source /
+    # package_preserves_source）は raw が原文であることを前提にしており、
+    # extracted に当てると誤って落ちるか、誤って通る。
+    # 文書だけ先に整えて実装が追いつかない状態を、黙って通さないために止める。
+    extracted = sorted({s.key for s in srcs if s.raw_form == "extracted"})
+    if extracted:
+        raise SystemExit(
+            f"{code}: raw_form=extracted の取得元がある（{extracted}）。"
+            f"dbt の原典突合の検査が原文前提のままなので、分岐させるまで配布物を作らない"
+        )
     years = sorted(s.fiscal_year for s in srcs)
 
     pkg = base(
@@ -197,16 +199,8 @@ def build_jurisdiction(code: str) -> None:
     pkg["fiscalPeriod"] = {"start": f"{years[0]}-04-01", "end": f"{years[-1] + 1}-03-31"}
     pkg["licenses"] = [LICENSE_CC_BY_4]
     pkg["attribution"] = srcs[0].attribution
-    pkg["fudoki"] = {**pkg["fudoki"], "rights": {
-        **rights_of(srcs),
-        "holder": srcs[0].jurisdiction_name,
-        # 再配布可と判断した根拠。**判断の中身を読めるようにする** —
-        # 「allow だから配った」だけでは、誰も判断を検討できない。
-        "redistributionBasis": sorted({s.redistribute_basis for s in srcs}),
-        "repositoryLicense": "リポジトリ直下の LICENSE（MIT）はコードに対するもので、この配布物には及ばない",
-        # `raw/` の保証は団体で違う。原文を置いた団体だけ「原典と1対1」が成立する。
-        "rawForm": sorted({s.raw_form for s in srcs}),
-    }}
+    if rights := rights_of(srcs):
+        pkg["fudoki"] = {**pkg["fudoki"], "rights": rights}
     pkg["sources"] = [{"title": s.attribution, "path": s.landing_page} for s in srcs]
     # 全行同じ値なのでリソースの列から外し、ここに持たせた定数。
     # ⚠️ **phase を package 全体の定数にしてよいのは1つしか無いときだけ。**
@@ -261,13 +255,8 @@ def build_derived() -> None:
         "原典: " + "／".join(sorted({s.attribution for s in srcs}))
     )
     pkg["sources"] = [{"title": s.attribution, "path": s.landing_page} for s in srcs]
-    pkg["fudoki"] = {**pkg["fudoki"], "rights": {
-        **rights_of(srcs),
-        "thisPackage": "COFOG の割当と規則そのものは fudoki の判断で、CC BY 4.0 で配布する",
-        "note2": "⚠️ 原典に継承（ShareAlike）を求めるライセンスが混ざった場合、"
-                 "この選択は成り立たなくなる（rights_of が停止する）。"
-                 "原典のライセンスは団体ごとに ingestion/budget/sources.toml が持つ",
-    }}
+    if rights := rights_of(srcs):
+        pkg["fudoki"] = {**pkg["fudoki"], "rights": rights}
     pkg["resources"] = [
         resource(d / "cofog.csv", "cofog", "COFOG の割当",
                  "識別子と判断だけ。正本の列を複製しない", ["budget_line_id"]),

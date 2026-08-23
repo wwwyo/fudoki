@@ -61,7 +61,7 @@ bun run pipeline
 ```
 
 **原典は `data/raw/` に Parquet で保全してある。** 取得の単位（団体・年度・direction）ごとに partition してあり、
-URL・取得日時・SHA-256 は `data/provenance/` にある。
+URL・取得日時・SHA-256 は原典の隣（`data/budget/raw/**/provenance.json`）にある。
 自治体が原典を差し替えても、**手元の原典から成果物を再生成できる**。
 
 出力は決定的にしてある（並びを固定し、`created` には実行時刻ではなく原典の取得時刻を入れる）。
@@ -69,9 +69,6 @@ URL・取得日時・SHA-256 は `data/provenance/` にある。
 
 ## ライセンスと帰属
 
-原典は CC BY 4.0。各パッケージの `datapackage.json` の `licenses` と `attribution` を見ること。
-
+各パッケージの `datapackage.json` の `licenses` / `attribution` / `modified` を見ること。
 ⚠️ **正本のライセンスは原典のものを素通ししている**（fudoki が選んだものではない）。
-派生（`derived/`）だけが fudoki 自身の著作物で、CC BY 4.0 で配っている。
-リポジトリ直下の `LICENSE`（MIT）はコードに対するもので、ここには及ばない。
-詳しくは [data/LICENSE](../../LICENSE) を参照。
+詳しくは [data/LICENSE](../../LICENSE)。

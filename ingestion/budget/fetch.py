@@ -110,19 +110,13 @@ def reconstruct(header: list[str], rows: list[list[str]], newline: str, trailing
 def ingest(key: str) -> None:
     src = resolve(key)
 
-    # ⚠️ **この取得器は原文をそのまま置く。** 復号の可逆性と原文の復元を検査したうえで
-    # Parquet に落とすので、原文の複製にあたる。だから再配布可の取得元しか通さない。
-    #
-    # ⚠️ **「配布物を作ってよいか」の判定ではない。** 原文を置けない取得元でも、
-    # そこから抽出した事実（事業名・金額・コード）は配れる。抽出する取得器は別に要る
-    # （raw_form=extracted。原文を復元できないので、下の復元検査は成立しない）。
+    # ⚠️ **この取得器は原文をそのまま置くものだけを扱う。**
+    # 「原文を置けるのは再配布可のときだけ」という不変条件は `Source` が持っているので、
+    # ここでは扱える形かどうかだけを見る（同じ規則を2箇所に置かない）。
+    # 抽出する取得器は別に要る（raw_form=extracted。原文を復元できないので復元検査が成立しない）。
     if src.raw_form != "verbatim":
         raise RuntimeError(
             f"{key} は raw_form={src.raw_form}。この取得器は原文をそのまま置くものなので扱えない"
-        )
-    if not src.may_publish_verbatim:
-        raise RuntimeError(
-            f"{key} は redistribute={src.redistribute}。原文をリポジトリへ置けるのは再配布可と判定した取得元だけ"
         )
 
     for spec in src.resources:

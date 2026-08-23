@@ -139,29 +139,13 @@
         "url": "https://unstats.un.org/unsd/classifications/Family/Detail/4"
       }
     },
-    "note": "正本（expenditure / revenue）は原典を正規化しただけで fudoki の判断を含まない。COFOG の割り当ては派生（expenditure-cofog）にある。FDP は全要素が任意なので、COFOG 列を持たない正本も適合した FDP になる。",
-    "rights": {
-      "basis": "素通し",
-      "upstream": [
-        "CC-BY-4.0"
-      ],
-      "note": "原典のライセンスをそのまま表示している。**fudoki が選んだものではない**。fudoki は原典の著作権を持たないので、付け替えることはできない",
-      "holder": "三鷹市",
-      "redistributionBasis": [
-        "東京都オープンデータカタログのライセンス表示（CC BY 4.0）"
-      ],
-      "repositoryLicense": "リポジトリ直下の LICENSE（MIT）はコードに対するもので、この配布物には及ばない",
-      "rawForm": [
-        "verbatim"
-      ]
-    }
+    "note": "正本（expenditure / revenue）は原典を正規化しただけで fudoki の判断を含まない。COFOG の割り当ては派生パッケージ derived/ にある。FDP は全要素が任意なので、COFOG 列を持たない正本も適合した FDP になる。"
   },
   "modified": true,
   "modifications": [
-    "セルの前後の空白を除去した（原典に全角スペースが混じるため）",
-    "コードと名称が同居するセルを分けた（分けたものを繋ぐと原文に戻ることを検査している）",
-    "金額を円へ正規化した（原典の値と単位も併せて残してある）",
-    "1行が複数の予算段階を持つ原典を、段階ごとの行へ展開した"
+    "セルの前後の空白を除去した",
+    "コードと名称が同居するセルを分けた",
+    "金額を円へ正規化した（原典の値と単位も残してある）"
   ],
   "fiscalPeriod": {
     "start": "2024-04-01",
