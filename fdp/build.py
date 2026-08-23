@@ -15,11 +15,19 @@
 仕様の `extraFields` + `constant` そのものだったし、`provenance` は取得物の隣の
 provenance.json と同じ内容を descriptor へ写しただけだった。
 
-⚠️ **1.0.0 に対応する profile JSON は存在しない**（2026-08-23 実測）。
+⚠️ **`profile` は `tabular-data-package` が正しい値であって、妥協ではない。**
+FDP の profile は Tabular Data Package を `allOf` で継承しており、継承元の `profile` は
+enum で `tabular-data-package` に固定されている。FDP の URL を入れると継承元の制約に
+違反する。**「これは FDP である」を宣言する口は、仕様の設計上どこにも無い**
+（`columnTypes` を持っていることが事実上の印になるだけ）。
+だから `fudoki.specification` は代替が見つかるまでの間に合わせではなく、
+構造的に標準へ寄せられないものである。
+
+⚠️ 別件として、**1.0.0 に対応する profile JSON も存在しない**（2026-08-23 実測）。
 仕様本文が Profile として挙げる fiscal.datapackage.org/profiles/fiscal-data-package.json は
 0.3 世代のままで、1.0.0 が廃止した `model`（measures / dimensions）を required に持つ。
-検査に使えないので descriptor の `profile` には下層の Tabular Data Package v1 を宣言し、
-この事実は AGENTS.md に記録してある（配布物には載せない — 利用者の行動が変わらないため）。
+1.0.0 への適合を機械に検査させる経路が無いということで、AGENTS.md に記録してある
+（配布物には載せない — 利用者の行動が変わらないため）。
 """
 
 from __future__ import annotations

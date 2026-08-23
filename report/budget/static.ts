@@ -112,7 +112,7 @@ export const STATIC: Static = {
     },
     {
       "topic": "1.0.0 の profile JSON が存在しないので、適合を機械に検査させられない",
-      "body": "仕様本文が Profile として挙げる `https://fiscal.datapackage.org/profiles/fiscal-data-package.json` は 0.3 世代のままで、**1.0.0 が廃止した `model`（measures / dimensions）を required に持つ**（2026-08-23 実測）。repo `frictionlessdata/datapackage-fiscal` でもこのファイルは 2024-01-05 の bootstrap 以降更新されていない。したがって `datapackage.json` の `profile` には下層の Tabular Data Package v1 を宣言し、**1.0.0 への適合は仕様本文に照らして人が確かめている**。バリデータで担保されていないことは弱点として残る。"
+      "body": "仕様本文が Profile として挙げる `https://fiscal.datapackage.org/profiles/fiscal-data-package.json` は 0.3 世代のままで、**1.0.0 が廃止した `model`（measures / dimensions）を required に持つ**（2026-08-23 実測）。repo `frictionlessdata/datapackage-fiscal` でもこのファイルは 2024-01-05 の bootstrap 以降更新されていない。**1.0.0 への適合は仕様本文に照らして人が確かめている**ので、バリデータで担保されていないことは弱点として残る。⚠️ なお `datapackage.json` の `profile: \"tabular-data-package\"` はこれとは別の話で、妥協ではなく正しい値である（FDP の profile は Tabular Data Package を継承しており、継承元の `profile` が enum で固定されているため、FDP の URL は入れられない）。"
     },
     {
       "topic": "`fin-source:generic:level4〜6` は標準の名前空間を fudoki が拡張したもの",

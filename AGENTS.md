@@ -64,9 +64,15 @@
 `fiscal.datapackage.org/profiles/fiscal-data-package.json` は 1.0.0 の profile ではない（2026-08-23 実測）。
 `model`（`measures` / `dimensions`）を required に持っており、これは 1.0.0 が廃止した 0.3 の語彙である。
 repo でもこのファイルは 2024-01-05 の bootstrap 以降 1 度も更新されていない。
-**1.0.0 に対応する profile JSON は存在しない** — 適合を機械に検査させる経路が無いということなので、
-`datapackage.json` の `profile` には下層の Tabular Data Package v1 を宣言し、
-1.0.0 への適合は仕様本文（`/specifications/fiscal-data-package/`）に照らして人が確かめる。
+**1.0.0 に対応する profile JSON は存在しない** — 1.0.0 への適合を機械に検査させる経路が無く、
+仕様本文（`/specifications/fiscal-data-package/`）に照らして人が確かめるしかない。
+
+⚠️ **ただし `profile` の値はこれとは別の話である。** `datapackage.json` の
+`profile: "tabular-data-package"` は profile JSON が無いための妥協ではなく、**正しい値**である。
+FDP の profile は Tabular Data Package を `allOf` で継承しており、継承元の `profile` は
+enum で `tabular-data-package` に固定されているので、FDP の URL を入れると継承元に違反する。
+**「これは FDP である」を宣言する口は仕様の設計上どこにも無い**ので、
+`fudoki.specification` は間に合わせではなく構造的に標準へ寄せられないものにあたる。
 ⚠️ **この事実は配布物に書かない。** 読んでも利用者のすることは変わらない
 （`profile` が何に照らして検査すべきかを既に言っている）ので、fudoki の調査メモにあたる。
 配布物に載せるのは「FDP 1.0.0 に沿って作った」という版の宣言（`fudoki.specification`）までで、
