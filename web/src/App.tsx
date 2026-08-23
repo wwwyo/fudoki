@@ -10,7 +10,6 @@ import { DetailBrowser } from '@/components/detail-browser'
 import { StageDetail } from '@/components/stage-detail'
 import { CofogPanel } from '@/components/cofog-panel'
 import { ChecksPanel } from '@/components/checks-panel'
-import { CaveatsPanel } from '@/components/caveats-panel'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -117,7 +116,6 @@ export default function App() {
             <TabsTrigger value="cofog">COFOG の判断</TabsTrigger>
             <TabsTrigger value="checks">検査</TabsTrigger>
             <TabsTrigger value="detail">明細</TabsTrigger>
-            <TabsTrigger value="caveats">未確定のこと</TabsTrigger>
           </TabsList>
 
           <TabsContent value="stages" className="pt-4">
@@ -140,9 +138,6 @@ export default function App() {
             ) : (
               <p className="text-sm text-muted-foreground">明細を読み込み中…</p>
             )}
-          </TabsContent>
-          <TabsContent value="caveats" className="pt-4">
-            <CaveatsPanel report={report} />
           </TabsContent>
         </Tabs>
 

@@ -228,7 +228,7 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
 
       {/* 選んだノードの中身。ノード上に置くと図が文字の表に戻る */}
       {detail && (
-        <div className="rounded-lg border bg-muted/30 p-3 text-sm">
+        <div className="flex flex-col gap-2 text-sm">
           <div className="flex flex-wrap items-baseline gap-2">
             <span className="font-mono font-medium">{detail.label}</span>
             <Badge variant="outline">{KIND_JA[detail.kind]}</Badge>
