@@ -110,8 +110,19 @@ CC BY が求める帰属を下流が落とす。層ごとの宣言は `data/LICE
 **ダッシュボードは `https://fudoki.dev/` で配信する。** これは派生物であって正本ではない。
 画面が止まっても配布物は repo に残る、という向きが保てる限りドメインを持つこと自体は問題にならない。
 配布物の絶対 URL（`canonical` / `og:image` / `sitemap.xml`）はこのドメインを指す。
-⚠️ **ドメイン直下（apex）に置く前提**なので、`vite.config.ts` の `base` は `/` のままでよい。
-サブパスへ移すときは `base` と上記3箇所を同時に変える（片方だけだと静的アセットが 404 になる）。
+⚠️ **ルートパス（`https://fudoki.dev/`）で配信する前提**なので、`vite.config.ts` の `base` は `/` のままでよい。
+`base` に効くのは**パス**であって DNS 名ではない。`www.fudoki.dev` のようなサブドメインへ移しても `/` のまま。
+サブパス（`example.github.io/fudoki/` のような形）へ移すときだけ、`base` と上記3箇所を同時に変える
+（片方だけだと静的アセットが 404 になる）。
+置き場は Cloudflare。apex をそのまま向けられるのは Cloudflare が CNAME flattening をするからで、
+`CNAME` ファイルは要らない（GitHub Pages なら要る）。
+
+⚠️ **ホスティング側でビルドさせることはできない。** 画面は `pipeline.json` と `preview/` を読むが、
+どちらも commit していない（再実行で得られるローカル生成物）。生成には `bun run report` が要り、
+それは `dbt/target/manifest.json` を読むので、**dbt を回さないと画面のデータが存在しない**。
+clone しただけの環境では作れないので、**CI で組んでから成果物を投げる**。
+`.github/workflows/verify.yml` が既に `dbt build` → `report` → `web build` を回しているため、
+必要なものは CI 上に揃っている。
 
 **原典・証跡・配布物をリポジトリに置く。** 原典は Parquet で `data/raw/` へ、取得の単位（団体コード・年度・direction）で partition する。全量（62団体 × 9年度）で 79 MB と実測しており、git repo として普通の範囲に収まる。調査の観測とパイプライン報告は commit しない（再実行で得られるローカル作業ファイル。主張には調査日を添える）。
 

@@ -1,0 +1,83 @@
+/* fudoki DESIGN.md 準拠。検査成績書のトーン: 無彩色基調、色は意味を持つところにだけ */
+
+:root {
+  --f-bg: oklch(100% 0 0);
+  --f-fg: oklch(14.5% 0 0);
+  --f-muted-fg: oklch(55.6% 0 0);
+  --f-border: oklch(92.2% 0 0);
+  --f-secondary: oklch(97% 0 0);
+  /* 判断の有無。スライドでも色で言うのはこれだけ */
+  --f-nojudgment: oklch(58% 0.075 250);
+  --f-judgment: oklch(58% 0.085 55);
+  --f-boundary: oklch(55% 0.13 55);
+  /* COFOG 割当の状態 */
+  --f-assigned: oklch(56% 0.10 155);
+  --f-unclassifiable: oklch(60% 0.12 75);
+}
+
+.slidev-layout {
+  background: var(--f-bg);
+  color: var(--f-fg);
+  font-family: "Geist", "Noto Sans JP", "Hiragino Sans", sans-serif;
+  /* 和文段落の行間は DESIGN.md の caption 相当（1.6 前後）に広げる */
+  line-height: 1.65;
+  font-feature-settings: "tnum"; /* 数字は常に tabular-nums */
+  padding: 3.2rem 3.6rem;
+}
+
+/* 見出し。ロゴだけ Shippori Mincho B1、それ以外は本文と同じ書体 */
+.slidev-layout h1 {
+  font-weight: 600;
+  font-size: 2.1rem;
+  line-height: 1.35;
+  color: var(--f-fg);
+}
+.slidev-layout h2 {
+  font-weight: 600;
+  font-size: 1.35rem;
+  border-bottom: 1px solid var(--f-border);
+  padding-bottom: 0.4rem;
+}
+.slidev-layout .logo-type {
+  font-family: "Shippori Mincho B1", serif;
+  font-weight: 700;
+}
+
+.slidev-layout strong { font-weight: 600; }
+.slidev-layout a { color: var(--f-fg); border-bottom: 1px solid var(--f-muted-fg); text-decoration: none; }
+
+/* 表: 罫線は水平のみ、数値は右寄せ */
+.slidev-layout table { border-collapse: collapse; width: 100%; }
+.slidev-layout th {
+  font-size: 0.72rem; font-weight: 500; color: var(--f-fg);
+  border-bottom: 1px solid var(--f-fg); text-align: left; padding: 0.3rem 0.6rem;
+}
+.slidev-layout td {
+  font-size: 0.85rem; border-bottom: 1px solid var(--f-border); padding: 0.3rem 0.6rem;
+}
+.slidev-layout td.num, .slidev-layout th.num { text-align: right; }
+
+/* 影は使わない。カードはヘアラインリングのみ */
+.f-card {
+  border: 1px solid color-mix(in oklch, var(--f-fg) 10%, transparent);
+  border-radius: 14px;
+  padding: 1rem 1.2rem;
+  background: var(--f-bg);
+}
+.f-label { font-size: 0.72rem; font-weight: 500; color: var(--f-muted-fg); }
+.f-stat { font-size: 1.5rem; font-weight: 500; font-feature-settings: "tnum"; }
+
+/* 判断の有無を言う縦帯（流れ図のノードと同じ語彙） */
+.f-nojudgment { border-left: 3px solid var(--f-nojudgment); padding-left: 0.8rem; }
+.f-judgment { border-left: 3px solid var(--f-judgment); padding-left: 0.8rem; }
+
+.f-caption { font-size: 0.72rem; color: var(--f-muted-fg); line-height: 1.6; }
+.f-mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.8rem; color: var(--f-muted-fg); }
+
+/* ページ番号など Slidev 既定の装飾も無彩色に */
+.slidev-layout code {
+  background: var(--f-secondary);
+  border-radius: 6px;
+  padding: 0.1em 0.35em;
+  font-size: 0.85em;
+}
