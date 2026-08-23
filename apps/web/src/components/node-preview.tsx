@@ -9,6 +9,7 @@
 import { useEffect, useState } from 'react'
 import type { NodePreview, Topology } from '@/lib/pipeline'
 import { loadNodePreview } from '@/lib/pipeline'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 type Loaded = { label: string; role: '入力' | '出力'; preview: NodePreview }
@@ -76,25 +77,22 @@ export function NodePreviewPanel({ nodeId, topology }: { nodeId: string; topolog
 
 function PreviewSection({ loaded: l, className = '' }: { loaded: Loaded; className?: string }) {
   return (
-    <section
-      className={`flex min-w-0 flex-col gap-2 rounded-lg border bg-card p-3 lg:grid lg:grid-rows-subgrid lg:row-span-3 ${className}`}
-    >
-      <div className="flex min-w-0 items-baseline gap-2">
-        <h4 className="shrink-0 text-xs font-medium text-muted-foreground">{l.role === '入力' ? '入力（データ元）' : '出力（変換後）'}</h4>
-        <span className="min-w-0 truncate font-mono text-xs font-medium">{l.preview.title ?? l.label}</span>
-      </div>
+    <Card size="sm" className={`min-w-0 gap-2 lg:grid lg:grid-rows-subgrid lg:row-span-3 ${className}`}>
+      <CardHeader>
+        <CardTitle className="flex min-w-0 items-baseline gap-2 text-sm">
+          <span className="shrink-0 text-xs font-medium text-muted-foreground">{l.role === '入力' ? '入力（データ元）' : '出力（変換後）'}</span>
+          <span className="min-w-0 truncate font-mono text-xs">{l.preview.title ?? l.label}</span>
+        </CardTitle>
+      </CardHeader>
       {l.preview.sourceUrl && (
-        <a
-          className="break-all text-[11px] text-muted-foreground underline"
-          href={l.preview.sourceUrl}
-          target="_blank"
-          rel="noreferrer"
-        >
-          {l.preview.sourceUrl}
-        </a>
+        <CardDescription className="px-(--card-spacing) lg:row-start-2">
+          <a className="break-all text-[11px] underline" href={l.preview.sourceUrl} target="_blank" rel="noreferrer">
+            {l.preview.sourceUrl}
+          </a>
+        </CardDescription>
       )}
       {/* 表は常に3トラック目。URL の無い card は2トラック目が空くが、位置は動かない */}
-      <div className="min-h-96 flex-1 basis-96 overflow-auto rounded-md border bg-background lg:row-start-3">
+      <CardContent className="min-h-96 flex-1 basis-96 overflow-auto px-0 lg:row-start-3">
         <Table>
           <TableHeader>
             <TableRow>
@@ -115,7 +113,7 @@ function PreviewSection({ loaded: l, className = '' }: { loaded: Loaded; classNa
             ))}
           </TableBody>
         </Table>
-      </div>
-    </section>
+      </CardContent>
+    </Card>
   )
 }

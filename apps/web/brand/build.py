@@ -104,14 +104,17 @@ def draw(text: str, size: float, x: float, cy: float, tracking: float = 0.0) -> 
     return "".join(parts)
 
 
-def mark(scale: float, dx: float = 0, dy: float = 0, themed: bool = False) -> str:
+def mark(
+    scale: float, dx: float = 0, dy: float = 0,
+    themed: bool = False, ink: str = INK, rule: str = RULE,
+) -> str:
     """短冊のマーク。基準線だけ丹になる。
 
-    themed=True はテーマ追従（`.ink` / `.rule` クラスで CSS に委ねる）、
-    False は色を直接置く（og の PNG のようにテーマの概念が無い出力向け）。
+    themed=True は `.ink` / `.rule` クラスで CSS に委ねる（ファビコン専用）。
+    False は渡された色を直接置く。
     """
-    bar_a = ' class="ink"' if themed else f' fill="{INK}"'
-    rule_a = ' class="rule"' if themed else f' fill="{RULE}"'
+    bar_a = ' class="ink"' if themed else f' fill="{ink}"'
+    rule_a = ' class="rule"' if themed else f' fill="{rule}"'
     bars = "".join(
         f'<rect{bar_a} x="{x}" y="{y}" width="4" height="{h}" rx="2"/>' for x, y, h in BARS
     )
@@ -136,20 +139,27 @@ THEME = f"""
     f'  {mark(1, 0, 0, themed=True)}\n</svg>\n'
 )
 
-# ---- logo.svg：マーク + 「風土記」の横組み ----
+# ---- logo.svg / logo-dark.svg：マーク + 「風土記」の横組み ----
 # ⚠️ 字面の中心（draw が計算する ink bbox の中心）に合わせると、重心が上に見える。
 # マークは下端の基準線が「地面」として読まれるぶん視覚的な重さが下にあるのに対し、
 # 明朝の「風土記」は横画が上半分に密集していて、幾何的な中心より上に重さが寄るため。
 # 光学的に下へ寄せる。TEXT_DY はこの補正で、字面の高さに対する比で持つ。
+#
+# ⚠️ **ロゴはテーマを媒体に委ねず、2枚に分ける。**
+# 画面のテーマはクラス（`.dark`）で切り替わるが、`<img>` の中の
+# `prefers-color-scheme` は OS 設定しか見ない。1枚にすると、OS がライトのまま
+# 画面をダークにしたときにロゴだけ取り残される。ファビコンは逆に
+# ブラウザのタブが OS 設定に従うので、あちらはメディアクエリのままでよい。
 H, GAP, TEXT, TEXT_DY = 40, 9, 30, 0.055
 tx = 32 * (H / 32) + GAP
 W = tx + measure("風土記", TEXT, 0.03)
-(PUBLIC / "logo.svg").write_text(
-    f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W:.0f} {H}" role="img" aria-label="風土記">\n'
-    f"  <title>風土記</title>{THEME}\n"
-    f'  {mark(H / 32, 0, 0, themed=True)}\n'
-    f'  <g class="ink">{draw("風土記", TEXT, tx, H / 2 + TEXT * TEXT_DY, 0.03)}</g>\n</svg>\n'
-)
+for name, ink, rule in [("logo.svg", INK, RULE), ("logo-dark.svg", INK_DARK, RULE_DARK)]:
+    (PUBLIC / name).write_text(
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W:.0f} {H}" role="img" aria-label="風土記">\n'
+        f"  <title>風土記</title>\n"
+        f"  {mark(H / 32, 0, 0, ink=ink, rule=rule)}\n"
+        f'  <g fill="{ink}">{draw("風土記", TEXT, tx, H / 2 + TEXT * TEXT_DY, 0.03)}</g>\n</svg>\n'
+    )
 
 # ---- og.png：1200x630。SVG を経由して焼く ----
 OW, OH = 1200, 630
