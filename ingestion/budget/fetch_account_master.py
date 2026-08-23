@@ -52,12 +52,15 @@ TABLES = {
     "revenue": {
         "pages": (1, 12),
         "start": "1市",           # 市町村欄の最初の款「1 市（町村）税」
-        "pref_bands": {"kan": (140.0, 158.0), "kou": (240.0, 258.0), "moku": (343.0, 358.0)},
-        "muni_bands": {"kan": (290.0, 315.0), "kou": (358.0, 372.0), "moku": (425.0, 445.0)},
+        # ⚠️ コードは中央寄せで、**2桁になると1桁より左から始まる**（項10 の実測 x=357.6、
+        # 項9 は 361.1）。帯の境界を1桁の実測で引くと2桁が隣の帯に食われる。
+        "pref_bands": {"kan": (140.0, 158.0), "kou": (240.0, 258.0), "moku": (343.0, 356.5)},
+        "muni_bands": {"kan": (290.0, 315.0), "kou": (356.5, 372.0), "moku": (425.0, 445.0)},
     },
     "expenditure": {
         "pages": (13, 25),
         "start": "1議会費",
+        "pref_name_cut": 290.0,
         "pref_bands": {"kan": (110.0, 125.0), "kou": (168.0, 182.0), "moku": (240.0, 255.0)},
         "muni_bands": {"kan": (290.0, 325.0), "kou": (355.0, 370.0), "moku": (425.0, 445.0)},
     },
@@ -75,10 +78,12 @@ def _segments(line: list[tuple[float, str]], spec: dict):
     """
     bands = [("pref", lv, lo, hi) for lv, (lo, hi) in spec["pref_bands"].items()] + \
             [("muni", lv, lo, hi) for lv, (lo, hi) in spec["muni_bands"].items()]
-    # ⚠️ **都道府県のセグメントの名称は市町村欄の手前で打ち切る。**
-    # 打ち切らないと、都道府県のコード行に市町村の折返しが同居したとき
-    # （2段組は左右の行がほぼ同じ y に整列する）、市町村側の文字を吸い込む。
-    muni_lo = spec["muni_bands"]["kan"][0]
+    # ⚠️ **都道府県のセグメントの名称の打ち切り方は表で違う。**
+    # 歳出は都道府県欄が丸ごと市町村欄の左にあるので、市町村欄の開始 x で切ってよい。
+    # 歳入は帯が交互に重なる（都道府県の目 343〜 > 市町村の款 290〜）ので、
+    # x で切ると都道府県のセグメントが開始した瞬間に壊れる。切らずに、
+    # 次のコード帯の数字が来た時点で自然に切れることに任せる。
+    muni_lo = spec.get("pref_name_cut", float("inf"))
     chars = sorted(line)
     segs: list[dict] = []
     cur: dict | None = None
@@ -184,14 +189,32 @@ def extract(pdf: pathlib.Path, direction: str) -> list[dict]:
 
 
 def verify(rows: list[dict]) -> None:
-    """抽出漏れの検査。**款は連番で名称が欠けないこと。**"""
+    """抽出漏れの検査。**款・項・目が連番で、名称が欠けないこと。**
+
+    ⚠️ 連番は款だけでは足りない。2桁の項コードが帯からはみ出して隣の欄に食われたとき、
+    款は揃ったまま**項が欠番**になった（歳入の項10〜13 が消え、その目が項9 に付いた）。
+    """
     kans = sorted({(r["kan_code"], r["_kan_name"]) for r in rows})
     codes = [k for k, _ in kans]
     if codes != list(range(1, len(codes) + 1)):
         raise RuntimeError(f"款が連番でない: {kans}")
+    for level, parent in (("kou_code", ("kan_code",)), ("moku_code", ("kan_code", "kou_code"))):
+        groups: dict[tuple, set] = {}
+        for r in rows:
+            groups.setdefault(tuple(r[k] for k in parent), set()).add(r[level])
+        for parent_key, seen in groups.items():
+            if sorted(seen) != list(range(1, len(seen) + 1)):
+                raise RuntimeError(f"{level} が連番でない（親 {parent_key}）: {sorted(seen)}")
     missing = [r for r in rows if not (r["_kan_name"] and r["_kou_name"] and r["moku_name"])]
     if missing:
         raise RuntimeError(f"名称の欠けた行が {len(missing)} 件: {missing[:3]}")
+    # ⚠️ 備考の文が名称に混入していないか。実際に最終行の目名へ「…ること。(退職手当を除」が
+    # 食い込んでいたことがある（名称の空でないことしか見ない verify はこれを通した）
+    import re
+    noisy = [r for r in rows if re.search(r"[。．]|ること|については",
+             r["_kan_name"] + r["_kou_name"] + r["moku_name"])]
+    if noisy:
+        raise RuntimeError(f"名称に本文の断片が混入: {noisy[:3]}")
 
 
 def main() -> None:
