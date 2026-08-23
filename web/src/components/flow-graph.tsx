@@ -162,11 +162,7 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
             // 判断を含む。持ち込むかどうかで塗ると、配布物が「判断なし」に見える。
             const on = node.containsJudgment
             const accent = on ? 'var(--color-stage-judgment)' : 'var(--color-stage-nojudgment)'
-            // 色が何を言っているかは凡例を置かず、hover と選択で文字にして読ませる
-            const hint = [
-              on ? 'fudoki の判断を含む' : '判断を含まない（原典と突き合わせて検証できる）',
-              cs.length > 0 ? `このノードを守っている検査 ${cs.length} 件` : null,
-            ].filter(Boolean).join(' / ')
+            const hint = cs.length > 0 ? `検査 ${cs.length} 件` : ''
             return (
               <g
                 key={node.id}
@@ -186,10 +182,10 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
                 tabIndex={0}
                 role="button"
                 aria-pressed={selected === node.id}
-                aria-label={`${node.label} — ${hint}`}
+                aria-label={hint ? `${node.label} — ${hint}` : node.label}
                 className="cursor-pointer focus:outline-none"
               >
-                <title>{`${node.label} — ${hint}`}</title>
+                <title>{hint ? `${node.label} — ${hint}` : node.label}</title>
                 <rect
                   width={COL_W} height={NODE_H} rx={7}
                   className="fill-card"
@@ -236,17 +232,10 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
           <div className="flex flex-wrap items-baseline gap-2">
             <span className="font-mono font-medium">{detail.label}</span>
             <Badge variant="outline">{KIND_JA[detail.kind]}</Badge>
-            <Badge variant={detail.containsJudgment ? 'destructive' : 'secondary'}>
-              {detail.containsJudgment ? '判断を含む' : '判断を含まない'}
-            </Badge>
-            {detail.introducesJudgment && <Badge variant="outline">ここで判断が入る</Badge>}
             {detail.artifact && (
               <code className="text-[11px] text-muted-foreground">{detail.artifact.replace('../data/', 'data/')}</code>
             )}
           </div>
-          {detail.description && (
-            <p className="mt-1.5 max-w-[80ch] whitespace-pre-line text-muted-foreground">{detail.description}</p>
-          )}
           <NodePreviewPanel nodeId={detail.id} topology={topology} />
         </div>
       )}

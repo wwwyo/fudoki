@@ -62,7 +62,9 @@ export function NodePreviewPanel({ nodeId, topology }: { nodeId: string; topolog
   return (
     // 入力（データ元）と出力（変換後）を左右に並べて、変換の前後を突き合わせて読めるようにする。
     // 入力の無いノード（原典）は出力だけを全幅で出す
-    <div className={`mt-3 grid gap-3 ${inputs.length > 0 ? 'lg:grid-cols-2' : ''}`}>
+    // grid の行の高さに左右を stretch させて揃える。見出しは1行固定（URL は truncate）—
+    // 見出しの折り返しで高さが割れると、表の上端がずれて突き合わせて読めない
+    <div className={`mt-3 grid items-stretch gap-3 ${inputs.length > 0 ? 'lg:grid-cols-2' : ''}`}>
       {inputs.length > 0 && (
         <div className="flex min-w-0 flex-col gap-3">
           {inputs.map((l, i) => (
@@ -72,22 +74,22 @@ export function NodePreviewPanel({ nodeId, topology }: { nodeId: string; topolog
       )}
       <div className="flex min-w-0 flex-col gap-3">
         {outputs.map((l, i) => (
-          <PreviewSection key={i} loaded={l} />
+          <PreviewSection key={i} loaded={l} stretch />
         ))}
       </div>
     </div>
   )
 }
 
-function PreviewSection({ loaded: l }: { loaded: Loaded }) {
+function PreviewSection({ loaded: l, stretch }: { loaded: Loaded; stretch?: boolean }) {
   return (
-    <section className="flex min-w-0 flex-col gap-1.5">
-      <div className="flex min-w-0 flex-wrap items-baseline gap-2">
+    <section className={`flex min-w-0 flex-col gap-1.5 ${stretch ? 'flex-1' : ''}`}>
+      <div className="flex min-w-0 items-baseline gap-2">
         <Badge variant={l.role === '出力' ? 'secondary' : 'outline'}>{l.role === '入力' ? '入力（データ元）' : '出力（変換後）'}</Badge>
-        <span className="truncate font-mono text-xs font-medium">{l.preview.title ?? l.label}</span>
+        <span className="shrink-0 truncate font-mono text-xs font-medium">{l.preview.title ?? l.label}</span>
         {l.preview.sourceUrl && (
           <a
-            className="min-w-0 truncate text-[11px] text-muted-foreground underline"
+            className="min-w-0 flex-1 truncate text-[11px] text-muted-foreground underline"
             href={l.preview.sourceUrl}
             target="_blank"
             rel="noreferrer"
@@ -96,7 +98,7 @@ function PreviewSection({ loaded: l }: { loaded: Loaded }) {
           </a>
         )}
       </div>
-      <div className="max-h-72 overflow-auto rounded-md border bg-background">
+      <div className={`overflow-auto rounded-md border bg-background ${stretch ? 'min-h-72 flex-1 basis-72' : 'h-72'}`}>
         <Table>
           <TableHeader>
             <TableRow>

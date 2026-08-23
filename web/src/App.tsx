@@ -83,17 +83,6 @@ export default function App() {
 
           <FlowGraph topology={report.topology} report={report} onSelectNode={setSelectedNode} selected={selectedNode} />
 
-          <Alert>
-            <AlertTitle>段の切れ目は「fudoki の判断が入るかどうか」で引いてある</AlertTitle>
-            <AlertDescription>
-              staging までは原典に忠実な写しで、出力（正本）は原典と突き合わせて検証できる。
-              core で初めて解釈が入り、COFOG の割り当てのように三鷹市が言っていないことを付け加える。
-              両者を同じデータに混ぜると、市が公表した事実と fudoki の判断を利用者が区別できなくなる。
-              だから配布物も <code>data/budget/datapackages/132047/</code>（正本）と <code>data/budget/datapackages/derived/</code>（派生）に分けてある。
-              境界はディレクトリ名では守れないので、原典との多重集合一致を検査で縛っている。
-            </AlertDescription>
-          </Alert>
-
           <div className="flex flex-wrap gap-3">
             {stats.map((s) => (
               <Card key={s.label} className="min-w-[9rem] flex-1 gap-1 py-4">
@@ -123,7 +112,8 @@ export default function App() {
           }}
         >
           <TabsList>
-            <TabsTrigger value="stages">段ごとの中身</TabsTrigger>
+            {/* データの中身はグラフのノード選択が出す。ここに残るのは証跡と階層の実測 */}
+            <TabsTrigger value="stages">証跡</TabsTrigger>
             <TabsTrigger value="cofog">COFOG の判断</TabsTrigger>
             <TabsTrigger value="checks">検査</TabsTrigger>
             <TabsTrigger value="detail">明細</TabsTrigger>
