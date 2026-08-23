@@ -156,7 +156,6 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
           {[...layout.pos.values()].map(({ x, y, node }) => {
             const cs = checks.get(node.id) ?? []
             const failed = cs.filter((c) => !c.ok && c.severity === 'error').length
-            const warned = cs.filter((c) => !c.ok && c.severity === 'warn').length
             const dim = related ? !related.has(node.id) : false
             const focused = active === node.id
             const hint = cs.length > 0 ? `検査 ${cs.length} 件` : ''
@@ -206,7 +205,8 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
                   <>
                     <circle
                       cx={COL_W - 16} cy={NODE_H / 2} r={7}
-                      fill={failed ? 'var(--color-destructive)' : warned ? 'var(--color-warning)' : 'var(--color-chart-2)'}
+                      // 色で言うのは「落ちているか」だけ。警告は数と一覧が言う
+                      fill={failed ? 'var(--color-destructive)' : 'var(--color-muted-foreground)'}
                       opacity={0.9}
                     />
                     <text x={COL_W - 16} y={NODE_H / 2 + 3.5} textAnchor="middle" className="fill-background text-[9px] font-semibold">

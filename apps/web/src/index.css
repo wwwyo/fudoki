@@ -7,9 +7,6 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-    /* 検査の状態。destructive（失敗）と対になる概念なので、chart-* を借りずに名前で持つ */
-    --color-warning: var(--warning);
-
     --font-heading: var(--font-sans);
     --font-sans: 'Geist Variable', 'Noto Sans JP Variable', 'Hiragino Sans', sans-serif;
     --color-sidebar-ring: var(--sidebar-ring);
@@ -53,7 +50,6 @@
 }
 
 :root {
-    --warning: oklch(60% 0.12 75);
     --background: oklch(1 0 0);
     --foreground: oklch(0.145 0 0);
     --card: oklch(1 0 0);
@@ -91,7 +87,6 @@
 }
 
 .dark {
-    --warning: oklch(78% 0.12 75);
     --background: oklch(0.145 0 0);
     --foreground: oklch(0.985 0 0);
     --card: oklch(0.205 0 0);
