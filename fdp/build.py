@@ -27,6 +27,29 @@ LICENSE_CC_BY_4 = {
     "title": "Creative Commons Attribution 4.0 International",
     "path": "https://creativecommons.org/licenses/by/4.0/",
 }
+def licenses_of(srcs: list) -> list[dict]:
+    """配布物に貼るライセンス。**取得元の宣言から決める。定数を貼らない。**
+
+    ⚠️ 以前はここが定数の直書きだった。`rights_of` が値域を守っていたので今のところ
+    結果は同じだったが、**この PR が直そうとした「勝手にライセンスを付ける」そのもの**である。
+    宣言が変わっても配布物が変わらない状態を残してはいけない。
+
+      原典が CC BY を付けている        → それを素通しする
+      原典に利用許諾が無い（NOASSERTION）→ 事実には原典のライセンスが付いてこないので、
+                                          選択と構成にあたる部分を fudoki が CC BY 4.0 で配る
+
+    後者が成り立つのは**抽出した事実だけ**である。原文そのものは `Source` が
+    `verbatim` + `NOASSERTION` を宣言時点で弾いているので、ここへ到達しない。
+    """
+    known = sorted({s.license_id for s in srcs} - {"NOASSERTION"})
+    if any(lic != "CC-BY-4.0" for lic in known):
+        raise SystemExit(
+            f"原典のライセンスに {known} が含まれる。CC BY 4.0 以外は継承条件が違いうるので、"
+            f"配布物のライセンスを決め直してから配ること"
+        )
+    return [LICENSE_CC_BY_4]
+
+
 def rights_of(srcs: list) -> dict:
     """**利用者の行動が変わることだけを書く。** 変わらないなら何も書かない。
 
@@ -41,12 +64,6 @@ def rights_of(srcs: list) -> dict:
     """
     if not srcs:
         raise SystemExit("取得元が空。権利の判断ができない")
-    others = sorted({s.license_id for s in srcs} - {"NOASSERTION", "CC-BY-4.0"})
-    if others:
-        raise SystemExit(
-            f"原典のライセンスに {others} が含まれる。CC BY 4.0 以外は継承条件が違いうるので、"
-            f"配布物のライセンスを決め直してから配ること"
-        )
     unlicensed = sorted({s.attribution for s in srcs if s.license_id == "NOASSERTION"})
     return {"factsFrom": unlicensed} if unlicensed else {}
 
@@ -197,7 +214,7 @@ def build_jurisdiction(code: str) -> None:
         CANONICAL_MODIFICATIONS,
     )
     pkg["fiscalPeriod"] = {"start": f"{years[0]}-04-01", "end": f"{years[-1] + 1}-03-31"}
-    pkg["licenses"] = [LICENSE_CC_BY_4]
+    pkg["licenses"] = licenses_of(srcs)
     pkg["attribution"] = srcs[0].attribution
     if rights := rights_of(srcs):
         pkg["fudoki"] = {**pkg["fudoki"], "rights": rights}
@@ -249,7 +266,7 @@ def build_derived() -> None:
     # 原典に CC BY-SA の団体が入った時点で派生も BY-SA にするほかなくなる。
     # だから「fudoki は CC BY 4.0 と決めた」ではなく「原典が許す範囲で CC BY 4.0 を選んでいる」
     # と読めるように、原典のライセンス一覧を併記する。
-    pkg["licenses"] = [LICENSE_CC_BY_4]
+    pkg["licenses"] = licenses_of(srcs)
     pkg["attribution"] = (
         "fudoki（COFOG の割当と規則表）。"
         "原典: " + "／".join(sorted({s.attribution for s in srcs}))

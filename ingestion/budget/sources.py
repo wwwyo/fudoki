@@ -72,6 +72,14 @@ class Source:
         # ⚠️ **原文を置けるのは再配布可のときだけ。**
         # 抽出した事実（事業名・金額・コード）は著作物ではないので配れるが、
         # 原文そのものは別で、再配布可と判定できていなければ置けない。
+        # ⚠️ **ライセンスが未確定の原文は置けない。**
+        # 置くと、配布物にライセンスを貼る段で fudoki が勝手に条件を決めることになる。
+        # 抽出した事実なら原典のライセンスが付いてこないので問題にならないが、原文は別。
+        if self.raw_form == "verbatim" and self.license_id == "NOASSERTION":
+            raise ValueError(
+                f"{self.key}: license_id=NOASSERTION なのに raw_form=verbatim。"
+                f"ライセンスが未確定の原文はリポジトリへ置けない（抽出した事実なら置ける）"
+            )
         if self.raw_form == "verbatim" and self.redistribute != "allow":
             raise ValueError(
                 f"{self.key}: redistribute={self.redistribute} なのに raw_form=verbatim。"

@@ -107,6 +107,37 @@ def reconstruct(header: list[str], rows: list[list[str]], newline: str, trailing
     return newline.join(",".join(r) for r in [header, *rows]) + trailing
 
 
+def _provenance_json(src: Source, spec: Resource, direction: str, got: Fetched,
+                     header: list[str], rows: int, fetched_at: str | None = None) -> str:
+    """取得の証跡。**`fetched_at` を差し替えられる。**
+
+    ⚠️ 中身が同じなら取得時刻も動かさない。descriptor の `created` がここから来るので、
+    回すたびに差分が出ると「変わっていない」を主張できなくなる。
+    """
+    return json.dumps({
+            "jurisdiction_code": src.jurisdiction_code,
+            "fiscal_year": src.fiscal_year,
+            "direction": direction,
+            "dataset_title": src.dataset_title,
+            "resource_name": spec.resource_name,
+            "fiscal_year_basis": f"CKAN のリソース名「{spec.resource_name}」の「{src.fiscal_year_label}」から解決",
+            "request_url": got.url,
+            "status": got.status,
+            "bytes": len(got.body),
+            "sha256": got.sha256,
+            "fetched_at": fetched_at or got.fetched_at,
+            "encoding": src.encoding,
+            "header": header,
+            "rows": len(rows),
+            # `raw/` の保証は団体で違う。verbatim なら原文を復元できることを検査済み、
+            # extracted なら抽出結果なので復元は成立しない。下流の検査がこれで分岐する。
+            "raw_form": src.raw_form,
+            "roundtrip_verified": True,
+            "license_id": src.license_id,
+            "attribution": src.attribution,
+        }, ensure_ascii=False, indent=2) + "\n"
+
+
 def ingest(key: str) -> None:
     src = resolve(key)
 
@@ -140,7 +171,18 @@ def ingest(key: str) -> None:
             raise RuntimeError(f"HTTP {got.status}: {url}")
 
         if prov_path.exists() and json.loads(prov_path.read_text()).get("sha256") == got.sha256 and out.exists():
-            print(f"skip  {direction}  同じ SHA-256 の Parquet が既にある")
+            # ⚠️ **証跡は作り直す。** 取得物が同じでも、宣言（raw_form など）が増えたときに
+            # 古い証跡が残り続ける。実際 raw_form を足したあと、commit 済みの
+            # provenance.json には入っていないまま「証跡にも記録する」と文書が主張していた。
+            # 取得時刻だけは既存のものを引き継ぐ（中身が同じなら差分を出さない）。
+            existing = json.loads(prov_path.read_text())
+            text = _provenance_json(src, spec, direction, got, existing["header"], existing["rows"],
+                                    fetched_at=existing["fetched_at"])
+            if text != prov_path.read_text():
+                prov_path.write_text(text)
+                print(f"skip  {direction}  Parquet は同じ。証跡を宣言に合わせて書き直した")
+            else:
+                print(f"skip  {direction}  同じ SHA-256 の Parquet が既にある")
             continue
 
         text = got.body.decode(src.encoding)
@@ -199,28 +241,7 @@ def ingest(key: str) -> None:
             )
         con.close()
 
-        prov_path.write_text(json.dumps({
-            "jurisdiction_code": src.jurisdiction_code,
-            "fiscal_year": src.fiscal_year,
-            "direction": direction,
-            "dataset_title": src.dataset_title,
-            "resource_name": spec.resource_name,
-            "fiscal_year_basis": f"CKAN のリソース名「{spec.resource_name}」の「{src.fiscal_year_label}」から解決",
-            "request_url": got.url,
-            "status": got.status,
-            "bytes": len(got.body),
-            "sha256": got.sha256,
-            "fetched_at": got.fetched_at,
-            "encoding": src.encoding,
-            "header": header,
-            "rows": len(rows),
-            # `raw/` の保証は団体で違う。verbatim なら原文を復元できることを検査済み、
-            # extracted なら抽出結果なので復元は成立しない。下流の検査がこれで分岐する。
-            "raw_form": src.raw_form,
-            "roundtrip_verified": True,
-            "license_id": src.license_id,
-            "attribution": src.attribution,
-        }, ensure_ascii=False, indent=2) + "\n")
+        prov_path.write_text(_provenance_json(src, spec, direction, got, header, len(rows)))
         print(f"ok    {direction}  {len(rows)} 行  {len(got.body)} バイト  sha256={got.sha256[:16]}…  復元一致")
 
 
