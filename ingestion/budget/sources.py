@@ -26,6 +26,10 @@ class Catalog:
 class Resource:
     direction: str
     resource_name: str
+    # データセット名。**団体によって歳出と歳入が別データセットになる**
+    # （三鷹市は1データセットに2リソース、狛江市は歳出と歳入で別）。
+    # 省略したときは取得元の `dataset_title` を使う。
+    dataset_title: str | None = None
 
 
 @dataclass(frozen=True)
@@ -38,7 +42,8 @@ class Source:
     fiscal_year_label: str
     phase_id: str
     phase_label: str
-    dataset_title: str
+    # 取得元に1つしかデータセットが無いときの既定。リソース側の宣言が優先する。
+    dataset_title: str | None
     encoding: str
     # 原典の金額の単位と、円へ直す倍率。**取得元ごとに違う**（encoding と同じ原典の性質）。
     # ⚠️ 以前は倍率が fdp/field_types.json の**全団体共通の**フィールド宣言に入っており、
@@ -52,6 +57,12 @@ class Source:
     attribution: str
     landing_page: str
     resources: tuple[Resource, ...]
+    # 同名のデータセットが複数ある取得元で、どのリソース URL を採るかを絞る部分文字列。
+    # ⚠️ **黙って先頭を採らない。** 狛江市は `/komae/R05/` と `/komae/` に
+    # 同名のデータセットがあり、中身が違う（所属名称の改称、執行率の表記）。
+    # 指定が無いまま複数当たれば取得は止まる（fetch.resolve_resource）。
+    resource_url_contains: str | None = None
+
     # `data/budget/raw/` に何を置くか。**ここがこの宣言の正本**（文書は要約）。
     #
     #   verbatim   原文そのもの。復号の可逆性と原文の復元を検査できる。
@@ -94,6 +105,14 @@ class Source:
                 f"原文をリポジトリへ置けるのは再配布可と判定した取得元だけ"
             )
 
+    def dataset_title_for(self, resource: Resource) -> str:
+        """そのリソースを載せているデータセット名。リソース側の宣言が優先する"""
+        title = resource.dataset_title or self.dataset_title
+        if title is None:
+            raise ValueError(
+                f"{self.key}: {resource.direction} のデータセット名が取得元にもリソースにも無い"
+            )
+        return title
     @property
     def may_publish_verbatim(self) -> bool:
         """**原文そのもの**をリポジトリへ置いてよいか。
@@ -114,6 +133,9 @@ class Source:
 def load_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
     raw = tomllib.loads(path.read_text(encoding="utf-8"))
     catalogs = {name: Catalog(**spec) for name, spec in raw.pop("catalog", {}).items()}
+    # 事業名の取得元は別の形（PDF とページ範囲）なので Source として読まない。
+    # 正本は同じ TOML に置く — 取得元の宣言が2ファイルに割れるほうが見落とす。
+    raw.pop("project_names", None)
 
     sources: dict[str, Source] = {}
     for key, spec in raw.items():
@@ -121,6 +143,7 @@ def load_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
         catalog_name = spec.pop("catalog")
         if catalog_name not in catalogs:
             raise ValueError(f"{key}: カタログ「{catalog_name}」が未定義")
+        spec.setdefault("dataset_title", None)
         resources = tuple(Resource(**r) for r in spec.pop("resources"))
         if not resources:
             raise ValueError(f"{key}: リソースが1つも無い")
@@ -134,3 +157,17 @@ def resolve(key: str) -> Source:
         available = ", ".join(sorted(sources)) or "(無し)"
         raise KeyError(f"取得元「{key}」が未定義。定義済み: {available}")
     return sources[key]
+
+
+def load_project_names(path: Path = SOURCES_TOML) -> dict[str, dict]:
+    """事業名の取得元（PDF）。`sources.toml` の `[project_names]` 節。
+
+    ⚠️ **`Source` には乗らない。** PDF とページ範囲と列の x 範囲という別の形なので、
+    CKAN の取得元と同じデータクラスにすると片方に無い項目が任意だらけになる。
+    ただし権利の語彙（`raw_form` / `redistribute` / `license_id`）は揃えてあり、
+    証跡にも同じキーで記録している。
+
+    ⚠️ **同じ toml を3箇所で開いていた**（抽出器・記述子の生成・この module）。
+    取得元の宣言を読む入口は1つにする。
+    """
+    return tomllib.loads(path.read_text(encoding="utf-8")).get("project_names", {})

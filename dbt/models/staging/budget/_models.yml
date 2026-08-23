@@ -3,27 +3,33 @@ version: 2
 models:
   - name: stg_132047__expenditure
     description: 三鷹市 歳出。原典と1対1。判断を含まない
-    columns:
+    columns: &staging_columns
       - name: source_row
         description: |
           原典の行番号（ヘッダを1行目とする）。**1リソース内でしか一意でない。**
           年度をまたぐと衝突するので、join にも一意性検査にも使わない（証跡として持つだけ）。
         data_tests: [not_null]
       - name: source_amount
-        description: 原典の値。単位は千円のまま
+        description: |
+          原典の値。単位は団体ごとに違う（三鷹市は千円、狛江市の歳出は円、歳入は千円）。
+          `budget_amounts` で primary と宣言した段階の金額で、COFOG の集計と検算はこれを使う。
         data_tests: [not_null]
       - name: budget_line_id
         description: |
           安定キー。**公開 API の一部**なので導出を変えると配布済みの参照が壊れる。
           コードのパスではなくセル全文から導く（細々節は兄弟間でコードを再利用するため）。
+          階層だけで一意にならない団体では、追加の同一性の列も材料に入れる
+          （狛江市は所属と予算区分）。
         data_tests: [unique, not_null]
 
   - name: stg_132047__revenue
     description: 三鷹市 歳入。原典と1対1。判断を含まない
-    columns:
-      - name: source_row
-        data_tests: [not_null]
-      - name: source_amount
-        data_tests: [not_null]
-      - name: budget_line_id
-        data_tests: [unique, not_null]
+    columns: *staging_columns
+
+  - name: stg_132195__expenditure
+    description: 狛江市 歳出（決算書）。原典と1対1。判断を含まない
+    columns: *staging_columns
+
+  - name: stg_132195__revenue
+    description: 狛江市 歳入（決算書）。原典と1対1。判断を含まない
+    columns: *staging_columns

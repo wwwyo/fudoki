@@ -76,6 +76,8 @@ export type Provenance = {
   header: string[]
   rows: number
   roundtrip_verified: boolean
+  /** PDF から起こした取得元だけが持つ。抽出の要約（原典と1対1ではない） */
+  extracted?: { projects: number; moku: number; totalThousandYen: number }
 }
 
 
