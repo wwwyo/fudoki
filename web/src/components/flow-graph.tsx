@@ -27,7 +27,7 @@ const NODE_GAP = 14
 /** focus ring がはみ出す分の余白。入れないと端のノードで ring が切れる */
 const PAD = 8
 
-const KIND_JA: Record<Node['kind'], string> = { source: '原典', model: 'モデル', seed: '規則表' }
+const KIND_JA: Record<Node['kind'], string> = { origin: '取得元', source: '原典', model: 'モデル', seed: '規則表' }
 
 export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
   const [hover, setHover] = useState<string | null>(null)
@@ -83,7 +83,8 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
             const stage = topology.stages.find((s) => s.id === sid)
             return (
               <div key={sid} className="flex items-center gap-1.5">
-                <span className="text-xs text-muted-foreground tabular-nums">{col + 1}</span>
+                {/* 取得元が 0。fudoki のパイプラインは 1 から始まる */}
+                <span className="text-xs text-muted-foreground tabular-nums">{col}</span>
                 <span className="text-[13px] font-medium">{stage?.label}</span>
                 <Tooltip>
                   <TooltipTrigger

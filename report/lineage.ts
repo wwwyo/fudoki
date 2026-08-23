@@ -56,6 +56,11 @@ export function q<T = Record<string, unknown>>(sql: string, nums: string[] = [])
 
 /** 段。**dbt のディレクトリがそのまま段になる。** 名前も並びもここでしか宣言しない */
 export const STAGES: Stage[] = [
+  // 取得元だけは dbt の外にある（パイプラインが始まる前の、自治体が配っているファイルそのもの）。
+  // ノードは provenance から組む — 手で並べると取得元を変えても図が変わらない
+  { id: 'origin', label: '取得元', introducesJudgment: false,
+    responsibility: '自治体が公開しているファイルそのもの。fudoki の外にあり、fudoki は変更できない',
+    excludes: 'fudoki の関与すべて' },
   { id: 'ingestion', label: 'ingestion', introducesJudgment: false,
     responsibility: '取得元から取り、無加工のまま Parquet で置く。取得 URL・status・SHA-256・取得時刻を添える',
     excludes: '解釈・整形・結合' },
@@ -149,8 +154,22 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
     }
   })
 
+  // 取得元。dbt は知らないので証跡から組む。id を「source ノードid + .origin」にしてあるのは
+  // プレビュー（web/public/preview/<id>.json）が同じ規約で書かれるため
+  for (const src of nodes.filter((n) => n.kind === 'source')) {
+    const ps = provenance.filter((p) => p.direction === src.label)
+    if (ps.length === 0) continue
+    nodes.push({
+      id: `${src.id}.origin`, label: ps[0]!.resource_name, kind: 'origin', stage: 'origin',
+      rows: ps.reduce((s, p) => s + p.rows, 0),
+      description: `${ps[0]!.request_url}\n取得: ${ps[0]!.fetched_at}`,
+      introducesJudgment: false, containsJudgment: false, artifact: null,
+    })
+  }
+
   const edges = models.flatMap(([id, n]) =>
     (n.depends_on?.nodes ?? []).filter((d) => ids.has(d)).map((from) => ({ from, to: id, kind: 'flow' })))
+  for (const n of nodes) if (n.kind === 'origin') edges.push({ from: n.id, to: n.id.replace(/\.origin$/, ''), kind: 'flow' })
 
   // **判断は下流へ伝播する。** COFOG を含む派生の配布物は、それ自身が規則を
   // 適用していなくても判断を含む。ここを伝播させないと、配布物が「判断なし」と

@@ -4,8 +4,9 @@
  * 数値は core への問い合わせで作る。**集計はここ1箇所だけ**で行う
  * （画面側でも集計すると、同じ数字が2通りに計算されていずれ食い違う）。
  */
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { decodeText, fetchCapped, sha256, splitCsvLine } from '../../ingestion/lib/source'
 import type { NodePreview, Provenance, ReportData } from './schema'
 import { ROOT, TARGET, buildChecks, buildTopology, q, readJson, type Manifest, type RunResults } from '../lineage'
 import { STATIC } from './static'
@@ -256,7 +257,8 @@ function previewFrom(node: ReportData['topology']['nodes'][number]): string {
 
 const PREVIEW_ROWS = 20
 mkdirSync(join(ROOT, 'web/public/preview'), { recursive: true })
-for (const node of report.topology.nodes) {
+// 取得元（origin）は DuckDB に無い。下の「取得元 CSV」節が fetch して書く
+for (const node of report.topology.nodes.filter((n) => n.kind !== 'origin')) {
   const rows = q<Record<string, unknown>>(`select * from ${previewFrom(node)} limit ${PREVIEW_ROWS}`)
   const columns = rows.length ? Object.keys(rows[0]!) : []
   const preview: NodePreview = {
@@ -267,6 +269,45 @@ for (const node of report.topology.nodes) {
     totalRows: node.rows,
   }
   writeFileSync(join(ROOT, 'web/public/preview', `${node.id}.json`), `${JSON.stringify(preview)}\n`)
+}
+
+/**
+ * 原典ノードの「入力」= 取得元の CSV そのもの。**都度取りに行き、SHA-256 が同じ間はキャッシュを使う。**
+ * raw（Parquet）は取り込み後の姿なので、その手前＝自治体が配っているファイルの生の姿を左に出す。
+ * 取れなくても報告は止めない — オフラインでも報告は原典から作れるのが ELT の建付けで、
+ * この節はその上に乗る飾りに過ぎない。
+ */
+const ORIGIN_CACHE = join(ROOT, '.cache/origin-csv')
+mkdirSync(ORIGIN_CACHE, { recursive: true })
+for (const node of report.topology.nodes.filter((n) => n.kind === 'source')) {
+  const p = report.ingestion.find((x) => x.direction === node.label)
+  if (!p) continue
+  // キャッシュキーは証跡の SHA-256。上流が差し替えたら証跡も変わり、キャッシュも取り直しになる
+  const cached = join(ORIGIN_CACHE, `${p.sha256}.csv`)
+  let bytes: Uint8Array | null = existsSync(cached) ? new Uint8Array(readFileSync(cached)) : null
+  if (!bytes) {
+    const f = await fetchCapped(p.request_url, 20 * 1024 * 1024)
+    if (!f.ok) {
+      console.warn(`warn  取得元 CSV を取れない（${node.label}: ${f.reason}）。入力プレビューは無しで続ける`)
+      continue
+    }
+    if (sha256(f.bytes) !== p.sha256)
+      console.warn(`warn  取得元 CSV が証跡の SHA-256 と一致しない（${node.label}）。上流が差し替えた可能性`)
+    bytes = f.bytes
+    writeFileSync(cached, bytes)
+  }
+  const lines = decodeText(bytes).split(/\r?\n/).filter((l) => l.trim())
+  const preview: NodePreview = {
+    id: `${node.id}.origin`,
+    columns: splitCsvLine(lines[0] ?? ''),
+    rows: lines.slice(1, 1 + PREVIEW_ROWS).map(splitCsvLine),
+    limit: PREVIEW_ROWS,
+    totalRows: Math.max(0, lines.length - 1),
+    title: p.resource_name,
+    sourceUrl: p.request_url,
+    fetchedAt: p.fetched_at,
+  }
+  writeFileSync(join(ROOT, 'web/public/preview', `${node.id}.origin.json`), `${JSON.stringify(preview)}\n`)
 }
 
 const s = report.summary

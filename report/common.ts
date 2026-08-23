@@ -8,7 +8,7 @@
 
 /** 段。**dbt のモデルの置き場がそのまま段になる**（report/build.py の STAGES） */
 export type Stage = {
-  id: 'ingestion' | 'staging' | 'core' | 'package'
+  id: 'origin' | 'ingestion' | 'staging' | 'core' | 'package'
   label: string
   responsibility: string
   excludes: string
@@ -20,7 +20,7 @@ export type Stage = {
 export type Node = {
   id: string
   label: string
-  kind: 'model' | 'source' | 'seed'
+  kind: 'model' | 'source' | 'seed' | 'origin'
   stage: Stage['id']
   rows: number | null
   description: string

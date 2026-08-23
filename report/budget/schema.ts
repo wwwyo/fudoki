@@ -69,4 +69,8 @@ export type NodePreview = {
   /** 何行で切ったか。全行は totalRows（グラフのノードと同じ数字）を見る */
   limit: number
   totalRows: number | null
+  /** 取得元 CSV のプレビュー（`<ノードid>.origin.json`）だけが持つ */
+  title?: string
+  sourceUrl?: string
+  fetchedAt?: string
 }

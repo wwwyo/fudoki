@@ -143,7 +143,7 @@ export const STATUS_JA: Record<string, string> = {
 }
 
 /** 段ごとの並び順。dbt の置き場が段を決めるので、画面はこの順に並べるだけ */
-export const STAGE_ORDER: Stage['id'][] = ['ingestion', 'staging', 'core', 'package']
+export const STAGE_ORDER: Stage['id'][] = ['origin', 'ingestion', 'staging', 'core', 'package']
 
 /** 検査をノードごとに引けるようにする。「どの段の何を守っているか」で見せるため */
 export function checksByNode(report: ReportData) {

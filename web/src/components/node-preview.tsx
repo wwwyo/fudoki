@@ -24,12 +24,23 @@ export function NodePreviewPanel({ nodeId, topology }: { nodeId: string; topolog
     setError(null)
     const labelOf = (id: string) => topology.nodes.find((n) => n.id === id)?.label ?? id
     const inputs = topology.edges.filter((e) => e.to === nodeId).map((e) => e.from)
-    const targets: { id: string; label: string; role: '入力' | '出力' }[] = [
-      ...inputs.map((id) => ({ id, label: labelOf(id), role: '入力' as const })),
-      { id: nodeId, label: labelOf(nodeId), role: '出力' as const },
+    // 取得元（.origin）のプレビューはオンラインで報告を生成したときだけある
+    const optional = (id: string) => id.endsWith('.origin')
+    const targets: { id: string; label: string; role: '入力' | '出力'; optional?: boolean }[] = [
+      ...inputs.map((id) => ({ id, label: labelOf(id), role: '入力' as const, optional: optional(id) })),
+      { id: nodeId, label: labelOf(nodeId), role: '出力' as const, optional: optional(nodeId) },
     ]
-    Promise.all(targets.map(async (t) => ({ label: t.label, role: t.role, preview: await loadNodePreview(t.id) })))
-      .then((r) => alive && setLoaded(r))
+    Promise.all(
+      targets.map(async (t) => {
+        try {
+          return { label: t.label, role: t.role, preview: await loadNodePreview(t.id) }
+        } catch (e) {
+          if (t.optional) return null
+          throw e
+        }
+      }),
+    )
+      .then((r) => alive && setLoaded(r.filter((x): x is Loaded => x !== null)))
       .catch((e: Error) => alive && setError(e.message))
     return () => {
       alive = false
@@ -38,6 +49,12 @@ export function NodePreviewPanel({ nodeId, topology }: { nodeId: string; topolog
 
   if (error) return <p className="mt-2 text-xs text-destructive">{error}</p>
   if (!loaded) return <p className="mt-2 text-xs text-muted-foreground">中身を読み込み中…</p>
+  if (loaded.length === 0)
+    return (
+      <p className="mt-2 text-xs text-muted-foreground">
+        取得元 CSV のプレビューが無い。オンラインで bun run report を回すと取得して表示する
+      </p>
+    )
 
   const inputs = loaded.filter((l) => l.role === '入力')
   const outputs = loaded.filter((l) => l.role === '出力')
@@ -65,13 +82,23 @@ export function NodePreviewPanel({ nodeId, topology }: { nodeId: string; topolog
 function PreviewSection({ loaded: l }: { loaded: Loaded }) {
   return (
     <section className="flex min-w-0 flex-col gap-1.5">
-      <div className="flex items-baseline gap-2">
+      <div className="flex min-w-0 flex-wrap items-baseline gap-2">
         <Badge variant={l.role === '出力' ? 'secondary' : 'outline'}>{l.role === '入力' ? '入力（データ元）' : '出力（変換後）'}</Badge>
-        <span className="truncate font-mono text-xs font-medium">{l.label}</span>
+        <span className="truncate font-mono text-xs font-medium">{l.preview.title ?? l.label}</span>
         <span className="shrink-0 text-[11px] text-muted-foreground tabular-nums">
           先頭 {Math.min(l.preview.limit, l.preview.rows.length)} 行
           {l.preview.totalRows !== null && ` / 全 ${l.preview.totalRows.toLocaleString()} 行`}
         </span>
+        {l.preview.sourceUrl && (
+          <a
+            className="min-w-0 truncate text-[11px] text-muted-foreground underline"
+            href={l.preview.sourceUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {l.preview.sourceUrl}
+          </a>
+        )}
       </div>
       <div className="max-h-72 overflow-auto rounded-md border bg-background">
         <Table>
