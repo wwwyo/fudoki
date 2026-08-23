@@ -368,9 +368,11 @@ function previewFrom(node: ReportData['topology']['nodes'][number]): string {
   if (node.kind === 'source') {
     const owner = /\.raw_(\d{6})/.exec(node.id)?.[1]
     if (!owner) throw new Error(`ソース ${node.id} の名前から団体コードを取れない`)
-    // 事業名は原典の CSV とは別の場所（PDF から起こした抽出物）にある
+    // 事業名・歳入科目名は原典の CSV とは別の場所（PDF から起こした抽出物）にある
     if (node.id.includes('project_names'))
       return `read_parquet('${join(ROOT, 'data/budget/raw/project-names')}/jurisdiction=${owner}/**/data.parquet')`
+    if (node.id.includes('revenue_accounts'))
+      return `read_parquet('${join(ROOT, 'data/budget/raw/revenue-accounts')}/jurisdiction=${owner}/**/data.parquet')`
     return `read_parquet('${join(ROOT, 'data/budget/raw')}/jurisdiction=${owner}/**/direction=${node.label}/data.parquet')`
   }
   // package 段は外部 CSV。DuckDB のビューは dbt の作業ディレクトリ基準なので実ファイルを読む

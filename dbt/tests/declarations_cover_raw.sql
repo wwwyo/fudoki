@@ -61,3 +61,22 @@ from (
     from {{ ref('stg_132195__project_names') }}
     group by 1, 2
 )
+
+union all
+
+-- 歳入科目名の抽出物。原典にある年度が staging に全部届いているか
+select jurisdiction, 'revenue-accounts' as direction, 原典にある, 宣言にある
+from (
+    select
+        cast(jurisdiction as varchar) as jurisdiction,
+        cast(year as varchar)         as year,
+        true                          as 原典にある,
+        false                         as 宣言にある
+    from read_parquet('../data/budget/raw/revenue-accounts/jurisdiction=*/year=*/data.parquet',
+                      hive_partitioning=true)
+    group by 1, 2
+    except
+    select jurisdiction_code, cast(fiscal_year as varchar), true, false
+    from {{ ref('stg_132195__revenue_accounts') }}
+    group by 1, 2
+)

@@ -27,3 +27,13 @@ sources:
       external_location: "read_parquet('../data/budget/raw/project-names/jurisdiction=132195/year=*/data.parquet', hive_partitioning=true)"
     tables:
       - name: data
+
+  - name: raw_132195_revenue_accounts
+    description: |
+      狛江市。決算資料の歳入事項別明細から起こした歳入の科目名称。**原典そのものではない。**
+      ⚠️ 2023 はテキスト抽出、2020〜2022 は OCR（誤読が混ざる前提の経路）。
+      調定額が原典 CSV と一致した科目だけを下流が名称に使う。
+    meta:
+      external_location: "read_parquet('../data/budget/raw/revenue-accounts/jurisdiction=132195/year=*/data.parquet', hive_partitioning=true)"
+    tables:
+      - name: data

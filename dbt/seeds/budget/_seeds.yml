@@ -82,11 +82,18 @@ seeds:
       ⚠️ **ここに無い款が一般会計の歳出に現れたらパイプラインが止まる**
       （tests/account_map_covers_lines.sql）。黙って未対応のまま配らないため。
     config:
+      # ⚠️ dbt-duckdb の seed の COPY 経路（fast）は、この CSV で方言の自動判定に失敗する
+      # （full-refresh でも再現。空の多い列と長い日本語セルの組合せ）。INSERT 経路なら通る。83行なので性能差は無い
+      fast: false
       column_types:
         jurisdiction_code: varchar
         direction: varchar
         kan_code: varchar
         kou_name: varchar
+        # 対応が効き始める年度（空 = 全年度）。⚠️ 款コードの意味が年度で変わる団体がある —
+        # 狛江市の歳入は 2019/2020 の境界で款の新設により以降のコードが繰り下がった。
+        # ⚠️ integer にすると dbt-duckdb の seed が CSV の方言判定に失敗する（実測）。varchar で持ち core で cast する
+        fiscal_year_from: varchar
         kind: varchar
         master_kan_code: integer
         master_kou_code: integer

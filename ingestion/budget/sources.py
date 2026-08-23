@@ -133,9 +133,10 @@ class Source:
 def load_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
     raw = tomllib.loads(path.read_text(encoding="utf-8"))
     catalogs = {name: Catalog(**spec) for name, spec in raw.pop("catalog", {}).items()}
-    # 事業名の取得元は別の形（PDF とページ範囲）なので Source として読まない。
+    # 事業名・歳入科目名の取得元は別の形（PDF とページ範囲）なので Source として読まない。
     # 正本は同じ TOML に置く — 取得元の宣言が2ファイルに割れるほうが見落とす。
     raw.pop("project_names", None)
+    raw.pop("revenue_accounts", None)
 
     sources: dict[str, Source] = {}
     for key, spec in raw.items():
@@ -171,3 +172,8 @@ def load_project_names(path: Path = SOURCES_TOML) -> dict[str, dict]:
     取得元の宣言を読む入口は1つにする。
     """
     return tomllib.loads(path.read_text(encoding="utf-8")).get("project_names", {})
+
+
+def load_revenue_accounts(path: Path = SOURCES_TOML) -> dict[str, dict]:
+    """歳入の科目名称の取得元（決算資料の歳入事項別明細）。`[revenue_accounts]` 節"""
+    return tomllib.loads(path.read_text(encoding="utf-8")).get("revenue_accounts", {})

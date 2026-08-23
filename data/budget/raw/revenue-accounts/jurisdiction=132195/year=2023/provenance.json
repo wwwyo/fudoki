@@ -1,0 +1,29 @@
+{
+  "jurisdiction_code": "132195",
+  "fiscal_year": 2023,
+  "direction": "revenue",
+  "document_title": "令和５年度主要な施策の成果説明書・決算資料（うち 一般会計歳入歳出（事項別）決算状況の歳入部）",
+  "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,134979,c,html/134979/20241004-150910.pdf",
+  "status": 200,
+  "bytes": 7891517,
+  "sha256": "da64e5588808d94760544dcaccc7c592c58ae41bd54ea9f54fa74651e1e42d26",
+  "fetched_at": "2026-08-23T04:47:41+00:00",
+  "pages": [
+    20,
+    37
+  ],
+  "extractor": "ingestion/budget/extract_revenue_accounts.py@6",
+  "mode": "text",
+  "verification": "text-extraction",
+  "roundtrip_verified": false,
+  "extracted": {
+    "moku": 79,
+    "named": 79,
+    "withAmount": 79,
+    "kan": 22
+  },
+  "raw_form": "extracted",
+  "redistribute": "review",
+  "redistribute_basis": "市サイトの著作権表示。事実に著作権が及ぶかは解釈が割れるので照会中",
+  "license_id": "NOASSERTION"
+}

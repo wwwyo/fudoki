@@ -404,3 +404,71 @@ license_id = "NOASSERTION"
 # ⚠️ **4年度とも同じ組版だが、宣言は年度ごとに置く。** 共通の定数にすると、
 # 別の組版の資料を足したときに前提が黙って壊れる。
 columns = { code = [0, 128], kanri = [128, 140], mei = [140, 207], setsumei = [207, 292], kingaku = [292, 342] }
+
+# ── 歳入の科目名称の取得元 ──────────────────────────────
+# 狛江市の歳入は原典 CSV に款・項・目の名称が無く、決算資料の歳入事項別明細から起こす。
+# ⚠️ **2020〜2022 の PDF は文字がアウトライン化されており（Tj が無くグリフが曲線）、
+# テキスト抽出が原理的に成立しない。** mode = "ocr" は Tesseract による読み取りで、
+# 誤読が混ざる前提の経路 — 調定額を原典 CSV と突合し、一致した科目からだけ名称を採る。
+# 2023 は同じ決算資料（歳出と同一 PDF）の歳入部にテキストがあり、mode = "text"。
+# bands は科目欄のコード（数字）の開始 x、amount は調定額の数字の x 範囲（いずれも実測）。
+
+[revenue_accounts."132195:2020"]
+document_title = "令和2年度　歳入事項別明細"
+url = "https://www.city.komae.tokyo.jp/index.cfm/46,130247,c,html/130247/R2-sainyuu-jikoubetsu-meisai.pdf"
+first_page = 1
+last_page = 19
+header_end = 128
+mode = "ocr"
+bands = { kan = [22, 34], kou = [35, 43], moku = [43, 52] }
+name_end = 110
+amount = [500, 570]
+raw_form = "extracted"
+redistribute = "review"
+redistribute_basis = "市サイトの著作権表示。事実に著作権が及ぶかは解釈が割れるので照会中"
+license_id = "NOASSERTION"
+
+[revenue_accounts."132195:2021"]
+document_title = "令和3年度　歳入事項別明細"
+url = "https://www.city.komae.tokyo.jp/index.cfm/46,130245,c,html/130245/20231011-101649.pdf"
+first_page = 1
+last_page = 19
+header_end = 128
+mode = "ocr"
+bands = { kan = [22, 34], kou = [35, 43], moku = [43, 52] }
+name_end = 110
+amount = [500, 570]
+raw_form = "extracted"
+redistribute = "review"
+redistribute_basis = "市サイトの著作権表示。事実に著作権が及ぶかは解釈が割れるので照会中"
+license_id = "NOASSERTION"
+
+[revenue_accounts."132195:2022"]
+document_title = "令和4年度　歳入事項別明細"
+url = "https://www.city.komae.tokyo.jp/index.cfm/46,130170,c,html/130170/20231005-114503.pdf"
+first_page = 1
+last_page = 19
+header_end = 128
+mode = "ocr"
+bands = { kan = [22, 34], kou = [35, 43], moku = [43, 52] }
+name_end = 110
+amount = [500, 570]
+raw_form = "extracted"
+redistribute = "review"
+redistribute_basis = "市サイトの著作権表示。事実に著作権が及ぶかは解釈が割れるので照会中"
+license_id = "NOASSERTION"
+
+[revenue_accounts."132195:2023"]
+document_title = "令和５年度主要な施策の成果説明書・決算資料（うち 一般会計歳入歳出（事項別）決算状況の歳入部）"
+url = "https://www.city.komae.tokyo.jp/index.cfm/46,134979,c,html/134979/20241004-150910.pdf"
+first_page = 20
+last_page = 37
+mode = "text"
+bands = { kan = [4, 16], kou = [16, 24], moku = [24, 34] }
+name_end = 90
+header_end = 126
+amount = [500, 578]
+raw_form = "extracted"
+redistribute = "review"
+redistribute_basis = "市サイトの著作権表示。事実に著作権が及ぶかは解釈が割れるので照会中"
+license_id = "NOASSERTION"
