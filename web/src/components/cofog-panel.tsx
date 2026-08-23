@@ -64,7 +64,7 @@ export function CofogPanel({ report }: { report: ReportData }) {
       <section className="flex flex-col gap-2">
         <h3 className="font-medium">どの単位で割り当てが決まったか</h3>
         <p className="max-w-[72ch] text-sm text-muted-foreground">
-          款だけで決まらなかった金額が、項・目のどこまで下げれば決まったかを示す。2団体目の設計に直結する。
+          款だけで決まらなかった金額が、項・目のどこまで下げれば決まったかを示す。
         </p>
         <div className="overflow-x-auto rounded-lg border">
           <Table>

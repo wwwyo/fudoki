@@ -1,10 +1,71 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>vite-app</title>
+
+    <title>fudoki（風土記）— 自治体の予算を事業単位まで開く</title>
+    <meta
+      name="description"
+      content="日本の地方自治体の支出を事業単位（目）まで構造化し、COFOG を割り当てて外部データと join 可能な形で配布する。Fiscal Data Package 1.0.0 準拠。原典・配布物・検証結果をリポジトリに置く。"
+    />
+    <link rel="canonical" href="https://wwwyo.github.io/fudoki/" />
+
+    <!-- OGP。og:image はまだ無い（ロゴ確定後に 1200x630 の PNG を置く） -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="fudoki" />
+    <meta property="og:locale" content="ja_JP" />
+    <meta property="og:title" content="fudoki（風土記）— 自治体の予算を事業単位まで開く" />
+    <meta
+      property="og:description"
+      content="自治体の支出を事業単位（目）まで構造化し、COFOG を割り当てて配布する。Fiscal Data Package 1.0.0 準拠。"
+    />
+    <meta property="og:url" content="https://wwwyo.github.io/fudoki/" />
+    <meta name="twitter:card" content="summary" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f4ec" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b0f14" />
+
+    <!--
+      Google Dataset Search はこの JSON-LD を読む。データを配る PJ なので、
+      普通の検索より効く入口にあたる。
+      ⚠️ **収録範囲（団体・年度）はここに書かない。** pipeline.json が持つ事実を
+      手で写すと、対象を広げた瞬間に嘘になる。可変の事実は App が実行時に入れる。
+    -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Dataset",
+        "name": "fudoki（風土記）",
+        "alternateName": "fudoki",
+        "description": "日本の地方自治体の支出を事業単位（目）まで構造化し、COFOG を割り当てて外部データと join 可能な形で配布するデータセット。Fiscal Data Package 1.0.0 に沿う。原典・配布物・検証結果をリポジトリに置く。",
+        "url": "https://wwwyo.github.io/fudoki/",
+        "sameAs": "https://github.com/wwwyo/fudoki",
+        "codeRepository": "https://github.com/wwwyo/fudoki",
+        "license": "https://creativecommons.org/licenses/by/4.0/",
+        "isAccessibleForFree": true,
+        "inLanguage": "ja",
+        "keywords": [
+          "地方自治体",
+          "予算",
+          "歳出",
+          "オープンデータ",
+          "COFOG",
+          "Fiscal Data Package",
+          "地方財政",
+          "municipal budget",
+          "Japan"
+        ],
+        "distribution": [
+          {
+            "@type": "DataDownload",
+            "encodingFormat": "text/csv",
+            "contentUrl": "https://github.com/wwwyo/fudoki/tree/main/data/budget/datapackages"
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

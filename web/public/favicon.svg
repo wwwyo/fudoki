@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="fudoki">
+  <!--
+    同じ基準線に並ぶ、長さの違う短冊。木簡（同じ様式の報告）と棒グラフ（金額）の
+    二重の読みになっている。色は 1 つだけ持ち、配色は閲覧側のテーマに従う。
+  -->
+  <style>
+    :root { color-scheme: light dark; }
+    .ink { fill: #1f3a5f; }
+    @media (prefers-color-scheme: dark) { .ink { fill: #e8edf4; } }
+  </style>
+  <g class="ink">
+    <rect x="2" y="14" width="4" height="14" rx="2" />
+    <rect x="8" y="6" width="4" height="22" rx="2" />
+    <rect x="14" y="18" width="4" height="10" rx="2" />
+    <rect x="20" y="2" width="4" height="26" rx="2" />
+    <rect x="26" y="11" width="4" height="17" rx="2" />
+    <rect x="2" y="29" width="28" height="2" rx="1" />
+  </g>
+</svg>

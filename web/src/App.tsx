@@ -14,6 +14,8 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { Info } from 'lucide-react'
 import { loadDetail, loadPipeline, toRows, type DetailData, type PipelineData } from '@/lib/pipeline'
 
 export default function App() {
@@ -27,6 +29,14 @@ export default function App() {
   useEffect(() => {
     loadPipeline().then(setData).catch((e: Error) => setError(e.message))
   }, [])
+
+  // 収録範囲（団体・年度）を知っているのは pipeline.json だけ。index.html の title に
+  // 写すと、対象を広げた瞬間に静かに嘘になるので、可変の部分だけ実行時に入れる。
+  useEffect(() => {
+    if (!data) return
+    const { jurisdictionName, fiscalYears, phase } = data.report.meta
+    document.title = `${jurisdictionName} ${fiscalYears.join('・')}年度 ${phase.label} | fudoki（風土記）`
+  }, [data])
 
   const rows = useMemo(
     () => (detail ? { expenditure: toRows(detail.expenditure), revenue: toRows(detail.revenue) } : null),
@@ -83,10 +93,7 @@ export default function App() {
 
       <main className="mx-auto flex max-w-[1500px] flex-col gap-8 p-4 pb-24">
         <section className="flex flex-col gap-4">
-          <div>
-            <h1 className="text-xl font-semibold">配布データの検証</h1>
-            <p className="text-sm text-muted-foreground">取得元の CSV から配布物まで、各段の中身を突き合わせて確かめられる</p>
-          </div>
+          <h1 className="text-xl font-semibold">配布データの検証</h1>
 
           <FlowGraph topology={report.topology} report={report} onSelectNode={setSelectedNode} selected={selectedNode} />
 
@@ -94,7 +101,20 @@ export default function App() {
             {stats.map((s) => (
               <Card key={s.label} className="min-w-[9rem] flex-1 gap-1 py-4">
                 <CardHeader className="px-4">
-                  <CardDescription className="text-xs">{s.label}</CardDescription>
+                  <CardDescription className="flex items-center gap-1 text-xs">
+                    {s.label}
+                    {s.hint && (
+                      <Tooltip>
+                        <TooltipTrigger
+                          className="text-muted-foreground hover:text-foreground focus-visible:ring-ring/50 rounded-full focus-visible:ring-[3px] focus-visible:outline-none"
+                          aria-label={`${s.label} の定義`}
+                        >
+                          <Info aria-hidden className="size-3" />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-[36ch]">{s.hint}</TooltipContent>
+                      </Tooltip>
+                    )}
+                  </CardDescription>
                   <CardTitle
                     className={
                       s.tone === 'good' ? 'text-xl text-[var(--color-chart-2)]'
@@ -103,7 +123,6 @@ export default function App() {
                   >
                     {s.value}
                   </CardTitle>
-                  {s.hint && <p className="mt-1 text-[11px] leading-tight text-muted-foreground">{s.hint}</p>}
                 </CardHeader>
               </Card>
             ))}

@@ -27,12 +27,6 @@ export function ChecksPanel({ report, selectedNode, onClearNode }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="max-w-[72ch] text-sm leading-relaxed text-muted-foreground">
-        合計の突合だけに頼らない。<span className="font-medium text-foreground">1行の欠落と同額の行の重複は合計では相殺されて素通りする。</span>
-        性質の異なる検査を並べ、どれか1つが通っても他が落ちる状態を作る。
-        検査が1つでも落ちると <code>dbt build</code> が止まり、下流のモデルも配布物も作られない。
-        欠落したまま合計だけ下がった正本を配らないため。
-      </p>
 
       <div className="flex flex-wrap items-center gap-2">
         <Button size="sm" variant={failOnly ? 'default' : 'outline'} onClick={() => setFailOnly((v) => !v)}>
