@@ -93,7 +93,16 @@ export type ReportEnvelope = {
     /** 実行時刻ではなく原典の取得時刻。回すたびに差分が出ないようにする */
     generatedAt: string
   }
-  summary: { total: number; passed: number; failed: number; warned: number }
+  summary: {
+    total: number; passed: number; failed: number; warned: number
+    /**
+     * staging → 配布物で行が失われていないか。**判定は生成側で行う** —
+     * 配布物は1行に複数の金額（狛江市は予算現額・執行済額など3つ）を展開するので、
+     * stg と pkg の行数の単純比較は多金額の団体で必ず「不一致」と嘘をつく。
+     * 期待値（stg 行数 × 金額の数）は dbt_project.yml の宣言を知る生成側にしか計算できない
+     */
+    rowsPreserved: boolean
+  }
   topology: Topology
   ingestion: Provenance[]
   checks: Check[]

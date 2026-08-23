@@ -17,6 +17,10 @@ colors:
   border: "oklch(0.922 0 0)"
   ring: "oklch(0.708 0 0)"
   destructive: "oklch(0.577 0.245 27.325)"
+  # ブランド。青丹（あをに）。**画面では使わない** — ロゴと og だけが持つ
+  brand: "#2f5d43"
+  brand-rule: "#c1553a"
+  brand-paper: "#f4f1e6"
   # 判断の有無。**この画面が色で言う唯一のこと**
   stage-nojudgment: "oklch(58% 0.075 250)"
   stage-judgment: "oklch(58% 0.085 55)"
@@ -181,6 +185,20 @@ components:
     backgroundColor: "{colors.status-out-of-scope}"
     size: 10px
     rounded: "{rounded.sm}"
+  # ロゴ。短冊（青）が基準線（丹）の上に並ぶ
+  logo-bar:
+    backgroundColor: "{colors.brand}"
+    width: 4px
+    height: 26px
+    rounded: "{rounded.sm}"
+  logo-rule:
+    backgroundColor: "{colors.brand-rule}"
+    height: 2px
+  og-canvas:
+    backgroundColor: "{colors.brand-paper}"
+    textColor: "{colors.brand}"
+    width: 1200px
+    height: 630px
 ---
 
 ## Overview
@@ -223,6 +241,17 @@ COFOG のディビジョン（01〜10）にも 10 色を割り当てているが
 抑えてあり、どれかが目立つことがないようにしている。色はコードの文字と必ず併記する。
 
 `{colors.destructive}` は検査の失敗にだけ使う。警告や注意喚起には使わない。
+
+**ブランド色は画面に持ち込まない。** `{colors.brand}` は青丹（あをに）で、
+「あをによし」＝奈良の都にかかる枕詞が指す、青（岩緑青）と丹（赤土）という顔料の対そのもの。
+713年の官命という出自に直結する。単色ではなく**対**で持ち、丹（`{colors.brand-rule}`）は
+マークの基準線＝短冊が並ぶ「地面」にだけ出る。
+
+⚠️ **この色をヘッダやボタンに使わない。** 画面で色が付いているものは意味を持つ、という規範があるので、
+ブランド色を画面に置いた瞬間、読み手はそれが何かを意味していると読む。
+ブランド色が出るのはロゴ・ファビコン・og の3箇所だけで、`{colors.og-canvas}` の地の上に置く。
+⚠️ 青丹の緑は `{colors.status-assigned}` と近い。**これは既知の衝突**で、
+両者が同じ面に出ないことで避けている（画面にブランド色を持ち込まない理由でもある）。
 
 ダークモードは同じ色相を保ったまま明度だけを上げる（例: `stage-nojudgment` は 58% → 72%）。
 **色相を変えると、判断の有無という意味そのものがテーマによって別物に見える。**
@@ -355,5 +384,6 @@ IBM Plex Sans JP / Murecho）の中で最も無個性で、字幅も最も詰ま
 * ❌ ページ本体を横スクロールさせない。溢れるものはその要素の中でスクロールさせる
 * ❌ `word-break: keep-all` を本文に当てない
 * ❌ 和文フォントを 1 つだけ指定しない。必ず欧文 → generic まで繋ぐ
+* ❌ ブランド色（青丹）を画面の要素に使わない。ロゴ・ファビコン・og の外に出さない
 * ❌ 画面側で集計しない。数字は `pipeline.json` が出したものをそのまま出す
   （同じ数字が 2 通りに計算されて、いずれ食い違う）

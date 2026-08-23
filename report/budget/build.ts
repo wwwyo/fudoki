@@ -227,6 +227,10 @@ function build(
       passed: checks.filter((c) => c.ok).length,
       failed: checks.filter((c) => !c.ok && c.severity === 'error').length,
       warned: checks.filter((c) => c.status === 'warn').length,
+      rowsPreserved: DIRECTIONS.every((d) => {
+        const rows = (label: string) => topology.nodes.find((n) => n.label === label)?.rows
+        return rows(`stg_${code}__${d}`)! * amountsOf(code, d).length === rows(`pkg_${code}__${d}`)
+      }),
     },
     topology,
     ingestion: prov,

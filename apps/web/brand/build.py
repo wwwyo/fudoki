@@ -50,8 +50,11 @@ _DEFAULT_FONT = (
 )
 FONT = Path(os.environ.get("FONT", _DEFAULT_FONT))
 
-INK, PAPER, MUTED, FAINT = "#1f3a5f", "#f7f4ec", "#5b6b7f", "#9aa7b5"
-INK_DARK = "#e8edf4"
+# 青丹（あをに）。「あをによし」は奈良の都にかかる枕詞で、青（岩緑青）と丹（赤土）という
+# 顔料の対そのものを指す。713年の官命という出自に最も近いので、単色ではなく**対**で持つ。
+# 対はマークの基準線に出る — 短冊が並ぶ「地面」だけが丹になる。
+INK, RULE, PAPER = "#2f5d43", "#c1553a", "#f4f1e6"
+INK_DARK, RULE_DARK = "#8fbfa2", "#e08267"
 
 # マークの意匠。同じ基準線に並ぶ、長さの違う短冊（木簡 / 棒グラフ）。32 単位系。
 BARS = [(2, 14, 14), (8, 6, 22), (14, 18, 10), (20, 2, 26), (26, 11, 17)]
@@ -101,26 +104,36 @@ def draw(text: str, size: float, x: float, cy: float, tracking: float = 0.0) -> 
     return "".join(parts)
 
 
-def mark(scale: float, dx: float = 0, dy: float = 0, cls: str = "") -> str:
-    c = f' class="{cls}"' if cls else ""
+def mark(scale: float, dx: float = 0, dy: float = 0, themed: bool = False) -> str:
+    """短冊のマーク。基準線だけ丹になる。
+
+    themed=True はテーマ追従（`.ink` / `.rule` クラスで CSS に委ねる）、
+    False は色を直接置く（og の PNG のようにテーマの概念が無い出力向け）。
+    """
+    bar_a = ' class="ink"' if themed else f' fill="{INK}"'
+    rule_a = ' class="rule"' if themed else f' fill="{RULE}"'
     bars = "".join(
-        f'<rect{c} x="{x}" y="{y}" width="4" height="{h}" rx="2"/>' for x, y, h in BARS
+        f'<rect{bar_a} x="{x}" y="{y}" width="4" height="{h}" rx="2"/>' for x, y, h in BARS
     )
     bx, by, bw, bh = BASELINE
-    bars += f'<rect{c} x="{bx}" y="{by}" width="{bw}" height="{bh}" rx="1"/>'
+    bars += f'<rect{rule_a} x="{bx}" y="{by}" width="{bw}" height="{bh}" rx="1"/>'
     return f'<g transform="translate({dx} {dy}) scale({scale})">{bars}</g>'
 
 
 THEME = f"""
   <style>
     .ink {{ fill: {INK}; }}
-    @media (prefers-color-scheme: dark) {{ .ink {{ fill: {INK_DARK}; }} }}
+    .rule {{ fill: {RULE}; }}
+    @media (prefers-color-scheme: dark) {{
+      .ink {{ fill: {INK_DARK}; }}
+      .rule {{ fill: {RULE_DARK}; }}
+    }}
   </style>"""
 
 # ---- favicon.svg：マーク単体 ----
 (PUBLIC / "favicon.svg").write_text(
     f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="風土記">{THEME}\n'
-    f'  {mark(1, 0, 0, "ink")}\n</svg>\n'
+    f'  {mark(1, 0, 0, themed=True)}\n</svg>\n'
 )
 
 # ---- logo.svg：マーク + 「風土記」の横組み ----
@@ -134,7 +147,7 @@ W = tx + measure("風土記", TEXT, 0.03)
 (PUBLIC / "logo.svg").write_text(
     f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W:.0f} {H}" role="img" aria-label="風土記">\n'
     f"  <title>風土記</title>{THEME}\n"
-    f'  {mark(H / 32, 0, 0, "ink")}\n'
+    f'  {mark(H / 32, 0, 0, themed=True)}\n'
     f'  <g class="ink">{draw("風土記", TEXT, tx, H / 2 + TEXT * TEXT_DY, 0.03)}</g>\n</svg>\n'
 )
 
@@ -146,7 +159,7 @@ ox, cy = (OW - block) / 2, OH / 2
 og = (
     f'<svg xmlns="http://www.w3.org/2000/svg" width="{OW}" height="{OH}" viewBox="0 0 {OW} {OH}">\n'
     f'  <rect width="{OW}" height="{OH}" fill="{PAPER}"/>\n'
-    f'  <g fill="{INK}">{mark(OG_MARK / 32, ox, cy - OG_MARK / 2)}</g>\n'
+    f'  {mark(OG_MARK / 32, ox, cy - OG_MARK / 2)}\n'
     f'  <g fill="{INK}">{draw("風土記", OG_TEXT, ox + OG_MARK + OG_GAP, cy + OG_TEXT * TEXT_DY, 0.04)}</g>\n'
     "</svg>\n"
 )
