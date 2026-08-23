@@ -96,4 +96,4 @@ bun run dev            # ダッシュボードを開く（http://localhost:5173�
 著作権を持たないものにライセンスは与えられないので、正本の表示は原典に付いてくる条件を
 そのまま素通ししている。fudoki は原典を改変しているので、その旨も表示している（CC BY 4.0 §3(a)(1)(B)）。
 
-詳細は [data/LICENSE](./data/LICENSE)、正確な表示は各 `datapackage.json` の `licenses` と `attribution`。
+詳細は [data/LICENSE](./data/LICENSE)、正確な表示は各 `datapackage.json` の `licenses` / `sources` / `description`。

@@ -67,7 +67,10 @@ repo でもこのファイルは 2024-01-05 の bootstrap 以降 1 度も更新�
 **1.0.0 に対応する profile JSON は存在しない** — 適合を機械に検査させる経路が無いということなので、
 `datapackage.json` の `profile` には下層の Tabular Data Package v1 を宣言し、
 1.0.0 への適合は仕様本文（`/specifications/fiscal-data-package/`）に照らして人が確かめる。
-この事実そのものを配布物の `fudoki.specification.profileNote` に書いて配っている。
+⚠️ **この事実は配布物に書かない。** 読んでも利用者のすることは変わらない
+（`profile` が何に照らして検査すべきかを既に言っている）ので、fudoki の調査メモにあたる。
+配布物に載せるのは「FDP 1.0.0 に沿って作った」という版の宣言（`fudoki.specification`）までで、
+`profile` は下層の Tabular Data Package しか言わないため標準フィールドでは代替できない。
 
 ⚠️ **採用した3標準のうち2つが止まっている**（最終コミット、2026-08-15 実測）。
 

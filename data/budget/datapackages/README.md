@@ -69,6 +69,7 @@ URL・取得日時・SHA-256 は原典の隣（`data/budget/raw/**/provenance.js
 
 ## ライセンスと帰属
 
-各パッケージの `datapackage.json` の `licenses` / `attribution` / `modified` を見ること。
+各パッケージの `datapackage.json` の `licenses` / `sources` / `contributors` と、
+出典表示の文言と改変の明示が入っている `description` を見ること。
 ⚠️ **正本のライセンスは原典のものを素通ししている**（fudoki が選んだものではない）。
 詳しくは [data/LICENSE](../../LICENSE)。
