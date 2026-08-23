@@ -206,7 +206,7 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
                   <>
                     <circle
                       cx={COL_W - 16} cy={NODE_H / 2} r={7}
-                      fill={failed ? 'var(--color-destructive)' : warned ? 'var(--color-status-unclassifiable)' : 'var(--color-chart-2)'}
+                      fill={failed ? 'var(--color-destructive)' : warned ? 'var(--color-warning)' : 'var(--color-chart-2)'}
                       opacity={0.9}
                     />
                     <text x={COL_W - 16} y={NODE_H / 2 + 3.5} textAnchor="middle" className="fill-background text-[9px] font-semibold">

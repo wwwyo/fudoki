@@ -23,14 +23,8 @@ colors:
   # ロゴが持つ塗り。UI トークンではない
   mark-rule: "#c1553a"
   og-paper: "#f4f1e6"
-  # 判断の有無。**この画面が色で言う唯一のこと**
-  stage-nojudgment: "oklch(58% 0.075 250)"
-  stage-judgment: "oklch(58% 0.085 55)"
-  judgment-boundary: "oklch(55% 0.13 55)"
-  # COFOG 割当の状態
-  status-assigned: "oklch(56% 0.10 155)"
-  status-unclassifiable: "oklch(60% 0.12 75)"
-  status-out-of-scope: "oklch(60% 0.02 260)"
+  # 検査の状態。destructive（失敗）と対になる
+  warning: "oklch(60% 0.12 75)"
 typography:
   heading:
     fontFamily: "\"Geist Variable\", \"Noto Sans JP Variable\", \"Hiragino Sans\", sans-serif"
@@ -167,32 +161,13 @@ components:
   card-value-failed:
     textColor: "{colors.destructive}"
     typography: "{typography.stat}"
-  # 流れ図のノード左端の縦帯。判断の有無を言う唯一の要素
-  flow-node-bar-nojudgment:
-    backgroundColor: "{colors.stage-nojudgment}"
-    width: 3px
-    height: 46px
-  flow-node-bar-judgment:
-    backgroundColor: "{colors.stage-judgment}"
-    width: 3px
-    height: 46px
-  # staging と core の間に引く、判断が入り始める線
-  judgment-boundary-rule:
-    backgroundColor: "{colors.judgment-boundary}"
-    width: 2px
-  # COFOG 割当の状態を示す色見本。コードの文字と必ず併記する
-  status-swatch-assigned:
-    backgroundColor: "{colors.status-assigned}"
-    size: 10px
-    rounded: "{rounded.sm}"
-  status-swatch-unclassifiable:
-    backgroundColor: "{colors.status-unclassifiable}"
-    size: 10px
-    rounded: "{rounded.sm}"
-  status-swatch-out-of-scope:
-    backgroundColor: "{colors.status-out-of-scope}"
-    size: 10px
-    rounded: "{rounded.sm}"
+  # 流れ図のノードに付く検査の印。落ちていれば destructive、警告なら warning
+  check-marker-failed:
+    backgroundColor: "{colors.destructive}"
+    size: 16px
+  check-marker-warned:
+    backgroundColor: "{colors.warning}"
+    size: 16px
   # ロゴ。短冊（青）が基準線（丹）の上に並ぶ
   logo-bar:
     backgroundColor: "{colors.primary}"
@@ -226,29 +201,27 @@ components:
 
 ## Colors
 
-**この画面が色で言うことは1つだけ — fudoki の判断が入っているか。**
+**この画面が色で言うことは1つだけ — 検査が通っているか。**
 
 | トークン | 何を指すか |
 |---|---|
-| `{colors.stage-nojudgment}` 落ち着いた寒色 | 原典と正本。**fudoki の判断が入っていない**側。原典と突き合わせて検証できる |
-| `{colors.stage-judgment}` 落ち着いた暖色 | 派生。**判断が入った**側。自治体が言っていないことを含む |
-| `{colors.judgment-boundary}` 締まった暖色 | その境界そのもの。staging と core の間に引かれる線 |
+| `{colors.destructive}` | 検査の**失敗**。下流の成果物を書き出さない状態 |
+| `{colors.warning}` | 検査の**警告**。書き出すが、原典に見過ごせない何かがある状態 |
 
-寒色と暖色を選んだのは、**明度でも彩度でもなく色相で区別したかった**から。
-明度で分けると「重要／些末」に読まれ、彩度で分けると「確定／未確定」に読まれる。
-判断の有無はどちらでもない、対等な2つの状態なので、色相を振り分ける。
+この2つは**対**なので、色相だけでなく「失敗は赤、警告は黄」という一般的な対応をそのまま使う。
+ここで独自の対応を作っても読み手の既有知識と戦うだけで、得るものがない。
 
-COFOG 割当の状態は別の軸として持つ。
-`{colors.status-assigned}` は割当済み（緑寄り）、`{colors.status-unclassifiable}` は分類不能（黄寄り）、
-`{colors.status-out-of-scope}` は対象外（ほぼ無彩色）。
-**「分類できなかった」と「分類の軸が無い（歳入）」を同じ色にしない** — 前者は fudoki の限界、
-後者は COFOG の定義上の性質で、混ぜると読み手が fudoki の精度を誤って低く見積もる。
+⚠️ **判断の有無（原典・正本 ⇄ 派生）を色で言うのはやめた。**
+以前は寒色／暖色の対で示していたが、**段の並びと辺の向きが既にそれを言っている** — 流れ図は
+左から右へ ingestion → staging → core → package と並び、fudoki の判断が入るのは core からである。
+位置で分かることを色でも言うと、色の語彙が2つの意味を持ち、
+「色が付いていたら意味がある」という規範のほうが薄まる。
 
 COFOG のディビジョン（01〜10）にも 10 色を割り当てているが、
 これは**識別の補助であって情報の担い手ではない**。明度を 58〜69% の狭い帯に、彩度を 0.05〜0.10 に
 抑えてあり、どれかが目立つことがないようにしている。色はコードの文字と必ず併記する。
-
-`{colors.destructive}` は検査の失敗にだけ使う。警告や注意喚起には使わない。
+⚠️ この 10 色は CSS トークンではなく `apps/web/src/lib/pipeline.ts` の `DIVISION_COLOR` が持つ。
+**分類体系に対応する色はデータの一部**で、テーマで変わるものではないため。
 
 **ブランド色は `{colors.primary}`（青丹）。** shadcn の `primary` は仕様上
 "High-emphasis actions and **brand surfaces**" の置き場なので、独自の `brand-*` を作らずここに入れる。
@@ -260,14 +233,16 @@ COFOG のディビジョン（01〜10）にも 10 色を割り当てているが
 色が情報を担うのは意味色の役目で、そこにブランド色が混ざると、
 読み手はブランド色にも意味があると読む。**「使うか使わないか」ではなく、どちらの役をやらせるか**の線引きである。
 
-⚠️ 青丹の緑は `{colors.status-assigned}` と近い。**この2つが同じ面に出ないのは上の線引きの結果**で、
-偶然ではない。ブランド色をデータの面へ持ち出した瞬間に、この近さが実害になる。
+⚠️ 青丹の緑は COFOG のディビジョン 05（`oklch(64% 0.08 145)`）と近い。
+**この2つが同じ面に出ないのは上の線引きの結果**で、偶然ではない。
+ブランド色をデータの面へ持ち出した瞬間に、この近さが実害になる。
 
 `{colors.mark-rule}`（丹）は UI トークンではない。ロゴのマークの基準線＝短冊が並ぶ「地面」にだけ出る塗りで、
 対を意匠として持つのはロゴの側の仕事。画面のトークンには置かない。
 
-ダークモードは同じ色相を保ったまま明度だけを上げる（例: `stage-nojudgment` は 58% → 72%）。
-**色相を変えると、判断の有無という意味そのものがテーマによって別物に見える。**
+ダークモードは同じ色相を保ったまま明度だけを上げる（`{colors.warning}` は 60% → 78%、
+`{colors.primary}` は 43.7% → 76.2%）。
+**色相を変えると、その色が意味していたものがテーマによって別物に見える。**
 
 ## Typography
 
@@ -371,9 +346,10 @@ IBM Plex Sans JP / Murecho）の中で最も無個性で、字幅も最も詰ま
   fudoki は何を足したか → 1 行ずつ確かめる）で、機能のグルーピングではない。
 * **Tables:** 罫線は水平のみ、`{colors.border}`。ヘッダは 12px・500。
   数値列は右寄せ＋ `tabular-nums`。行の高さは 32px。
-* **Flow graph:** 210×46px のノードを段ごとの列に並べ、依存を実線で引く。
+* **Flow graph:** ノードを段ごとの列に並べ、依存を実線で引く。
   ノードは**名前と行数だけ**を持ち、詳細は選択したときに別の面へ出す。
-  左端の 3px の縦帯が判断の有無（`{colors.stage-nojudgment}` / `{colors.stage-judgment}`）を言う。
+  判断が入るのは core 以降だが、それは**列の位置が言う**ので色では言わない。
+  ノードに付く印だけが色を持ち、`{colors.destructive}`（失敗）と `{colors.warning}`（警告）を取る。
 * **Inputs:** 高さ 32px、8px の角丸、1px の `{colors.border}`。背景は持たない。
 * **Tooltips:** 定義や但し書きの置き場。最大 36 文字幅で折り返す。
   **本文に書けることをツールチップに逃がさない** — 隠した時点で読まれない。
@@ -393,7 +369,8 @@ IBM Plex Sans JP / Murecho）の中で最も無個性で、字幅も最も詰ま
 * ❌ 影で重要度の序列を作らない。カードは対等
 * ❌ `chart-1..5` を使わない。ゼロ彩度で意味を区別できない
 * ❌ ダークモードで色相を変えない。明度だけを動かす
-* ❌ 「分類不能」と「分類の軸なし」を同じ色・同じ語で扱わない
+* ❌ 検査の状態以外に意味色を増やさない。増やすなら、それが何を言うかを先に決める
+* ❌ 判断の有無を色で言わない。段の並びが既に言っている
 * ❌ ページ本体を横スクロールさせない。溢れるものはその要素の中でスクロールさせる
 * ❌ `word-break: keep-all` を本文に当てない
 * ❌ 和文フォントを 1 つだけ指定しない。必ず欧文 → generic まで繋ぐ
