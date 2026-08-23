@@ -391,7 +391,7 @@ def build_jurisdiction(code: str) -> None:
     modifications = CANONICAL_MODIFICATIONS + [
         JUDGMENT_MODIFICATIONS[n] for n, *_ in present if n in JUDGMENT_MODIFICATIONS
     ]
-    # 事業名の取得元（PDF）。原典の CSV とは別の資料で、再配布の可否も別に判定している。
+    # 事業名・歳入科目名の取得元（PDF）。原典の CSV とは別の資料で、再配布の可否も別に判定している。
     pdf_specs = {**load_project_names(),
                  **{f"revenue/{k}": v for k, v in load_revenue_accounts().items()}}
     pdfs = [spec for key, spec in sorted(pdf_specs.items())
