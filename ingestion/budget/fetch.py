@@ -128,7 +128,7 @@ def _provenance_json(src: Source, spec: Resource, direction: str, got: Fetched,
             "fetched_at": fetched_at or got.fetched_at,
             "encoding": src.encoding,
             "header": header,
-            "rows": len(rows),
+            "rows": rows,
             # `raw/` の保証は団体で違う。verbatim なら原文を復元できることを検査済み、
             # extracted なら抽出結果なので復元は成立しない。下流の検査がこれで分岐する。
             "raw_form": src.raw_form,

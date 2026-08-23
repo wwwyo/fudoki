@@ -79,11 +79,8 @@ CC BY-SA を採る団体が入った時点で派生も BY-SA にするほかな�
 ## `raw/` の保証は団体で違う
 
 上の帰結として、`raw/` に何が入っているかが取得元ごとに変わります。
-**宣言の正本は `ingestion/budget/sources.toml` の `raw_form`** です。
-
-⚠️ 取得コードは証跡（`provenance.json`）にもこの値を書きますが、
-**commit 済みの証跡にはまだ入っていません**（`raw_form` を足す前に取得したもので、
-取得元が不安定で取り直せていない）。証跡だけを見て判断しないでください。
+**宣言の正本は `ingestion/budget/sources.toml` の `raw_form`** で、
+取得の証跡（`provenance.json`）にも記録されます。
 
 | `raw_form` | 中身 | 検査 |
 |---|---|---|

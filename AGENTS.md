@@ -379,6 +379,12 @@ bun run dev         # 報告を作り直してダッシュボードを上げる
 | `survey:budget-years` | `ingestion/budget/observations/mitaka-budget-years.json` | しない（ローカル観測） |
 | `validate` | （検査。`ingestion/transcripts/gates.json` を宣言と、`ingestion/shared/jurisdictions.json` とコード集合で突き合わせる） | — |
 
+⚠️ **ネットワークを叩くスクリプトは、サンドボックスを外して回す。**
+開発環境の HTTP プロキシが応答を途中で切るため、サンドボックス内では
+`IncompleteRead` が頻発する。取得元の問題と取り違えてリトライを実装しかけた
+（実測: urllib + プロキシ経由は5回とも失敗、プロキシなしは5回とも成功。
+切れる位置まで毎回一致するので、ランダムな不調ではない）。
+
 ネットワークを叩くので CI では回さない。観測はローカルに書き出し、原文・URL・status・SHA-256・取得時刻を丸ごと持つ（要約しない）。
 
 | script | 何を測るか |
