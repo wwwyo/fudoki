@@ -10,6 +10,13 @@
 --                   原典そのものは data/budget/raw/ に Parquet で入っているので join できる
 --   hierarchy_path  コード列から導出できる
 --   団体・phase・通貨・direction  全行同じ値。datapackage.json のメタデータに属する
+{% set amounts = var('budget_amounts')['132047']['revenue'] %}
+{% if amounts | length != 1 %}
+  {{ exceptions.raise_compiler_error(
+      '132047/revenue: 予算段階が ' ~ amounts | length ~ ' 種類ある。'
+      ~ 'このモデルは単一段階を前提にしているので、段階ごとの行へ展開する形へ変えること') }}
+{% endif %}
+{% set amount = amounts[0] %}
 select
     budget_line_id,
     fiscal_year,
@@ -32,7 +39,9 @@ select
     -- 円へ正規化した値と、原典の値を別に残す。
     -- FDP には倍率を表す ColumnType が無いため、両方置く。
     -- 単位（千円）は全行同じなので datapackage.json のメタデータへ。
-    source_amount * 1000 as value,
+    -- ⚠️ **倍率を直書きしない。** `budget_amounts` が宣言しており、
+    -- descriptor もそこから作る。写すと単位を直したとき片方だけ変わる。
+    source_amount * {{ amount['multiplier'] }} as value,
     source_amount
 from {{ ref('stg_132047__revenue') }}
 -- 年度をまたぐと source_row だけでは並びが決まらない

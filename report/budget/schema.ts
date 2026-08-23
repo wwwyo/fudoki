@@ -6,6 +6,7 @@
  * 巨大な optional の塊にしない。
  */
 import type { ReportEnvelope } from '../common'
+import type { Direction, Level } from './detail'
 
 export type { Check, Edge, Node, Provenance, Stage, Topology } from '../common'
 
@@ -38,6 +39,11 @@ export type LevelGroup = {
 
 export type ReportData = ReportEnvelope & {
   meta: ReportEnvelope['meta'] & { fiscalYears: number[] }
+  /**
+   * 明細の階層。**正本は dbt_project.yml の `budget_levels`** で、生成側が読んで載せる。
+   * 画面は階層名を直書きせず、これを回す（団体ごとに並びが違うため）。
+   */
+  detailLevels: { direction: Direction; levels: Level[] }[]
   levels: LevelGroup[]
   transform: Transform
   notYetReconciled: { scope: string; reason: string; wouldComeFrom: string; currentEvidence: string }

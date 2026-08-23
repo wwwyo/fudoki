@@ -110,6 +110,27 @@ function introducesJudgment(n: DbtNode, stage: Stage['id']): boolean {
   return stage === 'core'
 }
 
+/**
+ * 原典（source）の行数を証跡から引く。
+ *
+ * ⚠️ **direction だけで引かない。** ソースは団体ごとに1つあり、名前はどちらも
+ * `expenditure` / `revenue` である。direction だけで突き合わせると、
+ * 狛江市の原典ノードに三鷹市の行数が出る（実際にそうなっていた）。
+ * ソースの識別子（`source.fudoki.raw_132195.expenditure`）から団体コードを取る。
+ */
+function sourceRows(id: string, name: string, provenance: Provenance[]): number | null {
+  const code = /\.raw_(\d{6})/.exec(id)?.[1]
+  if (!code) throw new Error(`ソース ${id} の名前から団体コードを取れない（raw_<団体コード> の形にすること）`)
+  const mine = provenance.filter((p) => p.jurisdiction_code === code)
+  // ⚠️ **証跡の形が取得元で違う。** CSV の取り込みは direction ごとに `rows` を持つが、
+  // PDF から起こした事業名は direction を持たず、抽出の要約（`extracted.projects`）を持つ。
+  // 保証の強さが違うので形も揃えていない（片方は復元一致、片方は階層の合計突合）。
+  const byDirection = mine.filter((p) => p.direction === name)
+  if (byDirection.length > 0) return byDirection.reduce((s, p) => s + p.rows, 0)
+  const extracted = mine.filter((p) => p.extracted !== undefined)
+  return extracted.length === 0 ? null : extracted.reduce((s, p) => s + (p.extracted?.projects ?? 0), 0)
+}
+
 export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
   const all = { ...m.nodes, ...m.sources }
   const models = Object.entries(all).filter(([, n]) => ['model', 'source', 'seed'].includes(n.resource_type))
@@ -142,7 +163,7 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
   const nodes: Node[] = models.map(([id, n]) => {
     const loc = n.config?.location
     const rows = n.resource_type === 'source'
-      ? provenance.filter((p) => p.direction === n.name).reduce((s, p) => s + p.rows, 0)
+      ? sourceRows(id, n.name, provenance)
       : rowCounts.get(id) ?? null
     const stage = stageOf(n)
     return {
@@ -157,7 +178,11 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
   // 取得元。dbt は知らないので証跡から組む。id を「source ノードid + .origin」にしてあるのは
   // プレビュー（apps/web/public/preview/<id>.json）が同じ規約で書かれるため
   for (const src of nodes.filter((n) => n.kind === 'source')) {
-    const ps = provenance.filter((p) => p.direction === src.label)
+    // ⚠️ **direction だけで引かない。** 2団体目からは `expenditure` という名前の
+    // ソースが団体ごとにあり、direction だけで絞ると三鷹市の取得元ノードに
+    // 狛江市の証跡が混ざる（`sourceRows` が同じ理由で団体コードを見ている）。
+    const code = /\.raw_(\d{6})/.exec(src.id)?.[1]
+    const ps = provenance.filter((p) => p.jurisdiction_code === code && p.direction === src.label)
     if (ps.length === 0) continue
     nodes.push({
       // ノードには見出しだけ出す。「※下水道事業会計除く」のような注記は

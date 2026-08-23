@@ -1,0 +1,47 @@
+{
+  "jurisdiction_code": "132195",
+  "fiscal_year": 2023,
+  "document_title": "令和５年度主要な施策の成果説明書・決算資料（うち 一般会計歳入歳出（事項別）決算状況）",
+  "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,134979,c,html/134979/20241004-150910.pdf",
+  "status": 200,
+  "bytes": 7891517,
+  "sha256": "da64e5588808d94760544dcaccc7c592c58ae41bd54ea9f54fa74651e1e42d26",
+  "fetched_at": "2026-08-23T04:47:41+00:00",
+  "pages": [
+    20,
+    264
+  ],
+  "extractor": "ingestion/budget/extract_projects.py@3",
+  "verification": "hierarchy-totals + name-stability",
+  "verification_note": "PDF のバイト列は保存していない（再配布の判断が別のため）。無加工であることは検査できないので、階層の合計突合と、dbt 側の原典 CSV との結合率で縛る",
+  "roundtrip_verified": false,
+  "extracted": {
+    "projects": 524,
+    "projectsReconciled": 515,
+    "moku": 99,
+    "mokuHeadersFound": 99,
+    "mokuNotReconciled": 2,
+    "totalThousandYen": 34253042,
+    "notReconciled": [
+      {
+        "moku": "2-1-11",
+        "printedThousandYen": 492689,
+        "extractedThousandYen": 299247
+      },
+      {
+        "moku": "3-2-5",
+        "printedThousandYen": 224346,
+        "extractedThousandYen": 181090
+      }
+    ],
+    "nameStable": true,
+    "kan_name": 524,
+    "kou_name": 524,
+    "moku_name": 524,
+    "unstableNames": []
+  },
+  "raw_form": "extracted",
+  "redistribute": "review",
+  "redistribute_basis": "市サイトの著作権表示（https://www.city.komae.tokyo.jp/index.cfm/4,19790,10,html）。事実に著作権が及ぶかは解釈が割れるので照会中",
+  "license_id": "NOASSERTION"
+}

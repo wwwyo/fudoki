@@ -8,19 +8,18 @@
 --
 -- 件数が増えたら原典側の入力運用が変わった合図でもある。
 with cells as (
-    select direction, source_row, unnest([
-        "01会計", "02款", "03項", "04目", "05事項", "06節", "07細々節"
+    {% for code, direction in budget_units() %}
+    select '{{ code }}' as jurisdiction, direction, source_row, unnest([
+        {% for c in var('budget_source_columns')[code][direction]
+              + var('budget_extra_key_source_columns')[code][direction] %}
+        "{{ c }}"{% if not loop.last %},{% endif %}
+        {% endfor %}
     ]) as cell
-    from {{ source('raw_132047', 'expenditure') }}
-
-    union all
-
-    select direction, source_row, unnest([
-        "01会計", "02款", "03項", "04目", "05節", "06細節", "07細々節"
-    ]) as cell
-    from {{ source('raw_132047', 'revenue') }}
+    from {{ source('raw_' ~ code, direction) }}
+    {% if not loop.last %}union all{% endif %}
+    {% endfor %}
 )
 
-select direction, source_row, cell, '前後に空白がある。staging で trim した' as note
+select jurisdiction, direction, source_row, cell, '前後に空白がある。staging で trim した' as note
 from cells
 where cell is not null and cell <> {{ trim_cell('cell') }}

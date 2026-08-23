@@ -44,3 +44,363 @@ resource_name = "令和６年度予算データ（歳出）※下水道事業会
 [["132047:2024".resources]]
 direction = "revenue"
 resource_name = "令和６年度予算データ（歳入）※下水道事業会計除く"
+
+# ── 狛江市 132195 ────────────────────────────────────────────────────────────
+#
+# ⚠️ **三鷹市とは原典の作りが根本的に違う。** 実測（2026-08-22）で分かったこと。
+#
+#  1. **階層に名称が無い。** 款・項・目・大事業は数字コードだけの列で、名称の列が存在しない。
+#     名称を持つのは会計（会計名称）と、行の最下位階層（科目名称）だけ。
+#     三鷹市の「2桁コード + 名称」を1セルに詰める書式とは別物なので、
+#     セルを分解する規則を団体ごとに宣言できるようにした（dbt_project.yml の budget_code_style）。
+#  2. **中事業・小事業・細節・細々節は全行 `0`。** 列としては存在するが1件も使われていない
+#     （歳出は 6 年度 13,461 行すべて、歳入は細々節が全行 `0`）。
+#     「大事業・中事業・小事業の3階層がある」は列の話であって、中身は大事業までである。
+#  3. **階層だけでは行が一意にならない。** 所属（部課）と予算区分（現年度・繰越明許・事故繰越）
+#     まで含めて初めて一意になる（2023 歳出 2,224 行が 2,224 通り）。
+#  4. **決算書なので金額が段階ごとに複数ある。** 歳出は予算額 / 予算計 / 執行累計、
+#     歳入は予算現額 / 収入累計。FDP は phase を**行の列**として持つ設計なので、
+#     package 段で段階ごとの行へ展開する（詳細は pkg_132195__*.sql）。
+#  5. **歳入の予算現額だけ単位が千円。** 同じファイルの他の金額はすべて円。
+#  6. **文字コードが年度で変わる。** 2018〜2021 は UTF-8（BOM 付き）、2022〜2023 は CP932。
+#  7. ⚠️ **決算資料の PDF は取得元が別で、再配布の可否も別。**
+#     款・項・目・大事業の**名称は市サイトの「主要な施策の成果説明書・決算資料」PDF にしかない**
+#     （カタログの CSV には無く、カタログにその PDF も無い）。実測で CSV と同じ決算額であり、
+#     款別に完全一致することを確かめたが、**市サイトは無断複製・転用を明示的に禁じている**ので
+#     カタログの CC BY とは別の判断が要る。詳細は `bun run survey:structure` の隣に置いた PDF 調査の観測（2026-08-22 実測、commit しない）。
+#  8. **同じデータセット名が2件ある。** `/komae/R05/` 配下と `/komae/` 配下で中身が違う
+#     （所属名称の改称、執行率の `-` と `****`）。R05 側が新しいので、
+#     `resource_url_contains` で明示的に選ぶ。指定が無くて複数当たれば取得は止まる。
+#
+# 再配布はカタログのライセンス（CC BY 4.0）が根拠。③会議録の gate とは無関係。
+
+["132195:2018"]
+catalog = "tokyo"
+jurisdiction_code = "132195"
+jurisdiction_name = "狛江市"
+fiscal_year = 2018
+# 原典に年度の列はあるが（三鷹市には無かった）、照合はリソース名で行う。
+# 列と partition が食い違っていないことは dbt の検査（source_year_matches_partition）が見る。
+fiscal_year_label = "（2018）"
+# 予算段階は**文書の種類**。決算書なので settlement。
+# 行が持つ FDP の phase（approved / adjusted / executed）はこれとは別で、package 段で展開する。
+phase_id = "settlement"
+phase_label = "決算"
+# ⚠️ 歳出と歳入が**別のデータセット**になっている（三鷹市は1データセットに2リソース）。
+# データセット名はリソース側で宣言する。
+encoding = "utf-8"
+# 同名のデータセットが2件あるので、どちらを採るかを明示する（指定が無く複数当たれば取得は止まる）。
+resource_url_contains = "/komae/R05/"
+# ⚠️ **狛江市の原典は円。** 三鷹市（千円）と違う。全団体共通の倍率に戻すと
+# 「円に直すには 1000 を掛ける」が狛江市の配布物にも付いて黙って嘘になる。
+# ⚠️ 歳入の予算現額だけは千円で、段階ごとの単位は dbt_project.yml の
+# budget_amounts が持つ。ここは原典の主たる単位の宣言。
+source_amount_unit = "円"
+source_amount_multiplier = 1
+redistribute = "allow"
+redistribute_basis = "東京都オープンデータカタログのライセンス表示（CC BY 4.0）"
+license_id = "CC-BY-4.0"
+attribution = "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+landing_page = "https://www.city.komae.tokyo.jp/index.cfm/46,0,361,2170,html"
+
+[["132195:2018".resources]]
+direction = "expenditure"
+dataset_title = "決算書歳出データ（2018）"
+resource_name = "決算書歳出データ（2018）"
+
+[["132195:2018".resources]]
+direction = "revenue"
+dataset_title = "決算書歳入データ（2018）"
+resource_name = "決算書歳入データ（2018）"
+
+
+["132195:2019"]
+catalog = "tokyo"
+jurisdiction_code = "132195"
+jurisdiction_name = "狛江市"
+fiscal_year = 2019
+# 原典に年度の列はあるが（三鷹市には無かった）、照合はリソース名で行う。
+# 列と partition が食い違っていないことは dbt の検査（source_year_matches_partition）が見る。
+fiscal_year_label = "（2019）"
+# 予算段階は**文書の種類**。決算書なので settlement。
+# 行が持つ FDP の phase（approved / adjusted / executed）はこれとは別で、package 段で展開する。
+phase_id = "settlement"
+phase_label = "決算"
+# ⚠️ 歳出と歳入が**別のデータセット**になっている（三鷹市は1データセットに2リソース）。
+# データセット名はリソース側で宣言する。
+encoding = "utf-8"
+# 同名のデータセットが2件あるので、どちらを採るかを明示する（指定が無く複数当たれば取得は止まる）。
+resource_url_contains = "/komae/R05/"
+# ⚠️ **狛江市の原典は円。** 三鷹市（千円）と違う。全団体共通の倍率に戻すと
+# 「円に直すには 1000 を掛ける」が狛江市の配布物にも付いて黙って嘘になる。
+# ⚠️ 歳入の予算現額だけは千円で、段階ごとの単位は dbt_project.yml の
+# budget_amounts が持つ。ここは原典の主たる単位の宣言。
+source_amount_unit = "円"
+source_amount_multiplier = 1
+redistribute = "allow"
+redistribute_basis = "東京都オープンデータカタログのライセンス表示（CC BY 4.0）"
+license_id = "CC-BY-4.0"
+attribution = "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+landing_page = "https://www.city.komae.tokyo.jp/index.cfm/46,0,361,2170,html"
+
+[["132195:2019".resources]]
+direction = "expenditure"
+dataset_title = "決算書歳出データ（2019）"
+resource_name = "決算書歳出データ（2019）"
+
+[["132195:2019".resources]]
+direction = "revenue"
+dataset_title = "決算書歳入データ（2019）"
+resource_name = "決算書歳入データ（2019）"
+
+
+["132195:2020"]
+catalog = "tokyo"
+jurisdiction_code = "132195"
+jurisdiction_name = "狛江市"
+fiscal_year = 2020
+# 原典に年度の列はあるが（三鷹市には無かった）、照合はリソース名で行う。
+# 列と partition が食い違っていないことは dbt の検査（source_year_matches_partition）が見る。
+fiscal_year_label = "（2020）"
+# 予算段階は**文書の種類**。決算書なので settlement。
+# 行が持つ FDP の phase（approved / adjusted / executed）はこれとは別で、package 段で展開する。
+phase_id = "settlement"
+phase_label = "決算"
+# ⚠️ 歳出と歳入が**別のデータセット**になっている（三鷹市は1データセットに2リソース）。
+# データセット名はリソース側で宣言する。
+encoding = "utf-8"
+# 同名のデータセットが2件あるので、どちらを採るかを明示する（指定が無く複数当たれば取得は止まる）。
+resource_url_contains = "/komae/R05/"
+# ⚠️ **狛江市の原典は円。** 三鷹市（千円）と違う。全団体共通の倍率に戻すと
+# 「円に直すには 1000 を掛ける」が狛江市の配布物にも付いて黙って嘘になる。
+# ⚠️ 歳入の予算現額だけは千円で、段階ごとの単位は dbt_project.yml の
+# budget_amounts が持つ。ここは原典の主たる単位の宣言。
+source_amount_unit = "円"
+source_amount_multiplier = 1
+redistribute = "allow"
+redistribute_basis = "東京都オープンデータカタログのライセンス表示（CC BY 4.0）"
+license_id = "CC-BY-4.0"
+attribution = "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+landing_page = "https://www.city.komae.tokyo.jp/index.cfm/46,0,361,2170,html"
+
+[["132195:2020".resources]]
+direction = "expenditure"
+dataset_title = "決算書歳出データ（2020）"
+resource_name = "決算書歳出データ（2020）"
+
+[["132195:2020".resources]]
+direction = "revenue"
+dataset_title = "決算書歳入データ（2020）"
+resource_name = "決算書歳入データ（2020）"
+
+
+["132195:2021"]
+catalog = "tokyo"
+jurisdiction_code = "132195"
+jurisdiction_name = "狛江市"
+fiscal_year = 2021
+# 原典に年度の列はあるが（三鷹市には無かった）、照合はリソース名で行う。
+# 列と partition が食い違っていないことは dbt の検査（source_year_matches_partition）が見る。
+fiscal_year_label = "（2021）"
+# 予算段階は**文書の種類**。決算書なので settlement。
+# 行が持つ FDP の phase（approved / adjusted / executed）はこれとは別で、package 段で展開する。
+phase_id = "settlement"
+phase_label = "決算"
+# ⚠️ 歳出と歳入が**別のデータセット**になっている（三鷹市は1データセットに2リソース）。
+# データセット名はリソース側で宣言する。
+encoding = "utf-8"
+# 同名のデータセットが2件あるので、どちらを採るかを明示する（指定が無く複数当たれば取得は止まる）。
+resource_url_contains = "/komae/R05/"
+# ⚠️ **狛江市の原典は円。** 三鷹市（千円）と違う。全団体共通の倍率に戻すと
+# 「円に直すには 1000 を掛ける」が狛江市の配布物にも付いて黙って嘘になる。
+# ⚠️ 歳入の予算現額だけは千円で、段階ごとの単位は dbt_project.yml の
+# budget_amounts が持つ。ここは原典の主たる単位の宣言。
+source_amount_unit = "円"
+source_amount_multiplier = 1
+redistribute = "allow"
+redistribute_basis = "東京都オープンデータカタログのライセンス表示（CC BY 4.0）"
+license_id = "CC-BY-4.0"
+attribution = "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+landing_page = "https://www.city.komae.tokyo.jp/index.cfm/46,0,361,2170,html"
+
+[["132195:2021".resources]]
+direction = "expenditure"
+dataset_title = "決算書歳出データ（2021）"
+resource_name = "決算書歳出データ（2021）"
+
+[["132195:2021".resources]]
+direction = "revenue"
+dataset_title = "決算書歳入データ（2021）"
+resource_name = "決算書歳入データ（2021）"
+
+
+["132195:2022"]
+catalog = "tokyo"
+jurisdiction_code = "132195"
+jurisdiction_name = "狛江市"
+fiscal_year = 2022
+# 原典に年度の列はあるが（三鷹市には無かった）、照合はリソース名で行う。
+# 列と partition が食い違っていないことは dbt の検査（source_year_matches_partition）が見る。
+fiscal_year_label = "（2022）"
+# 予算段階は**文書の種類**。決算書なので settlement。
+# 行が持つ FDP の phase（approved / adjusted / executed）はこれとは別で、package 段で展開する。
+phase_id = "settlement"
+phase_label = "決算"
+# ⚠️ 歳出と歳入が**別のデータセット**になっている（三鷹市は1データセットに2リソース）。
+# データセット名はリソース側で宣言する。
+encoding = "cp932"
+# 同名のデータセットが2件あるので、どちらを採るかを明示する（指定が無く複数当たれば取得は止まる）。
+resource_url_contains = "/komae/R05/"
+# ⚠️ **狛江市の原典は円。** 三鷹市（千円）と違う。全団体共通の倍率に戻すと
+# 「円に直すには 1000 を掛ける」が狛江市の配布物にも付いて黙って嘘になる。
+# ⚠️ 歳入の予算現額だけは千円で、段階ごとの単位は dbt_project.yml の
+# budget_amounts が持つ。ここは原典の主たる単位の宣言。
+source_amount_unit = "円"
+source_amount_multiplier = 1
+redistribute = "allow"
+redistribute_basis = "東京都オープンデータカタログのライセンス表示（CC BY 4.0）"
+license_id = "CC-BY-4.0"
+attribution = "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+landing_page = "https://www.city.komae.tokyo.jp/index.cfm/46,0,361,2170,html"
+
+[["132195:2022".resources]]
+direction = "expenditure"
+dataset_title = "決算書歳出データ（2022）"
+resource_name = "決算書歳出データ（2022）"
+
+[["132195:2022".resources]]
+direction = "revenue"
+dataset_title = "決算書歳入データ（2022）"
+resource_name = "決算書歳入データ（2022）"
+
+
+["132195:2023"]
+catalog = "tokyo"
+jurisdiction_code = "132195"
+jurisdiction_name = "狛江市"
+fiscal_year = 2023
+# 原典に年度の列はあるが（三鷹市には無かった）、照合はリソース名で行う。
+# 列と partition が食い違っていないことは dbt の検査（source_year_matches_partition）が見る。
+fiscal_year_label = "（2023）"
+# 予算段階は**文書の種類**。決算書なので settlement。
+# 行が持つ FDP の phase（approved / adjusted / executed）はこれとは別で、package 段で展開する。
+phase_id = "settlement"
+phase_label = "決算"
+# ⚠️ 歳出と歳入が**別のデータセット**になっている（三鷹市は1データセットに2リソース）。
+# データセット名はリソース側で宣言する。
+encoding = "cp932"
+# 同名のデータセットが2件あるので、どちらを採るかを明示する（指定が無く複数当たれば取得は止まる）。
+resource_url_contains = "/komae/R05/"
+# ⚠️ **狛江市の原典は円。** 三鷹市（千円）と違う。全団体共通の倍率に戻すと
+# 「円に直すには 1000 を掛ける」が狛江市の配布物にも付いて黙って嘘になる。
+# ⚠️ 歳入の予算現額だけは千円で、段階ごとの単位は dbt_project.yml の
+# budget_amounts が持つ。ここは原典の主たる単位の宣言。
+source_amount_unit = "円"
+source_amount_multiplier = 1
+redistribute = "allow"
+redistribute_basis = "東京都オープンデータカタログのライセンス表示（CC BY 4.0）"
+license_id = "CC-BY-4.0"
+attribution = "狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）"
+landing_page = "https://www.city.komae.tokyo.jp/index.cfm/46,0,361,2170,html"
+
+[["132195:2023".resources]]
+direction = "expenditure"
+dataset_title = "決算書歳出データ（2023）"
+resource_name = "決算書歳出データ（2023）"
+
+[["132195:2023".resources]]
+direction = "revenue"
+dataset_title = "決算書歳入データ（2023）"
+resource_name = "決算書歳入データ（2023）"
+
+
+# ── 事業名の取得元（歳出事項別明細の PDF） ──────────────────────────────────
+#
+# ⚠️ **カタログの CSV は款・項・目・大事業を数字コードでしか持たない。**
+# 名称は市が公開している決算資料 PDF にしかなく、カタログには無い
+# （2026-08-22 に狛江市の 399 データセットを全件走査して確認）。
+#
+# ⚠️ **PDF そのものは保存しない。** 落とすのは抽出結果だけで、原典のバイト列は毎回取り直す。
+# 再配布の判断が CSV（CC BY）とは別レイヤーにあるため。
+#
+# ⚠️ **資料の構成が年度で変わる。** 2020〜2022 は「歳出事項別明細」が独立した PDF、
+# 2023 は「主要な施策の成果説明書・決算資料」に統合され、その一部（20〜264ページ）が該当する。
+# 一般化して吸収しようとしない（パーサ設計の原則5）。年度ごとに宣言する。
+#
+# ⚠️ **2018〜2019 は決算ページ自体が無い。** その2年度に事業名は付かない。
+
+[project_names."132195:2020"]
+document_title = "令和2年度　歳出事項別明細"
+url = "https://www.city.komae.tokyo.jp/index.cfm/46,130247,c,html/130247/R2-saishutsu-jikoubetsu-meisai.pdf"
+first_page = 1
+last_page = 216
+# ⚠️ **原文は置かない。落とすのは抽出した事実だけ。**
+# 抽出した事実（事業名・金額・コード）は著作物ではないので配れるが、原文の複製は別。
+raw_form = "extracted"
+# 市サイトの著作権表示は「著作権法上認められた場合を除き無断で複製・転用等をすることはできません」で、
+# 法が認める範囲を否定していない。**禁止の宣言ではないが、判断がついていない。**
+redistribute = "review"
+redistribute_basis = "市サイトの著作権表示（https://www.city.komae.tokyo.jp/index.cfm/4,19790,10,html）。事実に著作権が及ぶかは解釈が割れるので照会中"
+license_id = "NOASSERTION"
+
+# 列の x 範囲。見出し行（事業名 / 事業説明 / 金額）の実測から取った。
+# ⚠️ **4年度とも同じ組版だが、宣言は年度ごとに置く。** 共通の定数にすると、
+# 別の組版の資料を足したときに前提が黙って壊れる。
+columns = { code = [0, 128], kanri = [128, 140], mei = [140, 207], setsumei = [207, 292], kingaku = [292, 342] }
+
+[project_names."132195:2021"]
+document_title = "令和3年度　歳出事項別明細"
+url = "https://www.city.komae.tokyo.jp/index.cfm/46,130245,c,html/130245/saisyutu.pdf"
+first_page = 1
+last_page = 219
+# ⚠️ **原文は置かない。落とすのは抽出した事実だけ。**
+# 抽出した事実（事業名・金額・コード）は著作物ではないので配れるが、原文の複製は別。
+raw_form = "extracted"
+# 市サイトの著作権表示は「著作権法上認められた場合を除き無断で複製・転用等をすることはできません」で、
+# 法が認める範囲を否定していない。**禁止の宣言ではないが、判断がついていない。**
+redistribute = "review"
+redistribute_basis = "市サイトの著作権表示（https://www.city.komae.tokyo.jp/index.cfm/4,19790,10,html）。事実に著作権が及ぶかは解釈が割れるので照会中"
+license_id = "NOASSERTION"
+
+# 列の x 範囲。見出し行（事業名 / 事業説明 / 金額）の実測から取った。
+# ⚠️ **4年度とも同じ組版だが、宣言は年度ごとに置く。** 共通の定数にすると、
+# 別の組版の資料を足したときに前提が黙って壊れる。
+columns = { code = [0, 128], kanri = [128, 140], mei = [140, 207], setsumei = [207, 292], kingaku = [292, 342] }
+
+[project_names."132195:2022"]
+document_title = "令和4年度　歳出事項別明細"
+url = "https://www.city.komae.tokyo.jp/index.cfm/46,130170,c,html/130170/20231005-114612.pdf"
+first_page = 1
+last_page = 227
+# ⚠️ **原文は置かない。落とすのは抽出した事実だけ。**
+# 抽出した事実（事業名・金額・コード）は著作物ではないので配れるが、原文の複製は別。
+raw_form = "extracted"
+# 市サイトの著作権表示は「著作権法上認められた場合を除き無断で複製・転用等をすることはできません」で、
+# 法が認める範囲を否定していない。**禁止の宣言ではないが、判断がついていない。**
+redistribute = "review"
+redistribute_basis = "市サイトの著作権表示（https://www.city.komae.tokyo.jp/index.cfm/4,19790,10,html）。事実に著作権が及ぶかは解釈が割れるので照会中"
+license_id = "NOASSERTION"
+
+# 列の x 範囲。見出し行（事業名 / 事業説明 / 金額）の実測から取った。
+# ⚠️ **4年度とも同じ組版だが、宣言は年度ごとに置く。** 共通の定数にすると、
+# 別の組版の資料を足したときに前提が黙って壊れる。
+columns = { code = [0, 128], kanri = [128, 140], mei = [140, 207], setsumei = [207, 292], kingaku = [292, 342] }
+
+[project_names."132195:2023"]
+document_title = "令和５年度主要な施策の成果説明書・決算資料（うち 一般会計歳入歳出（事項別）決算状況）"
+url = "https://www.city.komae.tokyo.jp/index.cfm/46,134979,c,html/134979/20241004-150910.pdf"
+first_page = 20
+last_page = 264
+# ⚠️ **原文は置かない。落とすのは抽出した事実だけ。**
+# 抽出した事実（事業名・金額・コード）は著作物ではないので配れるが、原文の複製は別。
+raw_form = "extracted"
+# 市サイトの著作権表示は「著作権法上認められた場合を除き無断で複製・転用等をすることはできません」で、
+# 法が認める範囲を否定していない。**禁止の宣言ではないが、判断がついていない。**
+redistribute = "review"
+redistribute_basis = "市サイトの著作権表示（https://www.city.komae.tokyo.jp/index.cfm/4,19790,10,html）。事実に著作権が及ぶかは解釈が割れるので照会中"
+license_id = "NOASSERTION"
+
+# 列の x 範囲。見出し行（事業名 / 事業説明 / 金額）の実測から取った。
+# ⚠️ **4年度とも同じ組版だが、宣言は年度ごとに置く。** 共通の定数にすると、
+# 別の組版の資料を足したときに前提が黙って壊れる。
+columns = { code = [0, 128], kanri = [128, 140], mei = [140, 207], setsumei = [207, 292], kingaku = [292, 342] }

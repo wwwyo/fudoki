@@ -11,3 +11,19 @@ sources:
     tables:
       - name: expenditure
       - name: revenue
+  - name: raw_132195
+    description: 狛江市。原典の Parquet を直接読む（決算書。2018〜2023 の6年度）
+    meta:
+      external_location: "read_parquet('../data/budget/raw/jurisdiction=132195/year=*/phase=*/direction={name}/data.parquet', hive_partitioning=true)"
+    tables:
+      - name: expenditure
+      - name: revenue
+  - name: raw_132195_project_names
+    description: |
+      狛江市。決算資料 PDF から起こした事業名。**原典そのものではない。**
+      ⚠️ 抽出は不可逆なので、CSV のような復元一致の検査ができない。
+      保証の強さは証跡（`verification: hierarchy-totals`）に書いてある。
+    meta:
+      external_location: "read_parquet('../data/budget/raw/project-names/jurisdiction=132195/year=*/data.parquet', hive_partitioning=true)"
+    tables:
+      - name: data

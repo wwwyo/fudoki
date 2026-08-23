@@ -9,6 +9,9 @@ seeds:
       COFOG の割り当て規則。**fudoki の判断そのもの**なのでデータとして持つ。
       priority の小さい順に見て最初に当たったものを採る（具体的な規則ほど先）。
       applies_to が空の規則は法定語彙（款・節）にだけ当たるので、どの団体にも効く。
+      ⚠️ **名称で当たらない団体がある。** 狛江市は款・項・目に名称の列が原典に無いので、
+      名称を条件にした規則は1本も当たらない。名称を捏造せず `match_kan_code` で当て、
+      何の款かとその出所を basis に書く。
     config:
       # 団体コードは数値ではなく識別子。推論に任せると先頭ゼロが落ち、
       # match_* も値によって型が揺れる。
@@ -19,6 +22,7 @@ seeds:
         match_fund: varchar
         match_kan: varchar
         match_kou: varchar
+        match_kan_code: varchar
         match_moku: varchar
         moku_mode: varchar
         match_setsu: varchar
