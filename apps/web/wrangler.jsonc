@@ -1,0 +1,21 @@
+{
+  // Cloudflare Workers の静的アセットとして配信する。
+  //
+  // `main` を持たない＝**アセットだけの Worker**。この画面はサーバ側で何もしないので、
+  // スクリプトを置くと動かないコードを維持することになる。
+  //
+  // ⚠️ **Cloudflare 側でビルドさせない（Git 連携にしない）。**
+  // 画面は `public/pipeline.json` と `public/preview/` を読むが、どちらも commit しておらず、
+  // 生成には dbt が要る。clone しただけの環境では作れないので、
+  // 手元で組んでから `dist` を投げる（`bun run deploy:web`）。
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "fudoki",
+  "compatibility_date": "2026-08-23",
+  "assets": {
+    "directory": "./dist",
+    // 既定（`none`）のまま。クライアント側のルーティングを持たない1枚の画面なので、
+    // `single-page-application` にすると存在しないパスまで 200 で index を返し、
+    // 検索エンジンから見て soft 404 になる。
+    "not_found_handling": "none"
+  }
+}

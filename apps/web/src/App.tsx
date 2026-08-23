@@ -13,6 +13,7 @@ import { ChecksPanel } from '@/components/checks-panel'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Info } from 'lucide-react'
@@ -74,6 +75,18 @@ export default function App() {
     [loaded],
   )
 
+  // 系統は全団体で1本だが、図は見ている団体の分だけ出す（共有ノードは残す）。
+  // 帰属はノードの jurisdictionCode（生成側が付ける）で引く — id の命名規則を画面で推定しない。
+  // ⚠️ useMemo は参照の安定のため。毎 render で作り直すと、topology を依存に持つ
+  // プレビューの fetch がタブ切替のたびに再発火する（同じ JSON の取り直し）
+  const visibleTopology = useMemo(() => {
+    if (!current) return null
+    const topo = current.report.topology
+    const nodes = topo.nodes.filter((n) => (n.jurisdictionCode ?? current.code) === current.code)
+    const ids = new Set(nodes.map((n) => n.id))
+    return { ...topo, nodes, edges: topo.edges.filter((e) => ids.has(e.from) && ids.has(e.to)) }
+  }, [current])
+
   if (error) {
     return (
       <main className="mx-auto max-w-2xl p-6">
@@ -84,7 +97,7 @@ export default function App() {
       </main>
     )
   }
-  if (!data || !current) {
+  if (!data || !current || !visibleTopology) {
     return <main className="p-6 text-sm text-muted-foreground">読み込み中…</main>
   }
 
@@ -100,16 +113,14 @@ export default function App() {
   // 別の団体の行数と突き合わせることになる。
   const prov = report.ingestion
   const roundtripOk = prov.filter((p) => p.roundtrip_verified).length
-  const rowsOf = (label: string) => report.topology.nodes.find((n) => n.label === label)?.rows
-  const rowsIntact = (['expenditure', 'revenue'] as const).every(
-    (d) => rowsOf(`stg_${current.code}__${d}`) === rowsOf(`pkg_${current.code}__${d}`),
-  )
 
   const stats: { label: string; value: string | number; tone?: string; hint?: string }[] = [
     { label: '検査', value: `${report.summary.passed}/${report.summary.total}`, tone: report.summary.failed ? 'bad' : 'good', hint: '1つでも落ちると成果物を書き出さない' },
     // ⚠️ 団体で意味が違う。三鷹市は当初予算額、狛江市は決算の予算現額（全会計・全年度の合計）。
     { label: '原文の復元', value: `${roundtripOk}/${prov.length}`, tone: roundtripOk === prov.length ? 'good' : 'bad', hint: '文字コードの復号が可逆で、保存した Parquet から原文に戻ること' },
-    { label: '行数の一致', value: rowsIntact ? '一致' : '不一致', tone: rowsIntact ? 'good' : 'bad', hint: 'staging と配布物で行が増減していないこと' },
+    // 判定は生成側（summary.rowsPreserved）。配布物は1行に複数の金額を展開する団体があり、
+    // 期待値（stg × 金額の数）は dbt の宣言を知る生成側にしか計算できない
+    { label: '行の保存', value: report.summary.rowsPreserved ? '一致' : '不一致', tone: report.summary.rowsPreserved ? 'good' : 'bad', hint: 'staging の全行が配布物に残っていること（1行 × 金額の数）' },
     { label: 'COFOG 割当済み（金額比）', value: `${((assigned / total) * 100).toFixed(1)}%`, hint: 'COFOG は政府支出の機能別分類（教育、保健など10区分）。国際標準' },
     // ⚠️ 消去が成立しない団体がある（狛江市は相手の会計が原典から決まらない）。
     // 「相殺する」と決め打ちで書くと、消去していない団体で嘘になる。
@@ -118,30 +129,10 @@ export default function App() {
   return (
     <div className="min-h-dvh bg-background text-foreground">
       <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background/95 px-4 backdrop-blur">
-        <div className="flex min-w-0 items-center gap-3">
-          <img src="/logo.svg" alt="風土記" className="h-6 w-auto shrink-0" />
-          {data.jurisdictions.length > 1 ? (
-            <select
-              aria-label="団体"
-              value={current.code}
-              onChange={(e) => { setCode(e.target.value); setSelectedNode(null); setDetailError(null) }}
-              className="border-input h-8 shrink-0 rounded-md border bg-background px-2 text-sm focus-visible:ring-ring/50 focus-visible:ring-[3px] focus-visible:outline-none"
-            >
-              {data.jurisdictions.map((j) => (
-                <option key={j.code} value={j.code}>
-                  {j.report.meta.jurisdictionName}
-                </option>
-              ))}
-            </select>
-          ) : (
-            <span className="shrink-0 text-sm font-medium">{m.jurisdictionName}</span>
-          )}
-          <span className="truncate text-sm text-muted-foreground">
-            {m.fiscalYears.length > 2
-              ? `${m.fiscalYears[0]}〜${m.fiscalYears.at(-1)}年度`
-              : `${m.fiscalYears.join('・')}年度`} · {m.phase.label}
-          </span>
-        </div>
+        {/* ⚠️ ロゴを1枚にしない。`<img>` の中のメディアクエリは OS 設定しか見ないので、
+            OS がライトのまま画面をダークにするとロゴだけ取り残される */}
+        <img src="/logo.svg" alt="風土記" className="h-6 w-auto shrink-0 dark:hidden" />
+        <img src="/logo-dark.svg" alt="" aria-hidden className="hidden h-6 w-auto shrink-0 dark:block" />
         <Badge variant={report.summary.failed ? 'destructive' : 'secondary'} className="ml-auto shrink-0">
           検査 {report.summary.passed}/{report.summary.total}
         </Badge>
@@ -149,9 +140,37 @@ export default function App() {
 
       <main className="mx-auto flex max-w-[1500px] flex-col gap-8 p-4 pb-24">
         <section className="flex flex-col gap-4">
-          <h1 className="mb-2 text-xl font-semibold">ELT パイプライン</h1>
+          {/* どの団体を見ているかは本文のコンテキスト。header はサイト全体の枠なので置かない */}
+          <div className="mb-2 flex flex-wrap items-baseline gap-3">
+            <h1 className="text-xl font-semibold">ELT パイプライン</h1>
+            {data.jurisdictions.length > 1 ? (
+              <Select
+                items={data.jurisdictions.map((j) => ({ value: j.code, label: j.report.meta.jurisdictionName }))}
+                value={current.code}
+                onValueChange={(v) => { setCode(v as string); setSelectedNode(null); setDetailError(null) }}
+              >
+                <SelectTrigger aria-label="団体"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {data.jurisdictions.map((j) => (
+                      <SelectItem key={j.code} value={j.code}>
+                        {j.report.meta.jurisdictionName}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            ) : (
+              <span className="shrink-0 text-sm font-medium">{m.jurisdictionName}</span>
+            )}
+            <span className="truncate text-sm text-muted-foreground">
+              {m.fiscalYears.length > 2
+                ? `${m.fiscalYears[0]}〜${m.fiscalYears.at(-1)}年度`
+                : `${m.fiscalYears.join('・')}年度`} · {m.phase.label}
+            </span>
+          </div>
 
-          <FlowGraph topology={report.topology} report={report} onSelectNode={setSelectedNode} selected={selectedNode} />
+          <FlowGraph topology={visibleTopology} report={report} onSelectNode={setSelectedNode} selected={selectedNode} />
 
           <div className="flex flex-wrap gap-3">
             {stats.map((s) => (

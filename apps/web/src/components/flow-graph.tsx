@@ -159,10 +159,6 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
             const warned = cs.filter((c) => !c.ok && c.severity === 'warn').length
             const dim = related ? !related.has(node.id) : false
             const focused = active === node.id
-            // **「含む」で色を塗る。** 判断の配布物はそれ自身が規則を適用していなくても
-            // 判断を含む。持ち込むかどうかで塗ると、配布物が「判断なし」に見える。
-            const on = node.containsJudgment
-            const accent = on ? 'var(--color-stage-judgment)' : 'var(--color-stage-nojudgment)'
             const hint = cs.length > 0 ? `検査 ${cs.length} 件` : ''
             return (
               <g
@@ -190,19 +186,16 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
                 <rect
                   width={COL_W} height={NODE_H} rx={7}
                   className="fill-card"
-                  stroke={on ? 'var(--color-stage-judgment)' : 'var(--color-border)'}
+                  stroke="var(--color-border)"
                   strokeWidth={1.2}
                 />
-                {/* 選択は focus ring で示す。ノード自体の太さや色を変えると、
-                    その太さ・色が持っている意味（判断を含むか）と混ざる。
-                    間隔と太さは shadcn の ring-offset-2 / ring-[3px] に合わせる */}
+                {/* 選択は focus ring で示す。間隔と太さは shadcn の ring-offset-2 / ring-[3px] に合わせる */}
                 {focused && (
                   <rect
                     x={-5} y={-5} width={COL_W + 10} height={NODE_H + 10} rx={11}
                     fill="none" stroke="var(--color-ring)" strokeWidth={3}
                   />
                 )}
-                <rect width={4} height={NODE_H} rx={2} fill={accent} />
                 <text x={16} y={19} className="fill-foreground text-[11.5px] font-medium">
                   {fitLabel(node.label)}
                 </text>
@@ -213,7 +206,7 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
                   <>
                     <circle
                       cx={COL_W - 16} cy={NODE_H / 2} r={7}
-                      fill={failed ? 'var(--color-destructive)' : warned ? 'var(--color-status-unclassifiable)' : 'var(--color-chart-2)'}
+                      fill={failed ? 'var(--color-destructive)' : warned ? 'var(--color-warning)' : 'var(--color-chart-2)'}
                       opacity={0.9}
                     />
                     <text x={COL_W - 16} y={NODE_H / 2 + 3.5} textAnchor="middle" className="fill-background text-[9px] font-semibold">

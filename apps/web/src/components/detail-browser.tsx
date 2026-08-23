@@ -10,7 +10,10 @@ import { LEVEL_JA, basisOf, cell, divisionLabelOf, levelCell } from '@/lib/pipel
 import { DIVISION_COLOR, STATUS_JA, yen } from '@/lib/pipeline'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 /**
@@ -78,15 +81,24 @@ function Browser({
   const [phase, setPhase] = useState<string | null>(null)
   const activePhase = phase && phases.some((p) => p.id === phase) ? phase : phases[0]?.id ?? null
 
+  /**
+   * ⚠️ **年度も混ぜて足さない**（段階と同じ理由）。狛江市は6年度が1つの配布物に入っており、
+   * 絞らないと全年度の合算という意味の無い数字が出る。既定は最新年度。
+   * 何年度あるかは団体ごとに違うので、データから取る。
+   */
+  const years = useMemo(() => [...new Set(source.map((r) => cell(r, 'fiscal_year')))].sort(), [source])
+  const [year, setYear] = useState<string | null>(null)
+  const activeYear = year && years.includes(year) ? year : years.at(-1) ?? null
+
   const rows = useMemo(() => {
-    let r = source.filter((row) => cell(row, 'phase_id') === activePhase)
+    let r = source.filter((row) => cell(row, 'phase_id') === activePhase && cell(row, 'fiscal_year') === activeYear)
     r = r.filter((row) => path.every((v, i) => levelCell(row, levels[i]!, 'source') === v))
     if (query) {
       const q = query.toLowerCase()
       r = r.filter((row) => levels.some((l) => levelCell(row, l, 'label').toLowerCase().includes(q)))
     }
     return r
-  }, [source, path, query, levels, activePhase])
+  }, [source, path, query, levels, activePhase, activeYear])
 
   const total = rows.reduce((s, r) => s + Number(cell(r, 'value')), 0)
   const depth = path.length
@@ -128,15 +140,47 @@ function Browser({
       </p>
 
       <div className="flex flex-wrap items-center gap-2">
-        <Button size="sm" variant={dir === 'expenditure' ? 'default' : 'outline'} onClick={() => setDirection('expenditure')}>歳出</Button>
-        <Button size="sm" variant={dir === 'revenue' ? 'default' : 'outline'} onClick={() => setDirection('revenue')}>歳入</Button>
+        <ToggleGroup
+          variant="outline"
+          size="sm"
+          value={[dir]}
+          onValueChange={(v) => { const d = v[0] as Direction | undefined; if (d) setDirection(d) }}
+          aria-label="歳出と歳入"
+        >
+          <ToggleGroupItem value="expenditure">歳出</ToggleGroupItem>
+          <ToggleGroupItem value="revenue">歳入</ToggleGroupItem>
+        </ToggleGroup>
+        {years.length > 1 && (
+          <Select
+            items={years.map((y) => ({ value: y, label: `${y}年度` }))}
+            value={activeYear}
+            onValueChange={(v) => { setYear(v as string); setPath([]) }}
+          >
+            <SelectTrigger size="sm" aria-label="年度"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {years.map((y) => (
+                  <SelectItem key={y} value={y}>{y}年度</SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        )}
         {phases.length > 1 && (
-          <span className="flex flex-wrap items-center gap-1" role="group" aria-label="予算段階">
-            {phases.map((p) => (
-              <Button key={p.id} size="sm" variant={p.id === activePhase ? 'default' : 'outline'}
-                onClick={() => { setPhase(p.id); setPath([]) }}>{p.label}</Button>
-            ))}
-          </span>
+          <Select
+            items={phases.map((p) => ({ value: p.id, label: p.label }))}
+            value={activePhase}
+            onValueChange={(v) => { setPhase(v as string); setPath([]) }}
+          >
+            <SelectTrigger size="sm" aria-label="予算段階"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {phases.map((p) => (
+                  <SelectItem key={p.id} value={p.id}>{p.label}</SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         )}
         <Input className="max-w-xs" type="search" placeholder="科目名で絞り込み" aria-label="科目名で絞り込み"
           value={query} onChange={(e) => { setQuery(e.target.value); setPath([]) }} />
@@ -240,13 +284,17 @@ function LeafCard({
     )
   }
   return (
-    <dl className="grid grid-cols-[max-content_minmax(0,1fr)] gap-x-4 gap-y-1.5 rounded-lg border bg-muted/30 p-4 text-sm">
-      {items.map(([k, v], i) => (
-        <div key={i} className="col-span-2 grid grid-cols-subgrid">
-          <dt className="whitespace-nowrap text-muted-foreground">{k}</dt>
-          <dd className="m-0 break-words">{v}</dd>
-        </div>
-      ))}
-    </dl>
+    <Card size="sm">
+      <CardContent>
+        <dl className="grid grid-cols-[max-content_minmax(0,1fr)] gap-x-4 gap-y-1.5 text-sm">
+          {items.map(([k, v], i) => (
+            <div key={i} className="col-span-2 grid grid-cols-subgrid">
+              <dt className="whitespace-nowrap text-muted-foreground">{k}</dt>
+              <dd className="m-0 break-words">{v}</dd>
+            </div>
+          ))}
+        </dl>
+      </CardContent>
+    </Card>
   )
 }

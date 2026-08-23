@@ -168,6 +168,8 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
     const stage = stageOf(n)
     return {
       id, label: n.name, kind: n.resource_type as Node['kind'], stage, rows,
+      // 団体の帰属はここで1回だけ id / 名前から決める。画面はこのフィールドで絞る
+      jurisdictionCode: /\.raw_(\d{6})/.exec(id)?.[1] ?? /_(\d{6})__/.exec(n.name)?.[1] ?? null,
       description: (n.description ?? '').trim(),
       introducesJudgment: introducesJudgment(n, stage),
       containsJudgment: false, // 下で上流から伝播させる
@@ -184,12 +186,19 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
     const code = /\.raw_(\d{6})/.exec(src.id)?.[1]
     const ps = provenance.filter((p) => p.jurisdiction_code === code && p.direction === src.label)
     if (ps.length === 0) continue
+    // ノードには見出しだけ出す。「※下水道事業会計除く」のような注記は
+    // 選んだときのプレビュー（title が正式名）と description に残る。
+    // 複数年度あるときは先頭年の名前だけ出すと嘘になる（行数は全年度の合計）ので、範囲にする
+    const years = [...new Set(ps.map((p) => p.fiscal_year))].sort()
+    const base = ps[0]!.resource_name.split('※')[0]!.trim()
+    const label = years.length > 1
+      ? `${base.replace(/（\d{4}）$/, '').trim()}（${years[0]}〜${years.at(-1)}）`
+      : base
     nodes.push({
-      // ノードには見出しだけ出す。「※下水道事業会計除く」のような注記は
-      // 選んだときのプレビュー（title が正式名）と description に残る
-      id: `${src.id}.origin`, label: ps[0]!.resource_name.split('※')[0]!.trim(), kind: 'origin', stage: 'origin',
+      id: `${src.id}.origin`, label, kind: 'origin', stage: 'origin',
+      jurisdictionCode: code ?? null,
       rows: ps.reduce((s, p) => s + p.rows, 0),
-      description: `${ps[0]!.request_url}\n取得: ${ps[0]!.fetched_at}`,
+      description: `${ps[0]!.request_url}${ps.length > 1 ? `\nほか ${ps.length - 1} リソース` : ''}\n取得: ${ps[0]!.fetched_at}`,
       introducesJudgment: false, containsJudgment: false, artifact: null,
     })
   }

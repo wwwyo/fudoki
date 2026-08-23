@@ -21,6 +21,12 @@ export type Node = {
   id: string
   label: string
   kind: 'model' | 'source' | 'seed' | 'origin'
+  /**
+   * どの団体のノードか。null は団体をまたぐ共有ノード（規則表・core）。
+   * **生成側が1箇所で付ける** — 画面が id の命名規則を正規表現で推定すると、
+   * id の形式を変えたとき絞り込みが黙って壊れる
+   */
+  jurisdictionCode: string | null
   stage: Stage['id']
   rows: number | null
   description: string
@@ -93,7 +99,16 @@ export type ReportEnvelope = {
     /** 実行時刻ではなく原典の取得時刻。回すたびに差分が出ないようにする */
     generatedAt: string
   }
-  summary: { total: number; passed: number; failed: number; warned: number }
+  summary: {
+    total: number; passed: number; failed: number; warned: number
+    /**
+     * staging → 配布物で行が失われていないか。**判定は生成側で行う** —
+     * 配布物は1行に複数の金額（狛江市は予算現額・執行済額など3つ）を展開するので、
+     * stg と pkg の行数の単純比較は多金額の団体で必ず「不一致」と嘘をつく。
+     * 期待値（stg 行数 × 金額の数）は dbt_project.yml の宣言を知る生成側にしか計算できない
+     */
+    rowsPreserved: boolean
+  }
   topology: Topology
   ingestion: Provenance[]
   checks: Check[]

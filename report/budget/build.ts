@@ -227,6 +227,11 @@ function build(
       passed: checks.filter((c) => c.ok).length,
       failed: checks.filter((c) => !c.ok && c.severity === 'error').length,
       warned: checks.filter((c) => c.status === 'warn').length,
+      rowsPreserved: DIRECTIONS.every((d) => {
+        // label（表示名）ではなく id で引く。表示名は変わりうるが、dbt の unique_id は識別子
+        const rows = (name: string) => topology.nodes.find((n) => n.id.endsWith(`.${name}`))?.rows
+        return rows(`stg_${code}__${d}`)! * amountsOf(code, d).length === rows(`pkg_${code}__${d}`)
+      }),
     },
     topology,
     ingestion: prov,
