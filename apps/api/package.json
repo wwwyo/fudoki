@@ -1,0 +1,28 @@
+{
+  "name": "@fudoki/api",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "build": "bun run build.ts --allow-dirty",
+    "build:release": "bun run build.ts",
+    "deploy": "bun run build:release && wrangler deploy",
+    "dev": "bun run build && wrangler dev",
+    "test": "bun run build && bun test",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@orpc/contract": "1.15.0",
+    "@orpc/openapi": "1.15.0",
+    "@orpc/server": "1.15.0",
+    "@orpc/zod": "1.15.0",
+    "hono": "4.13.2",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@fudoki/report": "workspace:*",
+    "@types/bun": "1.3.14",
+    "typescript": "7.0.2",
+    "wrangler": "4.123.0"
+  }
+}

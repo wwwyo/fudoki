@@ -1,0 +1,104 @@
+# decision.log
+
+設計書（.agent/prd/budget-api/design-doc.md、gitignore 対象）に明示されていないが、
+実装時に判断したこと・考慮したトレードオフの記録。
+PRD・設計フェーズの決定記録は .agent/prd/budget-api/decision.log にある（こちらも gitignore 対象）。
+
+## budget-api の実装（2026-08-24）
+
+### 1. compatibility_date は 2026-08-18
+
+設計時は当日の日付を置く想定だったが、wrangler 4.123.0 同梱の workerd が受ける最新日付が
+2026-08-18 で、それより新しいと `wrangler dev` が起動しない。wrangler.jsonc にコメントで残した。
+wrangler を上げるときに一緒に上げてよい。
+
+### 2. 注意事項（caveat）のカテゴリに `other` を追加した
+
+設計書は必須4カテゴリ（coverage / phaseSemantics / classification / sourceAndLicense）だけを
+定義していたが、既存の注意事項25件にはどれにも属さないもの（識別子の設計、文字コード、
+配布形式など）がある。無理に4つへ畳むとカテゴリの意味が薄まるので `other` を追加した。
+**build の検査は「必須4カテゴリが全団体に存在すること」のままで、緩めていない。**
+
+### 3. 三鷹市の注意事項を3件新設した
+
+三鷹市の既存 caveats には coverage / phaseSemantics / sourceAndLicense に当たるものが無く、
+build の必須カテゴリ検査が通らない。埋め草ではなく実内容のある3件
+（収録は令和6年度当初予算のみ / 予算段階は approved の1段階だけ / CC BY 4.0 の帰属）を
+report/budget/static.ts に足した。内容は AGENTS.md の実測記述から起こした。
+
+### 4. 団体単位の List は fiscalYear と direction の filter を必須にした
+
+設計書の「フィルタ条件とパーティションが一致しない問い合わせは v0 では受けない」の具体化。
+パーティションが (団体, 年度, direction) 単位なので、年度・direction 無指定は全ファイル走査になる。
+PRD の Acceptance Criteria も常に両方を指定している。無指定は 400 で、要求される filter を
+メッセージで返す。
+
+### 5. ワイルドカード親（横断）では direction と phase の filter を 400 にした
+
+横断の chunk 系列は division（と年度）でしか切っておらず、direction は歳出固定。
+phase を実行時フィルタとして許すことはできたが、疎なページの原因が増えるだけで
+横断の代表ユースケース（division 指定の全件取得）に寄与しないため v0 では受けない。
+OpenAPI の説明文に scope ごとの許可フィールドを明記した。
+
+### 6. dirty な作業ツリーの build は「deploy 経路でだけ」止める
+
+設計書は「dirty なら build を止める」としていたが、そのままだと開発中のテスト
+（`bun test` は build 生成物を前提にする）が一切回らない。
+`--allow-dirty` フラグを設け、dev/test 経路（`bun run build`）では revision に `-dirty` を付けて通し、
+deploy 経路（`bun run deploy` → `build:release`）ではフラグ無し＝dirty なら停止、とした。
+「どの commit の配布物か言えない状態で公開しない」という設計意図は deploy 経路で守られている。
+
+### 7. パススルーの OpenAPI 記述はコードで合成する
+
+パススルー（配布物をバイト同一で返す口）は oRPC の procedure ではないので、contract からは
+生成できない。手書きの spec ファイルを持つ代わりに、生成オプション（apps/api/src/spec.ts）の
+`paths` に1エンドポイント分だけコードで足した。「contract が唯一の API 定義」の例外は
+このファイルのこの1箇所に閉じている。
+
+### 8. 参照 UI は oRPC v1 の OpenAPIReferencePlugin。root からは 302
+
+docs UI は `/v0/`、spec は `/v0/openapi.json` に置き、`/` と `/openapi.json` は 302 で流す。
+設計書の「GET /openapi.json」という表記との差は、oRPC handler の prefix（/v0）配下に
+プラグインがぶら下がる構造のため。公開 URL としては両方とも機能する。
+
+### 9. 依存の版: oRPC は 1.15.0、hono は 4.13.2
+
+oRPC の最新は 2.0.0-beta.31 だが beta なので安定版 1.15.0 を採った（v2 の
+OpenAPIReferenceHandlerPlugin 等とは API が違う。移行時は spec.ts / index.ts が対象）。
+hono の最新 4.13.3 は公開が 2026-08-18 で cooldown 7day に掛かるため 4.13.2。
+wrangler は repo 既存の 4.123.0 に、zod は root と同じ 4.4.3 に揃えた。
+
+### 10. 性能の実測（wrangler dev、ローカル）
+
+- 最大パーティション（狛江市 2018 歳出、JSON 3.1MB）の全件応答: wall 56ms
+- 横断 division 09 の先頭ページ: wall 14ms
+
+wall time なので CPU time はこれより小さいが、無料プランの 10ms CPU を最大パーティションで
+超える可能性は残る。設計書 Caveats 1 のとおり、本番（ステージング）に上げてから
+Workers Logs の CPU time で計測し、超えるなら chunk 縮小 → 出力検証の無効化 → 有料化の順で対処する。
+なお設計時の見積り「狛江 1年度歳出 = CSV 1.5MB 相当」は JSON 化で約2倍（3.1MB）になった。
+
+### 11. Get はパーティション索引を持たない
+
+budget_line_id が `{団体}:{年度}:{direction}:...` の形で、id 自身がパーティションを指す。
+別途の索引ファイルを作らず id を分解して該当ファイルを1つ読む。
+識別子の形式が変わるとここが壊れるが、識別子は公開契約なので変わらない前提を置いてよい。
+
+### 12. dimensions（所属・予算区分）は CSV ヘッダから導出し、dbt の宣言と突合する
+
+応答の `dimensions` に載せる列は、CSV ヘッダの `X_code`/`X_label` のうち階層でないものから導く。
+そのうえで dbt_project.yml の `budget_extra_key_columns` と一致しなければ build を止める。
+ヘッダだけを信じると宣言の腐りに気づけず、宣言だけを信じると原典の列追加に気づけないため、
+両方を突き合わせる形にした。
+
+### 13. project_names の結合キーは（年度, fund〜daijigyo のコード）
+
+配布物の project_names.csv がこのキーで出ているのでそのまま使った。
+結合が1件も成立しなければ build を止める（キーの形式が変わったことの検出）。
+
+### 14. 統合テストは workerd ではなく bun test で回す
+
+テストは Worker の fetch を直接呼び、assets binding をローカルファイルで模した。
+workerd 実機（wrangler dev）はスクリプトでの起動待ちが不安定なので CI 向きでなく、
+手元の smoke test に留めた（上記10の計測はその結果）。ランタイム差は
+compatibility_date の件以外は観測していない。

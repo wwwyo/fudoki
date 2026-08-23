@@ -1,0 +1,65 @@
+/**
+ * OpenAPI 生成の設定。**contract から生成する**（手書きの spec を持たない）。
+ * パススルーは oRPC の procedure ではないので、ここで base.paths として足す
+ * （手書き YAML ではなくコードで合成する。判断の経緯は repo 直下の decision.log）。
+ */
+import type { OpenAPIGeneratorGenerateOptions } from '@orpc/openapi'
+
+export const API_TITLE = 'fudoki budget API'
+export const API_VERSION = '0.1.0'
+
+const V0_NOTICE =
+  '**実験版（v0）**。URL と応答スキーマには破壊的変更があり得る。' +
+  'ただしデータの識別子（budget_line_id、団体コード）は配布物側の契約であり、' +
+  'API の版とは独立に安定している。' +
+  '正本はリポジトリ（https://github.com/wwwyo/fudoki）の配布物で、この API はその派生物。' +
+  'すべてのデータ応答は、由来する配布物の revision（git commit）を持つ。'
+
+/** パススルー（配布物をそのまま返す）の spec。procedure ではないのでここで宣言する */
+const passthroughPath = {
+  '/datapackages/{jurisdiction}/{file}': {
+    get: {
+      operationId: 'getDatapackageFile',
+      summary: 'Get a distribution file as-is',
+      description:
+        '配布物（datapackage.json と各リソース CSV）をバイト同一で返す。' +
+        '応答ヘッダ X-Fudoki-Revision が由来する配布物の revision、' +
+        'ETag がファイルの SHA-256。HEAD も受ける。',
+      tags: ['datapackages'],
+      parameters: [
+        { name: 'jurisdiction', in: 'path', required: true, schema: { type: 'string' } },
+        {
+          name: 'file',
+          in: 'path',
+          required: true,
+          schema: { type: 'string' },
+          description: 'datapackage.json または resources のファイル名（一覧は listJurisdictions の resources）',
+        },
+      ],
+      responses: {
+        '200': {
+          description: '配布物のファイル。リポジトリの該当 revision のファイルとバイト同一',
+          headers: {
+            'X-Fudoki-Revision': { schema: { type: 'string' }, description: '配布物の revision（git commit）' },
+            'ETag': { schema: { type: 'string' }, description: 'ファイル内容の SHA-256' },
+          },
+          content: {
+            'application/json': {},
+            'text/csv': {},
+          },
+        },
+        '404': { description: '未収録の団体、または契約外のファイル名' },
+      },
+    },
+  },
+} as const
+
+export const specGenerateOptions: OpenAPIGeneratorGenerateOptions = {
+  info: {
+    title: API_TITLE,
+    version: API_VERSION,
+    description: V0_NOTICE,
+  },
+  servers: [{ url: 'https://api.fudoki.dev/v0' }],
+  paths: structuredClone(passthroughPath) as never,
+}
