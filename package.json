@@ -2,13 +2,17 @@
   "name": "fudoki",
   "private": true,
   "type": "module",
-  "workspaces": ["apps/*", "report"],
+  "workspaces": [
+    "apps/*",
+    "report"
+  ],
   "scripts": {
     "build:brand": "uv run --no-project --with fonttools python apps/web/brand/build.py",
     "build:web": "bun run report && bun run --cwd apps/web build",
     "check:budget": "bun run ingestion/budget/check-granularity.ts",
     "check:bulletins": "bun run ingestion/transcripts/check-bulletins.ts",
     "dbt": "cd dbt && DBT_PROFILES_DIR=. uv run dbt build",
+    "deploy:web": "bun run dbt && bun run build:web && bun run --cwd apps/web deploy",
     "dev": "bun run report && bun run --cwd apps/web dev",
     "extract:projects": "uv run python -m ingestion.budget.extract_projects",
     "fetch:fdp-taxonomy": "bun run fdp/fetch-taxonomy.ts",

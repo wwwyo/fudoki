@@ -120,12 +120,21 @@ CC BY が求める帰属を下流が落とす。層ごとの宣言は `data/LICE
 置き場は Cloudflare。apex をそのまま向けられるのは Cloudflare が CNAME flattening をするからで、
 `CNAME` ファイルは要らない（GitHub Pages なら要る）。
 
+配信は **Cloudflare Workers の静的アセット**（`apps/web/wrangler.jsonc`）。`main` を持たない
+アセットだけの Worker で、画面はサーバ側で何もしないのでスクリプトは置かない。
+
 ⚠️ **ホスティング側でビルドさせることはできない。** 画面は `pipeline.json` と `preview/` を読むが、
 どちらも commit していない（再実行で得られるローカル生成物）。生成には `bun run report` が要り、
 それは `dbt/target/manifest.json` を読むので、**dbt を回さないと画面のデータが存在しない**。
-clone しただけの環境では作れないので、**CI で組んでから成果物を投げる**。
-`.github/workflows/verify.yml` が既に `dbt build` → `report` → `web build` を回しているため、
-必要なものは CI 上に揃っている。
+clone しただけの環境では作れないため、Git 連携でホスティング側にビルドさせる構成は採らない。
+手元で組んでから投げる。
+
+```bash
+bun run deploy:web    # dbt → report → vite build → wrangler deploy
+```
+
+⚠️ **`deploy:web` が dbt から通しているのは、古い `dist` を黙って上げないため。**
+`wrangler deploy` だけを叩くと、手元に残っている前回の `dist` がそのまま公開される。
 
 **原典・証跡・配布物をリポジトリに置く。** 原典は Parquet で `data/raw/` へ、取得の単位（団体コード・年度・direction）で partition する。全量（62団体 × 9年度）で 79 MB と実測しており、git repo として普通の範囲に収まる。調査の観測とパイプライン報告は commit しない（再実行で得られるローカル作業ファイル。主張には調査日を添える）。
 
