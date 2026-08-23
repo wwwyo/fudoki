@@ -19,7 +19,8 @@ provenance.json と同じ内容を descriptor へ写しただけだった。
 仕様本文が Profile として挙げる fiscal.datapackage.org/profiles/fiscal-data-package.json は
 0.3 世代のままで、1.0.0 が廃止した `model`（measures / dimensions）を required に持つ。
 検査に使えないので descriptor の `profile` には下層の Tabular Data Package v1 を宣言し、
-この事実そのものを `fudoki.specification.profileNote` に書いて配る。
+この事実は AGENTS.md と data/LICENSE に記録してある（配布物には載せない —
+利用者の行動が変わらないため）。
 """
 
 from __future__ import annotations
@@ -42,7 +43,7 @@ LICENSE_CC_BY_4 = {
 def licenses_of(srcs: list) -> list[dict]:
     """配布物に貼るライセンス。**取得元の宣言から決める。定数を貼らない。**
 
-    ⚠️ 以前はここが定数の直書きだった。`rights_of` が値域を守っていたので今のところ
+    ⚠️ 以前はここが定数の直書きだった。別の関数が値域を守っていたので今のところ
     結果は同じだったが、**この PR が直そうとした「勝手にライセンスを付ける」そのもの**である。
     宣言が変わっても配布物が変わらない状態を残してはいけない。
 
@@ -60,24 +61,6 @@ def licenses_of(srcs: list) -> list[dict]:
             f"配布物のライセンスを決め直してから配ること"
         )
     return [LICENSE_CC_BY_4]
-
-
-def rights_of(srcs: list) -> dict:
-    """**利用者の行動が変わることだけを書く。** 変わらないなら何も書かない。
-
-    ⚠️ 以前はここに「そのライセンスを誰が決めたか（原典 / fudoki）」を出していたが、
-    それを知っても利用者のすることは変わらない（`licenses` と `sources` で足りる）。
-    fudoki が自分の正しさを確認するための情報であって、配布物に載せるものではない。
-    その整理は data/LICENSE にある。
-
-    残るのは1つだけ。**利用許諾の無い資料から事実を抽出した部分があるか。**
-    事実に原典のライセンスは付いてこないが、利用者が原典そのものに当たり直すときは
-    条件が違うので、出所を知らせる必要がある。
-    """
-    if not srcs:
-        raise SystemExit("取得元が空。権利の判断ができない")
-    unlicensed = sorted({s.attribution for s in srcs if s.license_id == "NOASSERTION"})
-    return {"factsFrom": unlicensed} if unlicensed else {}
 
 
 # CC BY 4.0 §3(a)(1)(B) が求める「改変した旨」の表示。**descriptor の `description` に書く。**
@@ -242,7 +225,7 @@ def described(body: str, credit: str, modifications: list[str], notes: list[str]
 def base(name: str, title: str, description: str) -> dict:
     created = latest_fetch()
     return {
-        # ⚠️ **1.0.0 の profile JSON は存在しない**（`fudoki.specification.profileNote`）。
+        # ⚠️ **1.0.0 の profile JSON は存在しない**（AGENTS.md に実測を記録）。
         # ここに書けるのは下層の Tabular Data Package v1 だけである。
         "profile": "tabular-data-package",
         "name": name,
@@ -323,8 +306,6 @@ def build_jurisdiction(code: str) -> None:
     # ⚠️ したがって**自治体を contributors に入れない**。自治体はこのパッケージを作っていない。
     # 正本で fudoki がしたのは他人のデータの荷造りなので `wrangler`（派生は `author`）。
     pkg["contributors"] = [{"title": "fudoki", "path": HOMEPAGE, "role": "wrangler"}]
-    if rights := rights_of(srcs):
-        pkg["fudoki"] = {**pkg["fudoki"], "rights": rights}
     pkg["sources"] = [{"title": s.attribution, "path": s.landing_page} for s in srcs]
     # 全行同じ値なのでリソースの列から外したもの。**リソースの `extraFields` に置く。**
     # ⚠️ 以前は独自の `constants` に置いていたが、仕様が Constant Fields として
@@ -387,8 +368,6 @@ def build_derived() -> None:
     # ⚠️ 以前は正本にも同じものが載っていた（COFOG 列を1つも持たないのに）。
     pkg["fudoki"] = {**pkg["fudoki"], "cofog": TYPES["cofog"]}
     pkg["sources"] = [{"title": s.attribution, "path": s.landing_page} for s in srcs]
-    if rights := rights_of(srcs):
-        pkg["fudoki"] = {**pkg["fudoki"], "rights": rights}
     pkg["resources"] = [
         resource(d / "cofog.csv", "cofog", "COFOG の割当",
                  "識別子と判断だけ。正本の列を複製しない", ["budget_line_id"]),

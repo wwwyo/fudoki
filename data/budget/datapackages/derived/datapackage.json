@@ -128,9 +128,7 @@
   "fudoki": {
     "specification": {
       "version": "1.0.0",
-      "url": "https://fiscal.datapackage.org/specifications/fiscal-data-package/",
-      "profile": null,
-      "profileNote": "1.0.0 に対応する profile JSON は存在しない（2026-08-23 実測）。仕様本文が Profile として挙げる https://fiscal.datapackage.org/profiles/fiscal-data-package.json は 0.3 世代のままで、1.0.0 が廃止した model（measures / dimensions）を required に持つ。リポジトリ frictionlessdata/datapackage-fiscal でもこのファイルは 2024-01-05 の bootstrap 以降更新されておらず、1.0.0 の語彙を検査できる JSON Schema はどこにも無い。したがって descriptor の profile には下層の Tabular Data Package v1（tabular-data-package）を宣言し、1.0.0 への適合は仕様本文に照らして人が確かめる。"
+      "url": "https://fiscal.datapackage.org/specifications/fiscal-data-package/"
     },
     "cofog": {
       "version": "COFOG 1999",
