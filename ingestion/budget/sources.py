@@ -46,10 +46,54 @@ class Source:
     attribution: str
     landing_page: str
     resources: tuple[Resource, ...]
+    # `data/budget/raw/` に何を置くか。**ここがこの宣言の正本**（文書は要約）。
+    #
+    #   verbatim   原文そのもの。復号の可逆性と原文の復元を検査できる。
+    #              置けるのは redistribute=allow のときだけ（下の不変条件）
+    #   extracted  原文から抽出した事実。**不可逆**なので復元は検査できない。
+    #              再現性の保証は「証跡と抽出コードから取り直せること」に変わる
+    #
+    # ⚠️ dbt の原典突合の検査（staging_is_one_to_one / canonical_preserves_source /
+    # package_preserves_source）は raw が原文であることを前提にしている。
+    # extracted を通すときは、その3本を分岐させるか別の検査に差し替える必要がある。
+    raw_form: str = "verbatim"
+
+    def __post_init__(self) -> None:
+        # ⚠️ **値も検証する。** `alow` のような綴り違いが通ると、
+        # 再配布の判断を見ない経路（extracted）ではそのまま権利表示まで流れる。
+        if self.redistribute not in ("allow", "review", "deny"):
+            raise ValueError(f"{self.key}: redistribute は allow / review / deny（{self.redistribute}）")
+        if not self.license_id:
+            raise ValueError(f"{self.key}: license_id が空。不明なら NOASSERTION と書くこと")
+        if not self.redistribute_basis:
+            raise ValueError(f"{self.key}: redistribute_basis が空。判断の根拠を書くこと")
+        if self.raw_form not in ("verbatim", "extracted"):
+            raise ValueError(f"{self.key}: raw_form は verbatim か extracted（{self.raw_form}）")
+        # ⚠️ **原文を置けるのは再配布可のときだけ。**
+        # 抽出した事実（事業名・金額・コード）は著作物ではないので配れるが、
+        # 原文そのものは別で、再配布可と判定できていなければ置けない。
+        # ⚠️ **ライセンスが未確定の原文は置けない。**
+        # 置くと、配布物にライセンスを貼る段で fudoki が勝手に条件を決めることになる。
+        # 抽出した事実なら原典のライセンスが付いてこないので問題にならないが、原文は別。
+        if self.raw_form == "verbatim" and self.license_id == "NOASSERTION":
+            raise ValueError(
+                f"{self.key}: license_id=NOASSERTION なのに raw_form=verbatim。"
+                f"ライセンスが未確定の原文はリポジトリへ置けない（抽出した事実なら置ける）"
+            )
+        if self.raw_form == "verbatim" and self.redistribute != "allow":
+            raise ValueError(
+                f"{self.key}: redistribute={self.redistribute} なのに raw_form=verbatim。"
+                f"原文をリポジトリへ置けるのは再配布可と判定した取得元だけ"
+            )
 
     @property
-    def may_publish_raw(self) -> bool:
-        """原典をリポジトリへ置いてよいか。
+    def may_publish_verbatim(self) -> bool:
+        """**原文そのもの**をリポジトリへ置いてよいか。
+
+        ⚠️ **「配布物を作ってよいか」ではない。** 抽出した事実は著作物ではないので、
+        ここが False でも配布物は作れる（著作権法2条1項1号は著作物を
+        「思想又は感情を創作的に表現したもの」と定義しており、事業名と金額はそれにあたらない）。
+        止まるのは原文の複製だけである。
 
         根拠は `redistribute_basis`（①予算はカタログのライセンス）。
         ③会議録の gate（`ingestion/transcripts/gates.json`）とは根拠が違うので繋がない —

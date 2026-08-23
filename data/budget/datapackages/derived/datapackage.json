@@ -139,8 +139,26 @@
         "url": "https://unstats.un.org/unsd/classifications/Family/Detail/4"
       }
     },
-    "note": "正本（expenditure / revenue）は原典を正規化しただけで fudoki の判断を含まない。COFOG の割り当ては派生（expenditure-cofog）にある。FDP は全要素が任意なので、COFOG 列を持たない正本も適合した FDP になる。"
+    "note": "正本（expenditure / revenue）は原典を正規化しただけで fudoki の判断を含まない。COFOG の割り当ては派生パッケージ derived/ にある。FDP は全要素が任意なので、COFOG 列を持たない正本も適合した FDP になる。"
   },
+  "modified": true,
+  "modifications": [
+    "原典の各行に COFOG の分類と連結の判断を付け加えた（自治体が言っていないこと）"
+  ],
+  "licenses": [
+    {
+      "name": "CC-BY-4.0",
+      "title": "Creative Commons Attribution 4.0 International",
+      "path": "https://creativecommons.org/licenses/by/4.0/"
+    }
+  ],
+  "attribution": "fudoki（COFOG の割当と規則表）。原典: 三鷹市「令和6年度予算データ」（東京都オープンデータカタログサイト）",
+  "sources": [
+    {
+      "title": "三鷹市「令和6年度予算データ」（東京都オープンデータカタログサイト）",
+      "path": "https://www.city.mitaka.lg.jp/c_service/074/"
+    }
+  ],
   "resources": [
     {
       "name": "cofog",

@@ -68,7 +68,7 @@ bun run dev            # ダッシュボードを開く（http://localhost:5173�
 | ③ どう決まったか（会議録） | [Popolo](https://www.popoloproject.com/) | 権利判定のみ（再配布可の団体は0） |
 
 - 生成データはオープンデータとして本リポジトリで公開
-- コードは MIT
+- コードは MIT。データは原典のライセンスに従う（下記）
 - MCP サーバとしても配布し、AI エージェントが直接読める形にする
 
 ## もっと読む
@@ -84,4 +84,16 @@ bun run dev            # ダッシュボードを開く（http://localhost:5173�
 
 ## License
 
-MIT
+**1つのライセンスでは表せない**ので、層ごとに分けてある。
+
+| 層 | 誰のものか | ライセンス |
+|---|---|---|
+| コード（`ingestion/` `dbt/` `fdp/` `report/` `web/`） | fudoki | [MIT](./LICENSE) |
+| fudoki の判断（`data/budget/datapackages/derived/`） | fudoki | CC BY 4.0 |
+| 原典と正本（`data/budget/raw/` `datapackages/<団体コード>/`） | **各自治体** | 原典のライセンス（現在はすべて CC BY 4.0） |
+
+⚠️ **原典のライセンスは fudoki が選んだものではない。**
+著作権を持たないものにライセンスは与えられないので、正本の表示は原典に付いてくる条件を
+そのまま素通ししている。fudoki は原典を改変しているので、その旨も表示している（CC BY 4.0 §3(a)(1)(B)）。
+
+詳細は [data/LICENSE](./data/LICENSE)、正確な表示は各 `datapackage.json` の `licenses` と `attribution`。

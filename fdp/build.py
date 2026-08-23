@@ -20,6 +20,67 @@ import pathlib
 from ingestion.budget.sources import load_sources
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+# ライセンスの表示。**1箇所で持つ** — 正本（素通し）と派生（fudoki の選択）で
+# 意味は違うが、表示する内容が食い違うと利用者はどちらを信じるか決められない。
+LICENSE_CC_BY_4 = {
+    "name": "CC-BY-4.0",
+    "title": "Creative Commons Attribution 4.0 International",
+    "path": "https://creativecommons.org/licenses/by/4.0/",
+}
+def licenses_of(srcs: list) -> list[dict]:
+    """配布物に貼るライセンス。**取得元の宣言から決める。定数を貼らない。**
+
+    ⚠️ 以前はここが定数の直書きだった。`rights_of` が値域を守っていたので今のところ
+    結果は同じだったが、**この PR が直そうとした「勝手にライセンスを付ける」そのもの**である。
+    宣言が変わっても配布物が変わらない状態を残してはいけない。
+
+      原典が CC BY を付けている        → それを素通しする
+      原典に利用許諾が無い（NOASSERTION）→ 事実には原典のライセンスが付いてこないので、
+                                          選択と構成にあたる部分を fudoki が CC BY 4.0 で配る
+
+    後者が成り立つのは**抽出した事実だけ**である。原文そのものは `Source` が
+    `verbatim` + `NOASSERTION` を宣言時点で弾いているので、ここへ到達しない。
+    """
+    known = sorted({s.license_id for s in srcs} - {"NOASSERTION"})
+    if any(lic != "CC-BY-4.0" for lic in known):
+        raise SystemExit(
+            f"原典のライセンスに {known} が含まれる。CC BY 4.0 以外は継承条件が違いうるので、"
+            f"配布物のライセンスを決め直してから配ること"
+        )
+    return [LICENSE_CC_BY_4]
+
+
+def rights_of(srcs: list) -> dict:
+    """**利用者の行動が変わることだけを書く。** 変わらないなら何も書かない。
+
+    ⚠️ 以前はここに「そのライセンスを誰が決めたか（原典 / fudoki）」を出していたが、
+    それを知っても利用者のすることは変わらない（`licenses` と `attribution` で足りる）。
+    fudoki が自分の正しさを確認するための情報であって、配布物に載せるものではない。
+    その整理は data/LICENSE にある。
+
+    残るのは1つだけ。**利用許諾の無い資料から事実を抽出した部分があるか。**
+    事実に原典のライセンスは付いてこないが、利用者が原典そのものに当たり直すときは
+    条件が違うので、出所を知らせる必要がある。
+    """
+    if not srcs:
+        raise SystemExit("取得元が空。権利の判断ができない")
+    unlicensed = sorted({s.attribution for s in srcs if s.license_id == "NOASSERTION"})
+    return {"factsFrom": unlicensed} if unlicensed else {}
+
+
+# CC BY 4.0 §3(a)(1)(B) が求める「改変した旨」の表示。
+# ⚠️ **やっていない改変を書かない。** 一度、原典1行が複数の予算段階を持つ団体のための
+# 「段階ごとの行へ展開した」を全団体共通のリストへ入れており、1行1金額の三鷹市にも付いていた。
+# 改変の明示は CC BY が求めているものなので、嘘を書くと表示そのものの信用が落ちる。
+# 団体で改変が変わるなら、そのときリストを団体ごとに分けること。
+CANONICAL_MODIFICATIONS = [
+    "セルの前後の空白を除去した",
+    "コードと名称が同居するセルを分けた",
+    "金額を円へ正規化した（原典の値と単位も残してある）",
+]
+DERIVED_MODIFICATIONS = [
+    "原典の各行に COFOG の分類と連結の判断を付け加えた（自治体が言っていないこと）",
+]
 PACKAGES = ROOT / "data" / "budget" / "datapackages"
 RAW = ROOT / "data" / "budget" / "raw"
 TYPES = json.loads((pathlib.Path(__file__).parent / "field_types.json").read_text())
@@ -99,7 +160,7 @@ def latest_fetch() -> str:
     return max(stamps)
 
 
-def base(name: str, title: str, description: str) -> dict:
+def base(name: str, title: str, description: str, modifications: list[str]) -> dict:
     created = latest_fetch()
     return {
         "profile": "tabular-data-package",
@@ -114,15 +175,33 @@ def base(name: str, title: str, description: str) -> dict:
         "countryCode": "JP",
         "columnTypes": TYPES["columnTypes"],
         "fudoki": TYPES["fudoki"],
+        # CC BY 4.0 §3(a)(1)(B) が求める「改変した旨」の表示。
+        # ⚠️ `modified` と `attribution` は FDP の標準プロパティに無い（実測で確認）。
+        # 帰属と改変の明示は CC BY の義務なのに標準側に置き場が無いので、独自で持つほかない。
+        "modified": True,
+        "modifications": modifications,
     }
 
 
 def build_jurisdiction(code: str) -> None:
     """正本。**団体ごと・全年度で1パッケージ。** 判断を含まない。"""
     d = PACKAGES / code
+    # ⚠️ **`redistribute` で絞らない。** 原文を置けない取得元でも、そこから抽出した事実は
+    # 配布物に入る。絞ると、PDF から起こした団体の配布物が丸ごと空になる。理屈は data/LICENSE。
     srcs = [s for s in load_sources().values() if s.jurisdiction_code == code]
     if not srcs:
         raise RuntimeError(f"団体 {code} の取得元が sources.toml に無い")
+    # ⚠️ **抽出した事実を配る経路は、下流がまだ原文前提のままである。**
+    # dbt の原典突合（staging_is_one_to_one / canonical_preserves_source /
+    # package_preserves_source）は raw が原文であることを前提にしており、
+    # extracted に当てると誤って落ちるか、誤って通る。
+    # 文書だけ先に整えて実装が追いつかない状態を、黙って通さないために止める。
+    extracted = sorted({s.key for s in srcs if s.raw_form == "extracted"})
+    if extracted:
+        raise SystemExit(
+            f"{code}: raw_form=extracted の取得元がある（{extracted}）。"
+            f"dbt の原典突合の検査が原文前提のままなので、分岐させるまで配布物を作らない"
+        )
     years = sorted(s.fiscal_year for s in srcs)
 
     pkg = base(
@@ -132,10 +211,13 @@ def build_jurisdiction(code: str) -> None:
         "**fudoki の判断は含まない**（分類・名寄せ・推定を一切していない）。"
         "COFOG の割当は派生パッケージ derived/ にあり、budget_line_id で join する。"
         "原典そのものは data/budget/raw/ に Parquet で入っている。",
+        CANONICAL_MODIFICATIONS,
     )
     pkg["fiscalPeriod"] = {"start": f"{years[0]}-04-01", "end": f"{years[-1] + 1}-03-31"}
-    pkg["licenses"] = [{"name": srcs[0].license_id, "path": "https://creativecommons.org/licenses/by/4.0/"}]
+    pkg["licenses"] = licenses_of(srcs)
     pkg["attribution"] = srcs[0].attribution
+    if rights := rights_of(srcs):
+        pkg["fudoki"] = {**pkg["fudoki"], "rights": rights}
     pkg["sources"] = [{"title": s.attribution, "path": s.landing_page} for s in srcs]
     # 全行同じ値なのでリソースの列から外し、ここに持たせた定数。
     # ⚠️ **phase を package 全体の定数にしてよいのは1つしか無いときだけ。**
@@ -176,7 +258,22 @@ def build_derived() -> None:
         "正本とは budget_line_id で join する。"
         "根拠は cofog_rules に規則として出してあり、cofog_rule_id で引ける。"
         "分類不能の割合の低さは品質の指標ではない（成立範囲を正直に調べるのが目的）。",
+        DERIVED_MODIFICATIONS,
     )
+    srcs = list(load_sources().values())
+    # **派生は fudoki 自身の著作物なので、ライセンスを選ぶのは fudoki である。**
+    # ⚠️ ただし選べる範囲は原典に縛られる。CC BY は継承を求めないので今は CC BY 4.0 を選べるが、
+    # 原典に CC BY-SA の団体が入った時点で派生も BY-SA にするほかなくなる。
+    # だから「fudoki は CC BY 4.0 と決めた」ではなく「原典が許す範囲で CC BY 4.0 を選んでいる」
+    # と読めるように、原典のライセンス一覧を併記する。
+    pkg["licenses"] = licenses_of(srcs)
+    pkg["attribution"] = (
+        "fudoki（COFOG の割当と規則表）。"
+        "原典: " + "／".join(sorted({s.attribution for s in srcs}))
+    )
+    pkg["sources"] = [{"title": s.attribution, "path": s.landing_page} for s in srcs]
+    if rights := rights_of(srcs):
+        pkg["fudoki"] = {**pkg["fudoki"], "rights": rights}
     pkg["resources"] = [
         resource(d / "cofog.csv", "cofog", "COFOG の割当",
                  "識別子と判断だけ。正本の列を複製しない", ["budget_line_id"]),
@@ -194,6 +291,7 @@ def build_derived() -> None:
 IMPLEMENTED = {"132047"}
 
 if __name__ == "__main__":
+    # 配布物を作る対象は「再配布可と判定した取得元を持つ団体」。
     registered = {s.jurisdiction_code for s in load_sources().values()}
     if registered != IMPLEMENTED:
         raise SystemExit(

@@ -139,8 +139,14 @@
         "url": "https://unstats.un.org/unsd/classifications/Family/Detail/4"
       }
     },
-    "note": "正本（expenditure / revenue）は原典を正規化しただけで fudoki の判断を含まない。COFOG の割り当ては派生（expenditure-cofog）にある。FDP は全要素が任意なので、COFOG 列を持たない正本も適合した FDP になる。"
+    "note": "正本（expenditure / revenue）は原典を正規化しただけで fudoki の判断を含まない。COFOG の割り当ては派生パッケージ derived/ にある。FDP は全要素が任意なので、COFOG 列を持たない正本も適合した FDP になる。"
   },
+  "modified": true,
+  "modifications": [
+    "セルの前後の空白を除去した",
+    "コードと名称が同居するセルを分けた",
+    "金額を円へ正規化した（原典の値と単位も残してある）"
+  ],
   "fiscalPeriod": {
     "start": "2024-04-01",
     "end": "2025-03-31"
@@ -148,6 +154,7 @@
   "licenses": [
     {
       "name": "CC-BY-4.0",
+      "title": "Creative Commons Attribution 4.0 International",
       "path": "https://creativecommons.org/licenses/by/4.0/"
     }
   ],
@@ -196,6 +203,7 @@
         "08予算額"
       ],
       "rows": 5613,
+      "raw_form": "verbatim",
       "roundtrip_verified": true,
       "license_id": "CC-BY-4.0",
       "attribution": "三鷹市「令和6年度予算データ」（東京都オープンデータカタログサイト）"
@@ -224,6 +232,7 @@
         "08予算額"
       ],
       "rows": 821,
+      "raw_form": "verbatim",
       "roundtrip_verified": true,
       "license_id": "CC-BY-4.0",
       "attribution": "三鷹市「令和6年度予算データ」（東京都オープンデータカタログサイト）"
