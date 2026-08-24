@@ -10,6 +10,7 @@ import { LEVEL_JA, basisOf, cell, divisionLabelOf, levelCell } from '@/lib/pipel
 import { DIVISION_COLOR, STATUS_JA, yen } from '@/lib/pipeline'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
@@ -283,13 +284,17 @@ function LeafCard({
     )
   }
   return (
-    <dl className="grid grid-cols-[max-content_minmax(0,1fr)] gap-x-4 gap-y-1.5 rounded-lg border bg-muted/30 p-4 text-sm">
-      {items.map(([k, v], i) => (
-        <div key={i} className="col-span-2 grid grid-cols-subgrid">
-          <dt className="whitespace-nowrap text-muted-foreground">{k}</dt>
-          <dd className="m-0 break-words">{v}</dd>
-        </div>
-      ))}
-    </dl>
+    <Card size="sm">
+      <CardContent>
+        <dl className="grid grid-cols-[max-content_minmax(0,1fr)] gap-x-4 gap-y-1.5 text-sm">
+          {items.map(([k, v], i) => (
+            <div key={i} className="col-span-2 grid grid-cols-subgrid">
+              <dt className="whitespace-nowrap text-muted-foreground">{k}</dt>
+              <dd className="m-0 break-words">{v}</dd>
+            </div>
+          ))}
+        </dl>
+      </CardContent>
+    </Card>
   )
 }

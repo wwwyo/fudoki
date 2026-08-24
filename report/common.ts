@@ -21,6 +21,12 @@ export type Node = {
   id: string
   label: string
   kind: 'model' | 'source' | 'seed' | 'origin'
+  /**
+   * どの団体のノードか。null は団体をまたぐ共有ノード（規則表・core）。
+   * **生成側が1箇所で付ける** — 画面が id の命名規則を正規表現で推定すると、
+   * id の形式を変えたとき絞り込みが黙って壊れる
+   */
+  jurisdictionCode: string | null
   stage: Stage['id']
   rows: number | null
   description: string
