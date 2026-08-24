@@ -25,7 +25,8 @@
     "survey:structure": "uv run python -m ingestion.budget.survey_structure",
     "test:api": "bun run --cwd apps/api test",
     "typecheck": "tsc --noEmit",
-    "validate": "bun run ingestion/transcripts/validate.ts"
+    "validate": "bun run ingestion/transcripts/validate.ts",
+    "fetch:account-master": "uv run python -m ingestion.budget.fetch_account_master"
   },
   "dependencies": {
     "zod": "4.4.3"

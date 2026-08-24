@@ -34,7 +34,6 @@ from __future__ import annotations
 
 import csv
 import hashlib
-import csv
 import json
 import pathlib
 
@@ -94,6 +93,8 @@ CANONICAL_MODIFICATIONS = [
 # ⚠️ やっていない改変を書かない。事業名は狛江市にしか無い。
 JUDGMENT_MODIFICATIONS = {
     "cofog": "原典の各行に COFOG の分類と連結の判断を付け加えた（自治体が言っていないこと）",
+    "account_names": "科目に法定マスタ（地方自治法施行規則 別記の区分）への対応を付け加えた"
+                     "（コードのずれと表記差の吸収は fudoki の判断）",
     "project_names": "原典に無い事業名を決算資料 PDF の事項別明細から起こし、"
                      "同じ目の中で金額が一致する大事業へ対応づけた"
                      "（自治体がこの対応を宣言しているわけではない）",
@@ -111,6 +112,12 @@ JUDGMENT_RESOURCES = [
      "判断の中身そのもの。結果だけを配ると、利用者は検算できても判断を検討できない。"
      "その団体に効く規則だけを収めている（applies_to が空の規則はどの団体にも効く）",
      ["rule_id"]),
+    ("account_names", "科目の名称と法定マスタへの対応（fudoki の判断を含む）",
+     "款・項・目の名称のカタログと、地方自治法施行規則 別記の区分への対応。"
+     "**款のコードは団体ごとに法定とずれる**（災害復旧費を持たない市では以降が詰まる）ので、"
+     "団体をまたぐ比較は master_kan_code / master_kou_code で行う。"
+     "名称の出所（原典か、決算書 PDF から fudoki が解決したか）は name_source が言う",
+     ["fiscal_year", "direction", "fund_code", "kan_code", "kou_code", "moku_code"]),
     ("project_names", "事業名の対応づけ（fudoki の判断）",
      "原典の CSV に事業の名称が無い団体で、決算資料 PDF から起こした名称を"
      "金額で大事業へ対応づけたもの。対応づけの確からしさ（match_method / match_basis / "
