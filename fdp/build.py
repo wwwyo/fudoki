@@ -39,7 +39,7 @@ import pathlib
 
 import yaml
 
-from ingestion.budget.sources import load_project_names, load_sources
+from ingestion.budget.sources import load_project_names, load_revenue_accounts, load_sources
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 # 変換の宣言。**金額の段階と単位はここが正本**（dbt のモデルが同じ宣言から組まれる）。
@@ -386,9 +386,14 @@ def build_jurisdiction(code: str) -> None:
     modifications = CANONICAL_MODIFICATIONS + [
         JUDGMENT_MODIFICATIONS[n] for n, *_ in present if n in JUDGMENT_MODIFICATIONS
     ]
-    # 事業名の取得元（PDF）。原典の CSV とは別の資料で、再配布の可否も別に判定している。
-    pdfs = [spec for _, spec in sorted(load_project_names().items())
-            if spec["document_title"] and _.split(":")[0] == code]
+    # 事業名・歳入科目名の取得元（PDF）。原典の CSV とは別の資料で、再配布の可否も別に判定している。
+    pdf_specs = {**load_project_names(),
+                 **{f"revenue/{k}": v for k, v in load_revenue_accounts().items()}}
+    pdfs = [spec for key, spec in sorted(pdf_specs.items())
+            if key.split("/")[-1].split(":")[0] == code]
+    # 同じ PDF（歳出と歳入で同一文書）を2回出典に載せない
+    seen_urls: set[str] = set()
+    pdfs = [s for s in pdfs if not (s["url"] in seen_urls or seen_urls.add(s["url"]))]
 
     constants = {
         "jurisdiction_code": code,

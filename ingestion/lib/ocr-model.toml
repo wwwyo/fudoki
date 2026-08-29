@@ -1,0 +1,20 @@
+# OCR に使う重み（GGUF）の宣言。**取得元 + SHA-256 で固定する。**
+#
+# mise はバイナリ（llama.cpp）は pin できるが重みは管理できない。重みが変われば
+# 同じ原典から違う抽出物が出るので、原典に対してやっているのと同じ規律
+# （URL + SHA-256 + 取得時に検証）へ乗せる。sha256 は取得先の
+# HuggingFace が LFS の `x-linked-etag` として返す値と一致することを確認済み
+# （2026-08-29 実測）。
+#
+# ⚠️ 差し替えるときは engine_version() が返す文字列も自動で変わる。
+# provenance の冪等判定がそこに乗っているので、既存の抽出物は作り直しになる。
+
+[model]
+url = "https://huggingface.co/ggml-org/GLM-OCR-GGUF/resolve/main/GLM-OCR-f16.gguf"
+sha256 = "b06675e983db9593db78603b06f097e48c0cf078b37731c0a09612f4a249cf6f"
+bytes = 1785771648
+
+[mmproj]
+url = "https://huggingface.co/ggml-org/GLM-OCR-GGUF/resolve/main/mmproj-GLM-OCR-Q8_0.gguf"
+sha256 = "9c4b58e33e316ed142eb5dcb41abec3844d3e6e5dc361ffb782c3fa9d175141f"
+bytes = 484403648

@@ -156,7 +156,7 @@
       {
         "name": "fudoki:master:kind",
         "dataType": "string",
-        "description": "法定マスタへの対応の種別（map / addition）"
+        "description": "法定マスタへの対応の種別（map / addition / historical）"
       },
       {
         "name": "fudoki:master:basis",
@@ -769,7 +769,7 @@
       "name": "master_kan_code",
       "title": "法定マスタの款コード",
       "type": "integer",
-      "description": "地方自治法施行規則 別記「歳入歳出予算の款項の区分及び目の区分」（第15条関係）市町村・歳出 の款番号。団体のコードは法定とずれるので、横断はこちらで行う",
+      "description": "地方自治法施行規則 別記「歳入歳出予算の款項の区分及び目の区分」（第15条関係）市町村（歳入・歳出） の款番号。団体のコードは法定とずれるので、横断はこちらで行う",
       "columnType": "fudoki:master:kan:code"
     },
     "master_kan_name": {
@@ -794,7 +794,7 @@
       "name": "master_kind",
       "title": "対応の種別",
       "type": "string",
-      "description": "map = マスタの区分と同じだと fudoki が決めた。addition = 法定に無い団体固有の追加区分（様式の備考1）。空 = 様式の対象外（特別会計・歳入）か名称を解決できない年度",
+      "description": "map = マスタの区分と同じだと fudoki が決めた。addition = 法定に無い追加区分（様式の備考が認める）。historical = 現行様式から削除された旧法定区分。空 = 様式の対象外（特別会計・歳入）か名称を解決できない年度",
       "columnType": "fudoki:master:kind"
     },
     "master_basis": {

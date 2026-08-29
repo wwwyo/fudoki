@@ -1,0 +1,33 @@
+{
+  "jurisdiction_code": "132195",
+  "fiscal_year": 2021,
+  "direction": "revenue",
+  "document_title": "令和3年度　歳入事項別明細",
+  "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,130245,c,html/130245/20231011-101649.pdf",
+  "status": 200,
+  "bytes": 4197714,
+  "sha256": "7df1b95a31143171a52607365f4d2acf5e490cb555852d92ea724e0a4ddd88b7",
+  "fetched_at": "2026-08-29T08:20:12+00:00",
+  "pages": [
+    1,
+    19
+  ],
+  "extractor": "ingestion/budget/extract_revenue_accounts.py@8+llamacpp-b9616+GLM-OCR-f16-b06675e983db+mmproj-9c4b58e33e31@300dpi",
+  "pages_by_mode": {
+    "ocr": 19
+  },
+  "text_pages": [],
+  "verification": "ocr + downstream-amount-reconciliation",
+  "roundtrip_verified": false,
+  "extracted": {
+    "moku": 62,
+    "named": 62,
+    "withAmount": 62,
+    "kan": 22,
+    "duplicateKeys": 0
+  },
+  "raw_form": "extracted",
+  "redistribute": "review",
+  "redistribute_basis": "市サイトの著作権表示。事実に著作権が及ぶかは解釈が割れるので照会中",
+  "license_id": "NOASSERTION"
+}

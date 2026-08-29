@@ -44,15 +44,23 @@ with names as (
         using (jurisdiction_code, fiscal_year, fund_code, kan_code, kou_code, moku_code)
     where l.jurisdiction_code = '132195'
     union all
-    -- 狛江市の歳入。**名称の出所がまだ無い**（原典に名称の列が無く、歳出の決算書 PDF は
-    -- 歳入を載せていない）。科目コードのカタログとしては配り、名称と対応は null で正直に残す。
-    -- ⚠️ 歳入の款コードも法定とずれている可能性が高い（歳出で実証済みの詰まり方）。
-    -- 名称の根拠なしにコードで対応づけるのは、款コードの誤りを一度やった当の推測なのでしない。
+    -- 狛江市の歳入。名称は歳入事項別明細から解決した 2023年度だけに付く。
+    -- ⚠️ 2020〜2022 の歳入 PDF は文字がアウトライン化されておりテキスト抽出が成立しない。
+    -- OCR は誤読が多く名称の全量には使えなかった（実測。詳細は jurisdictions/132195.md）。
+    -- 名称の無い年度は null で正直に残す（款の master 対応は account_map が 2020年度以降に効かせる）。
     select
-        jurisdiction_code, fiscal_year, direction, fund_code, fund_label,
-        kan_code, null, kou_code, null, moku_code, null, null
-    from {{ ref('core_revenue_lines') }}
-    where jurisdiction_code = '132195'
+        l.jurisdiction_code, l.fiscal_year, l.direction, l.fund_code, l.fund_label,
+        l.kan_code, n.kan_name, l.kou_code, n.kou_name, l.moku_code, n.moku_name,
+        case when n.kan_name is not null then 'settlement-pdf' end
+    from {{ ref('core_revenue_lines') }} as l
+    left join {{ ref('stg_132195__revenue_accounts') }} as n
+        -- ⚠️ **名称に使うのはテキスト経路だけ。** OCR 経路（2020〜2022）は誤読が多く、
+        -- 壊れた名称と巻き戻った款コードが実際に流れ込んだ。raw には残すが名称には使わない
+        on n.mode = 'text'
+        and n.fiscal_year = l.fiscal_year
+        and l.fund_label = '一般会計'
+        and n.kan_code = l.kan_code and n.kou_code = l.kou_code and n.moku_code = l.moku_code
+    where l.jurisdiction_code = '132195'
 ),
 
 distinct_accounts as (
@@ -69,12 +77,13 @@ master_kou as (
 ),
 
 kan_map as (
-    select jurisdiction_code, direction, kan_code, kind, master_kan_code, basis
+    select jurisdiction_code, direction, kan_code, fiscal_year_from, kind, master_kan_code, basis
     from {{ ref('account_map') }} where kou_name = '' or kou_name is null
 ),
 
 kou_map as (
-    select jurisdiction_code, direction, kan_code, kou_name, kind, master_kan_code, master_kou_code, basis
+    select jurisdiction_code, direction, kan_code, kou_name, fiscal_year_from,
+           kind, master_kan_code, master_kou_code, basis
     from {{ ref('account_map') }} where kou_name != ''
 )
 
@@ -109,6 +118,9 @@ left join kan_map as km
     and km.direction = a.direction
     and km.kan_code = a.kan_code
     and a.fund_label = '一般会計'
+    -- ⚠️ 款コードの意味が年度で変わる団体がある（狛江市の歳入は 2019/2020 の境界で
+    -- 款の新設により繰り下がった）。対応はそれが確認できた年度からしか効かせない
+    and (nullif(km.fiscal_year_from, '') is null or a.fiscal_year >= cast(km.fiscal_year_from as integer))
 left join (select distinct direction, kan_code, kan_name from {{ ref('account_master') }}) as mk
     on mk.direction = a.direction and mk.kan_code = km.master_kan_code
 -- 2. 名称の完全一致（マスタの款の下に同名の項があるか）
@@ -120,5 +132,7 @@ left join kou_map as xm
     and xm.direction = a.direction
     and xm.kan_code = a.kan_code
     and xm.kou_name = a.kou_name
+    -- ⚠️ 款と同じ年度条件。項だけ無条件だと、款体系が違う年度に項の対応が誤適用される
+    and (nullif(xm.fiscal_year_from, '') is null or a.fiscal_year >= cast(xm.fiscal_year_from as integer))
 left join master_kou as mc2
     on mc2.direction = a.direction and mc2.kan_code = xm.master_kan_code and mc2.kou_code = xm.master_kou_code
