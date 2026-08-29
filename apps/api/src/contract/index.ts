@@ -37,9 +37,9 @@ export {
 } from './shared'
 export {
   budgetLineSchema,
-  crossJurisdictionLineSchema,
+  crossBudgetLineSchema,
   listBudgetLinesResponseSchema,
   type BudgetLine,
-  type CrossJurisdictionLine,
+  type CrossBudgetLine,
   type ListBudgetLinesResponse,
 } from './budget-lines'

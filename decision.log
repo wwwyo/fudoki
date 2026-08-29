@@ -146,3 +146,26 @@ jurisdiction が宣言すると、収録が増えるたびに団体の表現が�
 なお budget を「明細の集約ルート」にはしていない。読み取り専用の配布 API に
 書き込み時の不変条件は無く、明細は budget の境界をまたいで参照される（横断 COFOG）のが
 一級のユースケースのため。budget はあくまで年度スコープのメタデータの器である。
+
+### 19. budgets を root コレクションにし、明細を budget の子（/budgets/{id}/lines）へ移した
+
+決定18の後、さらに次の指摘を受けて再編した。
+「/budgets/{year} の path が年度の実体なのはミスリードで、id か name であるべき」
+「budget が内部の entity として lines を持つべき」
+「横断検索は root の /budgets?filter=... のように filter で表現すればよい」
+
+- budget の id を `{団体コード}:{年度}`（例 132195:2023）にした。budget_line_id の
+  先頭2セグメントと一致する自己記述的な id で、年度の実体を path に晒さない
+- budgets は root のコレクション（GET /budgets?filter=jurisdiction = "..."）。
+  jurisdictions/{j}/budgets の入れ子は廃止し、団体・年度は filter の軸にした。
+  件数が有界（団体×年度）なのでページングは持たない
+- 明細は /budgets/{id}/lines へ。親が年度を固定するので fiscalYear filter は不要になり
+  （within では 400）、必須 filter は direction だけになった。
+  横断は AIP-159 のワイルドカード親（/budgets/-/lines?filter=cofog.division = "..."）で維持
+- リソース名（permalink）は budgets/{id}/lines/{lineId}。横断応答の name から
+  1回の GET で元明細へ辿れる性質（PRD の AC）は保たれている
+- scope の discriminator は budget / crossBudget に改名
+
+以前の反対（permalink・横断・年度は filter）は、この形でもすべて成立することを確認して
+方針を転換した。年度は「lines にとっては」親 budget 経由で決まり、横断では filter として残る。
+パーティションと pageToken の内部形式は変えていない。

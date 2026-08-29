@@ -1,22 +1,23 @@
 /**
- * budgets リソース（団体 × 年度の予算）。
- * 年度スコープのメタデータ（収録している direction、分類率、金額の段階）の器で、
- * **収録範囲（どの年度があるか）は budgets の List から導出する**
- * （jurisdiction には年度を持たせない。収録が増えても団体の表現が変わらないように）。
+ * budgets リソース（団体 × 年度の予算）。**root のコレクション**で、
+ * 一覧の絞り込み（団体・年度）は filter で表現する。
+ * budget は年度スコープのメタ（収録 direction、分類率、金額の段階）を持ち、
+ * 明細（lines）を子コレクションとして持つ（budget-lines.ts）。
  *
- * 明細そのものはここに入れ子にしない。年度は budgetLines にとっては filter の軸
- * （`fiscalYear = 2023`）であり、URL の階層に固定しない。
+ * budget の id は `{団体コード}:{年度}`（例: 132195:2023）。
+ * budget_line_id の先頭2セグメントと一致し、明細から親 budget が機械的に決まる。
  */
 import * as z from 'zod'
 import { base, phaseId, resourceName } from './shared'
 
 export const budgetSchema = z.object({
-  name: resourceName.describe('リソース名（AIP-122）。jurisdictions/{団体コード}/budgets/{年度}'),
+  name: resourceName.describe('リソース名（AIP-122）。budgets/{id}'),
+  id: z.string().describe('budget の識別子。{団体コード}:{年度}（budget_line_id の先頭2セグメントと一致）'),
   jurisdictionId: z.string().describe('全国地方公共団体コード'),
   fiscalYear: z.string().describe('会計年度（西暦）'),
   directions: z
     .array(z.enum(['expenditure', 'revenue']))
-    .describe('この年度に収録している歳出・歳入の別'),
+    .describe('この予算で収録している歳出・歳入の別'),
   amountPhase: phaseId.describe('分類率の金額ベースの計算に使った予算段階'),
   classificationRate: z
     .object({
@@ -40,17 +41,25 @@ export type Budget = z.infer<typeof budgetSchema>
 export const listBudgets = base
   .route({
     method: 'GET',
-    path: '/jurisdictions/{jurisdiction}/budgets',
+    path: '/budgets',
     summary: 'List budgets',
     description:
-      '団体が収録している年度の一覧（= この団体のカバレッジ）。' +
-      '各年度の分類率と、金額ベースの計算に使った予算段階を返す。' +
-      '明細は /jurisdictions/{jurisdiction}/budgetLines を fiscalYear で絞って取得する。',
+      '収録している予算（団体 × 年度）の一覧。これがカバレッジの正体で、' +
+      'どの団体のどの年度が収録済みかは budgets の存在から導出する。' +
+      'filter で `jurisdiction` と `fiscalYear` を絞れる（例: `jurisdiction = "132195"`）。' +
+      '件数が少ないためページングは持たない。明細は /budgets/{id}/lines から取得する。',
   })
-  .input(z.object({ jurisdiction: z.string().describe('全国地方公共団体コード') }))
+  .input(
+    z.object({
+      filter: z
+        .string()
+        .optional()
+        .describe('AIP-160 の部分集合（`=` と `AND`）。使えるフィールドは jurisdiction / fiscalYear'),
+    }),
+  )
   .output(
     z.object({
-      budgets: z.array(budgetSchema).describe('fiscalYear の昇順'),
+      budgets: z.array(budgetSchema).describe('id の昇順'),
       revision: z.string().describe('由来する配布物の revision（git commit）'),
     }),
   )
@@ -58,15 +67,10 @@ export const listBudgets = base
 export const getBudget = base
   .route({
     method: 'GET',
-    path: '/jurisdictions/{jurisdiction}/budgets/{budget}',
+    path: '/budgets/{budget}',
     summary: 'Get a budget',
   })
-  .input(
-    z.object({
-      jurisdiction: z.string().describe('全国地方公共団体コード'),
-      budget: z.string().describe('会計年度（西暦）'),
-    }),
-  )
+  .input(z.object({ budget: z.string().describe('budget の識別子（{団体コード}:{年度}）') }))
   .output(
     z.object({
       budget: budgetSchema,

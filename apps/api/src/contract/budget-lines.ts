@@ -1,8 +1,8 @@
 /**
- * budgetLines リソース（予算明細）。
- * 団体単位（団体固有の階層つき）と横断（共通の最小軸のみ）の2つの scope を持ち、
- * どちらも同じコレクション `jurisdictions/{jurisdiction}/budgetLines` の List で表す
- * （横断は AIP-159 のワイルドカード親 `-`）。
+ * lines リソース（予算明細）。budget（団体 × 年度）の子コレクション。
+ * 親を指定した List は団体固有の階層を含む明細（scope: budget）、
+ * 親にワイルドカード `-` を指定した List は全予算を横断し、
+ * 団体に依存しない共通の最小軸だけの明細（scope: crossBudget）を返す（AIP-159）。
  *
  * 各フィールドの `.describe()` は OpenAPI の description にそのまま出る。
  */
@@ -49,7 +49,7 @@ const cofogJudgment = z.object({
 })
 
 export const budgetLineSchema = z.object({
-  name: resourceName.describe('リソース名（AIP-122）。jurisdictions/{団体}/budgetLines/{budgetLineId}'),
+  name: resourceName.describe('リソース名（AIP-122）。budgets/{団体コード}:{年度}/lines/{budgetLineId}'),
   budgetLineId: z.string().describe('配布物の明細識別子。{団体}:{年度}:{direction}:{資料種別}:{ハッシュ} の形で安定'),
   fiscalYear: z.string().describe('会計年度（西暦）'),
   direction: z.enum(['expenditure', 'revenue']).describe('歳出 / 歳入'),
@@ -65,7 +65,7 @@ export const budgetLineSchema = z.object({
 })
 export type BudgetLine = z.infer<typeof budgetLineSchema>
 
-export const crossJurisdictionLineSchema = z.object({
+export const crossBudgetLineSchema = z.object({
   name: resourceName.describe('リソース名。そのまま Get に渡すと団体固有の階層を含む元明細が返る'),
   jurisdictionId: z.string().describe('全国地方公共団体コード'),
   budgetLineId: z.string().describe('配布物の明細識別子'),
@@ -84,18 +84,18 @@ export const crossJurisdictionLineSchema = z.object({
     })
     .describe('COFOG 分類（fudoki の判断）'),
 })
-export type CrossJurisdictionLine = z.infer<typeof crossJurisdictionLineSchema>
+export type CrossBudgetLine = z.infer<typeof crossBudgetLineSchema>
 
 export const listBudgetLinesResponseSchema = z.discriminatedUnion('scope', [
   z.object({
-    scope: z.literal('jurisdiction').describe('団体単位の応答。明細は団体固有の形'),
-    budgetLines: z.array(budgetLineSchema),
+    scope: z.literal('budget').describe('親 budget を指定した応答。明細は団体固有の形'),
+    lines: z.array(budgetLineSchema),
     nextPageToken: z.string().optional().describe('続きがあるときだけ返る。無ければ最後まで返した'),
     revision: z.string().describe('由来する配布物の revision（git commit）'),
   }),
   z.object({
-    scope: z.literal('crossJurisdiction').describe('横断の応答。明細は団体に依存しない共通の最小軸のみ'),
-    budgetLines: z.array(crossJurisdictionLineSchema),
+    scope: z.literal('crossBudget').describe('横断の応答。明細は団体に依存しない共通の最小軸のみ'),
+    lines: z.array(crossBudgetLineSchema),
     nextPageToken: z.string().optional().describe('続きがあるときだけ返る。無ければ最後まで返した'),
     revision: z.string().describe('由来する配布物の revision（git commit）'),
   }),
@@ -105,14 +105,14 @@ export type ListBudgetLinesResponse = z.infer<typeof listBudgetLinesResponseSche
 export const listBudgetLines = base
   .route({
     method: 'GET',
-    path: '/jurisdictions/{jurisdiction}/budgetLines',
+    path: '/budgets/{budget}/lines',
     summary: 'List budget lines',
     description:
-      '予算明細の一覧。`{jurisdiction}` に団体コードを指定すると団体固有の階層を含む明細' +
-      '（scope: jurisdiction）を返す。filter には fiscalYear と direction が必須で、' +
-      'phase / cofog.division を追加できる。\n\n' +
-      '`{jurisdiction}` にワイルドカード `-` を指定すると全団体を横断し（AIP-159）、' +
-      '団体に依存しない共通の最小軸だけの明細（scope: crossJurisdiction）を返す。' +
+      '予算明細の検索。`{budget}` に budget の id（{団体コード}:{年度}）を指定すると、' +
+      'その予算の明細を団体固有の階層を含む形で返す（scope: budget）。' +
+      'filter には direction が必須で、phase / cofog.division を追加できる。\n\n' +
+      '`{budget}` にワイルドカード `-` を指定すると全予算を横断し（AIP-159）、' +
+      '団体に依存しない共通の最小軸だけの明細（scope: crossBudget）を返す。' +
       'filter には cofog.division が必須で、fiscalYear を追加できる（direction / phase は使えない）。\n\n' +
       'filter の文法は AIP-160 の部分集合（`=` と `AND` のみ）。' +
       '例: `cofog.division = "09" AND fiscalYear = 2023`。' +
@@ -123,13 +123,13 @@ export const listBudgetLines = base
       'フィルタの該当が薄いページは pageSize 未満の件数（0件を含む）になり得るが、' +
       'nextPageToken がある限り続きがある。',
   })
-  .input(z.object({ jurisdiction: z.string().describe('全国地方公共団体コード、または全団体横断の `-`'), ...pageInput }))
+  .input(z.object({ budget: z.string().describe('budget の識別子（{団体コード}:{年度}）、または全予算横断の `-`'), ...pageInput }))
   .output(listBudgetLinesResponseSchema)
 
 export const getBudgetLine = base
   .route({
     method: 'GET',
-    path: '/jurisdictions/{jurisdiction}/budgetLines/{budgetLine}',
+    path: '/budgets/{budget}/lines/{line}',
     summary: 'Get a budget line',
     description:
       '明細1件を配布物の識別子（budget_line_id）で取得する。' +
@@ -137,8 +137,8 @@ export const getBudgetLine = base
   })
   .input(
     z.object({
-      jurisdiction: z.string().describe('全国地方公共団体コード'),
-      budgetLine: z.string().describe('budget_line_id'),
+      budget: z.string().describe('budget の識別子（{団体コード}:{年度}）'),
+      line: z.string().describe('budget_line_id'),
     }),
   )
-  .output(z.object({ budgetLine: budgetLineSchema, revision: z.string().describe('由来する配布物の revision（git commit）') }))
+  .output(z.object({ line: budgetLineSchema, revision: z.string().describe('由来する配布物の revision（git commit）') }))

@@ -1,5 +1,5 @@
 /**
- * budgetLines リソースの procedure。
+ * lines リソース（budget の子）の procedure。
  * 判断はすべて build 済みのパーティションに寄せてあり、
  * ここは「該当パーティションを1つ読んで絞る」以外のことをしない。
  */
@@ -10,36 +10,49 @@ import {
   paths,
   readJsonAsset,
 } from '../assets'
-import type { BudgetLine, CrossJurisdictionLine } from '../contract'
+import type { BudgetLine, CrossBudgetLine } from '../contract'
 import { filterFingerprint, type ParsedFilter } from '../lib/filter'
 import { encodePageToken } from '../lib/token'
 import { os, parseFilterOr400, readMeta, resolvePageSize, scanPage, verifyToken, type Errors } from './os'
 
+/** budget id（{団体コード}:{年度}）を分解する。形式が違えば null */
+function parseBudgetId(id: string): { jurisdiction: string; fiscalYear: string } | null {
+  const m = id.match(/^(\d{6}):(\d{4})$/)
+  if (!m) return null
+  return { jurisdiction: m[1]!, fiscalYear: m[2]! }
+}
+
 export const listBudgetLines = os.listBudgetLines.handler(async ({ context, input, errors }) => {
   const pageSize = resolvePageSize(input.pageSize)
   const filter = parseFilterOr400(input.filter, errors)
-
-  if (input.jurisdiction === '-') {
-    return listCrossJurisdiction(context.env, filter, pageSize, input.pageToken, errors)
+  if (filter.jurisdiction !== undefined) {
+    throw errors.BAD_REQUEST({
+      message: 'jurisdiction is not a filter for lines. Specify the parent budget ({jurisdiction}:{year}) instead',
+      data: { reason: 'unsupported filter field' },
+    })
   }
-  return listWithinJurisdiction(context.env, input.jurisdiction, filter, pageSize, input.pageToken, errors)
+
+  if (input.budget === '-') {
+    return listCrossBudget(context.env, filter, pageSize, input.pageToken, errors)
+  }
+  return listWithinBudget(context.env, input.budget, filter, pageSize, input.pageToken, errors)
 })
 
 export const getBudgetLine = os.getBudgetLine.handler(async ({ context, input, errors }) => {
-  const notFound = () => errors.NOT_FOUND({ message: `unknown budget line: ${input.budgetLine}` })
-  // budget_line_id は {団体}:{年度}:{direction}:... なので、id 自身がパーティションを指す
-  const [jurisdiction, fiscalYear, direction] = input.budgetLine.split(':')
-  if (jurisdiction !== input.jurisdiction) throw notFound()
+  const notFound = () => errors.NOT_FOUND({ message: `unknown budget line: ${input.line}` })
+  // budget_line_id は {団体}:{年度}:{direction}:... で、先頭2セグメントが親 budget の id
+  const [jurisdiction, fiscalYear, direction] = input.line.split(':')
+  if (`${jurisdiction}:${fiscalYear}` !== input.budget) throw notFound()
   if (direction !== 'expenditure' && direction !== 'revenue') throw notFound()
   if (!jurisdiction || !fiscalYear) throw notFound()
   const file = await readJsonAsset<LinesFile>(context.env, paths.lines(jurisdiction, fiscalYear, direction))
   if (file === null) throw notFound()
-  const line = file.lines.find((l) => l.budgetLineId === input.budgetLine)
+  const line = file.lines.find((l) => l.budgetLineId === input.line)
   if (!line) throw notFound()
-  return { budgetLine: line, revision: file.revision }
+  return { line, revision: file.revision }
 })
 
-async function listCrossJurisdiction(
+async function listCrossBudget(
   env: Env,
   filter: ParsedFilter,
   pageSize: number,
@@ -48,14 +61,14 @@ async function listCrossJurisdiction(
 ) {
   if (filter.direction !== undefined || filter.phase !== undefined) {
     throw errors.BAD_REQUEST({
-      message: 'direction and phase filters are not supported for cross-jurisdiction queries',
+      message: 'direction and phase filters are not supported for cross-budget queries',
       data: { reason: 'unsupported filter field for parent "-"' },
     })
   }
   const division = filter.cofogDivision
   if (division === undefined) {
     throw errors.BAD_REQUEST({
-      message: 'cofog.division filter is required for cross-jurisdiction queries',
+      message: 'cofog.division filter is required for cross-budget queries',
       data: { reason: 'missing required filter' },
     })
   }
@@ -78,7 +91,7 @@ async function listCrossJurisdiction(
   if (chunk === null) {
     // 系列自体が無い（そのフィルタに該当が無い）のは先頭ページだけで正当
     if (token === null) {
-      return { scope: 'crossJurisdiction' as const, budgetLines: [], revision: meta.revision }
+      return { scope: 'crossBudget' as const, lines: [], revision: meta.revision }
     }
     throw errors.BAD_REQUEST({ message: 'pageToken points outside the result set', data: { reason: 'invalid pageToken' } })
   }
@@ -86,50 +99,60 @@ async function listCrossJurisdiction(
     throw errors.BAD_REQUEST({ message: 'pageToken offset is out of range', data: { reason: 'invalid pageToken' } })
   }
 
-  const { items, nextOffset } = scanPage<CrossJurisdictionLine>(chunk.lines, offset, pageSize, () => true)
+  const { items, nextOffset } = scanPage<CrossBudgetLine>(chunk.lines, offset, pageSize, () => true)
   let nextPageToken: string | undefined
   if (nextOffset !== null) {
     nextPageToken = encodePageToken({ v: 1, rev: meta.revision, family, chunk: chunkIndex, off: nextOffset, fh: fingerprint })
   } else if (chunk.hasNext) {
     nextPageToken = encodePageToken({ v: 1, rev: meta.revision, family, chunk: chunkIndex + 1, off: 0, fh: fingerprint })
   }
-  return { scope: 'crossJurisdiction' as const, budgetLines: items, revision: chunk.revision, nextPageToken }
+  return { scope: 'crossBudget' as const, lines: items, revision: chunk.revision, nextPageToken }
 }
 
-async function listWithinJurisdiction(
+async function listWithinBudget(
   env: Env,
-  jurisdictionId: string,
+  budgetId: string,
   filter: ParsedFilter,
   pageSize: number,
   rawToken: string | undefined,
   errors: Errors,
 ) {
-  const meta = await readMeta(env)
-  const jurisdiction = meta.jurisdictions.find((j) => j.id === jurisdictionId)
-  if (!jurisdiction) throw errors.NOT_FOUND({ message: `unknown jurisdiction: ${jurisdictionId}` })
-
-  const { fiscalYear, direction } = filter
-  if (fiscalYear === undefined || direction === undefined) {
+  const parsed = parseBudgetId(budgetId)
+  if (parsed === null) {
     throw errors.BAD_REQUEST({
-      message: 'fiscalYear and direction filters are required when listing within a jurisdiction',
+      message: `malformed budget id: ${budgetId} (expected {jurisdiction}:{year})`,
+      data: { reason: 'invalid budget id' },
+    })
+  }
+  const meta = await readMeta(env)
+  const budget = meta.budgets.find((b) => b.id === budgetId)
+  if (!budget) throw errors.NOT_FOUND({ message: `unknown budget: ${budgetId}` })
+
+  if (filter.fiscalYear !== undefined) {
+    throw errors.BAD_REQUEST({
+      message: 'fiscalYear filter is redundant within a budget (the parent budget fixes the year)',
+      data: { reason: 'unsupported filter field' },
+    })
+  }
+  const { direction } = filter
+  if (direction === undefined) {
+    throw errors.BAD_REQUEST({
+      message: 'direction filter is required when listing lines of a budget',
       data: { reason: 'missing required filter' },
     })
   }
-  const budget = meta.budgets[jurisdictionId]?.find((b) => b.fiscalYear === fiscalYear)
-  if (!budget || !budget.directions.includes(direction)) {
-    throw errors.NOT_FOUND({
-      message: `fiscal year ${fiscalYear} (${direction}) is not covered for ${jurisdictionId}`,
-    })
+  if (!budget.directions.includes(direction)) {
+    throw errors.NOT_FOUND({ message: `${direction} is not covered for budget ${budgetId}` })
   }
 
-  const family = paths.lines(jurisdictionId, fiscalYear, direction).replace(/\.json$/, '')
+  const family = paths.lines(parsed.jurisdiction, parsed.fiscalYear, direction).replace(/\.json$/, '')
   const fingerprint = filterFingerprint(filter)
   const token =
     rawToken === undefined ? null : verifyToken(rawToken, { revision: meta.revision, family, fingerprint }, errors)
   const offset = token?.off ?? 0
 
-  const file = await readJsonAsset<LinesFile>(env, paths.lines(jurisdictionId, fiscalYear, direction))
-  if (file === null) throw new Error(`partition missing for covered year: ${family}`)
+  const file = await readJsonAsset<LinesFile>(env, paths.lines(parsed.jurisdiction, parsed.fiscalYear, direction))
+  if (file === null) throw new Error(`partition missing for covered budget: ${family}`)
   if (offset > file.lines.length) {
     throw errors.BAD_REQUEST({ message: 'pageToken offset is out of range', data: { reason: 'invalid pageToken' } })
   }
@@ -144,5 +167,5 @@ async function listWithinJurisdiction(
     nextOffset === null
       ? undefined
       : encodePageToken({ v: 1, rev: meta.revision, family, chunk: 0, off: nextOffset, fh: fingerprint })
-  return { scope: 'jurisdiction' as const, budgetLines: items, revision: file.revision, nextPageToken }
+  return { scope: 'budget' as const, lines: items, revision: file.revision, nextPageToken }
 }

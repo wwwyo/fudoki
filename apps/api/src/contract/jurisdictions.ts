@@ -54,7 +54,7 @@ export const listJurisdictions = base
     description:
       '収録団体の一覧。団体の同一性・階層の宣言・注意事項（caveats）と、' +
       '配布物（datapackage.json）への参照を返す。' +
-      '収録している年度と分類率は /jurisdictions/{jurisdiction}/budgets から取得する（カバレッジは budgets の List から導出する）。',
+      '収録している予算（年度）と分類率は /budgets?filter=jurisdiction%20=%20"{id}" から取得する（カバレッジは budgets の List から導出する）。',
   })
   .output(
     z.object({

@@ -70,7 +70,7 @@ describe('jurisdictions', () => {
     }
   })
 
-  test('detail carries required caveat categories', async () => {
+  test('detail carries required caveat categories, and no per-year state', async () => {
     const res = await get('/v0/jurisdictions/132195')
     expect(res.status).toBe(200)
     const { jurisdiction } = await res.json() as { jurisdiction: { caveats: { category: string }[] } & Record<string, unknown> }
@@ -83,32 +83,44 @@ describe('jurisdictions', () => {
     expect(jurisdiction['classificationRates']).toBeUndefined()
   })
 
-  test('budgets list is the coverage: fiscal years and classification rates per year', async () => {
-    const res = await get('/v0/jurisdictions/132195/budgets')
+  test('unknown jurisdiction is 404', async () => {
+    expect((await get('/v0/jurisdictions/999999')).status).toBe(404)
+  })
+})
+
+describe('budgets (root collection = coverage)', () => {
+  test('list with jurisdiction filter is the coverage, with classification rates', async () => {
+    const res = await get(`/v0/budgets?${q('jurisdiction = "132195"')}`)
     expect(res.status).toBe(200)
-    const body = await res.json() as { budgets: { name: string; fiscalYear: string; directions: string[]; amountPhase: string; classificationRate: Record<string, { lines: number; amount: number }> }[]; revision: string }
+    const body = await res.json() as { budgets: { id: string; name: string; fiscalYear: string; directions: string[]; amountPhase: string; classificationRate: Record<string, { lines: number; amount: number }> }[]; revision: string }
     expect(body.budgets.map((b) => b.fiscalYear)).toEqual(['2018', '2019', '2020', '2021', '2022', '2023'])
     const b2023 = body.budgets.find((b) => b.fiscalYear === '2023')!
-    expect(b2023.name).toBe('jurisdictions/132195/budgets/2023')
+    expect(b2023.id).toBe('132195:2023')
+    expect(b2023.name).toBe('budgets/132195:2023')
     expect(b2023.directions.sort()).toEqual(['expenditure', 'revenue'])
     expect(b2023.amountPhase).toBe('adjusted')
     expect(b2023.classificationRate['assigned']!.lines).toBeGreaterThan(0)
     expect(b2023.classificationRate['unclassifiable']!.lines).toBeGreaterThan(0)
-
-    const one = await get('/v0/jurisdictions/132195/budgets/2023')
-    expect(one.status).toBe(200)
-    const got = await one.json() as { budget: { fiscalYear: string } }
-    expect(got.budget.fiscalYear).toBe('2023')
   })
 
-  test('unknown jurisdiction and uncovered budget are 404', async () => {
-    expect((await get('/v0/jurisdictions/999999')).status).toBe(404)
-    expect((await get('/v0/jurisdictions/999999/budgets')).status).toBe(404)
-    expect((await get('/v0/jurisdictions/132195/budgets/1999')).status).toBe(404)
+  test('unfiltered list spans jurisdictions; fiscalYear narrows it', async () => {
+    const all = await (await get('/v0/budgets')).json() as { budgets: { jurisdictionId: string }[] }
+    expect(new Set(all.budgets.map((b) => b.jurisdictionId))).toEqual(new Set(['132047', '132195']))
+    const y = await (await get(`/v0/budgets?${q('fiscalYear = 2024')}`)).json() as { budgets: { id: string }[] }
+    expect(y.budgets.map((b) => b.id)).toEqual(['132047:2024'])
+  })
+
+  test('get by id; unknown budget and unsupported filters fail', async () => {
+    const res = await get('/v0/budgets/132195:2023')
+    expect(res.status).toBe(200)
+    const { budget } = await res.json() as { budget: { fiscalYear: string } }
+    expect(budget.fiscalYear).toBe('2023')
+    expect((await get('/v0/budgets/132195:1999')).status).toBe(404)
+    expect((await get(`/v0/budgets?${q('direction = expenditure')}`)).status).toBe(400)
   })
 })
 
-describe('cross-jurisdiction listing (wildcard parent)', () => {
+describe('cross-budget listing (wildcard parent)', () => {
   test('division filter returns all matching lines across pages, without silent truncation', async () => {
     const seen = new Set<string>()
     let pageToken: string | undefined
@@ -116,12 +128,12 @@ describe('cross-jurisdiction listing (wildcard parent)', () => {
     let revision = ''
     do {
       const params = q('cofog.division = "09"', pageToken ? { pageToken } : {})
-      const res = await get(`/v0/jurisdictions/-/budgetLines?${params}`)
+      const res = await get(`/v0/budgets/-/lines?${params}`)
       expect(res.status).toBe(200)
-      const body = await res.json() as { scope: string; budgetLines: { name: string; jurisdictionId: string }[]; nextPageToken?: string; revision: string }
-      expect(body.scope).toBe('crossJurisdiction')
+      const body = await res.json() as { scope: string; lines: { name: string; jurisdictionId: string }[]; nextPageToken?: string; revision: string }
+      expect(body.scope).toBe('crossBudget')
       revision = body.revision
-      for (const line of body.budgetLines) {
+      for (const line of body.lines) {
         expect(seen.has(line.name)).toBe(false)
         seen.add(line.name)
       }
@@ -129,72 +141,74 @@ describe('cross-jurisdiction listing (wildcard parent)', () => {
       pages++
     } while (pageToken !== undefined)
     expect(pages).toBeGreaterThan(1)
-    expect(new Set([...seen].map((n) => n.split('/')[1]))).toEqual(new Set(['132047', '132195']))
+    // name は budgets/{団体}:{年度}/lines/... — 両団体が含まれる
+    expect(new Set([...seen].map((n) => n.split('/')[1]!.split(':')[0]))).toEqual(new Set(['132047', '132195']))
     // 独立に cofog リソースから数えた行数と一致する（黙った欠落が無い）
     expect(seen.size).toBe(countCofogRows(['132047', '132195'], '09'))
     expect(revision).toMatch(/^[0-9a-f]{40}/)
   })
 
   test('fiscalYear narrows the series', async () => {
-    const res = await get(`/v0/jurisdictions/-/budgetLines?${q('cofog.division = "09" AND fiscalYear = 2023')}`)
-    const body = await res.json() as { budgetLines: { fiscalYear: string }[] }
-    expect(body.budgetLines.length).toBeGreaterThan(0)
-    expect(body.budgetLines.every((l) => l.fiscalYear === '2023')).toBe(true)
+    const res = await get(`/v0/budgets/-/lines?${q('cofog.division = "09" AND fiscalYear = 2023')}`)
+    const body = await res.json() as { lines: { fiscalYear: string }[] }
+    expect(body.lines.length).toBeGreaterThan(0)
+    expect(body.lines.every((l) => l.fiscalYear === '2023')).toBe(true)
   })
 
   test('empty result set: 200 with empty array and no token', async () => {
-    const res = await get(`/v0/jurisdictions/-/budgetLines?${q('cofog.division = "09" AND fiscalYear = 1999')}`)
+    const res = await get(`/v0/budgets/-/lines?${q('cofog.division = "09" AND fiscalYear = 1999')}`)
     expect(res.status).toBe(200)
-    const body = await res.json() as { budgetLines: unknown[]; nextPageToken?: string }
-    expect(body.budgetLines).toEqual([])
+    const body = await res.json() as { lines: unknown[]; nextPageToken?: string }
+    expect(body.lines).toEqual([])
     expect(body.nextPageToken).toBeUndefined()
   })
 
   test('missing division / unsupported fields / bad syntax are 400', async () => {
-    expect((await get('/v0/jurisdictions/-/budgetLines')).status).toBe(400)
-    expect((await get(`/v0/jurisdictions/-/budgetLines?${q('fiscalYear = 2023')}`)).status).toBe(400)
-    expect((await get(`/v0/jurisdictions/-/budgetLines?${q('cofog.division = "09" AND direction = expenditure')}`)).status).toBe(400)
-    expect((await get(`/v0/jurisdictions/-/budgetLines?${q('cofog.division = "99"')}`)).status).toBe(400)
-    expect((await get(`/v0/jurisdictions/-/budgetLines?${q('cofog.division != "09"')}`)).status).toBe(400)
+    expect((await get('/v0/budgets/-/lines')).status).toBe(400)
+    expect((await get(`/v0/budgets/-/lines?${q('fiscalYear = 2023')}`)).status).toBe(400)
+    expect((await get(`/v0/budgets/-/lines?${q('cofog.division = "09" AND direction = expenditure')}`)).status).toBe(400)
+    expect((await get(`/v0/budgets/-/lines?${q('cofog.division = "99"')}`)).status).toBe(400)
+    expect((await get(`/v0/budgets/-/lines?${q('cofog.division != "09"')}`)).status).toBe(400)
+    expect((await get(`/v0/budgets/-/lines?${q('cofog.division = "09" AND jurisdiction = "132195"')}`)).status).toBe(400)
   })
 
   test('pageToken bound to another filter is 400; another revision is 410', async () => {
-    const first = await get(`/v0/jurisdictions/-/budgetLines?${q('cofog.division = "09"', { pageSize: '10' })}`)
+    const first = await get(`/v0/budgets/-/lines?${q('cofog.division = "09"', { pageSize: '10' })}`)
     const { nextPageToken } = await first.json() as { nextPageToken: string }
     expect(nextPageToken).toBeDefined()
 
-    const misused = await get(`/v0/jurisdictions/-/budgetLines?${q('cofog.division = "10"', { pageToken: nextPageToken })}`)
+    const misused = await get(`/v0/budgets/-/lines?${q('cofog.division = "10"', { pageToken: nextPageToken })}`)
     expect(misused.status).toBe(400)
 
     const decoded = JSON.parse(atob(nextPageToken.replaceAll('-', '+').replaceAll('_', '/'))) as Record<string, unknown>
     const stale = btoa(JSON.stringify({ ...decoded, rev: '0'.repeat(40) }))
-    const staleRes = await get(`/v0/jurisdictions/-/budgetLines?${q('cofog.division = "09"', { pageToken: stale })}`)
+    const staleRes = await get(`/v0/budgets/-/lines?${q('cofog.division = "09"', { pageToken: stale })}`)
     expect(staleRes.status).toBe(410)
 
-    const garbage = await get(`/v0/jurisdictions/-/budgetLines?${q('cofog.division = "09"', { pageToken: '!!!' })}`)
+    const garbage = await get(`/v0/budgets/-/lines?${q('cofog.division = "09"', { pageToken: '!!!' })}`)
     expect(garbage.status).toBe(400)
   })
 
   test('pageSize: clamps above 1000, rejects negatives', async () => {
-    const res = await get(`/v0/jurisdictions/-/budgetLines?${q('cofog.division = "09"', { pageSize: '2' })}`)
-    const body = await res.json() as { budgetLines: unknown[] }
-    expect(body.budgetLines.length).toBe(2)
-    expect((await get(`/v0/jurisdictions/-/budgetLines?${q('cofog.division = "09"', { pageSize: '-1' })}`)).status).toBe(400)
-    expect((await get(`/v0/jurisdictions/-/budgetLines?${q('cofog.division = "09"', { pageSize: '5000' })}`)).status).toBe(200)
+    const res = await get(`/v0/budgets/-/lines?${q('cofog.division = "09"', { pageSize: '2' })}`)
+    const body = await res.json() as { lines: unknown[] }
+    expect(body.lines.length).toBe(2)
+    expect((await get(`/v0/budgets/-/lines?${q('cofog.division = "09"', { pageSize: '-1' })}`)).status).toBe(400)
+    expect((await get(`/v0/budgets/-/lines?${q('cofog.division = "09"', { pageSize: '5000' })}`)).status).toBe(200)
   })
 })
 
-describe('within-jurisdiction listing and Get', () => {
+describe('within-budget listing and Get', () => {
   test('full listing preserves jurisdiction-specific shape and completeness', async () => {
     const seen: string[] = []
     let pageToken: string | undefined
     do {
-      const params = q('fiscalYear = 2023 AND direction = expenditure', pageToken ? { pageToken } : {})
-      const res = await get(`/v0/jurisdictions/132195/budgetLines?${params}`)
+      const params = q('direction = expenditure', pageToken ? { pageToken } : {})
+      const res = await get(`/v0/budgets/132195:2023/lines?${params}`)
       expect(res.status).toBe(200)
-      const body = await res.json() as { scope: string; budgetLines: { budgetLineId: string; hierarchy: { level: string }[]; dimensions: { name: string }[]; amounts: { phase: string }[]; judgments: { cofog: unknown } }[]; nextPageToken?: string }
-      expect(body.scope).toBe('jurisdiction')
-      for (const line of body.budgetLines) {
+      const body = await res.json() as { scope: string; lines: { budgetLineId: string; hierarchy: { level: string }[]; dimensions: { name: string }[]; amounts: { phase: string }[] }[]; nextPageToken?: string }
+      expect(body.scope).toBe('budget')
+      for (const line of body.lines) {
         seen.push(line.budgetLineId)
         expect(line.hierarchy.map((h) => h.level)).toContain('daijigyo')
         expect(line.dimensions.map((d) => d.name).sort()).toEqual(['budget_class', 'org'])
@@ -207,46 +221,47 @@ describe('within-jurisdiction listing and Get', () => {
   })
 
   test('phase filter matches lines but returns all phases', async () => {
-    const res = await get(`/v0/jurisdictions/132195/budgetLines?${q('fiscalYear = 2023 AND direction = expenditure AND phase = executed', { pageSize: '5' })}`)
-    const body = await res.json() as { budgetLines: { amounts: { phase: string }[] }[] }
-    expect(body.budgetLines.length).toBe(5)
-    for (const line of body.budgetLines) {
+    const res = await get(`/v0/budgets/132195:2023/lines?${q('direction = expenditure AND phase = executed', { pageSize: '5' })}`)
+    const body = await res.json() as { lines: { amounts: { phase: string }[] }[] }
+    expect(body.lines.length).toBe(5)
+    for (const line of body.lines) {
       expect(line.amounts.some((a) => a.phase === 'executed')).toBe(true)
       expect(line.amounts.length).toBe(3)
     }
   })
 
-  test('cofog.division filter within a jurisdiction', async () => {
-    const res = await get(`/v0/jurisdictions/132047/budgetLines?${q('fiscalYear = 2024 AND direction = expenditure AND cofog.division = "09"')}`)
-    const body = await res.json() as { budgetLines: { judgments: { cofog: { division: string } } }[] }
-    expect(body.budgetLines.length).toBeGreaterThan(0)
-    expect(body.budgetLines.every((l) => l.judgments.cofog.division === '09')).toBe(true)
+  test('cofog.division filter within a budget', async () => {
+    const res = await get(`/v0/budgets/132047:2024/lines?${q('direction = expenditure AND cofog.division = "09"')}`)
+    const body = await res.json() as { lines: { judgments: { cofog: { division: string } } }[] }
+    expect(body.lines.length).toBeGreaterThan(0)
+    expect(body.lines.every((l) => l.judgments.cofog.division === '09')).toBe(true)
   })
 
-  test('missing required filters is 400, uncovered year is 404', async () => {
-    expect((await get('/v0/jurisdictions/132195/budgetLines')).status).toBe(400)
-    expect((await get(`/v0/jurisdictions/132195/budgetLines?${q('fiscalYear = 2023')}`)).status).toBe(400)
-    expect((await get(`/v0/jurisdictions/132195/budgetLines?${q('fiscalYear = 1999 AND direction = expenditure')}`)).status).toBe(404)
+  test('missing direction is 400, redundant fiscalYear is 400, unknown budget is 404', async () => {
+    expect((await get('/v0/budgets/132195:2023/lines')).status).toBe(400)
+    expect((await get(`/v0/budgets/132195:2023/lines?${q('direction = expenditure AND fiscalYear = 2023')}`)).status).toBe(400)
+    expect((await get(`/v0/budgets/132195:1999/lines?${q('direction = expenditure')}`)).status).toBe(404)
+    expect((await get(`/v0/budgets/garbage/lines?${q('direction = expenditure')}`)).status).toBe(400)
   })
 
   test('cross line name resolves to the full line via Get (AC 2)', async () => {
-    const cross = await get(`/v0/jurisdictions/-/budgetLines?${q('cofog.division = "09"', { pageSize: '1' })}`)
-    const { budgetLines } = await cross.json() as { budgetLines: { name: string; budgetLineId: string }[] }
-    const line = budgetLines[0]!
+    const cross = await get(`/v0/budgets/-/lines?${q('cofog.division = "09"', { pageSize: '1' })}`)
+    const { lines } = await cross.json() as { lines: { name: string; budgetLineId: string }[] }
+    const line = lines[0]!
     const res = await get(`/v0/${line.name}`)
     expect(res.status).toBe(200)
-    const body = await res.json() as { budgetLine: { budgetLineId: string; hierarchy: unknown[] }; revision: string }
-    expect(body.budgetLine.budgetLineId).toBe(line.budgetLineId)
-    expect(body.budgetLine.hierarchy.length).toBeGreaterThan(0)
+    const body = await res.json() as { line: { budgetLineId: string; hierarchy: unknown[] }; revision: string }
+    expect(body.line.budgetLineId).toBe(line.budgetLineId)
+    expect(body.line.hierarchy.length).toBeGreaterThan(0)
   })
 
-  test('Get with mismatched jurisdiction or unknown id is 404', async () => {
-    const cross = await get(`/v0/jurisdictions/-/budgetLines?${q('cofog.division = "09"', { pageSize: '1' })}`)
-    const { budgetLines } = await cross.json() as { budgetLines: { budgetLineId: string; jurisdictionId: string }[] }
-    const line = budgetLines[0]!
-    const other = line.jurisdictionId === '132047' ? '132195' : '132047'
-    expect((await get(`/v0/jurisdictions/${other}/budgetLines/${line.budgetLineId}`)).status).toBe(404)
-    expect((await get(`/v0/jurisdictions/132047/budgetLines/garbage`)).status).toBe(404)
+  test('Get with mismatched budget or unknown id is 404', async () => {
+    const cross = await get(`/v0/budgets/-/lines?${q('cofog.division = "09"', { pageSize: '1' })}`)
+    const { lines } = await cross.json() as { lines: { budgetLineId: string; jurisdictionId: string; fiscalYear: string }[] }
+    const line = lines[0]!
+    const otherBudget = line.jurisdictionId === '132047' ? '132195:2023' : '132047:2024'
+    expect((await get(`/v0/budgets/${otherBudget}/lines/${line.budgetLineId}`)).status).toBe(404)
+    expect((await get(`/v0/budgets/132047:2024/lines/garbage`)).status).toBe(404)
   })
 })
 
@@ -295,10 +310,10 @@ describe('contract-only surface', () => {
     expect(Object.keys(spec.paths)).toEqual(expect.arrayContaining([
       '/jurisdictions',
       '/jurisdictions/{jurisdiction}',
-      '/jurisdictions/{jurisdiction}/budgets',
-      '/jurisdictions/{jurisdiction}/budgets/{budget}',
-      '/jurisdictions/{jurisdiction}/budgetLines',
-      '/jurisdictions/{jurisdiction}/budgetLines/{budgetLine}',
+      '/budgets',
+      '/budgets/{budget}',
+      '/budgets/{budget}/lines',
+      '/budgets/{budget}/lines/{line}',
       '/datapackages/{jurisdiction}/{file}',
     ]))
     const raw = JSON.stringify(spec)
@@ -324,20 +339,20 @@ describe('contract-only surface', () => {
     })
     const client: RouterClient = createORPCClient(link)
 
-    const listed = await client.listJurisdictions()
-    expect(listed.jurisdictions.map((j) => j.id).sort()).toEqual(['132047', '132195'])
+    const listed = await client.listBudgets({ filter: 'jurisdiction = "132195"' })
+    expect(listed.budgets.map((b) => b.fiscalYear)).toContain('2023')
     expect(listed.revision).toMatch(/^[0-9a-f]{40}/)
 
     const cross = await client.listBudgetLines({
-      jurisdiction: '-',
+      budget: '-',
       filter: 'cofog.division = "09"',
       pageSize: 3,
     })
-    expect(cross.scope).toBe('crossJurisdiction')
-    expect(cross.budgetLines.length).toBe(3)
+    expect(cross.scope).toBe('crossBudget')
+    expect(cross.lines.length).toBe(3)
 
     // 型付きエラーも RPC 経由で届く
-    await expect(client.getJurisdiction({ jurisdiction: '999999' })).rejects.toThrow()
+    await expect(client.getBudget({ budget: '999999:1999' })).rejects.toThrow()
   })
 
   test('CORS: OPTIONS preflight and headers on responses', async () => {

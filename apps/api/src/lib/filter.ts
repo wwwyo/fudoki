@@ -4,6 +4,7 @@
  */
 
 export type ParsedFilter = {
+  jurisdiction?: string
   fiscalYear?: string
   direction?: 'expenditure' | 'revenue'
   phase?: string
@@ -13,6 +14,7 @@ export type ParsedFilter = {
 export class FilterSyntaxError extends Error {}
 
 const FIELDS: Record<string, keyof ParsedFilter> = {
+  'jurisdiction': 'jurisdiction',
   'fiscalYear': 'fiscalYear',
   'direction': 'direction',
   'phase': 'phase',

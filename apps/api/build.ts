@@ -20,14 +20,14 @@ import {
   cofogConsolidation,
   cofogDecidedAtLevel,
   cofogStatus,
-  crossJurisdictionLineSchema,
+  crossBudgetLineSchema,
   dimensionName,
   levelName,
   jurisdictionSchema,
   phaseId,
   type Budget,
   type BudgetLine,
-  type CrossJurisdictionLine,
+  type CrossBudgetLine,
   type Jurisdiction,
 } from './src/contract'
 
@@ -255,7 +255,7 @@ function buildLines(
         projectName = key === null ? null : (projectNameByKey.get(key) ?? null)
       }
       line = {
-        name: `jurisdictions/${ctx.jurisdiction}/budgetLines/${id}`,
+        name: `budgets/${ctx.jurisdiction}:${row['fiscal_year']}/lines/${id}`,
         budgetLineId: id,
         fiscalYear: row['fiscal_year']!,
         direction: ctx.direction,
@@ -350,9 +350,9 @@ const jurisdictionIds = readdirSync(DATA_DIR).filter((d) => existsSync(join(DATA
 if (jurisdictionIds.length === 0) fail(`no datapackages under ${DATA_DIR}`)
 
 const jurisdictions: Jurisdiction[] = []
-/** 団体コード → 収録年度の budgets。カバレッジはここから導出する（jurisdiction には持たせない） */
-const budgetsByJurisdiction: Record<string, Budget[]> = {}
-const crossByDivision = new Map<string, CrossJurisdictionLine[]>()
+/** 収録している全 budget。カバレッジはここから導出する（jurisdiction には持たせない） */
+const allBudgets: Budget[] = []
+const crossByDivision = new Map<string, CrossBudgetLine[]>()
 const filesMeta: Record<string, Record<string, { sha256: string; size: number; contentType: string }>> = {}
 /** 検査2の期待値。cofog リソース側から独立に計算する（chunk 側と同じ経路で作らない） */
 const expectedCrossCounts = new Map<string, number>()
@@ -422,7 +422,7 @@ for (const j of jurisdictionIds.sort()) {
       for (const line of lines) {
         const division = line.judgments.cofog?.division
         if (!division) continue
-        const cross: CrossJurisdictionLine = {
+        const cross: CrossBudgetLine = {
           name: line.name,
           jurisdictionId: j,
           budgetLineId: line.budgetLineId,
@@ -473,7 +473,8 @@ for (const j of jurisdictionIds.sort()) {
     const sumAmount = statuses.assigned.amount + statuses.unclassifiable.amount + statuses.outOfScope.amount
     if (sumAmount !== totalAtPhase) fail(`classification rate amounts do not add up for ${j}/${year}`)
     budgets.push(budgetSchema.parse({
-      name: `jurisdictions/${j}/budgets/${year}`,
+      name: `budgets/${j}:${year}`,
+      id: `${j}:${year}`,
       jurisdictionId: j,
       fiscalYear: year,
       directions: DIRECTIONS.filter((d) => fiscalYears[d].includes(year)),
@@ -481,7 +482,7 @@ for (const j of jurisdictionIds.sort()) {
       classificationRate: statuses,
     } satisfies Budget))
   }
-  budgetsByJurisdiction[j] = budgets
+  allBudgets.push(...budgets)
 
   // パススルー（検査5: SHA-256 一致）
   const passthroughFiles = ['datapackage.json', ...descriptor.resources.map((r) => r.path)]
@@ -530,7 +531,7 @@ for (const j of jurisdictionIds.sort()) {
 function writeCrossChunks(): void {
   for (const [division, lines] of crossByDivision) {
     lines.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
-    for (const line of lines) crossJurisdictionLineSchema.parse(line)
+    for (const line of lines) crossBudgetLineSchema.parse(line)
 
     const count = expectedCrossCounts.get(division) ?? 0
     if (lines.length !== count) fail(`cross chunk count for division ${division} (${lines.length}) != cofog resource rows (${count})`)
@@ -546,7 +547,7 @@ function writeCrossChunks(): void {
   }
 }
 
-function writeChunkSeries(family: string, lines: CrossJurisdictionLine[]): void {
+function writeChunkSeries(family: string, lines: CrossBudgetLine[]): void {
   const chunkCount = Math.max(1, Math.ceil(lines.length / CHUNK_SIZE))
   for (let i = 0; i < chunkCount; i++) {
     const chunkLines = lines.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE)
@@ -563,7 +564,8 @@ function writeJson(path: string, value: unknown): void {
 }
 
 writeCrossChunks()
-writeJson(join(OUT_DIR, 'meta', 'jurisdictions.json'), { revision, jurisdictions, budgets: budgetsByJurisdiction })
+allBudgets.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
+writeJson(join(OUT_DIR, 'meta', 'jurisdictions.json'), { revision, jurisdictions, budgets: allBudgets })
 writeJson(join(OUT_DIR, 'meta', 'files.json'), { revision, files: filesMeta })
 
 // 出力の総点検: contract のスキーマに全 BudgetLine を通す（型のずれを deploy 前に落とす）
