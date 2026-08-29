@@ -8,6 +8,7 @@
     "build:release": "bun run build.ts",
     "deploy": "bun run build:release && wrangler deploy",
     "dev": "bun run build && wrangler dev",
+    "spec": "bun run generate-spec.ts",
     "test": "bun run build && bun test",
     "typecheck": "tsc --noEmit"
   },

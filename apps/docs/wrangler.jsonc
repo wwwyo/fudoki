@@ -1,0 +1,20 @@
+{
+  // Cloudflare Workers の静的アセットとして配信する。apps/web と同じ型（`main` なし＝
+  // アセットだけの Worker）。ここは blume の静的出力（HTML/CSS/検索インデックス）を
+  // そのまま置くだけで、サーバ側で何もしない。
+  //
+  // ⚠️ **Cloudflare 側でビルドさせない（Git 連携にしない）。**
+  // spec（openapi.json）は apps/api の contract から生成する派生物で commit しておらず、
+  // bun workspace のローカルビルド（`bun run generate` → `blume build`）が要る。
+  // clone しただけの環境では作れないので、手元で組んでから `dist` を投げる（`bun run deploy:docs`）。
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "fudoki-docs",
+  "compatibility_date": "2026-08-23",
+  "routes": [{ "pattern": "docs.fudoki.dev", "custom_domain": true }],
+  "assets": {
+    "directory": "./dist",
+    // blume build が dist/404.html を出力するので、存在しないパスはそれを 404 として返す
+    // （apps/web の `none` とは事情が違う — あちらは 1 枚の SPA で 404.html 自体を持たない）。
+    "not_found_handling": "404-page"
+  }
+}
