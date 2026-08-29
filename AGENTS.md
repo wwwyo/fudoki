@@ -541,6 +541,7 @@ CC BY が求める帰属と改変の明示には標準のプロパティが無�
 | `fetch:account-master` | `dbt/seeds/budget/account_master.csv` | ○ |
 | `survey:budget-years` | `ingestion/budget/observations/mitaka-budget-years.json` | しない（ローカル観測） |
 | `survey:structure` | `ingestion/budget/observations/<団体コード>-budget-structure.json` | しない（ローカル観測） |
+| `eval:extraction` | `ingestion/budget/observations/<団体コード>-extraction-recall.json` | しない（ローカル観測） |
 | `validate` | （検査。`ingestion/transcripts/gates.json` を宣言と、`ingestion/shared/jurisdictions.json` とコード集合で突き合わせる） | — |
 
 ⚠️ **ネットワークを叩くスクリプトは、サンドボックスを外して回す。**
@@ -558,6 +559,7 @@ CC BY が求める帰属と改変の明示には標準のプロパティが無�
 | `bun run check:budget` | 予算系オープンデータが**どの粒度まで届いているか**（列構成で判定。名前では判定しない） |
 | `bun run survey:budget-years` | 同じ団体の他年度が収録済み年度と互換か（列構成・金額の型・引用符の有無・会計の範囲） |
 | `bun run survey:structure <団体コード>` | その団体の原典が何を持っているか（階層が実際に使われているか・コードの再利用・行の同一性・歳出と歳入の一致）。**原典を読むだけでネットワークを叩かない** |
+| `bun run eval:extraction [団体コード...]` | PDF 抽出器の **recall**（原典にあって抽出できなかった目）を、正解のある団体で測る。年度ごと・経路（text / ocr）ごと・金額ベースでも出し、落とした目を一覧に残す。**抽出器を較正する場所**であって団体ごとのデータ検証ではない（正解があるのは 62 団体中 1 団体の歳入だけ）。**原典を読むだけでネットワークを叩かない** |
 | `bun run pipeline` | 取得 → dbt → 配布物 → 報告。**検査が1つでも落ちたら下流を作らない** |
 | `bun run dev` | 報告を作り直してダッシュボードを上げる（`apps/web/`） |
 | `bun run fetch:fdp-taxonomy` | FDP の ColumnType 一覧を仕様の原文から起こして取り込む（正準 URL が 404 のため） |
