@@ -109,6 +109,13 @@ vars:
       # 歳入の予算現額が千円単位なので、円未満は原理的に一致しない
       tolerance_yen: 1000
 
+  # **単位と、円へ直す倍率の対応。** 単位の語彙はここが正本。
+  # ⚠️ **これが無いと倍率の誤りを誰も見ていない状態になる**（`{unit: 千円, multiplier: 1}` は
+  # 全体が整合したまま 1000 分の 1 で通る）。検査は tests/amount_units_match_source.sql。
+  budget_amount_unit_multipliers:
+    円: 1
+    千円: 1000
+
   # **金額。原典の列を FDP の phase へ対応づける。**
   #
   # FDP は phase を**行の列**として持つ設計で、`value` の列型は1つしかない。
@@ -120,8 +127,9 @@ vars:
   #
   #   name       staging の列名
   #   source     原典の列名
-  #   unit       原典の単位（⚠️ 狛江市は歳入の予算現額だけ千円で、他はすべて円）
-  #   multiplier 円へ直す倍率
+  #   unit       原典の単位（⚠️ 狛江市は歳入の予算現額だけ千円で、他はすべて円）。
+  #              **単位の宣言はここが正本**で、取得の宣言（sources.toml）は持たない
+  #   multiplier 円へ直す倍率。`budget_amount_unit_multipliers` の unit と対で決まる
   #   phase      FDP の phase:id / phase_label はその表示名
   #   primary    COFOG の集計と検算に使う段階。**団体・direction ごとに1つ**
   budget_amounts:

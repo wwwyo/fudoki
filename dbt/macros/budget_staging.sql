@@ -12,7 +12,7 @@
     budget_extra_key_columns        階層だけでは一意にならない団体の追加の同一性の列
     budget_code_style               セルからコードと名称を取り出す書式
     budget_label_columns            code-only の団体で名称を持つ列がどの階層に対応するか
-    budget_amounts                  原典の金額列と FDP の phase の対応
+    budget_amounts                  原典の金額列と FDP の phase の対応（単位の宣言もここが正本）
 
   ## 識別子
 

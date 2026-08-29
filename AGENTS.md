@@ -437,6 +437,14 @@ CC BY が求める帰属と改変の明示には標準のプロパティが無�
 - **⚠️ 決算書は1行が複数段階の金額を持ち、段階ごとに単位も割れうる。**
   FDP は `value` の列型を1つしか持たないので package 段で段階ごとの行へ展開し、
   主キーは `(budget_line_id, phase_id)` になる。単位を descriptor の定数にできるのは1種類のときだけ
+- **⚠️ 同じ事実を2箇所で宣言すると、突き合わせが粗いぶんだけ嘘が通る。**
+  金額の単位は取得の宣言（`sources.toml` の団体単位）と変換の宣言（`budget_amounts` の
+  団体 × direction × 段階）の2箇所にあり、突き合わせは **direction をまたいで合算した集合への
+  メンバーシップ判定**だった。歳出が円で歳入の primary が千円の団体では、歳出のおかげで円が
+  集合に入り、**歳入の primary が食い違ったまま通った**。粒度の粗い側は割れ方を表現できない以上、
+  2つ目の宣言は検査の役に立たない — 取得側の宣言を消して `budget_amounts` に一本化した。
+  **突き合わせる相手は、もう1つの宣言ではなく原典に取る**（原典の列名が `予算現額(千円)` と
+  自分で単位を名乗っている）。宣言どうしの照合は、両方まとめて間違っているときに何も言わない
 - **⚠️ 同名のデータセットが複数あり中身が違うことがある。** 先頭を採る実装だと
   カタログの並びが変わった日に配布物の中身が入れ替わる。複数当たったら止めて
   `resource_url_contains` の宣言を要求する
@@ -484,6 +492,8 @@ CC BY が求める帰属と改変の明示には標準のプロパティが無�
    `budget_extra_key_source_columns` / `budget_absent_level_markers` / `budget_code_style` /
    `budget_label_columns` / `budget_extra_key_labels` / `budget_amounts` /
    `budget_source_year_columns` / `budget_expenditure_revenue_balance`
+   （**単位は `budget_amounts` だけが宣言する**。語彙に無い単位を使うなら
+   `budget_amount_unit_multipliers` に倍率と対で足す）
 5. `dbt/models/staging/budget/_sources.yml` にソースを、`stg_<団体>__{expenditure,revenue}.sql` に
    `{{ budget_staging('<団体>', '<direction>') }}` の1行を書く（本体はマクロが宣言から組み立てる）
 6. `dbt/models/package/budget/pkg_<団体>__*.sql` を書く。**正本は団体ごとの形のまま**で、
@@ -513,6 +523,15 @@ CC BY が求める帰属と改変の明示には標準のプロパティが無�
 | `budget_label_columns`（code-only の団体） | `macros/budget_staging.sql`（宣言が無ければコンパイルエラー） |
 | 原典を取ったのに宣言していない | `dbt/tests/declarations_cover_raw.sql`（**原典の側を母集団にする唯一の検査**。事業名の抽出物も見る） |
 | 事業名の取得元（`[project_names]`）を消した | `dbt/tests/project_names_cover_budget.sql`（年度を宣言で持つので、消すと 0% で落ちる） |
+
+**宣言どうしの矛盾は、足し忘れとは別の失敗の型である。** 足し忘れは「無い」を見れば済むが、
+矛盾は両方揃っているので、突き合わせの粒度が粗ければ通ってしまう（金額の単位で実際に通した）。
+だから**宣言を2つ持たない**のが第一で、それでも宣言が正しいかを見たいときは原典と突き合わせる。
+
+| 宣言が間違っていたら | 止める場所 |
+|---|---|
+| 単位と倍率が対になっていない（`{千円, 1}`） | `dbt/tests/amount_units_match_source.sql`（**母集団は宣言**。モデルを1つ組む前にコンパイルエラーで止まる） |
+| 宣言した単位が原典の列名（`予算現額(千円)`）と違う | 同上。⚠️ **列名が単位を名乗っていない団体（三鷹市の `08予算額`）は突き合わせる相手がいない** — その団体で確かめられるのは倍率との対応だけ |
 | 抽出が行の境界に乗っている | `extract_projects.py`（許容幅を変えて事業名が変わったら止まる） |
 | 目の合計と事業の合計が合わない | `extract_projects.py`（合わない目からは名前を採らない） |
 

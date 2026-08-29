@@ -375,15 +375,10 @@ def build_jurisdiction(code: str) -> None:
     # `Source` は (団体, 年度) の粒度なので、この割れ方を表せない。
     amounts = {name: amounts_of(code, name) for name in ("expenditure", "revenue")}
     flat = [a for v in amounts.values() for a in v]
-    # ⚠️ **2つの宣言が食い違っていないことを見る。** 取得元の宣言（原典の主たる単位）が
-    # 変換の宣言に1つも現れないなら、どちらかが古い。
+    # descriptor の定数を決めるための集合。**検査ではない** — 単位の宣言が正しいかは
+    # dbt が見る（tests/amount_units_match_source.sql）。ここが見るのは配布物との一致だけ
+    # （verify_against_csv）。
     declared_units = {(a["unit"], a["multiplier"]) for a in flat}
-    for s in srcs:
-        if (s.source_amount_unit, s.source_amount_multiplier) not in declared_units:
-            raise SystemExit(
-                f"{code}: sources.toml の単位 {(s.source_amount_unit, s.source_amount_multiplier)} が "
-                f"dbt の budget_amounts の宣言 {sorted(declared_units)} に無い"
-            )
 
     # ⚠️ **どの判断が入るかは description より先に決める。** 改変の明示（CC BY §3(a)(1)(B)）は
     # description に載るので、リソースを足しながら後から追記すると説明文に反映されない。

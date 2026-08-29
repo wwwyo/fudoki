@@ -1,6 +1,11 @@
 # 取得元の定義。「どの自治体の、どの年度の、どのリソースを取るか」だけを置く。
 # 変換規則は持たない（それは dbt 側の役割）。
 #
+# ⚠️ **金額の単位はここで宣言しない。** (団体, 年度) の粒度では direction や段階で単位が
+# 割れる団体を表せない。単位は `dbt/dbt_project.yml` の `budget_amounts` が段階ごとに持つ
+# （経緯は AGENTS.md「宣言どうしの矛盾は…」の節）。
+# ここは無加工で取るための宣言だけを持ち、原典の読み方は変換側に一本化する。
+#
 # TOML にしてあるのは Python（tomllib）と Bun の両方が依存なしで読めるため。
 # 定義を2言語で二重持ちすると、片方だけ直して気づかない状態を作る。
 
@@ -24,9 +29,6 @@ dataset_title = "【予算・決算】予算情報"
 # （`01Ⅰ型事業委託料` の Ⅰ = U+2160、CP932 で 0x8754）。
 # 素の shift_jis は NEC 特殊文字を受け付けず復号に失敗する。
 encoding = "cp932"
-# 原典の金額の単位。円へ直す倍率と対で持つ。**団体ごとに違う**ので宣言する。
-source_amount_unit = "千円"
-source_amount_multiplier = 1000
 # 再配布の可否。allow 以外は raw を書き出さない。
 # ⚠️ **根拠はカタログのライセンス**であって、ingestion/transcript-gates.json の
 # gate（③会議録。著作権法40条1項と各議会の利用規約が根拠）とは別の判断である。
@@ -62,6 +64,8 @@ resource_name = "令和６年度予算データ（歳入）※下水道事業会
 #     歳入は予算現額 / 収入累計。FDP は phase を**行の列**として持つ設計なので、
 #     package 段で段階ごとの行へ展開する（詳細は pkg_132195__*.sql）。
 #  5. **歳入の予算現額だけ単位が千円。** 同じファイルの他の金額はすべて円。
+#     宣言は段階ごとに budget_amounts が持つ（列名が `予算現額(千円)` と名乗っており、
+#     宣言がそれと食い違えば dbt がコンパイル時に止める）。
 #  6. **文字コードが年度で変わる。** 2018〜2021 は UTF-8（BOM 付き）、2022〜2023 は CP932。
 #  7. ⚠️ **決算資料の PDF は取得元が別で、再配布の可否も別。**
 #     款・項・目・大事業の**名称は市サイトの「主要な施策の成果説明書・決算資料」PDF にしかない**
@@ -91,12 +95,6 @@ phase_label = "決算"
 encoding = "utf-8"
 # 同名のデータセットが2件あるので、どちらを採るかを明示する（指定が無く複数当たれば取得は止まる）。
 resource_url_contains = "/komae/R05/"
-# ⚠️ **狛江市の原典は円。** 三鷹市（千円）と違う。全団体共通の倍率に戻すと
-# 「円に直すには 1000 を掛ける」が狛江市の配布物にも付いて黙って嘘になる。
-# ⚠️ 歳入の予算現額だけは千円で、段階ごとの単位は dbt_project.yml の
-# budget_amounts が持つ。ここは原典の主たる単位の宣言。
-source_amount_unit = "円"
-source_amount_multiplier = 1
 redistribute = "allow"
 redistribute_basis = "東京都オープンデータカタログのライセンス表示（CC BY 4.0）"
 license_id = "CC-BY-4.0"
@@ -131,12 +129,6 @@ phase_label = "決算"
 encoding = "utf-8"
 # 同名のデータセットが2件あるので、どちらを採るかを明示する（指定が無く複数当たれば取得は止まる）。
 resource_url_contains = "/komae/R05/"
-# ⚠️ **狛江市の原典は円。** 三鷹市（千円）と違う。全団体共通の倍率に戻すと
-# 「円に直すには 1000 を掛ける」が狛江市の配布物にも付いて黙って嘘になる。
-# ⚠️ 歳入の予算現額だけは千円で、段階ごとの単位は dbt_project.yml の
-# budget_amounts が持つ。ここは原典の主たる単位の宣言。
-source_amount_unit = "円"
-source_amount_multiplier = 1
 redistribute = "allow"
 redistribute_basis = "東京都オープンデータカタログのライセンス表示（CC BY 4.0）"
 license_id = "CC-BY-4.0"
@@ -171,12 +163,6 @@ phase_label = "決算"
 encoding = "utf-8"
 # 同名のデータセットが2件あるので、どちらを採るかを明示する（指定が無く複数当たれば取得は止まる）。
 resource_url_contains = "/komae/R05/"
-# ⚠️ **狛江市の原典は円。** 三鷹市（千円）と違う。全団体共通の倍率に戻すと
-# 「円に直すには 1000 を掛ける」が狛江市の配布物にも付いて黙って嘘になる。
-# ⚠️ 歳入の予算現額だけは千円で、段階ごとの単位は dbt_project.yml の
-# budget_amounts が持つ。ここは原典の主たる単位の宣言。
-source_amount_unit = "円"
-source_amount_multiplier = 1
 redistribute = "allow"
 redistribute_basis = "東京都オープンデータカタログのライセンス表示（CC BY 4.0）"
 license_id = "CC-BY-4.0"
@@ -211,12 +197,6 @@ phase_label = "決算"
 encoding = "utf-8"
 # 同名のデータセットが2件あるので、どちらを採るかを明示する（指定が無く複数当たれば取得は止まる）。
 resource_url_contains = "/komae/R05/"
-# ⚠️ **狛江市の原典は円。** 三鷹市（千円）と違う。全団体共通の倍率に戻すと
-# 「円に直すには 1000 を掛ける」が狛江市の配布物にも付いて黙って嘘になる。
-# ⚠️ 歳入の予算現額だけは千円で、段階ごとの単位は dbt_project.yml の
-# budget_amounts が持つ。ここは原典の主たる単位の宣言。
-source_amount_unit = "円"
-source_amount_multiplier = 1
 redistribute = "allow"
 redistribute_basis = "東京都オープンデータカタログのライセンス表示（CC BY 4.0）"
 license_id = "CC-BY-4.0"
@@ -251,12 +231,6 @@ phase_label = "決算"
 encoding = "cp932"
 # 同名のデータセットが2件あるので、どちらを採るかを明示する（指定が無く複数当たれば取得は止まる）。
 resource_url_contains = "/komae/R05/"
-# ⚠️ **狛江市の原典は円。** 三鷹市（千円）と違う。全団体共通の倍率に戻すと
-# 「円に直すには 1000 を掛ける」が狛江市の配布物にも付いて黙って嘘になる。
-# ⚠️ 歳入の予算現額だけは千円で、段階ごとの単位は dbt_project.yml の
-# budget_amounts が持つ。ここは原典の主たる単位の宣言。
-source_amount_unit = "円"
-source_amount_multiplier = 1
 redistribute = "allow"
 redistribute_basis = "東京都オープンデータカタログのライセンス表示（CC BY 4.0）"
 license_id = "CC-BY-4.0"
@@ -291,12 +265,6 @@ phase_label = "決算"
 encoding = "cp932"
 # 同名のデータセットが2件あるので、どちらを採るかを明示する（指定が無く複数当たれば取得は止まる）。
 resource_url_contains = "/komae/R05/"
-# ⚠️ **狛江市の原典は円。** 三鷹市（千円）と違う。全団体共通の倍率に戻すと
-# 「円に直すには 1000 を掛ける」が狛江市の配布物にも付いて黙って嘘になる。
-# ⚠️ 歳入の予算現額だけは千円で、段階ごとの単位は dbt_project.yml の
-# budget_amounts が持つ。ここは原典の主たる単位の宣言。
-source_amount_unit = "円"
-source_amount_multiplier = 1
 redistribute = "allow"
 redistribute_basis = "東京都オープンデータカタログのライセンス表示（CC BY 4.0）"
 license_id = "CC-BY-4.0"
