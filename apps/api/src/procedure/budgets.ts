@@ -5,7 +5,7 @@
 import {
   type Env,
   type CofogChunkFile,
-  type LinesFile,
+  type LinesChunkFile,
   paths,
   readJsonAsset,
 } from '../assets'
@@ -100,7 +100,7 @@ async function crossBudgetStatement(
   const chunkIndex = token?.chunk ?? 0
   const offset = token?.off ?? 0
 
-  const chunk = await readJsonAsset<CofogChunkFile>(env, paths.cofogChunk(family, chunkIndex))
+  const chunk = await readJsonAsset<CofogChunkFile>(env, paths.chunk(family, chunkIndex))
   if (chunk === null) {
     // 系列自体が無い（そのフィルタに該当が無い）のは先頭ページだけで正当
     if (token === null) {
@@ -160,24 +160,27 @@ async function budgetStatement(
   const fingerprint = filterFingerprint(filter)
   const token =
     rawToken === undefined ? null : verifyToken(rawToken, { revision: meta.revision, family, fingerprint }, errors)
-  if (token !== null && token.chunk !== 0) {
-    throw errors.BAD_REQUEST({ message: 'pageToken points outside the result set', data: { reason: 'invalid pageToken' } })
-  }
+  const chunkIndex = token?.chunk ?? 0
   const offset = token?.off ?? 0
 
-  const file = await readJsonAsset<LinesFile>(env, paths.lines(parsed.jurisdiction, parsed.fiscalYear, direction))
-  if (file === null) throw new Error(`partition missing for covered budget: ${family}`)
-  checkOffsetInRange(offset, file.lines.length, errors)
+  const chunk = await readJsonAsset<LinesChunkFile>(env, paths.chunk(family, chunkIndex))
+  if (chunk === null) {
+    if (token === null) throw new Error(`partition missing for covered budget: ${family}`)
+    throw errors.BAD_REQUEST({ message: 'pageToken points outside the result set', data: { reason: 'invalid pageToken' } })
+  }
+  checkOffsetInRange(offset, chunk.lines.length, errors)
 
   const predicate = (line: BudgetLine): boolean => {
     if (filter.phase !== undefined && !line.amounts.some((a) => a.phase === filter.phase)) return false
     if (filter.cofogDivision !== undefined && line.judgments.cofog?.division !== filter.cofogDivision) return false
     return true
   }
-  const { items, nextOffset } = scanPage(file.lines, offset, pageSize, predicate)
-  const nextPageToken =
-    nextOffset === null
-      ? undefined
-      : encodePageToken({ v: 1, rev: meta.revision, family, chunk: 0, off: nextOffset, fh: fingerprint })
-  return { scope: 'budget' as const, lines: items, revision: file.revision, nextPageToken }
+  const { items, nextOffset } = scanPage(chunk.lines, offset, pageSize, predicate)
+  let nextPageToken: string | undefined
+  if (nextOffset !== null) {
+    nextPageToken = encodePageToken({ v: 1, rev: meta.revision, family, chunk: chunkIndex, off: nextOffset, fh: fingerprint })
+  } else if (chunk.hasNext) {
+    nextPageToken = encodePageToken({ v: 1, rev: meta.revision, family, chunk: chunkIndex + 1, off: 0, fh: fingerprint })
+  }
+  return { scope: 'budget' as const, lines: items, revision: chunk.revision, nextPageToken }
 }

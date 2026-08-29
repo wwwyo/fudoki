@@ -308,7 +308,7 @@ describe('distribution passthrough', () => {
 describe('contract-only surface', () => {
   test('internal partitions are not exposed as URLs', async () => {
     expect((await get('/meta/jurisdictions.json')).status).toBe(404)
-    expect((await get('/lines/132195/2023-expenditure.json')).status).toBe(404)
+    expect((await get('/lines/132195/2023-expenditure/0.json')).status).toBe(404)
     expect((await get('/cofog/09/all/0.json')).status).toBe(404)
     expect((await get('/v0/meta/jurisdictions.json')).status).toBe(404)
   })
