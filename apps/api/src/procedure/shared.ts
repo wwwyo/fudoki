@@ -1,5 +1,5 @@
 /**
- * contract の implementer と、procedure が共有する道具。
+ * contract の implementer（oRPC の慣習で os と呼ぶ）と、procedure が共有する道具。
  * oRPC の推奨構成（contract → procedure → router）の procedure 層にあたる。
  */
 import { implement } from '@orpc/server'

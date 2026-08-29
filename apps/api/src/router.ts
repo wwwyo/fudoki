@@ -5,7 +5,7 @@
  */
 import { getBudget, getStatement, listBudgets } from './procedure/budgets'
 import { getJurisdiction, listJurisdictions } from './procedure/jurisdictions'
-import { os } from './procedure/os'
+import { os } from './procedure/shared'
 
 export const router = os.router({
   listJurisdictions,

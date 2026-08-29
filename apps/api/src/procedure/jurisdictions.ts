@@ -1,5 +1,5 @@
 /** jurisdictions リソースの procedure。パーティション meta/jurisdictions.json を読むだけ */
-import { os, readMeta } from './os'
+import { os, readMeta } from './shared'
 
 export const listJurisdictions = os.listJurisdictions.handler(async ({ context }) => {
   const meta = await readMeta(context.env)

@@ -12,7 +12,7 @@ import {
 import type { BudgetLine, CrossBudgetLine } from '../contract'
 import { filterFingerprint, type ParsedFilter } from '../lib/filter'
 import { encodePageToken } from '../lib/token'
-import { os, parseFilterOr400, readMeta, resolvePageSize, scanPage, verifyToken, type Errors } from './os'
+import { os, parseFilterOr400, readMeta, resolvePageSize, scanPage, verifyToken, type Errors } from './shared'
 
 export const listBudgets = os.listBudgets.handler(async ({ context, input, errors }) => {
   const filter = parseFilterOr400(input.filter, errors)
