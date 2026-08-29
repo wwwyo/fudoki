@@ -16,6 +16,7 @@ import { join } from 'node:path'
 import { BY_JURISDICTION } from '@fudoki/report/budget/static'
 import {
   budgetLineSchema,
+  budgetSchema,
   cofogConsolidation,
   cofogDecidedAtLevel,
   cofogStatus,
@@ -24,8 +25,8 @@ import {
   levelName,
   jurisdictionSchema,
   phaseId,
+  type Budget,
   type BudgetLine,
-  type ClassificationRate,
   type CrossJurisdictionLine,
   type Jurisdiction,
 } from './src/contract'
@@ -349,6 +350,8 @@ const jurisdictionIds = readdirSync(DATA_DIR).filter((d) => existsSync(join(DATA
 if (jurisdictionIds.length === 0) fail(`no datapackages under ${DATA_DIR}`)
 
 const jurisdictions: Jurisdiction[] = []
+/** 団体コード → 収録年度の budgets。カバレッジはここから導出する（jurisdiction には持たせない） */
+const budgetsByJurisdiction: Record<string, Budget[]> = {}
 const crossByDivision = new Map<string, CrossJurisdictionLine[]>()
 const filesMeta: Record<string, Record<string, { sha256: string; size: number; contentType: string }>> = {}
 /** 検査2の期待値。cofog リソース側から独立に計算する（chunk 側と同じ経路で作らない） */
@@ -443,9 +446,11 @@ for (const j of jurisdictionIds.sort()) {
     if (joined === 0) fail(`project_names.csv exists for ${j} but zero lines joined (key mismatch?)`)
   }
 
-  // 分類率（検査3: 内訳の一致を含む）。分母・分子とも歳出に限定する
-  const classificationRates: ClassificationRate[] = []
-  for (const year of fiscalYears.expenditure) {
+  // budgets（年度スコープのメタ。検査3: 分類率の内訳の一致を含む）。分類率は歳出に限定する
+  const budgets: Budget[] = []
+  const allYears = [...new Set([...fiscalYears.expenditure, ...fiscalYears.revenue])].sort()
+  for (const year of allYears) {
+    if (!fiscalYears.expenditure.includes(year)) fail(`year ${year} has revenue but no expenditure for ${j} (unexpected)`)
     const yearLines = linesByYearDir.get(`${year}-expenditure`)!
     const statuses = {
       assigned: { lines: 0, amount: 0 },
@@ -467,8 +472,16 @@ for (const j of jurisdictionIds.sort()) {
     if (sumLines !== denominator) fail(`classification rate line counts (${sumLines}) != distinct expenditure budget lines (${denominator}) for ${j}/${year}`)
     const sumAmount = statuses.assigned.amount + statuses.unclassifiable.amount + statuses.outOfScope.amount
     if (sumAmount !== totalAtPhase) fail(`classification rate amounts do not add up for ${j}/${year}`)
-    classificationRates.push({ fiscalYear: year, amountPhase, statuses })
+    budgets.push(budgetSchema.parse({
+      name: `jurisdictions/${j}/budgets/${year}`,
+      jurisdictionId: j,
+      fiscalYear: year,
+      directions: DIRECTIONS.filter((d) => fiscalYears[d].includes(year)),
+      amountPhase,
+      classificationRate: statuses,
+    } satisfies Budget))
   }
+  budgetsByJurisdiction[j] = budgets
 
   // パススルー（検査5: SHA-256 一致）
   const passthroughFiles = ['datapackage.json', ...descriptor.resources.map((r) => r.path)]
@@ -492,7 +505,6 @@ for (const j of jurisdictionIds.sort()) {
     name: `jurisdictions/${j}`,
     id: j,
     label,
-    fiscalYears,
     levels,
     datapackagePath: `/v0/datapackages/${j}/datapackage.json`,
     resources: passthroughFiles,
@@ -500,7 +512,6 @@ for (const j of jurisdictionIds.sort()) {
     sources: descriptor.sources.map((s) => ({ title: s.title, path: s.path ?? null })),
     consolidationScope: perJurisdiction.consolidationScope,
     caveats: perJurisdiction.caveats.map((c) => ({ category: c.category, topic: c.topic, body: c.body })),
-    classificationRates,
   } satisfies Jurisdiction))
 
   // 検査2の材料: cofog リソース側から division ごとの期待値を計算する
@@ -552,7 +563,7 @@ function writeJson(path: string, value: unknown): void {
 }
 
 writeCrossChunks()
-writeJson(join(OUT_DIR, 'meta', 'jurisdictions.json'), { revision, jurisdictions })
+writeJson(join(OUT_DIR, 'meta', 'jurisdictions.json'), { revision, jurisdictions, budgets: budgetsByJurisdiction })
 writeJson(join(OUT_DIR, 'meta', 'files.json'), { revision, files: filesMeta })
 
 // 出力の総点検: contract のスキーマに全 BudgetLine を通す（型のずれを deploy 前に落とす）

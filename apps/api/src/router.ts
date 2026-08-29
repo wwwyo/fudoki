@@ -4,12 +4,15 @@
  * `os.router()` が contract との完全一致（実装漏れ・余剰）を型検査する。
  */
 import { getBudgetLine, listBudgetLines } from './procedure/budget-lines'
+import { getBudget, listBudgets } from './procedure/budgets'
 import { getJurisdiction, listJurisdictions } from './procedure/jurisdictions'
 import { os } from './procedure/os'
 
 export const router = os.router({
   listJurisdictions,
   getJurisdiction,
+  listBudgets,
+  getBudget,
   listBudgetLines,
   getBudgetLine,
 })

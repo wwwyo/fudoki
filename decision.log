@@ -129,3 +129,20 @@ router.ts（束ねるだけ）に分けた。lib/（filter・token）を切り�
 自前のフロントと MCP は contract を import した型付きクライアントで /rpc/* を叩く想定。
 /rpc は oRPC プロトコル（POST）なので CORS の許可メソッドに POST を足した。
 OpenAPI には載せない（契約は contract の型として配る）。
+
+### 18. budgets リソースを新設し、年度とカバレッジを jurisdiction から外した
+
+当初、収録年度（fiscalYears）と年度別の分類率（classificationRates）を jurisdiction の属性として
+持たせていた。「年度は budget が持つべきで、カバレッジは budgets の存在から導出できる。
+jurisdiction が宣言すると、収録が増えるたびに団体の表現が変わる」という指摘を受けて再編した。
+
+- budgets = (団体, 年度)。年度スコープのメタ（収録 direction、amountPhase、分類率）の器。
+  GET /jurisdictions/{j}/budgets の List がそのままカバレッジになる
+- jurisdiction は団体の同一性・階層宣言・ライセンス・注意事項だけに痩せた。
+  収録が増えても jurisdiction の表現は変わらない
+- budgetLines の URL は変えていない。年度は明細にとって filter の軸
+  （fiscalYear = 2023）であり、budgets/{year}/lines の入れ子にはしない
+
+なお budget を「明細の集約ルート」にはしていない。読み取り専用の配布 API に
+書き込み時の不変条件は無く、明細は budget の境界をまたいで参照される（横断 COFOG）のが
+一級のユースケースのため。budget はあくまで年度スコープのメタデータの器である。

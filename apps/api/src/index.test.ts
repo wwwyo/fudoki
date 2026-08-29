@@ -70,22 +70,41 @@ describe('jurisdictions', () => {
     }
   })
 
-  test('detail carries required caveat categories and classification rates', async () => {
+  test('detail carries required caveat categories', async () => {
     const res = await get('/v0/jurisdictions/132195')
     expect(res.status).toBe(200)
-    const { jurisdiction } = await res.json() as { jurisdiction: { caveats: { category: string }[]; classificationRates: { fiscalYear: string; amountPhase: string; statuses: Record<string, { lines: number; amount: number }> }[] } }
+    const { jurisdiction } = await res.json() as { jurisdiction: { caveats: { category: string }[] } & Record<string, unknown> }
     const categories = new Set(jurisdiction.caveats.map((c) => c.category))
     for (const required of ['coverage', 'phaseSemantics', 'classification', 'sourceAndLicense']) {
       expect(categories.has(required)).toBe(true)
     }
-    const r2023 = jurisdiction.classificationRates.find((r) => r.fiscalYear === '2023')!
-    expect(r2023.amountPhase).toBe('adjusted')
-    expect(r2023.statuses['assigned']!.lines).toBeGreaterThan(0)
-    expect(r2023.statuses['unclassifiable']!.lines).toBeGreaterThan(0)
+    // 年度は budgets へ移した。団体の表現は収録が増えても変わらない
+    expect(jurisdiction['fiscalYears']).toBeUndefined()
+    expect(jurisdiction['classificationRates']).toBeUndefined()
   })
 
-  test('unknown jurisdiction is 404', async () => {
+  test('budgets list is the coverage: fiscal years and classification rates per year', async () => {
+    const res = await get('/v0/jurisdictions/132195/budgets')
+    expect(res.status).toBe(200)
+    const body = await res.json() as { budgets: { name: string; fiscalYear: string; directions: string[]; amountPhase: string; classificationRate: Record<string, { lines: number; amount: number }> }[]; revision: string }
+    expect(body.budgets.map((b) => b.fiscalYear)).toEqual(['2018', '2019', '2020', '2021', '2022', '2023'])
+    const b2023 = body.budgets.find((b) => b.fiscalYear === '2023')!
+    expect(b2023.name).toBe('jurisdictions/132195/budgets/2023')
+    expect(b2023.directions.sort()).toEqual(['expenditure', 'revenue'])
+    expect(b2023.amountPhase).toBe('adjusted')
+    expect(b2023.classificationRate['assigned']!.lines).toBeGreaterThan(0)
+    expect(b2023.classificationRate['unclassifiable']!.lines).toBeGreaterThan(0)
+
+    const one = await get('/v0/jurisdictions/132195/budgets/2023')
+    expect(one.status).toBe(200)
+    const got = await one.json() as { budget: { fiscalYear: string } }
+    expect(got.budget.fiscalYear).toBe('2023')
+  })
+
+  test('unknown jurisdiction and uncovered budget are 404', async () => {
     expect((await get('/v0/jurisdictions/999999')).status).toBe(404)
+    expect((await get('/v0/jurisdictions/999999/budgets')).status).toBe(404)
+    expect((await get('/v0/jurisdictions/132195/budgets/1999')).status).toBe(404)
   })
 })
 
@@ -276,6 +295,8 @@ describe('contract-only surface', () => {
     expect(Object.keys(spec.paths)).toEqual(expect.arrayContaining([
       '/jurisdictions',
       '/jurisdictions/{jurisdiction}',
+      '/jurisdictions/{jurisdiction}/budgets',
+      '/jurisdictions/{jurisdiction}/budgets/{budget}',
       '/jurisdictions/{jurisdiction}/budgetLines',
       '/jurisdictions/{jurisdiction}/budgetLines/{budgetLine}',
       '/datapackages/{jurisdiction}/{file}',

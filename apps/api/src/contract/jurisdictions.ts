@@ -6,29 +6,7 @@
  * 各フィールドの `.describe()` は OpenAPI の description にそのまま出る。
  */
 import * as z from 'zod'
-import { base, levelName, phaseId, resourceName } from './shared'
-
-export const classificationRateSchema = z.object({
-  fiscalYear: z.string().describe('会計年度（西暦）'),
-  amountPhase: phaseId.describe('金額ベースの分類率の計算に使った予算段階'),
-  statuses: z
-    .object({
-      assigned: z.object({
-        lines: z.number().describe('明細数（一意な budget_line_id の件数）'),
-        amount: z.number().describe('amountPhase 時点の金額合計（円）'),
-      }),
-      unclassifiable: z.object({
-        lines: z.number().describe('明細数'),
-        amount: z.number().describe('金額合計（円）'),
-      }),
-      outOfScope: z.object({
-        lines: z.number().describe('明細数'),
-        amount: z.number().describe('金額合計（円）'),
-      }),
-    })
-    .describe('COFOG 分類の内訳（assigned=割当済み / unclassifiable=分類不能 / outOfScope=対象外）。分母は歳出明細で、3状態の合計が歳出全体に一致する'),
-})
-export type ClassificationRate = z.infer<typeof classificationRateSchema>
+import { base, levelName, resourceName } from './shared'
 
 export const caveatSchema = z.object({
   category: z
@@ -42,12 +20,6 @@ export const jurisdictionSchema = z.object({
   name: resourceName.describe('リソース名（AIP-122）。jurisdictions/{団体コード}'),
   id: z.string().describe('全国地方公共団体コード（例: 三鷹市 132047、狛江市 132195）'),
   label: z.string().describe('団体名'),
-  fiscalYears: z
-    .object({
-      expenditure: z.array(z.string()).describe('歳出を収録している年度'),
-      revenue: z.array(z.string()).describe('歳入を収録している年度'),
-    })
-    .describe('収録範囲。ここに無い年度への問い合わせは 404'),
   levels: z
     .object({
       expenditure: z.array(levelName).describe('歳出の階層名の並び'),
@@ -71,7 +43,6 @@ export const jurisdictionSchema = z.object({
     .describe('原典の出典。再配布時の帰属表示に使う'),
   consolidationScope: z.string().describe('会計間の繰出・繰入の連結（消去）をどの範囲で行ったか。消去していない団体は全会計合計が二重計上を含む'),
   caveats: z.array(caveatSchema).describe('この団体のデータを使う前に知るべき注意事項'),
-  classificationRates: z.array(classificationRateSchema).describe('年度ごとの COFOG 分類率。COFOG で絞った結果に含まれない明細の規模がここで分かる'),
 })
 export type Jurisdiction = z.infer<typeof jurisdictionSchema>
 
@@ -81,8 +52,9 @@ export const listJurisdictions = base
     path: '/jurisdictions',
     summary: 'List jurisdictions',
     description:
-      '収録団体の一覧。各団体の収録年度・注意事項（caveats）・COFOG 分類率と、' +
-      '配布物（datapackage.json）への参照を返す。',
+      '収録団体の一覧。団体の同一性・階層の宣言・注意事項（caveats）と、' +
+      '配布物（datapackage.json）への参照を返す。' +
+      '収録している年度と分類率は /jurisdictions/{jurisdiction}/budgets から取得する（カバレッジは budgets の List から導出する）。',
   })
   .output(
     z.object({

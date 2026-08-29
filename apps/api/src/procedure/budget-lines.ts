@@ -115,7 +115,8 @@ async function listWithinJurisdiction(
       data: { reason: 'missing required filter' },
     })
   }
-  if (!jurisdiction.fiscalYears[direction].includes(fiscalYear)) {
+  const budget = meta.budgets[jurisdictionId]?.find((b) => b.fiscalYear === fiscalYear)
+  if (!budget || !budget.directions.includes(direction)) {
     throw errors.NOT_FOUND({
       message: `fiscal year ${fiscalYear} (${direction}) is not covered for ${jurisdictionId}`,
     })

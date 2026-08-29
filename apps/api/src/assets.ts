@@ -2,13 +2,18 @@
  * 静的アセット（パーティション JSON と配布物の写し）の読み口と、ファイル形式の型。
  * 形式は build.ts が書き、ここが読む。**両者はこの型で合意する。**
  */
-import type { BudgetLine, CrossJurisdictionLine, Jurisdiction } from './contract'
+import type { Budget, BudgetLine, CrossJurisdictionLine, Jurisdiction } from './contract'
 
 export interface Env {
   ASSETS: { fetch(input: Request | URL | string): Promise<Response> }
 }
 
-export type JurisdictionsFile = { revision: string; jurisdictions: Jurisdiction[] }
+export type JurisdictionsFile = {
+  revision: string
+  jurisdictions: Jurisdiction[]
+  /** 団体コード → 収録年度の budgets（fiscalYear 昇順）。カバレッジの正体 */
+  budgets: Record<string, Budget[]>
+}
 export type LinesFile = { revision: string; lines: BudgetLine[] }
 export type CofogChunkFile = { revision: string; hasNext: boolean; lines: CrossJurisdictionLine[] }
 export type FilesFile = {

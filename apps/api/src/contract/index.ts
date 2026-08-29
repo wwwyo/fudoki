@@ -8,11 +8,14 @@
  * ここの contract に載せる。
  */
 import { getJurisdiction, listJurisdictions } from './jurisdictions'
+import { getBudget, listBudgets } from './budgets'
 import { getBudgetLine, listBudgetLines } from './budget-lines'
 
 export const contract = {
   listJurisdictions,
   getJurisdiction,
+  listBudgets,
+  getBudget,
   listBudgetLines,
   getBudgetLine,
 }
@@ -20,11 +23,10 @@ export type Contract = typeof contract
 
 export {
   caveatSchema,
-  classificationRateSchema,
   jurisdictionSchema,
-  type ClassificationRate,
   type Jurisdiction,
 } from './jurisdictions'
+export { budgetSchema, type Budget } from './budgets'
 export {
   cofogConsolidation,
   cofogDecidedAtLevel,
