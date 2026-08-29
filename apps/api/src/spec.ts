@@ -4,9 +4,16 @@
  * （手書き YAML ではなくコードで合成する。判断の経緯は repo 直下の decision.log）。
  */
 import type { OpenAPIGeneratorGenerateOptions } from '@orpc/openapi'
+import { ZodToJsonSchemaConverter } from '@orpc/zod/zod4'
 
 export const API_TITLE = 'fudoki budget API'
 export const API_VERSION = '0.1.0'
+
+/**
+ * 実行時（/v0/openapi.json）とビルド時（generate-spec.ts）の両方が使う converter 構成。
+ * 片方だけ変えると静的な spec と配信される spec が乖離するので、ここに一本化する。
+ */
+export const specSchemaConverters = [new ZodToJsonSchemaConverter()]
 
 const V0_NOTICE =
   '**実験版（v0）**。URL と応答スキーマには破壊的変更があり得る。' +

@@ -6,11 +6,11 @@
  *
  * 実行: bun run generate-spec.ts <出力先パス>
  */
-import { writeFileSync } from 'node:fs'
+import { mkdirSync, writeFileSync } from 'node:fs'
+import { dirname } from 'node:path'
 import { OpenAPIGenerator } from '@orpc/openapi'
-import { ZodToJsonSchemaConverter } from '@orpc/zod/zod4'
 import { contract } from './src/contract'
-import { specGenerateOptions } from './src/spec'
+import { specGenerateOptions, specSchemaConverters } from './src/spec'
 
 const outPath = process.argv[2]
 if (!outPath) {
@@ -18,11 +18,10 @@ if (!outPath) {
   process.exit(1)
 }
 
-const generator = new OpenAPIGenerator({
-  schemaConverters: [new ZodToJsonSchemaConverter()],
-})
+const generator = new OpenAPIGenerator({ schemaConverters: specSchemaConverters })
 
 const spec = await generator.generate(contract, specGenerateOptions)
 
+mkdirSync(dirname(outPath), { recursive: true })
 writeFileSync(outPath, `${JSON.stringify(spec, null, 2)}\n`)
 console.log(`wrote OpenAPI spec -> ${outPath}`)
