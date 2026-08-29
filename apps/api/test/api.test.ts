@@ -29,7 +29,12 @@ const get = (path: string) => app.request(`https://api.fudoki.dev${path}`, { met
 const q = (filter: string, extra: Record<string, string> = {}) =>
   new URLSearchParams({ filter, ...extra }).toString()
 
-/** cofog.csv は引用符付きセルを持たないので素朴に割ってよい（テスト内の独立算出用） */
+/**
+ * テスト内の独立算出用の素朴な CSV 分割。cofog.csv の引用符セルは空の
+ * cofog_division（`""`）だけでコンマを含まない（実測: 全行で列数が一致）ため、
+ * 素朴な split でも列は崩れない。`""` は2文字の文字列として読まれるが、
+ * division の比較値（"09" など）と衝突しないので数え上げに影響しない。
+ */
 function countCofogRows(jurisdictions: string[], division: string): number {
   let count = 0
   for (const j of jurisdictions) {

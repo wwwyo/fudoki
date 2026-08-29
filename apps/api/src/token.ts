@@ -25,7 +25,9 @@ export function encodePageToken(token: PageToken): string {
 export function decodePageToken(raw: string): PageToken | null {
   try {
     const b64 = raw.replaceAll('-', '+').replaceAll('_', '/')
-    const parsed: unknown = JSON.parse(atob(b64))
+    // encode 側で削ったパディングを復元する（atob が厳格な実装でも通るように）
+    const padded = b64 + '='.repeat((4 - (b64.length % 4)) % 4)
+    const parsed: unknown = JSON.parse(atob(padded))
     if (typeof parsed !== 'object' || parsed === null) return null
     const t = parsed as Record<string, unknown>
     if (
