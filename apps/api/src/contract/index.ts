@@ -4,12 +4,12 @@
  * 形は Google AIP に倣う（リソース名 AIP-122、List/Get、ページング AIP-158、
  * ワイルドカード親 AIP-159、filter AIP-160 の部分集合）。
  *
- * リソースごとに1ファイル。リソースを足すときはファイルを足し、
- * ここの contract に載せる。
+ * ファイルは集約ごとに1つ（jurisdictions / budgets）。statement は
+ * budget 集約の内部なので budgets.ts に同居する。
+ * 集約を足すときはファイルを足し、ここの contract に載せる。
  */
 import { getJurisdiction, listJurisdictions } from './jurisdictions'
-import { getBudget, listBudgets } from './budgets'
-import { getStatement } from './statement'
+import { getBudget, getStatement, listBudgets } from './budgets'
 
 export const contract = {
   listJurisdictions,
@@ -25,7 +25,16 @@ export {
   jurisdictionSchema,
   type Jurisdiction,
 } from './jurisdictions'
-export { budgetSchema, type Budget } from './budgets'
+export {
+  budgetLineSchema,
+  budgetSchema,
+  crossBudgetLineSchema,
+  statementSchema,
+  type Budget,
+  type BudgetLine,
+  type CrossBudgetLine,
+  type Statement,
+} from './budgets'
 export {
   cofogConsolidation,
   cofogDecidedAtLevel,
@@ -34,11 +43,3 @@ export {
   levelName,
   phaseId,
 } from './shared'
-export {
-  budgetLineSchema,
-  crossBudgetLineSchema,
-  statementSchema,
-  type BudgetLine,
-  type CrossBudgetLine,
-  type Statement,
-} from './statement'
