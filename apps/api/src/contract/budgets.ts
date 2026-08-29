@@ -2,7 +2,7 @@
  * budgets リソース（団体 × 年度の予算）。**root のコレクション**で、
  * 一覧の絞り込み（団体・年度）は filter で表現する。
  * budget は年度スコープのメタ（収録 direction、分類率、金額の段階）を持ち、
- * 明細（lines）を子コレクションとして持つ（budget-lines.ts）。
+ * 明細（statement）をサブリソースとして持つ（statement.ts）。
  *
  * budget の id は `{団体コード}:{年度}`（例: 132195:2023）。
  * budget_line_id の先頭2セグメントと一致し、明細から親 budget が機械的に決まる。
@@ -47,7 +47,7 @@ export const listBudgets = base
       '収録している予算（団体 × 年度）の一覧。これがカバレッジの正体で、' +
       'どの団体のどの年度が収録済みかは budgets の存在から導出する。' +
       'filter で `jurisdiction` と `fiscalYear` を絞れる（例: `jurisdiction = "132195"`）。' +
-      '件数が少ないためページングは持たない。明細は /budgets/{id}/lines から取得する。',
+      '件数が少ないためページングは持たない。明細は /budgets/{id}/statement から取得する。',
   })
   .input(
     z.object({

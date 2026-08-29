@@ -10,7 +10,7 @@ import { decodePageToken, type PageToken } from '../lib/token'
 
 export const os = implement(contract).$context<{ env: Env }>()
 
-export type Errors = Parameters<Parameters<typeof os.listBudgetLines.handler>[0]>[0]['errors']
+export type Errors = Parameters<Parameters<typeof os.getStatement.handler>[0]>[0]['errors']
 
 export const PAGE_SIZE_DEFAULT = 1000
 export const PAGE_SIZE_MAX = 1000

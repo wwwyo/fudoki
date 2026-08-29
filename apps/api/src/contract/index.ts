@@ -9,15 +9,14 @@
  */
 import { getJurisdiction, listJurisdictions } from './jurisdictions'
 import { getBudget, listBudgets } from './budgets'
-import { getBudgetLine, listBudgetLines } from './budget-lines'
+import { getStatement } from './statement'
 
 export const contract = {
   listJurisdictions,
   getJurisdiction,
   listBudgets,
   getBudget,
-  listBudgetLines,
-  getBudgetLine,
+  getStatement,
 }
 export type Contract = typeof contract
 
@@ -38,8 +37,8 @@ export {
 export {
   budgetLineSchema,
   crossBudgetLineSchema,
-  listBudgetLinesResponseSchema,
+  statementSchema,
   type BudgetLine,
   type CrossBudgetLine,
-  type ListBudgetLinesResponse,
-} from './budget-lines'
+  type Statement,
+} from './statement'

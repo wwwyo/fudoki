@@ -255,7 +255,6 @@ function buildLines(
         projectName = key === null ? null : (projectNameByKey.get(key) ?? null)
       }
       line = {
-        name: `budgets/${ctx.jurisdiction}:${row['fiscal_year']}/lines/${id}`,
         budgetLineId: id,
         fiscalYear: row['fiscal_year']!,
         direction: ctx.direction,
@@ -275,7 +274,7 @@ function buildLines(
       sourceRow: Number(row['source_row']),
     })
   }
-  return [...byId.values()].sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
+  return [...byId.values()].sort((a, b) => (a.budgetLineId < b.budgetLineId ? -1 : a.budgetLineId > b.budgetLineId ? 1 : 0))
 }
 
 function labelOf(row: Record<string, string>, column: string): string | null {
@@ -423,8 +422,7 @@ for (const j of jurisdictionIds.sort()) {
         const division = line.judgments.cofog?.division
         if (!division) continue
         const cross: CrossBudgetLine = {
-          name: line.name,
-          jurisdictionId: j,
+          budget: `budgets/${j}:${line.fiscalYear}`,
           budgetLineId: line.budgetLineId,
           fiscalYear: line.fiscalYear,
           amounts: line.amounts.map((a) => ({ phase: a.phase, amount: a.amount })),
@@ -530,7 +528,7 @@ for (const j of jurisdictionIds.sort()) {
 // 横断 chunk の書き出しと検査2
 function writeCrossChunks(): void {
   for (const [division, lines] of crossByDivision) {
-    lines.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
+    lines.sort((a, b) => (a.budgetLineId < b.budgetLineId ? -1 : a.budgetLineId > b.budgetLineId ? 1 : 0))
     for (const line of lines) crossBudgetLineSchema.parse(line)
 
     const count = expectedCrossCounts.get(division) ?? 0

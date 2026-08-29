@@ -169,3 +169,18 @@ jurisdiction が宣言すると、収録が増えるたびに団体の表現が�
 以前の反対（permalink・横断・年度は filter）は、この形でもすべて成立することを確認して
 方針を転換した。年度は「lines にとっては」親 budget 経由で決まり、横断では filter として残る。
 パーティションと pageToken の内部形式は変えていない。
+
+### 20. 明細を statement（予算の明細）サブリソースに集約し、明細1件の URL を廃止した
+
+「lines は粒度が細かすぎる。明細という semantic で切るべき。明細の permalink は不要
+（AC から落としてよい）」という指摘を受けて再編した。
+
+- GET /budgets/{id}/statement が予算の明細（行の集合）。filter / paging は従来どおり
+- 横断は GET /budgets/-/statement。各行は name の代わりに親 budget への参照
+  （budget: "budgets/132195:2023"）を持ち、そこから団体固有の形の行へ辿る
+- 明細1件の Get は廃止。行の同一性はデータ識別子 budget_line_id（配布物側の契約）が担う
+- 並び順の契約は name 昇順から budgetLineId 昇順に変更（パーティション内では同順）
+- PRD の AC2 を「親予算への参照 + budget_line_id で元の行へ戻れる」に改定した
+
+サイズの実測: 1明細 ≈ 1.5KB（JSON のキー名込み）で狛江1年度歳出 3.2MB、ただし
+wire は Cloudflare の圧縮で gzip 185KB。懸念は転送量ではなく parse/serialize の CPU のまま。

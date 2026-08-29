@@ -1,5 +1,5 @@
 /**
- * lines リソース（budget の子）の procedure。
+ * statement リソースの procedure。
  * 判断はすべて build 済みのパーティションに寄せてあり、
  * ここは「該当パーティションを1つ読んで絞る」以外のことをしない。
  */
@@ -22,37 +22,23 @@ function parseBudgetId(id: string): { jurisdiction: string; fiscalYear: string }
   return { jurisdiction: m[1]!, fiscalYear: m[2]! }
 }
 
-export const listBudgetLines = os.listBudgetLines.handler(async ({ context, input, errors }) => {
+export const getStatement = os.getStatement.handler(async ({ context, input, errors }) => {
   const pageSize = resolvePageSize(input.pageSize)
   const filter = parseFilterOr400(input.filter, errors)
   if (filter.jurisdiction !== undefined) {
     throw errors.BAD_REQUEST({
-      message: 'jurisdiction is not a filter for lines. Specify the parent budget ({jurisdiction}:{year}) instead',
+      message: 'jurisdiction is not a filter for statements. Specify the parent budget ({jurisdiction}:{year}) instead',
       data: { reason: 'unsupported filter field' },
     })
   }
 
   if (input.budget === '-') {
-    return listCrossBudget(context.env, filter, pageSize, input.pageToken, errors)
+    return crossBudgetStatement(context.env, filter, pageSize, input.pageToken, errors)
   }
-  return listWithinBudget(context.env, input.budget, filter, pageSize, input.pageToken, errors)
+  return budgetStatement(context.env, input.budget, filter, pageSize, input.pageToken, errors)
 })
 
-export const getBudgetLine = os.getBudgetLine.handler(async ({ context, input, errors }) => {
-  const notFound = () => errors.NOT_FOUND({ message: `unknown budget line: ${input.line}` })
-  // budget_line_id は {団体}:{年度}:{direction}:... で、先頭2セグメントが親 budget の id
-  const [jurisdiction, fiscalYear, direction] = input.line.split(':')
-  if (`${jurisdiction}:${fiscalYear}` !== input.budget) throw notFound()
-  if (direction !== 'expenditure' && direction !== 'revenue') throw notFound()
-  if (!jurisdiction || !fiscalYear) throw notFound()
-  const file = await readJsonAsset<LinesFile>(context.env, paths.lines(jurisdiction, fiscalYear, direction))
-  if (file === null) throw notFound()
-  const line = file.lines.find((l) => l.budgetLineId === input.line)
-  if (!line) throw notFound()
-  return { line, revision: file.revision }
-})
-
-async function listCrossBudget(
+async function crossBudgetStatement(
   env: Env,
   filter: ParsedFilter,
   pageSize: number,
@@ -61,14 +47,14 @@ async function listCrossBudget(
 ) {
   if (filter.direction !== undefined || filter.phase !== undefined) {
     throw errors.BAD_REQUEST({
-      message: 'direction and phase filters are not supported for cross-budget queries',
+      message: 'direction and phase filters are not supported for cross-budget statements',
       data: { reason: 'unsupported filter field for parent "-"' },
     })
   }
   const division = filter.cofogDivision
   if (division === undefined) {
     throw errors.BAD_REQUEST({
-      message: 'cofog.division filter is required for cross-budget queries',
+      message: 'cofog.division filter is required for cross-budget statements',
       data: { reason: 'missing required filter' },
     })
   }
@@ -109,7 +95,7 @@ async function listCrossBudget(
   return { scope: 'crossBudget' as const, lines: items, revision: chunk.revision, nextPageToken }
 }
 
-async function listWithinBudget(
+async function budgetStatement(
   env: Env,
   budgetId: string,
   filter: ParsedFilter,
@@ -137,7 +123,7 @@ async function listWithinBudget(
   const { direction } = filter
   if (direction === undefined) {
     throw errors.BAD_REQUEST({
-      message: 'direction filter is required when listing lines of a budget',
+      message: 'direction filter is required for a budget statement',
       data: { reason: 'missing required filter' },
     })
   }
