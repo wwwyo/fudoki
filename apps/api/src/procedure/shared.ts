@@ -8,6 +8,8 @@ import { contract, type Budget, type Jurisdiction } from '../contract'
 import { FilterSyntaxError, parseFilter, type ParsedFilter } from '../lib/filter'
 import { decodePageToken, type PageToken } from '../lib/token'
 
+// 出力検証の無効化（decision.log 10 の対処順の2番目）は oRPC v1 に口が無く、
+// v2 の implement(contract, { disableOutputValidation: true }) を待つ。
 export const os = implement(contract).$context<{ env: Env }>()
 
 export type Errors = Parameters<Parameters<typeof os.getStatement.handler>[0]>[0]['errors']

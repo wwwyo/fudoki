@@ -434,9 +434,7 @@ for (const j of jurisdictionIds.sort()) {
     for (const year of years) {
       const yearLines = lines.filter((l) => l.fiscalYear === year)
       linesByYearDir.set(`${year}-${direction}`, yearLines)
-      const linesBody = JSON.stringify({ revision, lines: yearLines })
-      if (Buffer.byteLength(linesBody) > CHUNK_BYTES_LIMIT) fail(`lines partition ${assetPaths.lines(j, year, direction)} exceeds ${CHUNK_BYTES_LIMIT} bytes`)
-      writeText(join(OUT_DIR, assetPaths.lines(j, year, direction)), linesBody)
+      writeChunkSeries(assetPaths.linesFamily(j, year, direction), yearLines)
     }
     if (direction === 'expenditure') {
       for (const year of years) {
@@ -578,13 +576,13 @@ function writeCrossChunks(): void {
   }
 }
 
-function writeChunkSeries(family: string, lines: CrossBudgetLine[]): void {
+function writeChunkSeries(family: string, lines: unknown[]): void {
   const chunkCount = Math.max(1, Math.ceil(lines.length / CHUNK_SIZE))
   for (let i = 0; i < chunkCount; i++) {
     const chunkLines = lines.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE)
     const body = JSON.stringify({ revision, hasNext: i + 1 < chunkCount, lines: chunkLines })
     if (Buffer.byteLength(body) > CHUNK_BYTES_LIMIT) fail(`chunk ${family}/${i}.json exceeds ${CHUNK_BYTES_LIMIT} bytes`)
-    const chunkPath = join(OUT_DIR, assetPaths.cofogChunk(family, i))
+    const chunkPath = join(OUT_DIR, assetPaths.chunk(family, i))
     mkdirSync(join(chunkPath, '..'), { recursive: true })
     writeFileSync(chunkPath, body)
   }
@@ -607,9 +605,11 @@ writeJson(join(OUT_DIR, assetPaths.files), { revision, files: filesMeta })
 // 出力の総点検: contract のスキーマに全 BudgetLine を通す（型のずれを deploy 前に落とす）
 for (const j of jurisdictionIds) {
   const linesDir = join(OUT_DIR, 'lines', j)
-  for (const file of readdirSync(linesDir)) {
-    const parsed = JSON.parse(readFileSync(join(linesDir, file), 'utf8')) as { lines: unknown[] }
-    for (const line of parsed.lines) budgetLineSchema.parse(line)
+  for (const familyDir of readdirSync(linesDir)) {
+    for (const file of readdirSync(join(linesDir, familyDir))) {
+      const parsed = JSON.parse(readFileSync(join(linesDir, familyDir, file), 'utf8')) as { lines: unknown[] }
+      for (const line of parsed.lines) budgetLineSchema.parse(line)
+    }
   }
 }
 

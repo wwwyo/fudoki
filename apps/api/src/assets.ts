@@ -14,7 +14,7 @@ export type JurisdictionsFile = {
   /** 収録している全 budget（id 昇順）。カバレッジの正体 */
   budgets: Budget[]
 }
-export type LinesFile = { revision: string; lines: BudgetLine[] }
+export type LinesChunkFile = { revision: string; hasNext: boolean; lines: BudgetLine[] }
 export type CofogChunkFile = { revision: string; hasNext: boolean; lines: CrossBudgetLine[] }
 export type FilesFile = {
   revision: string
@@ -43,9 +43,7 @@ export const paths = {
   files: 'meta/files.json',
   linesFamily: (jurisdiction: string, fiscalYear: string, direction: string) =>
     `lines/${jurisdiction}/${fiscalYear}-${direction}`,
-  lines: (jurisdiction: string, fiscalYear: string, direction: string) =>
-    `${paths.linesFamily(jurisdiction, fiscalYear, direction)}.json`,
-  cofogChunk: (family: string, chunk: number) => `${family}/${chunk}.json`,
+  chunk: (family: string, chunk: number) => `${family}/${chunk}.json`,
   cofogFamily: (division: string, fiscalYear: string | undefined) =>
     fiscalYear === undefined ? `cofog/${division}/all` : `cofog/${division}/${fiscalYear}`,
   passthrough: (jurisdiction: string, file: string) => `datapackages/${jurisdiction}/${file}`,
