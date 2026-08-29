@@ -60,8 +60,20 @@ export type ReportData = ReportEnvelope & {
   }[]
   /** 2団体目で壊れうる箇所と、次に何を実測すれば確かめられるか */
   portability: { element: string; kind: string; verifyNext: string }[]
-  caveats: { topic: string; body: string }[]
+  caveats: { topic: string; body: string; category: CaveatCategory }[]
 }
+
+/**
+ * 注意事項の分類。budget-api が団体ごとに必須4カテゴリ
+ * （coverage / phaseSemantics / classification / sourceAndLicense）の存在を検査する。
+ * どれにも属さない注意事項は `other`。
+ */
+export type CaveatCategory =
+  | 'coverage'
+  | 'phaseSemantics'
+  | 'classification'
+  | 'sourceAndLicense'
+  | 'other'
 
 /**
  * ノード1つの中身の先頭数行。**グラフでノードを選んだときに画面が読む。**

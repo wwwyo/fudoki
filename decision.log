@@ -1,0 +1,186 @@
+# decision.log
+
+設計書に明示されていないが、実装時に判断したこと・考慮したトレードオフの記録。
+PRD・設計書・設計フェーズの決定記録はローカル管理で、リポジトリには含まれない。
+
+## budget-api の実装（2026-08-24）
+
+### 1. compatibility_date は 2026-08-18
+
+設計時は当日の日付を置く想定だったが、wrangler 4.123.0 同梱の workerd が受ける最新日付が
+2026-08-18 で、それより新しいと `wrangler dev` が起動しない。wrangler.jsonc にコメントで残した。
+wrangler を上げるときに一緒に上げてよい。
+
+### 2. 注意事項（caveat）のカテゴリに `other` を追加した
+
+設計書は必須4カテゴリ（coverage / phaseSemantics / classification / sourceAndLicense）だけを
+定義していたが、既存の注意事項25件にはどれにも属さないもの（識別子の設計、文字コード、
+配布形式など）がある。無理に4つへ畳むとカテゴリの意味が薄まるので `other` を追加した。
+**build の検査は「必須4カテゴリが全団体に存在すること」のままで、緩めていない。**
+
+### 3. 三鷹市の注意事項を3件新設した
+
+三鷹市の既存 caveats には coverage / phaseSemantics / sourceAndLicense に当たるものが無く、
+build の必須カテゴリ検査が通らない。埋め草ではなく実内容のある3件
+（収録は令和6年度当初予算のみ / 予算段階は approved の1段階だけ / CC BY 4.0 の帰属）を
+report/budget/static.ts に足した。内容は AGENTS.md の実測記述から起こした。
+
+### 4. 団体単位の List は fiscalYear と direction の filter を必須にした
+
+設計書の「フィルタ条件とパーティションが一致しない問い合わせは v0 では受けない」の具体化。
+パーティションが (団体, 年度, direction) 単位なので、年度・direction 無指定は全ファイル走査になる。
+PRD の Acceptance Criteria も常に両方を指定している。無指定は 400 で、要求される filter を
+メッセージで返す。
+
+### 5. ワイルドカード親（横断）では direction と phase の filter を 400 にした
+
+横断の chunk 系列は division（と年度）でしか切っておらず、direction は歳出固定。
+phase を実行時フィルタとして許すことはできたが、疎なページの原因が増えるだけで
+横断の代表ユースケース（division 指定の全件取得）に寄与しないため v0 では受けない。
+OpenAPI の説明文に scope ごとの許可フィールドを明記した。
+
+### 6. dirty な作業ツリーの build は「deploy 経路でだけ」止める
+
+設計書は「dirty なら build を止める」としていたが、そのままだと開発中のテスト
+（`bun test` は build 生成物を前提にする）が一切回らない。
+`--allow-dirty` フラグを設け、dev/test 経路（`bun run build`）では revision に `-dirty` を付けて通し、
+deploy 経路（`bun run deploy` → `build:release`）ではフラグ無し＝dirty なら停止、とした。
+「どの commit の配布物か言えない状態で公開しない」という設計意図は deploy 経路で守られている。
+
+### 7. パススルーの OpenAPI 記述はコードで合成する
+
+パススルー（配布物をバイト同一で返す口）は oRPC の procedure ではないので、contract からは
+生成できない。手書きの spec ファイルを持つ代わりに、生成オプション（apps/api/src/spec.ts）の
+`paths` に1エンドポイント分だけコードで足した。「contract が唯一の API 定義」の例外は
+このファイルのこの1箇所に閉じている。
+
+### 8. 参照 UI は oRPC v1 の OpenAPIReferencePlugin。root からは 302
+
+docs UI は `/v0/`、spec は `/v0/openapi.json` に置き、`/` と `/openapi.json` は 302 で流す。
+設計書の「GET /openapi.json」という表記との差は、oRPC handler の prefix（/v0）配下に
+プラグインがぶら下がる構造のため。公開 URL としては両方とも機能する。
+
+### 9. 依存の版: oRPC は 1.15.0、hono は 4.13.2
+
+oRPC の最新は 2.0.0-beta.31 だが beta なので安定版 1.15.0 を採った（v2 の
+OpenAPIReferenceHandlerPlugin 等とは API が違う。移行時は spec.ts / index.ts が対象）。
+hono の最新 4.13.3 は公開が 2026-08-18 で cooldown 7day に掛かるため 4.13.2。
+wrangler は repo 既存の 4.123.0 に、zod は root と同じ 4.4.3 に揃えた。
+
+### 10. 性能の実測（wrangler dev、ローカル）
+
+- 最大パーティション（狛江市 2018 歳出、JSON 3.1MB）の全件応答: wall 56ms
+- 横断 division 09 の先頭ページ: wall 14ms
+
+wall time なので CPU time はこれより小さいが、無料プランの 10ms CPU を最大パーティションで
+超える可能性は残る。設計書 Caveats 1 のとおり、本番（ステージング）に上げてから
+Workers Logs の CPU time で計測し、超えるなら chunk 縮小 → 出力検証の無効化 → 有料化の順で対処する。
+なお設計時の見積り「狛江 1年度歳出 = CSV 1.5MB 相当」は JSON 化で約2倍（3.1MB）になった。
+
+### 11. Get はパーティション索引を持たない
+
+budget_line_id が `{団体}:{年度}:{direction}:...` の形で、id 自身がパーティションを指す。
+別途の索引ファイルを作らず id を分解して該当ファイルを1つ読む。
+識別子の形式が変わるとここが壊れるが、識別子は公開契約なので変わらない前提を置いてよい。
+
+### 12. dimensions（所属・予算区分）は CSV ヘッダから導出し、dbt の宣言と突合する
+
+応答の `dimensions` に載せる列は、CSV ヘッダの `X_code`/`X_label` のうち階層でないものから導く。
+そのうえで dbt_project.yml の `budget_extra_key_columns` と一致しなければ build を止める。
+ヘッダだけを信じると宣言の腐りに気づけず、宣言だけを信じると原典の列追加に気づけないため、
+両方を突き合わせる形にした。
+
+### 13. project_names の結合キーは（年度, fund〜daijigyo のコード）
+
+配布物の project_names.csv がこのキーで出ているのでそのまま使った。
+結合が1件も成立しなければ build を止める（キーの形式が変わったことの検出）。
+
+### 14. 統合テストは workerd ではなく bun test で回す
+
+テストは Worker の fetch を直接呼び、assets binding をローカルファイルで模した。
+workerd 実機（wrangler dev）はスクリプトでの起動待ちが不安定なので CI 向きでなく、
+手元の smoke test に留めた（上記10の計測はその結果）。ランタイム差は
+compatibility_date の件以外は観測していない。
+
+## budget-api のレビュー反映（2026-08-29）
+
+### 15. 閉じた語彙を enum にし、配布物側にも constraints.enum を宣言した
+
+当初、cofog_status / cofog_consolidation / cofog_decided_at_level / phase_id / 階層名 / 次元名を
+すべて z.string() にしていた。固定の語彙は enum にすべきという指摘を受けて enum 化し、
+あわせて配布物側の宣言（fdp/field_types.json）にも Table Schema 標準の constraints.enum を追加した
+（それまで語彙は description の自由文にしかなく、cofog_status の説明には not-applicable が欠けていた）。
+datapackage.json の差分は constraints の追加のみで、CSV は変わっていない。
+契約と配布物の語彙のずれは build の突合検査（checkVocabulariesMatchFieldTypes）が止める。
+階層名と次元名は field_types に値の宣言が無い（列名であって値ではない）ため、
+契約側の enum と dbt 宣言・CSV ヘッダの突合で縛る。
+新しい団体が新しい語彙を持ち込むと build が落ち、契約へ足すまで deploy できない
+（黙って語彙が広がる事故を防ぐ。破壊的でない追加は v0 なので許容）。
+
+### 16. src を oRPC 推奨の contract → procedure → router に再編し、テストを collocate した
+
+router.ts が実装（231行）を1ファイルで抱えていたのを、procedure/（リソースごとの実装と共有部品）と
+router.ts（束ねるだけ）に分けた。lib/（filter・token）を切り、test/ ディレクトリは廃止して
+各テストを対象の隣に置いた（統合テストは src/index.test.ts）。
+
+### 17. /rpc/* を追加した（自前フロント・MCP 用の第2の口）
+
+同じ router を RPCHandler でも公開する。外部利用者は /v0/*（REST、OpenAPI 記載）、
+自前のフロントと MCP は contract を import した型付きクライアントで /rpc/* を叩く想定。
+/rpc は oRPC プロトコル（POST）なので CORS の許可メソッドに POST を足した。
+OpenAPI には載せない（契約は contract の型として配る）。
+
+### 18. budgets リソースを新設し、年度とカバレッジを jurisdiction から外した
+
+当初、収録年度（fiscalYears）と年度別の分類率（classificationRates）を jurisdiction の属性として
+持たせていた。「年度は budget が持つべきで、カバレッジは budgets の存在から導出できる。
+jurisdiction が宣言すると、収録が増えるたびに団体の表現が変わる」という指摘を受けて再編した。
+
+- budgets = (団体, 年度)。年度スコープのメタ（収録 direction、amountPhase、分類率）の器。
+  GET /jurisdictions/{j}/budgets の List がそのままカバレッジになる
+- jurisdiction は団体の同一性・階層宣言・ライセンス・注意事項だけに痩せた。
+  収録が増えても jurisdiction の表現は変わらない
+- budgetLines の URL は変えていない。年度は明細にとって filter の軸
+  （fiscalYear = 2023）であり、budgets/{year}/lines の入れ子にはしない
+
+なお budget を「明細の集約ルート」にはしていない。読み取り専用の配布 API に
+書き込み時の不変条件は無く、明細は budget の境界をまたいで参照される（横断 COFOG）のが
+一級のユースケースのため。budget はあくまで年度スコープのメタデータの器である。
+
+### 19. budgets を root コレクションにし、明細を budget の子（/budgets/{id}/lines）へ移した
+
+決定18の後、さらに次の指摘を受けて再編した。
+「/budgets/{year} の path が年度の実体なのはミスリードで、id か name であるべき」
+「budget が内部の entity として lines を持つべき」
+「横断検索は root の /budgets?filter=... のように filter で表現すればよい」
+
+- budget の id を `{団体コード}:{年度}`（例 132195:2023）にした。budget_line_id の
+  先頭2セグメントと一致する自己記述的な id で、年度の実体を path に晒さない
+- budgets は root のコレクション（GET /budgets?filter=jurisdiction = "..."）。
+  jurisdictions/{j}/budgets の入れ子は廃止し、団体・年度は filter の軸にした。
+  件数が有界（団体×年度）なのでページングは持たない
+- 明細は /budgets/{id}/lines へ。親が年度を固定するので fiscalYear filter は不要になり
+  （within では 400）、必須 filter は direction だけになった。
+  横断は AIP-159 のワイルドカード親（/budgets/-/lines?filter=cofog.division = "..."）で維持
+- リソース名（permalink）は budgets/{id}/lines/{lineId}。横断応答の name から
+  1回の GET で元明細へ辿れる性質（PRD の AC）は保たれている
+- scope の discriminator は budget / crossBudget に改名
+
+以前の反対（permalink・横断・年度は filter）は、この形でもすべて成立することを確認して
+方針を転換した。年度は「lines にとっては」親 budget 経由で決まり、横断では filter として残る。
+パーティションと pageToken の内部形式は変えていない。
+
+### 20. 明細を statement（予算の明細）サブリソースに集約し、明細1件の URL を廃止した
+
+「lines は粒度が細かすぎる。明細という semantic で切るべき。明細の permalink は不要
+（AC から落としてよい）」という指摘を受けて再編した。
+
+- GET /budgets/{id}/statement が予算の明細（行の集合）。filter / paging は従来どおり
+- 横断は GET /budgets/-/statement。各行は name の代わりに親 budget への参照
+  （budget: "budgets/132195:2023"）を持ち、そこから団体固有の形の行へ辿る
+- 明細1件の Get は廃止。行の同一性はデータ識別子 budget_line_id（配布物側の契約）が担う
+- 並び順の契約は name 昇順から budgetLineId 昇順に変更（パーティション内では同順）
+- PRD の AC2 を「親予算への参照 + budget_line_id で元の行へ戻れる」に改定した
+
+サイズの実測: 1明細 ≈ 1.5KB（JSON のキー名込み）で狛江1年度歳出 3.2MB、ただし
+wire は Cloudflare の圧縮で gzip 185KB。懸念は転送量ではなく parse/serialize の CPU のまま。

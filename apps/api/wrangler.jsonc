@@ -1,0 +1,23 @@
+{
+  // budget-api。配布物から生成したパーティション JSON を assets に持ち、
+  // Worker がフィルタして返す。
+  //
+  // ⚠️ `run_worker_first` を外さないこと。既定の asset 優先にすると、
+  // 内部パーティション（lines/ cofog/ meta/）が契約外の URL として公開され、
+  // 「contract が唯一の API 定義」が崩れる。
+  //
+  // ⚠️ Git 連携でビルドさせない。assets は dist/ にあり commit していない
+  // （生成には dbt と配布物が要る）。手元で `bun run deploy:api` から投げる。
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "fudoki-api",
+  "main": "src/index.ts",
+  // wrangler 4.123.0 同梱の workerd が受ける最新日付（これより新しいと dev が起動しない）
+  "compatibility_date": "2026-08-18",
+  "routes": [{ "pattern": "api.fudoki.dev", "custom_domain": true }],
+  "assets": {
+    "directory": "./dist/assets",
+    "binding": "ASSETS",
+    "run_worker_first": true,
+    "not_found_handling": "none"
+  }
+}
