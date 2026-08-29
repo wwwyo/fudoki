@@ -30,6 +30,8 @@ import {
   type CrossBudgetLine,
   type Jurisdiction,
 } from './src/contract'
+import { budgetIdOf } from './src/contract'
+import { paths as assetPaths } from './src/assets'
 
 const ROOT = join(import.meta.dir, '../..')
 const DATA_DIR = join(ROOT, 'data/budget/datapackages')
@@ -75,6 +77,15 @@ function checkVocabulariesMatchFieldTypes(): void {
     if (a !== b) {
       fail(`vocabulary mismatch for ${fieldName}: distribution declares [${a}] but API contract declares [${b}]`)
     }
+  }
+}
+
+/** 文字列キーの昇順比較（ソートの意図を1箇所に固定する） */
+function byKey<T>(key: (v: T) => string): (a: T, b: T) => number {
+  return (a, b) => {
+    const ka = key(a)
+    const kb = key(b)
+    return ka < kb ? -1 : ka > kb ? 1 : 0
   }
 }
 
@@ -274,7 +285,7 @@ function buildLines(
       sourceRow: Number(row['source_row']),
     })
   }
-  return [...byId.values()].sort((a, b) => (a.budgetLineId < b.budgetLineId ? -1 : a.budgetLineId > b.budgetLineId ? 1 : 0))
+  return [...byId.values()].sort(byKey((l) => l.budgetLineId))
 }
 
 function labelOf(row: Record<string, string>, column: string): string | null {
@@ -398,7 +409,8 @@ for (const j of jurisdictionIds.sort()) {
   const fiscalYears: Record<Direction, string[]> = { expenditure: [], revenue: [] }
   const levels: Jurisdiction['levels'] = { expenditure: [], revenue: [] }
   const linesByYearDir = new Map<string, BudgetLine[]>()
-  const expenditureTables = new Map<string, Table>()
+  /** 検査2用: 年度 → (budget_line_id → 全予算段階の金額合計)。cofog 行ループを O(1) 参照にする */
+  const expenditureSums = new Map<string, Map<string, number>>()
 
   for (const direction of DIRECTIONS) {
     const table = readCsvTable(join(dir, `${direction}.csv`))
@@ -412,17 +424,22 @@ for (const j of jurisdictionIds.sort()) {
     for (const year of years) {
       const yearLines = lines.filter((l) => l.fiscalYear === year)
       linesByYearDir.set(`${year}-${direction}`, yearLines)
-      writeJson(join(OUT_DIR, 'lines', j, `${year}-${direction}.json`), { revision, lines: yearLines })
+      writeJson(join(OUT_DIR, assetPaths.lines(j, year, direction)), { revision, lines: yearLines })
     }
     if (direction === 'expenditure') {
       for (const year of years) {
-        expenditureTables.set(year, { header: table.header, rows: table.rows.filter((r) => r['fiscal_year'] === year) })
+        const sums = new Map<string, number>()
+        for (const r of table.rows) {
+          if (r['fiscal_year'] !== year) continue
+          sums.set(r['budget_line_id']!, (sums.get(r['budget_line_id']!) ?? 0) + Number(r['value']))
+        }
+        expenditureSums.set(year, sums)
       }
       for (const line of lines) {
         const division = line.judgments.cofog?.division
         if (!division) continue
         const cross: CrossBudgetLine = {
-          budget: `budgets/${j}:${line.fiscalYear}`,
+          budget: `budgets/${budgetIdOf(j, line.fiscalYear)}`,
           budgetLineId: line.budgetLineId,
           fiscalYear: line.fiscalYear,
           amounts: line.amounts.map((a) => ({ phase: a.phase, amount: a.amount })),
@@ -471,8 +488,8 @@ for (const j of jurisdictionIds.sort()) {
     const sumAmount = statuses.assigned.amount + statuses.unclassifiable.amount + statuses.outOfScope.amount
     if (sumAmount !== totalAtPhase) fail(`classification rate amounts do not add up for ${j}/${year}`)
     budgets.push(budgetSchema.parse({
-      name: `budgets/${j}:${year}`,
-      id: `${j}:${year}`,
+      name: `budgets/${budgetIdOf(j, year)}`,
+      id: budgetIdOf(j, year),
       jurisdictionId: j,
       fiscalYear: year,
       directions: DIRECTIONS.filter((d) => fiscalYears[d].includes(year)),
@@ -487,8 +504,8 @@ for (const j of jurisdictionIds.sort()) {
   filesMeta[j] = {}
   for (const file of passthroughFiles) {
     const source = readFileSync(join(dir, file))
-    const outPath = join(OUT_DIR, 'datapackages', j, file)
-    mkdirSync(join(OUT_DIR, 'datapackages', j), { recursive: true })
+    const outPath = join(OUT_DIR, assetPaths.passthrough(j, file))
+    mkdirSync(join(outPath, '..'), { recursive: true })
     writeFileSync(outPath, source)
     const sha256 = createHash('sha256').update(source).digest('hex')
     const copied = createHash('sha256').update(readFileSync(outPath)).digest('hex')
@@ -517,10 +534,8 @@ for (const j of jurisdictionIds.sort()) {
   for (const row of cofogTable.rows) {
     if (row['direction'] !== 'expenditure' || row['cofog_division'] === '') continue
     expectedCrossCounts.set(row['cofog_division']!, (expectedCrossCounts.get(row['cofog_division']!) ?? 0) + 1)
-    const yearTable = expenditureTables.get(row['fiscal_year']!) ?? fail(`cofog row references unknown year ${row['fiscal_year']} for ${j}`)
-    const lineRows = yearTable.rows.filter((r) => r['budget_line_id'] === row['budget_line_id'])
-    if (lineRows.length === 0) fail(`cofog row references unknown budget_line_id ${row['budget_line_id']}`)
-    const amountSum = lineRows.reduce((sum, r) => sum + Number(r['value']), 0)
+    const yearSums = expenditureSums.get(row['fiscal_year']!) ?? fail(`cofog row references unknown year ${row['fiscal_year']} for ${j}`)
+    const amountSum = yearSums.get(row['budget_line_id']!) ?? fail(`cofog row references unknown budget_line_id ${row['budget_line_id']}`)
     expectedCrossAmounts.set(row['cofog_division']!, (expectedCrossAmounts.get(row['cofog_division']!) ?? 0) + amountSum)
   }
 }
@@ -528,7 +543,7 @@ for (const j of jurisdictionIds.sort()) {
 // 横断 chunk の書き出しと検査2
 function writeCrossChunks(): void {
   for (const [division, lines] of crossByDivision) {
-    lines.sort((a, b) => (a.budgetLineId < b.budgetLineId ? -1 : a.budgetLineId > b.budgetLineId ? 1 : 0))
+    lines.sort(byKey((l) => l.budgetLineId))
     for (const line of lines) crossBudgetLineSchema.parse(line)
 
     const count = expectedCrossCounts.get(division) ?? 0
@@ -537,10 +552,10 @@ function writeCrossChunks(): void {
     const expectedSum = expectedCrossAmounts.get(division) ?? 0
     if (amountSum !== expectedSum) fail(`cross chunk amount sum for division ${division} (${amountSum}) != expected (${expectedSum})`)
 
-    writeChunkSeries(`cofog/${division}/all`, lines)
+    writeChunkSeries(assetPaths.cofogFamily(division, undefined), lines)
     const years = [...new Set(lines.map((l) => l.fiscalYear))]
     for (const year of years) {
-      writeChunkSeries(`cofog/${division}/${year}`, lines.filter((l) => l.fiscalYear === year))
+      writeChunkSeries(assetPaths.cofogFamily(division, year), lines.filter((l) => l.fiscalYear === year))
     }
   }
 }
@@ -551,8 +566,9 @@ function writeChunkSeries(family: string, lines: CrossBudgetLine[]): void {
     const chunkLines = lines.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE)
     const body = JSON.stringify({ revision, hasNext: i + 1 < chunkCount, lines: chunkLines })
     if (Buffer.byteLength(body) > CHUNK_BYTES_LIMIT) fail(`chunk ${family}/${i}.json exceeds ${CHUNK_BYTES_LIMIT} bytes`)
-    mkdirSync(join(OUT_DIR, family), { recursive: true })
-    writeFileSync(join(OUT_DIR, family, `${i}.json`), body)
+    const chunkPath = join(OUT_DIR, assetPaths.cofogChunk(family, i))
+    mkdirSync(join(chunkPath, '..'), { recursive: true })
+    writeFileSync(chunkPath, body)
   }
 }
 
@@ -562,9 +578,9 @@ function writeJson(path: string, value: unknown): void {
 }
 
 writeCrossChunks()
-allBudgets.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
-writeJson(join(OUT_DIR, 'meta', 'jurisdictions.json'), { revision, jurisdictions, budgets: allBudgets })
-writeJson(join(OUT_DIR, 'meta', 'files.json'), { revision, files: filesMeta })
+allBudgets.sort(byKey((b) => b.id))
+writeJson(join(OUT_DIR, assetPaths.jurisdictions), { revision, jurisdictions, budgets: allBudgets })
+writeJson(join(OUT_DIR, assetPaths.files), { revision, files: filesMeta })
 
 // 出力の総点検: contract のスキーマに全 BudgetLine を通す（型のずれを deploy 前に落とす）
 for (const j of jurisdictionIds) {

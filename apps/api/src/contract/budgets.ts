@@ -21,9 +21,32 @@ import {
   resourceName,
 } from './shared'
 
+/**
+ * budget id のコーデック。**形式（{6桁の団体コード}:{4桁の年度}）を知るのはここだけ**。
+ * 作る側（build）は budgetIdOf、読む側（procedure）は parseBudgetId を使い、
+ * 独立に文字列連結・正規表現を書かない。
+ */
+export const BUDGET_ID_PATTERN = /^(\d{6}):(\d{4})$/
+
+export function budgetIdOf(jurisdiction: string, fiscalYear: string): string {
+  const id = `${jurisdiction}:${fiscalYear}`
+  if (!BUDGET_ID_PATTERN.test(id)) throw new Error(`malformed budget id would be produced: ${id}`)
+  return id
+}
+
+/** 形式が違えば null（呼び出し側が 400 にする） */
+export function parseBudgetId(id: string): { jurisdiction: string; fiscalYear: string } | null {
+  const m = id.match(BUDGET_ID_PATTERN)
+  if (!m) return null
+  return { jurisdiction: m[1]!, fiscalYear: m[2]! }
+}
+
 export const budgetSchema = z.object({
   name: resourceName.describe('リソース名（AIP-122）。budgets/{id}'),
-  id: z.string().describe('budget の識別子。{団体コード}:{年度}（budget_line_id の先頭2セグメントと一致）'),
+  id: z
+    .string()
+    .regex(BUDGET_ID_PATTERN)
+    .describe('budget の識別子。{団体コード}:{年度}（budget_line_id の先頭2セグメントと一致）'),
   jurisdictionId: z.string().describe('全国地方公共団体コード'),
   fiscalYear: z.string().describe('会計年度（西暦）'),
   directions: z
@@ -146,12 +169,9 @@ export const crossBudgetLineSchema = z.object({
       amount: z.number().describe('円に正規化した金額'),
     }))
     .describe('予算段階ごとの金額。段階の構成は団体で違うので、比較は同じ段階どうしで行うこと'),
-  cofog: z
-    .object({
-      status: cofogStatus,
-      division: z.string().nullable().describe('COFOG の大分類コード（01〜10）'),
-      consolidation: cofogConsolidation,
-    })
+  // 団体単位の行の cofogJudgment から共通の最小軸ぶんだけ導出する（二重定義しない）
+  cofog: cofogJudgment
+    .pick({ status: true, division: true, consolidation: true })
     .describe('COFOG 分類（fudoki の判断）'),
 })
 export type CrossBudgetLine = z.infer<typeof crossBudgetLineSchema>

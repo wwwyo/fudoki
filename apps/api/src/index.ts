@@ -47,10 +47,19 @@ app.use(
 app.get('/', (c) => c.redirect('/v0/', 302))
 app.get('/openapi.json', (c) => c.redirect('/v0/openapi.json', 302))
 
+// meta/files.json はデプロイに焼き込まれた不変データなので isolate 内で1回だけ読む
+let filesMetaCache: FilesFile | null = null
+async function readFilesMeta(env: Env): Promise<FilesFile> {
+  if (filesMetaCache !== null) return filesMetaCache
+  const filesMeta = await readJsonAsset<FilesFile>(env, paths.files)
+  if (filesMeta === null) throw new Error('meta/files.json is missing from assets')
+  filesMetaCache = filesMeta
+  return filesMeta
+}
+
 app.on(['GET', 'HEAD'], '/v0/datapackages/:jurisdiction/:file', async (c) => {
   const { jurisdiction, file } = c.req.param()
-  const filesMeta = await readJsonAsset<FilesFile>(c.env, paths.files)
-  if (filesMeta === null) throw new Error('meta/files.json is missing from assets')
+  const filesMeta = await readFilesMeta(c.env)
   // リクエスト入力をアセットのパスへ直接連結しない。宣言済みのファイルだけを返す
   const entry = filesMeta.files[jurisdiction]?.[file]
   if (entry === undefined) {

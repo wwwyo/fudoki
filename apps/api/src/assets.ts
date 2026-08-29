@@ -33,11 +33,18 @@ export async function readJsonAsset<T>(env: Env, path: string): Promise<T | null
   return (await res.json()) as T
 }
 
+/**
+ * パーティションレイアウトの唯一の定義。書き手（build.ts）も読み手（procedure）も
+ * ここを経由し、パス文字列を独立に組み立てない。
+ * family はページングの pageToken に封入される系列名（拡張子なし）。
+ */
 export const paths = {
   jurisdictions: 'meta/jurisdictions.json',
   files: 'meta/files.json',
+  linesFamily: (jurisdiction: string, fiscalYear: string, direction: string) =>
+    `lines/${jurisdiction}/${fiscalYear}-${direction}`,
   lines: (jurisdiction: string, fiscalYear: string, direction: string) =>
-    `lines/${jurisdiction}/${fiscalYear}-${direction}.json`,
+    `${paths.linesFamily(jurisdiction, fiscalYear, direction)}.json`,
   cofogChunk: (family: string, chunk: number) => `${family}/${chunk}.json`,
   cofogFamily: (division: string, fiscalYear: string | undefined) =>
     fiscalYear === undefined ? `cofog/${division}/all` : `cofog/${division}/${fiscalYear}`,
