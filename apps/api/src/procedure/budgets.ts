@@ -9,10 +9,19 @@ import {
   paths,
   readJsonAsset,
 } from '../assets'
-import type { BudgetLine, CrossBudgetLine } from '../contract'
+import { parseBudgetId, type BudgetLine, type CrossBudgetLine } from '../contract'
 import { filterFingerprint, type ParsedFilter } from '../lib/filter'
 import { encodePageToken } from '../lib/token'
-import { os, parseFilterOr400, readMeta, resolvePageSize, scanPage, verifyToken, type Errors } from './shared'
+import {
+  checkOffsetInRange,
+  os,
+  parseFilterOr400,
+  readMeta,
+  resolvePageSize,
+  scanPage,
+  verifyToken,
+  type Errors,
+} from './shared'
 
 export const listBudgets = os.listBudgets.handler(async ({ context, input, errors }) => {
   const filter = parseFilterOr400(input.filter, errors)
@@ -33,19 +42,12 @@ export const listBudgets = os.listBudgets.handler(async ({ context, input, error
 
 export const getBudget = os.getBudget.handler(async ({ context, input, errors }) => {
   const meta = await readMeta(context.env)
-  const budget = meta.budgets.find((b) => b.id === input.budget)
+  const budget = meta.budgetById.get(input.budget)
   if (!budget) throw errors.NOT_FOUND({ message: `unknown budget: ${input.budget}` })
   return { budget, revision: meta.revision }
 })
 
 // ---- statement（予算の明細。budget 集約の内部） ----
-
-/** budget id（{団体コード}:{年度}）を分解する。形式が違えば null */
-function parseBudgetId(id: string): { jurisdiction: string; fiscalYear: string } | null {
-  const m = id.match(/^(\d{6}):(\d{4})$/)
-  if (!m) return null
-  return { jurisdiction: m[1]!, fiscalYear: m[2]! }
-}
 
 export const getStatement = os.getStatement.handler(async ({ context, input, errors }) => {
   const pageSize = resolvePageSize(input.pageSize)
@@ -106,9 +108,7 @@ async function crossBudgetStatement(
     }
     throw errors.BAD_REQUEST({ message: 'pageToken points outside the result set', data: { reason: 'invalid pageToken' } })
   }
-  if (offset > chunk.lines.length) {
-    throw errors.BAD_REQUEST({ message: 'pageToken offset is out of range', data: { reason: 'invalid pageToken' } })
-  }
+  checkOffsetInRange(offset, chunk.lines.length, errors)
 
   const { items, nextOffset } = scanPage<CrossBudgetLine>(chunk.lines, offset, pageSize, () => true)
   let nextPageToken: string | undefined
@@ -136,7 +136,7 @@ async function budgetStatement(
     })
   }
   const meta = await readMeta(env)
-  const budget = meta.budgets.find((b) => b.id === budgetId)
+  const budget = meta.budgetById.get(budgetId)
   if (!budget) throw errors.NOT_FOUND({ message: `unknown budget: ${budgetId}` })
 
   if (filter.fiscalYear !== undefined) {
@@ -156,17 +156,18 @@ async function budgetStatement(
     throw errors.NOT_FOUND({ message: `${direction} is not covered for budget ${budgetId}` })
   }
 
-  const family = paths.lines(parsed.jurisdiction, parsed.fiscalYear, direction).replace(/\.json$/, '')
+  const family = paths.linesFamily(parsed.jurisdiction, parsed.fiscalYear, direction)
   const fingerprint = filterFingerprint(filter)
   const token =
     rawToken === undefined ? null : verifyToken(rawToken, { revision: meta.revision, family, fingerprint }, errors)
+  if (token !== null && token.chunk !== 0) {
+    throw errors.BAD_REQUEST({ message: 'pageToken points outside the result set', data: { reason: 'invalid pageToken' } })
+  }
   const offset = token?.off ?? 0
 
   const file = await readJsonAsset<LinesFile>(env, paths.lines(parsed.jurisdiction, parsed.fiscalYear, direction))
   if (file === null) throw new Error(`partition missing for covered budget: ${family}`)
-  if (offset > file.lines.length) {
-    throw errors.BAD_REQUEST({ message: 'pageToken offset is out of range', data: { reason: 'invalid pageToken' } })
-  }
+  checkOffsetInRange(offset, file.lines.length, errors)
 
   const predicate = (line: BudgetLine): boolean => {
     if (filter.phase !== undefined && !line.amounts.some((a) => a.phase === filter.phase)) return false

@@ -8,7 +8,7 @@ export const listJurisdictions = os.listJurisdictions.handler(async ({ context }
 
 export const getJurisdiction = os.getJurisdiction.handler(async ({ context, input, errors }) => {
   const meta = await readMeta(context.env)
-  const jurisdiction = meta.jurisdictions.find((j) => j.id === input.jurisdiction)
+  const jurisdiction = meta.jurisdictionById.get(input.jurisdiction)
   if (!jurisdiction) throw errors.NOT_FOUND({ message: `unknown jurisdiction: ${input.jurisdiction}` })
   return { jurisdiction, revision: meta.revision }
 })

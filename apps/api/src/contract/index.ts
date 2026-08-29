@@ -26,9 +26,11 @@ export {
   type Jurisdiction,
 } from './jurisdictions'
 export {
+  budgetIdOf,
   budgetLineSchema,
   budgetSchema,
   crossBudgetLineSchema,
+  parseBudgetId,
   statementSchema,
   type Budget,
   type BudgetLine,
@@ -37,6 +39,7 @@ export {
 } from './budgets'
 export {
   cofogConsolidation,
+  direction,
   cofogDecidedAtLevel,
   cofogStatus,
   dimensionName,

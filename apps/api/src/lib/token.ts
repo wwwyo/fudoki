@@ -30,12 +30,13 @@ export function decodePageToken(raw: string): PageToken | null {
     const parsed: unknown = JSON.parse(atob(padded))
     if (typeof parsed !== 'object' || parsed === null) return null
     const t = parsed as Record<string, unknown>
+    const isIndex = (v: unknown): v is number => typeof v === 'number' && Number.isSafeInteger(v) && v >= 0
     if (
       t['v'] !== 1 ||
       typeof t['rev'] !== 'string' ||
       typeof t['family'] !== 'string' ||
-      typeof t['chunk'] !== 'number' ||
-      typeof t['off'] !== 'number' ||
+      !isIndex(t['chunk']) ||
+      !isIndex(t['off']) ||
       typeof t['fh'] !== 'string'
     ) {
       return null

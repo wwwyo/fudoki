@@ -187,6 +187,13 @@ describe('cross-budget statement (wildcard parent)', () => {
 
     const garbage = await get(`/v0/budgets/-/statement?${q('cofog.division = "09"', { pageToken: '!!!' })}`)
     expect(garbage.status).toBe(400)
+
+    // 負の offset や非整数を細工したトークンは 500 ではなく 400 で弾く
+    for (const off of [-1, 1.5, Number.MAX_SAFE_INTEGER + 1]) {
+      const crafted = btoa(JSON.stringify({ ...decoded, off }))
+      const res = await get(`/v0/budgets/-/statement?${q('cofog.division = "09"', { pageToken: crafted })}`)
+      expect(res.status).toBe(400)
+    }
   })
 
   test('pageSize: clamps above 1000, rejects negatives', async () => {

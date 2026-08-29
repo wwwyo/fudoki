@@ -4,7 +4,7 @@
  */
 import { implement } from '@orpc/server'
 import { type Env, type JurisdictionsFile, paths, readJsonAsset } from '../assets'
-import { contract } from '../contract'
+import { contract, type Budget, type Jurisdiction } from '../contract'
 import { FilterSyntaxError, parseFilter, type ParsedFilter } from '../lib/filter'
 import { decodePageToken, type PageToken } from '../lib/token'
 
@@ -51,10 +51,35 @@ export function verifyToken(
   return token
 }
 
-export async function readMeta(env: Env): Promise<JurisdictionsFile> {
+export type Meta = JurisdictionsFile & {
+  jurisdictionById: Map<string, Jurisdiction>
+  budgetById: Map<string, Budget>
+}
+
+/**
+ * meta はデプロイに焼き込まれた不変データなので、isolate の生存中は
+ * モジュールスコープに1回だけ読む（毎リクエストの fetch + JSON.parse を避ける。
+ * デプロイのたびに isolate ごと入れ替わるため無効化は不要）。
+ */
+let metaCache: Meta | null = null
+
+export async function readMeta(env: Env): Promise<Meta> {
+  if (metaCache !== null) return metaCache
   const meta = await readJsonAsset<JurisdictionsFile>(env, paths.jurisdictions)
   if (meta === null) throw new Error('meta/jurisdictions.json is missing from assets')
-  return meta
+  metaCache = {
+    ...meta,
+    jurisdictionById: new Map(meta.jurisdictions.map((j) => [j.id, j])),
+    budgetById: new Map(meta.budgets.map((b) => [b.id, b])),
+  }
+  return metaCache
+}
+
+/** pageToken の offset が走査対象の範囲内であることの検査（budget / crossBudget で共通） */
+export function checkOffsetInRange(offset: number, length: number, errors: Errors): void {
+  if (offset > length) {
+    throw errors.BAD_REQUEST({ message: 'pageToken offset is out of range', data: { reason: 'invalid pageToken' } })
+  }
 }
 
 /** 走査は最大1 chunk。フィルタで該当が減っても offset は生の行位置で進める */
