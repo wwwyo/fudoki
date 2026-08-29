@@ -15,6 +15,7 @@ import {
   cofogDecidedAtLevel,
   cofogStatus,
   dimensionName,
+  direction,
   levelName,
   pageInput,
   phaseId,
@@ -49,9 +50,7 @@ export const budgetSchema = z.object({
     .describe('budget の識別子。{団体コード}:{年度}（budget_line_id の先頭2セグメントと一致）'),
   jurisdictionId: z.string().describe('全国地方公共団体コード'),
   fiscalYear: z.string().describe('会計年度（西暦）'),
-  directions: z
-    .array(z.enum(['expenditure', 'revenue']))
-    .describe('この予算で収録している歳出・歳入の別'),
+  directions: z.array(direction).describe('この予算で収録している歳出・歳入の別'),
   amountPhase: phaseId.describe('分類率の金額ベースの計算に使った予算段階'),
   classificationRate: z
     .object({
@@ -146,7 +145,7 @@ const cofogJudgment = z.object({
 export const budgetLineSchema = z.object({
   budgetLineId: z.string().describe('配布物の明細識別子。{団体}:{年度}:{direction}:{資料種別}:{ハッシュ} の形で安定。先頭2セグメントが親 budget の id'),
   fiscalYear: z.string().describe('会計年度（西暦）'),
-  direction: z.enum(['expenditure', 'revenue']).describe('歳出 / 歳入'),
+  direction,
   hierarchy: z.array(hierarchyEntry).describe('科目の階層（款→項→目→…）。並びと段数は団体ごとに違い、jurisdiction の levels が宣言する'),
   dimensions: z.array(dimensionEntry).describe('階層以外の同一性の軸（狛江市の所属・予算区分）。無い団体は空配列'),
   amounts: z.array(amountEntry).describe('この明細が持つ予算段階ごとの金額。決算資料の明細は複数段階を持つ'),

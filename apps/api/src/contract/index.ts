@@ -39,6 +39,7 @@ export {
 } from './budgets'
 export {
   cofogConsolidation,
+  direction,
   cofogDecidedAtLevel,
   cofogStatus,
   dimensionName,

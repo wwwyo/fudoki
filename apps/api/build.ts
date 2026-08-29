@@ -30,7 +30,7 @@ import {
   type CrossBudgetLine,
   type Jurisdiction,
 } from './src/contract'
-import { budgetIdOf } from './src/contract'
+import { budgetIdOf, direction } from './src/contract'
 import { paths as assetPaths } from './src/assets'
 
 const ROOT = join(import.meta.dir, '../..')
@@ -64,6 +64,7 @@ function checkVocabulariesMatchFieldTypes(): void {
     }
   ).fields
   const pairs: [string, readonly string[]][] = [
+    ['direction', direction.options],
     ['cofog_status', cofogStatus.options],
     ['cofog_consolidation', cofogConsolidation.options],
     ['cofog_decided_at_level', cofogDecidedAtLevel.options],
@@ -388,6 +389,15 @@ for (const j of jurisdictionIds.sort()) {
   const cofogTable = readCsvTable(join(dir, 'cofog.csv'))
   const cofogByLineId = new Map<string, CofogRow>()
   for (const row of cofogTable.rows) {
+    // 検査: cofog リソースは budget_line_id 単位で1行（重複は黙って上書きせず止める）
+    if (cofogByLineId.has(row['budget_line_id']!)) fail(`duplicate budget_line_id in cofog.csv of ${j}: ${row['budget_line_id']}`)
+    // 検査: 状態と division・direction の対応（assigned だけが division を持つ / 歳入は not-applicable）
+    const st = row['cofog_status']!
+    const div = row['cofog_division']!
+    if (st === 'assigned' && !/^(0[1-9]|10)$/.test(div)) fail(`assigned cofog row without a valid division (01..10) in ${j}: ${row['budget_line_id']} -> "${div}"`)
+    if (st !== 'assigned' && div !== '') fail(`non-assigned cofog row with a division in ${j}: ${row['budget_line_id']} (${st} -> "${div}")`)
+    if (row['direction'] === 'revenue' && st !== 'not-applicable') fail(`revenue cofog row must be not-applicable in ${j}: ${row['budget_line_id']} (${st})`)
+    if (row['direction'] === 'expenditure' && st === 'not-applicable') fail(`expenditure cofog row must not be not-applicable in ${j}: ${row['budget_line_id']}`)
     cofogByLineId.set(row['budget_line_id']!, {
       status: cofogStatus.parse(row['cofog_status']),
       division: row['cofog_division'] === '' ? null : row['cofog_division']!,
@@ -424,7 +434,9 @@ for (const j of jurisdictionIds.sort()) {
     for (const year of years) {
       const yearLines = lines.filter((l) => l.fiscalYear === year)
       linesByYearDir.set(`${year}-${direction}`, yearLines)
-      writeJson(join(OUT_DIR, assetPaths.lines(j, year, direction)), { revision, lines: yearLines })
+      const linesBody = JSON.stringify({ revision, lines: yearLines })
+      if (Buffer.byteLength(linesBody) > CHUNK_BYTES_LIMIT) fail(`lines partition ${assetPaths.lines(j, year, direction)} exceeds ${CHUNK_BYTES_LIMIT} bytes`)
+      writeText(join(OUT_DIR, assetPaths.lines(j, year, direction)), linesBody)
     }
     if (direction === 'expenditure') {
       for (const year of years) {
@@ -542,6 +554,12 @@ for (const j of jurisdictionIds.sort()) {
 
 // 横断 chunk の書き出しと検査2
 function writeCrossChunks(): void {
+  // 検査: 期待値側（cofog リソース由来）と chunk 側の division 集合が双方向に一致する
+  const expectedDivisions = [...expectedCrossCounts.keys()].sort().join(',')
+  const actualDivisions = [...crossByDivision.keys()].sort().join(',')
+  if (expectedDivisions !== actualDivisions) {
+    fail(`division sets differ: cofog resource has [${expectedDivisions}] but chunks have [${actualDivisions}]`)
+  }
   for (const [division, lines] of crossByDivision) {
     lines.sort(byKey((l) => l.budgetLineId))
     for (const line of lines) crossBudgetLineSchema.parse(line)
@@ -573,8 +591,12 @@ function writeChunkSeries(family: string, lines: CrossBudgetLine[]): void {
 }
 
 function writeJson(path: string, value: unknown): void {
+  writeText(path, JSON.stringify(value))
+}
+
+function writeText(path: string, body: string): void {
   mkdirSync(join(path, '..'), { recursive: true })
-  writeFileSync(path, JSON.stringify(value))
+  writeFileSync(path, body)
 }
 
 writeCrossChunks()

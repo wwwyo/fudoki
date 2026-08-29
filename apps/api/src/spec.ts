@@ -51,6 +51,26 @@ const passthroughPath = {
         '404': { description: '未収録の団体、または契約外のファイル名' },
       },
     },
+    head: {
+      operationId: 'headDatapackageFile',
+      summary: 'Get distribution file headers without the body',
+      description: '本文なしで ETag（SHA-256）と X-Fudoki-Revision を返す。巨大 CSV の同一性確認用。',
+      tags: ['datapackages'],
+      parameters: [
+        { name: 'jurisdiction', in: 'path', required: true, schema: { type: 'string' } },
+        { name: 'file', in: 'path', required: true, schema: { type: 'string' } },
+      ],
+      responses: {
+        '200': {
+          description: 'ヘッダのみ（本文なし）',
+          headers: {
+            'X-Fudoki-Revision': { schema: { type: 'string' }, description: '配布物の revision（git commit）' },
+            'ETag': { schema: { type: 'string' }, description: 'ファイル内容の SHA-256' },
+          },
+        },
+        '404': { description: '未収録の団体、または契約外のファイル名' },
+      },
+    },
   },
 } as const
 

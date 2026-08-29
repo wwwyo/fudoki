@@ -160,6 +160,9 @@ async function budgetStatement(
   const fingerprint = filterFingerprint(filter)
   const token =
     rawToken === undefined ? null : verifyToken(rawToken, { revision: meta.revision, family, fingerprint }, errors)
+  if (token !== null && token.chunk !== 0) {
+    throw errors.BAD_REQUEST({ message: 'pageToken points outside the result set', data: { reason: 'invalid pageToken' } })
+  }
   const offset = token?.off ?? 0
 
   const file = await readJsonAsset<LinesFile>(env, paths.lines(parsed.jurisdiction, parsed.fiscalYear, direction))

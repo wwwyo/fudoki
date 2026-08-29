@@ -29,6 +29,10 @@ export const phaseId = z
   .enum(['approved', 'adjusted', 'adjusted-before-transfer', 'executed'])
   .describe('予算段階（approved=当初予算, adjusted=予算現額, adjusted-before-transfer=補正後予算額（流用・充用前）, executed=執行済額）')
 
+export const direction = z
+  .enum(['expenditure', 'revenue'])
+  .describe('歳出 / 歳入')
+
 export const cofogStatus = z
   .enum(['assigned', 'unclassifiable', 'out-of-scope', 'not-applicable'])
   .describe('分類の状態（assigned=割当済み / unclassifiable=分類不能 / out-of-scope=対象外（公債費の元金償還など） / not-applicable=歳入なので対象外）')
