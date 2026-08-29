@@ -2,8 +2,7 @@
  * 配布物（data/budget/datapackages/）から API 用パーティションを生成する。
  * 出力は dist/assets/（ローカル生成物、commit しない）。
  *
- * **配布物との不整合があれば build を失敗させる**（設計は
- * .agent/prd/budget-api/design-doc.md の「build 時の検査」節）。
+ * **配布物との不整合があれば build を失敗させる。**
  * 検査: 多重集合一致 / 横断 chunk の合計一致 / 分類率の内訳一致 /
  * 注意事項の必須カテゴリ / パススルーの SHA-256 一致。
  *
