@@ -15,6 +15,7 @@ select
     {{ trim_cell('kou_name') }}  as kou_name,
     {{ trim_cell('moku_name') }} as moku_name,
     choutei_yen,
-    -- 抽出の経路。text = PDF のテキストそのまま / ocr = Tesseract の読み取り（誤読あり）
+    -- 抽出の経路。**宣言ではなくページごとの観測。** text = PDF のテキストそのまま /
+    -- ocr = llama.cpp + GLM-OCR の読み取り（誤読あり）
     mode
 from {{ source('raw_132195_revenue_accounts', 'data') }}

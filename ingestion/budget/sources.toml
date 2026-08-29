@@ -13,7 +13,6 @@ org_prefix = "t"
 ["132047:2024"]
 catalog = "tokyo"
 jurisdiction_code = "132047"
-jurisdiction_name = "三鷹市"
 fiscal_year = 2024
 # 原典に年度の列が無く、カタログのリソース名にしか現れない。照合に使う。
 fiscal_year_label = "令和６年度"
@@ -77,7 +76,6 @@ resource_name = "令和６年度予算データ（歳入）※下水道事業会
 ["132195:2018"]
 catalog = "tokyo"
 jurisdiction_code = "132195"
-jurisdiction_name = "狛江市"
 fiscal_year = 2018
 # 原典に年度の列はあるが（三鷹市には無かった）、照合はリソース名で行う。
 # 列と partition が食い違っていないことは dbt の検査（source_year_matches_partition）が見る。
@@ -117,7 +115,6 @@ resource_name = "決算書歳入データ（2018）"
 ["132195:2019"]
 catalog = "tokyo"
 jurisdiction_code = "132195"
-jurisdiction_name = "狛江市"
 fiscal_year = 2019
 # 原典に年度の列はあるが（三鷹市には無かった）、照合はリソース名で行う。
 # 列と partition が食い違っていないことは dbt の検査（source_year_matches_partition）が見る。
@@ -157,7 +154,6 @@ resource_name = "決算書歳入データ（2019）"
 ["132195:2020"]
 catalog = "tokyo"
 jurisdiction_code = "132195"
-jurisdiction_name = "狛江市"
 fiscal_year = 2020
 # 原典に年度の列はあるが（三鷹市には無かった）、照合はリソース名で行う。
 # 列と partition が食い違っていないことは dbt の検査（source_year_matches_partition）が見る。
@@ -197,7 +193,6 @@ resource_name = "決算書歳入データ（2020）"
 ["132195:2021"]
 catalog = "tokyo"
 jurisdiction_code = "132195"
-jurisdiction_name = "狛江市"
 fiscal_year = 2021
 # 原典に年度の列はあるが（三鷹市には無かった）、照合はリソース名で行う。
 # 列と partition が食い違っていないことは dbt の検査（source_year_matches_partition）が見る。
@@ -237,7 +232,6 @@ resource_name = "決算書歳入データ（2021）"
 ["132195:2022"]
 catalog = "tokyo"
 jurisdiction_code = "132195"
-jurisdiction_name = "狛江市"
 fiscal_year = 2022
 # 原典に年度の列はあるが（三鷹市には無かった）、照合はリソース名で行う。
 # 列と partition が食い違っていないことは dbt の検査（source_year_matches_partition）が見る。
@@ -277,7 +271,6 @@ resource_name = "決算書歳入データ（2022）"
 ["132195:2023"]
 catalog = "tokyo"
 jurisdiction_code = "132195"
-jurisdiction_name = "狛江市"
 fiscal_year = 2023
 # 原典に年度の列はあるが（三鷹市には無かった）、照合はリソース名で行う。
 # 列と partition が食い違っていないことは dbt の検査（source_year_matches_partition）が見る。
@@ -389,8 +382,16 @@ columns = { code = [0, 128], kanri = [128, 140], mei = [140, 207], setsumei = [2
 [project_names."132195:2023"]
 document_title = "令和５年度主要な施策の成果説明書・決算資料（うち 一般会計歳入歳出（事項別）決算状況）"
 url = "https://www.city.komae.tokyo.jp/index.cfm/46,134979,c,html/134979/20241004-150910.pdf"
-first_page = 20
-last_page = 264
+# ⚠️ **実測（2026-08-29）: p20〜37 は歳入詳細（revenue_accounts と同じ範囲）、
+# p38〜39 は歳出の款別集計（事業名なし）、p40〜263 が事業単位データ本体、
+# p264 は「Ⅲ附属資料」の見出しページ（事業データではない）。
+# 誤って歳入詳細の先頭（20）から附属資料の見出し（264）までを宣言していた期間があったが、
+# extract() の階層フィルタ（款・項・目が全て埋まった行だけを残す）と
+# 列レイアウトの違い（歳入は bands = kan/kou/moku の x 範囲が異なる）により、
+# 実際の抽出結果（524行）はこの誤りの影響を受けていなかった（範囲を正しい値に変えても
+# 行が1件も変わらないことを確認済み）。それでも宣言自体は実物の構成に合わせる。
+first_page = 40
+last_page = 263
 # ⚠️ **原文は置かない。落とすのは抽出した事実だけ。**
 # 抽出した事実（事業名・金額・コード）は著作物ではないので配れるが、原文の複製は別。
 raw_form = "extracted"
@@ -407,19 +408,22 @@ columns = { code = [0, 128], kanri = [128, 140], mei = [140, 207], setsumei = [2
 
 # ── 歳入の科目名称の取得元 ──────────────────────────────
 # 狛江市の歳入は原典 CSV に款・項・目の名称が無く、決算資料の歳入事項別明細から起こす。
-# ⚠️ **2020〜2022 の PDF は文字がアウトライン化されており（Tj が無くグリフが曲線）、
-# テキスト抽出が原理的に成立しない。** mode = "ocr" は Tesseract による読み取りで、
-# 誤読が混ざる前提の経路 — 調定額を原典 CSV と突合し、一致した科目からだけ名称を採る。
-# 2023 は同じ決算資料（歳出と同一 PDF）の歳入部にテキストがあり、mode = "text"。
-# bands は科目欄のコード（数字）の開始 x、amount は調定額の数字の x 範囲（いずれも実測）。
+# ⚠️ **テキストか OCR かは宣言しない。** 抽出器がページごとにテキスト抽出を試し、
+# 表の行が取れなければ OCR へ落とす（原則3: 資料名ではなく中身で判定する）。
+# 実際 2020〜2022 の PDF は文字がアウトライン化されており（Tj が無くグリフが曲線）、
+# 全ページが OCR に落ちる。2023 は同じ決算資料（歳出と同一 PDF）の歳入部に
+# テキストがあり、全ページがテキストで取れる。どちらだったかは provenance の
+# `pages_by_mode` が観測として持つ。
+# bands は科目欄のコード（数字）の開始 x、name_end は科目欄の右端、
+# amount は調定額の数字の x 範囲（いずれも実測）。
+# ⚠️ bands はテキスト経路だけが使う（OCR 経路は切り出した列の格子で段を決める）が、
+# name_end と amount は**両方の経路が使う** — OCR はこの2つを切り出して読ませる。
 
 [revenue_accounts."132195:2020"]
 document_title = "令和2年度　歳入事項別明細"
 url = "https://www.city.komae.tokyo.jp/index.cfm/46,130247,c,html/130247/R2-sainyuu-jikoubetsu-meisai.pdf"
 first_page = 1
 last_page = 19
-header_end = 128
-mode = "ocr"
 bands = { kan = [22, 34], kou = [35, 43], moku = [43, 52] }
 name_end = 110
 amount = [500, 570]
@@ -433,8 +437,6 @@ document_title = "令和3年度　歳入事項別明細"
 url = "https://www.city.komae.tokyo.jp/index.cfm/46,130245,c,html/130245/20231011-101649.pdf"
 first_page = 1
 last_page = 19
-header_end = 128
-mode = "ocr"
 bands = { kan = [22, 34], kou = [35, 43], moku = [43, 52] }
 name_end = 110
 amount = [500, 570]
@@ -448,8 +450,6 @@ document_title = "令和4年度　歳入事項別明細"
 url = "https://www.city.komae.tokyo.jp/index.cfm/46,130170,c,html/130170/20231005-114503.pdf"
 first_page = 1
 last_page = 19
-header_end = 128
-mode = "ocr"
 bands = { kan = [22, 34], kou = [35, 43], moku = [43, 52] }
 name_end = 110
 amount = [500, 570]
@@ -463,10 +463,8 @@ document_title = "令和５年度主要な施策の成果説明書・決算資�
 url = "https://www.city.komae.tokyo.jp/index.cfm/46,134979,c,html/134979/20241004-150910.pdf"
 first_page = 20
 last_page = 37
-mode = "text"
 bands = { kan = [4, 16], kou = [16, 24], moku = [24, 34] }
 name_end = 90
-header_end = 126
 amount = [500, 578]
 raw_form = "extracted"
 redistribute = "review"

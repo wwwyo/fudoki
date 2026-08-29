@@ -13,6 +13,14 @@ on:
   push:
     branches: [main]
 
+# llama.cpp は ingestion の OCR（歳入科目名の抽出）だけが使う。CI は ingestion を回さないので、
+# 数百MB を落とさせない。
+# ⚠️ **`mise-action` の `install_args` で入れるものを列挙しない。**
+# それはツールの宣言を mise.toml と workflow の2箇所に割ることになり、
+# 新しいツールを足したとき CI 側の追従を誰も検査しない。除外の側を書けば宣言は1箇所のまま。
+env:
+  MISE_DISABLE_TOOLS: llama.cpp
+
 jobs:
   # ①予算のパイプライン。取得（ingestion）はネットワークを叩くので回さない。
   budget:

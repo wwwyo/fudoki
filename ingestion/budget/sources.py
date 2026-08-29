@@ -10,6 +10,8 @@ import tomllib
 from dataclasses import dataclass
 from pathlib import Path
 
+from ingestion.shared.jurisdictions import jurisdiction_name as _jurisdiction_name
+
 ROOT = Path(__file__).resolve().parent.parent.parent
 SOURCES_TOML = Path(__file__).resolve().parent / "sources.toml"
 
@@ -37,6 +39,9 @@ class Source:
     key: str
     catalog: Catalog
     jurisdiction_code: str
+    # ⚠️ **sources.toml には書かない。** `jurisdiction_code` から
+    # `ingestion/shared/jurisdictions.json` を引いて load_sources が埋める。
+    # 団体の名称と識別子はそこが正本（①②③で同じキーを使う）。
     jurisdiction_name: str
     fiscal_year: int
     fiscal_year_label: str
@@ -148,7 +153,21 @@ def load_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
         resources = tuple(Resource(**r) for r in spec.pop("resources"))
         if not resources:
             raise ValueError(f"{key}: リソースが1つも無い")
-        sources[key] = Source(key=key, catalog=catalogs[catalog_name], resources=resources, **spec)
+        # ⚠️ **TOML に書かれていたら止める。** 既定値で上書きすると、
+        # 誤記を黙って直したのか宣言が効いていないのかを読み手が区別できない。
+        if "jurisdiction_name" in spec:
+            raise ValueError(
+                f"{key}: jurisdiction_name は sources.toml に書かない。"
+                f"団体の名称は ingestion/shared/jurisdictions.json が正本で、"
+                f"jurisdiction_code から引く"
+            )
+        sources[key] = Source(
+            key=key,
+            catalog=catalogs[catalog_name],
+            resources=resources,
+            jurisdiction_name=_jurisdiction_name(spec["jurisdiction_code"]),
+            **spec,
+        )
     return sources
 
 

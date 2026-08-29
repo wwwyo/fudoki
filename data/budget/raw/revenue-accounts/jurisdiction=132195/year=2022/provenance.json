@@ -7,21 +7,24 @@
   "status": 200,
   "bytes": 2935907,
   "sha256": "d3253287f0a1a24ad4a4952c13463152c3823cb1e435b13ea202a3759d666a76",
-  "fetched_at": "2026-08-23T16:28:15+00:00",
+  "fetched_at": "2026-08-29T08:20:12+00:00",
   "pages": [
     1,
     19
   ],
-  "extractor": "ingestion/budget/extract_revenue_accounts.py@7+tesseract-5.5.3@600dpi",
-  "mode": "ocr",
+  "extractor": "ingestion/budget/extract_revenue_accounts.py@8+llamacpp-b9616+GLM-OCR-f16-b06675e983db+mmproj-9c4b58e33e31@300dpi",
+  "pages_by_mode": {
+    "ocr": 19
+  },
+  "text_pages": [],
   "verification": "ocr + downstream-amount-reconciliation",
   "roundtrip_verified": false,
   "extracted": {
-    "moku": 52,
-    "named": 52,
-    "withAmount": 2,
-    "kan": 8,
-    "duplicateKeys": 25
+    "moku": 57,
+    "named": 57,
+    "withAmount": 57,
+    "kan": 20,
+    "duplicateKeys": 2
   },
   "raw_form": "extracted",
   "redistribute": "review",
