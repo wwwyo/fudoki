@@ -47,6 +47,20 @@ CACHE = pathlib.Path.home() / ".cache" / "fudoki" / "ocr-models"
 GAP_PX = 24
 
 
+def weights_version() -> str:
+    """重みとレンダリング解像度だけの指紋。**バイナリを呼ばない。**
+
+    例: `GLM-OCR-f16-b06675e983db+mmproj-9c4b58e33e31@300dpi`
+
+    ⚠️ **engine_version() から切り出してあるのは、エンジンが無い環境でも
+    ここまでは確定できるため。** 冪等判定をエンジンの版ごと諦めると、
+    重みや DPI を差し替えても古い抽出物が黙って生き残る
+    （`extract_revenue_accounts.ingest` がこの関数で見る）。
+    """
+    parts = "+".join(f"{name}-{spec['sha256'][:12]}" for name, spec in _declaration().items())
+    return f"{parts}@{DPI}dpi"
+
+
 def engine_version() -> str:
     """provenance に記録する識別子。
 
@@ -61,9 +75,7 @@ def engine_version() -> str:
     m = re.search(r"version:\s*(\S+)", text)
     if not m:
         raise RuntimeError(f"{BINARY} --version から版を読めない: {text[:200]!r}")
-    weights = _declaration()
-    parts = "+".join(f"{name}-{spec['sha256'][:12]}" for name, spec in weights.items())
-    return f"llamacpp-b{m.group(1)}+{parts}@{DPI}dpi"
+    return f"llamacpp-b{m.group(1)}+{weights_version()}"
 
 
 def _declaration() -> dict[str, dict]:
@@ -83,13 +95,18 @@ def _weight(spec: dict) -> pathlib.Path:
         return path
     CACHE.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".part")
-    with urllib.request.urlopen(spec["url"], timeout=60) as res, tmp.open("wb") as f:  # noqa: S310
-        while chunk := res.read(1 << 20):
-            f.write(chunk)
-    if tmp.stat().st_size != spec["bytes"] or _sha256(tmp) != spec["sha256"]:
-        tmp.unlink()
-        raise RuntimeError(f"取得した重みが宣言と一致しない: {spec['url']}")
-    tmp.rename(path)
+    # ⚠️ **途中で死んだときも消す。** timeout や切断で抜けると最大 1.8 GB の
+    # `.part` がキャッシュに残る。次回は `wb` で切り詰めるので誤成功にはならないが、
+    # 失敗するたびに置き土産が増える
+    try:
+        with urllib.request.urlopen(spec["url"], timeout=60) as res, tmp.open("wb") as f:  # noqa: S310
+            while chunk := res.read(1 << 20):
+                f.write(chunk)
+        if tmp.stat().st_size != spec["bytes"] or _sha256(tmp) != spec["sha256"]:
+            raise RuntimeError(f"取得した重みが宣言と一致しない: {spec['url']}")
+        tmp.rename(path)
+    finally:
+        tmp.unlink(missing_ok=True)
     return path
 
 
@@ -120,6 +137,9 @@ def tables_of(pdf: pathlib.Path, pages: list[int],
                  "-p", PROMPT, "--temp", "0", "-n", "4096", "-c", "8192"],
                 capture_output=True, check=True,
             ).stdout.decode()
+        # ⚠️ **`-n` の上限に達しても終了コードは 0。** check=True では切り捨てを検出できない。
+        # 検出は html_table.grid()（閉じていない <table> / <tr> / <td> を例外にする）が持つ —
+        # ここで文字列を再検査すると同じ事実を2箇所で宣言することになる
         yield out
 
 

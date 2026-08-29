@@ -190,9 +190,24 @@ def load_project_names(path: Path = SOURCES_TOML) -> dict[str, dict]:
     ⚠️ **同じ toml を3箇所で開いていた**（抽出器・記述子の生成・この module）。
     取得元の宣言を読む入口は1つにする。
     """
-    return tomllib.loads(path.read_text(encoding="utf-8")).get("project_names", {})
+    return _pdf_sources("project_names", path)
 
 
 def load_revenue_accounts(path: Path = SOURCES_TOML) -> dict[str, dict]:
     """歳入の科目名称の取得元（決算資料の歳入事項別明細）。`[revenue_accounts]` 節"""
-    return tomllib.loads(path.read_text(encoding="utf-8")).get("revenue_accounts", {})
+    return _pdf_sources("revenue_accounts", path)
+
+
+def _pdf_sources(section: str, path: Path) -> dict[str, dict]:
+    """PDF 系の取得元。**キーの団体コードを registry と突き合わせる。**
+
+    ⚠️ **CKAN 側（load_sources）だけを registry に通しても足りない。** こちらは
+    `"132195:2023"` のキー自体が partition の団体コードになるので、誤記のまま
+    `data/budget/raw/**/jurisdiction=132159/` のような未知の団体の区画へ書けてしまう。
+    名称を引く経路が無い分、CKAN 側より検知が遅れる。
+    """
+    section_raw = tomllib.loads(path.read_text(encoding="utf-8")).get(section, {})
+    for key in section_raw:
+        code = key.split(":")[0]
+        _jurisdiction_name(code)      # 未登録なら KeyError
+    return section_raw

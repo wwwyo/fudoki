@@ -37,7 +37,7 @@ import sys
 import tempfile
 import unicodedata
 
-from ingestion.budget.sources import SOURCES_TOML
+from ingestion.budget.sources import load_revenue_accounts
 from ingestion.lib import html_table, ocr
 from ingestion.lib import pdf as pdftext
 from ingestion.lib.http import http_get
@@ -56,11 +56,6 @@ LEVELS = ("kan", "kou", "moku")
 # text 経路を採るのに要る行数。**見出しだけ拾えた状態を「取れた」と呼ばない。**
 # 狛江 R2 の p1 は「（1）歳入」の3語だけを持つが、表の行は1つも無い
 MIN_TEXT_ROWS = 3
-
-
-def load_declarations() -> dict[str, dict]:
-    import tomllib
-    return tomllib.loads(SOURCES_TOML.read_text(encoding="utf-8")).get("revenue_accounts", {})
 
 
 def _rows_with_y(page, tolerance: float):
@@ -291,7 +286,7 @@ def summarize(rows: list[dict]) -> dict:
 
 
 def ingest(key: str) -> None:
-    spec = load_declarations()[key]
+    spec = load_revenue_accounts()[key]
     code, year = key.split(":")
     got = http_get(spec["url"])
     if got.status != 200:
@@ -312,9 +307,10 @@ def ingest(key: str) -> None:
             try:
                 extractor += f"+{ocr.engine_version()}"
             except (FileNotFoundError, subprocess.CalledProcessError):
-                # エンジンが無い環境では版を確定できず、extractor 文字列での冪等判定が
-                # そもそも成立しない。ただし再抽出も物理的にできないので、ここでは
-                # 「既存の抽出物が原典と食い違っていないか」だけを SHA-256 で見る
+                # エンジンが無い環境では llama.cpp の版を確定できないので、
+                # extractor 文字列をそのまま突き合わせる冪等判定が成立しない。
+                # 再抽出も物理的にできないため、確定できる材料（原典の SHA-256・
+                # 抽出器の版・重みと DPI の指紋）だけで判定する
                 engine_missing = True
 
         out_dir = OUT / f"jurisdiction={code}" / f"year={year}"
@@ -326,18 +322,23 @@ def ingest(key: str) -> None:
                 # 抽出結果も変わらないはずなので保全する。違えば再抽出が必要だが
                 # エンジンが無くて実行できないので、黙って古い抽出物を使わず止める
                 #
-                # ⚠️ 抽出器の版はエンジンが無くても分かるので、そこは比較を落とさない。
-                # 落とすと、抽出の規則を変えたのに古い抽出物が黙って生き残る
+                # ⚠️ 抽出器の版と**重み・DPI の指紋**はエンジンが無くても分かるので、
+                # そこは比較を落とさない。落とすと、抽出の規則やモデルを変えたのに
+                # 古い抽出物が黙って生き残る（版が確定できないのは llama.cpp の
+                # バイナリの版だけで、`ocr.weights_version()` はバイナリを呼ばない）
+                old_extractor = str(old.get("extractor", ""))
                 if (old.get("sha256") == got.sha256
-                        and str(old.get("extractor", "")).startswith(f"{extractor}+")):
+                        and old_extractor.startswith(f"{extractor}+")
+                        and old_extractor.endswith(ocr.weights_version())):
                     print(f"skip  {key}  OCR エンジンが見つからないため版を確認できないが、"
                           f"原典は既存の抽出物（extractor={old.get('extractor')}）と同じ SHA-256 "
                           "なのでそれを使う")
                     return
                 raise RuntimeError(
                     f"{key}: OCR エンジンが見つからず、かつ既存の抽出物が現在の原典・"
-                    f"抽出器（{extractor}）と一致しない（既存: sha256={old.get('sha256')}, "
-                    f"extractor={old.get('extractor')}）。再抽出できないため停止する"
+                    f"抽出器（{extractor}）・重み（{ocr.weights_version()}）と一致しない"
+                    f"（既存: sha256={old.get('sha256')}, extractor={old_extractor}）。"
+                    "再抽出できないため停止する"
                     "（OCR エンジンをインストールしてから再実行すること）")
             if old.get("sha256") == got.sha256 and old.get("extractor") == extractor:
                 print(f"skip  {key}  同じ原典・同じ抽出器の版で既に抽出済み")
@@ -409,7 +410,7 @@ def ingest(key: str) -> None:
 
 
 if __name__ == "__main__":
-    keys = sys.argv[1:] or sorted(load_declarations())
+    keys = sys.argv[1:] or sorted(load_revenue_accounts())
     for k in keys:
         print(f"--- {k}")
         ingest(k)
