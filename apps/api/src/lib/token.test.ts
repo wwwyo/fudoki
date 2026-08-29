@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test'
-import { decodePageToken, encodePageToken } from '../src/token'
+import { decodePageToken, encodePageToken } from './token'
 
 test('pageToken roundtrip', () => {
   const token = { v: 1 as const, rev: 'abc', family: 'cofog/09/all', chunk: 2, off: 500, fh: 'deadbeef' }

@@ -7,8 +7,8 @@ import { beforeAll, describe, expect, test } from 'bun:test'
 import { createHash } from 'node:crypto'
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import app from '../src/index'
-import type { Env } from '../src/assets'
+import app from './index'
+import type { Env } from './assets'
 
 const ASSETS_DIR = join(import.meta.dir, '../dist/assets')
 const DATA_DIR = join(import.meta.dir, '../../../data/budget/datapackages')
@@ -290,6 +290,33 @@ describe('contract-only surface', () => {
   test('root and /openapi.json redirect into /v0', async () => {
     expect((await get('/')).status).toBe(302)
     expect((await get('/openapi.json')).status).toBe(302)
+  })
+
+  test('RPC endpoint (/rpc) serves the same router for first-party clients', async () => {
+    const { createORPCClient } = await import('@orpc/client')
+    const { RPCLink } = await import('@orpc/client/fetch')
+    const { router } = await import('./router')
+    type RouterClient = import('@orpc/server').RouterClient<typeof router>
+    const link = new RPCLink({
+      url: 'https://api.fudoki.dev/rpc',
+      fetch: async (request, init) => app.request(request, init, env),
+    })
+    const client: RouterClient = createORPCClient(link)
+
+    const listed = await client.listJurisdictions()
+    expect(listed.jurisdictions.map((j) => j.id).sort()).toEqual(['132047', '132195'])
+    expect(listed.revision).toMatch(/^[0-9a-f]{40}/)
+
+    const cross = await client.listBudgetLines({
+      jurisdiction: '-',
+      filter: 'cofog.division = "09"',
+      pageSize: 3,
+    })
+    expect(cross.scope).toBe('crossJurisdiction')
+    expect(cross.budgetLines.length).toBe(3)
+
+    // 型付きエラーも RPC 経由で届く
+    await expect(client.getJurisdiction({ jurisdiction: '999999' })).rejects.toThrow()
   })
 
   test('CORS: OPTIONS preflight and headers on responses', async () => {

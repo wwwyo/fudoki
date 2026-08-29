@@ -238,7 +238,15 @@
             "name": "phase_id",
             "title": "予算段階",
             "type": "string",
-            "columnType": "phase:id"
+            "columnType": "phase:id",
+            "constraints": {
+              "enum": [
+                "approved",
+                "adjusted",
+                "adjusted-before-transfer",
+                "executed"
+              ]
+            }
           },
           {
             "name": "source_row",
@@ -399,6 +407,12 @@
             "title": "支出と収入の別",
             "type": "string",
             "columnType": "direction",
+            "constraints": {
+              "enum": [
+                "expenditure",
+                "revenue"
+              ]
+            },
             "constant": "expenditure"
           }
         ]
@@ -445,7 +459,15 @@
             "name": "phase_id",
             "title": "予算段階",
             "type": "string",
-            "columnType": "phase:id"
+            "columnType": "phase:id",
+            "constraints": {
+              "enum": [
+                "approved",
+                "adjusted",
+                "adjusted-before-transfer",
+                "executed"
+              ]
+            }
           },
           {
             "name": "source_row",
@@ -607,6 +629,12 @@
             "title": "支出と収入の別",
             "type": "string",
             "columnType": "direction",
+            "constraints": {
+              "enum": [
+                "expenditure",
+                "revenue"
+              ]
+            },
             "constant": "revenue"
           }
         ]
@@ -646,7 +674,13 @@
             "name": "direction",
             "title": "支出と収入の別",
             "type": "string",
-            "columnType": "direction"
+            "columnType": "direction",
+            "constraints": {
+              "enum": [
+                "expenditure",
+                "revenue"
+              ]
+            }
           },
           {
             "name": "budget_line_id",
@@ -659,8 +693,16 @@
             "name": "cofog_status",
             "title": "分類の軸",
             "type": "string",
-            "description": "assigned / unclassifiable / out-of-scope",
-            "columnType": "fudoki:cofog:status"
+            "description": "assigned / unclassifiable / out-of-scope / not-applicable（歳入）",
+            "columnType": "fudoki:cofog:status",
+            "constraints": {
+              "enum": [
+                "assigned",
+                "unclassifiable",
+                "out-of-scope",
+                "not-applicable"
+              ]
+            }
           },
           {
             "name": "cofog_division",
@@ -674,13 +716,29 @@
             "title": "連結の軸",
             "type": "string",
             "description": "retained / eliminated",
-            "columnType": "fudoki:cofog:consolidation"
+            "columnType": "fudoki:cofog:consolidation",
+            "constraints": {
+              "enum": [
+                "retained",
+                "eliminated"
+              ]
+            }
           },
           {
             "name": "cofog_decided_at_level",
             "title": "割り当てが決まった単位",
             "type": "string",
-            "columnType": "fudoki:cofog:decided-at-level"
+            "columnType": "fudoki:cofog:decided-at-level",
+            "constraints": {
+              "enum": [
+                "会計",
+                "款",
+                "項",
+                "目",
+                "節",
+                "（規則なし）"
+              ]
+            }
           },
           {
             "name": "cofog_rule_id",
@@ -847,7 +905,13 @@
             "name": "direction",
             "title": "支出と収入の別",
             "type": "string",
-            "columnType": "direction"
+            "columnType": "direction",
+            "constraints": {
+              "enum": [
+                "expenditure",
+                "revenue"
+              ]
+            }
           },
           {
             "name": "fund_code",

@@ -26,6 +26,14 @@ export {
   type Jurisdiction,
 } from './jurisdictions'
 export {
+  cofogConsolidation,
+  cofogDecidedAtLevel,
+  cofogStatus,
+  dimensionName,
+  levelName,
+  phaseId,
+} from './shared'
+export {
   budgetLineSchema,
   crossJurisdictionLineSchema,
   listBudgetLinesResponseSchema,

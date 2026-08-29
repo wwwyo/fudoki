@@ -101,3 +101,31 @@ budget_line_id が `{団体}:{年度}:{direction}:...` の形で、id 自身が�
 workerd 実機（wrangler dev）はスクリプトでの起動待ちが不安定なので CI 向きでなく、
 手元の smoke test に留めた（上記10の計測はその結果）。ランタイム差は
 compatibility_date の件以外は観測していない。
+
+## budget-api のレビュー反映（2026-08-29）
+
+### 15. 閉じた語彙を enum にし、配布物側にも constraints.enum を宣言した
+
+当初、cofog_status / cofog_consolidation / cofog_decided_at_level / phase_id / 階層名 / 次元名を
+すべて z.string() にしていた。固定の語彙は enum にすべきという指摘を受けて enum 化し、
+あわせて配布物側の宣言（fdp/field_types.json）にも Table Schema 標準の constraints.enum を追加した
+（それまで語彙は description の自由文にしかなく、cofog_status の説明には not-applicable が欠けていた）。
+datapackage.json の差分は constraints の追加のみで、CSV は変わっていない。
+契約と配布物の語彙のずれは build の突合検査（checkVocabulariesMatchFieldTypes）が止める。
+階層名と次元名は field_types に値の宣言が無い（列名であって値ではない）ため、
+契約側の enum と dbt 宣言・CSV ヘッダの突合で縛る。
+新しい団体が新しい語彙を持ち込むと build が落ち、契約へ足すまで deploy できない
+（黙って語彙が広がる事故を防ぐ。破壊的でない追加は v0 なので許容）。
+
+### 16. src を oRPC 推奨の contract → procedure → router に再編し、テストを collocate した
+
+router.ts が実装（231行）を1ファイルで抱えていたのを、procedure/（リソースごとの実装と共有部品）と
+router.ts（束ねるだけ）に分けた。lib/（filter・token）を切り、test/ ディレクトリは廃止して
+各テストを対象の隣に置いた（統合テストは src/index.test.ts）。
+
+### 17. /rpc/* を追加した（自前フロント・MCP 用の第2の口）
+
+同じ router を RPCHandler でも公開する。外部利用者は /v0/*（REST、OpenAPI 記載）、
+自前のフロントと MCP は contract を import した型付きクライアントで /rpc/* を叩く想定。
+/rpc は oRPC プロトコル（POST）なので CORS の許可メソッドに POST を足した。
+OpenAPI には載せない（契約は contract の型として配る）。

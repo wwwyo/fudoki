@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { FilterSyntaxError, filterFingerprint, parseFilter } from '../src/filter'
+import { FilterSyntaxError, filterFingerprint, parseFilter } from './filter'
 
 describe('parseFilter', () => {
   test('quoted and bare values', () => {

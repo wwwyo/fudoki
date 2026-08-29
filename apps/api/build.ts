@@ -16,8 +16,14 @@ import { join } from 'node:path'
 import { BY_JURISDICTION } from '@fudoki/report/budget/static'
 import {
   budgetLineSchema,
+  cofogConsolidation,
+  cofogDecidedAtLevel,
+  cofogStatus,
   crossJurisdictionLineSchema,
+  dimensionName,
+  levelName,
   jurisdictionSchema,
+  phaseId,
   type BudgetLine,
   type ClassificationRate,
   type CrossJurisdictionLine,
@@ -37,12 +43,39 @@ const CHUNK_BYTES_LIMIT = 20 * 1024 * 1024
  * 132047: 当初予算のみの資料なので approved。
  * 132195: 決算の予算現額（流用・充用まで反映した後の額）。
  */
-const AMOUNT_PHASE: Record<string, string> = {
+const AMOUNT_PHASE: Record<string, BudgetLine['amounts'][number]['phase']> = {
   '132047': 'approved',
   '132195': 'adjusted',
 }
 
 const REQUIRED_CAVEAT_CATEGORIES = ['coverage', 'phaseSemantics', 'classification', 'sourceAndLicense'] as const
+
+/**
+ * 検査: contract の語彙 enum が、配布物側の宣言（fdp/field_types.json の
+ * constraints.enum）と過不足なく一致すること。どちらかだけ直すと止まる。
+ */
+function checkVocabulariesMatchFieldTypes(): void {
+  const fieldTypes = (
+    JSON.parse(readFileSync(join(ROOT, 'fdp/field_types.json'), 'utf8')) as {
+      fields: Record<string, { constraints?: { enum?: string[] } }>
+    }
+  ).fields
+  const pairs: [string, readonly string[]][] = [
+    ['cofog_status', cofogStatus.options],
+    ['cofog_consolidation', cofogConsolidation.options],
+    ['cofog_decided_at_level', cofogDecidedAtLevel.options],
+    ['phase_id', phaseId.options],
+  ]
+  for (const [fieldName, contractValues] of pairs) {
+    const declared = fieldTypes[fieldName]?.constraints?.enum
+      ?? fail(`fdp/field_types.json の ${fieldName} に constraints.enum が無い（配布物側の語彙宣言）`)
+    const a = [...declared].sort().join(' / ')
+    const b = [...contractValues].sort().join(' / ')
+    if (a !== b) {
+      fail(`vocabulary mismatch for ${fieldName}: distribution declares [${a}] but API contract declares [${b}]`)
+    }
+  }
+}
 
 function fail(message: string): never {
   console.error(`\nbuild failed: ${message}`)
@@ -192,13 +225,7 @@ function resourceContext(jurisdiction: string, direction: Direction, table: Tabl
   return { jurisdiction, direction, levels, dimensions, header: table.header, constants }
 }
 
-type CofogRow = {
-  status: string
-  division: string | null
-  consolidation: string
-  decidedAtLevel: string | null
-  ruleId: string | null
-}
+type CofogRow = NonNullable<BudgetLine['judgments']['cofog']>
 
 function buildLines(
   ctx: ResourceContext,
@@ -212,12 +239,12 @@ function buildLines(
     let line = byId.get(id)
     if (!line) {
       const hierarchy = ctx.levels.map((level) => ({
-        level,
+        level: levelName.parse(level),
         code: row[`${level}_code`]!,
         label: labelOf(row, `${level}_label`),
       }))
       const dimensions = ctx.dimensions.map((name) => ({
-        name,
+        name: dimensionName.parse(name),
         code: row[`${name}_code`]!,
         label: labelOf(row, `${name}_label`),
       }))
@@ -239,7 +266,7 @@ function buildLines(
       byId.set(id, line)
     }
     line.amounts.push({
-      phase: row['phase_id']!,
+      phase: phaseId.parse(row['phase_id']),
       phaseLabel: row['phase_label'] ?? ctx.constants['phase_label'] ?? fail(`phase_label is neither a column nor a constant for ${ctx.jurisdiction}/${ctx.direction}`),
       amount: Number(row['value']),
       sourceAmount: Number(row['source_amount']),
@@ -313,6 +340,7 @@ function checkMultisetEquality(ctx: ResourceContext, table: Table, lines: Budget
 
 const allowDirty = process.argv.includes('--allow-dirty')
 const revision = resolveRevision(allowDirty)
+checkVocabulariesMatchFieldTypes()
 
 rmSync(OUT_DIR, { recursive: true, force: true })
 mkdirSync(OUT_DIR, { recursive: true })
@@ -348,10 +376,10 @@ for (const j of jurisdictionIds.sort()) {
   const cofogByLineId = new Map<string, CofogRow>()
   for (const row of cofogTable.rows) {
     cofogByLineId.set(row['budget_line_id']!, {
-      status: row['cofog_status']!,
+      status: cofogStatus.parse(row['cofog_status']),
       division: row['cofog_division'] === '' ? null : row['cofog_division']!,
-      consolidation: row['cofog_consolidation']!,
-      decidedAtLevel: row['cofog_decided_at_level'] === '' ? null : row['cofog_decided_at_level']!,
+      consolidation: cofogConsolidation.parse(row['cofog_consolidation']),
+      decidedAtLevel: row['cofog_decided_at_level'] === '' ? null : cofogDecidedAtLevel.parse(row['cofog_decided_at_level']),
       ruleId: row['cofog_rule_id'] === '' ? null : row['cofog_rule_id']!,
     })
   }
@@ -366,14 +394,14 @@ for (const j of jurisdictionIds.sort()) {
   }
 
   const fiscalYears: Record<Direction, string[]> = { expenditure: [], revenue: [] }
-  const levels: Record<Direction, string[]> = { expenditure: [], revenue: [] }
+  const levels: Jurisdiction['levels'] = { expenditure: [], revenue: [] }
   const linesByYearDir = new Map<string, BudgetLine[]>()
   const expenditureTables = new Map<string, Table>()
 
   for (const direction of DIRECTIONS) {
     const table = readCsvTable(join(dir, `${direction}.csv`))
     const ctx = resourceContext(j, direction, table, descriptor)
-    levels[direction] = ctx.levels
+    levels[direction] = ctx.levels.map((l) => levelName.parse(l))
     const lines = buildLines(ctx, table, cofogByLineId, projectNames)
     checkMultisetEquality(ctx, table, lines)
 

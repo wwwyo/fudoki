@@ -6,11 +6,11 @@
  * 各フィールドの `.describe()` は OpenAPI の description にそのまま出る。
  */
 import * as z from 'zod'
-import { base, resourceName } from './shared'
+import { base, levelName, phaseId, resourceName } from './shared'
 
 export const classificationRateSchema = z.object({
   fiscalYear: z.string().describe('会計年度（西暦）'),
-  amountPhase: z.string().describe('金額ベースの分類率の計算に使った予算段階'),
+  amountPhase: phaseId.describe('金額ベースの分類率の計算に使った予算段階'),
   statuses: z
     .object({
       assigned: z.object({
@@ -50,8 +50,8 @@ export const jurisdictionSchema = z.object({
     .describe('収録範囲。ここに無い年度への問い合わせは 404'),
   levels: z
     .object({
-      expenditure: z.array(z.string()).describe('歳出の階層名の並び'),
-      revenue: z.array(z.string()).describe('歳入の階層名の並び'),
+      expenditure: z.array(levelName).describe('歳出の階層名の並び'),
+      revenue: z.array(levelName).describe('歳入の階層名の並び'),
     })
     .describe('団体固有の階層の並び（datapackage の宣言由来）。budgetLines 応答の hierarchy はこの順で並ぶ'),
   datapackagePath: z.string().describe('配布物（datapackage.json）へのパス。出典・ライセンス・改変表示の正本'),

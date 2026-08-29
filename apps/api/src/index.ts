@@ -1,10 +1,14 @@
 /**
  * Worker のエントリ。Hono は CORS・パススルー・リダイレクトだけを持ち、
- * API 本体は oRPC の OpenAPIHandler（prefix /v0）へ委ねる。
+ * API 本体は同じ router を2つの口で公開する。
+ * - `/v0/*`: OpenAPIHandler。外部利用者向けの REST（OpenAPI ドキュメントつき）
+ * - `/rpc/*`: RPCHandler。自前のフロントと MCP 向け（contract を import した
+ *   型付きクライアントで叩く。OpenAPI には載せない）
  * `run_worker_first` なので、ここを通らずにアセットが露出することはない。
  */
 import { OpenAPIHandler } from '@orpc/openapi/fetch'
 import { OpenAPIReferencePlugin } from '@orpc/openapi/plugins'
+import { RPCHandler } from '@orpc/server/fetch'
 import { ZodToJsonSchemaConverter } from '@orpc/zod/zod4'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
@@ -12,7 +16,7 @@ import { type Env, type FilesFile, paths, readAsset, readJsonAsset } from './ass
 import { router } from './router'
 import { specGenerateOptions } from './spec'
 
-const handler = new OpenAPIHandler(router, {
+const openapiHandler = new OpenAPIHandler(router, {
   plugins: [
     new OpenAPIReferencePlugin({
       schemaConverters: [new ZodToJsonSchemaConverter()],
@@ -23,15 +27,18 @@ const handler = new OpenAPIHandler(router, {
   ],
 })
 
+const rpcHandler = new RPCHandler(router)
+
 const app = new Hono<{ Bindings: Env }>()
 
 // 公開 API（認証なし・読み取り専用）なので全開でよい。
-// exposeHeaders はパススルーの revision をブラウザから読むために要る。
+// POST は RPC（oRPC プロトコル）用。exposeHeaders はパススルーの revision を
+// ブラウザから読むために要る。
 app.use(
   '*',
   cors({
     origin: '*',
-    allowMethods: ['GET', 'HEAD', 'OPTIONS'],
+    allowMethods: ['GET', 'HEAD', 'POST', 'OPTIONS'],
     allowHeaders: ['Content-Type'],
     exposeHeaders: ['X-Fudoki-Revision', 'ETag'],
   }),
@@ -62,12 +69,21 @@ app.on(['GET', 'HEAD'], '/v0/datapackages/:jurisdiction/:file', async (c) => {
 })
 
 app.all('/v0/*', async (c) => {
-  const { matched, response } = await handler.handle(c.req.raw, {
+  const { matched, response } = await openapiHandler.handle(c.req.raw, {
     prefix: '/v0',
     context: { env: c.env },
   })
   if (matched) return response
   return c.json({ error: 'NOT_FOUND', message: 'no such endpoint' }, 404)
+})
+
+app.all('/rpc/*', async (c) => {
+  const { matched, response } = await rpcHandler.handle(c.req.raw, {
+    prefix: '/rpc',
+    context: { env: c.env },
+  })
+  if (matched) return response
+  return c.json({ error: 'NOT_FOUND', message: 'no such procedure' }, 404)
 })
 
 app.notFound((c) => c.json({ error: 'NOT_FOUND', message: 'no such endpoint. See /v0/openapi.json' }, 404))

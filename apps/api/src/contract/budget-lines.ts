@@ -7,22 +7,32 @@
  * 各フィールドの `.describe()` は OpenAPI の description にそのまま出る。
  */
 import * as z from 'zod'
-import { base, pageInput, resourceName } from './shared'
+import {
+  base,
+  cofogConsolidation,
+  cofogDecidedAtLevel,
+  cofogStatus,
+  dimensionName,
+  levelName,
+  pageInput,
+  phaseId,
+  resourceName,
+} from './shared'
 
 const hierarchyEntry = z.object({
-  level: z.string().describe('階層の名前（fund=会計, kan=款, kou=項, moku=目, …。並びと語彙は団体の宣言による）'),
+  level: levelName,
   code: z.string().describe('原典のコード。"0" はその階層を持たない行のプレースホルダ'),
   label: z.string().nullable().describe('原典の名称。名称の列を持たない団体（狛江市の款・項・目など）は null'),
 })
 
 const dimensionEntry = z.object({
-  name: z.string().describe('軸の名前（org=所属（部課）, budget_class=予算区分 など）'),
+  name: dimensionName,
   code: z.string().describe('原典のコード'),
   label: z.string().nullable().describe('原典の名称。無ければ null'),
 })
 
 const amountEntry = z.object({
-  phase: z.string().describe('予算段階の id（approved=当初予算, adjusted=予算現額, executed=執行済額 など）'),
+  phase: phaseId,
   phaseLabel: z.string().describe('予算段階の原典での呼び名'),
   amount: z.number().describe('円に正規化した金額'),
   sourceAmount: z.number().describe('原典の額面（単位変換前の値）'),
@@ -31,10 +41,10 @@ const amountEntry = z.object({
 })
 
 const cofogJudgment = z.object({
-  status: z.string().describe('分類の状態（assigned=割当済み / unclassifiable=分類不能 / out-of-scope=対象外）'),
+  status: cofogStatus,
   division: z.string().nullable().describe('COFOG の大分類コード（01〜10）。割当済み以外は null'),
-  consolidation: z.string().describe('連結状態（retained=保持 / eliminated=会計間移転として消去済み）。全会計を合計するとき eliminated を除くと二重計上を避けられる'),
-  decidedAtLevel: z.string().nullable().describe('どの階層の単位で分類が決まったか（款 / 項 / 目）'),
+  consolidation: cofogConsolidation,
+  decidedAtLevel: cofogDecidedAtLevel.nullable(),
   ruleId: z.string().nullable().describe('適用した分類規則の id。配布物の cofog_rules リソースで根拠を引ける'),
 })
 
@@ -62,15 +72,15 @@ export const crossJurisdictionLineSchema = z.object({
   fiscalYear: z.string().describe('会計年度（西暦）'),
   amounts: z
     .array(z.object({
-      phase: z.string().describe('予算段階の id'),
+      phase: phaseId,
       amount: z.number().describe('円に正規化した金額'),
     }))
     .describe('予算段階ごとの金額。段階の構成は団体で違うので、比較は同じ段階どうしで行うこと'),
   cofog: z
     .object({
-      status: z.string().describe('分類の状態（assigned / unclassifiable / out-of-scope）'),
+      status: cofogStatus,
       division: z.string().nullable().describe('COFOG の大分類コード（01〜10）'),
-      consolidation: z.string().describe('連結状態（retained / eliminated）'),
+      consolidation: cofogConsolidation,
     })
     .describe('COFOG 分類（fudoki の判断）'),
 })
