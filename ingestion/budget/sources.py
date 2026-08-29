@@ -47,7 +47,8 @@ class Source:
     encoding: str
     # ⚠️ **金額の単位は持たない。** (団体, 年度) の粒度では direction や段階で
     # 単位が割れる団体を表せず、`budget_amounts` との突き合わせも粗くなる。
-    # 単位の正本は `dbt/dbt_project.yml` の `budget_amounts`（macros/budget_amount_units.sql）。
+    # 単位の正本は `dbt/dbt_project.yml` の `budget_amounts`
+    # （検査は dbt/macros/check_budget_amount_units.sql）。
     redistribute: str
     redistribute_basis: str
     license_id: str
