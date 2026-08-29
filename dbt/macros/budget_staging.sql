@@ -44,7 +44,6 @@
 {%- set labels = var('budget_label_columns').get(code, {}).get(direction, {}) -%}
 {%- set extra_labels = var('budget_extra_key_labels').get(code, {}).get(direction, {}) -%}
 {%- set amounts = var('budget_amounts')[code][direction] -%}
-{{ check_budget_amount_units(code, direction, amounts) }}
 
 {%- if levels | length != columns | length -%}
   {{ exceptions.raise_compiler_error(
