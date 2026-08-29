@@ -7,6 +7,7 @@ import { OpenAPIHandler } from '@orpc/openapi/fetch'
 import { OpenAPIReferencePlugin } from '@orpc/openapi/plugins'
 import { ZodToJsonSchemaConverter } from '@orpc/zod/zod4'
 import { Hono } from 'hono'
+import { cors } from 'hono/cors'
 import { type Env, type FilesFile, paths, readAsset, readJsonAsset } from './assets'
 import { router } from './router'
 import { specGenerateOptions } from './spec'
@@ -25,21 +26,16 @@ const handler = new OpenAPIHandler(router, {
 const app = new Hono<{ Bindings: Env }>()
 
 // 公開 API（認証なし・読み取り専用）なので全開でよい。
-// Expose-Headers はパススルーの revision をブラウザから読むために要る。
-const CORS_HEADERS: Record<string, string> = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
-  'Access-Control-Expose-Headers': 'X-Fudoki-Revision, ETag',
-}
-
-app.use('*', async (c, next) => {
-  if (c.req.method === 'OPTIONS') {
-    return c.newResponse(null, 204, CORS_HEADERS)
-  }
-  await next()
-  for (const [k, v] of Object.entries(CORS_HEADERS)) c.res.headers.set(k, v)
-})
+// exposeHeaders はパススルーの revision をブラウザから読むために要る。
+app.use(
+  '*',
+  cors({
+    origin: '*',
+    allowMethods: ['GET', 'HEAD', 'OPTIONS'],
+    allowHeaders: ['Content-Type'],
+    exposeHeaders: ['X-Fudoki-Revision', 'ETag'],
+  }),
+)
 
 app.get('/', (c) => c.redirect('/v0/', 302))
 app.get('/openapi.json', (c) => c.redirect('/v0/openapi.json', 302))
