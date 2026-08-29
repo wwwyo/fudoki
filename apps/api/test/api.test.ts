@@ -280,7 +280,11 @@ describe('contract-only surface', () => {
       '/jurisdictions/{jurisdiction}/budgetLines/{budgetLine}',
       '/datapackages/{jurisdiction}/{file}',
     ]))
-    expect(JSON.stringify(spec)).toContain('oneOf')
+    const raw = JSON.stringify(spec)
+    expect(raw).toContain('oneOf')
+    // フィールドの .describe() が description として出ていること
+    expect(raw).toContain('円に正規化した金額')
+    expect(raw).toContain('全国地方公共団体コード')
   })
 
   test('root and /openapi.json redirect into /v0', async () => {

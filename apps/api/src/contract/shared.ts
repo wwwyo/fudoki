@@ -23,12 +23,18 @@ export const base = oc.errors({
 
 /** AIP-158 のページング入力（List 系が spread して使う） */
 export const pageInput = {
-  /**
-   * AIP-160 の部分集合。`=` と `AND` のみ。
-   * 使えるフィールド: fiscalYear / direction / phase / cofog.division（詳細は説明文）
-   */
-  filter: z.string().optional(),
-  /** 未指定・0 は既定値 1000。上限 1000（超過は丸める）。負数は 400 */
-  pageSize: z.coerce.number().int().min(0).optional(),
-  pageToken: z.string().optional(),
+  filter: z
+    .string()
+    .optional()
+    .describe(
+      'AIP-160 の部分集合。`field = value` を AND でつなぐ形のみ。' +
+        '使えるフィールドは fiscalYear / direction / phase / cofog.division（scope ごとの必須・可否はエンドポイントの説明を参照）',
+    ),
+  pageSize: z
+    .coerce.number().int().min(0).optional()
+    .describe('1ページの最大件数。未指定・0 は既定値 1000。上限 1000（超過は丸める）。負数は 400'),
+  pageToken: z
+    .string()
+    .optional()
+    .describe('前ページの nextPageToken。発行時と同じ filter でだけ使える（pageSize は変えてよい）。deploy をまたぐと 410'),
 }
