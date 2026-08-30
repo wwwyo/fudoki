@@ -37,21 +37,6 @@ export function splitCsvLine(line: string): string[] {
   return out.map((s) => s.replace(/^﻿/, '').trim())
 }
 
-export type ContentKind = 'zip' | 'pdf' | 'xls' | 'html' | 'text'
-
-/**
- * 先頭バイトで種別を見る。拡張子も Content-Type も当てにならない。
- * HTML が返るのは「取得できたが中身が無い」典型なので、text と区別する。
- */
-export function sniffContent(bytes: Uint8Array): ContentKind {
-  const b = bytes
-  if (b[0] === 0x50 && b[1] === 0x4b) return 'zip' // xlsx / docx も zip
-  if (b[0] === 0x25 && b[1] === 0x50 && b[2] === 0x44 && b[3] === 0x46) return 'pdf'
-  if (b[0] === 0xd0 && b[1] === 0xcf) return 'xls' // 旧 OLE2
-  const head = new TextDecoder('utf-8', { fatal: false }).decode(b.slice(0, 200)).trimStart()
-  return /^<(!DOCTYPE|html)/i.test(head) ? 'html' : 'text'
-}
-
 export const sha256 = (bytes: Uint8Array) => new Bun.CryptoHasher('sha256').update(bytes).digest('hex')
 
 export type Fetched =
@@ -88,34 +73,4 @@ export async function fetchCapped(url: string, maxBytes: number, timeoutMs = 30_
   let at = 0
   for (const c of chunks) (bytes.set(c, at), (at += c.length))
   return { ok: true, status: res.status, bytes }
-}
-
-/** 空行を除いたデータ行数。全行を配列化せずに数える */
-export function countDataRows(text: string): number {
-  let rows = 0
-  let start = 0
-  for (;;) {
-    const nl = text.indexOf('\n', start)
-    const line = (nl < 0 ? text.slice(start) : text.slice(start, nl)).trim()
-    if (line) rows++
-    if (nl < 0) break
-    start = nl + 1
-  }
-  return Math.max(0, rows - 1) // ヘッダを除く
-}
-
-/** 相手は自治体のサーバなので、同時実行数を絞って回す */
-export async function mapWithConcurrency<T, R>(items: readonly T[], limit: number, fn: (item: T) => Promise<R>): Promise<R[]> {
-  const out: R[] = new Array(items.length)
-  let next = 0
-  await Promise.all(
-    Array.from({ length: Math.min(limit, items.length) }, async () => {
-      for (;;) {
-        const i = next++
-        if (i >= items.length) return
-        out[i] = await fn(items[i]!)
-      }
-    }),
-  )
-  return out
 }

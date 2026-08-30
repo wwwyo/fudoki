@@ -18,6 +18,13 @@ sources:
     tables:
       - name: expenditure
       - name: revenue
+  - name: raw_132241
+    description: 多摩市。原典の Parquet を直接読む（当初予算。2021〜2022 の2年度）
+    meta:
+      external_location: "read_parquet('../data/budget/raw/jurisdiction=132241/year=*/phase=*/direction={name}/data.parquet', hive_partitioning=true)"
+    tables:
+      - name: expenditure
+      - name: revenue
   - name: raw_132195_project_names
     description: |
       狛江市。決算資料 PDF から起こした事業名。**原典そのものではない。**

@@ -12,6 +12,7 @@
     budget_extra_key_columns        階層だけでは一意にならない団体の追加の同一性の列
     budget_code_style               セルからコードと名称を取り出す書式
     budget_label_columns            code-only の団体で名称を持つ列がどの階層に対応するか
+    budget_levels_without_code      原典がコードの列を持たない階層（名称だけを持つ）
     budget_amounts                  原典の金額列と FDP の phase の対応（単位の宣言もここが正本）
 
   ## 識別子
@@ -42,6 +43,8 @@
       ~ '名称を持つ列がどの階層に対応するかを宣言すること（宣言できないなら名称は空だと明示する）') }}
 {%- endif -%}
 {%- set labels = var('budget_label_columns').get(code, {}).get(direction, {}) -%}
+{#- 原典がコードを持たない階層。**無いものを埋めない** — 多摩市の会計は `会計名称` しか無い -#}
+{%- set no_code = var('budget_levels_without_code', {}).get(code, {}).get(direction, []) -%}
 {%- set extra_labels = var('budget_extra_key_labels').get(code, {}).get(direction, {}) -%}
 {%- set amounts = var('budget_amounts')[code][direction] -%}
 
@@ -86,7 +89,7 @@ select
     -- tests/label_column_determines_level.sql が毎回確かめる。
     -- それ以外の階層の label は空文字で、「原典に名称が無い」ことを表す。
   {%- for lv in levels %}
-    {{ lv }}_source as {{ lv }}_code,
+    {% if lv in no_code %}''{% else %}{{ lv }}_source{% endif %} as {{ lv }}_code,
     {% if lv in labels %}{{ trim_cell('"' ~ labels[lv] ~ '"') }}{% else %}''{% endif %} as {{ lv }}_label,
   {%- endfor %}
 {%- else %}

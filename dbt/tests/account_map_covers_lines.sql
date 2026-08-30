@@ -13,8 +13,12 @@ with unresolved as (
     select
         jurisdiction_code, fiscal_year, direction, kan_code, kan_name, kou_code, kou_name,
         case
+            -- ⚠️ **対応先が無いこと自体は誤りではない。** 止めたいのは
+            -- 「突き合わせていない」状態で、款ごと historical（旧法定区分）や
+            -- addition（様式の備考が条件付きで認める款）は突き合わせ済みの判断にあたる。
             when kan_name is not null and master_kan_code is null
-                 and master_kind is distinct from 'historical' then '款が account_map に無い'
+                 and coalesce(master_kind, '') not in ('historical', 'addition')
+                 then '款が account_map に無い'
             when kou_name is not null and master_kind is null then '項がマスタにも account_map にも無い'
         end as problem
     from {{ ref('core_budget_accounts') }}

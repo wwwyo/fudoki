@@ -19,7 +19,7 @@
     "build:brand": "uv run --no-project --with fonttools python apps/web/brand/build.py",
     "build:docs": "bun run --cwd apps/docs build",
     "build:web": "bun run report && bun run --cwd apps/web build",
-    "check:budget": "bun run ingestion/budget/check-granularity.ts",
+    "check:budget": "uv run python -m ingestion.budget.check_granularity",
     "check:bulletins": "bun run ingestion/transcripts/check-bulletins.ts",
     "dbt": "cd dbt && DBT_PROFILES_DIR=. uv run dbt build",
     "deploy:api": "bun run dbt && uv run python -m fdp.build && bun run --cwd apps/api deploy",
