@@ -234,14 +234,8 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
     <Layout>
       <main className="mx-auto flex max-w-[1500px] flex-col gap-8 p-4 pb-24">
         <section className="flex flex-col gap-4">
-          {/*
-            見出しの主語は団体である。**ページの機能名を見出しにしない** —
-            「ELT パイプライン」は fudoki の内部語彙で、読み手はこのページで
-            何が見られるかを知らないまま本文へ入ることになる。
-            ELT（取得と正規化を分ける）という建付けの説明は下の本文へ落とす。
-          */}
           <h1 className="text-2xl font-semibold tracking-tight">
-            {m.jurisdictionName}の予算が配布物になるまで
+            {m.jurisdictionName}の ELT パイプライン
           </h1>
           <p className="max-w-[80ch] text-sm text-muted-foreground">
             原典の取得から、検査・COFOG への分類・配布物の生成までを1本の系統で示す。
@@ -284,7 +278,7 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
               · {m.phase.label}
             </span>
             {/* この団体の支出分析（COFOG 別の金額）への導線。パイプラインは検証、分析は数字を見る場所で目的が違う。
-                analysis.tsx 側の「ELT パイプライン報告を見る」ボタンと対になる導線なので、扱いを揃える。
+                analysis.tsx 側の「ELT パイプラインを見る」ボタンと対になる導線なので、扱いを揃える。
                 ⚠️ `render` に `<a>` を渡すときは `nativeButton={false}` が要る（Base UI の既定は
                 `nativeButton: true` で、落とすとボタンのセマンティクスが外れて実行時に警告が出る） */}
             <Button

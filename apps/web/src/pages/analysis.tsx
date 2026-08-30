@@ -164,7 +164,7 @@ function CollectedAnalysis({
     const unclassifiedCount = cofog.total.count - cofog.assigned.count
     return {
       // ⚠️ **分母は total（未分類を含む）。** cofog-panel.tsx の帯は「割当済みの中での構成比」だが、
-      // ここはパイプライン報告と違い「事業に使うといくら見えるか」を見せる分析なので、
+      // ここは ELT パイプラインと違い「事業に使うといくら見えるか」を見せる分析なので、
       // 分類できなかった分を隠さず分母に残す（AGENTS.md タスク仕様）。
       byDivision: cofog.byDivision.map((d) => ({ ...d, share: total > 0 ? d.sum / total : 0 })),
       unclassifiedSum,
@@ -220,7 +220,7 @@ function CollectedAnalysis({
                 </SelectGroup>
               </SelectContent>
             </Select>
-            {/* この団体の ELT パイプライン報告への導線。分析は数字を見る場所、パイプラインは
+            {/* この団体の ELT パイプラインへの導線。分析は数字を見る場所、パイプラインは
                 その数字の根拠（集計・COFOG 割当）を検証する場所で目的が違う。pipeline.tsx 側の
                 「支出分析を見る」ボタンと対になる導線なので、扱いを揃える */}
             <Button
@@ -228,7 +228,7 @@ function CollectedAnalysis({
               size="sm"
               nativeButton={false}
               className="ml-auto shrink-0"
-              render={<a href={withBase(`/pipeline/${code}/`)}>ELT パイプライン報告を見る</a>}
+              render={<a href={withBase(`/pipeline/${code}/`)}>ELT パイプラインを見る</a>}
             />
           </div>
           <p className="max-w-[72ch] text-sm leading-relaxed text-muted-foreground">
@@ -362,7 +362,7 @@ function CollectedAnalysis({
               </div>
               <p className="max-w-[72ch] text-xs leading-relaxed text-muted-foreground">
                 COFOG への割当の根拠（款・項ごとにどの規則で決めたか）は、上部の
-                「ELT パイプライン報告を見る」から開ける報告の「COFOG の判断」タブにある。
+                「ELT パイプラインを見る」から開ける「COFOG の判断」タブにある。
               </p>
             </section>
           </>

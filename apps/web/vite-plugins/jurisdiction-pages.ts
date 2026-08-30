@@ -87,7 +87,7 @@ const ROUTE_KINDS: RouteKind[] = [
       return page({
         // ⚠️ document.title はここから団体・年度に応じて実行時に書き換わる（src/pages/pipeline.tsx）。
         // ここに書くのは JS 実行前 / SEO 用の既定値
-        title: `${safeName}の予算が配布物になるまで | fudoki（風土記）`,
+        title: `${safeName}の ELT パイプライン | fudoki（風土記）`,
         description: `${safeName}の予算データが原典からどう取得され、何を検査され、どこで fudoki の判断（COFOG への分類）が入って配布物になるかを、年度ごとの収録状況まで含めて追う報告。系統は dbt の manifest から生成する。`,
         canonical: `https://fudoki.dev/pipeline/${code}/`,
         globalName: "__FUDOKI_PIPELINE_JURISDICTION__",

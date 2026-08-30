@@ -94,7 +94,7 @@ export function HomePage() {
               GitHub
             </a>
           } />
-          <Button variant="outline" size="sm" nativeButton={false} render={<a href={withBase("/pipeline/")}>パイプライン報告</a>} />
+          <Button variant="outline" size="sm" nativeButton={false} render={<a href={withBase("/pipeline/")}>ELT パイプライン</a>} />
         </section>
       </main>
     </Layout>
