@@ -372,4 +372,18 @@ describe('contract-only surface', () => {
     const res = await get('/v0/jurisdictions')
     expect(res.headers.get('Access-Control-Allow-Origin')).toBe('*')
   })
+
+  test('CORS: /rpc is restricted to fudoki origins, /v0 stays open', async () => {
+    const rpc = (origin: string) =>
+      app.request('https://api.fudoki.dev/rpc/listJurisdictions', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', origin },
+        body: '{}',
+      }, env)
+    expect((await rpc('https://fudoki.dev')).headers.get('Access-Control-Allow-Origin')).toBe('https://fudoki.dev')
+    expect((await rpc('https://evil.example')).headers.get('Access-Control-Allow-Origin')).toBeNull()
+    // /v0 は Origin が何であっても全開のまま
+    const open = await app.request('https://api.fudoki.dev/v0/jurisdictions', { headers: { origin: 'https://evil.example' } }, env)
+    expect(open.headers.get('Access-Control-Allow-Origin')).toBe('*')
+  })
 })
