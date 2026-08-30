@@ -11,6 +11,9 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "fudoki",
   "compatibility_date": "2026-08-23",
+  // custom domain は config で宣言する（apps/api・apps/docs と同じ形）。
+  // ダッシュボード側の設定だけに頼ると、外れたときに宣言がどこにも無く復元できない。
+  "routes": [{ "pattern": "fudoki.dev", "custom_domain": true }],
   "assets": {
     "directory": "./dist",
     // 既定（`none`）のまま。クライアント側のルーティングを持たない1枚の画面なので、
