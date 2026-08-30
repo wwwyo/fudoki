@@ -25,6 +25,20 @@ vars:
     "132047":
       expenditure: [fund, kan, kou, moku, jikou, setsu, saisaisetsu]
       revenue: [fund, kan, kou, moku, setsu, saisetsu, saisaisetsu]
+    "131016":
+      # ⚠️ **説明欄は事業 → 内訳の2段で、中に節が現れない。** 節の欄は目の内訳として
+      # 左頁にあり、説明欄とは別の分解になっている（どちらも目の額に一致する）。
+      # 名前で結び付けるのは名寄せ（判断）なので取り込みではやらない。
+      expenditure: [fund, kan, kou, moku, jigyo, saisetsu]
+      # ⚠️ 歳入の説明欄は1段しかない（事業だけ）。昭島市の歳入とは作りが違う
+      revenue: [fund, kan, kou, moku, jigyo]
+    "132071":
+      # ⚠️ **歳出と歳入で説明欄の作りが違う。** 法定様式では歳出の説明欄が
+      # 事業 → 節 → 細節の3段なのに対し、歳入の説明欄は節の内訳が1段しかない。
+      # ⚠️ **歳出の節にはコードが無い。** コードを持つのは目の集計としての節列のほうで、
+      # 説明欄の中の節と名前で突き合わせるのは判断（名寄せ）なので取り込みではやらない。
+      expenditure: [fund, kan, kou, moku, jigyo, setsu, saisetsu]
+      revenue: [fund, kan, kou, moku, setsu, saisetsu]
     "132195":
       # ⚠️ 中事業・小事業・細節・細々節は**列としては存在するが全行 `0`**（実測 6 年度）。
       # 使われていない階層でも宣言から落とさない — 落とすと原典との1対1が崩れ、
@@ -42,6 +56,13 @@ vars:
     "132047":
       expenditure: ["01会計", "02款", "03項", "04目", "05事項", "06節", "07細々節"]
       revenue: ["01会計", "02款", "03項", "04目", "05節", "06細節", "07細々節"]
+    "131016":
+      expenditure: ["会計名称", "款", "項", "目", "事業名", "内訳名称"]
+      revenue: ["会計名称", "款", "項", "目", "事業名"]
+    "132071":
+      expenditure: ["会計名称", "款", "項", "目", "事業名", "節名称", "内訳名称"]
+      # ⚠️ 節はコードの列（`節`）が階層のセル。名称は budget_label_columns が別に指す
+      revenue: ["会計名称", "款", "項", "目", "節", "内訳名称"]
     "132195":
       expenditure: ["会計", "款", "項", "目", "大事業", "中事業", "小事業", "節", "細節", "細々節"]
       revenue: ["会計", "款", "項", "目", "節", "細節", "細々節"]
@@ -57,6 +78,11 @@ vars:
   # 識別子の材料でもあるので、宣言を落とすと budget_line_id が衝突する。
   budget_extra_key_columns:
     "132047": {expenditure: [], revenue: []}
+    # 千代田区も階層だけで一意（実測 2026-08-30。歳出 810 行、歳入 425 行）
+    "131016": {expenditure: [], revenue: []}
+    # 昭島市は階層だけで一意（実測 2026-08-30。歳出 3,588 行が 3,588 通り、
+    # 歳入 423 行が 423 通り）
+    "132071": {expenditure: [], revenue: []}
     "132195":
       expenditure: [org, budget_class]
       revenue: [org, budget_class]
@@ -65,6 +91,8 @@ vars:
   budget_extra_key_source_columns:
     "132047": {expenditure: [], revenue: []}
     "132241": {expenditure: [], revenue: []}
+    "131016": {expenditure: [], revenue: []}
+    "132071": {expenditure: [], revenue: []}
     "132195":
       # ⚠️ 歳出は「所属」、歳入は「所属コード」。同じ概念で列名が違う。
       expenditure: ["所属", "予算区分"]
@@ -77,6 +105,11 @@ vars:
   # 宣言が無いと「先頭2桁がコード」の検査がこのセルで落ちる。
   budget_absent_level_markers:
     "132047": ["0"]
+    "131016": []
+    # ⚠️ 昭島市はプレースホルダを持たない。**説明欄を持たない目（予備費）は空文字**になるが、
+    # それは「その階層が無い」ことを自治体が印字した記号ではなく、原典に何も無いことの写しである。
+    # 空文字を登録すると、コードを持つ階層の空欄まで検査から外れる。
+    "132071": []
     "132195": ["0"]
     # 多摩市はどの階層も全行が埋まっている（プレースホルダの行が無い。実測 2026-08-30）
     "132241": []
@@ -88,6 +121,8 @@ vars:
   # ⚠️ ここを一般則にしない（パーサ設計の原則5）。宣言が無い団体は検査で落ちる。
   budget_code_style:
     "132047": prefix2
+    "131016": code-only
+    "132071": code-only
     "132195": code-only
     # 多摩市は階層ごとに「コードの列」と「名称の列」を対で持つ。
     # セルがコードだけである点は狛江市と同じで、違うのは名称の列が全階層にあること。
@@ -108,6 +143,20 @@ vars:
     "132195":
       expenditure: {fund: "会計名称", setsu: "科目名称"}
       revenue: {fund: "会計名称", saisetsu: "科目名称"}
+    "131016":
+      # 千代田区はどの説明欄の段にもコードが無い（節のコードは目の内訳としての節の欄にあり、
+      # 説明欄の行に結び付けるのは名寄せなので取り込みではやらない）。
+      expenditure: {fund: "会計名称", kan: "款名称", kou: "項名称", moku: "目名称",
+                    jigyo: "事業名", saisetsu: "内訳名称"}
+      revenue: {fund: "会計名称", kan: "款名称", kou: "項名称", moku: "目名称",
+                jigyo: "事業名"}
+    "132071":
+      # ⚠️ **コードを持たない階層は、セルの出所と名称の出所が同じ列であることで表れる**
+      # （budget_staging がそう判定して code を空にする）。事業・説明欄の節・細節が該当する。
+      expenditure: {fund: "会計名称", kan: "款名称", kou: "項名称", moku: "目名称",
+                    jigyo: "事業名", setsu: "節名称", saisetsu: "内訳名称"}
+      revenue: {fund: "会計名称", kan: "款名称", kou: "項名称", moku: "目名称",
+                setsu: "節名称", saisetsu: "内訳名称"}
     "132241":
       expenditure: {fund: "会計名称", kan: "款名称", kou: "項名称", moku: "目名称",
                     saimoku: "細目名称", setsu: "節名称"}
@@ -152,6 +201,14 @@ vars:
     "132047":
       # 当初予算どうしなので丸めが無く、1円でも違えば落とす
       tolerance_yen: 1
+    "131016":
+      # 当初予算どうしで、抽出結果の歳出・歳入がともに 91,610,567 千円で一致する
+      # （実測 2026-08-30）
+      tolerance_yen: 1
+    "132071":
+      # 当初予算どうしで、総括（p14）の歳入合計・歳出合計がともに 56,360,000 千円。
+      # 抽出結果も両方向とも同額で一致する（実測 2026-08-30）
+      tolerance_yen: 1
     "132195":
       # 歳入の予算現額が千円単位なので、円未満は原理的に一致しない
       tolerance_yen: 1000
@@ -169,6 +226,20 @@ vars:
   budget_amount_unit_multipliers:
     円: 1
     千円: 1000
+
+  # **科目の名称がどこから来たか。** 配布物の `name_source` 列にそのまま出る。
+  # ⚠️ **ここに載るのは「原典の行がそのまま名称を持つ団体」だけ。**
+  # 狛江市は原典 CSV に名称が無く、別資料（決算書 PDF）から解決しているので
+  # core_budget_accounts が別の枝で扱う（結合の形が違い、名称の付かない年度がある）。
+  #   source-csv     カタログの CSV の列にあった文字列そのまま
+  #   statement-pdf  事項別明細書（PDF）の見出しから抽出した文字列そのまま。
+  #                  ⚠️ 判断ではない（市が印字した名称の写し）が、**抽出は不可逆**なので
+  #                  復元一致では確かめられない。強さの違いを列で見分けられるようにする
+  budget_account_name_sources:
+    "131016": statement-pdf
+    "132047": source-csv
+    "132071": statement-pdf
+    "132241": source-csv
 
   # **金額。原典の列を FDP の phase へ対応づける。**
   #
@@ -200,6 +271,23 @@ vars:
            phase: approved, phase_label: 当初予算, primary: true}
       revenue:
         - {name: source_amount, source: "08予算額", unit: 千円, multiplier: 1000,
+           phase: approved, phase_label: 当初予算, primary: true}
+    "131016":
+      # 欄の見出しが単位を名乗っている（`千円`）。説明欄の金額にも `千円` が付く
+      expenditure:
+        - {name: source_amount, source: "本年度予算額", unit: 千円, multiplier: 1000,
+           phase: approved, phase_label: 当初予算, primary: true}
+      revenue:
+        - {name: source_amount, source: "本年度予算額", unit: 千円, multiplier: 1000,
+           phase: approved, phase_label: 当初予算, primary: true}
+    "132071":
+      # ⚠️ **欄の見出しが単位を名乗っている**（`千円`）。抽出器はその欄名を
+      # provenance の `source_amount_unit` に写しており、宣言と突き合わせられる。
+      expenditure:
+        - {name: source_amount, source: "本年度予算額", unit: 千円, multiplier: 1000,
+           phase: approved, phase_label: 当初予算, primary: true}
+      revenue:
+        - {name: source_amount, source: "本年度予算額", unit: 千円, multiplier: 1000,
            phase: approved, phase_label: 当初予算, primary: true}
     "132195":
       expenditure:

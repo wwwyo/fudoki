@@ -122,9 +122,9 @@ function sourceRows(id: string, name: string, provenance: Provenance[]): number 
   const code = /\.raw_(\d{6})/.exec(id)?.[1]
   if (!code) throw new Error(`ソース ${id} の名前から団体コードを取れない（raw_<団体コード> の形にすること）`)
   const mine = provenance.filter((p) => p.jurisdiction_code === code)
-  // ⚠️ **証跡の形が取得元で違う。** CSV の取り込みは direction ごとに `rows` を持つが、
-  // PDF から起こした事業名は direction を持たず、抽出の要約（`extracted.projects`）を持つ。
-  // 保証の強さが違うので形も揃えていない（片方は復元一致、片方は階層の合計突合）。
+  // ⚠️ **証跡の形が取得元で違う。** 正本の取り込み（CSV でも事項別明細書の PDF でも）は
+  // direction ごとに `rows` を持つが、既収録の団体で欠けている名称を補う抽出物
+  // （事業名）は direction を持たず、抽出の要約（`extracted.projects`）しか持たない。
   const byDirection = mine.filter((p) => p.direction === name)
   if (byDirection.length > 0) return byDirection.reduce((s, p) => s + p.rows, 0)
   const extracted = mine.filter((p) => p.extracted !== undefined)

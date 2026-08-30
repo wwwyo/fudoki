@@ -449,8 +449,26 @@ type SourceEntry = {
  */
 const SOURCES_TOML = Bun.TOML.parse(
   readFileSync(join(ROOT, 'ingestion/budget/sources.toml'), 'utf8'),
-) as Record<string, SourceEntry> & { project_names?: Record<string, unknown> }
-const SOURCES = SOURCES_TOML as Record<string, SourceEntry>
+) as Record<string, SourceEntry | Record<string, SourceEntry>> & {
+  project_names?: Record<string, unknown>
+  statement?: Record<string, SourceEntry>
+}
+
+/**
+ * 取得元。**経路が2つある**（CKAN の CSV と、事項別明細書の PDF）ので両方を束ねる。
+ *
+ * ⚠️ **CSV の取得元だけを母集団にしない。** 59/62 団体は PDF しか持たないので、
+ * トップレベルの `<団体>:<年度>` だけを見ると、それらの団体が報告から丸ごと消える
+ * （実際に1団体目が黙って抜けた）。Python 側の `all_sources()` と同じ束ね方をする。
+ * ⚠️ `[project_names]` `[revenue_accounts]` は束ねない — あれは既に収録済みの団体で
+ * 欠けている名称を補う取得元で、その団体を収録している宣言ではない。
+ */
+const SOURCES: Record<string, SourceEntry> = {
+  ...Object.fromEntries(
+    Object.entries(SOURCES_TOML).filter(([k]) => /^\d{6}:/.test(k)),
+  ) as Record<string, SourceEntry>,
+  ...(SOURCES_TOML.statement ?? {}),
+}
 
 /**
  * 事業名の取得元がある (団体, 年度)。**正本は `sources.toml` の `[project_names]`。**

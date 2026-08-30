@@ -78,12 +78,23 @@ export type Provenance = {
   bytes: number
   sha256: string
   fetched_at: string
-  encoding: string
+  /** ⚠️ **PDF を原典とする取得元は持たない**（テキストの文字コードという概念が無い） */
+  encoding?: string
   header: string[]
   rows: number
   roundtrip_verified: boolean
-  /** PDF から起こした取得元だけが持つ。抽出の要約（原典と1対1ではない） */
-  extracted?: { projects: number; moku: number; totalThousandYen: number }
+  /**
+   * PDF から起こした取得元だけが持つ。抽出の要約（原典と1対1ではない）。
+   * ⚠️ **抽出器ごとに項目が違う。** 事業名の抽出器は事業を数え、
+   * 事項別明細書の抽出器は説明欄の葉を数える。共通なのは目の数と合計だけ。
+   */
+  extracted?: {
+    projects?: number
+    leaves?: number
+    moku: number
+    totalThousandYen?: number
+    total?: number
+  }
 }
 
 

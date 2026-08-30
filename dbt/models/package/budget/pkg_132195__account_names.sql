@@ -1,7 +1,8 @@
 {{ config(materialized = 'external', location = '../data/budget/datapackages/132195/account_names.csv', format = 'csv') }}
 -- 科目（款・項・目）の名称と、法定マスタへの対応。**fudoki の判断を含む。**
 --
--- 名称の出所は name_source が言う（source-csv = 原典の文字列そのまま /
+-- 名称の出所は name_source が言う（source-csv = 原典 CSV の文字列そのまま /
+-- statement-pdf = 事項別明細書 PDF の見出しから抽出した文字列そのまま /
 -- settlement-pdf = 決算書 PDF の見出しから fudoki が解決した）。
 -- master_* は地方自治法施行規則 別記の区分への対応で、**コードは団体ごとに
 -- 法定とずれる**（法定の款11 災害復旧費を持たない市では以降が詰まる）ため、

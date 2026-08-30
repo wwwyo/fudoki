@@ -27,7 +27,7 @@ from collections import Counter, defaultdict
 
 import duckdb
 
-from ingestion.budget.sources import load_revenue_accounts, load_sources
+from ingestion.budget.sources import all_sources, load_revenue_accounts, load_statements
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 RAW = ROOT / "data" / "budget" / "raw"
@@ -230,16 +230,117 @@ def evaluate(code: str) -> dict:
     }
 
 
+def evaluate_statement(code: str) -> dict:
+    """事項別明細書の抽出器を測る。**正解は資料が自分で印字している合計。**
+
+    ⚠️ **`evaluate` とは分母が違う。** あちらは原典 CSV という外の正解と突き合わせるが、
+    事項別明細書を原典とする団体には突き合わせる CSV が無い（それが PDF から起こす理由である）。
+    使えるのは、様式が同じ数字を階層ごとに重複して印字しているという性質だけで、
+    **同じ誤りが両側に入れば通る**ぶん外の正解より弱い。強さの違いを観測に書く。
+
+    ⚠️ **取得の判定をここで作り直さない。** 抽出時の突合は
+    `extract_statement.reconcile` が既に計算して証跡へ書いているので、それを読む。
+    ここが足すのは、証跡が持たない**名称の欠け**（配布物の使い勝手に直結し、
+    金額の突合では動かないので合計突合では検出できない）と、年度をまたいだ集約である。
+    """
+    con = _con()
+    years: list[dict] = []
+    for path in sorted(RAW.glob(f"jurisdiction={code}/**/provenance.json")):
+        prov = json.loads(path.read_text())
+        if "extract_statement" not in prov.get("extractor", ""):
+            continue
+        e = prov["extracted"]
+        parquet = path.parent / "data.parquet"
+        blank = con.execute(
+            f"select count(*) filter (where 款名称 = '') , count(*) filter (where 項名称 = ''), "
+            f"count(*) filter (where 目名称 = ''), count(*) "
+            f"from read_parquet('{parquet}')"
+        ).fetchone()
+        years.append({
+            "year": prov["fiscal_year"],
+            "direction": prov["direction"],
+            "pages": prov["pages"],
+            "leaves": e["leaves"],
+            "moku": e["moku"],
+            "mokuHeadersFound": e["mokuHeadersFound"],
+            "mokuNotReconciled": e["mokuNotReconciled"],
+            "setsuColumnNotReconciled": e["setsuColumnNotReconciled"],
+            "mokuWithoutExplanation": e["mokuWithoutExplanation"],
+            # 説明欄の段ごとの合計。歳出は3段が同じ額を重複して印字しているので、
+            # ここが割れていれば段の判定（金額の右端）を読み違えている
+            "explanationLevelTotals": e["explanationLevelTotals"],
+            "annotationsDropped": e["annotationsDropped"],
+            "total": e["total"],
+            # ⚠️ **名称の欠けは合計突合では動かない。** 継続頁の見出しから名称を
+            # 持ち越せていないと静かに欠けるので、別に数える。
+            "blankNames": {"kan": blank[0], "kou": blank[1], "moku": blank[2], "rows": blank[3]},
+            "recall": {
+                "mokuRatio": (e["moku"] / e["mokuHeadersFound"]) if e["mokuHeadersFound"] else 0.0,
+                "reconciledRatio": (e["leavesReconciled"] / e["leaves"]) if e["leaves"] else 0.0,
+            },
+        })
+    return {
+        "jurisdictionCode": code,
+        "scope": {
+            "target": "事項別明細書（PDF）から起こした正本そのもの",
+            "truth": "**資料が自分で印字している合計**（目の本年度予算額・節の区分欄）。"
+                     "外の正解ではないので、同じ誤りが両側に入れば通る",
+            "level": "説明欄の葉（歳出は 目→事業→節→細節、歳入は 目→節→説明）",
+        },
+        "byYear": years,
+    }
+
+
+def statement_targets() -> list[str]:
+    return sorted({k.split(":")[0] for k in load_statements()})
+
+
 def targets() -> tuple[list[str], list[str]]:
     """測れる団体と、測れない団体。**「無い」を黙って落とさない。**"""
     have = {k.split(":")[0] for k in load_revenue_accounts()}
-    every = {s.jurisdiction_code for s in load_sources().values()}
+    every = {s.jurisdiction_code for s in all_sources().values()}
     return sorted(have), sorted(every - have)
+
+
+def _report_statements(codes: list[str]) -> None:
+    for code in codes:
+        result = evaluate_statement(code)
+        out = OBSERVATIONS / f"{code}-statement-recall.json"
+        out.write_text(json.dumps({
+            "note": "事項別明細書の抽出器を、**資料が自分で印字している合計**を正解として測った観測。"
+                    "原典 CSV という外の正解が無い団体（62 団体中 59）で使える唯一の測り方で、"
+                    "同じ誤りが両側に入れば通るぶん evaluate() の recall より弱い。",
+            "generatedBy": "ingestion/budget/eval_extraction.py"
+                           "（bun run eval:extraction [団体コード...]）",
+            "reads": f"data/budget/raw/jurisdiction={code}/（抽出物と証跡）",
+            **result,
+        }, ensure_ascii=False, indent=2) + "\n")
+        print(f"--- {code}  {out.relative_to(ROOT)}")
+        print(f"{'年度':>6} {'方向':>12} {'葉':>7} {'目':>5} {'見出し':>6} "
+              f"{'目突合外':>8} {'節列突合外':>10} {'説明無し目':>10} {'名称欠け':>8} {'注記落ち':>8}")
+        for y in result["byYear"]:
+            b = y["blankNames"]
+            blank = b["kan"] + b["kou"] + b["moku"]
+            print(f"{y['year']:>6} {y['direction']:>12} {y['leaves']:>7} {y['moku']:>5} "
+                  f"{y['mokuHeadersFound']:>6} {y['mokuNotReconciled']:>8} "
+                  f"{y['setsuColumnNotReconciled']:>10} {y['mokuWithoutExplanation']:>10} "
+                  f"{blank:>8}{'  ⚠️' if blank else ''} {y['annotationsDropped']:>8}")
+            # ⚠️ **段ごとの合計が割れていること自体は誤りではない。**
+            # 昭島市の歳出のように段が完全な内訳になっている形では3段とも同じ額になるが、
+            # 千代田区のように内訳の段が任意の形では、浅い段のほうが大きくなる。
+            # 割当の正しさは目の突合が見ているので、ここは値を出すだけにする。
+            print(f"       説明欄の段ごとの合計: {y['explanationLevelTotals']}")
 
 
 if __name__ == "__main__":
     have, without = targets()
+    statements = statement_targets()
     codes = sys.argv[1:] or have
+    if not sys.argv[1:]:
+        _report_statements(statements)
+    else:
+        _report_statements([c for c in codes if c in statements])
+        codes = [c for c in codes if c not in statements]
     unknown = [c for c in codes if c not in have]
     if unknown:
         raise SystemExit(

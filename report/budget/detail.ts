@@ -60,6 +60,7 @@ export const COFOG_DIVISIONS: Record<string, string> = {
  */
 export const COFOG_GROUPS: Record<string, string> = {
   '01.1': '立法機関及び行政機関、財政・財務、対外関係',
+  '01.3': '総合的サービス',
   '01.7': '公債取引',
   '03.2': '消防サービス',
   '04.1': '一般経済・商業・労働関係',
@@ -68,6 +69,7 @@ export const COFOG_GROUPS: Record<string, string> = {
   '04.7': 'その他の産業',
   '05.1': '廃棄物管理',
   '05.2': '排水管理',
+  '05.3': '汚染防止',
   '05.4': '生物多様性及び景観の保護',
   '06.1': '住宅開発',
   '06.2': '地域開発',
@@ -78,7 +80,10 @@ export const COFOG_GROUPS: Record<string, string> = {
   '09.5': '水準が定義できない教育',
   '09.6': '教育に付帯するサービス',
   '09.8': '他に分類されない教育',
+  '10.1': '疾病及び障害',
   '10.2': '高齢',
+  '10.4': '家族及び児童',
+  '10.7': '社会的排除（他に分類されないもの）',
 }
 
 export const COFOG_CLASSES: Record<string, string> = {

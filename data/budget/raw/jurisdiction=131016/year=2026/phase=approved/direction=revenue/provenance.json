@@ -1,0 +1,71 @@
+{
+  "jurisdiction_code": "131016",
+  "fiscal_year": 2026,
+  "direction": "revenue",
+  "document_title": "令和8年度各会計予算（うち 一般会計予算説明書 歳入歳出予算事項別明細書）",
+  "dataset_title": null,
+  "resource_name": "令和8年度各会計予算（うち 一般会計予算説明書 歳入歳出予算事項別明細書）",
+  "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
+  "resource_url_declared": true,
+  "resource_url_basis": "区サイト「予算」ページ（landing_page）のリンクテキスト「令和8年度各会計予算」から人が拾った。カタログへの登録が存在しないため名前から解決する経路が無い",
+  "fiscal_year_basis": "sources.toml が宣言した URL（カタログへの登録が存在しない）。年度は取得元ページの見出しとリンクテキストを人が読んで決めており、機械は照合していない。根拠は resource_url_basis にある",
+  "fund_basis": "「一般会計予算説明書」の中扉（p37）と、その明細書の目次（p39）。同じ PDF の p279 以降は別会計の説明書で、pages の宣言から外してある",
+  "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r8kaikeiyosan.pdf",
+  "status": 200,
+  "bytes": 3444027,
+  "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
+  "fetched_at": "2026-08-30T08:56:39+00:00",
+  "pages": [
+    42,
+    145
+  ],
+  "layout": "spread",
+  "extractor": "ingestion/budget/extract_statement.py@4",
+  "verification": "hierarchy-totals + setsu-column-totals + name-stability",
+  "verification_note": "PDF のバイト列は保存していない（大半の団体で再配布の判断が付かないため、経路を団体で分けない）。無加工であることは検査できないので、目の見出し金額との突合・節列との突合・行のまとめ方への非依存で縛る",
+  "roundtrip_verified": false,
+  "normalization": [
+    "桁区切りのカンマを除去",
+    "NFKC 正規化と空白の除去",
+    "説明欄の項目の通し番号を除去（並びは source_row が保つ）"
+  ],
+  "source_amount_unit": "千円",
+  "header": [
+    "source_row",
+    "会計名称",
+    "款",
+    "款名称",
+    "項",
+    "項名称",
+    "目",
+    "目名称",
+    "事業名",
+    "節",
+    "節名称",
+    "内訳名称",
+    "本年度予算額",
+    "reconciled"
+  ],
+  "rows": 425,
+  "extracted": {
+    "leaves": 425,
+    "leavesReconciled": 425,
+    "moku": 83,
+    "mokuHeadersFound": 83,
+    "mokuNotReconciled": 0,
+    "setsuColumnNotReconciled": 0,
+    "explanationLevelTotals": {
+      "project": 91610567
+    },
+    "annotationsDropped": 65,
+    "mokuWithoutExplanation": 0,
+    "total": 91610567,
+    "notReconciled": [],
+    "nameStable": true
+  },
+  "raw_form": "extracted",
+  "redistribute": "allow",
+  "redistribute_basis": "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする",
+  "license_id": "NOASSERTION",
+  "attribution": "千代田区"
+}

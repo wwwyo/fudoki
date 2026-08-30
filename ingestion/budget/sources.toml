@@ -605,3 +605,160 @@ direction = "revenue"
 resource_name = "令和7年度一般会計歳入（当初予算）"
 url = "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r7ippannkaikeisainyuu.csv"
 url_basis = "カタログのリソース登録が令和4年度で止まっており、データセット名とリソース名から解決できない。原典は市の「予算・決算についての資料」ページに置かれている（landing_page）。⚠️ **年度の裏づけはそのページの見出し（「令和7年度予算についての資料」）とリンクテキスト（`resource_name` と同じ文字列）で、これは人が読んだもの** — 直 URL では取得時のリソース名照合が自己参照になるので、機械は年度を照合していない"
+
+
+# ── 事項別明細書（PDF）を原典とする取得元 ────────────────────
+# ⚠️ **59/62 団体は事業単位の資料を PDF でしか出していない**（2026-08-30 実測）。
+# CKAN の CSV を背骨にした取得器では1団体も足せないので、こちらの経路を持つ。
+#
+# ⚠️ **列の意味は法定様式が決めるので共有、座標は団体ごとに宣言する。**
+# 地方自治法施行規則の様式が款・項・目・節・説明という列を定めているため、
+# どの団体の事項別明細書も同じ語彙で並ぶ（読み取りは statement_layout.py）。
+# 一方で見開きに割るかどうかも列の x も団体ごとに違うので、ここに書く。
+
+[statement."132071:2025"]
+document_title = "令和7年度昭島市一般会計予算及び予算説明書"
+url = "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/264/2-1.ippan.pdf"
+# ⚠️ **昭島市はオープンデータカタログを持たない**（2026-08-30 の探索で openDataPortal が null）。
+# 予算資料は市サイトの財政ページに直接置かれている。
+url_basis = "市サイト「令和7年度当初予算」ページ（landing_page）のリンクテキスト「令和7年度一般会計当初予算及び予算説明書」から人が拾った。カタログへの登録が存在しないため、名前から解決する経路が無い"
+landing_page = "https://www.city.akishima.lg.jp/shisei/gyozaisei/1005263/1005264.html"
+# ⚠️ **会計は資料の中にしか無い。** CSV の団体は原典に `会計名称` の列があるが、
+# 事項別明細書は資料そのものが1会計ぶんで、会計名は表紙にしか出てこない。
+fund_label = "一般会計"
+fund_basis = "表紙（p1）の標題「昭島市一般会計予算及び予算説明書」および目次（p2）の「◎ 一般会計」"
+phase_id = "approved"
+phase_label = "当初予算"
+raw_form = "extracted"
+redistribute = "allow"
+redistribute_basis = "市サイトの著作権・免責事項（https://www.city.akishima.lg.jp/about/1006647.html）が「権利表記の記載がない限り『公共データ利用規約（第1.0版）』（PDL1.0）が適用されています」と明示。当該 PDF に別の権利表記は無い"
+license_id = "PDL-1.0"
+attribution = "昭島市"
+# 見開き。偶数頁が左（款・項・目・本年度予算額・財源内訳）、奇数頁が右（節・説明）
+layout = "spread"
+# 款・項の見出しの記法。**様式は文言を固定していないので団体で割れる**（`第 １ 款 民生費`）
+heading_style = "dai"
+# 印字の単位。⚠️ **金額の単位の正本は dbt の `budget_amounts`** で、ここは
+# 抽出器が読んだ紙の欄名（`千円`）を証跡へ残すためだけに持つ。
+source_amount_unit = "千円"
+
+# 頁範囲（実測 2026-08-30）。20 頁から「２ 歳入」、108 頁から「３ 歳出」、
+# 450 頁から「給与費明細書」で明細書は終わる。
+[statement."132071:2025".pages]
+revenue = [20, 107]
+expenditure = [108, 449]
+
+# 見開きのどちら側に来る欄か。昭島市は左頁が目だけで、節と説明は右頁にある
+[statement."132071:2025".left_page_columns]
+expenditure = ["moku"]
+revenue = ["moku"]
+
+# ⚠️ **列の x は direction で割れる。** 同じ資料の同じ団体でも、歳入の目の欄は
+# 名称が折り返さない幅で組まれており（x 64〜300）、歳出は 6 文字で折り返す幅（x 64〜128）である。
+# 片方の実測を両方へ当てると、歳出では目の名称が金額の欄へ、歳入では金額が欄外へこぼれる。
+# **右頁は頁内座標で書く**（見開き座標への変換は抽出器がやる）。
+# ⚠️ **名前と金額を別の欄に分けない。** どの欄も名前が左寄せ・金額が右揃えなので、
+# 1つの欄として取り、行末から右揃えの数字を切り出す（`_split_amount`）。
+# 境界を引くと、長い名前が金額側へ・桁の多い金額が名前側へこぼれた行が丸ごと落ちる
+# （両方とも実測で起きた）。`setsu_code` だけは名前の左にあるので別に取る。
+[statement."132071:2025".columns.expenditure]
+moku = [56, 182]
+setsu_code = [56, 72]
+setsu = [72, 193]
+explanation = [195, 545]
+
+[statement."132071:2025".columns.revenue]
+moku = [56, 380]
+setsu_code = [56, 72]
+setsu = [72, 192]
+explanation = [195, 545]
+
+# 説明欄の入れ子の作り。**direction で違い、これは法定様式の作りがそうなっている。**
+#   nested       説明欄そのものが 事業 → 節 → 細節 の3段（歳出）。節列は目の集計で、突合にしか使わない
+#   under-setsu  説明欄は節列の節の内訳が1段（歳入）。節のコードは節列から取れる
+# ⚠️ **様式の性質でも宣言に出す**（原則5）。次の団体で違ったときに、
+# コードの分岐ではなく宣言の差として現れてほしい。
+[statement."132071:2025".explanation.expenditure]
+model = "nested"
+# 段は**金額の右端 x** が決める（名前の左端では決まらない。長い名前が下の段の
+# 字下げ位置を越えて右へ伸びるため。実測で細節の名前が x=458 まで来る）。
+levels = { project = 530, setsu = 522, detail = 504 }
+tolerance = 2
+
+[statement."132071:2025".explanation.revenue]
+model = "under-setsu"
+levels = { detail = 530 }
+tolerance = 2
+
+[statement."131016:2026"]
+document_title = "令和8年度各会計予算（うち 一般会計予算説明書 歳入歳出予算事項別明細書）"
+url = "https://www.city.chiyoda.lg.jp/documents/583/r8kaikeiyosan.pdf"
+# ⚠️ **千代田区もオープンデータカタログを持たない**（2026-08-30 の探索で openDataPortal が null）。
+url_basis = "区サイト「予算」ページ（landing_page）のリンクテキスト「令和8年度各会計予算」から人が拾った。カタログへの登録が存在しないため名前から解決する経路が無い"
+landing_page = "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html"
+# ⚠️ **この PDF は4会計を1本に綴じている**（一般会計・国民健康保険事業会計・
+# 介護保険特別会計・後期高齢者医療特別会計）。収録するのは一般会計の頁範囲だけで、
+# それを頁範囲の宣言で表している（既収録の多摩市・昭島市も一般会計だけ）。
+fund_label = "一般会計"
+fund_basis = "「一般会計予算説明書」の中扉（p37）と、その明細書の目次（p39）。同じ PDF の p279 以降は別会計の説明書で、pages の宣言から外してある"
+phase_id = "approved"
+phase_label = "当初予算"
+raw_form = "extracted"
+redistribute = "allow"
+# ⚠️ **CC BY 互換を名乗っていない。** 昭島市の PDL1.0 は原文が CC BY での利用を明示的に
+# 許諾しているが、千代田区の規約は政府標準利用規約（第2.0版）に似た文面でありながら
+# CC BY にも政府標準利用規約にも言及していない。**「オープンだから同じだろう」で
+# CC BY を貼らない**ので license_id は NOASSERTION（判断していない）。
+redistribute_basis = "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする"
+license_id = "NOASSERTION"
+attribution = "千代田区"
+layout = "spread"
+# 款・項の見出しは `（款） 1 議会費`。**昭島市の `第 １ 款 民生費` とは記法が違う**
+heading_style = "paren"
+source_amount_unit = "千円"
+
+# 頁範囲（実測 2026-08-30）。一般会計の明細書は 42 頁から歳入、146 頁から歳出、
+# 252 頁から給与費明細書。279 頁以降は国民健康保険事業会計の説明書で、収録しない。
+[statement."131016:2026".pages]
+revenue = [42, 145]
+expenditure = [146, 251]
+
+# ⚠️ **節が左頁にある。** 昭島市は右頁に節と説明が並ぶが、千代田区は左頁に
+# 目・財源内訳・節が入り、右頁は説明欄だけの1頁になる。見開きとして扱う点は同じ。
+[statement."131016:2026".left_page_columns]
+expenditure = ["moku", "setsu_code", "setsu"]
+revenue = ["moku", "setsu_code", "setsu"]
+
+[statement."131016:2026".columns.expenditure]
+moku = [40, 182]
+setsu_code = [408, 422]
+setsu = [422, 534]
+explanation = [60, 560]
+
+[statement."131016:2026".columns.revenue]
+moku = [40, 240]
+setsu_code = [382, 396]
+setsu = [396, 530]
+explanation = [60, 560]
+
+# ⚠️ **説明欄の金額には単位が付く**（`316,980 千円`）。行末が数字で終わらないので、
+# 単位を落としてから右揃えの数字を切り出す。落とせない行（自由記述の `21,400人`・
+# `3,000円`・`98.0％`）はそこで弾かれる — **単位そのものが項目の目印になる**。
+[statement."131016:2026".explanation.expenditure]
+model = "nested"
+# 段は2つ（事業 → 内訳）。昭島市のように説明欄の中に節は現れない
+levels = { project = 532, detail = 514 }
+tolerance = 2
+amount_suffix = "千円"
+# ⚠️ **項目に通し番号が振られている**（`１ 議員報酬（区議会事務局）` / `（１） 議会ホームページ運営`）。
+# 番号は目の中での並び順しか表しておらず（並びは source_row が保つ）、
+# 落とさないと年度をまたいで番号がずれ、同じ事業が別の名前に見える。
+# ⚠️ **自動判定にしない** — 番号を振らない団体では `1歳6か月児健診` のような名前を削ってしまう。
+numbered = true
+
+[statement."131016:2026".explanation.revenue]
+model = "nested"
+levels = { project = 530 }
+tolerance = 2
+amount_suffix = "千円"
+numbered = true
