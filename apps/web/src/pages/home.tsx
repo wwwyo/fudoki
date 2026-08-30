@@ -1,46 +1,40 @@
 /**
- * ホームページ。何をやっているかの説明とベータ告知、収録状況の入口。
+ * ホームページ。何をやっているかの説明とベータ告知、地図の入口。
  *
- * ⚠️ **収録状況は手で書かない。** `pipeline.json`（`report/budget/build.ts` の出力）を
- * 実行時に読んで出す。対象を広げた瞬間に文書だけが古くなる、という事故を避けるため
- * （AGENTS.md の「収録範囲を手で書くと嘘になる」原則）。
- *
- * ただし `pipeline.json` が読めなくても、この静的な説明部分は表示され続ける。
- * ホーム全体が真っ白になる方が、収録状況の1区画が欠けるより損害が大きい。
+ * ⚠️ **地図は境界データが揃ってから別途作る。** ここにあるのは見出しだけの
+ * プレースホルダで、`pipeline.json` はまだ読まない。地図は収録済み団体の塗り分けに
+ * `pipeline.json` を使う予定だが、それは地図コンポーネント自身の実装時に足す話であって、
+ * 使われる予定があるという理由だけで読み込みの仕組みを先取りして残すと、
+ * 「呼んでいるのに何も出さない」という未使用コードになる（AGENTS.md:
+ * 自分の変更で未使用になったものは片付ける）。
  */
-import { useEffect, useState } from "react"
 import { Layout } from "@/components/layout"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { loadPipeline, type Direction, type PipelineData } from "@/lib/pipeline"
-
-const DIRECTION_JA: Record<Direction, string> = {
-  expenditure: "歳出",
-  revenue: "歳入",
-}
+import { Button } from "@/components/ui/button"
 
 export function HomePage() {
-  const [data, setData] = useState<PipelineData | null>(null)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    loadPipeline()
-      .then(setData)
-      .catch((e: Error) => {
-        // 生のエラー（JSON パース失敗など）はここでしか意味を持たない。
-        // ホームは一般の利用者が最初に見る面なので、画面には行動が分かる文言だけを出す
-        // （原因の追跡は console 経由。⚠️ /pipeline/ は逆で、見るのは報告を回している
-        // 本人なので生のエラーをそのまま出す — ここだけの判断）。
-        console.error("収録状況の読み込みに失敗しました:", e)
-        setError("収録状況はいま表示できません。配布物そのものは")
-      })
-  }, [])
-
   return (
     <Layout>
       <main className="mx-auto flex max-w-3xl flex-col gap-10 px-4 py-16">
         <section className="flex flex-col gap-4">
-          <h1 className="text-3xl font-semibold">fudoki（風土記）</h1>
+          {/*
+            713年の官命で諸国へ同じ様式の報告を求め、集めたのが『風土記』
+            （AGENTS.md 冒頭）。この墨絵はその由来そのもの（諸国から巻物を集めて
+            役人が受け取る場面）を描いたもので、由来の説明を絵に肩代わりさせる。
+
+            生成手段（commit した生成物には作り方を残す — AGENTS.md「スクリプト」節）:
+              cwebp -q 80 fudoki-sumie.jpg -o hero.webp
+            元は 1376×768 / 687KB の JPEG。q=80 で 56KB（目標 150KB 以下）。
+            画像は横長で左側が余白なので、右詰めでトリミング表示する。
+          */}
+          <img
+            src={`${import.meta.env.BASE_URL}hero.webp`}
+            alt="713年の官命により諸国から集められた、地名の由来や産物を記した巻物を役人が受け取る場面を描いた墨絵"
+            width={1376}
+            height={768}
+            className="h-auto w-full rounded-lg border object-cover object-right sm:max-h-56"
+          />
+          <h1 className="text-3xl font-semibold">風土記（fudoki）</h1>
           <p className="text-lg text-muted-foreground">
             公開されているのに読めない、を読める形にする。
           </p>
@@ -59,7 +53,14 @@ export function HomePage() {
           </p>
         </section>
 
-        <Alert>
+        {/*
+          ⚠️ alert.tsx 自体は変えない（shadcn CLI の更新で上書きされる）。
+          既定の variant="default" は bg-card で Card と同じ背景になり、告知として
+          見分けがつかない（ユーザー指摘）。ブランドカラー（青丹）の accent トークンと
+          左ボーダーで、Card とは別物だと分かる見た目にする。accent はライト・ダーク
+          両方で定義済みのトークンなので、ここで新しい色を足す必要はない。
+        */}
+        <Alert className="border-l-primary bg-accent text-accent-foreground border-l-4">
           <AlertTitle>ベータです</AlertTitle>
           <AlertDescription>
             URL・応答スキーマ・提供そのものを予告なく変更または停止することがあります。詳しくは
@@ -72,90 +73,33 @@ export function HomePage() {
           </AlertDescription>
         </Alert>
 
+        {/*
+          ⚠️ 地図はまだ無い。境界データが揃うまでの間、位置だけを示す最小の
+          プレースホルダ。地図コンポーネントは別途作る（このファイルでは作らない）。
+        */}
         <section className="flex flex-col gap-3">
-          <h2 className="text-xl font-semibold">いま手に入るもの</h2>
-          {error ? (
-            <p className="text-sm text-muted-foreground">
-              {error}
-              {" "}
-              <a
-                className="underline"
-                href="https://github.com/wwwyo/fudoki"
-                target="_blank"
-                rel="noreferrer"
-              >
-                GitHub
-              </a>
-              {" "}
-              で直接確認できます。
-            </p>
-          ) : data ? (
-            <div className="flex flex-wrap gap-3">
-              {data.jurisdictions.map((j) => {
-                const rows = (direction: Direction) =>
-                  j.report.ingestion
-                    .filter((p) => p.direction === direction)
-                    .reduce((sum, p) => sum + p.rows, 0)
-                const years = j.report.meta.fiscalYears
-                return (
-                  <Card key={j.code} className="min-w-[16rem] flex-1 gap-1 py-4">
-                    <CardHeader className="px-4">
-                      <CardTitle className="text-lg">
-                        {j.report.meta.jurisdictionName}
-                      </CardTitle>
-                      <CardDescription>
-                        {years.length > 2
-                          ? `${years[0]}〜${years.at(-1)}年度`
-                          : `${years.join("・")}年度`}
-                        {/* 段階（当初予算／決算）。三鷹市は予算、狛江市は決算で性質が違うので、
-                            年度だけ出すと数字の意味を取り違える */}
-                        {" "}
-                        {j.report.meta.phase.label}
-                        {" "}
-                        ・{" "}
-                        {(["expenditure", "revenue"] as const)
-                          .map((d) => `${DIRECTION_JA[d]} ${rows(d).toLocaleString("ja-JP")}行`)
-                          .join("、")}
-                      </CardDescription>
-                    </CardHeader>
-                  </Card>
-                )
-              })}
-            </div>
-          ) : (
-            <p className="text-sm text-muted-foreground">読み込み中…</p>
-          )}
-          <p className="text-sm text-muted-foreground">
-            検証の中身は
-            {" "}
-            <a className="underline" href="/pipeline/">
-              パイプライン報告
-            </a>
-            {" "}
-            で確認できる。
-          </p>
+          <h2 className="text-xl font-semibold">収録状況</h2>
+          <div className="text-muted-foreground rounded-lg border border-dashed p-8 text-center text-sm">
+            ここに東京都の地図が入る予定です。
+          </div>
         </section>
 
-        <section className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
-          <a
-            className="underline"
-            href="https://docs.fudoki.dev/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            API docs
-          </a>
-          <a
-            className="underline"
-            href="https://github.com/wwwyo/fudoki"
-            target="_blank"
-            rel="noreferrer"
-          >
-            GitHub
-          </a>
-          <a className="underline" href="/pipeline/">
-            パイプライン報告
-          </a>
+        <section className="flex flex-wrap gap-2 text-sm">
+          {/* ⚠️ `render` に `<a>` を渡すときは `nativeButton={false}` が要る。
+              Base UI の既定は `nativeButton: true`（＝ネイティブの `<button>` が来る前提）で、
+              指定を落とすとボタンのセマンティクスが外れたまま実行時に警告が出る。
+              ここは見た目だけボタンの「リンク」なので、false が正しい。 */}
+          <Button variant="outline" size="sm" nativeButton={false} render={
+            <a href="https://docs.fudoki.dev/" target="_blank" rel="noreferrer">
+              API docs
+            </a>
+          } />
+          <Button variant="outline" size="sm" nativeButton={false} render={
+            <a href="https://github.com/wwwyo/fudoki" target="_blank" rel="noreferrer">
+              GitHub
+            </a>
+          } />
+          <Button variant="outline" size="sm" nativeButton={false} render={<a href="/pipeline/">パイプライン報告</a>} />
         </section>
       </main>
     </Layout>

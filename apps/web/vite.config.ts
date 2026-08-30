@@ -3,6 +3,7 @@ import path from "node:path"
 import tailwindcss from "@tailwindcss/vite"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
+import { pipelineJurisdictionPages } from "./vite-plugins/pipeline-jurisdictions.ts"
 
 const ROOT = import.meta.dirname
 
@@ -11,7 +12,10 @@ const ROOT = import.meta.dirname
 // 本番で 404 になる（AGENTS.md の「足し忘れはエラーで止まる」設計から外れる）。
 // `apps/web/` 直下を走査して `index.html` を持つディレクトリを拾えば、
 // HTML を置いた時点でビルド対象に入り、この失敗経路自体が無くなる。
-const EXCLUDED_DIRS = new Set(["node_modules", "dist", "public", "src", "brand"])
+// ⚠️ `pipeline/<団体コード>/` は1階層下なのでこの走査には拾われない
+// （このファイル自体が書いている通り直下1階層だけ）。62団体分は
+// pipelineJurisdictionPages プラグインが `config` フックで別途 input へ足す。
+const EXCLUDED_DIRS = new Set(["node_modules", "dist", "public", "src", "brand", "vite-plugins"])
 const pageInput = Object.fromEntries(
   readdirSync(ROOT, { withFileTypes: true })
     .filter((e) => e.isDirectory() && !e.name.startsWith(".") && !EXCLUDED_DIRS.has(e.name))
@@ -21,7 +25,7 @@ const pageInput = Object.fromEntries(
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), pipelineJurisdictionPages(ROOT)],
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "./src"),

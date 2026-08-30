@@ -44,13 +44,22 @@ import {
   type PipelineData,
 } from "@/lib/pipeline"
 
-export function PipelinePage() {
+type Props = {
+  /** `/pipeline/<団体コード>/` の団体コード。コードなしの `/pipeline/` では null */
+  urlCode?: string | null
+  /** 未収録団体でも団体名は出す（jurisdictions.json 由来。ビルド時に埋め込まれる） */
+  jurisdictionName?: string
+}
+
+export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
   const [data, setData] = useState<PipelineData | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [selectedNode, setSelectedNode] = useState<string | null>(null)
   // 見ている団体。**1団体だけを前提にしない** — 以前は pipeline.json が単一団体の形で、
   // 2団体目を足したら生成側が例外で止まるようにしてあった。
-  const [code, setCode] = useState<string | null>(null)
+  // MPA なので団体は URL（≒ページ）ごとに固定。コードなしの `/pipeline/` は
+  // データを読んだ後に先頭団体の URL へ redirect する（下の useEffect）
+  const code = urlCode
   // 明細は報告の 50 倍あるので、タブを開いたときだけ取りに行く。
   // ⚠️ **団体をまたいで溜めない。** 溜めると切り替えるたびに 40,383 行の表が積み上がり、
   // 解放されない（対象は最終的に62団体になる）。見ている団体の分だけ持つ。
@@ -64,12 +73,23 @@ export function PipelinePage() {
     loadPipeline()
       .then((d) => {
         setData(d)
-        setCode(d.jurisdictions[0]?.code ?? null)
+        // `/pipeline/`（コードなし）は常に収録済みの先頭団体の URL へ送る。
+        // state だけ変えると URL が `/pipeline/` のままになり、地図からの遷移や
+        // ブックマークが「どの団体を見ているか」を表さなくなる。
+        if (!urlCode) {
+          const first = d.jurisdictions[0]?.code
+          if (first) window.location.replace(`${import.meta.env.BASE_URL}pipeline/${first}/`)
+          return
+        }
       })
       .catch((e: Error) => setError(e.message))
-  }, [])
+  }, [urlCode])
 
-  const current = data?.jurisdictions.find((j) => j.code === code) ?? data?.jurisdictions[0]
+  const found = data?.jurisdictions.find((j) => j.code === code) ?? null
+  // URL にコードがあるのに pipeline.json に無い＝まだ収録していない団体。
+  // 先頭団体へ fallback すると「収録済みのふり」をしてしまうので、ここでは fallback しない。
+  const notCollected = data !== null && urlCode !== null && found === null
+  const current = found ?? undefined
   const loaded = detail?.code === code ? detail.data : undefined
 
   /**
@@ -100,9 +120,16 @@ export function PipelinePage() {
   // 写すと、対象を広げた瞬間に静かに嘘になるので、可変の部分だけ実行時に入れる。
   useEffect(() => {
     if (!current) return
-    const { jurisdictionName, fiscalYears, phase } = current.report.meta
-    document.title = `${jurisdictionName} ${fiscalYears.join("・")}年度 ${phase.label} | fudoki（風土記）`
+    const { jurisdictionName: name, fiscalYears, phase } = current.report.meta
+    document.title = `${name} ${fiscalYears.join("・")}年度 ${phase.label} | fudoki（風土記）`
   }, [current])
+
+  // 未収録団体は report を持たないので上の effect と分ける。index.html の title
+  // 既定値と揃えつつ「未収録」だと分かる文言にする
+  useEffect(() => {
+    if (!notCollected) return
+    document.title = `${jurisdictionName ?? urlCode} はまだ収録していません | fudoki（風土記）`
+  }, [notCollected, jurisdictionName, urlCode])
 
   const rows = useMemo(
     () =>
@@ -134,6 +161,18 @@ export function PipelinePage() {
           </Alert>
         </main>
       </Layout>
+    )
+  }
+  if (notCollected) {
+    return (
+      <NotCollectedPage
+        code={urlCode!}
+        name={jurisdictionName}
+        jurisdictions={data!.jurisdictions.map((j) => ({
+          code: j.code,
+          name: j.report.meta.jurisdictionName,
+        }))}
+      />
     )
   }
   if (!data || !current || !visibleTopology) {
@@ -208,9 +247,10 @@ export function PipelinePage() {
                 }))}
                 value={current.code}
                 onValueChange={(v) => {
-                  setCode(v as string)
-                  setSelectedNode(null)
-                  setDetailError(null)
+                  // state だけ変えると URL が古い団体のままになる（地図からの遷移・
+                  // ブックマーク・共有リンクがすべて「見ている団体」を表さなくなる）。
+                  // 隣の団体へは `/pipeline/<code>/` への遷移で移る。
+                  window.location.href = `${import.meta.env.BASE_URL}pipeline/${v}/`
                 }}
               >
                 <SelectTrigger aria-label="団体">
@@ -337,6 +377,61 @@ export function PipelinePage() {
           </a>{" "}
           ／ {m.license.id} ／ 生成 {m.generatedAt.replace("T", " ").slice(0, 19)}
         </footer>
+      </main>
+    </Layout>
+  )
+}
+
+/**
+ * 未収録団体のページ（`/pipeline/<未収録の団体コード>/`）。
+ *
+ * 収録済みの先頭団体へ fallback しない代わりに、団体名は出す
+ * （jurisdictions.json 由来。コードだけを見せない）。
+ * 地図を経由せずに他の団体へ移れるよう、収録済みの団体へのセレクタは残す。
+ */
+function NotCollectedPage({
+  code,
+  name,
+  jurisdictions,
+}: {
+  code: string
+  name?: string
+  jurisdictions: { code: string; name: string }[]
+}) {
+  return (
+    <Layout>
+      <main className="mx-auto flex max-w-2xl flex-col gap-4 p-6">
+        <h1 className="text-xl font-semibold">{name ?? code}</h1>
+        <Alert>
+          <AlertTitle>この団体はまだ収録していません</AlertTitle>
+          <AlertDescription>
+            {name ?? code}（団体コード {code}）の予算データは、まだ fudoki のパイプラインを通していません。
+          </AlertDescription>
+        </Alert>
+        {jurisdictions.length > 0 && (
+          <div className="flex items-center gap-2 text-sm">
+            <span className="text-muted-foreground">収録済みの団体を見る:</span>
+            <Select
+              items={jurisdictions.map((j) => ({ value: j.code, label: j.name }))}
+              onValueChange={(v) => {
+                window.location.href = `${import.meta.env.BASE_URL}pipeline/${v}/`
+              }}
+            >
+              <SelectTrigger aria-label="団体">
+                <SelectValue placeholder="団体を選ぶ" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {jurisdictions.map((j) => (
+                    <SelectItem key={j.code} value={j.code}>
+                      {j.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        )}
       </main>
     </Layout>
   )

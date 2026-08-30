@@ -6,6 +6,8 @@
  * リンクと「原典ごとに条件が違う」という一文までに留める。
  */
 import { Layout } from "@/components/layout"
+import { Card, CardContent } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
 
 export function TermsPage() {
   return (
@@ -22,6 +24,8 @@ export function TermsPage() {
           </p>
         </section>
 
+        <Separator />
+
         <section className="flex flex-col gap-2">
           <h2 className="text-lg font-semibold">2. 無保証</h2>
           <p>
@@ -31,6 +35,8 @@ export function TermsPage() {
           </p>
         </section>
 
+        <Separator />
+
         <section className="flex flex-col gap-2">
           <h2 className="text-lg font-semibold">3. 責任制限</h2>
           <p>
@@ -38,6 +44,8 @@ export function TermsPage() {
             負わない。データの誤り、API の停止・変更、それらに起因する判断の誤りを含む。
           </p>
         </section>
+
+        <Separator />
 
         <section className="flex flex-col gap-2">
           <h2 className="text-lg font-semibold">4. データのライセンス</h2>
@@ -55,15 +63,21 @@ export function TermsPage() {
           </p>
         </section>
 
+        <Separator />
+
         <section className="flex flex-col gap-2">
           <h2 className="text-lg font-semibold">5. API について</h2>
           <p>fudoki は API に対して次の権限を持つ。</p>
-          <ul className="list-disc pl-5">
-            <li>API キーの発行と失効</li>
-            <li>レート制限</li>
-            <li>アクセスログの取得</li>
-            <li>提供の停止</li>
-          </ul>
+          <Card>
+            <CardContent>
+              <ul className="list-disc pl-5">
+                <li>API キーの発行と失効</li>
+                <li>レート制限</li>
+                <li>アクセスログの取得</li>
+                <li>提供の停止</li>
+              </ul>
+            </CardContent>
+          </Card>
           <p>
             API キーは<strong>任意</strong>である。キーが無くても API を利用できるが、レートは
             低く抑える。キーを取得すると制限が緩和される。API を使えるかどうかを鍵で握る形には
@@ -74,6 +88,8 @@ export function TermsPage() {
             API が止まっても、正本は repo に残る。
           </p>
         </section>
+
+        <Separator />
 
         <section className="flex flex-col gap-2">
           <h2 className="text-lg font-semibold">6. 法的な最終判断</h2>

@@ -82,7 +82,10 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="overflow-x-auto">
+      {/* 縦は 39 ノードで画面を埋め尽くすことがある（列内の最大ノード数に比例して伸びるため）。
+          横に加えて縦もスクロール域に収め、ページ自体が伸びきらないようにする。
+          数値は実際の画面で見て決めた目安（60vh）で、仕様上の根拠はない */}
+      <div className="max-h-[60vh] overflow-x-auto overflow-y-auto">
         {/* 段の見出しは HTML で出す。SVG の中だと tooltip を素直に置けない。
             列幅を SVG と揃えるため、どちらも固定幅で横スクロールさせる */}
         <div

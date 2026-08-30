@@ -18,6 +18,13 @@ tmp/
 # ビューア用の生成物（data/ の成果物から再生成できる）
 apps/web/public/pipeline.json
 apps/web/public/preview/
+
+# 団体ごとの /pipeline/<団体コード>/ は vite plugin が jurisdictions.json から生成する
+# （apps/web/vite-plugins/pipeline-jurisdictions.ts）。コードなしの apps/web/pipeline/index.html は
+# 手書きなので残す（配下だけを無視する）
+apps/web/pipeline/*/
+# 同じ plugin が62団体分を書き出す。手書きだと3 URL のまま古びていた
+apps/web/public/sitemap.xml
 apps/web/node_modules/
 apps/web/dist/
 
