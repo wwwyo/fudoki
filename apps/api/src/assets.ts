@@ -4,8 +4,33 @@
  */
 import type { Budget, BudgetLine, CrossBudgetLine, Jurisdiction } from './contract'
 
+/**
+ * KV namespace binding の最小型。`@cloudflare/workers-types` はこの repo に入れていない
+ * （tsconfig の types は `@types/bun` のみ）ので、既存の `ASSETS` と同じく使う形だけ手書きする。
+ */
+export interface KVNamespaceLike {
+  get(key: string): Promise<string | null>
+  put(key: string, value: string): Promise<void>
+}
+
+/**
+ * Rate Limiting binding の最小型。`limit()` は成功/失敗の boolean しか返さない
+ * （残量やウィンドウ長は取れない）。カウンターはデータセンターごとであり、
+ * グローバルな厳密上限にはならない ── ここで実現しているのは濫用の抑制であって、
+ * 課金保護のような厳密な上限ではない。
+ */
+export interface RateLimiterLike {
+  limit(options: { key: string }): Promise<{ success: boolean }>
+}
+
 export interface Env {
   ASSETS: { fetch(input: Request | URL | string): Promise<Response> }
+  /** ベータ用 API キー。KV のキーが SHA-256(生のキー)、値が ApiKeyEntry の JSON（src/lib/apiKey.ts） */
+  API_KEYS: KVNamespaceLike
+  /** キー無し（匿名）リクエスト用。IP のハッシュをキーにして呼ぶ */
+  RATE_LIMIT_ANONYMOUS: RateLimiterLike
+  /** 有効な API キー付きリクエスト用。キーIDをキーにして呼ぶ */
+  RATE_LIMIT_AUTHENTICATED: RateLimiterLike
 }
 
 export type JurisdictionsFile = {

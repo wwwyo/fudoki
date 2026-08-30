@@ -89,5 +89,19 @@ export const specGenerateOptions: OpenAPIGeneratorGenerateOptions = {
     description: V0_NOTICE,
   },
   servers: [{ url: 'https://api.fudoki.dev/v0' }],
+  components: {
+    securitySchemes: {
+      apiKey: {
+        type: 'http',
+        scheme: 'bearer',
+        description:
+          'ベータ用 API キー（任意）。無くても匿名レートで叩けるが、' +
+          'キーを送ると高いレート制限が適用される。手動発行で、GitHub の Issue で申請する。',
+      },
+    },
+  },
+  // `{}` を含む配列は「キー無しでも呼べる」ことを表す OpenAPI 3 の慣用表現。
+  // 必須にしないこと（キーは任意なので、これを外すと「必須」という嘘になる）
+  security: [{ apiKey: [] }, {}],
   paths: structuredClone(passthroughPath) as never,
 }

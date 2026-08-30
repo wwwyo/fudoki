@@ -18,7 +18,7 @@ description: 日本の地方自治体の予算を事業単位まで構造化し�
 https://api.fudoki.dev/v0
 ```
 
-REST（OpenAPI 準拠）の読み取り専用 API で、認証は不要です。応答はすべて、由来する配布物の revision（git commit）を持ちます。
+REST（OpenAPI 準拠）の読み取り専用 API です。API キーは任意です ── 無くても叩けますが、キーを送るとレート制限が緩和されます。キーは手動発行で、[GitHub の Issue](https://github.com/wwwyo/fudoki/issues) で申請してください。制限を超えると `429` が返ります。応答はすべて、由来する配布物の revision（git commit）を持ちます。
 
 **実験版（v0）**のため URL と応答スキーマには破壊的変更があり得ますが、データの識別子（`budget_line_id`、全国地方公共団体コード）は配布物側の契約であり、API の版とは独立に安定しています。
 

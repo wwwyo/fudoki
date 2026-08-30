@@ -9,6 +9,8 @@
     "deploy": "bun run build:release && wrangler deploy",
     "dev": "bun run build && wrangler dev",
     "spec": "bun run generate-spec.ts",
+    "keys:issue": "bun run scripts/issue-key.ts",
+    "keys:revoke": "bun run scripts/revoke-key.ts",
     "test": "bun run build && bun test",
     "typecheck": "tsc --noEmit"
   },

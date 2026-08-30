@@ -19,5 +19,20 @@
     "binding": "ASSETS",
     "run_worker_first": true,
     "not_found_handling": "none"
-  }
+  },
+  // ベータ用アクセス制御（access-control.ts）。namespace は
+  // `wrangler kv namespace create fudoki-api-keys` で作成済み。
+  // ⚠️ binding 名は wrangler の出力（title 由来の `fudoki_api_keys`）ではなく `API_KEYS`。
+  // コード側（assets.ts の Env）がこの名前で参照している。
+  "kv_namespaces": [{ "binding": "API_KEYS", "id": "4b80ef13a2b54558b1e3df7268443f70" }],
+  // ⚠️ simple.period は 10 か 60 しか指定できない（公式ドキュメントで確認済み）。
+  // ⚠️ カウンターはデータセンターごとで、グローバルな厳密上限にはならない
+  // （濫用の抑制であって課金保護ではない。access-control.ts にも同じ注記がある）。
+  // limit/period はここで固定され、実行時にキー単位で変えることはできない。
+  "ratelimits": [
+    { "name": "RATE_LIMIT_ANONYMOUS", "namespace_id": "1001", "simple": { "limit": 60, "period": 60 } },
+    { "name": "RATE_LIMIT_AUTHENTICATED", "namespace_id": "1002", "simple": { "limit": 600, "period": 60 } }
+  ],
+  // Workers Logs。access-control.ts の console.log がここに集約される
+  "observability": { "enabled": true }
 }
