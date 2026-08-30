@@ -14,7 +14,7 @@ export const resourceName = z.string()
  * ここへ足すまで deploy できない（黙って語彙が広がる事故を防ぐ）。
  */
 
-/** 階層の名前。団体ごとに使う部分集合が違う（statement の hierarchy に現れる並びが宣言） */
+/** 階層の名前。団体ごとに使う部分集合が違う（budgetLines の hierarchy に現れる並びが宣言） */
 export const levelName = z
   .enum([
     'fund',
@@ -43,6 +43,7 @@ export const dimensionName = z
 export const phaseId = z
   .enum(['approved', 'adjusted', 'adjusted-before-transfer', 'executed'])
   .describe('予算段階（approved=当初予算, adjusted=予算現額, adjusted-before-transfer=補正後予算額（流用・充用前）, executed=執行済額）')
+export type PhaseId = z.infer<typeof phaseId>
 
 export const direction = z
   .enum(['expenditure', 'revenue'])
@@ -63,7 +64,19 @@ export const cofogDecidedAtLevel = z
 /** 全 procedure 共通のエラー語彙 */
 export const base = oc.errors({
   BAD_REQUEST: {
-    data: z.object({ reason: z.string() }).optional(),
+    data: z
+      .object({
+        reason: z.string(),
+        /**
+         * 「次に何を指定すればよいか」を機械可読で示す（design doc「400 の本文には
+         * 必ず code と、supportedGroupings や allowedValues のような次に何を指定すればよいかを入れる」）。
+         * MCP は tool 実行エラーを言語モデルが自己修正するための応答と位置づけており、
+         * message の自由文だけでは分岐できない。
+         */
+        supportedGroupings: z.array(z.array(z.string())).optional().describe('groupBy に指定できる組み合わせの一覧'),
+        allowedValues: z.array(z.string()).optional().describe('phase / fund など、typed field に指定できる値の一覧'),
+      })
+      .optional(),
   },
   NOT_FOUND: {},
   /** deploy をまたいだ pageToken。入力誤り（400）と区別して 410 で返す */
@@ -72,6 +85,20 @@ export const base = oc.errors({
     message: 'pageToken was issued for a different revision. Restart from the first page.',
   },
 })
+
+/**
+ * ページングの入力の部品。**メソッドごとに専用の入力定義を持つ**方針（design doc「条件は
+ * typed field で受け、filter は範囲の絞り込みだけに使う」）なので、`filter` は各メソッドの
+ * 説明文つきで個別に宣言し、ここでは pageSize / pageToken だけを共有部品として切り出す。
+ */
+export const pageSizeInput = z
+  .coerce.number().int().min(0).optional()
+  .describe('1ページの最大件数。未指定・0 は既定値 1000。上限 1000（超過は丸める）。負数は 400')
+
+export const pageTokenInput = z
+  .string()
+  .optional()
+  .describe('前ページの nextPageToken。発行時と同じ問い合わせでだけ使える（pageSize は変えてよい）。deploy をまたぐと 410')
 
 /** AIP-158 のページング入力（List 系が spread して使う） */
 export const pageInput = {
@@ -82,11 +109,6 @@ export const pageInput = {
       'AIP-160 の部分集合。`field = value` を AND でつなぐ形のみ。' +
         '使えるフィールドは fiscalYear / direction / phase / cofog.division（scope ごとの必須・可否はエンドポイントの説明を参照）',
     ),
-  pageSize: z
-    .coerce.number().int().min(0).optional()
-    .describe('1ページの最大件数。未指定・0 は既定値 1000。上限 1000（超過は丸める）。負数は 400'),
-  pageToken: z
-    .string()
-    .optional()
-    .describe('前ページの nextPageToken。発行時と同じ filter でだけ使える（pageSize は変えてよい）。deploy をまたぐと 410'),
+  pageSize: pageSizeInput,
+  pageToken: pageTokenInput,
 }

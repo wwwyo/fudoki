@@ -12,7 +12,7 @@ import { decodePageToken, type PageToken } from '../lib/token'
 // v2 の implement(contract, { disableOutputValidation: true }) を待つ。
 export const os = implement(contract).$context<{ env: Env }>()
 
-export type Errors = Parameters<Parameters<typeof os.getStatement.handler>[0]>[0]['errors']
+export type Errors = Parameters<Parameters<typeof os.getBudgetLines.handler>[0]>[0]['errors']
 
 export const PAGE_SIZE_DEFAULT = 1000
 export const PAGE_SIZE_MAX = 1000

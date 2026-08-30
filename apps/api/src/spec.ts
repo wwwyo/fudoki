@@ -24,6 +24,14 @@ export const V0_PREFIX = '/v0'
 export const V0_DOCS_PATH = '/'
 /** OpenAPIReferencePlugin の specPath */
 export const V0_SPEC_PATH = '/openapi.json'
+/**
+ * MCP（remote）のエンドポイント。oRPC の router 外（index.ts が直接ハンドリングする）
+ * ので、除外判定と同じ理由でここに1つだけ宣言する。鍵不要（PRD の Goal）で
+ * アクセス制御は既定の keyed のまま通す ── path-class.ts がここを参照して
+ * 明示することで、将来 classifyPath の既定分岐を変えても `/mcp` の扱いが
+ * 黙って変わらないようにする。
+ */
+export const MCP_PATH = '/mcp'
 
 /**
  * 実行時（/v0/openapi.json）とビルド時（generate-spec.ts）の両方が使う converter 構成。

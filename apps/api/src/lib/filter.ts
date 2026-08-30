@@ -55,18 +55,23 @@ export function parseFilter(filter: string): ParsedFilter {
 }
 
 /**
- * pageToken に封入するフィルタの指紋。**pageSize は含めない**
- * （AIP-158 は継続取得の途中で pageSize を変えることを認めている）。
+ * 任意の record から指紋を作る（**pageSize は含めないこと** ── AIP-158 は継続取得の途中で
+ * pageSize を変えることを認めている）。FNV-1a 32bit。暗号強度は不要
+ * （改竄対策ではなく、別条件のトークン流用を検出するため）。
  */
-export function filterFingerprint(parsed: ParsedFilter): string {
+export function fingerprintOf(record: Record<string, unknown>): string {
   const canonical = JSON.stringify(
-    Object.fromEntries(Object.entries(parsed).filter(([, v]) => v !== undefined).sort()),
+    Object.fromEntries(Object.entries(record).filter(([, v]) => v !== undefined).sort()),
   )
-  // FNV-1a 32bit。暗号強度は不要（改竄対策ではなく、取り違え検出のため）
   let hash = 0x811c9dc5
   for (let i = 0; i < canonical.length; i++) {
     hash ^= canonical.charCodeAt(i)
     hash = Math.imul(hash, 0x01000193) >>> 0
   }
   return hash.toString(16).padStart(8, '0')
+}
+
+/** pageToken に封入するフィルタの指紋 */
+export function filterFingerprint(parsed: ParsedFilter): string {
+  return fingerprintOf(parsed)
 }

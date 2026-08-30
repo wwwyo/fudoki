@@ -3,7 +3,7 @@
  * procedure を contract の形に束ねるだけで、処理は持たない。
  * `os.router()` が contract との完全一致（実装漏れ・余剰）を型検査する。
  */
-import { getBudget, getStatement, listBudgets } from './procedure/budgets'
+import { aggregateBudgets, getBudget, getBudgetLines, listBudgets, searchBudgetLines } from './procedure/budgets'
 import { getJurisdiction, listJurisdictions } from './procedure/jurisdictions'
 import { os } from './procedure/shared'
 
@@ -12,6 +12,8 @@ export const router = os.router({
   getJurisdiction,
   listBudgets,
   getBudget,
-  getStatement,
+  getBudgetLines,
+  aggregateBudgets,
+  searchBudgetLines,
 })
 export type Router = typeof router

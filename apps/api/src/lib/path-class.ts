@@ -12,14 +12,14 @@
  * （ステータスコードの偶然の一致次第では）通り続けてしまうので、
  * 除外が黙って壊れる（AGENTS.md「同じ事実を2箇所で宣言しない」）。
  */
-import { ROOT_PATH, ROOT_SPEC_REDIRECT_PATH, V0_DOCS_PATH, V0_PREFIX, V0_SPEC_PATH } from '../spec'
+import { MCP_PATH, ROOT_PATH, ROOT_SPEC_REDIRECT_PATH, V0_DOCS_PATH, V0_PREFIX, V0_SPEC_PATH } from '../spec'
 
 export type PathClass =
   /** ドキュメント UI・spec・ルートリダイレクト。キーもレート制限も掛けない */
   | 'excluded'
   /** 自前フロント専用の口。API キーを埋め込めない設計なので IP だけで制限する */
   | 'rpc'
-  /** それ以外（`/v0/*` のクエリ API・配布物パススルー）。キー任意・レート制限あり */
+  /** それ以外（`/v0/*` のクエリ API・配布物パススルー・`/mcp`）。キー任意・レート制限あり */
   | 'keyed'
 
 const EXCLUDED_PATHS = new Set([
@@ -33,5 +33,9 @@ const EXCLUDED_PATHS = new Set([
 export function classifyPath(path: string): PathClass {
   if (EXCLUDED_PATHS.has(path)) return 'excluded'
   if (path === '/rpc' || path.startsWith('/rpc/')) return 'rpc'
+  // `/mcp` は既定の keyed 分岐に自然に落ちるが、MCP サーバは鍵無しで
+  // 使えることが PRD の Goal なので、意図した分岐であることを明示する
+  // （既定分岐の書き換えが `/mcp` の扱いを黙って変えないようにする）。
+  if (path === MCP_PATH) return 'keyed'
   return 'keyed'
 }

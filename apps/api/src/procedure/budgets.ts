@@ -3,14 +3,44 @@
  * 一覧の存在がカバレッジそのもの。
  */
 import {
-  type Env,
+  type AggBudgetsAsset,
+  type AggCrossAsset,
+  type AggHierarchyAsset,
+  type AggHierarchyCofogAsset,
+  type AggYearsCofogDivisionAsset,
+  type AggYearsTotalAsset,
   type CofogChunkFile,
+  type Env,
   type LinesChunkFile,
+  type NameIndexChunkFile,
+  type NameIndexEntry,
   paths,
   readJsonAsset,
 } from '../assets'
-import { parseBudgetId, type BudgetLine, type CrossBudgetLine } from '../contract'
-import { filterFingerprint, type ParsedFilter } from '../lib/filter'
+import {
+  budgetIdOf,
+  type BudgetLinesView,
+  cofogDepthOf,
+  CROSS_JURISDICTION_GROUPINGS,
+  hierarchyChildLevel,
+  hierarchyParentPathString,
+  JURISDICTION_YEARS_GROUPINGS,
+  type NameFieldValue,
+  parseBudgetId,
+  parseBudgetLineId,
+  parseHierarchyParent,
+  type SearchMatch,
+  SINGLE_BUDGET_GROUPINGS,
+  type StoredBudgetLine,
+  type StoredCrossBudgetLine,
+  SUPPORTED_GROUPINGS,
+  type Budget,
+  type BudgetDirectionScope,
+  type BudgetLine,
+  type GroupingKey,
+  type PhaseId,
+} from '../contract'
+import { fingerprintOf, type ParsedFilter } from '../lib/filter'
 import { encodePageToken } from '../lib/token'
 import {
   checkOffsetInRange,
@@ -21,6 +51,7 @@ import {
   scanPage,
   verifyToken,
   type Errors,
+  type Meta,
 } from './shared'
 
 export const listBudgets = os.listBudgets.handler(async ({ context, input, errors }) => {
@@ -47,41 +78,118 @@ export const getBudget = os.getBudget.handler(async ({ context, input, errors })
   return { budget, revision: meta.revision }
 })
 
-// ---- statement（予算の明細。budget 集約の内部） ----
+// ---- budgetLines（明細の一覧。design doc「明細の一覧」） ----
 
-export const getStatement = os.getStatement.handler(async ({ context, input, errors }) => {
+/**
+ * budget の isPrimary な段階を引く。BASIC の `amount` はこの段階1つに絞った軽量な形
+ * （design doc「view=BASIC（既定）：…金額…」）。500 で落とすのは、実在する budget の
+ * direction スコープに isPrimary が無いのは利用者の誤りではなくデプロイの不整合だから。
+ */
+function primaryPhaseOf(scope: BudgetDirectionScope, context: string): PhaseId {
+  const primary = scope.phases.find((p) => p.isPrimary)
+  if (!primary) throw new Error(`no isPrimary phase declared for ${context}`)
+  return primary.id
+}
+
+/** amounts 配列から特定の段階を取り出す。無ければデプロイの不整合として 500 で落とす */
+function pickAmount(amounts: readonly { phase: string; amount: number }[], phase: PhaseId, context: string): { phase: PhaseId; amount: number } {
+  const found = amounts.find((a) => a.phase === phase)
+  if (!found) throw new Error(`no amount at phase ${phase} for ${context}`)
+  return { phase: found.phase as PhaseId, amount: found.amount }
+}
+
+/**
+ * 保存形式（StoredBudgetLine。団体固有の完全な形）を、view に応じた公開の BudgetLine へ射影する。
+ * BASIC はここで全フィールドを削るのではなく、そもそも呼び出し側が hierarchy 等を
+ * 詰めないことで表す（optional なので undefined のまま返せば「返らない」と同じ）。
+ */
+function projectStoredLine(budgetName: string, line: StoredBudgetLine, primaryPhase: PhaseId, view: BudgetLinesView): BudgetLine {
+  const cofogFull = line.judgments.cofog
+  const base: BudgetLine = {
+    name: `${budgetName}/budgetLines/${line.budgetLineId}`,
+    budgetLineId: line.budgetLineId,
+    budget: budgetName,
+    fiscalYear: line.fiscalYear,
+    direction: line.direction,
+    amount: pickAmount(line.amounts, primaryPhase, `${budgetName}/budgetLines/${line.budgetLineId}`),
+    cofog: cofogFull ? { status: cofogFull.status, division: cofogFull.division, consolidation: cofogFull.consolidation } : null,
+  }
+  if (view === 'BASIC') return base
+  return {
+    ...base,
+    hierarchy: line.hierarchy,
+    dimensions: line.dimensions,
+    amounts: line.amounts,
+    judgments: line.judgments,
+  }
+}
+
+/**
+ * 横断（`-`）の保存形式は元から共通の最小軸しか持たないので、view=BASIC の形へ
+ * 直に写せる（FULL はここへ来る前に 400 で弾いている）。
+ * 横断の系列は expenditure の COFOG だけが対象（design doc: 歳入は not-applicable）なので direction は固定値。
+ */
+function projectCrossLine(meta: Meta, line: StoredCrossBudgetLine): BudgetLine {
+  const parsed = parseBudgetId(line.budget.slice('budgets/'.length))
+  if (!parsed) throw new Error(`cross line has a malformed budget reference: ${line.budget}`)
+  const budget = meta.budgetById.get(`${parsed.jurisdiction}:${parsed.fiscalYear}`)
+  if (!budget) throw new Error(`cross line references an unknown budget: ${line.budget}`)
+  const scope = budget.scopes.expenditure
+  if (!scope) throw new Error(`budget ${line.budget} has no expenditure scope but is referenced by a cross line`)
+  const primaryPhase = primaryPhaseOf(scope, `${line.budget}/expenditure`)
+  return {
+    name: `${line.budget}/budgetLines/${line.budgetLineId}`,
+    budgetLineId: line.budgetLineId,
+    budget: line.budget,
+    fiscalYear: line.fiscalYear,
+    direction: 'expenditure',
+    amount: pickAmount(line.amounts, primaryPhase, `${line.budget}/budgetLines/${line.budgetLineId}`),
+    cofog: line.cofog,
+  }
+}
+
+export const getBudgetLines = os.getBudgetLines.handler(async ({ context, input, errors }) => {
   const pageSize = resolvePageSize(input.pageSize)
   const filter = parseFilterOr400(input.filter, errors)
   if (filter.jurisdiction !== undefined) {
     throw errors.BAD_REQUEST({
-      message: 'jurisdiction is not a filter for statements. Specify the parent budget ({jurisdiction}:{year}) instead',
+      message: 'jurisdiction is not a filter for budgetLines. Specify the parent budget ({jurisdiction}:{year}) instead',
       data: { reason: 'unsupported filter field' },
     })
   }
 
   if (input.budget === '-') {
-    return crossBudgetStatement(context.env, filter, pageSize, input.pageToken, errors)
+    // design doc「FULL は実在する予算を親にしたときだけ許し、`-` では 400 にする」。
+    // 団体固有の hierarchy/dimensions は団体を固定しないと意味を持たない。
+    if (input.view === 'FULL') {
+      throw errors.BAD_REQUEST({
+        message: 'view=FULL requires a concrete budget as the parent (jurisdiction-specific fields have no meaning without fixing the jurisdiction). Omit view, or use view=BASIC, for the wildcard parent "-"',
+        data: { reason: 'FULL view not supported for wildcard parent' },
+      })
+    }
+    return crossBudgetLines(context.env, filter, pageSize, input.pageToken, input.view, errors)
   }
-  return budgetStatement(context.env, input.budget, filter, pageSize, input.pageToken, errors)
+  return budgetLinesForBudget(context.env, input.budget, filter, pageSize, input.pageToken, input.view, errors)
 })
 
-async function crossBudgetStatement(
+async function crossBudgetLines(
   env: Env,
   filter: ParsedFilter,
   pageSize: number,
   rawToken: string | undefined,
+  view: BudgetLinesView,
   errors: Errors,
 ) {
   if (filter.direction !== undefined || filter.phase !== undefined) {
     throw errors.BAD_REQUEST({
-      message: 'direction and phase filters are not supported for cross-budget statements',
+      message: 'direction and phase filters are not supported for cross-budget budgetLines',
       data: { reason: 'unsupported filter field for parent "-"' },
     })
   }
   const division = filter.cofogDivision
   if (division === undefined) {
     throw errors.BAD_REQUEST({
-      message: 'cofog.division filter is required for cross-budget statements',
+      message: 'cofog.division filter is required for cross-budget budgetLines',
       data: { reason: 'missing required filter' },
     })
   }
@@ -94,7 +202,9 @@ async function crossBudgetStatement(
 
   const meta = await readMeta(env)
   const family = paths.cofogFamily(division, filter.fiscalYear)
-  const fingerprint = filterFingerprint(filter)
+  // design doc「ページトークンには問い合わせ全体の指紋を入れる」── view も typed field の
+  // 一部なので、フィルタだけでなく view を含めて指紋にする(別 view のトークン流用を防ぐ)。
+  const fingerprint = fingerprintOf({ ...filter, view })
   const token =
     rawToken === undefined ? null : verifyToken(rawToken, { revision: meta.revision, family, fingerprint }, errors)
   const chunkIndex = token?.chunk ?? 0
@@ -104,28 +214,35 @@ async function crossBudgetStatement(
   if (chunk === null) {
     // 系列自体が無い（そのフィルタに該当が無い）のは先頭ページだけで正当
     if (token === null) {
-      return { scope: 'crossBudget' as const, lines: [], revision: meta.revision }
+      return { lines: [], revision: meta.revision }
     }
     throw errors.BAD_REQUEST({ message: 'pageToken points outside the result set', data: { reason: 'invalid pageToken' } })
   }
+  // design doc「実行時は revision の混在を止める」── meta と chunk の revision が
+  // 食い違うのは deploy やキャッシュの不整合であって利用者の誤りではないので 500 で落とす
+  if (chunk.revision !== meta.revision) {
+    throw new Error(`asset revision mismatch (meta=${meta.revision}, asset=${chunk.revision}) for ${paths.chunk(family, chunkIndex)}`)
+  }
   checkOffsetInRange(offset, chunk.lines.length, errors)
 
-  const { items, nextOffset } = scanPage<CrossBudgetLine>(chunk.lines, offset, pageSize, () => true)
+  const { items, nextOffset } = scanPage<StoredCrossBudgetLine>(chunk.lines, offset, pageSize, () => true)
   let nextPageToken: string | undefined
   if (nextOffset !== null) {
     nextPageToken = encodePageToken({ v: 1, rev: meta.revision, family, chunk: chunkIndex, off: nextOffset, fh: fingerprint })
   } else if (chunk.hasNext) {
     nextPageToken = encodePageToken({ v: 1, rev: meta.revision, family, chunk: chunkIndex + 1, off: 0, fh: fingerprint })
   }
-  return { scope: 'crossBudget' as const, lines: items, revision: chunk.revision, nextPageToken }
+  // design doc「応答の revision は一貫して meta のものにする」（旧実装はチャンク側の revision を返していた）
+  return { lines: items.map((l) => projectCrossLine(meta, l)), revision: meta.revision, nextPageToken }
 }
 
-async function budgetStatement(
+async function budgetLinesForBudget(
   env: Env,
   budgetId: string,
   filter: ParsedFilter,
   pageSize: number,
   rawToken: string | undefined,
+  view: BudgetLinesView,
   errors: Errors,
 ) {
   const parsed = parseBudgetId(budgetId)
@@ -148,16 +265,19 @@ async function budgetStatement(
   const { direction } = filter
   if (direction === undefined) {
     throw errors.BAD_REQUEST({
-      message: 'direction filter is required for a budget statement',
+      message: 'direction filter is required for budgetLines under a budget',
       data: { reason: 'missing required filter' },
     })
   }
   if (!budget.directions.includes(direction)) {
     throw errors.NOT_FOUND({ message: `${direction} is not covered for budget ${budgetId}` })
   }
+  const scope = budget.scopes[direction]
+  if (!scope) throw new Error(`budget ${budgetId} covers ${direction} but has no scopes.${direction}`)
+  const primaryPhase = primaryPhaseOf(scope, `${budgetId}/${direction}`)
 
   const family = paths.linesFamily(parsed.jurisdiction, parsed.fiscalYear, direction)
-  const fingerprint = filterFingerprint(filter)
+  const fingerprint = fingerprintOf({ ...filter, view })
   const token =
     rawToken === undefined ? null : verifyToken(rawToken, { revision: meta.revision, family, fingerprint }, errors)
   const chunkIndex = token?.chunk ?? 0
@@ -168,9 +288,12 @@ async function budgetStatement(
     if (token === null) throw new Error(`partition missing for covered budget: ${family}`)
     throw errors.BAD_REQUEST({ message: 'pageToken points outside the result set', data: { reason: 'invalid pageToken' } })
   }
+  if (chunk.revision !== meta.revision) {
+    throw new Error(`asset revision mismatch (meta=${meta.revision}, asset=${chunk.revision}) for ${paths.chunk(family, chunkIndex)}`)
+  }
   checkOffsetInRange(offset, chunk.lines.length, errors)
 
-  const predicate = (line: BudgetLine): boolean => {
+  const predicate = (line: StoredBudgetLine): boolean => {
     if (filter.phase !== undefined && !line.amounts.some((a) => a.phase === filter.phase)) return false
     if (filter.cofogDivision !== undefined && line.judgments.cofog?.division !== filter.cofogDivision) return false
     return true
@@ -182,5 +305,1017 @@ async function budgetStatement(
   } else if (chunk.hasNext) {
     nextPageToken = encodePageToken({ v: 1, rev: meta.revision, family, chunk: chunkIndex + 1, off: 0, fh: fingerprint })
   }
-  return { scope: 'budget' as const, lines: items, revision: chunk.revision, nextPageToken }
+  const budgetName = `budgets/${budgetId}`
+  return {
+    lines: items.map((l) => projectStoredLine(budgetName, l, primaryPhase, view)),
+    revision: meta.revision,
+    nextPageToken,
+  }
 }
+
+// ---- aggregate（budgets コレクションのカスタムメソッド。design doc「引ける集計の一覧」） ----
+
+/**
+ * 集計対象の phase の label を引く。単一 budget の場合は呼び出し側が直接 phaseScope.label を持つので
+ * 使わない ── ここは横断（複数団体）で、応答に含める代表 label を選ぶために使う
+ * （団体をまたいでも同じ phase id の label は同じはず。異なる場合は最初に見つかったものを使う）。
+ */
+function findPhaseLabel(meta: Meta, fiscalYear: string, direction: 'expenditure' | 'revenue', phase: string): string {
+  for (const b of meta.budgets) {
+    if (b.fiscalYear !== fiscalYear) continue
+    const found = b.scopes[direction]?.phases.find((p) => p.id === phase)
+    if (found) return found.label
+  }
+  return phase
+}
+
+/** budget のリソース名から団体ごとの provenance.sources を組む。実体は団体ごとに1回だけ作る */
+function provenanceSourcesFor(meta: Meta, jurisdictionIds: readonly string[]): {
+  sources: { id: string; title: string; path: string | null; license: string; kind: 'canonical' }[]
+  byJurisdiction: Map<string, string[]>
+} {
+  const sources: { id: string; title: string; path: string | null; license: string; kind: 'canonical' }[] = []
+  const byJurisdiction = new Map<string, string[]>()
+  for (const jid of jurisdictionIds) {
+    if (byJurisdiction.has(jid)) continue
+    const jurisdiction = meta.jurisdictionById.get(jid)
+    if (!jurisdiction) throw new Error(`aggregate: unknown jurisdiction referenced by an included budget: ${jid}`)
+    const license = jurisdiction.licenses[0]?.name ?? 'NOASSERTION'
+    const ids: string[] = []
+    jurisdiction.sources.forEach((s, i) => {
+      const id = `${jid}-src-${i}`
+      ids.push(id)
+      sources.push({ id, title: s.title, path: s.path, license, kind: 'canonical' as const })
+    })
+    byJurisdiction.set(jid, ids)
+  }
+  return { sources, byJurisdiction }
+}
+
+export const aggregateBudgets = os.aggregateBudgets.handler(async ({ context, input, errors }) => {
+  const filter = parseFilterOr400(input.filter, errors)
+  if (filter.direction !== undefined || filter.phase !== undefined || filter.cofogDivision !== undefined) {
+    throw errors.BAD_REQUEST({
+      message:
+        'direction, phase, and cofog.division are not filter fields for budgets:aggregate. ' +
+        'direction and phase are typed fields; cofog depth is chosen via groupBy',
+      data: { reason: 'unsupported filter field' },
+    })
+  }
+  if (input.hierarchyParent !== undefined && !input.groupBy.includes('hierarchy')) {
+    throw errors.BAD_REQUEST({
+      message: 'hierarchyParent is only usable when groupBy includes "hierarchy"',
+      data: { reason: 'hierarchyParent not applicable' },
+    })
+  }
+
+  const groupByKey = input.groupBy.join(',')
+  if (!SUPPORTED_GROUPINGS.some((g) => g.join(',') === groupByKey)) {
+    throw errors.BAD_REQUEST({
+      message: `unsupported groupBy: [${input.groupBy.join(', ')}]`,
+      data: { reason: 'UNSUPPORTED_AGGREGATION', supportedGroupings: mutableGroupings(SUPPORTED_GROUPINGS) },
+    })
+  }
+  if (input.direction === 'revenue') {
+    throw errors.BAD_REQUEST({
+      message: 'COFOG is not applicable to revenue (cofog_status is always not-applicable for revenue lines). ' +
+        'budgets:aggregate only supports direction=expenditure in this version',
+      data: { reason: 'cofog not applicable to revenue', supportedGroupings: mutableGroupings(SUPPORTED_GROUPINGS) },
+    })
+  }
+
+  const meta = await readMeta(context.env)
+
+  // design doc「範囲の表し方」: filter だけで範囲を決める。jurisdiction・fiscalYear の
+  // 有無の組み合わせが3通りの axis（単一予算 / 同一団体の年度横断 / 団体横断）を分ける。
+  if (filter.jurisdiction !== undefined && filter.fiscalYear !== undefined) {
+    return singleBudgetAggregate(context.env, meta, filter.jurisdiction, filter.fiscalYear, input, errors)
+  }
+  if (filter.jurisdiction !== undefined) {
+    return jurisdictionYearsAggregate(context.env, meta, filter.jurisdiction, input, errors)
+  }
+  if (filter.fiscalYear !== undefined) {
+    return crossJurisdictionAggregate(context.env, meta, filter.fiscalYear, input, errors)
+  }
+  throw errors.BAD_REQUEST({
+    message: 'filter must specify jurisdiction, fiscalYear, or both for budgets:aggregate',
+    data: { reason: 'missing required filter' },
+  })
+})
+
+type AggregateTypedInput = {
+  filter?: string
+  direction: 'expenditure' | 'revenue'
+  phase: PhaseId
+  fund: string
+  groupBy: GroupingKey[]
+  hierarchyParent?: string
+  pageSize?: number
+  pageToken?: string
+}
+
+const ZERO_STAT = { amount: 0, lineCount: 0 } as const
+const ZERO_RESIDUAL = { unclassifiable: ZERO_STAT, outOfScope: ZERO_STAT, notDescended: ZERO_STAT } as const
+
+async function singleBudgetAggregate(
+  env: Env,
+  meta: Meta,
+  jurisdictionId: string,
+  fiscalYear: string,
+  input: AggregateTypedInput,
+  errors: Errors,
+) {
+  if (!SINGLE_BUDGET_GROUPINGS.some((g) => g.join(',') === input.groupBy.join(','))) {
+    throw errors.BAD_REQUEST({
+      message:
+        `groupBy [${input.groupBy.join(', ')}] is not supported when filter narrows to a single jurisdiction ` +
+        '("jurisdiction" cannot be an axis here — every cell would already be that one jurisdiction)',
+      data: { reason: 'UNSUPPORTED_AGGREGATION', supportedGroupings: mutableGroupings(SINGLE_BUDGET_GROUPINGS) },
+    })
+  }
+  if (!meta.jurisdictionById.has(jurisdictionId)) {
+    throw errors.NOT_FOUND({ message: `unknown jurisdiction: ${jurisdictionId}` })
+  }
+  const budgetId = budgetIdOf(jurisdictionId, fiscalYear)
+  const budget = meta.budgetById.get(budgetId)
+  if (!budget) throw errors.NOT_FOUND({ message: `unknown budget: ${budgetId}` })
+  if (input.direction !== 'expenditure') throw new Error('unreachable: revenue is rejected before reaching here')
+  if (!budget.directions.includes(input.direction)) {
+    throw errors.NOT_FOUND({ message: `${input.direction} is not covered for budget ${budgetId}` })
+  }
+  const scope = budget.scopes[input.direction]
+  if (!scope) throw new Error(`budget ${budgetId} covers ${input.direction} but has no scopes.${input.direction}`)
+
+  const phaseScope = scope.phases.find((p) => p.id === input.phase)
+  if (!phaseScope) {
+    throw errors.BAD_REQUEST({
+      message: `phase "${input.phase}" is not available for ${budgetId}/${input.direction}`,
+      data: { reason: 'invalid phase', allowedValues: scope.phases.map((p) => p.id) },
+    })
+  }
+  if (input.fund !== 'all' && !scope.funds.some((f) => f.code === input.fund)) {
+    throw errors.BAD_REQUEST({
+      message: `fund "${input.fund}" is not available for ${budgetId}/${input.direction}`,
+      data: { reason: 'invalid fund', allowedValues: scope.funds.map((f) => f.code) },
+    })
+  }
+
+  if (input.groupBy[0] === 'hierarchy') {
+    return hierarchyAggregate(env, meta, jurisdictionId, fiscalYear, budget, scope, phaseScope, input, errors)
+  }
+
+  const depth = cofogDepthOf(input.groupBy)
+  const assetPath = paths.aggBudget(jurisdictionId, fiscalYear, input.direction, input.phase, input.fund, depth)
+  const asset = await readJsonAsset<AggBudgetsAsset>(env, assetPath)
+  if (asset === null) {
+    // 契約が許した組み合わせ（SINGLE_BUDGET_GROUPINGS）なのにアセットが無いのは
+    // 利用者の誤りではなくデプロイの不整合（design doc: 404 にしない。500 のまま落とす）
+    throw new Error(`aggregate asset missing for an allowed combination: ${assetPath}`)
+  }
+  if (asset.revision !== meta.revision) {
+    throw new Error(`aggregate asset revision mismatch (meta=${meta.revision}, asset=${asset.revision}) for ${assetPath}`)
+  }
+
+  const pageSize = resolvePageSize(input.pageSize)
+  const fingerprint = fingerprintOf({
+    filter: input.filter,
+    direction: input.direction,
+    phase: input.phase,
+    fund: input.fund,
+    groupBy: groupByFingerprintValue(input.groupBy),
+  })
+  const family = assetPath
+  const token = input.pageToken === undefined ? null : verifyToken(input.pageToken, { revision: meta.revision, family, fingerprint }, errors)
+  const offset = token?.off ?? 0
+  checkOffsetInRange(offset, asset.cells.length, errors)
+  const { items, nextOffset } = scanPage(asset.cells, offset, pageSize, () => true)
+  let nextPageToken: string | undefined
+  if (nextOffset !== null) {
+    nextPageToken = encodePageToken({ v: 1, rev: meta.revision, family, chunk: 0, off: nextOffset, fh: fingerprint })
+  }
+
+  const cofogDimension = input.groupBy[0]!
+  const cells = items.map((c) => ({
+    dimensions: [{ dimension: cofogDimension, code: c.code, label: c.label }],
+    amount: c.amount,
+    lineCount: c.lineCount,
+  }))
+
+  const warnings: { code: 'UNCONSOLIDATED_INTERFUND_TRANSFERS'; message: string }[] = []
+  if (input.fund === 'all' && asset.consolidation.eliminated.lineCount > 0) {
+    warnings.push({
+      code: 'UNCONSOLIDATED_INTERFUND_TRANSFERS',
+      message: '会計間の繰出を消去していないため、全会計の合計は移転を二重に含む',
+    })
+  }
+
+  const jurisdiction = meta.jurisdictionById.get(jurisdictionId)!
+  const { sources, byJurisdiction } = provenanceSourcesFor(meta, [jurisdictionId])
+
+  return {
+    cells,
+    residual: asset.residual,
+    total: asset.total,
+    currency: 'JPY' as const,
+    amountUnit: '1' as const,
+    query: {
+      filter: input.filter ?? '',
+      direction: input.direction,
+      phase: { id: phaseScope.id, label: phaseScope.label },
+      fund: input.fund,
+      groupBy: input.groupBy,
+      hierarchyParent: null,
+      budgets: [budget.name],
+      fundScope: {
+        funds: input.fund === 'all' ? scope.funds : scope.funds.filter((f) => f.code === input.fund),
+        consolidation: asset.consolidation,
+      },
+    },
+    warnings,
+    omitted: [],
+    supportedGroupings: mutableGroupings(SINGLE_BUDGET_GROUPINGS),
+    judgment: ['cofog' as const],
+    provenance: {
+      sources,
+      byBudget: { [budget.name]: byJurisdiction.get(jurisdictionId) ?? [] },
+      attribution: `${jurisdiction.label}の予算（${jurisdiction.sources.map((s) => s.title).join('; ')}）を出典とする`,
+      modifications: 'COFOG（Classification of the Functions of Government）別の分類は fudoki が行った判断で、原典（自治体の公表資料）には無い',
+    },
+    revision: meta.revision,
+    nextPageToken,
+  }
+}
+
+async function crossJurisdictionAggregate(
+  env: Env,
+  meta: Meta,
+  fiscalYear: string,
+  input: AggregateTypedInput,
+  errors: Errors,
+) {
+  if (input.fund !== 'all') {
+    throw errors.BAD_REQUEST({
+      message:
+        'fund cannot be specified without narrowing filter to a single jurisdiction (fund codes are not aligned across jurisdictions; ' +
+        'e.g. the general account is "01" in Mitaka, "1" in Komae, "" in Tama)',
+      data: { reason: 'fund requires a single jurisdiction' },
+    })
+  }
+  if (!CROSS_JURISDICTION_GROUPINGS.some((g) => g.join(',') === input.groupBy.join(','))) {
+    throw errors.BAD_REQUEST({
+      message:
+        `groupBy [${input.groupBy.join(', ')}] is missing "jurisdiction". filter has no jurisdiction, so this query spans multiple ` +
+        'jurisdictions; summing without a jurisdiction axis would produce a cross-jurisdiction total that does not exist ' +
+        '(add "jurisdiction" to groupBy, or narrow filter to a single jurisdiction)',
+      data: { reason: 'UNSUPPORTED_AGGREGATION', supportedGroupings: mutableGroupings(CROSS_JURISDICTION_GROUPINGS) },
+    })
+  }
+  if (input.direction !== 'expenditure') throw new Error('unreachable: revenue is rejected before reaching here')
+  const anyBudgetThisYear = meta.budgets.some((b) => b.fiscalYear === fiscalYear)
+  if (!anyBudgetThisYear) throw errors.NOT_FOUND({ message: `no budgets for fiscalYear ${fiscalYear}` })
+
+  const depth = cofogDepthOf(input.groupBy)
+  const assetPath = paths.aggCross(fiscalYear, input.direction, input.phase, depth)
+  const asset = await readJsonAsset<AggCrossAsset>(env, assetPath)
+  if (asset === null) {
+    throw new Error(`aggregate asset missing for an allowed combination: ${assetPath}`)
+  }
+  if (asset.revision !== meta.revision) {
+    throw new Error(`aggregate asset revision mismatch (meta=${meta.revision}, asset=${asset.revision}) for ${assetPath}`)
+  }
+
+  const pageSize = resolvePageSize(input.pageSize)
+  const fingerprint = fingerprintOf({
+    filter: input.filter,
+    direction: input.direction,
+    phase: input.phase,
+    fund: input.fund,
+    groupBy: groupByFingerprintValue(input.groupBy),
+  })
+  const family = assetPath
+  const token = input.pageToken === undefined ? null : verifyToken(input.pageToken, { revision: meta.revision, family, fingerprint }, errors)
+  const offset = token?.off ?? 0
+  checkOffsetInRange(offset, asset.cells.length, errors)
+  const { items, nextOffset } = scanPage(asset.cells, offset, pageSize, () => true)
+  let nextPageToken: string | undefined
+  if (nextOffset !== null) {
+    nextPageToken = encodePageToken({ v: 1, rev: meta.revision, family, chunk: 0, off: nextOffset, fh: fingerprint })
+  }
+
+  const cofogDimension = input.groupBy.find((g) => g !== 'jurisdiction')!
+  const cells = items.map((c) => ({
+    dimensions: [
+      { dimension: 'jurisdiction' as const, code: c.jurisdiction, label: c.jurisdictionLabel },
+      { dimension: cofogDimension, code: c.code, label: c.label },
+    ],
+    amount: c.amount,
+    lineCount: c.lineCount,
+  }))
+
+  const warnings: { code: 'UNCONSOLIDATED_INTERFUND_TRANSFERS'; message: string }[] = []
+  if (asset.consolidation.eliminated.lineCount > 0) {
+    warnings.push({
+      code: 'UNCONSOLIDATED_INTERFUND_TRANSFERS',
+      message: '会計間の繰出を消去していないため、全会計の合計は移転を二重に含む',
+    })
+  }
+
+  const includedJurisdictionIds = asset.includedBudgets.map((b) => parseBudgetId(b.split('/')[1]!)?.jurisdiction ?? fail())
+  const { sources, byJurisdiction } = provenanceSourcesFor(meta, includedJurisdictionIds)
+  const byBudget: Record<string, string[]> = {}
+  for (const budgetName of asset.includedBudgets) {
+    const parsed = parseBudgetId(budgetName.split('/')[1]!)
+    if (!parsed) throw new Error(`aggregate: malformed budget id in includedBudgets: ${budgetName}`)
+    byBudget[budgetName] = byJurisdiction.get(parsed.jurisdiction) ?? []
+  }
+  const attributionParts = [...new Set(includedJurisdictionIds)].map((jid) => meta.jurisdictionById.get(jid)?.label ?? jid)
+
+  return {
+    cells,
+    residual: asset.residual,
+    // total は返さない（filter が複数団体にまたがるため。design doc「団体をまたいで足さない」）
+    currency: 'JPY' as const,
+    amountUnit: '1' as const,
+    query: {
+      filter: input.filter ?? '',
+      direction: input.direction,
+      phase: { id: input.phase, label: findPhaseLabel(meta, fiscalYear, input.direction, input.phase) },
+      fund: input.fund,
+      groupBy: input.groupBy,
+      hierarchyParent: null,
+      budgets: asset.includedBudgets,
+      // 会計コードは団体で揃わないため、横断では個々の会計を列挙しない（design doc Caveats 3）
+      fundScope: { funds: [], consolidation: asset.consolidation },
+    },
+    warnings,
+    omitted: asset.omittedBudgets,
+    supportedGroupings: mutableGroupings(CROSS_JURISDICTION_GROUPINGS),
+    judgment: ['cofog' as const],
+    provenance: {
+      sources,
+      byBudget,
+      attribution: `${attributionParts.join('、')}の予算を出典とする`,
+      modifications: 'COFOG（Classification of the Functions of Government）別の分類は fudoki が行った判断で、原典（各自治体の公表資料）には無い',
+    },
+    revision: meta.revision,
+    nextPageToken,
+  }
+}
+
+// ---- hierarchy 軸（design doc Tasks 5）。単一 budget の科目階層集計 ----
+
+/**
+ * hierarchy / hierarchy,cofog.division を集計する。呼び出し元（singleBudgetAggregate）が
+ * jurisdiction・budget・direction・phase・fund の存在をすでに検証済み。
+ */
+async function hierarchyAggregate(
+  env: Env,
+  meta: Meta,
+  jurisdictionId: string,
+  fiscalYear: string,
+  budget: Budget,
+  scope: BudgetDirectionScope,
+  phaseScope: { id: PhaseId; label: string },
+  input: AggregateTypedInput,
+  errors: Errors,
+) {
+  // 款・項のコードは会計内でしか一意でない（COFOG と違い fudoki の判断による正規化を経ていない）。
+  // "all" のまま kan/kou コードだけで合算すると、会計をまたいで別カテゴリを1つのセルへ混ぜてしまう
+  // （実測: 三鷹市の kan_code "01" は一般会計で議会費、国保特別会計で総務費）。
+  // design doc は fund と hierarchy の相互作用を明記していないため、これはこの実装での判断。
+  if (input.fund === 'all') {
+    throw errors.BAD_REQUEST({
+      message:
+        'hierarchy aggregation requires a specific fund. kan/kou codes are meaningful only within one fund ' +
+        '(unlike COFOG codes, which are a fudoki judgment normalized across funds), so summing across funds by ' +
+        'code would merge unrelated categories',
+      data: { reason: 'fund required for hierarchy aggregation', allowedValues: scope.funds.map((f) => f.code) },
+    })
+  }
+
+  const parsed = input.hierarchyParent === undefined ? [] : parseHierarchyParent(input.hierarchyParent)
+  if (!Array.isArray(parsed)) {
+    throw errors.BAD_REQUEST({ message: parsed.error, data: { reason: 'invalid hierarchyParent' } })
+  }
+  const childLevel = hierarchyChildLevel(parsed)
+  const parentPath = hierarchyParentPathString(parsed)
+  const includesCofog = input.groupBy.length === 2
+
+  const assetPath = includesCofog
+    ? paths.aggHierarchyCofog(jurisdictionId, fiscalYear, input.direction, input.phase, input.fund, parentPath)
+    : paths.aggHierarchy(jurisdictionId, fiscalYear, input.direction, input.phase, input.fund, parentPath)
+  const asset = includesCofog
+    ? await readJsonAsset<AggHierarchyCofogAsset>(env, assetPath)
+    : await readJsonAsset<AggHierarchyAsset>(env, assetPath)
+  if (asset === null) {
+    // hierarchyParent は自由入力なので、根拠のない親（存在しない款・項）を指した場合もここに来る。
+    // 契約は "kan=XX" の形式までしか縛れず中身までは検証していないので、これは利用者の誤りでもありうる
+    // ── ただし build はデータに実在する親のパスをすべて生成しているので、実在する親なら必ずアセットがある。
+    throw errors.NOT_FOUND({ message: `no data at hierarchyParent "${parentPath}" for ${budget.id}/${input.direction}` })
+  }
+  if (asset.revision !== meta.revision) {
+    throw new Error(`aggregate asset revision mismatch (meta=${meta.revision}, asset=${asset.revision}) for ${assetPath}`)
+  }
+
+  const pageSize = resolvePageSize(input.pageSize)
+  const fingerprint = fingerprintOf({
+    filter: input.filter,
+    direction: input.direction,
+    phase: input.phase,
+    fund: input.fund,
+    groupBy: groupByFingerprintValue(input.groupBy),
+    hierarchyParent: input.hierarchyParent ?? '',
+  })
+  const family = assetPath
+  const token = input.pageToken === undefined ? null : verifyToken(input.pageToken, { revision: meta.revision, family, fingerprint }, errors)
+  const offset = token?.off ?? 0
+  checkOffsetInRange(offset, asset.cells.length, errors)
+  const { items, nextOffset } = scanPage(asset.cells, offset, pageSize, () => true)
+  let nextPageToken: string | undefined
+  if (nextOffset !== null) {
+    nextPageToken = encodePageToken({ v: 1, rev: meta.revision, family, chunk: 0, off: nextOffset, fh: fingerprint })
+  }
+
+  const cells = includesCofog
+    ? (items as AggHierarchyCofogAsset['cells']).map((c) => ({
+        dimensions: [
+          { dimension: 'hierarchy' as const, code: c.code, label: c.label },
+          { dimension: 'cofog.division' as const, code: c.cofogDivision, label: c.cofogLabel },
+        ],
+        amount: c.amount,
+        lineCount: c.lineCount,
+      }))
+    : (items as AggHierarchyAsset['cells']).map((c) => ({
+        dimensions: [{ dimension: 'hierarchy' as const, code: c.code, label: c.label }],
+        amount: c.amount,
+        lineCount: c.lineCount,
+      }))
+
+  // fund は特定の会計コードなので会計間の繰出という概念自体が無く、UNCONSOLIDATED_INTERFUND_TRANSFERS は起きない
+  const residual = includesCofog ? (asset as AggHierarchyCofogAsset).residual : ZERO_RESIDUAL
+
+  const jurisdiction = meta.jurisdictionById.get(jurisdictionId)!
+  const { sources, byJurisdiction } = provenanceSourcesFor(meta, [jurisdictionId])
+
+  return {
+    cells,
+    residual,
+    total: asset.total,
+    currency: 'JPY' as const,
+    amountUnit: '1' as const,
+    query: {
+      filter: input.filter ?? '',
+      direction: input.direction,
+      phase: { id: phaseScope.id, label: phaseScope.label },
+      fund: input.fund,
+      groupBy: input.groupBy,
+      hierarchyParent: input.hierarchyParent ?? null,
+      budgets: [budget.name],
+      fundScope: { funds: scope.funds.filter((f) => f.code === input.fund), consolidation: scope.consolidation },
+    },
+    warnings: [],
+    omitted: [],
+    supportedGroupings: mutableGroupings(SINGLE_BUDGET_GROUPINGS),
+    judgment: includesCofog ? ['cofog' as const] : [],
+    provenance: {
+      sources,
+      byBudget: { [budget.name]: byJurisdiction.get(jurisdictionId) ?? [] },
+      attribution: `${jurisdiction.label}の予算（${jurisdiction.sources.map((s) => s.title).join('; ')}）を出典とする`,
+      modifications: includesCofog
+        ? 'COFOG（Classification of the Functions of Government）別の分類は fudoki が行った判断で、原典（自治体の公表資料）には無い'
+        : '款・項・目の階層は原典のとおりで、fudoki の判断は加えていない',
+    },
+    revision: meta.revision,
+    nextPageToken,
+  }
+}
+
+// ---- fiscalYear 軸（design doc Tasks 6）。同一団体の年度横断 ----
+
+function findPhaseLabelForJurisdiction(meta: Meta, jurisdictionId: string, direction: 'expenditure' | 'revenue', phase: string): string {
+  for (const b of meta.budgets) {
+    if (b.jurisdictionId !== jurisdictionId) continue
+    const found = b.scopes[direction]?.phases.find((p) => p.id === phase)
+    if (found) return found.label
+  }
+  return phase
+}
+
+async function jurisdictionYearsAggregate(
+  env: Env,
+  meta: Meta,
+  jurisdictionId: string,
+  input: AggregateTypedInput,
+  errors: Errors,
+) {
+  if (!meta.jurisdictionById.has(jurisdictionId)) {
+    throw errors.NOT_FOUND({ message: `unknown jurisdiction: ${jurisdictionId}` })
+  }
+  if (!JURISDICTION_YEARS_GROUPINGS.some((g) => g.join(',') === input.groupBy.join(','))) {
+    throw errors.BAD_REQUEST({
+      message:
+        `groupBy [${input.groupBy.join(', ')}] is not supported when filter narrows to a jurisdiction without a fiscalYear ` +
+        '(expected "fiscalYear" or "fiscalYear,cofog.division" — aggregating across years of one jurisdiction)',
+      data: { reason: 'UNSUPPORTED_AGGREGATION', supportedGroupings: mutableGroupings(JURISDICTION_YEARS_GROUPINGS) },
+    })
+  }
+  if (input.hierarchyParent !== undefined) {
+    throw errors.BAD_REQUEST({
+      message: 'hierarchyParent is not usable with the fiscalYear axis',
+      data: { reason: 'hierarchyParent not applicable' },
+    })
+  }
+  if (input.direction !== 'expenditure') throw new Error('unreachable: revenue is rejected before reaching here')
+
+  const budgetsForJ = meta.budgets.filter((b) => b.jurisdictionId === jurisdictionId && b.directions.includes('expenditure'))
+  if (budgetsForJ.length === 0) throw errors.NOT_FOUND({ message: `no expenditure budgets for jurisdiction ${jurisdictionId}` })
+
+  const includesCofog = input.groupBy.length === 2
+  const assetPath = includesCofog
+    ? paths.aggYearsCofogDivision(jurisdictionId, input.direction, input.phase, input.fund)
+    : paths.aggYearsTotal(jurisdictionId, input.direction, input.phase, input.fund)
+  const asset = includesCofog
+    ? await readJsonAsset<AggYearsCofogDivisionAsset>(env, assetPath)
+    : await readJsonAsset<AggYearsTotalAsset>(env, assetPath)
+  if (asset === null) {
+    throw new Error(`aggregate asset missing for an allowed combination: ${assetPath}`)
+  }
+  if (asset.revision !== meta.revision) {
+    throw new Error(`aggregate asset revision mismatch (meta=${meta.revision}, asset=${asset.revision}) for ${assetPath}`)
+  }
+
+  const pageSize = resolvePageSize(input.pageSize)
+  const fingerprint = fingerprintOf({
+    filter: input.filter,
+    direction: input.direction,
+    phase: input.phase,
+    fund: input.fund,
+    groupBy: groupByFingerprintValue(input.groupBy),
+  })
+  const family = assetPath
+  const token = input.pageToken === undefined ? null : verifyToken(input.pageToken, { revision: meta.revision, family, fingerprint }, errors)
+  const offset = token?.off ?? 0
+  checkOffsetInRange(offset, asset.cells.length, errors)
+  const { items, nextOffset } = scanPage(asset.cells, offset, pageSize, () => true)
+  let nextPageToken: string | undefined
+  if (nextOffset !== null) {
+    nextPageToken = encodePageToken({ v: 1, rev: meta.revision, family, chunk: 0, off: nextOffset, fh: fingerprint })
+  }
+
+  const cells = includesCofog
+    ? (items as AggYearsCofogDivisionAsset['cells']).map((c) => ({
+        dimensions: [
+          { dimension: 'fiscalYear' as const, code: c.fiscalYear, label: null },
+          { dimension: 'cofog.division' as const, code: c.cofogDivision, label: c.cofogLabel },
+        ],
+        amount: c.amount,
+        lineCount: c.lineCount,
+        fundScope: c.fundScope,
+      }))
+    : (items as AggYearsTotalAsset['cells']).map((c) => ({
+        dimensions: [{ dimension: 'fiscalYear' as const, code: c.fiscalYear, label: null }],
+        amount: c.amount,
+        lineCount: c.lineCount,
+        fundScope: c.fundScope,
+      }))
+
+  const residual = includesCofog
+    ? Object.values((asset as AggYearsCofogDivisionAsset).residualByYear).reduce(
+        (s, r) => ({
+          unclassifiable: { amount: s.unclassifiable.amount + r.unclassifiable.amount, lineCount: s.unclassifiable.lineCount + r.unclassifiable.lineCount },
+          outOfScope: { amount: s.outOfScope.amount + r.outOfScope.amount, lineCount: s.outOfScope.lineCount + r.outOfScope.lineCount },
+          notDescended: { amount: s.notDescended.amount + r.notDescended.amount, lineCount: s.notDescended.lineCount + r.notDescended.lineCount },
+        }),
+        { unclassifiable: { amount: 0, lineCount: 0 }, outOfScope: { amount: 0, lineCount: 0 }, notDescended: { amount: 0, lineCount: 0 } },
+      )
+    : ZERO_RESIDUAL
+
+  // design doc「total は範囲が1つの団体に閉じているときだけ返す」── ここは団体は1つ（年度をまたぐだけ）
+  const cellsSum = cells.reduce((s, c) => ({ amount: s.amount + c.amount, lineCount: s.lineCount + c.lineCount }), { amount: 0, lineCount: 0 })
+  const residualSum = {
+    amount: residual.unclassifiable.amount + residual.outOfScope.amount + residual.notDescended.amount,
+    lineCount: residual.unclassifiable.lineCount + residual.outOfScope.lineCount + residual.notDescended.lineCount,
+  }
+  const total = { amount: cellsSum.amount + residualSum.amount, lineCount: cellsSum.lineCount + residualSum.lineCount }
+
+  const omitted = asset.omittedYears.map((o) => ({ budget: `budgets/${jurisdictionId}:${o.fiscalYear}`, code: o.code }))
+
+  // query.fundScope は年度をまたぐ union（design doc: セルごとの fundScope が正）。
+  // consolidation は年度をまたいだ単純合計（1つの数値で会計範囲の変化を表せないための妥協）
+  const fundsUnion = new Map<string, string | null>()
+  let retained = { amount: 0, lineCount: 0 }
+  let eliminated = { amount: 0, lineCount: 0 }
+  for (const c of cells) {
+    for (const f of c.fundScope.funds) if (!fundsUnion.has(f.code)) fundsUnion.set(f.code, f.label)
+    retained = { amount: retained.amount + c.fundScope.consolidation.retained.amount, lineCount: retained.lineCount + c.fundScope.consolidation.retained.lineCount }
+    eliminated = { amount: eliminated.amount + c.fundScope.consolidation.eliminated.amount, lineCount: eliminated.lineCount + c.fundScope.consolidation.eliminated.lineCount }
+  }
+
+  const jurisdiction = meta.jurisdictionById.get(jurisdictionId)!
+  const { sources, byJurisdiction } = provenanceSourcesFor(meta, [jurisdictionId])
+  const budgetsIncluded = budgetsForJ
+    .filter((b) => !asset.omittedYears.some((o) => o.fiscalYear === b.fiscalYear))
+    .map((b) => b.name)
+    .sort()
+
+  return {
+    cells,
+    residual,
+    total,
+    currency: 'JPY' as const,
+    amountUnit: '1' as const,
+    query: {
+      filter: input.filter ?? '',
+      direction: input.direction,
+      phase: { id: input.phase, label: findPhaseLabelForJurisdiction(meta, jurisdictionId, input.direction, input.phase) },
+      fund: input.fund,
+      groupBy: input.groupBy,
+      hierarchyParent: null,
+      budgets: budgetsIncluded,
+      fundScope: {
+        funds: [...fundsUnion.entries()].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)).map(([code, label]) => ({ code, label })),
+        consolidation: { retained, eliminated },
+      },
+    },
+    warnings: [],
+    omitted,
+    supportedGroupings: mutableGroupings(JURISDICTION_YEARS_GROUPINGS),
+    judgment: includesCofog ? ['cofog' as const] : [],
+    provenance: {
+      sources,
+      byBudget: Object.fromEntries(budgetsIncluded.map((name) => [name, byJurisdiction.get(jurisdictionId) ?? []])),
+      attribution: `${jurisdiction.label}の予算（${jurisdiction.sources.map((s) => s.title).join('; ')}）を出典とする`,
+      modifications: includesCofog
+        ? 'COFOG（Classification of the Functions of Government）別の分類は fudoki が行った判断で、原典（自治体の公表資料）には無い'
+        : '',
+    },
+    revision: meta.revision,
+    nextPageToken,
+  }
+}
+
+/** readonly な groupBy allowlist を、エラー応答の data（mutable な string[][]）へ変換する */
+function mutableGroupings(groupings: readonly (readonly GroupingKey[])[]): GroupingKey[][] {
+  return groupings.map((g) => [...g])
+}
+
+/** pageToken の指紋に groupBy を含めるための正規化（配列の要素順は仕様上意味を持つのでそのまま結合する） */
+function groupByFingerprintValue(groupBy: readonly GroupingKey[]): string {
+  return groupBy.join(',')
+}
+
+function fail(): never {
+  throw new Error('aggregate: malformed budget id encountered while building provenance')
+}
+
+// ---- budgetLines:search（design doc「名称の検索」） ----
+
+const ALL_NAME_FIELDS: readonly NameFieldValue[] = ['accountLabel', 'projectName']
+/** 原典に名称が無いことが scopes.names.hierarchy から判定できる階層（design doc: 狛江市の款・項・目） */
+const NAME_SCOPED_LEVELS = new Set(['kan', 'kou', 'moku'])
+
+type SearchTypedInput = {
+  query: string
+  filter?: string
+  direction?: 'expenditure' | 'revenue'
+  phase?: PhaseId
+  fund?: string
+  nameField?: NameFieldValue[]
+  level?: string
+  pageSize?: number
+  pageToken?: string
+}
+
+/**
+ * level（kan/kou/moku）が budgetsInScope のどの (budget, direction) にも
+ * canonical な名称を持たないかどうか。design doc「原典が名称を持たない階層を level に
+ * 指定した検索は、0件ではなく400を返す」の判定に使う。
+ */
+function levelHasNoNamesAnywhere(
+  budgetsInScope: readonly Budget[],
+  level: string,
+  directionsToCheck: readonly ('expenditure' | 'revenue')[],
+): boolean {
+  for (const b of budgetsInScope) {
+    for (const dir of directionsToCheck) {
+      const scope = b.scopes[dir]
+      if (!scope) continue
+      const h = scope.names.hierarchy.find((h) => h.level === level)
+      if (h?.hasName) return false
+    }
+  }
+  return true
+}
+
+function canUseProjectNameInstead(budgetsInScope: readonly Budget[], directionsToCheck: readonly ('expenditure' | 'revenue')[]): boolean {
+  return budgetsInScope.some((b) => directionsToCheck.some((dir) => b.scopes[dir]?.names.projectName != null))
+}
+
+type NamedCoverageEntry = {
+  budget: string
+  field: NameFieldValue
+  funds: { code: string; label: string | null }[]
+  code: 'NO_NAMES' | 'PARTIAL_NAMES'
+  message: string
+}
+
+/**
+ * 完全でない (budget, field) の組だけを列挙する（design doc「coverage は固定値にせず、
+ * filter で絞られた範囲について計算する」）。フルカバレッジの組は列挙しない。
+ */
+function computeNamedCoverage(
+  budgetsInScope: readonly Budget[],
+  nameFields: readonly NameFieldValue[],
+  level: string | undefined,
+  directionsToCheck: readonly ('expenditure' | 'revenue')[],
+): NamedCoverageEntry[] {
+  const out: NamedCoverageEntry[] = []
+  for (const b of budgetsInScope) {
+    for (const dir of directionsToCheck) {
+      const scope = b.scopes[dir]
+      if (!scope) continue
+      if (nameFields.includes('accountLabel') && level !== undefined && NAME_SCOPED_LEVELS.has(level)) {
+        const h = scope.names.hierarchy.find((h) => h.level === level)
+        if (h && !h.hasName) {
+          out.push({
+            budget: b.name,
+            field: 'accountLabel',
+            funds: scope.funds,
+            code: 'NO_NAMES',
+            message: `${level} has no canonical name in the raw data for ${b.id}/${dir}`,
+          })
+        }
+      }
+      if (nameFields.includes('projectName')) {
+        const pn = scope.names.projectName
+        if (pn === null) {
+          out.push({
+            budget: b.name,
+            field: 'projectName',
+            funds: scope.funds,
+            code: 'NO_NAMES',
+            message: `no project_names mapping exists for ${b.id}/${dir}`,
+          })
+        } else if (!pn.fiscalYears.includes(b.fiscalYear)) {
+          out.push({
+            budget: b.name,
+            field: 'projectName',
+            funds: scope.funds.filter((f) => pn.funds.includes(f.code)),
+            code: 'PARTIAL_NAMES',
+            message: `project names only cover fiscal years ${pn.fiscalYears.join(', ')} for ${b.jurisdictionId}/${dir} (this budget is ${b.fiscalYear})`,
+          })
+        } else if (pn.funds.length < scope.funds.length) {
+          out.push({
+            budget: b.name,
+            field: 'projectName',
+            funds: scope.funds.filter((f) => pn.funds.includes(f.code)),
+            code: 'PARTIAL_NAMES',
+            message: `project names only cover fund(s) ${pn.funds.join(', ')} (out of ${scope.funds.map((f) => f.code).join(', ')}) for ${b.id}/${dir}`,
+          })
+        }
+      }
+    }
+  }
+  return out
+}
+
+/**
+ * 名称索引の1件（NameIndexEntry）×1 ref を、応答を組む前の中間形へ展開したもの。
+ * jurisdiction/fiscalYear/direction は ref の budgetLineId から機械的に決まる
+ * （parseBudgetLineId）ので、この段階まで運んでおく。hierarchy・amounts はまだ持たない
+ * （resolveLine で取りに行く。ページに乗る分だけ解決すれば足りるため、ここでは持たせない）。
+ */
+type SearchCandidate = {
+  matched: { field: NameFieldValue; level: string; value: string }
+  nameSource: 'canonical' | 'judgment'
+  budgetLineId: string
+  jurisdiction: string
+  fiscalYear: string
+  direction: 'expenditure' | 'revenue'
+  fund: { code: string; label: string | null }
+}
+
+/** budgetLineId 昇順（同一 id 内は field, level, value の順）。design doc「並び順は明細識別子の昇順に固定する」 */
+function compareCandidates(a: SearchCandidate, b: SearchCandidate): number {
+  if (a.budgetLineId !== b.budgetLineId) return a.budgetLineId < b.budgetLineId ? -1 : 1
+  if (a.matched.field !== b.matched.field) return a.matched.field < b.matched.field ? -1 : 1
+  if (a.matched.level !== b.matched.level) return a.matched.level < b.matched.level ? -1 : 1
+  return a.matched.value < b.matched.value ? -1 : a.matched.value > b.matched.value ? 1 : 0
+}
+
+/**
+ * 名称索引を全チャンク走査し（design doc「1回のリクエストで全チャンクを走査して該当を集める」）、
+ * query・nameField・level・direction・fund・jurisdiction/fiscalYear で絞った候補を集めて返す。
+ * field/level/value による絞り込みは NameIndexEntry 単位（索引の単位）でできるので、
+ * refs へ降りるのは実際にマッチしたエントリだけ ── コースな階層（款など）で無い限り、
+ * 実際に展開する ref の数は索引の全件数よりずっと小さい。
+ */
+async function gatherSearchCandidates(
+  env: Env,
+  meta: Meta,
+  family: string,
+  typedInput: SearchTypedInput,
+  nameFields: readonly NameFieldValue[],
+  budgetIdSet: ReadonlySet<string>,
+): Promise<SearchCandidate[]> {
+  const entryMatches = (entry: NameIndexEntry): boolean => {
+    if (!nameFields.includes(entry.field)) return false
+    if (typedInput.level !== undefined) {
+      if (entry.field === 'accountLabel' && entry.level !== typedInput.level) return false
+      if (entry.field === 'projectName' && typedInput.level !== 'daijigyo') return false
+    }
+    return entry.value.includes(typedInput.query)
+  }
+
+  const candidates: SearchCandidate[] = []
+  for (let chunkIndex = 0; ; chunkIndex++) {
+    const chunk = await readJsonAsset<NameIndexChunkFile>(env, paths.chunk(family, chunkIndex))
+    if (chunk === null) break
+    if (chunk.revision !== meta.revision) {
+      throw new Error(`asset revision mismatch (meta=${meta.revision}, asset=${chunk.revision}) for ${paths.chunk(family, chunkIndex)}`)
+    }
+    for (const entry of chunk.lines) {
+      if (!entryMatches(entry)) continue
+      for (const ref of entry.refs) {
+        const parsed = parseBudgetLineId(ref.budgetLineId)
+        if (parsed === null) throw new Error(`name index ref has a malformed budgetLineId: ${ref.budgetLineId}`)
+        if (!budgetIdSet.has(`${parsed.jurisdiction}:${parsed.fiscalYear}`)) continue
+        if (typedInput.direction !== undefined && parsed.direction !== typedInput.direction) continue
+        if (typedInput.fund !== undefined && ref.fund.code !== typedInput.fund) continue
+        candidates.push({
+          matched: { field: entry.field, level: entry.level, value: entry.value },
+          nameSource: entry.nameSource,
+          budgetLineId: ref.budgetLineId,
+          jurisdiction: parsed.jurisdiction,
+          fiscalYear: parsed.fiscalYear,
+          direction: parsed.direction,
+          fund: ref.fund,
+        })
+      }
+    }
+    if (!chunk.hasNext) break
+  }
+  candidates.sort(compareCandidates)
+  return candidates
+}
+
+/**
+ * budgetLineId から明細本体（hierarchy・amounts）を引く。名称索引は明細を丸ごと持たない
+ * （NameIndexEntry のコメント参照）ので、応答を組むときに `lines/{jurisdiction}/{fiscalYear}-{direction}`
+ * チャンクへ戻る。family 単位でメモ化し、同じ (jurisdiction, fiscalYear, direction) を指す
+ * 複数の候補が1回のアセット読み込みで済むようにする。
+ */
+function makeLineResolver(env: Env, meta: Meta): (c: SearchCandidate) => Promise<StoredBudgetLine> {
+  const familyCache = new Map<string, Promise<Map<string, StoredBudgetLine>>>()
+  return async (c) => {
+    const family = paths.linesFamily(c.jurisdiction, c.fiscalYear, c.direction)
+    let loading = familyCache.get(family)
+    if (loading === undefined) {
+      loading = loadLinesFamily(env, meta, family)
+      familyCache.set(family, loading)
+    }
+    const lines = await loading
+    const line = lines.get(c.budgetLineId)
+    if (line === undefined) throw new Error(`name index references a budget line missing from ${family}: ${c.budgetLineId}`)
+    return line
+  }
+}
+
+async function loadLinesFamily(env: Env, meta: Meta, family: string): Promise<Map<string, StoredBudgetLine>> {
+  const out = new Map<string, StoredBudgetLine>()
+  for (let chunkIndex = 0; ; chunkIndex++) {
+    const chunk = await readJsonAsset<LinesChunkFile>(env, paths.chunk(family, chunkIndex))
+    if (chunk === null) break
+    if (chunk.revision !== meta.revision) {
+      throw new Error(`asset revision mismatch (meta=${meta.revision}, asset=${chunk.revision}) for ${paths.chunk(family, chunkIndex)}`)
+    }
+    for (const line of chunk.lines) out.set(line.budgetLineId, line)
+    if (!chunk.hasNext) break
+  }
+  return out
+}
+
+export const searchBudgetLines = os.searchBudgetLines.handler(async ({ context, input, errors }) => {
+  const typedInput = input as SearchTypedInput
+  const filter = parseFilterOr400(typedInput.filter, errors)
+  if (filter.direction !== undefined || filter.phase !== undefined || filter.cofogDivision !== undefined) {
+    throw errors.BAD_REQUEST({
+      message: 'only jurisdiction and fiscalYear filters are supported for budgetLines:search; direction/phase/fund are typed fields',
+      data: { reason: 'unsupported filter field' },
+    })
+  }
+  if (typedInput.fund !== undefined && filter.jurisdiction === undefined) {
+    throw errors.BAD_REQUEST({
+      message:
+        'fund cannot be specified without narrowing filter to a single jurisdiction (fund codes are not aligned across jurisdictions; ' +
+        'e.g. the general account is "01" in Mitaka, "1" in Komae, "" in Tama)',
+      data: { reason: 'fund requires a single jurisdiction' },
+    })
+  }
+
+  const meta = await readMeta(context.env)
+  if (filter.jurisdiction !== undefined && !meta.jurisdictionById.has(filter.jurisdiction)) {
+    throw errors.NOT_FOUND({ message: `unknown jurisdiction: ${filter.jurisdiction}` })
+  }
+  const budgetsInScope = meta.budgets.filter(
+    (b) =>
+      (filter.jurisdiction === undefined || b.jurisdictionId === filter.jurisdiction) &&
+      (filter.fiscalYear === undefined || b.fiscalYear === filter.fiscalYear) &&
+      (typedInput.direction === undefined || b.directions.includes(typedInput.direction)),
+  )
+  if (budgetsInScope.length === 0) {
+    throw errors.NOT_FOUND({ message: 'no budgets match the given filter/direction for budgetLines:search' })
+  }
+
+  const nameFields = typedInput.nameField ?? ALL_NAME_FIELDS
+  const directionsToCheck: readonly ('expenditure' | 'revenue')[] =
+    typedInput.direction !== undefined ? [typedInput.direction] : (['expenditure', 'revenue'] as const)
+
+  // design doc: 原典が名称を持たない階層（狛江市の款・項・目）を level に指定した検索は 400
+  if (
+    typedInput.level !== undefined &&
+    NAME_SCOPED_LEVELS.has(typedInput.level) &&
+    nameFields.includes('accountLabel') &&
+    levelHasNoNamesAnywhere(budgetsInScope, typedInput.level, directionsToCheck)
+  ) {
+    const alt = canUseProjectNameInstead(budgetsInScope, directionsToCheck)
+    throw errors.BAD_REQUEST({
+      message:
+        `level "${typedInput.level}" has no canonical name in the raw data for the given scope. ` +
+        (alt
+          ? 'Try nameField=["projectName"] instead (fudoki\'s judgment-based mapping), or search a different level.'
+          : 'No projectName mapping is available for this scope either.'),
+      data: { reason: 'level has no canonical names' },
+    })
+  }
+
+  const fingerprint = fingerprintOf({
+    filter: typedInput.filter,
+    direction: typedInput.direction,
+    phase: typedInput.phase,
+    fund: typedInput.fund,
+    nameField: [...nameFields].sort().join(','),
+    level: typedInput.level ?? '',
+    query: typedInput.query,
+  })
+  const family = paths.searchAll
+  const pageSize = resolvePageSize(typedInput.pageSize)
+  const token = typedInput.pageToken === undefined ? null : verifyToken(typedInput.pageToken, { revision: meta.revision, family, fingerprint }, errors)
+  const offset = token?.off ?? 0
+
+  const budgetIdSet = new Set(budgetsInScope.map((b) => b.id))
+
+  const namedCoverage = computeNamedCoverage(budgetsInScope, nameFields, typedInput.level, directionsToCheck)
+  const jurisdictionIds = [...new Set(budgetsInScope.map((b) => b.jurisdictionId))].sort()
+  const { sources, byJurisdiction } = provenanceSourcesFor(meta, jurisdictionIds)
+  const byBudget: Record<string, string[]> = {}
+  for (const b of budgetsInScope) byBudget[b.name] = byJurisdiction.get(b.jurisdictionId) ?? []
+  const attribution = `${jurisdictionIds.map((jid) => meta.jurisdictionById.get(jid)?.label ?? jid).join('、')}の予算を出典とする`
+  const modifications = nameFields.includes('projectName')
+    ? '事業名（projectName）は fudoki が決算資料等から対応づけた判断で、原典（自治体の公表資料）には無い'
+    : ''
+  const judgment = nameFields.includes('projectName') ? (['projectName'] as const) : []
+
+  const emptyOutput = () => ({
+    matches: [] as SearchMatch[],
+    coverage: { searchedNameFields: [...nameFields], namedCoverage },
+    judgment: [...judgment],
+    provenance: { sources, byBudget, attribution, modifications },
+    revision: meta.revision,
+  })
+
+  // design doc「1回のリクエストで索引全体を走査できる大きさにする」「チャンクに割る場合も、
+  // 1回のリクエストで全チャンクを走査して該当を集める（1チャンクで打ち切らない）」。
+  // 索引は名称の単位で小さいので、フィルタに合う候補（budgetLineId 昇順）を毎回このまま作り直す
+  // ── 同じ revision・同じ入力なら決定的に同じ列になるので、offset をその列への位置として使い回せる。
+  const candidates = await gatherSearchCandidates(context.env, meta, family, typedInput, nameFields, budgetIdSet)
+  checkOffsetInRange(offset, candidates.length, errors)
+
+  // design doc「ページングは「該当」に対して行う」「該当が0件のページを返さない」。
+  // phase フィルタは明細の amounts を解決しないと判定できないので、offset から候補を1件ずつ
+  // 解決しながら pageSize 件集まるか候補が尽きるまで進める（1リクエスト内で完結させる。
+  // scanPage と同じ「フィルタで落ちても offset は生の位置で進める」考え方の非同期版）。
+  const resolveLine = makeLineResolver(context.env, meta)
+  const matches: SearchMatch[] = []
+  let i = offset
+  for (; i < candidates.length && matches.length < pageSize; i++) {
+    const c = candidates[i]!
+    const line = await resolveLine(c)
+    const amounts = typedInput.phase !== undefined ? line.amounts.filter((a) => a.phase === typedInput.phase) : line.amounts
+    if (typedInput.phase !== undefined && amounts.length === 0) continue
+    matches.push({
+      name: `budgets/${budgetIdOf(c.jurisdiction, c.fiscalYear)}/budgetLines/${c.budgetLineId}`,
+      budget: `budgets/${budgetIdOf(c.jurisdiction, c.fiscalYear)}`,
+      fiscalYear: c.fiscalYear,
+      direction: c.direction,
+      fund: c.fund,
+      matched: c.matched as SearchMatch['matched'],
+      nameSource: c.nameSource,
+      hierarchy: line.hierarchy as SearchMatch['hierarchy'],
+      amounts: amounts as SearchMatch['amounts'],
+    })
+  }
+  const nextPageToken = i < candidates.length ? encodePageToken({ v: 1, rev: meta.revision, family, chunk: 0, off: i, fh: fingerprint }) : undefined
+
+  return { ...emptyOutput(), matches, nextPageToken }
+})
