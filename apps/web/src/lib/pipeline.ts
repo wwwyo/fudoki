@@ -170,7 +170,7 @@ export function yenShort(v: number | string): string {
   return `${yen(x)}円`
 }
 
-/** COFOG 1999 のディビジョン。色は識別の補助で、コードは必ず文字でも出す */
+/** COFOG 1999 の大分類。色は識別の補助で、コードは必ず文字でも出す */
 export const DIVISION_COLOR: Record<string, string> = {
   '01': 'oklch(62% 0.06 260)',
   '02': 'oklch(58% 0.06 300)',

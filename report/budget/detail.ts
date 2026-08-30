@@ -40,7 +40,7 @@ export const LEVEL_JA: Record<Level, string> = {
   setsu: '節', saisetsu: '細節', saisaisetsu: '細々節',
 }
 
-/** COFOG 1999 のディビジョン。**ここが唯一の定義**で、SQL に埋める値もここから作る */
+/** COFOG 1999 の大分類。**ここが唯一の定義**で、SQL に埋める値もここから作る */
 export const COFOG_DIVISIONS: Record<string, string> = {
   '01': '一般公共サービス', '02': '防衛', '03': '公共の秩序及び安全', '04': '経済業務',
   '05': '環境保護', '06': '住宅及び地域アメニティ', '07': '保健',
@@ -48,13 +48,13 @@ export const COFOG_DIVISIONS: Record<string, string> = {
 }
 
 /**
- * COFOG のグループ（`04.5`）とクラス（`04.5.1`）の名称。
+ * COFOG の中分類（`04.5`）と小分類（`04.5.1`）の名称。
  *
- * ⚠️ **規則が使うコードだけを持つ。** COFOG 1999 の全 69 グループ・109 クラスを写すと、
+ * ⚠️ **規則が使うコードだけを持つ。** COFOG 1999 の全 69 中分類・109 小分類を写すと、
  * 使っていない大半が検証されないまま増える。規則が新しいコードを使ったら
  * `cofogLabel` が落ちるので、黙って名称なしで配られることはない。
  *
- * ⚠️ **クラスを足したらその親のグループも要る。** `04.1.2` は
+ * ⚠️ **小分類を足したらその親の中分類も要る。** `04.1.2` は
  * 04.1（一般経済・商業・労働関係）の下にあり、画面は division → group → class の
  * 連なりで見せるため、途中が欠けると「まだ降りていない」と区別がつかなくなる。
  */
@@ -96,7 +96,7 @@ export const COFOG_NAMES: Record<CofogDepth, Record<string, string>> = {
 }
 
 export const COFOG_DEPTH_JA: Record<CofogDepth, string> = {
-  division: 'ディビジョン（2桁）', group: 'グループ（04.5）', class: 'クラス（04.5.1）',
+  division: '大分類（2桁）', group: '中分類（04.5）', class: '小分類（04.5.1）',
 }
 
 /**
@@ -161,7 +161,7 @@ export type DetailRow = Record<DetailColumn, string>
  * 割当の根拠（`cofog_basis`）を行へ入れていたとき、狛江市の歳出の明細 23.7 MB のうち
  * **7.0 MB がこの1列**だった（異なり値は19個で、`cofog_rule_id` が全行にあるので情報量はゼロ）。
  * 規則表として1回だけ運び、`cofog_rule_id` で引く。配布物の派生パッケージと同じ形。
- * ディビジョン名も同じ理由で運ばない（画面が `COFOG_DIVISIONS` を持っている）。
+ * 大分類名も同じ理由で運ばない（画面が `COFOG_DIVISIONS` を持っている）。
  */
 export type DetailTable = {
   columns: DetailColumn[]
@@ -206,7 +206,7 @@ export function basisOf(table: DetailTable, row: DetailRow): string {
   return table.ruleBasis[cell(row, 'cofog_rule_id')] ?? ''
 }
 
-/** COFOG ディビジョンの表示名。行には入っておらず、宣言から引く */
+/** COFOG 大分類の表示名。行には入っておらず、宣言から引く */
 export function divisionLabelOf(row: DetailRow): string {
   return COFOG_DIVISIONS[cell(row, 'cofog_division_code')] ?? ''
 }

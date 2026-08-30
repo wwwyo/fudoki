@@ -545,7 +545,7 @@ function detailProjection(code: string, direction: Direction): DetailTable {
   ].join('')
   // ⚠️ **異なり数の少ない列を行へ join しない。** 根拠（basis）は19種類しかないのに
   // 行へ入れると狛江市の歳出だけで 7.0 MB になる（`cofog_rule_id` が全行にあるので情報量ゼロ）。
-  // ディビジョン名も画面が宣言として持っている。どちらも規則表・宣言から引く。
+  // 大分類名も画面が宣言として持っている。どちらも規則表・宣言から引く。
   const rows = q<Record<string, unknown>>(`
     select c.*, ${src}${constants},
            d.cofog_status, d.cofog_division as cofog_division_code,

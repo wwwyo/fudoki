@@ -26,7 +26,7 @@ export function CofogPanel({ report }: { report: ReportData }) {
     <div className="flex flex-col gap-6">
       <p className="max-w-[72ch] text-sm leading-relaxed text-muted-foreground">
         <span className="font-medium text-foreground">COFOG</span>（Classification of the Functions of Government）は政府支出の機能別分類で、
-        教育や保健といった<span className="font-medium text-foreground">10のディビジョン</span>（01〜10）に分ける国際標準。
+        教育や保健といった<span className="font-medium text-foreground">10の大分類</span>（01〜10）に分ける国際標準。
         版は {t.cofogVersion} ／
         コード表の取得元 <a className="underline" href={t.cofogSource.url} target="_blank" rel="noreferrer">{t.cofogSource.name}</a> ／
         規則 {t.ruleCount} 本（うち{t.ruleScope.shared} 本は法定語彙にもとづく共通の規則、{t.ruleScope.jurisdictionSpecific} 本はこの団体固有）。
@@ -35,7 +35,7 @@ export function CofogPanel({ report }: { report: ReportData }) {
       </p>
 
       <section className="flex flex-col gap-2">
-        <h3 className="font-medium">ディビジョン別の金額</h3>
+        <h3 className="font-medium">大分類別の金額</h3>
         <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
           {divs.map((v) => (
             <span key={v.division} className="inline-flex items-center gap-1.5">
@@ -60,16 +60,16 @@ export function CofogPanel({ report }: { report: ReportData }) {
       <section className="flex flex-col gap-2">
         <h3 className="font-medium">COFOG のどの深さまで降りているか</h3>
         <p className="max-w-[72ch] text-sm leading-relaxed text-muted-foreground">
-          COFOG も階層で、ディビジョン（<code>04</code>）の下にグループ（<code>04.5</code>）、
-          その下にクラス（<code>04.5.1</code>）がある。fudoki は
+          COFOG も階層で、大分類（<code>04</code>）の下に中分類（<code>04.5</code>）、
+          その下に小分類（<code>04.5.1</code>）がある。fudoki は
           <span className="font-medium text-foreground">規則が決めた粒度をそのまま持つ</span>。
         </p>
         <p className="max-w-[72ch] rounded-md border border-dashed p-3 text-sm leading-relaxed">
-          ⚠️ <span className="font-medium">グループ・クラスが空なのは「該当が無い」ではなく
+          ⚠️ <span className="font-medium">中分類・小分類が空なのは「該当が無い」ではなく
           「まだ降りていない」</span>という意味である。
           款の名称だけで決まる規則（総務費 → 01、民生費 → 10）は
-          <span className="font-medium">ディビジョン止まりが正しく</span>、
-          グループを埋めるには項や目まで下げる判断が要る。
+          <span className="font-medium">大分類止まりが正しく</span>、
+          中分類を埋めるには項や目まで下げる判断が要る。
           下表は達成率ではなく<span className="font-medium">現在地</span>で、
           割合の高さを品質の指標として使わない（分類不能の割合と同じ扱い）。
         </p>
@@ -102,7 +102,7 @@ export function CofogPanel({ report }: { report: ReportData }) {
         <p className="max-w-[72ch] text-xs text-muted-foreground">
           母数は<span className="font-medium text-foreground">割当済みの {yen(t.assigned.count)} 行</span>
           （{yen(t.assigned.sum)} 円）。分類不能・対象外には割当先が無いので深さも無く、ここには入らない。
-          「そこまで降りた」は累積（クラスまで降りた行はグループにも数える）、
+          「そこまで降りた」は累積（小分類まで降りた行は中分類にも数える）、
           「そこで止まった」はその深さが最も深い到達点である行。
         </p>
       </section>
@@ -111,7 +111,7 @@ export function CofogPanel({ report }: { report: ReportData }) {
         <h3 className="font-medium">割当先ごとの金額</h3>
         <p className="max-w-[72ch] text-sm text-muted-foreground">
           割当済みを COFOG のコードごとに。
-          同じディビジョンが複数行に分かれるのは、降りている深さが規則ごとに違うため
+          同じ大分類が複数行に分かれるのは、降りている深さが規則ごとに違うため
           （<code>09</code> 止まりの行と <code>09.1</code> まで降りた行は別の事実である）。
         </p>
         <div className="overflow-x-auto rounded-lg border">

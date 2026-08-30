@@ -13,6 +13,7 @@ import { CofogPanel } from "@/components/cofog-panel"
 import { CoveragePanel } from "@/components/coverage-panel"
 import { ChecksPanel } from "@/components/checks-panel"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardDescription,
@@ -282,6 +283,17 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
                 : `${m.fiscalYears.join("・")}年度`}{" "}
               · {m.phase.label}
             </span>
+            {/* この団体の支出分析（COFOG 別の金額）への導線。パイプラインは検証、分析は数字を見る場所で目的が違う。
+                analysis.tsx 側の「ELT パイプライン報告を見る」ボタンと対になる導線なので、扱いを揃える。
+                ⚠️ `render` に `<a>` を渡すときは `nativeButton={false}` が要る（Base UI の既定は
+                `nativeButton: true` で、落とすとボタンのセマンティクスが外れて実行時に警告が出る） */}
+            <Button
+              variant="outline"
+              size="sm"
+              nativeButton={false}
+              className="ml-auto shrink-0"
+              render={<a href={withBase(`/analysis/${current.code}/`)}>この団体の支出分析を見る</a>}
+            />
           </div>
 
           <FlowGraph

@@ -1,5 +1,5 @@
 /**
- * 東京都62団体の地図。自治体をクリックするとその団体のパイプラインへ飛ぶ。
+ * 東京都62団体の地図。自治体をクリックするとその団体の支出分析へ飛ぶ。
  *
  * ## なぜ素の SVG で描くか
  *
@@ -213,12 +213,12 @@ export function TokyoMap({ className }: Props) {
         height={mainland.height}
         className="h-auto w-full max-w-2xl"
         role="img"
-        aria-label="東京都の区市町村。クリックするとその団体のパイプラインへ移動します"
+        aria-label="東京都の区市町村。クリックするとその団体の支出分析へ移動します"
       >
         {mainland.shapes.map((s) => (
           <Tooltip key={s.code}>
             <TooltipTrigger
-              render={<a href={withBase(`/pipeline/${s.code}/`)} aria-label={s.name} className="group outline-none" />}
+              render={<a href={withBase(`/analysis/${s.code}/`)} aria-label={s.name} className="group outline-none" />}
             >
               <path
                 d={s.d}
@@ -249,7 +249,7 @@ export function TokyoMap({ className }: Props) {
             <TooltipTrigger
               render={
                 <a
-                  href={withBase(`/pipeline/${s.code}/`)}
+                  href={withBase(`/analysis/${s.code}/`)}
                   aria-label={s.name}
                   className="group focus-visible:ring-ring/50 flex flex-col items-center gap-0.5 rounded-md p-1 outline-none focus-visible:ring-[3px]"
                 />
