@@ -11,11 +11,14 @@ from __future__ import annotations
 import hashlib
 import json
 import pathlib
+import ssl
 import urllib.error
 import urllib.parse
 import urllib.request
 from dataclasses import dataclass
 from datetime import UTC, datetime
+
+import certifi
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 
@@ -27,7 +30,14 @@ UA = "fudoki/0.1 (+https://github.com/wwwyo/fudoki)"
 CACHE = ROOT / "ingestion" / ".http-cache"
 # 取り直す間隔。原典が差し替わったかを見るのは取得の目的なので、無期限にはしない。
 CACHE_TTL_SECONDS = 24 * 60 * 60
-MAX_BYTES = 20 * 1024 * 1024
+# 取得の上限。**取得元の異常を止めるための柵**であって、資料の大きさの想定ではない。
+# ⚠️ **20MB では本物の資料を弾いていた。** 3団体の CSV に合わせた値だったので、
+# 予算書・決算書の PDF を取り始めた途端に落ち始めた（2026-08-30 実測で、
+# 東村山市の決算書 37.7MB を筆頭に 173 本中 9 本が超えていた）。
+# しかも `RuntimeError` は「取得元の異常」と名乗るので、**自分の閾値が原因なのに
+# 相手のせいに見える**。北区・荒川区・調布市はこれで事項別明細書が落ち、
+# 浅い資料だけが残って「目どまり」と誤って判定されていた。
+MAX_BYTES = 128 * 1024 * 1024
 
 
 @dataclass
@@ -97,9 +107,23 @@ def _to_cache(got: Fetched) -> None:
     }, ensure_ascii=False))
 
 
+def _tls_context() -> ssl.SSLContext:
+    """CA を certifi に固定する。
+
+    ⚠️ **OS の信頼ストアに任せると、団体によって黙って落ちる。**
+    Python は macOS では `/private/etc/ssl/cert.pem` を見るが、これは Homebrew の
+    OpenSSL が置いたもので、GlobalSign GCC R46 系の root を持たないことがある。
+    実測（2026-08-30）で目黒区・小金井市が `CERTIFICATE_VERIFY_FAILED` になり、
+    同じ URL を curl と openssl は検証できた。**取得元の異常ではなく実行環境の差**なので、
+    どの環境でも同じ判定になるよう束を明示する。検証は外さない（外すと相手の
+    なりすましを取り込む経路になる）。
+    """
+    return ssl.create_default_context(cafile=certifi.where())
+
+
 def _http_get_once(url: str) -> Fetched:
     req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=40) as res:  # noqa: S310  (取得元は sources.toml の固定 https)
+    with urllib.request.urlopen(req, timeout=40, context=_tls_context()) as res:  # noqa: S310  (取得元は sources.toml の固定 https)
         # 引数なしの read() を使う。分割して読むと、途中で接続が切れても
         # 短いレスポンスとして黙って通ってしまう（IncompleteRead が上がらない）。
         body = res.read()
