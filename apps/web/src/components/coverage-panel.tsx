@@ -10,7 +10,7 @@
  * 集計はしない。割合はすべて生成側（`report/budget/build.ts`）が持つ。
  */
 import type { ReportData } from "@/lib/pipeline"
-import { pct, yenShort } from "@/lib/pipeline"
+import { count, pct, yen, yenShort } from "@/lib/pipeline"
 import { Badge } from "@/components/ui/badge"
 import {
   Table,
@@ -99,9 +99,9 @@ export function CoveragePanel({ report }: { report: ReportData }) {
                   <Badge variant="secondary">{DIRECTION_JA[c.direction]}</Badge>
                 </TableCell>
                 <TableCell className="text-right tabular-nums">
-                  {c.rows.toLocaleString("ja-JP")}
+                  {count(c.rows)}
                 </TableCell>
-                <TableCell className="text-right tabular-nums" title={`${c.sum.toLocaleString("ja-JP")} 円`}>
+                <TableCell className="text-right tabular-nums" title={`${yen(c.sum)} 円`}>
                   {yenShort(c.sum)}
                 </TableCell>
                 <TableCell className="text-right tabular-nums">

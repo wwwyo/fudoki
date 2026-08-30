@@ -7,7 +7,7 @@
  * 割合を目標にすると分類不能を減らす方向へ判断が歪む。
  */
 import type { ReportData } from '@/lib/pipeline'
-import { DIVISION_COLOR, STATUS_JA, pct, yen, yenShort } from '@/lib/pipeline'
+import { DIVISION_COLOR, STATUS_JA, count, pct, yen, yenShort } from '@/lib/pipeline'
 import { Badge } from '@/components/ui/badge'
 import { CofogChain } from '@/components/division'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -89,18 +89,18 @@ export function CofogPanel({ report }: { report: ReportData }) {
               {t.cofogReach.map((r) => (
                 <TableRow key={r.depth}>
                   <TableCell className="whitespace-nowrap">{r.label}</TableCell>
-                  <TableCell className="text-right tabular-nums">{yen(r.reached.count)}</TableCell>
+                  <TableCell className="text-right tabular-nums">{count(r.reached.count)}</TableCell>
                   <TableCell className="text-right tabular-nums">{pct(r.share.count)}</TableCell>
                   <TableCell className="text-right tabular-nums">{yen(r.reached.sum)}</TableCell>
                   <TableCell className="text-right tabular-nums">{pct(r.share.sum)}</TableCell>
-                  <TableCell className="text-right tabular-nums text-muted-foreground">{yen(r.deepest.count)}</TableCell>
+                  <TableCell className="text-right tabular-nums text-muted-foreground">{count(r.deepest.count)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </div>
         <p className="max-w-[72ch] text-xs text-muted-foreground">
-          母数は<span className="font-medium text-foreground">割当済みの {yen(t.assigned.count)} 行</span>
+          母数は<span className="font-medium text-foreground">割当済みの {count(t.assigned.count)} 行</span>
           （{yen(t.assigned.sum)} 円）。分類不能・対象外には割当先が無いので深さも無く、ここには入らない。
           「そこまで降りた」は累積（小分類まで降りた行は中分類にも数える）、
           「そこで止まった」はその深さが最も深い到達点である行。
@@ -127,7 +127,7 @@ export function CofogPanel({ report }: { report: ReportData }) {
               {t.byCode.map((c) => (
                 <TableRow key={`${c.division}/${c.group}/${c.class}`}>
                   <TableCell><CofogChain code={c} /></TableCell>
-                  <TableCell className="text-right tabular-nums">{yen(c.count)}</TableCell>
+                  <TableCell className="text-right tabular-nums">{count(c.count)}</TableCell>
                   <TableCell className="text-right tabular-nums">{yen(c.sum)}</TableCell>
                 </TableRow>
               ))}
@@ -150,7 +150,7 @@ export function CofogPanel({ report }: { report: ReportData }) {
               {t.byLevel.map((l) => (
                 <TableRow key={l.level}>
                   <TableCell>{l.level}</TableCell>
-                  <TableCell className="text-right tabular-nums">{yen(l.count)}</TableCell>
+                  <TableCell className="text-right tabular-nums">{count(l.count)}</TableCell>
                   <TableCell className="text-right tabular-nums">{yen(l.sum)}</TableCell>
                 </TableRow>
               ))}
@@ -208,7 +208,7 @@ export function CofogPanel({ report }: { report: ReportData }) {
                 <TableRow key={i}>
                   <TableCell>{p.from}</TableCell><TableCell>{p.to}</TableCell>
                   <TableCell className="text-right tabular-nums">{yen(p.eliminated)}</TableCell>
-                  <TableCell className="text-right tabular-nums">{yen(p.counterpart)}</TableCell>
+                  <TableCell className="text-right tabular-nums">{count(p.counterpart)}</TableCell>
                   <TableCell><Badge variant={p.ok ? 'secondary' : 'destructive'}>{p.ok ? '一致' : '不一致'}</Badge></TableCell>
                   <TableCell className="text-right tabular-nums">{p.counterpartCount}</TableCell>
                 </TableRow>

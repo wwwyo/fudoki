@@ -7,7 +7,7 @@
 import { useMemo, useState } from 'react'
 import type { Direction, DetailRow, DetailTable, Level } from '@/lib/pipeline'
 import { LEVEL_JA, basisOf, cell, divisionLabelOf, levelCell } from '@/lib/pipeline'
-import { DIVISION_COLOR, STATUS_JA, yen } from '@/lib/pipeline'
+import { DIVISION_COLOR, STATUS_JA, count, yen } from '@/lib/pipeline'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -184,7 +184,7 @@ function Browser({
         )}
         <Input className="max-w-xs" type="search" placeholder="科目名で絞り込み" aria-label="科目名で絞り込み"
           value={query} onChange={(e) => { setQuery(e.target.value); setPath([]) }} />
-        <span className="text-xs tabular-nums text-muted-foreground">{yen(rows.length)} 行 / {yen(total)} 円</span>
+        <span className="text-xs tabular-nums text-muted-foreground">{count(rows.length)} 行 / {yen(total)} 円</span>
       </div>
 
       <nav aria-label="階層" className="flex flex-wrap items-center gap-1 text-sm">
@@ -225,14 +225,14 @@ function Browser({
                   <TableRow key={k}>
                     <TableCell>
                       <button type="button" className="w-full cursor-pointer text-left hover:text-primary hover:underline"
-                        aria-label={`${k} を開いて${nextJa}を見る（${yen(g.sum)} 円 / ${yen(g.count)} 行）`}
+                        aria-label={`${k} を開いて${nextJa}を見る（${yen(g.sum)} 円 / ${count(g.count)} 行）`}
                         onClick={() => setPath([...path, k])}>{k}</button>
                     </TableCell>
                     <TableCell className="text-right tabular-nums">{yen(g.sum)}</TableCell>
                     <TableCell>
                       <div className="h-1.5 rounded-full bg-primary/30" style={{ width: `${(g.sum / max) * 100}%` }} />
                     </TableCell>
-                    <TableCell className="text-right tabular-nums">{yen(g.count)}</TableCell>
+                    <TableCell className="text-right tabular-nums">{count(g.count)}</TableCell>
                     {dir === 'expenditure' && (
                       <TableCell className="whitespace-nowrap text-xs">
                         {ds.length === 0
