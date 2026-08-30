@@ -303,6 +303,9 @@ def targets() -> tuple[list[str], list[str]]:
 
 
 def _report_statements(codes: list[str]) -> None:
+    # ⚠️ **書く前に作る。** 観測は commit しないので、clone 直後や観測を消した後は
+    # このディレクトリが存在しない。呼ぶ側の mkdir に頼ると、呼ぶ順を変えた瞬間に落ちる。
+    OBSERVATIONS.mkdir(parents=True, exist_ok=True)
     for code in codes:
         result = evaluate_statement(code)
         out = OBSERVATIONS / f"{code}-statement-recall.json"
