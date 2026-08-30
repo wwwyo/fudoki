@@ -8,9 +8,16 @@ import type { ReactNode } from "react"
 import { ThemeProvider } from "@/components/theme-provider"
 import { TooltipProvider } from "@/components/ui/tooltip"
 
+/**
+ * `external` は別サイト（docs.fudoki.dev）への導線。新しいタブで開く。
+ * ⚠️ 並びは「ホーム → パイプライン → API docs → 利用条件」で固定する。
+ * API docs だけを右端へ寄せると、外部サイトであることより先に
+ * 「他とは別格の項目」に見えてしまう。
+ */
 const NAV = [
   { href: "/", label: "ホーム" },
   { href: "/pipeline/", label: "パイプライン" },
+  { href: "https://docs.fudoki.dev/", label: "API docs", external: true },
   { href: "/terms/", label: "利用条件" },
 ] as const
 
@@ -49,21 +56,14 @@ export function Layout({ children, headerExtra }: LayoutProps) {
                 <a
                   key={n.href}
                   href={n.href}
-                  className="text-muted-foreground transition-colors hover:text-foreground"
+                  {...("external" in n ? { target: "_blank", rel: "noreferrer" } : {})}
+                  className="shrink-0 text-muted-foreground transition-colors hover:text-foreground"
                 >
                   {n.label}
                 </a>
               ))}
             </nav>
-            <a
-              href="https://docs.fudoki.dev/"
-              target="_blank"
-              rel="noreferrer"
-              className="ml-auto shrink-0 text-sm text-muted-foreground transition-colors hover:text-foreground"
-            >
-              API docs
-            </a>
-            {headerExtra}
+            <div className="ml-auto">{headerExtra}</div>
           </header>
 
           {children}
