@@ -42,8 +42,9 @@ dbt/target/
 dbt/logs/
 dbt/dbt_packages/
 # DuckDB は実行時に組む一時ファイル。正は data/raw/ の Parquet 側にある
-data/fudoki.duckdb
-data/fudoki.duckdb.wal
+# 置き場所に依存しないパターンにする（`dbt/fudoki.duckdb` を誤って commit した事故があった。d2d414c）
+**/fudoki.duckdb
+**/fudoki.duckdb.wal
 dbt/.user.yml
 
 # 取得したもののローカルキャッシュ（自治体サーバへ何度も取りに行かないため）

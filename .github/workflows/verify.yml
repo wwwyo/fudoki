@@ -48,6 +48,13 @@ jobs:
       - name: 配布物を組み立てる
         run: uv run python -m fdp.build
 
+      # apps/api は data/budget/datapackages/ を読んで配布物の宣言（AMOUNT_PHASE、levelName の enum など）を
+      # 手で持っている。団体を足したとき配布物側だけ更新して apps/api 側を足し忘れると、
+      # ここより後ろのどのステップも検知できない（実際に PR #18 で発生し、CI green のまま main が壊れた）。
+      # `test` script は `bun run build && bun test` なので、build と test の両方をここで検査する。
+      - name: apps/api のビルドと検査
+        run: bun run --cwd apps/api test
+
       - name: 報告を作る
         run: bun run report
 
