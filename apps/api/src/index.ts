@@ -31,13 +31,24 @@ const rpcHandler = new RPCHandler(router)
 
 const app = new Hono<{ Bindings: Env }>()
 
-// 公開 API（認証なし・読み取り専用）なので全開でよい。
-// POST は RPC（oRPC プロトコル）用。exposeHeaders はパススルーの revision を
-// ブラウザから読むために要る。
+/**
+ * CORS は口ごとに分ける。
+ * - /v0/* とパススルー: 公開 API（認証なし・全データ public）なので全開。
+ *   外部開発者のブラウザベースのツールが一次利用者のため `*` を維持する
+ * - /rpc/*: 自前フロント専用の口なので fudoki のオリジンだけに絞る。
+ *   防御ではなく「公式クライアント以外はここを使わない」という契約の表明
+ *   （CORS はブラウザにしか効かないので、curl 等は元から制限対象外）
+ * exposeHeaders はパススルーの revision をブラウザから読むために要る。
+ */
+const RPC_ALLOWED_ORIGINS = new Set(['https://fudoki.dev', 'http://localhost:5173'])
+
 app.use(
   '*',
   cors({
-    origin: '*',
+    origin: (origin, c) => {
+      if (!c.req.path.startsWith('/rpc')) return '*'
+      return RPC_ALLOWED_ORIGINS.has(origin) ? origin : ''
+    },
     allowMethods: ['GET', 'HEAD', 'POST', 'OPTIONS'],
     allowHeaders: ['Content-Type'],
     exposeHeaders: ['X-Fudoki-Revision', 'ETag'],
