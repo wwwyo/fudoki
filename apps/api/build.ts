@@ -45,10 +45,12 @@ const CHUNK_BYTES_LIMIT = 20 * 1024 * 1024
  * （宣言が無ければ build が止まる。既定値で埋めない）。
  * 132047: 当初予算のみの資料なので approved。
  * 132195: 決算の予算現額（流用・充用まで反映した後の額）。
+ * 132241: 当初予算のみの資料なので approved（sources.toml の phase_id と同じ）。
  */
 const AMOUNT_PHASE: Record<string, BudgetLine['amounts'][number]['phase']> = {
   '132047': 'approved',
   '132195': 'adjusted',
+  '132241': 'approved',
 }
 
 const REQUIRED_CAVEAT_CATEGORIES = ['coverage', 'phaseSemantics', 'classification', 'sourceAndLicense'] as const

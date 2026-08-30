@@ -16,8 +16,23 @@ export const resourceName = z.string()
 
 /** 階層の名前。団体ごとに使う部分集合が違う（statement の hierarchy に現れる並びが宣言） */
 export const levelName = z
-  .enum(['fund', 'kan', 'kou', 'moku', 'jikou', 'daijigyo', 'chujigyo', 'shojigyo', 'setsu', 'saisetsu', 'saisaisetsu'])
-  .describe('階層の名前（fund=会計, kan=款, kou=項, moku=目, jikou=事項, daijigyo=大事業, chujigyo=中事業, shojigyo=小事業, setsu=節, saisetsu=細節, saisaisetsu=細々節）')
+  .enum([
+    'fund',
+    'kan',
+    'kou',
+    'moku',
+    'jikou',
+    'daijigyo',
+    'chujigyo',
+    'shojigyo',
+    'saimoku',
+    'setsu',
+    'saisetsu',
+    'saisaisetsu',
+  ])
+  .describe(
+    '階層の名前（fund=会計, kan=款, kou=項, moku=目, jikou=事項, daijigyo=大事業, chujigyo=中事業, shojigyo=小事業, saimoku=細目, setsu=節, saisetsu=細節, saisaisetsu=細々節）',
+  )
 
 /** 階層以外の同一性の軸の名前 */
 export const dimensionName = z

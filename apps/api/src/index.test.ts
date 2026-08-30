@@ -116,7 +116,7 @@ describe('jurisdictions', () => {
     const body = await res.json() as { jurisdictions: { id: string; datapackagePath: string; resources: string[] }[]; revision: string }
     expect(body.revision).toMatch(/^[0-9a-f]{40}/)
     const ids = body.jurisdictions.map((j) => j.id).sort()
-    expect(ids).toEqual(['132047', '132195'])
+    expect(ids).toEqual(['132047', '132195', '132241'])
     for (const j of body.jurisdictions) {
       expect(j.resources).toContain('datapackage.json')
       expect(j.datapackagePath).toBe(`/v0/datapackages/${j.id}/datapackage.json`)
@@ -166,9 +166,9 @@ describe('budgets (root collection = coverage)', () => {
 
   test('unfiltered list spans jurisdictions; fiscalYear narrows it', async () => {
     const all = await (await get('/v0/budgets')).json() as { budgets: { jurisdictionId: string }[] }
-    expect(new Set(all.budgets.map((b) => b.jurisdictionId))).toEqual(new Set(['132047', '132195']))
+    expect(new Set(all.budgets.map((b) => b.jurisdictionId))).toEqual(new Set(['132047', '132195', '132241']))
     const y = await (await get(`/v0/budgets?${q('fiscalYear = 2024')}`)).json() as { budgets: { id: string }[] }
-    expect(y.budgets.map((b) => b.id)).toEqual(['132047:2024'])
+    expect(y.budgets.map((b) => b.id)).toEqual(['132047:2024', '132241:2024'])
   })
 
   test('get by id; unknown budget and unsupported filters fail', async () => {
@@ -203,9 +203,9 @@ describe('cross-budget statement (wildcard parent)', () => {
     } while (pageToken !== undefined)
     expect(pages).toBeGreaterThan(1)
     // budgetLineId の先頭セグメントが団体コード — 両団体が含まれる
-    expect(new Set([...seen].map((n) => n.split(':')[0]))).toEqual(new Set(['132047', '132195']))
+    expect(new Set([...seen].map((n) => n.split(':')[0]))).toEqual(new Set(['132047', '132195', '132241']))
     // 独立に cofog リソースから数えた行数と一致する（黙った欠落が無い）
-    expect(seen.size).toBe(countCofogRows(['132047', '132195'], '09'))
+    expect(seen.size).toBe(countCofogRows(['132047', '132195', '132241'], '09'))
     expect(revision).toMatch(/^[0-9a-f]{40}/)
   })
 
