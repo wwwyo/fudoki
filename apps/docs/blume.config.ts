@@ -4,10 +4,18 @@
  * OpenAPI reference は apps/api の contract から生成した openapi.json（`bun run generate`、
  * commit しない派生物）を読む。手書きの API ドキュメントは持たない。
  */
+import { readFileSync } from 'node:fs'
 import { defineConfig } from 'blume'
 
+// サイト名は生成済み spec の info.title（apps/api/src/spec.ts の API_TITLE）から取る。
+// ここに直書きすると同じ名前の2箇所目の宣言になり、改名時に片方だけ直る。
+// openapi.json は `bun run generate` が作る（dev / build は必ず generate を先に通す）
+const spec = JSON.parse(readFileSync(new URL('./openapi.json', import.meta.url), 'utf8')) as {
+  info: { title: string }
+}
+
 export default defineConfig({
-  title: '風土記 API',
+  title: spec.info.title,
   description: '日本の地方自治体の予算を事業単位まで構造化して配布する、風土記の API ドキュメント。',
 
   // public/ のロゴと favicon は apps/web/public/ からのコピー（`bun run build:brand` の生成物）。
