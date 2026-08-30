@@ -18,8 +18,8 @@ export const specSchemaConverters = [new ZodToJsonSchemaConverter()]
 
 const V0_NOTICE =
   '**実験版（v0）**。URL と応答スキーマには破壊的変更があり得る。' +
-  'ただしデータの識別子（budget_line_id、団体コード）は配布物側の契約であり、' +
-  'API の版とは独立に安定している。' +
+  'ただしデータの識別子（budget_line_id、団体コード）は配布物側の契約であり、API の版とは独立。' +
+  '安定するのは同一原典・同一の導出規則の範囲で、自治体が原典の科目名称を改めると変わりうる（詳細は jurisdiction の caveats）。' +
   '正本はリポジトリ（https://github.com/wwwyo/fudoki）の配布物で、この API はその派生物。' +
   'すべてのデータ応答は、由来する配布物の revision（git commit）を持つ。'
 

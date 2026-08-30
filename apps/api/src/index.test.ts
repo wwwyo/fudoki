@@ -78,11 +78,17 @@ describe('jurisdictions', () => {
     // 全量（経緯・吸収済み込み）は報告側が持ち、必須カテゴリの検査は build がそちらに掛ける
     const topics = jurisdiction.caveats.map((c) => c.topic)
     expect(topics).toContain('予算額は当初予算ではない')
-    expect(topics.length).toBeGreaterThan(0)
     expect(topics.length).toBeLessThan(6)
     // 年度は budgets へ移した。団体の表現は収録が増えても変わらない
     expect(jurisdiction['fiscalYears']).toBeUndefined()
     expect(jurisdiction['classificationRates']).toBeUndefined()
+  })
+
+  test('mitaka also carries the statutory kan-code caveat (団体をまたいで出さない原則の裏)', async () => {
+    const res = await get('/v0/jurisdictions/132047')
+    expect(res.status).toBe(200)
+    const { jurisdiction } = await res.json() as { jurisdiction: { caveats: { topic: string }[] } }
+    expect(jurisdiction.caveats.map((c) => c.topic)).toContain('款コードは法定の款番号と一致しない')
   })
 
   test('unknown jurisdiction is 404', async () => {
