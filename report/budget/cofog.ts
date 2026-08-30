@@ -30,13 +30,14 @@ import type { CofogCode, CofogReach, Transform } from './schema'
 export type StateRow = CofogCode & { status: string; consolidation: string; count: number; sum: number }
 
 /** 順序を SQL と揃える（報告は commit するので、非決定的だと中身が同じでも差分が出る） */
-const cmp = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0)
+/** 文字列の昇順比較。集計の並びを決めるのに使う（build.ts の並べ替えからも呼ぶ） */
+export const cmp = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0)
 const ZERO = { count: 0, sum: 0 }
 const add = (a: { count: number; sum: number }, b: { count: number; sum: number }) =>
   ({ count: a.count + b.count, sum: a.sum + b.sum })
 
 /** 鍵ごとに畳む。**鍵に含めない列は先頭行のもの**（同じ鍵なら同じ値である列しか残さない） */
-function foldBy<T extends { count: number; sum: number }>(rows: T[], key: (r: T) => string): T[] {
+export function foldBy<T extends { count: number; sum: number }>(rows: T[], key: (r: T) => string): T[] {
   const m = new Map<string, T>()
   for (const r of rows) {
     const hit = m.get(key(r))
@@ -48,12 +49,14 @@ function foldBy<T extends { count: number; sum: number }>(rows: T[], key: (r: T)
 /** その行がどこまで降りているか。**空は「まだ降りていない」** */
 const depthOf = (r: CofogCode): CofogDepth => (r.class ? 'class' : r.group ? 'group' : 'division')
 
+/** 割合。分母が 0 のときは 0（COFOG 以外の充足率でも使う） */
+export const share = (v: number, whole: number) => (whole === 0 ? 0 : v / whole)
+
 export function cofogGranularity(byState: StateRow[]):
   Pick<Transform, 'byCode' | 'byDivision' | 'cofogReach' | 'assigned' | 'total' | 'assignedShare'> {
   const total = byState.reduce(add, ZERO)
   const assignedRows = byState.filter((r) => r.status === 'assigned')
   const assigned = assignedRows.reduce(add, ZERO)
-  const share = (v: number, whole: number) => (whole === 0 ? 0 : v / whole)
   const byCode = foldBy(
     assignedRows.map(({ status: _s, consolidation: _c, ...code }) => code),
     (r) => [r.division, r.group, r.class].join(''),
