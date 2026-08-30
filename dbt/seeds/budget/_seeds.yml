@@ -88,6 +88,10 @@ seeds:
       column_types:
         jurisdiction_code: varchar
         direction: varchar
+        # ⚠️ **原典の表記そのまま。** 正規化しない — 正本（expenditure.csv）の kan_code が
+        # 原典の表記なので、揃えると利用者が join できなくなる。
+        # 表記が年度で割れる団体（多摩市はゼロ埋めが R3 の `01` から R4 の `1` へ変わる）は、
+        # 同じ款に両表記の行を持つ。**行が2つあること自体が原典の表記の記録**である。
         kan_code: varchar
         kou_name: varchar
         # 対応が効き始める年度（空 = 全年度）。⚠️ 款コードの意味が年度で変わる団体がある —

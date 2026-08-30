@@ -7,12 +7,18 @@
 -- ⚠️ **行数の比較では足りない。** 1行の欠落と1行の重複が打ち消し合っても、
 -- 別の科目の行にすり替わっても、件数は同じまま通る。キーと名称・対応の列を
 -- 双方向の差集合で突き合わせる。
+--
+-- ⚠️ **CSV は空文字と NULL を区別できない。** 書き出した `""` は読み戻すと NULL になるので、
+-- 空になりうる列は両側で空文字へ寄せてから比べる。寄せないと、原典がコードを持たない階層
+-- （多摩市の会計は名称の列しか無い）を持つ団体で全行が差分として出る。
+-- **配布物の側に区別が無い**以上、検査がその区別を期待してはいけない。
 {% for code in var('budget_levels').keys() | list | sort %}
 -- depends_on: {{ ref('pkg_' ~ code ~ '__account_names') }}
 {% endfor %}
 
 with in_core as (
-    select jurisdiction_code, fiscal_year::varchar as fiscal_year, direction, fund_code,
+    select jurisdiction_code, fiscal_year::varchar as fiscal_year, direction,
+           coalesce(fund_code, '') as fund_code,
            kan_code, coalesce(kan_name, '') as kan_name,
            kou_code, coalesce(kou_name, '') as kou_name,
            moku_code, coalesce(moku_name, '') as moku_name,
@@ -24,7 +30,8 @@ with in_core as (
 
 in_package as (
     {% for code in var('budget_levels').keys() | list | sort %}
-    select '{{ code }}' as jurisdiction_code, fiscal_year, direction, fund_code,
+    select '{{ code }}' as jurisdiction_code, fiscal_year, direction,
+           coalesce(fund_code, '') as fund_code,
            kan_code, coalesce(kan_name, '') as kan_name,
            kou_code, coalesce(kou_name, '') as kou_name,
            moku_code, coalesce(moku_name, '') as moku_name,

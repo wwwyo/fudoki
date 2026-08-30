@@ -33,6 +33,21 @@ with names as (
     from {{ ref('core_revenue_lines') }}
     where jurisdiction_code = '132047'
     union all
+    -- 多摩市: 原典の名称（階層ごとにコードと名称が別の列で入っている）
+    -- ⚠️ 3団体目も出所が原典 CSV なので、次に足すときは
+    -- 「名称の出所」を団体ごとの宣言へ寄せるほうがよい（今は写経が3つ）。
+    select
+        jurisdiction_code, fiscal_year, direction, fund_code, fund_label,
+        kan_code, kan_label, kou_code, kou_label, moku_code, moku_label, 'source-csv'
+    from {{ ref('core_budget_lines') }}
+    where jurisdiction_code = '132241'
+    union all
+    select
+        jurisdiction_code, fiscal_year, direction, fund_code, fund_label,
+        kan_code, kan_label, kou_code, kou_label, moku_code, moku_label, 'source-csv'
+    from {{ ref('core_revenue_lines') }}
+    where jurisdiction_code = '132241'
+    union all
     -- 狛江市: 決算書 PDF の見出しから解決した名称（fudoki の判断）
     select
         l.jurisdiction_code, l.fiscal_year, l.direction, l.fund_code, l.fund_label,
@@ -106,12 +121,16 @@ select
     case
         when xm.kind is not null then xm.kind
         when mc.kou_code is not null then 'map'
-        -- 旧法定区分（例: 自動車取得税交付金）は款ごと historical。対応先のマスタが無い
-        when km.kind = 'historical' then 'historical'
+        -- **款そのものに対応先が無い2つの型。** どちらも「突き合わせた結果ここには無い」
+        -- という判断で、突き合わせていない状態（null）とは別物。
+        --   historical  旧法定区分（例: 自動車取得税交付金）。現行様式から削除された
+        --   addition    様式の備考が条件付きで認める款（例: ゴルフ場利用税交付金は
+        --               歳入の備考2がゴルフ場所在市町村に挿入を認めている）
+        when km.kind in ('historical', 'addition') then km.kind
     end as master_kind,
     coalesce(xm.basis, case when mc.kou_code is not null
         then '項の名称がマスタと完全一致（款は account_map の対応を介す）'
-        when km.kind = 'historical' then km.basis end) as master_basis
+        when km.kind in ('historical', 'addition') then km.basis end) as master_basis
 from distinct_accounts as a
 left join kan_map as km
     on km.jurisdiction_code = a.jurisdiction_code

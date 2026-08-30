@@ -42,6 +42,18 @@
       ~ '名称を持つ列がどの階層に対応するかを宣言すること（宣言できないなら名称は空だと明示する）') }}
 {%- endif -%}
 {%- set labels = var('budget_label_columns').get(code, {}).get(direction, {}) -%}
+{#-
+  原典がコードの列を持たない階層。**別に宣言せず、既にある2つの宣言から導く。**
+  セルの出所（budget_source_columns）と名称の出所（budget_label_columns）が同じ列を
+  指しているなら、その階層の原典にはコードが無く名称しかない（多摩市の会計）。
+  独立したフラグを足すと同じ事実が3箇所へ分かれ、片方だけ直したときに気づけない。
+-#}
+{%- set no_code = [] -%}
+{%- for lv in levels %}
+  {%- if labels.get(lv) is not none and labels[lv] == columns[loop.index0] %}
+    {%- do no_code.append(lv) %}
+  {%- endif %}
+{%- endfor -%}
 {%- set extra_labels = var('budget_extra_key_labels').get(code, {}).get(direction, {}) -%}
 {%- set amounts = var('budget_amounts')[code][direction] -%}
 
@@ -86,7 +98,7 @@ select
     -- tests/label_column_determines_level.sql が毎回確かめる。
     -- それ以外の階層の label は空文字で、「原典に名称が無い」ことを表す。
   {%- for lv in levels %}
-    {{ lv }}_source as {{ lv }}_code,
+    {% if lv in no_code %}''{% else %}{{ lv }}_source{% endif %} as {{ lv }}_code,
     {% if lv in labels %}{{ trim_cell('"' ~ labels[lv] ~ '"') }}{% else %}''{% endif %} as {{ lv }}_label,
   {%- endfor %}
 {%- else %}

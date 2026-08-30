@@ -438,3 +438,142 @@ raw_form = "extracted"
 redistribute = "review"
 redistribute_basis = "市サイトの著作権表示。事実に著作権が及ぶかは解釈が割れるので照会中"
 license_id = "NOASSERTION"
+
+# ── 多摩市 132241 ────────────────────────────────────────────────────────────
+#
+# ⚠️ **三鷹市・狛江市のどちらとも書式が違う。** 実測（2026-08-30）で分かったこと。
+#
+#  1. **コードと名称が別々の列にある。** `款` と `款名称`、`細目` と `細目名称` のように
+#     階層ごとに対で持つ。三鷹市（1セルに「2桁コード + 名称」）とも
+#     狛江市（コードだけで階層ごとの名称が無い）とも違う。
+#     宣言は budget_code_style=code-only + budget_label_columns（全階層）で表す。
+#  2. **事業階層の呼び名は「細目」（歳出）と「細節」（歳入）。**
+#     ⚠️ 歳出は 款→項→目→細目→節、歳入は 款→項→目→節→細節 で、**並びが違う**。
+#     事業にあたるのは歳出の細目（例: `子ども若者育成支援事業`）。
+#  3. **コードのゼロ埋めが年度で変わる。** R3 は `01` / `001` の固定桁、R4 は `1` / `100`。
+#     同じ団体の同じ資料で表記が割れるので、コードの比較は年度をまたげない。
+#  4. **階層だけで行が一意**（狛江市と違い所属や予算区分の列が無い。
+#     R4 歳出 1,440 行が 1,440 通り、R3 歳出 1,580 行が 1,580 通り）。
+#  5. **金額は1段階だけ**（`予算額`）。当初予算なので phase は approved。
+#  6. **単位は千円（R3〜R6）。** ⚠️ **列名が単位を名乗っていない**ので、原典の列名と突き合わせられない。
+#     根拠は歳入と歳出の合計が一致すること（R3 = 63,030,000 / R4 = 63,067,000 /
+#     R5 = 58,730,000 / R6 = 61,790,000）で、多摩市の一般会計当初予算の規模と合う
+#     （円なら 0.63 億円で成り立たない）。⚠️ **R7 は円に変わっている**（下記 8）。
+#  7. **会計にコードが無い。** 列は `会計名称` だけで、`一般会計` の1種類。
+#     コードが原典に無いので fund の code には名称がそのまま入る。
+#  8. ⚠️ **カタログのリソース登録が古い。** カタログに載っているのは R3・R4 までで、
+#     市サイトには R7 まで置いてある（R2 以前は登録があっても実体が 404）。
+#     R5・R6 は原典の URL を宣言して取っている（下の `url` / `url_basis`）。
+#     ⚠️ **R7 は書式が変わっており足せない** — 金額の列名が `予算額` から `合計 / 予算額` へ、
+#     単位が千円から円へ変わり、歳出だけ年度の列が消えた。いまの宣言は
+#     (団体, direction) の粒度なので、年度で単位や列名が割れる団体を表せない。
+#  9. **特別会計は別ファイル**（同じ書式）。raw の partition が
+#     (団体, 年度, phase, direction) なので、同じ direction で2本を置けない。
+#     一般会計だけを収録する（科目マスタの適用範囲も一般会計）。
+#
+# 再配布はカタログのライセンス（CC BY 4.0）が根拠。③会議録の gate とは無関係。
+
+["132241:2021"]
+catalog = "tokyo"
+jurisdiction_code = "132241"
+fiscal_year = 2021
+fiscal_year_label = "令和3年度"
+phase_id = "approved"
+phase_label = "当初予算"
+dataset_title = "予算・決算についての資料（オープンデータ）"
+encoding = "cp932"
+redistribute = "allow"
+redistribute_basis = "東京都オープンデータカタログのライセンス表示（CC BY 4.0）"
+license_id = "CC-BY-4.0"
+attribution = "多摩市「令和3年度一般会計歳出・歳入（当初予算）」（東京都オープンデータカタログサイト）"
+landing_page = "https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html"
+
+[["132241:2021".resources]]
+direction = "expenditure"
+resource_name = "令和3年度一般会計歳出（当初予算）"
+
+[["132241:2021".resources]]
+direction = "revenue"
+resource_name = "令和3年度一般会計歳入（当初予算）"
+
+
+["132241:2022"]
+catalog = "tokyo"
+jurisdiction_code = "132241"
+fiscal_year = 2022
+fiscal_year_label = "令和4年度"
+phase_id = "approved"
+phase_label = "当初予算"
+dataset_title = "予算・決算についての資料（オープンデータ）"
+encoding = "cp932"
+redistribute = "allow"
+redistribute_basis = "東京都オープンデータカタログのライセンス表示（CC BY 4.0）"
+license_id = "CC-BY-4.0"
+attribution = "多摩市「令和4年度一般会計歳出・歳入（当初予算）」（東京都オープンデータカタログサイト）"
+landing_page = "https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html"
+
+[["132241:2022".resources]]
+direction = "expenditure"
+resource_name = "令和4年度一般会計歳出（当初予算）"
+
+[["132241:2022".resources]]
+direction = "revenue"
+resource_name = "令和4年度一般会計歳入（当初予算）"
+
+# 令和5・6年度。カタログに登録が無いので URL を宣言して取る（上の 8）。
+# 書式は令和3・4年度と同じ（列構成・文字コード・単位・年度列すべて実測で一致。2026-08-30）。
+
+["132241:2023"]
+catalog = "tokyo"
+jurisdiction_code = "132241"
+fiscal_year = 2023
+fiscal_year_label = "令和5年度"
+phase_id = "approved"
+phase_label = "当初予算"
+dataset_title = "予算・決算についての資料（オープンデータ）"
+encoding = "cp932"
+redistribute = "allow"
+redistribute_basis = "東京都オープンデータカタログのライセンス表示（CC BY 4.0）"
+license_id = "CC-BY-4.0"
+attribution = "多摩市「令和5年度一般会計歳出・歳入（当初予算）」（多摩市「予算・決算についての資料」）"
+landing_page = "https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html"
+
+[["132241:2023".resources]]
+direction = "expenditure"
+resource_name = "令和5年度一般会計歳出（当初予算）"
+url = "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r5ippannkaikeisaisyutu.csv"
+url_basis = "カタログのリソース登録が令和4年度で止まっており、データセット名とリソース名から解決できない。原典は市の「予算・決算についての資料」ページに同じ書式で置かれている（landing_page）"
+
+[["132241:2023".resources]]
+direction = "revenue"
+resource_name = "令和5年度一般会計歳入（当初予算）"
+url = "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r5ippannkaikeisainyuu.csv"
+url_basis = "カタログのリソース登録が令和4年度で止まっており、データセット名とリソース名から解決できない。原典は市の「予算・決算についての資料」ページに同じ書式で置かれている（landing_page）"
+
+
+["132241:2024"]
+catalog = "tokyo"
+jurisdiction_code = "132241"
+fiscal_year = 2024
+fiscal_year_label = "令和6年度"
+phase_id = "approved"
+phase_label = "当初予算"
+dataset_title = "予算・決算についての資料（オープンデータ）"
+encoding = "cp932"
+redistribute = "allow"
+redistribute_basis = "東京都オープンデータカタログのライセンス表示（CC BY 4.0）"
+license_id = "CC-BY-4.0"
+attribution = "多摩市「令和6年度一般会計歳出・歳入（当初予算）」（多摩市「予算・決算についての資料」）"
+landing_page = "https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html"
+
+[["132241:2024".resources]]
+direction = "expenditure"
+resource_name = "令和6年度一般会計歳出（当初予算）"
+url = "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r6ippannkaikeisaisyutu.csv"
+url_basis = "カタログのリソース登録が令和4年度で止まっており、データセット名とリソース名から解決できない。原典は市の「予算・決算についての資料」ページに同じ書式で置かれている（landing_page）"
+
+[["132241:2024".resources]]
+direction = "revenue"
+resource_name = "令和6年度一般会計歳入（当初予算）"
+url = "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r6ippannkaikeisainyuu.csv"
+url_basis = "カタログのリソース登録が令和4年度で止まっており、データセット名とリソース名から解決できない。原典は市の「予算・決算についての資料」ページに同じ書式で置かれている（landing_page）"

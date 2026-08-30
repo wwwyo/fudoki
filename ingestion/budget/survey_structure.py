@@ -60,9 +60,16 @@ def primary_amount(code: str, direction: str) -> dict:
     return hit[0]
 
 
-def absent_marker(code: str) -> str:
-    """その階層を持たない行のプレースホルダ。団体ごとに違いうる"""
+def absent_marker(code: str) -> str | None:
+    """その階層を持たない行のプレースホルダ。団体ごとに違いうる。
+
+    ⚠️ **1つも使わない団体がある**（多摩市は全階層が全行埋まっている）。
+    宣言が空なら None を返す — 「プレースホルダが無い」は誤りではないので止めない。
+    2つ以上は測り方が決まらないので止める。
+    """
     markers = VARS["budget_absent_level_markers"][code]
+    if not markers:
+        return None
     if len(markers) != 1:
         raise SystemExit(f"{code}: プレースホルダが {len(markers)} 種類ある。1つを前提にしている")
     return str(markers[0])
@@ -83,7 +90,9 @@ def survey(code: str, direction: str) -> dict:
 
     # その階層が実際に使われているか。列があることは使われていることを意味しない。
     used = {
-        lv: {"rows": len(data), "nonPlaceholder": sum(1 for d in data if d[lv] != absent)}
+        lv: {"rows": len(data),
+             "nonPlaceholder": len(data) if absent is None
+             else sum(1 for d in data if d[lv] != absent)}
         for lv in levels
     }
     # 兄弟間でコードが一意か。完全修飾のほうが多ければ、別の親の下で再利用されている。
@@ -150,7 +159,13 @@ def kan_evidence(code: str) -> dict:
 
     ⚠️ **裏づけであって証明ではない。** 原典が「款2は総務費」と書いているわけではないので、
     所属名称と節名称が款ごとに整合することを数字で出し、読んだ者が judge できる形にする。
+
+    ⚠️ **款の名称を原典が持つ団体では、この裏づけ自体が要らない**（多摩市は `款名称` の列がある）。
+    要らないだけでなく、材料にしている所属名称・科目名称の列も無いので測れない。
     """
+    if "kan" in VARS["budget_label_columns"].get(code, {}).get("expenditure", {}):
+        return {"note": "原典が款の名称を持つので裏づけは要らない",
+                "labelColumn": VARS["budget_label_columns"][code]["expenditure"]["kan"]}
     data = rows(code, "expenditure")
     if not data:
         return {}

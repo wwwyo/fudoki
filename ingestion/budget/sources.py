@@ -7,6 +7,7 @@ TOML を正にしているのは、Python（tomllib）と Bun の両方が依存
 from __future__ import annotations
 
 import tomllib
+import urllib.parse
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -32,6 +33,44 @@ class Resource:
     # （三鷹市は1データセットに2リソース、狛江市は歳出と歳入で別）。
     # 省略したときは取得元の `dataset_title` を使う。
     dataset_title: str | None = None
+
+    # ⚠️ **カタログを介さず直接取りに行く URL。既定では使わない。**
+    #
+    # 通常はデータセット名とリソース名から CKAN で解決する。リソース URL は自治体の CMS が
+    # 振る内部番号で資料の差し替えのたびに動くのに対し、名前のほうは安定しているためである。
+    # ここに URL を書くと、その安定性を捨てて自治体の URL 設計に賭けることになる。
+    #
+    # それでも要るのは、**原典は公開されているのにカタログへ登録されていない**場合。
+    # 多摩市は市サイトに令和7年度まで同じ書式の CSV を置いているが、カタログの登録は
+    # 令和4年度で止まっており、名前から解決する経路では届かない。
+    #
+    # ⚠️ **年度の照合が取得時にできなくなる。** カタログ経由なら「リソース名に年度表記が
+    # 含まれること」を取得の前に見ているが、直 URL では resource_name が fudoki の書いた
+    # 文字列なので自己参照になり検査にならない。年度が合っているかは原典の年度列と
+    # partition の突き合わせ（dbt の source_year_matches_partition）に移る。
+    # **その検査が無い団体でこれを使うと、年度の裏づけがどこにも無くなる。**
+    url: str | None = None
+    # なぜカタログを外れるのか。**URL を書くなら理由も書く**（書かないと停止する）。
+    # 理由が無いと、後から読んだ者に「カタログにあるのに横着した」のと区別が付かない。
+    url_basis: str | None = None
+
+    def __post_init__(self) -> None:
+        if self.url is not None and not self.url_basis:
+            raise ValueError(
+                f"{self.resource_name}: url を宣言するなら url_basis も書くこと"
+                f"（カタログから解決できない理由が要る）"
+            )
+        if self.url is not None:
+            # ⚠️ **前方一致で見ない。** `https://` だけの文字列も、改行を挟んだ値も、
+            # 認証情報を埋めた URL も通ってしまう。取得の宛先は証跡に残り配布物の
+            # `sources` にも出るので、形が壊れたものを黙って通さない。
+            parsed = urllib.parse.urlparse(self.url)
+            if parsed.scheme != "https" or not parsed.netloc:
+                raise ValueError(f"{self.resource_name}: url は https の絶対 URL のみ（{self.url}）")
+            if parsed.username or parsed.password:
+                raise ValueError(f"{self.resource_name}: url に認証情報を書かない（{self.url}）")
+            if any(c in self.url for c in " \t\r\n"):
+                raise ValueError(f"{self.resource_name}: url に空白や改行が入っている（{self.url!r}）")
 
 
 @dataclass(frozen=True)
@@ -165,6 +204,17 @@ def load_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
             **spec,
         )
     return sources
+
+
+def load_catalogs(path: Path = SOURCES_TOML) -> dict[str, Catalog]:
+    """カタログの宣言だけを引く。**取得元を1つも読まずに宛先を知りたいときのため。**
+
+    ⚠️ 粒度の調査（`check_granularity.py`）が CKAN の宛先と団体コードの解決規則を
+    自前のリテラルで持っていた。同じ事実が2箇所にあると、カタログを足したり
+    宛先が変わったりしたときに調査だけが古いカタログを見続ける。
+    """
+    raw = tomllib.loads(path.read_text(encoding="utf-8"))
+    return {name: Catalog(**spec) for name, spec in raw.get("catalog", {}).items()}
 
 
 def resolve(key: str) -> Source:

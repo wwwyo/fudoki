@@ -31,6 +31,11 @@ vars:
       # 翌年度から使われ始めたときに黙って欠ける。
       expenditure: [fund, kan, kou, moku, daijigyo, chujigyo, shojigyo, setsu, saisetsu, saisaisetsu]
       revenue: [fund, kan, kou, moku, setsu, saisetsu, saisaisetsu]
+    "132241":
+      # ⚠️ **歳出と歳入で階層の並びが違う。** 歳出は目の下に細目（事業）が入り、
+      # 歳入は節の下に細節が入る。原典の列の並びがそのまま違う。
+      expenditure: [fund, kan, kou, moku, saimoku, setsu]
+      revenue: [fund, kan, kou, moku, setsu, saisetsu]
 
   # 原典の列名。取り込み時のヘッダそのままなので階層名とは別に持つ。
   budget_source_columns:
@@ -40,6 +45,11 @@ vars:
     "132195":
       expenditure: ["会計", "款", "項", "目", "大事業", "中事業", "小事業", "節", "細節", "細々節"]
       revenue: ["会計", "款", "項", "目", "節", "細節", "細々節"]
+    "132241":
+      # ⚠️ **会計にコードの列が無い**（`会計名称` だけで、値は `一般会計` の1種類）。
+      # 原典が持たないので fund の code には名称がそのまま入る。捏造しないための帰結。
+      expenditure: ["会計名称", "款", "項", "目", "細目", "節"]
+      revenue: ["会計名称", "款", "項", "目", "節", "細節"]
 
   # **階層だけでは行が一意にならない団体の、追加の同一性の列。**
   # ⚠️ 狛江市は所属（部課）と予算区分（現年度・繰越明許・事故繰越）まで含めて初めて一意になる。
@@ -50,8 +60,11 @@ vars:
     "132195":
       expenditure: [org, budget_class]
       revenue: [org, budget_class]
+    # 多摩市は階層だけで一意（R4 歳出 1,440 行が 1,440 通り、R3 歳出 1,580 行が 1,580 通り）
+    "132241": {expenditure: [], revenue: []}
   budget_extra_key_source_columns:
     "132047": {expenditure: [], revenue: []}
+    "132241": {expenditure: [], revenue: []}
     "132195":
       # ⚠️ 歳出は「所属」、歳入は「所属コード」。同じ概念で列名が違う。
       expenditure: ["所属", "予算区分"]
@@ -65,6 +78,8 @@ vars:
   budget_absent_level_markers:
     "132047": ["0"]
     "132195": ["0"]
+    # 多摩市はどの階層も全行が埋まっている（プレースホルダの行が無い。実測 2026-08-30）
+    "132241": []
 
   # **セルからコードと名称を取り出す書式。団体ごとに違う。**
   #   prefix2   1セルに「2桁コード + 名称」が入っている（三鷹市）
@@ -74,16 +89,30 @@ vars:
   budget_code_style:
     "132047": prefix2
     "132195": code-only
+    # 多摩市は階層ごとに「コードの列」と「名称の列」を対で持つ。
+    # セルがコードだけである点は狛江市と同じで、違うのは名称の列が全階層にあること。
+    # だから style は増やさず、budget_label_columns を全階層ぶん宣言して表す。
+    "132241": code-only
 
   # **code-only の団体で、名称を持つ列がどの階層に対応するか。**
   # 狛江市の「科目名称」は行の最下位階層の名称で、歳出は節、歳入は細節にあたる。
   # ⚠️ これは推測ではなく実測（2023 歳出は節コード→科目名称が1対1、
   # 歳入は細節までのパス→科目名称が1対1）。対応が崩れたら
   # tests/label_column_determines_level.sql が落ちる。
+  # ⚠️ **コードの列を持たない階層は、ここと budget_source_columns が同じ列を指すことで表れる。**
+  # 多摩市の会計は原典に `会計名称` しか無く、コードが存在しない。そのとき原典の同じ列が
+  # 「セルの出所」と「名称の出所」を兼ねるので、宣言を突き合わせれば導出できる
+  # （budget_staging がそう判定して code を空にする）。**別のフラグを足さない** —
+  # 同じ事実が3箇所へ分かれ、片方だけ直したときに突き合わせる相手がいなくなる。
   budget_label_columns:
     "132195":
       expenditure: {fund: "会計名称", setsu: "科目名称"}
       revenue: {fund: "会計名称", saisetsu: "科目名称"}
+    "132241":
+      expenditure: {fund: "会計名称", kan: "款名称", kou: "項名称", moku: "目名称",
+                    saimoku: "細目名称", setsu: "節名称"}
+      revenue: {fund: "会計名称", kan: "款名称", kou: "項名称", moku: "目名称",
+                setsu: "節名称", saisetsu: "細節名称"}
   # 追加の同一性の列のうち、名称を持つもの。
   # ⚠️ 歳入には所属名称の列が無い（歳出にはある）。無いものを埋めない。
   budget_extra_key_labels:
@@ -91,10 +120,17 @@ vars:
       expenditure: {org: "所属名称", budget_class: "予算区分名称"}
       revenue: {budget_class: "予算区分名称"}
 
-  # 原典が年度の列を持つ団体と、その列名。
+  # 原典が年度の列を持つ団体と、その列名・**表記**。
   # ⚠️ 三鷹市には無い（リソース名だけが年度の出所）。無い団体はここに書かない。
+  # ⚠️ **表記まで宣言する。** 多摩市の年度は `R4` という和暦の略記で、
+  # 列名だけを宣言して西暦の partition と文字列比較すると全行が不一致になる。
+  # 表記を持たせずに「照合できないから宣言しない」と逃げると、
+  # **原典が年度の列を持っているのに誰も見ていない**状態になる。
+  #   western       2023 のような西暦（狛江市）
+  #   reiwa-abbrev  R4 のような令和の略記（多摩市）
   budget_source_year_columns:
-    "132195": "年度"
+    "132195": {column: "年度", notation: western}
+    "132241": {column: "年度", notation: reiwa-abbrev}
 
   # **歳出と歳入の合計が一致するという検算を、どの団体で有効にするか。**
   # ⚠️ 一般の不変条件ではない。決算・企業会計・補正差分・会計範囲の異なる抽出では成立しない。
@@ -107,6 +143,10 @@ vars:
       tolerance_yen: 1
     "132195":
       # 歳入の予算現額が千円単位なので、円未満は原理的に一致しない
+      tolerance_yen: 1000
+    "132241":
+      # 当初予算どうしで、実測でも歳入と歳出の合計が完全に一致する
+      # （R4 = 63,067,000 千円 / R3 = 63,030,000 千円）。単位が千円なので円未満は出ない
       tolerance_yen: 1000
 
   # **単位と、円へ直す倍率の対応。** 単位の語彙はここが正本。
@@ -153,3 +193,13 @@ vars:
            phase: adjusted, phase_label: 予算現額, primary: true}
         - {name: source_amount_executed, source: "収入累計(円)", unit: 円, multiplier: 1,
            phase: executed, phase_label: 収入済額, primary: false}
+    "132241":
+      # ⚠️ **列名が単位を名乗っていない**（ただの `予算額`）ので、原典と突き合わせられない。
+      # 千円だという根拠は歳入と歳出の合計の一致と規模で、
+      # R4 = 63,067,000 → 630.67 億円（円なら 0.63 億円で多摩市の一般会計と合わない）。
+      expenditure:
+        - {name: source_amount, source: "予算額", unit: 千円, multiplier: 1000,
+           phase: approved, phase_label: 当初予算, primary: true}
+      revenue:
+        - {name: source_amount, source: "予算額", unit: 千円, multiplier: 1000,
+           phase: approved, phase_label: 当初予算, primary: true}

@@ -46,7 +46,10 @@ rules as (
         coalesce(match_kan_code, '')   as match_kan_code,
         coalesce(match_setsu, '')      as match_setsu,
         status,
-        coalesce(division, '')         as division,
+        -- ⚠️ **割当は1列（cofog_code）で持つ。** division / group / class を
+        -- 別々に宣言すると同じ事実が3箇所に分かれ、粒度を下げたときに片方だけ古くなる。
+        -- 分解は下の select が導出する（`04.5.1` → division 04 / group 04.5 / class 04.5.1）。
+        coalesce(cofog_code, '')       as cofog_code,
         consolidation,
         decided_at_level,
         coalesce(counterpart_fund, '') as counterpart_fund,
@@ -89,7 +92,18 @@ select
     l.budget_line_id,
     l.source_row,
     coalesce(m.status, 'unclassifiable')          as cofog_status,
-    coalesce(m.division, '')                      as cofog_division,
+    -- COFOG の階層。**規則が言った粒度までしか埋めない。**
+    -- 款の名称だけで決まる規則は division 止まりで、group / class は空になる。
+    -- 「分からない」を空で正直に出す（原則6）。
+    -- ⚠️ **NULL を先に潰す。** 規則に当たらなかった行は m.* が NULL で、
+    -- split_part(NULL) が NULL を返すことに頼ると、空文字で揃えるという意図が
+    -- SQL の方言差に委ねられる。列ごとに coalesce を書くのではなく1度だけ潰す。
+    split_part(coalesce(m.cofog_code, ''), '.', 1)                         as cofog_division,
+    case when coalesce(m.cofog_code, '') like '%.%'
+         then split_part(m.cofog_code, '.', 1) || '.' || split_part(m.cofog_code, '.', 2)
+         else '' end                                                       as cofog_group,
+    case when regexp_full_match(coalesce(m.cofog_code, ''), '\d+\.\d+\.\d+')
+         then m.cofog_code else '' end                                     as cofog_class,
     coalesce(m.consolidation, 'retained')         as cofog_consolidation,
     coalesce(m.decided_at_level, '（規則なし）')   as cofog_decided_at_level,
     m.rule_id                                     as cofog_rule_id,
