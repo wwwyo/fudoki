@@ -191,6 +191,57 @@ export const statementSchema = z.discriminatedUnion('scope', [
 ])
 export type Statement = z.infer<typeof statementSchema>
 
+// ---- cofog breakdown（団体 × 年度 × direction の COFOG 別内訳。budget 集約の内部） ----
+
+const cofogAmountAndCount = z.object({
+  count: z.number().describe('明細数（一意な budget_line_id の件数）'),
+  sum: z.number().describe('円に正規化した金額合計'),
+})
+
+const cofogDivisionBreakdown = cofogAmountAndCount.extend({
+  division: z.string().describe('COFOG の大分類コード（01〜10）'),
+  divisionLabel: z.string().describe('大分類の名称'),
+})
+
+export const cofogBreakdownSchema = z.object({
+  byDivision: z
+    .array(cofogDivisionBreakdown)
+    .describe('割当済みの明細を COFOG のディビジョンごとに集計したもの。division の昇順'),
+  assigned: cofogAmountAndCount.describe('COFOG が割当済みの明細の合計（byDivision の総和と一致）'),
+  total: cofogAmountAndCount.describe(
+    '対象 direction の全明細の合計（割当済み + 分類不能 + 対象外 [+ 歳入は not-applicable]）。' +
+      '分類できなかった分を落としていないので、total から assigned を引けば得られる',
+  ),
+  assignedShare: cofogAmountAndCount.describe('total に対する assigned の割合（0〜1）。画面側で割り算しない'),
+})
+export type CofogBreakdown = z.infer<typeof cofogBreakdownSchema>
+
+export const getCofogBreakdown = base
+  .route({
+    method: 'GET',
+    path: '/budgets/{budget}/cofog',
+    summary: 'Get COFOG breakdown for a budget',
+    description:
+      '`{budget}` が指す団体 × 年度の予算を、指定した direction について COFOG の10分類（division）ごとに集計する。' +
+      '集計は report/budget/cofog.ts の `cofogGranularity()` の出力そのもので、API 側では計算しない' +
+      '（AGENTS.md の「集計は1箇所」）。\n\n' +
+      '⚠️ 分類できなかった分（unclassifiable / out-of-scope、歳入は not-applicable）は byDivision に現れないが、' +
+      '`total` には含まれたままなので `total - assigned` で取り戻せる（落としていない）。\n\n' +
+      '10分類しか返らないためページングは持たない（listBudgets と同じ理由）。',
+  })
+  .input(
+    z.object({
+      budget: z.string().describe('budget の識別子（{団体コード}:{年度}）'),
+      direction: direction.describe('歳出 / 歳入'),
+    }),
+  )
+  .output(
+    z.object({
+      cofog: cofogBreakdownSchema,
+      revision: z.string().describe('由来する配布物の revision（git commit）'),
+    }),
+  )
+
 export const getStatement = base
   .route({
     method: 'GET',

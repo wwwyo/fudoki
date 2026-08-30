@@ -337,6 +337,81 @@ describe('budget statement', () => {
   })
 })
 
+describe('cofog breakdown', () => {
+  type ClassificationRate = Record<'assigned' | 'unclassifiable' | 'outOfScope', { lines: number; amount: number }>
+  type CofogBreakdownBody = {
+    cofog: {
+      byDivision: { division: string; divisionLabel: string; count: number; sum: number }[]
+      assigned: { count: number; sum: number }
+      total: { count: number; sum: number }
+      assignedShare: { count: number; sum: number }
+    }
+    revision: string
+  }
+
+  for (const budgetId of ['132047:2024', '132195:2023', '132241:2023']) {
+    test(`expenditure: byDivision folds to assigned, and assigned/total match the budget's classificationRate (${budgetId})`, async () => {
+      const budgetRes = await get(`/v0/budgets/${budgetId}`)
+      expect(budgetRes.status).toBe(200)
+      const { budget } = await budgetRes.json() as { budget: { classificationRate: ClassificationRate } }
+      const { classificationRate } = budget
+
+      const res = await get(`/v0/budgets/${budgetId}/cofog?direction=expenditure`)
+      expect(res.status).toBe(200)
+      const { cofog, revision } = await res.json() as CofogBreakdownBody
+      expect(revision).toMatch(/^[0-9a-f]{40}/)
+
+      // 独立に計算した2つの数字（budgets の分類率 と cofog の集計）が一致する。
+      // どちらかが壊れたら build 自体が止まるが、ここでも API 応答レベルで確かめる
+      expect(cofog.assigned).toEqual({ count: classificationRate.assigned.lines, sum: classificationRate.assigned.amount })
+      const expectedTotalLines =
+        classificationRate.assigned.lines + classificationRate.unclassifiable.lines + classificationRate.outOfScope.lines
+      const expectedTotalAmount =
+        classificationRate.assigned.amount + classificationRate.unclassifiable.amount + classificationRate.outOfScope.amount
+      expect(cofog.total).toEqual({ count: expectedTotalLines, sum: expectedTotalAmount })
+
+      // ⚠️ 分類できなかった分（unclassifiable + outOfScope）を落としていないこと。
+      // byDivision（割当済みだけ）の総和は total より必ず小さく、その差が
+      // ちょうど分類できなかった分の金額と行数に一致する
+      expect(classificationRate.unclassifiable.lines + classificationRate.outOfScope.lines).toBeGreaterThan(0)
+      const unclassifiedLines = cofog.total.count - cofog.assigned.count
+      const unclassifiedAmount = cofog.total.sum - cofog.assigned.sum
+      expect(unclassifiedLines).toBe(classificationRate.unclassifiable.lines + classificationRate.outOfScope.lines)
+      expect(unclassifiedAmount).toBe(classificationRate.unclassifiable.amount + classificationRate.outOfScope.amount)
+
+      // byDivision は割当済みの内訳の分解 — 足し戻すと assigned に一致する
+      const byDivisionCount = cofog.byDivision.reduce((s, d) => s + d.count, 0)
+      const byDivisionSum = cofog.byDivision.reduce((s, d) => s + d.sum, 0)
+      expect(byDivisionCount).toBe(cofog.assigned.count)
+      expect(byDivisionSum).toBe(cofog.assigned.sum)
+      expect(cofog.byDivision.length).toBeGreaterThan(0)
+      // division の昇順、01〜10 の範囲
+      expect(cofog.byDivision.map((d) => d.division)).toEqual([...cofog.byDivision].map((d) => d.division).sort())
+      for (const d of cofog.byDivision) {
+        expect(d.division).toMatch(/^(0[1-9]|10)$/)
+        expect(d.divisionLabel.length).toBeGreaterThan(0)
+      }
+    })
+  }
+
+  test('revenue: cofog_status is always not-applicable, so assigned is zero but total is not (nothing dropped)', async () => {
+    const res = await get('/v0/budgets/132195:2023/cofog?direction=revenue')
+    expect(res.status).toBe(200)
+    const { cofog } = await res.json() as CofogBreakdownBody
+    expect(cofog.assigned).toEqual({ count: 0, sum: 0 })
+    expect(cofog.byDivision).toEqual([])
+    expect(cofog.total.count).toBeGreaterThan(0)
+    expect(cofog.total.sum).toBeGreaterThan(0)
+  })
+
+  test('unknown budget is 404, malformed budget id is 400, missing/invalid direction is 400', async () => {
+    expect((await get('/v0/budgets/132195:1999/cofog?direction=expenditure')).status).toBe(404)
+    expect((await get('/v0/budgets/garbage/cofog?direction=expenditure')).status).toBe(400)
+    expect((await get('/v0/budgets/132195:2023/cofog')).status).toBe(400)
+    expect((await get('/v0/budgets/132195:2023/cofog?direction=nonsense')).status).toBe(400)
+  })
+})
+
 describe('distribution passthrough', () => {
   test('files are byte-identical, with revision and ETag headers (AC 5)', async () => {
     for (const [j, file] of [['132047', 'expenditure.csv'], ['132195', 'datapackage.json']] as const) {
@@ -385,6 +460,7 @@ describe('contract-only surface', () => {
       '/budgets',
       '/budgets/{budget}',
       '/budgets/{budget}/statement',
+      '/budgets/{budget}/cofog',
       '/datapackages/{jurisdiction}/{file}',
     ]))
     const raw = JSON.stringify(spec)
@@ -421,6 +497,15 @@ describe('contract-only surface', () => {
     })
     expect(cross.scope).toBe('crossBudget')
     expect(cross.lines.length).toBe(3)
+
+    // 収録済み3団体それぞれで、COFOG 別内訳が RPC 経由でも取れ、
+    // 分類できなかった分（total - assigned）が合計に残っていること
+    for (const budget of ['132047:2024', '132195:2023', '132241:2023']) {
+      const cofog = await client.getCofogBreakdown({ budget, direction: 'expenditure' })
+      expect(cofog.cofog.total.sum).toBeGreaterThan(cofog.cofog.assigned.sum)
+      expect(cofog.cofog.total.count).toBeGreaterThan(cofog.cofog.assigned.count)
+      expect(cofog.revision).toMatch(/^[0-9a-f]{40}/)
+    }
 
     // 型付きエラーも RPC 経由で届く
     await expect(client.getBudget({ budget: '999999:1999' })).rejects.toThrow()

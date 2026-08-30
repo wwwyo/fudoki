@@ -3,8 +3,9 @@
  * 一覧の存在がカバレッジそのもの。
  */
 import {
-  type Env,
+  type CofogBreakdownFile,
   type CofogChunkFile,
+  type Env,
   type LinesChunkFile,
   paths,
   readJsonAsset,
@@ -45,6 +46,29 @@ export const getBudget = os.getBudget.handler(async ({ context, input, errors })
   const budget = meta.budgetById.get(input.budget)
   if (!budget) throw errors.NOT_FOUND({ message: `unknown budget: ${input.budget}` })
   return { budget, revision: meta.revision }
+})
+
+// ---- cofog breakdown（団体 × 年度 × direction の COFOG 別内訳。budget 集約の内部） ----
+
+export const getCofogBreakdown = os.getCofogBreakdown.handler(async ({ context, input, errors }) => {
+  const parsed = parseBudgetId(input.budget)
+  if (parsed === null) {
+    throw errors.BAD_REQUEST({
+      message: `malformed budget id: ${input.budget} (expected {jurisdiction}:{year})`,
+      data: { reason: 'invalid budget id' },
+    })
+  }
+  const meta = await readMeta(context.env)
+  const budget = meta.budgetById.get(input.budget)
+  if (!budget) throw errors.NOT_FOUND({ message: `unknown budget: ${input.budget}` })
+  if (!budget.directions.includes(input.direction)) {
+    throw errors.NOT_FOUND({ message: `${input.direction} is not covered for budget ${input.budget}` })
+  }
+
+  const path = paths.cofogBreakdown(parsed.jurisdiction, parsed.fiscalYear, input.direction)
+  const file = await readJsonAsset<CofogBreakdownFile>(context.env, path)
+  if (file === null) throw new Error(`partition missing for covered budget: ${path}`)
+  return { cofog: file.breakdown, revision: file.revision }
 })
 
 // ---- statement（予算の明細。budget 集約の内部） ----

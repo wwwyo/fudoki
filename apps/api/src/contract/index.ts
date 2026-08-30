@@ -9,13 +9,14 @@
  * 集約を足すときはファイルを足し、ここの contract に載せる。
  */
 import { getJurisdiction, listJurisdictions } from './jurisdictions'
-import { getBudget, getStatement, listBudgets } from './budgets'
+import { getBudget, getCofogBreakdown, getStatement, listBudgets } from './budgets'
 
 export const contract = {
   listJurisdictions,
   getJurisdiction,
   listBudgets,
   getBudget,
+  getCofogBreakdown,
   getStatement,
 }
 export type Contract = typeof contract
@@ -29,11 +30,13 @@ export {
   budgetIdOf,
   budgetLineSchema,
   budgetSchema,
+  cofogBreakdownSchema,
   crossBudgetLineSchema,
   parseBudgetId,
   statementSchema,
   type Budget,
   type BudgetLine,
+  type CofogBreakdown,
   type CrossBudgetLine,
   type Statement,
 } from './budgets'
