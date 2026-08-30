@@ -11,6 +11,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { decodeText, fetchCapped, sha256, splitCsvLine } from '../../ingestion/lib/source'
+import { loadJurisdictions } from '../../ingestion/shared/jurisdictions'
 import type { Check, NodePreview, Provenance, ReportData, Topology } from './schema'
 import { ROOT, TARGET, buildChecks, buildTopology, q, readJson, type Manifest, type RunResults } from '../lineage'
 import { BY_JURISDICTION, SHARED } from './static'
@@ -161,7 +162,7 @@ function buildLevels(code: string): ReportData['levels'] {
 }
 
 type SourceEntry = {
-  jurisdiction_name?: string; phase_id?: string; phase_label?: string
+  phase_id?: string; phase_label?: string
   license_id?: string; attribution?: string; landing_page?: string
 }
 
@@ -174,6 +175,32 @@ type SourceEntry = {
 const SOURCES = Bun.TOML.parse(
   readFileSync(join(ROOT, 'ingestion/budget/sources.toml'), 'utf8'),
 ) as Record<string, SourceEntry>
+
+/**
+ * 団体の名称。**`sources.toml` には持たせない**（`ingestion/budget/sources.py` が
+ * 明示的に禁止している — 以前は団体×年度ごとに反復宣言しており、狛江市だけで6回、
+ * 誤記があっても検知されなかった）。正本は `ingestion/shared/jurisdictions.json`
+ * （①②③のどの層からも参照される、層に依存しない団体の同一性）。
+ *
+ * ⚠️ **読む口を自分で作らない。** 既に `ingestion/shared/jurisdictions.ts` の
+ * `loadJurisdictions()` が zod で検証して読んでいる。ここで `readFileSync` + 型アサーションを
+ * 書き直すと、同じ JSON を読む口が2つになるうえ、実行時の検証が効かない場所を自分で作ることになる。
+ * `loadJurisdictions()` は非同期だが、Bun の ESM は top-level await を扱えるので、
+ * 同期に寄せる理由にはならない。
+ */
+const JURISDICTIONS = (await loadJurisdictions()).jurisdictions
+
+/** 団体コードから名称を引く。**登録が無ければ止める**（黙って欠けさせない） */
+function jurisdictionNameOf(code: string): string {
+  const j = JURISDICTIONS[code]
+  if (!j) {
+    throw new Error(
+      `団体コード「${code}」が ingestion/shared/jurisdictions.json に無い。` +
+        `団体の名称と識別子はそこで一元管理している（AGENTS.md 参照）`,
+    )
+  }
+  return j.name
+}
 
 /** `sources.toml` に登録された団体コード */
 const CODES = [...new Set(
@@ -210,7 +237,7 @@ function build(
   return {
     meta: {
       jurisdictionCode: code,
-      jurisdictionName: pick('jurisdiction_name'),
+      jurisdictionName: jurisdictionNameOf(code),
       fiscalYears: [...new Set(prov.map((p) => p.fiscal_year))].sort(),
       // **原典の文書の種類**（当初予算 / 決算）。行が持つ予算段階とは別の軸で、
       // 狛江市の決算書は1行が予算現額と執行済額の両方を持つ。
