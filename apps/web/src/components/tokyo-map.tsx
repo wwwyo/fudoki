@@ -15,7 +15,6 @@
  * （東京都自身の地図も別枠方式を採っている）。
  */
 import { useEffect, useMemo, useState } from 'react'
-import { Badge } from '@/components/ui/badge'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 
@@ -28,8 +27,6 @@ type TokyoFeature = {
 type TokyoGeoJSON = { type: 'FeatureCollection'; features: TokyoFeature[] }
 
 type Props = {
-  /** 収録済みの団体コード（6桁）の集合。手で列挙しない — 呼び出し側が `pipeline.json` の `jurisdictions[].code` から渡す */
-  recordedCodes: ReadonlySet<string>
   className?: string
 }
 
@@ -141,7 +138,7 @@ function useTokyoGeoJSON() {
   return state
 }
 
-export function TokyoMap({ recordedCodes, className }: Props) {
+export function TokyoMap({ className }: Props) {
   const { data, error } = useTokyoGeoJSON()
 
   const mainland = useMemo(() => {
@@ -210,17 +207,6 @@ export function TokyoMap({ recordedCodes, className }: Props) {
 
   return (
     <figure className={cn('flex flex-col gap-3', className)}>
-      <div className="flex items-center gap-3 text-xs">
-        <span className="inline-flex items-center gap-1.5">
-          <Badge className="size-3 rounded-sm p-0" aria-hidden />
-          収録済み
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <Badge variant="outline" className="size-3 rounded-sm border-muted-foreground/40 bg-muted p-0" aria-hidden />
-          未収録
-        </span>
-      </div>
-
       <svg
         viewBox={`0 0 ${mainland.width} ${mainland.height}`}
         width={mainland.width}
@@ -229,79 +215,53 @@ export function TokyoMap({ recordedCodes, className }: Props) {
         role="img"
         aria-label="東京都の区市町村。クリックするとその団体のパイプラインへ移動します"
       >
-        {mainland.shapes.map((s) => {
-          const recorded = recordedCodes.has(s.code)
-          return (
-            <Tooltip key={s.code}>
-              <TooltipTrigger
-                render={
-                  <a
-                    href={`/pipeline/${s.code}/`}
-                    aria-label={`${s.name}（${recorded ? '収録済み' : '未収録'}）`}
-                    className="group outline-none"
-                  />
-                }
-              >
-                <path
-                  d={s.d}
-                  className={cn(
-                    'cursor-pointer stroke-background stroke-[0.6] transition-opacity',
-                    recorded ? 'fill-primary' : 'fill-muted',
-                    'group-hover:opacity-70 group-focus-visible:opacity-70',
-                    'group-focus-visible:stroke-ring group-focus-visible:stroke-[1.5]',
-                  )}
-                />
-              </TooltipTrigger>
-              <TooltipContent>
-                {s.name}（{recorded ? '収録済み' : '未収録'}）
-              </TooltipContent>
-            </Tooltip>
-          )
-        })}
+        {mainland.shapes.map((s) => (
+          <Tooltip key={s.code}>
+            <TooltipTrigger
+              render={<a href={`/pipeline/${s.code}/`} aria-label={s.name} className="group outline-none" />}
+            >
+              <path
+                d={s.d}
+                className={cn(
+                  'fill-muted stroke-background cursor-pointer stroke-[0.6] transition-opacity',
+                  'group-hover:opacity-70 group-focus-visible:opacity-70',
+                  'group-focus-visible:stroke-ring group-focus-visible:stroke-[1.5]',
+                )}
+              />
+            </TooltipTrigger>
+            <TooltipContent>{s.name}</TooltipContent>
+          </Tooltip>
+        ))}
       </svg>
 
-      <div>
-        <p className="mb-1.5 text-xs text-muted-foreground">島しょ部（実際の縮尺とは無関係に、押せる大きさで並べています）</p>
-        <div className="flex flex-wrap gap-2">
-          {islands.map((s) => {
-            const recorded = recordedCodes.has(s.code)
-            return (
-              <Tooltip key={s.code}>
-                <TooltipTrigger
-                  render={
-                    <a
-                      href={`/pipeline/${s.code}/`}
-                      aria-label={`${s.name}（${recorded ? '収録済み' : '未収録'}）`}
-                      className="group flex flex-col items-center gap-0.5 rounded-md p-1 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
-                    />
-                  }
-                >
-                  <svg
-                    viewBox={`0 0 ${ISLAND_TILE} ${ISLAND_TILE}`}
-                    width={ISLAND_TILE}
-                    height={ISLAND_TILE}
-                    aria-hidden
-                  >
-                    {/* タイル全面を透明な矩形で覆い、実面積に関係なく同じ大きさを押せるようにする */}
-                    <rect width={ISLAND_TILE} height={ISLAND_TILE} className="fill-transparent" />
-                    <path
-                      d={s.d}
-                      className={cn(
-                        'stroke-background stroke-[0.6] transition-opacity',
-                        recorded ? 'fill-primary' : 'fill-muted',
-                        'group-hover:opacity-70',
-                      )}
-                    />
-                  </svg>
-                  <span className="max-w-[84px] truncate text-[10px] text-muted-foreground">{s.name}</span>
-                </TooltipTrigger>
-                <TooltipContent>
-                  {s.name}（{recorded ? '収録済み' : '未収録'}）
-                </TooltipContent>
-              </Tooltip>
-            )
-          })}
-        </div>
+      {/* ⚠️ 島しょ部だけ縮尺が本土と揃っていない。小笠原村は南鳥島・沖ノ鳥島まで
+          行政区域に含み、本土と同じ座標系では点にしかならないため、タイルごとに
+          正規化して並べている（各タイルの中でだけ形が正しい）。 */}
+      <div className="flex flex-wrap gap-2">
+        {islands.map((s) => (
+          <Tooltip key={s.code}>
+            <TooltipTrigger
+              render={
+                <a
+                  href={`/pipeline/${s.code}/`}
+                  aria-label={s.name}
+                  className="group focus-visible:ring-ring/50 flex flex-col items-center gap-0.5 rounded-md p-1 outline-none focus-visible:ring-[3px]"
+                />
+              }
+            >
+              <svg viewBox={`0 0 ${ISLAND_TILE} ${ISLAND_TILE}`} width={ISLAND_TILE} height={ISLAND_TILE} aria-hidden>
+                {/* タイル全面を透明な矩形で覆い、実面積に関係なく同じ大きさを押せるようにする */}
+                <rect width={ISLAND_TILE} height={ISLAND_TILE} className="fill-transparent" />
+                <path
+                  d={s.d}
+                  className="fill-muted stroke-background stroke-[0.6] transition-opacity group-hover:opacity-70"
+                />
+              </svg>
+              <span className="text-muted-foreground max-w-[84px] truncate text-[10px]">{s.name}</span>
+            </TooltipTrigger>
+            <TooltipContent>{s.name}</TooltipContent>
+          </Tooltip>
+        ))}
       </div>
 
       <figcaption className="text-[10px] leading-relaxed text-muted-foreground/70">

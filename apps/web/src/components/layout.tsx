@@ -23,14 +23,9 @@ const NAV = [
 
 type LayoutProps = {
   children: ReactNode
-  /**
-   * ヘッダー右端に足す追加要素。パイプライン報告の「検査 passed/total」Badge のように
-   * ページ固有の情報を Layout 自身は知らないので、slot として受ける。
-   */
-  headerExtra?: ReactNode
 }
 
-export function Layout({ children, headerExtra }: LayoutProps) {
+export function Layout({ children }: LayoutProps) {
   return (
     <ThemeProvider>
       <TooltipProvider>
@@ -63,7 +58,6 @@ export function Layout({ children, headerExtra }: LayoutProps) {
                 </a>
               ))}
             </nav>
-            <div className="ml-auto">{headerExtra}</div>
           </header>
 
           {children}

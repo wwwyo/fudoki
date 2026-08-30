@@ -12,7 +12,6 @@ import { StageDetail } from "@/components/stage-detail"
 import { CofogPanel } from "@/components/cofog-panel"
 import { ChecksPanel } from "@/components/checks-panel"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Badge } from "@/components/ui/badge"
 import {
   Card,
   CardDescription,
@@ -228,11 +227,6 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
 
   return (
     <Layout
-      headerExtra={
-        <Badge variant={report.summary.failed ? "destructive" : "secondary"} className="shrink-0">
-          検査 {report.summary.passed}/{report.summary.total}
-        </Badge>
-      }
     >
       <main className="mx-auto flex max-w-[1500px] flex-col gap-8 p-4 pb-24">
         <section className="flex flex-col gap-4">

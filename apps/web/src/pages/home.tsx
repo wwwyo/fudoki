@@ -1,40 +1,17 @@
 /**
  * ホームページ。何をやっているかの説明とベータ告知、地図の入口。
  *
- * ⚠️ **地図は境界データが揃ってから別途作る。** ここにあるのは見出しだけの
- * プレースホルダで、`pipeline.json` はまだ読まない。地図は収録済み団体の塗り分けに
- * `pipeline.json` を使う予定だが、それは地図コンポーネント自身の実装時に足す話であって、
- * 使われる予定があるという理由だけで読み込みの仕組みを先取りして残すと、
- * 「呼んでいるのに何も出さない」という未使用コードになる（AGENTS.md:
- * 自分の変更で未使用になったものは片付ける）。
+ * ⚠️ **地図に収録状況を持ち込まない。** 62団体すべてを同じ扱いで押せるようにし、
+ * どこが埋まっているかは各団体のページ側が告げる。ホームで塗り分けると
+ * `pipeline.json` を読む必要が生まれ、報告の生成物が欠けただけで
+ * 入口が壊れる（実際に古い pipeline.json を掴んで塗り分けが全部外れた）。
  */
-import { useEffect, useState } from "react"
 import { Layout } from "@/components/layout"
 import { TokyoMap } from "@/components/tokyo-map"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
-import { loadPipeline } from "@/lib/pipeline"
 
 export function HomePage() {
-  /**
-   * 収録済みの団体コード。地図の塗り分けに使う。
-   *
-   * ⚠️ **手で列挙しない。** `pipeline.json` から取る。収録を増やした瞬間に
-   * 画面だけが古くなる、という事故を避けるため（AGENTS.md）。
-   *
-   * ⚠️ 読めなくても地図は出す。62団体の境界は `tokyo.geojson` 側にあり、
-   * `pipeline.json` が欠けて失われるのは「どこが埋まっているか」だけである。
-   * 網羅範囲そのものを見せるのがこの地図の役割なので、全部を未収録として
-   * 描くほうが、地図ごと消えるより伝わる。
-   */
-  const [recordedCodes, setRecordedCodes] = useState<ReadonlySet<string>>(new Set())
-
-  useEffect(() => {
-    loadPipeline()
-      .then((d) => setRecordedCodes(new Set(d.jurisdictions.map((j) => j.code))))
-      .catch((e: Error) => console.error("収録状況を読み込めませんでした", e))
-  }, [])
-
   return (
     <Layout>
       <main className="mx-auto flex max-w-3xl flex-col gap-10 px-4 py-16">
@@ -76,13 +53,12 @@ export function HomePage() {
         </section>
 
         {/*
-          ⚠️ alert.tsx 自体は変えない（shadcn CLI の更新で上書きされる）。
-          既定の variant="default" は bg-card で Card と同じ背景になり、告知として
-          見分けがつかない（ユーザー指摘）。ブランドカラー（青丹）の accent トークンと
-          左ボーダーで、Card とは別物だと分かる見た目にする。accent はライト・ダーク
-          両方で定義済みのトークンなので、ここで新しい色を足す必要はない。
+          ⚠️ className で見た目を足さない。Card と同じ背景に見えるのは Alert の
+          既定 variant の仕様で、変えるならデザインシステム側（alert.tsx の variant）
+          の仕事である。利用側で bg や border を上書きすると、shadcn の variant を
+          迂回した独自スタイルが1箇所だけ生まれる。
         */}
-        <Alert className="border-l-primary bg-accent text-accent-foreground border-l-4">
+        <Alert>
           <AlertTitle>ベータです</AlertTitle>
           <AlertDescription>
             URL・応答スキーマ・提供そのものを予告なく変更または停止することがあります。詳しくは
@@ -96,11 +72,8 @@ export function HomePage() {
         </Alert>
 
         <section className="flex flex-col gap-3">
-          <h2 className="text-xl font-semibold">収録状況</h2>
-          <p className="text-muted-foreground text-sm">
-            東京都の全区市町村（62団体）が最初の網羅範囲です。押すとその団体のパイプラインへ入ります。
-          </p>
-          <TokyoMap recordedCodes={recordedCodes} />
+          <h2 className="text-xl font-semibold">東京都の区市町村</h2>
+          <TokyoMap />
         </section>
 
         <section className="flex flex-wrap gap-2 text-sm">
