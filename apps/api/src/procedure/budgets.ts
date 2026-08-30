@@ -96,9 +96,16 @@ async function crossBudgetStatement(
   rawToken: string | undefined,
   errors: Errors,
 ) {
-  if (filter.direction !== undefined || filter.phase !== undefined) {
+  if (
+    filter.direction !== undefined ||
+    filter.phase !== undefined ||
+    filter.cofogGroup !== undefined ||
+    filter.cofogClass !== undefined
+  ) {
     throw errors.BAD_REQUEST({
-      message: 'direction and phase filters are not supported for cross-budget statements',
+      message:
+        'direction, phase, cofog.group and cofog.class filters are not supported for cross-budget statements ' +
+        '(crossBudgetLine only carries the common minimal axis: status / division / consolidation)',
       data: { reason: 'unsupported filter field for parent "-"' },
     })
   }
@@ -197,6 +204,8 @@ async function budgetStatement(
   const predicate = (line: BudgetLine): boolean => {
     if (filter.phase !== undefined && !line.amounts.some((a) => a.phase === filter.phase)) return false
     if (filter.cofogDivision !== undefined && line.judgments.cofog?.division !== filter.cofogDivision) return false
+    if (filter.cofogGroup !== undefined && line.judgments.cofog?.group !== filter.cofogGroup) return false
+    if (filter.cofogClass !== undefined && line.judgments.cofog?.class !== filter.cofogClass) return false
     return true
   }
   const { items, nextOffset } = scanPage(chunk.lines, offset, pageSize, predicate)

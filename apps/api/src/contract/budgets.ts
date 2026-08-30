@@ -137,6 +137,14 @@ const amountEntry = z.object({
 const cofogJudgment = z.object({
   status: cofogStatus,
   division: z.string().nullable().describe('COFOG の大分類コード（01〜10）。割当済み以外は null'),
+  group: z
+    .string()
+    .nullable()
+    .describe('COFOG の中分類コード（04.5 形式）。規則がそこまで下げていない行、または割当済み以外は null'),
+  class: z
+    .string()
+    .nullable()
+    .describe('COFOG の小分類コード（04.5.1 形式）。規則がそこまで下げていない行、または割当済み以外は null'),
   consolidation: cofogConsolidation,
   decidedAtLevel: cofogDecidedAtLevel.nullable(),
   ruleId: z.string().nullable().describe('適用した分類規則の id。配布物の cofog_rules リソースで根拠を引ける'),
@@ -203,7 +211,24 @@ const cofogDivisionBreakdown = cofogAmountAndCount.extend({
   divisionLabel: z.string().describe('大分類の名称'),
 })
 
+const cofogCodeBreakdown = cofogAmountAndCount.extend({
+  division: z.string().describe('COFOG の大分類コード（01〜10）'),
+  divisionLabel: z.string().describe('大分類の名称'),
+  group: z.string().describe('COFOG の中分類コード（04.5 形式）。まだ降りていない行は空文字'),
+  groupLabel: z.string().describe('中分類の名称。group が空文字なら空文字'),
+  class: z.string().describe('COFOG の小分類コード（04.5.1 形式）。まだ降りていない行は空文字'),
+  classLabel: z.string().describe('小分類の名称。class が空文字なら空文字'),
+})
+
 export const cofogBreakdownSchema = z.object({
+  byCode: z
+    .array(cofogCodeBreakdown)
+    .describe(
+      '割当済みの明細を、規則が到達した COFOG コード（division/group/class の組）ごとに集計したもの。' +
+        'byDivision をさらに掘り下げた粒度で、金額降順（report/budget/cofog.ts の `cofogGranularity()` の並びそのまま）。\n\n' +
+        '⚠️ group / class が空文字なのは「該当が無い」ではなく「規則がそこまで下げていない」ことを意味する。' +
+        '割合の高さを分類の質の指標にしない。',
+    ),
   byDivision: z
     .array(cofogDivisionBreakdown)
     .describe('割当済みの明細を COFOG のディビジョンごとに集計したもの。division の昇順'),
@@ -223,9 +248,10 @@ export const getCofogBreakdown = base
     summary: 'Get COFOG breakdown for a budget',
     description:
       '`{budget}` が指す団体 × 年度の予算を、指定した direction について COFOG の10分類（division）ごとに集計する。' +
+      '`byCode` は同じ集計をさらに中分類・小分類まで掘り下げた粒度で持つ（画面のツリー表示向け）。' +
       '集計は report/budget/cofog.ts の `cofogGranularity()` の出力そのもので、API 側では計算しない' +
       '（AGENTS.md の「集計は1箇所」）。\n\n' +
-      '⚠️ 分類できなかった分（unclassifiable / out-of-scope、歳入は not-applicable）は byDivision に現れないが、' +
+      '⚠️ 分類できなかった分（unclassifiable / out-of-scope、歳入は not-applicable）は byDivision / byCode に現れないが、' +
       '`total` には含まれたままなので `total - assigned` で取り戻せる（落としていない）。\n\n' +
       '10分類しか返らないためページングは持たない（listBudgets と同じ理由）。',
   })
@@ -250,10 +276,11 @@ export const getStatement = base
     description:
       '予算の明細。`{budget}` に budget の id（{団体コード}:{年度}）を指定すると、' +
       'その予算の明細行を団体固有の階層を含む形で返す（scope: budget）。' +
-      'filter には direction が必須で、phase / cofog.division を追加できる。\n\n' +
+      'filter には direction が必須で、phase / cofog.division / cofog.group / cofog.class を追加できる。\n\n' +
       '`{budget}` にワイルドカード `-` を指定すると全予算を横断し（AIP-159）、' +
       '団体に依存しない共通の最小軸だけの行（scope: crossBudget）を返す。' +
-      'filter には cofog.division が必須で、fiscalYear を追加できる（direction / phase は使えない）。' +
+      'filter には cofog.division が必須で、fiscalYear を追加できる' +
+      '（direction / phase / cofog.group / cofog.class は使えない。crossBudgetLine は共通の最小軸しか持たない）。' +
       '各行の budget フィールドから親予算へ辿れる。\n\n' +
       'filter の文法は AIP-160 の部分集合（`=` と `AND` のみ）。' +
       '例: `cofog.division = "09" AND fiscalYear = 2023`。' +

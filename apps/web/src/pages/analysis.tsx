@@ -28,10 +28,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { withBase } from "@/lib/utils"
 import { DIVISION_COLOR, loadPipeline, pct, yen, type Direction, type PipelineData } from "@/lib/pipeline"
 import { apiClient } from "@/lib/api-client"
+import { buildCofogTree, type CofogNodeFilter } from "@/lib/cofog-tree"
+import { CofogTree } from "@/components/cofog-tree"
+import { CofogStatement } from "@/components/cofog-statement"
 
 /** contract 型を web 側で二重宣言しない。API 呼び出しの戻り値からそのまま導出する */
 type CofogBreakdown = Awaited<ReturnType<typeof apiClient.getCofogBreakdown>>["cofog"]
@@ -131,6 +133,9 @@ function CollectedAnalysis({
   const [direction, setDirection] = useState<Direction>("expenditure")
   const [cofog, setCofog] = useState<CofogBreakdown | null>(null)
   const [apiError, setApiError] = useState<string | null>(null)
+  const [selected, setSelected] = useState<CofogNodeFilter | null>(null)
+  // 明細の金額表示に使う予算段階。direction には依存しない（団体単位の宣言）ので別 effect にする
+  const [amountPhase, setAmountPhase] = useState<string | null>(null)
 
   // 団体を切り替えたら年度もその団体の最新年度に戻す（前の団体にしか無い年度を持ち越さない）。
   // 依存は `code` だけにする — `years` を足すと配列の参照が変わるたびに発火し、
@@ -143,6 +148,7 @@ function CollectedAnalysis({
     let stale = false
     setCofog(null)
     setApiError(null)
+    setSelected(null) // 団体・年度・歳出歳入を切り替えたら選択中の分類も捨てる（別の集計に対する古い選択を残さない）
     apiClient
       .getCofogBreakdown({ budget: `${code}:${year}`, direction })
       .then((res) => {
@@ -156,6 +162,22 @@ function CollectedAnalysis({
       stale = true
     }
   }, [code, year, direction])
+
+  useEffect(() => {
+    let stale = false
+    setAmountPhase(null)
+    apiClient
+      .getBudget({ budget: `${code}:${year}` })
+      .then((res) => {
+        if (!stale) setAmountPhase(res.budget.amountPhase)
+      })
+      .catch(() => {
+        // 明細の金額欄が「—」になるだけなので、ここは静かに諦める（apiError は cofog 取得の失敗用）
+      })
+    return () => {
+      stale = true
+    }
+  }, [code, year])
 
   const breakdown = useMemo(() => {
     if (!cofog) return null
@@ -172,6 +194,8 @@ function CollectedAnalysis({
       unclassifiedShare: total > 0 ? unclassifiedSum / total : 0,
     }
   }, [cofog])
+
+  const tree = useMemo(() => (cofog ? buildCofogTree(cofog.byDivision, cofog.byCode) : null), [cofog])
 
   return (
     <Layout>
@@ -320,51 +344,39 @@ function CollectedAnalysis({
             </section>
 
             <section className="flex flex-col gap-2">
-              <h2 className="font-medium">大分類ごとの内訳</h2>
-              <div className="overflow-x-auto rounded-lg border">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>コード</TableHead>
-                      <TableHead>大分類</TableHead>
-                      <TableHead className="text-right">明細数</TableHead>
-                      <TableHead className="text-right">金額（円）</TableHead>
-                      <TableHead className="text-right">合計に対する割合</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {breakdown.byDivision.map((v) => (
-                      <TableRow key={v.division}>
-                        <TableCell>
-                          <span className="inline-flex items-center gap-1.5">
-                            <i aria-hidden className="size-2.5 rounded-sm" style={{ background: DIVISION_COLOR[v.division] }} />
-                            {v.division}
-                          </span>
-                        </TableCell>
-                        <TableCell>{v.divisionLabel}</TableCell>
-                        <TableCell className="text-right tabular-nums">{yen(v.count)}</TableCell>
-                        <TableCell className="text-right tabular-nums">{yen(v.sum)}</TableCell>
-                        <TableCell className="text-right tabular-nums">{pct(v.share)}</TableCell>
-                      </TableRow>
-                    ))}
-                    {breakdown.unclassifiedSum > 0 && (
-                      <TableRow>
-                        <TableCell colSpan={2}>
-                          <Badge variant="outline">未分類</Badge>
-                        </TableCell>
-                        <TableCell className="text-right tabular-nums">{yen(breakdown.unclassifiedCount)}</TableCell>
-                        <TableCell className="text-right tabular-nums">{yen(breakdown.unclassifiedSum)}</TableCell>
-                        <TableCell className="text-right tabular-nums">{pct(breakdown.unclassifiedShare)}</TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
+              <h2 className="font-medium">分類ごとの内訳（大分類 → 中分類 → 小分類）</h2>
               <p className="max-w-[72ch] text-xs leading-relaxed text-muted-foreground">
-                COFOG への割当の根拠（款・項ごとにどの規則で決めたか）は、上部の
-                「ELT パイプラインを見る」から開ける「COFOG の判断」タブにある。
+                行を開くとさらに細かい分類へ降りられる。「（〜までで止まった分）」は
+                規則がそこより下まで判断していない金額で、割合の高さは分類の質を意味しない。
+                行をクリックすると、その分類に属する明細を下に出す。
               </p>
+              {tree && <CofogTree nodes={tree} total={cofog.total.sum} selected={selected} onSelect={setSelected} />}
+              {breakdown.unclassifiedSum > 0 && (
+                <div className="flex items-center gap-2 rounded-lg border px-2 py-1.5 text-sm text-muted-foreground">
+                  <Badge variant="outline">未分類</Badge>
+                  {yen(breakdown.unclassifiedCount)}件 ・ {yen(breakdown.unclassifiedSum)}円 ・{" "}
+                  {pct(breakdown.unclassifiedShare)}
+                  <span className="ml-1 text-xs">（分類不能・対象外。明細は下の分類ツリーには出ない）</span>
+                </div>
+              )}
             </section>
+
+            {selected && amountPhase && (
+              <section className="flex flex-col gap-2">
+                <h2 className="font-medium">選んだ分類の明細</h2>
+                <CofogStatement
+                  budget={`${code}:${year}`}
+                  direction={direction}
+                  filter={selected}
+                  amountPhase={amountPhase}
+                />
+              </section>
+            )}
+
+            <p className="max-w-[72ch] text-xs leading-relaxed text-muted-foreground">
+              COFOG への割当の根拠（款・項ごとにどの規則で決めたか）は、上部の
+              「ELT パイプラインを見る」から開ける「COFOG の判断」タブにある。
+            </p>
           </>
         )}
       </main>

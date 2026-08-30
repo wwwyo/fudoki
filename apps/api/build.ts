@@ -385,8 +385,8 @@ function buildCofogBreakdown(
       count: 1, sum: amount,
     }
   })
-  const { byDivision, assigned, total, assignedShare } = cofogGranularity(byState)
-  return cofogBreakdownSchema.parse({ byDivision, assigned, total, assignedShare } satisfies CofogBreakdown)
+  const { byCode, byDivision, assigned, total, assignedShare } = cofogGranularity(byState)
+  return cofogBreakdownSchema.parse({ byCode, byDivision, assigned, total, assignedShare } satisfies CofogBreakdown)
 }
 
 /**
@@ -415,6 +415,13 @@ function checkCofogBreakdown(
   const byDivisionSum = breakdown.byDivision.reduce((s, d) => s + d.sum, 0)
   if (byDivisionCount !== breakdown.assigned.count || byDivisionSum !== breakdown.assigned.sum) {
     fail(`cofog breakdown byDivision does not add up to assigned for ${j}/${year}/${direction}`)
+  }
+  // byCode も同じく割当済みの分解。byDivision と独立に取り出しているので、
+  // ここでも足し戻して assigned に一致することを見る（同じ抜け漏れの型を2度書かない）
+  const byCodeCount = breakdown.byCode.reduce((s, d) => s + d.count, 0)
+  const byCodeSum = breakdown.byCode.reduce((s, d) => s + d.sum, 0)
+  if (byCodeCount !== breakdown.assigned.count || byCodeSum !== breakdown.assigned.sum) {
+    fail(`cofog breakdown byCode does not add up to assigned for ${j}/${year}/${direction}`)
   }
 }
 
@@ -463,11 +470,11 @@ for (const j of jurisdictionIds.sort()) {
   const cofogTable = readCsvTable(join(dir, 'cofog.csv'))
   const cofogByLineId = new Map<string, CofogRow>()
   /**
-   * cofog.csv の group / class は BudgetLine の judgments には出ない
-   * （contract の cofogJudgment は division までしか持たない）が、
-   * COFOG 別内訳の集計（cofogGranularity）には CofogCode の3列が要る。
-   * 配布物には出さない、この内訳の集計だけで使う内部データなので、
-   * contract の CofogRow を太らせず別の map に持つ。
+   * cofog.csv の全列（division / group / class）は COFOG 別内訳の集計
+   * （cofogGranularity）にも要るので、cofogByLineId（BudgetLine の judgments 用）
+   * とは別に持つ。CofogRow（judgments に出る形）は3列とも持つが、
+   * 集計側は status / consolidation も併せて要るのでここは別の型のまま
+   * （二重に持つのは集計に必要な形が違うため。値の出所は同じ cofog.csv）。
    */
   const cofogFullByLineId = new Map<string, Coded & { status: string; consolidation: string }>()
   for (const row of cofogTable.rows) {
@@ -483,6 +490,8 @@ for (const j of jurisdictionIds.sort()) {
     cofogByLineId.set(row['budget_line_id']!, {
       status: cofogStatus.parse(row['cofog_status']),
       division: row['cofog_division'] === '' ? null : row['cofog_division']!,
+      group: row['cofog_group'] === '' ? null : row['cofog_group']!,
+      class: row['cofog_class'] === '' ? null : row['cofog_class']!,
       consolidation: cofogConsolidation.parse(row['cofog_consolidation']),
       decidedAtLevel: row['cofog_decided_at_level'] === '' ? null : cofogDecidedAtLevel.parse(row['cofog_decided_at_level']),
       ruleId: row['cofog_rule_id'] === '' ? null : row['cofog_rule_id']!,
