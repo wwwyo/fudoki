@@ -272,7 +272,7 @@ export const cofogBreakdownSchema = z.object({
     ),
   byDivision: z
     .array(cofogDivisionBreakdown)
-    .describe('割当済みの明細を COFOG のディビジョンごとに集計したもの。division の昇順'),
+    .describe('割当済みの明細を COFOG の大分類ごとに集計したもの。division の昇順'),
   assigned: cofogAmountAndCount.describe('COFOG が割当済みの明細の合計（byDivision の総和と一致）'),
   total: cofogAmountAndCount.describe(
     '対象 direction の全明細の合計（割当済み + 分類不能 + 対象外 [+ 歳入は not-applicable]）。' +

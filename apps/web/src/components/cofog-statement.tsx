@@ -4,7 +4,7 @@
  * ⚠️ **全件は取りに行かない。** 狛江市は1万3千行を超える。`pageSize` を絞り、
  * 「続きを読む」で `nextPageToken` を渡して追記する（AGENTS.md タスク仕様）。
  */
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { yen, type Direction } from "@/lib/pipeline"
@@ -44,8 +44,16 @@ export function CofogStatement({
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  /**
+   * 「いま表示している問い合わせ」の世代。分類・年度・歳出歳入を切り替えるたびに進める。
+   * ⚠️ 初回取得の stale フラグだけでは足りない — loadMore はエフェクトの外で走るので、
+   * 切り替え直後に古い応答が返ると別条件の行が現在の明細に足される。
+   */
+  const requestId = useRef(0)
+
   useEffect(() => {
-    let stale = false
+    const id = ++requestId.current
+    const isStale = () => requestId.current !== id
     setLines([])
     setNextPageToken(undefined)
     setError(null)
@@ -53,34 +61,41 @@ export function CofogStatement({
     apiClient
       .getStatement({ budget, filter: filterExpr(filter, direction), pageSize: PAGE_SIZE })
       .then((res) => {
-        if (stale || res.scope !== "budget") return
+        if (isStale() || res.scope !== "budget") return
         setLines(res.lines)
         setNextPageToken(res.nextPageToken)
       })
       .catch((e: unknown) => {
-        if (!stale) setError(e instanceof Error ? e.message : String(e))
+        if (!isStale()) setError(e instanceof Error ? e.message : String(e))
       })
       .finally(() => {
-        if (!stale) setLoading(false)
+        if (!isStale()) setLoading(false)
       })
+    // アンマウントでも世代を進める（外れた画面へ書き戻さない）
     return () => {
-      stale = true
+      requestId.current++
     }
     // biome-ignore lint/correctness/useExhaustiveDependencies: filter は毎回新しいオブジェクトなので中身で見る
   }, [budget, direction, filter.division, filter.group, filter.class])
 
   const loadMore = () => {
     if (!nextPageToken) return
+    const id = requestId.current
+    const isStale = () => requestId.current !== id
     setLoading(true)
     apiClient
       .getStatement({ budget, filter: filterExpr(filter, direction), pageSize: PAGE_SIZE, pageToken: nextPageToken })
       .then((res) => {
-        if (res.scope !== "budget") return
+        if (isStale() || res.scope !== "budget") return
         setLines((prev) => [...prev, ...res.lines])
         setNextPageToken(res.nextPageToken)
       })
-      .catch((e: unknown) => setError(e instanceof Error ? e.message : String(e)))
-      .finally(() => setLoading(false))
+      .catch((e: unknown) => {
+        if (!isStale()) setError(e instanceof Error ? e.message : String(e))
+      })
+      .finally(() => {
+        if (!isStale()) setLoading(false)
+      })
   }
 
   if (error) return <p className="text-sm text-destructive">明細を読み込めませんでした: {error}</p>

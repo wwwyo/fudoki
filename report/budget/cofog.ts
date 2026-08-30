@@ -92,7 +92,9 @@ export function cofogGranularity(byState: StateRow[]):
   const assigned = assignedRows.reduce(add, ZERO)
   const byCode = foldBy(
     assignedRows.map(({ status: _s, consolidation: _c, ...code }) => code),
-    (r) => [r.division, r.group, r.class].join(''),
+    // \x1F（Unit Separator）で繋ぐ。COFOG のコードに現れない文字なので、
+    // '01' + '1' と '011' + '' のような別の組が同じキーに潰れない
+    (r) => [r.division, r.group, r.class].join('\x1f'),
   ).sort((a, b) => b.sum - a.sum || cmp(a.division, b.division)
     || cmp(a.group, b.group) || cmp(a.class, b.class))
   const byDivision = foldBy(
