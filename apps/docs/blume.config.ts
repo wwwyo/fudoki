@@ -22,7 +22,11 @@ export default defineConfig({
   // ブランドを変えたら build:brand を回してコピーし直す。
   // ロゴ画像がワードマーク（風土記）込みなので text は空にする。
   // ⚠️ ロゴを1枚にしない — SVG 内のメディアクエリは OS 設定しか見ないため（apps/web の header と同じ理由）。
+  // ⚠️ href の既定は `/` で、それは docs 自身のトップを指す。
+  // ロゴは PJ 全体のブランドなので、押した人が期待するのは fudoki のホームであって
+  // 「いま見ている API ドキュメントのトップ」ではない。別サイトなので絶対 URL で書く。
   logo: {
+    href: 'https://fudoki.dev/',
     image: { light: '/logo.svg', dark: '/logo-dark.svg', alt: '風土記' },
     text: '',
   },
