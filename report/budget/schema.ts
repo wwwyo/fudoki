@@ -60,7 +60,13 @@ export type ReportData = ReportEnvelope & {
   }[]
   /** 2団体目で壊れうる箇所と、次に何を実測すれば確かめられるか */
   portability: { element: string; kind: string; verifyNext: string }[]
-  caveats: { topic: string; body: string; category: CaveatCategory }[]
+  /**
+   * `api` は budget-api の jurisdiction 応答に載せるものだけ true にする。
+   * 基準: データ（enum・数値・構造）から見えず、API 利用者の解釈を変えるもの。
+   * 構造が既に語っている事実、fudoki 側で吸収済みの経緯、repo の再現性の話は載せない
+   * （報告=ダッシュボードには全量を出す）。
+   */
+  caveats: { topic: string; body: string; category: CaveatCategory; api?: boolean }[]
 }
 
 /**

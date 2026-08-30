@@ -70,14 +70,16 @@ describe('jurisdictions', () => {
     }
   })
 
-  test('detail carries required caveat categories, and no per-year state', async () => {
+  test('detail carries interpretation-relevant caveats only, and no per-year state', async () => {
     const res = await get('/v0/jurisdictions/132195')
     expect(res.status).toBe(200)
-    const { jurisdiction } = await res.json() as { jurisdiction: { caveats: { category: string }[] } & Record<string, unknown> }
-    const categories = new Set(jurisdiction.caveats.map((c) => c.category))
-    for (const required of ['coverage', 'phaseSemantics', 'classification', 'sourceAndLicense']) {
-      expect(categories.has(required)).toBe(true)
-    }
+    const { jurisdiction } = await res.json() as { jurisdiction: { caveats: { topic: string }[] } & Record<string, unknown> }
+    // API の caveats は「データから見えず解釈を変えるもの」だけ（基準は report/budget/schema.ts）。
+    // 全量（経緯・吸収済み込み）は報告側が持ち、必須カテゴリの検査は build がそちらに掛ける
+    const topics = jurisdiction.caveats.map((c) => c.topic)
+    expect(topics).toContain('予算額は当初予算ではない')
+    expect(topics.length).toBeGreaterThan(0)
+    expect(topics.length).toBeLessThan(6)
     // 年度は budgets へ移した。団体の表現は収録が増えても変わらない
     expect(jurisdiction['fiscalYears']).toBeUndefined()
     expect(jurisdiction['classificationRates']).toBeUndefined()

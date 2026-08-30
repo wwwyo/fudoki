@@ -36,7 +36,7 @@ export const jurisdictionSchema = z.object({
     }))
     .describe('原典の出典。再配布時の帰属表示に使う'),
   consolidationScope: z.string().describe('会計間の繰出・繰入の連結（消去）をどの範囲で行ったか。消去していない団体は全会計合計が二重計上を含む'),
-  caveats: z.array(caveatSchema).describe('この団体のデータを使う前に知るべき注意事項'),
+  caveats: z.array(caveatSchema).describe('この団体のデータを使う前に知るべき注意事項。データ（enum・数値・構造）から見えず解釈を変えるものに絞ってある。調査・検証の全記録はダッシュボード（https://fudoki.dev/）にある'),
 })
 export type Jurisdiction = z.infer<typeof jurisdictionSchema>
 

@@ -534,7 +534,9 @@ for (const j of jurisdictionIds.sort()) {
     licenses: descriptor.licenses,
     sources: descriptor.sources.map((s) => ({ title: s.title, path: s.path ?? null })),
     consolidationScope: perJurisdiction.consolidationScope,
-    caveats: perJurisdiction.caveats.map((c) => ({ category: c.category, topic: c.topic, body: c.body })),
+    // API に載せるのは `api: true` の caveat だけ（基準は report/budget/schema.ts）。
+    // 必須カテゴリの検査は全量（報告側）に対して行っているので、ここで絞っても落ちない
+    caveats: perJurisdiction.caveats.filter((c) => c.api).map((c) => ({ category: c.category, topic: c.topic, body: c.body })),
   } satisfies Jurisdiction))
 
   // 検査2の材料: cofog リソース側から division ごとの期待値を計算する
