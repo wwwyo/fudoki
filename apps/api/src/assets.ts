@@ -2,7 +2,7 @@
  * 静的アセット（パーティション JSON と配布物の写し）の読み口と、ファイル形式の型。
  * 形式は build.ts が書き、ここが読む。**両者はこの型で合意する。**
  */
-import type { Budget, BudgetLine, CrossBudgetLine, Jurisdiction } from './contract'
+import type { Budget, BudgetLine, CofogBreakdown, CrossBudgetLine, Jurisdiction } from './contract'
 
 /**
  * KV namespace binding の最小型。`@cloudflare/workers-types` はこの repo に入れていない
@@ -41,6 +41,8 @@ export type JurisdictionsFile = {
 }
 export type LinesChunkFile = { revision: string; hasNext: boolean; lines: BudgetLine[] }
 export type CofogChunkFile = { revision: string; hasNext: boolean; lines: CrossBudgetLine[] }
+/** 団体 × 年度 × direction の COFOG 別内訳。件数が10分類しか無いのでチャンク化しない */
+export type CofogBreakdownFile = { revision: string; breakdown: CofogBreakdown }
 export type FilesFile = {
   revision: string
   files: Record<string, Record<string, { sha256: string; size: number; contentType: string }>>
@@ -71,5 +73,11 @@ export const paths = {
   chunk: (family: string, chunk: number) => `${family}/${chunk}.json`,
   cofogFamily: (division: string, fiscalYear: string | undefined) =>
     fiscalYear === undefined ? `cofog/${division}/all` : `cofog/${division}/${fiscalYear}`,
+  /**
+   * 団体 × 年度 × direction の COFOG 別内訳。10分類しか無くページングが要らないので、
+   * `lines`/`cofog` と違いチャンク化せず1ファイルに直接書く。
+   */
+  cofogBreakdown: (jurisdiction: string, fiscalYear: string, direction: string) =>
+    `cofog-breakdown/${jurisdiction}/${fiscalYear}-${direction}.json`,
   passthrough: (jurisdiction: string, file: string) => `datapackages/${jurisdiction}/${file}`,
 }

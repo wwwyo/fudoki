@@ -37,20 +37,20 @@ export function HomePage() {
           />
           <h1 className="text-3xl font-semibold">風土記（fudoki）</h1>
           <p className="text-lg leading-relaxed text-muted-foreground">
-            公開されているのに読めない、を読める形にする。
+            あなたの街の家計簿をオープンに。
           </p>
           <p className="leading-relaxed">
-            自治体の予算は全部公開されている。ただし PDF か、自治体ごとに違う形の CSV である。
-            ある市のある年度に「いじめ問題対策協議会関係費」がいくら付いたかを知るには、資料を開いて
-            人が探すしかない。他市と比べるなら他市の資料も開き、科目体系の違いを人が頭の中で
-            吸収することになる。年をまたぐ比較も、市をまたぐ比較も、事実上できない。
+            <strong>公開されているのに読めない。</strong>自治体の予算は PDF か、
+            自治体ごとに違う形の CSV で出ている。ある市のある年度に
+            「いじめ問題対策協議会関係費」がいくら付いたかを知るには、資料を開いて人が探すしかない。
+            他市と比べるなら他市の資料も開き、科目体系の違いを人が頭の中で吸収することになる。
+            年をまたぐ比較も、市をまたぐ比較も、事実上できない。
           </p>
           <p className="leading-relaxed">
-            fudoki は日本の地方自治体の支出を<strong>事業単位（目）まで</strong>構造化し、
-            国際標準の分類（COFOG）を割り当てて、外部データと join できる形で配布する。
-            デジタル庁のダッシュボードは款・項レベルの目的別・性質別を既に出しているので、
-            欠けているのは<strong>粒度</strong>（事業単位に届かない）と<strong>横断性</strong>
-            （自治体ごとに個別形式で、同じ軸で並べられない）の2つだけで、そこだけを埋める。
+            fudoki は日本の地方自治体の支出を<strong>事業単位まで</strong>構造化し、
+            COFOG を割り当てて、外部データと join できる形で配布する。
+            デジタル庁のダッシュボードが目的別と性質別まで出している以上、
+            欠けているのは粒度と横断性の2つだけで、そこだけを埋める。
           </p>
         </section>
 
@@ -94,7 +94,7 @@ export function HomePage() {
               GitHub
             </a>
           } />
-          <Button variant="outline" size="sm" nativeButton={false} render={<a href={withBase("/pipeline/")}>パイプライン報告</a>} />
+          <Button variant="outline" size="sm" nativeButton={false} render={<a href={withBase("/pipeline/")}>ELT パイプライン</a>} />
         </section>
       </main>
     </Layout>

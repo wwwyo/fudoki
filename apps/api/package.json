@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
+  "exports": {
+    "./router": "./src/router.ts"
+  },
   "scripts": {
     "build": "bun run build.ts --allow-dirty",
     "build:release": "bun run build.ts",

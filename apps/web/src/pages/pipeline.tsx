@@ -5,7 +5,9 @@
  * そのまま出す。画面側でも集計すると、同じ数字が2通りに計算されて、いずれ食い違う。
  */
 import { useEffect, useMemo, useState } from "react"
+import { JurisdictionSelect } from "@/components/jurisdiction-select"
 import { Layout } from "@/components/layout"
+import { NotCollectedPage } from "@/components/not-collected-page"
 import { FlowGraph } from "@/components/flow-graph"
 import { DetailBrowser } from "@/components/detail-browser"
 import { StageDetail } from "@/components/stage-detail"
@@ -13,20 +15,13 @@ import { CofogPanel } from "@/components/cofog-panel"
 import { CoveragePanel } from "@/components/coverage-panel"
 import { ChecksPanel } from "@/components/checks-panel"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   Tooltip,
@@ -173,6 +168,7 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
           code: j.code,
           name: j.report.meta.jurisdictionName,
         }))}
+        basePath="pipeline"
       />
     )
   }
@@ -233,14 +229,8 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
     <Layout>
       <main className="mx-auto flex max-w-[1500px] flex-col gap-8 p-4 pb-24">
         <section className="flex flex-col gap-4">
-          {/*
-            見出しの主語は団体である。**ページの機能名を見出しにしない** —
-            「ELT パイプライン」は fudoki の内部語彙で、読み手はこのページで
-            何が見られるかを知らないまま本文へ入ることになる。
-            ELT（取得と正規化を分ける）という建付けの説明は下の本文へ落とす。
-          */}
           <h1 className="text-2xl font-semibold tracking-tight">
-            {m.jurisdictionName}の予算が配布物になるまで
+            {m.jurisdictionName}の ELT パイプライン
           </h1>
           <p className="max-w-[80ch] text-sm text-muted-foreground">
             原典の取得から、検査・COFOG への分類・配布物の生成までを1本の系統で示す。
@@ -248,32 +238,14 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
           </p>
           <div className="mb-2 flex flex-wrap items-baseline gap-3">
             {data.jurisdictions.length > 1 ? (
-              <Select
-                items={data.jurisdictions.map((j) => ({
-                  value: j.code,
-                  label: j.report.meta.jurisdictionName,
+              <JurisdictionSelect
+                jurisdictions={data.jurisdictions.map((j) => ({
+                  code: j.code,
+                  name: j.report.meta.jurisdictionName,
                 }))}
                 value={current.code}
-                onValueChange={(v) => {
-                  // state だけ変えると URL が古い団体のままになる（地図からの遷移・
-                  // ブックマーク・共有リンクがすべて「見ている団体」を表さなくなる）。
-                  // 隣の団体へは `/pipeline/<code>/` への遷移で移る。
-                  window.location.href = withBase(`/pipeline/${v}/`)
-                }}
-              >
-                <SelectTrigger aria-label="団体">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {data.jurisdictions.map((j) => (
-                      <SelectItem key={j.code} value={j.code}>
-                        {j.report.meta.jurisdictionName}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+                basePath="pipeline"
+              />
             ) : // 団体が1つなら切り替える先が無い。名称は見出しが既に言っている
             null}
             <span className="truncate text-sm text-muted-foreground">
@@ -282,6 +254,17 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
                 : `${m.fiscalYears.join("・")}年度`}{" "}
               · {m.phase.label}
             </span>
+            {/* この団体の支出分析（COFOG 別の金額）への導線。パイプラインは検証、分析は数字を見る場所で目的が違う。
+                analysis.tsx 側の「ELT パイプラインを見る」ボタンと対になる導線なので、扱いを揃える。
+                ⚠️ `render` に `<a>` を渡すときは `nativeButton={false}` が要る（Base UI の既定は
+                `nativeButton: true` で、落とすとボタンのセマンティクスが外れて実行時に警告が出る） */}
+            <Button
+              variant="outline"
+              size="sm"
+              nativeButton={false}
+              className="ml-auto shrink-0"
+              render={<a href={withBase(`/analysis/${current.code}/`)}>この団体の支出分析を見る</a>}
+            />
           </div>
 
           <FlowGraph
@@ -402,50 +385,3 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
  * （jurisdictions.json 由来。コードだけを見せない）。
  * 地図を経由せずに他の団体へ移れるよう、収録済みの団体へのセレクタは残す。
  */
-function NotCollectedPage({
-  code,
-  name,
-  jurisdictions,
-}: {
-  code: string
-  name?: string
-  jurisdictions: { code: string; name: string }[]
-}) {
-  return (
-    <Layout>
-      <main className="mx-auto flex max-w-2xl flex-col gap-4 p-6">
-        <h1 className="text-xl font-semibold">{name ?? code}</h1>
-        <Alert>
-          <AlertTitle>この団体はまだ収録していません</AlertTitle>
-          <AlertDescription>
-            {name ?? code}（団体コード {code}）の予算データは、まだ fudoki のパイプラインを通していません。
-          </AlertDescription>
-        </Alert>
-        {jurisdictions.length > 0 && (
-          <div className="flex items-center gap-2 text-sm">
-            <span className="text-muted-foreground">収録済みの団体を見る:</span>
-            <Select
-              items={jurisdictions.map((j) => ({ value: j.code, label: j.name }))}
-              onValueChange={(v) => {
-                window.location.href = withBase(`/pipeline/${v}/`)
-              }}
-            >
-              <SelectTrigger aria-label="団体">
-                <SelectValue placeholder="団体を選ぶ" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {jurisdictions.map((j) => (
-                    <SelectItem key={j.code} value={j.code}>
-                      {j.name}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-        )}
-      </main>
-    </Layout>
-  )
-}

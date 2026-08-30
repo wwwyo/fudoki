@@ -1,5 +1,5 @@
 /**
- * 3ページ（/ ・ /pipeline/ ・ /terms/、将来 /analysis/）に共通する外枠。
+ * 4ページ（/ ・ /pipeline/ ・ /analysis/ ・ /terms/）に共通する外枠。
  *
  * Vite の MPA なので、ページ間の遷移は素の `<a>` によるフルロードになる
  * （React Router は入れない）。ThemeProvider / TooltipProvider もここで1回だけ張る。
@@ -14,6 +14,7 @@ import { withBase } from "@/lib/utils"
  * ⚠️ ホームへの導線はロゴが持つので、ナビには置かない（同じ行き先が2つ並ぶ）。
  */
 const NAV = [
+  { href: "/analysis/", label: "分析" },
   { href: "/pipeline/", label: "パイプライン" },
   { href: "https://docs.fudoki.dev/", label: "API docs", external: true },
   { href: "/terms/", label: "利用条件" },

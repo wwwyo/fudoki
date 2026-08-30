@@ -49,7 +49,7 @@ export type Transform = {
   })[]
   /** 割当済みの金額を COFOG のコードごとに。**降りた先そのもの**を見せる */
   byCode: (CofogCode & { count: number; sum: number })[]
-  /** 割当済みの金額をディビジョンごとに。帯グラフの構成比はこれで描く */
+  /** 割当済みの金額を大分類ごとに。帯グラフの構成比はこれで描く */
   byDivision: { division: string; divisionLabel: string; count: number; sum: number }[]
   cofogReach: CofogReach[]
   /** 割当済みの合計。`cofogReach` と帯グラフの母数 */

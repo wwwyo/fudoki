@@ -159,6 +159,24 @@ function assertShape(d: PipelineFile): void {
 
 export const yen = (v: number | string) => Number(v).toLocaleString('ja-JP')
 
+/**
+ * 件数の桁区切り。`yen` と実装は同じだが、**金額でないものに `yen` を使わない**
+ * （読んだ者が単位を取り違える。実際に件数へ `yen` を当てていた箇所があった）。
+ */
+export const count = (v: number | string) => Number(v).toLocaleString('ja-JP')
+
+/**
+ * 千円表示。合計カードと COFOG ツリーで使う（明細は桁の小さい行があるため円のまま
+ * — cofog-statement.tsx 参照）。呼び出し側で必ず「千円」を明示すること（円と混在する画面なので、
+ * 単位を数字に付けずに置くと読み違える）。
+ *
+ * ⚠️ 円が1000で割り切れない値がある（狛江市の歳出は決算書 PDF から起こした真の円単位で、
+ * 千円未満の端数を持つ）。表示専用の丸めなので四捨五入する
+ * （切り捨てだと構造的に実額より小さく見せることになり、合計が明細より系統的にずれる）。
+ * 正確な値は常に明細（円）に残るので、丸めによる情報の欠落は起きない。
+ */
+export const senYen = (v: number | string) => Math.round(Number(v) / 1000).toLocaleString('ja-JP')
+
 /** 割合（0〜1）の書式。**割り算は生成側が済ませてある** — ここでは桁の揃え方だけを1箇所で決める */
 export const pct = (v: number) => `${(v * 100).toFixed(1)}%`
 
@@ -170,7 +188,7 @@ export function yenShort(v: number | string): string {
   return `${yen(x)}円`
 }
 
-/** COFOG 1999 のディビジョン。色は識別の補助で、コードは必ず文字でも出す */
+/** COFOG 1999 の大分類。色は識別の補助で、コードは必ず文字でも出す */
 export const DIVISION_COLOR: Record<string, string> = {
   '01': 'oklch(62% 0.06 260)',
   '02': 'oklch(58% 0.06 300)',
