@@ -55,6 +55,15 @@ jobs:
       - name: apps/api のビルドと検査
         run: bun run --cwd apps/api test
 
+      # report/budget/cofog.ts の純粋関数テスト。apps/api と report の両方から呼ぶ集計本体なので、
+      # 統合テスト（apps/api）とは別に境界値を直接検査する。
+      - name: report のテスト
+        run: bun run --cwd report test
+
+      # apps/web/src/lib/cofog-tree.ts の invariant テスト。ビルド前のソースだけで完結する。
+      - name: apps/web のテスト
+        run: bun run --cwd apps/web test
+
       - name: 報告を作る
         run: bun run report
 

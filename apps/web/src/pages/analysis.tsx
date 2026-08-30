@@ -9,8 +9,10 @@
  * ELT パイプラインを通った団体の集合と、budget API が返せる団体の集合は同じ配布物から
  * 生成されるので一致するはずで、ここだけのために別の一覧を持つ理由が無い。
  */
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
+import { JurisdictionSelect } from "@/components/jurisdiction-select"
 import { Layout } from "@/components/layout"
+import { NotCollectedPage } from "@/components/not-collected-page"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -31,12 +33,11 @@ import {
 import { withBase } from "@/lib/utils"
 import { DIVISION_COLOR, loadPipeline, pct, senYen, type Direction, type PipelineData, count } from "@/lib/pipeline"
 import { apiClient } from "@/lib/api-client"
-import { buildCofogTree, type CofogNodeFilter } from "@/lib/cofog-tree"
+import type { CofogBreakdown, CofogNodeFilter } from "@/lib/cofog-tree"
 import { CofogTree } from "@/components/cofog-tree"
 import { CofogStatement } from "@/components/cofog-statement"
 
 /** contract 型を web 側で二重宣言しない。API 呼び出しの戻り値からそのまま導出する */
-type CofogBreakdown = Awaited<ReturnType<typeof apiClient.getCofogBreakdown>>["cofog"]
 
 type Props = {
   /** `/analysis/<団体コード>/` の団体コード。コードなしの `/analysis/` では null */
@@ -96,13 +97,14 @@ export function AnalysisPage({ urlCode = null, jurisdictionName }: Props = {}) {
 
   if (notCollected) {
     return (
-      <AnalysisNotCollected
+      <NotCollectedPage
         code={urlCode!}
         name={jurisdictionName}
         jurisdictions={data!.jurisdictions.map((j) => ({
           code: j.code,
           name: j.report.meta.jurisdictionName,
         }))}
+        basePath="analysis"
       />
     )
   }
@@ -179,23 +181,11 @@ function CollectedAnalysis({
     }
   }, [code, year])
 
-  const breakdown = useMemo(() => {
-    if (!cofog) return null
-    const total = cofog.total.sum
-    const unclassifiedSum = cofog.total.sum - cofog.assigned.sum
-    const unclassifiedCount = cofog.total.count - cofog.assigned.count
-    return {
-      // ⚠️ **分母は total（未分類を含む）。** cofog-panel.tsx の帯は「割当済みの中での構成比」だが、
-      // ここは ELT パイプラインと違い「事業に使うといくら見えるか」を見せる分析なので、
-      // 分類できなかった分を隠さず分母に残す（AGENTS.md タスク仕様）。
-      byDivision: cofog.byDivision.map((d) => ({ ...d, share: total > 0 ? d.sum / total : 0 })),
-      unclassifiedSum,
-      unclassifiedCount,
-      unclassifiedShare: total > 0 ? unclassifiedSum / total : 0,
-    }
-  }, [cofog])
-
-  const tree = useMemo(() => (cofog ? buildCofogTree(cofog.byDivision, cofog.byCode) : null), [cofog])
+  // `cofog.tree` はすでに division → group → class の木として届く（report/budget/cofog.ts の
+  // `buildCofogTree()` が組む）。大分類ごとの帯グラフは、その木の最上位ノード（1団体1系列）を
+  // そのまま使う ── byDivision を別に取り出して割合を計算し直すと二重集計になる。
+  // 割合（`share`）と未分類（`cofog.unclassified`）も生成側が持つので、画面では割り算しない
+  // （AGENTS.md「集計は1箇所」）。
 
   return (
     <Layout>
@@ -203,7 +193,7 @@ function CollectedAnalysis({
         <section className="flex flex-col gap-4">
           <div className="mb-2 flex flex-wrap items-baseline gap-3">
             <h1 className="text-xl font-semibold">支出分析</h1>
-            <JurisdictionSelect data={data} current={code} />
+            <AnalysisJurisdictionSelect data={data} current={code} />
             {years.length > 1 ? (
               <Select
                 items={years.map((y) => ({ value: String(y), label: `${y}年度` }))}
@@ -273,7 +263,7 @@ function CollectedAnalysis({
               {apiError}
             </AlertDescription>
           </Alert>
-        ) : !cofog || !breakdown ? (
+        ) : !cofog ? (
           <p className="text-sm text-muted-foreground">読み込み中…</p>
         ) : (
           <>
@@ -305,34 +295,34 @@ function CollectedAnalysis({
                 role="img"
                 aria-label={
                   `合計 ${senYen(cofog.total.sum)} 千円の内訳: ` +
-                  breakdown.byDivision.map((v) => `${v.division} ${v.divisionLabel} ${pct(v.share)}`).join("、") +
-                  `、未分類 ${pct(breakdown.unclassifiedShare)}`
+                  cofog.tree.map((v) => `${v.code} ${v.label} ${pct(v.share)}`).join("、") +
+                  `、未分類 ${pct(cofog.unclassified.share)}`
                 }
               >
-                {breakdown.byDivision.map((v) => (
-                  <div key={v.division} style={{ width: `${v.share * 100}%`, background: DIVISION_COLOR[v.division] }} />
+                {cofog.tree.map((v) => (
+                  <div key={v.code} style={{ width: `${v.share * 100}%`, background: DIVISION_COLOR[v.code] }} />
                 ))}
-                {breakdown.unclassifiedSum > 0 && (
+                {cofog.unclassified.sum > 0 && (
                   // ⚠️ 未分類はブランド色でも意味色でもない中立のグレー（DESIGN.md: データを表す面にブランド色を出さない）
                   <div
                     className="bg-muted-foreground/25"
-                    style={{ width: `${breakdown.unclassifiedShare * 100}%` }}
+                    style={{ width: `${cofog.unclassified.share * 100}%` }}
                     title="未分類"
                   />
                 )}
               </div>
               <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                {breakdown.byDivision.map((v) => (
-                  <span key={v.division} className="inline-flex items-center gap-1.5">
-                    <i aria-hidden className="size-2.5 rounded-sm" style={{ background: DIVISION_COLOR[v.division] }} />
-                    <span className="font-medium text-foreground">{v.division}</span> {v.divisionLabel}{" "}
+                {cofog.tree.map((v) => (
+                  <span key={v.code} className="inline-flex items-center gap-1.5">
+                    <i aria-hidden className="size-2.5 rounded-sm" style={{ background: DIVISION_COLOR[v.code] }} />
+                    <span className="font-medium text-foreground">{v.code}</span> {v.label}{" "}
                     <span className="tabular-nums">{pct(v.share)}</span>
                   </span>
                 ))}
-                {breakdown.unclassifiedSum > 0 && (
+                {cofog.unclassified.sum > 0 && (
                   <span className="inline-flex items-center gap-1.5">
                     <i aria-hidden className="bg-muted-foreground/25 size-2.5 rounded-sm" />
-                    未分類 <span className="tabular-nums">{pct(breakdown.unclassifiedShare)}</span>
+                    未分類 <span className="tabular-nums">{pct(cofog.unclassified.share)}</span>
                   </span>
                 )}
               </div>
@@ -350,10 +340,9 @@ function CollectedAnalysis({
                 規則がそこより下まで判断していない金額で、割合の高さは分類の質を意味しない。
                 行をクリックすると、その分類に属する明細を下に出す。
               </p>
-              {tree && (
+              {cofog.tree.length > 0 && (
                 <CofogTree
-                  nodes={tree}
-                  total={cofog.total.sum}
+                  nodes={cofog.tree}
                   selected={selected}
                   onSelect={setSelected}
                   renderDetail={(filter) =>
@@ -363,11 +352,11 @@ function CollectedAnalysis({
                   }
                 />
               )}
-              {breakdown.unclassifiedSum > 0 && (
+              {cofog.unclassified.sum > 0 && (
                 <div className="flex items-center gap-2 rounded-lg border px-2 py-1.5 text-sm text-muted-foreground">
                   <Badge variant="outline">未分類</Badge>
-                  {count(breakdown.unclassifiedCount)}件 ・ {senYen(breakdown.unclassifiedSum)}千円 ・{" "}
-                  {pct(breakdown.unclassifiedShare)}
+                  {count(cofog.unclassified.count)}件 ・ {senYen(cofog.unclassified.sum)}千円 ・{" "}
+                  {pct(cofog.unclassified.share)}
                   <span className="ml-1 text-xs">（分類不能・対象外。明細は下の分類ツリーには出ない）</span>
                 </div>
               )}
@@ -385,83 +374,11 @@ function CollectedAnalysis({
 }
 
 /** 団体セレクタ。地図を経由せず隣の団体へ移れるようにする（/pipeline/ と同じ導線） */
-function JurisdictionSelect({ data, current }: { data: PipelineData; current: string }) {
-  if (data.jurisdictions.length <= 1) {
-    const only = data.jurisdictions.find((j) => j.code === current)
-    return <span className="shrink-0 text-sm font-medium">{only?.report.meta.jurisdictionName}</span>
+function AnalysisJurisdictionSelect({ data, current }: { data: PipelineData; current: string }) {
+  const options = data.jurisdictions.map((j) => ({ code: j.code, name: j.report.meta.jurisdictionName }))
+  // 団体が1つなら切り替える先が無い。分析はパイプラインと違って見出しに団体名が無いので、名称だけ出す
+  if (options.length <= 1) {
+    return <span className="shrink-0 text-sm font-medium">{options.find((o) => o.code === current)?.name}</span>
   }
-  return (
-    <Select
-      items={data.jurisdictions.map((j) => ({ value: j.code, label: j.report.meta.jurisdictionName }))}
-      value={current}
-      onValueChange={(v) => {
-        window.location.href = withBase(`/analysis/${v}/`)
-      }}
-    >
-      <SelectTrigger aria-label="団体">
-        <SelectValue />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          {data.jurisdictions.map((j) => (
-            <SelectItem key={j.code} value={j.code}>
-              {j.report.meta.jurisdictionName}
-            </SelectItem>
-          ))}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
-  )
-}
-
-/**
- * 未収録団体のページ（`/analysis/<未収録の団体コード>/`）。
- * `/pipeline/` の `NotCollectedPage` と同じ扱い（AGENTS.md タスク仕様）。
- */
-function AnalysisNotCollected({
-  code,
-  name,
-  jurisdictions,
-}: {
-  code: string
-  name?: string
-  jurisdictions: { code: string; name: string }[]
-}) {
-  return (
-    <Layout>
-      <main className="mx-auto flex max-w-2xl flex-col gap-4 p-6">
-        <h1 className="text-xl font-semibold">{name ?? code}</h1>
-        <Alert>
-          <AlertTitle>この団体はまだ収録していません</AlertTitle>
-          <AlertDescription>
-            {name ?? code}（団体コード {code}）の予算データは、まだ fudoki のパイプラインを通していません。
-          </AlertDescription>
-        </Alert>
-        {jurisdictions.length > 0 && (
-          <div className="flex items-center gap-2 text-sm">
-            <span className="text-muted-foreground">収録済みの団体を見る:</span>
-            <Select
-              items={jurisdictions.map((j) => ({ value: j.code, label: j.name }))}
-              onValueChange={(v) => {
-                window.location.href = withBase(`/analysis/${v}/`)
-              }}
-            >
-              <SelectTrigger aria-label="団体">
-                <SelectValue placeholder="団体を選ぶ" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {jurisdictions.map((j) => (
-                    <SelectItem key={j.code} value={j.code}>
-                      {j.name}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-        )}
-      </main>
-    </Layout>
-  )
+  return <JurisdictionSelect jurisdictions={options} value={current} basePath="analysis" />
 }

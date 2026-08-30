@@ -27,6 +27,24 @@
 import { COFOG_DEPTHS, COFOG_DEPTH_JA, type CofogDepth } from './detail'
 import type { CofogCode, CofogReach, Transform } from './schema'
 
+/** ツリーのノードに紐づく statement filter。選択可能なノードだけが持つ */
+export type CofogTreeFilter = { division: string; group?: string; class?: string }
+
+export type CofogTreeNode = {
+  /** React key かつ展開状態の管理キー */
+  key: string
+  code: string
+  label: string
+  depth: CofogDepth
+  count: number
+  sum: number
+  /** 全体（`total`）に対する構成比。画面が割り算しなくて済むよう、ここで持たせる */
+  share: number
+  /** 「ここで止まった分」の情報ノードは選択できない（API に「該当なし」を絞る術が無い） */
+  filter: CofogTreeFilter | null
+  children?: CofogTreeNode[]
+}
+
 export type StateRow = CofogCode & { status: string; consolidation: string; count: number; sum: number }
 
 /** 順序を SQL と揃える（報告は commit するので、非決定的だと中身が同じでも差分が出る） */
@@ -51,6 +69,21 @@ const depthOf = (r: CofogCode): CofogDepth => (r.class ? 'class' : r.group ? 'gr
 
 /** 割合。分母が 0 のときは 0（COFOG 以外の充足率でも使う） */
 export const share = (v: number, whole: number) => (whole === 0 ? 0 : v / whole)
+
+/**
+ * `total` と `assigned` の差（分類不能・対象外・歳入は分類の軸なし）。
+ * 画面（旧 analysis.tsx）が `total.sum - assigned.sum` を自分で引いていたのをここへ移す。
+ * ⚠️ 分母は `total`（未分類込み）── 割当済みだけを分母にすると、実際には
+ * 使途が見えていない分まで「見えている」ことになる。
+ */
+export function unclassifiedOf(
+  assigned: { count: number; sum: number },
+  total: { count: number; sum: number },
+): { count: number; sum: number; share: number } {
+  const count = total.count - assigned.count
+  const sum = total.sum - assigned.sum
+  return { count, sum, share: share(sum, total.sum) }
+}
 
 export function cofogGranularity(byState: StateRow[]):
   Pick<Transform, 'byCode' | 'byDivision' | 'cofogReach' | 'assigned' | 'total' | 'assignedShare'> {
@@ -82,4 +115,126 @@ export function cofogGranularity(byState: StateRow[]):
     byCode, byDivision, cofogReach, assigned, total,
     assignedShare: { count: share(assigned.count, total.count), sum: share(assigned.sum, total.sum) },
   }
+}
+
+/**
+ * `byCode`（division/group/class ごとに fold 済みの葉）を division → group → class の
+ * 木へ組み替える。ここも `cofogGranularity` と同じ「集計は1箇所」の境界に置く。
+ * 画面（旧 `apps/web/src/lib/cofog-tree.ts`）が `+=` で足していたのをここへ移した。
+ *
+ * ⚠️ **新しい集計はしない。** `byCode` の `count`/`sum`（すでに fold 済みの最終値）を
+ * 表示のためにネストし直すだけで、値そのものは API から来た値の再配分（同じ値を
+ * group・class の親へ積み上げる）に留める。行レベルまで戻って独自に足し直すと
+ * AGENTS.md が禁じる「画面側の二重集計」に戻ってしまう。
+ *
+ * `total` は構成比（`share`）の分母。呼び出し側は `cofogGranularity` の `total.sum`
+ * （未分類込みの全体）を渡す — 割当済みだけを分母にすると、実際には使途が
+ * 見えていない分まで「見えている」ことになる（analysis.tsx が説明している理由と同じ）。
+ */
+export function buildCofogTree(
+  byDivision: readonly (Pick<CofogCode, 'division' | 'divisionLabel'> & { count: number; sum: number })[],
+  byCode: readonly (CofogCode & { count: number; sum: number })[],
+  total: number,
+): CofogTreeNode[] {
+  const shareOf = (v: number) => share(v, total)
+  return byDivision.map((d) => {
+    const rows = byCode.filter((r) => r.division === d.division)
+    const groups = new Map<string, { label: string; count: number; sum: number; rows: (CofogCode & { count: number; sum: number })[] }>()
+    const ownAtDivision = { count: 0, sum: 0 }
+    for (const r of rows) {
+      if (r.group === '') {
+        ownAtDivision.count += r.count
+        ownAtDivision.sum += r.sum
+        continue
+      }
+      const g = groups.get(r.group) ?? { label: r.groupLabel, count: 0, sum: 0, rows: [] }
+      g.count += r.count
+      g.sum += r.sum
+      g.rows.push(r)
+      groups.set(r.group, g)
+    }
+
+    const groupNodes: CofogTreeNode[] = [...groups.entries()]
+      .sort(([, a], [, b]) => b.sum - a.sum)
+      .map(([group, g]) => {
+        const ownAtGroup = { count: 0, sum: 0 }
+        const classNodes: CofogTreeNode[] = []
+        for (const r of g.rows) {
+          if (r.class === '') {
+            ownAtGroup.count += r.count
+            ownAtGroup.sum += r.sum
+            continue
+          }
+          classNodes.push({
+            key: `${d.division}/${group}/${r.class}`,
+            code: r.class,
+            label: r.classLabel,
+            depth: 'class',
+            count: r.count,
+            sum: r.sum,
+            share: shareOf(r.sum),
+            filter: { division: d.division, group, class: r.class },
+          })
+        }
+        classNodes.sort((a, b) => b.sum - a.sum)
+        // 「止まった分」は、同じ階層に実際に降りた兄弟（classNodes）がいるときだけ出す。
+        // 兄弟が無ければ、子が無いこと自体が「ここで止まった」を意味するので冗長になる
+        // （合計は group 自身の count/sum にそのまま残るので、ここで削っても値は変わらない）。
+        const children: CofogTreeNode[] = ownAtGroup.count > 0 && classNodes.length > 0
+          ? [
+              {
+                key: `${d.division}/${group}/_own`,
+                code: '',
+                label: '（中分類までで止まった分）',
+                depth: 'class',
+                count: ownAtGroup.count,
+                sum: ownAtGroup.sum,
+                share: shareOf(ownAtGroup.sum),
+                filter: null,
+              },
+              ...classNodes,
+            ]
+          : classNodes
+        return {
+          key: `${d.division}/${group}`,
+          code: group,
+          label: g.label,
+          depth: 'group' as const,
+          count: g.count,
+          sum: g.sum,
+          share: shareOf(g.sum),
+          filter: { division: d.division, group },
+          children: children.length > 0 ? children : undefined,
+        }
+      })
+
+    // 同様に、division 直下の「止まった分」も group が実在するときだけ出す。
+    const children: CofogTreeNode[] = ownAtDivision.count > 0 && groupNodes.length > 0
+      ? [
+          {
+            key: `${d.division}/_own`,
+            code: '',
+            label: '（大分類までで止まった分）',
+            depth: 'group' as const,
+            count: ownAtDivision.count,
+            sum: ownAtDivision.sum,
+            share: shareOf(ownAtDivision.sum),
+            filter: null,
+          },
+          ...groupNodes,
+        ]
+      : groupNodes
+
+    return {
+      key: d.division,
+      code: d.division,
+      label: d.divisionLabel,
+      depth: 'division' as const,
+      count: d.count,
+      sum: d.sum,
+      share: shareOf(d.sum),
+      filter: { division: d.division },
+      children: children.length > 0 ? children : undefined,
+    }
+  })
 }

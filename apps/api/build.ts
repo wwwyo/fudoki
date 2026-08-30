@@ -13,7 +13,7 @@
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { cofogGranularity, type StateRow } from '@fudoki/report/budget/cofog'
+import { buildCofogTree, cofogGranularity, unclassifiedOf, type StateRow } from '@fudoki/report/budget/cofog'
 import { cofogLabel } from '@fudoki/report/budget/detail'
 import { BY_JURISDICTION } from '@fudoki/report/budget/static'
 import {
@@ -245,8 +245,6 @@ function resourceContext(jurisdiction: string, direction: Direction, table: Tabl
 }
 
 type CofogRow = NonNullable<BudgetLine['judgments']['cofog']>
-/** COFOG のコード3列。cofogGranularity（report/budget/cofog.ts）の入力の形と揃える */
-type Coded = { division: string; group: string; class: string }
 
 function buildLines(
   ctx: ResourceContext,
@@ -370,23 +368,70 @@ function checkMultisetEquality(ctx: ResourceContext, table: Table, lines: Budget
  */
 function buildCofogBreakdown(
   yearLines: BudgetLine[],
-  cofogFullByLineId: Map<string, Coded & { status: string; consolidation: string }>,
+  cofogByLineId: Map<string, CofogRow>,
   amountPhase: BudgetLine['amounts'][number]['phase'],
 ): CofogBreakdown {
   const byState: StateRow[] = yearLines.map((line) => {
-    const full = cofogFullByLineId.get(line.budgetLineId) ?? fail(`cofog.csv has no row for budget_line_id ${line.budgetLineId}`)
+    const row = cofogByLineId.get(line.budgetLineId) ?? fail(`cofog.csv has no row for budget_line_id ${line.budgetLineId}`)
+    const division = row.division ?? ''
+    const group = row.group ?? ''
+    const cls = row.class ?? ''
     const amount = line.amounts.find((a) => a.phase === amountPhase)?.amount
       ?? fail(`line ${line.budgetLineId} has no amount at declared phase "${amountPhase}"`)
     return {
-      division: full.division, divisionLabel: cofogLabel('division', full.division),
-      group: full.group, groupLabel: cofogLabel('group', full.group),
-      class: full.class, classLabel: cofogLabel('class', full.class),
-      status: full.status, consolidation: full.consolidation,
+      division, divisionLabel: cofogLabel('division', division),
+      group, groupLabel: cofogLabel('group', group),
+      class: cls, classLabel: cofogLabel('class', cls),
+      status: row.status, consolidation: row.consolidation,
       count: 1, sum: amount,
     }
   })
   const { byCode, byDivision, assigned, total, assignedShare } = cofogGranularity(byState)
-  return cofogBreakdownSchema.parse({ byCode, byDivision, assigned, total, assignedShare } satisfies CofogBreakdown)
+  const tree = buildCofogTree(byDivision, byCode, total.sum)
+  const unclassified = unclassifiedOf(assigned, total)
+  return cofogBreakdownSchema.parse(
+    { byCode, byDivision, assigned, total, assignedShare, tree, unclassified } satisfies CofogBreakdown,
+  )
+}
+
+/** count/sum を持つ行の集合を1つの count/sum へ畳む（ロールアップ検査の共通部） */
+const sumCounted = (rows: readonly { count: number; sum: number }[]): { count: number; sum: number } =>
+  rows.reduce((s, r) => ({ count: s.count + r.count, sum: s.sum + r.sum }), { count: 0, sum: 0 })
+
+/** `rows` を足し戻すと `expected` に一致するか。抜け漏れ検査を1箇所にまとめる（3箇所からコピペしない） */
+function checkRollup(rows: readonly { count: number; sum: number }[], expected: { count: number; sum: number }, msg: string): void {
+  const actual = sumCounted(rows)
+  if (actual.count !== expected.count || actual.sum !== expected.sum) {
+    fail(`${msg}: got {count:${actual.count}, sum:${actual.sum}} != expected {count:${expected.count}, sum:${expected.sum}}`)
+  }
+}
+
+/**
+ * `tree`（buildCofogTree の出力）の構造 invariant。**新しい集計はしない検査**で、
+ * ロールアップが構造上崩れていないかだけを見る:
+ * - 大分類ノードの合計が `byDivision` と一致する
+ * - 各ノードの子（own を含む）の合計が、そのノード自身と一致する
+ * - 木全体の合計が `assigned` と一致する
+ */
+function checkCofogTree(
+  tree: CofogBreakdown['tree'],
+  byDivision: CofogBreakdown['byDivision'],
+  assigned: { count: number; sum: number },
+  ctx: string,
+): void {
+  checkRollup(tree, assigned, `cofog tree does not add up to assigned for ${ctx}`)
+  for (const root of tree) {
+    const match = byDivision.find((d) => d.division === root.code)
+    if (!match) fail(`cofog tree has a division node not in byDivision for ${ctx}: ${root.code}`)
+    else checkRollup([root], match, `cofog tree division node "${root.code}" mismatches byDivision for ${ctx}`)
+    walkCofogTreeNode(root, ctx)
+  }
+}
+
+function walkCofogTreeNode(node: CofogBreakdown['tree'][number], ctx: string): void {
+  if (!node.children) return
+  checkRollup(node.children, node, `cofog tree children do not add up to parent "${node.key}" for ${ctx}`)
+  for (const child of node.children) walkCofogTreeNode(child, ctx)
 }
 
 /**
@@ -403,26 +448,14 @@ function checkCofogBreakdown(
   expectedAssigned: { lines: number; amount: number },
   expectedTotal: { lines: number; amount: number },
 ): void {
-  if (breakdown.assigned.count !== expectedAssigned.lines || breakdown.assigned.sum !== expectedAssigned.amount) {
-    fail(`cofog breakdown assigned mismatch for ${j}/${year}/${direction}: got {count:${breakdown.assigned.count}, sum:${breakdown.assigned.sum}} != expected {count:${expectedAssigned.lines}, sum:${expectedAssigned.amount}}`)
-  }
-  if (breakdown.total.count !== expectedTotal.lines || breakdown.total.sum !== expectedTotal.amount) {
-    fail(`cofog breakdown total mismatch for ${j}/${year}/${direction}: got {count:${breakdown.total.count}, sum:${breakdown.total.sum}} != expected {count:${expectedTotal.lines}, sum:${expectedTotal.amount}}`)
-  }
-  // byDivision は割当済みの内訳の分解にすぎないので、足し戻すと assigned に一致するはず
-  // （cofogGranularity 自身の fold ロジックに対する構造検査）
-  const byDivisionCount = breakdown.byDivision.reduce((s, d) => s + d.count, 0)
-  const byDivisionSum = breakdown.byDivision.reduce((s, d) => s + d.sum, 0)
-  if (byDivisionCount !== breakdown.assigned.count || byDivisionSum !== breakdown.assigned.sum) {
-    fail(`cofog breakdown byDivision does not add up to assigned for ${j}/${year}/${direction}`)
-  }
-  // byCode も同じく割当済みの分解。byDivision と独立に取り出しているので、
-  // ここでも足し戻して assigned に一致することを見る（同じ抜け漏れの型を2度書かない）
-  const byCodeCount = breakdown.byCode.reduce((s, d) => s + d.count, 0)
-  const byCodeSum = breakdown.byCode.reduce((s, d) => s + d.sum, 0)
-  if (byCodeCount !== breakdown.assigned.count || byCodeSum !== breakdown.assigned.sum) {
-    fail(`cofog breakdown byCode does not add up to assigned for ${j}/${year}/${direction}`)
-  }
+  const ctx = `${j}/${year}/${direction}`
+  checkRollup([breakdown.assigned], { count: expectedAssigned.lines, sum: expectedAssigned.amount }, `cofog breakdown assigned mismatch for ${ctx}`)
+  checkRollup([breakdown.total], { count: expectedTotal.lines, sum: expectedTotal.amount }, `cofog breakdown total mismatch for ${ctx}`)
+  // byDivision / byCode はどちらも割当済みの分解にすぎないので、足し戻すと assigned に一致するはず
+  // （cofogGranularity 自身の fold ロジックに対する構造検査。独立に取り出しているので別々に見る）
+  checkRollup(breakdown.byDivision, breakdown.assigned, `cofog breakdown byDivision does not add up to assigned for ${ctx}`)
+  checkRollup(breakdown.byCode, breakdown.assigned, `cofog breakdown byCode does not add up to assigned for ${ctx}`)
+  checkCofogTree(breakdown.tree, breakdown.byDivision, breakdown.assigned, ctx)
 }
 
 function writeCofogBreakdown(j: string, year: string, dir: Direction, breakdown: CofogBreakdown, revision: string): void {
@@ -469,14 +502,6 @@ for (const j of jurisdictionIds.sort()) {
 
   const cofogTable = readCsvTable(join(dir, 'cofog.csv'))
   const cofogByLineId = new Map<string, CofogRow>()
-  /**
-   * cofog.csv の全列（division / group / class）は COFOG 別内訳の集計
-   * （cofogGranularity）にも要るので、cofogByLineId（BudgetLine の judgments 用）
-   * とは別に持つ。CofogRow（judgments に出る形）は3列とも持つが、
-   * 集計側は status / consolidation も併せて要るのでここは別の型のまま
-   * （二重に持つのは集計に必要な形が違うため。値の出所は同じ cofog.csv）。
-   */
-  const cofogFullByLineId = new Map<string, Coded & { status: string; consolidation: string }>()
   for (const row of cofogTable.rows) {
     // 検査: cofog リソースは budget_line_id 単位で1行（重複は黙って上書きせず止める）
     if (cofogByLineId.has(row['budget_line_id']!)) fail(`duplicate budget_line_id in cofog.csv of ${j}: ${row['budget_line_id']}`)
@@ -495,10 +520,6 @@ for (const j of jurisdictionIds.sort()) {
       consolidation: cofogConsolidation.parse(row['cofog_consolidation']),
       decidedAtLevel: row['cofog_decided_at_level'] === '' ? null : cofogDecidedAtLevel.parse(row['cofog_decided_at_level']),
       ruleId: row['cofog_rule_id'] === '' ? null : row['cofog_rule_id']!,
-    })
-    cofogFullByLineId.set(row['budget_line_id']!, {
-      division: row['cofog_division']!, group: row['cofog_group']!, class: row['cofog_class']!,
-      status: st, consolidation: row['cofog_consolidation']!,
     })
   }
 
@@ -594,7 +615,7 @@ for (const j of jurisdictionIds.sort()) {
     // COFOG 別内訳（歳出）。分類率と同じ yearLines・amountPhase を使っているので、
     // ここで独立に立てた assigned/total（statuses・totalAtPhase）と cofogGranularity の
     // 出力を突き合わせられる（検査3': どちらかの実装が壊れたら食い違う）
-    const expenditureBreakdown = buildCofogBreakdown(yearLines, cofogFullByLineId, amountPhase)
+    const expenditureBreakdown = buildCofogBreakdown(yearLines, cofogByLineId, amountPhase)
     checkCofogBreakdown(
       j, year, 'expenditure', expenditureBreakdown,
       { lines: statuses.assigned.lines, amount: statuses.assigned.amount },
@@ -611,7 +632,7 @@ for (const j of jurisdictionIds.sort()) {
         revenueTotalAtPhase += line.amounts.find((a) => a.phase === amountPhase)?.amount
           ?? fail(`line ${line.budgetLineId} has no amount at declared phase "${amountPhase}"`)
       }
-      const revenueBreakdown = buildCofogBreakdown(revenueLines, cofogFullByLineId, amountPhase)
+      const revenueBreakdown = buildCofogBreakdown(revenueLines, cofogByLineId, amountPhase)
       checkCofogBreakdown(
         j, year, 'revenue', revenueBreakdown,
         { lines: 0, amount: 0 },

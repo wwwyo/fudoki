@@ -220,6 +220,47 @@ const cofogCodeBreakdown = cofogAmountAndCount.extend({
   classLabel: z.string().describe('小分類の名称。class が空文字なら空文字'),
 })
 
+/** statement へ絞り込むための filter。選択できないノード（「〜で止まった分」）は null */
+const cofogTreeFilter = z.object({
+  division: z.string(),
+  group: z.string().optional(),
+  class: z.string().optional(),
+})
+
+/**
+ * `byCode` を division → group → class へ組み替えた木（`report/budget/cofog.ts` の
+ * `buildCofogTree()` の出力そのもの）。画面のツリー表示はこれをそのままネストして描けばよく、
+ * `byCode` を自分で組み替える必要が無い（AGENTS.md「集計は1箇所」）。
+ * 再帰構造なので `z.lazy` で宣言する。
+ */
+export type CofogTreeNode = {
+  key: string
+  code: string
+  label: string
+  depth: 'division' | 'group' | 'class'
+  count: number
+  sum: number
+  share: number
+  filter: { division: string; group?: string; class?: string } | null
+  children?: CofogTreeNode[]
+}
+
+const cofogTreeNode: z.ZodType<CofogTreeNode> = z.lazy(() =>
+  z.object({
+    key: z.string().describe('React key かつ展開状態の管理キー'),
+    code: z.string().describe('この階層のコード。「〜で止まった分」ノードは空文字'),
+    label: z.string(),
+    depth: z.enum(['division', 'group', 'class']),
+    count: z.number(),
+    sum: z.number(),
+    share: z.number().describe('`total`（cofogBreakdown.total.sum）に対する構成比（0〜1）。画面で割り算しない'),
+    filter: cofogTreeFilter
+      .nullable()
+      .describe('statement を絞り込む filter。「〜で止まった分」ノードは null（該当なしを絞る術が API に無い）'),
+    children: z.array(cofogTreeNode).optional(),
+  }),
+)
+
 export const cofogBreakdownSchema = z.object({
   byCode: z
     .array(cofogCodeBreakdown)
@@ -238,6 +279,16 @@ export const cofogBreakdownSchema = z.object({
       '分類できなかった分を落としていないので、total から assigned を引けば得られる',
   ),
   assignedShare: cofogAmountAndCount.describe('total に対する assigned の割合（0〜1）。画面側で割り算しない'),
+  tree: z
+    .array(cofogTreeNode)
+    .describe(
+      '`byCode` を division → group → class へ組み替えた木（大分類ごとに1本）。' +
+        '各ノードは `share`（total に対する構成比）を持つので、画面はネストして描くだけでよい。' +
+        '「〜で止まった分」ノードは、実際に降りた兄弟がいるときだけ現れる（filter は null）。',
+    ),
+  unclassified: cofogAmountAndCount
+    .extend({ share: z.number().describe('total に対する構成比（0〜1）。画面で total - assigned を計算しない') })
+    .describe('total と assigned の差（分類不能・対象外。歳入は分類の軸が無いので全量がここに入る）'),
 })
 export type CofogBreakdown = z.infer<typeof cofogBreakdownSchema>
 

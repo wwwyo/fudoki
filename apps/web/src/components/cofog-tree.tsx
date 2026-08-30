@@ -20,14 +20,11 @@ import { cn } from "@/lib/utils"
 
 export function CofogTree({
   nodes,
-  total,
   selected,
   onSelect,
   renderDetail,
 }: {
   nodes: CofogTreeNode[]
-  /** 割合の分母（合計、未分類込み）。cofog.total.sum を渡す */
-  total: number
   selected: CofogNodeFilter | null
   onSelect: (filter: CofogNodeFilter) => void
   /** 選択中の行の直下に出す明細。呼び出し側（analysis.tsx）が API 呼び出しの詳細を持つ */
@@ -41,26 +38,25 @@ export function CofogTree({
         <span className="ml-auto shrink-0 whitespace-nowrap text-right">金額（千円）・構成比・件数</span>
       </div>
       {nodes.map((n) => (
-        <TreeRow key={n.key} node={n} depth={0} total={total} selected={selected} onSelect={onSelect} renderDetail={renderDetail} />
+        <TreeRow key={n.key} node={n} depth={0} selected={selected} onSelect={onSelect} renderDetail={renderDetail} />
       ))}
     </div>
   )
 }
 
-const sameFilter = (a: CofogNodeFilter | null, b: CofogNodeFilter | null) =>
+/** 選択中のノードをハイライトするための filter 一致判定。exported for testing */
+export const sameFilter = (a: CofogNodeFilter | null, b: CofogNodeFilter | null) =>
   a !== null && b !== null && a.division === b.division && a.group === b.group && a.class === b.class
 
 function TreeRow({
   node,
   depth,
-  total,
   selected,
   onSelect,
   renderDetail,
 }: {
   node: CofogTreeNode
   depth: number
-  total: number
   selected: CofogNodeFilter | null
   onSelect: (filter: CofogNodeFilter) => void
   renderDetail: (filter: CofogNodeFilter) => React.ReactNode
@@ -80,7 +76,19 @@ function TreeRow({
         )}
         style={{ paddingLeft: `${depth * 20 + 8}px` }}
         onClick={node.filter ? () => onSelect(node.filter!) : undefined}
+        onKeyDown={
+          node.filter
+            ? (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault()
+                  onSelect(node.filter!)
+                }
+              }
+            : undefined
+        }
+        tabIndex={node.filter ? 0 : undefined}
         role={node.filter ? "button" : undefined}
+        aria-pressed={node.filter ? isSelected : undefined}
       >
         <button
           type="button"
@@ -101,7 +109,7 @@ function TreeRow({
         </span>
         <span className={cn("truncate", node.code === "" && "text-xs text-muted-foreground")}>{node.label}</span>
         <span className="ml-auto shrink-0 whitespace-nowrap text-right text-xs text-muted-foreground tabular-nums">
-          {senYen(node.sum)} ・ {pct(total > 0 ? node.sum / total : 0)} ・ {count(node.count)}件
+          {senYen(node.sum)} ・ {pct(node.share)} ・ {count(node.count)}件
         </span>
       </div>
       {isSelected && node.filter && (
@@ -116,7 +124,7 @@ function TreeRow({
         </div>
       )}
       {open && node.children?.map((c) => (
-        <TreeRow key={c.key} node={c} depth={depth + 1} total={total} selected={selected} onSelect={onSelect} renderDetail={renderDetail} />
+        <TreeRow key={c.key} node={c} depth={depth + 1} selected={selected} onSelect={onSelect} renderDetail={renderDetail} />
       ))}
     </div>
   )

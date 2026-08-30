@@ -9,6 +9,7 @@
     "dev": "vite",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "preview": "vite preview",
+    "test": "bun test src",
     "typecheck": "tsc -b --force"
   },
   "dependencies": {
