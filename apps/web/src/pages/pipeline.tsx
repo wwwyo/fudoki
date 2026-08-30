@@ -10,6 +10,7 @@ import { FlowGraph } from "@/components/flow-graph"
 import { DetailBrowser } from "@/components/detail-browser"
 import { StageDetail } from "@/components/stage-detail"
 import { CofogPanel } from "@/components/cofog-panel"
+import { CoveragePanel } from "@/components/coverage-panel"
 import { ChecksPanel } from "@/components/checks-panel"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import {
@@ -220,7 +221,9 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
       label: "COFOG 割当済み（金額比）",
       // ⚠️ **ここで足し直さない。** 割合は生成側（report/budget/build.ts）が持つ
       value: pct(t.assignedShare.sum),
-      hint: "COFOG は政府支出の機能別分類（教育、保健など10区分）。国際標準",
+      // ⚠️ **全年度の合算だと明示する。** 名称の載った資料が一部の年度にしか無い団体では、
+      // 合算の割合が年度ごとの実態から離れる（狛江市は 73% の年度と 91% の年度がある）。
+      hint: "COFOG は政府支出の機能別分類（教育、保健など10区分）。国際標準。全年度の合算で、年度ごとは「年度ごとの収録」タブ",
     },
     // ⚠️ 消去が成立しない団体がある（狛江市は相手の会計が原典から決まらない）。
     // 「相殺する」と決め打ちで書くと、消去していない団体で嘘になる。
@@ -230,9 +233,20 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
     <Layout>
       <main className="mx-auto flex max-w-[1500px] flex-col gap-8 p-4 pb-24">
         <section className="flex flex-col gap-4">
-          {/* どの団体を見ているかは本文のコンテキスト。header はサイト全体の枠なので置かない */}
+          {/*
+            見出しの主語は団体である。**ページの機能名を見出しにしない** —
+            「ELT パイプライン」は fudoki の内部語彙で、読み手はこのページで
+            何が見られるかを知らないまま本文へ入ることになる。
+            ELT（取得と正規化を分ける）という建付けの説明は下の本文へ落とす。
+          */}
+          <h1 className="text-2xl font-semibold tracking-tight">
+            {m.jurisdictionName}の予算が配布物になるまで
+          </h1>
+          <p className="max-w-[80ch] text-sm text-muted-foreground">
+            原典の取得から、検査・COFOG への分類・配布物の生成までを1本の系統で示す。
+            取得と正規化は分けてあり、分類の規則を変えても原典は取り直さない。
+          </p>
           <div className="mb-2 flex flex-wrap items-baseline gap-3">
-            <h1 className="text-xl font-semibold">ELT パイプライン</h1>
             {data.jurisdictions.length > 1 ? (
               <Select
                 items={data.jurisdictions.map((j) => ({
@@ -260,9 +274,8 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
                   </SelectGroup>
                 </SelectContent>
               </Select>
-            ) : (
-              <span className="shrink-0 text-sm font-medium">{m.jurisdictionName}</span>
-            )}
+            ) : // 団体が1つなら切り替える先が無い。名称は見出しが既に言っている
+            null}
             <span className="truncate text-sm text-muted-foreground">
               {m.fiscalYears.length > 2
                 ? `${m.fiscalYears[0]}〜${m.fiscalYears.at(-1)}年度`
@@ -315,13 +328,19 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
 
         <Tabs value={tab} onValueChange={setTab}>
           <TabsList>
-            {/* 検証の順に並べる: 何を保証しているか（検査）→ どこから来たか（証跡）
-                → fudoki は何を足したか（COFOG）→ 1行ずつ確かめる（明細） */}
+            {/* 検証の順に並べる: 何を保証しているか（検査）→ どこまで取れているか（年度）
+                → どこから来たか（証跡）→ fudoki は何を足したか（COFOG）
+                → 1行ずつ確かめる（明細） */}
             <TabsTrigger value="checks">検査</TabsTrigger>
+            <TabsTrigger value="coverage">年度ごとの収録</TabsTrigger>
             <TabsTrigger value="stages">証跡</TabsTrigger>
             <TabsTrigger value="cofog">COFOG の判断</TabsTrigger>
             <TabsTrigger value="detail">明細</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="coverage" className="pt-4">
+            <CoveragePanel report={report} />
+          </TabsContent>
 
           <TabsContent value="stages" className="pt-4">
             <StageDetail report={report} />
