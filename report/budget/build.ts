@@ -274,6 +274,127 @@ function buildLevels(code: string): ReportData['levels'] {
   })
 }
 
+/**
+ * 年度 × direction ごとの収録の状況。**年度差は団体単位の集計に現れない。**
+ *
+ * ⚠️ **団体で畳んだ割合を年度の主張に使わない。** 狛江市は事業名の PDF が
+ * 2020〜2023年度にしか無く、2018〜2019年度は科目の名称も事業名もゼロだが、
+ * 6年度を合算すると名称のある年度が薄めるだけで、無い年度の存在が消える。
+ *
+ * ⚠️ **名称は行に持っている値ではなく `core_budget_accounts` から測る。**
+ * 名称の解決（原典の列か、決算書 PDF から起こしたものか）はそこが正本で、
+ * ここで `coalesce` を書き直すと同じ判断が2箇所に分かれる。
+ *
+ * ⚠️ **direction ごとに1クエリ。** 指標ごとに投げると DuckDB CLI の起動が増えるうえ、
+ * 後から片方の絞り込みだけ変えたときに年度の行どうしが黙って食い違う。
+ */
+function buildCoverage(code: string): ReportData['coverage'] {
+  const share = (v: number, whole: number) => (whole === 0 ? 0 : v / whole)
+  return DIRECTIONS.flatMap((direction) => {
+    // 歳出だけが COFOG を持つ（歳入に割当は無い）。列を持たない側で join しない
+    const isExpenditure = direction === 'expenditure'
+    const lines = isExpenditure ? 'core_budget_lines' : 'core_revenue_lines'
+    const cofogJoin = isExpenditure
+      ? `left join core_budget_cofog c on c.budget_line_id = l.budget_line_id`
+      : ''
+    const cofogCols = isExpenditure
+      ? `, count(*) filter (where c.cofog_status = 'assigned') assignedCount,
+           sum(l.amount_yen) filter (where c.cofog_status = 'assigned') assignedSum,
+           sum(l.amount_yen) filter (where c.cofog_status = 'assigned' and c.cofog_group <> '') groupSum,
+           sum(l.amount_yen) filter (where c.cofog_status = 'assigned' and c.cofog_class <> '') classSum`
+      : ''
+    type Row = {
+      fy: number; lineCount: number; sum: number
+      namedKan: number; namedKou: number; namedMoku: number
+      assignedCount?: number; assignedSum?: number; groupSum?: number; classSum?: number
+    }
+    const rows = q<Row>(`
+      -- ⚠️ year と rows はどちらも予約語で、別名に使うと DuckDB のパーサが落ちる
+      select l.fiscal_year fy, count(*) lineCount, sum(l.amount_yen) sum,
+             count(*) filter (where a.kan_name is not null) namedKan,
+             count(*) filter (where a.kou_name is not null) namedKou,
+             count(*) filter (where a.moku_name is not null) namedMoku
+             ${cofogCols}
+      from ${lines} l
+      left join core_budget_accounts a
+        on  a.jurisdiction_code = l.jurisdiction_code and a.fiscal_year = l.fiscal_year
+        and a.direction = l.direction and a.fund_code = l.fund_code
+        and a.kan_code = l.kan_code and a.kou_code = l.kou_code and a.moku_code = l.moku_code
+      ${cofogJoin}
+      where l.jurisdiction_code = '${code}'
+      group by 1 order by 1`,
+      ['fy', 'lineCount', 'sum', 'namedKan', 'namedKou', 'namedMoku',
+       'assignedCount', 'assignedSum', 'groupSum', 'classSum'])
+    const projects = projectNameCoverage(code, direction)
+    return rows.map((r) => ({
+      fiscalYear: r.fy,
+      direction,
+      rows: r.lineCount,
+      sum: r.sum,
+      named: {
+        kan: share(r.namedKan, r.lineCount),
+        kou: share(r.namedKou, r.lineCount),
+        moku: share(r.namedMoku, r.lineCount),
+      },
+      cofog: isExpenditure
+        ? {
+            assignedShare: {
+              count: share(r.assignedCount ?? 0, r.lineCount),
+              sum: share(r.assignedSum ?? 0, r.sum),
+            },
+            // 分母は割当済みの金額。**全行にすると「降りていない」と
+            // 「そもそも割り当てていない」が混ざる**（transform.cofogReach と同じ取り方）
+            groupShare: share(r.groupSum ?? 0, r.assignedSum ?? 0),
+            classShare: share(r.classSum ?? 0, r.assignedSum ?? 0),
+          }
+        : null,
+      projectNames: projects.get(r.fy) ?? null,
+    }))
+  })
+}
+
+/**
+ * 年度ごとの事業名の充足。**大事業の階層を持つ団体 × direction だけ**に掛かる
+ * （持たない側は空の Map を返す = 画面では null）。
+ *
+ * ⚠️ **母集団は全会計の大事業。** 名称の出所（決算書 PDF の事項別明細）は
+ * 一般会計しか載せていないので、狭めると「出所が覆っていない」ぶんが見えなくなる。
+ * 代わりに出所の範囲（`inSourceScope`）を併記して、**出所が届いていない**のと
+ * **届いているが当たらなかった**のを分けられるようにする。
+ */
+function projectNameCoverage(
+  code: string, direction: Direction,
+): Map<number, NonNullable<ReportData['coverage'][number]['projectNames']>> {
+  const out = new Map<number, NonNullable<ReportData['coverage'][number]['projectNames']>>()
+  if (!levelsOf(code, direction).includes('daijigyo' as Level)) return out
+  const rows = q<{ fy: number; total: number; named: number; inScope: number }>(`
+    with d as (
+      select distinct fiscal_year, fund_code, kan_code, kou_code, moku_code, daijigyo_code
+      from stg_${code}__${direction}
+    )
+    select d.fiscal_year fy, count(*) total,
+           count(p.project_name) named,
+           -- 出所が覆う範囲。**会計を report で決め打たない** — 対応づけの側が
+           -- 一般会計に閉じているので、その宣言（fund_code）を引いて母数にする
+           count(*) filter (where d.fund_code in (
+             select distinct fund_code from core_budget_project_names
+             where jurisdiction_code = '${code}')) inScope
+    from d
+    left join core_budget_project_names p
+      on  p.jurisdiction_code = '${code}' and p.fiscal_year = d.fiscal_year
+      and p.fund_code = d.fund_code and p.kan_code = d.kan_code and p.kou_code = d.kou_code
+      and p.moku_code = d.moku_code and p.daijigyo_code = d.daijigyo_code
+    group by 1 order by 1`, ['fy', 'total', 'named', 'inScope'])
+  for (const r of rows) {
+    out.set(r.fy, {
+      total: r.total, named: r.named, inSourceScope: r.inScope,
+      share: r.total === 0 ? 0 : r.named / r.total,
+      shareInScope: r.inScope === 0 ? 0 : r.named / r.inScope,
+    })
+  }
+  return out
+}
+
 type SourceEntry = {
   phase_id?: string; phase_label?: string
   license_id?: string; attribution?: string; landing_page?: string
@@ -377,6 +498,7 @@ function build(
     ingestion: prov,
     detailLevels: DIRECTIONS.map((direction) => ({ direction, levels: levelsOf(code, direction) })),
     levels: buildLevels(code),
+    coverage: buildCoverage(code),
     transform: buildTransform(code),
     checks,
     ...SHARED,

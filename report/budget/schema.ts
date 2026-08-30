@@ -64,6 +64,52 @@ export type Transform = {
   consolidationScope: string
 }
 
+/**
+ * 年度 × direction ごとの収録の状況。**団体単位の集計に埋もれる年度差を出す。**
+ *
+ * ⚠️ **団体で1つに畳んだ数字では、年度ごとに何が取れているかを見られない。**
+ * 実際に狛江市は事業名の PDF が 2020〜2023年度にしか無く、2018〜2019年度は
+ * 科目の名称も事業名もゼロだが、6年度を合算した割合にはそれが現れない
+ * （名称のある4年度が薄めるだけで、無い年度の存在が消える）。
+ * 収録範囲の主張は年度ごとにしか正しく書けないので、年度を軸に持つ。
+ *
+ * ⚠️ **割合は生成側が持つ**（画面で割り算しない）。分母は指標ごとに違う —
+ * 名称は行数、COFOG の到達は割当済みの金額で、混ぜると別の数字になる。
+ */
+export type YearCoverage = {
+  fiscalYear: number
+  direction: Direction
+  /** core の行数（配布物の行数は段階の数だけ展開されるので別） */
+  rows: number
+  /** primary と宣言した金額の合計（円） */
+  sum: number
+  /** 科目の名称がある行の割合（0〜1）。**階層ごとに別**（款だけ解決した年度がある） */
+  named: { kan: number; kou: number; moku: number }
+  /**
+   * COFOG の状況。**歳出だけ**（歳入に COFOG の割当は無いので null）。
+   * `groupShare` / `classShare` の分母は割当済みの金額
+   * （`transform.cofogReach` と同じ取り方で、年度に切ったもの）。
+   */
+  cofog: {
+    assignedShare: { count: number; sum: number }
+    groupShare: number
+    classShare: number
+  } | null
+  /**
+   * 事業名の充足。**大事業の階層を持つ団体だけ**（無い団体は null）。
+   * ⚠️ **母集団は全会計の大事業。** 名称の出所（決算書 PDF の事項別明細）は
+   * 一般会計しか載せていないので、`inSourceScope` を併記して
+   * 「出所が覆っていない」と「出所は覆っているが当たらなかった」を分けられるようにする。
+   */
+  projectNames: {
+    total: number
+    named: number
+    inSourceScope: number
+    /** `named / total`（0〜1） */ share: number
+    /** `named / inSourceScope`（0〜1） */ shareInScope: number
+  } | null
+}
+
 export type LevelGroup = {
   direction: string
   items: {
@@ -83,6 +129,8 @@ export type ReportData = ReportEnvelope & {
    */
   detailLevels: { direction: Direction; levels: Level[] }[]
   levels: LevelGroup[]
+  /** 年度 × direction ごとの収録の状況。**年度で並べ替えて出す** */
+  coverage: YearCoverage[]
   transform: Transform
   notYetReconciled: { scope: string; reason: string; wouldComeFrom: string; currentEvidence: string }
   /** FDP に無い概念のために自作した ColumnType。**自作は最小限に留めた根拠を出す** */

@@ -79,10 +79,10 @@ function renderHtml(code: string, name: string): string {
 
     <!-- ⚠️ document.title はここから団体・年度に応じて実行時に書き換わる
          （src/pages/pipeline.tsx）。ここに書くのは JS 実行前 / SEO 用の既定値 -->
-    <title>${safeName} のELTパイプライン報告 | fudoki（風土記）</title>
+    <title>${safeName}の予算が配布物になるまで | fudoki（風土記）</title>
     <meta
       name="description"
-      content="${safeName} の予算データについて、fudoki の ELT パイプラインが何を検査し、どこで判断を加えているかを追う報告。原典・変換・配布物の系統は dbt の manifest から生成する。"
+      content="${safeName}の予算データが原典からどう取得され、何を検査され、どこで fudoki の判断（COFOG への分類）が入って配布物になるかを、年度ごとの収録状況まで含めて追う報告。系統は dbt の manifest から生成する。"
     />
     <link rel="canonical" href="https://fudoki.dev/pipeline/${code}/" />
 
