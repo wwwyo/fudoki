@@ -172,16 +172,7 @@ function cofogGranularity(byState: StateRow[]):
 const phaseIdsOf = (code: string, direction: Direction) =>
   new Set(amountsOf(code, direction).map((a) => a.phase))
 
-/**
- * COFOG の判断。**fudoki が自治体の言っていないことを付け加えた唯一の場所**なので、
- * 何をどこへ割り当て、なぜそう決めたかを根拠まで出す。
- *
- * ⚠️ 分類不能の割合の低さは合否に使わない。成立範囲を正直に調べるのが目的で、
- * 割合を目標にすると分類不能を減らす方向へ判断が歪む。
- *
- * ⚠️ **金額は円で見る**（core_budget_lines の `amount_yen`）。
- * 原典の単位は団体ごとに違うので、source_amount のまま足すと千円と円が混ざる。
- */
+/** 年度つきの状態行。**年度を落とすかどうかは受け取る側が決める** */
 type YearStateRow = StateRow & { fy: number }
 
 /**
@@ -207,6 +198,16 @@ function cofogStateRows(code: string): YearStateRow[] {
     order by sum desc, status, division, "group", "class", consolidation, fy`, ['fy', 'count', 'sum']))
 }
 
+/**
+ * COFOG の判断。**fudoki が自治体の言っていないことを付け加えた唯一の場所**なので、
+ * 何をどこへ割り当て、なぜそう決めたかを根拠まで出す。
+ *
+ * ⚠️ 分類不能の割合の低さは合否に使わない。成立範囲を正直に調べるのが目的で、
+ * 割合を目標にすると分類不能を減らす方向へ判断が歪む。
+ *
+ * ⚠️ **金額は円で見る**（core_budget_lines の `amount_yen`）。
+ * 原典の単位は団体ごとに違うので、source_amount のまま足すと千円と円が混ざる。
+ */
 function buildTransform(code: string, stateRows: YearStateRow[]): ReportData['transform'] {
   const scope = `where c.jurisdiction_code = '${code}'`
   const rules = q<{ n: number; shared: number }>(
@@ -319,6 +320,15 @@ function buildLevels(code: string): ReportData['levels'] {
  * 引くのは行数・金額・名称と、事業名（大事業を持つ団体だけ）。
  */
 function buildCoverage(code: string, stateRows: YearStateRow[]): ReportData['coverage'] {
+  return coverageRows(code, stateRows)
+    // **並び順は生成側が決める。** 年度 → direction の順に並べ、同じ年度の歳出と歳入を隣に置く
+    // （原典が別の資料なので、片方だけ名称が取れている年度がある）。
+    // 画面で並べ替えると、JSON を直接読む利用者と画面で行の順が違うことになる。
+    .sort((a, b) => a.fiscalYear - b.fiscalYear
+      || (a.direction === b.direction ? 0 : a.direction === 'expenditure' ? -1 : 1))
+}
+
+function coverageRows(code: string, stateRows: YearStateRow[]): ReportData['coverage'] {
   const byYear = new Map<number, YearStateRow[]>()
   for (const r of stateRows) byYear.set(r.fy, [...(byYear.get(r.fy) ?? []), r])
   return DIRECTIONS.flatMap((direction) => {

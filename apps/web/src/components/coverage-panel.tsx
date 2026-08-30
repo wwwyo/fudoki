@@ -9,7 +9,6 @@
  *
  * 集計はしない。割合はすべて生成側（`report/budget/build.ts`）が持つ。
  */
-import { useMemo } from "react"
 import type { ReportData } from "@/lib/pipeline"
 import { pct, yenShort } from "@/lib/pipeline"
 import { Badge } from "@/components/ui/badge"
@@ -45,15 +44,9 @@ function Share({ value }: { value: number | null }) {
 }
 
 export function CoveragePanel({ report }: { report: ReportData }) {
-  // 年度 → direction の順。**同じ年度の歳出と歳入を隣に置く**
-  // （原典が別の資料なので、片方だけ名称が取れている年度がある）。
-  // タブの開閉やノード選択でも再ソートしないよう useMemo で留める（同ページの他の表と同じ扱い）
-  const rows = useMemo(
-    () => [...report.coverage].sort(
-      (a, b) => a.fiscalYear - b.fiscalYear || (a.direction === "expenditure" ? -1 : 1),
-    ),
-    [report.coverage],
-  )
+  // 並び順は生成側が持つ（報告の他の節と同じ）。画面で並べ替えると、
+  // JSON を直接読む利用者と画面で行の順が違うことになる
+  const rows = report.coverage
 
   return (
     <div className="flex flex-col gap-4">
@@ -69,7 +62,9 @@ export function CoveragePanel({ report }: { report: ReportData }) {
           <TableHeader>
             <TableRow>
               <TableHead>年度</TableHead>
-              <TableHead></TableHead>
+              {/* 空の見出しにしない。スクリーンリーダーはこの列（歳出/歳入）の意味を
+                  ヘッダからしか得られない */}
+              <TableHead>区分</TableHead>
               <TableHead className="text-right">行</TableHead>
               <TableHead className="text-right">金額</TableHead>
               <TableHead className="text-right">
