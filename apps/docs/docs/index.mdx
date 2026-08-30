@@ -1,9 +1,16 @@
 ---
-title: fudoki budget API
-description: 東京都の区市町村の予算を事業単位まで構造化して配布する budget API の概要。
+title: Introduction
+description: 日本の地方自治体の予算を事業単位まで構造化して配布する、風土記の API。
 ---
 
-fudoki は、日本の地方自治体の支出を事業単位（目）まで構造化し、外部データと join 可能な形で配布するプロジェクトです。**正本はリポジトリ**（[github.com/wwwyo/fudoki](https://github.com/wwwyo/fudoki)）にあり、この budget API はそこから生成した派生物です。
+風土記（fudoki）は、日本の地方自治体の支出を事業単位（目）まで構造化し、外部データと join 可能な形で配布するプロジェクトです。**正本はリポジトリ**（[github.com/wwwyo/fudoki](https://github.com/wwwyo/fudoki)）にあり、この API はそこから生成した派生物です。
+
+## 何ができるか
+
+- 団体（jurisdictions）と予算（budgets、団体 × 年度）のメタデータを引ける
+- 予算の明細（statement）を、団体固有の科目階層と金額つきで取得できる。歳出と歳入の両方を扱う
+- COFOG（国際的な政府機能分類）で団体をまたいだ横断検索ができる
+- 配布物（Fiscal Data Package）そのものをバイト同一で取得できる（datapackages）
 
 ## Base URL
 
@@ -11,12 +18,11 @@ fudoki は、日本の地方自治体の支出を事業単位（目）まで構�
 https://api.fudoki.dev/v0
 ```
 
-REST（OpenAPI 準拠）で、団体（jurisdictions）、予算（budgets）、明細（statement）、配布物のパススルー（datapackages）を読み取り専用で提供します。認証は不要です。
+REST（OpenAPI 準拠）の読み取り専用 API で、認証は不要です。応答はすべて、由来する配布物の revision（git commit）を持ちます。
 
-## API リファレンス
+**実験版（v0）**のため URL と応答スキーマには破壊的変更があり得ますが、データの識別子（`budget_line_id`、全国地方公共団体コード）は配布物側の契約であり、API の版とは独立に安定しています。
 
-各エンドポイントの詳細、スキーマ、Try it は [/reference](/reference) を参照してください。
+## 次に読む
 
-## 由来
-
-応答はすべて、由来する配布物の revision（git commit）を返します。API の版（`v0`）とデータの識別子（`budget_line_id`、団体コード）は別レイヤーで、識別子は API の版とは独立に安定しています。
+- [Quickstart](/quickstart): curl で最初のリクエストを投げる
+- [API リファレンス](/reference): 全エンドポイントのスキーマと Try it

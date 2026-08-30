@@ -6,7 +6,8 @@
 import type { OpenAPIGeneratorGenerateOptions } from '@orpc/openapi'
 import { ZodToJsonSchemaConverter } from '@orpc/zod/zod4'
 
-export const API_TITLE = 'fudoki budget API'
+// budget に限定した名前にしない — 歳出だけでなく歳入も配っており、レイヤも拡張していくため
+export const API_TITLE = '風土記 API'
 export const API_VERSION = '0.1.0'
 
 /**

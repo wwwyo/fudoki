@@ -1,0 +1,62 @@
+---
+title: Quickstart
+description: curl で風土記 API に最初のリクエストを投げる。
+---
+
+認証は不要です。curl だけで始められます。
+
+## 1. 収録されている団体を見る
+
+```bash
+curl 'https://api.fudoki.dev/v0/jurisdictions'
+```
+
+団体は総務省の全国地方公共団体コード（6桁）で識別されます。
+
+## 2. 予算の一覧を見る
+
+予算は「団体 × 年度」の単位で、id は `{団体コード}:{年度}` です。
+
+```bash
+curl 'https://api.fudoki.dev/v0/budgets'
+```
+
+filter で団体や年度を絞れます（文法は AIP-160 の部分集合。`=` と `AND` のみ）。
+
+```bash
+curl 'https://api.fudoki.dev/v0/budgets?filter=jurisdiction%20%3D%20%22132195%22'
+```
+
+## 3. 予算の明細を取る
+
+`/budgets/{id}/statement` が明細（行の集合）です。filter には `direction`（`expenditure` か `revenue`）が必須です。
+
+```bash
+curl 'https://api.fudoki.dev/v0/budgets/132195:2023/statement?filter=direction%20%3D%20%22expenditure%22&pageSize=10'
+```
+
+各行は団体固有の科目階層（款・項・目など）と、段階ごとの金額（円に正規化済み）を持ちます。続きは応答の `nextPageToken` を `pageToken` に渡して辿ります。
+
+## 4. 団体をまたいで COFOG で横断する
+
+budget の id にワイルドカード `-` を指定すると、全予算を COFOG（政府機能分類）で横断できます。filter には `cofog.division` が必須です。
+
+```bash
+curl 'https://api.fudoki.dev/v0/budgets/-/statement?filter=cofog.division%20%3D%20%2209%22&pageSize=10'
+```
+
+division `09` は教育です。横断応答の各行は親 budget への参照を持ち、そこから団体固有の形の行へ戻れます。
+
+## 5. 配布物そのものを取る
+
+API を経由せず、正本の配布物（Fiscal Data Package）をバイト同一で取得できます。
+
+```bash
+curl 'https://api.fudoki.dev/v0/datapackages/132195/datapackage.json'
+```
+
+応答ヘッダの `X-Fudoki-Revision` が由来する配布物の revision（git commit）、`ETag` がファイルの SHA-256 です。
+
+## 次に読む
+
+各エンドポイントのスキーマ、filter の詳細、Try it は [API リファレンス](/reference)にあります。
