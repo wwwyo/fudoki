@@ -132,7 +132,16 @@ def _provenance_json(src: Source, spec: Resource, direction: str, got: Fetched,
             "direction": direction,
             "dataset_title": src.dataset_title_for(spec),
             "resource_name": spec.resource_name,
-            "fiscal_year_basis": f"CKAN のリソース名「{spec.resource_name}」の「{src.fiscal_year_label}」から解決",
+            "fiscal_year_basis": (
+                f"sources.toml が宣言した URL（カタログに登録が無い）。"
+                f"年度の照合は原典の年度列と partition の突き合わせで行う"
+                if spec.url is not None else
+                f"CKAN のリソース名「{spec.resource_name}」の「{src.fiscal_year_label}」から解決"
+            ),
+            # カタログを介さず直接取りに行ったか。**リソース URL の安定性の保証が違う**
+            # （カタログ経由は名前から毎回解決するので資料の差し替えに追随する）。
+            "resource_url_declared": spec.url is not None,
+            "resource_url_basis": spec.url_basis,
             "request_url": got.url,
             "status": got.status,
             "bytes": len(got.body),
@@ -174,10 +183,13 @@ def ingest(key: str) -> None:
         prov_path = out_dir / "provenance.json"
 
         # 年度の唯一の出所はリソース名。照合できなければ収録しない。
-        if src.fiscal_year_label not in spec.resource_name:
+        # ⚠️ **直 URL の宣言があるときは、この照合が成立しない** — resource_name が
+        # カタログの持つ名前ではなく fudoki の書いた文字列になるので、自己参照になる。
+        # 年度の裏づけは原典の年度列と partition の突き合わせ（dbt）へ移る。
+        if spec.url is None and src.fiscal_year_label not in spec.resource_name:
             raise RuntimeError(f"リソース名「{spec.resource_name}」に年度表記「{src.fiscal_year_label}」が無い")
 
-        url = resolve_resource(src, spec)
+        url = spec.url or resolve_resource(src, spec)
         got = http_get(url)
         if got.status != 200:
             raise RuntimeError(f"HTTP {got.status}: {url}")

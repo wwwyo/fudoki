@@ -5,7 +5,7 @@
   "description": "自治体が公開した当初予算データを Fiscal Data Package の形にしたもの。歳出・歳入のリソースは**原典を正規化しただけで、fudoki の判断を含まない**（分類・名寄せ・推定を一切していない）。COFOG の割当と事業名の対応づけは fudoki の判断で、同じパッケージの別リソースにしてある（budget_line_id などのキーで join する）。原典そのものは data/budget/raw/ に Parquet で入っている。\n\n## 出典表示（CC BY 4.0 §3(a)(1)(A)）\n\n次の一文をそのまま使うこと。\n\n> 多摩市「令和3年度一般会計歳出・歳入（当初予算）」（東京都オープンデータカタログサイト）\n\n機械可読な同じ内容は `sources[].title`（原典）と `contributors`（加工者）にある。\n\n## 改変（CC BY 4.0 §3(a)(1)(B)）\n\n原典に対して次のことをしている。\n\n- セルの前後の空白を除去した\n- コードと名称が同居するセルを分けた\n- 金額を円へ正規化した（原典の値と単位も残してある）\n- 原典の各行に COFOG の分類と連結の判断を付け加えた（自治体が言っていないこと）\n- 科目に法定マスタ（地方自治法施行規則 別記の区分）への対応を付け加えた（コードのずれと表記差の吸収は fudoki の判断）\n\n原典そのものは `data/budget/raw/` に Parquet で保全してあるので、改変の前後を突き合わせられる。\n\n取得の証跡（取得 URL・HTTP status・SHA-256・取得時刻・ヘッダ・行数）は、原典の隣（`data/budget/raw/**/provenance.json`）にある。\n\nリソースの `sources[].path` は、その証跡が記録している取得 URL そのものである。正本は団体ごと・全年度で1リソースなので、年度の数だけ並ぶ。\n\n## 全行で同じ値の列\n\n全国地方公共団体コード、地方公共団体名、通貨、予算段階の表示名、原典の金額の単位、支出と収入の別は行ごとに変わらないので、CSV の列から外して `schema.extraFields` に定数として置いてある（仕様の Constant Fields）。非正規化した形へ戻すときは、その列を全行に補う。\n\n## 金額の段階と単位\n\n- expenditure: 当初予算（approved）は原典の 千円 で、円へ直すには 1000 を掛ける\n- revenue: 当初予算（approved）は原典の 千円 で、円へ直すには 1000 を掛ける\n\n段階が複数ある場合は原典1行を段階ごとの行へ展開してあるので、主キーは budget_line_id と phase_id の組になる。",
   "homepage": "https://github.com/wwwyo/fudoki",
   "version": "0.1.0",
-  "created": "2026-08-29T16:40:50+00:00",
+  "created": "2026-08-30T02:42:37+00:00",
   "countryCode": "JP",
   "columnTypes": [
     "https://specs.frictionlessdata.io/taxonomies/fiscal/budgets.json",
@@ -180,7 +180,7 @@
   },
   "fiscalPeriod": {
     "start": "2021-04-01",
-    "end": "2023-03-31"
+    "end": "2025-03-31"
   },
   "licenses": [
     {
@@ -204,6 +204,14 @@
     {
       "title": "多摩市「令和4年度一般会計歳出・歳入（当初予算）」（東京都オープンデータカタログサイト）",
       "path": "https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html"
+    },
+    {
+      "title": "多摩市「令和5年度一般会計歳出・歳入（当初予算）」（多摩市「予算・決算についての資料」）",
+      "path": "https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html"
+    },
+    {
+      "title": "多摩市「令和6年度一般会計歳出・歳入（当初予算）」（多摩市「予算・決算についての資料」）",
+      "path": "https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html"
     }
   ],
   "resources": [
@@ -216,8 +224,8 @@
       "format": "csv",
       "mediatype": "text/csv",
       "encoding": "utf-8",
-      "bytes": 593639,
-      "hash": "sha256:145e3628d0b1cf411c6173d03c91c0fda91c45a8c56cf41d4df03e508f31a41d",
+      "bytes": 1179863,
+      "hash": "sha256:a6731ae5c14ba5c7b268bec23b769a3df1304013987194183b4d8724823b92f7",
       "dialect": {
         "delimiter": ",",
         "header": true
@@ -417,6 +425,14 @@
         {
           "title": "2022年度／予算・決算についての資料（オープンデータ）／令和4年度一般会計歳出（当初予算）",
           "path": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r4saisyutuippannkaikei01.csv"
+        },
+        {
+          "title": "2023年度／予算・決算についての資料（オープンデータ）／令和5年度一般会計歳出（当初予算）",
+          "path": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r5ippannkaikeisaisyutu.csv"
+        },
+        {
+          "title": "2024年度／予算・決算についての資料（オープンデータ）／令和6年度一般会計歳出（当初予算）",
+          "path": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r6ippannkaikeisaisyutu.csv"
         }
       ]
     },
@@ -429,8 +445,8 @@
       "format": "csv",
       "mediatype": "text/csv",
       "encoding": "utf-8",
-      "bytes": 220808,
-      "hash": "sha256:bf0dbdaa0b3d7dbaef09ad7cb363b2b0081a34b507e3e626cdf0cfad821e2d0d",
+      "bytes": 438451,
+      "hash": "sha256:4aa981e40c3d14ff946522215cc515d591fefc289ee4486b4f04ce2e4685ad46",
       "dialect": {
         "delimiter": ",",
         "header": true
@@ -630,6 +646,14 @@
         {
           "title": "2022年度／予算・決算についての資料（オープンデータ）／令和4年度一般会計歳入（当初予算）",
           "path": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r4sainyuuippannkaikei01.csv"
+        },
+        {
+          "title": "2023年度／予算・決算についての資料（オープンデータ）／令和5年度一般会計歳入（当初予算）",
+          "path": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r5ippannkaikeisainyuu.csv"
+        },
+        {
+          "title": "2024年度／予算・決算についての資料（オープンデータ）／令和6年度一般会計歳入（当初予算）",
+          "path": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r6ippannkaikeisainyuu.csv"
         }
       ]
     },
@@ -642,8 +666,8 @@
       "format": "csv",
       "mediatype": "text/csv",
       "encoding": "utf-8",
-      "bytes": 426136,
-      "hash": "sha256:f76774f23b2e02b16aa16e1e48edcd0c9ade4747b5157a74fc88ac513aa60e12",
+      "bytes": 849016,
+      "hash": "sha256:fe319ca128b184697b599f8b021fff87f9c397a6171cc15c6eeaeed52b938b43",
       "dialect": {
         "delimiter": ",",
         "header": true
@@ -873,8 +897,8 @@
       "format": "csv",
       "mediatype": "text/csv",
       "encoding": "utf-8",
-      "bytes": 98464,
-      "hash": "sha256:42e3b1ff4ae5f45a03d82727ef8ae351d4d33f87fa8b250a4af5b1b0ca9a52ea",
+      "bytes": 192318,
+      "hash": "sha256:4d4c62eb8e0b30d0b01a605680c873a4e655be38cf485ac8f93abb43cf3df51f",
       "dialect": {
         "delimiter": ",",
         "header": true

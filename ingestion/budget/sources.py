@@ -33,6 +33,35 @@ class Resource:
     # 省略したときは取得元の `dataset_title` を使う。
     dataset_title: str | None = None
 
+    # ⚠️ **カタログを介さず直接取りに行く URL。既定では使わない。**
+    #
+    # 通常はデータセット名とリソース名から CKAN で解決する。リソース URL は自治体の CMS が
+    # 振る内部番号で資料の差し替えのたびに動くのに対し、名前のほうは安定しているためである。
+    # ここに URL を書くと、その安定性を捨てて自治体の URL 設計に賭けることになる。
+    #
+    # それでも要るのは、**原典は公開されているのにカタログへ登録されていない**場合。
+    # 多摩市は市サイトに令和7年度まで同じ書式の CSV を置いているが、カタログの登録は
+    # 令和4年度で止まっており、名前から解決する経路では届かない。
+    #
+    # ⚠️ **年度の照合が取得時にできなくなる。** カタログ経由なら「リソース名に年度表記が
+    # 含まれること」を取得の前に見ているが、直 URL では resource_name が fudoki の書いた
+    # 文字列なので自己参照になり検査にならない。年度が合っているかは原典の年度列と
+    # partition の突き合わせ（dbt の source_year_matches_partition）に移る。
+    # **その検査が無い団体でこれを使うと、年度の裏づけがどこにも無くなる。**
+    url: str | None = None
+    # なぜカタログを外れるのか。**URL を書くなら理由も書く**（書かないと停止する）。
+    # 理由が無いと、後から読んだ者に「カタログにあるのに横着した」のと区別が付かない。
+    url_basis: str | None = None
+
+    def __post_init__(self) -> None:
+        if self.url is not None and not self.url_basis:
+            raise ValueError(
+                f"{self.resource_name}: url を宣言するなら url_basis も書くこと"
+                f"（カタログから解決できない理由が要る）"
+            )
+        if self.url is not None and not self.url.startswith("https://"):
+            raise ValueError(f"{self.resource_name}: url は https のみ（{self.url}）")
+
 
 @dataclass(frozen=True)
 class Source:

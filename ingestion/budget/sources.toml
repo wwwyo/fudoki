@@ -516,3 +516,70 @@ resource_name = "令和4年度一般会計歳出（当初予算）"
 [["132241:2022".resources]]
 direction = "revenue"
 resource_name = "令和4年度一般会計歳入（当初予算）"
+
+# ⚠️ **令和5・6年度はカタログに登録が無い。** 市サイトには置かれているので URL を宣言して取る。
+# 書式は令和3・4年度と同じ（列構成・文字コード・単位・年度列すべて実測で一致。2026-08-30）。
+#
+# ⚠️ **令和7年度は足せない。** 同じページに置かれているが書式が変わっている。
+#   * 金額の列名が「予算額」から「合計 / 予算額」へ
+#   * 単位が千円から**円**へ（歳出計 68,550,000,000 = 685.5 億円）
+#   * **歳出だけ年度の列が消えた**（歳入には残っている）
+# いまの宣言は (団体, direction) の粒度なので、年度で単位や列名が割れる団体を表せない。
+# 足すには budget_amounts と budget_source_year_columns を年度の粒度へ広げる必要がある。
+
+["132241:2023"]
+catalog = "tokyo"
+jurisdiction_code = "132241"
+jurisdiction_name = "多摩市"
+fiscal_year = 2023
+fiscal_year_label = "令和5年度"
+phase_id = "approved"
+phase_label = "当初予算"
+dataset_title = "予算・決算についての資料（オープンデータ）"
+encoding = "cp932"
+redistribute = "allow"
+redistribute_basis = "東京都オープンデータカタログのライセンス表示（CC BY 4.0）"
+license_id = "CC-BY-4.0"
+attribution = "多摩市「令和5年度一般会計歳出・歳入（当初予算）」（多摩市「予算・決算についての資料」）"
+landing_page = "https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html"
+
+[["132241:2023".resources]]
+direction = "expenditure"
+resource_name = "令和5年度一般会計歳出（当初予算）"
+url = "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r5ippannkaikeisaisyutu.csv"
+url_basis = "カタログのリソース登録が令和4年度で止まっており、データセット名とリソース名から解決できない。原典は市の「予算・決算についての資料」ページに同じ書式で置かれている（landing_page）"
+
+[["132241:2023".resources]]
+direction = "revenue"
+resource_name = "令和5年度一般会計歳入（当初予算）"
+url = "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r5ippannkaikeisainyuu.csv"
+url_basis = "カタログのリソース登録が令和4年度で止まっており、データセット名とリソース名から解決できない。原典は市の「予算・決算についての資料」ページに同じ書式で置かれている（landing_page）"
+
+
+["132241:2024"]
+catalog = "tokyo"
+jurisdiction_code = "132241"
+jurisdiction_name = "多摩市"
+fiscal_year = 2024
+fiscal_year_label = "令和6年度"
+phase_id = "approved"
+phase_label = "当初予算"
+dataset_title = "予算・決算についての資料（オープンデータ）"
+encoding = "cp932"
+redistribute = "allow"
+redistribute_basis = "東京都オープンデータカタログのライセンス表示（CC BY 4.0）"
+license_id = "CC-BY-4.0"
+attribution = "多摩市「令和6年度一般会計歳出・歳入（当初予算）」（多摩市「予算・決算についての資料」）"
+landing_page = "https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html"
+
+[["132241:2024".resources]]
+direction = "expenditure"
+resource_name = "令和6年度一般会計歳出（当初予算）"
+url = "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r6ippannkaikeisaisyutu.csv"
+url_basis = "カタログのリソース登録が令和4年度で止まっており、データセット名とリソース名から解決できない。原典は市の「予算・決算についての資料」ページに同じ書式で置かれている（landing_page）"
+
+[["132241:2024".resources]]
+direction = "revenue"
+resource_name = "令和6年度一般会計歳入（当初予算）"
+url = "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r6ippannkaikeisainyuu.csv"
+url_basis = "カタログのリソース登録が令和4年度で止まっており、データセット名とリソース名から解決できない。原典は市の「予算・決算についての資料」ページに同じ書式で置かれている（landing_page）"
