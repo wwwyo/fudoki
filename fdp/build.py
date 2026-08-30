@@ -39,7 +39,7 @@ import pathlib
 
 import yaml
 
-from ingestion.budget.sources import load_project_names, load_revenue_accounts, load_sources
+from ingestion.budget.sources import all_sources, load_project_names, load_revenue_accounts
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 # 変換の宣言。**金額の段階と単位はここが正本**（dbt のモデルが同じ宣言から組まれる）。
@@ -52,27 +52,52 @@ LICENSE_CC_BY_4 = {
     "title": "Creative Commons Attribution 4.0 International",
     "path": "https://creativecommons.org/licenses/by/4.0/",
 }
+# 原典が名乗るライセンスのうち、CC BY 4.0 として配ってよいもの。
+# ⚠️ **「オープンだから同じだろう」で足さない。** 継承条件が違えば下流の義務が変わる。
+# 足すときは、その規約の原文が CC BY での利用を許諾していることを確かめて根拠を書く。
+CC_BY_COMPATIBLE = {
+    "CC-BY-4.0",
+    # 公共データ利用規約（第1.0版）。デジタル庁の原文（2026-08-30 実測）に
+    # 「本利用ルールは、クリエイティブ・コモンズ・ライセンスの表示4.0 国際ライセンスに
+    # 規定される著作権利用許諾条件（以下「CC BY」といいます。）と互換性があります。…
+    # 利用者がCC BYに従って利用することを許諾します。」とある。
+    # https://www.digital.go.jp/resources/open_data/public_data_license_v1.0
+    "PDL-1.0",
+}
+
+
 def licenses_of(srcs: list) -> list[dict]:
     """配布物に貼るライセンス。**取得元の宣言から決める。定数を貼らない。**
 
     ⚠️ 以前はここが定数の直書きだった。別の関数が値域を守っていたので今のところ
-    結果は同じだったが、**この PR が直そうとした「勝手にライセンスを付ける」そのもの**である。
+    結果は同じだったが、**「勝手にライセンスを付ける」そのもの**である。
     宣言が変わっても配布物が変わらない状態を残してはいけない。
 
       原典が CC BY を付けている        → それを素通しする
-      原典に利用許諾が無い（NOASSERTION）→ 事実には原典のライセンスが付いてこないので、
-                                          選択と構成にあたる部分を fudoki が CC BY 4.0 で配る
+      原典が CC BY 互換を明示している   → それも素通しする（`CC_BY_COMPATIBLE`）
+      原典の利用許諾が未判断（NOASSERTION）**だけ** → **`licenses` を書かない**
 
-    後者が成り立つのは**抽出した事実だけ**である。原文そのものは `Source` が
-    `verbatim` + `NOASSERTION` を宣言時点で弾いているので、ここへ到達しない。
+    ⚠️ **判断が付いた原典と未判断の原典が混ざる団体では、付いているほうを出す。**
+    `licenses` が伝えるのは**下流が負う義務**である。CC BY の原典が1つでも入っていれば、
+    下流には帰属・ライセンス表示・改変の明示の義務が実際に生じるので、
+    書かないと**義務を伝え損ねる**（未判断だから伏せる、では下流が帰属を落とす）。
+    逆に、どの原典も未判断のパッケージには伝えるべき義務がまだ無いので、書かない。
+    どのリソースがどの原典から来たかは `sources` と `description` が言う。
+
+    ⚠️ **最後の場合に fudoki のライセンスを貼らない。** 抽出した事実には原典のライセンスが
+    付いてこないので、選択と構成にあたる部分を fudoki が CC BY 4.0 で配ることは**できる**。
+    だがそれは「配ってよい条件を fudoki が決めた」という主張であって、
+    **原典の許諾をまだ判断していない段階でそれを出すと、判断が済んだように読める**。
+    `licenses` は Data Package の仕様でも任意なので、決まっていない状態は
+    **書かないことで表す**（未定を表す値が仕様に無いため）。決まったら足す。
     """
     known = sorted({s.license_id for s in srcs} - {"NOASSERTION"})
-    if any(lic != "CC-BY-4.0" for lic in known):
+    if any(lic not in CC_BY_COMPATIBLE for lic in known):
         raise SystemExit(
             f"原典のライセンスに {known} が含まれる。CC BY 4.0 以外は継承条件が違いうるので、"
             f"配布物のライセンスを決め直してから配ること"
         )
-    return [LICENSE_CC_BY_4]
+    return [LICENSE_CC_BY_4] if known else []
 
 
 # CC BY 4.0 §3(a)(1)(B) が求める「改変した旨」の表示。**descriptor の `description` に書く。**
@@ -116,7 +141,7 @@ JUDGMENT_RESOURCES = [
      "款・項・目の名称のカタログと、地方自治法施行規則 別記の区分への対応。"
      "**款のコードは団体ごとに法定とずれる**（災害復旧費を持たない市では以降が詰まる）ので、"
      "団体をまたぐ比較は master_kan_code / master_kou_code で行う。"
-     "名称の出所（原典か、決算書 PDF から fudoki が解決したか）は name_source が言う",
+     "名称の出所（原典 CSV か、事項別明細書 PDF からの抽出か、決算書 PDF から fudoki が解決したか）は name_source が言う",
      ["fiscal_year", "direction", "fund_code", "kan_code", "kou_code", "moku_code"]),
     ("project_names", "事業名の対応づけ（fudoki の判断）",
      "原典の CSV に事業の名称が無い団体で、決算資料 PDF から起こした名称を"
@@ -253,8 +278,17 @@ def header_of(body: bytes) -> list[str]:
     return next(csv.reader([first]))
 
 
-def field_spec(path: pathlib.Path, name: str) -> dict:
-    spec = TYPES["fields"].get(name)
+def field_spec(path: pathlib.Path, name: str, scope: str | None = None) -> dict:
+    """列の意味づけを引く。**同じ列名が direction で別の概念になることがある。**
+
+    ⚠️ 昭島市の歳出の `saisetsu`（節の下の内訳）は経済性質の分類だが、
+    歳入の `saisetsu`（細節）は財源の分類で、標準の列型が別物になる。
+    列名だけで引くと、片方が黙ってもう片方の意味で配られる。
+    そこで `<direction>:<列名>` の宣言があればそちらを先に使う。
+    """
+    spec = TYPES["fields"].get(f"{scope}:{name}") if scope else None
+    if spec is None:
+        spec = TYPES["fields"].get(name)
     if spec is None:
         raise RuntimeError(
             f"{path.name} の列「{name}」に ColumnType の宣言が無い。"
@@ -264,7 +298,7 @@ def field_spec(path: pathlib.Path, name: str) -> dict:
 
 
 def schema_for(path: pathlib.Path, body: bytes, primary_key: list[str],
-               constants: dict[str, object] | None = None) -> dict:
+               constants: dict[str, object] | None = None, scope: str | None = None) -> dict:
     """列に意味づけを与える。**宣言の無い列は配らない。**
 
     `constants` は全行同じ値なので CSV の列から外したもの。仕様の
@@ -274,10 +308,10 @@ def schema_for(path: pathlib.Path, body: bytes, primary_key: list[str],
     `extraFields` は定義上「非正規化した形には現れるが原典には無い列」なので、
     **CSV の列は1つも変わらない**（`budget_line_id` を含め公開済みの参照は無傷）。
     """
-    fields = [field_spec(path, name) for name in header_of(body)]
+    fields = [field_spec(path, name, scope) for name in header_of(body)]
     extra = []
     for name, value in (constants or {}).items():
-        spec = field_spec(path, name)
+        spec = field_spec(path, name, scope)
         if name in {f["name"] for f in fields}:
             raise RuntimeError(f"{path.name} の「{name}」は実在の列。定数として二重に宣言できない")
         extra.append({**spec, "constant": value})
@@ -307,7 +341,8 @@ def schema_for(path: pathlib.Path, body: bytes, primary_key: list[str],
 
 
 def resource(path: pathlib.Path, name: str, title: str, description: str, primary_key: list[str],
-             sources: list[dict] | None = None, constants: dict[str, object] | None = None) -> dict:
+             sources: list[dict] | None = None, constants: dict[str, object] | None = None,
+             scope: str | None = None) -> dict:
     body = path.read_bytes()
     r = {
         "name": name,
@@ -321,7 +356,7 @@ def resource(path: pathlib.Path, name: str, title: str, description: str, primar
         "bytes": len(body),
         "hash": "sha256:" + hashlib.sha256(body).hexdigest(),
         "dialect": {"delimiter": ",", "header": True},
-        "schema": schema_for(path, body, primary_key, constants),
+        "schema": schema_for(path, body, primary_key, constants, scope),
     }
     if sources:
         # リソース単位の出所。パッケージ単位の `sources` が「どの資料か」を言うのに対し、
@@ -414,24 +449,9 @@ def build_jurisdiction(code: str) -> None:
     d = PACKAGES / code
     # ⚠️ **`redistribute` で絞らない。** 原文を置けない取得元でも、そこから抽出した事実は
     # 配布物に入る。絞ると、PDF から起こした団体の配布物が丸ごと空になる。理屈は data/LICENSE。
-    srcs = [s for s in load_sources().values() if s.jurisdiction_code == code]
+    srcs = [s for s in all_sources().values() if s.jurisdiction_code == code]
     if not srcs:
         raise RuntimeError(f"団体 {code} の取得元が sources.toml に無い")
-    # ⚠️ **抽出した事実は配れるが、原典突合の検査には掛けられない。**
-    # dbt の原典突合（staging_is_one_to_one / canonical_preserves_source /
-    # package_preserves_source）は raw が原文であることを前提にしており、
-    # extracted に当てると誤って落ちるか、誤って通る。
-    # ⚠️ 以前ここは extracted の取得元があるだけで全部止めていたが、それでは
-    # **PDF から起こすほかない大半の団体の配布物が丸ごと空になる**（data/LICENSE）。
-    # 止めるべきなのは「原文前提の検査に extracted を掛けること」だけなので、
-    # 全面停止ではなくその不変条件を検査する。
-    covered = set(DBT_VARS["budget_levels"].get(code, {}))
-    wrong = sorted({s.key for s in srcs if s.raw_form == "extracted" and {res.direction for res in s.resources} & covered})
-    if wrong:
-        raise SystemExit(
-            f"{code}: raw_form=extracted の取得元が原典突合の対象になっている（{wrong}）。"
-            f"検査が原文前提のままなので、分岐させるまで配布物を作らない"
-        )
     years = sorted(s.fiscal_year for s in srcs)
 
     # 原典の文書そのものの種類（当初予算 / 決算）。**行が持つ予算段階とは別の軸。**
@@ -469,6 +489,9 @@ def build_jurisdiction(code: str) -> None:
         "jurisdiction_label": srcs[0].jurisdiction_name,
         "currency": "JPY",
     }
+    # ⚠️ **1回だけ決める。** description の分岐と `pkg["licenses"]` の両方が同じ答えを要る。
+    # 2回呼ぶと、間に何か挟まったときに食い違う余地ができる。
+    licenses = licenses_of(srcs)
     # ⚠️ **定数にしてよいのは、実際に1種類しか無いときだけ。**
     # 複数あるものを定数にすると、CSV の列は正しいまま descriptor だけが嘘になる。
     phase_labels = {(a["phase"], a["phase_label"]) for a in flat}
@@ -520,6 +543,18 @@ def build_jurisdiction(code: str) -> None:
                 "単位が段階や年度で割れるリソースでは、単位を行の列（source_amount_unit）に持つ"
                 "（1種類しか無いリソースでは `schema.extraFields` の定数にしてある）。",
                 *([
+                    "## 利用条件は未確定\n\n"
+                    "⚠️ **この配布物には `licenses` を付けていない。**"
+                    "原典の取得元はいずれも利用条件を判断できていない（`NOASSERTION`）。"
+                    "取得元のページは複製・翻案を許諾しているが、"
+                    "既知のライセンスとの互換をどこにも明示していないため、"
+                    "fudoki の側でどの条件に当たるかを決めていない。\n\n"
+                    "配っているのは抽出した事実（科目名・事業名・コード・金額）であって"
+                    "原文の複製ではなく、事実に原典の著作権は及ばない。"
+                    "それでも**利用する前に原典の利用条件を確認すること** — "
+                    "出典と取得 URL は `sources` にある。"
+                ] if not licenses else []),
+                *([
                     "## 事業名の出所\n\n"
                     "原典の CSV に事業の名称が無いため、市が公開している決算資料 PDF から起こした。"
                     "⚠️ **その PDF は再配布の可否が未確定である**（`licenses` には入れていない）。"
@@ -532,7 +567,10 @@ def build_jurisdiction(code: str) -> None:
         latest_fetch(f"jurisdiction={code}/**/provenance.json"),
     )
     pkg["fiscalPeriod"] = {"start": f"{years[0]}-04-01", "end": f"{years[-1] + 1}-03-31"}
-    pkg["licenses"] = licenses_of(srcs)
+    # ⚠️ **空なら書かない。** 原典の許諾がどれも未判断の団体では、`licenses` を出すこと自体が
+    # 「条件が決まっている」という主張になる。仕様上も任意のフィールドである。
+    if licenses:
+        pkg["licenses"] = licenses
     # **加工したのは誰か。** Data Package v1 の role の推奨語彙は
     # author / publisher / maintainer / wrangler / contributor の5つで、
     # 仕様は「author を使っても原典の作成者という意味にはならない。
@@ -554,6 +592,48 @@ def build_jurisdiction(code: str) -> None:
         entry = json.loads(path.read_text())
         prov.setdefault(entry["direction"], []).append(entry)
 
+    # ⚠️ **保証の強さが取得元で違う。証跡の主張と `raw_form` が食い違っていないか見る。**
+    #
+    # dbt の原典突合（staging_is_one_to_one / canonical_preserves_source /
+    # package_preserves_source）は「staging が raw と同じであること」しか言わない。
+    # raw が原文なら、それは推移的に「原典と同じ」まで届く（取得時に復元一致を検査している）。
+    # **raw が抽出結果なら、届くのは「抽出結果と同じ」まで**で、抽出そのものの忠実さは
+    # 別の検査（階層の合計突合）が受け持つ。検査の意味は成立するが、**強さが違う**。
+    #
+    # ⚠️ 以前ここは「extracted が原典突合の対象になっていたら停止」だった。だがそれは
+    # PDF を原典とする経路そのものを禁じており、**59/62 団体を配れない**ことを意味していた。
+    # 止めるべきなのは検査を掛けること自体ではなく、**弱い保証を強い保証として配ること**なので、
+    # 証跡が名乗る保証と `raw_form` が一致しているかを見る形へ変えた。
+    for direction, entries in sorted(prov.items()):
+        for e in entries:
+            form, roundtrip = e.get("raw_form"), e.get("roundtrip_verified")
+            if form == "verbatim" and not roundtrip:
+                raise SystemExit(
+                    f"{code}/{direction} {e['fiscal_year']}年度: raw_form=verbatim なのに"
+                    f" roundtrip_verified が偽。原文だと名乗るなら復元一致を検査すること")
+            if form == "extracted" and roundtrip:
+                raise SystemExit(
+                    f"{code}/{direction} {e['fiscal_year']}年度: raw_form=extracted なのに"
+                    f" roundtrip_verified が真。抽出は不可逆なので復元一致は成立しない")
+            if form == "extracted" and not e.get("verification"):
+                raise SystemExit(
+                    f"{code}/{direction} {e['fiscal_year']}年度: 抽出結果なのに verification が空。"
+                    f"復元一致の代わりに何を確かめたのかを証跡に書くこと")
+
+    def guarantee(direction: str) -> str:
+        """このリソースの原典との突合が、どこまで届くか。**配布物の説明文に出す。**
+
+        利用者が「市が公表した数字と一致することを誰が確かめたのか」を判断できるように、
+        強さの違いを説明文に載せる（証跡の在り処だけでは、開くまで分からない）。
+        """
+        forms = {e.get("raw_form") for e in prov.get(direction, [])}
+        if forms == {"verbatim"}:
+            return ""
+        return ("。⚠️ 原典は PDF で、取り込みは組版からの抽出にあたる（不可逆）。"
+                "原文へ戻して突き合わせる検査は成立しないので、"
+                "様式が階層ごとに重複して印字している合計との突合で縛っている"
+                "（詳細は raw の provenance.json の verification）")
+
     def origin(direction: str) -> list[dict]:
         """この1ファイルを構成する原典。**年度の数だけある。**
 
@@ -567,8 +647,12 @@ def build_jurisdiction(code: str) -> None:
         # 以前はここが証跡の `dataset_title` をそのまま出しており、市サイトから
         # 直接取った年度にもカタログのデータセット名が並んでいた。
         # その年度の在り処はパッケージ単位の `sources`（landing_page）が持つ。
+        # ⚠️ **PDF の証跡はカタログの語彙を持たない。** CSV の取得元は
+        # （データセット名／リソース名）で資料を名指すが、事項別明細書は資料そのものが
+        # 1つなので `document_title` しか無い。無いものを埋めず、有るほうを使う。
         return [{"title": "／".join(part for part in (
-                     f"{e['fiscal_year']}年度", e["dataset_title"], e["resource_name"]) if part),
+                     f"{e['fiscal_year']}年度", e.get("dataset_title"),
+                     e.get("resource_name") or e.get("document_title")) if part),
                  "path": e["request_url"]} for e in entries]
 
     pkg["resources"] = []
@@ -590,9 +674,9 @@ def build_jurisdiction(code: str) -> None:
         pkg["resources"].append(resource(
             path, name, title,
             ("原典1行が1行。判断を含まない" if not multi
-             else "原典1行を予算段階ごとの行へ展開している。判断を含まない"),
+             else "原典1行を予算段階ごとの行へ展開している。判断を含まない") + guarantee(name),
             ["budget_line_id", "phase_id"] if multi else ["budget_line_id"],
-            origin(name), const))
+            origin(name), const, scope=name))
 
     # ⚠️ **判断のリソースも同じパッケージに入れる。** 以前は `derived/` へ団体をまたいで
     # 置いていたが、畳むと**団体ごとに違うライセンスと出典が1つの表示に潰れる**。
@@ -613,12 +697,30 @@ if __name__ == "__main__":
     # それぞれ正本なので、生成対象はその一致として決まる。
     # ⚠️ 以前は3つ目の手書きリスト（IMPLEMENTED）があり、団体を足すたびに3箇所へ登録していた。
     # しかも突き合わせは sources.toml とだけで、**dbt の宣言との食い違いは誰も見ていなかった**。
-    registered = {s.jurisdiction_code for s in load_sources().values()}
+    registered = {s.jurisdiction_code for s in all_sources().values()}
     declared = set(DBT_VARS["budget_levels"])
     if registered != declared:
         raise SystemExit(
             f"sources.toml の団体 {sorted(registered)} と dbt の宣言 {sorted(declared)} が一致しない。"
             f"配布物を欠けたまま書き出さないため停止する"
+        )
+    # ⚠️ **package モデルの足し忘れは dbt では止まらない。**
+    # 検査（judgment_package_covers_core / account_names_package_covers_core /
+    # package_preserves_source / amount_normalization）は `ref('pkg_<団体>__*')` を
+    # 依存に宣言しているが、dbt は無いノードを**警告して検査ごと無効化する**。
+    # つまり団体を足してモデルを足し忘れると、4本の検査が黙って消える。
+    # 宣言（budget_levels）を母集団にして、ファイルの存在をここで見る。
+    models = pathlib.Path(__file__).resolve().parent.parent / "dbt" / "models" / "package" / "budget"
+    missing = sorted(
+        f"pkg_{code}__{name}.sql"
+        for code in declared
+        for name in ("expenditure", "revenue", "cofog", "cofog_rules", "account_names")
+        if not (models / f"pkg_{code}__{name}.sql").exists()
+    )
+    if missing:
+        raise SystemExit(
+            f"package モデルが足りない: {missing}。"
+            f"dbt は無いノードを警告して検査ごと無効化するので、ここで止める"
         )
     for code in sorted(registered):
         build_jurisdiction(code)

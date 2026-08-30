@@ -4,10 +4,31 @@ sources:
   # 取得の単位（団体コード, 年度, direction）ごとに1ソース。
   # **団体ごとに列が違う**（三鷹市には事項があり多摩市には無い）ので、
   # 団体をまたいで1つのソースにはできない。団体を足すときはこのブロックを足す。
+  - name: raw_131016
+    description: |
+      千代田区。**原典は PDF の事項別明細書**（当初予算。令和8年度の一般会計）。
+      ⚠️ ここにあるのは `ingestion/budget/extract_statement.py` が起こした表で、
+      原文のバイト列ではない（`raw_form = "extracted"`）。復元一致の検査は成立しない。
+    meta:
+      external_location: "read_parquet('../data/budget/raw/jurisdiction=131016/year=*/phase=*/direction={name}/data.parquet', hive_partitioning=true)"
+    tables:
+      - name: expenditure
+      - name: revenue
   - name: raw_132047
     description: 三鷹市。原典の Parquet を直接読む
     meta:
       external_location: "read_parquet('../data/budget/raw/jurisdiction=132047/year=*/phase=*/direction={name}/data.parquet', hive_partitioning=true)"
+    tables:
+      - name: expenditure
+      - name: revenue
+  - name: raw_132071
+    description: |
+      昭島市。**原典は PDF の事項別明細書**（当初予算。令和7年度）。
+      ⚠️ ここにあるのは `ingestion/budget/extract_statement.py` が起こした表で、
+      原文のバイト列ではない（`raw_form = "extracted"`）。復元一致の検査は成立しない。
+      保証の強さは取得物の隣の `provenance.json`（`verification`）に書いてある。
+    meta:
+      external_location: "read_parquet('../data/budget/raw/jurisdiction=132071/year=*/phase=*/direction={name}/data.parquet', hive_partitioning=true)"
     tables:
       - name: expenditure
       - name: revenue

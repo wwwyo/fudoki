@@ -43,12 +43,16 @@ const CHUNK_BYTES_LIMIT = 20 * 1024 * 1024
 /**
  * 分類率の金額ベースに使う予算段階。**団体を足すときは必ずここに書く**
  * （宣言が無ければ build が止まる。既定値で埋めない）。
+ * 131016: 事項別明細書の「本年度」欄なので approved。
  * 132047: 当初予算のみの資料なので approved。
+ * 132071: 事項別明細書の「本年度予算額」欄なので approved。
  * 132195: 決算の予算現額（流用・充用まで反映した後の額）。
  * 132241: 当初予算のみの資料なので approved（sources.toml の phase_id と同じ）。
  */
 const AMOUNT_PHASE: Record<string, BudgetLine['amounts'][number]['phase']> = {
+  '131016': 'approved',
   '132047': 'approved',
+  '132071': 'approved',
   '132195': 'adjusted',
   '132241': 'approved',
 }
@@ -192,7 +196,9 @@ type Descriptor = {
       extraFields?: { name: string; constant?: string }[]
     }
   }[]
-  licenses: { name: string; title: string; path: string }[]
+  /** ⚠️ **未確定の団体には無い。** 原典の利用条件を判断できていないパッケージは
+   *  descriptor に licenses を書かない（詳細は data/LICENSE）。API では空配列で表す。 */
+  licenses?: { name: string; title: string; path: string }[]
   sources: { title: string; path?: string }[]
 }
 
@@ -533,7 +539,7 @@ for (const j of jurisdictionIds.sort()) {
     label,
     datapackagePath: `/v0/datapackages/${j}/datapackage.json`,
     resources: passthroughFiles,
-    licenses: descriptor.licenses,
+    licenses: descriptor.licenses ?? [],
     sources: descriptor.sources.map((s) => ({ title: s.title, path: s.path ?? null })),
     consolidationScope: perJurisdiction.consolidationScope,
     // API に載せるのは `api: true` の caveat だけ（基準は report/budget/schema.ts）。

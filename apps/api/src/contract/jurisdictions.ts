@@ -28,7 +28,11 @@ export const jurisdictionSchema = z.object({
       title: z.string().describe('ライセンスの表示名'),
       path: z.string().describe('ライセンス本文の URL'),
     }))
-    .describe('配布物のライセンス'),
+    .describe(
+      '配布物のライセンス。⚠️ **空配列は「利用条件が未確定」を意味する**'
+      + '（原典の許諾を fudoki が判断できておらず、fudoki 自身のライセンスも貼っていない）。'
+      + 'そのときは caveats の sourceAndLicense と、sources の原典を確認すること',
+    ),
   sources: z
     .array(z.object({
       title: z.string().describe('出典の名前'),

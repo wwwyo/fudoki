@@ -1,0 +1,30 @@
+priority,rule_id,applies_to,match_fund,match_kan,match_kou,match_kan_code,match_moku,moku_mode,match_setsu,status,cofog_code,consolidation,decided_at_level,counterpart_fund,basis
+7,debt-principal,,,公債費,,,元金,eq,,out-of-scope,,retained,目,,市債の元金償還。金融負債の返済であり、COFOG の対象である経費・非金融資産への純投資のいずれでもない
+8,debt-interest,,,公債費,,,利子,eq,,assigned,01.7,retained,目,,市債利子。COFOG 01.7 公債取引にあたる
+9,fund-accumulation,,,,,,,eq,積立金,out-of-scope,,retained,節,,基金への積立。金融資産の取得であり COFOG の集計対象ではない
+11,contingency,,,予備費,,,,eq,,unclassifiable,,retained,款,,予備費。COFOG の対象だが、執行されるまで機能が決まらないため割り当ての根拠が無い
+28,gikai,,,議会費,,,,eq,,assigned,01.1,retained,款,,議会。COFOG 01.1 立法機関・行政機関
+29,somu,,,総務費,,,,eq,,assigned,01,retained,款,,総務・徴税・戸籍・選挙・統計・監査。COFOG 01 一般公共サービス
+30,minsei,,,民生費,,,,eq,,assigned,10,retained,款,,社会福祉・児童福祉・生活保護。COFOG 10 社会保護
+31,rodo,,,労働費,,,,eq,,assigned,04.1.2,retained,款,,労働諸費。COFOG 04.1.2 一般労働業務
+32,norin,,,農林費,,,,eq,,assigned,04.2,retained,款,,農業。COFOG 04.2 農林水産業
+33,shoko,,,商工費,,,,eq,,assigned,04.7,retained,款,,商工業。COFOG 04.7 その他の産業
+34,shobo,,,消防費,,,,eq,,assigned,03.2,retained,款,,消防。COFOG 03.2 消防サービス
+93,akishima-eisei-hoken,132071,一般会計,,保健衛生費,,,eq,,assigned,07,retained,項,,昭島市 款4 項1。COFOG 07 保健。⚠️ 目には環境衛生費・環境費・害虫等駆除対策費（COFOG 05 環境保護に寄る内容）が混じるが、既収録3団体と同じく項の粒度で 07 に寄せてある。目まで降ろすのは規則の分割という別の判断なので、caveat として残す
+94,akishima-eisei-seiso,132071,一般会計,,清掃費,,,eq,,assigned,05.1,retained,項,,昭島市 款4 項2。COFOG 05.1 廃棄物管理
+95,akishima-doboku-kanri,132071,一般会計,,土木管理費,,,eq,,assigned,04.5,retained,項,,昭島市 款8 項1。COFOG 04.5 運輸。土木の総務にあたるので運輸の division 止まり
+96,akishima-doboku-doro,132071,一般会計,,道路橋りょう費,,,eq,,assigned,04.5.1,retained,項,,昭島市 款8 項2。COFOG 04.5.1 道路交通
+97,akishima-toshikeikaku-kouen,132071,一般会計,,都市計画費,,公園費|緑化対策費,eq,,assigned,08.1,retained,目,,昭島市 款8 項3 のうち公園・緑化。COFOG 08.1 レクリエーション及びスポーツのサービス
+98,akishima-toshikeikaku-gairo,132071,一般会計,,都市計画費,,街路事業費,eq,,assigned,04.5.1,retained,目,,昭島市 款8 項3 のうち街路事業。COFOG 04.5.1 道路交通
+99,akishima-toshikeikaku-gesui,132071,一般会計,,都市計画費,,公共下水道費,eq,,assigned,05.2,retained,目,,昭島市 款8 項3 のうち公共下水道。COFOG 05.2 排水
+100,akishima-toshikeikaku-other,132071,一般会計,,都市計画費,,,eq,,assigned,06.2,retained,項,,昭島市 款8 項3 の残り（都市計画総務費・土地区画整理費・中神駅北側地域整備費）。COFOG 06.2 コミュニティの開発
+101,akishima-doboku-jutaku,132071,一般会計,,住宅費,,,eq,,assigned,06.1,retained,項,,昭島市 款8 項4。COFOG 06.1 住宅開発
+102,akishima-kyoiku-yochien,132071,一般会計,,教育総務費,,幼稚園費,eq,,assigned,09.1,retained,目,,昭島市 款10 項1 のうち幼稚園。COFOG 09.1 就学前教育及び初等教育。⚠️ 他の3団体は幼稚園費が項として立っているが、昭島市は教育総務費の目にある
+103,akishima-kyoiku-gakko,132071,一般会計,,教育総務費,,,eq,,assigned,09.8,retained,項,,昭島市 款10 項1 の残り。COFOG 09.8 他に分類されない教育
+104,akishima-kyoiku-shoto,132071,一般会計,,小学校費,,,eq,,assigned,09.1,retained,項,,昭島市 款10 項2。COFOG 09.1 就学前教育及び初等教育
+105,akishima-kyoiku-chuto,132071,一般会計,,中学校費,,,eq,,assigned,09.2,retained,項,,昭島市 款10 項3。COFOG 09.2 中等教育
+106,akishima-shakaikyoiku-bunka,132071,一般会計,,社会教育費,,図書館費|市民会館費|公民館費|文化財保護費,eq,,assigned,08.2,retained,目,,昭島市 款10 項4 のうち図書館・市民会館・公民館・文化財。COFOG 08.2 文化サービス
+107,akishima-shakaikyoiku-other,132071,一般会計,,社会教育費,,,eq,,assigned,09.5,retained,項,,昭島市 款10 項4 の残り（社会教育総務費・青少年育成費・社会教育施設管理費）。COFOG 09.5 水準を特定できない教育
+108,akishima-hokentaiiku-kyushoku,132071,一般会計,,保健体育費,,学校給食費,eq,,assigned,09.6,retained,目,,昭島市 款10 項5 のうち学校給食。COFOG 09.6 教育に付帯するサービス
+109,akishima-hokentaiiku-other,132071,一般会計,,保健体育費,,,eq,,assigned,08.1,retained,項,,昭島市 款10 項5 の残り。COFOG 08.1 レクリエーション及びスポーツのサービス
+110,akishima-saigai,132071,一般会計,,公共施設災害復旧費,,,eq,,unclassifiable,,retained,項,,昭島市 款11 項1。対象施設が特定できないので機能を決められない。捨てずに分類不能として残す
