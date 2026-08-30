@@ -136,6 +136,9 @@ bun run deploy:web    # dbt → report → vite build → wrangler deploy
 ⚠️ **`deploy:web` が dbt から通しているのは、古い `dist` を黙って上げないため。**
 `wrangler deploy` だけを叩くと、手元に残っている前回の `dist` がそのまま公開される。
 
+`apps/web` の運用ハマりどころ（デプロイ後の確認方法・`DESIGN.md` に何を書くか）は
+`.agents/skills/web-frontend-ops/`（session-retro が維持）を参照。
+
 `apps/api`（Cloudflare Workers + oRPC）のデプロイ・運用のハマりどころは
 `.agents/skills/cloudflare-api-ops/`（session-retro が維持）を参照。
 
