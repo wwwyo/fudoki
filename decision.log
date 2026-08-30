@@ -206,3 +206,33 @@ v1 で集計・自由クエリを要件化する場合の比較軸:
 - 未確認: R2 SQL のクエリレイテンシ（分析向けなので対話的 API には秒オーダーの可能性）と課金
 
 v0 の要件（filter 付き明細取得）は現方式で満たせており、この検討は要件が増えるまで着手しない。
+
+## budget-api のドキュメント配布（2026-08-30）
+
+### 22. apps/docs を新設し、blume で OpenAPI ドキュメントサイトを配る
+
+budget-api（apps/api）は spec.ts + index.ts の OpenAPIReferencePlugin で実行時に
+`/v0/openapi.json` を配信しているが、静的なドキュメントサイトとして別ドメインで
+配りたい要求に対して、専用の口を用意した。
+
+- spec は contract から生成する。手書きはしない。 `apps/api/generate-spec.ts` が
+  `OpenAPIGenerator`（`@orpc/openapi`）+ `ZodToJsonSchemaConverter`（`@orpc/zod/zod4`）で
+  contract + `specGenerateOptions` から spec を組む。index.ts の実行時生成と同じ入力・同じ
+  converter 構成なので、出力は `/v0/openapi.json` が返すものと同一になる
+- ドキュメントサイトは blume（npm `blume`）を採用した。 OpenAPI ネイティブ対応で、
+  spec を渡すだけで operation ごとに実ページ（検索・Try it 付き）を生成する。1.5.3、
+  cooldown 7day 通過済み。基盤は Astro + Vite、`blume build` は `dist/` へ完全な静的アセット
+  （HTML/CSS/検索インデックス/`404.html`）を出す。サーバは要らない
+- openapi.json は commit しない派生物。 `apps/docs/package.json` の `generate` スクリプトが
+  `bun run --cwd ../api spec` で都度作り直す。`dev` / `build` はその後に blume を呼ぶだけの構成
+  （`deploy` はさらに `build` を通してから `wrangler deploy` — 古い `dist` を黙って上げないため。
+  apps/web の `deploy:web` と同じ理由）
+- 配信は apps/web と同型のアセットだけの Worker。 `apps/docs/wrangler.jsonc` は `main` を
+  持たない。ただし `not_found_handling` は apps/web の `none` ではなく `404-page` にした —
+  blume が `dist/404.html` を出力する（apps/web は1枚の SPA で 404.html 自体を持たない）ため、
+  存在するものは使う
+- ドメインは `docs.fudoki.dev` を仮置き。 `api.fudoki.dev`（apps/api）・`fudoki.dev`
+  （apps/web）と並ぶ3つ目のカスタムドメインとして `routes` に `custom_domain: true` で宣言した
+- root の `deploy:docs` は dbt を挟まない。 spec は contract だけから決まり、配布物
+  （data/budget/datapackages/）を読まないため、`deploy:api` / `deploy:web` と違って
+  `bun run dbt` を経由する理由が無い

@@ -133,7 +133,15 @@ export default function App() {
             OS がライトのまま画面をダークにするとロゴだけ取り残される */}
         <img src="/mark.svg" alt="風土記" className="size-6 shrink-0 dark:hidden" />
         <img src="/mark-dark.svg" alt="" aria-hidden className="hidden size-6 shrink-0 dark:block" />
-        <Badge variant={report.summary.failed ? 'destructive' : 'secondary'} className="ml-auto shrink-0">
+        <a
+          href="https://docs.fudoki.dev/"
+          target="_blank"
+          rel="noreferrer"
+          className="ml-auto shrink-0 text-sm text-muted-foreground transition-colors hover:text-foreground"
+        >
+          API docs
+        </a>
+        <Badge variant={report.summary.failed ? 'destructive' : 'secondary'} className="shrink-0">
           検査 {report.summary.passed}/{report.summary.total}
         </Badge>
       </header>
