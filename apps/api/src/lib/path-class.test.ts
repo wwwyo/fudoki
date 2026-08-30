@@ -1,9 +1,18 @@
 import { describe, expect, test } from 'bun:test'
+import { ROOT_PATH, ROOT_SPEC_REDIRECT_PATH, V0_DOCS_PATH, V0_PREFIX, V0_SPEC_PATH } from '../spec'
 import { classifyPath } from './path-class'
 
+/**
+ * 除外パスは spec.ts の定数から組み立てて期待値を作る（リテラルを手で
+ * 二重に書かない）。この単体テストは classifyPath の分岐ロジック
+ * （prefix マッチ・over-match しないこと・既定 keyed へのフォールバック）を
+ * 検査するためのもので、「除外がリテラルの写しではなく実際の設定と
+ * 連動しているか」は index.test.ts 側（limiter を必ず失敗させても
+ * 除外パスは通ることを見るテスト）が担う。
+ */
 describe('classifyPath', () => {
   test('excludes docs UI, spec, and root/openapi.json redirects', () => {
-    for (const p of ['/', '/openapi.json', '/v0', '/v0/', '/v0/openapi.json']) {
+    for (const p of [ROOT_PATH, ROOT_SPEC_REDIRECT_PATH, V0_PREFIX, `${V0_PREFIX}${V0_DOCS_PATH}`, `${V0_PREFIX}${V0_SPEC_PATH}`]) {
       expect(classifyPath(p)).toBe('excluded')
     }
   })

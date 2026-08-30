@@ -22,6 +22,8 @@ import { classifyPath } from './lib/path-class'
 /**
  * 構造化ログ（Workers Logs 経由の console.log）。
  * ⚠️ 生 IP は載せない。載せるのは ipHash（IP の SHA-256）だけ。
+ * `reason` は 401 の詳細（キーが未知か revoked かなど）。クライアントへの応答は
+ * 一律 `invalid API key` にするが、運用側の追跡のためログにだけ詳細を残す。
  */
 type AccessLogEntry = {
   path: string
@@ -30,11 +32,29 @@ type AccessLogEntry = {
   keyId: string | undefined
   rateLimited: boolean
   ipHash: string
+  reason?: string
 }
 
 function logAccess(entry: AccessLogEntry): void {
   console.log(JSON.stringify(entry))
 }
+
+/**
+ * Rate Limiting binding の period（秒）。429 の Retry-After をここから
+ * 組み立てる ── wrangler.jsonc の `ratelimits[].simple.period` を手で
+ * コピーしてハードコードすると、片方だけ変えたときに Retry-After が
+ * 黙って嘘の値になる（simple.period は 10 か 60 しか選べないので、
+ * 匿名側だけ 10 に変える判断は普通に起こりうる）。
+ * ⚠️ TypeScript から wrangler.jsonc の値を直接参照する経路は無いので、
+ * 対応関係はコメントでしか保証できない。wrangler.jsonc 側を変えたら
+ * 必ずここも合わせて変えること。
+ */
+const RATE_LIMIT_PERIOD_SECONDS = {
+  /** wrangler.jsonc: ratelimits[name=RATE_LIMIT_ANONYMOUS].simple.period */
+  anonymous: 60,
+  /** wrangler.jsonc: ratelimits[name=RATE_LIMIT_AUTHENTICATED].simple.period */
+  authenticated: 60,
+} as const
 
 function clientIp(c: Context<{ Bindings: Env }>): string {
   // ⚠️ x-forwarded-for へはフォールバックしない。このヘッダはクライアントが
@@ -56,13 +76,34 @@ function shortKeyId(keyId: string | undefined): string | undefined {
   return keyId?.slice(0, 12)
 }
 
-function unauthorized(
+/**
+ * 認証失敗（401）を返す前に、必ず匿名 limiter を1回消費させる。
+ *
+ * ⚠️ これが無いと、不正なキーを送り続けるだけで limiter を経由せずに
+ * KV 参照 + SHA-256 計算を無制限に走らせられる ── 濫用を止めるための機能に
+ * 無制限に叩ける口が開くことになる。認証**成功**したリクエストは別途 keyId で
+ * 認証済み limiter を消費するので、失敗経路だけ匿名側に載せても
+ * 「キーを取ると緩和される」という設計（キー有りは高レート）は壊れない。
+ * 全リクエストの先頭に匿名 limiter を置く案は採らない ── それだとキー有りの
+ * リクエストまで匿名レートで頭打ちになってしまう。
+ *
+ * `logReason` は運用側の追跡用にログにだけ残す詳細（例: revoked / unknown）。
+ * `publicMessage` はクライアントへの応答。キーの状態に関する理由
+ * （unknown / revoked / malformed record）は一律 `invalid API key` に統一し、
+ * 「そのキーが存在するか」を外部から判別できないようにする。
+ * ただし Authorization ヘッダの形式ミスはクライアントの実装ミスであって
+ * キーの情報を漏らさないので、区別したまま返してよい。
+ */
+async function unauthorized(
   c: Context<{ Bindings: Env }>,
   ipHash: string,
-  reason: string,
-): Response {
-  logAccess({ path: c.req.path, method: c.req.method, status: 401, keyId: undefined, rateLimited: false, ipHash })
-  return c.json({ error: 'UNAUTHORIZED', message: reason }, 401)
+  logReason: string,
+  publicMessage: string,
+): Promise<Response> {
+  const limited = await c.env.RATE_LIMIT_ANONYMOUS.limit({ key: ipHash })
+  if (!limited.success) return tooManyRequests(c, undefined, ipHash)
+  logAccess({ path: c.req.path, method: c.req.method, status: 401, keyId: undefined, rateLimited: false, ipHash, reason: logReason })
+  return c.json({ error: 'UNAUTHORIZED', message: publicMessage }, 401)
 }
 
 function tooManyRequests(
@@ -73,8 +114,11 @@ function tooManyRequests(
   logAccess({ path: c.req.path, method: c.req.method, status: 429, keyId: shortKeyId(keyId), rateLimited: true, ipHash })
   // ⚠️ Rate Limiting binding の limit() は成功/失敗の boolean しか返さず、
   // 残量やウィンドウ長を持たない。したがって「残量ヘッダ」は正確な値を作れない。
-  // 429 のときだけ Retry-After を付ける（period と同じ 60 秒。実際の値は wrangler.jsonc 側の宣言）
-  return c.json({ error: 'RATE_LIMITED', message: 'too many requests' }, 429, { 'Retry-After': '60' })
+  // 429 のときだけ Retry-After を付ける。keyId の有無で「どちらの limiter が
+  // 発火したか」を判定する（keyId 有り = 認証済み limiter、無し = 匿名 limiter。
+  // 呼び出し元2箇所とも、その対応で呼んでいる）
+  const period = keyId !== undefined ? RATE_LIMIT_PERIOD_SECONDS.authenticated : RATE_LIMIT_PERIOD_SECONDS.anonymous
+  return c.json({ error: 'RATE_LIMITED', message: 'too many requests' }, 429, { 'Retry-After': String(period) })
 }
 
 export function accessControl(): MiddlewareHandler<{ Bindings: Env }> {
@@ -94,15 +138,25 @@ export function accessControl(): MiddlewareHandler<{ Bindings: Env }> {
     let keyId: string | undefined
     if (authHeader !== undefined) {
       const match = /^Bearer (.+)$/.exec(authHeader)
-      if (match === null) return unauthorized(c, ipHash, 'malformed Authorization header')
+      if (match === null) return await unauthorized(c, ipHash, 'malformed Authorization header', 'malformed Authorization header')
       const hash = await sha256Hex(match[1]!)
       const raw = await c.env.API_KEYS.get(hash)
-      if (raw === null) return unauthorized(c, ipHash, 'unknown API key')
-      const parsed = apiKeyEntrySchema.safeParse(JSON.parse(raw))
-      if (!parsed.success) return unauthorized(c, ipHash, 'malformed API key record')
+      if (raw === null) return await unauthorized(c, ipHash, 'unknown API key', 'invalid API key')
+
+      // ⚠️ JSON.parse は例外を投げうる（KV の値が壊れている場合）。ここで
+      // catch しないと unauthorized() に到達せずアクセスログも残らないまま
+      // 例外が上へ抜ける。壊れたレコードは 401 として扱い、必ずログを残す。
+      let parsedJson: unknown
+      try {
+        parsedJson = JSON.parse(raw)
+      } catch {
+        return await unauthorized(c, ipHash, 'malformed API key record (invalid JSON)', 'invalid API key')
+      }
+      const parsed = apiKeyEntrySchema.safeParse(parsedJson)
+      if (!parsed.success) return await unauthorized(c, ipHash, 'malformed API key record (schema)', 'invalid API key')
       // ⚠️ KV の書き込み反映は最大60秒。revoke 直後の数十秒はここが古い active を読み、
       // 失効前のキーを一時的に通すことがある（即時性は保証しない）
-      if (parsed.data.status !== 'active') return unauthorized(c, ipHash, 'revoked API key')
+      if (parsed.data.status !== 'active') return await unauthorized(c, ipHash, 'revoked API key', 'invalid API key')
       keyId = hash
     }
 

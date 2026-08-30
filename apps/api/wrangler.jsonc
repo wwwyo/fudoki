@@ -29,6 +29,9 @@
   // ⚠️ カウンターはデータセンターごとで、グローバルな厳密上限にはならない
   // （濫用の抑制であって課金保護ではない。access-control.ts にも同じ注記がある）。
   // limit/period はここで固定され、実行時にキー単位で変えることはできない。
+  // ⚠️ ここの period を変えたら、access-control.ts の RATE_LIMIT_PERIOD_SECONDS
+  // も必ず合わせて変えること（429 の Retry-After がそこから組み立てられる。
+  // TypeScript からこの JSON を直接参照できないので、対応はコメントでしか保証できない）。
   "ratelimits": [
     { "name": "RATE_LIMIT_ANONYMOUS", "namespace_id": "1001", "simple": { "limit": 60, "period": 60 } },
     { "name": "RATE_LIMIT_AUTHENTICATED", "namespace_id": "1002", "simple": { "limit": 600, "period": 60 } }

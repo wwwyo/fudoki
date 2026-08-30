@@ -7,41 +7,52 @@
  * エントリごと消してもよいが、いつ・誰のキーを止めたかを label ごと残すため
  * status の書き換えを既定にする。
  *
- * ⚠️ 既定は local（`wrangler kv key get/put --local`）。本番のキーを止めるときだけ
- * 明示的に `--remote` を渡す。issue-key.ts と同じ非対称性が理由:
- * local のつもりで remote に書くと本番に意図しない変更が残り、
- * remote のつもりで local に書いても「効かない」だけで気づける。
- * ⚠️ ただし revoke は「本番のキーを止めたい」が実行動機のほぼ全てなので、
- * 既定 local のまま気づかずに実行して「止めたつもりが止まっていない」を
- * 起こさないよう、実行後に必ずどちらを操作したかを標準エラーへ出す。
+ * ⚠️ ハッシュは access-control.ts / issue-key.ts と同じ `sha256Hex`
+ * （lib/apiKey.ts）を使う。ハッシュの作り方が発行側・検証側・失効側で
+ * 食い違うと、正しいキーを渡しても KV 上のエントリを引けなくなる。
+ *
+ * ⚠️ `bunx wrangler` は使わない。issue-key.ts と同じ理由（高権限操作での
+ * 意図しないパッケージ取得を避ける）で、ピン留めされた wrangler を直接呼ぶ。
+ *
+ * ⚠️ `--local` / `--remote` の指定を必須にする（既定を持たない）。
+ * issue は既定 local でよい（開発中に何度も試すだけなので、代償の非対称性
+ * ── local のつもりで remote に書くと本番に有効なキーが残る ── が効く）。
+ * revoke は逆に**本番のキーを止めたい場面こそが本番運用そのもの**なので、
+ * 「デフォルトで local に倒して安全」という理屈が成立しない。既定 local の
+ * まま `--remote` を付け忘れると、ローカルだけ失効して本番では有効なままなのに
+ * 「revoked」という成功メッセージが出てしまう ── 実行後の表示は事故が
+ * 起きた後なので防止にならない。だから未指定はエラーにして usage を出す。
  *
  * ⚠️ KV の書き込み反映は最大60秒。実行直後の数十秒は access-control.ts が
  * まだ古い active を読み、失効前のキーを一時的に通すことがある（即時には止まらない）。
  *
  * 実行:
- *   bun run keys:revoke -- <生のキー>           # local（wrangler dev 用）
+ *   bun run keys:revoke -- <生のキー> --local   # wrangler dev 用
  *   bun run keys:revoke -- <生のキー> --remote  # 本番
  */
-import { createHash } from 'node:crypto'
 import { spawnSync } from 'node:child_process'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { apiKeyEntrySchema } from '../src/lib/apiKey'
+import { apiKeyEntrySchema, sha256Hex } from '../src/lib/apiKey'
 
 const args = process.argv.slice(2)
 const remote = args.includes('--remote')
-const [rawKey] = args.filter((a) => a !== '--remote')
-if (rawKey === undefined || rawKey.length === 0) {
-  console.error('usage: bun run keys:revoke -- <raw key> [--remote]')
+const local = args.includes('--local')
+const [rawKey] = args.filter((a) => a !== '--remote' && a !== '--local')
+
+if (rawKey === undefined || rawKey.length === 0 || (!remote && !local) || (remote && local)) {
+  console.error('usage: bun run keys:revoke -- <raw key> (--local | --remote)')
+  console.error('  --local and --remote are both explicit; there is no default.')
   process.exit(1)
 }
 
-const hash = createHash('sha256').update(rawKey).digest('hex')
+const hash = await sha256Hex(rawKey)
 const cwd = join(dirname(fileURLToPath(import.meta.url)), '..')
+const wrangler = join(cwd, 'node_modules/.bin/wrangler')
 const target = remote ? '--remote' : '--local'
 const targetLabel = remote ? 'REMOTE (production)' : 'local'
 
-const got = spawnSync('bunx', ['wrangler', 'kv', 'key', 'get', '--binding=API_KEYS', target, hash], {
+const got = spawnSync(wrangler, ['kv', 'key', 'get', '--binding=API_KEYS', target, hash], {
   cwd,
   encoding: 'utf8',
 })
@@ -58,8 +69,8 @@ if (entry.status === 'revoked') {
 entry.status = 'revoked'
 
 const put = spawnSync(
-  'bunx',
-  ['wrangler', 'kv', 'key', 'put', '--binding=API_KEYS', target, hash, JSON.stringify(entry)],
+  wrangler,
+  ['kv', 'key', 'put', '--binding=API_KEYS', target, hash, JSON.stringify(entry)],
   { cwd, stdio: 'inherit' },
 )
 if (put.status !== 0) {

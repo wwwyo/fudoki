@@ -20,6 +20,7 @@ const DATA_DIR = join(import.meta.dir, '../../../data/budget/datapackages')
  */
 const VALID_KEY = 'test-valid-key'
 const REVOKED_KEY = 'test-revoked-key'
+const CORRUPT_KEY = 'test-corrupt-key'
 const apiKeysStore = new Map<string, string>()
 apiKeysStore.set(
   await sha256Hex(VALID_KEY),
@@ -29,6 +30,8 @@ apiKeysStore.set(
   await sha256Hex(REVOKED_KEY),
   JSON.stringify({ label: 'test-suite', issuedAt: '2026-01-01T00:00:00.000Z', status: 'revoked' }),
 )
+// KV の値が壊れているケース（JSON として parse できない）を再現する
+apiKeysStore.set(await sha256Hex(CORRUPT_KEY), 'not-json{')
 const fakeApiKeys: KVNamespaceLike = {
   async get(key) {
     return apiKeysStore.get(key) ?? null
@@ -479,6 +482,70 @@ describe('access control (beta)', () => {
     expect(res.status).toBe(401)
   })
 
+  test('corrupt KV record (invalid JSON): 401, not a 500, and it is logged', async () => {
+    const lines: string[] = []
+    const original = console.log
+    console.log = (...args: unknown[]) => {
+      lines.push(args.map(String).join(' '))
+    }
+    let res: Response
+    try {
+      res = await app.request(
+        'https://api.fudoki.dev/v0/jurisdictions',
+        { headers: { Authorization: `Bearer ${CORRUPT_KEY}` } },
+        env,
+      )
+    } finally {
+      console.log = original
+    }
+    expect(res.status).toBe(401)
+    expect(lines.length).toBeGreaterThan(0)
+    const entry = JSON.parse(lines[lines.length - 1]!) as { status: number; reason?: string }
+    expect(entry.status).toBe(401)
+    expect(entry.reason).toContain('malformed API key record')
+  })
+
+  test('key-state 401 reasons are unified in the response, not leaked to the client', async () => {
+    const unknown = await app.request(
+      'https://api.fudoki.dev/v0/jurisdictions',
+      { headers: { Authorization: 'Bearer no-such-key' } },
+      env,
+    )
+    const revoked = await app.request(
+      'https://api.fudoki.dev/v0/jurisdictions',
+      { headers: { Authorization: `Bearer ${REVOKED_KEY}` } },
+      env,
+    )
+    const unknownBody = await unknown.json() as { message: string }
+    const revokedBody = await revoked.json() as { message: string }
+    expect(unknownBody.message).toBe('invalid API key')
+    expect(revokedBody.message).toBe('invalid API key')
+    // malformed header はクライアント側の実装ミスなので区別したままでよい
+    const malformed = await app.request(
+      'https://api.fudoki.dev/v0/jurisdictions',
+      { headers: { Authorization: VALID_KEY } },
+      env,
+    )
+    const malformedBody = await malformed.json() as { message: string }
+    expect(malformedBody.message).toBe('malformed Authorization header')
+  })
+
+  test('repeated invalid keys are throttled by the anonymous limiter, not left unbounded: 429', async () => {
+    // unauthorized() は 401 を返す前に匿名 limiter を消費する。3回目以降は
+    // limiter が枯渇しているので、無効なキーを送り続けても 429 になり、
+    // 401 だけを無限に返し続ける（レート制限が効かない）ことはない。
+    const limitedEnv: Env = { ...env, RATE_LIMIT_ANONYMOUS: makeCountingLimiter(2) }
+    const attempt = () =>
+      app.request(
+        'https://api.fudoki.dev/v0/jurisdictions',
+        { headers: { Authorization: 'Bearer no-such-key' } },
+        limitedEnv,
+      )
+    expect((await attempt()).status).toBe(401)
+    expect((await attempt()).status).toBe(401)
+    expect((await attempt()).status).toBe(429)
+  })
+
   test('over the limit: 429, with Retry-After', async () => {
     const limitedEnv: Env = { ...env, RATE_LIMIT_ANONYMOUS: makeCountingLimiter(0) }
     const res = await app.request('https://api.fudoki.dev/v0/jurisdictions', {}, limitedEnv)
@@ -501,11 +568,25 @@ describe('access control (beta)', () => {
     expect(res.status).toBe(200)
   })
 
-  test('docs UI (/v0/) and /v0/openapi.json are excluded: 200 without a key', async () => {
-    expect((await get('/v0/')).status).toBe(200)
-    expect((await get('/v0/openapi.json')).status).toBe(200)
-    expect((await get('/openapi.json')).status).toBe(302)
-    expect((await get('/')).status).toBe(302)
+  test('docs UI (/v0/) and /v0/openapi.json are excluded: they never consume the anonymous limiter', async () => {
+    // 「ステータスが 200 か」だけでは弱い ── excluded の判定が壊れて
+    // keyed に落ちても、キーは任意なので同じ 200 が返り、テストが偶然通る。
+    // 代わりに RATE_LIMIT_ANONYMOUS を必ず失敗させ、除外パスがそれでも
+    // 通ることを見る。これは limiter に一切触れていないことの直接証拠になる。
+    const neverAllow: RateLimiterLike = {
+      async limit() {
+        return { success: false }
+      },
+    }
+    const excludedEnv: Env = { ...env, RATE_LIMIT_ANONYMOUS: neverAllow }
+    expect((await app.request('https://api.fudoki.dev/v0/', {}, excludedEnv)).status).toBe(200)
+    expect((await app.request('https://api.fudoki.dev/v0/openapi.json', {}, excludedEnv)).status).toBe(200)
+    expect((await app.request('https://api.fudoki.dev/openapi.json', {}, excludedEnv)).status).toBe(302)
+    expect((await app.request('https://api.fudoki.dev/', {}, excludedEnv)).status).toBe(302)
+    // 対照実験: 除外されていない /v0/jurisdictions は同じ limiter で 429 になる
+    // （neverAllow 自体が効いていることの確認。そうでないと上の 200 が
+    // 「limiter が壊れているだけ」で通っている可能性を消せない）
+    expect((await app.request('https://api.fudoki.dev/v0/jurisdictions', {}, excludedEnv)).status).toBe(429)
   })
 
   test('access log is structured JSON and never carries the raw IP', async () => {

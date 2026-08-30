@@ -11,6 +11,21 @@ export const API_TITLE = '風土記 API'
 export const API_VERSION = '0.1.0'
 
 /**
+ * ルーティングの構成。index.ts のルート定義と、access-control.ts が使う
+ * path-class.ts の除外判定は、ここを唯一の宣言元として組み立てる。
+ * ⚠️ 個別にリテラルを書き写さないこと ── docsPath 等を変えても
+ * TypeScript は検知せずテストも通り続けるので、除外が黙って壊れる
+ * （AGENTS.md「同じ事実を2箇所で宣言しない」）。
+ */
+export const ROOT_PATH = '/'
+export const ROOT_SPEC_REDIRECT_PATH = '/openapi.json'
+export const V0_PREFIX = '/v0'
+/** OpenAPIReferencePlugin の docsPath（Scalar のドキュメント UI）。/v0 prefix 配下にマウントされる */
+export const V0_DOCS_PATH = '/'
+/** OpenAPIReferencePlugin の specPath */
+export const V0_SPEC_PATH = '/openapi.json'
+
+/**
  * 実行時（/v0/openapi.json）とビルド時（generate-spec.ts）の両方が使う converter 構成。
  * 片方だけ変えると静的な spec と配信される spec が乖離するので、ここに一本化する。
  */

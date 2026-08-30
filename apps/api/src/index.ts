@@ -14,15 +14,23 @@ import { cors } from 'hono/cors'
 import { accessControl } from './access-control'
 import { type Env, type FilesFile, paths, readAsset, readJsonAsset } from './assets'
 import { router } from './router'
-import { specGenerateOptions, specSchemaConverters } from './spec'
+import {
+  ROOT_PATH,
+  ROOT_SPEC_REDIRECT_PATH,
+  specGenerateOptions,
+  specSchemaConverters,
+  V0_DOCS_PATH,
+  V0_PREFIX,
+  V0_SPEC_PATH,
+} from './spec'
 
 const openapiHandler = new OpenAPIHandler(router, {
   plugins: [
     new OpenAPIReferencePlugin({
       schemaConverters: specSchemaConverters,
       specGenerateOptions,
-      docsPath: '/',
-      specPath: '/openapi.json',
+      docsPath: V0_DOCS_PATH,
+      specPath: V0_SPEC_PATH,
     }),
   ],
 })
@@ -64,8 +72,8 @@ app.use(
 // （detail は access-control.ts 冒頭のコメント）。
 app.use('*', accessControl())
 
-app.get('/', (c) => c.redirect('/v0/', 302))
-app.get('/openapi.json', (c) => c.redirect('/v0/openapi.json', 302))
+app.get(ROOT_PATH, (c) => c.redirect(`${V0_PREFIX}${V0_DOCS_PATH}`, 302))
+app.get(ROOT_SPEC_REDIRECT_PATH, (c) => c.redirect(`${V0_PREFIX}${V0_SPEC_PATH}`, 302))
 
 // meta/files.json はデプロイに焼き込まれた不変データなので isolate 内で1回だけ読む
 let filesMetaCache: FilesFile | null = null
@@ -77,7 +85,7 @@ async function readFilesMeta(env: Env): Promise<FilesFile> {
   return filesMeta
 }
 
-app.on(['GET', 'HEAD'], '/v0/datapackages/:jurisdiction/:file', async (c) => {
+app.on(['GET', 'HEAD'], `${V0_PREFIX}/datapackages/:jurisdiction/:file`, async (c) => {
   const { jurisdiction, file } = c.req.param()
   const filesMeta = await readFilesMeta(c.env)
   // リクエスト入力をアセットのパスへ直接連結しない。宣言済みのファイルだけを返す
@@ -97,9 +105,9 @@ app.on(['GET', 'HEAD'], '/v0/datapackages/:jurisdiction/:file', async (c) => {
   return new Response(c.req.method === 'HEAD' ? null : asset.body, { status: 200, headers })
 })
 
-app.all('/v0/*', async (c) => {
+app.all(`${V0_PREFIX}/*`, async (c) => {
   const { matched, response } = await openapiHandler.handle(c.req.raw, {
-    prefix: '/v0',
+    prefix: V0_PREFIX,
     context: { env: c.env },
   })
   if (matched) return response
