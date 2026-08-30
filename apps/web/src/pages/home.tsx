@@ -8,11 +8,33 @@
  * 「呼んでいるのに何も出さない」という未使用コードになる（AGENTS.md:
  * 自分の変更で未使用になったものは片付ける）。
  */
+import { useEffect, useState } from "react"
 import { Layout } from "@/components/layout"
+import { TokyoMap } from "@/components/tokyo-map"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
+import { loadPipeline } from "@/lib/pipeline"
 
 export function HomePage() {
+  /**
+   * 収録済みの団体コード。地図の塗り分けに使う。
+   *
+   * ⚠️ **手で列挙しない。** `pipeline.json` から取る。収録を増やした瞬間に
+   * 画面だけが古くなる、という事故を避けるため（AGENTS.md）。
+   *
+   * ⚠️ 読めなくても地図は出す。62団体の境界は `tokyo.geojson` 側にあり、
+   * `pipeline.json` が欠けて失われるのは「どこが埋まっているか」だけである。
+   * 網羅範囲そのものを見せるのがこの地図の役割なので、全部を未収録として
+   * 描くほうが、地図ごと消えるより伝わる。
+   */
+  const [recordedCodes, setRecordedCodes] = useState<ReadonlySet<string>>(new Set())
+
+  useEffect(() => {
+    loadPipeline()
+      .then((d) => setRecordedCodes(new Set(d.jurisdictions.map((j) => j.code))))
+      .catch((e: Error) => console.error("収録状況を読み込めませんでした", e))
+  }, [])
+
   return (
     <Layout>
       <main className="mx-auto flex max-w-3xl flex-col gap-10 px-4 py-16">
@@ -73,15 +95,12 @@ export function HomePage() {
           </AlertDescription>
         </Alert>
 
-        {/*
-          ⚠️ 地図はまだ無い。境界データが揃うまでの間、位置だけを示す最小の
-          プレースホルダ。地図コンポーネントは別途作る（このファイルでは作らない）。
-        */}
         <section className="flex flex-col gap-3">
           <h2 className="text-xl font-semibold">収録状況</h2>
-          <div className="text-muted-foreground rounded-lg border border-dashed p-8 text-center text-sm">
-            ここに東京都の地図が入る予定です。
-          </div>
+          <p className="text-muted-foreground text-sm">
+            東京都の全区市町村（62団体）が最初の網羅範囲です。押すとその団体のパイプラインへ入ります。
+          </p>
+          <TokyoMap recordedCodes={recordedCodes} />
         </section>
 
         <section className="flex flex-wrap gap-2 text-sm">
