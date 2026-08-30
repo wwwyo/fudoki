@@ -343,7 +343,7 @@ def latest_fetch(pattern: str = "**/provenance.json") -> str:
     return max(stamps)
 
 
-def described(body: str, credit: str, modifications: list[str], notes: list[str]) -> str:
+def described(body: str, credits: list[str], modifications: list[str], notes: list[str]) -> str:
     """`description` を組み立てる。**CC BY の義務をここへ集める。**
 
     ⚠️ 帰属（§3(a)(1)(A)）と改変の明示（§3(a)(1)(B)）に FDP の標準プロパティは無い。
@@ -356,11 +356,26 @@ def described(body: str, credit: str, modifications: list[str], notes: list[str]
     出典の文字列は `sources[].title`、条件は `licenses`、加工者は `contributors`。
     ここはそれを「どう表示してほしいか」に翻訳した一文である。
     """
+    # ⚠️ **収録年度で取得元が違う団体がある。** 多摩市は令和3・4年度がカタログ、
+    # 令和5〜7年度が市サイトで、原典の名乗りもそれぞれ違う。先頭の1件だけを
+    # 「そのまま使うこと」と示すと、**利用者が3年度ぶん誤った帰属を書く**ことになる。
+    # 1件しか無い団体の見え方は変えない（三鷹市・狛江市はここを通っても1行のまま）。
+    if len(credits) == 1:
+        credit_note = f"次の一文をそのまま使うこと。\n\n> {credits[0]}\n\n"
+    else:
+        credit_note = (
+            "**収録した年度で原典の取得元が違うので、出典表示も1つではない。**\n"
+            "使った年度に対応する次の一文をそのまま使うこと"
+            "（全年度を使うなら全部を並べる）。\n\n"
+            + "".join(f"> {c}\n>\n" for c in credits)
+            + "\n"
+        )
     parts = [
         body,
         "## 出典表示（CC BY 4.0 §3(a)(1)(A)）\n\n"
-        f"次の一文をそのまま使うこと。\n\n> {credit}\n\n"
-        "機械可読な同じ内容は `sources[].title`（原典）と `contributors`（加工者）にある。",
+        + credit_note
+        + "機械可読な同じ内容は `sources[].title`（原典）と `contributors`（加工者）にある"
+        "（並びは収録年度の順）。",
         "## 改変（CC BY 4.0 §3(a)(1)(B)）\n\n"
         "原典に対して次のことをしている。\n\n"
         + "\n".join(f"- {m}" for m in modifications)
@@ -473,7 +488,9 @@ def build_jurisdiction(code: str) -> None:
             "COFOG の割当と事業名の対応づけは fudoki の判断で、"
             "同じパッケージの別リソースにしてある（budget_line_id などのキーで join する）。"
             "原典そのものは data/budget/raw/ に Parquet で入っている。",
-            srcs[0].attribution,
+            # ⚠️ **先頭1件で代表させない。** 年度で取得元が違えば名乗りも違う。
+            # 並びは収録年度の順（`srcs` は年度順）で、重複はここで落とす。
+            list(dict.fromkeys(s_.attribution for s_ in srcs)),
             modifications,
             [
                 PROVENANCE_NOTE,
