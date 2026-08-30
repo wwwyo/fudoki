@@ -20,9 +20,9 @@ import io
 import json
 import pathlib
 import sys
-import urllib.parse
 
 from ingestion.budget.sources import Resource, Source, load_sources, resolve
+from ingestion.lib.ckan import datasets_of_organization
 from ingestion.lib.http import Fetched, http_get
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
@@ -40,22 +40,16 @@ _SEARCH_CACHE: dict[str, list[dict]] = {}
 
 
 def datasets_of(src: Source) -> list[dict]:
-    """その団体のデータセット一覧。同じ団体を何度引いても取得は1回。"""
+    """その団体のデータセット一覧。同じ団体を何度引いても取得は1回。
+
+    ⚠️ **列挙そのものは ingestion.lib.ckan が持つ。** 粒度の調査
+    （`check_granularity.py`）も同じものを必要とするので、共有層に置いてある。
+    ここが受け持つのはプロセス内のキャッシュだけ。
+    """
     org = src.catalog.org_prefix + src.jurisdiction_code
     key = f"{src.catalog.endpoint}\x1f{org}"
     if key not in _SEARCH_CACHE:
-        # fq でカタログ側に絞らせる。q での全文検索と違い、団体が確定するので
-        # 「同名データセットが別の団体にもある」場合の取り違えも起きない。
-        query = urllib.parse.quote(f"organization:{org}")
-        got = http_get(f"{src.catalog.endpoint}?fq={query}&rows=1000")
-        result = json.loads(got.body).get("result", {})
-        found, returned = result.get("count", 0), result.get("results", [])
-        if found > len(returned):
-            raise RuntimeError(
-                f"{org} のデータセットが {found} 件あるのに {len(returned)} 件しか返っていない。"
-                f"rows を増やすこと（先頭だけを見て「無い」と判定しないため）"
-            )
-        _SEARCH_CACHE[key] = returned
+        _SEARCH_CACHE[key] = datasets_of_organization(src.catalog.endpoint, org)
     return _SEARCH_CACHE[key]
 
 

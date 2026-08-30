@@ -7,6 +7,7 @@ TOML を正にしているのは、Python（tomllib）と Bun の両方が依存
 from __future__ import annotations
 
 import tomllib
+import urllib.parse
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -59,8 +60,17 @@ class Resource:
                 f"{self.resource_name}: url を宣言するなら url_basis も書くこと"
                 f"（カタログから解決できない理由が要る）"
             )
-        if self.url is not None and not self.url.startswith("https://"):
-            raise ValueError(f"{self.resource_name}: url は https のみ（{self.url}）")
+        if self.url is not None:
+            # ⚠️ **前方一致で見ない。** `https://` だけの文字列も、改行を挟んだ値も、
+            # 認証情報を埋めた URL も通ってしまう。取得の宛先は証跡に残り配布物の
+            # `sources` にも出るので、形が壊れたものを黙って通さない。
+            parsed = urllib.parse.urlparse(self.url)
+            if parsed.scheme != "https" or not parsed.netloc:
+                raise ValueError(f"{self.resource_name}: url は https の絶対 URL のみ（{self.url}）")
+            if parsed.username or parsed.password:
+                raise ValueError(f"{self.resource_name}: url に認証情報を書かない（{self.url}）")
+            if any(c in self.url for c in " \t\r\n"):
+                raise ValueError(f"{self.resource_name}: url に空白や改行が入っている（{self.url!r}）")
 
 
 @dataclass(frozen=True)
@@ -194,6 +204,17 @@ def load_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
             **spec,
         )
     return sources
+
+
+def load_catalogs(path: Path = SOURCES_TOML) -> dict[str, Catalog]:
+    """カタログの宣言だけを引く。**取得元を1つも読まずに宛先を知りたいときのため。**
+
+    ⚠️ 粒度の調査（`check_granularity.py`）が CKAN の宛先と団体コードの解決規則を
+    自前のリテラルで持っていた。同じ事実が2箇所にあると、カタログを足したり
+    宛先が変わったりしたときに調査だけが古いカタログを見続ける。
+    """
+    raw = tomllib.loads(path.read_text(encoding="utf-8"))
+    return {name: Catalog(**spec) for name, spec in raw.get("catalog", {}).items()}
 
 
 def resolve(key: str) -> Source:

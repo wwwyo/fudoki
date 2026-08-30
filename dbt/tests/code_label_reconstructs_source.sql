@@ -9,7 +9,7 @@
 --
 --   code-only（狛江市・多摩市）
 --     セルそのものがコードで、コードが数字であること。
---     ⚠️ **原典がコードを持たない階層はここでは見ない**（`budget_levels_without_code`）。
+--     ⚠️ **原典がコードを持たない階層はここでは見ない**（セルの出所と名称の出所が同じ列）。
 --     多摩市の会計は名称しか無く、コードを要求すると名称を数字だと言わせることになる。
 --     その階層に残っている保証は「名称が原文セルと一致すること」で、下の別の分岐が見る。
 --     ⚠️ **名称は別列から来るので、繋いでも原文には戻らない。**
@@ -21,9 +21,13 @@
 -- WHERE に残らない。NULL に壊れた行が不一致として報告されなくなる。
 {% set checks = [] %}
 {% for code, direction in budget_units() %}
-  {% set no_code = var('budget_levels_without_code', {}).get(code, {}).get(direction, []) %}
+  {#- コードの列が無い階層は、セルの出所と名称の出所が同じ列であることで表れる
+      （budget_staging と同じ導出。宣言をもう1つ持たない） -#}
+  {% set columns = var('budget_source_columns')[code][direction] %}
+  {% set labels = var('budget_label_columns').get(code, {}).get(direction, {}) %}
   {% for lv in var('budget_levels')[code][direction] %}
-    {% do checks.append((code, direction, lv, lv in no_code)) %}
+    {% do checks.append((code, direction, lv,
+                         labels.get(lv) is not none and labels[lv] == columns[loop.index0])) %}
   {% endfor %}
 {% endfor %}
 

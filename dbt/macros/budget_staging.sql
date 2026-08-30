@@ -12,7 +12,6 @@
     budget_extra_key_columns        階層だけでは一意にならない団体の追加の同一性の列
     budget_code_style               セルからコードと名称を取り出す書式
     budget_label_columns            code-only の団体で名称を持つ列がどの階層に対応するか
-    budget_levels_without_code      原典がコードの列を持たない階層（名称だけを持つ）
     budget_amounts                  原典の金額列と FDP の phase の対応（単位の宣言もここが正本）
 
   ## 識別子
@@ -43,8 +42,18 @@
       ~ '名称を持つ列がどの階層に対応するかを宣言すること（宣言できないなら名称は空だと明示する）') }}
 {%- endif -%}
 {%- set labels = var('budget_label_columns').get(code, {}).get(direction, {}) -%}
-{#- 原典がコードを持たない階層。**無いものを埋めない** — 多摩市の会計は `会計名称` しか無い -#}
-{%- set no_code = var('budget_levels_without_code', {}).get(code, {}).get(direction, []) -%}
+{#-
+  原典がコードの列を持たない階層。**別に宣言せず、既にある2つの宣言から導く。**
+  セルの出所（budget_source_columns）と名称の出所（budget_label_columns）が同じ列を
+  指しているなら、その階層の原典にはコードが無く名称しかない（多摩市の会計）。
+  独立したフラグを足すと同じ事実が3箇所へ分かれ、片方だけ直したときに気づけない。
+-#}
+{%- set no_code = [] -%}
+{%- for lv in levels %}
+  {%- if labels.get(lv) is not none and labels[lv] == columns[loop.index0] %}
+    {%- do no_code.append(lv) %}
+  {%- endif %}
+{%- endfor -%}
 {%- set extra_labels = var('budget_extra_key_labels').get(code, {}).get(direction, {}) -%}
 {%- set amounts = var('budget_amounts')[code][direction] -%}
 

@@ -23,7 +23,7 @@
 {%- if spec['notation'] == 'western' -%}
   {%- set expected = "cast(year as varchar)" -%}
 {%- elif spec['notation'] == 'reiwa-abbrev' -%}
-  {%- set expected = "'R' || cast(cast(year as integer) - 2018 as varchar)" -%}
+  {%- set expected = western_to_reiwa_abbrev('year') -%}
 {%- else -%}
   {{ exceptions.raise_compiler_error(
       code ~ ': budget_source_year_columns の notation「' ~ spec['notation'] ~ '」は未定義') }}

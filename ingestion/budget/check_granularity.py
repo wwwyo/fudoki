@@ -48,11 +48,15 @@ from ingestion.budget.granularity_profile import (
     normalize_column,
     score_header_row,
 )
+from ingestion.budget.sources import load_catalogs
+from ingestion.lib.ckan import datasets_of_organization
 from ingestion.lib.http import http_get
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
-CKAN = "https://catalog.data.metro.tokyo.lg.jp/api/3/action/package_search"
-ORG_PREFIX = "t"
+# ⚠️ **カタログの宛先をここで宣言しない。** 取得元の正本は sources.toml の [catalog.*] で、
+# 団体コードの解決規則（`t` + 6桁）もそこが持つ。写すと、カタログを足したり
+# 宛先が変わったりしたときに調査だけが古いカタログを見続ける。
+CATALOG = "tokyo"
 JURISDICTIONS = ROOT / "ingestion" / "shared" / "jurisdictions.json"
 OBSERVATIONS = pathlib.Path(__file__).resolve().parent / "observations"
 OUT = OBSERVATIONS / "budget-granularity.json"
@@ -67,22 +71,6 @@ MAX_SHEETS = 30
 def load_jurisdictions() -> dict[str, dict]:
     """母集団。**③会議録のゲート判定は読まない** — 根拠が違ううえ、③が落ちたら①も動かなくなる。"""
     return json.loads(JURISDICTIONS.read_text())["jurisdictions"]
-
-
-def datasets_of(code: str) -> list[dict]:
-    """その団体の**全**データセット。クエリ語で絞らない（原則4）。"""
-    org = ORG_PREFIX + code
-    rows: list[dict] = []
-    start = 0
-    while True:
-        query = urllib.parse.quote(f"organization:{org}")
-        got = http_get(f"{CKAN}?fq={query}&rows=300&start={start}")
-        result = json.loads(got.body).get("result", {})
-        found, returned = result.get("count", 0), result.get("results", [])
-        rows.extend(returned)
-        if not returned or len(rows) >= found:
-            return rows
-        start += 300
 
 
 def candidates_of(code: str, packages: list[dict]) -> list[dict]:
@@ -108,18 +96,17 @@ def candidates_of(code: str, packages: list[dict]) -> list[dict]:
     return out
 
 
-def _rows_from_csv(body: bytes) -> tuple[list[list[str]], str]:
+def _rows_from_csv(body: bytes) -> list[list[str]]:
     for encoding in ("utf-8-sig", "cp932", "utf-8"):
         try:
             text = body.decode(encoding)
         except UnicodeDecodeError:
             continue
-        rows = list(csv.reader(io.StringIO(text)))[:HEADER_SCAN_ROWS]
-        return rows, encoding
+        return list(csv.reader(io.StringIO(text)))[:HEADER_SCAN_ROWS]
     raise RuntimeError("復号できる文字コードが無い")
 
 
-def _rows_from_xlsx(body: bytes) -> tuple[list[list[str]], list[str]]:
+def _rows_from_xlsx(body: bytes) -> list[list[str]]:
     import openpyxl  # noqa: PLC0415  (調査スクリプトなので取得だけのときに import させない)
 
     book = openpyxl.load_workbook(io.BytesIO(body), read_only=True, data_only=True)
@@ -127,10 +114,10 @@ def _rows_from_xlsx(body: bytes) -> tuple[list[list[str]], list[str]]:
     for name in book.sheetnames[:MAX_SHEETS]:
         sheet = book[name]
         rows.extend(list(r) for r in sheet.iter_rows(max_row=HEADER_SCAN_ROWS, values_only=True))
-    return rows, book.sheetnames[:MAX_SHEETS]
+    return rows
 
 
-def _rows_from_xls(body: bytes) -> tuple[list[list[str]], list[str]]:
+def _rows_from_xls(body: bytes) -> list[list[str]]:
     import xlrd  # noqa: PLC0415
 
     book = xlrd.open_workbook(file_contents=body)
@@ -138,20 +125,20 @@ def _rows_from_xls(body: bytes) -> tuple[list[list[str]], list[str]]:
     for i in range(min(MAX_SHEETS, book.nsheets)):
         sheet = book.sheet_by_index(i)
         rows.extend(sheet.row_values(j) for j in range(min(HEADER_SCAN_ROWS, sheet.nrows)))
-    return rows, book.sheet_names()[:MAX_SHEETS]
+    return rows
 
 
 def _rows_of(fmt: str, body: bytes) -> list[list[str]]:
     if fmt == "CSV":
-        return _rows_from_csv(body)[0]
+        return _rows_from_csv(body)
     if fmt in ("XLSX", "XLSM"):
-        return _rows_from_xlsx(body)[0]
+        return _rows_from_xlsx(body)
     if fmt == "XLS":
         # ⚠️ 拡張子と中身が食い違う配信が実在する（`.xls` の名前で XLSX が置いてある）
         try:
-            return _rows_from_xls(body)[0]
+            return _rows_from_xls(body)
         except Exception:  # noqa: BLE001
-            return _rows_from_xlsx(body)[0]
+            return _rows_from_xlsx(body)
     raise RuntimeError(f"列を読めない形式: {fmt}")
 
 
@@ -222,12 +209,16 @@ def observe(candidate: dict) -> dict:
 def best_by_jurisdiction(observations: list[dict]) -> dict[str, dict]:
     """団体ごとの最良は観測から導く。ファイルには焼き込まない。
 
-    歳出の粒度が目的なので歳入は代表にせず、判定できなかったものも代表にしない
-    （無関係な資料を「その団体の結果」として出すと誤読される）。
+    ⚠️ **歳出だと分かった資料だけを代表にする。** 測っているのは「歳出がどこまで
+    届いているか」なので、歳入はもちろん、歳出か歳入か判別できない資料も代表にしない。
+    以前は `unknown` を通しており、財政指標の表（「財政力の状況」「財政健全化判断比率」）が
+    5団体の代表として歳出の粒度の欄に並んでいた。**測っていないものを結果として出さない。**
+
+    判定できなかったもの（`unchecked`）も同じ理由で代表にしない。
     """
     best: dict[str, dict] = {}
     for o in observations:
-        if o["direction"] == "revenue" or o["granularity"] == "unchecked":
+        if o["direction"] != "expenditure" or o["granularity"] == "unchecked":
             continue
         prev = best.get(o["code"])
         if prev and GRANULARITY_RANK[prev["granularity"]] >= GRANULARITY_RANK[o["granularity"]]:
@@ -240,10 +231,11 @@ def main() -> None:
     write = "--write" in sys.argv[1:]
     registry = load_jurisdictions()
 
+    catalog = load_catalogs()[CATALOG]
     candidates: list[dict] = []
     dataset_counts: dict[str, int] = {}
     for code in registry:
-        packages = datasets_of(code)
+        packages = datasets_of_organization(catalog.endpoint, catalog.org_prefix + code)
         dataset_counts[code] = len(packages)
         candidates.extend(candidates_of(code, packages))
 
@@ -261,10 +253,14 @@ def main() -> None:
         print(f"  {mark} {code} {registry[code]['name']:8s} {b['granularity']:13s} "
               f"{b['format']:5s} {basis}  {b['dataset'][:30]}")
 
-    undecided = {o["code"] for o in observations} - set(best)
+    # ⚠️ **「歳出として判定できなかった」の内訳を出す。** 候補が1件も無い団体と、
+    # 候補はあるが歳出だと分からない（あるいは列から粒度を測れない）団体は別の話で、
+    # 前者は「カタログに予算資料が無い」、後者は「資料はあるが歳出の粒度に届かない」。
+    with_candidates = {o["code"] for o in observations}
+    undecided = with_candidates - set(best)
     print(f"\n{' / '.join(f'{k} {v}' for k, v in sorted(tally.items()))}  "
-          f"（判定できた {len(best)} 団体 / 候補はあるが判定できない {len(undecided)} 団体 / "
-          f"母集団 {len(registry)}）")
+          f"（歳出の粒度を測れた {len(best)} 団体 / 候補はあるが測れない {len(undecided)} 団体 / "
+          f"候補が無い {len(registry) - len(with_candidates)} 団体 / 母集団 {len(registry)}）")
     print(f"全候補: {len(observations)} 件")
 
     if write:

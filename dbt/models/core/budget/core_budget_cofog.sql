@@ -95,8 +95,11 @@ select
     -- COFOG の階層。**規則が言った粒度までしか埋めない。**
     -- 款の名称だけで決まる規則は division 止まりで、group / class は空になる。
     -- 「分からない」を空で正直に出す（原則6）。
-    coalesce(split_part(m.cofog_code, '.', 1), '')                        as cofog_division,
-    case when m.cofog_code like '%.%'
+    -- ⚠️ **NULL を先に潰す。** 規則に当たらなかった行は m.* が NULL で、
+    -- split_part(NULL) が NULL を返すことに頼ると、空文字で揃えるという意図が
+    -- SQL の方言差に委ねられる。列ごとに coalesce を書くのではなく1度だけ潰す。
+    split_part(coalesce(m.cofog_code, ''), '.', 1)                         as cofog_division,
+    case when coalesce(m.cofog_code, '') like '%.%'
          then split_part(m.cofog_code, '.', 1) || '.' || split_part(m.cofog_code, '.', 2)
          else '' end                                                       as cofog_group,
     case when regexp_full_match(coalesce(m.cofog_code, ''), '\d+\.\d+\.\d+')
