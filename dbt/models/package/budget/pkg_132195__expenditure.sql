@@ -30,6 +30,15 @@ with lines as (
     descriptor 側（fdp/build.py の unit_is_column）が同じ列を定数としても宣言し、
     「実在の列を定数として二重に宣言できない」で配布物の生成が止まる。
     どちらが正しいかを人が読み解く前に、規則の側で止める。 -#}
+{#- ⚠️ **このモデルは宣言を段階として展開する。年度で割れた宣言を渡してはいけない。**
+    年度で割れた同じ段階が2件あると、その2件が同じ行を2度展開して**行数が倍になる**
+    （多摩市が単一段階のままでいられるのは、あちらが年度で選ぶ形だから）。
+    狛江市に年度で割れる年度が来たら、展開と年度の絞り込みを分けるところから設計し直すこと。 -#}
+{% if budget_amount_is_year_scoped('132195', 'expenditure') %}
+  {{ exceptions.raise_compiler_error(
+      '132195/expenditure: 年度で割れた宣言がある。このモデルは宣言を段階として展開するので、'
+      ~ '同じ段階が年度で2件に割れると行が倍になる。展開と年度の絞り込みを分けてから収録すること') }}
+{% endif %}
 {% if not budget_amount_unit_is_column('132195', 'expenditure') %}
   {{ exceptions.raise_compiler_error(
       '132195/expenditure: 単位を定数にできる宣言なのに source_amount_unit を列で出している') }}

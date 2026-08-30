@@ -218,9 +218,14 @@ def load_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
         spec.setdefault("fiscal_year_label", None)
         via_catalog = [r for r in resources if r.url is None]
         # カタログを引くなら要る宣言／引かないなら書いてはいけない宣言。**同じ集合の裏表**。
+        # ⚠️ **CKAN 解決でしか読まれない宣言をここに漏らさない。**
+        # `resource_url_contains` は同名データセットが複数当たったときの絞り込みで、
+        # 直 URL では一度も参照されない。漏らすと「全直 URL ならカタログ専用の宣言を
+        # 残さない」という不変条件に穴が開く。
         catalog_only = {"catalog": catalog_name,
                         "dataset_title": spec["dataset_title"],
-                        "fiscal_year_label": spec["fiscal_year_label"]}
+                        "fiscal_year_label": spec["fiscal_year_label"],
+                        "resource_url_contains": spec.get("resource_url_contains")}
         if via_catalog:
             for name in ("catalog", "fiscal_year_label"):
                 if catalog_only[name] is None:

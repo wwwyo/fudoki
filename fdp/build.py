@@ -169,6 +169,13 @@ def amount_at(amounts: list[dict], year: int, phase: str) -> dict | None:
     """
     hit = [a for a in amounts if a["phase"] == phase]
     scoped = [a for a in hit if year in (a.get("years") or [])]
+    # ⚠️ **黙って先頭を採らない。** dbt 側は `years` の重なりをコンパイルエラーにするので
+    # 通しの pipeline なら手前で止まるが、`fdp.build` を単独で回すとここが最初の関門になる。
+    # 順序依存で「たまたま正しい倍率」を採る状態を作らない。
+    if len(scoped) > 1:
+        raise RuntimeError(
+            f"{year}年度の段階「{phase}」に効く宣言が {len(scoped)} 件ある。years は重ねてはいけない"
+        )
     if scoped:
         return scoped[0]
     return next((a for a in hit if a.get("years") is None), None)

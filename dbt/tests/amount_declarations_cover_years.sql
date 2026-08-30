@@ -17,8 +17,18 @@
       {#- 全年度に効く変種があれば、その名前は年度によらず必ず解決する -#}
       {% set variants = budget_amount_variants(code, direction, name) %}
       {% if variants | rejectattr('years', 'defined') | list | length == 0 %}
-        {% do scoped.append((code, direction, name,
-                             budget_amount_declared_years(code, direction))) %}
+        {#-
+          ⚠️ **年度の集合は「その名前の変種」から作る。direction 全体の和集合ではない。**
+          和集合を使うと、金額 A が [2021]・金額 B が [2022] のとき両方が [2021, 2022] で
+          検査され、**A の 2022 と B の 2021 の欠落を互いに埋め合って**通ってしまう。
+        -#}
+        {% set years = [] %}
+        {% for a in variants %}
+          {% for y in a['years'] %}
+            {% if y not in years %}{% do years.append(y) %}{% endif %}
+          {% endfor %}
+        {% endfor %}
+        {% do scoped.append((code, direction, name, years | sort)) %}
       {% endif %}
     {% endfor %}
   {% endif %}

@@ -33,3 +33,15 @@ models:
   - name: stg_132195__revenue
     description: 狛江市 歳入（決算書）。原典と1対1。判断を含まない
     columns: *staging_columns
+
+  # ⚠️ **多摩市はここに登録されていなかった。** 収録した PR で足し忘れたまま、
+  # `source_amount` の not_null も `budget_line_id` の unique も一度も掛かっていなかった。
+  # ⚠️ **この形（団体ごとに手で登録する）は足し忘れを止められない。** 金額が解けているかは
+  # 宣言を母集団にする tests/amounts_resolve_for_every_row.sql が全団体を見る。
+  - name: stg_132241__expenditure
+    description: 多摩市 歳出（当初予算）。原典と1対1。判断を含まない
+    columns: *staging_columns
+
+  - name: stg_132241__revenue
+    description: 多摩市 歳入（当初予算）。原典と1対1。判断を含まない
+    columns: *staging_columns
