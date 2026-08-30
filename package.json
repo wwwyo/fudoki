@@ -2,10 +2,18 @@
   "name": "fudoki",
   "private": true,
   "type": "module",
-  "workspaces": [
-    "apps/*",
-    "report"
-  ],
+  "workspaces": {
+    "packages": [
+      "apps/*",
+      "report"
+    ],
+    "catalog": {
+      "@types/bun": "1.3.14",
+      "typescript": "7.0.2",
+      "wrangler": "4.123.0",
+      "zod": "4.4.3"
+    }
+  },
   "scripts": {
     "build:api": "bun run --cwd apps/api build",
     "build:brand": "uv run --no-project --with fonttools python apps/web/brand/build.py",
@@ -33,10 +41,10 @@
     "extract:revenue-accounts": "uv run python -m ingestion.budget.extract_revenue_accounts"
   },
   "dependencies": {
-    "zod": "4.4.3"
+    "zod": "catalog:"
   },
   "devDependencies": {
-    "@types/bun": "1.3.14",
-    "typescript": "7.0.2"
+    "@types/bun": "catalog:",
+    "typescript": "catalog:"
   }
 }
