@@ -10,6 +10,7 @@ import { Layout } from "@/components/layout"
 import { TokyoMap } from "@/components/tokyo-map"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
+import { Info } from "lucide-react"
 import { withBase } from "@/lib/utils"
 
 export function HomePage() {
@@ -35,7 +36,7 @@ export function HomePage() {
             className="h-auto w-full rounded-lg border object-cover object-right sm:max-h-56"
           />
           <h1 className="text-3xl font-semibold">風土記（fudoki）</h1>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-lg leading-relaxed text-muted-foreground">
             公開されているのに読めない、を読める形にする。
           </p>
           <p className="leading-relaxed">
@@ -60,6 +61,7 @@ export function HomePage() {
           迂回した独自スタイルが1箇所だけ生まれる。
         */}
         <Alert>
+          <Info aria-hidden />
           <AlertTitle>ベータです</AlertTitle>
           <AlertDescription>
             URL・応答スキーマ・提供そのものを予告なく変更または停止することがあります。詳しくは
