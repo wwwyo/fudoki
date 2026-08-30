@@ -12,16 +12,34 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { decodeText, fetchCapped, sha256, splitCsvLine } from '../../ingestion/lib/source'
 import { loadJurisdictions } from '../../ingestion/shared/jurisdictions'
-import type { Check, NodePreview, Provenance, ReportData, Topology } from './schema'
+import type { Check, CofogCode, CofogReach, NodePreview, Provenance, ReportData, Topology } from './schema'
 import { ROOT, TARGET, buildChecks, buildTopology, q, readJson, type Manifest, type RunResults } from '../lineage'
 import { BY_JURISDICTION, SHARED } from './static'
 import {
-  COFOG_DIVISIONS, DIRECTIONS, LEVEL_JA, assertDetailColumns,
-  type Direction, type DetailTable, type Level,
+  COFOG_DEPTHS, COFOG_DEPTH_JA, DIRECTIONS, LEVEL_JA,
+  assertDetailColumns, cofogLabel,
+  type CofogDepth, type Direction, type DetailTable, type Level,
 } from './detail'
 
-const withLabel = <T extends { division: string }>(rows: T[]) =>
-  rows.map((r) => ({ ...r, divisionLabel: COFOG_DIVISIONS[r.division] ?? '' }))
+/**
+ * COFOG のコードに名称を添える。**名称は行に持たず宣言から引く**（異なり数が少ないため）。
+ * ⚠️ 宣言に無いコードは `cofogLabel` が落とす。規則が新しいコードを使ったのに
+ * 名称を足し忘れると、画面にコードだけが並ぶ状態になるので、生成で止める。
+ */
+type Coded = { division: string; group: string; class: string }
+const withLabel = <T extends Coded>(rows: T[]): (T & CofogCode)[] =>
+  rows.map((r) => ({
+    ...r,
+    divisionLabel: cofogLabel('division', r.division),
+    groupLabel: cofogLabel('group', r.group),
+    classLabel: cofogLabel('class', r.class),
+  }))
+
+/** その行がどの深さまで降りているか。**空は「まだ降りていない」** */
+const DEPTH_SQL = `case when c.cofog_class <> '' then 'class'
+                        when c.cofog_group <> '' then 'group' else 'division' end`
+/** COFOG のコード3列。`group` / `class` は SQL の予約語なので引用する */
+const CODE_SQL = `c.cofog_division division, c.cofog_group "group", c.cofog_class "class"`
 
 
 
@@ -63,6 +81,63 @@ const CUSTOM_COLUMN_TYPES: ReportData['customColumnTypes'] =
 const amountsOf = (code: string, direction: Direction) => DBT_VARS.vars.budget_amounts[code]![direction]
 
 /**
+ * COFOG の**到達粒度**と、降りた先そのもの。
+ *
+ * ⚠️ **`group` / `class` が空なのは「該当が無い」ではなく「まだ降りていない」。**
+ * 款の名称だけで決まる規則（総務費 → 01、民生費 → 10）は division 止まりが正しく、
+ * group を埋めるには項や目まで下げる判断が要る。したがってここは
+ * **達成率ではなく現在地**で、割合の高さを合否に使わない（分類不能の割合と同じ扱い）。
+ *
+ * ⚠️ **母数は割当済みだけ。** 分類不能・対象外には割当先が無いので深さも無い。
+ * 全行を母数にすると「降りていない」と「そもそも割り当てていない」が混ざる。
+ *
+ * 累積（`reached`）と排他（`deepest`）の両方を持つのは、**画面で足し算させないため**。
+ * 集計を画面へ漏らすと、同じ数字が2通りに計算されていずれ食い違う。
+ */
+function cofogGranularity(scope: string):
+  Pick<ReportData['transform'], 'byCode' | 'byDivision' | 'cofogReach' | 'assigned' | 'total'> {
+  const assignedOnly = `${scope} and c.cofog_status = 'assigned'`
+  const byCode = withLabel(q<Coded & { count: number; sum: number }>(`
+    select ${CODE_SQL}, count(*) count, sum(s.amount_yen) sum
+    from core_budget_cofog c join core_budget_lines s using (budget_line_id) ${assignedOnly}
+    group by all order by sum desc, division, "group", "class"`, ['count', 'sum']))
+  const byDivision = q<{ division: string; count: number; sum: number }>(`
+    select c.cofog_division division, count(*) count, sum(s.amount_yen) sum
+    from core_budget_cofog c join core_budget_lines s using (budget_line_id) ${assignedOnly}
+    group by all order by division`, ['count', 'sum'])
+    .map((r) => ({ ...r, divisionLabel: cofogLabel('division', r.division) }))
+  // 帯の説明に使う「これに分類不能と対象外を足すと原典の合計に戻る」の右辺。
+  // **画面で byState を足し直さない**（同じ数字が2通りに計算される）
+  const total = q<{ count: number; sum: number }>(`
+    select count(*) count, sum(s.amount_yen) sum
+    from core_budget_cofog c join core_budget_lines s using (budget_line_id) ${scope}`,
+    ['count', 'sum'])[0]!
+  const deepest = q<{ depth: CofogDepth; count: number; sum: number }>(`
+    select ${DEPTH_SQL} depth, count(*) count, sum(s.amount_yen) sum
+    from core_budget_cofog c join core_budget_lines s using (budget_line_id) ${assignedOnly}
+    group by all`, ['count', 'sum'])
+  const at = (d: CofogDepth) => deepest.find((x) => x.depth === d) ?? { count: 0, sum: 0 }
+  const assigned = {
+    count: deepest.reduce((a, b) => a + b.count, 0),
+    sum: deepest.reduce((a, b) => a + b.sum, 0),
+  }
+  const share = (v: number, total: number) => (total === 0 ? 0 : v / total)
+  const cofogReach: CofogReach[] = COFOG_DEPTHS.map((depth, i) => {
+    // その深さ「以上」= 自分より深い段も数える（04.5.1 は group にも届いている）
+    const reached = COFOG_DEPTHS.slice(i).map(at).reduce(
+      (a, b) => ({ count: a.count + b.count, sum: a.sum + b.sum }), { count: 0, sum: 0 })
+    return {
+      depth, label: COFOG_DEPTH_JA[depth],
+      deepest: { count: at(depth).count, sum: at(depth).sum },
+      reached,
+      reachedCountShare: share(reached.count, assigned.count),
+      reachedSumShare: share(reached.sum, assigned.sum),
+    }
+  })
+  return { byCode, byDivision, cofogReach, assigned, total }
+}
+
+/**
  * COFOG の判断。**fudoki が自治体の言っていないことを付け加えた唯一の場所**なので、
  * 何をどこへ割り当て、なぜそう決めたかを根拠まで出す。
  *
@@ -84,24 +159,31 @@ function buildTransform(code: string): ReportData['transform'] {
                    url: 'https://unstats.un.org/unsd/classifications/Family/Detail/4' },
     ruleCount: rules.n,
     ruleScope: { shared: rules.shared, jurisdictionSpecific: rules.n - rules.shared },
-    byState: withLabel(q(`
-      select c.cofog_status status, c.cofog_division division, c.cofog_consolidation consolidation,
+    byState: withLabel(q<Coded & { status: string; consolidation: string; count: number; sum: number }>(`
+      select c.cofog_status status, ${CODE_SQL}, c.cofog_consolidation consolidation,
              count(*) count, sum(s.amount_yen) sum
       from core_budget_cofog c join core_budget_lines s using (budget_line_id) ${scope}
       -- 同点で並びが揺れないよう、決着のつく列まで指定する。
       -- 報告は commit するので、非決定的だと中身が同じでも毎回差分が出る。
-      group by all order by sum desc, status, division, consolidation`, ['count', 'sum'])),
+      group by all
+      order by sum desc, status, division, "group", "class", consolidation`, ['count', 'sum'])),
     // **規則ごとに分ける。** 併合すると basis が合計に対応しなくなる
     // （国民健康保険への繰出と後期高齢者医療への繰出が1行に潰れ、
     // 片方の根拠だけが両方の金額に付いた状態になっていた）。
-    byKan: withLabel(q(`
+    byKan: withLabel(q<Coded & {
+      fund: string; kan: string; status: string; decidedAtLevel: string
+      ruleId: string | null; sum: number; basis: string | null
+    }>(`
       select s.fund_code || s.fund_label fund, s.kan_code || s.kan_label kan,
-             c.cofog_division division, c.cofog_status status,
+             ${CODE_SQL}, c.cofog_status status,
              c.cofog_decided_at_level decidedAtLevel, c.cofog_rule_id ruleId,
              sum(s.amount_yen) sum, any_value(r.basis) basis
       from core_budget_cofog c join core_budget_lines s using (budget_line_id)
       left join cofog_rules r on r.rule_id = c.cofog_rule_id ${scope}
-      group by 1, 2, 3, 4, 5, 6 order by sum desc, fund, kan, ruleId`, ['sum'])),
+      -- ⚠️ **規則ごとに分けてあるので行は増えない。** 1本の規則が決める COFOG コードは
+      -- 1つで、group / class はそのコードの分解にすぎない。
+      group by 1, 2, 3, 4, 5, 6, 7, 8 order by sum desc, fund, kan, ruleId`, ['sum'])),
+    ...cofogGranularity(scope),
     byLevel: q(`
       select c.cofog_decided_at_level "level", count(*) count, sum(s.amount_yen) sum
       from core_budget_cofog c join core_budget_lines s using (budget_line_id) ${scope}
