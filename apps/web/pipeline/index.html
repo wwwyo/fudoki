@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ⚠️ document.title はここから団体・年度に応じて実行時に書き換わる
+         （src/pages/pipeline.tsx）。ここに書くのは JS 実行前 / SEO 用の既定値 -->
+    <title>fudoki（風土記）— ELT パイプライン報告</title>
+    <meta
+      name="description"
+      content="fudoki の ELT パイプラインが何を検査し、どこで判断を加えているかを団体ごとに追う報告。原典・変換・配布物の系統は dbt の manifest から生成する。"
+    />
+    <link rel="canonical" href="https://fudoki.dev/pipeline/" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4f1e6" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b0f14" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main-pipeline.tsx"></script>
+  </body>
+</html>

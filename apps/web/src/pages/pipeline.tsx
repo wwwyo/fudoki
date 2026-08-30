@@ -4,22 +4,46 @@
  * 集計はしない。数字はすべて `pipeline.json`（`report/budget/build.ts` の出力）を
  * そのまま出す。画面側でも集計すると、同じ数字が2通りに計算されて、いずれ食い違う。
  */
-import { useEffect, useMemo, useState } from 'react'
-import { FlowGraph } from '@/components/flow-graph'
-import { DetailBrowser } from '@/components/detail-browser'
-import { StageDetail } from '@/components/stage-detail'
-import { CofogPanel } from '@/components/cofog-panel'
-import { ChecksPanel } from '@/components/checks-panel'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { Info } from 'lucide-react'
-import { levelsOf, loadDetail, loadPipeline, toRows, type DetailData, type PipelineData } from '@/lib/pipeline'
+import { useEffect, useMemo, useState } from "react"
+import { Layout } from "@/components/layout"
+import { FlowGraph } from "@/components/flow-graph"
+import { DetailBrowser } from "@/components/detail-browser"
+import { StageDetail } from "@/components/stage-detail"
+import { CofogPanel } from "@/components/cofog-panel"
+import { ChecksPanel } from "@/components/checks-panel"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Badge } from "@/components/ui/badge"
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { Info } from "lucide-react"
+import {
+  levelsOf,
+  loadDetail,
+  loadPipeline,
+  toRows,
+  type DetailData,
+  type PipelineData,
+} from "@/lib/pipeline"
 
-export default function App() {
+export function PipelinePage() {
   const [data, setData] = useState<PipelineData | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [selectedNode, setSelectedNode] = useState<string | null>(null)
@@ -33,11 +57,14 @@ export default function App() {
   const [detailError, setDetailError] = useState<string | null>(null)
   // 開いているタブ。**明細の取得はタブを開いた瞬間だけの出来事ではない** —
   // 明細を見ている最中に団体を切り替えても取りに行く必要がある。
-  const [tab, setTab] = useState('checks')
+  const [tab, setTab] = useState("checks")
 
   useEffect(() => {
     loadPipeline()
-      .then((d) => { setData(d); setCode(d.jurisdictions[0]?.code ?? null) })
+      .then((d) => {
+        setData(d)
+        setCode(d.jurisdictions[0]?.code ?? null)
+      })
       .catch((e: Error) => setError(e.message))
   }, [])
 
@@ -52,14 +79,20 @@ export default function App() {
    * 見ているものと持っているものの差で決めれば、どちらの順序でも同じ結果になる。
    */
   useEffect(() => {
-    if (tab !== 'detail' || !current || loaded || detailError) return
+    if (tab !== "detail" || !current || loaded || detailError) return
     let stale = false
     const target = current.code
     loadDetail(current.report)
-      .then((d) => { if (!stale) setDetail({ code: target, data: d }) })
-      .catch((e: Error) => { if (!stale) setDetailError(e.message) })
+      .then((d) => {
+        if (!stale) setDetail({ code: target, data: d })
+      })
+      .catch((e: Error) => {
+        if (!stale) setDetailError(e.message)
+      })
     // 取得中に団体を切り替えたら、遅れて届いた前の団体の明細を捨てる
-    return () => { stale = true }
+    return () => {
+      stale = true
+    }
   }, [tab, current, loaded, detailError])
 
   // 収録範囲（団体・年度）を知っているのは pipeline.json だけ。index.html の title に
@@ -67,12 +100,15 @@ export default function App() {
   useEffect(() => {
     if (!current) return
     const { jurisdictionName, fiscalYears, phase } = current.report.meta
-    document.title = `${jurisdictionName} ${fiscalYears.join('・')}年度 ${phase.label} | fudoki（風土記）`
+    document.title = `${jurisdictionName} ${fiscalYears.join("・")}年度 ${phase.label} | fudoki（風土記）`
   }, [current])
 
   const rows = useMemo(
-    () => (loaded ? { expenditure: toRows(loaded.expenditure), revenue: toRows(loaded.revenue) } : null),
-    [loaded],
+    () =>
+      loaded
+        ? { expenditure: toRows(loaded.expenditure), revenue: toRows(loaded.revenue) }
+        : null,
+    [loaded]
   )
 
   // 系統は全団体で1本だが、図は見ている団体の分だけ出す（共有ノードは残す）。
@@ -89,23 +125,29 @@ export default function App() {
 
   if (error) {
     return (
-      <main className="mx-auto max-w-2xl p-6">
-        <Alert variant="destructive">
-          <AlertTitle>データを読み込めませんでした</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      </main>
+      <Layout>
+        <main className="mx-auto max-w-2xl p-6">
+          <Alert variant="destructive">
+            <AlertTitle>データを読み込めませんでした</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        </main>
+      </Layout>
     )
   }
   if (!data || !current || !visibleTopology) {
-    return <main className="p-6 text-sm text-muted-foreground">読み込み中…</main>
+    return (
+      <Layout>
+        <main className="p-6 text-sm text-muted-foreground">読み込み中…</main>
+      </Layout>
+    )
   }
 
   const { report } = current
   const m = report.meta
   const t = report.transform
   const total = t.byState.reduce((s, x) => s + x.sum, 0)
-  const assigned = t.byState.filter((x) => x.status === 'assigned').reduce((s, x) => s + x.sum, 0)
+  const assigned = t.byState.filter((x) => x.status === "assigned").reduce((s, x) => s + x.sum, 0)
 
   // このページの目的は「配布データが正しいか」を判別できることなので、
   // サマリも検証の指標だけを出す（総額のような分析の数字は明細タブが持つ）。
@@ -115,37 +157,44 @@ export default function App() {
   const roundtripOk = prov.filter((p) => p.roundtrip_verified).length
 
   const stats: { label: string; value: string | number; tone?: string; hint?: string }[] = [
-    { label: '検査', value: `${report.summary.passed}/${report.summary.total}`, tone: report.summary.failed ? 'bad' : 'good', hint: '1つでも落ちると成果物を書き出さない' },
+    {
+      label: "検査",
+      value: `${report.summary.passed}/${report.summary.total}`,
+      tone: report.summary.failed ? "bad" : "good",
+      hint: "1つでも落ちると成果物を書き出さない",
+    },
     // ⚠️ 団体で意味が違う。三鷹市は当初予算額、狛江市は決算の予算現額（全会計・全年度の合計）。
-    { label: '原文の復元', value: `${roundtripOk}/${prov.length}`, tone: roundtripOk === prov.length ? 'good' : 'bad', hint: '文字コードの復号が可逆で、保存した Parquet から原文に戻ること' },
+    {
+      label: "原文の復元",
+      value: `${roundtripOk}/${prov.length}`,
+      tone: roundtripOk === prov.length ? "good" : "bad",
+      hint: "文字コードの復号が可逆で、保存した Parquet から原文に戻ること",
+    },
     // 判定は生成側（summary.rowsPreserved）。配布物は1行に複数の金額を展開する団体があり、
     // 期待値（stg × 金額の数）は dbt の宣言を知る生成側にしか計算できない
-    { label: '行の保存', value: report.summary.rowsPreserved ? '一致' : '不一致', tone: report.summary.rowsPreserved ? 'good' : 'bad', hint: 'staging の全行が配布物に残っていること（1行 × 金額の数）' },
-    { label: 'COFOG 割当済み（金額比）', value: `${((assigned / total) * 100).toFixed(1)}%`, hint: 'COFOG は政府支出の機能別分類（教育、保健など10区分）。国際標準' },
+    {
+      label: "行の保存",
+      value: report.summary.rowsPreserved ? "一致" : "不一致",
+      tone: report.summary.rowsPreserved ? "good" : "bad",
+      hint: "staging の全行が配布物に残っていること（1行 × 金額の数）",
+    },
+    {
+      label: "COFOG 割当済み（金額比）",
+      value: `${((assigned / total) * 100).toFixed(1)}%`,
+      hint: "COFOG は政府支出の機能別分類（教育、保健など10区分）。国際標準",
+    },
     // ⚠️ 消去が成立しない団体がある（狛江市は相手の会計が原典から決まらない）。
     // 「相殺する」と決め打ちで書くと、消去していない団体で嘘になる。
   ]
 
   return (
-    <div className="min-h-dvh bg-background text-foreground">
-      <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background/95 px-4 backdrop-blur">
-        {/* ⚠️ ロゴを1枚にしない。`<img>` の中のメディアクエリは OS 設定しか見ないので、
-            OS がライトのまま画面をダークにするとロゴだけ取り残される */}
-        <img src="/mark.svg" alt="風土記" className="size-6 shrink-0 dark:hidden" />
-        <img src="/mark-dark.svg" alt="" aria-hidden className="hidden size-6 shrink-0 dark:block" />
-        <a
-          href="https://docs.fudoki.dev/"
-          target="_blank"
-          rel="noreferrer"
-          className="ml-auto shrink-0 text-sm text-muted-foreground transition-colors hover:text-foreground"
-        >
-          API docs
-        </a>
-        <Badge variant={report.summary.failed ? 'destructive' : 'secondary'} className="shrink-0">
+    <Layout
+      headerExtra={
+        <Badge variant={report.summary.failed ? "destructive" : "secondary"} className="shrink-0">
           検査 {report.summary.passed}/{report.summary.total}
         </Badge>
-      </header>
-
+      }
+    >
       <main className="mx-auto flex max-w-[1500px] flex-col gap-8 p-4 pb-24">
         <section className="flex flex-col gap-4">
           {/* どの団体を見ているかは本文のコンテキスト。header はサイト全体の枠なので置かない */}
@@ -153,11 +202,20 @@ export default function App() {
             <h1 className="text-xl font-semibold">ELT パイプライン</h1>
             {data.jurisdictions.length > 1 ? (
               <Select
-                items={data.jurisdictions.map((j) => ({ value: j.code, label: j.report.meta.jurisdictionName }))}
+                items={data.jurisdictions.map((j) => ({
+                  value: j.code,
+                  label: j.report.meta.jurisdictionName,
+                }))}
                 value={current.code}
-                onValueChange={(v) => { setCode(v as string); setSelectedNode(null); setDetailError(null) }}
+                onValueChange={(v) => {
+                  setCode(v as string)
+                  setSelectedNode(null)
+                  setDetailError(null)
+                }}
               >
-                <SelectTrigger aria-label="団体"><SelectValue /></SelectTrigger>
+                <SelectTrigger aria-label="団体">
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
                     {data.jurisdictions.map((j) => (
@@ -174,11 +232,17 @@ export default function App() {
             <span className="truncate text-sm text-muted-foreground">
               {m.fiscalYears.length > 2
                 ? `${m.fiscalYears[0]}〜${m.fiscalYears.at(-1)}年度`
-                : `${m.fiscalYears.join('・')}年度`} · {m.phase.label}
+                : `${m.fiscalYears.join("・")}年度`}{" "}
+              · {m.phase.label}
             </span>
           </div>
 
-          <FlowGraph topology={visibleTopology} report={report} onSelectNode={setSelectedNode} selected={selectedNode} />
+          <FlowGraph
+            topology={visibleTopology}
+            report={report}
+            onSelectNode={setSelectedNode}
+            selected={selectedNode}
+          />
 
           <div className="flex flex-wrap gap-3">
             {stats.map((s) => (
@@ -200,8 +264,11 @@ export default function App() {
                   </CardDescription>
                   <CardTitle
                     className={
-                      s.tone === 'good' ? 'text-xl text-[var(--color-chart-2)]'
-                        : s.tone === 'bad' ? 'text-xl text-destructive' : 'text-xl'
+                      s.tone === "good"
+                        ? "text-xl text-[var(--color-chart-2)]"
+                        : s.tone === "bad"
+                          ? "text-xl text-destructive"
+                          : "text-xl"
                     }
                   >
                     {s.value}
@@ -229,7 +296,11 @@ export default function App() {
             <CofogPanel report={report} />
           </TabsContent>
           <TabsContent value="checks" className="pt-4">
-            <ChecksPanel report={report} selectedNode={selectedNode} onClearNode={() => setSelectedNode(null)} />
+            <ChecksPanel
+              report={report}
+              selectedNode={selectedNode}
+              onClearNode={() => setSelectedNode(null)}
+            />
           </TabsContent>
           <TabsContent value="detail" className="pt-4">
             {detailError ? (
@@ -243,8 +314,8 @@ export default function App() {
                 expenditure={rows.expenditure}
                 revenue={rows.revenue}
                 levels={{
-                  expenditure: levelsOf(report, 'expenditure'),
-                  revenue: levelsOf(report, 'revenue'),
+                  expenditure: levelsOf(report, "expenditure"),
+                  revenue: levelsOf(report, "revenue"),
                 }}
                 tables={{ expenditure: loaded!.expenditure, revenue: loaded!.revenue }}
               />
@@ -254,13 +325,19 @@ export default function App() {
           </TabsContent>
         </Tabs>
 
+        {/* ⚠️ 団体固有の帰属表示。Layout の共通フッターに入れられない
+            （current.code・m.landingPage・m.license.id という報告データに依存するため） */}
         <footer className="border-t pt-6 text-xs leading-relaxed text-muted-foreground">
-          配布物 <code>data/budget/datapackages/{current.code}/</code> ／ 原典 <code>data/budget/raw/</code>
+          配布物 <code>data/budget/datapackages/{current.code}/</code> ／ 原典{" "}
+          <code>data/budget/raw/</code>
           <br />
-          原典: <a className="underline" href={m.landingPage} target="_blank" rel="noreferrer">{m.attribution}</a>
-          {' '}／ {m.license.id} ／ 生成 {m.generatedAt.replace('T', ' ').slice(0, 19)}
+          原典:{" "}
+          <a className="underline" href={m.landingPage} target="_blank" rel="noreferrer">
+            {m.attribution}
+          </a>{" "}
+          ／ {m.license.id} ／ 生成 {m.generatedAt.replace("T", " ").slice(0, 19)}
         </footer>
       </main>
-    </div>
+    </Layout>
   )
 }
