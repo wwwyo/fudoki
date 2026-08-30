@@ -666,8 +666,8 @@
       "format": "csv",
       "mediatype": "text/csv",
       "encoding": "utf-8",
-      "bytes": 849016,
-      "hash": "sha256:fe319ca128b184697b599f8b021fff87f9c397a6171cc15c6eeaeed52b938b43",
+      "bytes": 903432,
+      "hash": "sha256:c65007e819e2a34af5f6952318cd692cada687c0c002141da6c533d5c7ba2685",
       "dialect": {
         "delimiter": ",",
         "header": true
@@ -721,6 +721,20 @@
             "type": "string",
             "description": "割当済みのときだけ入る。分類不能・対象外・歳入では空",
             "columnType": "functional-classification:cofog:division:code"
+          },
+          {
+            "name": "cofog_group",
+            "title": "COFOG グループ",
+            "type": "string",
+            "description": "例 04.5 運輸。⚠️ **空は「該当が無い」ではなく「まだ降りていない」**。款の名称だけで決まる規則は division 止まりで、項や目まで下げて初めて group が決まる",
+            "columnType": "functional-classification:cofog:group:code"
+          },
+          {
+            "name": "cofog_class",
+            "title": "COFOG クラス",
+            "type": "string",
+            "description": "例 04.5.1 道路交通。group と同じく、空は「まだ降りていない」を意味する",
+            "columnType": "functional-classification:cofog:class:code"
           },
           {
             "name": "cofog_consolidation",
@@ -778,8 +792,8 @@
       "format": "csv",
       "mediatype": "text/csv",
       "encoding": "utf-8",
-      "bytes": 5764,
-      "hash": "sha256:9b2bd057606d8a4164e3a874921ec761c2f828d5d5c70de3f1bb72c43344581c",
+      "bytes": 6111,
+      "hash": "sha256:6fe65bad981064b814dc1ef20ba5b6afce7e6f9e9f86ee347e84e1fa8fa5005a",
       "dialect": {
         "delimiter": ",",
         "header": true
@@ -853,10 +867,10 @@
             "description": "assigned / unclassifiable / out-of-scope"
           },
           {
-            "name": "division",
-            "title": "割当先のディビジョン",
+            "name": "cofog_code",
+            "title": "割当先の COFOG",
             "type": "string",
-            "description": "assigned のときだけ入る"
+            "description": "その規則が決めた粒度をそのまま持つ（`01` / `04.5` / `04.5.1`）。assigned のときだけ入る。⚠️ **division / group / class を別々に宣言しない** — 同じ事実が3箇所に分かれると、粒度を下げたときに片方だけ古くなる。割当の結果（cofog.csv）では分解して出す"
           },
           {
             "name": "consolidation",

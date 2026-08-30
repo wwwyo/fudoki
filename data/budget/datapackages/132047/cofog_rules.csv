@@ -1,36 +1,38 @@
-priority,rule_id,applies_to,match_fund,match_kan,match_kou,match_kan_code,match_moku,moku_mode,match_setsu,status,division,consolidation,decided_at_level,counterpart_fund,basis
+priority,rule_id,applies_to,match_fund,match_kan,match_kou,match_kan_code,match_moku,moku_mode,match_setsu,status,cofog_code,consolidation,decided_at_level,counterpart_fund,basis
 2,transfer-kokuho,132047,,,,,国民健康保険事業特別会計繰出金,contains,繰出金,assigned,07,eliminated,目,国民健康保険事業特別会計,同一主体内の会計間繰出。連結時は消去する。分類は受け皿である国民健康保険事業特別会計の機能に対応し、医療給付を担うため 07 保健
 3,transfer-kaigo-service,132047,,,,,介護サービス事業特別会計繰出金,contains,繰出金,assigned,10,eliminated,目,介護サービス事業特別会計,同一主体内の会計間繰出。連結時は消去する。分類は受け皿である介護サービス事業特別会計の機能に対応し、介護サービスの提供であり 10 社会保護
 4,transfer-kaigo-hoken,132047,,,,,介護保険事業特別会計繰出金,contains,繰出金,assigned,10,eliminated,目,介護保険事業特別会計,同一主体内の会計間繰出。連結時は消去する。分類は受け皿である介護保険事業特別会計の機能に対応し、長期介護の社会保険であり 10 社会保護
 5,transfer-kouki,132047,,,,,後期高齢者医療特別会計繰出金,contains,繰出金,assigned,07,eliminated,目,後期高齢者医療特別会計,同一主体内の会計間繰出。連結時は消去する。分類は受け皿である後期高齢者医療特別会計の機能に対応し、医療給付を担うため 07 保健
 6,transfer-to-general,132047,,,,,一般会計繰出金,contains,繰出金,out-of-scope,,eliminated,目,一般会計,特別会計から一般会計への精算返還。同一主体内の移転として消去する。COFOG の対象である経費・非金融資産への純投資のいずれでもないため分類の対象外
 7,debt-principal,,,公債費,,,元金,eq,,out-of-scope,,retained,目,,市債の元金償還。金融負債の返済であり、COFOG の対象である経費・非金融資産への純投資のいずれでもない
-8,debt-interest,,,公債費,,,利子,eq,,assigned,01,retained,目,,市債利子。COFOG 01.7 公債取引にあたる
+8,debt-interest,,,公債費,,,利子,eq,,assigned,01.7,retained,目,,市債利子。COFOG 01.7 公債取引にあたる
 9,fund-accumulation,,,,,,,eq,積立金,out-of-scope,,retained,節,,基金への積立。金融資産の取得であり COFOG の集計対象ではない
 10,refund,132047,,,償還金及び還付加算金,,,eq,,out-of-scope,,retained,項,,過誤納金の還付。歳入の戻しであり経費ではない
 11,contingency,,,予備費,,,,eq,,unclassifiable,,retained,款,,予備費。COFOG の対象だが、執行されるまで機能が決まらないため割り当ての根拠が無い
-12,toshikeikaku-somu,132047,,,都市計画費,,都市計画総務費|再開発事業費,eq,,assigned,06,retained,目,,都市計画・市街地再開発。COFOG 06.2 地域開発
-13,toshikeikaku-gairo,132047,,,都市計画費,,街路事業費,eq,,assigned,04,retained,目,,都市計画道路の整備。COFOG 04.5.1 道路交通
-14,toshikeikaku-kouen,132047,,,都市計画費,,緑化公園費,eq,,assigned,08,retained,目,,公園・緑化。COFOG 08.1 レクリエーション及びスポーツのサービス
-15,toshikeikaku-gesui,132047,,,都市計画費,,下水道事業支出金,eq,,assigned,05,retained,目,,下水道事業への支出。COFOG 05.2 排水管理。下水道事業会計は本パッケージの収録範囲外なので消去しない
-16,shogaigakushu-toshokan,132047,,,生涯学習費,,図書館費,eq,,assigned,08,retained,目,,図書館。COFOG 08.2 文化サービスが図書館を明示的に含むため、教育費の下にあっても 08 に置く
-17,shogaigakushu-other,132047,,,生涯学習費,,,eq,,assigned,09,retained,目,,社会教育（生涯学習総務・青少年育成・生涯学習センター）。COFOG 09.5 水準が定義できない教育。08 文化サービスとの境界は判断であり、2団体目で再検討する
+12,toshikeikaku-somu,132047,,,都市計画費,,都市計画総務費|再開発事業費,eq,,assigned,06.2,retained,目,,都市計画・市街地再開発。COFOG 06.2 地域開発
+13,toshikeikaku-gairo,132047,,,都市計画費,,街路事業費,eq,,assigned,04.5.1,retained,目,,都市計画道路の整備。COFOG 04.5.1 道路交通
+14,toshikeikaku-kouen,132047,,,都市計画費,,緑化公園費,eq,,assigned,08.1,retained,目,,公園・緑化。COFOG 08.1 レクリエーション及びスポーツのサービス
+15,toshikeikaku-gesui,132047,,,都市計画費,,下水道事業支出金,eq,,assigned,05.2,retained,目,,下水道事業への支出。COFOG 05.2 排水管理。下水道事業会計は本パッケージの収録範囲外なので消去しない
+16,shogaigakushu-toshokan,132047,,,生涯学習費,,図書館費,eq,,assigned,08.2,retained,目,,図書館。COFOG 08.2 文化サービスが図書館を明示的に含むため、教育費の下にあっても 08 に置く
+17,shogaigakushu-other,132047,,,生涯学習費,,,eq,,assigned,09.5,retained,目,,社会教育（生涯学習総務・青少年育成・生涯学習センター）。COFOG 09.5 水準が定義できない教育。08 文化サービスとの境界は判断であり、2団体目で再検討する
 18,eisei-hoken,132047,,,保健衛生費,,,eq,,assigned,07,retained,項,,保健衛生。COFOG 07 保健
-19,eisei-seiso,132047,,,清掃費,,,eq,,assigned,05,retained,項,,ごみ処理。COFOG 05.1 廃棄物管理
-20,doboku-kanri,132047,,,土木管理費,,,eq,,assigned,04,retained,項,,土木の管理部門。COFOG 04.5 運輸の管理にあたる
-21,doboku-doro,132047,,,道路橋梁費,,,eq,,assigned,04,retained,項,,道路・橋梁。COFOG 04.5.1 道路交通
+19,eisei-seiso,132047,,,清掃費,,,eq,,assigned,05.1,retained,項,,ごみ処理。COFOG 05.1 廃棄物管理
+20,doboku-kanri,132047,,,土木管理費,,,eq,,assigned,04.5,retained,項,,土木の管理部門。COFOG 04.5 運輸の管理にあたる
+21,doboku-doro,132047,,,道路橋梁費,,,eq,,assigned,04.5.1,retained,項,,道路・橋梁。COFOG 04.5.1 道路交通
 22,doboku-kasen,132047,,,河川費,,,eq,,assigned,05,retained,項,,河川・水路の管理。COFOG は治水を明示的に置いていないため 05 環境保護に寄せた判断で、04 経済業務にも読める
-23,doboku-jutaku,132047,,,住宅費,,,eq,,assigned,06,retained,項,,住宅。COFOG 06.1 住宅開発
-24,kyoiku-somu,132047,,,教育総務費|小学校費|中学校費,,,eq,,assigned,09,retained,項,,学校教育。COFOG 09.1〜09.2 初等・中等教育
-25,kyoiku-sports,132047,,,スポーツ推進費,,,eq,,assigned,08,retained,項,,スポーツ推進。COFOG 08.1 レクリエーション及びスポーツのサービス
-26,gikai,,,議会費,,,,eq,,assigned,01,retained,款,,議会。COFOG 01.1 立法機関・行政機関
-27,somu,,,総務費,,,,eq,,assigned,01,retained,款,,総務・徴税・戸籍・選挙・統計・監査。COFOG 01 一般公共サービス
-28,minsei,,,民生費,,,,eq,,assigned,10,retained,款,,社会福祉・児童福祉・生活保護。COFOG 10 社会保護
-29,rodo,,,労働費,,,,eq,,assigned,04,retained,款,,労働諸費。COFOG 04.1.2 一般労働業務
-30,norin,,,農林費,,,,eq,,assigned,04,retained,款,,農業。COFOG 04.2 農林水産業
-31,shoko,,,商工費,,,,eq,,assigned,04,retained,款,,商工業。COFOG 04.7 その他の産業
-32,shobo,,,消防費,,,,eq,,assigned,03,retained,款,,消防。COFOG 03.2 消防サービス
-33,fund-kokuho,132047,国民健康保険事業特別会計,,,,,eq,,assigned,07,retained,会計,,国民健康保険。医療給付とその運営であり COFOG 07 保健
-34,fund-kouki,132047,後期高齢者医療特別会計,,,,,eq,,assigned,07,retained,会計,,後期高齢者医療。医療給付とその運営であり COFOG 07 保健
-35,fund-kaigo-service,132047,介護サービス事業特別会計,,,,,eq,,assigned,10,retained,会計,,介護サービス事業。COFOG 10.2 高齢
-36,fund-kaigo-hoken,132047,介護保険事業特別会計,,,,,eq,,assigned,10,retained,会計,,介護保険。長期介護の社会保険であり COFOG 10.2 高齢
+23,doboku-jutaku,132047,,,住宅費,,,eq,,assigned,06.1,retained,項,,住宅。COFOG 06.1 住宅開発
+24,kyoiku-somu,132047,,,教育総務費,,,eq,,assigned,09.8,retained,項,,教育委員会・事務局の管理業務。特定の学校段階に属さないので COFOG 09.8 他に分類されない教育
+25,kyoiku-shoto,132047,,,小学校費,,,eq,,assigned,09.1,retained,項,,小学校。COFOG 09.1 就学前教育及び初等教育
+26,kyoiku-chuto,132047,,,中学校費,,,eq,,assigned,09.2,retained,項,,中学校。COFOG 09.2 中等教育
+27,kyoiku-sports,132047,,,スポーツ推進費,,,eq,,assigned,08.1,retained,項,,スポーツ推進。COFOG 08.1 レクリエーション及びスポーツのサービス
+28,gikai,,,議会費,,,,eq,,assigned,01.1,retained,款,,議会。COFOG 01.1 立法機関・行政機関
+29,somu,,,総務費,,,,eq,,assigned,01,retained,款,,総務・徴税・戸籍・選挙・統計・監査。COFOG 01 一般公共サービス
+30,minsei,,,民生費,,,,eq,,assigned,10,retained,款,,社会福祉・児童福祉・生活保護。COFOG 10 社会保護
+31,rodo,,,労働費,,,,eq,,assigned,04.1.2,retained,款,,労働諸費。COFOG 04.1.2 一般労働業務
+32,norin,,,農林費,,,,eq,,assigned,04.2,retained,款,,農業。COFOG 04.2 農林水産業
+33,shoko,,,商工費,,,,eq,,assigned,04.7,retained,款,,商工業。COFOG 04.7 その他の産業
+34,shobo,,,消防費,,,,eq,,assigned,03.2,retained,款,,消防。COFOG 03.2 消防サービス
+35,fund-kokuho,132047,国民健康保険事業特別会計,,,,,eq,,assigned,07,retained,会計,,国民健康保険。医療給付とその運営であり COFOG 07 保健
+36,fund-kouki,132047,後期高齢者医療特別会計,,,,,eq,,assigned,07,retained,会計,,後期高齢者医療。医療給付とその運営であり COFOG 07 保健
+37,fund-kaigo-service,132047,介護サービス事業特別会計,,,,,eq,,assigned,10.2,retained,会計,,介護サービス事業。COFOG 10.2 高齢
+38,fund-kaigo-hoken,132047,介護保険事業特別会計,,,,,eq,,assigned,10.2,retained,会計,,介護保険。長期介護の社会保険であり COFOG 10.2 高齢

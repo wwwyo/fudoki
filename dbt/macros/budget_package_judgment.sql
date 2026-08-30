@@ -26,7 +26,12 @@ select
     direction,
     budget_line_id,
     cofog_status,
+    -- COFOG の階層。**規則が決めた粒度までしか埋まらない**（款の名称だけで決まる
+    -- 規則は division 止まりで group / class が空）。空は「まだ降りていない」であって
+    -- 「該当が無い」ではない。
     cofog_division,
+    cofog_group,
+    cofog_class,
     cofog_consolidation,
     cofog_decided_at_level,
     cofog_rule_id,
@@ -62,7 +67,7 @@ select
     moku_mode,
     match_setsu,
     status,
-    division,
+    cofog_code,
     consolidation,
     decided_at_level,
     counterpart_fund,

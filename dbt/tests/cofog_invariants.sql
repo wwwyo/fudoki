@@ -40,7 +40,26 @@ having count(*) > 0
 
 union all
 
--- 5. 消去する行には相手側がある。無いと連結の相手を辿れない
+-- 5. 階層が矛盾していない。group は division の下、class は group の下でなければならない。
+--    ⚠️ **粒度が粗いこと自体は誤りではない**（款の名称だけで決まる規則は division 止まり）。
+--    誤りなのは、下位が入っているのに上位と食い違っていることのほう。
+select 'COFOG の階層が食い違っている', count(*), 0
+from e
+where (cofog_group <> '' and split_part(cofog_group, '.', 1) <> cofog_division)
+   or (cofog_class <> '' and not starts_with(cofog_class, cofog_group || '.'))
+   or (cofog_class <> '' and cofog_group = '')
+having count(*) > 0
+
+union all
+
+-- 6. 未割当なら階層も空。ディビジョンだけを見て group / class を見落とさない
+select '未割当なのに group / class が入っている', count(*), 0
+from e where cofog_status <> 'assigned' and (cofog_group <> '' or cofog_class <> '')
+having count(*) > 0
+
+union all
+
+-- 7. 消去する行には相手側がある。無いと連結の相手を辿れない
 select '消去なのに相手側が無い', count(*), 0
 from e where cofog_consolidation = 'eliminated' and cofog_counterpart_fund is null
 having count(*) > 0

@@ -1,30 +1,32 @@
-priority,rule_id,applies_to,match_fund,match_kan,match_kou,match_kan_code,match_moku,moku_mode,match_setsu,status,division,consolidation,decided_at_level,counterpart_fund,basis
+priority,rule_id,applies_to,match_fund,match_kan,match_kou,match_kan_code,match_moku,moku_mode,match_setsu,status,cofog_code,consolidation,decided_at_level,counterpart_fund,basis
 7,debt-principal,,,公債費,,,元金,eq,,out-of-scope,,retained,目,,市債の元金償還。金融負債の返済であり、COFOG の対象である経費・非金融資産への純投資のいずれでもない
-8,debt-interest,,,公債費,,,利子,eq,,assigned,01,retained,目,,市債利子。COFOG 01.7 公債取引にあたる
+8,debt-interest,,,公債費,,,利子,eq,,assigned,01.7,retained,目,,市債利子。COFOG 01.7 公債取引にあたる
 9,fund-accumulation,,,,,,,eq,積立金,out-of-scope,,retained,節,,基金への積立。金融資産の取得であり COFOG の集計対象ではない
 11,contingency,,,予備費,,,,eq,,unclassifiable,,retained,款,,予備費。COFOG の対象だが、執行されるまで機能が決まらないため割り当ての根拠が無い
-26,gikai,,,議会費,,,,eq,,assigned,01,retained,款,,議会。COFOG 01.1 立法機関・行政機関
-27,somu,,,総務費,,,,eq,,assigned,01,retained,款,,総務・徴税・戸籍・選挙・統計・監査。COFOG 01 一般公共サービス
-28,minsei,,,民生費,,,,eq,,assigned,10,retained,款,,社会福祉・児童福祉・生活保護。COFOG 10 社会保護
-29,rodo,,,労働費,,,,eq,,assigned,04,retained,款,,労働諸費。COFOG 04.1.2 一般労働業務
-30,norin,,,農林費,,,,eq,,assigned,04,retained,款,,農業。COFOG 04.2 農林水産業
-31,shoko,,,商工費,,,,eq,,assigned,04,retained,款,,商工業。COFOG 04.7 その他の産業
-32,shobo,,,消防費,,,,eq,,assigned,03,retained,款,,消防。COFOG 03.2 消防サービス
-69,tama-eisei-hoken,132241,一般会計,,保健衛生費,,,eq,,assigned,07,retained,項,,多摩市 款4 項1 保健衛生費。COFOG 07 保健
-70,tama-eisei-seiso,132241,一般会計,,清掃費,,,eq,,assigned,05,retained,項,,多摩市 款4 項2 清掃費。COFOG 05.1 廃棄物管理
-71,tama-doboku-kanri,132241,一般会計,,土木管理費,,,eq,,assigned,04,retained,項,,多摩市 款8 項1 土木管理費。COFOG 04.5 運輸
-72,tama-doboku-doro,132241,一般会計,,道路橋りょう費,,,eq,,assigned,04,retained,項,,多摩市 款8 項2 道路橋りょう費。COFOG 04.5.1 道路交通
-73,tama-doboku-jutaku,132241,一般会計,,住宅費,,,eq,,assigned,06,retained,項,,多摩市 款8 項5 住宅費。COFOG 06.1 住宅開発
-74,tama-toshikeikaku-kouen,132241,一般会計,,都市計画費,,公園費|緑化推進対策費,eq,,assigned,08,retained,目,,多摩市 款8 項4 のうち公園・緑化。COFOG 08.1 レクリエーション及びスポーツのサービス。三鷹市の緑化公園費と同じ扱い
-75,tama-toshikeikaku-other,132241,一般会計,,都市計画費,,,eq,,assigned,06,retained,項,,多摩市 款8 項4 都市計画費のうち目で決まらないもの（都市計画総務費）。COFOG 06.2 地域開発
-76,tama-shakaikyoiku-toshokan,132241,一般会計,,社会教育費,,図書館費,eq,,assigned,08,retained,目,,多摩市 款10 項5 のうち図書館。COFOG 08.2 文化サービスが図書館を明示的に含むため教育費の下にあっても 08 に置く（三鷹市・狛江市の図書館費と同じ扱い）
-77,tama-shakaikyoiku-other,132241,一般会計,,社会教育費,,,eq,,assigned,09,retained,項,,多摩市 款10 項5 社会教育費のうち図書館以外（社会教育総務・公民館・社会教育施設）。COFOG 09.5 水準が定義できない教育。08 文化サービスとの境界は判断である
-78,tama-hokentaiiku-kyushoku,132241,一般会計,,保健体育費,,学校給食費,eq,,assigned,09,retained,目,,多摩市 款10 項6 のうち学校給食。COFOG 09.6 教育に付帯するサービス
-79,tama-hokentaiiku-other,132241,一般会計,,保健体育費,,,eq,,assigned,08,retained,項,,多摩市 款10 項6 保健体育費のうち学校給食以外（保健体育総務・体育施設）。COFOG 08.1 レクリエーション及びスポーツのサービス。三鷹市のスポーツ推進費と同じ扱い
-80,tama-kyoiku-gakko,132241,一般会計,,教育総務費|小学校費|中学校費|幼稚園費,,,eq,,assigned,09,retained,項,,多摩市 款10 の学校教育。COFOG 09 教育。⚠️ 幼稚園費は 09.1 就学前教育で水準が違うが division は 09 で同じ
-81,tama-nogyo,132241,一般会計,,農業費,,,eq,,assigned,04,retained,項,,多摩市 款6 項1 農業費。COFOG 04.2 農業・林業・漁業・狩猟。⚠️ 款の名称が「農林業費」で汎用規則（農林費）に当たらないため項で当てる
-82,tama-saigai-bunkyo,132241,一般会計,,文教施設災害復旧費,,,eq,,assigned,09,retained,項,,多摩市 款11 の文教施設の災害復旧。COFOG は機能別なので復旧の対象施設の機能に置く
-83,tama-saigai-doboku,132241,一般会計,,公共土木施設災害復旧費,,,eq,,assigned,04,retained,項,,多摩市 款11 の公共土木施設（道路橋りょう）の災害復旧。COFOG 04.5.1 道路交通
-84,tama-saigai-kouen,132241,一般会計,,公園施設災害復旧費,,,eq,,assigned,08,retained,項,,多摩市 款11 の公園施設の災害復旧。COFOG 08.1 レクリエーション及びスポーツのサービス
-85,tama-saigai-other,132241,一般会計,,その他公共、公用施設災害復旧費,,,eq,,unclassifiable,,retained,項,,多摩市 款11 のその他公共・公用施設の災害復旧。対象施設が特定できないので機能を決められない。捨てずに分類不能として残す
-86,tama-shokitte,132241,一般会計,,小切手支払未済償還金,,,eq,,out-of-scope,,retained,項,,多摩市 款13 項2 小切手支払未済償還金。歳計現金の戻入であって支出の機能ではない。三鷹市の償還金及び還付加算金と同じ扱い
+28,gikai,,,議会費,,,,eq,,assigned,01.1,retained,款,,議会。COFOG 01.1 立法機関・行政機関
+29,somu,,,総務費,,,,eq,,assigned,01,retained,款,,総務・徴税・戸籍・選挙・統計・監査。COFOG 01 一般公共サービス
+30,minsei,,,民生費,,,,eq,,assigned,10,retained,款,,社会福祉・児童福祉・生活保護。COFOG 10 社会保護
+31,rodo,,,労働費,,,,eq,,assigned,04.1.2,retained,款,,労働諸費。COFOG 04.1.2 一般労働業務
+32,norin,,,農林費,,,,eq,,assigned,04.2,retained,款,,農業。COFOG 04.2 農林水産業
+33,shoko,,,商工費,,,,eq,,assigned,04.7,retained,款,,商工業。COFOG 04.7 その他の産業
+34,shobo,,,消防費,,,,eq,,assigned,03.2,retained,款,,消防。COFOG 03.2 消防サービス
+73,tama-eisei-hoken,132241,一般会計,,保健衛生費,,,eq,,assigned,07,retained,項,,多摩市 款4 項1 保健衛生費。COFOG 07 保健
+74,tama-eisei-seiso,132241,一般会計,,清掃費,,,eq,,assigned,05.1,retained,項,,多摩市 款4 項2 清掃費。COFOG 05.1 廃棄物管理
+75,tama-doboku-kanri,132241,一般会計,,土木管理費,,,eq,,assigned,04.5,retained,項,,多摩市 款8 項1 土木管理費。COFOG 04.5 運輸
+76,tama-doboku-doro,132241,一般会計,,道路橋りょう費,,,eq,,assigned,04.5.1,retained,項,,多摩市 款8 項2 道路橋りょう費。COFOG 04.5.1 道路交通
+77,tama-doboku-jutaku,132241,一般会計,,住宅費,,,eq,,assigned,06.1,retained,項,,多摩市 款8 項5 住宅費。COFOG 06.1 住宅開発
+78,tama-toshikeikaku-kouen,132241,一般会計,,都市計画費,,公園費|緑化推進対策費,eq,,assigned,08.1,retained,目,,多摩市 款8 項4 のうち公園・緑化。COFOG 08.1 レクリエーション及びスポーツのサービス。三鷹市の緑化公園費と同じ扱い
+79,tama-toshikeikaku-other,132241,一般会計,,都市計画費,,,eq,,assigned,06.2,retained,項,,多摩市 款8 項4 都市計画費のうち目で決まらないもの（都市計画総務費）。COFOG 06.2 地域開発
+80,tama-shakaikyoiku-toshokan,132241,一般会計,,社会教育費,,図書館費,eq,,assigned,08.2,retained,目,,多摩市 款10 項5 のうち図書館。COFOG 08.2 文化サービスが図書館を明示的に含むため教育費の下にあっても 08 に置く（三鷹市・狛江市の図書館費と同じ扱い）
+81,tama-shakaikyoiku-other,132241,一般会計,,社会教育費,,,eq,,assigned,09.5,retained,項,,多摩市 款10 項5 社会教育費のうち図書館以外（社会教育総務・公民館・社会教育施設）。COFOG 09.5 水準が定義できない教育。08 文化サービスとの境界は判断である
+82,tama-hokentaiiku-kyushoku,132241,一般会計,,保健体育費,,学校給食費,eq,,assigned,09.6,retained,目,,多摩市 款10 項6 のうち学校給食。COFOG 09.6 教育に付帯するサービス
+83,tama-hokentaiiku-other,132241,一般会計,,保健体育費,,,eq,,assigned,08.1,retained,項,,多摩市 款10 項6 保健体育費のうち学校給食以外（保健体育総務・体育施設）。COFOG 08.1 レクリエーション及びスポーツのサービス。三鷹市のスポーツ推進費と同じ扱い
+84,tama-kyoiku-gakko,132241,一般会計,,教育総務費,,,eq,,assigned,09.8,retained,項,,多摩市 款10 項1 教育総務費。教育委員会・事務局・教育指導の管理業務で COFOG 09.8 他に分類されない教育
+85,tama-kyoiku-shoto,132241,一般会計,,小学校費|幼稚園費,,,eq,,assigned,09.1,retained,項,,多摩市 款10 の小学校・幼稚園。COFOG 09.1 就学前教育及び初等教育
+86,tama-kyoiku-chuto,132241,一般会計,,中学校費,,,eq,,assigned,09.2,retained,項,,多摩市 款10 項3 中学校費。COFOG 09.2 中等教育
+87,tama-nogyo,132241,一般会計,,農業費,,,eq,,assigned,04.2,retained,項,,多摩市 款6 項1 農業費。COFOG 04.2 農業・林業・漁業・狩猟。⚠️ 款の名称が「農林業費」で汎用規則（農林費）に当たらないため項で当てる
+88,tama-saigai-bunkyo,132241,一般会計,,文教施設災害復旧費,,,eq,,assigned,09,retained,項,,多摩市 款11 の文教施設の災害復旧。COFOG は機能別なので復旧の対象施設の機能に置く
+89,tama-saigai-doboku,132241,一般会計,,公共土木施設災害復旧費,,,eq,,assigned,04.5.1,retained,項,,多摩市 款11 の公共土木施設（道路橋りょう）の災害復旧。COFOG 04.5.1 道路交通
+90,tama-saigai-kouen,132241,一般会計,,公園施設災害復旧費,,,eq,,assigned,08.1,retained,項,,多摩市 款11 の公園施設の災害復旧。COFOG 08.1 レクリエーション及びスポーツのサービス
+91,tama-saigai-other,132241,一般会計,,その他公共、公用施設災害復旧費,,,eq,,unclassifiable,,retained,項,,多摩市 款11 のその他公共・公用施設の災害復旧。対象施設が特定できないので機能を決められない。捨てずに分類不能として残す
+92,tama-shokitte,132241,一般会計,,小切手支払未済償還金,,,eq,,out-of-scope,,retained,項,,多摩市 款13 項2 小切手支払未済償還金。歳計現金の戻入であって支出の機能ではない。三鷹市の償還金及び還付加算金と同じ扱い

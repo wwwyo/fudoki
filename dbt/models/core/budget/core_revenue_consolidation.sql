@@ -36,6 +36,8 @@ select
     -- 分類の軸は歳入に存在しない。空にするのではなく、そう明示する。
     'not-applicable'                                     as cofog_status,
     ''                                                   as cofog_division,
+    ''                                                   as cofog_group,
+    ''                                                   as cofog_class,
     case when is_interfund then 'eliminated' else 'retained' end as cofog_consolidation,
     case when is_interfund then '項' else '（規則なし）' end      as cofog_decided_at_level,
     case when is_interfund then 'revenue-interfund' end  as cofog_rule_id,
