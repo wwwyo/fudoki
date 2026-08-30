@@ -10,6 +10,7 @@ import { Layout } from "@/components/layout"
 import { TokyoMap } from "@/components/tokyo-map"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
+import { withBase } from "@/lib/utils"
 
 export function HomePage() {
   return (
@@ -63,7 +64,7 @@ export function HomePage() {
           <AlertDescription>
             URL・応答スキーマ・提供そのものを予告なく変更または停止することがあります。詳しくは
             {" "}
-            <a className="underline" href="/terms/">
+            <a className="underline" href={withBase("/terms/")}>
               ベータ利用条件
             </a>
             {" "}
@@ -91,7 +92,7 @@ export function HomePage() {
               GitHub
             </a>
           } />
-          <Button variant="outline" size="sm" nativeButton={false} render={<a href="/pipeline/">パイプライン報告</a>} />
+          <Button variant="outline" size="sm" nativeButton={false} render={<a href={withBase("/pipeline/")}>パイプライン報告</a>} />
         </section>
       </main>
     </Layout>

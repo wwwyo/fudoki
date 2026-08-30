@@ -1,4 +1,6 @@
-# fudoki（風土記）
+# 風土記（fudoki）
+
+<img src="apps/web/public/hero.webp" alt="713年の官命により諸国から集められた、地名の由来や産物を記した巻物を役人が受け取る場面を描いた墨絵" width="100%">
 
 **公開されているのに読めない、を読める形にする。**
 
@@ -9,29 +11,25 @@
 fudoki は日本の地方自治体の**支出を事業単位まで**構造化し、標準形式で配布する。
 デジタル庁のダッシュボードが目的別と性質別まで出している以上、欠けているのは**粒度**と**横断性**の2つだけで、そこだけを埋める。
 
-## いま手に入るもの
+## 配布しているもの
 
-東京都の2団体を [Fiscal Data Package](https://fiscal.datapackage.org/) 1.0.0 として配布している。
-
-- **三鷹市** 令和6年度当初予算（歳出 5,613行、歳入 821行）
-- **狛江市** 2018〜2023年度決算（歳出 13,461行、歳入 4,219行）
-
-狛江市は事業の名称が決算資料 PDF にしかないので、そこから起こして事業へ対応づけている。
-名称が付くのは一般会計の 2020年度以降で、対象となる事業の 98.2%（金額で 92.2%）にあたる。
+東京都の全区市町村（62団体）を最初の網羅範囲とし、**収録できた団体から順に** [Fiscal Data Package](https://fiscal.datapackage.org/) 1.0.0 として配布している。
 
 | | 置き場 | 中身 |
 |---|---|---|
 | 原典 | [`data/budget/raw/`](./data/budget/raw/) | Parquet。取得の単位ごとに partition |
-| 配布物 | [`132047/`](./data/budget/datapackages/132047/) ／ [`132195/`](./data/budget/datapackages/132195/) | 団体ごと。正本（歳出・歳入）と判断（COFOG・その規則表・事業名）を別リソースで |
+| 配布物 | [`data/budget/datapackages/`](./data/budget/datapackages/) | 団体ごと。正本（歳出・歳入）と判断（COFOG・その規則表・事業名）を別リソースで |
 | 証跡 | 原典の隣の `provenance.json` | URL・status・SHA-256・取得時刻 |
-| 報告 | `bun run dev` | ダッシュボードで見る |
+| API | [docs.fudoki.dev](https://docs.fudoki.dev/) | 配布物から生成した読み取り専用の REST |
+| 報告 | [fudoki.dev](https://fudoki.dev/) | 収録した団体と、その検査の結果 |
 
-たとえば三鷹市の「いじめ問題対策協議会関係費」は 311,000円で、教育費 > 教育総務費 > 教育指導費 の下にある。
-これを機械で引けるようにするのが目的である。
-狛江市でも「いじめ問題等対策推進」を 2020〜2023 の4年度ぶん引ける。
+⚠️ **どの団体をどこまで収録したかはここに書かない。** 増えるたびに文書だけが古くなるので、
+[配布物](./data/budget/datapackages/)そのものと[画面](https://fudoki.dev/)を見てほしい。
+取得元の宣言は [`ingestion/budget/sources.toml`](./ingestion/budget/sources.toml)、
+団体ごとの実測と癖は [`ingestion/budget/jurisdictions/`](./ingestion/budget/jurisdictions/) にある。
 
 **公開されているデータの粒度と、そこから問いに答えられるかは別**というのが2団体目の一番大きな発見だった。
-狛江市のオープンデータは事業まで届いているのに名称を持たないので、CSV だけでは何の事業か分からない。
+事業まで届いているのに名称を持たない団体があり、CSV だけでは何の事業か分からない。
 成立範囲・判断の内容・確からしさは [AGENTS.md](./AGENTS.md) とパイプライン報告の Caveats にある。
 
 ## 5分で動かす
@@ -79,7 +77,7 @@ bun run dev            # ダッシュボードを開く（http://localhost:5173�
 
 | レイヤ | 標準 | 状態 |
 |---|---|---|
-| ① 何にいくら（予算） | [Fiscal Data Package](https://fiscal.datapackage.org/) | 2団体を配布済み |
+| ① 何にいくら（予算） | [Fiscal Data Package](https://fiscal.datapackage.org/) | 収録できた団体から配布中 |
 | ② いつ何が公告されたか（調達） | [OCDS](https://standard.open-contracting.org/) | 未着手 |
 | ③ どう決まったか（会議録） | [Popolo](https://www.popoloproject.com/) | 権利判定のみ（再配布可の団体は0） |
 
@@ -93,7 +91,7 @@ bun run dev            # ダッシュボードを開く（http://localhost:5173�
 - [data/budget/datapackages/README.md](./data/budget/datapackages/README.md): 配布物の読み方
 - [apps/web/README.md](./apps/web/README.md): ダッシュボードの構成
 - [dbt/models/](./dbt/models/): staging（判断なし）と core（判断あり）。層の境界はテストで縛っている
-- [ingestion/budget/sources.toml](./ingestion/budget/sources.toml): 取得元の定義。2団体目はここに足す
+- [ingestion/budget/sources.toml](./ingestion/budget/sources.toml): 取得元の定義。団体を足すときはここから
 
 名前は『風土記』から。
 713年の官命により、諸国へ地名の由来や産物を**同じ様式で報告させて集めた**地誌で、各自治体から同じ形式でデータを集めるという本 PJ の構造がそのまま重なる。

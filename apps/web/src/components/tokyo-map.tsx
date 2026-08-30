@@ -16,7 +16,7 @@
  */
 import { useEffect, useMemo, useState } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { cn } from '@/lib/utils'
+import { cn, withBase } from '@/lib/utils'
 
 type TokyoFeature = {
   type: 'Feature'
@@ -218,7 +218,7 @@ export function TokyoMap({ className }: Props) {
         {mainland.shapes.map((s) => (
           <Tooltip key={s.code}>
             <TooltipTrigger
-              render={<a href={`/pipeline/${s.code}/`} aria-label={s.name} className="group outline-none" />}
+              render={<a href={withBase(`/pipeline/${s.code}/`)} aria-label={s.name} className="group outline-none" />}
             >
               <path
                 d={s.d}
@@ -243,7 +243,7 @@ export function TokyoMap({ className }: Props) {
             <TooltipTrigger
               render={
                 <a
-                  href={`/pipeline/${s.code}/`}
+                  href={withBase(`/pipeline/${s.code}/`)}
                   aria-label={s.name}
                   className="group focus-visible:ring-ring/50 flex flex-col items-center gap-0.5 rounded-md p-1 outline-none focus-visible:ring-[3px]"
                 />

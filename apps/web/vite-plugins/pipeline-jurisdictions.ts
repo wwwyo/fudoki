@@ -48,11 +48,29 @@ function loadJurisdictions(root: string): Record<string, Jurisdiction> {
   return parsed.jurisdictions
 }
 
+/** HTML のテキストと属性値に入れる文字。`"` まで含めるのは属性値に埋めるため */
+function escapeHtml(s: string): string {
+  return s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c] as string)
+}
+
+/**
+ * `<script>` の中へ JSON を埋めるためのエスケープ。
+ *
+ * ⚠️ `JSON.stringify` だけでは足りない。値に `</script>` が入ると HTML パーサが
+ * そこでスクリプトを閉じてしまい、JSON として妥当でもページが壊れる。
+ * いまの `jurisdictions.json` は日本語の団体名しか持たないが、
+ * 生成する側がその前提に寄りかかる理由が無い。
+ */
+function escapeJsonForScript(value: unknown): string {
+  return JSON.stringify(value).replace(/</g, "\\u003C")
+}
+
 function renderHtml(code: string, name: string): string {
   // 団体名・コードは window 経由で main-pipeline.tsx へ渡す。jurisdictions.json を
   // 画面側からも fetch させると同じデータを2箇所（生成物と実行時 fetch）で持つことになるため、
   // このページが担当する1団体分だけをビルド時に埋め込む。
-  const injected = JSON.stringify({ code, name })
+  const injected = escapeJsonForScript({ code, name })
+  const safeName = escapeHtml(name)
   return `<!doctype html>
 <html lang="ja">
   <head>
@@ -61,10 +79,10 @@ function renderHtml(code: string, name: string): string {
 
     <!-- ⚠️ document.title はここから団体・年度に応じて実行時に書き換わる
          （src/pages/pipeline.tsx）。ここに書くのは JS 実行前 / SEO 用の既定値 -->
-    <title>${name} のELTパイプライン報告 | fudoki（風土記）</title>
+    <title>${safeName} のELTパイプライン報告 | fudoki（風土記）</title>
     <meta
       name="description"
-      content="${name} の予算データについて、fudoki の ELT パイプラインが何を検査し、どこで判断を加えているかを追う報告。原典・変換・配布物の系統は dbt の manifest から生成する。"
+      content="${safeName} の予算データについて、fudoki の ELT パイプラインが何を検査し、どこで判断を加えているかを追う報告。原典・変換・配布物の系統は dbt の manifest から生成する。"
     />
     <link rel="canonical" href="https://fudoki.dev/pipeline/${code}/" />
 

@@ -33,6 +33,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { Info } from "lucide-react"
+import { withBase } from "@/lib/utils"
 import {
   levelsOf,
   loadDetail,
@@ -77,7 +78,7 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
         // ブックマークが「どの団体を見ているか」を表さなくなる。
         if (!urlCode) {
           const first = d.jurisdictions[0]?.code
-          if (first) window.location.replace(`${import.meta.env.BASE_URL}pipeline/${first}/`)
+          if (first) window.location.replace(withBase(`/pipeline/${first}/`))
           return
         }
       })
@@ -226,8 +227,7 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
   ]
 
   return (
-    <Layout
-    >
+    <Layout>
       <main className="mx-auto flex max-w-[1500px] flex-col gap-8 p-4 pb-24">
         <section className="flex flex-col gap-4">
           {/* どの団体を見ているかは本文のコンテキスト。header はサイト全体の枠なので置かない */}
@@ -244,7 +244,7 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
                   // state だけ変えると URL が古い団体のままになる（地図からの遷移・
                   // ブックマーク・共有リンクがすべて「見ている団体」を表さなくなる）。
                   // 隣の団体へは `/pipeline/<code>/` への遷移で移る。
-                  window.location.href = `${import.meta.env.BASE_URL}pipeline/${v}/`
+                  window.location.href = withBase(`/pipeline/${v}/`)
                 }}
               >
                 <SelectTrigger aria-label="団体">
@@ -408,7 +408,7 @@ function NotCollectedPage({
             <Select
               items={jurisdictions.map((j) => ({ value: j.code, label: j.name }))}
               onValueChange={(v) => {
-                window.location.href = `${import.meta.env.BASE_URL}pipeline/${v}/`
+                window.location.href = withBase(`/pipeline/${v}/`)
               }}
             >
               <SelectTrigger aria-label="団体">
