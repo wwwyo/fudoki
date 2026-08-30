@@ -11,10 +11,15 @@
 --   hierarchy_path  コード列から導出できる
 --   団体・phase・通貨・direction  全行同じ値。datapackage.json のメタデータに属する
 {% set amounts = var('budget_amounts')['132047']['revenue'] %}
+{#- ⚠️ **宣言の件数で見る。** 止めたいのは段階が増えた場合（行の展開が要る）と、
+    年度で宣言が割れた場合（列名・単位・倍率を年度で選ぶ形が要る）の両方で、
+    このモデルはどちらにも対応していない。 -#}
 {% if amounts | length != 1 %}
   {{ exceptions.raise_compiler_error(
-      '132047/revenue: 予算段階が ' ~ amounts | length ~ ' 種類ある。'
-      ~ 'このモデルは単一段階を前提にしているので、段階ごとの行へ展開する形へ変えること') }}
+      '132047/revenue: 金額の宣言が ' ~ amounts | length ~ ' 件ある。'
+      ~ 'このモデルは単一段階・全年度共通の宣言を前提にしている。'
+      ~ '段階が増えたなら段階ごとの行へ展開する形へ、年度で割れたなら'
+      ~ 'budget_amount_value_sql のように年度で選ぶ形へ変えること') }}
 {% endif %}
 {% set amount = amounts[0] %}
 select

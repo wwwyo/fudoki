@@ -128,9 +128,20 @@ vars:
   # **原典が年度の列を持っているのに誰も見ていない**状態になる。
   #   western       2023 のような西暦（狛江市）
   #   reiwa-abbrev  R4 のような令和の略記（多摩市）
+  # ⚠️ **列の有無は年度で割れる。** 多摩市の令和7年度は歳出だけ年度の列が消えた
+  # （歳入には残っている）。だから (団体) ではなく (団体, direction) で持ち、
+  # 各宣言に `years` を書けるようにしてある。`years` を書かない宣言は全年度に効く。
+  #   ⚠️ **`years` で絞ると、絞った外の年度は誰も見ていない状態になる。**
+  #   それを許さないために、外した年度では原典に列が**本当に無い**ことを
+  #   tests/source_year_column_scope_is_real.sql が確かめる。
   budget_source_year_columns:
-    "132195": {column: "年度", notation: western}
-    "132241": {column: "年度", notation: reiwa-abbrev}
+    "132195":
+      expenditure: [{column: "年度", notation: western}]
+      revenue: [{column: "年度", notation: western}]
+    "132241":
+      # ⚠️ 令和7年度（2025）の歳出には年度の列が無い。
+      expenditure: [{column: "年度", notation: reiwa-abbrev, years: [2021, 2022, 2023, 2024]}]
+      revenue: [{column: "年度", notation: reiwa-abbrev}]
 
   # **歳出と歳入の合計が一致するという検算を、どの団体で有効にするか。**
   # ⚠️ 一般の不変条件ではない。決算・企業会計・補正差分・会計範囲の異なる抽出では成立しない。
@@ -146,7 +157,10 @@ vars:
       tolerance_yen: 1000
     "132241":
       # 当初予算どうしで、実測でも歳入と歳出の合計が完全に一致する
-      # （R4 = 63,067,000 千円 / R3 = 63,030,000 千円）。単位が千円なので円未満は出ない
+      # （R4 = 63,067,000 千円 / R3 = 63,030,000 千円 / R7 = 68,550,000,000 円）。
+      # ⚠️ **単位が年度で割れる**（R3〜R6 は千円、R7 は円）。千円の年度は円未満が出ないので
+      # 許容差は 1,000 円のままでよいが、これは「R7 が 1,000 円ずれても通る」ことも意味する。
+      # 年度ごとに許容差を変える理由がまだ無い（実測ではどの年度も差 0）ので分けていない
       tolerance_yen: 1000
 
   # **単位と、円へ直す倍率の対応。** 単位の語彙はここが正本。
@@ -172,6 +186,13 @@ vars:
   #   multiplier 円へ直す倍率。`budget_amount_unit_multipliers` の unit と対で決まる
   #   phase      FDP の phase:id / phase_label はその表示名
   #   primary    COFOG の集計と検算に使う段階。**団体・direction ごとに1つ**
+  #   years      その宣言が効く年度（省略したら全年度）。
+  #              ⚠️ **同じ団体の同じ資料でも、年度をまたぐと列名や単位が割れる。**
+  #              多摩市は令和7年度で列名が `予算額` → `合計 / 予算額`、単位が千円 → 円に変わった。
+  #              (団体, direction) の粒度では表せないので、`name` が同じ宣言を
+  #              年度で分けて並べる。宣言の解決は macros/budget_amount_scope.sql にあり、
+  #              **原典の年度がどれかの宣言に覆われていること**は
+  #              tests/amount_declarations_cover_years.sql が原典の側から確かめる。
   budget_amounts:
     "132047":
       expenditure:
@@ -194,12 +215,19 @@ vars:
         - {name: source_amount_executed, source: "収入累計(円)", unit: 円, multiplier: 1,
            phase: executed, phase_label: 収入済額, primary: false}
     "132241":
-      # ⚠️ **列名が単位を名乗っていない**（ただの `予算額`）ので、原典と突き合わせられない。
-      # 千円だという根拠は歳入と歳出の合計の一致と規模で、
+      # ⚠️ **列名が単位を名乗っていない**（ただの `予算額` / `合計 / 予算額`）ので、原典と突き合わせられない。
+      # 令和3〜6年度が千円だという根拠は歳入と歳出の合計の一致と規模で、
       # R4 = 63,067,000 → 630.67 億円（円なら 0.63 億円で多摩市の一般会計と合わない）。
+      # ⚠️ **令和7年度（2025）は円。** 同じ根拠の当て方で、歳出計 68,550,000,000 を
+      # 円と読むと 685.5 億円になり前年度からの連続で読める（千円と読むと 68.5 兆円で成り立たない）。
+      # 歳出と歳入の合計が一致することも従来どおり成立している。
       expenditure:
         - {name: source_amount, source: "予算額", unit: 千円, multiplier: 1000,
-           phase: approved, phase_label: 当初予算, primary: true}
+           phase: approved, phase_label: 当初予算, primary: true, years: [2021, 2022, 2023, 2024]}
+        - {name: source_amount, source: "合計 / 予算額", unit: 円, multiplier: 1,
+           phase: approved, phase_label: 当初予算, primary: true, years: [2025]}
       revenue:
         - {name: source_amount, source: "予算額", unit: 千円, multiplier: 1000,
-           phase: approved, phase_label: 当初予算, primary: true}
+           phase: approved, phase_label: 当初予算, primary: true, years: [2021, 2022, 2023, 2024]}
+        - {name: source_amount, source: "合計 / 予算額", unit: 円, multiplier: 1,
+           phase: approved, phase_label: 当初予算, primary: true, years: [2025]}

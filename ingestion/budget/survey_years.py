@@ -87,6 +87,11 @@ def _resources(src: Source) -> list[dict]:
     """カタログのリソース一覧。1回引いて使い回す"""
     if src.key not in _cache:
         import urllib.parse
+        if src.catalog is None or src.dataset_title is None:
+            raise SystemExit(
+                f"{src.key}: カタログの宣言が無い（全リソースが直 URL）。"
+                f"この調査はカタログの他年度リソースを見るものなので、対象にできない"
+            )
         q = urllib.parse.quote(src.dataset_title)
         got = http_get(f"{src.catalog.endpoint}?q={q}&rows=300")
         org = src.catalog.org_prefix + src.jurisdiction_code

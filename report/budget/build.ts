@@ -44,6 +44,13 @@ const CODE_SQL = `c.cofog_division division, c.cofog_group "group", c.cofog_clas
 type Amount = {
   name: string; source: string; unit: string; multiplier: number
   phase: string; phase_label: string; primary: boolean
+  /**
+   * その宣言が効く年度。**省略なら全年度。**
+   * ⚠️ 同じ団体の同じ資料でも年度をまたぐと列名や単位が割れることがある
+   * （多摩市は令和7年度で `予算額` → `合計 / 予算額`、千円 → 円）。
+   * 解決の規則は dbt 側（macros/budget_amount_scope.sql）が正本。
+   */
+  years?: number[]
 }
 const DBT_VARS = Bun.YAML.parse(
   readFileSync(join(ROOT, 'dbt/dbt_project.yml'), 'utf8'),
@@ -151,6 +158,14 @@ function cofogGranularity(byState: StateRow[]):
     assignedShare: { count: share(assigned.count, total.count), sum: share(assigned.sum, total.sum) },
   }
 }
+
+/**
+ * そのリソースに現れる予算段階。**行を段階ごとに展開したかはこれで決まる。**
+ * ⚠️ **宣言の件数で決めない。** 多摩市は同じ approved の宣言が年度で2件に割れているが、
+ * 原典1行は1行のままである（件数で見ると配布物の行数が2倍だと思い込む）。
+ */
+const phaseIdsOf = (code: string, direction: Direction) =>
+  new Set(amountsOf(code, direction).map((a) => a.phase))
 
 /**
  * COFOG の判断。**fudoki が自治体の言っていないことを付け加えた唯一の場所**なので、
@@ -355,7 +370,7 @@ function build(
       rowsPreserved: DIRECTIONS.every((d) => {
         // label（表示名）ではなく id で引く。表示名は変わりうるが、dbt の unique_id は識別子
         const rows = (name: string) => topology.nodes.find((n) => n.id.endsWith(`.${name}`))?.rows
-        return rows(`stg_${code}__${d}`)! * amountsOf(code, d).length === rows(`pkg_${code}__${d}`)
+        return rows(`stg_${code}__${d}`)! * phaseIdsOf(code, d).size === rows(`pkg_${code}__${d}`)
       }),
     },
     topology,
@@ -385,9 +400,11 @@ function build(
  * `*_source`（原典のセル全文）は配布物から落としてある（code‖label で復元できるため）。
  * 画面は階層の絞り込みに使うので、ここで組み立て直す。
  *
- * ⚠️ **単一段階の団体には phase_label / source_amount_unit の列が無い。**
- * 全行同じ値なので配布物から外して descriptor の定数にしてあるが、
- * 画面は列として受け取る。無い側をここで補う。
+ * ⚠️ **配布物に phase_label / source_amount_unit の列が無い団体がある。**
+ * 全行同じ値なら配布物から外して descriptor の定数にしてあるからで、
+ * 画面は列として受け取るので無い側をここで補う。
+ * ⚠️ **2つは別々に決まる。** 段階が1つなら phase_label は定数だが、
+ * 単位は年度でも割れる（多摩市は令和3〜6年度が千円、令和7年度が円）ので列に残る。
  */
 /**
  * 割当の根拠。**規則ごとに1つ**なので行に複製せず、明細と一緒に1回だけ運ぶ。
@@ -416,10 +433,13 @@ function detailProjection(code: string, direction: Direction): DetailTable {
   const canonical = join(ROOT, `data/budget/datapackages/${code}/${direction}.csv`)
   // ⚠️ join 相手にも同名の列があるので c. で明示する（曖昧参照で DuckDB が落ちる）
   const src = levels.map((l) => `c.${l}_code || c.${l}_label as ${l}_source`).join(', ')
-  const single = amounts.length === 1
-  const constants = single
-    ? `, '${amounts[0]!.phase_label}' as phase_label, '${amounts[0]!.unit}' as source_amount_unit`
-    : ''
+  // ⚠️ **段階の数と宣言の数を分けて見る。** 多摩市は段階が1つ（approved）なので
+  // phase_label は配布物の定数だが、単位は年度で割れるので配布物の列になっている。
+  // 一緒くたにすると、既にある列を二重に select して DuckDB が落ちる。
+  const constants = [
+    phaseIdsOf(code, direction).size === 1 ? `, '${amounts[0]!.phase_label}' as phase_label` : '',
+    amounts.length === 1 ? `, '${amounts[0]!.unit}' as source_amount_unit` : '',
+  ].join('')
   // ⚠️ **異なり数の少ない列を行へ join しない。** 根拠（basis）は19種類しかないのに
   // 行へ入れると狛江市の歳出だけで 7.0 MB になる（`cofog_rule_id` が全行にあるので情報量ゼロ）。
   // ディビジョン名も画面が宣言として持っている。どちらも規則表・宣言から引く。

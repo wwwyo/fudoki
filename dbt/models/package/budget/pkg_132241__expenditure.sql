@@ -8,13 +8,21 @@
 --
 -- ⚠️ **三鷹市・狛江市と列を揃えない。** 多摩市の事業階層は目の下の「細目」で、名称を持つ（例: `子ども若者育成支援事業`）。
 -- 揃えることが「同じ概念だ」という判断になるので、正本は団体ごとの形のまま出す。
-{% set amounts = var('budget_amounts')['132241']['expenditure'] %}
-{% if amounts | length != 1 %}
+{#-
+  ⚠️ **段階の数で決める。宣言の件数で決めない。** 多摩市は令和7年度で金額の列名と単位が
+  変わったので、同じ `source_amount` の宣言が年度で 2 件に割れている。件数で見ると
+  「段階が2種類ある」と誤読して、1行しかない原典を2行へ展開してしまう。
+-#}
+{% if not budget_amount_unit_is_column('132241', 'expenditure') %}
   {{ exceptions.raise_compiler_error(
-      '132241/expenditure: 予算段階が ' ~ amounts | length ~ ' 種類ある。'
+      '132241/expenditure: 単位を定数にできる宣言なのに source_amount_unit を列で出している') }}
+{% endif %}
+{% set phases = budget_phase_ids('132241', 'expenditure') %}
+{% if phases | length != 1 %}
+  {{ exceptions.raise_compiler_error(
+      '132241/expenditure: 予算段階が ' ~ phases | length ~ ' 種類ある。'
       ~ 'このモデルは単一段階を前提にしているので、段階ごとの行へ展開する形へ変えること') }}
 {% endif %}
-{% set amount = amounts[0] %}
 select
     budget_line_id,
     fiscal_year,
@@ -32,11 +40,14 @@ select
     saimoku_label,
     setsu_code,
     setsu_label,
-    -- 円へ正規化した値と、原典の値を別に残す。
+    -- 円へ正規化した値と、原典の値・単位を別に残す。
     -- FDP には倍率を表す ColumnType が無いため、両方置く。
-    -- ⚠️ 単位（千円）は原典の列名が名乗っていない。根拠は budget_amounts の宣言にある。
-    source_amount * {{ amount['multiplier'] }} as value,
-    source_amount
+    -- ⚠️ 単位は原典の列名が名乗っていない。根拠は budget_amounts の宣言にある。
+    -- ⚠️ **単位が年度で割れる**（令和3〜6年度は千円、令和7年度は円）ので、
+    -- 三鷹市のように datapackage.json の定数へ出すことはできない。行の列として持つ。
+    {{ budget_amount_value_sql('132241', 'expenditure', 'source_amount') }} as value,
+    source_amount,
+    {{ budget_amount_attr_sql('132241', 'expenditure', 'source_amount', 'unit', true) }} as source_amount_unit
 from {{ ref('stg_132241__expenditure') }}
 -- 年度をまたぐと source_row だけでは並びが決まらない
 order by fiscal_year, source_row

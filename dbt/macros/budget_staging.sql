@@ -55,7 +55,6 @@
   {%- endif %}
 {%- endfor -%}
 {%- set extra_labels = var('budget_extra_key_labels').get(code, {}).get(direction, {}) -%}
-{%- set amounts = var('budget_amounts')[code][direction] -%}
 
 {%- if levels | length != columns | length -%}
   {{ exceptions.raise_compiler_error(
@@ -120,8 +119,15 @@ select
             jurisdiction_code || chr(31) || fiscal_year || chr(31) || direction || chr(31) || phase
             || chr(31) || {{ key_cells | join(" || chr(31) || ") }}
         ), 1, 16) as budget_line_id
-{%- for a in amounts %},
-    cast("{{ a['source'] }}" as bigint) as {{ a['name'] }}
+{#-
+  金額。**列名は年度で割れうる**ので、宣言の解決（budget_amount_scope）に任せる。
+  多摩市は令和7年度だけ `合計 / 予算額` で、それ以前は `予算額` である。
+  割れていない団体では、これはただの `cast("列" as bigint)` に戻る。
+  ⚠️ ここで見る年度は原典の partition（`year`）で、`fiscal_year` はまだ別名を付けただけの
+  同じ select の中なので参照できない。
+-#}
+{%- for name in budget_amount_names(code, direction) %},
+    {{ budget_amount_source_sql(code, direction, name, 'year') }} as {{ name }}
 {%- endfor %}
 from {{ source('raw_' ~ code, direction) }}
 

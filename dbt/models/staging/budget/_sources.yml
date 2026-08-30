@@ -19,9 +19,17 @@ sources:
       - name: expenditure
       - name: revenue
   - name: raw_132241
-    description: 多摩市。原典の Parquet を直接読む（当初予算。2021〜2024 の4年度）
+    description: |
+      多摩市。原典の Parquet を直接読む（当初予算。2021〜2025 の5年度）。
+      ⚠️ **年度で列構成が違うので `union_by_name` が要る。** 令和7年度は金額の列名が
+      `予算額` から `合計 / 予算額` へ変わり、歳出からは `年度` の列が消えた。
+      無い列は NULL として読まれるので、**列名の書き間違いが黙って NULL になる**経路が
+      この団体にだけ開く。塞ぐのは
+      `amount_declarations_cover_years`（宣言が原典の全年度を覆っているか）と
+      `source_year_column_scope_is_real`（年度の列を外した年度で本当に列が無いか）、
+      それに従来からの `canonical_preserves_source`（原典と staging の多重集合一致）。
     meta:
-      external_location: "read_parquet('../data/budget/raw/jurisdiction=132241/year=*/phase=*/direction={name}/data.parquet', hive_partitioning=true)"
+      external_location: "read_parquet('../data/budget/raw/jurisdiction=132241/year=*/phase=*/direction={name}/data.parquet', hive_partitioning=true, union_by_name=true)"
     tables:
       - name: expenditure
       - name: revenue

@@ -18,15 +18,18 @@
 {% set units = [] %}
 {% for code, direction in budget_units() %}
   {% if code in spec %}
+    {#- ⚠️ **倍率は年度で割れうる**（多摩市は令和3〜6年度が千円、令和7年度が円）。
+        1つ選んで全年度に掛けると、片方の年度が 1000 倍ずれたまま比べることになる。 -#}
     {% set primary = var('budget_amounts')[code][direction] | selectattr('primary') | list %}
-    {% do units.append((code, direction, primary[0]['multiplier'])) %}
+    {% do units.append((code, direction, primary[0]['name'])) %}
   {% endif %}
 {% endfor %}
 
 with sums as (
-    {% for code, direction, multiplier in units %}
+    {% for code, direction, name in units %}
     select '{{ code }}' as jurisdiction, fiscal_year, fund_label,
-           '{{ direction }}' as direction, sum(source_amount * {{ multiplier }}) as amount
+           '{{ direction }}' as direction,
+           sum({{ budget_amount_value_sql(code, direction, name) }}) as amount
     from {{ ref('stg_' ~ code ~ '__' ~ direction) }} group by 1, 2, 3, 4
     {% if not loop.last %}union all{% endif %}
     {% endfor %}

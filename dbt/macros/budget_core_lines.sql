@@ -25,12 +25,22 @@
 {%- set codes = [] -%}
 {%- for c, d in budget_units() if d == direction %}{% do codes.append(c) %}{% endfor -%}
 {%- for code in codes %}
-{%- set amounts = var('budget_amounts')[code][direction] -%}
-{%- set primary = amounts | selectattr('primary') | list -%}
-{%- if primary | length != 1 -%}
+{#-
+  ⚠️ **primary は宣言の件数ではなく年度ごとに1つ。** 多摩市は令和7年度で列名と単位が
+  変わったので、同じ `source_amount` の宣言が年度で 2 件に割れている（どちらも primary）。
+  件数で数えると「primary が2件」で落ちるので、年度ごとの解決を見る
+  （check_budget_amount_scopes がそれをコンパイル時に確かめる）。
+  ⚠️ 集計に使う金額の**名前**まで年度で割れると、この select の列が年度で変わってしまう。
+  そこは割れていないことを要求する（割る必要が出たら core の形を決め直すこと）。
+-#}
+{%- set primary_names = [] -%}
+{%- for a in var('budget_amounts')[code][direction] if a['primary'] -%}
+  {%- if a['name'] not in primary_names %}{% do primary_names.append(a['name']) %}{% endif -%}
+{%- endfor -%}
+{%- if primary_names | length != 1 -%}
   {{ exceptions.raise_compiler_error(
-      code ~ '/' ~ direction ~ ': budget_amounts の primary が ' ~ primary | length
-      ~ ' 件。集計に使う段階は団体・direction ごとに1つでなければならない') }}
+      code ~ '/' ~ direction ~ ': primary の金額の名前が ' ~ primary_names
+      ~ ' と複数ある。集計に使う金額は団体・direction ごとに1つでなければならない') }}
 {%- endif -%}
 select
     jurisdiction_code,
@@ -50,8 +60,9 @@ select
     setsu_code,
     setsu_label,
     source_amount,
-    -- 円へ正規化した値。倍率は原典の単位の宣言から来る（三鷹市は千円、狛江市は円と千円）
-    source_amount * {{ primary[0]['multiplier'] }} as amount_yen
+    -- 円へ正規化した値。倍率は原典の単位の宣言から来る
+    -- （三鷹市は千円、狛江市は円と千円、多摩市は年度で千円と円に割れる）
+    {{ budget_amount_value_sql(code, direction, primary_names[0]) }} as amount_yen
 from {{ ref('stg_' ~ code ~ '__' ~ direction) }}
 {% if not loop.last %}union all
 {% endif %}
