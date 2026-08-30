@@ -136,28 +136,64 @@ def amounts_of(code: str, direction: str) -> list[dict]:
     return DBT_VARS["budget_amounts"][code][direction]
 
 
+def phase_ids(amounts: list[dict]) -> set[str]:
+    """そのリソースに現れる予算段階。**行を段階ごとに展開したかはこれで決まる。**
+
+    ⚠️ **宣言の件数で決めない。** 多摩市は同じ approved の宣言が年度で2件に割れている
+    （令和7年度で列名と単位が変わった）ので、件数で見ると1行しかない原典を
+    2行へ展開したことになってしまう。
+    """
+    return {a["phase"] for a in amounts}
+
+
+def amount_at(amounts: list[dict], year: int, phase: str) -> dict | None:
+    """その (年度, 段階) に効く宣言。**解決の規則は dbt 側と同じ**
+    （`years` を持つ宣言が優先し、無ければ `years` を持たない宣言）。
+
+    正本は `dbt/dbt_project.yml` で、規則そのものは
+    `dbt/macros/budget_amount_scope.sql` にある。ここはそれを Python で読むだけ。
+    """
+    hit = [a for a in amounts if a["phase"] == phase]
+    scoped = [a for a in hit if year in (a.get("years") or [])]
+    if scoped:
+        return scoped[0]
+    return next((a for a in hit if a.get("years") is None), None)
+
+
 def verify_against_csv(path: pathlib.Path, amounts: list[dict]) -> None:
     """宣言と配布物が食い違っていないか。**descriptor だけ正しい状態を作らない。**"""
-    multi = len(amounts) > 1
+    # ⚠️ **単位が定数でいられるのは宣言が1つのときだけ。** 段階で割れても
+    # （狛江市）年度で割れても（多摩市）行の列として持つほかない。
+    unit_is_column = len(amounts) > 1
     with path.open(encoding="utf-8", newline="") as f:
         rows = csv.DictReader(f)
         header = rows.fieldnames or []
         if "phase_id" not in header:
             raise RuntimeError(f"{path.name}: phase_id の列が無い")
-        if multi and "source_amount_unit" not in header:
+        if unit_is_column and "source_amount_unit" not in header:
             raise RuntimeError(
-                f"{path.name}: 予算段階が {len(amounts)} 種類あるのに source_amount_unit の列が無い"
+                f"{path.name}: 金額の宣言が {len(amounts)} 件あるのに source_amount_unit の列が無い"
             )
         seen: set[tuple[str, str]] = set()
         for row in rows:
             unit = row.get("source_amount_unit", amounts[0]["unit"])
             seen.add((row["phase_id"], unit))
             src, val = int(row["source_amount"]), int(row["value"])
-            expected = next((a["multiplier"] for a in amounts if a["phase"] == row["phase_id"]), None)
-            if expected is None:
-                raise RuntimeError(f"{path.name}: 宣言に無い予算段階「{row['phase_id']}」が配布物にある")
-            if val != src * expected:
-                raise RuntimeError(f"{path.name}: value {val} が source_amount {src} × {expected} と違う")
+            # ⚠️ **段階だけでは宣言が決まらない。** 多摩市は同じ approved が年度で
+            # 千円と円に割れているので、段階で先頭を採ると令和7年度に 1000 を掛けてしまう。
+            spec = amount_at(amounts, int(row["fiscal_year"]), row["phase_id"])
+            if spec is None:
+                raise RuntimeError(
+                    f"{path.name}: {row['fiscal_year']}年度の予算段階「{row['phase_id']}」に効く宣言が無い"
+                )
+            if val != src * spec["multiplier"]:
+                raise RuntimeError(
+                    f"{path.name}: value {val} が source_amount {src} × {spec['multiplier']} と違う"
+                )
+            if unit != spec["unit"]:
+                raise RuntimeError(
+                    f"{path.name}: {row['fiscal_year']}年度の単位が配布物では {unit}、宣言では {spec['unit']}"
+                )
     declared = {(a["phase"], a["unit"]) for a in amounts}
     if seen != declared:
         raise RuntimeError(
@@ -405,7 +441,9 @@ def build_jurisdiction(code: str) -> None:
     phase_labels = {(a["phase"], a["phase_label"]) for a in flat}
     if len(phase_labels) == 1:
         constants["phase_label"] = next(iter(phase_labels))[1]
-    if len(declared_units) == 1:
+    # ⚠️ **単位が1種類であることと、宣言が1つであることは別。** 多摩市は単位が
+    # 年度で千円と円に割れるので、宣言が1つの団体でしか定数にはできない。
+    if len(declared_units) == 1 and all(len(v) == 1 for v in amounts.values()):
         constants["source_amount_unit"] = next(iter(declared_units))[0]
     pkg = base(
         f"fudoki-budget-{code}",
@@ -431,15 +469,21 @@ def build_jurisdiction(code: str) -> None:
                 + "は行ごとに変わらないので、CSV の列から外して `schema.extraFields` に"
                 "定数として置いてある（仕様の Constant Fields）。"
                 "非正規化した形へ戻すときは、その列を全行に補う。",
+                # ⚠️ **年度で割れる宣言があるなら、その年度を書く。** 単位が年度で変わる団体で
+                # 「原典の千円」とだけ書くと、別の年度の行について嘘になる。
                 "## 金額の段階と単位\n\n"
                 + "\n".join(
                     f"- {name}: "
-                    + "、".join(f"{a['phase_label']}（{a['phase']}）は原典の {a['unit']} で、"
+                    + "、".join((f"{'・'.join(str(y) for y in a['years'])}年度の"
+                                 if a.get("years") else "")
+                                + f"{a['phase_label']}（{a['phase']}）は原典の {a['unit']} で、"
                                 f"円へ直すには {a['multiplier']} を掛ける"
                                 for a in amounts[name])
                     for name in amounts)
                 + "\n\n段階が複数ある場合は原典1行を段階ごとの行へ展開してあるので、"
-                "主キーは budget_line_id と phase_id の組になる。",
+                "主キーは budget_line_id と phase_id の組になる。"
+                "単位が段階や年度で割れるリソースでは、単位を行の列（source_amount_unit）に持つ"
+                "（1種類しか無いリソースでは `schema.extraFields` の定数にしてある）。",
                 *([
                     "## 事業名の出所\n\n"
                     "原典の CSV に事業の名称が無いため、市が公開している決算資料 PDF から起こした。"
@@ -484,13 +528,21 @@ def build_jurisdiction(code: str) -> None:
         entries = prov.get(direction)
         if not entries:
             raise RuntimeError(f"{code}/{direction} の証跡が無い。先に ingestion を回すこと")
-        return [{"title": f"{e['fiscal_year']}年度／{e['dataset_title']}／{e['resource_name']}",
+        # ⚠️ **カタログを引いていない年度には、載せているデータセットが無い。**
+        # 以前はここが証跡の `dataset_title` をそのまま出しており、市サイトから
+        # 直接取った年度にもカタログのデータセット名が並んでいた。
+        # その年度の在り処はパッケージ単位の `sources`（landing_page）が持つ。
+        return [{"title": "／".join(part for part in (
+                     f"{e['fiscal_year']}年度", e["dataset_title"], e["resource_name"]) if part),
                  "path": e["request_url"]} for e in entries]
 
     pkg["resources"] = []
     for name, title in (("expenditure", "歳出"), ("revenue", "歳入")):
         path = d / f"{name}.csv"
-        multi = len(amounts[name]) > 1
+        # 行を段階ごとに展開したか（主キーと phase_label の置き場が変わる）
+        multi = len(phase_ids(amounts[name])) > 1
+        # 単位を定数にできるか。⚠️ **段階でも年度でも割れれば行の列になる。**
+        unit_is_column = len(amounts[name]) > 1
         # ⚠️ **主キーは段階の数で変わる。** 決算書は原典1行を段階ごとの行へ展開するので、
         # budget_line_id だけでは一意でない（Table Schema の primaryKey が嘘になる）。
         const = {**constants, "direction": name}
@@ -499,6 +551,7 @@ def build_jurisdiction(code: str) -> None:
         # 定数にできるのは、段階が1つでその値が全行で同じときだけ。
         if not multi:
             const["phase_label"] = amounts[name][0]["phase_label"]
+        if not unit_is_column:
             const["source_amount_unit"] = amounts[name][0]["unit"]
         verify_against_csv(path, amounts[name])
         pkg["resources"].append(resource(

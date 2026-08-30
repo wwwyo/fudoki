@@ -55,6 +55,10 @@ from_staging as (
          cast({{ a['name'] }} as varchar)] as cells,
         count(*) as n
     from {{ ref('stg_' ~ code ~ '__' ~ direction) }}
+    -- ⚠️ **年度で割れた宣言は、その年度の行だけを取る。** 多摩市は同じ `source_amount` の
+    -- 宣言が年度で2件に割れているので、絞らないと同じ行を2度数えて多重集合が倍になる。
+    {% set years = budget_amount_year_filter(a) %}
+    {% if years %}where {{ years }}{% endif %}
     group by 1, 2, 3, 4, 5
     {% if not loop.last %}union all{% endif %}
     {% endfor %}

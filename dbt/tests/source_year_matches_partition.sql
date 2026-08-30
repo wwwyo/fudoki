@@ -7,15 +7,17 @@
 --
 -- 列名も**表記**も団体ごとに違うので、宣言（`budget_source_year_columns`）から引く。
 -- 宣言の無い団体（年度の列を持たない団体）はここでは検査できない。
+-- ⚠️ **年度の列の有無そのものが年度で割れる。** 多摩市の歳出は令和7年度から列が消えた
+-- （歳入には残っている）ので、宣言は (団体, direction) ごとで、各宣言が `years` を持てる。
 --
 -- ⚠️ **表記の違いを「照合できない」で済ませない。** 多摩市の年度は `R4` という
 -- 和暦の略記で、西暦の partition と直接は比べられない。宣言をやめれば検査は通るが、
 -- 原典が持っている年度を誰も見ていない状態になるので、partition 側を表記へ寄せて比べる。
 {% set units = [] %}
 {% for code, direction in budget_units() %}
-  {% if code in var('budget_source_year_columns') %}
-    {% do units.append((code, direction, var('budget_source_year_columns')[code])) %}
-  {% endif %}
+  {% for spec in var('budget_source_year_columns').get(code, {}).get(direction, []) %}
+    {% do units.append((code, direction, spec)) %}
+  {% endfor %}
 {% endfor %}
 
 {% for code, direction, spec in units %}
@@ -31,7 +33,11 @@
 select '{{ code }}' as jurisdiction, '{{ direction }}' as direction,
        year as partition_year, "{{ spec['column'] }}" as source_year, count(*) as rows
 from {{ source('raw_' ~ code, direction) }}
-where cast("{{ spec['column'] }}" as varchar) is distinct from {{ expected }}
+-- ⚠️ **列が存在するのは一部の年度だけ**ということがある（多摩市の歳出は令和7年度で
+-- 年度の列が消えた）。宣言の `years` で絞る。**絞った外側を誰も見ていない状態にしない**ため、
+-- そこで本当に列が無いことは source_year_column_scope_is_real が確かめる。
+{% if spec.get('years') %}where year in ({{ spec['years'] | join(', ') }}) and{% else %}where{% endif %}
+      cast("{{ spec['column'] }}" as varchar) is distinct from {{ expected }}
 group by 1, 2, 3, 4
 {% if not loop.last %}union all{% endif %}
 {% endfor %}

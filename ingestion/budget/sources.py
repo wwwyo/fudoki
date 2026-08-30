@@ -60,6 +60,14 @@ class Resource:
                 f"{self.resource_name}: url を宣言するなら url_basis も書くこと"
                 f"（カタログから解決できない理由が要る）"
             )
+        # ⚠️ **読まれない宣言を残さない。** url を書いた時点でカタログは一度も引かれないので、
+        # データセット名は解決にも証跡にも使われない。残すと「カタログのこのデータセットから
+        # 取った」と読めてしまい、実際には市サイトから取っている、という嘘になる。
+        if self.url is not None and self.dataset_title is not None:
+            raise ValueError(
+                f"{self.resource_name}: url を宣言したリソースに dataset_title は書かない"
+                f"（カタログを引かないので、どこからも読まれない宣言になる）"
+            )
         if self.url is not None:
             # ⚠️ **前方一致で見ない。** `https://` だけの文字列も、改行を挟んだ値も、
             # 認証情報を埋めた URL も通ってしまう。取得の宛先は証跡に残り配布物の
@@ -76,14 +84,22 @@ class Resource:
 @dataclass(frozen=True)
 class Source:
     key: str
-    catalog: Catalog
+    # ⚠️ **カタログを引かない取得元がある。** 全リソースが `url` を宣言していれば
+    # CKAN は一度も叩かれないので、カタログの宣言は読まれない。
+    # 読まれない宣言を残すと「カタログから取った」と読めてしまうので、`load_sources` が
+    # 「全リソースが直 URL なら catalog を書いてはいけない」を強制する。
+    catalog: Catalog | None
     jurisdiction_code: str
     # ⚠️ **sources.toml には書かない。** `jurisdiction_code` から
     # `ingestion/shared/jurisdictions.json` を引いて load_sources が埋める。
     # 団体の名称と識別子はそこが正本（①②③で同じキーを使う）。
     jurisdiction_name: str
     fiscal_year: int
-    fiscal_year_label: str
+    # ⚠️ **カタログ経由のときだけ読まれる。** 年度表記がリソース名に含まれることを
+    # 取得の前に確かめるためのもので、直 URL では照合が自己参照になるので使わない。
+    # 全リソースが直 URL のブロックでは `load_sources` が「書いてはいけない」を強制する
+    # （読まれない宣言は、読まれていることと区別が付かない）。
+    fiscal_year_label: str | None
     phase_id: str
     phase_label: str
     # 取得元に1つしかデータセットが無いときの既定。リソース側の宣言が優先する。
@@ -145,8 +161,17 @@ class Source:
                 f"原文をリポジトリへ置けるのは再配布可と判定した取得元だけ"
             )
 
-    def dataset_title_for(self, resource: Resource) -> str:
-        """そのリソースを載せているデータセット名。リソース側の宣言が優先する"""
+    def dataset_title_for(self, resource: Resource) -> str | None:
+        """そのリソースを載せているデータセット名。リソース側の宣言が優先する。
+
+        ⚠️ **直 URL のリソースには存在しない（None を返す）。** カタログを引かないので
+        載せているデータセットが無く、資料の在り処は `landing_page` が持つ。
+        以前はここが取得元の既定（カタログのデータセット名）を返しており、
+        **市サイトから取ったものの証跡に、引いてもいないカタログのデータセット名が
+        載っていた**（配布物の `sources[].title` にもそのまま出ていた）。
+        """
+        if resource.url is not None:
+            return None
         title = resource.dataset_title or self.dataset_title
         if title is None:
             raise ValueError(
@@ -181,13 +206,36 @@ def load_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
     sources: dict[str, Source] = {}
     for key, spec in raw.items():
         spec = dict(spec)
-        catalog_name = spec.pop("catalog")
-        if catalog_name not in catalogs:
-            raise ValueError(f"{key}: カタログ「{catalog_name}」が未定義")
+        catalog_name = spec.pop("catalog", None)
         spec.setdefault("dataset_title", None)
         resources = tuple(Resource(**r) for r in spec.pop("resources"))
         if not resources:
             raise ValueError(f"{key}: リソースが1つも無い")
+        # ⚠️ **カタログの宣言は、カタログを引くときだけ書く。**
+        # 全リソースが直 URL なら CKAN は一度も叩かれないので、`catalog` も
+        # `dataset_title` もどこからも読まれない。残すと後から読んだ者が
+        # 「カタログから取った」と誤読し、証跡もそう読める文字列を持ってしまう。
+        spec.setdefault("fiscal_year_label", None)
+        via_catalog = [r for r in resources if r.url is None]
+        # カタログを引くなら要る宣言／引かないなら書いてはいけない宣言。**同じ集合の裏表**。
+        catalog_only = {"catalog": catalog_name,
+                        "dataset_title": spec["dataset_title"],
+                        "fiscal_year_label": spec["fiscal_year_label"]}
+        if via_catalog:
+            for name in ("catalog", "fiscal_year_label"):
+                if catalog_only[name] is None:
+                    raise ValueError(
+                        f"{key}: カタログから解決するリソースがあるのに {name} の宣言が無い"
+                    )
+        else:
+            dead = sorted(n for n, v in catalog_only.items() if v is not None)
+            if dead:
+                raise ValueError(
+                    f"{key}: 全リソースが url を宣言しているのに {dead} が残っている。"
+                    f"カタログを一度も引かないので、どこからも読まれない宣言になる"
+                )
+        if catalog_name is not None and catalog_name not in catalogs:
+            raise ValueError(f"{key}: カタログ「{catalog_name}」が未定義")
         # ⚠️ **TOML に書かれていたら止める。** 既定値で上書きすると、
         # 誤記を黙って直したのか宣言が効いていないのかを読み手が区別できない。
         if "jurisdiction_name" in spec:
@@ -198,7 +246,7 @@ def load_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
             )
         sources[key] = Source(
             key=key,
-            catalog=catalogs[catalog_name],
+            catalog=catalogs[catalog_name] if catalog_name is not None else None,
             resources=resources,
             jurisdiction_name=_jurisdiction_name(spec["jurisdiction_code"]),
             **spec,

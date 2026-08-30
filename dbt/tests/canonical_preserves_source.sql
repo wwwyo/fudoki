@@ -13,8 +13,13 @@ with raw_cells as (
               + var('budget_extra_key_source_columns')[code][direction] %}
         {{ trim_cell('"' ~ c ~ '"') }},
         {%- endfor %}
-        {%- for a in var('budget_amounts')[code][direction] %}
-        "{{ a['source'] }}"{% if not loop.last %},{% endif %}
+        {#-
+          ⚠️ **原典の金額の列名は年度で割れうる。** 多摩市の令和7年度は `合計 / 予算額` で、
+          それ以前は `予算額` である。列を並べるのではなく年度で選ぶ（並べると、
+          その年度に存在しない側が NULL のまま cells に入り、staging と一致しなくなる）。
+        -#}
+        {%- for name in budget_amount_names(code, direction) %}
+        {{ budget_amount_source_sql(code, direction, name, 'year', cast_bigint=false) }}{% if not loop.last %},{% endif %}
         {%- endfor %}
     ] as cells
     from {{ source('raw_' ~ code, direction) }}
@@ -30,8 +35,8 @@ staged_cells as (
         {%- for k in var('budget_extra_key_columns')[code][direction] %}
         {{ k }}_source,
         {%- endfor %}
-        {%- for a in var('budget_amounts')[code][direction] %}
-        cast({{ a['name'] }} as varchar){% if not loop.last %},{% endif %}
+        {%- for name in budget_amount_names(code, direction) %}
+        cast({{ name }} as varchar){% if not loop.last %},{% endif %}
         {%- endfor %}
     ] as cells
     from {{ ref('stg_' ~ code ~ '__' ~ direction) }}

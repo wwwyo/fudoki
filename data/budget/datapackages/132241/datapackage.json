@@ -2,10 +2,10 @@
   "profile": "tabular-data-package",
   "name": "fudoki-budget-132241",
   "title": "多摩市 当初予算（事業単位）",
-  "description": "自治体が公開した当初予算データを Fiscal Data Package の形にしたもの。歳出・歳入のリソースは**原典を正規化しただけで、fudoki の判断を含まない**（分類・名寄せ・推定を一切していない）。COFOG の割当と事業名の対応づけは fudoki の判断で、同じパッケージの別リソースにしてある（budget_line_id などのキーで join する）。原典そのものは data/budget/raw/ に Parquet で入っている。\n\n## 出典表示（CC BY 4.0 §3(a)(1)(A)）\n\n次の一文をそのまま使うこと。\n\n> 多摩市「令和3年度一般会計歳出・歳入（当初予算）」（東京都オープンデータカタログサイト）\n\n機械可読な同じ内容は `sources[].title`（原典）と `contributors`（加工者）にある。\n\n## 改変（CC BY 4.0 §3(a)(1)(B)）\n\n原典に対して次のことをしている。\n\n- セルの前後の空白を除去した\n- コードと名称が同居するセルを分けた\n- 金額を円へ正規化した（原典の値と単位も残してある）\n- 原典の各行に COFOG の分類と連結の判断を付け加えた（自治体が言っていないこと）\n- 科目に法定マスタ（地方自治法施行規則 別記の区分）への対応を付け加えた（コードのずれと表記差の吸収は fudoki の判断）\n\n原典そのものは `data/budget/raw/` に Parquet で保全してあるので、改変の前後を突き合わせられる。\n\n取得の証跡（取得 URL・HTTP status・SHA-256・取得時刻・ヘッダ・行数）は、原典の隣（`data/budget/raw/**/provenance.json`）にある。\n\nリソースの `sources[].path` は、その証跡が記録している取得 URL そのものである。正本は団体ごと・全年度で1リソースなので、年度の数だけ並ぶ。\n\n## 全行で同じ値の列\n\n全国地方公共団体コード、地方公共団体名、通貨、予算段階の表示名、原典の金額の単位、支出と収入の別は行ごとに変わらないので、CSV の列から外して `schema.extraFields` に定数として置いてある（仕様の Constant Fields）。非正規化した形へ戻すときは、その列を全行に補う。\n\n## 金額の段階と単位\n\n- expenditure: 当初予算（approved）は原典の 千円 で、円へ直すには 1000 を掛ける\n- revenue: 当初予算（approved）は原典の 千円 で、円へ直すには 1000 を掛ける\n\n段階が複数ある場合は原典1行を段階ごとの行へ展開してあるので、主キーは budget_line_id と phase_id の組になる。",
+  "description": "自治体が公開した当初予算データを Fiscal Data Package の形にしたもの。歳出・歳入のリソースは**原典を正規化しただけで、fudoki の判断を含まない**（分類・名寄せ・推定を一切していない）。COFOG の割当と事業名の対応づけは fudoki の判断で、同じパッケージの別リソースにしてある（budget_line_id などのキーで join する）。原典そのものは data/budget/raw/ に Parquet で入っている。\n\n## 出典表示（CC BY 4.0 §3(a)(1)(A)）\n\n次の一文をそのまま使うこと。\n\n> 多摩市「令和3年度一般会計歳出・歳入（当初予算）」（東京都オープンデータカタログサイト）\n\n機械可読な同じ内容は `sources[].title`（原典）と `contributors`（加工者）にある。\n\n## 改変（CC BY 4.0 §3(a)(1)(B)）\n\n原典に対して次のことをしている。\n\n- セルの前後の空白を除去した\n- コードと名称が同居するセルを分けた\n- 金額を円へ正規化した（原典の値と単位も残してある）\n- 原典の各行に COFOG の分類と連結の判断を付け加えた（自治体が言っていないこと）\n- 科目に法定マスタ（地方自治法施行規則 別記の区分）への対応を付け加えた（コードのずれと表記差の吸収は fudoki の判断）\n\n原典そのものは `data/budget/raw/` に Parquet で保全してあるので、改変の前後を突き合わせられる。\n\n取得の証跡（取得 URL・HTTP status・SHA-256・取得時刻・ヘッダ・行数）は、原典の隣（`data/budget/raw/**/provenance.json`）にある。\n\nリソースの `sources[].path` は、その証跡が記録している取得 URL そのものである。正本は団体ごと・全年度で1リソースなので、年度の数だけ並ぶ。\n\n## 全行で同じ値の列\n\n全国地方公共団体コード、地方公共団体名、通貨、予算段階の表示名、支出と収入の別は行ごとに変わらないので、CSV の列から外して `schema.extraFields` に定数として置いてある（仕様の Constant Fields）。非正規化した形へ戻すときは、その列を全行に補う。\n\n## 金額の段階と単位\n\n- expenditure: 2021・2022・2023・2024年度の当初予算（approved）は原典の 千円 で、円へ直すには 1000 を掛ける、2025年度の当初予算（approved）は原典の 円 で、円へ直すには 1 を掛ける\n- revenue: 2021・2022・2023・2024年度の当初予算（approved）は原典の 千円 で、円へ直すには 1000 を掛ける、2025年度の当初予算（approved）は原典の 円 で、円へ直すには 1 を掛ける\n\n段階が複数ある場合は原典1行を段階ごとの行へ展開してあるので、主キーは budget_line_id と phase_id の組になる。単位が段階や年度で割れるリソースでは、単位を行の列（source_amount_unit）に持つ（1種類しか無いリソースでは `schema.extraFields` の定数にしてある）。",
   "homepage": "https://github.com/wwwyo/fudoki",
   "version": "0.1.0",
-  "created": "2026-08-30T02:42:37+00:00",
+  "created": "2026-08-30T03:57:56+00:00",
   "countryCode": "JP",
   "columnTypes": [
     "https://specs.frictionlessdata.io/taxonomies/fiscal/budgets.json",
@@ -180,7 +180,7 @@
   },
   "fiscalPeriod": {
     "start": "2021-04-01",
-    "end": "2025-03-31"
+    "end": "2026-03-31"
   },
   "licenses": [
     {
@@ -212,6 +212,10 @@
     {
       "title": "多摩市「令和6年度一般会計歳出・歳入（当初予算）」（多摩市「予算・決算についての資料」）",
       "path": "https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html"
+    },
+    {
+      "title": "多摩市「令和7年度一般会計歳出・歳入（当初予算）」（多摩市「予算・決算についての資料」）",
+      "path": "https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html"
     }
   ],
   "resources": [
@@ -224,8 +228,8 @@
       "format": "csv",
       "mediatype": "text/csv",
       "encoding": "utf-8",
-      "bytes": 1179863,
-      "hash": "sha256:a6731ae5c14ba5c7b268bec23b769a3df1304013987194183b4d8724823b92f7",
+      "bytes": 1546087,
+      "hash": "sha256:e87a075c9cf4ac3b99c2c8e21590d7b16280cd0979e939aca8a93f414e8615c7",
       "dialect": {
         "delimiter": ",",
         "header": true
@@ -358,6 +362,13 @@
             "title": "原典の金額",
             "type": "number",
             "columnType": "fudoki:source:amount"
+          },
+          {
+            "name": "source_amount_unit",
+            "title": "原典の金額の単位",
+            "type": "string",
+            "columnType": "fudoki:source:amount-unit",
+            "description": "原典の金額の単位。円へ直す倍率は取得元ごとに違うので、この配布物の値は description が示す"
           }
         ],
         "primaryKey": [
@@ -395,14 +406,6 @@
             "constant": "当初予算"
           },
           {
-            "name": "source_amount_unit",
-            "title": "原典の金額の単位",
-            "type": "string",
-            "columnType": "fudoki:source:amount-unit",
-            "description": "原典の金額の単位。円へ直す倍率は取得元ごとに違うので、この配布物の値は description が示す",
-            "constant": "千円"
-          },
-          {
             "name": "direction",
             "title": "支出と収入の別",
             "type": "string",
@@ -427,12 +430,16 @@
           "path": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r4saisyutuippannkaikei01.csv"
         },
         {
-          "title": "2023年度／予算・決算についての資料（オープンデータ）／令和5年度一般会計歳出（当初予算）",
+          "title": "2023年度／令和5年度一般会計歳出（当初予算）",
           "path": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r5ippannkaikeisaisyutu.csv"
         },
         {
-          "title": "2024年度／予算・決算についての資料（オープンデータ）／令和6年度一般会計歳出（当初予算）",
+          "title": "2024年度／令和6年度一般会計歳出（当初予算）",
           "path": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r6ippannkaikeisaisyutu.csv"
+        },
+        {
+          "title": "2025年度／令和7年度一般会計歳出（当初予算）",
+          "path": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r7ippannkaikeisaisyutu.csv"
         }
       ]
     },
@@ -445,8 +452,8 @@
       "format": "csv",
       "mediatype": "text/csv",
       "encoding": "utf-8",
-      "bytes": 438451,
-      "hash": "sha256:4aa981e40c3d14ff946522215cc515d591fefc289ee4486b4f04ce2e4685ad46",
+      "bytes": 578554,
+      "hash": "sha256:eb4a49a4f3387cc35c8e9eb53e9db118d7602562414a0456dc7051dcda98666f",
       "dialect": {
         "delimiter": ",",
         "header": true
@@ -579,6 +586,13 @@
             "title": "原典の金額",
             "type": "number",
             "columnType": "fudoki:source:amount"
+          },
+          {
+            "name": "source_amount_unit",
+            "title": "原典の金額の単位",
+            "type": "string",
+            "columnType": "fudoki:source:amount-unit",
+            "description": "原典の金額の単位。円へ直す倍率は取得元ごとに違うので、この配布物の値は description が示す"
           }
         ],
         "primaryKey": [
@@ -616,14 +630,6 @@
             "constant": "当初予算"
           },
           {
-            "name": "source_amount_unit",
-            "title": "原典の金額の単位",
-            "type": "string",
-            "columnType": "fudoki:source:amount-unit",
-            "description": "原典の金額の単位。円へ直す倍率は取得元ごとに違うので、この配布物の値は description が示す",
-            "constant": "千円"
-          },
-          {
             "name": "direction",
             "title": "支出と収入の別",
             "type": "string",
@@ -648,12 +654,16 @@
           "path": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r4sainyuuippannkaikei01.csv"
         },
         {
-          "title": "2023年度／予算・決算についての資料（オープンデータ）／令和5年度一般会計歳入（当初予算）",
+          "title": "2023年度／令和5年度一般会計歳入（当初予算）",
           "path": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r5ippannkaikeisainyuu.csv"
         },
         {
-          "title": "2024年度／予算・決算についての資料（オープンデータ）／令和6年度一般会計歳入（当初予算）",
+          "title": "2024年度／令和6年度一般会計歳入（当初予算）",
           "path": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r6ippannkaikeisainyuu.csv"
+        },
+        {
+          "title": "2025年度／令和7年度一般会計歳入（当初予算）",
+          "path": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r7ippannkaikeisainyuu.csv"
         }
       ]
     },
@@ -666,8 +676,8 @@
       "format": "csv",
       "mediatype": "text/csv",
       "encoding": "utf-8",
-      "bytes": 903432,
-      "hash": "sha256:c65007e819e2a34af5f6952318cd692cada687c0c002141da6c533d5c7ba2685",
+      "bytes": 1146268,
+      "hash": "sha256:94bb8113fefd1de168616b9f99faee9d04f58c5d77af6a11202f8bcb1e142d1b",
       "dialect": {
         "delimiter": ",",
         "header": true
@@ -911,8 +921,8 @@
       "format": "csv",
       "mediatype": "text/csv",
       "encoding": "utf-8",
-      "bytes": 175750,
-      "hash": "sha256:f839c6ac81bac3cf607c43d89427401be1a632423936f9e1d8cf7c376942816b",
+      "bytes": 219472,
+      "hash": "sha256:38e557c4fdc1e2a19897c92dde74b24ad345eab4ad98d6a06bd6dd0941b3a99a",
       "dialect": {
         "delimiter": ",",
         "header": true

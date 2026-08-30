@@ -8,4 +8,7 @@
 -- モデルを1つ組む前に止まるほうが読みやすい。ここに置いてあるのは母集団のためで、
 -- `budget_amount_units()` が宣言の側から全ての (団体, direction, 段階) を列挙する。
 {{ check_budget_amount_units() }}
+{#- 年度で割れた宣言の解決（years の重なり・既定の重複・年度ごとの primary）も同じ場所で見る。
+    どちらも「宣言そのものが成立しているか」で、データではないのでコンパイル時に止まる。 -#}
+{{ check_budget_amount_scopes() }}
 select null as jurisdiction where false

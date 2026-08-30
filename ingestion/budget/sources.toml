@@ -455,18 +455,21 @@ license_id = "NOASSERTION"
 #  4. **階層だけで行が一意**（狛江市と違い所属や予算区分の列が無い。
 #     R4 歳出 1,440 行が 1,440 通り、R3 歳出 1,580 行が 1,580 通り）。
 #  5. **金額は1段階だけ**（`予算額`）。当初予算なので phase は approved。
-#  6. **単位は千円（R3〜R6）。** ⚠️ **列名が単位を名乗っていない**ので、原典の列名と突き合わせられない。
+#  6. **単位は年度で割れる。** R3〜R6 は千円、**R7 は円**。
+#     ⚠️ **列名が単位を名乗っていない**ので、原典の列名と突き合わせられない。
 #     根拠は歳入と歳出の合計が一致すること（R3 = 63,030,000 / R4 = 63,067,000 /
-#     R5 = 58,730,000 / R6 = 61,790,000）で、多摩市の一般会計当初予算の規模と合う
-#     （円なら 0.63 億円で成り立たない）。⚠️ **R7 は円に変わっている**（下記 8）。
+#     R5 = 58,730,000 / R6 = 61,790,000 / R7 = 68,550,000,000）で、
+#     多摩市の一般会計当初予算の規模と合う（R3〜R6 を円と読むと 0.63 億円、
+#     R7 を千円と読むと 68.5 兆円で、どちらも成り立たない）。
 #  7. **会計にコードが無い。** 列は `会計名称` だけで、`一般会計` の1種類。
 #     コードが原典に無いので fund の code には名称がそのまま入る。
 #  8. ⚠️ **カタログのリソース登録が古い。** カタログに載っているのは R3・R4 までで、
 #     市サイトには R7 まで置いてある（R2 以前は登録があっても実体が 404）。
-#     R5・R6 は原典の URL を宣言して取っている（下の `url` / `url_basis`）。
-#     ⚠️ **R7 は書式が変わっており足せない** — 金額の列名が `予算額` から `合計 / 予算額` へ、
-#     単位が千円から円へ変わり、歳出だけ年度の列が消えた。いまの宣言は
-#     (団体, direction) の粒度なので、年度で単位や列名が割れる団体を表せない。
+#     R5〜R7 は原典の URL を宣言して取っている（下の `url` / `url_basis`）。
+#     ⚠️ **R7 は書式が変わっている** — 金額の列名が `予算額` から `合計 / 予算額` へ、
+#     単位が千円から円へ変わり、歳出だけ年度の列が消えた。
+#     `budget_amounts` と `budget_source_year_columns` の各宣言が `years` を持てるので、
+#     年度で割れる書式はそちらで表す（取得側は年度ごとに1ブロックあるだけで、何も変わらない）。
 #  9. **特別会計は別ファイル**（同じ書式）。raw の partition が
 #     (団体, 年度, phase, direction) なので、同じ direction で2本を置けない。
 #     一般会計だけを収録する（科目マスタの適用範囲も一般会計）。
@@ -524,16 +527,13 @@ resource_name = "令和4年度一般会計歳入（当初予算）"
 # 書式は令和3・4年度と同じ（列構成・文字コード・単位・年度列すべて実測で一致。2026-08-30）。
 
 ["132241:2023"]
-catalog = "tokyo"
 jurisdiction_code = "132241"
 fiscal_year = 2023
-fiscal_year_label = "令和5年度"
 phase_id = "approved"
 phase_label = "当初予算"
-dataset_title = "予算・決算についての資料（オープンデータ）"
 encoding = "cp932"
 redistribute = "allow"
-redistribute_basis = "東京都オープンデータカタログのライセンス表示（CC BY 4.0）"
+redistribute_basis = "市サイト「予算・決算についての資料」の当該年度の節に置かれた CC BY 4.0 の表示（2026-08-30 実測。カタログにこの年度のリソース登録は無いので、根拠はカタログではなく市サイトにある）"
 license_id = "CC-BY-4.0"
 attribution = "多摩市「令和5年度一般会計歳出・歳入（当初予算）」（多摩市「予算・決算についての資料」）"
 landing_page = "https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html"
@@ -542,26 +542,23 @@ landing_page = "https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html"
 direction = "expenditure"
 resource_name = "令和5年度一般会計歳出（当初予算）"
 url = "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r5ippannkaikeisaisyutu.csv"
-url_basis = "カタログのリソース登録が令和4年度で止まっており、データセット名とリソース名から解決できない。原典は市の「予算・決算についての資料」ページに同じ書式で置かれている（landing_page）"
+url_basis = "カタログのリソース登録が令和4年度で止まっており、データセット名とリソース名から解決できない。原典は市の「予算・決算についての資料」ページに同じ書式で置かれている（landing_page）。⚠️ **年度の裏づけはそのページの見出し（「令和N年度予算についての資料」）とリンクテキスト（`resource_name` と同じ文字列）で、これは人が読んだもの** — 直 URL では取得時のリソース名照合が自己参照になるので、機械は年度を照合していない"
 
 [["132241:2023".resources]]
 direction = "revenue"
 resource_name = "令和5年度一般会計歳入（当初予算）"
 url = "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r5ippannkaikeisainyuu.csv"
-url_basis = "カタログのリソース登録が令和4年度で止まっており、データセット名とリソース名から解決できない。原典は市の「予算・決算についての資料」ページに同じ書式で置かれている（landing_page）"
+url_basis = "カタログのリソース登録が令和4年度で止まっており、データセット名とリソース名から解決できない。原典は市の「予算・決算についての資料」ページに同じ書式で置かれている（landing_page）。⚠️ **年度の裏づけはそのページの見出し（「令和N年度予算についての資料」）とリンクテキスト（`resource_name` と同じ文字列）で、これは人が読んだもの** — 直 URL では取得時のリソース名照合が自己参照になるので、機械は年度を照合していない"
 
 
 ["132241:2024"]
-catalog = "tokyo"
 jurisdiction_code = "132241"
 fiscal_year = 2024
-fiscal_year_label = "令和6年度"
 phase_id = "approved"
 phase_label = "当初予算"
-dataset_title = "予算・決算についての資料（オープンデータ）"
 encoding = "cp932"
 redistribute = "allow"
-redistribute_basis = "東京都オープンデータカタログのライセンス表示（CC BY 4.0）"
+redistribute_basis = "市サイト「予算・決算についての資料」の当該年度の節に置かれた CC BY 4.0 の表示（2026-08-30 実測。カタログにこの年度のリソース登録は無いので、根拠はカタログではなく市サイトにある）"
 license_id = "CC-BY-4.0"
 attribution = "多摩市「令和6年度一般会計歳出・歳入（当初予算）」（多摩市「予算・決算についての資料」）"
 landing_page = "https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html"
@@ -570,10 +567,41 @@ landing_page = "https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html"
 direction = "expenditure"
 resource_name = "令和6年度一般会計歳出（当初予算）"
 url = "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r6ippannkaikeisaisyutu.csv"
-url_basis = "カタログのリソース登録が令和4年度で止まっており、データセット名とリソース名から解決できない。原典は市の「予算・決算についての資料」ページに同じ書式で置かれている（landing_page）"
+url_basis = "カタログのリソース登録が令和4年度で止まっており、データセット名とリソース名から解決できない。原典は市の「予算・決算についての資料」ページに同じ書式で置かれている（landing_page）。⚠️ **年度の裏づけはそのページの見出し（「令和N年度予算についての資料」）とリンクテキスト（`resource_name` と同じ文字列）で、これは人が読んだもの** — 直 URL では取得時のリソース名照合が自己参照になるので、機械は年度を照合していない"
 
 [["132241:2024".resources]]
 direction = "revenue"
 resource_name = "令和6年度一般会計歳入（当初予算）"
 url = "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r6ippannkaikeisainyuu.csv"
-url_basis = "カタログのリソース登録が令和4年度で止まっており、データセット名とリソース名から解決できない。原典は市の「予算・決算についての資料」ページに同じ書式で置かれている（landing_page）"
+url_basis = "カタログのリソース登録が令和4年度で止まっており、データセット名とリソース名から解決できない。原典は市の「予算・決算についての資料」ページに同じ書式で置かれている（landing_page）。⚠️ **年度の裏づけはそのページの見出し（「令和N年度予算についての資料」）とリンクテキスト（`resource_name` と同じ文字列）で、これは人が読んだもの** — 直 URL では取得時のリソース名照合が自己参照になるので、機械は年度を照合していない"
+
+
+# 令和7年度。⚠️ **書式が令和3〜6年度と違う**（上の 8）。
+#   * 金額の列名が `予算額` → `合計 / 予算額`
+#   * 単位が千円 → **円**（歳出計 68,550,000,000 = 685.5 億円）
+#   * **歳出だけ年度の列が消えた**（歳入には `年度` が残っている）
+# どれも (団体, direction) の粒度では表せないので、`budget_amounts` と
+# `budget_source_year_columns` の宣言を年度で絞れるようにして収録した。
+["132241:2025"]
+jurisdiction_code = "132241"
+fiscal_year = 2025
+phase_id = "approved"
+phase_label = "当初予算"
+encoding = "cp932"
+redistribute = "allow"
+redistribute_basis = "市サイト「予算・決算についての資料」の当該年度の節に置かれた CC BY 4.0 の表示（2026-08-30 実測。カタログにこの年度のリソース登録は無いので、根拠はカタログではなく市サイトにある）"
+license_id = "CC-BY-4.0"
+attribution = "多摩市「令和7年度一般会計歳出・歳入（当初予算）」（多摩市「予算・決算についての資料」）"
+landing_page = "https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html"
+
+[["132241:2025".resources]]
+direction = "expenditure"
+resource_name = "令和7年度一般会計歳出（当初予算）"
+url = "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r7ippannkaikeisaisyutu.csv"
+url_basis = "カタログのリソース登録が令和4年度で止まっており、データセット名とリソース名から解決できない。原典は市の「予算・決算についての資料」ページに置かれている（landing_page）。⚠️ **年度の裏づけはそのページの見出し（「令和7年度予算についての資料」）とリンクテキスト（`resource_name` と同じ文字列）で、これは人が読んだもの** — 直 URL では取得時のリソース名照合が自己参照になるので、機械は年度を照合していない"
+
+[["132241:2025".resources]]
+direction = "revenue"
+resource_name = "令和7年度一般会計歳入（当初予算）"
+url = "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r7ippannkaikeisainyuu.csv"
+url_basis = "カタログのリソース登録が令和4年度で止まっており、データセット名とリソース名から解決できない。原典は市の「予算・決算についての資料」ページに置かれている（landing_page）。⚠️ **年度の裏づけはそのページの見出し（「令和7年度予算についての資料」）とリンクテキスト（`resource_name` と同じ文字列）で、これは人が読んだもの** — 直 URL では取得時のリソース名照合が自己参照になるので、機械は年度を照合していない"

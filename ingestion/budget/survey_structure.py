@@ -52,12 +52,22 @@ def extra_keys_of(code: str, direction: str) -> list[str]:
     return VARS["budget_extra_key_source_columns"][code][direction]
 
 
-def primary_amount(code: str, direction: str) -> dict:
-    """集計に使う段階の金額の宣言。決算書は1行に複数段階あるのでどれかを選ぶ必要がある"""
+def primary_amount(code: str, direction: str, year: int) -> dict:
+    """集計に使う段階の金額の宣言。決算書は1行に複数段階あるのでどれかを選ぶ必要がある。
+
+    ⚠️ **年度を渡す。** 同じ団体の同じ資料でも、年度をまたぐと列名や単位が割れることがある
+    （多摩市は令和7年度で `予算額` → `合計 / 予算額`、千円 → 円）。
+    解決の規則は dbt 側（`macros/budget_amount_scope.sql`）が正本で、
+    `years` を持つ宣言が優先し、無ければ `years` を持たない宣言に落ちる。
+    """
     hit = [a for a in VARS["budget_amounts"][code][direction] if a.get("primary")]
-    if len(hit) != 1:
-        raise SystemExit(f"{code}/{direction}: budget_amounts の primary が {len(hit)} 件")
-    return hit[0]
+    scoped = [a for a in hit if int(year) in (a.get("years") or [])]
+    resolved = scoped or [a for a in hit if a.get("years") is None]
+    if len(resolved) != 1:
+        raise SystemExit(
+            f"{code}/{direction}/{year}: budget_amounts の primary が {len(resolved)} 件"
+        )
+    return resolved[0]
 
 
 def absent_marker(code: str) -> str | None:
@@ -78,7 +88,11 @@ def absent_marker(code: str) -> str | None:
 def rows(code: str, direction: str) -> list[dict]:
     con = duckdb.connect()
     pattern = f"{RAW}/jurisdiction={code}/year=*/phase=*/direction={direction}/data.parquet"
-    got = con.execute(f"select * from read_parquet('{pattern}', hive_partitioning=true)").fetchall()
+    # ⚠️ **年度で列構成が違う団体がある**（多摩市の令和7年度の歳出には `年度` の列が無く、
+    # 金額の列名も違う）。union_by_name が無いと glob そのものが開けない。
+    got = con.execute(
+        f"select * from read_parquet('{pattern}', hive_partitioning=true, union_by_name=true)"
+    ).fetchall()
     cols = [d[0] for d in con.description]
     return [dict(zip(cols, r, strict=True)) for r in got]
 
@@ -174,7 +188,7 @@ def kan_evidence(code: str) -> dict:
     funds = Counter(d["会計名称"] for d in data if d["year"] == latest)
     general = funds.most_common(1)[0][0]
     scope = [d for d in data if d["year"] == latest and d["会計名称"] == general]
-    amount = primary_amount(code, "expenditure")["source"]
+    amount = primary_amount(code, "expenditure", latest)["source"]
 
     ev = {}
     for kan, name in STATUTORY_KAN.items():
@@ -201,10 +215,13 @@ def balance(code: str) -> list[dict]:
     比べる金額と倍率は `budget_amounts` の primary から引く
     （歳入だけ単位が千円、という団体があるので決め打ちできない）。
     """
-    spec = {d: primary_amount(code, d) for d in ("expenditure", "revenue")}
-    data = {d: rows(code, d) for d in spec}
+    directions = ("expenditure", "revenue")
+    data = {d: rows(code, d) for d in directions}
     out = []
     for year in sorted({d["year"] for d in data["expenditure"]}):
+        # ⚠️ **宣言は年度ごとに引き直す。** 単位が年度で割れる団体では、
+        # 1つ選んで全年度に掛けると片方が 1000 倍ずれたまま「一致した」と出る。
+        spec = {d: primary_amount(code, d, int(year)) for d in directions}
         for fund in sorted({d["会計名称"] for d in data["expenditure"] if d["year"] == year}):
             totals = {
                 direction: sum(

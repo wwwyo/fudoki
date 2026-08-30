@@ -46,6 +46,8 @@ def datasets_of(src: Source) -> list[dict]:
     （`check_granularity.py`）も同じものを必要とするので、共有層に置いてある。
     ここが受け持つのはプロセス内のキャッシュだけ。
     """
+    if src.catalog is None:
+        raise RuntimeError(f"{src.key}: カタログの宣言が無い（全リソースが直 URL のはず）")
     org = src.catalog.org_prefix + src.jurisdiction_code
     key = f"{src.catalog.endpoint}\x1f{org}"
     if key not in _SEARCH_CACHE:
@@ -66,6 +68,7 @@ def resolve_resource(src: Source, spec: Resource) -> str:
     候補が複数のまま残ったら `resource_url_contains` の宣言を要求して止める。
     """
     dataset_title = src.dataset_title_for(spec)
+    assert src.catalog is not None  # 直 URL のリソースはここへ来ない（呼ぶ側が分岐している）
     org = src.catalog.org_prefix + src.jurisdiction_code
     pkgs = [p for p in datasets_of(src) if p.get("title") == dataset_title]
     if not pkgs:
@@ -124,11 +127,22 @@ def _provenance_json(src: Source, spec: Resource, direction: str, got: Fetched,
             "jurisdiction_code": src.jurisdiction_code,
             "fiscal_year": src.fiscal_year,
             "direction": direction,
+            # ⚠️ **直 URL では None。** カタログを引いていないので載せているデータセットが無い。
+            # 以前はここに取得元の既定（カタログのデータセット名）が入っており、
+            # **市サイトから取ったものの証跡が、引いてもいないカタログを指していた。**
+            # 資料の在り処は landing_page（配布物のパッケージ単位の `sources`）が持つ。
             "dataset_title": src.dataset_title_for(spec),
             "resource_name": spec.resource_name,
+            # ⚠️ **していない照合を書かない。** ここは長く「年度の照合は原典の年度列と
+            # partition の突き合わせで行う」と書いていたが、**原典に年度の列が無い
+            # (団体, 年度, direction) が実在する**（多摩市の令和7年度の歳出）。
+            # その組では誰も年度を照合しておらず、証跡だけが照合したと言っている状態になる。
+            # 取得側が言えるのは「どう年度を決めたか」までなので、そこで止める。
             "fiscal_year_basis": (
                 f"sources.toml が宣言した URL（カタログに登録が無い）。"
-                f"年度の照合は原典の年度列と partition の突き合わせで行う"
+                f"リソース名「{spec.resource_name}」は取得元ページのリンクテキストを人が写したもので、"
+                f"取得時には照合していない（宣言どうしの自己参照になるため）。"
+                f"根拠は resource_url_basis にある"
                 if spec.url is not None else
                 f"CKAN のリソース名「{spec.resource_name}」の「{src.fiscal_year_label}」から解決"
             ),
@@ -179,7 +193,14 @@ def ingest(key: str) -> None:
         # 年度の唯一の出所はリソース名。照合できなければ収録しない。
         # ⚠️ **直 URL の宣言があるときは、この照合が成立しない** — resource_name が
         # カタログの持つ名前ではなく fudoki の書いた文字列になるので、自己参照になる。
-        # 年度の裏づけは原典の年度列と partition の突き合わせ（dbt）へ移る。
+        # ⚠️ **移る先があるとは限らない。** 原典に年度の列があれば dbt の
+        # source_year_matches_partition が partition と突き合わせるが、
+        # **その列が無い (団体, 年度, direction) が実在する**（多摩市の令和7年度の歳出）。
+        # そのとき年度を言っているのは、人が取得元ページで読んだ見出しとリンクテキストだけで、
+        # それは `url_basis` に文章として残っている（機械は見ていない）。
+        if spec.url is None:
+            # 直 URL のときは宣言そのものが無い（load_sources が禁じている）
+            assert src.fiscal_year_label is not None
         if spec.url is None and src.fiscal_year_label not in spec.resource_name:
             raise RuntimeError(f"リソース名「{spec.resource_name}」に年度表記「{src.fiscal_year_label}」が無い")
 
