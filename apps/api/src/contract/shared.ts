@@ -75,6 +75,12 @@ export const base = oc.errors({
          */
         supportedGroupings: z.array(z.array(z.string())).optional().describe('groupBy に指定できる組み合わせの一覧'),
         allowedValues: z.array(z.string()).optional().describe('phase / fund など、typed field に指定できる値の一覧'),
+        /**
+         * budgets:aggregate の direction 制約（PR #27 レビュー指摘）。歳入を拒否する理由が
+         * 「COFOG が無いから」ではなく「歳入の集計自体を v1 でまだ実装していないから」であることを、
+         * 400 の本文からも機械可読に示す。
+         */
+        supportedDirections: z.array(direction).optional().describe('typed field の direction に指定できる値の一覧'),
       })
       .optional(),
   },

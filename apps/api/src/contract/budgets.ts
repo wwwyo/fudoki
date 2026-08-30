@@ -472,6 +472,16 @@ export const SUPPORTED_GROUPINGS: readonly (readonly GroupingKey[])[] = [
   ...JURISDICTION_YEARS_GROUPINGS,
 ]
 
+/**
+ * budgets:aggregate が v1 で対応する direction。歳入を弾く理由は「歳入の集計自体を
+ * 実装していない」であって、COFOG が歳入に無いことではない（歳入でも hierarchy や
+ * fiscalYear の軸は意味を持つ。design doc は COFOG 軸だけを歳入の対象外にしている）。
+ * ⚠️ 以前はエラーメッセージが COFOG を理由に挙げており、歳入の集計が設計より広く拒否されている
+ * ように読めた（PR #27 レビュー指摘）。応答からもこの制約が分かるよう、成功応答・エラー応答の
+ * 両方にこの一覧をそのまま載せる。
+ */
+export const SUPPORTED_AGGREGATE_DIRECTIONS: readonly z.infer<typeof direction>[] = ['expenditure']
+
 /** groupBy の cofog.* 要素から前計算アセットの depth を導く（groupBy に cofog.* は高々1つ） */
 export function cofogDepthOf(groupBy: readonly GroupingKey[]): 'division' | 'group' | 'class' {
   const g = groupBy.find((k) => k !== 'jurisdiction')
@@ -612,7 +622,15 @@ const aggregateProvenance = z.object({
 
 export const aggregateBudgetsOutput = z.object({
   cells: z.array(aggregationCell),
-  residual: aggregationResidual,
+  // ⚠️ 元は必須の単一オブジェクトだったが、団体横断（groupBy に jurisdiction を含む）応答では
+  // 「全団体で1つに合算した residual」は total と同じ理由で存在しない（design doc「団体をまたいで
+  // 足さない」）。合算した 0 を置く代わりに、団体が1つに閉じているときだけ residual を返し、
+  // 団体をまたぐときは residualByJurisdiction を返す（PR #27 レビュー指摘）。
+  residual: aggregationResidual.optional().describe('filter が単一の団体に閉じているときだけ返す。団体をまたぐときは residualByJurisdiction を見る'),
+  residualByJurisdiction: z
+    .record(z.string(), aggregationResidual)
+    .optional()
+    .describe('groupBy が jurisdiction を含むときだけ返す。団体コード → その団体の residual。団体ごとに cells + residualByJurisdiction[jurisdiction] を復元できる'),
   total: aggStat.optional().describe('filter が単一の団体に閉じているときだけ返す。複数団体にまたがるときは持たせない（0 も置かない）'),
   currency: z.literal('JPY'),
   amountUnit: z.literal('1').describe('cells / residual / total の金額は常に円（1倍）に正規化済み'),
@@ -620,6 +638,10 @@ export const aggregateBudgetsOutput = z.object({
   warnings: z.array(z.object({ code: aggregateWarningCode, message: z.string() })),
   omitted: z.array(z.object({ budget: z.string(), code: aggregateOmittedCode })).describe('条件（direction の phase など）を満たさず集計から除外した budget。黙って落とさない'),
   supportedGroupings: z.array(z.array(groupingKey)).describe('この filter の範囲で引ける groupBy の一覧'),
+  // ⚠️ supportedGroupings だけでは「歳入は集計自体を実装していない」という direction の制約が
+  // 応答から読み取れない（PR #27 レビュー指摘）。歳出の応答にも常に含め、歳入で 400 になったときの
+  // エラー応答にも同じ一覧を載せる（procedure/budgets.ts）ことで、成功・失敗どちらの経路でも分かるようにする。
+  supportedDirections: z.array(direction).describe('budgets:aggregate が現在対応する direction の一覧。歳入はここに無ければ集計自体が未対応（COFOG の欠如とは別の理由）'),
   judgment: z.array(judgmentKind).describe('この応答に含まれる fudoki の判断の種類'),
   provenance: aggregateProvenance,
   revision: z.string().describe('由来する配布物の revision（git commit）'),
@@ -682,7 +704,9 @@ export const aggregateBudgets = base
       '（含めないと、団体をまたいだ合計という存在しない数値を返すことになるため 400）。このとき fund は指定できない' +
       '（会計コードが団体で揃わないため）。\n\n' +
       'direction と phase は必須。歳出の複数の予算段階を区別せず合計する誤りを防ぐため、既定値は持たない。' +
-      '歳入は COFOG が not-applicable なので 400。',
+      '⚠️ v1 では歳出（expenditure）のみ対応。歳入を指定すると 400（COFOG が歳入に無いからではなく、' +
+      '歳入の集計自体を v1 でまだ実装していないため。hierarchy・fiscalYear の軸は歳入でも意味を持つ）。' +
+      '応答・エラー応答の supportedDirections が、その時点で対応する direction を示す。',
   })
   .input(aggregateBudgetsInput)
   .output(aggregateBudgetsOutput)

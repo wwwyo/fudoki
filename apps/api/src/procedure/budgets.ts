@@ -33,6 +33,7 @@ import {
   SINGLE_BUDGET_GROUPINGS,
   type StoredBudgetLine,
   type StoredCrossBudgetLine,
+  SUPPORTED_AGGREGATE_DIRECTIONS,
   SUPPORTED_GROUPINGS,
   type Budget,
   type BudgetDirectionScope,
@@ -329,23 +330,41 @@ function findPhaseLabel(meta: Meta, fiscalYear: string, direction: 'expenditure'
   return phase
 }
 
-/** budget のリソース名から団体ごとの provenance.sources を組む。実体は団体ごとに1回だけ作る */
-function provenanceSourcesFor(meta: Meta, jurisdictionIds: readonly string[]): {
-  sources: { id: string; title: string; path: string | null; license: string; kind: 'canonical' }[]
+/**
+ * budget のリソース名から団体ごとの provenance.sources を組む。実体は団体ごとに1回だけ作る。
+ *
+ * ⚠️ 以前はここで団体の代表ライセンス（`licenses[0]`）を全出典へ機械的に付け、`kind` も常に
+ * `'canonical'` に固定していた。狛江市の事業名は決算資料 PDF（`ingestion/budget/sources.toml`
+ * では `redistribute = "review"` / `license_id = "NOASSERTION"`）から起こしており、
+ * カタログの CC BY とは権利状態が別なのに canonical と誤表示していた（PR #27 レビュー指摘）。
+ * `jurisdiction.provenanceSources`（build.ts が sources.toml から重複排除して組んだもの）を
+ * 出典ごとの kind・license のまま使う。
+ *
+ * `includeJudgment` が false の呼び出し（集計。判断は cofog だけで、事業名の判断は含まない）は
+ * canonical だけを結ぶ。true の呼び出し（budgetLines:search で nameField=projectName を含むとき）
+ * だけ、事業名の根拠になった judgment 出典も結ぶ ── 実際に応答へ含めた判断に対応する出典だけを
+ * 結ぶという設計に合わせ、使っていない判断の出典を混ぜない。
+ */
+function provenanceSourcesFor(
+  meta: Meta,
+  jurisdictionIds: readonly string[],
+  includeJudgment: boolean,
+): {
+  sources: { id: string; title: string; path: string | null; license: string; kind: 'canonical' | 'judgment' }[]
   byJurisdiction: Map<string, string[]>
 } {
-  const sources: { id: string; title: string; path: string | null; license: string; kind: 'canonical' }[] = []
+  const sources: { id: string; title: string; path: string | null; license: string; kind: 'canonical' | 'judgment' }[] = []
   const byJurisdiction = new Map<string, string[]>()
   for (const jid of jurisdictionIds) {
     if (byJurisdiction.has(jid)) continue
     const jurisdiction = meta.jurisdictionById.get(jid)
     if (!jurisdiction) throw new Error(`aggregate: unknown jurisdiction referenced by an included budget: ${jid}`)
-    const license = jurisdiction.licenses[0]?.name ?? 'NOASSERTION'
+    const decls = jurisdiction.provenanceSources.filter((s) => s.kind === 'canonical' || includeJudgment)
     const ids: string[] = []
-    jurisdiction.sources.forEach((s, i) => {
+    decls.forEach((s, i) => {
       const id = `${jid}-src-${i}`
       ids.push(id)
-      sources.push({ id, title: s.title, path: s.path, license, kind: 'canonical' as const })
+      sources.push({ id, title: s.title, path: s.path, license: s.license, kind: s.kind })
     })
     byJurisdiction.set(jid, ids)
   }
@@ -373,14 +392,21 @@ export const aggregateBudgets = os.aggregateBudgets.handler(async ({ context, in
   if (!SUPPORTED_GROUPINGS.some((g) => g.join(',') === groupByKey)) {
     throw errors.BAD_REQUEST({
       message: `unsupported groupBy: [${input.groupBy.join(', ')}]`,
-      data: { reason: 'UNSUPPORTED_AGGREGATION', supportedGroupings: mutableGroupings(SUPPORTED_GROUPINGS) },
+      data: { reason: 'UNSUPPORTED_AGGREGATION', supportedGroupings: mutableGroupings(SUPPORTED_GROUPINGS), supportedDirections: [...SUPPORTED_AGGREGATE_DIRECTIONS] },
     })
   }
   if (input.direction === 'revenue') {
+    // ⚠️ 理由は「歳入に COFOG が無い」ではない。hierarchy や fiscalYear の軸は歳入でも意味を持つが、
+    // budgets:aggregate 自体が歳入の集計をまだ実装していない（PR #27 レビュー指摘: 以前のメッセージは
+    // COFOG が理由であるかのように読め、設計より広く歳入を拒否しているように見えた）。
     throw errors.BAD_REQUEST({
-      message: 'COFOG is not applicable to revenue (cofog_status is always not-applicable for revenue lines). ' +
-        'budgets:aggregate only supports direction=expenditure in this version',
-      data: { reason: 'cofog not applicable to revenue', supportedGroupings: mutableGroupings(SUPPORTED_GROUPINGS) },
+      message: 'budgets:aggregate does not support direction=revenue yet. v1 only implements direction=expenditure ' +
+        '(a scope limit of this version, unrelated to whether classification axes apply to revenue)',
+      data: {
+        reason: 'revenue aggregation not supported in v1',
+        supportedGroupings: mutableGroupings(SUPPORTED_GROUPINGS),
+        supportedDirections: [...SUPPORTED_AGGREGATE_DIRECTIONS],
+      },
     })
   }
 
@@ -430,7 +456,7 @@ async function singleBudgetAggregate(
       message:
         `groupBy [${input.groupBy.join(', ')}] is not supported when filter narrows to a single jurisdiction ` +
         '("jurisdiction" cannot be an axis here — every cell would already be that one jurisdiction)',
-      data: { reason: 'UNSUPPORTED_AGGREGATION', supportedGroupings: mutableGroupings(SINGLE_BUDGET_GROUPINGS) },
+      data: { reason: 'UNSUPPORTED_AGGREGATION', supportedGroupings: mutableGroupings(SINGLE_BUDGET_GROUPINGS), supportedDirections: [...SUPPORTED_AGGREGATE_DIRECTIONS] },
     })
   }
   if (!meta.jurisdictionById.has(jurisdictionId)) {
@@ -510,7 +536,7 @@ async function singleBudgetAggregate(
   }
 
   const jurisdiction = meta.jurisdictionById.get(jurisdictionId)!
-  const { sources, byJurisdiction } = provenanceSourcesFor(meta, [jurisdictionId])
+  const { sources, byJurisdiction } = provenanceSourcesFor(meta, [jurisdictionId], false)
 
   return {
     cells,
@@ -534,6 +560,7 @@ async function singleBudgetAggregate(
     warnings,
     omitted: [],
     supportedGroupings: mutableGroupings(SINGLE_BUDGET_GROUPINGS),
+    supportedDirections: [...SUPPORTED_AGGREGATE_DIRECTIONS],
     judgment: ['cofog' as const],
     provenance: {
       sources,
@@ -567,12 +594,22 @@ async function crossJurisdictionAggregate(
         `groupBy [${input.groupBy.join(', ')}] is missing "jurisdiction". filter has no jurisdiction, so this query spans multiple ` +
         'jurisdictions; summing without a jurisdiction axis would produce a cross-jurisdiction total that does not exist ' +
         '(add "jurisdiction" to groupBy, or narrow filter to a single jurisdiction)',
-      data: { reason: 'UNSUPPORTED_AGGREGATION', supportedGroupings: mutableGroupings(CROSS_JURISDICTION_GROUPINGS) },
+      data: { reason: 'UNSUPPORTED_AGGREGATION', supportedGroupings: mutableGroupings(CROSS_JURISDICTION_GROUPINGS), supportedDirections: [...SUPPORTED_AGGREGATE_DIRECTIONS] },
     })
   }
   if (input.direction !== 'expenditure') throw new Error('unreachable: revenue is rejected before reaching here')
-  const anyBudgetThisYear = meta.budgets.some((b) => b.fiscalYear === fiscalYear)
-  if (!anyBudgetThisYear) throw errors.NOT_FOUND({ message: `no budgets for fiscalYear ${fiscalYear}` })
+  const budgetsThisYear = meta.budgets.filter((b) => b.fiscalYear === fiscalYear && b.directions.includes(input.direction))
+  if (budgetsThisYear.length === 0) throw errors.NOT_FOUND({ message: `no ${input.direction} budgets for fiscalYear ${fiscalYear}` })
+  // ⚠️ phase を検証しないままアセットパスを組むと、契約が許さない (fiscalYear, phase) の組み合わせ
+  // （どの団体もその phase を持たない年度）が「アセットが無い」500 になっていた
+  // （PR #27 レビュー指摘。利用者の入力誤りは 400 で返す。500 はデプロイの不整合のときだけ）
+  const allowedPhases = [...new Set(budgetsThisYear.flatMap((b) => b.scopes[input.direction]?.phases.map((p) => p.id) ?? []))]
+  if (!allowedPhases.includes(input.phase)) {
+    throw errors.BAD_REQUEST({
+      message: `phase "${input.phase}" is not available for any ${input.direction} budget in fiscalYear ${fiscalYear}`,
+      data: { reason: 'invalid phase', allowedValues: allowedPhases },
+    })
+  }
 
   const depth = cofogDepthOf(input.groupBy)
   const assetPath = paths.aggCross(fiscalYear, input.direction, input.phase, depth)
@@ -621,7 +658,7 @@ async function crossJurisdictionAggregate(
   }
 
   const includedJurisdictionIds = asset.includedBudgets.map((b) => parseBudgetId(b.split('/')[1]!)?.jurisdiction ?? fail())
-  const { sources, byJurisdiction } = provenanceSourcesFor(meta, includedJurisdictionIds)
+  const { sources, byJurisdiction } = provenanceSourcesFor(meta, includedJurisdictionIds, false)
   const byBudget: Record<string, string[]> = {}
   for (const budgetName of asset.includedBudgets) {
     const parsed = parseBudgetId(budgetName.split('/')[1]!)
@@ -632,7 +669,11 @@ async function crossJurisdictionAggregate(
 
   return {
     cells,
-    residual: asset.residual,
+    // design doc「団体をまたいで足さない」── total と同じ理由で、団体をまたいだ単一の residual も
+    // 存在しない。cells が jurisdiction を軸に必須なので、残余も団体ごとに返す
+    // （PR #27 レビュー指摘。以前は全団体を1つの residual に合算しており、団体ごとに
+    // cells + residual を復元できなかった）
+    residualByJurisdiction: asset.residualByJurisdiction,
     // total は返さない（filter が複数団体にまたがるため。design doc「団体をまたいで足さない」）
     currency: 'JPY' as const,
     amountUnit: '1' as const,
@@ -650,6 +691,7 @@ async function crossJurisdictionAggregate(
     warnings,
     omitted: asset.omittedBudgets,
     supportedGroupings: mutableGroupings(CROSS_JURISDICTION_GROUPINGS),
+    supportedDirections: [...SUPPORTED_AGGREGATE_DIRECTIONS],
     judgment: ['cofog' as const],
     provenance: {
       sources,
@@ -755,7 +797,7 @@ async function hierarchyAggregate(
   const residual = includesCofog ? (asset as AggHierarchyCofogAsset).residual : ZERO_RESIDUAL
 
   const jurisdiction = meta.jurisdictionById.get(jurisdictionId)!
-  const { sources, byJurisdiction } = provenanceSourcesFor(meta, [jurisdictionId])
+  const { sources, byJurisdiction } = provenanceSourcesFor(meta, [jurisdictionId], false)
 
   return {
     cells,
@@ -776,6 +818,7 @@ async function hierarchyAggregate(
     warnings: [],
     omitted: [],
     supportedGroupings: mutableGroupings(SINGLE_BUDGET_GROUPINGS),
+    supportedDirections: [...SUPPORTED_AGGREGATE_DIRECTIONS],
     judgment: includesCofog ? ['cofog' as const] : [],
     provenance: {
       sources,
@@ -816,7 +859,7 @@ async function jurisdictionYearsAggregate(
       message:
         `groupBy [${input.groupBy.join(', ')}] is not supported when filter narrows to a jurisdiction without a fiscalYear ` +
         '(expected "fiscalYear" or "fiscalYear,cofog.division" — aggregating across years of one jurisdiction)',
-      data: { reason: 'UNSUPPORTED_AGGREGATION', supportedGroupings: mutableGroupings(JURISDICTION_YEARS_GROUPINGS) },
+      data: { reason: 'UNSUPPORTED_AGGREGATION', supportedGroupings: mutableGroupings(JURISDICTION_YEARS_GROUPINGS), supportedDirections: [...SUPPORTED_AGGREGATE_DIRECTIONS] },
     })
   }
   if (input.hierarchyParent !== undefined) {
@@ -829,6 +872,27 @@ async function jurisdictionYearsAggregate(
 
   const budgetsForJ = meta.budgets.filter((b) => b.jurisdictionId === jurisdictionId && b.directions.includes('expenditure'))
   if (budgetsForJ.length === 0) throw errors.NOT_FOUND({ message: `no expenditure budgets for jurisdiction ${jurisdictionId}` })
+
+  // ⚠️ phase・fund を検証しないままアセットパスを組むと、この団体のどの年度も持たない組み合わせ
+  // （例: 狛江市に存在しない phase=approved）が「アセットが無い」500 になっていた
+  // （PR #27 レビュー指摘。build はこの団体のどこかの年度に実在する (phase, fund) の組しか
+  // アセットを作らないので、実在しない組を利用者の入力誤りとして 400 で返す）
+  const allowedPhases = [...new Set(budgetsForJ.flatMap((b) => b.scopes.expenditure?.phases.map((p) => p.id) ?? []))]
+  if (!allowedPhases.includes(input.phase)) {
+    throw errors.BAD_REQUEST({
+      message: `phase "${input.phase}" is not available for any expenditure budget of jurisdiction ${jurisdictionId}`,
+      data: { reason: 'invalid phase', allowedValues: allowedPhases },
+    })
+  }
+  if (input.fund !== 'all') {
+    const allowedFunds = [...new Set(budgetsForJ.flatMap((b) => b.scopes.expenditure?.funds.map((f) => f.code) ?? []))]
+    if (!allowedFunds.includes(input.fund)) {
+      throw errors.BAD_REQUEST({
+        message: `fund "${input.fund}" is not available for any expenditure budget of jurisdiction ${jurisdictionId}`,
+        data: { reason: 'invalid fund', allowedValues: allowedFunds },
+      })
+    }
+  }
 
   const includesCofog = input.groupBy.length === 2
   const assetPath = includesCofog
@@ -890,29 +954,16 @@ async function jurisdictionYearsAggregate(
       )
     : ZERO_RESIDUAL
 
-  // design doc「total は範囲が1つの団体に閉じているときだけ返す」── ここは団体は1つ（年度をまたぐだけ）
-  const cellsSum = cells.reduce((s, c) => ({ amount: s.amount + c.amount, lineCount: s.lineCount + c.lineCount }), { amount: 0, lineCount: 0 })
-  const residualSum = {
-    amount: residual.unclassifiable.amount + residual.outOfScope.amount + residual.notDescended.amount,
-    lineCount: residual.unclassifiable.lineCount + residual.outOfScope.lineCount + residual.notDescended.lineCount,
-  }
-  const total = { amount: cellsSum.amount + residualSum.amount, lineCount: cellsSum.lineCount + residualSum.lineCount }
+  // design doc「total は範囲が1つの団体に閉じているときだけ返す」「範囲全体の要約は
+  // アセットに一度だけ持つ」── total と query.fundScope はアセットが範囲全体（全年度）に
+  // ついて一度だけ計算した値を使う。ページ後の cells から作り直すと pageSize で値が変わる
+  // （PR #27 レビュー指摘: 全件 total と pageSize=1 の total が食い違っていた）
+  const total = asset.total
 
   const omitted = asset.omittedYears.map((o) => ({ budget: `budgets/${jurisdictionId}:${o.fiscalYear}`, code: o.code }))
 
-  // query.fundScope は年度をまたぐ union（design doc: セルごとの fundScope が正）。
-  // consolidation は年度をまたいだ単純合計（1つの数値で会計範囲の変化を表せないための妥協）
-  const fundsUnion = new Map<string, string | null>()
-  let retained = { amount: 0, lineCount: 0 }
-  let eliminated = { amount: 0, lineCount: 0 }
-  for (const c of cells) {
-    for (const f of c.fundScope.funds) if (!fundsUnion.has(f.code)) fundsUnion.set(f.code, f.label)
-    retained = { amount: retained.amount + c.fundScope.consolidation.retained.amount, lineCount: retained.lineCount + c.fundScope.consolidation.retained.lineCount }
-    eliminated = { amount: eliminated.amount + c.fundScope.consolidation.eliminated.amount, lineCount: eliminated.lineCount + c.fundScope.consolidation.eliminated.lineCount }
-  }
-
   const jurisdiction = meta.jurisdictionById.get(jurisdictionId)!
-  const { sources, byJurisdiction } = provenanceSourcesFor(meta, [jurisdictionId])
+  const { sources, byJurisdiction } = provenanceSourcesFor(meta, [jurisdictionId], false)
   const budgetsIncluded = budgetsForJ
     .filter((b) => !asset.omittedYears.some((o) => o.fiscalYear === b.fiscalYear))
     .map((b) => b.name)
@@ -932,14 +983,15 @@ async function jurisdictionYearsAggregate(
       groupBy: input.groupBy,
       hierarchyParent: null,
       budgets: budgetsIncluded,
-      fundScope: {
-        funds: [...fundsUnion.entries()].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)).map(([code, label]) => ({ code, label })),
-        consolidation: { retained, eliminated },
-      },
+      // 年度をまたぐ union（design doc: セルごとの fundScope が正）。アセットが範囲全体について
+      // 一度だけ計算した値を使う（cells から作り直すと、cofog 軸で年度内の division 数だけ
+      // consolidation を二重に数えてしまう。PR #27 レビュー指摘）
+      fundScope: asset.fundScope,
     },
     warnings: [],
     omitted,
     supportedGroupings: mutableGroupings(JURISDICTION_YEARS_GROUPINGS),
+    supportedDirections: [...SUPPORTED_AGGREGATE_DIRECTIONS],
     judgment: includesCofog ? ['cofog' as const] : [],
     provenance: {
       sources,
@@ -1267,7 +1319,7 @@ export const searchBudgetLines = os.searchBudgetLines.handler(async ({ context, 
 
   const namedCoverage = computeNamedCoverage(budgetsInScope, nameFields, typedInput.level, directionsToCheck)
   const jurisdictionIds = [...new Set(budgetsInScope.map((b) => b.jurisdictionId))].sort()
-  const { sources, byJurisdiction } = provenanceSourcesFor(meta, jurisdictionIds)
+  const { sources, byJurisdiction } = provenanceSourcesFor(meta, jurisdictionIds, nameFields.includes('projectName'))
   const byBudget: Record<string, string[]> = {}
   for (const b of budgetsInScope) byBudget[b.name] = byJurisdiction.get(b.jurisdictionId) ?? []
   const attribution = `${jurisdictionIds.map((jid) => meta.jurisdictionById.get(jid)?.label ?? jid).join('、')}の予算を出典とする`

@@ -66,11 +66,15 @@ export type AggBudgetsAsset = {
  * 年度横断の COFOG 集計アセット。`agg/cross/{年度}/{direction}/{phase}/cofog-{depth}.json` の中身。
  * fund は選べない（団体を絞らないと fund を指定できないため、常に全会計合算）。
  * `omittedBudgets` は、その年度に予算はあるがこの phase を持たない団体（design doc の `omitted`）。
+ *
+ * ⚠️ `residual` は団体ごとに持つ（`residualByJurisdiction`）。`cells` は `jurisdiction` を軸に
+ * 必須にしているのに、残余だけ全団体で1つに合算すると「団体をまたいで足さない」を残余だけが破る
+ * （PR #27 レビュー指摘。団体ごとに `cells + residual` を復元できなくなる）。
  */
 export type AggCrossAsset = {
   revision: string
   cells: { jurisdiction: string; jurisdictionLabel: string; code: string; label: string; amount: number; lineCount: number }[]
-  residual: { unclassifiable: AggStat; outOfScope: AggStat; notDescended: AggStat }
+  residualByJurisdiction: Record<string, { unclassifiable: AggStat; outOfScope: AggStat; notDescended: AggStat }>
   consolidation: { retained: AggStat; eliminated: AggStat }
   includedBudgets: string[]
   omittedBudgets: { budget: string; code: 'PHASE_NOT_AVAILABLE' }[]
@@ -112,10 +116,16 @@ export type AggYearsFundScope = {
  * 単一団体の年度横断（COFOG 無し）。`agg/{団体}/years/{direction}/{phase}/{fund}/total.json`。
  * `omittedYears` は、その団体にその年度の予算はあるが phase または fund を持たない年度
  * （design doc「指定した段階を持たない年度は omitted に enum のコードで残す」）。
+ *
+ * `total` と `fundScope` は範囲全体（全 `cells`）の要約で、ページングの対象から分離してある。
+ * procedure がページ後の `cells` から毎回作り直すと、`pageSize` を変えるだけで値が変わってしまう
+ * （PR #27 レビュー指摘）ため、ここに一度だけ持つ。
  */
 export type AggYearsTotalAsset = {
   revision: string
   cells: { fiscalYear: string; amount: number; lineCount: number; fundScope: AggYearsFundScope }[]
+  total: AggStat
+  fundScope: AggYearsFundScope
   omittedYears: { fiscalYear: string; code: 'PHASE_NOT_AVAILABLE' | 'FUND_NOT_AVAILABLE' }[]
 }
 
@@ -152,7 +162,14 @@ export type NameIndexEntry = {
  */
 export type NameIndexChunkFile = { revision: string; hasNext: boolean; lines: NameIndexEntry[] }
 
-/** 単一団体の年度横断×COFOG（division 固定）。`agg/{団体}/years/{direction}/{phase}/{fund}/cofog-division.json` */
+/**
+ * 単一団体の年度横断×COFOG（division 固定）。`agg/{団体}/years/{direction}/{phase}/{fund}/cofog-division.json`。
+ *
+ * `total` と `fundScope` は範囲全体（全年度・全 division）の要約。`fundScope` は年度ごとに
+ * 同じ値を複数の division セルへ複製しているので、procedure がページ後の `cells` を単純に
+ * 足し込むと年度内の division 数だけ連結の内訳が水増しされる（PR #27 レビュー指摘）。
+ * ここで年度単位に一度だけ集計しておく。
+ */
 export type AggYearsCofogDivisionAsset = {
   revision: string
   cells: {
@@ -165,6 +182,8 @@ export type AggYearsCofogDivisionAsset = {
   }[]
   /** 年度ごとの COFOG 残余（cells には現れない unclassifiable / out-of-scope / notDescended） */
   residualByYear: Record<string, { unclassifiable: AggStat; outOfScope: AggStat; notDescended: AggStat }>
+  total: AggStat
+  fundScope: AggYearsFundScope
   omittedYears: { fiscalYear: string; code: 'PHASE_NOT_AVAILABLE' | 'FUND_NOT_AVAILABLE' }[]
 }
 

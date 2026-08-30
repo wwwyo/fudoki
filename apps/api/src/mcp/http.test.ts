@@ -301,4 +301,25 @@ describe('/mcp (remote MCP server)', () => {
     )
     expect(res.status).toBe(406)
   })
+
+  // PR #27 レビュー指摘: MCP Streamable HTTP 仕様の Security Considerations が Origin ヘッダの
+  // 検証を MUST としている（不正なら 403）。第三者のサイトが被害者のブラウザ経由で `/mcp` を叩き、
+  // 匿名のレート制限枠を消費できてしまうのを防ぐため。
+  test('Origin validation: disallowed browser Origin is rejected with 403', async () => {
+    const res = await rpc(initializeBody, { origin: 'https://evil.example' })
+    expect(res.status).toBe(403)
+    const body = (await res.json()) as { error: string }
+    expect(body.error).toBe('FORBIDDEN')
+  })
+
+  test('Origin validation: allowlisted Origin (fudoki.dev) passes through', async () => {
+    const res = await rpc(initializeBody, { origin: 'https://fudoki.dev' })
+    expect(res.status).toBe(200)
+  })
+
+  test('Origin validation: request with no Origin header (non-browser client) passes through', async () => {
+    // rpc() ヘルパーは既定で origin ヘッダを付けない ── curl やネイティブの MCP client を模す
+    const res = await rpc(initializeBody)
+    expect(res.status).toBe(200)
+  })
 })

@@ -53,6 +53,7 @@ export {
   SINGLE_BUDGET_GROUPINGS,
   storedBudgetLineSchema,
   storedCrossBudgetLineSchema,
+  SUPPORTED_AGGREGATE_DIRECTIONS,
   SUPPORTED_GROUPINGS,
   type AggregateBudgetsOutput,
   type Budget,

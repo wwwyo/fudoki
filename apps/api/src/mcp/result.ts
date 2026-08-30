@@ -29,7 +29,7 @@ function toolError(message: string): CallToolResult {
 export function fromApiError(error: unknown): CallToolResult {
   if (error instanceof ORPCError) {
     const data = error.data as
-      | { reason?: string; supportedGroupings?: string[][]; allowedValues?: string[] }
+      | { reason?: string; supportedGroupings?: string[][]; allowedValues?: string[]; supportedDirections?: string[] }
       | undefined
     const lines = [`${error.code}: ${error.message}`]
     if (data?.reason) lines.push(`reason: ${data.reason}`)
@@ -37,6 +37,9 @@ export function fromApiError(error: unknown): CallToolResult {
     // reason だけ通すと、言語モデルが自己修正するための情報が本文から欠ける。
     if (data?.supportedGroupings) lines.push(`supportedGroupings: ${JSON.stringify(data.supportedGroupings)}`)
     if (data?.allowedValues) lines.push(`allowedValues: ${JSON.stringify(data.allowedValues)}`)
+    // budgets:aggregate の direction 制約（PR #27 レビュー指摘）。歳入拒否の理由が COFOG ではなく
+    // v1 の未実装であることを、MCP tool のエラー本文からも機械可読に示す。
+    if (data?.supportedDirections) lines.push(`supportedDirections: ${JSON.stringify(data.supportedDirections)}`)
     return toolError(lines.join('\n'))
   }
   throw error

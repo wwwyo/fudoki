@@ -20,6 +20,7 @@ import { createApiClient } from './mcp/client'
 import { createMcpServer } from './mcp/server'
 import { router } from './router'
 import {
+  MCP_ALLOWED_ORIGINS,
   MCP_PATH,
   ROOT_PATH,
   ROOT_SPEC_REDIRECT_PATH,
@@ -50,7 +51,12 @@ const app = new Hono<{ Bindings: Env }>()
  * - /v0/* とパススルー・/mcp: 全データ public なので origin は全開のまま。
  *   API キーは任意（ベータのアクセス制御。access-control.ts）なので、
  *   キー無しでも外部開発者のブラウザベースのツールから叩けることを維持する
- *   （MCP client がブラウザ内で動く場合も、鍵無しで使えることが PRD の Goal）
+ *   （MCP client がブラウザ内で動く場合も、鍵無しで使えることが PRD の Goal）。
+ *   ⚠️ ただし /mcp は CORS とは別に Origin ヘッダの allowlist 検証も持つ（下記 `app.all(MCP_PATH, ...)`）。
+ *   CORS の origin: '*' は「ブラウザに応答を読ませてよいか」だけを決め、リクエスト自体を
+ *   拒否する力を持たない。MCP Streamable HTTP 仕様が Origin 検証を必須にしているのは、
+ *   第三者のサイトが被害者のブラウザ経由で `/mcp` を叩き、匿名のレート制限枠
+ *   （access-control.ts）を消費できてしまうのを防ぐため（PR #27 レビュー指摘）。
  * - /rpc/*: 自前フロント専用の口なので fudoki のオリジンだけに絞る。
  *   防御ではなく「公式クライアント以外はここを使わない」という契約の表明
  *   （CORS はブラウザにしか効かないので、curl 等は元から制限対象外）
@@ -95,8 +101,21 @@ app.get(ROOT_SPEC_REDIRECT_PATH, (c) => c.redirect(`${V0_PREFIX}${V0_SPEC_PATH}`
  * この tool 群はサーバ発の通知を送らない参照専用の request/response なので、
  * ストリームを維持する理由が無い（stateless 構成とも相性がよい）。
  * tool 定義は apps/api/src/mcp/ を stdio 版（apps/mcp）と共有する。
+ *
+ * ⚠️ Origin ヘッダの検証（MCP Streamable HTTP 仕様の Security Considerations が MUST とする）を
+ * transport に渡す前に行う。CORS の `origin: '*'`（上の cors() ミドルウェア）はブラウザに
+ * 応答を読ませるかどうかしか決めず、リクエストそのものを拒否できない。ここで弾かないと、
+ * 悪意あるサイトが被害者のブラウザ経由で `/mcp` を叩き、匿名のレート制限枠
+ * （access-control.ts）を被害者の IP で消費できてしまう（PR #27 レビュー指摘）。
+ * Origin ヘッダが無いリクエスト（curl・ネイティブの MCP client など非ブラウザ）は対象外 ──
+ * ブラウザ由来でなければ DNS rebinding 等の脅威が成立せず、ここで締め出すと
+ * PRD の Goal「URL を登録するだけで鍵無しに使える」を壊す。
  */
 app.all(MCP_PATH, async (c) => {
+  const origin = c.req.header('origin')
+  if (origin !== undefined && !MCP_ALLOWED_ORIGINS.has(origin)) {
+    return c.json({ error: 'FORBIDDEN', message: `origin not allowed: ${origin}` }, 403)
+  }
   const transport = new WebStandardStreamableHTTPServerTransport({ enableJsonResponse: true })
   const client = createApiClient(c.env)
   const server = createMcpServer(client)

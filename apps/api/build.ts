@@ -58,6 +58,57 @@ const CHUNK_SIZE = 1000
 const CHUNK_BYTES_LIMIT = 20 * 1024 * 1024
 
 /**
+ * `provenance.sources` の kind / license の正本（PR #27 レビュー指摘）。
+ * datapackage.json の `sources[]` は原典を年度の数だけ複製した生の一覧で、正本かどうか・
+ * ライセンスが確定しているかを区別しない ── 狛江市の事業名は決算資料 PDF から起こしており、
+ * その PDF の再配布可否は `ingestion/budget/sources.toml` で `review` / `NOASSERTION` と
+ * 宣言されているのに、以前の実装は団体の代表ライセンス（CC-BY-4.0）を全出典へ機械的に付けていた。
+ * ここで宣言そのもの（取得の入力）を読み、種類ごとに重複排除した出典を組む。
+ */
+const sourcesToml = Bun.TOML.parse(readFileSync(join(ROOT, 'ingestion/budget/sources.toml'), 'utf8')) as Record<string, unknown>
+
+type ProvenanceSourceDecl = { title: string; path: string | null; license: string; kind: 'canonical' | 'judgment' }
+
+/**
+ * jurisdiction の canonical（カタログ由来の一次データ）と judgment（事業名などを起こした二次資料）
+ * を、sources.toml の宣言から重複排除して組む。同じ (kind, title, path) は1件にまとめる
+ * （狛江市の canonical は年度ごとの `["<団体>:<年度>"]` テーブルに同じ値が6回現れる）。
+ */
+function provenanceSourcesFromToml(jurisdiction: string): ProvenanceSourceDecl[] {
+  const out: ProvenanceSourceDecl[] = []
+  const seen = new Set<string>()
+  const push = (title: string, path: string | null, license: string, kind: ProvenanceSourceDecl['kind']): void => {
+    const key = `${kind}|${title}|${path}`
+    if (seen.has(key)) return
+    seen.add(key)
+    out.push({ title, path, license, kind })
+  }
+  for (const [key, value] of Object.entries(sourcesToml)) {
+    if (!key.startsWith(`${jurisdiction}:`)) continue
+    const block = value as { attribution?: string; landing_page?: string; license_id?: string }
+    if (block.attribution !== undefined && block.license_id !== undefined) {
+      push(block.attribution, block.landing_page ?? null, block.license_id, 'canonical')
+    }
+  }
+  // 事業名（project_names）・歳入科目名（revenue_accounts）は fudoki の判断（事業名・科目名の対応づけ）
+  // を作るために参照した二次資料。redistribute/license_id は canonical とは別レイヤーで宣言されている。
+  for (const section of ['project_names', 'revenue_accounts'] as const) {
+    const table = sourcesToml[section] as Record<string, { document_title?: string; url?: string; license_id?: string }> | undefined
+    if (table === undefined) continue
+    for (const [key, block] of Object.entries(table)) {
+      if (!key.startsWith(`${jurisdiction}:`)) continue
+      if (block.document_title !== undefined && block.license_id !== undefined) {
+        push(block.document_title, block.url ?? null, block.license_id, 'judgment')
+      }
+    }
+  }
+  if (out.filter((s) => s.kind === 'canonical').length === 0) {
+    fail(`no canonical source declared in ingestion/budget/sources.toml for jurisdiction ${jurisdiction}`)
+  }
+  return out
+}
+
+/**
  * 分類率の金額ベースに使う予算段階。**団体を足すときは必ずここに書く**
  * （宣言が無ければ build が止まる。既定値で埋めない）。
  * 132047: 当初予算のみの資料なので approved。
@@ -584,8 +635,8 @@ function checkPhasesAndFundsMatchSource(
   if (expectedPhases !== actualPhases) {
     fail(`scopes.phases mismatch for ${jurisdiction}/${year}/${direction}: source=[${expectedPhases}] scopes=[${actualPhases}]`)
   }
-  const expectedFunds = [...new Set(rows.map((r) => r['fund_code']!))].sort().join(' ')
-  const actualFunds = [...new Set(scopeFunds.map((f) => f.code))].sort().join(' ')
+  const expectedFunds = [...new Set(rows.map((r) => r['fund_code']!))].sort().join('\0')
+  const actualFunds = [...new Set(scopeFunds.map((f) => f.code))].sort().join('\0')
   if (expectedFunds !== actualFunds) {
     fail(`scopes.funds mismatch for ${jurisdiction}/${year}/${direction}: source=[${expectedFunds}] scopes=[${actualFunds}]`)
   }
@@ -809,6 +860,11 @@ function writeAggBudgetAsset(
  * 検査1・2: 単一 budget の集計アセットが、cofog.csv + expenditure.csv から独立に数えた値と一致し、
  * かつ cells + residual = total が成り立つこと。**生成に使った cofogAux を再利用しない**
  * （ここだけの Map を cofogTable.rows から新しく組む）。
+ *
+ * ⚠️ `yearRows` は phase・fund で絞る前の生の行（年度だけで絞ったもの）を受け取り、
+ * phase・fund の範囲選択は生成側の `fundRows` を再利用せずこの関数自身が行う（PR #27 レビュー指摘）。
+ * セルの再集計の経路が別でも、範囲選択（yearRows → phaseRows → fundRows）を共有していると、
+ * その選択自体を誤ったときに生成と検査が同時に同じ誤りを通してしまうため。
  */
 function checkAggBudgetAssetMatchesSource(
   jurisdiction: string,
@@ -816,11 +872,11 @@ function checkAggBudgetAssetMatchesSource(
   phase: string,
   fund: string,
   depth: CofogDepth,
-  rows: Record<string, string>[],
+  yearRows: Record<string, string>[],
   cofogRowsForYear: Record<string, string>[],
 ): void {
   const byId = new Map(cofogRowsForYear.map((r) => [r['budget_line_id']!, r]))
-  const relevantRows = fund === 'all' ? rows : rows.filter((r) => r['fund_code'] === fund)
+  const relevantRows = yearRows.filter((r) => r['phase_id'] === phase && (fund === 'all' || r['fund_code'] === fund))
   const cellsByCode = new Map<string, AggStat>()
   const unclassifiable = newAggStat()
   const outOfScope = newAggStat()
@@ -961,7 +1017,12 @@ function writeHierarchyAsset(
   writeJson(join(OUT_DIR, assetPaths.aggHierarchy(jurisdiction, year, 'expenditure', phase, fund, hierarchyParentPathString(segments))), asset)
 }
 
-/** 検査1・2（hierarchy 版）。生成側の cellsByCode を再利用せず、scoped rows から独立に数え直す */
+/**
+ * 検査1・2（hierarchy 版）。生成側の cellsByCode を再利用せず、独立に数え直す。
+ * ⚠️ 引数は phase・fund・hierarchy の範囲で絞る前の `yearRows`。生成側が組んだ `scoped`
+ * （fundRows → scopedRowsFor の結果）をそのまま受け取らず、この関数自身が phase・fund・
+ * segments で絞る（PR #27 レビュー指摘。範囲選択の共有を断つ）。
+ */
 function checkHierarchyAssetMatchesSource(
   jurisdiction: string,
   year: string,
@@ -969,8 +1030,13 @@ function checkHierarchyAssetMatchesSource(
   fund: string,
   segments: HierarchyParentSegment[],
   childLevel: ChildLevel,
-  scoped: Record<string, string>[],
+  yearRows: Record<string, string>[],
 ): void {
+  // hierarchy 集計は fund === 'all' を対象にしない（呼び出し側の判断。書き込み側と同じ前提）ので、
+  // ここでは fund を会計コードの等値比較で使ってよい
+  const scoped = yearRows.filter(
+    (r) => r['phase_id'] === phase && r['fund_code'] === fund && segments.every((s) => r[`${s.level}_code`] === s.code),
+  )
   const expectedByCode = new Map<string, AggStat>()
   const expectedTotal = newAggStat()
   for (const row of scoped) {
@@ -1061,7 +1127,11 @@ function writeHierarchyCofogAsset(
   )
 }
 
-/** 検査1・2（hierarchy-cofog 版）。cofogRowsForYear（cofog リソース）から独立に数え直す */
+/**
+ * 検査1・2（hierarchy-cofog 版）。cofogRowsForYear（cofog リソース）から独立に数え直す。
+ * ⚠️ こちらも `yearRows`（phase・fund・hierarchy で絞る前）を受け取り、範囲選択を自前で行う
+ * （checkHierarchyAssetMatchesSource と同じ理由。PR #27 レビュー指摘）。
+ */
 function checkHierarchyCofogAssetMatchesSource(
   jurisdiction: string,
   year: string,
@@ -1069,9 +1139,12 @@ function checkHierarchyCofogAssetMatchesSource(
   fund: string,
   segments: HierarchyParentSegment[],
   childLevel: ChildLevel,
-  scoped: Record<string, string>[],
+  yearRows: Record<string, string>[],
   cofogRowsForYear: Record<string, string>[],
 ): void {
+  const scoped = yearRows.filter(
+    (r) => r['phase_id'] === phase && r['fund_code'] === fund && segments.every((s) => r[`${s.level}_code`] === s.code),
+  )
   const byId = new Map(cofogRowsForYear.map((r) => [r['budget_line_id']!, r]))
   const cellsByKey = new Map<string, AggStat>()
   const unclassifiable = newAggStat()
@@ -1139,7 +1212,15 @@ function checkHierarchyCofogAssetMatchesSource(
   }
 }
 
-type CrossDepthBucket = { cellsByJC: Map<string, AggStat>; unclassifiable: AggStat; outOfScope: AggStat; notDescended: AggStat }
+// ⚠️ 残余（unclassifiable / out-of-scope / notDescended）は団体ごとに持つ（Map<jurisdiction, AggStat>）。
+// `cells` が jurisdiction を軸に必須にしているのに、以前は残余だけ全団体で1つの AggStat に
+// 合算しており、団体をまたいで足さないという設計を残余だけが破っていた（PR #27 レビュー指摘）。
+type CrossDepthBucket = {
+  cellsByJC: Map<string, AggStat>
+  unclassifiableByJ: Map<string, AggStat>
+  outOfScopeByJ: Map<string, AggStat>
+  notDescendedByJ: Map<string, AggStat>
+}
 type CrossAccum = {
   perDepth: Record<CofogDepth, CrossDepthBucket>
   retained: AggStat
@@ -1154,7 +1235,15 @@ const crossJurisdictionLabel = new Map<string, string>()
 const perJurisdictionAggSource = new Map<string, { table: Table; cofogTable: Table; cofogAux: Map<string, CofogAux> }>()
 
 function newCrossDepthBucket(): CrossDepthBucket {
-  return { cellsByJC: new Map(), unclassifiable: newAggStat(), outOfScope: newAggStat(), notDescended: newAggStat() }
+  return { cellsByJC: new Map(), unclassifiableByJ: new Map(), outOfScopeByJ: new Map(), notDescendedByJ: new Map() }
+}
+
+/** Map<jurisdiction, AggStat> への加算。無ければ 0 から作る */
+function addAggStatByJ(map: Map<string, AggStat>, jurisdiction: string, amount: number): void {
+  const stat = map.get(jurisdiction) ?? newAggStat()
+  stat.amount += amount
+  stat.lineCount += 1
+  map.set(jurisdiction, stat)
 }
 
 function crossAccumFor(key: string): CrossAccum {
@@ -1188,20 +1277,17 @@ function accumulateCrossRows(jurisdiction: string, accum: CrossAccum, rows: Reco
     for (const depth of COFOG_DEPTHS) {
       const bucket = accum.perDepth[depth]
       if (aux.status === 'unclassifiable') {
-        bucket.unclassifiable.amount += amount
-        bucket.unclassifiable.lineCount += 1
+        addAggStatByJ(bucket.unclassifiableByJ, jurisdiction, amount)
         continue
       }
       if (aux.status === 'out-of-scope') {
-        bucket.outOfScope.amount += amount
-        bucket.outOfScope.lineCount += 1
+        addAggStatByJ(bucket.outOfScopeByJ, jurisdiction, amount)
         continue
       }
       if (aux.status !== 'assigned') fail(`agg cross: unexpected cofog_status "${aux.status}" for ${id}`)
       const code = depth === 'division' ? aux.division : depth === 'group' ? aux.group : aux.klass
       if (!code) {
-        bucket.notDescended.amount += amount
-        bucket.notDescended.lineCount += 1
+        addAggStatByJ(bucket.notDescendedByJ, jurisdiction, amount)
         continue
       }
       const jcKey = `${jurisdiction}|${code}`
@@ -1227,6 +1313,8 @@ function writeCrossAggAssets(allBudgetsForOmission: Budget[]): void {
     const omittedBudgets = budgetsThisYear
       .filter((b) => !accum.includedBudgets.has(b.id))
       .map((b) => ({ budget: `budgets/${b.id}`, code: 'PHASE_NOT_AVAILABLE' as const }))
+    // この年度・段階で実在する団体（cells の団体だけでなく、残余しか持たない団体も含む）
+    const includedJurisdictions = [...new Set([...accum.includedBudgets].map((id) => id.split(':')[0]!))]
     for (const depth of COFOG_DEPTHS) {
       const bucket = accum.perDepth[depth]
       const cells = [...bucket.cellsByJC.entries()]
@@ -1242,10 +1330,21 @@ function writeCrossAggAssets(allBudgetsForOmission: Budget[]): void {
           }
         })
         .sort(byKey((c) => `${c.jurisdiction}:${c.code}`))
+      // design doc「団体をまたいで足さない」── cells が jurisdiction を軸に必須なのに、
+      // 残余だけ全団体で1つに合算すると団体ごとに cells + residual を復元できなくなる
+      // （PR #27 レビュー指摘）。団体ごとの残余にする
+      const residualByJurisdiction: AggCrossAsset['residualByJurisdiction'] = {}
+      for (const jurisdiction of includedJurisdictions) {
+        residualByJurisdiction[jurisdiction] = {
+          unclassifiable: bucket.unclassifiableByJ.get(jurisdiction) ?? newAggStat(),
+          outOfScope: bucket.outOfScopeByJ.get(jurisdiction) ?? newAggStat(),
+          notDescended: bucket.notDescendedByJ.get(jurisdiction) ?? newAggStat(),
+        }
+      }
       const asset: AggCrossAsset = {
         revision,
         cells,
-        residual: { unclassifiable: bucket.unclassifiable, outOfScope: bucket.outOfScope, notDescended: bucket.notDescended },
+        residualByJurisdiction,
         consolidation: { retained: accum.retained, eliminated: accum.eliminated },
         includedBudgets: [...accum.includedBudgets].sort().map((id) => `budgets/${id}`),
         omittedBudgets,
@@ -1261,9 +1360,9 @@ function writeCrossAggAssets(allBudgetsForOmission: Budget[]): void {
  */
 function checkAggCrossAssetMatchesSource(year: string, phase: string, depth: CofogDepth): void {
   const cellsByJC = new Map<string, AggStat>()
-  const unclassifiable = newAggStat()
-  const outOfScope = newAggStat()
-  const notDescended = newAggStat()
+  const unclassifiableByJ = new Map<string, AggStat>()
+  const outOfScopeByJ = new Map<string, AggStat>()
+  const notDescendedByJ = new Map<string, AggStat>()
   const retained = newAggStat()
   const eliminated = newAggStat()
   const includedJurisdictions: string[] = []
@@ -1290,20 +1389,17 @@ function checkAggCrossAssetMatchesSource(year: string, phase: string, depth: Cof
       }
       const status = cofogRow['cofog_status']!
       if (status === 'unclassifiable') {
-        unclassifiable.amount += amount
-        unclassifiable.lineCount += 1
+        addAggStatByJ(unclassifiableByJ, jurisdiction, amount)
         continue
       }
       if (status === 'out-of-scope') {
-        outOfScope.amount += amount
-        outOfScope.lineCount += 1
+        addAggStatByJ(outOfScopeByJ, jurisdiction, amount)
         continue
       }
       if (status !== 'assigned') fail(`agg cross check: unexpected cofog_status "${status}" for ${id}`)
       const code = depth === 'division' ? cofogRow['cofog_division']! : depth === 'group' ? cofogRow['cofog_group']! : cofogRow['cofog_class']!
       if (!code) {
-        notDescended.amount += amount
-        notDescended.lineCount += 1
+        addAggStatByJ(notDescendedByJ, jurisdiction, amount)
         continue
       }
       const jcKey = `${jurisdiction}|${code}`
@@ -1323,15 +1419,31 @@ function checkAggCrossAssetMatchesSource(year: string, phase: string, depth: Cof
     if (w.amount !== expected.amount || w.lineCount !== expected.lineCount) fail(`agg cross check: cell ${key} mismatch in ${assetPath}`)
   }
   const pairs: [string, AggStat, AggStat][] = [
-    ['residual.unclassifiable', unclassifiable, written.residual.unclassifiable],
-    ['residual.outOfScope', outOfScope, written.residual.outOfScope],
-    ['residual.notDescended', notDescended, written.residual.notDescended],
     ['consolidation.retained', retained, written.consolidation.retained],
     ['consolidation.eliminated', eliminated, written.consolidation.eliminated],
   ]
   for (const [name, expected, actual] of pairs) {
     if (expected.amount !== actual.amount || expected.lineCount !== actual.lineCount) {
       fail(`agg cross check: ${name} mismatch for ${assetPath}`)
+    }
+  }
+  // 残余は団体ごと（design doc「団体をまたいで足さない」）。3種×団体で突き合わせる
+  const residualMaps: [string, Map<string, AggStat>, (r: AggCrossAsset['residualByJurisdiction'][string]) => AggStat][] = [
+    ['unclassifiable', unclassifiableByJ, (r) => r.unclassifiable],
+    ['outOfScope', outOfScopeByJ, (r) => r.outOfScope],
+    ['notDescended', notDescendedByJ, (r) => r.notDescended],
+  ]
+  const allJurisdictionsWithResidual = new Set([...unclassifiableByJ.keys(), ...outOfScopeByJ.keys(), ...notDescendedByJ.keys()])
+  if (new Set(Object.keys(written.residualByJurisdiction)).size < allJurisdictionsWithResidual.size) {
+    fail(`agg cross check: residualByJurisdiction is missing jurisdictions for ${assetPath}`)
+  }
+  for (const [name, expectedMap, pick] of residualMaps) {
+    for (const [jurisdiction, expected] of expectedMap) {
+      const writtenResidual = written.residualByJurisdiction[jurisdiction] ?? fail(`agg cross check: missing residualByJurisdiction[${jurisdiction}] in ${assetPath}`)
+      const actual = pick(writtenResidual)
+      if (expected.amount !== actual.amount || expected.lineCount !== actual.lineCount) {
+        fail(`agg cross check: residualByJurisdiction[${jurisdiction}].${name} mismatch for ${assetPath}`)
+      }
     }
   }
   const expectedIncluded = [...includedJurisdictions].sort().map((j) => `budgets/${j}:${year}`)
@@ -1562,7 +1674,9 @@ for (const j of jurisdictionIds.sort()) {
             const fundRows = fundOption === 'all' ? phaseRows : phaseRows.filter((r) => r['fund_code'] === fundOption)
             for (const depth of COFOG_DEPTHS) {
               writeAggBudgetAsset(j, year, phase, fundOption, depth, fundRows, cofogAux)
-              checkAggBudgetAssetMatchesSource(j, year, phase, fundOption, depth, fundRows, cofogRowsForYear)
+              // ⚠️ 検査へは範囲選択前の yearRows を渡す（fundRows を渡さない）。範囲選択
+              // （yearRows → phaseRows → fundRows）自体は検査関数が独立に行う（PR #27 レビュー指摘）
+              checkAggBudgetAssetMatchesSource(j, year, phase, fundOption, depth, yearRows, cofogRowsForYear)
             }
             // hierarchy 集計は "all" を対象にしない（design doc に明記は無い。procedure/budgets.ts の
             // hierarchyAggregate に書いたとおり、款・項のコードは会計内でしか一意でないための判断）
@@ -1571,9 +1685,9 @@ for (const j of jurisdictionIds.sort()) {
                 const childLevel = hierarchyChildLevel(segments)
                 const scoped = scopedRowsFor(fundRows, segments)
                 writeHierarchyAsset(j, year, phase, fundOption, segments, childLevel, scoped)
-                checkHierarchyAssetMatchesSource(j, year, phase, fundOption, segments, childLevel, scoped)
+                checkHierarchyAssetMatchesSource(j, year, phase, fundOption, segments, childLevel, yearRows)
                 writeHierarchyCofogAsset(j, year, phase, fundOption, segments, childLevel, scoped, cofogAux)
-                checkHierarchyCofogAssetMatchesSource(j, year, phase, fundOption, segments, childLevel, scoped, cofogRowsForYear)
+                checkHierarchyCofogAssetMatchesSource(j, year, phase, fundOption, segments, childLevel, yearRows, cofogRowsForYear)
               }
             }
           }
@@ -1628,6 +1742,7 @@ for (const j of jurisdictionIds.sort()) {
     resources: passthroughFiles,
     licenses: descriptor.licenses,
     sources: descriptor.sources.map((s) => ({ title: s.title, path: s.path ?? null })),
+    provenanceSources: provenanceSourcesFromToml(j),
     consolidationScope: perJurisdiction.consolidationScope,
     // API に載せるのは `api: true` の caveat だけ（基準は report/budget/schema.ts）。
     // 必須カテゴリの検査は全量（報告側）に対して行っているので、ここで絞っても落ちない
@@ -1782,8 +1897,16 @@ function writeNameIndex(): void {
   writeChunkSeries(assetPaths.searchAll, entries)
 }
 
+/**
+ * ⚠️ チャンク系列（writeChunkSeries）は CHUNK_BYTES_LIMIT を検査するが、集計アセット
+ * （aggBudget / aggHierarchy / aggCross / aggYearsTotal / aggYearsCofogDivision など）は
+ * 同じ Cloudflare Workers の応答上限を共有するのに検査が無かった（PR #27 レビュー指摘）。
+ * 集計アセットは1ファイル1レスポンスなので、チャンクと同じ上限をここでも適用する。
+ */
 function writeJson(path: string, value: unknown): void {
-  writeText(path, JSON.stringify(value))
+  const body = JSON.stringify(value)
+  if (Buffer.byteLength(body) > CHUNK_BYTES_LIMIT) fail(`asset ${path} exceeds ${CHUNK_BYTES_LIMIT} bytes`)
+  writeText(path, body)
 }
 
 function writeText(path: string, body: string): void {
@@ -1822,6 +1945,30 @@ function yearOmissionFor(scope: BudgetDirectionScope, phase: string, fund: strin
   return null
 }
 
+/**
+ * 年度ごとの `fundScope` を1回ずつだけ足し込んで union する（procedure 側が旧実装で
+ * 行っていた「ページ後の cells を足す」と同じ計算を、ここでは年度単位・全件で1回だけ行う）。
+ * ⚠️ 呼び出し側は「年度1つにつき1個」の fundScope を渡すこと。cofog セルのように同じ年度の
+ * fundScope が複数セルに複製されている配列をそのまま渡すと、division の数だけ二重に数える
+ * （PR #27 レビュー指摘の再発）。
+ */
+function unionFundScope(perYearFundScopes: readonly AggYearsFundScope[]): AggYearsFundScope {
+  const fundsUnion = new Map<string, string | null>()
+  const retained = newAggStat()
+  const eliminated = newAggStat()
+  for (const fs of perYearFundScopes) {
+    for (const f of fs.funds) if (!fundsUnion.has(f.code)) fundsUnion.set(f.code, f.label)
+    retained.amount += fs.consolidation.retained.amount
+    retained.lineCount += fs.consolidation.retained.lineCount
+    eliminated.amount += fs.consolidation.eliminated.amount
+    eliminated.lineCount += fs.consolidation.eliminated.lineCount
+  }
+  return {
+    funds: [...fundsUnion.entries()].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)).map(([code, label]) => ({ code, label })),
+    consolidation: { retained, eliminated },
+  }
+}
+
 function writeYearsTotalAsset(jurisdiction: string, phase: string, fund: string, budgetsForJ: Budget[], source: YearsSource): void {
   const cells: AggYearsTotalAsset['cells'] = []
   const omittedYears: AggYearsTotalAsset['omittedYears'] = []
@@ -1844,7 +1991,11 @@ function writeYearsTotalAsset(jurisdiction: string, phase: string, fund: string,
     const fundScope: AggYearsFundScope = { funds: fundsThisYear, consolidation: consolidationAt(rows, source.cofogAux) }
     cells.push({ fiscalYear: b.fiscalYear, amount: stat.amount, lineCount: stat.lineCount, fundScope })
   }
-  const asset: AggYearsTotalAsset = { revision, cells, omittedYears }
+  // design doc「範囲全体の要約はアセットに一度だけ持つ」── ページング後の cells から
+  // procedure が作り直すと pageSize で値が変わる（PR #27 レビュー指摘）ので、ここで確定させる。
+  const total = cells.reduce((s, c) => ({ amount: s.amount + c.amount, lineCount: s.lineCount + c.lineCount }), newAggStat())
+  const fundScope = unionFundScope(cells.map((c) => c.fundScope))
+  const asset: AggYearsTotalAsset = { revision, cells, total, fundScope, omittedYears }
   writeJson(join(OUT_DIR, assetPaths.aggYearsTotal(jurisdiction, 'expenditure', phase, fund)), asset)
 }
 
@@ -1879,12 +2030,24 @@ function checkYearsTotalAssetMatchesSource(jurisdiction: string, phase: string, 
   if (expectedOmittedKey !== actualOmittedKey) {
     fail(`years-total check: omittedYears mismatch for ${assetPath}: expected [${expectedOmittedKey}] got [${actualOmittedKey}]`)
   }
+  const expectedTotal = expectedCells.reduce((s, c) => ({ amount: s.amount + c.amount, lineCount: s.lineCount + c.lineCount }), newAggStat())
+  if (written.total.amount !== expectedTotal.amount || written.total.lineCount !== expectedTotal.lineCount) {
+    fail(`years-total check: total mismatch for ${assetPath}: expected ${JSON.stringify(expectedTotal)} got ${JSON.stringify(written.total)}`)
+  }
+  const expectedFundScope = unionFundScope(written.cells.map((c) => c.fundScope))
+  if (JSON.stringify(written.fundScope) !== JSON.stringify(expectedFundScope)) {
+    fail(`years-total check: fundScope is not the union of cells for ${assetPath}`)
+  }
 }
 
 function writeYearsCofogDivisionAsset(jurisdiction: string, phase: string, fund: string, budgetsForJ: Budget[], source: YearsSource): void {
   const cells: AggYearsCofogDivisionAsset['cells'] = []
   const residualByYear: AggYearsCofogDivisionAsset['residualByYear'] = {}
   const omittedYears: AggYearsCofogDivisionAsset['omittedYears'] = []
+  // ⚠️ fundScope は年度単位で1個決まるが、cells は年度×division で複数行に分かれる（同じ
+  // fundScope オブジェクトを全 division セルへ複製している）。union は cells からではなく
+  // ここへ年度1個につき1回だけ積んだ配列から取る（cells から取ると division の数だけ二重に数える）。
+  const perYearFundScopes: AggYearsFundScope[] = []
   for (const b of [...budgetsForJ].sort(byKey((x) => x.fiscalYear))) {
     const scope = b.scopes.expenditure!
     const omission = yearOmissionFor(scope, phase, fund)
@@ -1925,6 +2088,7 @@ function writeYearsCofogDivisionAsset(jurisdiction: string, phase: string, fund:
     }
     const fundsThisYear = fund === 'all' ? scope.funds : scope.funds.filter((f) => f.code === fund)
     const fundScope: AggYearsFundScope = { funds: fundsThisYear, consolidation: consolidationAt(rows, source.cofogAux) }
+    perYearFundScopes.push(fundScope)
     for (const [division, stat] of [...byDivision.entries()].sort(byKey(([d]) => d))) {
       cells.push({
         fiscalYear: b.fiscalYear,
@@ -1937,7 +2101,19 @@ function writeYearsCofogDivisionAsset(jurisdiction: string, phase: string, fund:
     }
     residualByYear[b.fiscalYear] = { unclassifiable, outOfScope, notDescended }
   }
-  const asset: AggYearsCofogDivisionAsset = { revision, cells, residualByYear, omittedYears }
+  // design doc「範囲全体の要約はアセットに一度だけ持つ」。total は cells（division 別）と
+  // residualByYear（unclassifiable / out-of-scope / notDescended）の両方を足した全年度合計。
+  const cellsTotal = cells.reduce((s, c) => ({ amount: s.amount + c.amount, lineCount: s.lineCount + c.lineCount }), newAggStat())
+  const residualTotal = Object.values(residualByYear).reduce(
+    (s, r) => ({
+      amount: s.amount + r.unclassifiable.amount + r.outOfScope.amount + r.notDescended.amount,
+      lineCount: s.lineCount + r.unclassifiable.lineCount + r.outOfScope.lineCount + r.notDescended.lineCount,
+    }),
+    newAggStat(),
+  )
+  const total = { amount: cellsTotal.amount + residualTotal.amount, lineCount: cellsTotal.lineCount + residualTotal.lineCount }
+  const fundScope = unionFundScope(perYearFundScopes)
+  const asset: AggYearsCofogDivisionAsset = { revision, cells, residualByYear, total, fundScope, omittedYears }
   writeJson(join(OUT_DIR, assetPaths.aggYearsCofogDivision(jurisdiction, 'expenditure', phase, fund)), asset)
 }
 
@@ -2018,6 +2194,24 @@ function checkYearsCofogDivisionAssetMatchesSource(jurisdiction: string, phase: 
   const actualOmittedKey = written.omittedYears.map((o) => `${o.fiscalYear}:${o.code}`).sort().join(',')
   if (expectedOmittedKey !== actualOmittedKey) {
     fail(`years-cofog check: omittedYears mismatch for ${assetPath}: expected [${expectedOmittedKey}] got [${actualOmittedKey}]`)
+  }
+  const expectedCellsTotal = expectedCells.reduce((s, c) => ({ amount: s.amount + c.amount, lineCount: s.lineCount + c.lineCount }), newAggStat())
+  const expectedResidualTotal = Object.values(expectedResidualByYear).reduce(
+    (s, r) => ({
+      amount: s.amount + r.unclassifiable.amount + r.outOfScope.amount + r.notDescended.amount,
+      lineCount: s.lineCount + r.unclassifiable.lineCount + r.outOfScope.lineCount + r.notDescended.lineCount,
+    }),
+    newAggStat(),
+  )
+  const expectedTotal = { amount: expectedCellsTotal.amount + expectedResidualTotal.amount, lineCount: expectedCellsTotal.lineCount + expectedResidualTotal.lineCount }
+  if (written.total.amount !== expectedTotal.amount || written.total.lineCount !== expectedTotal.lineCount) {
+    fail(`years-cofog check: total mismatch for ${assetPath}: expected ${JSON.stringify(expectedTotal)} got ${JSON.stringify(written.total)}`)
+  }
+  // fundScope は年度単位（cells は年度×division に複製されている）ので、年度ごとに1個だけ拾って union する
+  const perYearFundScopes = [...new Map(written.cells.map((c) => [c.fiscalYear, c.fundScope])).values()]
+  const expectedFundScope = unionFundScope(perYearFundScopes)
+  if (JSON.stringify(written.fundScope) !== JSON.stringify(expectedFundScope)) {
+    fail(`years-cofog check: fundScope is not the union of per-year fundScope for ${assetPath}`)
   }
 }
 

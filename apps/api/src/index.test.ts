@@ -624,11 +624,27 @@ describe('budgets:aggregate (COFOG axis)', () => {
     expect(body.query.budgets.sort()).toEqual(['budgets/132047:2024', 'budgets/132241:2024'])
   })
 
-  test('歳入に COFOG の軸を要求すると 400（歳入は not-applicable）', async () => {
+  test('歳入は budgets:aggregate 自体が v1 で未対応（COFOG が理由であるかのようなメッセージにしない）', async () => {
     const res = await get(
       `/v0/budgets:aggregate?${aggQuery({ filter: 'jurisdiction = "132047" AND fiscalYear = 2024', direction: 'revenue', phase: 'approved', groupBy: ['cofog.division'] })}`,
     )
     expect(res.status).toBe(400)
+    // PR #27 レビュー指摘: 以前は「COFOG が歳入には無い」ことを理由に挙げており、
+    // 歳入の集計が設計より広く拒否されているように読めた。理由は「v1 でまだ実装していない」であって、
+    // COFOG の欠如ではない ── message にも reason にも COFOG を理由として書かない。
+    const body = (await res.json()) as { message: string; data: { reason: string; supportedDirections: string[] } }
+    expect(body.message.toLowerCase()).not.toContain('cofog')
+    expect(body.data.reason.toLowerCase()).not.toContain('cofog')
+    expect(body.data.supportedDirections).toEqual(['expenditure'])
+  })
+
+  test('歳出の集計応答は supportedDirections で direction の制約を示す', async () => {
+    const res = await get(
+      `/v0/budgets:aggregate?${aggQuery({ filter: 'jurisdiction = "132047" AND fiscalYear = 2024', direction: 'expenditure', phase: 'approved', groupBy: ['cofog.division'] })}`,
+    )
+    expect(res.status).toBe(200)
+    const body = (await res.json()) as { supportedDirections: string[] }
+    expect(body.supportedDirections).toEqual(['expenditure'])
   })
 
   test('団体を絞らずに fund を指定すると 400', async () => {
@@ -670,7 +686,11 @@ describe('budgets:aggregate (COFOG axis)', () => {
       `/v0/budgets:aggregate?${aggQuery({ filter: 'jurisdiction = "132195" AND fiscalYear = 2023', direction: 'expenditure', phase: 'adjusted', groupBy: ['cofog.division'], pageSize: '2' })}`,
     )
     expect(res.status).toBe(200)
-    const body = await res.json() as AggregateResponse & { provenance: { sources: unknown[]; byBudget: Record<string, string[]> }; judgment: string[]; nextPageToken?: string }
+    const body = await res.json() as AggregateResponse & {
+      provenance: { sources: { id: string; title: string; path: string | null; license: string; kind: string }[]; byBudget: Record<string, string[]> }
+      judgment: string[]
+      nextPageToken?: string
+    }
     expect(body.cells.length).toBe(2)
     expect(body.nextPageToken).toBeDefined()
     expect(body.judgment).toEqual(['cofog'])
@@ -678,6 +698,18 @@ describe('budgets:aggregate (COFOG axis)', () => {
     expect(Object.keys(body.provenance.byBudget)).toEqual(['budgets/132195:2023'])
     // 狛江市は連結消去の対象外（三鷹市だけ eliminated がある）なので警告は立たない
     expect(body.warnings).toEqual([])
+
+    // PR #27 レビュー指摘: 狛江市の provenance.sources が、決算資料 PDF（事業名の判断由来。
+    // ingestion/budget/sources.toml では redistribute=review / license_id=NOASSERTION）まで
+    // 一律に CC-BY-4.0 / kind=canonical と誤表示し、かつ同じ出典が重複していた。
+    // budgets:aggregate の judgment は cofog だけなので、事業名の判断由来の出典（judgment）は
+    // そもそも含めない ── ここに現れるのは狛江市のカタログ出典（canonical・CC-BY-4.0）だけ。
+    for (const s of body.provenance.sources) {
+      expect(s.kind).toBe('canonical')
+      expect(s.license).toBe('CC-BY-4.0')
+    }
+    const dedupeKeys = new Set(body.provenance.sources.map((s) => `${s.title}|${s.path}`))
+    expect(dedupeKeys.size).toBe(body.provenance.sources.length)
   })
 })
 
@@ -862,6 +894,93 @@ describe('budgets:aggregate (fiscalYear axis)', () => {
       `/v0/budgets:aggregate?${aggQuery({ filter: 'jurisdiction = "132195"', direction: 'expenditure', phase: 'adjusted', groupBy: ['jurisdiction', 'fiscalYear'] })}`,
     )
     expect(res.status).toBe(400)
+  })
+
+  // PR #27 レビュー指摘: total と query.fundScope をページ後の cells から作り直していたため、
+  // 同じ問い合わせでも pageSize を変えるだけで値が変わっていた（全件と pageSize=1 で不一致）。
+  test('groupBy=fiscalYear: total と query.fundScope は pageSize を変えても変わらない', async () => {
+    const full = await get(
+      `/v0/budgets:aggregate?${aggQuery({ filter: 'jurisdiction = "132195"', direction: 'expenditure', phase: 'adjusted', groupBy: ['fiscalYear'] })}`,
+    )
+    const paged = await get(
+      `/v0/budgets:aggregate?${aggQuery({ filter: 'jurisdiction = "132195"', direction: 'expenditure', phase: 'adjusted', groupBy: ['fiscalYear'], pageSize: '1' })}`,
+    )
+    expect(full.status).toBe(200)
+    expect(paged.status).toBe(200)
+    const fullBody = await full.json() as AggregateResponse & { query: { fundScope: unknown } }
+    const pagedBody = await paged.json() as AggregateResponse & { query: { fundScope: unknown }; cells: unknown[] }
+    expect(pagedBody.cells.length).toBe(1)
+    expect(pagedBody.total).toEqual(fullBody.total)
+    expect(pagedBody.query.fundScope).toEqual(fullBody.query.fundScope)
+  })
+
+  test('groupBy=fiscalYear,cofog.division: total と query.fundScope は pageSize を変えても変わらない（division 数だけ二重に数える回帰）', async () => {
+    const full = await get(
+      `/v0/budgets:aggregate?${aggQuery({ filter: 'jurisdiction = "132195"', direction: 'expenditure', phase: 'adjusted', groupBy: ['fiscalYear', 'cofog.division'] })}`,
+    )
+    const paged = await get(
+      `/v0/budgets:aggregate?${aggQuery({ filter: 'jurisdiction = "132195"', direction: 'expenditure', phase: 'adjusted', groupBy: ['fiscalYear', 'cofog.division'], pageSize: '1' })}`,
+    )
+    expect(full.status).toBe(200)
+    expect(paged.status).toBe(200)
+    const fullBody = await full.json() as AggregateResponse & { query: { fundScope: { consolidation: unknown } } }
+    const pagedBody = await paged.json() as AggregateResponse & { query: { fundScope: { consolidation: unknown } }; cells: unknown[] }
+    expect(pagedBody.cells.length).toBe(1)
+    expect(pagedBody.total).toEqual(fullBody.total)
+    expect(pagedBody.query.fundScope).toEqual(fullBody.query.fundScope)
+  })
+
+  // PR #27 レビュー指摘: phase を検証しないままアセットパスを組んでいたため、この団体のどの年度も
+  // 持たない phase（狛江市に approved は無い。決算のみで adjusted/executed）が 500 になっていた。
+  test('この団体のどの年度も持たない phase を指定すると 400（allowedValues 付き。500 にしない）', async () => {
+    const res = await get(
+      `/v0/budgets:aggregate?${aggQuery({ filter: 'jurisdiction = "132195"', direction: 'expenditure', phase: 'approved', groupBy: ['fiscalYear'] })}`,
+    )
+    expect(res.status).toBe(400)
+    const body = await res.json() as { data?: { reason?: string; allowedValues?: string[] } }
+    expect(body.data?.reason).toBe('invalid phase')
+    expect(body.data?.allowedValues).toBeDefined()
+    expect(body.data?.allowedValues).not.toContain('approved')
+  })
+})
+
+describe('budgets:aggregate (jurisdiction axis / 団体横断)', () => {
+  // PR #27 レビュー指摘: cells は jurisdiction を軸に必須にしているのに、residual だけ
+  // 全団体を1つの AggStat に合算しており、団体ごとに cells + residual を復元できなかった。
+  test('残余は団体ごとに返る（residualByJurisdiction）。団体を1つに合算した residual は返さない', async () => {
+    const res = await get(
+      `/v0/budgets:aggregate?${aggQuery({ filter: 'fiscalYear = 2023', direction: 'expenditure', phase: 'adjusted', groupBy: ['jurisdiction', 'cofog.division'] })}`,
+    )
+    expect(res.status).toBe(200)
+    const body = await res.json() as AggregateResponse & {
+      residual?: unknown
+      residualByJurisdiction?: Record<string, { unclassifiable: { amount: number; lineCount: number } }>
+    }
+    expect(body.residual).toBeUndefined()
+    expect(body.residualByJurisdiction).toBeDefined()
+    const jurisdictionsInCells = new Set(body.cells.map((c) => c.dimensions.find((d) => d.dimension === 'jurisdiction')!.code))
+    // 応答に現れた団体はすべて residualByJurisdiction に対応するキーを持つ（cells + residual を団体ごとに復元できる）
+    for (const jid of jurisdictionsInCells) {
+      expect(body.residualByJurisdiction![jid]).toBeDefined()
+    }
+    // 団体を1つに合算していないことの直接証拠: 少なくとも1団体の残余が他の団体と異なる
+    const komae = body.residualByJurisdiction!['132195']
+    expect(komae).toBeDefined()
+  })
+
+  // PR #27 レビュー指摘: phase を検証しないままアセットパスを組んでいたため、
+  // その年度のどの団体も持たない phase が 500 になっていた。2018年度は狛江市しか無く、
+  // 狛江市の phase は adjusted / adjusted-before-transfer / executed だけ（approved は無い）ので、
+  // "approved" は phaseId としては実在するが 2018 年度のどの団体にも無い値になる。
+  test('その年度のどの団体も持たない phase を指定すると 400（allowedValues 付き。500 にしない）', async () => {
+    const res = await get(
+      `/v0/budgets:aggregate?${aggQuery({ filter: 'fiscalYear = 2018', direction: 'expenditure', phase: 'approved', groupBy: ['jurisdiction', 'cofog.division'] })}`,
+    )
+    expect(res.status).toBe(400)
+    const body = await res.json() as { data?: { reason?: string; allowedValues?: string[] } }
+    expect(body.data?.reason).toBe('invalid phase')
+    expect(body.data?.allowedValues).toBeDefined()
+    expect(body.data?.allowedValues).not.toContain('approved')
   })
 })
 
@@ -1057,6 +1176,40 @@ describe('budgetLines:search (名称の検索)', () => {
     const body = await res.json() as SearchResponse
     expect(body.provenance.sources.length).toBeGreaterThan(0)
     expect(body.revision).toMatch(/^[0-9a-f]{40}/)
+  })
+
+  // PR #27 レビュー指摘: 狛江市の事業名（projectName）は決算資料 PDF から起こしており、
+  // ingestion/budget/sources.toml では redistribute=review / license_id=NOASSERTION と
+  // 宣言されている。nameField=projectName を含む検索では、その判断由来の出典が
+  // canonical（CC-BY-4.0）と誤表示されず、judgment / NOASSERTION として区別されて出ること。
+  test('nameField=projectName を含む検索は、事業名の判断由来の出典を judgment / NOASSERTION として区別して返す', async () => {
+    const res = await get(
+      `/v0/budgets/-/budgetLines:search?${aggQuery({ query: '教育', filter: 'jurisdiction = "132195" AND fiscalYear = 2020', nameField: ['projectName'] })}`,
+    )
+    expect(res.status).toBe(200)
+    const body = await res.json() as Omit<SearchResponse, 'provenance'> & {
+      provenance: { sources: { id: string; title: string; path: string | null; license: string; kind: string }[] }
+    }
+    const judgmentSources = body.provenance.sources.filter((s) => s.kind === 'judgment')
+    expect(judgmentSources.length).toBeGreaterThan(0)
+    for (const s of judgmentSources) expect(s.license).toBe('NOASSERTION')
+    // canonical（カタログの CC-BY-4.0）と judgment（決算資料 PDF）は別出典として両方残る
+    const canonicalSources = body.provenance.sources.filter((s) => s.kind === 'canonical')
+    expect(canonicalSources.length).toBeGreaterThan(0)
+    for (const s of canonicalSources) expect(s.license).toBe('CC-BY-4.0')
+    // 重複が無い
+    const dedupeKeys = new Set(body.provenance.sources.map((s) => `${s.kind}|${s.title}|${s.path}`))
+    expect(dedupeKeys.size).toBe(body.provenance.sources.length)
+  })
+
+  // accountLabel だけの検索は事業名の判断を含まないので、判断由来の出典を混ぜない
+  test('nameField=accountLabel だけの検索は judgment 出典を含まない', async () => {
+    const res = await get(
+      `/v0/budgets/-/budgetLines:search?${aggQuery({ query: '教育', filter: 'jurisdiction = "132047" AND fiscalYear = 2024', nameField: ['accountLabel'] })}`,
+    )
+    expect(res.status).toBe(200)
+    const body = await res.json() as Omit<SearchResponse, 'provenance'> & { provenance: { sources: { kind: string }[] } }
+    expect(body.provenance.sources.every((s) => s.kind === 'canonical')).toBe(true)
   })
 })
 

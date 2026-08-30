@@ -67,6 +67,11 @@ apps/api の `Contract`（`apps/api/src/contract/`）にある procedure を、�
 先に `list_budgets` で対象団体の `scopes[direction].phases` を見て、実在する phase を選んでから呼ぶこと。
 複数団体にまたがる集計（filter に jurisdiction を指定しない）は `groupBy` に `jurisdiction` を含める必要がある。
 
+⚠️ `aggregate_budgets` は v1 では `direction=expenditure` のみ対応。`revenue` を指定すると 400 になる ──
+理由は「歳入に COFOG が無いから」ではなく「歳入の集計自体を v1 でまだ実装していないから」（PR #27
+レビュー指摘。以前のメッセージは COFOG が理由であるかのように読めた）。応答・エラー応答の
+`supportedDirections` が、その時点で対応する direction を示す。
+
 ⚠️ `aggregate_budgets` の `groupBy` に `hierarchy` を含めるとき（科目階層＝款・項・目での集計）は、
 `fund` を会計コード1つに絞ることが必須（既定の `"all"` は 400）。款・項のコードは会計の中でしか意味を
 持たない（三鷹市の款コード `01` は一般会計では議会費、国民健康保険事業特別会計では総務費）。
@@ -104,6 +109,14 @@ view で使い分ける単一の object schema）はこの制約に元から当�
   既定 `keyed`）。MCP 独自の認証は設けない（PRD の Non-Goal）
 - CORS は `/v0/*` と同じ全開。`mcp-session-id` / `mcp-protocol-version` / `Last-Event-ID` を
   allow/expose ヘッダに足している（MCP Streamable HTTP がクライアント→サーバ・サーバ→クライアントで使うため）
+- **Origin ヘッダの検証を別に持つ**（`index.ts` の `app.all(MCP_PATH, ...)`、allowlist は
+  `spec.ts` の `MCP_ALLOWED_ORIGINS`）。MCP Streamable HTTP 仕様の Security Considerations が
+  Origin ヘッダの検証を MUST としており、不正なら 403 を返す。CORS の `origin: '*'` はブラウザに
+  応答を読ませるかどうかしか決めず、リクエストそのものは拒否できない ── 検証が無いと、悪意ある
+  サイトが被害者のブラウザ経由で `/mcp` を叩き、匿名のレート制限枠を被害者の IP で消費できてしまう
+  （PR #27 レビュー指摘）。Origin ヘッダの無いリクエスト（curl・ネイティブの MCP client など
+  非ブラウザ）は検証の対象外 ── ブラウザ由来でなければこの脅威が成立せず、締め出すと
+  PRD の Goal「URL を登録するだけで鍵無しに使える」を壊す。
 
 ## 開発
 

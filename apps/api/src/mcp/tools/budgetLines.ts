@@ -1,6 +1,6 @@
 /**
  * get_budget_lines tool。`getBudgetLines` procedure をそのまま呼ぶだけ。
- * 明細は件数が多い（例: 三鷹市の歳出だけで 5,613 行）ので、ページングをそのまま露出する。
+ * 団体によっては明細の件数が多いので、ページングをそのまま露出する。
  *
  * contract の `getBudgetLinesOutput` は判別可能な union をやめて view にした
  * 単一の object schema なので（design doc「明細の一覧」）、MCP SDK 1.30.0 の
@@ -25,14 +25,16 @@ export function registerGetBudgetLines(server: McpServer, client: ApiClient): vo
         '1段階）・共通の COFOG 項目だけの軽量な形。FULL は団体固有の科目階層（hierarchy）・階層以外の軸' +
         '（dimensions）・全段階の金額（amounts）・fudoki の判断の全体（judgments）を追加する。' +
         'FULL は実在する budget を親にしたときだけ指定できる（`-` では 400）。\n\n' +
-        '⚠️ 件数が多い。三鷹市の歳出だけで 5,613 行、狛江市は6年度分の決算で更に多い。' +
-        'filter を付けずに呼ぶと大量の行が返るので、必要な direction・phase・cofog.division を' +
-        'filter で絞ってから呼ぶこと。続きがあるときだけ nextPageToken が返る（無ければ最後まで返した）。\n\n' +
+        '⚠️ filter は省略できない。budget に実在する id を指定したときは direction が必須' +
+        '（省略すると 400）。budget に `-` を指定したときは cofog.division が必須（省略すると 400）。' +
+        'いずれの場合も団体によっては該当行数が多いので、phase も添えて絞ってから呼ぶこと。' +
+        '続きがあるときだけ nextPageToken が返る（無ければ最後まで返した）。\n\n' +
         '⚠️ view=FULL の amounts は予算段階（phase）ごとの金額を持つ。同じ団体でも決算資料の行は複数段階' +
         '（当初予算額・補正後・執行済額など）を持つことがあるので、集計するときは phase を' +
         '固定してから合算すること。団体をまたぐ合算は list_budgets の amountPhase が違う団体どうしでは行わないこと。',
       inputSchema: getBudgetLinesInput,
       outputSchema: getBudgetLinesOutput,
+      annotations: { readOnlyHint: true, openWorldHint: false },
     },
     async (input) => {
       try {
