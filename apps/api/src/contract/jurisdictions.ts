@@ -6,7 +6,7 @@
  * 各フィールドの `.describe()` は OpenAPI の description にそのまま出る。
  */
 import * as z from 'zod'
-import { base, levelName, resourceName } from './shared'
+import { base, resourceName } from './shared'
 
 export const caveatSchema = z.object({
   category: z
@@ -20,12 +20,6 @@ export const jurisdictionSchema = z.object({
   name: resourceName.describe('リソース名（AIP-122）。jurisdictions/{団体コード}'),
   id: z.string().describe('全国地方公共団体コード（例: 三鷹市 132047、狛江市 132195）'),
   label: z.string().describe('団体名'),
-  levels: z
-    .object({
-      expenditure: z.array(levelName).describe('歳出の階層名の並び'),
-      revenue: z.array(levelName).describe('歳入の階層名の並び'),
-    })
-    .describe('団体固有の階層の並び（datapackage の宣言由来）。budgetLines 応答の hierarchy はこの順で並ぶ'),
   datapackagePath: z.string().describe('配布物（datapackage.json）へのパス。出典・ライセンス・改変表示の正本'),
   resources: z.array(z.string()).describe('パススルー（/datapackages/{id}/{file}）で取得できるファイル名'),
   licenses: z
@@ -52,7 +46,7 @@ export const listJurisdictions = base
     path: '/jurisdictions',
     summary: 'List jurisdictions',
     description:
-      '収録団体の一覧。団体の同一性・階層の宣言・注意事項（caveats）と、' +
+      '収録団体の一覧。団体の同一性・注意事項（caveats）と、' +
       '配布物（datapackage.json）への参照を返す。' +
       '収録している予算（年度）と分類率は /budgets?filter=jurisdiction%20=%20"{id}" から取得する（カバレッジは budgets の List から導出する）。',
   })

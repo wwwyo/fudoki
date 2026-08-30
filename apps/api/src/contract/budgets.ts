@@ -146,7 +146,7 @@ export const budgetLineSchema = z.object({
   budgetLineId: z.string().describe('配布物の明細識別子。{団体}:{年度}:{direction}:{資料種別}:{ハッシュ} の形で安定。先頭2セグメントが親 budget の id'),
   fiscalYear: z.string().describe('会計年度（西暦）'),
   direction,
-  hierarchy: z.array(hierarchyEntry).describe('科目の階層（款→項→目→…）。並びと段数は団体ごとに違い、jurisdiction の levels が宣言する'),
+  hierarchy: z.array(hierarchyEntry).describe('科目の階層（款→項→目→…）。並びと段数は団体ごとに違い、配列の並び順が上位から下位への順序'),
   dimensions: z.array(dimensionEntry).describe('階層以外の同一性の軸（狛江市の所属・予算区分）。無い団体は空配列'),
   amounts: z.array(amountEntry).describe('この明細が持つ予算段階ごとの金額。決算資料の明細は複数段階を持つ'),
   judgments: z

@@ -417,7 +417,6 @@ for (const j of jurisdictionIds.sort()) {
   }
 
   const fiscalYears: Record<Direction, string[]> = { expenditure: [], revenue: [] }
-  const levels: Jurisdiction['levels'] = { expenditure: [], revenue: [] }
   const linesByYearDir = new Map<string, BudgetLine[]>()
   /** 検査2用: 年度 → (budget_line_id → 全予算段階の金額合計)。cofog 行ループを O(1) 参照にする */
   const expenditureSums = new Map<string, Map<string, number>>()
@@ -425,7 +424,6 @@ for (const j of jurisdictionIds.sort()) {
   for (const direction of DIRECTIONS) {
     const table = readCsvTable(join(dir, `${direction}.csv`))
     const ctx = resourceContext(j, direction, table, descriptor)
-    levels[direction] = ctx.levels.map((l) => levelName.parse(l))
     const lines = buildLines(ctx, table, cofogByLineId, projectNames)
     checkMultisetEquality(ctx, table, lines)
 
@@ -531,7 +529,6 @@ for (const j of jurisdictionIds.sort()) {
     name: `jurisdictions/${j}`,
     id: j,
     label,
-    levels,
     datapackagePath: `/v0/datapackages/${j}/datapackage.json`,
     resources: passthroughFiles,
     licenses: descriptor.licenses,
