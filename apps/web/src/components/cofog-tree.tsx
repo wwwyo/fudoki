@@ -6,10 +6,15 @@
  * （cofog-panel.tsx が同じ理由を説明している）。この葉ノードは選択できない
  * （API の filter は division/group/class の完全一致しか無く、
  * 「そこで止まった行だけ」を絞る術が無いため）。
+ *
+ * ⚠️ **選んだ行の明細は、その行の直下にインラインで挟む。** ツリーの下に独立した
+ * セクションを置くと、縦に長いツリーでは選んだ行と明細が同時に見えなくなる
+ * （AGENTS.md タスク3）。展開（chevron）と選択（行クリック）は別の操作なので、
+ * 「開いている」ことと「選ばれている」ことは別の状態として扱う。
  */
 import { useState } from "react"
 import { ChevronRight } from "lucide-react"
-import { DIVISION_COLOR, pct, yen } from "@/lib/pipeline"
+import { DIVISION_COLOR, pct, senYen, count } from "@/lib/pipeline"
 import type { CofogNodeFilter, CofogTreeNode } from "@/lib/cofog-tree"
 import { cn } from "@/lib/utils"
 
@@ -18,17 +23,25 @@ export function CofogTree({
   total,
   selected,
   onSelect,
+  renderDetail,
 }: {
   nodes: CofogTreeNode[]
   /** 割合の分母（合計、未分類込み）。cofog.total.sum を渡す */
   total: number
   selected: CofogNodeFilter | null
   onSelect: (filter: CofogNodeFilter) => void
+  /** 選択中の行の直下に出す明細。呼び出し側（analysis.tsx）が API 呼び出しの詳細を持つ */
+  renderDetail: (filter: CofogNodeFilter) => React.ReactNode
 }) {
   return (
     <div className="flex flex-col rounded-lg border text-sm">
+      {/* ⚠️ 金額の単位はここで1回だけ明示する。行ごとに「千円」を繰り返すと
+          ノイズになるが、書かないと明細（円）と混同する（AGENTS.md の指摘）。 */}
+      <div className="flex items-center gap-2 border-b bg-muted/30 px-2 py-1 text-xs text-muted-foreground">
+        <span className="ml-auto shrink-0 whitespace-nowrap text-right">金額（千円）・構成比・件数</span>
+      </div>
       {nodes.map((n) => (
-        <TreeRow key={n.key} node={n} depth={0} total={total} selected={selected} onSelect={onSelect} />
+        <TreeRow key={n.key} node={n} depth={0} total={total} selected={selected} onSelect={onSelect} renderDetail={renderDetail} />
       ))}
     </div>
   )
@@ -43,12 +56,14 @@ function TreeRow({
   total,
   selected,
   onSelect,
+  renderDetail,
 }: {
   node: CofogTreeNode
   depth: number
   total: number
   selected: CofogNodeFilter | null
   onSelect: (filter: CofogNodeFilter) => void
+  renderDetail: (filter: CofogNodeFilter) => React.ReactNode
 }) {
   const [open, setOpen] = useState(depth === 0)
   const hasChildren = (node.children?.length ?? 0) > 0
@@ -86,11 +101,22 @@ function TreeRow({
         </span>
         <span className={cn("truncate", node.code === "" && "text-xs text-muted-foreground")}>{node.label}</span>
         <span className="ml-auto shrink-0 whitespace-nowrap text-right text-xs text-muted-foreground tabular-nums">
-          {yen(node.sum)}円 ・ {pct(total > 0 ? node.sum / total : 0)} ・ {yen(node.count)}件
+          {senYen(node.sum)} ・ {pct(total > 0 ? node.sum / total : 0)} ・ {count(node.count)}件
         </span>
       </div>
+      {isSelected && node.filter && (
+        // ⚠️ 明細は表なので、ツリーの字下げ（depth * 20px）をそのまま当てると
+        // 深い階層（小分類）で横幅が潰れる。字下げは行のラベル位置に揃える程度に留め、
+        // 表自体は overflow-x-auto で横スクロールに逃がす（cofog-statement.tsx 側）。
+        <div
+          className="border-t bg-muted/20 py-2 pr-2"
+          style={{ paddingLeft: `${Math.min(depth, 1) * 20 + 8}px` }}
+        >
+          {renderDetail(node.filter)}
+        </div>
+      )}
       {open && node.children?.map((c) => (
-        <TreeRow key={c.key} node={c} depth={depth + 1} total={total} selected={selected} onSelect={onSelect} />
+        <TreeRow key={c.key} node={c} depth={depth + 1} total={total} selected={selected} onSelect={onSelect} renderDetail={renderDetail} />
       ))}
     </div>
   )

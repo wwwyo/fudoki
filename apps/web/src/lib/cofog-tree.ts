@@ -76,7 +76,10 @@ export function buildCofogTree(byDivision: readonly CofogDivisionRow[], byCode: 
           })
         }
         classNodes.sort(byDesc)
-        const children: CofogTreeNode[] = ownAtGroup.count > 0
+        // 「止まった分」は、同じ階層に実際に降りた兄弟（classNodes）がいるときだけ出す。
+        // 兄弟が無ければ、子が無いこと自体が「ここで止まった」を意味するので冗長になる
+        // （合計は group 自身の count/sum にそのまま残るので、ここで削っても値は変わらない）。
+        const children: CofogTreeNode[] = ownAtGroup.count > 0 && classNodes.length > 0
           ? [
               {
                 key: `${d.division}/${group}/_own`,
@@ -102,7 +105,8 @@ export function buildCofogTree(byDivision: readonly CofogDivisionRow[], byCode: 
         }
       })
 
-    const children: CofogTreeNode[] = ownAtDivision.count > 0
+    // 同様に、division 直下の「止まった分」も group が実在するときだけ出す。
+    const children: CofogTreeNode[] = ownAtDivision.count > 0 && groupNodes.length > 0
       ? [
           {
             key: `${d.division}/_own`,

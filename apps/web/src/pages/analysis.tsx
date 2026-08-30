@@ -29,7 +29,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { withBase } from "@/lib/utils"
-import { DIVISION_COLOR, loadPipeline, pct, yen, type Direction, type PipelineData } from "@/lib/pipeline"
+import { DIVISION_COLOR, loadPipeline, pct, senYen, type Direction, type PipelineData, count } from "@/lib/pipeline"
 import { apiClient } from "@/lib/api-client"
 import { buildCofogTree, type CofogNodeFilter } from "@/lib/cofog-tree"
 import { CofogTree } from "@/components/cofog-tree"
@@ -280,14 +280,14 @@ function CollectedAnalysis({
             <div className="flex flex-wrap gap-3">
               <Card className="min-w-[9rem] flex-1 gap-1 py-4">
                 <CardHeader className="px-4">
-                  <CardDescription className="text-xs">合計（{DIRECTIONS.find((d) => d.value === direction)?.label}）</CardDescription>
-                  <CardTitle className="text-xl tabular-nums">{yen(cofog.total.sum)}円</CardTitle>
+                  <CardDescription className="text-xs">合計（{DIRECTIONS.find((d) => d.value === direction)?.label}）・千円</CardDescription>
+                  <CardTitle className="text-xl tabular-nums">{senYen(cofog.total.sum)}千円</CardTitle>
                 </CardHeader>
               </Card>
               <Card className="min-w-[9rem] flex-1 gap-1 py-4">
                 <CardHeader className="px-4">
-                  <CardDescription className="text-xs">COFOG 割当済み</CardDescription>
-                  <CardTitle className="text-xl tabular-nums">{yen(cofog.assigned.sum)}円</CardTitle>
+                  <CardDescription className="text-xs">COFOG 割当済み・千円</CardDescription>
+                  <CardTitle className="text-xl tabular-nums">{senYen(cofog.assigned.sum)}千円</CardTitle>
                 </CardHeader>
               </Card>
               <Card className="min-w-[9rem] flex-1 gap-1 py-4">
@@ -304,7 +304,7 @@ function CollectedAnalysis({
                 className="flex h-6 overflow-hidden rounded-md border"
                 role="img"
                 aria-label={
-                  `合計 ${yen(cofog.total.sum)} 円の内訳: ` +
+                  `合計 ${senYen(cofog.total.sum)} 千円の内訳: ` +
                   breakdown.byDivision.map((v) => `${v.division} ${v.divisionLabel} ${pct(v.share)}`).join("、") +
                   `、未分類 ${pct(breakdown.unclassifiedShare)}`
                 }
@@ -337,7 +337,7 @@ function CollectedAnalysis({
                 )}
               </div>
               <p className="max-w-[72ch] text-xs leading-relaxed text-muted-foreground">
-                割合の分母は{DIRECTIONS.find((d) => d.value === direction)?.label}の合計（{yen(cofog.total.sum)}円）。
+                割合の分母は{DIRECTIONS.find((d) => d.value === direction)?.label}の合計（{senYen(cofog.total.sum)}千円）。
                 COFOG に割り当てられなかった分（分類不能・対象外・歳入は分類の軸なし）も分母に含めて出す
                 — 割当済みだけを分母にすると、実際には使途が見えていない分まで「見えている」ことになる。
               </p>
@@ -350,28 +350,28 @@ function CollectedAnalysis({
                 規則がそこより下まで判断していない金額で、割合の高さは分類の質を意味しない。
                 行をクリックすると、その分類に属する明細を下に出す。
               </p>
-              {tree && <CofogTree nodes={tree} total={cofog.total.sum} selected={selected} onSelect={setSelected} />}
+              {tree && (
+                <CofogTree
+                  nodes={tree}
+                  total={cofog.total.sum}
+                  selected={selected}
+                  onSelect={setSelected}
+                  renderDetail={(filter) =>
+                    amountPhase ? (
+                      <CofogStatement budget={`${code}:${year}`} direction={direction} filter={filter} amountPhase={amountPhase} />
+                    ) : null
+                  }
+                />
+              )}
               {breakdown.unclassifiedSum > 0 && (
                 <div className="flex items-center gap-2 rounded-lg border px-2 py-1.5 text-sm text-muted-foreground">
                   <Badge variant="outline">未分類</Badge>
-                  {yen(breakdown.unclassifiedCount)}件 ・ {yen(breakdown.unclassifiedSum)}円 ・{" "}
+                  {count(breakdown.unclassifiedCount)}件 ・ {senYen(breakdown.unclassifiedSum)}千円 ・{" "}
                   {pct(breakdown.unclassifiedShare)}
                   <span className="ml-1 text-xs">（分類不能・対象外。明細は下の分類ツリーには出ない）</span>
                 </div>
               )}
             </section>
-
-            {selected && amountPhase && (
-              <section className="flex flex-col gap-2">
-                <h2 className="font-medium">選んだ分類の明細</h2>
-                <CofogStatement
-                  budget={`${code}:${year}`}
-                  direction={direction}
-                  filter={selected}
-                  amountPhase={amountPhase}
-                />
-              </section>
-            )}
 
             <p className="max-w-[72ch] text-xs leading-relaxed text-muted-foreground">
               COFOG への割当の根拠（款・項ごとにどの規則で決めたか）は、上部の
