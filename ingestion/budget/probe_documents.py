@@ -38,6 +38,7 @@ from __future__ import annotations
 import json
 import pathlib
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -78,6 +79,20 @@ SPREAD_SAMPLES = 12
 # テキストが取れたとみなす1ページあたりの最低文字数。
 # アウトライン化された PDF は 0〜数文字しか返さない（狛江市の決算資料で実測）
 MIN_CHARS_PER_PAGE = 40
+
+
+def _require_poppler() -> None:
+    """`pdfinfo` / `pdftotext` が無ければ、何を入れればよいかを言って止める。
+
+    ⚠️ `subprocess.run(check=False)` は**コマンドが存在しない場合を防げない**
+    （`FileNotFoundError` は起動の失敗であって終了コードではない）。
+    素の traceback だと PDF 側の問題に見えるので、依存の不足だと分かる形で落とす。
+    """
+    missing = [c for c in ("pdfinfo", "pdftotext") if shutil.which(c) is None]
+    if missing:
+        raise SystemExit(
+            f"{'、'.join(missing)} が見つからない。poppler を入れること（macOS: brew install poppler）"
+        )
 
 
 def _page_count(pdf: pathlib.Path) -> int | None:
@@ -205,6 +220,7 @@ def probe(doc: dict) -> dict:
 def main() -> None:
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     write = "--write" in sys.argv[1:]
+    _require_poppler()
     if not DISCOVERY.exists():
         raise SystemExit(f"{DISCOVERY} が無い。先に取得元の探索を回すこと")
 

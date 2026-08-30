@@ -56,15 +56,18 @@ STATE_OF_REACHES: dict[str | None, tuple[str, str]] = {
 }
 
 
-def _load(path: pathlib.Path) -> dict:
-    return json.loads(path.read_text()) if path.exists() else {}
-
-
 def main() -> None:
     registry = load_jurisdictions()
     registered = {s.jurisdiction_code for s in load_sources().values()}
     discovery = {p.stem: json.loads(p.read_text()) for p in sorted((OBS / "discovery").glob("*.json"))}
-    probe = _load(OBS / "budget-document-probe.json").get("jurisdictions", {})
+    # ⚠️ **観測が無いときは止める。** 空として続けると、測っていない団体が
+    # そのまま「資料が無い」になって出る。欠けた観測を既定値で埋めない。
+    probe_path = OBS / "budget-document-probe.json"
+    if not probe_path.exists():
+        raise SystemExit(
+            f"{probe_path} が無い。先に `bun run probe:documents --write` を回すこと"
+        )
+    probe = json.loads(probe_path.read_text()).get("jurisdictions", {})
 
     resolved: dict[str, dict] = {}
     tally: dict[str, list[str]] = {}
@@ -74,13 +77,17 @@ def main() -> None:
             state, route, basis = "収録済み", "catalog", "sources.toml に登録済み"
         elif code not in discovery:
             state, route, basis = "未調査", "-", "取得元の探索がまだ回っていない"
+        elif code not in probe:
+            # 探索は回ったが、その団体をまだ測っていない。**「資料が無い」とは別**
+            state, route, basis = "測定待ち", "-", "資料は挙がっているが中身を測っていない"
         else:
-            best = best_probe(probe.get(code, {}).get("documents", []))
+            best = best_probe(probe[code].get("documents", []))
             reaches = best.get("reaches") if best else None
             state, route = STATE_OF_REACHES[reaches]
+            # ⚠️ 観測は手で書かれるので、キーが欠けていることがある。落とさず「不明」と出す
             basis = (
-                f"{best['title'][:22]}。{best['basis'][:40]}" if best
-                else "探索は回ったが、事項別明細書にあたる資料が1本も挙がらなかった"
+                f"{best.get('title') or '（資料名なし）'}"[:22] + f"。{best.get('basis') or ''}"[:40]
+                if best else "探索は回ったが、事項別明細書にあたる資料が1本も挙がらなかった"
             )
         stance = (discovery.get(code, {}).get("copyright") or {}).get("stance", "-")
         resolved[code] = {"name": name, "state": state, "route": route,
