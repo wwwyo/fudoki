@@ -139,7 +139,7 @@ function assertShape(d: PipelineFile): void {
   for (const j of d.jurisdictions ?? []) {
     if (j.code === undefined) problems.push('jurisdictions[].code が無い')
     if (!j.report) { problems.push(`${j.code}: report が無い`); continue }
-    for (const k of ['meta', 'summary', 'ingestion', 'detailLevels', 'levels', 'transform'] as const) {
+    for (const k of ['meta', 'summary', 'ingestion', 'detailLevels', 'levels', 'coverage', 'transform'] as const) {
       if (j.report[k] === undefined) problems.push(`${j.code}: report.${k} が無い`)
     }
     // ⚠️ **transform の中まで見る。** COFOG の集計は生成側が持っていて画面は表示だけなので、

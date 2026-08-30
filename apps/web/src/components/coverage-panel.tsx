@@ -9,6 +9,7 @@
  *
  * 集計はしない。割合はすべて生成側（`report/budget/build.ts`）が持つ。
  */
+import { useMemo } from "react"
 import type { ReportData } from "@/lib/pipeline"
 import { pct, yenShort } from "@/lib/pipeline"
 import { Badge } from "@/components/ui/badge"
@@ -36,22 +37,22 @@ const NONE = <span className="text-muted-foreground">—</span>
  * 名称も COFOG の深さも、達成率ではなく現在地である（原典に無いものは取れない）。
  * ゼロだけは「その年度は1件も無い」という別種の事実なので、目に入るようにする。
  */
-function Share({ value, title }: { value: number; title?: string }) {
-  return (
-    <span
-      className={value === 0 ? "text-muted-foreground" : undefined}
-      title={title}
-    >
-      {pct(value)}
-    </span>
-  )
+function Share({ value }: { value: number | null }) {
+  // ⚠️ **null は 0% と別。** 分母が無い（降りる先が無い・出所が無い）ことを
+  // 0% と書くと、「取れていない」と「そもそも母数が無い」が混ざる
+  if (value === null) return NONE
+  return <span className={value === 0 ? "text-muted-foreground" : undefined}>{pct(value)}</span>
 }
 
 export function CoveragePanel({ report }: { report: ReportData }) {
   // 年度 → direction の順。**同じ年度の歳出と歳入を隣に置く**
-  // （原典が別の資料なので、片方だけ名称が取れている年度がある）
-  const rows = [...report.coverage].sort(
-    (a, b) => a.fiscalYear - b.fiscalYear || (a.direction === "expenditure" ? -1 : 1),
+  // （原典が別の資料なので、片方だけ名称が取れている年度がある）。
+  // タブの開閉やノード選択でも再ソートしないよう useMemo で留める（同ページの他の表と同じ扱い）
+  const rows = useMemo(
+    () => [...report.coverage].sort(
+      (a, b) => a.fiscalYear - b.fiscalYear || (a.direction === "expenditure" ? -1 : 1),
+    ),
+    [report.coverage],
   )
 
   return (

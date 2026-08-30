@@ -92,8 +92,12 @@ export type YearCoverage = {
    */
   cofog: {
     assignedShare: { count: number; sum: number }
-    groupShare: number
-    classShare: number
+    /**
+     * 割当済みの金額のうち group / class まで降りているもの。
+     * ⚠️ **割当済みが 0 円の年度は null**（降りる先が無いので 0% とは言えない）。
+     */
+    groupShare: number | null
+    classShare: number | null
   } | null
   /**
    * 事業名の充足。**大事業の階層を持つ団体だけ**（無い団体は null）。
@@ -104,9 +108,14 @@ export type YearCoverage = {
   projectNames: {
     total: number
     named: number
+    /**
+     * 出所が覆う大事業の数。**出所（`sources.toml` の `[project_names]`）の宣言が
+     * 無い年度は 0** — 突合できた行から逆算すると、資料が無い年度と
+     * 資料はあるが1件も当たらなかった年度が同じ数字になる。
+     */
     inSourceScope: number
     /** `named / total`（0〜1） */ share: number
-    /** `named / inSourceScope`（0〜1） */ shareInScope: number
+    /** `named / inSourceScope`。**出所の無い年度は null**（0% ではない） */ shareInScope: number | null
   } | null
 }
 
