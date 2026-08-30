@@ -20,7 +20,7 @@
     107
   ],
   "layout": "spread",
-  "extractor": "ingestion/budget/extract_statement.py@4",
+  "extractor": "ingestion/budget/extract_statement.py@5",
   "verification": "hierarchy-totals + setsu-column-totals + name-stability",
   "verification_note": "PDF のバイト列は保存していない（大半の団体で再配布の判断が付かないため、経路を団体で分けない）。無加工であることは検査できないので、目の見出し金額との突合・節列との突合・行のまとめ方への非依存で縛る",
   "roundtrip_verified": false,
@@ -56,7 +56,7 @@
     "explanationLevelTotals": {
       "detail": 56360000
     },
-    "annotationsDropped": 381,
+    "annotationsDropped": 337,
     "mokuWithoutExplanation": 0,
     "total": 56360000,
     "notReconciled": [],

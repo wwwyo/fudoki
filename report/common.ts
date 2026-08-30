@@ -66,6 +66,32 @@ export type Check = {
   detail: string
 }
 
+/** 事業名の抽出器（`extract_projects.py`）の要約 */
+export type ProjectNamesExtract = {
+  kind: 'project-names'
+  projects: number
+  moku: number
+  totalThousandYen: number
+}
+
+/** 事項別明細書の抽出器（`extract_statement.py`）の要約 */
+export type StatementExtract = {
+  kind: 'statement'
+  leaves: number
+  moku: number
+  total: number
+}
+
+/**
+ * どちらの抽出器の要約かを、証跡が名乗る抽出器のパスから決める。
+ * ⚠️ **形（どのキーがあるか）で判定しない。** 項目が増えたときに黙って別の枝へ落ちる。
+ */
+export function extractedKindOf(p: Provenance): 'project-names' | 'statement' | null {
+  if (!p.extracted) return null
+  if (p.extractor?.includes('extract_statement')) return 'statement'
+  return 'project-names'
+}
+
 /** 取得の証跡。原典1リソースにつき1件 */
 export type Provenance = {
   jurisdiction_code: string
@@ -83,18 +109,19 @@ export type Provenance = {
   header: string[]
   rows: number
   roundtrip_verified: boolean
+  /** 抽出した取得元だけが持つ。`ingestion/budget/extract_*.py@<版>` */
+  extractor?: string
   /**
-   * PDF から起こした取得元だけが持つ。抽出の要約（原典と1対1ではない）。
-   * ⚠️ **抽出器ごとに項目が違う。** 事業名の抽出器は事業を数え、
-   * 事項別明細書の抽出器は説明欄の葉を数える。共通なのは目の数と合計だけ。
+   * PDF から起こした取得元だけが持つ、抽出の要約（原典と1対1ではない）。
+   *
+   * ⚠️ **抽出器ごとに項目が違うので、全部を任意にして1つの形へ潰さない。**
+   * 潰すと「どの抽出器由来か」を型が何も言わなくなり、事項別明細書の証跡を
+   * 事業名の証跡として読むコードがコンパイルを通ってしまう（`projects` が
+   * 常に undefined になり、黙って 0 になる）。読む側は `kind` で分岐すること。
+   * ⚠️ **判別子は証跡に無い。** 抽出器が書いた `extractor` のパスから読む側が導く
+   * （`extractedKindOf`）。証跡に持たせると、既に commit 済みの取得物を作り直す必要が出る。
    */
-  extracted?: {
-    projects?: number
-    leaves?: number
-    moku: number
-    totalThousandYen?: number
-    total?: number
-  }
+  extracted?: ProjectNamesExtract | StatementExtract
 }
 
 

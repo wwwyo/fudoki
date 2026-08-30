@@ -75,7 +75,14 @@ def licenses_of(srcs: list) -> list[dict]:
 
       原典が CC BY を付けている        → それを素通しする
       原典が CC BY 互換を明示している   → それも素通しする（`CC_BY_COMPATIBLE`）
-      原典の利用許諾が未判断（NOASSERTION）だけ → **`licenses` を書かない**
+      原典の利用許諾が未判断（NOASSERTION）**だけ** → **`licenses` を書かない**
+
+    ⚠️ **判断が付いた原典と未判断の原典が混ざる団体では、付いているほうを出す。**
+    `licenses` が伝えるのは**下流が負う義務**である。CC BY の原典が1つでも入っていれば、
+    下流には帰属・ライセンス表示・改変の明示の義務が実際に生じるので、
+    書かないと**義務を伝え損ねる**（未判断だから伏せる、では下流が帰属を落とす）。
+    逆に、どの原典も未判断のパッケージには伝えるべき義務がまだ無いので、書かない。
+    どのリソースがどの原典から来たかは `sources` と `description` が言う。
 
     ⚠️ **最後の場合に fudoki のライセンスを貼らない。** 抽出した事実には原典のライセンスが
     付いてこないので、選択と構成にあたる部分を fudoki が CC BY 4.0 で配ることは**できる**。
@@ -482,6 +489,9 @@ def build_jurisdiction(code: str) -> None:
         "jurisdiction_label": srcs[0].jurisdiction_name,
         "currency": "JPY",
     }
+    # ⚠️ **1回だけ決める。** description の分岐と `pkg["licenses"]` の両方が同じ答えを要る。
+    # 2回呼ぶと、間に何か挟まったときに食い違う余地ができる。
+    licenses = licenses_of(srcs)
     # ⚠️ **定数にしてよいのは、実際に1種類しか無いときだけ。**
     # 複数あるものを定数にすると、CSV の列は正しいまま descriptor だけが嘘になる。
     phase_labels = {(a["phase"], a["phase_label"]) for a in flat}
@@ -543,7 +553,7 @@ def build_jurisdiction(code: str) -> None:
                     "原文の複製ではなく、事実に原典の著作権は及ばない。"
                     "それでも**利用する前に原典の利用条件を確認すること** — "
                     "出典と取得 URL は `sources` にある。"
-                ] if not licenses_of(srcs) else []),
+                ] if not licenses else []),
                 *([
                     "## 事業名の出所\n\n"
                     "原典の CSV に事業の名称が無いため、市が公開している決算資料 PDF から起こした。"
@@ -559,7 +569,6 @@ def build_jurisdiction(code: str) -> None:
     pkg["fiscalPeriod"] = {"start": f"{years[0]}-04-01", "end": f"{years[-1] + 1}-03-31"}
     # ⚠️ **空なら書かない。** 原典の許諾がどれも未判断の団体では、`licenses` を出すこと自体が
     # 「条件が決まっている」という主張になる。仕様上も任意のフィールドである。
-    licenses = licenses_of(srcs)
     if licenses:
         pkg["licenses"] = licenses
     # **加工したのは誰か。** Data Package v1 の role の推奨語彙は

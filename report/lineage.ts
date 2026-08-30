@@ -22,7 +22,8 @@
  */
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import type { Check, Node, Provenance, Stage, Topology } from './common'
+import { extractedKindOf } from './common'
+import type { Check, Node, ProjectNamesExtract, Provenance, Stage, Topology } from './common'
 
 export const ROOT = resolve(import.meta.dirname, '..')
 export const TARGET = join(ROOT, 'dbt/target')
@@ -125,10 +126,14 @@ function sourceRows(id: string, name: string, provenance: Provenance[]): number 
   // ⚠️ **証跡の形が取得元で違う。** 正本の取り込み（CSV でも事項別明細書の PDF でも）は
   // direction ごとに `rows` を持つが、既収録の団体で欠けている名称を補う抽出物
   // （事業名）は direction を持たず、抽出の要約（`extracted.projects`）しか持たない。
+  // ⚠️ **要約の形は抽出器で違う**ので、どちらの抽出器かを `extractedKindOf` で判別する
+  // （形で見分けると、項目が増えたときに黙って別の枝へ落ちる）。
   const byDirection = mine.filter((p) => p.direction === name)
   if (byDirection.length > 0) return byDirection.reduce((s, p) => s + p.rows, 0)
-  const extracted = mine.filter((p) => p.extracted !== undefined)
-  return extracted.length === 0 ? null : extracted.reduce((s, p) => s + (p.extracted?.projects ?? 0), 0)
+  const extracted = mine.filter((p) => extractedKindOf(p) === 'project-names')
+  return extracted.length === 0
+    ? null
+    : extracted.reduce((s, p) => s + (p.extracted as ProjectNamesExtract).projects, 0)
 }
 
 export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {

@@ -34,26 +34,27 @@ from collections import defaultdict
 from ingestion.budget import statement_layout as L
 from ingestion.budget.sources import load_statements
 from ingestion.lib.http import http_get
-from ingestion.lib.pdf import chars_of, column_of, rows_of
+from ingestion.lib.pdf import chars_of, rows_of
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 RAW = ROOT / "data" / "budget" / "raw"
 # 抽出器の版。**出力を変える修正をしたら上げる。**
 # (PDF の SHA-256, この版) で出力が決まる、という再現性の主張がここに乗る。
-EXTRACTOR_VERSION = "4"
+EXTRACTOR_VERSION = "5"
 
 # 説明欄の段。**入れ子の深さの名前**であって、団体ごとの語彙ではない。
 # 浅い順に並べる（`nested` は3段とも使い、`under-setsu` は最も深い1段だけを使う）。
 LEVELS = ("project", "setsu", "detail")
 
 
-def _cells(line, columns) -> dict[str, str]:
-    out: dict[str, str] = defaultdict(str)
-    for x, c in sorted(line):
-        col = column_of(x, columns)
-        if col:
-            out[col] += c
-    return out
+def _span_text(line, span: tuple[float, float]) -> str:
+    """その x 範囲に来た文字を左から連ねる。**汎用の列判定を通さない。**
+
+    ⚠️ 以前は「全列を一度に切り出す」汎用の関数を通していたが、切り出した結果のうち
+    実際に使うのは節のコードの1列だけで、名前と金額はどれも `_split_amount` が
+    別に切り出していた。数百頁 × 各頁の行数ぶん、使わない列のために行を並べ替えていた。
+    """
+    return "".join(c for _, c in sorted((x, c) for x, c in line if span[0] <= x < span[1]))
 
 
 def _strip_suffix(chars: list[tuple[float, str]], suffix: str) -> list[tuple[float, str]]:
@@ -77,7 +78,7 @@ def _strip_suffix(chars: list[tuple[float, str]], suffix: str) -> list[tuple[flo
 
 
 def _split_amount(line, left: float, right: float,
-                  suffix: str = "") -> tuple[str, str, float | None]:
+                  suffix: str = "") -> tuple[str, str, float | None, float | None]:
     """欄を「名前」と「右揃えの金額」に割る。**境界の x では割らない。**
 
     表の欄はどれも名前が左寄せ・金額が右揃えなので、割り方は1つでよい。
@@ -87,24 +88,25 @@ def _split_amount(line, left: float, right: float,
         392,119 が 4,392,119 として突合に落ちた。**30 目**で起きていた）
     どちらも「欄の幅は中身で決まるのに、宣言は紙面のどこかに線を引く」ことから来る。
     行末から数字と桁区切りだけの連なりを取れば、名前も金額もどこまで伸びても割れる。
-    段の判定に使う右端も同じ文字から取る。
+    段の判定に使う右端も同じ文字から取る。**左端も返す** — 折返しの判定に要る。
     """
     chars = sorted((x, c) for x, c in line if left <= x < right)
     if not chars:
-        return "", "", None
+        return "", "", None, None
+    start = chars[0][0]
     if suffix:
         stripped = _strip_suffix(chars, suffix)
         if not stripped:
             # 単位が付いていない行。名前だけとして扱う（金額の欄には数が無い）
-            return "".join(c for _, c in chars), "", None
+            return "".join(c for _, c in chars), "", None, start
         chars = stripped
     i = len(chars)
     while i > 0 and chars[i - 1][1] in "0123456789,":
         i -= 1
     name = "".join(c for _, c in chars[:i])
     if i == len(chars):
-        return name, "", None
-    return name, "".join(c for _, c in chars[i:]), chars[-1][0]
+        return name, "", None, start
+    return name, "".join(c for _, c in chars[i:]), chars[-1][0], start
 
 
 class _Nested:
@@ -113,8 +115,6 @@ class _Nested:
     ⚠️ **葉だけを行にする。** 3段は同じ金額を重複して印字しているので、
     全部を行にすると合計が3倍になる。段ごとの合計は突合が使う。
     """
-
-    columns = ("project_name", "setsu_code", "setsu_name", "detail_name")
 
     def __init__(self, levels: dict[str, float]) -> None:
         self.levels = [lv for lv in LEVELS if lv in levels]
@@ -167,8 +167,6 @@ class _UnderSetsu:
     節に説明欄の項目が1つも付かなければ、節そのものが葉になる。
     """
 
-    columns = ("project_name", "setsu_code", "setsu_name", "detail_name")
-
     def __init__(self, levels: dict[str, float]) -> None:
         self.levels = [lv for lv in LEVELS if lv in levels]
         self.rows: list[dict] = []
@@ -207,13 +205,12 @@ class _UnderSetsu:
 
 def _resolve(row: dict) -> dict:
     """名札を値へ畳む。**抽出が終わってから**やる（折返しが確定するのが行の後だから）"""
-    out = {k: v for k, v in row.items() if k not in ("kan", "kou", "moku", "setsu")}
-    for lv in ("kan", "kou", "moku"):
-        out[f"{lv}_code"] = row[lv]["code"]
-        out[f"{lv}_name"] = row[lv]["name"]
-    if "setsu" in row:
-        out["setsu_code"] = row["setsu"]["code"]
-        out["setsu_name"] = row["setsu"]["name"]
+    holders = ("kan", "kou", "moku", "setsu")
+    out = {k: v for k, v in row.items() if k not in holders}
+    for lv in holders:
+        if lv in row:
+            out[f"{lv}_code"] = row[lv]["code"]
+            out[f"{lv}_name"] = row[lv]["name"]
     return out
 
 
@@ -224,22 +221,34 @@ def _level_of(right_edge: float, levels: dict[str, float], tolerance: float) -> 
     return None
 
 
-def extract(pdf: pathlib.Path, spec: dict, direction: str, tolerance: float = 1.0,
+def read_pages(pdf: pathlib.Path, spec: dict, direction: str) -> list[list]:
+    """PDF の文字と座標を読む。**行のまとめ方に依存しないので、1回読めば使い回せる。**
+
+    ⚠️ **`extract()` の中で読まない。** 行のまとめ方（`tolerance`）を変えて2回抽出するので、
+    中で読むと `pdftotext` が direction ごとに2回、資料1本あたり4回走る
+    （事項別明細書は数百頁あり、そのぶん丸ごと無駄になる）。
+    """
+    first, last = spec["pages"][direction]
+    return list(chars_of(pdf, first, last))
+
+
+def extract(pages: list[list], spec: dict, direction: str, tolerance: float = 1.0,
             dump: range | None = None) -> tuple[list[dict], dict, dict]:
     """見開きを1論理表として読み、葉を出現順に返す。
 
-    戻り値は (葉の行, 目の見出し金額, 突合の材料)。
+    `pages` は `read_pages()` の結果。戻り値は (葉の行, 目の見出し金額, 突合の材料)。
     """
-    first, last = spec["pages"][direction]
+    first = spec["pages"][direction][0]
     columns = {k: (float(lo), float(hi)) for k, (lo, hi) in spec["columns"][direction].items()}
     # ⚠️ **どの欄が左頁にあるかは団体で違う。** 昭島市は右頁に節と説明が並ぶが、
     # 千代田区は左頁に目・財源内訳・節が入り、右頁は説明欄だけである。宣言に出す。
     left = set(spec["left_page_columns"][direction])
     merged = {**{k: v for k, v in columns.items() if k in left},
               **L.shift_right_columns({k: v for k, v in columns.items() if k not in left})}
-    moku_span = merged.pop("moku")
-    setsu_span = merged.pop("setsu")
-    exp_left, exp_right = merged.pop("explanation")
+    moku_span = merged["moku"]
+    setsu_span = merged["setsu"]
+    setsu_code_span = merged["setsu_code"]
+    exp_left, exp_right = merged["explanation"]
 
     style = spec["heading_style"]
     declared = spec["explanation"][direction]
@@ -264,10 +273,12 @@ def extract(pdf: pathlib.Path, spec: dict, direction: str, tolerance: float = 1.
     kan = kou = moku = None
     moku_name_open = setsu_name_open = False
     setsu_code, setsu_name = "", ""
-    moku_totals: dict[tuple, int] = {}
-    moku_context: dict[tuple, dict] = {}
+    # 目の見出し金額と、その目の文脈。**常に対で書いて対で読む**ので1つの辞書に持つ
+    # （2つに分けると、キーがずれても気づけない）。
+    moku_headers: dict[tuple, dict] = {}
     setsu_totals: dict[tuple, int] = defaultdict(int)
     pending_name: str | None = None
+    pending_start: float = 0.0
     annotations = 0
 
     def context() -> dict:
@@ -277,13 +288,11 @@ def extract(pdf: pathlib.Path, spec: dict, direction: str, tolerance: float = 1.
         # （実測で 64 件。`保健体育総` と `保健体育総務費` が同じ目に並んでいた）。
         return {"kan": labels["kan"], "kou": labels["kou"], "moku": labels["moku"]}
 
-    pages = list(chars_of(pdf, first, last))
     for i in range(0, len(pages) - 1, 2):
         spread = L.merge_spread(pages[i], pages[i + 1])
         for line in rows_of(spread, tolerance):
-            cells = _cells(line, merged)
             if dump is not None and first + i in dump:
-                print(f"  p{first + i} {dict(cells)}")
+                print(f"  p{first + i} {''.join(c for _, c in sorted(line))[:200]}")
             left_text = "".join(c for x, c in sorted(line) if x < L.RIGHT_PAGE_X)
 
             # ⚠️ **見出しは見開きごとに再掲される。** 款・項・目の見出しは継続の見開きでも
@@ -314,7 +323,7 @@ def extract(pdf: pathlib.Path, spec: dict, direction: str, tolerance: float = 1.
                 continue
 
             # ── 目（見出しと本年度予算額） ─────────────────────
-            raw_moku, raw_moku_amount, _ = _split_amount(line, *moku_span)
+            raw_moku, raw_moku_amount, _, _ = _split_amount(line, *moku_span)
             cell = L.normalize(raw_moku)
             moku_amount = L.read_amount(raw_moku_amount)
             if cell and not L.is_heading(cell):
@@ -330,9 +339,9 @@ def extract(pdf: pathlib.Path, spec: dict, direction: str, tolerance: float = 1.
                         moku_name_open = bool(name)
                         if name:
                             labels["moku"]["name"] = name
-                    if moku_amount is not None and (kan, kou, moku) not in moku_totals:
-                        moku_totals[(kan, kou, moku)] = moku_amount
-                        moku_context[(kan, kou, moku)] = context()
+                    if moku_amount is not None and (kan, kou, moku) not in moku_headers:
+                        moku_headers[(kan, kou, moku)] = {"amount": moku_amount,
+                                                          "context": context()}
                 elif name == "計":
                     # 項の合計行。目ではないので名称の折返しもここで閉じる
                     moku_name_open = False
@@ -344,8 +353,8 @@ def extract(pdf: pathlib.Path, spec: dict, direction: str, tolerance: float = 1.
                 moku_name_open = False
 
             # ── 節（区分の欄） ──────────────────────────────
-            code_cell = L.normalize(cells.get("setsu_code", ""))
-            raw_setsu, raw_setsu_amount, _ = _split_amount(line, *setsu_span)
+            code_cell = L.normalize(_span_text(line, setsu_code_span))
+            raw_setsu, raw_setsu_amount, _, _ = _split_amount(line, *setsu_span)
             name_cell = L.normalize(raw_setsu)
             if code_cell.isdigit() and code_cell:
                 setsu_code, setsu_name, setsu_name_open = code_cell, name_cell, True
@@ -363,19 +372,36 @@ def extract(pdf: pathlib.Path, spec: dict, direction: str, tolerance: float = 1.
                 setsu_name_open = False
 
             # ── 説明欄（右頁の右側） ──────────────────────────
-            raw_name, raw_amount, edge = _split_amount(line, exp_left, exp_right, suffix)
+            raw_name, raw_amount, edge, start = _split_amount(
+                line, exp_left, exp_right, suffix)
             name = L.strip_item_number(raw_name) if numbered else L.normalize(raw_name)
             if L.is_heading(name):
                 name = ""
             amount = L.read_amount(raw_amount)
             level = _level_of(edge, levels, level_tolerance) if edge is not None else None
+            # ⚠️ **名前も次の行へ折り返す。** 説明欄には金額だけが次行へ回る行と、
+            # 名前が次行へ続く行の両方がある。持ち越した名前を無条件に捨てると、
+            # **項目名が途中で切れたまま配布物に出る**（実測で
+            # 「母子・父子自立支援プログラム策定事業補助金(男女共同参画・女性活躍支援担」
+            # のように、続きの行にあった末尾が落ちていた）。
+            # ⚠️ **無条件に繋いでもいけない。** 説明欄には目ごとのリード文
+            # （「〜に要する経費を計上」）や積算根拠（「均等割」「普通徴収 21,400人」）も
+            # 並んでおり、繋ぐと項目名にそれらが混ざる。
+            # **同じ字下げから始まる行だけを続きとみなす** — 折返しは行頭が揃い、
+            # リード文や積算根拠は字下げが違う（実測で見分けが付く）。
+            continues = pending_name is not None and start is not None \
+                and abs(start - pending_start) <= level_tolerance
             if name and amount is not None and level:
-                tree.add(level, name, amount, context())
+                tree.add(level, (pending_name + name) if continues else name,
+                         amount, context())
+                annotations += pending_name is not None and not continues
                 pending_name = None
             elif name:
-                # 金額が次の行へ回った可能性がある。**確定は次の行を見てから。**
-                annotations += pending_name is not None
-                pending_name = name
+                if continues:
+                    pending_name += name
+                else:
+                    annotations += pending_name is not None
+                    pending_name, pending_start = name, start
             elif amount is not None and level and pending_name is not None:
                 tree.add(level, pending_name, amount, context())
                 pending_name = None
@@ -388,19 +414,20 @@ def extract(pdf: pathlib.Path, spec: dict, direction: str, tolerance: float = 1.
     # 予備費 150,000 千円ぶん足りず、歳入と一致しなかった）。目そのものを葉にする。
     covered = {(r["kan"]["code"], r["kou"]["code"], r["moku"]["code"]) for r in tree.rows}
     bare = 0
-    for key, amount in moku_totals.items():
+    for key, header in moku_headers.items():
         if key in covered:
             continue
         bare += 1
-        tree.rows.append({**moku_context[key], "project_name": "",
+        tree.rows.append({**header["context"], "project_name": "",
                           "setsu": {"code": "", "name": ""},
-                          "detail_name": "", "amount": amount})
+                          "detail_name": "", "amount": header["amount"]})
     rows = [_resolve(r) for r in tree.rows]
-    return rows, moku_totals, {"setsu_column": dict(setsu_totals),
-                                    "mokuWithoutExplanation": bare,
-                                    "by_level": tree.by_level,
-                                    "annotations": annotations,
-                                    "columns": list(tree.columns)}
+    return (rows,
+            {key: h["amount"] for key, h in moku_headers.items()},
+            {"setsu_column": dict(setsu_totals),
+             "mokuWithoutExplanation": bare,
+             "by_level": tree.by_level,
+             "annotations": annotations})
 
 
 def reconcile(rows: list[dict], moku_totals: dict, aux: dict) -> dict:
@@ -517,11 +544,14 @@ def ingest(key: str, *, force: bool = False) -> None:
         tmp = pathlib.Path(f.name)
     try:
         for direction, out_dir in out_dirs.items():
-            rows, totals, aux = extract(tmp, spec, direction)
+            # **文字の読み取りは1回だけ。** 下で許容幅を変えて2回抽出するが、
+            # 読み取り自体は許容幅に依存しないので使い回す。
+            pages = read_pages(tmp, spec, direction)
+            rows, totals, aux = extract(pages, spec, direction)
             # ⚠️ **行のまとめ方に結果が依存していないことを確かめる。**
             # y の許容幅を変えて葉が変われば、抽出が行の境界に乗っている。
             # 金額は動かないことがあるので、合計突合だけでは検出できない。
-            alt, _, _ = extract(tmp, spec, direction, tolerance=2.0)
+            alt, _, _ = extract(pages, spec, direction, tolerance=2.0)
             summary = reconcile(rows, totals, aux)
             unstable = [a for a, b in zip(rows, alt, strict=False)
                         if (a["project_name"], a["setsu_name"], a["detail_name"])
@@ -540,6 +570,17 @@ def ingest(key: str, *, force: bool = False) -> None:
                 raise RuntimeError(
                     f"{key}/{direction}: 目の合計と1件も突合できなかった。"
                     f"抽出器がレイアウトを読めていない")
+            # ⚠️ **節の欄との突合は「独立した証拠」として数えているので、落ちたら止める。**
+            # 計算だけして通すと、証跡が verification に書いている保証が実際には
+            # 成立していない状態で配ることになる（葉の合計がたまたま合っていても、
+            # 別経路が合わないなら欄の読み方をどちらか間違えている）。
+            # 正当に一致しない団体が出たら、目ごとの印（`moku_reconciled` と同じ形）へ
+            # 落として下流へ渡す形に変えること — 黙って通す形には戻さない。
+            if summary["setsuColumnNotReconciled"]:
+                raise RuntimeError(
+                    f"{key}/{direction}: 節の欄の合計が目の額と一致しない目が "
+                    f"{summary['setsuColumnNotReconciled']} 件ある。"
+                    f"葉の合計とは別経路なので、どちらかの欄の読み方が誤っている")
             _write(out_dir, direction, spec["fund_label"], rows)
             (out_dir / "provenance.json").write_text(json.dumps({
                 "jurisdiction_code": code,
