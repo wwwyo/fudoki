@@ -7,24 +7,20 @@
  * 割合を目標にすると分類不能を減らす方向へ判断が歪む。
  */
 import type { ReportData } from '@/lib/pipeline'
-import { DIVISION_COLOR, STATUS_JA, yen, yenShort } from '@/lib/pipeline'
+import { DIVISION_COLOR, STATUS_JA, pct, yen, yenShort } from '@/lib/pipeline'
 import { Badge } from '@/components/ui/badge'
-import { Division } from '@/components/division'
+import { CofogChain } from '@/components/division'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 const statusVariant = (s: string) => (s === 'assigned' ? 'secondary' : s === 'unclassifiable' ? 'outline' : 'outline')
 
 export function CofogPanel({ report }: { report: ReportData }) {
   const t = report.transform
-  const byDiv = new Map<string, { sum: number; label: string }>()
-  for (const s of t.byState) {
-    if (s.status !== 'assigned') continue
-    const prev = byDiv.get(s.division)
-    byDiv.set(s.division, { sum: (prev?.sum ?? 0) + s.sum, label: s.divisionLabel })
-  }
-  const divs = [...byDiv.entries()].sort()
-  const assigned = divs.reduce((a, [, v]) => a + v.sum, 0)
-  const total = t.byState.reduce((a, b) => a + b.sum, 0)
+  // ⚠️ **画面で集計しない。** 以前はここで byState を status で絞って足していたが、
+  // 同じ数字を生成側と画面側の2箇所で計算すると、いずれ食い違う。
+  const divs = t.byDivision
+  const assigned = t.assigned.sum
+  const total = t.total.sum
 
   return (
     <div className="flex flex-col gap-6">
@@ -41,17 +37,17 @@ export function CofogPanel({ report }: { report: ReportData }) {
       <section className="flex flex-col gap-2">
         <h3 className="font-medium">ディビジョン別の金額</h3>
         <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-          {divs.map(([d, v]) => (
-            <span key={d} className="inline-flex items-center gap-1.5">
-              <i aria-hidden className="size-2.5 rounded-sm" style={{ background: DIVISION_COLOR[d] }} />
-              <span className="font-medium text-foreground">{d}</span> {v.label} {yenShort(v.sum)}
+          {divs.map((v) => (
+            <span key={v.division} className="inline-flex items-center gap-1.5">
+              <i aria-hidden className="size-2.5 rounded-sm" style={{ background: DIVISION_COLOR[v.division] }} />
+              <span className="font-medium text-foreground">{v.division}</span> {v.divisionLabel} {yenShort(v.sum)}
             </span>
           ))}
         </div>
         <div className="flex h-6 overflow-hidden rounded-md border" role="img"
-          aria-label={`割当済み ${yen(assigned)} 円の内訳: ` + divs.map(([d, v]) => `${d} ${v.label} ${yenShort(v.sum)}`).join('、')}>
-          {divs.map(([d, v]) => (
-            <div key={d} style={{ width: `${(v.sum / assigned) * 100}%`, background: DIVISION_COLOR[d] }} />
+          aria-label={`割当済み ${yen(assigned)} 円の内訳: ` + divs.map((v) => `${v.division} ${v.divisionLabel} ${yenShort(v.sum)}`).join('、')}>
+          {divs.map((v) => (
+            <div key={v.division} style={{ width: `${(v.sum / assigned) * 100}%`, background: DIVISION_COLOR[v.division] }} />
           ))}
         </div>
         <p className="max-w-[72ch] text-xs text-muted-foreground">
@@ -59,6 +55,85 @@ export function CofogPanel({ report }: { report: ReportData }) {
           これに分類不能と対象外を足すと原典の合計 {yen(total)} 円に戻る。
           帯の幅は割当済みの中での構成比であって、総額に対する比ではない。
         </p>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h3 className="font-medium">COFOG のどの深さまで降りているか</h3>
+        <p className="max-w-[72ch] text-sm leading-relaxed text-muted-foreground">
+          COFOG も階層で、ディビジョン（<code>04</code>）の下にグループ（<code>04.5</code>）、
+          その下にクラス（<code>04.5.1</code>）がある。fudoki は
+          <span className="font-medium text-foreground">規則が決めた粒度をそのまま持つ</span>。
+        </p>
+        <p className="max-w-[72ch] rounded-md border border-dashed p-3 text-sm leading-relaxed">
+          ⚠️ <span className="font-medium">グループ・クラスが空なのは「該当が無い」ではなく
+          「まだ降りていない」</span>という意味である。
+          款の名称だけで決まる規則（総務費 → 01、民生費 → 10）は
+          <span className="font-medium">ディビジョン止まりが正しく</span>、
+          グループを埋めるには項や目まで下げる判断が要る。
+          下表は達成率ではなく<span className="font-medium">現在地</span>で、
+          割合の高さを品質の指標として使わない（分類不能の割合と同じ扱い）。
+        </p>
+        <div className="overflow-x-auto rounded-lg border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>深さ</TableHead>
+                <TableHead className="text-right">そこまで降りた行数</TableHead>
+                <TableHead className="text-right">割当済みに対する割合</TableHead>
+                <TableHead className="text-right">金額（円）</TableHead>
+                <TableHead className="text-right">金額の割合</TableHead>
+                <TableHead className="text-right">そこで止まった行数</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {t.cofogReach.map((r) => (
+                <TableRow key={r.depth}>
+                  <TableCell className="whitespace-nowrap">{r.label}</TableCell>
+                  <TableCell className="text-right tabular-nums">{yen(r.reached.count)}</TableCell>
+                  <TableCell className="text-right tabular-nums">{pct(r.share.count)}</TableCell>
+                  <TableCell className="text-right tabular-nums">{yen(r.reached.sum)}</TableCell>
+                  <TableCell className="text-right tabular-nums">{pct(r.share.sum)}</TableCell>
+                  <TableCell className="text-right tabular-nums text-muted-foreground">{yen(r.deepest.count)}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+        <p className="max-w-[72ch] text-xs text-muted-foreground">
+          母数は<span className="font-medium text-foreground">割当済みの {yen(t.assigned.count)} 行</span>
+          （{yen(t.assigned.sum)} 円）。分類不能・対象外には割当先が無いので深さも無く、ここには入らない。
+          「そこまで降りた」は累積（クラスまで降りた行はグループにも数える）、
+          「そこで止まった」はその深さが最も深い到達点である行。
+        </p>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h3 className="font-medium">割当先ごとの金額</h3>
+        <p className="max-w-[72ch] text-sm text-muted-foreground">
+          割当済みを COFOG のコードごとに。
+          同じディビジョンが複数行に分かれるのは、降りている深さが規則ごとに違うため
+          （<code>09</code> 止まりの行と <code>09.1</code> まで降りた行は別の事実である）。
+        </p>
+        <div className="overflow-x-auto rounded-lg border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>割当先</TableHead>
+                <TableHead className="text-right">行数</TableHead>
+                <TableHead className="text-right">金額（円）</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {t.byCode.map((c) => (
+                <TableRow key={`${c.division}/${c.group}/${c.class}`}>
+                  <TableCell><CofogChain code={c} /></TableCell>
+                  <TableCell className="text-right tabular-nums">{yen(c.count)}</TableCell>
+                  <TableCell className="text-right tabular-nums">{yen(c.sum)}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </section>
 
       <section className="flex flex-col gap-2">
@@ -100,7 +175,7 @@ export function CofogPanel({ report }: { report: ReportData }) {
                 <TableRow key={i}>
                   <TableCell className="whitespace-nowrap">{k.fund}</TableCell>
                   <TableCell className="whitespace-nowrap">{k.kan}</TableCell>
-                  <TableCell><Division code={k.division} label={k.divisionLabel} /></TableCell>
+                  <TableCell><CofogChain code={k} /></TableCell>
                   <TableCell><Badge variant={statusVariant(k.status)}>{STATUS_JA[k.status] ?? k.status}</Badge></TableCell>
                   <TableCell>{k.decidedAtLevel}</TableCell>
                   <TableCell className="text-right tabular-nums">{yen(k.sum)}</TableCell>

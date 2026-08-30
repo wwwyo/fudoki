@@ -38,6 +38,7 @@ import {
   levelsOf,
   loadDetail,
   loadPipeline,
+  pct,
   toRows,
   type DetailData,
   type PipelineData,
@@ -146,8 +147,6 @@ export function PipelinePage() {
   const { report } = current
   const m = report.meta
   const t = report.transform
-  const total = t.byState.reduce((s, x) => s + x.sum, 0)
-  const assigned = t.byState.filter((x) => x.status === "assigned").reduce((s, x) => s + x.sum, 0)
 
   // このページの目的は「配布データが正しいか」を判別できることなので、
   // サマリも検証の指標だけを出す（総額のような分析の数字は明細タブが持つ）。
@@ -180,7 +179,8 @@ export function PipelinePage() {
     },
     {
       label: "COFOG 割当済み（金額比）",
-      value: `${((assigned / total) * 100).toFixed(1)}%`,
+      // ⚠️ **ここで足し直さない。** 割合は生成側（report/budget/build.ts）が持つ
+      value: pct(t.assignedShare.sum),
       hint: "COFOG は政府支出の機能別分類（教育、保健など10区分）。国際標準",
     },
     // ⚠️ 消去が成立しない団体がある（狛江市は相手の会計が原典から決まらない）。

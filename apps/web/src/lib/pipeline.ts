@@ -5,10 +5,10 @@
  * 食い違いはコンパイラが捕まえる。型を2箇所で宣言すると、
  * 生成側のキーを変えた瞬間に画面が黙って壊れる（実際にその状態を作った）。
  */
-import type { ReportData, Topology, Node, Edge, Stage, Check, NodePreview } from '@fudoki/report/budget/schema'
+import type { CofogCode, ReportData, Topology, Node, Edge, Stage, Check, NodePreview } from '@fudoki/report/budget/schema'
 import type { Direction, DetailRow, DetailTable, Level } from '@fudoki/report/budget/detail'
 
-export type { ReportData, Topology, Node, Edge, Stage, Check, NodePreview }
+export type { CofogCode, ReportData, Topology, Node, Edge, Stage, Check, NodePreview }
 
 export type { Direction, DetailColumn, DetailRow, DetailTable, Level } from '@fudoki/report/budget/detail'
 export { LEVEL_JA, basisOf, cell, divisionLabelOf, levelCell } from '@fudoki/report/budget/detail'
@@ -142,6 +142,12 @@ function assertShape(d: PipelineFile): void {
     for (const k of ['meta', 'summary', 'ingestion', 'detailLevels', 'levels', 'transform'] as const) {
       if (j.report[k] === undefined) problems.push(`${j.code}: report.${k} が無い`)
     }
+    // ⚠️ **transform の中まで見る。** COFOG の集計は生成側が持っていて画面は表示だけなので、
+    // 古い pipeline.json を掴むと**型が「ある」と言っている節が実際には無い**まま画面が落ちる。
+    // 到達粒度を足したときに実際にこの穴が開いた（transform があるかしか見ていなかった）。
+    for (const k of ['byDivision', 'byCode', 'cofogReach', 'assigned', 'total'] as const) {
+      if (j.report?.transform?.[k] === undefined) problems.push(`${j.code}: report.transform.${k} が無い`)
+    }
   }
   if (problems.length > 0) {
     throw new Error(
@@ -152,6 +158,9 @@ function assertShape(d: PipelineFile): void {
 }
 
 export const yen = (v: number | string) => Number(v).toLocaleString('ja-JP')
+
+/** 割合（0〜1）の書式。**割り算は生成側が済ませてある** — ここでは桁の揃え方だけを1箇所で決める */
+export const pct = (v: number) => `${(v * 100).toFixed(1)}%`
 
 /** 円は桁が多い。俯瞰する場所では丸め、厳密な値は必ず併記する */
 export function yenShort(v: number | string): string {
