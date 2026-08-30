@@ -7,15 +7,12 @@
  * 割合を目標にすると分類不能を減らす方向へ判断が歪む。
  */
 import type { ReportData } from '@/lib/pipeline'
-import { DIVISION_COLOR, STATUS_JA, yen, yenShort } from '@/lib/pipeline'
+import { DIVISION_COLOR, STATUS_JA, pct, yen, yenShort } from '@/lib/pipeline'
 import { Badge } from '@/components/ui/badge'
 import { CofogChain } from '@/components/division'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 const statusVariant = (s: string) => (s === 'assigned' ? 'secondary' : s === 'unclassifiable' ? 'outline' : 'outline')
-
-/** 割合の表示。**割り算は生成側が済ませてある**ので、ここでは書式だけ整える */
-const pct = (v: number) => `${(v * 100).toFixed(1)}%`
 
 export function CofogPanel({ report }: { report: ReportData }) {
   const t = report.transform
@@ -93,9 +90,9 @@ export function CofogPanel({ report }: { report: ReportData }) {
                 <TableRow key={r.depth}>
                   <TableCell className="whitespace-nowrap">{r.label}</TableCell>
                   <TableCell className="text-right tabular-nums">{yen(r.reached.count)}</TableCell>
-                  <TableCell className="text-right tabular-nums">{pct(r.reachedCountShare)}</TableCell>
+                  <TableCell className="text-right tabular-nums">{pct(r.share.count)}</TableCell>
                   <TableCell className="text-right tabular-nums">{yen(r.reached.sum)}</TableCell>
-                  <TableCell className="text-right tabular-nums">{pct(r.reachedSumShare)}</TableCell>
+                  <TableCell className="text-right tabular-nums">{pct(r.share.sum)}</TableCell>
                   <TableCell className="text-right tabular-nums text-muted-foreground">{yen(r.deepest.count)}</TableCell>
                 </TableRow>
               ))}
@@ -129,11 +126,7 @@ export function CofogPanel({ report }: { report: ReportData }) {
             <TableBody>
               {t.byCode.map((c) => (
                 <TableRow key={`${c.division}/${c.group}/${c.class}`}>
-                  <TableCell>
-                    <CofogChain division={c.division} divisionLabel={c.divisionLabel}
-                      group={c.group} groupLabel={c.groupLabel}
-                      cls={c.class} clsLabel={c.classLabel} />
-                  </TableCell>
+                  <TableCell><CofogChain code={c} /></TableCell>
                   <TableCell className="text-right tabular-nums">{yen(c.count)}</TableCell>
                   <TableCell className="text-right tabular-nums">{yen(c.sum)}</TableCell>
                 </TableRow>
@@ -182,11 +175,7 @@ export function CofogPanel({ report }: { report: ReportData }) {
                 <TableRow key={i}>
                   <TableCell className="whitespace-nowrap">{k.fund}</TableCell>
                   <TableCell className="whitespace-nowrap">{k.kan}</TableCell>
-                  <TableCell>
-                    <CofogChain division={k.division} divisionLabel={k.divisionLabel}
-                      group={k.group} groupLabel={k.groupLabel}
-                      cls={k.class} clsLabel={k.classLabel} />
-                  </TableCell>
+                  <TableCell><CofogChain code={k} /></TableCell>
                   <TableCell><Badge variant={statusVariant(k.status)}>{STATUS_JA[k.status] ?? k.status}</Badge></TableCell>
                   <TableCell>{k.decidedAtLevel}</TableCell>
                   <TableCell className="text-right tabular-nums">{yen(k.sum)}</TableCell>

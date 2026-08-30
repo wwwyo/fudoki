@@ -34,8 +34,7 @@ export type CofogReach = {
   /** その深さ**以上**に降りている行（累積）。division は割当済みの全部 */
   reached: { count: number; sum: number }
   /** 割当済みに対する `reached` の割合（0〜1）。**画面で割り算しない**ため生成側が持つ */
-  reachedCountShare: number
-  reachedSumShare: number
+  share: { count: number; sum: number }
 }
 
 export type Transform = {
@@ -57,6 +56,8 @@ export type Transform = {
   assigned: { count: number; sum: number }
   /** 全状態の合計（割当済み + 分類不能 + 対象外）= 原典の合計 */
   total: { count: number; sum: number }
+  /** `total` に対する `assigned` の割合（0〜1）。**画面で割り算しない**ため生成側が持つ */
+  assignedShare: { count: number; sum: number }
   byLevel: { level: string; count: number; sum: number }[]
   notAssigned: { status: string; fund: string; kan: string; ruleId: string | null; sum: number; basis: string | null }[]
   consolidationPairs: { from: string; to: string; eliminated: number; counterpart: number; counterpartCount: number; ok: boolean }[]

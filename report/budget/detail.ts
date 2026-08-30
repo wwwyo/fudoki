@@ -90,6 +90,11 @@ export const COFOG_CLASSES: Record<string, string> = {
 export const COFOG_DEPTHS = ['division', 'group', 'class'] as const
 export type CofogDepth = (typeof COFOG_DEPTHS)[number]
 
+/** 深さから名称表を引く。**深さの集合と対で置く** — 離すと片方だけ直る */
+export const COFOG_NAMES: Record<CofogDepth, Record<string, string>> = {
+  division: COFOG_DIVISIONS, group: COFOG_GROUPS, class: COFOG_CLASSES,
+}
+
 export const COFOG_DEPTH_JA: Record<CofogDepth, string> = {
   division: 'ディビジョン（2桁）', group: 'グループ（04.5）', class: 'クラス（04.5.1）',
 }
@@ -100,8 +105,7 @@ export const COFOG_DEPTH_JA: Record<CofogDepth, string> = {
  */
 export function cofogLabel(depth: CofogDepth, code: string): string {
   if (!code) return ''
-  const table = depth === 'division' ? COFOG_DIVISIONS : depth === 'group' ? COFOG_GROUPS : COFOG_CLASSES
-  const label = table[code]
+  const label = COFOG_NAMES[depth][code]
   if (label === undefined) {
     throw new Error(
       `COFOG ${depth} ${code} の名称が report/budget/detail.ts に無い。` +

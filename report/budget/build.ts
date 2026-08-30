@@ -35,9 +35,6 @@ const withLabel = <T extends Coded>(rows: T[]): (T & CofogCode)[] =>
     classLabel: cofogLabel('class', r.class),
   }))
 
-/** その行がどの深さまで降りているか。**空は「まだ降りていない」** */
-const DEPTH_SQL = `case when c.cofog_class <> '' then 'class'
-                        when c.cofog_group <> '' then 'group' else 'division' end`
 /** COFOG のコード3列。`group` / `class` は SQL の予約語なので引用する */
 const CODE_SQL = `c.cofog_division division, c.cofog_group "group", c.cofog_class "class"`
 
@@ -83,6 +80,12 @@ const amountsOf = (code: string, direction: Direction) => DBT_VARS.vars.budget_a
 /**
  * COFOG の**到達粒度**と、降りた先そのもの。
  *
+ * ⚠️ **`byState` から導出する。問い合わせを増やさない。**
+ * どれも同じ join の同じ事実を別の切り方で数えているだけなので、
+ * 独立に4本のクエリを投げると、後から片方の絞り込みだけ変えたときに
+ * 画面の節どうしが黙って食い違う（合計が一致するのは偶然になる）。
+ * 導出なら一致は構造で保たれ、DuckDB CLI の起動も団体あたり4回減る。
+ *
  * ⚠️ **`group` / `class` が空なのは「該当が無い」ではなく「まだ降りていない」。**
  * 款の名称だけで決まる規則（総務費 → 01、民生費 → 10）は division 止まりが正しく、
  * group を埋めるには項や目まで下げる判断が要る。したがってここは
@@ -94,47 +97,59 @@ const amountsOf = (code: string, direction: Direction) => DBT_VARS.vars.budget_a
  * 累積（`reached`）と排他（`deepest`）の両方を持つのは、**画面で足し算させないため**。
  * 集計を画面へ漏らすと、同じ数字が2通りに計算されていずれ食い違う。
  */
-function cofogGranularity(scope: string):
-  Pick<ReportData['transform'], 'byCode' | 'byDivision' | 'cofogReach' | 'assigned' | 'total'> {
-  const assignedOnly = `${scope} and c.cofog_status = 'assigned'`
-  const byCode = withLabel(q<Coded & { count: number; sum: number }>(`
-    select ${CODE_SQL}, count(*) count, sum(s.amount_yen) sum
-    from core_budget_cofog c join core_budget_lines s using (budget_line_id) ${assignedOnly}
-    group by all order by sum desc, division, "group", "class"`, ['count', 'sum']))
-  const byDivision = q<{ division: string; count: number; sum: number }>(`
-    select c.cofog_division division, count(*) count, sum(s.amount_yen) sum
-    from core_budget_cofog c join core_budget_lines s using (budget_line_id) ${assignedOnly}
-    group by all order by division`, ['count', 'sum'])
-    .map((r) => ({ ...r, divisionLabel: cofogLabel('division', r.division) }))
-  // 帯の説明に使う「これに分類不能と対象外を足すと原典の合計に戻る」の右辺。
-  // **画面で byState を足し直さない**（同じ数字が2通りに計算される）
-  const total = q<{ count: number; sum: number }>(`
-    select count(*) count, sum(s.amount_yen) sum
-    from core_budget_cofog c join core_budget_lines s using (budget_line_id) ${scope}`,
-    ['count', 'sum'])[0]!
-  const deepest = q<{ depth: CofogDepth; count: number; sum: number }>(`
-    select ${DEPTH_SQL} depth, count(*) count, sum(s.amount_yen) sum
-    from core_budget_cofog c join core_budget_lines s using (budget_line_id) ${assignedOnly}
-    group by all`, ['count', 'sum'])
-  const at = (d: CofogDepth) => deepest.find((x) => x.depth === d) ?? { count: 0, sum: 0 }
-  const assigned = {
-    count: deepest.reduce((a, b) => a + b.count, 0),
-    sum: deepest.reduce((a, b) => a + b.sum, 0),
+type StateRow = CofogCode & { status: string; consolidation: string; count: number; sum: number }
+
+/** 順序を SQL と揃える（報告は commit するので、非決定的だと中身が同じでも差分が出る） */
+const cmp = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0)
+const ZERO = { count: 0, sum: 0 }
+const add = (a: { count: number; sum: number }, b: { count: number; sum: number }) =>
+  ({ count: a.count + b.count, sum: a.sum + b.sum })
+
+/** 鍵ごとに畳む。**鍵に含めない列は先頭行のもの**（同じ鍵なら同じ値である列しか残さない） */
+function foldBy<T extends { count: number; sum: number }>(rows: T[], key: (r: T) => string): T[] {
+  const m = new Map<string, T>()
+  for (const r of rows) {
+    const hit = m.get(key(r))
+    if (hit) { hit.count += r.count; hit.sum += r.sum } else m.set(key(r), { ...r })
   }
-  const share = (v: number, total: number) => (total === 0 ? 0 : v / total)
+  return [...m.values()]
+}
+
+/** その行がどこまで降りているか。**空は「まだ降りていない」** */
+const depthOf = (r: CofogCode): CofogDepth => (r.class ? 'class' : r.group ? 'group' : 'division')
+
+function cofogGranularity(byState: StateRow[]):
+  Pick<ReportData['transform'],
+    'byCode' | 'byDivision' | 'cofogReach' | 'assigned' | 'total' | 'assignedShare'> {
+  const total = byState.reduce(add, ZERO)
+  const assignedRows = byState.filter((r) => r.status === 'assigned')
+  const assigned = assignedRows.reduce(add, ZERO)
+  const share = (v: number, whole: number) => (whole === 0 ? 0 : v / whole)
+  const byCode = foldBy(
+    assignedRows.map(({ status: _s, consolidation: _c, ...code }) => code),
+    (r) => [r.division, r.group, r.class].join('\u001f'),
+  ).sort((a, b) => b.sum - a.sum || cmp(a.division, b.division)
+    || cmp(a.group, b.group) || cmp(a.class, b.class))
+  const byDivision = foldBy(
+    byCode.map(({ division, divisionLabel, count, sum }) => ({ division, divisionLabel, count, sum })),
+    (r) => r.division,
+  ).sort((a, b) => cmp(a.division, b.division))
+
+  const at = (d: CofogDepth) => byCode.filter((r) => depthOf(r) === d).reduce(add, ZERO)
   const cofogReach: CofogReach[] = COFOG_DEPTHS.map((depth, i) => {
     // その深さ「以上」= 自分より深い段も数える（04.5.1 は group にも届いている）
-    const reached = COFOG_DEPTHS.slice(i).map(at).reduce(
-      (a, b) => ({ count: a.count + b.count, sum: a.sum + b.sum }), { count: 0, sum: 0 })
+    const reached = COFOG_DEPTHS.slice(i).map(at).reduce(add, ZERO)
     return {
       depth, label: COFOG_DEPTH_JA[depth],
-      deepest: { count: at(depth).count, sum: at(depth).sum },
+      deepest: at(depth),
       reached,
-      reachedCountShare: share(reached.count, assigned.count),
-      reachedSumShare: share(reached.sum, assigned.sum),
+      share: { count: share(reached.count, assigned.count), sum: share(reached.sum, assigned.sum) },
     }
   })
-  return { byCode, byDivision, cofogReach, assigned, total }
+  return {
+    byCode, byDivision, cofogReach, assigned, total,
+    assignedShare: { count: share(assigned.count, total.count), sum: share(assigned.sum, total.sum) },
+  }
 }
 
 /**
@@ -153,20 +168,21 @@ function buildTransform(code: string): ReportData['transform'] {
     `select count(*) as n, count(*) filter (where coalesce(applies_to, '') = '') as shared
      from cofog_rules where coalesce(applies_to, '') in ('', '${code}')`,
     ['n', 'shared'])[0]!
+  const byState = withLabel(q<Coded & { status: string; consolidation: string; count: number; sum: number }>(`
+    select c.cofog_status status, ${CODE_SQL}, c.cofog_consolidation consolidation,
+           count(*) count, sum(s.amount_yen) sum
+    from core_budget_cofog c join core_budget_lines s using (budget_line_id) ${scope}
+    -- 同点で並びが揺れないよう、決着のつく列まで指定する。
+    -- 報告は commit するので、非決定的だと中身が同じでも毎回差分が出る。
+    group by all
+    order by sum desc, status, division, "group", "class", consolidation`, ['count', 'sum']))
   return {
     cofogVersion: 'COFOG 1999',
     cofogSource: { name: 'UNSD Classification of the Functions of Government (COFOG)',
                    url: 'https://unstats.un.org/unsd/classifications/Family/Detail/4' },
     ruleCount: rules.n,
     ruleScope: { shared: rules.shared, jurisdictionSpecific: rules.n - rules.shared },
-    byState: withLabel(q<Coded & { status: string; consolidation: string; count: number; sum: number }>(`
-      select c.cofog_status status, ${CODE_SQL}, c.cofog_consolidation consolidation,
-             count(*) count, sum(s.amount_yen) sum
-      from core_budget_cofog c join core_budget_lines s using (budget_line_id) ${scope}
-      -- 同点で並びが揺れないよう、決着のつく列まで指定する。
-      -- 報告は commit するので、非決定的だと中身が同じでも毎回差分が出る。
-      group by all
-      order by sum desc, status, division, "group", "class", consolidation`, ['count', 'sum'])),
+    byState,
     // **規則ごとに分ける。** 併合すると basis が合計に対応しなくなる
     // （国民健康保険への繰出と後期高齢者医療への繰出が1行に潰れ、
     // 片方の根拠だけが両方の金額に付いた状態になっていた）。
@@ -183,7 +199,7 @@ function buildTransform(code: string): ReportData['transform'] {
       -- ⚠️ **規則ごとに分けてあるので行は増えない。** 1本の規則が決める COFOG コードは
       -- 1つで、group / class はそのコードの分解にすぎない。
       group by 1, 2, 3, 4, 5, 6, 7, 8 order by sum desc, fund, kan, ruleId`, ['sum'])),
-    ...cofogGranularity(scope),
+    ...cofogGranularity(byState),
     byLevel: q(`
       select c.cofog_decided_at_level "level", count(*) count, sum(s.amount_yen) sum
       from core_budget_cofog c join core_budget_lines s using (budget_line_id) ${scope}
