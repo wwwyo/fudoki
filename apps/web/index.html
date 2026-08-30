@@ -35,7 +35,8 @@
       Google Dataset Search はこの JSON-LD を読む。データを配る PJ なので、
       普通の検索より効く入口にあたる。
       ⚠️ **収録範囲（団体・年度）はここに書かない。** pipeline.json が持つ事実を
-      手で写すと、対象を広げた瞬間に嘘になる。可変の事実は App が実行時に入れる。
+      手で写すと、対象を広げた瞬間に嘘になる。収録状況はホーム画面が pipeline.json を
+      実行時に読んで出す（`src/pages/home.tsx`）。
     -->
     <script type="application/ld+json">
       {
