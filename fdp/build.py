@@ -146,6 +146,20 @@ def phase_ids(amounts: list[dict]) -> set[str]:
     return {a["phase"] for a in amounts}
 
 
+def unit_is_column(amounts: list[dict]) -> bool:
+    """単位を**行の列**（`source_amount_unit`）で持つか、descriptor の定数にできるか。
+
+    **規則の正本は dbt の同名マクロ**（`budget_amount_unit_is_column`）で、
+    列を出すのはあちらのモデルである。ここへ違う規則を書くと、CSV に列があるのに
+    descriptor が定数だと言う（あるいはその逆の）状態になる。
+    食い違いは `verify_against_csv` が配布物そのものを見て止める。
+
+    ⚠️ 「宣言が1つか」であって「単位が1種類か」ではない。狛江市の歳出は3段階とも円だが、
+    段階ごとの行へ展開する以上その行が何の単位かは行が言うべきで、定数にはできない。
+    """
+    return len(amounts) > 1
+
+
 def amount_at(amounts: list[dict], year: int, phase: str) -> dict | None:
     """その (年度, 段階) に効く宣言。**解決の規則は dbt 側と同じ**
     （`years` を持つ宣言が優先し、無ければ `years` を持たない宣言）。
@@ -162,15 +176,12 @@ def amount_at(amounts: list[dict], year: int, phase: str) -> dict | None:
 
 def verify_against_csv(path: pathlib.Path, amounts: list[dict]) -> None:
     """宣言と配布物が食い違っていないか。**descriptor だけ正しい状態を作らない。**"""
-    # ⚠️ **単位が定数でいられるのは宣言が1つのときだけ。** 段階で割れても
-    # （狛江市）年度で割れても（多摩市）行の列として持つほかない。
-    unit_is_column = len(amounts) > 1
     with path.open(encoding="utf-8", newline="") as f:
         rows = csv.DictReader(f)
         header = rows.fieldnames or []
         if "phase_id" not in header:
             raise RuntimeError(f"{path.name}: phase_id の列が無い")
-        if unit_is_column and "source_amount_unit" not in header:
+        if unit_is_column(amounts) and "source_amount_unit" not in header:
             raise RuntimeError(
                 f"{path.name}: 金額の宣言が {len(amounts)} 件あるのに source_amount_unit の列が無い"
             )
@@ -443,7 +454,7 @@ def build_jurisdiction(code: str) -> None:
         constants["phase_label"] = next(iter(phase_labels))[1]
     # ⚠️ **単位が1種類であることと、宣言が1つであることは別。** 多摩市は単位が
     # 年度で千円と円に割れるので、宣言が1つの団体でしか定数にはできない。
-    if len(declared_units) == 1 and all(len(v) == 1 for v in amounts.values()):
+    if len(declared_units) == 1 and not any(unit_is_column(v) for v in amounts.values()):
         constants["source_amount_unit"] = next(iter(declared_units))[0]
     pkg = base(
         f"fudoki-budget-{code}",
@@ -541,8 +552,6 @@ def build_jurisdiction(code: str) -> None:
         path = d / f"{name}.csv"
         # 行を段階ごとに展開したか（主キーと phase_label の置き場が変わる）
         multi = len(phase_ids(amounts[name])) > 1
-        # 単位を定数にできるか。⚠️ **段階でも年度でも割れれば行の列になる。**
-        unit_is_column = len(amounts[name]) > 1
         # ⚠️ **主キーは段階の数で変わる。** 決算書は原典1行を段階ごとの行へ展開するので、
         # budget_line_id だけでは一意でない（Table Schema の primaryKey が嘘になる）。
         const = {**constants, "direction": name}
@@ -551,7 +560,7 @@ def build_jurisdiction(code: str) -> None:
         # 定数にできるのは、段階が1つでその値が全行で同じときだけ。
         if not multi:
             const["phase_label"] = amounts[name][0]["phase_label"]
-        if not unit_is_column:
+        if not unit_is_column(amounts[name]):
             const["source_amount_unit"] = amounts[name][0]["unit"]
         verify_against_csv(path, amounts[name])
         pkg["resources"].append(resource(

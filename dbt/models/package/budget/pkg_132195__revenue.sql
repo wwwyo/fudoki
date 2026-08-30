@@ -26,6 +26,14 @@ with lines as (
     select * from {{ ref('stg_132195__revenue') }}
 )
 
+{#- ⚠️ **単位を列で出すことを宣言と突き合わせる。** 定数にできる宣言なのに列を出すと、
+    descriptor 側（fdp/build.py の unit_is_column）が同じ列を定数としても宣言し、
+    「実在の列を定数として二重に宣言できない」で配布物の生成が止まる。
+    どちらが正しいかを人が読み解く前に、規則の側で止める。 -#}
+{% if not budget_amount_unit_is_column('132195', 'revenue') %}
+  {{ exceptions.raise_compiler_error(
+      '132195/revenue: 単位を定数にできる宣言なのに source_amount_unit を列で出している') }}
+{% endif %}
 {% set amounts = var('budget_amounts')['132195']['revenue'] %}
 {% for a in amounts %}
 select

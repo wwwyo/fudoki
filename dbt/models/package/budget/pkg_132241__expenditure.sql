@@ -13,6 +13,10 @@
   変わったので、同じ `source_amount` の宣言が年度で 2 件に割れている。件数で見ると
   「段階が2種類ある」と誤読して、1行しかない原典を2行へ展開してしまう。
 -#}
+{% if not budget_amount_unit_is_column('132241', 'expenditure') %}
+  {{ exceptions.raise_compiler_error(
+      '132241/expenditure: 単位を定数にできる宣言なのに source_amount_unit を列で出している') }}
+{% endif %}
 {% set phases = budget_phase_ids('132241', 'expenditure') %}
 {% if phases | length != 1 %}
   {{ exceptions.raise_compiler_error(

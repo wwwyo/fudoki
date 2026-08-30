@@ -24,10 +24,6 @@
   母集団は宣言ではなく**原典**の側に取る。
 #}
 
-{#- その宣言が効く年度。`years` が無ければ none（＝全年度） -#}
-{% macro budget_amount_years(a) %}{{ return(a.get('years')) }}{% endmacro %}
-
-
 {#- (団体, direction) が持つ金額の名前。宣言の並び順を保つ -#}
 {% macro budget_amount_names(code, direction) %}
   {%- set names = [] -%}
@@ -93,38 +89,67 @@
 
 
 {#-
-  1つの金額について、宣言の属性を年度で選ぶ SQL 式。
+  1つの宣言に効く年度の述語。全年度に効く宣言では空文字（＝絞り込み無し）。
 
-  年度で割れていなければただの定数になる（既存の団体の SQL は 1 文字も変わらない）。
-  割れているときだけ CASE になる。
-    attr    宣言のキー（source / multiplier / unit / phase / phase_label）
-    quote   値を文字列リテラルとして出すか
-    year_col  年度を持つ列名。staging は原典の partition（`year`）、下流は `fiscal_year`
-  ⚠️ **`else` を付けない。** 覆えていない年度は NULL になり、
-  `value` も `source_amount` も欠けるので下流の検査が落ちる（黙って 0 にしない）。
+  **`years` を SQL にするのはここだけ。** 宣言を1件ずつ回る検査も、下の CASE の組み立ても
+  この1本を通す。⚠️ 以前は同じ `in (...)` を CASE の側で手で組み直しており、
+  `budget_units.sql` の冒頭が名指しで警告している失敗（同じ数行の Jinja が複数箇所へ写され、
+  片方だけ直ってドリフトする）を、その警告の隣で再現していた。
+  ⚠️ 検査の側でこれが無いと、年度で割れた宣言 2 件が同じ行を 2 度数える
+  （package_preserves_source の多重集合が倍になる）。
 -#}
-{% macro budget_amount_attr_sql(code, direction, name, attr, quote=false, year_col='fiscal_year') %}
-  {%- set variants = budget_amount_variants(code, direction, name) -%}
-  {%- set lit -%}
-    {%- if quote %}'{{ variants[0][attr] }}'{% else %}{{ variants[0][attr] }}{% endif -%}
-  {%- endset -%}
+{% macro budget_amount_year_filter(a, year_col='fiscal_year') %}
+  {%- if a.get('years') is none -%}
+    {{ return('') }}
+  {%- endif -%}
+  {{ return(year_col ~ ' in (' ~ a['years'] | join(', ') ~ ')') }}
+{% endmacro %}
+
+
+{#-
+  年度で値が変わる式を組む。**CASE を組み立てるのはここだけ。**
+
+  `values` は `variants` と同じ並びの SQL の値（リテラルでも列参照でもよい）。
+  何を値にするかは呼ぶ側が決め、**年度で選ぶという構造はここが持つ**。
+  ⚠️ 以前は属性用と原典の列用で同じ骨格を2度書いており、
+  「`branches` が空のときの `case  end`」のようなエッジケースを片方だけ直せる状態だった。
+
+  年度で割れていなければ、ただの値をそのまま返す（既存の団体の SQL は 1 文字も変わらない）。
+  ⚠️ **`else` を勝手に足さない。** 覆えていない年度は NULL になり、
+  `value` も `source_amount` も欠けるので下流の検査が落ちる（黙って 0 にしない）。
+  覆えているかは tests/amount_declarations_cover_years.sql が原典の側から見る。
+-#}
+{% macro budget_amount_case_sql(variants, values, year_col) %}
   {%- if variants | length == 1 and variants[0].get('years') is none -%}
-    {{ return(lit) }}
+    {{ return(values[0]) }}
   {%- endif -%}
   {%- set branches = [] -%}
   {%- set fallback = [] -%}
   {%- for a in variants -%}
-    {%- set value -%}
-      {%- if quote %}'{{ a[attr] }}'{% else %}{{ a[attr] }}{% endif -%}
-    {%- endset -%}
-    {%- if a.get('years') is none -%}
-      {%- do fallback.append('else ' ~ value) -%}
+    {%- set predicate = budget_amount_year_filter(a, year_col) -%}
+    {%- if predicate -%}
+      {%- do branches.append('when ' ~ predicate ~ ' then ' ~ values[loop.index0]) -%}
     {%- else -%}
-      {%- do branches.append('when ' ~ year_col ~ ' in ('
-            ~ a['years'] | join(', ') ~ ') then ' ~ value) -%}
+      {%- do fallback.append('else ' ~ values[loop.index0]) -%}
     {%- endif -%}
   {%- endfor -%}
   {{ return('case ' ~ branches | join(' ') ~ (' ' ~ fallback[0] if fallback else '') ~ ' end') }}
+{% endmacro %}
+
+
+{#-
+  1つの金額について、宣言の属性を年度で選ぶ SQL 式。
+    attr    宣言のキー（source / multiplier / unit / phase / phase_label）
+    quote   値を文字列リテラルとして出すか
+    year_col  年度を持つ列名。staging は原典の partition（`year`）、下流は `fiscal_year`
+-#}
+{% macro budget_amount_attr_sql(code, direction, name, attr, quote=false, year_col='fiscal_year') %}
+  {%- set variants = budget_amount_variants(code, direction, name) -%}
+  {%- set values = [] -%}
+  {%- for a in variants -%}
+    {%- do values.append("'" ~ a[attr] ~ "'" if quote else a[attr] | string) -%}
+  {%- endfor -%}
+  {{ return(budget_amount_case_sql(variants, values, year_col)) }}
 {% endmacro %}
 
 
@@ -138,23 +163,11 @@
 -#}
 {% macro budget_amount_source_sql(code, direction, name, year_col='fiscal_year', cast_bigint=true) %}
   {%- set variants = budget_amount_variants(code, direction, name) -%}
-  {%- set open = 'cast("' if cast_bigint else '"' -%}
-  {%- set close = '" as bigint)' if cast_bigint else '"' -%}
-  {%- if variants | length == 1 and variants[0].get('years') is none -%}
-    {{ return(open ~ variants[0]['source'] ~ close) }}
-  {%- endif -%}
-  {%- set branches = [] -%}
-  {%- set fallback = [] -%}
+  {%- set values = [] -%}
   {%- for a in variants -%}
-    {%- set value = open ~ a['source'] ~ close -%}
-    {%- if a.get('years') is none -%}
-      {%- do fallback.append('else ' ~ value) -%}
-    {%- else -%}
-      {%- do branches.append('when ' ~ year_col ~ ' in ('
-            ~ a['years'] | join(', ') ~ ') then ' ~ value) -%}
-    {%- endif -%}
+    {%- do values.append('cast("' ~ a['source'] ~ '" as bigint)' if cast_bigint else '"' ~ a['source'] ~ '"') -%}
   {%- endfor -%}
-  {{ return('case ' ~ branches | join(' ') ~ (' ' ~ fallback[0] if fallback else '') ~ ' end') }}
+  {{ return(budget_amount_case_sql(variants, values, year_col)) }}
 {% endmacro %}
 
 
@@ -165,16 +178,20 @@
 
 
 {#-
-  1つの宣言に効く年度の述語。全年度に効く宣言では空文字（＝絞り込み無し）。
-  **宣言を1件ずつ回る検査が使う。**
-  ⚠️ これが無いと、年度で割れた宣言 2 件が同じ行を 2 度数える
-  （package_preserves_source の多重集合が倍になる）。
+  単位を配布物の**行の列**（`source_amount_unit`）で持つか、descriptor の定数にできるか。
+
+  ⚠️ **package モデルと descriptor が別々に決めない。** 列を出すのは dbt のモデル、
+  定数を宣言するのは `fdp/build.py` で、実装言語が違うぶん判断が2箇所に割れやすい。
+  片方だけ直すと、CSV に列があるのに descriptor が定数だと言う（あるいはその逆の）
+  状態になる。そこで**規則をここに1つ置き、モデルはこれを見る**。
+  Python 側は同名の `unit_is_column()` が同じ規則を持ち、食い違いは
+  `verify_against_csv` が配布物そのものを見て止める。
+
+  規則は「宣言が1つか」であって「単位が1種類か」ではない。狛江市の歳出は3段階とも円だが、
+  段階ごとの行へ展開する以上その行が何の単位かは行が言うべきで、定数にはできない。
 -#}
-{% macro budget_amount_year_filter(a, year_col='fiscal_year') %}
-  {%- if a.get('years') is none -%}
-    {{ return('') }}
-  {%- endif -%}
-  {{ return(year_col ~ ' in (' ~ a['years'] | join(', ') ~ ')') }}
+{% macro budget_amount_unit_is_column(code, direction) %}
+  {{ return(var('budget_amounts')[code][direction] | length > 1) }}
 {% endmacro %}
 
 
