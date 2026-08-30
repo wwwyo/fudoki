@@ -8,6 +8,7 @@ PDF から事業名を起こす取得器がそこから import しており、
 
 from __future__ import annotations
 
+import functools
 import hashlib
 import json
 import pathlib
@@ -107,8 +108,9 @@ def _to_cache(got: Fetched) -> None:
     }, ensure_ascii=False))
 
 
+@functools.cache
 def _tls_context() -> ssl.SSLContext:
-    """CA を certifi に固定する。
+    """CA を certifi に固定する。**束のパースは1度だけ**（`SSLContext` は使い回せる）。
 
     ⚠️ **OS の信頼ストアに任せると、団体によって黙って落ちる。**
     Python は macOS では `/private/etc/ssl/cert.pem` を見るが、これは Homebrew の
@@ -126,12 +128,17 @@ def _http_get_once(url: str) -> Fetched:
     with urllib.request.urlopen(req, timeout=40, context=_tls_context()) as res:  # noqa: S310  (取得元は sources.toml の固定 https)
         # 引数なしの read() を使う。分割して読むと、途中で接続が切れても
         # 短いレスポンスとして黙って通ってしまう（IncompleteRead が上がらない）。
-        body = res.read()
+        # ⚠️ **上限は読む前に見る。** 読み切ってから測ると、拒否するはずのものを
+        # まるごとメモリへ載せてから捨てることになり、柵として働いていない。
+        # Content-Length を名乗らない相手には効かないので、読んだ後にもう一度見る。
         declared = res.headers.get("Content-Length")
+        if declared is not None and int(declared) > MAX_BYTES:
+            raise RuntimeError(f"Content-Length {declared} が上限 {MAX_BYTES} を超えている: {url}")
+        body = res.read()
         if declared is not None and len(body) != int(declared):
             raise RuntimeError(f"Content-Length {declared} に対し {len(body)} バイトしか取れていない: {url}")
         if len(body) > MAX_BYTES:
-            raise RuntimeError(f"{MAX_BYTES} バイトを超えた。取得元の異常: {url}")
+            raise RuntimeError(f"上限 {MAX_BYTES} バイトを超えた: {url}")
         return Fetched(
             url=url,
             status=res.status,

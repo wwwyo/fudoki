@@ -27,18 +27,33 @@ import json
 import pathlib
 import sys
 
-from ingestion.budget.probe_documents import _rank
+from ingestion.budget.probe_documents import best_probe
 from ingestion.budget.sources import load_sources
+from ingestion.shared.jurisdictions import load_jurisdictions
 
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 OBS = HERE / "observations"
-JURISDICTIONS = ROOT / "ingestion" / "shared" / "jurisdictions.json"
 OUT = OBS / "budget-source-coverage.json"
 
-# 中身を測った結果のうち、事業単位に届く見込みがあるもの。
-# 節（目より下）まで降りていれば、説明欄に事業名が載る様式である
-REACHES_BELOW_MOKU = ("setsu",)
+# `reaches` を団体の状態へ翻訳する対応表。**ここに閾値や推定を持ち込まない** —
+# 判断は probe_documents 側で済んでおり、この表は 1 対 1 の言い換えである。
+#
+# ⚠️ **「測れていない」を「資料が無い」に潰さない。** `unknown` は資料を開いた上で
+# 判定が付かなかった状態、`unprobed` はそもそも開いていない状態で、どちらも
+# 「その団体に資料が存在しない」とは別のことを言っている。潰すと、測っていないものが
+# 結果として出る（AGENTS.md「測っていないものを結果として出さない」）。
+STATE_OF_REACHES: dict[str | None, tuple[str, str]] = {
+    "setsu": ("確定", "site-pdf"),
+    "moku": ("目どまり", "site-pdf"),
+    "kou": ("目どまり", "site-pdf"),
+    "ocr-required": ("OCR 待ち", "site-pdf"),
+    "blocked": ("照会が要る", "site-pdf"),
+    "unknown": ("測れていない", "site-pdf"),
+    "unprobed": ("測れていない", "site-pdf"),
+    # 探索は回ったが、資料が1本も挙がらなかった団体
+    None: ("資料が無い", "-"),
+}
 
 
 def _load(path: pathlib.Path) -> dict:
@@ -46,7 +61,7 @@ def _load(path: pathlib.Path) -> dict:
 
 
 def main() -> None:
-    registry = json.loads(JURISDICTIONS.read_text())["jurisdictions"]
+    registry = load_jurisdictions()
     registered = {s.jurisdiction_code for s in load_sources().values()}
     discovery = {p.stem: json.loads(p.read_text()) for p in sorted((OBS / "discovery").glob("*.json"))}
     probe = _load(OBS / "budget-document-probe.json").get("jurisdictions", {})
@@ -60,24 +75,13 @@ def main() -> None:
         elif code not in discovery:
             state, route, basis = "未調査", "-", "取得元の探索がまだ回っていない"
         else:
-            docs = probe.get(code, {}).get("documents", [])
-            best = max(docs, key=lambda d: _rank(d.get("reaches")), default=None)
+            best = best_probe(probe.get(code, {}).get("documents", []))
             reaches = best.get("reaches") if best else None
-            if reaches in REACHES_BELOW_MOKU:
-                state, route = "確定", "site-pdf"
-                basis = f"{best['title'][:22]} を開いて {best['basis'][:36]}"
-            elif reaches == "ocr-required":
-                state, route = "OCR 待ち", "site-pdf"
-                basis = f"{best['title'][:22]}。{best['basis'][:34]}"
-            elif reaches == "blocked":
-                state, route = "照会が要る", "site-pdf"
-                basis = f"{best['title'][:22]}。{best['basis'][:34]}"
-            elif reaches == "moku":
-                state, route = "目どまり", "site-pdf"
-                basis = f"{best['title'][:22]}。テキスト経路では節に届かない（OCR で再確認）"
-            else:
-                state, route = "資料が無い", "-"
-                basis = "事項別明細書にあたる資料が公開されていない"
+            state, route = STATE_OF_REACHES[reaches]
+            basis = (
+                f"{best['title'][:22]}。{best['basis'][:40]}" if best
+                else "探索は回ったが、事項別明細書にあたる資料が1本も挙がらなかった"
+            )
         stance = (discovery.get(code, {}).get("copyright") or {}).get("stance", "-")
         resolved[code] = {"name": name, "state": state, "route": route,
                           "redistribute": stance, "basis": basis}

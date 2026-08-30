@@ -43,6 +43,7 @@ import sys
 import tempfile
 import urllib.error
 
+from ingestion.budget.granularity_profile import STATUTORY_LEVELS
 from ingestion.lib.http import http_get
 
 HERE = pathlib.Path(__file__).resolve().parent
@@ -113,13 +114,12 @@ def probe_pdf(body: bytes) -> dict:
             for i in range(1, SPREAD_SAMPLES + 1)
         } & set(range(head_last + 1, pages + 1)))
         parts.extend(_text(path, n, n) for n in spread)
-        head, middle = "".join(parts), ""
 
     sampled = head_last + len(spread)
     # ⚠️ **空白を除いてから突き合わせる。** 罫線表の PDF は1文字ずつ字間が空いており、
     # `pdftotext` が「需 用 費」のように分けて吐く。素の文字列で探すと
     # 節の語が1つも当たらず、事項別明細書が「款項どまり」に見える（葛飾区で実測）。
-    text = re.sub(r"\s+", "", head + middle)
+    text = re.sub(r"\s+", "", "".join(parts))
     chars = len(text)
     if chars < MIN_CHARS_PER_PAGE * sampled:
         return {
@@ -138,7 +138,7 @@ def probe_pdf(body: bytes) -> dict:
     setsu = sorted({w for w in SETSU_WORDS if w in text})
     meisai = sorted({w for w in MEISAI_WORDS if w in text})
     explanation = any(w in text for w in EXPLANATION_WORDS)
-    levels = sorted({w for w in ("款", "項", "目", "節") if w in text})
+    levels = sorted({w for w in STATUTORY_LEVELS if w in text})
 
     if len(setsu) >= 3:
         reaches, basis = "setsu", f"節の法定語が {len(setsu)} 語: {'、'.join(setsu[:6])}"
@@ -160,6 +160,24 @@ def probe_pdf(body: bytes) -> dict:
         "setsuWords": setsu, "meisaiWords": meisai, "hasExplanationColumn": explanation,
         "levelWords": levels, "reaches": reaches, "basis": basis,
     }
+
+
+def rank_reaches(reaches: str | None) -> int:
+    """`reaches` の深さ。**この語彙を持つのはこのモジュールなので、順序もここが持つ。**
+
+    ⚠️ OCR が要る資料は**粒度が低いのではなく、まだ測れていない**。
+    目どまりと確かめた資料より上に置かない（測っていないものを結果にしない）が、
+    経路が塞がっている `blocked` や見ていない `unprobed` よりは前に進んでいる。
+    """
+    return {"setsu": 5, "moku": 4, "kou": 3, "ocr-required": 2, "blocked": 1,
+            "unknown": 1, "unprobed": 0}.get(reaches, 0)
+
+
+def best_probe(probes: list[dict]) -> dict | None:
+    """その団体で最も深く届いた1本。**選び方を消費側に書かせない** —
+    `source_coverage` も同じ選択をするので、2箇所に書くとタイブレークを足したとき片方だけ古くなる。
+    """
+    return max(probes, key=lambda p: rank_reaches(p.get("reaches")), default=None)
 
 
 def probe(doc: dict) -> dict:
@@ -198,7 +216,7 @@ def main() -> None:
             continue
         probes = [probe(d) for d in found.get("documents", [])]
         result[code] = {"name": found["name"], "documents": probes}
-        best = max((p for p in probes), key=lambda p: _rank(p["reaches"]), default=None)
+        best = best_probe(probes)
         mark = {"setsu": "✓", "moku": "◎", "ocr-required": "▲",
                 "blocked": "✖"}.get(best["reaches"] if best else "", "△")
         print(f"  {mark} {code} {found['name']:8s} "
@@ -212,14 +230,6 @@ def main() -> None:
             "jurisdictions": result,
         }, ensure_ascii=False, indent=2) + "\n")
         print(f"\n{OUT} へ書き出した")
-
-
-def _rank(reaches: str) -> int:
-    # ⚠️ OCR が要る資料は**粒度が低いのではなく、まだ測れていない**。
-    # 目どまりと確かめた資料より上に置かない（測っていないものを結果にしない）が、
-    # 経路が塞がっている `blocked` や見ていない `unprobed` よりは前に進んでいる
-    return {"setsu": 5, "moku": 4, "kou": 3, "ocr-required": 2, "blocked": 1,
-            "unknown": 1, "unprobed": 0}.get(reaches, 0)
 
 
 if __name__ == "__main__":
