@@ -11,6 +11,7 @@ import { DIVISION_COLOR, STATUS_JA, count, yen } from '@/lib/pipeline'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { FiscalYearSelect } from '@/components/fiscal-year-select'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
@@ -151,20 +152,14 @@ function Browser({
           <ToggleGroupItem value="revenue">歳入</ToggleGroupItem>
         </ToggleGroup>
         {years.length > 1 && (
-          <Select
-            items={years.map((y) => ({ value: y, label: `${y}年度` }))}
-            value={activeYear}
-            onValueChange={(v) => { setYear(v as string); setPath([]) }}
-          >
-            <SelectTrigger size="sm" aria-label="年度"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                {years.map((y) => (
-                  <SelectItem key={y} value={y}>{y}年度</SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          // 年度は原典の列（fiscal_year）から文字列で来る。FiscalYearSelect は
+          // number で扱うので、境界でだけ変換する（allowAll を渡さないので null は返らない）
+          <FiscalYearSelect
+            years={years.map(Number)}
+            value={activeYear === null ? null : Number(activeYear)}
+            onChange={(y) => { setYear(y === null ? null : String(y)); setPath([]) }}
+            size="sm"
+          />
         )}
         {phases.length > 1 && (
           <Select

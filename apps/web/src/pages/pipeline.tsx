@@ -5,6 +5,7 @@
  * そのまま出す。画面側でも集計すると、同じ数字が2通りに計算されて、いずれ食い違う。
  */
 import { useEffect, useMemo, useState } from "react"
+import { FiscalYearSelect } from "@/components/fiscal-year-select"
 import { JurisdictionSelect } from "@/components/jurisdiction-select"
 import { Layout } from "@/components/layout"
 import { NotCollectedPage } from "@/components/not-collected-page"
@@ -22,14 +23,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   Tooltip,
@@ -47,12 +40,6 @@ import {
   type DetailData,
   type PipelineData,
 } from "@/lib/pipeline"
-
-/**
- * 年度セレクタの「全年度」。**年度の値と衝突しない文字列**にする
- * （Select は値を文字列で持つので、年度と同じ空間に入る）
- */
-const ALL_YEARS = "all"
 
 type Props = {
   /** `/pipeline/<団体コード>/` の団体コード。コードなしの `/pipeline/` では null */
@@ -273,28 +260,13 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
                 置き場と見た目は分析画面の年度セレクタに揃える — 同じ操作が画面ごとに違う形で
                 現れると、どちらかが別の意味だと読まれる */}
             {m.fiscalYears.length > 1 ? (
-              <Select
-                items={[
-                  { value: ALL_YEARS, label: "全年度" },
-                  ...m.fiscalYears.map((y) => ({ value: String(y), label: `${y}年度` })),
-                ]}
-                value={fiscalYear === null ? ALL_YEARS : String(fiscalYear)}
-                onValueChange={(v) => setFiscalYear(v === ALL_YEARS ? null : Number(v))}
-              >
-                <SelectTrigger aria-label="年度" className="w-32">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value={ALL_YEARS}>全年度</SelectItem>
-                    {m.fiscalYears.map((y) => (
-                      <SelectItem key={y} value={String(y)}>
-                        {y}年度
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+              <FiscalYearSelect
+                years={m.fiscalYears}
+                value={fiscalYear}
+                onChange={setFiscalYear}
+                allowAll
+                className="w-32"
+              />
             ) : (
               <span className="truncate text-sm text-muted-foreground">
                 {m.fiscalYears[0]}年度
