@@ -25,9 +25,11 @@ export type Contract = typeof contract
 export {
   caveatSchema,
   jurisdictionSchema,
+  listJurisdictionsOutput,
   type Jurisdiction,
 } from './jurisdictions'
 export {
+  aggregateBudgetsInput,
   aggregateBudgetsOutput,
   aggregateOmittedCode,
   aggregateWarningCode,
@@ -44,6 +46,7 @@ export {
   hierarchyParentPathString,
   judgmentKind,
   JURISDICTION_YEARS_GROUPINGS,
+  listBudgetsOutput,
   namedCoverageCode,
   nameFieldEnum,
   parseBudgetId,

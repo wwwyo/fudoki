@@ -5,8 +5,8 @@
 import { implement } from '@orpc/server'
 import { type Env, type JurisdictionsFile, paths, readJsonAsset } from '../assets'
 import { contract, type Budget, type Jurisdiction } from '../contract'
-import { FilterSyntaxError, parseFilter, type ParsedFilter } from '../lib/filter'
-import { decodePageToken, type PageToken } from '../lib/token'
+import { FilterSyntaxError, fingerprintOf, parseFilter, type ParsedFilter } from '../lib/filter'
+import { decodePageToken, encodePageToken, type PageToken } from '../lib/token'
 
 // 出力検証の無効化（decision.log 10 の対処順の2番目）は oRPC v1 に口が無く、
 // v2 の implement(contract, { disableOutputValidation: true }) を待つ。
@@ -101,4 +101,34 @@ export function scanPage<T>(
     }
   }
   return { items, nextOffset: null }
+}
+
+/**
+ * 単一 chunk の集計アセット（budget / cross / hierarchy / years）から1ページを切り出す。
+ * resolvePageSize → fingerprint → verifyToken → checkOffsetInRange → scanPage → encodePageToken
+ * の並びは4箇所（procedure/budgets.ts の各 *Aggregate 関数）で同一だったので、ここへまとめる。
+ * fingerprint に含める項目は呼び出し元ごとに違う（hierarchy は hierarchyParent を足す）ので、
+ * 組み立て済みの Record を受け取る。
+ */
+export function pageAggregateCells<T>(
+  meta: Meta,
+  assetPath: string,
+  cells: T[],
+  pageSize: number | undefined,
+  pageToken: string | undefined,
+  fingerprintFields: Record<string, unknown>,
+  errors: Errors,
+): { items: T[]; nextPageToken: string | undefined } {
+  const resolvedPageSize = resolvePageSize(pageSize)
+  const fingerprint = fingerprintOf(fingerprintFields)
+  const family = assetPath
+  const token = pageToken === undefined ? null : verifyToken(pageToken, { revision: meta.revision, family, fingerprint }, errors)
+  const offset = token?.off ?? 0
+  checkOffsetInRange(offset, cells.length, errors)
+  const { items, nextOffset } = scanPage(cells, offset, resolvedPageSize, () => true)
+  let nextPageToken: string | undefined
+  if (nextOffset !== null) {
+    nextPageToken = encodePageToken({ v: 1, rev: meta.revision, family, chunk: 0, off: nextOffset, fh: fingerprint })
+  }
+  return { items, nextPageToken }
 }

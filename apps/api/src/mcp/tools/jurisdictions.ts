@@ -2,15 +2,9 @@
  * list_jurisdictions tool。`listJurisdictions` procedure をそのまま呼ぶだけ。
  */
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
-import * as z from 'zod'
-import { jurisdictionSchema } from '../../contract'
+import { listJurisdictionsOutput } from '../../contract'
 import type { ApiClient } from '../client'
-import { fromApiError, ok } from '../result'
-
-const outputSchema = z.object({
-  jurisdictions: z.array(jurisdictionSchema),
-  revision: z.string().describe('由来する配布物の revision（git commit）'),
-})
+import { runTool } from '../result'
 
 export function registerListJurisdictions(server: McpServer, client: ApiClient): void {
   server.registerTool(
@@ -24,16 +18,9 @@ export function registerListJurisdictions(server: McpServer, client: ApiClient):
         '扱えるかは、この tool を呼んで確かめること）。各団体の caveats に、予算段階や会計範囲など' +
         '数値の意味を変える注意事項が入っている。団体ごとに実際に収録している年度は list_budgets で' +
         '確認すること（このリストからは分からない）。',
-      outputSchema,
+      outputSchema: listJurisdictionsOutput,
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
-    async () => {
-      try {
-        const result = await client.listJurisdictions()
-        return ok(result)
-      } catch (error) {
-        return fromApiError(error)
-      }
-    },
+    async () => runTool(() => client.listJurisdictions()),
   )
 }

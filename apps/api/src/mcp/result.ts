@@ -26,6 +26,18 @@ function toolError(message: string): CallToolResult {
  * 代替の問い方（= errors.BAD_REQUEST の message が既に持っている）をそのまま乗せる。
  * ORPCError 以外（サーバのバグ）は握りつぶさず再 throw する。
  */
+/**
+ * 5つの tool ハンドラが同じ形で書いていた try/catch（成功は ok、失敗は fromApiError）をまとめる。
+ * ハンドラ側は router 呼び出しの組み立てだけを持つ。
+ */
+export async function runTool(fn: () => Promise<Record<string, unknown>>): Promise<CallToolResult> {
+  try {
+    return ok(await fn())
+  } catch (error) {
+    return fromApiError(error)
+  }
+}
+
 export function fromApiError(error: unknown): CallToolResult {
   if (error instanceof ORPCError) {
     const data = error.data as

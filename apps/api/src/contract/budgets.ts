@@ -206,6 +206,11 @@ export const budgetSchema = z.object({
 })
 export type Budget = z.infer<typeof budgetSchema>
 
+export const listBudgetsOutput = z.object({
+  budgets: z.array(budgetSchema).describe('id の昇順'),
+  revision: z.string().describe('由来する配布物の revision（git commit）'),
+})
+
 export const listBudgets = base
   .route({
     method: 'GET',
@@ -225,12 +230,7 @@ export const listBudgets = base
         .describe('AIP-160 の部分集合（`=` と `AND`）。使えるフィールドは jurisdiction / fiscalYear'),
     }),
   )
-  .output(
-    z.object({
-      budgets: z.array(budgetSchema).describe('id の昇順'),
-      revision: z.string().describe('由来する配布物の revision（git commit）'),
-    }),
-  )
+  .output(listBudgetsOutput)
 
 export const getBudget = base
   .route({

@@ -12,7 +12,7 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { searchBudgetLinesInput, searchBudgetLinesOutput } from '../../contract/budgets'
 import type { ApiClient } from '../client'
-import { fromApiError, ok } from '../result'
+import { runTool } from '../result'
 
 export function registerSearchBudgetLines(server: McpServer, client: ApiClient): void {
   server.registerTool(
@@ -40,9 +40,9 @@ export function registerSearchBudgetLines(server: McpServer, client: ApiClient):
       outputSchema: searchBudgetLinesOutput,
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
-    async (input) => {
-      try {
-        const result = await client.searchBudgetLines({
+    async (input) =>
+      runTool(() =>
+        client.searchBudgetLines({
           query: input.query,
           filter: input.filter,
           direction: input.direction,
@@ -52,11 +52,7 @@ export function registerSearchBudgetLines(server: McpServer, client: ApiClient):
           level: input.level,
           pageSize: input.pageSize,
           pageToken: input.pageToken,
-        })
-        return ok(result)
-      } catch (error) {
-        return fromApiError(error)
-      }
-    },
+        }),
+      ),
   )
 }

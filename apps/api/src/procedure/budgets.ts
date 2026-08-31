@@ -46,6 +46,7 @@ import { encodePageToken } from '../lib/token'
 import {
   checkOffsetInRange,
   os,
+  pageAggregateCells,
   parseFilterOr400,
   readMeta,
   resolvePageSize,
@@ -345,6 +346,15 @@ function findPhaseLabel(meta: Meta, fiscalYear: string, direction: 'expenditure'
  * だけ、事業名の根拠になった judgment 出典も結ぶ ── 実際に応答へ含めた判断に対応する出典だけを
  * 結ぶという設計に合わせ、使っていない判断の出典を混ぜない。
  */
+/**
+ * COFOG 分類の provenance.modifications 文言。呼び出し元によって「自治体の公表資料」と
+ * 「各自治体の公表資料」の2通りが実際に使われている（表記の割れ。統一はしない — 呼び出し元が
+ * どちらを出しているかは各サイトのまま保つ）。
+ */
+function cofogModifications(sourceLabel: '自治体の公表資料' | '各自治体の公表資料'): string {
+  return `COFOG（Classification of the Functions of Government）別の分類は fudoki が行った判断で、原典（${sourceLabel}）には無い`
+}
+
 function provenanceSourcesFor(
   meta: Meta,
   jurisdictionIds: readonly string[],
@@ -502,23 +512,15 @@ async function singleBudgetAggregate(
     throw new Error(`aggregate asset revision mismatch (meta=${meta.revision}, asset=${asset.revision}) for ${assetPath}`)
   }
 
-  const pageSize = resolvePageSize(input.pageSize)
-  const fingerprint = fingerprintOf({
-    filter: input.filter,
-    direction: input.direction,
-    phase: input.phase,
-    fund: input.fund,
-    groupBy: groupByFingerprintValue(input.groupBy),
-  })
-  const family = assetPath
-  const token = input.pageToken === undefined ? null : verifyToken(input.pageToken, { revision: meta.revision, family, fingerprint }, errors)
-  const offset = token?.off ?? 0
-  checkOffsetInRange(offset, asset.cells.length, errors)
-  const { items, nextOffset } = scanPage(asset.cells, offset, pageSize, () => true)
-  let nextPageToken: string | undefined
-  if (nextOffset !== null) {
-    nextPageToken = encodePageToken({ v: 1, rev: meta.revision, family, chunk: 0, off: nextOffset, fh: fingerprint })
-  }
+  const { items, nextPageToken } = pageAggregateCells(
+    meta,
+    assetPath,
+    asset.cells,
+    input.pageSize,
+    input.pageToken,
+    { filter: input.filter, direction: input.direction, phase: input.phase, fund: input.fund, groupBy: groupByFingerprintValue(input.groupBy) },
+    errors,
+  )
 
   const cofogDimension = input.groupBy[0]!
   const cells = items.map((c) => ({
@@ -566,7 +568,7 @@ async function singleBudgetAggregate(
       sources,
       byBudget: { [budget.name]: byJurisdiction.get(jurisdictionId) ?? [] },
       attribution: `${jurisdiction.label}の予算（${jurisdiction.sources.map((s) => s.title).join('; ')}）を出典とする`,
-      modifications: 'COFOG（Classification of the Functions of Government）別の分類は fudoki が行った判断で、原典（自治体の公表資料）には無い',
+      modifications: cofogModifications('自治体の公表資料'),
     },
     revision: meta.revision,
     nextPageToken,
@@ -621,23 +623,15 @@ async function crossJurisdictionAggregate(
     throw new Error(`aggregate asset revision mismatch (meta=${meta.revision}, asset=${asset.revision}) for ${assetPath}`)
   }
 
-  const pageSize = resolvePageSize(input.pageSize)
-  const fingerprint = fingerprintOf({
-    filter: input.filter,
-    direction: input.direction,
-    phase: input.phase,
-    fund: input.fund,
-    groupBy: groupByFingerprintValue(input.groupBy),
-  })
-  const family = assetPath
-  const token = input.pageToken === undefined ? null : verifyToken(input.pageToken, { revision: meta.revision, family, fingerprint }, errors)
-  const offset = token?.off ?? 0
-  checkOffsetInRange(offset, asset.cells.length, errors)
-  const { items, nextOffset } = scanPage(asset.cells, offset, pageSize, () => true)
-  let nextPageToken: string | undefined
-  if (nextOffset !== null) {
-    nextPageToken = encodePageToken({ v: 1, rev: meta.revision, family, chunk: 0, off: nextOffset, fh: fingerprint })
-  }
+  const { items, nextPageToken } = pageAggregateCells(
+    meta,
+    assetPath,
+    asset.cells,
+    input.pageSize,
+    input.pageToken,
+    { filter: input.filter, direction: input.direction, phase: input.phase, fund: input.fund, groupBy: groupByFingerprintValue(input.groupBy) },
+    errors,
+  )
 
   const cofogDimension = input.groupBy.find((g) => g !== 'jurisdiction')!
   const cells = items.map((c) => ({
@@ -697,7 +691,7 @@ async function crossJurisdictionAggregate(
       sources,
       byBudget,
       attribution: `${attributionParts.join('、')}の予算を出典とする`,
-      modifications: 'COFOG（Classification of the Functions of Government）別の分類は fudoki が行った判断で、原典（各自治体の公表資料）には無い',
+      modifications: cofogModifications('各自治体の公表資料'),
     },
     revision: meta.revision,
     nextPageToken,
@@ -759,24 +753,22 @@ async function hierarchyAggregate(
     throw new Error(`aggregate asset revision mismatch (meta=${meta.revision}, asset=${asset.revision}) for ${assetPath}`)
   }
 
-  const pageSize = resolvePageSize(input.pageSize)
-  const fingerprint = fingerprintOf({
-    filter: input.filter,
-    direction: input.direction,
-    phase: input.phase,
-    fund: input.fund,
-    groupBy: groupByFingerprintValue(input.groupBy),
-    hierarchyParent: input.hierarchyParent ?? '',
-  })
-  const family = assetPath
-  const token = input.pageToken === undefined ? null : verifyToken(input.pageToken, { revision: meta.revision, family, fingerprint }, errors)
-  const offset = token?.off ?? 0
-  checkOffsetInRange(offset, asset.cells.length, errors)
-  const { items, nextOffset } = scanPage(asset.cells, offset, pageSize, () => true)
-  let nextPageToken: string | undefined
-  if (nextOffset !== null) {
-    nextPageToken = encodePageToken({ v: 1, rev: meta.revision, family, chunk: 0, off: nextOffset, fh: fingerprint })
-  }
+  const { items, nextPageToken } = pageAggregateCells(
+    meta,
+    assetPath,
+    asset.cells,
+    input.pageSize,
+    input.pageToken,
+    {
+      filter: input.filter,
+      direction: input.direction,
+      phase: input.phase,
+      fund: input.fund,
+      groupBy: groupByFingerprintValue(input.groupBy),
+      hierarchyParent: input.hierarchyParent ?? '',
+    },
+    errors,
+  )
 
   const cells = includesCofog
     ? (items as AggHierarchyCofogAsset['cells']).map((c) => ({
@@ -824,9 +816,7 @@ async function hierarchyAggregate(
       sources,
       byBudget: { [budget.name]: byJurisdiction.get(jurisdictionId) ?? [] },
       attribution: `${jurisdiction.label}の予算（${jurisdiction.sources.map((s) => s.title).join('; ')}）を出典とする`,
-      modifications: includesCofog
-        ? 'COFOG（Classification of the Functions of Government）別の分類は fudoki が行った判断で、原典（自治体の公表資料）には無い'
-        : '款・項・目の階層は原典のとおりで、fudoki の判断は加えていない',
+      modifications: includesCofog ? cofogModifications('自治体の公表資料') : '款・項・目の階層は原典のとおりで、fudoki の判断は加えていない',
     },
     revision: meta.revision,
     nextPageToken,
@@ -908,23 +898,15 @@ async function jurisdictionYearsAggregate(
     throw new Error(`aggregate asset revision mismatch (meta=${meta.revision}, asset=${asset.revision}) for ${assetPath}`)
   }
 
-  const pageSize = resolvePageSize(input.pageSize)
-  const fingerprint = fingerprintOf({
-    filter: input.filter,
-    direction: input.direction,
-    phase: input.phase,
-    fund: input.fund,
-    groupBy: groupByFingerprintValue(input.groupBy),
-  })
-  const family = assetPath
-  const token = input.pageToken === undefined ? null : verifyToken(input.pageToken, { revision: meta.revision, family, fingerprint }, errors)
-  const offset = token?.off ?? 0
-  checkOffsetInRange(offset, asset.cells.length, errors)
-  const { items, nextOffset } = scanPage(asset.cells, offset, pageSize, () => true)
-  let nextPageToken: string | undefined
-  if (nextOffset !== null) {
-    nextPageToken = encodePageToken({ v: 1, rev: meta.revision, family, chunk: 0, off: nextOffset, fh: fingerprint })
-  }
+  const { items, nextPageToken } = pageAggregateCells(
+    meta,
+    assetPath,
+    asset.cells,
+    input.pageSize,
+    input.pageToken,
+    { filter: input.filter, direction: input.direction, phase: input.phase, fund: input.fund, groupBy: groupByFingerprintValue(input.groupBy) },
+    errors,
+  )
 
   const cells = includesCofog
     ? (items as AggYearsCofogDivisionAsset['cells']).map((c) => ({
@@ -997,9 +979,7 @@ async function jurisdictionYearsAggregate(
       sources,
       byBudget: Object.fromEntries(budgetsIncluded.map((name) => [name, byJurisdiction.get(jurisdictionId) ?? []])),
       attribution: `${jurisdiction.label}の予算（${jurisdiction.sources.map((s) => s.title).join('; ')}）を出典とする`,
-      modifications: includesCofog
-        ? 'COFOG（Classification of the Functions of Government）別の分類は fudoki が行った判断で、原典（自治体の公表資料）には無い'
-        : '',
+      modifications: includesCofog ? cofogModifications('自治体の公表資料') : '',
     },
     revision: meta.revision,
     nextPageToken,

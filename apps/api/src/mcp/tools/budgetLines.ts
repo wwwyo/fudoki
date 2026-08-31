@@ -10,7 +10,7 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { getBudgetLinesInput, getBudgetLinesOutput } from '../../contract'
 import type { ApiClient } from '../client'
-import { fromApiError, ok } from '../result'
+import { runTool } from '../result'
 
 export function registerGetBudgetLines(server: McpServer, client: ApiClient): void {
   server.registerTool(
@@ -36,19 +36,15 @@ export function registerGetBudgetLines(server: McpServer, client: ApiClient): vo
       outputSchema: getBudgetLinesOutput,
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
-    async (input) => {
-      try {
-        const result = await client.getBudgetLines({
+    async (input) =>
+      runTool(() =>
+        client.getBudgetLines({
           budget: input.budget,
           view: input.view,
           filter: input.filter,
           pageSize: input.pageSize,
           pageToken: input.pageToken,
-        })
-        return ok(result)
-      } catch (error) {
-        return fromApiError(error)
-      }
-    },
+        }),
+      ),
   )
 }

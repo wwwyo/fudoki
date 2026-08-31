@@ -4,9 +4,9 @@
  */
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import * as z from 'zod'
-import { budgetSchema } from '../../contract'
+import { listBudgetsOutput } from '../../contract'
 import type { ApiClient } from '../client'
-import { fromApiError, ok } from '../result'
+import { runTool } from '../result'
 
 const inputSchema = z.object({
   filter: z
@@ -16,11 +16,6 @@ const inputSchema = z.object({
       'AIP-160 の部分集合（`=` と `AND` のみ）。使えるフィールドは jurisdiction / fiscalYear。' +
         '例: `jurisdiction = "<団体コード>"`、`jurisdiction = "<団体コード>" AND fiscalYear = "<年度>"`（実在する値は list_jurisdictions / list_budgets の応答で確認する）',
     ),
-})
-
-const outputSchema = z.object({
-  budgets: z.array(budgetSchema).describe('id の昇順'),
-  revision: z.string().describe('由来する配布物の revision（git commit）'),
 })
 
 export function registerListBudgets(server: McpServer, client: ApiClient): void {
@@ -39,16 +34,9 @@ export function registerListBudgets(server: McpServer, client: ApiClient): void 
         '各 budget の scopes に、direction ごとの会計範囲・COFOG 到達度・名称の収録状況が入っている。' +
         '明細は /budgets/{id}/budgetLines に相当する get_budget_lines tool から取得する。',
       inputSchema,
-      outputSchema,
+      outputSchema: listBudgetsOutput,
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
-    async (input) => {
-      try {
-        const result = await client.listBudgets({ filter: input.filter })
-        return ok(result)
-      } catch (error) {
-        return fromApiError(error)
-      }
-    },
+    async (input) => runTool(() => client.listBudgets({ filter: input.filter })),
   )
 }

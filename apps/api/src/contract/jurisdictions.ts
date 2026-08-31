@@ -58,6 +58,11 @@ export const jurisdictionSchema = z.object({
 })
 export type Jurisdiction = z.infer<typeof jurisdictionSchema>
 
+export const listJurisdictionsOutput = z.object({
+  jurisdictions: z.array(jurisdictionSchema),
+  revision: z.string().describe('由来する配布物の revision（git commit）'),
+})
+
 export const listJurisdictions = base
   .route({
     method: 'GET',
@@ -68,12 +73,7 @@ export const listJurisdictions = base
       '配布物（datapackage.json）への参照を返す。' +
       '収録している予算（年度）と分類率は /budgets?filter=jurisdiction%20=%20"{id}" から取得する（カバレッジは budgets の List から導出する）。',
   })
-  .output(
-    z.object({
-      jurisdictions: z.array(jurisdictionSchema),
-      revision: z.string().describe('由来する配布物の revision（git commit）'),
-    }),
-  )
+  .output(listJurisdictionsOutput)
 
 export const getJurisdiction = base
   .route({
