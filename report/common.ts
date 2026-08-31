@@ -60,7 +60,8 @@ export type Node = {
 
 /**
  * ノードの行数を、見ている団体と年度で引く。**足し算はしない**（生成側が数え終えている）。
- * 生成側と画面が同じ関数を通るので、引き方が2通りに分かれない。
+ * 集計（グルーピング・合算）は `lineage.ts` の1箇所で終わらせてあり、
+ * 画面はここでその結果から選ぶだけなので、集計のやり方が2通りに分かれない。
  *
  * `scopedToYear` が false なのは、年度を選んでいないときと、
  * そのノードが年度を持たない（規則表）ときの両方。画面はこれを見て
@@ -119,14 +120,25 @@ export type StatementExtract = {
   total: number
 }
 
+/** 歳入の科目名称の抽出器（`extract_revenue_accounts.py`）の要約 */
+export type RevenueAccountsExtract = {
+  kind: 'revenue-accounts'
+  moku: number
+  named: number
+}
+
 /**
  * どちらの抽出器の要約かを、証跡が名乗る抽出器のパスから決める。
  * ⚠️ **形（どのキーがあるか）で判定しない。** 項目が増えたときに黙って別の枝へ落ちる。
  */
-export function extractedKindOf(p: Provenance): 'project-names' | 'statement' | null {
+export function extractedKindOf(p: Provenance): 'project-names' | 'statement' | 'revenue-accounts' | null {
   if (!p.extracted) return null
   if (p.extractor?.includes('extract_statement')) return 'statement'
-  return 'project-names'
+  if (p.extractor?.includes('extract_projects')) return 'project-names'
+  if (p.extractor?.includes('extract_revenue_accounts')) return 'revenue-accounts'
+  // ⚠️ 既定で project-names に落とさない。抽出器が増えた日に黙って別の枝へ入り、
+  // その要約に無いフィールドを読んで NaN になる（revenue-accounts で実際に起きた）。
+  throw new Error(`未知の抽出器: ${p.extractor}（extractedKindOf に足すこと）`)
 }
 
 /** 取得の証跡。原典1リソースにつき1件 */
@@ -158,7 +170,7 @@ export type Provenance = {
    * ⚠️ **判別子は証跡に無い。** 抽出器が書いた `extractor` のパスから読む側が導く
    * （`extractedKindOf`）。証跡に持たせると、既に commit 済みの取得物を作り直す必要が出る。
    */
-  extracted?: ProjectNamesExtract | StatementExtract
+  extracted?: ProjectNamesExtract | StatementExtract | RevenueAccountsExtract
 }
 
 
