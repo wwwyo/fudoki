@@ -119,7 +119,7 @@ function introducesJudgment(n: DbtNode, stage: Stage['id']): boolean {
  * 狛江市の原典ノードに三鷹市の行数が出る（実際にそうなっていた）。
  * ソースの識別子（`source.fudoki.raw_132195.expenditure`）から団体コードを取る。
  */
-function sourceRows(id: string, name: string, provenance: Provenance[]): number | null {
+function sourceRows(id: string, name: string, provenance: Provenance[]): Counted | null {
   const code = /\.raw_(\d{6})/.exec(id)?.[1]
   if (!code) throw new Error(`ソース ${id} の名前から団体コードを取れない（raw_<団体コード> の形にすること）`)
   const mine = provenance.filter((p) => p.jurisdiction_code === code)
@@ -129,11 +129,68 @@ function sourceRows(id: string, name: string, provenance: Provenance[]): number 
   // ⚠️ **要約の形は抽出器で違う**ので、どちらの抽出器かを `extractedKindOf` で判別する
   // （形で見分けると、項目が増えたときに黙って別の枝へ落ちる）。
   const byDirection = mine.filter((p) => p.direction === name)
-  if (byDirection.length > 0) return byDirection.reduce((s, p) => s + p.rows, 0)
+  if (byDirection.length > 0) return countByYear(byDirection.map((p) => [p.fiscal_year, p.rows]))
   const extracted = mine.filter((p) => extractedKindOf(p) === 'project-names')
   return extracted.length === 0
     ? null
-    : extracted.reduce((s, p) => s + (p.extracted as ProjectNamesExtract).projects, 0)
+    : countByYear(extracted.map((p) => [p.fiscal_year, (p.extracted as ProjectNamesExtract).projects]))
+}
+
+/** 年度ごとの行数と、その合計。**合計は生成側で1回だけ足す**（画面では足さない） */
+type Counted = { total: number; byYear: Record<string, number> }
+
+function countByYear(pairs: [number, number][]): Counted {
+  const byYear: Record<string, number> = {}
+  for (const [year, rows] of pairs) byYear[String(year)] = (byYear[String(year)] ?? 0) + rows
+  return { total: pairs.reduce((s, [, rows]) => s + rows, 0), byYear }
+}
+
+/** ノード1つぶんの行数。`total` は全団体・全年度、`byJurisdiction` は団体で切ったもの */
+type NodeCount = { total: number; byJurisdiction: Node['rowsByJurisdiction'] }
+
+/** 1団体しか持たないノード（原典・取得元）を、団体で引ける形へ */
+function ownCount(c: Counted | null, code: string): NodeCount | null {
+  return c === null ? null : { total: c.total, byJurisdiction: { [code]: { total: c.total, byYear: c.byYear } } }
+}
+
+/**
+ * 問い合わせの結果を、団体 × 年度の行数へ畳む。
+ *
+ * ⚠️ **団体を名乗らない表を団体で切らない。** 規則表（`account_master` /
+ * `cofog_rules`）は団体にも年度にも依らないので、切ると「その団体の分」という
+ * 存在しない概念を画面に出すことになる。null を返して合計だけを見せる。
+ */
+function tally(rows: CountRow[], nameCode: string | null): NodeCount | null {
+  if (rows.length === 0) return null
+  const total = rows.reduce((s, r) => s + r.n_rows, 0)
+  const { has_jurisdiction: hasJurisdiction, has_year: hasYear } = rows[0]!
+  if (!hasJurisdiction && nameCode === null) return { total, byJurisdiction: null }
+  const byJurisdiction: NonNullable<Node['rowsByJurisdiction']> = {}
+  for (const r of rows) {
+    // 列はあるが値が無い行は、どの団体のページにも出しようがない（合計 `total` には残る）
+    const code = hasJurisdiction ? r.jurisdiction_code : nameCode
+    if (code === null) continue
+    const slot = (byJurisdiction[code] ??= { total: 0, byYear: hasYear ? {} : null })
+    slot.total += r.n_rows
+    if (slot.byYear !== null && r.fiscal_year !== null)
+      slot.byYear[r.fiscal_year] = (slot.byYear[r.fiscal_year] ?? 0) + r.n_rows
+  }
+  return { total, byJurisdiction }
+}
+
+/** ノードの団体。**id か名前のどちらかが名乗る**（`raw_132241` / `pkg_132241__expenditure`） */
+function jurisdictionOf(id: string, name: string): string | null {
+  return /\.raw_(\d{6})/.exec(id)?.[1] ?? /_(\d{6})__/.exec(name)?.[1] ?? null
+}
+
+/** 行数の問い合わせの1行。**列の有無まで返す** — 無いことと NULL であることは違う */
+type CountRow = {
+  node: number
+  has_year: boolean
+  has_jurisdiction: boolean
+  fiscal_year: string | null
+  jurisdiction_code: string | null
+  n_rows: number
 }
 
 export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
@@ -144,37 +201,46 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
   // **行数は1クエリでまとめて数える。** ノードごとに投げると DuckDB CLI の
   // プロセス起動が13回になり、その大半が同じ warehouse を開き直すのに消える。
   // 原典（source）は DuckDB にテーブルとして存在しないので証跡から取る。
+  //
+  // ⚠️ **どのモデルが年度・団体の列を持つかをここで宣言しない。** core と staging は
+  // 両方持ち、package は団体をモデル名で名乗って列を持たず、規則表はどちらも持たない。
+  // 宣言すると、モデルに列を足した日に古い数え方が黙って残る。行を JSON にすれば
+  // **実物が名乗る**（`json_keys` で列の有無、`json_extract_string` で値）。
   const counted = models.filter(([, n]) => n.resource_type !== 'source')
-  const rowCounts = new Map<string, number>(
-    counted.length === 0 ? [] :
-      Object.entries(
-        q<Record<string, number>>(
-          `select ${counted
-            .map(([, n], i) => {
-              const loc = n.config?.location
-              // package 段は外部ファイルとして書き出される。DuckDB のビューは dbt の
-              // 作業ディレクトリ基準の相対パスなので、実ファイルを直接数える。
-              const from = loc
-                ? `read_csv('${join(ROOT, 'dbt', loc)}', header = true, all_varchar = true)`
-                : `"${n.name}"`
-              return `(select count(*) from ${from}) n${i}`
-            })
-            .join(', ')}`,
-          counted.map((_, i) => `n${i}`),
-        )[0] ?? {},
-      ).map(([k, v]) => [counted[Number(k.slice(1))]![0], v]),
+  const counts = counted.length === 0 ? [] : q<CountRow>(
+    counted
+      .map(([, n], i) => {
+        const loc = n.config?.location
+        // package 段は外部ファイルとして書き出される。DuckDB のビューは dbt の
+        // 作業ディレクトリ基準の相対パスなので、実ファイルを直接数える。
+        const from = loc
+          ? `read_csv('${join(ROOT, 'dbt', loc)}', header = true, all_varchar = true)`
+          : `"${n.name}"`
+        return `select ${i} as node,
+          list_contains(json_keys(r), 'fiscal_year') as has_year,
+          list_contains(json_keys(r), 'jurisdiction_code') as has_jurisdiction,
+          json_extract_string(r, '$.fiscal_year') as fiscal_year,
+          json_extract_string(r, '$.jurisdiction_code') as jurisdiction_code,
+          count(*) as n_rows
+        from (select to_json(t) as r from ${from} t) group by 1, 2, 3, 4, 5`
+      })
+      .join('\nunion all\n'),
+    ['node', 'n_rows'],
   )
 
   const nodes: Node[] = models.map(([id, n]) => {
     const loc = n.config?.location
-    const rows = n.resource_type === 'source'
-      ? sourceRows(id, n.name, provenance)
-      : rowCounts.get(id) ?? null
+    const jurisdictionCode = jurisdictionOf(id, n.name)
+    const count = n.resource_type === 'source'
+      ? ownCount(sourceRows(id, n.name, provenance), jurisdictionCode!)
+      : tally(counts.filter((c) => counted[c.node]?.[0] === id), jurisdictionCode)
     const stage = stageOf(n)
     return {
-      id, label: n.name, kind: n.resource_type as Node['kind'], stage, rows,
+      id, label: n.name, kind: n.resource_type as Node['kind'], stage,
+      rows: count?.total ?? null,
+      rowsByJurisdiction: count?.byJurisdiction ?? null,
       // 団体の帰属はここで1回だけ id / 名前から決める。画面はこのフィールドで絞る
-      jurisdictionCode: /\.raw_(\d{6})/.exec(id)?.[1] ?? /_(\d{6})__/.exec(n.name)?.[1] ?? null,
+      jurisdictionCode,
       description: (n.description ?? '').trim(),
       introducesJudgment: introducesJudgment(n, stage),
       containsJudgment: false, // 下で上流から伝播させる
@@ -199,10 +265,13 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
     const label = years.length > 1
       ? `${base.replace(/（\d{4}）$/, '').trim()}（${years[0]}〜${years.at(-1)}）`
       : base
+    // 証跡は年度ごとに1件あるので、取得元も年度で切れる（切れないのは規則表だけ）
+    const origin = countByYear(ps.map((p) => [p.fiscal_year, p.rows]))
     nodes.push({
       id: `${src.id}.origin`, label, kind: 'origin', stage: 'origin',
       jurisdictionCode: code ?? null,
-      rows: ps.reduce((s, p) => s + p.rows, 0),
+      rows: origin.total,
+      rowsByJurisdiction: code === undefined ? null : { [code]: { total: origin.total, byYear: origin.byYear } },
       description: `${ps[0]!.request_url}${ps.length > 1 ? `\nほか ${ps.length - 1} リソース` : ''}\n取得: ${ps[0]!.fetched_at}`,
       introducesJudgment: false, containsJudgment: false, artifact: null,
     })

@@ -22,6 +22,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   Tooltip,
@@ -39,6 +47,12 @@ import {
   type DetailData,
   type PipelineData,
 } from "@/lib/pipeline"
+
+/**
+ * 年度セレクタの「全年度」。**年度の値と衝突しない文字列**にする
+ * （Select は値を文字列で持つので、年度と同じ空間に入る）
+ */
+const ALL_YEARS = "all"
 
 type Props = {
   /** `/pipeline/<団体コード>/` の団体コード。コードなしの `/pipeline/` では null */
@@ -64,6 +78,12 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
   // 開いているタブ。**明細の取得はタブを開いた瞬間だけの出来事ではない** —
   // 明細を見ている最中に団体を切り替えても取りに行く必要がある。
   const [tab, setTab] = useState("checks")
+  /**
+   * 図の行数をどの年度で見るか。**既定は全年度（null）** — 収録範囲そのものが
+   * この画面の主張なので、最初に見えるのは全年度の姿でよい（分析画面は最新年度が既定だが、
+   * あちらは「いくら使ったか」を見る場所で、合算した金額に意味が無い）。
+   */
+  const [fiscalYear, setFiscalYear] = useState<number | null>(null)
 
   useEffect(() => {
     loadPipeline()
@@ -117,8 +137,9 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
   useEffect(() => {
     if (!current) return
     const { jurisdictionName: name, fiscalYears, phase } = current.report.meta
-    document.title = `${name} ${fiscalYears.join("・")}年度 ${phase.label} | fudoki（風土記）`
-  }, [current])
+    const years = fiscalYear === null ? fiscalYears.join("・") : String(fiscalYear)
+    document.title = `${name} ${years}年度 ${phase.label} | fudoki（風土記）`
+  }, [current, fiscalYear])
 
   // 未収録団体は report を持たないので上の effect と分ける。index.html の title
   // 既定値と揃えつつ「未収録」だと分かる文言にする
@@ -248,12 +269,38 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
               />
             ) : // 団体が1つなら切り替える先が無い。名称は見出しが既に言っている
             null}
-            <span className="truncate text-sm text-muted-foreground">
-              {m.fiscalYears.length > 2
-                ? `${m.fiscalYears[0]}〜${m.fiscalYears.at(-1)}年度`
-                : `${m.fiscalYears.join("・")}年度`}{" "}
-              · {m.phase.label}
-            </span>
+            {/* 年度。**切り替える先があるときだけ出す**（1年度の団体は選ばせても何も変わらない）。
+                置き場と見た目は分析画面の年度セレクタに揃える — 同じ操作が画面ごとに違う形で
+                現れると、どちらかが別の意味だと読まれる */}
+            {m.fiscalYears.length > 1 ? (
+              <Select
+                items={[
+                  { value: ALL_YEARS, label: "全年度" },
+                  ...m.fiscalYears.map((y) => ({ value: String(y), label: `${y}年度` })),
+                ]}
+                value={fiscalYear === null ? ALL_YEARS : String(fiscalYear)}
+                onValueChange={(v) => setFiscalYear(v === ALL_YEARS ? null : Number(v))}
+              >
+                <SelectTrigger aria-label="年度" className="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value={ALL_YEARS}>全年度</SelectItem>
+                    {m.fiscalYears.map((y) => (
+                      <SelectItem key={y} value={String(y)}>
+                        {y}年度
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            ) : (
+              <span className="truncate text-sm text-muted-foreground">
+                {m.fiscalYears[0]}年度
+              </span>
+            )}
+            <span className="truncate text-sm text-muted-foreground">{m.phase.label}</span>
             {/* この団体の支出分析（COFOG 別の金額）への導線。パイプラインは検証、分析は数字を見る場所で目的が違う。
                 analysis.tsx 側の「ELT パイプラインを見る」ボタンと対になる導線なので、扱いを揃える。
                 ⚠️ `render` に `<a>` を渡すときは `nativeButton={false}` が要る（Base UI の既定は
@@ -270,6 +317,7 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
           <FlowGraph
             topology={visibleTopology}
             report={report}
+            fiscalYear={fiscalYear}
             onSelectNode={setSelectedNode}
             selected={selectedNode}
           />

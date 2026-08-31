@@ -28,7 +28,21 @@ export type Node = {
    */
   jurisdictionCode: string | null
   stage: Stage['id']
+  /** 全団体・全年度の行数。core は系統1本を共有するので、ここには他団体の行も入る */
   rows: number | null
+  /**
+   * 団体 × 年度で数え直した行数。**画面は選んだ団体・年度でここを引くだけ**にする
+   * （画面で足し込むと、同じ数字が2通りに計算されていずれ食い違う）。
+   *
+   * ⚠️ **`rows` では1団体のページを作れない。** core のモデルは全団体を1つの表に
+   * 持つので、`rows` をそのまま出すと多摩市のページにも三鷹市の行が混ざった数字が出る
+   * （raw・staging・package は団体ごとなので、同じ図の中で数字の意味が変わる）。
+   *
+   * - null: 団体にも年度にも依らない規則表（`rows` がすべて）
+   * - `byYear` が null: その団体では年度に依らない（年度を持たない表）。
+   *   **欠損ではなく「規則は年度に依らない」という事実**なので、0 に潰さない
+   */
+  rowsByJurisdiction: Record<string, { total: number; byYear: Record<string, number> | null }> | null
   description: string
   /** このノード自身が判断を持ち込むか（規則を適用する core のモデルと、判断を宣言した seed） */
   introducesJudgment: boolean
@@ -42,6 +56,29 @@ export type Node = {
   containsJudgment: boolean
   /** 配布物として書き出されるファイル。package 段のノードだけ持つ */
   artifact: string | null
+}
+
+/**
+ * ノードの行数を、見ている団体と年度で引く。**足し算はしない**（生成側が数え終えている）。
+ * 生成側と画面が同じ関数を通るので、引き方が2通りに分かれない。
+ *
+ * `scopedToYear` が false なのは、年度を選んでいないときと、
+ * そのノードが年度を持たない（規則表）ときの両方。画面はこれを見て
+ * 「この数字だけ年度で切れていない」と言える。
+ */
+export function nodeRows(
+  n: Node,
+  jurisdictionCode: string,
+  fiscalYear: number | null,
+): { rows: number | null; scopedToYear: boolean } {
+  if (n.rowsByJurisdiction === null) return { rows: n.rows, scopedToYear: false }
+  // ⚠️ **団体で切れる表に自分の行が無いときに `rows` へ落ちない。**
+  // 落とすと、その団体が1行も持たないモデル（名称を PDF から起こした団体だけが行を持つ
+  // `core_budget_account_names` など）に他団体の合計が出る。無いことは 0 行である
+  const mine = n.rowsByJurisdiction[jurisdictionCode]
+  if (!mine) return { rows: 0, scopedToYear: fiscalYear !== null }
+  if (fiscalYear === null || mine.byYear === null) return { rows: mine.total, scopedToYear: false }
+  return { rows: mine.byYear[String(fiscalYear)] ?? 0, scopedToYear: true }
 }
 
 export type Edge = { from: string; to: string; kind: string }

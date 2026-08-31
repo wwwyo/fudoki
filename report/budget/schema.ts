@@ -9,6 +9,8 @@ import type { ReportEnvelope } from '../common'
 import type { CofogDepth, Direction, Level } from './detail'
 
 export type { Check, Edge, Node, Provenance, Stage, Topology } from '../common'
+// 行数の引き方（団体 × 年度）は生成側と画面で同じ関数を通す
+export { nodeRows } from '../common'
 
 /**
  * COFOG のコード（`04.5.1`）とその分解。**規則が決めた粒度までしか埋まらない。**
