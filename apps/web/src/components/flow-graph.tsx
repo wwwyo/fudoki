@@ -12,13 +12,20 @@
  */
 import { useMemo, useState } from 'react'
 import type { Node, ReportData, Topology } from '@/lib/pipeline'
-import { STAGE_ORDER, checksByNode, yen } from '@/lib/pipeline'
+import { STAGE_ORDER, checksByNode, nodeRows, yen } from '@/lib/pipeline'
 import { Info } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { NodePreviewPanel } from '@/components/node-preview'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
-type Props = { topology: Topology; report: ReportData; onSelectNode?: (id: string | null) => void; selected: string | null }
+type Props = {
+  topology: Topology
+  report: ReportData
+  /** 選んでいる年度。null は全年度。行数はここで切る（**切るのは生成側が数えた値の選択だけ**） */
+  fiscalYear: number | null
+  onSelectNode?: (id: string | null) => void
+  selected: string | null
+}
 
 const COL_W = 210
 const COL_GAP = 78
@@ -44,7 +51,7 @@ function fitLabel(label: string, maxUnits = 31): string {
   return label
 }
 
-export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
+export function FlowGraph({ topology, report, fiscalYear, onSelectNode, selected }: Props) {
   const [hover, setHover] = useState<string | null>(null)
   const checks = checksByNode(report)
 
@@ -162,6 +169,9 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
             const dim = related ? !related.has(node.id) : false
             const focused = active === node.id
             const hint = cs.length > 0 ? `検査 ${cs.length} 件` : ''
+            // 行数は「見ている団体 × 選んだ年度」で引く。core は系統1本を全団体で共有するので、
+            // node.rows をそのまま出すと1団体のページに他団体の行が混ざる
+            const count = nodeRows(node, report.meta.jurisdictionCode, fiscalYear)
             return (
               <g
                 key={node.id}
@@ -202,7 +212,10 @@ export function FlowGraph({ topology, report, onSelectNode, selected }: Props) {
                   {fitLabel(node.label)}
                 </text>
                 <text x={16} y={35} className="fill-muted-foreground text-[11px] tabular-nums">
-                  {node.rows === null ? '—' : yen(node.rows)} 行{KIND_JA[node.kind] && ` · ${KIND_JA[node.kind]}`}
+                  {count.rows === null ? '—' : yen(count.rows)} 行{KIND_JA[node.kind] && ` · ${KIND_JA[node.kind]}`}
+                  {/* 規則表は年度を持たない。**0 にも空にもしない** — 年度に依らないという事実なので、
+                      年度を選んでいるときだけ「この数字は切れていない」と断る */}
+                  {fiscalYear !== null && !count.scopedToYear && ' · 全年度'}
                 </text>
                 {cs.length > 0 && (
                   <>

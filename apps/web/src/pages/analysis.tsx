@@ -10,6 +10,7 @@
  * 生成されるので一致するはずで、ここだけのために別の一覧を持つ理由が無い。
  */
 import { useEffect, useState } from "react"
+import { FiscalYearSelect } from "@/components/fiscal-year-select"
 import { JurisdictionSelect } from "@/components/jurisdiction-select"
 import { Layout } from "@/components/layout"
 import { NotCollectedPage } from "@/components/not-collected-page"
@@ -195,24 +196,8 @@ function CollectedAnalysis({
             <h1 className="text-xl font-semibold">支出分析</h1>
             <AnalysisJurisdictionSelect data={data} current={code} />
             {years.length > 1 ? (
-              <Select
-                items={years.map((y) => ({ value: String(y), label: `${y}年度` }))}
-                value={String(year)}
-                onValueChange={(v) => setYear(Number(v))}
-              >
-                <SelectTrigger aria-label="年度" className="w-28">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {years.map((y) => (
-                      <SelectItem key={y} value={String(y)}>
-                        {y}年度
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+              // allowAll を渡さないので `y` が null になることはない（「全年度」の選択肢が無い）
+              <FiscalYearSelect years={years} value={year} onChange={(y) => setYear(y!)} className="w-28" />
             ) : (
               <span className="text-sm text-muted-foreground">{years[0]}年度</span>
             )}

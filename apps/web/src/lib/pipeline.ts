@@ -9,6 +9,7 @@ import type { CofogCode, ReportData, Topology, Node, Edge, Stage, Check, NodePre
 import type { Direction, DetailRow, DetailTable, Level } from '@fudoki/report/budget/detail'
 
 export type { CofogCode, ReportData, Topology, Node, Edge, Stage, Check, NodePreview }
+export { nodeRows } from '@fudoki/report/budget/schema'
 
 export type { Direction, DetailColumn, DetailRow, DetailTable, Level } from '@fudoki/report/budget/detail'
 export { LEVEL_JA, basisOf, cell, divisionLabelOf, levelCell } from '@fudoki/report/budget/detail'
