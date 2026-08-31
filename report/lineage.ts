@@ -333,15 +333,24 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
   )
   assertNoNullKeyRows(counts, (i) => (columnsOf.get(i) ?? new Set()).has('fiscal_year'), (i) => (columnsOf.get(i) ?? new Set()).has('jurisdiction_code'))
 
+  // ノードごとに `counts` を走査すると ノード数 × 集計行数 になる。索引は先に1回だけ作る
+  const idxOf = new Map(counted.map(([cid], i) => [cid, i]))
+  const countsByNode = new Map<number, CountRow[]>()
+  for (const c of counts) {
+    const bucket = countsByNode.get(c.node)
+    if (bucket) bucket.push(c)
+    else countsByNode.set(c.node, [c])
+  }
+
   const nodes: Node[] = models.map(([id, n]) => {
     const loc = n.config?.location
     const jurisdictionCode = jurisdictionOf(id, n.name)
-    const nodeIdx = counted.findIndex(([cid]) => cid === id)
+    const nodeIdx = idxOf.get(id) ?? -1
     const cols = columnsOf.get(nodeIdx) ?? new Set<string>()
     const count = n.resource_type === 'source'
       ? ownCount(sourceRows(id, n.name, provenance), jurisdictionCode!)
       : tally(
-          counts.filter((c) => c.node === nodeIdx),
+          countsByNode.get(nodeIdx) ?? [],
           cols.has('fiscal_year'),
           cols.has('jurisdiction_code'),
           jurisdictionCode,
