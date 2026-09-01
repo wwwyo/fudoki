@@ -6,7 +6,7 @@ user-invocable: false
 
 # cloudflare-api-ops
 
-`apps/api`（api.fudoki.dev）の運用で得た、コードや AGENTS.md からは読めないハマりどころの正本。設計判断そのもの（why この形にしたか）は `decision.log` が正本なので、ここは重複させない。
+`apps/api`（api.fudoki.dev）の運用で得た、コードや AGENTS.md からは読めないハマりどころの正本。設計判断そのもの（why この形にしたか）は repo 直下の `AGENTS.md` が正本なので、ここは重複させない。
 
 ## Routing table
 
@@ -17,5 +17,5 @@ user-invocable: false
 
 ## 関連 skill
 
-- apps/api の設計判断・トレードオフは repo 直下の `decision.log` が正本（このスキルは重複させない）
+- apps/api の設計判断・トレードオフは repo 直下の `AGENTS.md` が正本（このスキルは重複させない）
 - dbt / duckdb 側のハマりどころは `.agents/skills/dbt-pipeline/`
