@@ -1049,41 +1049,30 @@ function checkAggBudgetAssetMatchesSource(
       },
     ]),
   )
-  const cellsByCode = new Map<string, AggStat>()
-  const unclassifiable = newAggStat()
-  const outOfScope = newAggStat()
-  const notDescended = newAggStat()
   const { retained, eliminated } = consolidationAt(relevantRows, cofogAuxForCheck)
-  const total = newAggStat()
+  const allRows: { count: number; sum: number }[] = []
+  const unclassifiableRows: { count: number; sum: number }[] = []
+  const outOfScopeRows: { count: number; sum: number }[] = []
+  const notDescendedRows: { count: number; sum: number }[] = []
+  const assignedRows: { code: string; count: number; sum: number }[] = []
   for (const row of relevantRows) {
     const id = row['budget_line_id']!
     const cofogRow = byId.get(id) ?? fail(`agg check: no cofog row for ${id}`)
-    const amount = Number(row['value'])
-    total.amount += amount
-    total.lineCount += 1
+    const r = { count: 1, sum: Number(row['value']) }
+    allRows.push(r)
     const status = cofogRow['cofog_status']!
     const code = depth === 'division' ? cofogRow['cofog_division']! : depth === 'group' ? cofogRow['cofog_group']! : cofogRow['cofog_class']!
     const cls = classifyCofogAmount(status, code, `agg check: unexpected cofog_status "${status}" for ${id}`)
-    if (cls.kind === 'unclassifiable') {
-      unclassifiable.amount += amount
-      unclassifiable.lineCount += 1
-      continue
-    }
-    if (cls.kind === 'out-of-scope') {
-      outOfScope.amount += amount
-      outOfScope.lineCount += 1
-      continue
-    }
-    if (cls.kind === 'not-descended') {
-      notDescended.amount += amount
-      notDescended.lineCount += 1
-      continue
-    }
-    const cell = cellsByCode.get(cls.code) ?? newAggStat()
-    cell.amount += amount
-    cell.lineCount += 1
-    cellsByCode.set(cls.code, cell)
+    if (cls.kind === 'unclassifiable') { unclassifiableRows.push(r); continue }
+    if (cls.kind === 'out-of-scope') { outOfScopeRows.push(r); continue }
+    if (cls.kind === 'not-descended') { notDescendedRows.push(r); continue }
+    assignedRows.push({ code: cls.code, ...r })
   }
+  const cellsByCode = new Map(foldBy(assignedRows, (r) => r.code).map((r) => [r.code, toAggStat(r)]))
+  const unclassifiable = toAggStat(sumCounted(unclassifiableRows))
+  const outOfScope = toAggStat(sumCounted(outOfScopeRows))
+  const notDescended = toAggStat(sumCounted(notDescendedRows))
+  const total = toAggStat(sumCounted(allRows))
 
   const assetPath = join(OUT_DIR, assetPaths.aggBudget(jurisdiction, year, 'expenditure', phase, fund, depth))
   const written = JSON.parse(readFileSync(assetPath, 'utf8')) as AggBudgetsAsset
@@ -1160,21 +1149,11 @@ function writeHierarchyAsset(
   childLevel: ChildLevel,
   scoped: Record<string, string>[],
 ): void {
-  const cellsByCode = new Map<string, AggStat>()
-  const total = newAggStat()
-  for (const row of scoped) {
-    const code = row[`${childLevel}_code`]!
-    const amount = Number(row['value'])
-    total.amount += amount
-    total.lineCount += 1
-    const cell = cellsByCode.get(code) ?? newAggStat()
-    cell.amount += amount
-    cell.lineCount += 1
-    cellsByCode.set(code, cell)
-  }
-  const cells = [...cellsByCode.entries()]
-    .sort(byKey(([code]) => code))
-    .map(([code, stat]) => ({ code, label: childLabelOf(scoped, childLevel, code), amount: stat.amount, lineCount: stat.lineCount }))
+  const rows = scoped.map((row) => ({ code: row[`${childLevel}_code`]!, count: 1, sum: Number(row['value']) }))
+  const cells = foldBy(rows, (r) => r.code)
+    .sort(byKey((r) => r.code))
+    .map((r) => ({ code: r.code, label: childLabelOf(scoped, childLevel, r.code), amount: r.sum, lineCount: r.count }))
+  const total = toAggStat(sumCounted(rows))
   const asset: AggHierarchyAsset = { revision, childLevel, cells, total }
   writeJson(join(OUT_DIR, assetPaths.aggHierarchy(jurisdiction, year, direction, phase, fund, hierarchyParentPathString(segments))), asset)
 }
@@ -1200,18 +1179,10 @@ function checkHierarchyAssetMatchesSource(
   const scoped = yearRows.filter(
     (r) => r['phase_id'] === phase && r['fund_code'] === fund && segments.every((s) => r[`${s.level}_code`] === s.code),
   )
-  const expectedByCode = new Map<string, AggStat>()
-  const expectedTotal = newAggStat()
-  for (const row of scoped) {
-    const code = row[`${childLevel}_code`]!
-    const amount = Number(row['value'])
-    expectedTotal.amount += amount
-    expectedTotal.lineCount += 1
-    const cell = expectedByCode.get(code) ?? newAggStat()
-    cell.amount += amount
-    cell.lineCount += 1
-    expectedByCode.set(code, cell)
-  }
+  const rows = scoped.map((row) => ({ code: row[`${childLevel}_code`]!, count: 1, sum: Number(row['value']) }))
+  const folded = foldBy(rows, (r) => r.code)
+  const expectedByCode = new Map(folded.map((r) => [r.code, toAggStat(r)]))
+  const expectedTotal = toAggStat(sumCounted(rows))
   const assetPath = join(OUT_DIR, assetPaths.aggHierarchy(jurisdiction, year, direction, phase, fund, hierarchyParentPathString(segments)))
   const written = JSON.parse(readFileSync(assetPath, 'utf8')) as AggHierarchyAsset
   if (written.cells.length !== expectedByCode.size) fail(`hierarchy check: cell count mismatch for ${assetPath}`)
@@ -1223,7 +1194,7 @@ function checkHierarchyAssetMatchesSource(
     fail(`hierarchy check: total mismatch for ${assetPath}`)
   }
   // 検査2: cells の合計 = total（このアセットに COFOG の残余は無い）
-  const cellsSum = [...expectedByCode.values()].reduce((s, c) => ({ amount: s.amount + c.amount, lineCount: s.lineCount + c.lineCount }), newAggStat())
+  const cellsSum = toAggStat(sumCounted(folded))
   if (cellsSum.amount !== expectedTotal.amount || cellsSum.lineCount !== expectedTotal.lineCount) {
     fail(`hierarchy check: cells != total for ${assetPath}`)
   }
@@ -1239,50 +1210,38 @@ function writeHierarchyCofogAsset(
   scoped: Record<string, string>[],
   cofogAux: Map<string, CofogAux>,
 ): void {
-  const cellsByKey = new Map<string, { childCode: string; division: string; stat: AggStat }>()
-  const unclassifiable = newAggStat()
-  const outOfScope = newAggStat()
-  const notDescended = newAggStat()
-  const total = newAggStat()
+  const allRows: { count: number; sum: number }[] = []
+  const unclassifiableRows: { count: number; sum: number }[] = []
+  const outOfScopeRows: { count: number; sum: number }[] = []
+  const notDescendedRows: { count: number; sum: number }[] = []
+  const assignedRows: { childCode: string; division: string; count: number; sum: number }[] = []
   for (const row of scoped) {
     const id = row['budget_line_id']!
     const aux = cofogAux.get(id) ?? fail(`hierarchy-cofog: no cofog row for ${id}`)
     const amount = Number(row['value'])
-    total.amount += amount
-    total.lineCount += 1
+    const r = { count: 1, sum: amount }
+    allRows.push(r)
     const childCode = row[`${childLevel}_code`]!
     const cls = classifyCofogAmount(aux.status, aux.division, `hierarchy-cofog: unexpected cofog_status "${aux.status}" for ${id}`)
-    if (cls.kind === 'unclassifiable') {
-      unclassifiable.amount += amount
-      unclassifiable.lineCount += 1
-      continue
-    }
-    if (cls.kind === 'out-of-scope') {
-      outOfScope.amount += amount
-      outOfScope.lineCount += 1
-      continue
-    }
-    if (cls.kind === 'not-descended') {
-      notDescended.amount += amount
-      notDescended.lineCount += 1
-      continue
-    }
-    const key = `${childCode}|${cls.code}`
-    const cell = cellsByKey.get(key) ?? { childCode, division: cls.code, stat: newAggStat() }
-    cell.stat.amount += amount
-    cell.stat.lineCount += 1
-    cellsByKey.set(key, cell)
+    if (cls.kind === 'unclassifiable') { unclassifiableRows.push(r); continue }
+    if (cls.kind === 'out-of-scope') { outOfScopeRows.push(r); continue }
+    if (cls.kind === 'not-descended') { notDescendedRows.push(r); continue }
+    assignedRows.push({ childCode, division: cls.code, ...r })
   }
-  const cells = [...cellsByKey.values()]
+  const cells = foldBy(assignedRows, (r) => `${r.childCode}|${r.division}`)
     .sort(byKey((c) => `${c.childCode}:${c.division}`))
     .map((c) => ({
       code: c.childCode,
       label: childLabelOf(scoped, childLevel, c.childCode),
       cofogDivision: c.division,
       cofogLabel: cofogLabel('division', c.division),
-      amount: c.stat.amount,
-      lineCount: c.stat.lineCount,
+      amount: c.sum,
+      lineCount: c.count,
     }))
+  const unclassifiable = toAggStat(sumCounted(unclassifiableRows))
+  const outOfScope = toAggStat(sumCounted(outOfScopeRows))
+  const notDescended = toAggStat(sumCounted(notDescendedRows))
+  const total = toAggStat(sumCounted(allRows))
   const asset: AggHierarchyCofogAsset = { revision, childLevel, cells, residual: { unclassifiable, outOfScope, notDescended }, total }
   writeJson(
     join(OUT_DIR, assetPaths.aggHierarchyCofog(jurisdiction, year, 'expenditure', phase, fund, hierarchyParentPathString(segments))),
@@ -1309,42 +1268,31 @@ function checkHierarchyCofogAssetMatchesSource(
     (r) => r['phase_id'] === phase && r['fund_code'] === fund && segments.every((s) => r[`${s.level}_code`] === s.code),
   )
   const byId = new Map(cofogRowsForYear.map((r) => [r['budget_line_id']!, r]))
-  const cellsByKey = new Map<string, AggStat>()
-  const unclassifiable = newAggStat()
-  const outOfScope = newAggStat()
-  const notDescended = newAggStat()
-  const total = newAggStat()
+  const allRows: { count: number; sum: number }[] = []
+  const unclassifiableRows: { count: number; sum: number }[] = []
+  const outOfScopeRows: { count: number; sum: number }[] = []
+  const notDescendedRows: { count: number; sum: number }[] = []
+  const assignedRows: { childCode: string; division: string; count: number; sum: number }[] = []
   for (const row of scoped) {
     const id = row['budget_line_id']!
     const cofogRow = byId.get(id) ?? fail(`hierarchy-cofog check: no cofog row for ${id}`)
     const amount = Number(row['value'])
-    total.amount += amount
-    total.lineCount += 1
+    const r = { count: 1, sum: amount }
+    allRows.push(r)
     const childCode = row[`${childLevel}_code`]!
     const status = cofogRow['cofog_status']!
     const division = cofogRow['cofog_division']!
     const cls = classifyCofogAmount(status, division, `hierarchy-cofog check: unexpected cofog_status "${status}" for ${id}`)
-    if (cls.kind === 'unclassifiable') {
-      unclassifiable.amount += amount
-      unclassifiable.lineCount += 1
-      continue
-    }
-    if (cls.kind === 'out-of-scope') {
-      outOfScope.amount += amount
-      outOfScope.lineCount += 1
-      continue
-    }
-    if (cls.kind === 'not-descended') {
-      notDescended.amount += amount
-      notDescended.lineCount += 1
-      continue
-    }
-    const key = `${childCode}|${cls.code}`
-    const cell = cellsByKey.get(key) ?? newAggStat()
-    cell.amount += amount
-    cell.lineCount += 1
-    cellsByKey.set(key, cell)
+    if (cls.kind === 'unclassifiable') { unclassifiableRows.push(r); continue }
+    if (cls.kind === 'out-of-scope') { outOfScopeRows.push(r); continue }
+    if (cls.kind === 'not-descended') { notDescendedRows.push(r); continue }
+    assignedRows.push({ childCode, division: cls.code, ...r })
   }
+  const cellsByKey = new Map(foldBy(assignedRows, (r) => `${r.childCode}|${r.division}`).map((r) => [`${r.childCode}|${r.division}`, toAggStat(r)]))
+  const unclassifiable = toAggStat(sumCounted(unclassifiableRows))
+  const outOfScope = toAggStat(sumCounted(outOfScopeRows))
+  const notDescended = toAggStat(sumCounted(notDescendedRows))
+  const total = toAggStat(sumCounted(allRows))
   const assetPath = join(
     OUT_DIR,
     assetPaths.aggHierarchyCofog(jurisdiction, year, 'expenditure', phase, fund, hierarchyParentPathString(segments)),
@@ -1408,19 +1356,10 @@ function newCrossDepthBucket(): CrossDepthBucket {
   return { cellsByJC: new Map(), unclassifiableByJ: new Map(), outOfScopeByJ: new Map(), notDescendedByJ: new Map() }
 }
 
-/** Map<jurisdiction, AggStat> への加算。無ければ 0 から作る。**検査側だけが使う**（1明細ずつ加算する） */
-function addAggStatByJ(map: Map<string, AggStat>, jurisdiction: string, amount: number): void {
-  const stat = map.get(jurisdiction) ?? newAggStat()
-  stat.amount += amount
-  stat.lineCount += 1
-  map.set(jurisdiction, stat)
-}
-
 /**
- * Map<key, AggStat> へ、すでに fold 済みの AggStat をまとめて積む。
- * `addAggStatByJ` と役割が近いが、あちらは検査側が明細を1行ずつ独立に数える用途専用
- * （生成と検査でデータの取得経路を共有しない）で、こちらは生成側が `cofogGranularity` の
- * 出力（1団体ぶんすでに合算済みの値）を横断アセットへ merge する用途に使う。
+ * Map<key, AggStat> へ、すでに fold 済みの AggStat をまとめて積む。生成側が
+ * `cofogGranularity` の出力（1団体ぶんすでに合算済みの値）を横断アセットへ merge する用途に使う
+ * （検査側は `foldBy` で明細から直接畳むので、この関数を経由しない）。
  */
 function mergeAggStat(map: Map<string, AggStat>, key: string, add: AggStat): void {
   const stat = map.get(key) ?? newAggStat()
@@ -1551,12 +1490,12 @@ function writeCrossAggAssets(allBudgetsForOmission: Budget[]): void {
  * accum.includedBudgets をそのまま信じず、table.rows に該当 phase の行が実在するかで判定する。
  */
 function checkAggCrossAssetMatchesSource(year: string, phase: string, depth: CofogDepth): void {
-  const cellsByJC = new Map<string, AggStat>()
-  const unclassifiableByJ = new Map<string, AggStat>()
-  const outOfScopeByJ = new Map<string, AggStat>()
-  const notDescendedByJ = new Map<string, AggStat>()
-  const retained = newAggStat()
-  const eliminated = newAggStat()
+  const retainedRows: { count: number; sum: number }[] = []
+  const eliminatedRows: { count: number; sum: number }[] = []
+  const unclassifiableRows: { key: string; count: number; sum: number }[] = []
+  const outOfScopeRows: { key: string; count: number; sum: number }[] = []
+  const notDescendedRows: { key: string; count: number; sum: number }[] = []
+  const assignedRows: { key: string; count: number; sum: number }[] = []
   const includedJurisdictions: string[] = []
   for (const [jurisdiction, { table, cofogTable }] of perJurisdictionAggSource) {
     const rows = table.rows.filter((r) => r['fiscal_year'] === year && r['phase_id'] === phase)
@@ -1574,36 +1513,27 @@ function checkAggCrossAssetMatchesSource(year: string, phase: string, depth: Cof
       ]),
     )
     const consolidationForJ = consolidationAt(rows, cofogAuxForJ)
-    retained.amount += consolidationForJ.retained.amount
-    retained.lineCount += consolidationForJ.retained.lineCount
-    eliminated.amount += consolidationForJ.eliminated.amount
-    eliminated.lineCount += consolidationForJ.eliminated.lineCount
+    retainedRows.push({ count: consolidationForJ.retained.lineCount, sum: consolidationForJ.retained.amount })
+    eliminatedRows.push({ count: consolidationForJ.eliminated.lineCount, sum: consolidationForJ.eliminated.amount })
     for (const row of rows) {
       const id = row['budget_line_id']!
       const cofogRow = byId.get(id) ?? fail(`agg cross check: no cofog row for ${id}`)
-      const amount = Number(row['value'])
+      const r = { count: 1, sum: Number(row['value']) }
       const status = cofogRow['cofog_status']!
       const code = depth === 'division' ? cofogRow['cofog_division']! : depth === 'group' ? cofogRow['cofog_group']! : cofogRow['cofog_class']!
       const cls = classifyCofogAmount(status, code, `agg cross check: unexpected cofog_status "${status}" for ${id}`)
-      if (cls.kind === 'unclassifiable') {
-        addAggStatByJ(unclassifiableByJ, jurisdiction, amount)
-        continue
-      }
-      if (cls.kind === 'out-of-scope') {
-        addAggStatByJ(outOfScopeByJ, jurisdiction, amount)
-        continue
-      }
-      if (cls.kind === 'not-descended') {
-        addAggStatByJ(notDescendedByJ, jurisdiction, amount)
-        continue
-      }
-      const jcKey = `${jurisdiction}|${cls.code}`
-      const cell = cellsByJC.get(jcKey) ?? newAggStat()
-      cell.amount += amount
-      cell.lineCount += 1
-      cellsByJC.set(jcKey, cell)
+      if (cls.kind === 'unclassifiable') { unclassifiableRows.push({ key: jurisdiction, ...r }); continue }
+      if (cls.kind === 'out-of-scope') { outOfScopeRows.push({ key: jurisdiction, ...r }); continue }
+      if (cls.kind === 'not-descended') { notDescendedRows.push({ key: jurisdiction, ...r }); continue }
+      assignedRows.push({ key: `${jurisdiction}|${cls.code}`, ...r })
     }
   }
+  const retained = toAggStat(sumCounted(retainedRows))
+  const eliminated = toAggStat(sumCounted(eliminatedRows))
+  const cellsByJC = new Map(foldBy(assignedRows, (r) => r.key).map((r) => [r.key, toAggStat(r)]))
+  const unclassifiableByJ = new Map(foldBy(unclassifiableRows, (r) => r.key).map((r) => [r.key, toAggStat(r)]))
+  const outOfScopeByJ = new Map(foldBy(outOfScopeRows, (r) => r.key).map((r) => [r.key, toAggStat(r)]))
+  const notDescendedByJ = new Map(foldBy(notDescendedRows, (r) => r.key).map((r) => [r.key, toAggStat(r)]))
 
   const assetPath = join(OUT_DIR, assetPaths.aggCross(year, 'expenditure', phase, depth))
   const written = JSON.parse(readFileSync(assetPath, 'utf8')) as AggCrossAsset
@@ -2159,21 +2089,16 @@ function writeText(path: string, body: string): void {
 type YearsSource = { table: Table; tableByDirection: Map<Direction, Table>; cofogTable: Table; cofogAux: Map<string, CofogAux> }
 
 function consolidationAt(rows: Record<string, string>[], cofogAux: Map<string, CofogAux>): { retained: AggStat; eliminated: AggStat } {
-  const retained = newAggStat()
-  const eliminated = newAggStat()
-  for (const row of rows) {
+  const classified = rows.map((row) => {
     const aux = cofogAux.get(row['budget_line_id']!) ?? fail(`years agg: no cofog row for ${row['budget_line_id']}`)
-    const amount = Number(row['value'])
-    if (aux.consolidation === 'retained') {
-      retained.amount += amount
-      retained.lineCount += 1
-    } else if (aux.consolidation === 'eliminated') {
-      eliminated.amount += amount
-      eliminated.lineCount += 1
-    } else {
+    if (aux.consolidation !== 'retained' && aux.consolidation !== 'eliminated') {
       fail(`years agg: unknown cofog_consolidation "${aux.consolidation}"`)
     }
-  }
+    return { consolidation: aux.consolidation, count: 1, sum: Number(row['value']) }
+  })
+  const byConsolidation = new Map(foldBy(classified, (r) => r.consolidation).map((r) => [r.consolidation, r]))
+  const retained = toAggStat(byConsolidation.get('retained') ?? { count: 0, sum: 0 })
+  const eliminated = toAggStat(byConsolidation.get('eliminated') ?? { count: 0, sum: 0 })
   return { retained, eliminated }
 }
 
@@ -2222,11 +2147,7 @@ function writeYearsTotalAsset(jurisdiction: string, direction: Direction, phase:
     const rows = table.rows.filter(
       (r) => r['fiscal_year'] === b.fiscalYear && r['phase_id'] === phase && (fund === 'all' || r['fund_code'] === fund),
     )
-    const stat = newAggStat()
-    for (const row of rows) {
-      stat.amount += Number(row['value'])
-      stat.lineCount += 1
-    }
+    const stat = toAggStat(sumCounted(rows.map((row) => ({ count: 1, sum: Number(row['value']) }))))
     const fundsThisYear = fund === 'all' ? scope.funds : scope.funds.filter((f) => f.code === fund)
     const fundScope: AggYearsFundScope = { funds: fundsThisYear, consolidation: consolidationAt(rows, source.cofogAux) }
     cells.push({ fiscalYear: b.fiscalYear, amount: stat.amount, lineCount: stat.lineCount, fundScope })
@@ -2259,9 +2180,8 @@ function checkYearsTotalAssetMatchesSource(jurisdiction: string, direction: Dire
     const rows = table.rows.filter(
       (r) => r['fiscal_year'] === b.fiscalYear && r['phase_id'] === phase && (fund === 'all' || r['fund_code'] === fund),
     )
-    let amount = 0
-    for (const row of rows) amount += Number(row['value'])
-    expectedCells.push({ fiscalYear: b.fiscalYear, amount, lineCount: rows.length })
+    const stat = toAggStat(sumCounted(rows.map((row) => ({ count: 1, sum: Number(row['value']) }))))
+    expectedCells.push({ fiscalYear: b.fiscalYear, amount: stat.amount, lineCount: stat.lineCount })
   }
   const writtenByYear = new Map(written.cells.map((c) => [c.fiscalYear, c]))
   if (writtenByYear.size !== expectedCells.length) fail(`years-total check: cell count mismatch for ${assetPath}`)
@@ -2302,48 +2222,38 @@ function writeYearsCofogDivisionAsset(jurisdiction: string, phase: string, fund:
     const rows = source.table.rows.filter(
       (r) => r['fiscal_year'] === b.fiscalYear && r['phase_id'] === phase && (fund === 'all' || r['fund_code'] === fund),
     )
-    const byDivision = new Map<string, AggStat>()
-    const unclassifiable = newAggStat()
-    const outOfScope = newAggStat()
-    const notDescended = newAggStat()
+    const unclassifiableRows: { count: number; sum: number }[] = []
+    const outOfScopeRows: { count: number; sum: number }[] = []
+    const notDescendedRows: { count: number; sum: number }[] = []
+    const assignedRows: { division: string; count: number; sum: number }[] = []
     for (const row of rows) {
       const aux = source.cofogAux.get(row['budget_line_id']!) ?? fail(`years cofog: no cofog row for ${row['budget_line_id']}`)
       const amount = Number(row['value'])
+      const r = { count: 1, sum: amount }
       const cls = classifyCofogAmount(aux.status, aux.division, `years cofog: unexpected cofog_status "${aux.status}"`)
-      if (cls.kind === 'unclassifiable') {
-        unclassifiable.amount += amount
-        unclassifiable.lineCount += 1
-        continue
-      }
-      if (cls.kind === 'out-of-scope') {
-        outOfScope.amount += amount
-        outOfScope.lineCount += 1
-        continue
-      }
-      if (cls.kind === 'not-descended') {
-        notDescended.amount += amount
-        notDescended.lineCount += 1
-        continue
-      }
-      const cell = byDivision.get(cls.code) ?? newAggStat()
-      cell.amount += amount
-      cell.lineCount += 1
-      byDivision.set(cls.code, cell)
+      if (cls.kind === 'unclassifiable') { unclassifiableRows.push(r); continue }
+      if (cls.kind === 'out-of-scope') { outOfScopeRows.push(r); continue }
+      if (cls.kind === 'not-descended') { notDescendedRows.push(r); continue }
+      assignedRows.push({ division: cls.code, ...r })
     }
     const fundsThisYear = fund === 'all' ? scope.funds : scope.funds.filter((f) => f.code === fund)
     const fundScope: AggYearsFundScope = { funds: fundsThisYear, consolidation: consolidationAt(rows, source.cofogAux) }
     perYearFundScopes.push(fundScope)
-    for (const [division, stat] of [...byDivision.entries()].sort(byKey(([d]) => d))) {
+    for (const r of foldBy(assignedRows, (r) => r.division).sort(byKey((r) => r.division))) {
       cells.push({
         fiscalYear: b.fiscalYear,
-        cofogDivision: division,
-        cofogLabel: cofogLabel('division', division),
-        amount: stat.amount,
-        lineCount: stat.lineCount,
+        cofogDivision: r.division,
+        cofogLabel: cofogLabel('division', r.division),
+        amount: r.sum,
+        lineCount: r.count,
         fundScope,
       })
     }
-    residualByYear[b.fiscalYear] = { unclassifiable, outOfScope, notDescended }
+    residualByYear[b.fiscalYear] = {
+      unclassifiable: toAggStat(sumCounted(unclassifiableRows)),
+      outOfScope: toAggStat(sumCounted(outOfScopeRows)),
+      notDescended: toAggStat(sumCounted(notDescendedRows)),
+    }
   }
   // design doc「範囲全体の要約はアセットに一度だけ持つ」。total は cells（division 別）と
   // residualByYear（unclassifiable / out-of-scope / notDescended）の両方を足した全年度合計。
@@ -2395,38 +2305,30 @@ function checkYearsCofogDivisionAssetMatchesSource(
         .filter((r) => r['fiscal_year'] === b.fiscalYear && r['direction'] === 'expenditure')
         .map((r) => [r['budget_line_id']!, r]),
     )
-    const byDivision = new Map<string, AggStat>()
-    const unclassifiable = newAggStat()
-    const outOfScope = newAggStat()
-    const notDescended = newAggStat()
+    const unclassifiableRows: { count: number; sum: number }[] = []
+    const outOfScopeRows: { count: number; sum: number }[] = []
+    const notDescendedRows: { count: number; sum: number }[] = []
+    const assignedRows: { division: string; count: number; sum: number }[] = []
     for (const row of rows) {
       const cofogRow = cofogByLineId.get(row['budget_line_id']!) ?? fail(`years-cofog check: no cofog row for ${row['budget_line_id']}`)
       const amount = Number(row['value'])
+      const r = { count: 1, sum: amount }
       const status = cofogRow['cofog_status']!
       const division = cofogRow['cofog_division']!
       const cls = classifyCofogAmount(status, division, `years-cofog check: unexpected cofog_status "${status}"`)
-      if (cls.kind === 'unclassifiable') {
-        unclassifiable.amount += amount
-        unclassifiable.lineCount += 1
-        continue
-      }
-      if (cls.kind === 'out-of-scope') {
-        outOfScope.amount += amount
-        outOfScope.lineCount += 1
-        continue
-      }
-      if (cls.kind === 'not-descended') {
-        notDescended.amount += amount
-        notDescended.lineCount += 1
-        continue
-      }
-      const cell = byDivision.get(cls.code) ?? newAggStat()
-      cell.amount += amount
-      cell.lineCount += 1
-      byDivision.set(cls.code, cell)
+      if (cls.kind === 'unclassifiable') { unclassifiableRows.push(r); continue }
+      if (cls.kind === 'out-of-scope') { outOfScopeRows.push(r); continue }
+      if (cls.kind === 'not-descended') { notDescendedRows.push(r); continue }
+      assignedRows.push({ division: cls.code, ...r })
     }
-    for (const [division, stat] of byDivision) expectedCells.push({ fiscalYear: b.fiscalYear, division, amount: stat.amount, lineCount: stat.lineCount })
-    expectedResidualByYear[b.fiscalYear] = { unclassifiable, outOfScope, notDescended }
+    for (const r of foldBy(assignedRows, (r) => r.division)) {
+      expectedCells.push({ fiscalYear: b.fiscalYear, division: r.division, amount: r.sum, lineCount: r.count })
+    }
+    expectedResidualByYear[b.fiscalYear] = {
+      unclassifiable: toAggStat(sumCounted(unclassifiableRows)),
+      outOfScope: toAggStat(sumCounted(outOfScopeRows)),
+      notDescended: toAggStat(sumCounted(notDescendedRows)),
+    }
   }
   const writtenByKey = new Map(written.cells.map((c) => [`${c.fiscalYear}|${c.cofogDivision}`, c]))
   if (writtenByKey.size !== expectedCells.length) fail(`years-cofog check: cell count mismatch for ${assetPath}`)
