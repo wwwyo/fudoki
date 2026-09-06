@@ -6,9 +6,11 @@
  * 数字は API 側（`report/budget/cofog.ts` 由来）が持ち、ここでは足し直さない
  * （AGENTS.md の「集計は1箇所」）。木の組み立て（並べ替え）だけを `lib/cofog-tree.ts` で行う。
  *
- * ⚠️ **歳入は対象外。** `budgets:aggregate` は v1 では歳出（expenditure）しか集計しない
- * （COFOG が歳入に無いからではなく、歳入の集計自体を実装していないため）。
- * 歳入を選んだときは API を呼ばず、その旨を案内するだけにする。
+ * ⚠️ **歳入に COFOG 内訳は無い。** cofog_status が歳入では常に not-applicable なので、
+ * `groupBy: ['cofog.class']` は歳入では 400 になる。ただし歳入の「合計」自体は
+ * `budgets:aggregate` の別の軸（`groupBy: ['fiscalYear']`、filter は jurisdiction のみ）で
+ * 引ける ── COFOG と違い fiscalYear 軸は歳入でも意味を持つ、かつ fund=all を取れる唯一の軸
+ * （hierarchy 軸は款・項のコードが会計内でしか一意でないため fund=all を取れない）。
  *
  * 「収録済みか」の判定と団体セレクタだけは `pipeline.json`（`loadPipeline`）を再利用する。
  * ELT パイプラインを通った団体の集合と、budget API が返せる団体の集合は同じ配布物から
@@ -140,9 +142,8 @@ function CollectedAnalysis({
   const [year, setYear] = useState<number>(years.at(-1)!)
   const [direction, setDirection] = useState<Direction>("expenditure")
   const [agg, setAgg] = useState<AggregateBudgetsResponse | null>(null)
-  // 歳入の合計（budgets:aggregate を呼ばずに getBudget の scopes.revenue.consolidation から出す。
-  // retained + eliminated が「連結前の全明細の合計」で、旧 getCofogBreakdown の total.sum と同じ値になる
-  // （apps/api/build.ts の revenueTotalAtPhase と同一の導出）。COFOG は歳入に無いので割当は常に0。
+  // 歳入の合計。budgets:aggregate の fiscalYear 軸（filter=jurisdiction のみ、groupBy=['fiscalYear']）を
+  // 呼び、その年度の cell をそのまま使う（画面では足し算しない。AGENTS.md「集計は1箇所」）。
   const [revenueTotal, setRevenueTotal] = useState<{ lineCount: number; amount: number } | null>(null)
   const [apiError, setApiError] = useState<string | null>(null)
   const [selected, setSelected] = useState<CofogNodeFilter | null>(null)
@@ -156,9 +157,10 @@ function CollectedAnalysis({
     setYear(years.at(-1)!)
   }, [code])
 
-  // ⚠️ **歳入は budgets:aggregate 未対応**（v1 は direction=expenditure のみ。COFOG が
-  // 歳入に無いからではなく、歳入の集計自体を実装していないため）。歳入を選んだときは
-  // aggregateBudgets を呼ばず、getBudget の scopes.revenue から合計だけを取る。
+  // ⚠️ **歳入に COFOG 内訳は無い**（cofog_status が歳入では常に not-applicable）ので、
+  // groupBy=['cofog.class'] は歳出だけに使う。歳入は fiscalYear 軸（filter=jurisdiction のみ、
+  // fund=all）でその年度の合計だけを取る ── fund=all を取れるのはこの軸だけで、hierarchy 軸は
+  // 款・項のコードが会計内でしか一意でないため使えない（procedure/budgets.ts の同じ判断）。
   useEffect(() => {
     let stale = false
     setAgg(null)
@@ -169,26 +171,33 @@ function CollectedAnalysis({
     apiClient
       .getBudget({ budget: `${code}:${year}` })
       .then((res) => {
-        if (stale) return
+        if (stale) return undefined
         setAmountPhase(res.budget.amountPhase)
         if (direction === "expenditure") {
-          return apiClient.aggregateBudgets({
-            filter: `jurisdiction = "${code}" AND fiscalYear = ${year}`,
-            direction: "expenditure",
-            phase: res.budget.amountPhase,
-            groupBy: ["cofog.class"],
-          })
+          return apiClient
+            .aggregateBudgets({
+              filter: `jurisdiction = "${code}" AND fiscalYear = ${year}`,
+              direction: "expenditure",
+              phase: res.budget.amountPhase,
+              groupBy: ["cofog.class"],
+            })
+            .then((r) => {
+              if (!stale) setAgg(r)
+            })
         }
-        // 歳入: scopes.revenue.consolidation は明細を retained/eliminated に排他分割するので、
-        // 足せば連結前の全明細の合計になる。画面ではこの足し算しかしない（AGENTS.md「集計は1箇所」）。
-        const revenueScope = res.budget.scopes.revenue
-        if (!revenueScope) throw new Error(`budget ${code}:${year} has no revenue scope despite directions including revenue`)
-        const { retained, eliminated } = revenueScope.consolidation
-        setRevenueTotal({ lineCount: retained.lineCount + eliminated.lineCount, amount: retained.amount + eliminated.amount })
-        return undefined
-      })
-      .then((res) => {
-        if (!stale && res) setAgg(res)
+        return apiClient
+          .aggregateBudgets({
+            filter: `jurisdiction = "${code}"`,
+            direction: "revenue",
+            phase: res.budget.amountPhase,
+            groupBy: ["fiscalYear"],
+          })
+          .then((r) => {
+            if (stale) return
+            const cell = r.cells.find((c) => c.dimensions[0]?.code === String(year))
+            if (!cell) throw new Error(`no fiscalYear=${year} cell in revenue fiscalYear aggregate for ${code}`)
+            setRevenueTotal({ lineCount: cell.lineCount, amount: cell.amount })
+          })
       })
       .catch((e: unknown) => {
         if (!stale) setApiError(e instanceof Error ? e.message : String(e))
@@ -281,9 +290,9 @@ function CollectedAnalysis({
             </AlertDescription>
           </Alert>
         ) : direction !== "expenditure" ? (
-          // ⚠️ budgets:aggregate は v1 では歳出しか集計しない（procedure/budgets.ts の
-          // SUPPORTED_AGGREGATE_DIRECTIONS）。呼ばずに getBudget の scopes.revenue から
-          // 合計だけを出す（COFOG が無いことを言うのと、合計を出すことは両立する）。
+          // ⚠️ 歳入は COFOG 軸が無い（procedure/budgets.ts: cofog_status は歳入で常に
+          // not-applicable）ので、budgets:aggregate の fiscalYear 軸から合計だけを出す
+          // （COFOG が無いことを言うのと、合計を budgets:aggregate から出すことは両立する）。
           !revenueTotal ? (
             <p className="text-sm text-muted-foreground">読み込み中…</p>
           ) : (
