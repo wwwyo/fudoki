@@ -23,7 +23,6 @@ import {
   type BudgetLinesView,
   cofogDepthOf,
   CROSS_JURISDICTION_GROUPINGS,
-  hierarchyChildLevel,
   hierarchyParentPathString,
   JURISDICTION_YEARS_GROUPINGS,
   type NameFieldValue,
@@ -766,7 +765,6 @@ async function hierarchyAggregate(
   if (!Array.isArray(parsed)) {
     throw errors.BAD_REQUEST({ message: parsed.error, data: { reason: 'invalid hierarchyParent' } })
   }
-  const childLevel = hierarchyChildLevel(parsed)
   const parentPath = hierarchyParentPathString(parsed)
   const includesCofog = input.groupBy.length === 2
 
