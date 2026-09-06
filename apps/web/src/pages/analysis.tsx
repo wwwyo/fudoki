@@ -140,6 +140,10 @@ function CollectedAnalysis({
   const [year, setYear] = useState<number>(years.at(-1)!)
   const [direction, setDirection] = useState<Direction>("expenditure")
   const [agg, setAgg] = useState<AggregateBudgetsResponse | null>(null)
+  // 歳入の合計（budgets:aggregate を呼ばずに getBudget の scopes.revenue.consolidation から出す。
+  // retained + eliminated が「連結前の全明細の合計」で、旧 getCofogBreakdown の total.sum と同じ値になる
+  // （apps/api/build.ts の revenueTotalAtPhase と同一の導出）。COFOG は歳入に無いので割当は常に0。
+  const [revenueTotal, setRevenueTotal] = useState<{ lineCount: number; amount: number } | null>(null)
   const [apiError, setApiError] = useState<string | null>(null)
   const [selected, setSelected] = useState<CofogNodeFilter | null>(null)
   // 明細の金額表示に使う予算段階。budgets:aggregate の phase（typed field）にも使う
@@ -154,25 +158,34 @@ function CollectedAnalysis({
 
   // ⚠️ **歳入は budgets:aggregate 未対応**（v1 は direction=expenditure のみ。COFOG が
   // 歳入に無いからではなく、歳入の集計自体を実装していないため）。歳入を選んだときは
-  // API を呼ばず、案内だけを出す（呼べば毎回 400 になる）。
+  // aggregateBudgets を呼ばず、getBudget の scopes.revenue から合計だけを取る。
   useEffect(() => {
     let stale = false
     setAgg(null)
+    setRevenueTotal(null)
     setApiError(null)
     setAmountPhase(null)
     setSelected(null) // 団体・年度・歳出歳入を切り替えたら選択中の分類も捨てる（別の集計に対する古い選択を残さない）
-    if (direction !== "expenditure") return
     apiClient
       .getBudget({ budget: `${code}:${year}` })
       .then((res) => {
         if (stale) return
         setAmountPhase(res.budget.amountPhase)
-        return apiClient.aggregateBudgets({
-          filter: `jurisdiction = "${code}" AND fiscalYear = ${year}`,
-          direction: "expenditure",
-          phase: res.budget.amountPhase,
-          groupBy: ["cofog.class"],
-        })
+        if (direction === "expenditure") {
+          return apiClient.aggregateBudgets({
+            filter: `jurisdiction = "${code}" AND fiscalYear = ${year}`,
+            direction: "expenditure",
+            phase: res.budget.amountPhase,
+            groupBy: ["cofog.class"],
+          })
+        }
+        // 歳入: scopes.revenue.consolidation は明細を retained/eliminated に排他分割するので、
+        // 足せば連結前の全明細の合計になる。画面ではこの足し算しかしない（AGENTS.md「集計は1箇所」）。
+        const revenueScope = res.budget.scopes.revenue
+        if (!revenueScope) throw new Error(`budget ${code}:${year} has no revenue scope despite directions including revenue`)
+        const { retained, eliminated } = revenueScope.consolidation
+        setRevenueTotal({ lineCount: retained.lineCount + eliminated.lineCount, amount: retained.amount + eliminated.amount })
+        return undefined
       })
       .then((res) => {
         if (!stale && res) setAgg(res)
@@ -256,26 +269,43 @@ function CollectedAnalysis({
           </p>
         </section>
 
-        {direction !== "expenditure" ? (
-          // ⚠️ budgets:aggregate は v1 では歳出しか集計しない（procedure/budgets.ts の
-          // SUPPORTED_AGGREGATE_DIRECTIONS）。呼べば必ず400になるので、そもそも呼ばずに案内する。
-          <Alert>
-            <AlertTitle>歳入は COFOG の対象外です</AlertTitle>
-            <AlertDescription>
-              COFOG（Classification of the Functions of Government）は政府の支出を機能別に分類する体系で、
-              歳入には分類の軸そのものが無い。この分析ダッシュボードは歳出のみを対象にする。
-            </AlertDescription>
-          </Alert>
-        ) : apiError ? (
+        {apiError ? (
           <Alert variant="destructive">
             <AlertTitle>分析データを読み込めませんでした</AlertTitle>
             <AlertDescription>
-              fudoki の API（api.fudoki.dev）から COFOG 別内訳を取得できませんでした。
+              fudoki の API（api.fudoki.dev）から{direction === "expenditure" ? "COFOG 別内訳" : "合計"}
+              を取得できませんでした。
               API が止まっているか、この団体・年度の組み合わせがまだ収録されていない可能性があります。
               <br />
               {apiError}
             </AlertDescription>
           </Alert>
+        ) : direction !== "expenditure" ? (
+          // ⚠️ budgets:aggregate は v1 では歳出しか集計しない（procedure/budgets.ts の
+          // SUPPORTED_AGGREGATE_DIRECTIONS）。呼ばずに getBudget の scopes.revenue から
+          // 合計だけを出す（COFOG が無いことを言うのと、合計を出すことは両立する）。
+          !revenueTotal ? (
+            <p className="text-sm text-muted-foreground">読み込み中…</p>
+          ) : (
+            <>
+              <div className="flex flex-wrap gap-3">
+                <Card className="min-w-[9rem] flex-1 gap-1 py-4">
+                  <CardHeader className="px-4">
+                    <CardDescription className="text-xs">合計（歳入）・千円</CardDescription>
+                    <CardTitle className="text-xl tabular-nums">{senYen(revenueTotal.amount)}千円</CardTitle>
+                  </CardHeader>
+                </Card>
+              </div>
+              <Alert>
+                <AlertTitle>歳入は COFOG の対象外です</AlertTitle>
+                <AlertDescription>
+                  COFOG（Classification of the Functions of Government）は政府の支出を機能別に分類する体系で、
+                  歳入には分類の軸そのものが無い。この分析ダッシュボードの COFOG 内訳は歳出のみを対象にする
+                  （上の合計は{count(revenueTotal.lineCount)}件の歳入明細の合計そのもので、分類は含まない）。
+                </AlertDescription>
+              </Alert>
+            </>
+          )
         ) : !summary ? (
           <p className="text-sm text-muted-foreground">読み込み中…</p>
         ) : (
