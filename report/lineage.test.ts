@@ -63,11 +63,24 @@ describe('assertRowSumsConsistent', () => {
     expect(() => assertRowSumsConsistent([n])).not.toThrow()
   })
 
-  test('total が null（行数が取れていない）なら、そこは比較せず通す', () => {
+  test('行数を数えようが無いノード（rows も rowsByJurisdiction も null）は通す', () => {
+    const n = node({ rows: null, rowsByJurisdiction: null })
+    expect(() => assertRowSumsConsistent([n])).not.toThrow()
+  })
+
+  test('団体の total が数値でなければ止める', () => {
     const n = node({
       rows: null,
-      rowsByJurisdiction: { '132195': { total: null as unknown as number, byYear: { '2020': null as unknown as number } } },
+      rowsByJurisdiction: { '132195': { total: Number.NaN, byYear: null } },
     })
-    expect(() => assertRowSumsConsistent([n])).not.toThrow()
+    expect(() => assertRowSumsConsistent([n])).toThrow(/数値でない/)
+  })
+
+  test('年度の行数が数値でなければ止める', () => {
+    const n = node({
+      rows: 10,
+      rowsByJurisdiction: { '132195': { total: 10, byYear: { '2020': Number.NaN } } },
+    })
+    expect(() => assertRowSumsConsistent([n])).toThrow(/2020年度/)
   })
 })

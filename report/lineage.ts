@@ -22,8 +22,8 @@
  */
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { extractedKindOf } from './common'
-import type { Check, Node, ProjectNamesExtract, Provenance, RevenueAccountsExtract, Stage, Topology } from './common'
+import { extractedKindOf, isCanonicalFetch } from './common'
+import type { CanonicalFetch, Check, Node, ProjectNamesExtract, Provenance, RevenueAccountsExtract, Stage, Topology } from './common'
 
 export const ROOT = resolve(import.meta.dirname, '..')
 export const TARGET = join(ROOT, 'dbt/target')
@@ -112,6 +112,22 @@ function introducesJudgment(n: DbtNode, stage: Stage['id']): boolean {
 }
 
 /**
+ * その証跡が、この direction の「正本の取り込み」か。判別そのものは `isCanonicalFetch`。
+ *
+ * ⚠️ **direction で絞るだけでは足りない。** 抽出物のうち revenue-accounts も
+ * direction を名乗るので、これだけだと正本の合算に混ざる。
+ */
+function isCanonicalFetchOf(p: Provenance, direction: string): p is CanonicalFetch {
+  if (p.direction !== direction) return false
+  if (isCanonicalFetch(p)) return true
+  // 捨てる前に、正本らしいのに行数だけ無いものを止める。黙って落とすと
+  // 取得元の行数が実際より小さくなり、しかもそれが画面から分からない。
+  if (p.resource_name)
+    throw new Error(`${p.jurisdiction_code} の証跡「${p.resource_name}」に rows が無い（${p.fiscal_year}年度）`)
+  return false
+}
+
+/**
  * 原典（source）の行数を証跡から引く。
  *
  * ⚠️ **direction だけで引かない。** ソースは団体ごとに1つあり、名前はどちらも
@@ -119,28 +135,6 @@ function introducesJudgment(n: DbtNode, stage: Stage['id']): boolean {
  * 狛江市の原典ノードに三鷹市の行数が出る（実際にそうなっていた）。
  * ソースの識別子（`source.fudoki.raw_132195.expenditure`）から団体コードを取る。
  */
-/**
- * その証跡が「正本の取り込み」か。取得元ノードと source ノードの行数はこれだけを足す。
- *
- * ⚠️ **direction では見分けられない。** 名称を補う抽出物のうち revenue-accounts は
- * direction を名乗るので、混ざると rows を持たない値が合算に入り NaN になる
- * （狛江市の取得元が空欄で出ていた）。
- * ⚠️ **`extractedKindOf` でも見分けられない。** 事項別明細書 PDF を原典とする団体
- * （千代田区・昭島市）は正本そのものが extracted を持つので、一緒に落ちる。
- * 見分けるのは `rows` の有無 — 正本の取り込みは CSV でも PDF でも必ず行数を持ち、
- * 名称の抽出物は持たない。
- */
-function isCanonicalFetch(p: Provenance, direction: string): boolean {
-  if (p.direction !== direction) return false
-  if (Number.isFinite(p.rows)) return true
-  // 捨てる前に、正本らしいのに行数だけ無いものを止める。黙って落とすと
-  // 取得元の行数が実際より小さくなり、しかもそれが画面から分からない。
-  if (p.resource_name) {
-    throw new Error(`${p.jurisdiction_code} の証跡「${p.resource_name}」に rows が無い（${p.fiscal_year}年度）`)
-  }
-  return false
-}
-
 function sourceRows(id: string, name: string, provenance: Provenance[]): Counted | null {
   const code = /\.raw_(\d{6})/.exec(id)?.[1]
   if (!code) throw new Error(`ソース ${id} の名前から団体コードを取れない（raw_<団体コード> の形にすること）`)
@@ -150,7 +144,7 @@ function sourceRows(id: string, name: string, provenance: Provenance[]): Counted
   // `rows` を持たず、抽出の要約しか持たない。direction の有無は抽出器によって割れる。
   // ⚠️ **要約の形は抽出器で違う**ので、どちらの抽出器かを `extractedKindOf` で判別する
   // （形で見分けると、項目が増えたときに黙って別の枝へ落ちる）。
-  const byDirection = mine.filter((p) => isCanonicalFetch(p, name))
+  const byDirection = mine.filter((p) => isCanonicalFetchOf(p, name))
   if (byDirection.length > 0) return countByYear(byDirection.map((p) => [p.fiscal_year, p.rows]))
   // ⚠️ **どの抽出物かは id で決める。** 団体の証跡から抽出物を種類で拾うだけだと、
   // 同じ団体に2つの抽出器があるとき（狛江市の事業名と歳入の科目名称）両方の
@@ -248,30 +242,32 @@ export function assertNoNullKeyRows(counts: CountRow[], hasYear: (node: number) 
 /**
  * 検査: `rows === Σ(rowsByJurisdiction[*].total)` と `total === Σ(byYear)`。
  *
- * ⚠️ **行数は実データで取れないことがある**（132195 の一部の source/origin。
- * 証跡の `rows` 自体が欠けている取得元と、行数を持つ取得元が同じ direction を
- * 名乗って両方拾われ、`undefined + number` が `NaN` になる）。
- * `NaN` を 0 として足すと（JS の `+` は `null` を 0 に変換するが `NaN` は伝播する）
- * 比較が必ず不一致になり、逆に見なかったことにすると本当の不一致まで見逃す。
- * ここでは「取れていない」を型どおり null 扱いし、`Number.isFinite` で
- * 比較できる（全員が実数の）組だけを見る。
+ * ⚠️ **数値でない行数をスキップしない。** `NaN` は比較が必ず不一致になるので、
+ * 見なかったことにすると原因が画面から消える（`isCanonicalFetch` を参照）。
  */
 export function assertRowSumsConsistent(nodes: Node[]): void {
+  // 文言は throw する側でだけ組む。検査のたびに組むと、捨てるだけの文字列を団体 × 年度ぶん作る
+  const notANumber = (id: string, what: string, v: unknown) =>
+    new Error(`${id}: ${what} が数値でない（${v}）。行数を持たない証跡が合算に混ざっている`)
   for (const n of nodes) {
     if (n.rowsByJurisdiction === null) continue
-    const perJurisdiction = Object.values(n.rowsByJurisdiction)
-    if (Number.isFinite(n.rows) && perJurisdiction.every((v) => Number.isFinite(v.total))) {
-      const sum = perJurisdiction.reduce((s, v) => s + v.total, 0)
-      if (sum !== n.rows) throw new Error(`${n.id}: rows(${n.rows}) !== Σ(rowsByJurisdiction の total)(${sum})`)
-    }
-    for (const v of perJurisdiction) {
-      if (v.byYear === null || !Number.isFinite(v.total)) continue
-      const years = Object.values(v.byYear)
-      if (years.every((y) => Number.isFinite(y))) {
-        const sum = years.reduce((s, y) => s + y, 0)
-        if (sum !== v.total) throw new Error(`${n.id}: total(${v.total}) !== Σ(byYear)(${sum})`)
+    let acrossJurisdictions = 0
+    for (const [code, v] of Object.entries(n.rowsByJurisdiction)) {
+      if (!Number.isFinite(v.total)) throw notANumber(n.id, `${code} の total`, v.total)
+      acrossJurisdictions += v.total
+      if (v.byYear === null) continue
+      let acrossYears = 0
+      for (const [year, rows] of Object.entries(v.byYear)) {
+        if (!Number.isFinite(rows)) throw notANumber(n.id, `${code} の ${year}年度`, rows)
+        acrossYears += rows
       }
+      if (acrossYears !== v.total) throw new Error(`${n.id}: total(${v.total}) !== Σ(byYear)(${acrossYears})`)
     }
+    // `rows` だけは null を取りうる（行数を数えようが無いノード）
+    if (n.rows === null) continue
+    if (!Number.isFinite(n.rows)) throw notANumber(n.id, 'rows', n.rows)
+    if (acrossJurisdictions !== n.rows)
+      throw new Error(`${n.id}: rows(${n.rows}) !== Σ(rowsByJurisdiction の total)(${acrossJurisdictions})`)
   }
 }
 
@@ -377,7 +373,10 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
     // 狛江市の証跡が混ざる（`sourceRows` が同じ理由で団体コードを見ている）。
     const code = /\.raw_(\d{6})/.exec(src.id)?.[1]
     if (!code) continue
-    const ps = provenance.filter((p) => p.jurisdiction_code === code && isCanonicalFetch(p, src.label))
+    // 2段に分けるのは、`&&` で束ねると `isCanonicalFetchOf` の型述語が効かなくなるため
+    const ps = provenance
+      .filter((p) => p.jurisdiction_code === code)
+      .filter((p) => isCanonicalFetchOf(p, src.label))
     if (ps.length === 0) continue
     // ノードには見出しだけ出す。「※下水道事業会計除く」のような注記は
     // 選んだときのプレビュー（title が正式名）と description に残る。
