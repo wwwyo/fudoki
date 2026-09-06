@@ -1276,79 +1276,62 @@ describe('budgetLines:search (名称の検索)', () => {
   })
 })
 
-describe('cofog breakdown', () => {
+// getCofogBreakdown（旧 `/budgets/{budget}/cofog`）は budgets:aggregate に一本化して削除した
+// （応答の形が引数で変わる計算は AIP-136 のカスタムメソッドであるべき、という方針）。
+// その検査はここへ移す。「歳入で assigned が 0 になること」「404/400 の扱い」は
+// budgets:aggregate 自体の検査（`describe('budgets:aggregate (COFOG axis)')`）が
+// すでに独立に持っている（歳入は v1 で未対応そのものが 400 になる、実在しない団体・年度は 404、
+// 型付き必須フィールドの欠落は 400）ので、ここでは重複させず、
+// 旧テストに固有だった classificationRate との突合だけを残す。
+describe('classificationRate matches budgets:aggregate', () => {
   type ClassificationRate = Record<'assigned' | 'unclassifiable' | 'outOfScope', { lines: number; amount: number }>
-  type CofogBreakdownBody = {
-    cofog: {
-      byDivision: { division: string; divisionLabel: string; count: number; sum: number }[]
-      assigned: { count: number; sum: number }
-      total: { count: number; sum: number }
-      assignedShare: { count: number; sum: number }
-    }
-    revision: string
-  }
 
   for (const budgetId of ['132047:2024', '132195:2023', '132241:2023']) {
-    test(`expenditure: byDivision folds to assigned, and assigned/total match the budget's classificationRate (${budgetId})`, async () => {
+    test(`expenditure: budgets:aggregate(groupBy=cofog.division) の assigned/total が budget の classificationRate と一致する (${budgetId})`, async () => {
+      const [jurisdiction, fiscalYear] = budgetId.split(':') as [string, string]
       const budgetRes = await get(`/v0/budgets/${budgetId}`)
       expect(budgetRes.status).toBe(200)
-      const { budget } = await budgetRes.json() as { budget: { classificationRate: ClassificationRate } }
-      const { classificationRate } = budget
+      const { budget } = await budgetRes.json() as { budget: { classificationRate: ClassificationRate; amountPhase: string } }
+      const { classificationRate, amountPhase } = budget
 
-      const res = await get(`/v0/budgets/${budgetId}/cofog?direction=expenditure`)
+      const res = await get(
+        `/v0/budgets:aggregate?${aggQuery({ filter: `jurisdiction = "${jurisdiction}" AND fiscalYear = ${fiscalYear}`, direction: 'expenditure', phase: amountPhase, groupBy: ['cofog.division'] })}`,
+      )
       expect(res.status).toBe(200)
-      const { cofog, revision } = await res.json() as CofogBreakdownBody
-      expect(revision).toMatch(/^[0-9a-f]{40}/)
+      const body = await res.json() as AggregateResponse
+      expect(body.revision).toMatch(/^[0-9a-f]{40}/)
 
-      // 独立に計算した2つの数字（budgets の分類率 と cofog の集計）が一致する。
-      // どちらかが壊れたら build 自体が止まるが、ここでも API 応答レベルで確かめる
-      expect(cofog.assigned).toEqual({ count: classificationRate.assigned.lines, sum: classificationRate.assigned.amount })
-      const expectedTotalLines =
-        classificationRate.assigned.lines + classificationRate.unclassifiable.lines + classificationRate.outOfScope.lines
+      // 独立に計算した2つの数字（budgets の分類率 と budgets:aggregate の集計）が一致する。
+      // どちらかが壊れたら build 自体が止まる（apps/api/build.ts の検査3'）が、
+      // ここでも API 応答レベルで確かめる。groupBy=cofog.division では全割当済み行が
+      // division を必ず持つので notDescended は常に0 ── assigned は cells の総和に一致する
+      const cellsAmount = body.cells.reduce((s, c) => s + c.amount, 0)
+      const cellsLines = body.cells.reduce((s, c) => s + c.lineCount, 0)
+      expect(body.residual.notDescended.amount).toBe(0)
+      expect(cellsAmount).toBe(classificationRate.assigned.amount)
+      expect(cellsLines).toBe(classificationRate.assigned.lines)
+
+      expect(body.residual.unclassifiable.amount).toBe(classificationRate.unclassifiable.amount)
+      expect(body.residual.unclassifiable.lineCount).toBe(classificationRate.unclassifiable.lines)
+      expect(body.residual.outOfScope.amount).toBe(classificationRate.outOfScope.amount)
+      expect(body.residual.outOfScope.lineCount).toBe(classificationRate.outOfScope.lines)
+
+      // ⚠️ 分類できなかった分（unclassifiable + outOfScope）を落としていないこと
+      expect(classificationRate.unclassifiable.lines + classificationRate.outOfScope.lines).toBeGreaterThan(0)
       const expectedTotalAmount =
         classificationRate.assigned.amount + classificationRate.unclassifiable.amount + classificationRate.outOfScope.amount
-      expect(cofog.total).toEqual({ count: expectedTotalLines, sum: expectedTotalAmount })
+      const expectedTotalLines =
+        classificationRate.assigned.lines + classificationRate.unclassifiable.lines + classificationRate.outOfScope.lines
+      expect(body.total).toEqual({ amount: expectedTotalAmount, lineCount: expectedTotalLines })
 
-      // ⚠️ 分類できなかった分（unclassifiable + outOfScope）を落としていないこと。
-      // byDivision（割当済みだけ）の総和は total より必ず小さく、その差が
-      // ちょうど分類できなかった分の金額と行数に一致する
-      expect(classificationRate.unclassifiable.lines + classificationRate.outOfScope.lines).toBeGreaterThan(0)
-      const unclassifiedLines = cofog.total.count - cofog.assigned.count
-      const unclassifiedAmount = cofog.total.sum - cofog.assigned.sum
-      expect(unclassifiedLines).toBe(classificationRate.unclassifiable.lines + classificationRate.outOfScope.lines)
-      expect(unclassifiedAmount).toBe(classificationRate.unclassifiable.amount + classificationRate.outOfScope.amount)
-
-      // byDivision は割当済みの内訳の分解 — 足し戻すと assigned に一致する
-      const byDivisionCount = cofog.byDivision.reduce((s, d) => s + d.count, 0)
-      const byDivisionSum = cofog.byDivision.reduce((s, d) => s + d.sum, 0)
-      expect(byDivisionCount).toBe(cofog.assigned.count)
-      expect(byDivisionSum).toBe(cofog.assigned.sum)
-      expect(cofog.byDivision.length).toBeGreaterThan(0)
-      // division の昇順、01〜10 の範囲
-      expect(cofog.byDivision.map((d) => d.division)).toEqual([...cofog.byDivision].map((d) => d.division).sort())
-      for (const d of cofog.byDivision) {
-        expect(d.division).toMatch(/^(0[1-9]|10)$/)
-        expect(d.divisionLabel.length).toBeGreaterThan(0)
+      // cells は division の集合そのもの。01〜10 の範囲でラベルも埋まっている
+      expect(body.cells.length).toBeGreaterThan(0)
+      for (const cell of body.cells) {
+        expect(cell.dimensions[0]!.code).toMatch(/^(0[1-9]|10)$/)
+        expect(cell.dimensions[0]!.label?.length ?? 0).toBeGreaterThan(0)
       }
     })
   }
-
-  test('revenue: cofog_status is always not-applicable, so assigned is zero but total is not (nothing dropped)', async () => {
-    const res = await get('/v0/budgets/132195:2023/cofog?direction=revenue')
-    expect(res.status).toBe(200)
-    const { cofog } = await res.json() as CofogBreakdownBody
-    expect(cofog.assigned).toEqual({ count: 0, sum: 0 })
-    expect(cofog.byDivision).toEqual([])
-    expect(cofog.total.count).toBeGreaterThan(0)
-    expect(cofog.total.sum).toBeGreaterThan(0)
-  })
-
-  test('unknown budget is 404, malformed budget id is 400, missing/invalid direction is 400', async () => {
-    expect((await get('/v0/budgets/132195:1999/cofog?direction=expenditure')).status).toBe(404)
-    expect((await get('/v0/budgets/garbage/cofog?direction=expenditure')).status).toBe(400)
-    expect((await get('/v0/budgets/132195:2023/cofog')).status).toBe(400)
-    expect((await get('/v0/budgets/132195:2023/cofog?direction=nonsense')).status).toBe(400)
-  })
 })
 
 describe('distribution passthrough', () => {
@@ -1399,11 +1382,13 @@ describe('contract-only surface', () => {
       '/budgets',
       '/budgets/{budget}',
       '/budgets/{budget}/budgetLines',
-      '/budgets/{budget}/cofog',
+      '/budgets:aggregate',
       '/datapackages/{jurisdiction}/{file}',
     ]))
     // statement は budgetLines へ置き換えて削除した(旧 path を残さない。design doc Backward Compatibility)
     expect(Object.keys(spec.paths)).not.toContain('/budgets/{budget}/statement')
+    // getCofogBreakdown は budgets:aggregate に一本化して削除した(旧 path を残さない)
+    expect(Object.keys(spec.paths)).not.toContain('/budgets/{budget}/cofog')
     const raw = JSON.stringify(spec)
     // budgetLines の union(旧 scope)は view に変えて廃止したが、cofogDepth の
     // discriminatedUnion(applicable)がまだ oneOf を生む
@@ -1440,13 +1425,20 @@ describe('contract-only surface', () => {
     })
     expect(cross.lines.length).toBe(3)
 
-    // 収録済み3団体それぞれで、COFOG 別内訳が RPC 経由でも取れ、
-    // 分類できなかった分（total - assigned）が合計に残っていること
+    // 収録済み3団体それぞれで、COFOG 別内訳が budgets:aggregate（RPC 経由）でも取れ、
+    // 分類できなかった分（total - cells の合計）が合計に残っていること
     for (const budget of ['132047:2024', '132195:2023', '132241:2023']) {
-      const cofog = await client.getCofogBreakdown({ budget, direction: 'expenditure' })
-      expect(cofog.cofog.total.sum).toBeGreaterThan(cofog.cofog.assigned.sum)
-      expect(cofog.cofog.total.count).toBeGreaterThan(cofog.cofog.assigned.count)
-      expect(cofog.revision).toMatch(/^[0-9a-f]{40}/)
+      const [jurisdiction, fiscalYear] = budget.split(':') as [string, string]
+      const { budget: b } = await client.getBudget({ budget })
+      const agg = await client.aggregateBudgets({
+        filter: `jurisdiction = "${jurisdiction}" AND fiscalYear = ${fiscalYear}`,
+        direction: 'expenditure',
+        phase: b.amountPhase,
+        groupBy: ['cofog.division'],
+      })
+      const cellsAmount = agg.cells.reduce((s, c) => s + c.amount, 0)
+      expect(agg.total!.amount).toBeGreaterThan(cellsAmount)
+      expect(agg.revision).toMatch(/^[0-9a-f]{40}/)
     }
 
     // 型付きエラーも RPC 経由で届く

@@ -13,14 +13,13 @@
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { buildCofogTree, cofogGranularity, foldBy, unclassifiedOf, type StateRow } from '@fudoki/report/budget/cofog'
+import { cofogGranularity, foldBy, unclassifiedOf, type StateRow } from '@fudoki/report/budget/cofog'
 import { COFOG_DEPTHS, cofogLabel, type CofogDepth } from '@fudoki/report/budget/detail'
 import type { CofogCode } from '@fudoki/report/budget/schema'
 import { BY_JURISDICTION } from '@fudoki/report/budget/static'
 import {
   storedBudgetLineSchema,
   budgetSchema,
-  cofogBreakdownSchema,
   cofogConsolidation,
   cofogDecidedAtLevel,
   cofogDepthOf,
@@ -41,7 +40,6 @@ import {
   type StoredBudgetLine,
   type BudgetScopes,
   type StoredCrossBudgetLine,
-  type CofogBreakdown,
   type HierarchyParentSegment,
   type Jurisdiction,
 } from './src/contract'
@@ -56,7 +54,6 @@ import {
   type AggYearsCofogDivisionAsset,
   type AggYearsFundScope,
   type AggYearsTotalAsset,
-  type CofogBreakdownFile,
   type NameIndexEntry,
 } from './src/assets'
 
@@ -760,23 +757,45 @@ function codeAt(line: StoredBudgetLine, level: string): string {
   return line.hierarchy.find((h) => h.level === level)?.code ?? fail(`line ${line.budgetLineId} has no "${level}" level`)
 }
 
-// ---- 検査3': 団体 × 年度 × direction の COFOG 別内訳 -------------------------
+// ---- 検査3': budget.classificationRate と cofogGranularity の突き合わせ -------------------------
+
+/** count/sum を持つ行の集合を1つの count/sum へ畳む（ロールアップ検査の共通部） */
+const sumCounted = (rows: readonly { count: number; sum: number }[]): { count: number; sum: number } =>
+  rows.reduce((s, r) => ({ count: s.count + r.count, sum: s.sum + r.sum }), { count: 0, sum: 0 })
+
+/** `rows` を足し戻すと `expected` に一致するか。抜け漏れ検査を1箇所にまとめる（3箇所からコピペしない） */
+function checkRollup(rows: readonly { count: number; sum: number }[], expected: { count: number; sum: number }, msg: string): void {
+  const actual = sumCounted(rows)
+  if (actual.count !== expected.count || actual.sum !== expected.sum) {
+    fail(`${msg}: got {count:${actual.count}, sum:${actual.sum}} != expected {count:${expected.count}, sum:${expected.sum}}`)
+  }
+}
 
 /**
- * 集計は cofogGranularity（report/budget/cofog.ts）だけで行う。
- * ここでは1明細 = 1 StateRow を組み立てて渡すだけで、割合や合計を自分で書かない
- * （AGENTS.md「集計は report/budget/build.ts の1箇所だけ」。API 側に書き下ろすと
- * 同じ数字が2通りに計算される状態そのものになる）。
+ * `budget.classificationRate`（別ループが独立に集計した statuses・totalAtPhase）と、
+ * `budgets:aggregate` の数値の出所である `cofogGranularity`（report/budget/cofog.ts）の
+ * assigned/total を突き合わせる。どちらかの実装が壊れれば食い違う「検査3'」。
+ *
+ * ⚠️ 以前はここで `getCofogBreakdown` の応答（`byDivision`/`byCode`/`tree` を含む
+ * `CofogBreakdown` 全体）を組み立てて突き合わせていたが、その公開エンドポイントを
+ * 削除したので応答の形を再現する理由が無くなった。assigned/total の一致だけを見れば
+ * 同じ検査は保てる（`byDivision`/`byCode` 自身の内部ロールアップは、
+ * `checkAggBudgetAssetMatchesSource` が別経路ですでに検算している）。
  *
  * ⚠️ **金額は amountPhase（宣言した1段階）だけを見る。** 分類率の計算と同じ理由
  * （狛江市は1明細が3段階の金額を持つ決算書で、段階を絞らずに全段階を足すと
  * 同じ支出を複数回数えることになる）。
  */
-function buildCofogBreakdown(
+function checkClassificationRateMatchesCofogGranularity(
+  j: string,
+  year: string,
+  direction: Direction,
   yearLines: StoredBudgetLine[],
   cofogByLineId: Map<string, CofogRow>,
   amountPhase: PhaseIdT,
-): CofogBreakdown {
+  expectedAssigned: { lines: number; amount: number },
+  expectedTotal: { lines: number; amount: number },
+): void {
   const byState: StateRow[] = yearLines.map((line) => {
     const row = cofogByLineId.get(line.budgetLineId) ?? fail(`cofog.csv has no row for budget_line_id ${line.budgetLineId}`)
     const division = row.division ?? ''
@@ -792,80 +811,10 @@ function buildCofogBreakdown(
       count: 1, sum: amount,
     }
   })
-  const { byCode, byDivision, assigned, total, assignedShare } = cofogGranularity(byState)
-  const tree = buildCofogTree(byDivision, byCode, total.sum)
-  const unclassified = unclassifiedOf(assigned, total)
-  return cofogBreakdownSchema.parse(
-    { byCode, byDivision, assigned, total, assignedShare, tree, unclassified } satisfies CofogBreakdown,
-  )
-}
-
-/** count/sum を持つ行の集合を1つの count/sum へ畳む（ロールアップ検査の共通部） */
-const sumCounted = (rows: readonly { count: number; sum: number }[]): { count: number; sum: number } =>
-  rows.reduce((s, r) => ({ count: s.count + r.count, sum: s.sum + r.sum }), { count: 0, sum: 0 })
-
-/** `rows` を足し戻すと `expected` に一致するか。抜け漏れ検査を1箇所にまとめる（3箇所からコピペしない） */
-function checkRollup(rows: readonly { count: number; sum: number }[], expected: { count: number; sum: number }, msg: string): void {
-  const actual = sumCounted(rows)
-  if (actual.count !== expected.count || actual.sum !== expected.sum) {
-    fail(`${msg}: got {count:${actual.count}, sum:${actual.sum}} != expected {count:${expected.count}, sum:${expected.sum}}`)
-  }
-}
-
-/**
- * `tree`（buildCofogTree の出力）の構造 invariant。**新しい集計はしない検査**で、
- * ロールアップが構造上崩れていないかだけを見る:
- * - 大分類ノードの合計が `byDivision` と一致する
- * - 各ノードの子（own を含む）の合計が、そのノード自身と一致する
- * - 木全体の合計が `assigned` と一致する
- */
-function checkCofogTree(
-  tree: CofogBreakdown['tree'],
-  byDivision: CofogBreakdown['byDivision'],
-  assigned: { count: number; sum: number },
-  ctx: string,
-): void {
-  checkRollup(tree, assigned, `cofog tree does not add up to assigned for ${ctx}`)
-  for (const root of tree) {
-    const match = byDivision.find((d) => d.division === root.code)
-    if (!match) fail(`cofog tree has a division node not in byDivision for ${ctx}: ${root.code}`)
-    else checkRollup([root], match, `cofog tree division node "${root.code}" mismatches byDivision for ${ctx}`)
-    walkCofogTreeNode(root, ctx)
-  }
-}
-
-function walkCofogTreeNode(node: CofogBreakdown['tree'][number], ctx: string): void {
-  if (!node.children) return
-  checkRollup(node.children, node, `cofog tree children do not add up to parent "${node.key}" for ${ctx}`)
-  for (const child of node.children) walkCofogTreeNode(child, ctx)
-}
-
-/**
- * 配布物側から独立に立てた期待値（assigned・total）と突き合わせる。
- * `expectedAssigned` は歳出なら分類率の計算（別のループ）が持つ値を渡し、
- * 歳入ならその場で amountPhase の金額を積む。**同じコードを2回書かない**ため
- * 引数で受け取る形にし、この関数自体は cofogGranularity の出力の整合性だけを見る。
- */
-function checkCofogBreakdown(
-  j: string,
-  year: string,
-  direction: Direction,
-  breakdown: CofogBreakdown,
-  expectedAssigned: { lines: number; amount: number },
-  expectedTotal: { lines: number; amount: number },
-): void {
+  const { assigned, total } = cofogGranularity(byState)
   const ctx = `${j}/${year}/${direction}`
-  checkRollup([breakdown.assigned], { count: expectedAssigned.lines, sum: expectedAssigned.amount }, `cofog breakdown assigned mismatch for ${ctx}`)
-  checkRollup([breakdown.total], { count: expectedTotal.lines, sum: expectedTotal.amount }, `cofog breakdown total mismatch for ${ctx}`)
-  // byDivision / byCode はどちらも割当済みの分解にすぎないので、足し戻すと assigned に一致するはず
-  // （cofogGranularity 自身の fold ロジックに対する構造検査。独立に取り出しているので別々に見る）
-  checkRollup(breakdown.byDivision, breakdown.assigned, `cofog breakdown byDivision does not add up to assigned for ${ctx}`)
-  checkRollup(breakdown.byCode, breakdown.assigned, `cofog breakdown byCode does not add up to assigned for ${ctx}`)
-  checkCofogTree(breakdown.tree, breakdown.byDivision, breakdown.assigned, ctx)
-}
-
-function writeCofogBreakdown(j: string, year: string, dir: Direction, breakdown: CofogBreakdown, revision: string): void {
-  writeJson(join(OUT_DIR, assetPaths.cofogBreakdown(j, year, dir)), { revision, breakdown } satisfies CofogBreakdownFile)
+  checkRollup([assigned], { count: expectedAssigned.lines, sum: expectedAssigned.amount }, `classificationRate assigned mismatch against cofogGranularity for ${ctx}`)
+  checkRollup([total], { count: expectedTotal.lines, sum: expectedTotal.amount }, `classificationRate total mismatch against cofogGranularity for ${ctx}`)
 }
 
 // ---- main -------------------------------------------------------------------
@@ -1004,9 +953,8 @@ function notDescendedByDivisionOf(
  *
  * ⚠️ 数値の出所は `cofogGranularity`（report/budget/cofog.ts）一本にする。
  * ここでの仕事は1明細 = 1 StateRow を組み立てて渡すことと、その出力を depth に応じて
- * セル・残余へ折りたたむことだけ（main の `buildCofogBreakdown` と同じ経路。AGENTS.md
- * 「集計は1箇所だけで行う」── ここに独自の4分岐を書くと、`getCofogBreakdown` と
- * `budgets:aggregate` で同じ数字が2通りに計算される状態に戻る）。
+ * セル・残余へ折りたたむことだけ（AGENTS.md「集計は1箇所だけで行う」── ここに独自の
+ * 4分岐を書くと、`budgets:aggregate` の中で同じ数字が2通りに計算される状態になる）。
  *
  * unclassifiable / out-of-scope だけは `cofogGranularity` を経由させない ── 割当済み以外を
  * 折りたたむ関数ではないので、ここは byState を直接 status で filter する単純な集計にとどめる
@@ -1932,16 +1880,14 @@ for (const j of jurisdictionIds.sort()) {
       }
     }
 
-    // COFOG 別内訳（歳出）。分類率と同じ yearLines・amountPhase を使っているので、
+    // 分類率（classificationRate）と同じ yearLines・amountPhase を使っているので、
     // ここで独立に立てた assigned/total（statuses・totalAtPhase）と cofogGranularity の
     // 出力を突き合わせられる（検査3': どちらかの実装が壊れたら食い違う）
-    const expenditureBreakdown = buildCofogBreakdown(yearLines, cofogByLineId, amountPhase)
-    checkCofogBreakdown(
-      j, year, 'expenditure', expenditureBreakdown,
+    checkClassificationRateMatchesCofogGranularity(
+      j, year, 'expenditure', yearLines, cofogByLineId, amountPhase,
       { lines: statuses.assigned.lines, amount: statuses.assigned.amount },
       { lines: denominator, amount: totalAtPhase },
     )
-    writeCofogBreakdown(j, year, 'expenditure', expenditureBreakdown, revision)
 
     if (fiscalYears.revenue.includes(year)) {
       const revenueLines = linesByYearDir.get(`${year}-revenue`)!
@@ -1952,13 +1898,11 @@ for (const j of jurisdictionIds.sort()) {
         revenueTotalAtPhase += line.amounts.find((a) => a.phase === amountPhase)?.amount
           ?? fail(`line ${line.budgetLineId} has no amount at declared phase "${amountPhase}"`)
       }
-      const revenueBreakdown = buildCofogBreakdown(revenueLines, cofogByLineId, amountPhase)
-      checkCofogBreakdown(
-        j, year, 'revenue', revenueBreakdown,
+      checkClassificationRateMatchesCofogGranularity(
+        j, year, 'revenue', revenueLines, cofogByLineId, amountPhase,
         { lines: 0, amount: 0 },
         { lines: revenueLines.length, amount: revenueTotalAtPhase },
       )
-      writeCofogBreakdown(j, year, 'revenue', revenueBreakdown, revision)
     }
 
     budgets.push(budgetSchema.parse({

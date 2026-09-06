@@ -11,7 +11,6 @@ import {
   type AggHierarchyCofogAsset,
   type AggYearsCofogDivisionAsset,
   type AggYearsTotalAsset,
-  type CofogBreakdownFile,
   type CofogChunkFile,
   type Env,
   type LinesChunkFile,
@@ -80,29 +79,6 @@ export const getBudget = os.getBudget.handler(async ({ context, input, errors })
   const budget = meta.budgetById.get(input.budget)
   if (!budget) throw errors.NOT_FOUND({ message: `unknown budget: ${input.budget}` })
   return { budget, revision: meta.revision }
-})
-
-// ---- cofog breakdown（団体 × 年度 × direction の COFOG 別内訳。budget 集約の内部） ----
-
-export const getCofogBreakdown = os.getCofogBreakdown.handler(async ({ context, input, errors }) => {
-  const parsed = parseBudgetId(input.budget)
-  if (parsed === null) {
-    throw errors.BAD_REQUEST({
-      message: `malformed budget id: ${input.budget} (expected {jurisdiction}:{year})`,
-      data: { reason: 'invalid budget id' },
-    })
-  }
-  const meta = await readMeta(context.env)
-  const budget = meta.budgetById.get(input.budget)
-  if (!budget) throw errors.NOT_FOUND({ message: `unknown budget: ${input.budget}` })
-  if (!budget.directions.includes(input.direction)) {
-    throw errors.NOT_FOUND({ message: `${input.direction} is not covered for budget ${input.budget}` })
-  }
-
-  const path = paths.cofogBreakdown(parsed.jurisdiction, parsed.fiscalYear, input.direction)
-  const file = await readJsonAsset<CofogBreakdownFile>(context.env, path)
-  if (file === null) throw new Error(`partition missing for covered budget: ${path}`)
-  return { cofog: file.breakdown, revision: file.revision }
 })
 
 // ---- budgetLines（明細の一覧。design doc「明細の一覧」） ----
@@ -489,7 +465,7 @@ const ZERO_RESIDUAL = { unclassifiable: ZERO_STAT, outOfScope: ZERO_STAT, notDes
 
 /**
  * `stat` に `total` に対する構成比を足す。画面に割り算させないための仕上げで、
- * report/budget/cofog.ts の `share()`（`getCofogBreakdown` と同じ式）をそのまま使う。
+ * report/budget/cofog.ts の `share()` をそのまま使う。
  *
  * ⚠️ 呼べるのは `total` が存在する応答だけ（design doc「団体をまたいで足さない」）。
  * 団体横断（crossJurisdictionAggregate）は `total` 自体を返さないので、この関数を呼ばず
