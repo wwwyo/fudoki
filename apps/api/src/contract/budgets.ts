@@ -679,6 +679,19 @@ const aggStat = z.object({
   lineCount: z.number().describe('明細数（一意な budget_line_id の件数）'),
 })
 
+/**
+ * `share` は `total`（応答の同じ階層にある金額の分母）に対する構成比。画面に割り算させない
+ * ため生成側 or procedure 側で計算して持たせる（report/budget/cofog.ts の `share()` と同じ式）。
+ *
+ * ⚠️ **`total` が存在しない応答では省略する（0 は置かない）。** budgets:aggregate が団体を
+ * またぐ（filter が fiscalYear だけで groupBy に jurisdiction を含む）ときは `total` 自体を
+ * 返さない（design doc「団体をまたいで足さない」）。単一の分母が無いのに構成比だけ返すと、
+ * 何に対する割合か言えない偽の数値になるため、`total` の有無と `share` の有無を一致させる。
+ */
+const aggStatWithShare = aggStat.extend({
+  share: z.number().min(0).max(1).optional().describe('`total` に対する構成比（0〜1）。`total` が無い応答では省略する'),
+})
+
 const aggregationDimension = z.object({
   dimension: groupingKey,
   code: z.string(),
@@ -689,6 +702,7 @@ const aggregationCell = z.object({
   dimensions: z.array(aggregationDimension).min(1).describe('groupBy と同じ順序の値'),
   amount: z.number().describe('円に正規化した金額合計'),
   lineCount: z.number().describe('明細数'),
+  share: z.number().min(0).max(1).optional().describe('`total` に対する構成比（0〜1）。`total` が無い応答（団体横断）では省略する'),
   fundScope: z
     .lazy(() => aggregateQueryFundScope)
     .optional()
@@ -698,10 +712,27 @@ const aggregationCell = z.object({
     ),
 })
 
+const notDescendedByDivisionEntry = z.object({
+  division: z.string(),
+  divisionLabel: z.string(),
+  amount: z.number(),
+  lineCount: z.number(),
+  share: z.number().min(0).max(1).optional().describe('`total` に対する構成比（0〜1）。`total` が無い応答では省略する'),
+})
+
 const aggregationResidual = z.object({
-  unclassifiable: aggStat.describe('cofog_status = unclassifiable の合計（cells には現れない）'),
-  outOfScope: aggStat.describe('cofog_status = out-of-scope の合計（公債費の元金償還など。cells には現れない）'),
-  notDescended: aggStat.describe('割当済み（assigned）だが groupBy が要求する深さのコードを持たない行の合計（例: division までしか降りていない行を group で集計したとき）'),
+  unclassifiable: aggStatWithShare.describe('cofog_status = unclassifiable の合計（cells には現れない）'),
+  outOfScope: aggStatWithShare.describe('cofog_status = out-of-scope の合計（公債費の元金償還など。cells には現れない）'),
+  notDescended: aggStatWithShare.describe('割当済み（assigned）だが groupBy が要求する深さのコードを持たない行の合計（例: division までしか降りていない行を group で集計したとき）'),
+  notDescendedByDivision: z
+    .array(notDescendedByDivisionEntry)
+    .optional()
+    .describe(
+      '`notDescended` を division ごとに割った内訳。groupBy が `cofog.group` / `cofog.class` のときだけ持つ' +
+        '（`cofog.division` のときは「division まで降りていない」が起こり得ないので概念自体が無い）。\n\n' +
+        '⚠️ 単一 budget の集計（filter が jurisdiction + fiscalYear）だけが持つ。団体横断（groupBy に jurisdiction を含む）は' +
+        'まだこの内訳を前計算アセットに持っておらず、実装していない',
+    ),
 })
 
 export const aggregateWarningCode = z.enum(['UNCONSOLIDATED_INTERFUND_TRANSFERS'])

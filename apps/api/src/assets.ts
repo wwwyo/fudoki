@@ -59,7 +59,17 @@ export type AggStat = { amount: number; lineCount: number }
 export type AggBudgetsAsset = {
   revision: string
   cells: { code: string; label: string; amount: number; lineCount: number }[]
-  residual: { unclassifiable: AggStat; outOfScope: AggStat; notDescended: AggStat }
+  residual: {
+    unclassifiable: AggStat
+    outOfScope: AggStat
+    notDescended: AggStat
+    /**
+     * `notDescended` を division ごとに割った内訳。`depth = 'division'` のときは
+     * 「division まで降りていない」が起こり得ない（割当済みは常に division を持つ）ので、無い。
+     * `depth = 'group' | 'class'` のときだけ持つ（procedure/budgets.ts がそのまま応答へ渡す）。
+     */
+    notDescendedByDivision?: { division: string; divisionLabel: string; amount: number; lineCount: number }[]
+  }
   total: AggStat
   consolidation: { retained: AggStat; eliminated: AggStat }
 }

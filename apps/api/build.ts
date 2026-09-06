@@ -13,8 +13,9 @@
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { buildCofogTree, cofogGranularity, unclassifiedOf, type StateRow } from '@fudoki/report/budget/cofog'
+import { buildCofogTree, cofogGranularity, foldBy, unclassifiedOf, type StateRow } from '@fudoki/report/budget/cofog'
 import { COFOG_DEPTHS, cofogLabel, type CofogDepth } from '@fudoki/report/budget/detail'
+import type { CofogCode } from '@fudoki/report/budget/schema'
 import { BY_JURISDICTION } from '@fudoki/report/budget/static'
 import {
   storedBudgetLineSchema,
@@ -948,7 +949,69 @@ function classifyCofogAmount(status: string, code: string | undefined, unexpecte
   return { kind: 'assigned', code }
 }
 
-/** 単一 budget（団体×年度×phase×fund）の COFOG 集計を生成し、アセットへ書く */
+/** count/sum の行の集合を AggStat（amount/lineCount）へ変換する。cofog.ts 側と apps/api 側で列名の語彙が違うだけ */
+function toAggStat(r: { count: number; sum: number }): AggStat {
+  return { amount: r.sum, lineCount: r.count }
+}
+
+/**
+ * `cofogGranularity` の `byCode`（division/group/class の完全な組で fold 済み）を、
+ * 集計に要求された depth のセルへ折りたたむ。depth より深く判断が進んだ行も同じ親コードへ合算する
+ * （例: depth=group のとき、class まで割り当てた行も group のセルへ積む）。
+ * `division` は `byCode` を経由せず `byDivision`（cofogGranularity がすでに division 単位へ
+ * fold 済み）をそのまま使う ── 同じ fold をここでやり直さない。
+ */
+function cellsAtDepth(
+  byCode: readonly (CofogCode & { count: number; sum: number })[],
+  byDivision: readonly { division: string; divisionLabel: string; count: number; sum: number }[],
+  depth: CofogDepth,
+): { code: string; label: string; amount: number; lineCount: number }[] {
+  if (depth === 'division') {
+    return byDivision
+      .map((d) => ({ code: d.division, label: d.divisionLabel, amount: d.sum, lineCount: d.count }))
+      .sort(byKey((c) => c.code))
+  }
+  if (depth === 'group') {
+    return foldBy(byCode.filter((r) => r.group !== ''), (r) => r.group)
+      .map((r) => ({ code: r.group, label: r.groupLabel, amount: r.sum, lineCount: r.count }))
+      .sort(byKey((c) => c.code))
+  }
+  // byCode はすでに (division, group, class) の完全な組で一意なので、class を持つ行はそのまま使える
+  return byCode
+    .filter((r) => r.class !== '')
+    .map((r) => ({ code: r.class, label: r.classLabel, amount: r.sum, lineCount: r.count }))
+    .sort(byKey((c) => c.code))
+}
+
+/**
+ * `notDescended`（割当済みだが depth まで降りていない行）を division ごとに割った内訳。
+ * depth='group' は division だけで止まった行（group が空）、depth='class' は
+ * division か group のどちらかで止まった行（class が空）── どちらも division は必ず埋まっている
+ * （割当済みの前提）ので、division でそのまま fold できる。
+ */
+function notDescendedByDivisionOf(
+  byCode: readonly (CofogCode & { count: number; sum: number })[],
+  depth: 'group' | 'class',
+): { division: string; divisionLabel: string; amount: number; lineCount: number }[] {
+  const rows = depth === 'group' ? byCode.filter((r) => r.group === '') : byCode.filter((r) => r.class === '')
+  return foldBy(rows, (r) => r.division)
+    .map((r) => ({ division: r.division, divisionLabel: r.divisionLabel, amount: r.sum, lineCount: r.count }))
+    .sort(byKey((r) => r.division))
+}
+
+/**
+ * 単一 budget（団体×年度×phase×fund）の COFOG 集計を生成し、アセットへ書く。
+ *
+ * ⚠️ 数値の出所は `cofogGranularity`（report/budget/cofog.ts）一本にする。
+ * ここでの仕事は1明細 = 1 StateRow を組み立てて渡すことと、その出力を depth に応じて
+ * セル・残余へ折りたたむことだけ（main の `buildCofogBreakdown` と同じ経路。AGENTS.md
+ * 「集計は1箇所だけで行う」── ここに独自の4分岐を書くと、`getCofogBreakdown` と
+ * `budgets:aggregate` で同じ数字が2通りに計算される状態に戻る）。
+ *
+ * unclassifiable / out-of-scope だけは `cofogGranularity` を経由させない ── 割当済み以外を
+ * 折りたたむ関数ではないので、ここは byState を直接 status で filter する単純な集計にとどめる
+ * （`unclassifiedOf` は total と assigned の差でこの2つを合算してしまい、分けられない）。
+ */
 function writeAggBudgetAsset(
   jurisdiction: string,
   year: string,
@@ -958,48 +1021,36 @@ function writeAggBudgetAsset(
   rows: Record<string, string>[],
   cofogAux: Map<string, CofogAux>,
 ): void {
-  const cellsByCode = new Map<string, AggStat>()
-  const unclassifiable = newAggStat()
-  const outOfScope = newAggStat()
-  const notDescended = newAggStat()
   const { retained, eliminated } = consolidationAt(rows, cofogAux)
-  const total = newAggStat()
-  for (const row of rows) {
+  const byState: StateRow[] = rows.map((row) => {
     const id = row['budget_line_id']!
     const aux = cofogAux.get(id) ?? fail(`agg: no cofog row for ${id} (${jurisdiction}/${year})`)
-    const amount = Number(row['value'])
-    total.amount += amount
-    total.lineCount += 1
-    const code = depth === 'division' ? aux.division : depth === 'group' ? aux.group : aux.klass
-    const cls = classifyCofogAmount(aux.status, code, `agg: unexpected cofog_status "${aux.status}" for expenditure row ${id}`)
-    if (cls.kind === 'unclassifiable') {
-      unclassifiable.amount += amount
-      unclassifiable.lineCount += 1
-      continue
+    return {
+      division: aux.division, divisionLabel: cofogLabel('division', aux.division),
+      group: aux.group, groupLabel: cofogLabel('group', aux.group),
+      class: aux.klass, classLabel: cofogLabel('class', aux.klass),
+      status: aux.status, consolidation: aux.consolidation,
+      count: 1, sum: Number(row['value']),
     }
-    if (cls.kind === 'out-of-scope') {
-      outOfScope.amount += amount
-      outOfScope.lineCount += 1
-      continue
-    }
-    if (cls.kind === 'not-descended') {
-      notDescended.amount += amount
-      notDescended.lineCount += 1
-      continue
-    }
-    const cell = cellsByCode.get(cls.code) ?? newAggStat()
-    cell.amount += amount
-    cell.lineCount += 1
-    cellsByCode.set(cls.code, cell)
-  }
-  const cells = [...cellsByCode.entries()]
-    .sort(byKey(([code]) => code))
-    .map(([code, stat]) => ({ code, label: cofogLabel(depth, code), amount: stat.amount, lineCount: stat.lineCount }))
+  })
+  const { byCode, byDivision, assigned, total, cofogReach } = cofogGranularity(byState)
+
+  const unclassifiable = toAggStat(sumCounted(byState.filter((r) => r.status === 'unclassifiable')))
+  const outOfScope = toAggStat(sumCounted(byState.filter((r) => r.status === 'out-of-scope')))
+  // notDescended = 割当済みのうち、この depth まで reach していない分。unclassifiedOf(reached, assigned) は
+  // 「assigned - reached」を count/sum/share で返す関数で、分母を入れ替えれば同じ式が notDescended の定義になる
+  // （unclassifiedOf 本来の呼び方は total/assigned だが、「全体から一部を引いた残り」という形は同じ）。
+  const reachedHere = cofogReach.find((r) => r.depth === depth) ?? fail(`agg: cofogReach has no entry for depth "${depth}"`)
+  const notDescended = toAggStat(unclassifiedOf(reachedHere.reached, assigned))
+
+  const cells = cellsAtDepth(byCode, byDivision, depth)
+  const notDescendedByDivision = depth === 'division' ? undefined : notDescendedByDivisionOf(byCode, depth)
+
   const asset: AggBudgetsAsset = {
     revision,
     cells,
-    residual: { unclassifiable, outOfScope, notDescended },
-    total,
+    residual: { unclassifiable, outOfScope, notDescended, ...(notDescendedByDivision ? { notDescendedByDivision } : {}) },
+    total: toAggStat(total),
     consolidation: { retained, eliminated },
   }
   writeJson(join(OUT_DIR, assetPaths.aggBudget(jurisdiction, year, 'expenditure', phase, fund, depth)), asset)
@@ -1390,12 +1441,25 @@ function newCrossDepthBucket(): CrossDepthBucket {
   return { cellsByJC: new Map(), unclassifiableByJ: new Map(), outOfScopeByJ: new Map(), notDescendedByJ: new Map() }
 }
 
-/** Map<jurisdiction, AggStat> への加算。無ければ 0 から作る */
+/** Map<jurisdiction, AggStat> への加算。無ければ 0 から作る。**検査側だけが使う**（1明細ずつ加算する） */
 function addAggStatByJ(map: Map<string, AggStat>, jurisdiction: string, amount: number): void {
   const stat = map.get(jurisdiction) ?? newAggStat()
   stat.amount += amount
   stat.lineCount += 1
   map.set(jurisdiction, stat)
+}
+
+/**
+ * Map<key, AggStat> へ、すでに fold 済みの AggStat をまとめて積む。
+ * `addAggStatByJ` と役割が近いが、あちらは検査側が明細を1行ずつ独立に数える用途専用
+ * （生成と検査でデータの取得経路を共有しない）で、こちらは生成側が `cofogGranularity` の
+ * 出力（1団体ぶんすでに合算済みの値）を横断アセットへ merge する用途に使う。
+ */
+function mergeAggStat(map: Map<string, AggStat>, key: string, add: AggStat): void {
+  const stat = map.get(key) ?? newAggStat()
+  stat.amount += add.amount
+  stat.lineCount += add.lineCount
+  map.set(key, stat)
 }
 
 function crossAccumFor(key: string): CrossAccum {
@@ -1411,38 +1475,51 @@ function crossAccumFor(key: string): CrossAccum {
   return created
 }
 
-/** 横断集計の材料を1団体ぶん積む。fund は選べない（design doc: 団体を絞らないと fund を指定できない） */
+/**
+ * 横断集計の材料を1団体ぶん積む。fund は選べない（design doc: 団体を絞らないと fund を指定できない）。
+ *
+ * ⚠️ 数値の出所は `writeAggBudgetAsset` と同じく `cofogGranularity`（report/budget/cofog.ts）一本にする。
+ * 以前はここに `classifyCofogAmount` を行ごとに呼ぶ独自の4分岐があり、同じ判断が
+ * `writeAggBudgetAsset` と2箇所に分かれていた。
+ *
+ * ⚠️ **団体をまたぐ notDescendedByDivision の内訳は今回作らない。** `writeAggBudgetAsset`
+ * 側（単一 budget）には division ごとの内訳を足したが、横断側でこれをやるには
+ * `AggCrossAsset.residualByJurisdiction` に (jurisdiction, division) 単位の新しい構造を
+ * 足す必要があり、design doc タスクの主眼（budgets:aggregate の数値の出所を寄せる）を超える
+ * データモデル変更になる。団体ごとの `notDescended` は今まで通り division の内訳を持たない。
+ */
 function accumulateCrossRows(jurisdiction: string, accum: CrossAccum, rows: Record<string, string>[], cofogAux: Map<string, CofogAux>): void {
   const { retained, eliminated } = consolidationAt(rows, cofogAux)
   accum.retained.amount += retained.amount
   accum.retained.lineCount += retained.lineCount
   accum.eliminated.amount += eliminated.amount
   accum.eliminated.lineCount += eliminated.lineCount
-  for (const row of rows) {
+
+  const byState: StateRow[] = rows.map((row) => {
     const id = row['budget_line_id']!
     const aux = cofogAux.get(id) ?? fail(`agg cross: no cofog row for ${id}`)
-    const amount = Number(row['value'])
-    for (const depth of COFOG_DEPTHS) {
-      const bucket = accum.perDepth[depth]
-      const code = depth === 'division' ? aux.division : depth === 'group' ? aux.group : aux.klass
-      const cls = classifyCofogAmount(aux.status, code, `agg cross: unexpected cofog_status "${aux.status}" for ${id}`)
-      if (cls.kind === 'unclassifiable') {
-        addAggStatByJ(bucket.unclassifiableByJ, jurisdiction, amount)
-        continue
-      }
-      if (cls.kind === 'out-of-scope') {
-        addAggStatByJ(bucket.outOfScopeByJ, jurisdiction, amount)
-        continue
-      }
-      if (cls.kind === 'not-descended') {
-        addAggStatByJ(bucket.notDescendedByJ, jurisdiction, amount)
-        continue
-      }
-      const jcKey = `${jurisdiction}|${cls.code}`
-      const cell = bucket.cellsByJC.get(jcKey) ?? newAggStat()
-      cell.amount += amount
-      cell.lineCount += 1
-      bucket.cellsByJC.set(jcKey, cell)
+    return {
+      division: aux.division, divisionLabel: cofogLabel('division', aux.division),
+      group: aux.group, groupLabel: cofogLabel('group', aux.group),
+      class: aux.klass, classLabel: cofogLabel('class', aux.klass),
+      status: aux.status, consolidation: aux.consolidation,
+      count: 1, sum: Number(row['value']),
+    }
+  })
+  const { byCode, byDivision, assigned, cofogReach } = cofogGranularity(byState)
+  const unclassifiable = toAggStat(sumCounted(byState.filter((r) => r.status === 'unclassifiable')))
+  const outOfScope = toAggStat(sumCounted(byState.filter((r) => r.status === 'out-of-scope')))
+
+  for (const depth of COFOG_DEPTHS) {
+    const bucket = accum.perDepth[depth]
+    mergeAggStat(bucket.unclassifiableByJ, jurisdiction, unclassifiable)
+    mergeAggStat(bucket.outOfScopeByJ, jurisdiction, outOfScope)
+
+    const reachedHere = cofogReach.find((r) => r.depth === depth) ?? fail(`agg cross: cofogReach has no entry for depth "${depth}"`)
+    mergeAggStat(bucket.notDescendedByJ, jurisdiction, toAggStat(unclassifiedOf(reachedHere.reached, assigned)))
+
+    for (const cell of cellsAtDepth(byCode, byDivision, depth)) {
+      mergeAggStat(bucket.cellsByJC, `${jurisdiction}|${cell.code}`, { amount: cell.amount, lineCount: cell.lineCount })
     }
   }
 }

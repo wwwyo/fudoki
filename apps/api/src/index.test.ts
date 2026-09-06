@@ -522,8 +522,13 @@ function sumExpenditureByDivision(
 }
 
 type AggregateResponse = {
-  cells: { dimensions: { dimension: string; code: string; label: string | null }[]; amount: number; lineCount: number }[]
-  residual: { unclassifiable: { amount: number; lineCount: number }; outOfScope: { amount: number; lineCount: number }; notDescended: { amount: number; lineCount: number } }
+  cells: { dimensions: { dimension: string; code: string; label: string | null }[]; amount: number; lineCount: number; share?: number }[]
+  residual: {
+    unclassifiable: { amount: number; lineCount: number; share?: number }
+    outOfScope: { amount: number; lineCount: number; share?: number }
+    notDescended: { amount: number; lineCount: number; share?: number }
+    notDescendedByDivision?: { division: string; divisionLabel: string; amount: number; lineCount: number; share?: number }[]
+  }
   total?: { amount: number; lineCount: number }
   supportedGroupings: string[][]
   query: { budgets: string[]; groupBy: string[] }
@@ -602,6 +607,64 @@ describe('budgets:aggregate (COFOG axis)', () => {
     const divisionAssigned = divisionBody.cells.reduce((s, c) => s + c.amount, 0)
     const groupAssigned = groupBody.cells.reduce((s, c) => s + c.amount, 0) + groupBody.residual.notDescended.amount
     expect(groupAssigned).toBe(divisionAssigned)
+  })
+
+  test('share: cells と residual の各項目が total に対する構成比を持ち、全体で1になる', async () => {
+    const res = await get(
+      `/v0/budgets:aggregate?${aggQuery({ filter: 'jurisdiction = "132047" AND fiscalYear = 2024', direction: 'expenditure', phase: 'approved', groupBy: ['cofog.division'] })}`,
+    )
+    expect(res.status).toBe(200)
+    const body = await res.json() as AggregateResponse
+    for (const cell of body.cells) {
+      expect(cell.share).toBeCloseTo(cell.amount / body.total!.amount, 12)
+    }
+    expect(body.residual.unclassifiable.share).toBeCloseTo(body.residual.unclassifiable.amount / body.total!.amount, 12)
+    expect(body.residual.outOfScope.share).toBeCloseTo(body.residual.outOfScope.amount / body.total!.amount, 12)
+    expect(body.residual.notDescended.share).toBeCloseTo(body.residual.notDescended.amount / body.total!.amount, 12)
+    const shareSum =
+      body.cells.reduce((s, c) => s + c.share!, 0) +
+      body.residual.unclassifiable.share! +
+      body.residual.outOfScope.share! +
+      body.residual.notDescended.share!
+    expect(shareSum).toBeCloseTo(1, 9)
+  })
+
+  test('share: 団体をまたぐ応答（total が無い）では share を省略する', async () => {
+    const res = await get(
+      `/v0/budgets:aggregate?${aggQuery({ filter: 'fiscalYear = 2024', direction: 'expenditure', phase: 'approved', groupBy: ['jurisdiction', 'cofog.division'] })}`,
+    )
+    expect(res.status).toBe(200)
+    const body = await res.json() as AggregateResponse
+    expect(body.total).toBeUndefined()
+    for (const cell of body.cells) expect(cell.share).toBeUndefined()
+  })
+
+  test('notDescendedByDivision: groupBy=cofog.group のとき、residual.notDescended が division ごとの内訳を持ち、合計が一致する', async () => {
+    const res = await get(
+      `/v0/budgets:aggregate?${aggQuery({ filter: 'jurisdiction = "132047" AND fiscalYear = 2024', direction: 'expenditure', phase: 'approved', groupBy: ['cofog.group'] })}`,
+    )
+    expect(res.status).toBe(200)
+    const body = await res.json() as AggregateResponse
+    const byDivision = body.residual.notDescendedByDivision
+    expect(byDivision).toBeDefined()
+    expect(byDivision!.length).toBeGreaterThan(0)
+    const sumAmount = byDivision!.reduce((s, d) => s + d.amount, 0)
+    const sumLines = byDivision!.reduce((s, d) => s + d.lineCount, 0)
+    expect(sumAmount).toBe(body.residual.notDescended.amount)
+    expect(sumLines).toBe(body.residual.notDescended.lineCount)
+    // division コードは重複しない
+    expect(new Set(byDivision!.map((d) => d.division)).size).toBe(byDivision!.length)
+    for (const d of byDivision!) {
+      expect(d.share).toBeCloseTo(d.amount / body.total!.amount, 12)
+    }
+  })
+
+  test('notDescendedByDivision: groupBy=cofog.division のときは概念が無いので持たない', async () => {
+    const res = await get(
+      `/v0/budgets:aggregate?${aggQuery({ filter: 'jurisdiction = "132047" AND fiscalYear = 2024', direction: 'expenditure', phase: 'approved', groupBy: ['cofog.division'] })}`,
+    )
+    const body = await res.json() as AggregateResponse
+    expect(body.residual.notDescendedByDivision).toBeUndefined()
   })
 
   test('複数団体にまたがるのに jurisdiction が groupBy に無いと 400（supportedGroupings 付き）', async () => {

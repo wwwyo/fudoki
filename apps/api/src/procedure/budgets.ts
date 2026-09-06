@@ -2,6 +2,8 @@
  * budgets リソースの procedure。root の一覧（filter で絞る）と Get。
  * 一覧の存在がカバレッジそのもの。
  */
+import { share } from '@fudoki/report/budget/cofog'
+import type { AggStat } from '../assets'
 import {
   type AggBudgetsAsset,
   type AggCrossAsset,
@@ -485,6 +487,19 @@ type AggregateTypedInput = {
 const ZERO_STAT = { amount: 0, lineCount: 0 } as const
 const ZERO_RESIDUAL = { unclassifiable: ZERO_STAT, outOfScope: ZERO_STAT, notDescended: ZERO_STAT } as const
 
+/**
+ * `stat` に `total` に対する構成比を足す。画面に割り算させないための仕上げで、
+ * report/budget/cofog.ts の `share()`（`getCofogBreakdown` と同じ式）をそのまま使う。
+ *
+ * ⚠️ 呼べるのは `total` が存在する応答だけ（design doc「団体をまたいで足さない」）。
+ * 団体横断（crossJurisdictionAggregate）は `total` 自体を返さないので、この関数を呼ばず
+ * `share` を省略する ── 単一の分母が無いのに構成比だけ返すと、何に対する割合か言えない
+ * 偽の数値になるため。
+ */
+function withShare<T extends AggStat>(stat: T, totalAmount: number): T & { share: number } {
+  return { ...stat, share: share(stat.amount, totalAmount) }
+}
+
 async function singleBudgetAggregate(
   env: Env,
   meta: Meta,
@@ -555,11 +570,23 @@ async function singleBudgetAggregate(
   )
 
   const cofogDimension = input.groupBy[0]!
+  // `total` はこの応答が単一 budget に閉じているので常に存在する。画面に割り算させないため
+  // ここで構成比まで計算する（design doc「引ける集計の一覧」に share の言及は無いが、
+  // 画面が同じ理由で total/assignedShare を計算済みで持つ既存パターンをここへ揃える）。
   const cells = items.map((c) => ({
     dimensions: [{ dimension: cofogDimension, code: c.code, label: c.label }],
     amount: c.amount,
     lineCount: c.lineCount,
+    share: share(c.amount, asset.total.amount),
   }))
+  const residual = {
+    unclassifiable: withShare(asset.residual.unclassifiable, asset.total.amount),
+    outOfScope: withShare(asset.residual.outOfScope, asset.total.amount),
+    notDescended: withShare(asset.residual.notDescended, asset.total.amount),
+    ...(asset.residual.notDescendedByDivision
+      ? { notDescendedByDivision: asset.residual.notDescendedByDivision.map((d) => withShare(d, asset.total.amount)) }
+      : {}),
+  }
 
   const warnings: { code: 'UNCONSOLIDATED_INTERFUND_TRANSFERS'; message: string }[] = []
   if (input.fund === 'all' && asset.consolidation.eliminated.lineCount > 0) {
@@ -574,7 +601,7 @@ async function singleBudgetAggregate(
 
   return {
     cells,
-    residual: asset.residual,
+    residual,
     total: asset.total,
     currency: 'JPY' as const,
     amountUnit: '1' as const,
@@ -666,6 +693,12 @@ async function crossJurisdictionAggregate(
   )
 
   const cofogDimension = input.groupBy.find((g) => g !== 'jurisdiction')!
+  // ⚠️ `share` を持たせない。この応答は複数団体にまたがり `total` を返さない
+  // （design doc「団体をまたいで足さない」）ので、分母になる単一の合計が無い。
+  // 団体ごとの分母（残余は団体ごとに持っている）まで遡れば構成比は作れるが、
+  // それには団体ごとの合計を新しく持つ必要があり、いまの `AggCrossAsset` には無い
+  // ── 無いものを機械的に足すより、`total` の有無と `share` の有無を一致させる方を選ぶ
+  // （`residual.notDescendedByDivision` も同じ理由でこの経路にはまだ無い）。
   const cells = items.map((c) => ({
     dimensions: [
       { dimension: 'jurisdiction' as const, code: c.jurisdiction, label: c.jurisdictionLabel },
