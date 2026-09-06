@@ -8,7 +8,8 @@
 import type { ReportEnvelope } from '../common'
 import type { CofogDepth, Direction, Level } from './detail'
 
-export type { Check, Edge, Node, Provenance, Stage, Topology } from '../common'
+export type { CanonicalFetch, Check, Edge, Node, Provenance, Stage, Topology } from '../common'
+export { isCanonicalFetch } from '../common'
 // 行数の集計（団体 × 年度へのグルーピング・合算）は lineage.ts の1箇所で終わらせてあり、
 // 画面側の nodeRows はその結果から選ぶだけ
 export { nodeRows } from '../common'

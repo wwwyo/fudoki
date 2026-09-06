@@ -12,6 +12,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { decodeText, fetchCapped, sha256, splitCsvLine } from '../../ingestion/lib/source'
 import { loadJurisdictions } from '../../ingestion/shared/jurisdictions'
+import { isCanonicalFetch } from './schema'
 import type { Check, CofogCode, NodePreview, Provenance, ReportData, Topology } from './schema'
 import { ROOT, TARGET, buildChecks, buildTopology, q, readJson, type Manifest, type RunResults } from '../lineage'
 import { BY_JURISDICTION, SHARED } from './static'
@@ -457,7 +458,14 @@ const ALL_PROVENANCE = provenanceOf(join(ROOT, 'data/budget/raw'))
 function build(
   code: string, topology: Topology, checks: Check[],
 ): ReportData {
-  const prov = provenanceOf(join(ROOT, 'data/budget/raw', `jurisdiction=${code}`))
+  // ⚠️ **保証を作っているのはこの glob。だからここで検査する。**
+  // 名称を補う抽出物は団体のディレクトリの外（`raw/project-names/` `raw/revenue-accounts/`）に
+  // あるので、`jurisdiction=<code>` の下には正本の取り込みしか来ない。
+  // 型（`ReportEnvelope.ingestion`）はそれを前提にしているので、宣言しっぱなしにしない
+  const prov = provenanceOf(join(ROOT, 'data/budget/raw', `jurisdiction=${code}`)).map((p) => {
+    if (!isCanonicalFetch(p)) throw new Error(`${code} の団体ディレクトリに、行数を持たない証跡がある（${p.request_url}）`)
+    return p
+  })
 
   const entries = Object.entries(SOURCES).filter(([k]) => k.startsWith(`${code}:`))
   if (entries.length === 0) throw new Error(`取得元 ${code}:* が ingestion/budget/sources.toml に無い`)

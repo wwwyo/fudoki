@@ -22,8 +22,8 @@
  */
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { extractedKindOf } from './common'
-import type { Check, Node, ProjectNamesExtract, Provenance, RevenueAccountsExtract, Stage, Topology } from './common'
+import { extractedKindOf, isCanonicalFetch } from './common'
+import type { CanonicalFetch, Check, Node, ProjectNamesExtract, Provenance, RevenueAccountsExtract, Stage, Topology } from './common'
 
 export const ROOT = resolve(import.meta.dirname, '..')
 export const TARGET = join(ROOT, 'dbt/target')
@@ -111,38 +111,22 @@ function introducesJudgment(n: DbtNode, stage: Stage['id']): boolean {
   return stage === 'core'
 }
 
-/** 正本の取り込みの証跡。**行数とリソース名を必ず持つ**（抽出物との違いはここ） */
-type CanonicalFetch = Provenance & { rows: number; resource_name: string }
-
 /**
- * その証跡が「正本の取り込み」か。取得元ノードと source ノードの行数はこれだけを足す。
+ * その証跡が、この direction の「正本の取り込み」か。
+ * 判別そのもの（行数の有無）は `isCanonicalFetch` が持つ。ここは direction の一致と、
+ * 「正本らしいのに行数だけ無い」証跡を黙って落とさないための診断だけを足す。
  *
  * ⚠️ **direction では見分けられない。** 名称を補う抽出物のうち revenue-accounts は
- * direction を名乗るので、混ざると rows を持たない値が合算に入り NaN になる
+ * direction を名乗るので、混ざると行数を持たない値が合算に入り NaN になる
  * （狛江市の取得元が空欄で出ていた）。
- * ⚠️ **`extractedKindOf` でも見分けられない。** 事項別明細書 PDF を原典とする団体
- * （千代田区・昭島市）は正本そのものが extracted を持つので、一緒に落ちる。
- * 見分けるのは `rows` の有無 — 正本の取り込みは CSV でも PDF でも必ず行数を持ち、
- * 名称の抽出物は持たない。
- *
- * ⚠️ **戻り値を `boolean` にしない。** 型述語にしておくと、絞り込んでいない証跡から
- * `rows` を足すコードがコンパイルを通らなくなる。`Provenance` 側で
- * `rows` を任意にしてあるのはこの検査を成立させるためで、
- * 必須と宣言すると「実行時だけ undefined」に戻る。
  */
-function isCanonicalFetch(p: Provenance, direction: string): p is CanonicalFetch {
+function isCanonicalFetchOf(p: Provenance, direction: string): p is CanonicalFetch {
   if (p.direction !== direction) return false
-  if (typeof p.rows === 'number' && Number.isFinite(p.rows)) {
-    // リソース名は正本の取り込みなら必ず付く（取得元ノードの見出しに使う）
-    if (!p.resource_name)
-      throw new Error(`${p.jurisdiction_code} の証跡に resource_name が無い（${p.fiscal_year}年度・${direction}）`)
-    return true
-  }
+  if (isCanonicalFetch(p)) return true
   // 捨てる前に、正本らしいのに行数だけ無いものを止める。黙って落とすと
   // 取得元の行数が実際より小さくなり、しかもそれが画面から分からない。
-  if (p.resource_name) {
+  if (p.resource_name)
     throw new Error(`${p.jurisdiction_code} の証跡「${p.resource_name}」に rows が無い（${p.fiscal_year}年度）`)
-  }
   return false
 }
 
@@ -163,7 +147,7 @@ function sourceRows(id: string, name: string, provenance: Provenance[]): Counted
   // `rows` を持たず、抽出の要約しか持たない。direction の有無は抽出器によって割れる。
   // ⚠️ **要約の形は抽出器で違う**ので、どちらの抽出器かを `extractedKindOf` で判別する
   // （形で見分けると、項目が増えたときに黙って別の枝へ落ちる）。
-  const byDirection = mine.filter((p) => isCanonicalFetch(p, name))
+  const byDirection = mine.filter((p) => isCanonicalFetchOf(p, name))
   if (byDirection.length > 0) return countByYear(byDirection.map((p) => [p.fiscal_year, p.rows]))
   // ⚠️ **どの抽出物かは id で決める。** 団体の証跡から抽出物を種類で拾うだけだと、
   // 同じ団体に2つの抽出器があるとき（狛江市の事業名と歳入の科目名称）両方の
@@ -392,11 +376,11 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
     // 狛江市の証跡が混ざる（`sourceRows` が同じ理由で団体コードを見ている）。
     const code = /\.raw_(\d{6})/.exec(src.id)?.[1]
     if (!code) continue
-    // 2段に分けるのは、`&&` で束ねると `isCanonicalFetch` の型述語が効かなくなるため
+    // 2段に分けるのは、`&&` で束ねると `isCanonicalFetchOf` の型述語が効かなくなるため
     // （行数を持たない証跡が混ざったことを型検査が言えなくなる）
     const ps = provenance
       .filter((p) => p.jurisdiction_code === code)
-      .filter((p) => isCanonicalFetch(p, src.label))
+      .filter((p) => isCanonicalFetchOf(p, src.label))
     if (ps.length === 0) continue
     // ノードには見出しだけ出す。「※下水道事業会計除く」のような注記は
     // 選んだときのプレビュー（title が正式名）と description に残る。

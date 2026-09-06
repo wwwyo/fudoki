@@ -189,6 +189,26 @@ export type Provenance = {
 }
 
 
+/** 正本の取り込みの証跡。**行数とリソース名を必ず持つ**（抽出物との違いはここ） */
+export type CanonicalFetch = Provenance & { rows: number; resource_name: string }
+
+/**
+ * その証跡が「正本の取り込み」か。
+ *
+ * ⚠️ **`extractor` では見分けられない。** 事項別明細書 PDF を原典とする団体
+ * （千代田区・昭島市）は正本そのものが抽出器を通るので、`extractor` を持つ。
+ * 見分けるのは行数の有無 — 正本の取り込みは CSV でも PDF でも必ず行数を持ち、
+ * 名称を補う抽出物は原典と1対1でないので持たない。
+ *
+ * ⚠️ **戻り値を `boolean` にしない。** 型述語にしておくと、絞り込んでいない証跡から
+ * `rows` を足すコードがコンパイルを通らなくなる。`Provenance` 側で `rows` を
+ * 任意にしてあるのはこの検査を成立させるためで、必須と宣言すると
+ * 「実行時だけ undefined」に戻る。
+ */
+export function isCanonicalFetch(p: Provenance): p is CanonicalFetch {
+  return typeof p.rows === 'number' && Number.isFinite(p.rows) && p.resource_name !== undefined
+}
+
 /** どの層の報告でも共通の外枠 */
 export type ReportEnvelope = {
   meta: {
@@ -212,6 +232,8 @@ export type ReportEnvelope = {
     rowsPreserved: boolean
   }
   topology: Topology
-  ingestion: Provenance[]
+  /** ⚠️ **正本の取り込みだけ。** 抽出物は団体のディレクトリの外にあり、ここには来ない
+   *（保証を作っているのは `report/budget/build.ts` の glob。そこで検査する） */
+  ingestion: CanonicalFetch[]
   checks: Check[]
 }
