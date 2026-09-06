@@ -24,7 +24,9 @@ import {
   type BudgetLinesView,
   cofogDepthOf,
   CROSS_JURISDICTION_GROUPINGS,
+  groupingsWithDirections,
   hierarchyParentPathString,
+  includesCofogAxis,
   JURISDICTION_YEARS_GROUPINGS,
   type NameFieldValue,
   parseBudgetId,
@@ -34,7 +36,6 @@ import {
   SINGLE_BUDGET_GROUPINGS,
   type StoredBudgetLine,
   type StoredCrossBudgetLine,
-  SUPPORTED_AGGREGATE_DIRECTIONS,
   SUPPORTED_GROUPINGS,
   type Budget,
   type BudgetDirectionScope,
@@ -412,21 +413,20 @@ export const aggregateBudgets = os.aggregateBudgets.handler(async ({ context, in
   if (!SUPPORTED_GROUPINGS.some((g) => g.join(',') === groupByKey)) {
     throw errors.BAD_REQUEST({
       message: `unsupported groupBy: [${input.groupBy.join(', ')}]`,
-      data: { reason: 'UNSUPPORTED_AGGREGATION', supportedGroupings: mutableGroupings(SUPPORTED_GROUPINGS), supportedDirections: [...SUPPORTED_AGGREGATE_DIRECTIONS] },
+      data: { reason: 'UNSUPPORTED_AGGREGATION', supportedGroupings: mutableGroupings(SUPPORTED_GROUPINGS) },
     })
   }
-  if (input.direction === 'revenue') {
-    // ⚠️ 理由は「歳入に COFOG が無い」ではない。hierarchy や fiscalYear の軸は歳入でも意味を持つが、
-    // budgets:aggregate 自体が歳入の集計をまだ実装していない（PR #27 レビュー指摘: 以前のメッセージは
-    // COFOG が理由であるかのように読め、設計より広く歳入を拒否しているように見えた）。
+  // COFOG は歳入に適用されない（cofog_status は歳入で常に not-applicable。データの事実であって
+  // このバージョンの制限ではない）。hierarchy・fiscalYear 単体の軸は歳入でも意味を持つので、
+  // ここで弾くのは groupBy が COFOG 軸を含むときだけにする（PR #27 レビュー指摘の再発防止:
+  // 以前は direction=revenue を一律 400 にしており、歳入で意味を持つ軸まで拒否していた）。
+  if (input.direction === 'revenue' && includesCofogAxis(input.groupBy)) {
     throw errors.BAD_REQUEST({
-      message: 'budgets:aggregate does not support direction=revenue yet. v1 only implements direction=expenditure ' +
-        '(a scope limit of this version, unrelated to whether classification axes apply to revenue)',
-      data: {
-        reason: 'revenue aggregation not supported in v1',
-        supportedGroupings: mutableGroupings(SUPPORTED_GROUPINGS),
-        supportedDirections: [...SUPPORTED_AGGREGATE_DIRECTIONS],
-      },
+      message:
+        `COFOG is not applicable to revenue (cofog_status is always "not-applicable" for revenue lines), so groupBy ` +
+        `[${input.groupBy.join(', ')}] cannot be combined with direction=revenue. hierarchy and fiscalYear axes are ` +
+        'supported for revenue; only the cofog.* axes are expenditure-only.',
+      data: { reason: 'COFOG is not applicable to revenue', supportedGroupings: mutableGroupings(SUPPORTED_GROUPINGS) },
     })
   }
 
@@ -489,7 +489,7 @@ async function singleBudgetAggregate(
       message:
         `groupBy [${input.groupBy.join(', ')}] is not supported when filter narrows to a single jurisdiction ` +
         '("jurisdiction" cannot be an axis here — every cell would already be that one jurisdiction)',
-      data: { reason: 'UNSUPPORTED_AGGREGATION', supportedGroupings: mutableGroupings(SINGLE_BUDGET_GROUPINGS), supportedDirections: [...SUPPORTED_AGGREGATE_DIRECTIONS] },
+      data: { reason: 'UNSUPPORTED_AGGREGATION', supportedGroupings: mutableGroupings(SINGLE_BUDGET_GROUPINGS) },
     })
   }
   if (!meta.jurisdictionById.has(jurisdictionId)) {
@@ -498,7 +498,9 @@ async function singleBudgetAggregate(
   const budgetId = budgetIdOf(jurisdictionId, fiscalYear)
   const budget = meta.budgetById.get(budgetId)
   if (!budget) throw errors.NOT_FOUND({ message: `unknown budget: ${budgetId}` })
-  if (input.direction !== 'expenditure') throw new Error('unreachable: revenue is rejected before reaching here')
+  // ⚠️ ここで direction を expenditure に固定しない。revenue + cofog.* はハンドラの入口で
+  // 既に 400 になっているので、ここへ revenue で来るのは groupBy=['hierarchy'] のときだけ
+  // （SINGLE_BUDGET_GROUPINGS のうち COFOG 軸を持たないのはそれだけ）。
   if (!budget.directions.includes(input.direction)) {
     throw errors.NOT_FOUND({ message: `${input.direction} is not covered for budget ${budgetId}` })
   }
@@ -596,8 +598,7 @@ async function singleBudgetAggregate(
     },
     warnings,
     omitted: [],
-    supportedGroupings: mutableGroupings(SINGLE_BUDGET_GROUPINGS),
-    supportedDirections: [...SUPPORTED_AGGREGATE_DIRECTIONS],
+    supportedGroupings: groupingsWithDirections(SINGLE_BUDGET_GROUPINGS),
     judgment: ['cofog' as const],
     provenance: {
       sources,
@@ -631,10 +632,12 @@ async function crossJurisdictionAggregate(
         `groupBy [${input.groupBy.join(', ')}] is missing "jurisdiction". filter has no jurisdiction, so this query spans multiple ` +
         'jurisdictions; summing without a jurisdiction axis would produce a cross-jurisdiction total that does not exist ' +
         '(add "jurisdiction" to groupBy, or narrow filter to a single jurisdiction)',
-      data: { reason: 'UNSUPPORTED_AGGREGATION', supportedGroupings: mutableGroupings(CROSS_JURISDICTION_GROUPINGS), supportedDirections: [...SUPPORTED_AGGREGATE_DIRECTIONS] },
+      data: { reason: 'UNSUPPORTED_AGGREGATION', supportedGroupings: mutableGroupings(CROSS_JURISDICTION_GROUPINGS) },
     })
   }
-  if (input.direction !== 'expenditure') throw new Error('unreachable: revenue is rejected before reaching here')
+  // CROSS_JURISDICTION_GROUPINGS は全組み合わせが COFOG 軸を必須で持つ（jurisdiction 単独では
+  // 引けない）ので、revenue はハンドラの入口で必ず 400 になっており、ここには来ない。
+  if (input.direction !== 'expenditure') throw new Error('unreachable: revenue always includes a cofog axis here and is rejected before reaching here')
   const budgetsThisYear = meta.budgets.filter((b) => b.fiscalYear === fiscalYear && b.directions.includes(input.direction))
   if (budgetsThisYear.length === 0) throw errors.NOT_FOUND({ message: `no ${input.direction} budgets for fiscalYear ${fiscalYear}` })
   // ⚠️ phase を検証しないままアセットパスを組むと、契約が許さない (fiscalYear, phase) の組み合わせ
@@ -725,8 +728,7 @@ async function crossJurisdictionAggregate(
     },
     warnings,
     omitted: asset.omittedBudgets,
-    supportedGroupings: mutableGroupings(CROSS_JURISDICTION_GROUPINGS),
-    supportedDirections: [...SUPPORTED_AGGREGATE_DIRECTIONS],
+    supportedGroupings: groupingsWithDirections(CROSS_JURISDICTION_GROUPINGS),
     judgment: ['cofog' as const],
     provenance: {
       sources,
@@ -849,8 +851,7 @@ async function hierarchyAggregate(
     },
     warnings: [],
     omitted: [],
-    supportedGroupings: mutableGroupings(SINGLE_BUDGET_GROUPINGS),
-    supportedDirections: [...SUPPORTED_AGGREGATE_DIRECTIONS],
+    supportedGroupings: groupingsWithDirections(SINGLE_BUDGET_GROUPINGS),
     judgment: includesCofog ? ['cofog' as const] : [],
     provenance: {
       sources,
@@ -889,7 +890,7 @@ async function jurisdictionYearsAggregate(
       message:
         `groupBy [${input.groupBy.join(', ')}] is not supported when filter narrows to a jurisdiction without a fiscalYear ` +
         '(expected "fiscalYear" or "fiscalYear,cofog.division" — aggregating across years of one jurisdiction)',
-      data: { reason: 'UNSUPPORTED_AGGREGATION', supportedGroupings: mutableGroupings(JURISDICTION_YEARS_GROUPINGS), supportedDirections: [...SUPPORTED_AGGREGATE_DIRECTIONS] },
+      data: { reason: 'UNSUPPORTED_AGGREGATION', supportedGroupings: mutableGroupings(JURISDICTION_YEARS_GROUPINGS) },
     })
   }
   if (input.hierarchyParent !== undefined) {
@@ -898,27 +899,29 @@ async function jurisdictionYearsAggregate(
       data: { reason: 'hierarchyParent not applicable' },
     })
   }
-  if (input.direction !== 'expenditure') throw new Error('unreachable: revenue is rejected before reaching here')
+  // revenue + cofog.division はハンドラの入口で 400 になっているので、revenue で来るのは
+  // groupBy=['fiscalYear'] のときだけ。以降は input.direction をそのまま使い、expenditure に固定しない。
+  const { direction } = input
 
-  const budgetsForJ = meta.budgets.filter((b) => b.jurisdictionId === jurisdictionId && b.directions.includes('expenditure'))
-  if (budgetsForJ.length === 0) throw errors.NOT_FOUND({ message: `no expenditure budgets for jurisdiction ${jurisdictionId}` })
+  const budgetsForJ = meta.budgets.filter((b) => b.jurisdictionId === jurisdictionId && b.directions.includes(direction))
+  if (budgetsForJ.length === 0) throw errors.NOT_FOUND({ message: `no ${direction} budgets for jurisdiction ${jurisdictionId}` })
 
   // ⚠️ phase・fund を検証しないままアセットパスを組むと、この団体のどの年度も持たない組み合わせ
   // （例: 狛江市に存在しない phase=approved）が「アセットが無い」500 になっていた
   // （PR #27 レビュー指摘。build はこの団体のどこかの年度に実在する (phase, fund) の組しか
   // アセットを作らないので、実在しない組を利用者の入力誤りとして 400 で返す）
-  const allowedPhases = [...new Set(budgetsForJ.flatMap((b) => b.scopes.expenditure?.phases.map((p) => p.id) ?? []))]
+  const allowedPhases = [...new Set(budgetsForJ.flatMap((b) => b.scopes[direction]?.phases.map((p) => p.id) ?? []))]
   if (!allowedPhases.includes(input.phase)) {
     throw errors.BAD_REQUEST({
-      message: `phase "${input.phase}" is not available for any expenditure budget of jurisdiction ${jurisdictionId}`,
+      message: `phase "${input.phase}" is not available for any ${direction} budget of jurisdiction ${jurisdictionId}`,
       data: { reason: 'invalid phase', allowedValues: allowedPhases },
     })
   }
   if (input.fund !== 'all') {
-    const allowedFunds = [...new Set(budgetsForJ.flatMap((b) => b.scopes.expenditure?.funds.map((f) => f.code) ?? []))]
+    const allowedFunds = [...new Set(budgetsForJ.flatMap((b) => b.scopes[direction]?.funds.map((f) => f.code) ?? []))]
     if (!allowedFunds.includes(input.fund)) {
       throw errors.BAD_REQUEST({
-        message: `fund "${input.fund}" is not available for any expenditure budget of jurisdiction ${jurisdictionId}`,
+        message: `fund "${input.fund}" is not available for any ${direction} budget of jurisdiction ${jurisdictionId}`,
         data: { reason: 'invalid fund', allowedValues: allowedFunds },
       })
     }
@@ -1012,8 +1015,7 @@ async function jurisdictionYearsAggregate(
     },
     warnings: [],
     omitted,
-    supportedGroupings: mutableGroupings(JURISDICTION_YEARS_GROUPINGS),
-    supportedDirections: [...SUPPORTED_AGGREGATE_DIRECTIONS],
+    supportedGroupings: groupingsWithDirections(JURISDICTION_YEARS_GROUPINGS),
     judgment: includesCofog ? ['cofog' as const] : [],
     provenance: {
       sources,

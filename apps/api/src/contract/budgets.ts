@@ -482,14 +482,39 @@ export const SUPPORTED_GROUPINGS: readonly (readonly GroupingKey[])[] = [
 ]
 
 /**
- * budgets:aggregate が v1 で対応する direction。歳入を弾く理由は「歳入の集計自体を
- * 実装していない」であって、COFOG が歳入に無いことではない（歳入でも hierarchy や
- * fiscalYear の軸は意味を持つ。design doc は COFOG 軸だけを歳入の対象外にしている）。
- * ⚠️ 以前はエラーメッセージが COFOG を理由に挙げており、歳入の集計が設計より広く拒否されている
- * ように読めた（PR #27 レビュー指摘）。応答からもこの制約が分かるよう、成功応答・エラー応答の
- * 両方にこの一覧をそのまま載せる。
+ * COFOG 軸（cofog.division/.group/.class）を含む groupBy かどうか。COFOG は歳入に適用されない
+ * （cofog_status は歳入で常に not-applicable）が、hierarchy・fiscalYear 単体の軸は歳入でも意味を持つ。
+ * ⚠️ 以前はここを1本の `SUPPORTED_AGGREGATE_DIRECTIONS`（全 groupBy 共通で歳出のみ）にしており、
+ * 「歳入は集計自体を v1で未実装」という誤ったメッセージの元になっていた。歳入を拒否してよいのは
+ * COFOG 軸を含む groupBy のときだけで、それ以外は歳入でも direction として受け付ける。
  */
-export const SUPPORTED_AGGREGATE_DIRECTIONS: readonly z.infer<typeof direction>[] = ['expenditure']
+const COFOG_AXES: readonly GroupingKey[] = ['cofog.division', 'cofog.group', 'cofog.class']
+
+export function includesCofogAxis(groupBy: readonly GroupingKey[]): boolean {
+  return groupBy.some((g) => COFOG_AXES.includes(g))
+}
+
+const EXPENDITURE_ONLY = ['expenditure'] as const
+const BOTH_DIRECTIONS = ['expenditure', 'revenue'] as const
+
+/** groupBy が対応する direction。COFOG 軸を含むなら歳出のみ、それ以外は歳出・歳入の両方 */
+export function directionsSupportedFor(groupBy: readonly GroupingKey[]): readonly z.infer<typeof direction>[] {
+  return includesCofogAxis(groupBy) ? EXPENDITURE_ONLY : BOTH_DIRECTIONS
+}
+
+/**
+ * `supportedGroupings` の応答形。groupBy ごとに対応する direction を運ぶ ── 軸ごとに direction が
+ * 違う（design doc）ことを、全体で1つの `supportedDirections` ではなく groupBy に紐づけて表す。
+ */
+const groupingSupportSchema = z.object({
+  groupBy: z.array(groupingKey),
+  directions: z.array(direction).describe('この groupBy が対応する direction。COFOG 軸を含む groupBy は歳出のみ'),
+})
+export type GroupingSupport = z.infer<typeof groupingSupportSchema>
+
+export function groupingsWithDirections(groupings: readonly (readonly GroupingKey[])[]): GroupingSupport[] {
+  return groupings.map((g) => ({ groupBy: [...g], directions: [...directionsSupportedFor(g)] }))
+}
 
 /** groupBy の cofog.* 要素から前計算アセットの depth を導く（groupBy に cofog.* は高々1つ） */
 export function cofogDepthOf(groupBy: readonly GroupingKey[]): 'division' | 'group' | 'class' {
@@ -685,11 +710,15 @@ export const aggregateBudgetsOutput = z.object({
   query: aggregateQuery,
   warnings: z.array(z.object({ code: aggregateWarningCode, message: z.string() })),
   omitted: z.array(z.object({ budget: z.string(), code: aggregateOmittedCode })).describe('条件（direction の phase など）を満たさず集計から除外した budget。黙って落とさない'),
-  supportedGroupings: z.array(z.array(groupingKey)).describe('この filter の範囲で引ける groupBy の一覧'),
-  // ⚠️ supportedGroupings だけでは「歳入は集計自体を実装していない」という direction の制約が
-  // 応答から読み取れない（PR #27 レビュー指摘）。歳出の応答にも常に含め、歳入で 400 になったときの
-  // エラー応答にも同じ一覧を載せる（procedure/budgets.ts）ことで、成功・失敗どちらの経路でも分かるようにする。
-  supportedDirections: z.array(direction).describe('budgets:aggregate が現在対応する direction の一覧。歳入はここに無ければ集計自体が未対応（COFOG の欠如とは別の理由）'),
+  // groupBy ごとに対応する direction を運ぶ（design doc「軸ごとに direction が違う」）。
+  // COFOG 軸を含む groupBy は歳出のみ、hierarchy・fiscalYear 単体は歳出・歳入の両方に対応する。
+  // ⚠️ 以前は全体で1本の `supportedDirections` を返しており、「歳入は集計自体を実装していない」と
+  // 読める誤ったメッセージの元だった（PR #27 レビュー指摘）。歳入に適用できないのは COFOG 軸だけ。
+  supportedGroupings: z.array(groupingSupportSchema).describe(
+    'この filter の範囲で引ける groupBy と、その groupBy が対応する direction の一覧。' +
+      'COFOG 軸（cofog.division/.group/.class）を含む groupBy は歳出のみ（cofog_status が歳入では' +
+      '常に not-applicable のため）。hierarchy・fiscalYear 単体は歳出・歳入の両方に対応する。',
+  ),
   judgment: z.array(judgmentKind).describe('この応答に含まれる fudoki の判断の種類'),
   provenance: aggregateProvenance,
   revision: z.string().describe('由来する配布物の revision（git commit）'),
@@ -752,9 +781,10 @@ export const aggregateBudgets = base
       '（含めないと、団体をまたいだ合計という存在しない数値を返すことになるため 400）。このとき fund は指定できない' +
       '（会計コードが団体で揃わないため）。\n\n' +
       'direction と phase は必須。歳出の複数の予算段階を区別せず合計する誤りを防ぐため、既定値は持たない。' +
-      '⚠️ v1 では歳出（expenditure）のみ対応。歳入を指定すると 400（COFOG が歳入に無いからではなく、' +
-      '歳入の集計自体を v1 でまだ実装していないため。hierarchy・fiscalYear の軸は歳入でも意味を持つ）。' +
-      '応答・エラー応答の supportedDirections が、その時点で対応する direction を示す。',
+      '⚠️ groupBy が COFOG 軸（cofog.division/.group/.class）を含むときは歳出（expenditure）のみ対応する ' +
+      '（cofog_status は歳入で常に not-applicable のため、COFOG そのものが歳入に適用されない）。' +
+      'hierarchy・fiscalYear 単体の軸は歳出・歳入の両方に意味を持ち、歳入でも集計できる。' +
+      '応答の supportedGroupings が、groupBy ごとに対応する direction を示す。',
   })
   .input(aggregateBudgetsInput)
   .output(aggregateBudgetsOutput)

@@ -530,7 +530,7 @@ type AggregateResponse = {
     notDescendedByDivision?: { division: string; divisionLabel: string; stoppedAt: 'division' | 'group'; amount: number; lineCount: number; share?: number }[]
   }
   total?: { amount: number; lineCount: number }
-  supportedGroupings: string[][]
+  supportedGroupings: { groupBy: string[]; directions: string[] }[]
   query: { budgets: string[]; groupBy: string[] }
   warnings: { code: string; message: string }[]
   omitted: { budget: string; code: string }[]
@@ -718,27 +718,57 @@ describe('budgets:aggregate (COFOG axis)', () => {
     expect(body.query.budgets.sort()).toEqual(['budgets/132047:2024', 'budgets/132241:2024'])
   })
 
-  test('歳入は budgets:aggregate 自体が v1 で未対応（COFOG が理由であるかのようなメッセージにしない）', async () => {
+  test('歳入 + cofog.division は 400 で、理由が COFOG の非適用であって v1 未実装ではないと読める', async () => {
     const res = await get(
       `/v0/budgets:aggregate?${aggQuery({ filter: 'jurisdiction = "132047" AND fiscalYear = 2024', direction: 'revenue', phase: 'approved', groupBy: ['cofog.division'] })}`,
     )
     expect(res.status).toBe(400)
-    // PR #27 レビュー指摘: 以前は「COFOG が歳入には無い」ことを理由に挙げており、
-    // 歳入の集計が設計より広く拒否されているように読めた。理由は「v1 でまだ実装していない」であって、
-    // COFOG の欠如ではない ── message にも reason にも COFOG を理由として書かない。
-    const body = (await res.json()) as { message: string; data: { reason: string; supportedDirections: string[] } }
-    expect(body.message.toLowerCase()).not.toContain('cofog')
-    expect(body.data.reason.toLowerCase()).not.toContain('cofog')
-    expect(body.data.supportedDirections).toEqual(['expenditure'])
+    // 歳入で COFOG 軸が拒否される理由は「COFOG が歳入に適用されない」という事実であって、
+    // 「v1 がまだ実装していない」という制限ではない ── message/reason はその区別を明示する。
+    const body = (await res.json()) as { message: string; data: { reason: string } }
+    expect(body.message.toLowerCase()).toContain('cofog')
+    expect(body.message.toLowerCase()).not.toContain('v1')
+    expect(body.data.reason.toLowerCase()).toContain('cofog')
+    expect(body.data.reason.toLowerCase()).not.toContain('not supported in v1')
   })
 
-  test('歳出の集計応答は supportedDirections で direction の制約を示す', async () => {
+  test('歳入 + hierarchy は集計できる（COFOG 軸を含まないため）。ただし hierarchy は fund=all を取れない' +
+    '（款・項のコードは会計内でしか一意でないため、direction を問わず既存の制約）ので total は fund 単体の値になる', async () => {
+    const res = await get(
+      `/v0/budgets:aggregate?${aggQuery({ filter: 'jurisdiction = "132047" AND fiscalYear = 2024', direction: 'revenue', phase: 'approved', fund: '01', groupBy: ['hierarchy'] })}`,
+    )
+    expect(res.status).toBe(200)
+    const body = await res.json() as AggregateResponse
+    // 三鷹市2024歳入・一般会計(fund=01)だけの金額（歳入は5会計に分かれ、全会計合計は 122,908,044,000）
+    expect(body.total?.amount).toBe(83187972000)
+  })
+
+  test('歳入 + fiscalYear(fund=all) は集計できる（COFOG 軸を含まないため）。fund=all が使えるのはこの軸だけ、' +
+    'かつ filter がひとつの年度に絞らないため total は範囲全体（全年度）の合計になる ── ' +
+    '2024年度単体の値は cells から拾う', async () => {
+    const res = await get(
+      `/v0/budgets:aggregate?${aggQuery({ filter: 'jurisdiction = "132047"', direction: 'revenue', phase: 'approved', groupBy: ['fiscalYear'] })}`,
+    )
+    expect(res.status).toBe(200)
+    const body = await res.json() as AggregateResponse
+    expect(body.total).toBeDefined()
+    const cell2024 = body.cells.find((c) => c.dimensions[0]!.code === '2024')
+    expect(cell2024).toBeDefined()
+    // 不変条件（三鷹市 132047、2024年度、approved）: 歳入の合計 = 122,908,044,000円 / 821行
+    expect(cell2024!.amount).toBe(122908044000)
+    expect(cell2024!.lineCount).toBe(821)
+  })
+
+  test('supportedGroupings は groupBy ごとに対応する direction を持つ（COFOG 軸は歳出のみ、hierarchy は両方）', async () => {
     const res = await get(
       `/v0/budgets:aggregate?${aggQuery({ filter: 'jurisdiction = "132047" AND fiscalYear = 2024', direction: 'expenditure', phase: 'approved', groupBy: ['cofog.division'] })}`,
     )
     expect(res.status).toBe(200)
-    const body = (await res.json()) as { supportedDirections: string[] }
-    expect(body.supportedDirections).toEqual(['expenditure'])
+    const body = (await res.json()) as { supportedGroupings: { groupBy: string[]; directions: string[] }[] }
+    const cofogEntry = body.supportedGroupings.find((g) => g.groupBy.join(',') === 'cofog.division')
+    expect(cofogEntry?.directions).toEqual(['expenditure'])
+    const hierarchyEntry = body.supportedGroupings.find((g) => g.groupBy.join(',') === 'hierarchy')
+    expect(hierarchyEntry?.directions).toEqual(['expenditure', 'revenue'])
   })
 
   test('団体を絞らずに fund を指定すると 400', async () => {
@@ -1311,8 +1341,8 @@ describe('budgetLines:search (名称の検索)', () => {
 // （応答の形が引数で変わる計算は AIP-136 のカスタムメソッドであるべき、という方針）。
 // その検査はここへ移す。「歳入で assigned が 0 になること」「404/400 の扱い」は
 // budgets:aggregate 自体の検査（`describe('budgets:aggregate (COFOG axis)')`）が
-// すでに独立に持っている（歳入は v1 で未対応そのものが 400 になる、実在しない団体・年度は 404、
-// 型付き必須フィールドの欠落は 400）ので、ここでは重複させず、
+// すでに独立に持っている（歳入 + COFOG 軸は「COFOG が歳入に適用されない」ため 400 になる、
+// 実在しない団体・年度は 404、型付き必須フィールドの欠落は 400）ので、ここでは重複させず、
 // 旧テストに固有だった classificationRate との突合だけを残す。
 describe('classificationRate matches budgets:aggregate', () => {
   type ClassificationRate = Record<'assigned' | 'unclassifiable' | 'outOfScope', { lines: number; amount: number }>

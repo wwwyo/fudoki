@@ -19,9 +19,9 @@ const inputSchema = aggregateBudgetsInput.extend({
       '（実在する値は list_jurisdictions / list_budgets の応答で確認する）',
   ),
   direction: aggregateBudgetsInput.shape.direction.describe(
-    '歳出 / 歳入。必須。ただし budgets:aggregate は v1 では歳出（expenditure）のみ対応で、' +
-      'revenue を指定すると 400 になる（歳入の集計自体を将来対応しない、という意味ではない。' +
-      '現状 COFOG 軸以外の集計も含めて未実装というだけ）',
+    '歳出 / 歳入。必須。groupBy が COFOG 軸（cofog.division/.group/.class）を含むときは歳出のみ対応で、' +
+      'revenue を指定すると 400 になる（cofog_status が歳入では常に not-applicable のため、COFOG そのものが' +
+      '歳入に適用されない）。hierarchy・fiscalYear 単体の軸は歳出・歳入の両方で使える',
   ),
   phase: aggregateBudgetsInput.shape.phase.describe(
     '予算段階。必須で既定値は無い。同じ明細が予算段階ごとに複数の金額（当初予算額・補正後・執行済額など）を' +
@@ -63,8 +63,10 @@ export function registerAggregateBudgets(server: McpServer, client: ApiClient): 
         '団体・年度で絞った予算を COFOG（大分類・中分類・小分類）別、または科目階層（款・項・目）別に' +
         '集計する。実行時の再集計はせず、前計算済みの組み合わせだけを引く（応答の supportedGroupings が' +
         '引ける組み合わせの全部）。\n\n' +
-        '⚠️ v1 では歳出（direction=expenditure）だけが対象。歳入は集計そのものを未実装のため 400 になる' +
-        '（応答の supportedDirections が、その時点で対応している direction を示す）。\n\n' +
+        '⚠️ groupBy が COFOG 軸（cofog.division/.group/.class）を含むときは歳出（direction=expenditure）' +
+        'のみが対象で、歳入を指定すると 400 になる（cofog_status が歳入では常に not-applicable のため）。' +
+        'hierarchy・fiscalYear 単体の軸は歳出・歳入の両方に対応する（応答の supportedGroupings が、' +
+        'groupBy ごとに対応する direction を示す）。\n\n' +
         '`direction` と `phase` は必須（既定値なし）。同じ明細が複数の予算段階（当初予算額・補正後・' +
         '執行済額など）の金額を持つ団体があり、段階を固定しないと同じ明細を複数回合算することになる。' +
         '段階は団体ごとに違うので、まず list_budgets で対象団体の scopes[direction].phases を見て、' +
