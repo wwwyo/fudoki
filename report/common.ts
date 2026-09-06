@@ -141,13 +141,26 @@ export function extractedKindOf(p: Provenance): 'project-names' | 'statement' | 
   throw new Error(`未知の抽出器: ${p.extractor}（extractedKindOf に足すこと）`)
 }
 
-/** 取得の証跡。原典1リソースにつき1件 */
+/**
+ * 取得の証跡。原典1リソースにつき1件。
+ *
+ * ⚠️ **正本の取り込みだけが持つ項目を必須で宣言しない。** 名称を補う抽出物
+ * （`extract_projects.py` / `extract_revenue_accounts.py`）は原典と1対1ではないので、
+ * リソース名も行数も持たない。ここを必須と宣言すると、**型検査は通るのに実行時は
+ * `undefined`** という状態になり、`rows` を足した先が黙って `NaN` になる
+ * （狛江市の取得元ノードの行数で実際に起きた。抽出物が `direction: "revenue"` を
+ * 名乗るので、行数を持つ決算歳入の証跡と一緒に合算された）。
+ * 任意にしておけば、読む側は絞り込んでからでないと足せない。
+ */
 export type Provenance = {
   jurisdiction_code: string
   fiscal_year: number
-  direction: string
-  resource_name: string
-  fiscal_year_basis: string
+  /** ⚠️ **抽出物は名乗らないことがある**（`extract_projects.py` は direction を持たない） */
+  direction?: string
+  /** ⚠️ **正本の取り込みだけが持つ。** 抽出物は `document_title` を名乗る */
+  resource_name?: string
+  /** ⚠️ 同上（正本の取り込みだけ） */
+  fiscal_year_basis?: string
   request_url: string
   status: number
   bytes: number
@@ -155,8 +168,10 @@ export type Provenance = {
   fetched_at: string
   /** ⚠️ **PDF を原典とする取得元は持たない**（テキストの文字コードという概念が無い） */
   encoding?: string
-  header: string[]
-  rows: number
+  /** ⚠️ 表を持つ取得元だけ（CSV と事項別明細書の PDF） */
+  header?: string[]
+  /** ⚠️ **正本の取り込みだけが持つ。** 抽出物は行数ではなく抽出の要約（`extracted`）を持つ */
+  rows?: number
   roundtrip_verified: boolean
   /** 抽出した取得元だけが持つ。`ingestion/budget/extract_*.py@<版>` */
   extractor?: string

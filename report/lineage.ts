@@ -111,14 +111,9 @@ function introducesJudgment(n: DbtNode, stage: Stage['id']): boolean {
   return stage === 'core'
 }
 
-/**
- * 原典（source）の行数を証跡から引く。
- *
- * ⚠️ **direction だけで引かない。** ソースは団体ごとに1つあり、名前はどちらも
- * `expenditure` / `revenue` である。direction だけで突き合わせると、
- * 狛江市の原典ノードに三鷹市の行数が出る（実際にそうなっていた）。
- * ソースの識別子（`source.fudoki.raw_132195.expenditure`）から団体コードを取る。
- */
+/** 正本の取り込みの証跡。**行数とリソース名を必ず持つ**（抽出物との違いはここ） */
+type CanonicalFetch = Provenance & { rows: number; resource_name: string }
+
 /**
  * その証跡が「正本の取り込み」か。取得元ノードと source ノードの行数はこれだけを足す。
  *
@@ -129,10 +124,20 @@ function introducesJudgment(n: DbtNode, stage: Stage['id']): boolean {
  * （千代田区・昭島市）は正本そのものが extracted を持つので、一緒に落ちる。
  * 見分けるのは `rows` の有無 — 正本の取り込みは CSV でも PDF でも必ず行数を持ち、
  * 名称の抽出物は持たない。
+ *
+ * ⚠️ **戻り値を `boolean` にしない。** 型述語にしておくと、絞り込んでいない証跡から
+ * `rows` を足すコードがコンパイルを通らなくなる。`Provenance` 側で
+ * `rows` を任意にしてあるのはこの検査を成立させるためで、
+ * 必須と宣言すると「実行時だけ undefined」に戻る。
  */
-function isCanonicalFetch(p: Provenance, direction: string): boolean {
+function isCanonicalFetch(p: Provenance, direction: string): p is CanonicalFetch {
   if (p.direction !== direction) return false
-  if (Number.isFinite(p.rows)) return true
+  if (typeof p.rows === 'number' && Number.isFinite(p.rows)) {
+    // リソース名は正本の取り込みなら必ず付く（取得元ノードの見出しに使う）
+    if (!p.resource_name)
+      throw new Error(`${p.jurisdiction_code} の証跡に resource_name が無い（${p.fiscal_year}年度・${direction}）`)
+    return true
+  }
   // 捨てる前に、正本らしいのに行数だけ無いものを止める。黙って落とすと
   // 取得元の行数が実際より小さくなり、しかもそれが画面から分からない。
   if (p.resource_name) {
@@ -141,6 +146,14 @@ function isCanonicalFetch(p: Provenance, direction: string): boolean {
   return false
 }
 
+/**
+ * 原典（source）の行数を証跡から引く。
+ *
+ * ⚠️ **direction だけで引かない。** ソースは団体ごとに1つあり、名前はどちらも
+ * `expenditure` / `revenue` である。direction だけで突き合わせると、
+ * 狛江市の原典ノードに三鷹市の行数が出る（実際にそうなっていた）。
+ * ソースの識別子（`source.fudoki.raw_132195.expenditure`）から団体コードを取る。
+ */
 function sourceRows(id: string, name: string, provenance: Provenance[]): Counted | null {
   const code = /\.raw_(\d{6})/.exec(id)?.[1]
   if (!code) throw new Error(`ソース ${id} の名前から団体コードを取れない（raw_<団体コード> の形にすること）`)
@@ -248,29 +261,31 @@ export function assertNoNullKeyRows(counts: CountRow[], hasYear: (node: number) 
 /**
  * 検査: `rows === Σ(rowsByJurisdiction[*].total)` と `total === Σ(byYear)`。
  *
- * ⚠️ **行数は実データで取れないことがある**（132195 の一部の source/origin。
- * 証跡の `rows` 自体が欠けている取得元と、行数を持つ取得元が同じ direction を
- * 名乗って両方拾われ、`undefined + number` が `NaN` になる）。
- * `NaN` を 0 として足すと（JS の `+` は `null` を 0 に変換するが `NaN` は伝播する）
- * 比較が必ず不一致になり、逆に見なかったことにすると本当の不一致まで見逃す。
- * ここでは「取れていない」を型どおり null 扱いし、`Number.isFinite` で
- * 比較できる（全員が実数の）組だけを見る。
+ * ⚠️ **「行数が無い」と「行数を数え損ねた」を同じ扱いにしない。**
+ * 前者は `null`（団体にも年度にも依らない規則表など、数えようが無いもの）で、
+ * 検査から外してよい。後者は `NaN` で、必ず合算の誤りから来る
+ * （行数を持たない抽出物が正本の証跡に混ざり `undefined + number` になった実例がある）。
+ * `NaN` は比較すると常に不一致になるので、スキップすると**根本原因を隠したまま通る**。
+ * ここで別の失敗として止める。
  */
 export function assertRowSumsConsistent(nodes: Node[]): void {
+  const finite = (id: string, what: string, v: number): number => {
+    if (!Number.isFinite(v)) throw new Error(`${id}: ${what} が数値でない（${v}）。行数を持たない証跡が合算に混ざっている`)
+    return v
+  }
   for (const n of nodes) {
     if (n.rowsByJurisdiction === null) continue
-    const perJurisdiction = Object.values(n.rowsByJurisdiction)
-    if (Number.isFinite(n.rows) && perJurisdiction.every((v) => Number.isFinite(v.total))) {
-      const sum = perJurisdiction.reduce((s, v) => s + v.total, 0)
-      if (sum !== n.rows) throw new Error(`${n.id}: rows(${n.rows}) !== Σ(rowsByJurisdiction の total)(${sum})`)
+    const perJurisdiction = Object.entries(n.rowsByJurisdiction)
+    for (const [code, v] of perJurisdiction) finite(n.id, `${code} の total`, v.total)
+    if (n.rows !== null) {
+      const sum = perJurisdiction.reduce((s, [, v]) => s + v.total, 0)
+      if (finite(n.id, 'rows', n.rows) !== sum)
+        throw new Error(`${n.id}: rows(${n.rows}) !== Σ(rowsByJurisdiction の total)(${sum})`)
     }
-    for (const v of perJurisdiction) {
-      if (v.byYear === null || !Number.isFinite(v.total)) continue
-      const years = Object.values(v.byYear)
-      if (years.every((y) => Number.isFinite(y))) {
-        const sum = years.reduce((s, y) => s + y, 0)
-        if (sum !== v.total) throw new Error(`${n.id}: total(${v.total}) !== Σ(byYear)(${sum})`)
-      }
+    for (const [code, v] of perJurisdiction) {
+      if (v.byYear === null) continue
+      const sum = Object.entries(v.byYear).reduce((s, [y, rows]) => s + finite(n.id, `${code} の ${y}年度`, rows), 0)
+      if (sum !== v.total) throw new Error(`${n.id}: total(${v.total}) !== Σ(byYear)(${sum})`)
     }
   }
 }
@@ -377,7 +392,11 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
     // 狛江市の証跡が混ざる（`sourceRows` が同じ理由で団体コードを見ている）。
     const code = /\.raw_(\d{6})/.exec(src.id)?.[1]
     if (!code) continue
-    const ps = provenance.filter((p) => p.jurisdiction_code === code && isCanonicalFetch(p, src.label))
+    // 2段に分けるのは、`&&` で束ねると `isCanonicalFetch` の型述語が効かなくなるため
+    // （行数を持たない証跡が混ざったことを型検査が言えなくなる）
+    const ps = provenance
+      .filter((p) => p.jurisdiction_code === code)
+      .filter((p) => isCanonicalFetch(p, src.label))
     if (ps.length === 0) continue
     // ノードには見出しだけ出す。「※下水道事業会計除く」のような注記は
     // 選んだときのプレビュー（title が正式名）と description に残る。

@@ -25,7 +25,8 @@ export function StageDetail({ report }: { report: ReportData }) {
                     <a className="underline" href={p.request_url} target="_blank" rel="noreferrer">{p.resource_name}</a>
                   </TableCell>
                   <TableCell><Badge variant={p.status === 200 ? 'secondary' : 'destructive'}>{p.status}</Badge></TableCell>
-                  <TableCell className="text-right tabular-nums">{yen(p.rows)}</TableCell>
+                  {/* 行数は正本の取り込みだけが持つ。無いものを 0 と書くと空の原典に見える */}
+                  <TableCell className="text-right tabular-nums">{p.rows === undefined ? '—' : yen(p.rows)}</TableCell>
                   <TableCell title="shift_jis ではなく cp932。原典に機種依存文字（Ⅰ = U+2160）が入っている">
                     {p.encoding}
                   </TableCell>
