@@ -453,15 +453,15 @@
             "name": "saisetsu_code",
             "title": "細節コード",
             "type": "string",
-            "columnType": "fin-source:generic:level5:code",
-            "description": "歳入の細節"
+            "columnType": "economic-classification:generic:level2:code",
+            "description": "歳出の節の下の内訳。⚠️ 同じ列名でも歳入の細節は財源の分類（fin-source）で別概念"
           },
           {
             "name": "saisetsu_label",
             "title": "細節名",
             "type": "string",
-            "columnType": "fin-source:generic:level5:label",
-            "labelOf": "fin-source:generic:level5:code"
+            "columnType": "economic-classification:generic:level2:label",
+            "labelOf": "economic-classification:generic:level2:code"
           },
           {
             "name": "saisaisetsu_code",
@@ -1086,7 +1086,7 @@
       "path": "account_names.csv",
       "profile": "tabular-data-resource",
       "title": "科目の名称と法定マスタへの対応（fudoki の判断を含む）",
-      "description": "款・項・目の名称のカタログと、地方自治法施行規則 別記の区分への対応。**款のコードは団体ごとに法定とずれる**（災害復旧費を持たない市では以降が詰まる）ので、団体をまたぐ比較は master_kan_code / master_kou_code で行う。名称の出所（原典か、決算書 PDF から fudoki が解決したか）は name_source が言う",
+      "description": "款・項・目の名称のカタログと、地方自治法施行規則 別記の区分への対応。**款のコードは団体ごとに法定とずれる**（災害復旧費を持たない市では以降が詰まる）ので、団体をまたぐ比較は master_kan_code / master_kou_code で行う。名称の出所（原典 CSV か、事項別明細書 PDF からの抽出か、決算書 PDF から fudoki が解決したか）は name_source が言う",
       "format": "csv",
       "mediatype": "text/csv",
       "encoding": "utf-8",

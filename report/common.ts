@@ -28,7 +28,21 @@ export type Node = {
    */
   jurisdictionCode: string | null
   stage: Stage['id']
+  /** 全団体・全年度の行数。core は系統1本を共有するので、ここには他団体の行も入る */
   rows: number | null
+  /**
+   * 団体 × 年度で数え直した行数。**画面は選んだ団体・年度でここを引くだけ**にする
+   * （画面で足し込むと、同じ数字が2通りに計算されていずれ食い違う）。
+   *
+   * ⚠️ **`rows` では1団体のページを作れない。** core のモデルは全団体を1つの表に
+   * 持つので、`rows` をそのまま出すと多摩市のページにも三鷹市の行が混ざった数字が出る
+   * （raw・staging・package は団体ごとなので、同じ図の中で数字の意味が変わる）。
+   *
+   * - null: 団体にも年度にも依らない規則表（`rows` がすべて）
+   * - `byYear` が null: その団体では年度に依らない（年度を持たない表）。
+   *   **欠損ではなく「規則は年度に依らない」という事実**なので、0 に潰さない
+   */
+  rowsByJurisdiction: Record<string, { total: number; byYear: Record<string, number> | null }> | null
   description: string
   /** このノード自身が判断を持ち込むか（規則を適用する core のモデルと、判断を宣言した seed） */
   introducesJudgment: boolean
@@ -42,6 +56,30 @@ export type Node = {
   containsJudgment: boolean
   /** 配布物として書き出されるファイル。package 段のノードだけ持つ */
   artifact: string | null
+}
+
+/**
+ * ノードの行数を、見ている団体と年度で引く。**足し算はしない**（生成側が数え終えている）。
+ * 集計（グルーピング・合算）は `lineage.ts` の1箇所で終わらせてあり、
+ * 画面はここでその結果から選ぶだけなので、集計のやり方が2通りに分かれない。
+ *
+ * `scopedToYear` が false なのは、年度を選んでいないときと、
+ * そのノードが年度を持たない（規則表）ときの両方。画面はこれを見て
+ * 「この数字だけ年度で切れていない」と言える。
+ */
+export function nodeRows(
+  n: Node,
+  jurisdictionCode: string,
+  fiscalYear: number | null,
+): { rows: number | null; scopedToYear: boolean } {
+  if (n.rowsByJurisdiction === null) return { rows: n.rows, scopedToYear: false }
+  // ⚠️ **団体で切れる表に自分の行が無いときに `rows` へ落ちない。**
+  // 落とすと、その団体が1行も持たないモデル（名称を PDF から起こした団体だけが行を持つ
+  // `core_budget_account_names` など）に他団体の合計が出る。無いことは 0 行である
+  const mine = n.rowsByJurisdiction[jurisdictionCode]
+  if (!mine) return { rows: 0, scopedToYear: fiscalYear !== null }
+  if (fiscalYear === null || mine.byYear === null) return { rows: mine.total, scopedToYear: false }
+  return { rows: mine.byYear[String(fiscalYear)] ?? 0, scopedToYear: true }
 }
 
 export type Edge = { from: string; to: string; kind: string }
@@ -66,6 +104,43 @@ export type Check = {
   detail: string
 }
 
+/** 事業名の抽出器（`extract_projects.py`）の要約 */
+export type ProjectNamesExtract = {
+  kind: 'project-names'
+  projects: number
+  moku: number
+  totalThousandYen: number
+}
+
+/** 事項別明細書の抽出器（`extract_statement.py`）の要約 */
+export type StatementExtract = {
+  kind: 'statement'
+  leaves: number
+  moku: number
+  total: number
+}
+
+/** 歳入の科目名称の抽出器（`extract_revenue_accounts.py`）の要約 */
+export type RevenueAccountsExtract = {
+  kind: 'revenue-accounts'
+  moku: number
+  named: number
+}
+
+/**
+ * どちらの抽出器の要約かを、証跡が名乗る抽出器のパスから決める。
+ * ⚠️ **形（どのキーがあるか）で判定しない。** 項目が増えたときに黙って別の枝へ落ちる。
+ */
+export function extractedKindOf(p: Provenance): 'project-names' | 'statement' | 'revenue-accounts' | null {
+  if (!p.extracted) return null
+  if (p.extractor?.includes('extract_statement')) return 'statement'
+  if (p.extractor?.includes('extract_projects')) return 'project-names'
+  if (p.extractor?.includes('extract_revenue_accounts')) return 'revenue-accounts'
+  // ⚠️ 既定で project-names に落とさない。抽出器が増えた日に黙って別の枝へ入り、
+  // その要約に無いフィールドを読んで NaN になる（revenue-accounts で実際に起きた）。
+  throw new Error(`未知の抽出器: ${p.extractor}（extractedKindOf に足すこと）`)
+}
+
 /** 取得の証跡。原典1リソースにつき1件 */
 export type Provenance = {
   jurisdiction_code: string
@@ -78,12 +153,24 @@ export type Provenance = {
   bytes: number
   sha256: string
   fetched_at: string
-  encoding: string
+  /** ⚠️ **PDF を原典とする取得元は持たない**（テキストの文字コードという概念が無い） */
+  encoding?: string
   header: string[]
   rows: number
   roundtrip_verified: boolean
-  /** PDF から起こした取得元だけが持つ。抽出の要約（原典と1対1ではない） */
-  extracted?: { projects: number; moku: number; totalThousandYen: number }
+  /** 抽出した取得元だけが持つ。`ingestion/budget/extract_*.py@<版>` */
+  extractor?: string
+  /**
+   * PDF から起こした取得元だけが持つ、抽出の要約（原典と1対1ではない）。
+   *
+   * ⚠️ **抽出器ごとに項目が違うので、全部を任意にして1つの形へ潰さない。**
+   * 潰すと「どの抽出器由来か」を型が何も言わなくなり、事項別明細書の証跡を
+   * 事業名の証跡として読むコードがコンパイルを通ってしまう（`projects` が
+   * 常に undefined になり、黙って 0 になる）。読む側は `kind` で分岐すること。
+   * ⚠️ **判別子は証跡に無い。** 抽出器が書いた `extractor` のパスから読む側が導く
+   * （`extractedKindOf`）。証跡に持たせると、既に commit 済みの取得物を作り直す必要が出る。
+   */
+  extracted?: ProjectNamesExtract | StatementExtract | RevenueAccountsExtract
 }
 
 

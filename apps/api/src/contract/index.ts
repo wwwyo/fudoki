@@ -9,7 +9,7 @@
  * 集約を足すときはファイルを足し、ここの contract に載せる。
  */
 import { getJurisdiction, listJurisdictions } from './jurisdictions'
-import { aggregateBudgets, getBudget, getBudgetLines, listBudgets, searchBudgetLines } from './budgets'
+import { aggregateBudgets, getBudget, getBudgetLines, getCofogBreakdown, listBudgets, searchBudgetLines } from './budgets'
 
 export const contract = {
   listJurisdictions,
@@ -17,6 +17,7 @@ export const contract = {
   listBudgets,
   getBudget,
   getBudgetLines,
+  getCofogBreakdown,
   aggregateBudgets,
   searchBudgetLines,
 }
@@ -37,6 +38,7 @@ export {
   budgetLinesViewEnum,
   budgetLineSchema,
   budgetSchema,
+  cofogBreakdownSchema,
   cofogDepthOf,
   CROSS_JURISDICTION_GROUPINGS,
   getBudgetLinesInput,
@@ -64,6 +66,7 @@ export {
   type BudgetLine,
   type BudgetLinesView,
   type BudgetScopes,
+  type CofogBreakdown,
   type GetBudgetLinesOutput,
   type GroupingKey,
   type HierarchyParentSegment,

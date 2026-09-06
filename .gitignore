@@ -19,11 +19,12 @@ tmp/
 apps/web/public/pipeline.json
 apps/web/public/preview/
 
-# 団体ごとの /pipeline/<団体コード>/ は vite plugin が jurisdictions.json から生成する
-# （apps/web/vite-plugins/pipeline-jurisdictions.ts）。コードなしの apps/web/pipeline/index.html は
-# 手書きなので残す（配下だけを無視する）
+# 団体ごとの /pipeline/<団体コード>/ と /analysis/<団体コード>/ は vite plugin が
+# jurisdictions.json から生成する（apps/web/vite-plugins/jurisdiction-pages.ts）。
+# コードなしの apps/web/{pipeline,analysis}/index.html は手書きなので残す（配下だけを無視する）
 apps/web/pipeline/*/
-# 同じ plugin が62団体分を書き出す。手書きだと3 URL のまま古びていた
+apps/web/analysis/*/
+# 同じ plugin が62団体 × 2種類分を書き出す。手書きだと3 URL のまま古びていた
 apps/web/public/sitemap.xml
 apps/web/node_modules/
 apps/web/dist/

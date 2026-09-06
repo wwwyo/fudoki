@@ -202,6 +202,7 @@ def load_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
     # 正本は同じ TOML に置く — 取得元の宣言が2ファイルに割れるほうが見落とす。
     raw.pop("project_names", None)
     raw.pop("revenue_accounts", None)
+    raw.pop("statement", None)
 
     sources: dict[str, Source] = {}
     for key, spec in raw.items():
@@ -259,6 +260,56 @@ def load_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
     return sources
 
 
+def statement_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
+    """事項別明細書の取得元を `Source` の語彙へ畳む。**配布物の側が使う。**
+
+    ⚠️ **`load_sources()` には混ぜない。** そちらは CSV の取得器（`fetch.py`）が回す集合で、
+    混ぜると原文をそのまま置く取得器が PDF を掴んで落ちる（`raw_form != verbatim` で停止する）。
+    取得の経路は分かれているが、**配布物から見た「取得元」は同じ概念**（誰の資料を、どの許諾で、
+    どの入口から取ったか）なので、descriptor を組む側には同じ形で渡す。
+
+    ⚠️ **CKAN 固有の項目は持たない。** カタログも `fiscal_year_label` も
+    `dataset_title` も無い（カタログを一度も引かないので、書けば読まれない宣言になる）。
+    """
+    out: dict[str, Source] = {}
+    for key, spec in load_statements(path).items():
+        code, year = key.split(":")
+        out[f"statement:{key}"] = Source(
+            key=f"statement:{key}",
+            catalog=None,
+            jurisdiction_code=code,
+            jurisdiction_name=_jurisdiction_name(code),
+            fiscal_year=int(year),
+            fiscal_year_label=None,
+            phase_id=spec["phase_id"],
+            phase_label=spec["phase_label"],
+            dataset_title=None,
+            # PDF はテキストの文字コードを持たない。CSV の取得器だけが読む項目なので空にする
+            encoding="",
+            redistribute=spec["redistribute"],
+            redistribute_basis=spec["redistribute_basis"],
+            license_id=spec["license_id"],
+            attribution=spec["attribution"],
+            landing_page=spec["landing_page"],
+            raw_form=spec["raw_form"],
+            resources=tuple(
+                Resource(direction=direction, resource_name=spec["document_title"],
+                         url=spec["url"], url_basis=spec["url_basis"])
+                for direction in sorted(spec["pages"])
+            ),
+        )
+    return out
+
+
+def all_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
+    """収録済みの取得元すべて。**配布物と検査の母集団はこちら。**
+
+    ⚠️ 取得器ごとの集合（`load_sources` / `statement_sources`）を母集団にすると、
+    経路を増やすたびに「その経路だけ誰も見ていない」団体が生まれる。
+    """
+    return {**load_sources(path), **statement_sources(path)}
+
+
 def load_catalogs(path: Path = SOURCES_TOML) -> dict[str, Catalog]:
     """カタログの宣言だけを引く。**取得元を1つも読まずに宛先を知りたいときのため。**
 
@@ -295,6 +346,47 @@ def load_project_names(path: Path = SOURCES_TOML) -> dict[str, dict]:
 def load_revenue_accounts(path: Path = SOURCES_TOML) -> dict[str, dict]:
     """歳入の科目名称の取得元（決算資料の歳入事項別明細）。`[revenue_accounts]` 節"""
     return _pdf_sources("revenue_accounts", path)
+
+
+def load_statements(path: Path = SOURCES_TOML) -> dict[str, dict]:
+    """事項別明細書（PDF）を原典とする取得元。`sources.toml` の `[statement]` 節。
+
+    ⚠️ **`Source` には乗らない。** CKAN の取得元は (団体, 年度) に対して
+    direction ごとの**別ファイル**を持つが、事項別明細書は1本の PDF の中で
+    歳入と歳出が**頁範囲で分かれる**。同じデータクラスに載せると、どちらの団体でも
+    半分が任意の項目になる。権利の語彙（`raw_form` / `redistribute` / `license_id`）は揃えてある。
+
+    ⚠️ **`raw_form` は `extracted` しか許さない。** ここが落とすのは抽出した表であって
+    原文の複製ではない。再配布可の団体（昭島市は PDL1.0）でも同じで、
+    `verbatim` と名乗ると下流の復元一致の検査が成立すると読めてしまう。
+    """
+    section = _pdf_sources("statement", path)
+    for key, spec in section.items():
+        if spec.get("raw_form") != "extracted":
+            raise ValueError(f"statement.{key}: raw_form は extracted のみ（抽出した表しか落とさない）")
+        if not spec.get("url_basis"):
+            raise ValueError(f"statement.{key}: url_basis が空。カタログを引かない理由を書くこと")
+        if not spec.get("fund_basis"):
+            # ⚠️ **会計は資料の中にしか無い。** CSV の団体は原典に `会計名称` の列があるが、
+            # 事項別明細書は資料そのものが1会計ぶんで、会計名は表紙にしか出てこない。
+            # 宣言で埋める以上、どこを読んで決めたかを書かないと捏造と区別が付かない。
+            raise ValueError(f"statement.{key}: fund_basis が空。会計名の出所を書くこと")
+        if spec.get("heading_style") not in ("dai", "paren"):
+            # ⚠️ **既定値を持たせない。** 記法は実物を見ないと分からず、
+            # 誤ると款・項が1つも立たないまま「目が0件」として静かに終わる。
+            raise ValueError(
+                f"statement.{key}: heading_style は dai（第１款）か paren（（款） 1）"
+                f"（{spec.get('heading_style')}）")
+        missing = {"expenditure", "revenue"} - set(spec.get("pages", {}))
+        if missing:
+            raise ValueError(f"statement.{key}: pages に {sorted(missing)} が無い")
+        for direction, (a, b) in spec["pages"].items():
+            # 見開きは (左, 右) の対で1論理行になるので、頁数が偶数でなければ対が崩れている
+            if (b - a + 1) % 2:
+                raise ValueError(
+                    f"statement.{key}: {direction} の頁範囲 {a}〜{b} が奇数頁ぶん。"
+                    f"見開きの対が崩れている")
+    return section
 
 
 def _pdf_sources(section: str, path: Path) -> dict[str, dict]:

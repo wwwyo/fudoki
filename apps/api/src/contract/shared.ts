@@ -26,12 +26,13 @@ export const levelName = z
     'chujigyo',
     'shojigyo',
     'saimoku',
+    'jigyo',
     'setsu',
     'saisetsu',
     'saisaisetsu',
   ])
   .describe(
-    '階層の名前（fund=会計, kan=款, kou=項, moku=目, jikou=事項, daijigyo=大事業, chujigyo=中事業, shojigyo=小事業, saimoku=細目, setsu=節, saisetsu=細節, saisaisetsu=細々節）',
+    '階層の名前（fund=会計, kan=款, kou=項, moku=目, jikou=事項, daijigyo=大事業, chujigyo=中事業, shojigyo=小事業, saimoku=細目, jigyo=事業, setsu=節, saisetsu=細節, saisaisetsu=細々節）',
   )
 
 /** 階層以外の同一性の軸の名前 */

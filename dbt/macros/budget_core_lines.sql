@@ -57,8 +57,20 @@ select
     kou_label,
     moku_code,
     moku_label,
+{#-
+  ⚠️ **節を持たない団体がある。** 千代田区の説明欄は事業 → 内訳の2段で、節は
+  「目の内訳」として別の欄にあり、説明欄の行に結び付けるのは名寄せ（判断）になる。
+  だから staging に `setsu_*` の列が無い。**空で埋めるのは core の判断**であって、
+  staging に空の列を作って原典にあるかのように見せるのとは違う。
+  ⚠️ 判定は `budget_levels` から導く。フラグを別に持つと同じ事実が2箇所へ分かれる。
+-#}
+{%- if 'setsu' in var('budget_levels')[code][direction] %}
     setsu_code,
     setsu_label,
+{%- else %}
+    ''  as setsu_code,
+    ''  as setsu_label,
+{%- endif %}
     source_amount,
     -- 円へ正規化した値。倍率は原典の単位の宣言から来る
     -- （三鷹市は千円、狛江市は円と千円、多摩市は年度で千円と円に割れる）

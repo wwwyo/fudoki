@@ -1,5 +1,5 @@
 /**
- * 東京都62団体の地図。自治体をクリックするとその団体のパイプラインへ飛ぶ。
+ * 東京都62団体の地図。自治体をクリックするとその団体の支出分析へ飛ぶ。
  *
  * ## なぜ素の SVG で描くか
  *
@@ -16,7 +16,7 @@
  */
 import { useEffect, useMemo, useState } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { cn } from '@/lib/utils'
+import { cn, withBase } from '@/lib/utils'
 
 type TokyoFeature = {
   type: 'Feature'
@@ -213,18 +213,24 @@ export function TokyoMap({ className }: Props) {
         height={mainland.height}
         className="h-auto w-full max-w-2xl"
         role="img"
-        aria-label="東京都の区市町村。クリックするとその団体のパイプラインへ移動します"
+        aria-label="東京都の区市町村。クリックするとその団体の支出分析へ移動します"
       >
         {mainland.shapes.map((s) => (
           <Tooltip key={s.code}>
             <TooltipTrigger
-              render={<a href={`/pipeline/${s.code}/`} aria-label={s.name} className="group outline-none" />}
+              render={<a href={withBase(`/analysis/${s.code}/`)} aria-label={s.name} className="group outline-none" />}
             >
               <path
                 d={s.d}
                 className={cn(
-                  'fill-muted stroke-background cursor-pointer stroke-[0.6] transition-opacity',
-                  'group-hover:opacity-70 group-focus-visible:opacity-70',
+                  // ⚠️ 全団体を同じ色で塗る。色が団体ごとの違いを表さないので、
+                  // これは「押せる面」を示すクロムであって、データを表す面ではない
+                  // （DESIGN.md「ブランド色をデータを表す面に使わない」）。
+                  'fill-accent stroke-background cursor-pointer stroke-[0.6]',
+                  'transition-colors duration-150',
+                  // ⚠️ ホバーは濃くする方向へ。薄くすると背景へ近づいて、
+                  // どれを指しているかがかえって分かりにくい
+                  'group-hover:fill-primary group-focus-visible:fill-primary',
                   'group-focus-visible:stroke-ring group-focus-visible:stroke-[1.5]',
                 )}
               />
@@ -243,7 +249,7 @@ export function TokyoMap({ className }: Props) {
             <TooltipTrigger
               render={
                 <a
-                  href={`/pipeline/${s.code}/`}
+                  href={withBase(`/analysis/${s.code}/`)}
                   aria-label={s.name}
                   className="group focus-visible:ring-ring/50 flex flex-col items-center gap-0.5 rounded-md p-1 outline-none focus-visible:ring-[3px]"
                 />
@@ -254,7 +260,7 @@ export function TokyoMap({ className }: Props) {
                 <rect width={ISLAND_TILE} height={ISLAND_TILE} className="fill-transparent" />
                 <path
                   d={s.d}
-                  className="fill-muted stroke-background stroke-[0.6] transition-opacity group-hover:opacity-70"
+                  className="fill-accent stroke-background group-hover:fill-primary stroke-[0.6] transition-colors duration-150"
                 />
               </svg>
               <span className="text-muted-foreground max-w-[84px] truncate text-[10px]">{s.name}</span>

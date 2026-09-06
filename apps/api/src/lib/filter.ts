@@ -9,6 +9,8 @@ export type ParsedFilter = {
   direction?: 'expenditure' | 'revenue'
   phase?: string
   cofogDivision?: string
+  cofogGroup?: string
+  cofogClass?: string
 }
 
 export class FilterSyntaxError extends Error {}
@@ -19,6 +21,8 @@ const FIELDS: Record<string, keyof ParsedFilter> = {
   'direction': 'direction',
   'phase': 'phase',
   'cofog.division': 'cofogDivision',
+  'cofog.group': 'cofogGroup',
+  'cofog.class': 'cofogClass',
 }
 
 /** `a = "x" AND b = 1` を分解する。未対応の文法・フィールド・重複は FilterSyntaxError */

@@ -21,14 +21,15 @@ from __future__ import annotations
 
 import io
 import json
+import math
 import pathlib
 import zipfile
 
 from ingestion.lib.http import http_get
+from ingestion.shared.jurisdictions import load_jurisdictions
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent.parent.parent
 OUT = ROOT / "apps" / "web" / "public" / "tokyo.geojson"
-JURISDICTIONS = ROOT / "ingestion" / "shared" / "jurisdictions.json"
 
 URL = "https://nlftp.mlit.go.jp/ksj/gml/data/N03/N03-2026/N03-20260101_13_GML.zip"
 SHA256 = "94f10b26256566db970dd74b09d614f059c1e8a432f9244ac9c4add76c32ff16"
@@ -153,7 +154,7 @@ def _extract_geojson(zip_bytes: bytes) -> dict:
 
 
 def main() -> None:
-    jurisdictions = json.loads(JURISDICTIONS.read_text())["jurisdictions"]
+    jurisdictions = load_jurisdictions()
     # N03_007 は全国地方公共団体コード**から検査数字（末尾1桁）を除いた5桁**
     # （JIS X 0402 の行政区域コード）。fudoki の正本キーは6桁なので、
     # 5桁プレフィクスで対応を取る。62件が5桁の時点で重複しないことは
@@ -190,6 +191,14 @@ def main() -> None:
             "母集団が欠けたまま出力しない"
         )
 
+    # ⚠️ 島しょ部の判定は手で書いた団体コードの集合なので、正本の側でコードが
+    # 変わっても気づけない。実在を突き合わせて、島フラグだけが古くなるのを止める
+    unknown_islands = ISLAND_CODES - set(jurisdictions)
+    if unknown_islands:
+        raise RuntimeError(
+            f"ISLAND_CODES に jurisdictions.json へ無い団体コードがある: {sorted(unknown_islands)}"
+        )
+
     features = []
     for code6 in sorted(jurisdictions):
         simplified_polys = [
@@ -206,11 +215,37 @@ def main() -> None:
             "geometry": {"type": "MultiPolygon", "coordinates": simplified_polys},
         })
 
+    _verify_rings(features)
+
     fc = {"type": "FeatureCollection", "features": features}
     encoded = json.dumps(fc, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
 
     OUT.write_bytes(encoded)
     print(f"ok  {len(features)} 団体  {len(encoded) / 1024:.1f} KB  -> {OUT}")
+
+
+def _verify_rings(features: list[dict]) -> None:
+    """
+    簡略化と丸めを通した後のリングが、描ける形になっているかを見る。
+
+    ⚠️ **丸めは簡略化の後に効く。** Douglas-Peucker が残した点でも、小数4桁へ
+    丸めると隣どうしが同じ座標に潰れうる。閉じていない・点が足りない・
+    有限でない値が混ざったリングは `<path>` にすると描画が崩れるので、
+    書き出す前に止める（生成物を検証せずに commit しない）。
+    """
+    problems: list[str] = []
+    for f in features:
+        code = f["properties"]["code"]
+        for poly in f["geometry"]["coordinates"]:
+            for ring in poly:
+                if len(ring) < 4:
+                    problems.append(f"{code}: 点が {len(ring)} しかないリング")
+                elif ring[0] != ring[-1]:
+                    problems.append(f"{code}: 閉じていないリング")
+                elif any(not math.isfinite(v) for pt in ring for v in pt):
+                    problems.append(f"{code}: 有限でない座標")
+    if problems:
+        raise RuntimeError("簡略化後のリングが不正: " + "; ".join(problems[:10]))
 
 
 if __name__ == "__main__":

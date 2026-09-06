@@ -1,0 +1,48 @@
+priority,rule_id,applies_to,match_fund,match_kan,match_kou,match_kan_code,match_moku,moku_mode,match_setsu,status,cofog_code,consolidation,decided_at_level,counterpart_fund,basis
+7,debt-principal,,,公債費,,,元金,eq,,out-of-scope,,retained,目,,市債の元金償還。金融負債の返済であり、COFOG の対象である経費・非金融資産への純投資のいずれでもない
+8,debt-interest,,,公債費,,,利子,eq,,assigned,01.7,retained,目,,市債利子。COFOG 01.7 公債取引にあたる
+9,fund-accumulation,,,,,,,eq,積立金,out-of-scope,,retained,節,,基金への積立。金融資産の取得であり COFOG の集計対象ではない
+11,contingency,,,予備費,,,,eq,,unclassifiable,,retained,款,,予備費。COFOG の対象だが、執行されるまで機能が決まらないため割り当ての根拠が無い
+28,gikai,,,議会費,,,,eq,,assigned,01.1,retained,款,,議会。COFOG 01.1 立法機関・行政機関
+29,somu,,,総務費,,,,eq,,assigned,01,retained,款,,総務・徴税・戸籍・選挙・統計・監査。COFOG 01 一般公共サービス
+30,minsei,,,民生費,,,,eq,,assigned,10,retained,款,,社会福祉・児童福祉・生活保護。COFOG 10 社会保護
+31,rodo,,,労働費,,,,eq,,assigned,04.1.2,retained,款,,労働諸費。COFOG 04.1.2 一般労働業務
+32,norin,,,農林費,,,,eq,,assigned,04.2,retained,款,,農業。COFOG 04.2 農林水産業
+33,shoko,,,商工費,,,,eq,,assigned,04.7,retained,款,,商工業。COFOG 04.7 その他の産業
+34,shobo,,,消防費,,,,eq,,assigned,03.2,retained,款,,消防。COFOG 03.2 消防サービス
+111,chiyoda-kodomo-kanri,131016,一般会計,,子ども管理費,,,eq,,assigned,09.8,retained,項,,千代田区 款2 項1。教育委員会・指導・校外施設の運営。COFOG 09.8 他に分類されない教育
+112,chiyoda-gakko-shoto,131016,一般会計,,学校管理費,,小学校管理費|幼稚園管理費,eq,,assigned,09.1,retained,目,,千代田区 款2 項2 のうち小学校・幼稚園。COFOG 09.1 就学前教育及び初等教育
+113,chiyoda-gakko-chuto,131016,一般会計,,学校管理費,,中学校管理費|中等教育学校管理費,eq,,assigned,09.2,retained,目,,千代田区 款2 項2 のうち中学校・中等教育学校。COFOG 09.2 中等教育
+114,chiyoda-gakko-hoken,131016,一般会計,,学校管理費,,学校保健費,eq,,assigned,09.6,retained,目,,千代田区 款2 項2 のうち学校保健。COFOG 09.6 教育に付帯するサービス
+115,chiyoda-gakko-other,131016,一般会計,,学校管理費,,,eq,,assigned,09.5,retained,項,,千代田区 款2 項2 の残り（教育振興費・学校施設建設費）。小中の双方に及び水準を特定できないので COFOG 09.5
+116,chiyoda-kodomo-katei,131016,一般会計,,子ども家庭費,,,eq,,assigned,10.4,retained,項,,千代田区 款2 項3。児童福祉・保育園・こども園。COFOG 10.4 家族及び児童
+117,chiyoda-fukushi-kanri,131016,一般会計,,保健福祉管理費,,,eq,,assigned,10,retained,項,,千代田区 款3 項1。保健福祉の総務。対象が特定の給付に絞れないので COFOG 10 社会保護の division 止まり
+118,chiyoda-koreisha,131016,一般会計,,高齢者・障害者費,,高齢者福祉費|高齢者施設建設費,eq,,assigned,10.2,retained,目,,千代田区 款3 項2 のうち高齢者。COFOG 10.2 高齢
+119,chiyoda-shogaisha,131016,一般会計,,高齢者・障害者費,,障害者福祉費|障害者施設建設費,eq,,assigned,10.1,retained,目,,千代田区 款3 項2 のうち障害者。COFOG 10.1 疾病及び障害
+120,chiyoda-seikatsuhogo,131016,一般会計,,生活保護費,,,eq,,assigned,10.7,retained,項,,千代田区 款3 項3。COFOG 10.7 他に分類されない社会的排除
+121,chiyoda-kenko,131016,一般会計,,健康衛生費,,,eq,,assigned,07,retained,項,,千代田区 款3 項4（健康推進費・公害保健費・生活衛生費）。COFOG 07 保健。⚠️ 生活衛生費は環境保護（05）に寄る内容を含むが、既収録団体と同じく項の粒度で 07 に寄せてある
+122,chiyoda-chiiki-shoko,131016,一般会計,,地域振興管理費,,商工振興費|観光費,eq,,assigned,04.7,retained,目,,千代田区 款4 項1 のうち商工・観光。COFOG 04.7 他の産業
+123,chiyoda-chiiki-shisetsu,131016,一般会計,,地域振興管理費,,区民施設費|区民施設建設費,eq,,assigned,06.2,retained,目,,千代田区 款4 項1 のうち区民施設。COFOG 06.2 コミュニティの開発
+124,chiyoda-chiiki-other,131016,一般会計,,地域振興管理費,,,eq,,assigned,01,retained,項,,千代田区 款4 項1 の残り（地域振興総務費・基幹統計費）。COFOG 01 一般公共サービス
+125,chiyoda-madoguchi,131016,一般会計,,総合窓口費,,,eq,,assigned,01.3,retained,項,,千代田区 款4 項2（戸籍住民基本台帳・総合窓口）。COFOG 01.3 総合的サービス
+126,chiyoda-zeimu,131016,一般会計,,税務費,,,eq,,assigned,01,retained,項,,千代田区 款4 項3。賦課徴収は COFOG 01 一般公共サービス（既収録団体の徴税費と同じ扱い）
+127,chiyoda-bunka-sports,131016,一般会計,,文化学習スポーツ費,,スポーツ振興費,eq,,assigned,08.1,retained,目,,千代田区 款4 項4 のうちスポーツ。COFOG 08.1 レクリエーション及びスポーツのサービス
+128,chiyoda-bunka-toshokan,131016,一般会計,,文化学習スポーツ費,,図書文化財費|社会教育施設建設費,eq,,assigned,08.2,retained,目,,千代田区 款4 項4 のうち図書館・文化財・社会教育施設。COFOG 08.2 文化サービス
+129,chiyoda-bunka-other,131016,一般会計,,文化学習スポーツ費,,,eq,,assigned,09.5,retained,項,,千代田区 款4 項4 の残り（生涯学習振興費）。COFOG 09.5 水準を特定できない教育
+130,chiyoda-kankyo-hozen,131016,一般会計,,環境まちづくり管理費,,環境保全費,eq,,assigned,05,retained,目,,千代田区 款5 項1 のうち環境保全。対象が特定の環境分野に絞れないので COFOG 05 環境保護の division 止まり
+131,chiyoda-kogai,131016,一般会計,,環境まちづくり管理費,,公害対策費,eq,,assigned,05.3,retained,目,,千代田区 款5 項1 のうち公害対策。COFOG 05.3 汚染防止
+132,chiyoda-kankyo-other,131016,一般会計,,環境まちづくり管理費,,,eq,,assigned,06,retained,項,,千代田区 款5 項1 の残り（環境まちづくり総務費）。COFOG 06 住宅及び地域アメニティの division 止まり
+133,chiyoda-jutaku,131016,一般会計,,都市整備費,,住宅整備費|住宅建設費,eq,,assigned,06.1,retained,目,,千代田区 款5 項2 のうち住宅。COFOG 06.1 住宅開発
+134,chiyoda-toshi-other,131016,一般会計,,都市整備費,,,eq,,assigned,06.2,retained,項,,千代田区 款5 項2 の残り（都市整備総務費・地域整備費・建築事務費）。COFOG 06.2 コミュニティの開発
+135,chiyoda-kouen,131016,一般会計,,道路公園費,,公園維持費,eq,,assigned,08.1,retained,目,,千代田区 款5 項3 のうち公園。COFOG 08.1 レクリエーション及びスポーツのサービス
+136,chiyoda-kasen,131016,一般会計,,道路公園費,,河川維持費,eq,,assigned,05.4,retained,目,,千代田区 款5 項3 のうち河川。COFOG 05.4 生物多様性及び景観の保護
+137,chiyoda-doro,131016,一般会計,,道路公園費,,,eq,,assigned,04.5.1,retained,項,,千代田区 款5 項3 の残り（道路橋梁総務費・道路維持費・道路新設改良費・受託事業費・私道整備費）。COFOG 04.5.1 道路交通
+138,chiyoda-seiso,131016,一般会計,,清掃リサイクル費,,,eq,,assigned,05.1,retained,項,,千代田区 款5 項4。COFOG 05.1 廃棄物管理
+139,chiyoda-shokuin-gikai,131016,一般会計,,職員費,,議会職員費,eq,,assigned,01.1,retained,目,,千代田区 款7 のうち議会。⚠️ **千代田区は人件費を款7に集めている**ので、機能は所属先の部門で決まる。COFOG 01.1 立法及び行政機関、財政・財務、外務
+140,chiyoda-shokuin-kodomo,131016,一般会計,,職員費,,子ども職員費,eq,,assigned,09.8,retained,目,,千代田区 款7 のうち子ども部門。COFOG 09.8 他に分類されない教育
+141,chiyoda-shokuin-fukushi,131016,一般会計,,職員費,,保健福祉職員費,eq,,assigned,10,retained,目,,千代田区 款7 のうち保健福祉部門。COFOG 10 社会保護の division 止まり
+142,chiyoda-shokuin-machi,131016,一般会計,,職員費,,環境まちづくり職員費,eq,,assigned,06,retained,目,,千代田区 款7 のうち環境まちづくり部門。COFOG 06 住宅及び地域アメニティの division 止まり
+143,chiyoda-shokuin-other,131016,一般会計,,職員費,,,eq,,assigned,01,retained,項,,千代田区 款7 の残り（地域振興職員費・総務職員費）。COFOG 01 一般公共サービス
+144,chiyoda-kurikoshi-kokuho,131016,一般会計,,他会計繰出金,,国民健康保険事業会計繰出金|後期高齢者医療特別会計繰出金,eq,,assigned,07,retained,目,,千代田区 款9 項1 のうち医療保険への繰出。COFOG 07 保健。⚠️ 繰出先の会計は本パッケージに収録していないので二重計上にはならない
+145,chiyoda-kurikoshi-kaigo,131016,一般会計,,他会計繰出金,,介護保険特別会計繰出金,eq,,assigned,10.2,retained,目,,千代田区 款9 項1 のうち介護保険への繰出。COFOG 10.2 高齢
+146,chiyoda-tsumitate,131016,一般会計,,財産積立金,,,eq,,out-of-scope,,retained,項,,千代田区 款9 項2。基金への積立は支出の機能を表さないので範囲外（既収録団体の節「積立金」と同じ扱い。⚠️ 千代田区は節を行に持たないので節の規則が当たらず、項で宣言する）

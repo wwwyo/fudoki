@@ -17,37 +17,27 @@
 -- tests/account_map_covers_lines.sql が止める。特別会計はマスタの対象外
 -- （施行規則の備考6）なので null が正しい。
 with names as (
-    -- 三鷹市: 原典の名称（市が公表した文字列そのもの）
+    -- 原典の行がそのまま名称を持つ団体。**写経しない** — 出所の語彙は
+    -- `budget_account_name_sources` が団体ごとに宣言する。
+    -- ⚠️ 以前ここは団体ごとに同じ4つの select を写していた（3団体で12個）。
+    -- 4団体目を足すときに同じ形をもう2つ増やすことになったので宣言へ寄せた。
+    {%- for code, name_source in var('budget_account_name_sources').items() %}
     select
         jurisdiction_code, fiscal_year, direction, fund_code, fund_label,
         kan_code, kan_label as kan_name,
         kou_code, kou_label as kou_name,
         moku_code, moku_label as moku_name,
-        'source-csv' as name_source
+        '{{ name_source }}' as name_source
     from {{ ref('core_budget_lines') }}
-    where jurisdiction_code = '132047'
+    where jurisdiction_code = '{{ code }}'
     union all
     select
         jurisdiction_code, fiscal_year, direction, fund_code, fund_label,
-        kan_code, kan_label, kou_code, kou_label, moku_code, moku_label, 'source-csv'
+        kan_code, kan_label, kou_code, kou_label, moku_code, moku_label, '{{ name_source }}'
     from {{ ref('core_revenue_lines') }}
-    where jurisdiction_code = '132047'
+    where jurisdiction_code = '{{ code }}'
     union all
-    -- 多摩市: 原典の名称（階層ごとにコードと名称が別の列で入っている）
-    -- ⚠️ 3団体目も出所が原典 CSV なので、次に足すときは
-    -- 「名称の出所」を団体ごとの宣言へ寄せるほうがよい（今は写経が3つ）。
-    select
-        jurisdiction_code, fiscal_year, direction, fund_code, fund_label,
-        kan_code, kan_label, kou_code, kou_label, moku_code, moku_label, 'source-csv'
-    from {{ ref('core_budget_lines') }}
-    where jurisdiction_code = '132241'
-    union all
-    select
-        jurisdiction_code, fiscal_year, direction, fund_code, fund_label,
-        kan_code, kan_label, kou_code, kou_label, moku_code, moku_label, 'source-csv'
-    from {{ ref('core_revenue_lines') }}
-    where jurisdiction_code = '132241'
-    union all
+    {%- endfor %}
     -- 狛江市: 決算書 PDF の見出しから解決した名称（fudoki の判断）
     select
         l.jurisdiction_code, l.fiscal_year, l.direction, l.fund_code, l.fund_label,

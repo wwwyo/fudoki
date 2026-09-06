@@ -7,10 +7,11 @@
 import { useMemo, useState } from 'react'
 import type { Direction, DetailRow, DetailTable, Level } from '@/lib/pipeline'
 import { LEVEL_JA, basisOf, cell, divisionLabelOf, levelCell } from '@/lib/pipeline'
-import { DIVISION_COLOR, STATUS_JA, yen } from '@/lib/pipeline'
+import { DIVISION_COLOR, STATUS_JA, count, yen } from '@/lib/pipeline'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { FiscalYearSelect } from '@/components/fiscal-year-select'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
@@ -151,20 +152,14 @@ function Browser({
           <ToggleGroupItem value="revenue">歳入</ToggleGroupItem>
         </ToggleGroup>
         {years.length > 1 && (
-          <Select
-            items={years.map((y) => ({ value: y, label: `${y}年度` }))}
-            value={activeYear}
-            onValueChange={(v) => { setYear(v as string); setPath([]) }}
-          >
-            <SelectTrigger size="sm" aria-label="年度"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                {years.map((y) => (
-                  <SelectItem key={y} value={y}>{y}年度</SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          // 年度は原典の列（fiscal_year）から文字列で来る。FiscalYearSelect は
+          // number で扱うので、境界でだけ変換する（allowAll を渡さないので null は返らない）
+          <FiscalYearSelect
+            years={years.map(Number)}
+            value={activeYear === null ? null : Number(activeYear)}
+            onChange={(y) => { setYear(y === null ? null : String(y)); setPath([]) }}
+            size="sm"
+          />
         )}
         {phases.length > 1 && (
           <Select
@@ -184,7 +179,7 @@ function Browser({
         )}
         <Input className="max-w-xs" type="search" placeholder="科目名で絞り込み" aria-label="科目名で絞り込み"
           value={query} onChange={(e) => { setQuery(e.target.value); setPath([]) }} />
-        <span className="text-xs tabular-nums text-muted-foreground">{yen(rows.length)} 行 / {yen(total)} 円</span>
+        <span className="text-xs tabular-nums text-muted-foreground">{count(rows.length)} 行 / {yen(total)} 円</span>
       </div>
 
       <nav aria-label="階層" className="flex flex-wrap items-center gap-1 text-sm">
@@ -225,14 +220,14 @@ function Browser({
                   <TableRow key={k}>
                     <TableCell>
                       <button type="button" className="w-full cursor-pointer text-left hover:text-primary hover:underline"
-                        aria-label={`${k} を開いて${nextJa}を見る（${yen(g.sum)} 円 / ${yen(g.count)} 行）`}
+                        aria-label={`${k} を開いて${nextJa}を見る（${yen(g.sum)} 円 / ${count(g.count)} 行）`}
                         onClick={() => setPath([...path, k])}>{k}</button>
                     </TableCell>
                     <TableCell className="text-right tabular-nums">{yen(g.sum)}</TableCell>
                     <TableCell>
                       <div className="h-1.5 rounded-full bg-primary/30" style={{ width: `${(g.sum / max) * 100}%` }} />
                     </TableCell>
-                    <TableCell className="text-right tabular-nums">{yen(g.count)}</TableCell>
+                    <TableCell className="text-right tabular-nums">{count(g.count)}</TableCell>
                     {dir === 'expenditure' && (
                       <TableCell className="whitespace-nowrap text-xs">
                         {ds.length === 0

@@ -5,27 +5,24 @@
  * そのまま出す。画面側でも集計すると、同じ数字が2通りに計算されて、いずれ食い違う。
  */
 import { useEffect, useMemo, useState } from "react"
+import { FiscalYearSelect } from "@/components/fiscal-year-select"
+import { JurisdictionSelect } from "@/components/jurisdiction-select"
 import { Layout } from "@/components/layout"
+import { NotCollectedPage } from "@/components/not-collected-page"
 import { FlowGraph } from "@/components/flow-graph"
 import { DetailBrowser } from "@/components/detail-browser"
 import { StageDetail } from "@/components/stage-detail"
 import { CofogPanel } from "@/components/cofog-panel"
+import { CoveragePanel } from "@/components/coverage-panel"
 import { ChecksPanel } from "@/components/checks-panel"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   Tooltip,
@@ -33,6 +30,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { Info } from "lucide-react"
+import { withBase } from "@/lib/utils"
 import {
   levelsOf,
   loadDetail,
@@ -67,6 +65,12 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
   // 開いているタブ。**明細の取得はタブを開いた瞬間だけの出来事ではない** —
   // 明細を見ている最中に団体を切り替えても取りに行く必要がある。
   const [tab, setTab] = useState("checks")
+  /**
+   * 図の行数をどの年度で見るか。**既定は全年度（null）** — 収録範囲そのものが
+   * この画面の主張なので、最初に見えるのは全年度の姿でよい（分析画面は最新年度が既定だが、
+   * あちらは「いくら使ったか」を見る場所で、合算した金額に意味が無い）。
+   */
+  const [fiscalYear, setFiscalYear] = useState<number | null>(null)
 
   useEffect(() => {
     loadPipeline()
@@ -77,7 +81,7 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
         // ブックマークが「どの団体を見ているか」を表さなくなる。
         if (!urlCode) {
           const first = d.jurisdictions[0]?.code
-          if (first) window.location.replace(`${import.meta.env.BASE_URL}pipeline/${first}/`)
+          if (first) window.location.replace(withBase(`/pipeline/${first}/`))
           return
         }
       })
@@ -120,8 +124,9 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
   useEffect(() => {
     if (!current) return
     const { jurisdictionName: name, fiscalYears, phase } = current.report.meta
-    document.title = `${name} ${fiscalYears.join("・")}年度 ${phase.label} | fudoki（風土記）`
-  }, [current])
+    const years = fiscalYear === null ? fiscalYears.join("・") : String(fiscalYear)
+    document.title = `${name} ${years}年度 ${phase.label} | fudoki（風土記）`
+  }, [current, fiscalYear])
 
   // 未収録団体は report を持たないので上の effect と分ける。index.html の title
   // 既定値と揃えつつ「未収録」だと分かる文言にする
@@ -171,6 +176,7 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
           code: j.code,
           name: j.report.meta.jurisdictionName,
         }))}
+        basePath="pipeline"
       />
     )
   }
@@ -219,61 +225,71 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
       label: "COFOG 割当済み（金額比）",
       // ⚠️ **ここで足し直さない。** 割合は生成側（report/budget/build.ts）が持つ
       value: pct(t.assignedShare.sum),
-      hint: "COFOG は政府支出の機能別分類（教育、保健など10区分）。国際標準",
+      // ⚠️ **全年度の合算だと明示する。** 名称の載った資料が一部の年度にしか無い団体では、
+      // 合算の割合が年度ごとの実態から離れる（狛江市は 73% の年度と 91% の年度がある）。
+      hint: "COFOG は政府支出の機能別分類（教育、保健など10区分）。国際標準。全年度の合算で、年度ごとは「年度ごとの収録」タブ",
     },
     // ⚠️ 消去が成立しない団体がある（狛江市は相手の会計が原典から決まらない）。
     // 「相殺する」と決め打ちで書くと、消去していない団体で嘘になる。
   ]
 
   return (
-    <Layout
-    >
+    <Layout>
       <main className="mx-auto flex max-w-[1500px] flex-col gap-8 p-4 pb-24">
         <section className="flex flex-col gap-4">
-          {/* どの団体を見ているかは本文のコンテキスト。header はサイト全体の枠なので置かない */}
+          <h1 className="text-2xl font-semibold tracking-tight">
+            {m.jurisdictionName}の ELT パイプライン
+          </h1>
+          <p className="max-w-[80ch] text-sm text-muted-foreground">
+            原典の取得から、検査・COFOG への分類・配布物の生成までを1本の系統で示す。
+            取得と正規化は分けてあり、分類の規則を変えても原典は取り直さない。
+          </p>
           <div className="mb-2 flex flex-wrap items-baseline gap-3">
-            <h1 className="text-xl font-semibold">ELT パイプライン</h1>
             {data.jurisdictions.length > 1 ? (
-              <Select
-                items={data.jurisdictions.map((j) => ({
-                  value: j.code,
-                  label: j.report.meta.jurisdictionName,
+              <JurisdictionSelect
+                jurisdictions={data.jurisdictions.map((j) => ({
+                  code: j.code,
+                  name: j.report.meta.jurisdictionName,
                 }))}
                 value={current.code}
-                onValueChange={(v) => {
-                  // state だけ変えると URL が古い団体のままになる（地図からの遷移・
-                  // ブックマーク・共有リンクがすべて「見ている団体」を表さなくなる）。
-                  // 隣の団体へは `/pipeline/<code>/` への遷移で移る。
-                  window.location.href = `${import.meta.env.BASE_URL}pipeline/${v}/`
-                }}
-              >
-                <SelectTrigger aria-label="団体">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {data.jurisdictions.map((j) => (
-                      <SelectItem key={j.code} value={j.code}>
-                        {j.report.meta.jurisdictionName}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+                basePath="pipeline"
+              />
+            ) : // 団体が1つなら切り替える先が無い。名称は見出しが既に言っている
+            null}
+            {/* 年度。**切り替える先があるときだけ出す**（1年度の団体は選ばせても何も変わらない）。
+                置き場と見た目は分析画面の年度セレクタに揃える — 同じ操作が画面ごとに違う形で
+                現れると、どちらかが別の意味だと読まれる */}
+            {m.fiscalYears.length > 1 ? (
+              <FiscalYearSelect
+                years={m.fiscalYears}
+                value={fiscalYear}
+                onChange={setFiscalYear}
+                allowAll
+                className="w-32"
+              />
             ) : (
-              <span className="shrink-0 text-sm font-medium">{m.jurisdictionName}</span>
+              <span className="truncate text-sm text-muted-foreground">
+                {m.fiscalYears[0]}年度
+              </span>
             )}
-            <span className="truncate text-sm text-muted-foreground">
-              {m.fiscalYears.length > 2
-                ? `${m.fiscalYears[0]}〜${m.fiscalYears.at(-1)}年度`
-                : `${m.fiscalYears.join("・")}年度`}{" "}
-              · {m.phase.label}
-            </span>
+            <span className="truncate text-sm text-muted-foreground">{m.phase.label}</span>
+            {/* この団体の支出分析（COFOG 別の金額）への導線。パイプラインは検証、分析は数字を見る場所で目的が違う。
+                analysis.tsx 側の「ELT パイプラインを見る」ボタンと対になる導線なので、扱いを揃える。
+                ⚠️ `render` に `<a>` を渡すときは `nativeButton={false}` が要る（Base UI の既定は
+                `nativeButton: true` で、落とすとボタンのセマンティクスが外れて実行時に警告が出る） */}
+            <Button
+              variant="outline"
+              size="sm"
+              nativeButton={false}
+              className="ml-auto shrink-0"
+              render={<a href={withBase(`/analysis/${current.code}/`)}>この団体の支出分析を見る</a>}
+            />
           </div>
 
           <FlowGraph
             topology={visibleTopology}
             report={report}
+            fiscalYear={fiscalYear}
             onSelectNode={setSelectedNode}
             selected={selectedNode}
           />
@@ -315,13 +331,19 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
 
         <Tabs value={tab} onValueChange={setTab}>
           <TabsList>
-            {/* 検証の順に並べる: 何を保証しているか（検査）→ どこから来たか（証跡）
-                → fudoki は何を足したか（COFOG）→ 1行ずつ確かめる（明細） */}
+            {/* 検証の順に並べる: 何を保証しているか（検査）→ どこまで取れているか（年度）
+                → どこから来たか（証跡）→ fudoki は何を足したか（COFOG）
+                → 1行ずつ確かめる（明細） */}
             <TabsTrigger value="checks">検査</TabsTrigger>
+            <TabsTrigger value="coverage">年度ごとの収録</TabsTrigger>
             <TabsTrigger value="stages">証跡</TabsTrigger>
             <TabsTrigger value="cofog">COFOG の判断</TabsTrigger>
             <TabsTrigger value="detail">明細</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="coverage" className="pt-4">
+            <CoveragePanel report={report} />
+          </TabsContent>
 
           <TabsContent value="stages" className="pt-4">
             <StageDetail report={report} />
@@ -383,50 +405,3 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
  * （jurisdictions.json 由来。コードだけを見せない）。
  * 地図を経由せずに他の団体へ移れるよう、収録済みの団体へのセレクタは残す。
  */
-function NotCollectedPage({
-  code,
-  name,
-  jurisdictions,
-}: {
-  code: string
-  name?: string
-  jurisdictions: { code: string; name: string }[]
-}) {
-  return (
-    <Layout>
-      <main className="mx-auto flex max-w-2xl flex-col gap-4 p-6">
-        <h1 className="text-xl font-semibold">{name ?? code}</h1>
-        <Alert>
-          <AlertTitle>この団体はまだ収録していません</AlertTitle>
-          <AlertDescription>
-            {name ?? code}（団体コード {code}）の予算データは、まだ fudoki のパイプラインを通していません。
-          </AlertDescription>
-        </Alert>
-        {jurisdictions.length > 0 && (
-          <div className="flex items-center gap-2 text-sm">
-            <span className="text-muted-foreground">収録済みの団体を見る:</span>
-            <Select
-              items={jurisdictions.map((j) => ({ value: j.code, label: j.name }))}
-              onValueChange={(v) => {
-                window.location.href = `${import.meta.env.BASE_URL}pipeline/${v}/`
-              }}
-            >
-              <SelectTrigger aria-label="団体">
-                <SelectValue placeholder="団体を選ぶ" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {jurisdictions.map((j) => (
-                    <SelectItem key={j.code} value={j.code}>
-                      {j.name}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-        )}
-      </main>
-    </Layout>
-  )
-}

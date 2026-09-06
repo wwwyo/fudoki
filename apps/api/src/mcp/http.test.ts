@@ -289,8 +289,8 @@ describe('/mcp (remote MCP server)', () => {
     expect(second.status).toBe(200)
     const firstBody = (await first.json()) as { result: { structuredContent: { jurisdictions: unknown[] } } }
     const secondBody = (await second.json()) as { result: { structuredContent: { jurisdictions: unknown[] } } }
-    expect(firstBody.result.structuredContent.jurisdictions.length).toBe(3)
-    expect(secondBody.result.structuredContent.jurisdictions.length).toBe(3)
+    expect(firstBody.result.structuredContent.jurisdictions.length).toBe(5)
+    expect(secondBody.result.structuredContent.jurisdictions.length).toBe(5)
   })
 
   test('missing Accept header is rejected (transport requirement, not a session artifact)', async () => {

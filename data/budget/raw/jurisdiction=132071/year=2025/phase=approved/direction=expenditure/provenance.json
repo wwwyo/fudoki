@@ -1,0 +1,72 @@
+{
+  "jurisdiction_code": "132071",
+  "fiscal_year": 2025,
+  "direction": "expenditure",
+  "document_title": "令和7年度昭島市一般会計予算及び予算説明書",
+  "dataset_title": null,
+  "resource_name": "令和7年度昭島市一般会計予算及び予算説明書",
+  "landing_page": "https://www.city.akishima.lg.jp/shisei/gyozaisei/1005263/1005264.html",
+  "resource_url_declared": true,
+  "resource_url_basis": "市サイト「令和7年度当初予算」ページ（landing_page）のリンクテキスト「令和7年度一般会計当初予算及び予算説明書」から人が拾った。カタログへの登録が存在しないため、名前から解決する経路が無い",
+  "fiscal_year_basis": "sources.toml が宣言した URL（カタログへの登録が存在しない）。年度は取得元ページの見出しとリンクテキストを人が読んで決めており、機械は照合していない。根拠は resource_url_basis にある",
+  "fund_basis": "表紙（p1）の標題「昭島市一般会計予算及び予算説明書」および目次（p2）の「◎ 一般会計」",
+  "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/264/2-1.ippan.pdf",
+  "status": 200,
+  "bytes": 4004251,
+  "sha256": "4662197051b0ec0d9c50e1690c5804d0b31e17dd7d35b972fd272e03068507f8",
+  "fetched_at": "2026-08-30T08:03:27+00:00",
+  "pages": [
+    108,
+    449
+  ],
+  "layout": "spread",
+  "extractor": "ingestion/budget/extract_statement.py@5",
+  "verification": "hierarchy-totals + setsu-column-totals + name-stability",
+  "verification_note": "PDF のバイト列は保存していない（大半の団体で再配布の判断が付かないため、経路を団体で分けない）。無加工であることは検査できないので、目の見出し金額との突合・節列との突合・行のまとめ方への非依存で縛る",
+  "roundtrip_verified": false,
+  "normalization": [
+    "桁区切りのカンマを除去",
+    "NFKC 正規化と空白の除去"
+  ],
+  "source_amount_unit": "千円",
+  "header": [
+    "source_row",
+    "会計名称",
+    "款",
+    "款名称",
+    "項",
+    "項名称",
+    "目",
+    "目名称",
+    "事業名",
+    "節",
+    "節名称",
+    "内訳名称",
+    "本年度予算額",
+    "reconciled"
+  ],
+  "rows": 3588,
+  "extracted": {
+    "leaves": 3588,
+    "leavesReconciled": 3588,
+    "moku": 108,
+    "mokuHeadersFound": 108,
+    "mokuNotReconciled": 0,
+    "setsuColumnNotReconciled": 0,
+    "explanationLevelTotals": {
+      "project": 56210000,
+      "setsu": 56210000,
+      "detail": 56210000
+    },
+    "annotationsDropped": 171,
+    "mokuWithoutExplanation": 1,
+    "total": 56360000,
+    "notReconciled": [],
+    "nameStable": true
+  },
+  "raw_form": "extracted",
+  "redistribute": "allow",
+  "redistribute_basis": "市サイトの著作権・免責事項（https://www.city.akishima.lg.jp/about/1006647.html）が「権利表記の記載がない限り『公共データ利用規約（第1.0版）』（PDL1.0）が適用されています」と明示。当該 PDF に別の権利表記は無い",
+  "license_id": "PDL-1.0",
+  "attribution": "昭島市"
+}

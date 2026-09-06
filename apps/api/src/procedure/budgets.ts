@@ -9,6 +9,7 @@ import {
   type AggHierarchyCofogAsset,
   type AggYearsCofogDivisionAsset,
   type AggYearsTotalAsset,
+  type CofogBreakdownFile,
   type CofogChunkFile,
   type Env,
   type LinesChunkFile,
@@ -78,6 +79,29 @@ export const getBudget = os.getBudget.handler(async ({ context, input, errors })
   const budget = meta.budgetById.get(input.budget)
   if (!budget) throw errors.NOT_FOUND({ message: `unknown budget: ${input.budget}` })
   return { budget, revision: meta.revision }
+})
+
+// ---- cofog breakdown（団体 × 年度 × direction の COFOG 別内訳。budget 集約の内部） ----
+
+export const getCofogBreakdown = os.getCofogBreakdown.handler(async ({ context, input, errors }) => {
+  const parsed = parseBudgetId(input.budget)
+  if (parsed === null) {
+    throw errors.BAD_REQUEST({
+      message: `malformed budget id: ${input.budget} (expected {jurisdiction}:{year})`,
+      data: { reason: 'invalid budget id' },
+    })
+  }
+  const meta = await readMeta(context.env)
+  const budget = meta.budgetById.get(input.budget)
+  if (!budget) throw errors.NOT_FOUND({ message: `unknown budget: ${input.budget}` })
+  if (!budget.directions.includes(input.direction)) {
+    throw errors.NOT_FOUND({ message: `${input.direction} is not covered for budget ${input.budget}` })
+  }
+
+  const path = paths.cofogBreakdown(parsed.jurisdiction, parsed.fiscalYear, input.direction)
+  const file = await readJsonAsset<CofogBreakdownFile>(context.env, path)
+  if (file === null) throw new Error(`partition missing for covered budget: ${path}`)
+  return { cofog: file.breakdown, revision: file.revision }
 })
 
 // ---- budgetLines（明細の一覧。design doc「明細の一覧」） ----
@@ -182,9 +206,16 @@ async function crossBudgetLines(
   view: BudgetLinesView,
   errors: Errors,
 ) {
-  if (filter.direction !== undefined || filter.phase !== undefined) {
+  if (
+    filter.direction !== undefined ||
+    filter.phase !== undefined ||
+    filter.cofogGroup !== undefined ||
+    filter.cofogClass !== undefined
+  ) {
     throw errors.BAD_REQUEST({
-      message: 'direction and phase filters are not supported for cross-budget budgetLines',
+      message:
+        'direction, phase, cofog.group and cofog.class filters are not supported for cross-budget budgetLines ' +
+        '(crossBudgetLine only carries the common minimal axis: status / division / consolidation)',
       data: { reason: 'unsupported filter field for parent "-"' },
     })
   }
@@ -298,6 +329,8 @@ async function budgetLinesForBudget(
   const predicate = (line: StoredBudgetLine): boolean => {
     if (filter.phase !== undefined && !line.amounts.some((a) => a.phase === filter.phase)) return false
     if (filter.cofogDivision !== undefined && line.judgments.cofog?.division !== filter.cofogDivision) return false
+    if (filter.cofogGroup !== undefined && line.judgments.cofog?.group !== filter.cofogGroup) return false
+    if (filter.cofogClass !== undefined && line.judgments.cofog?.class !== filter.cofogClass) return false
     return true
   }
   const { items, nextOffset } = scanPage(chunk.lines, offset, pageSize, predicate)
