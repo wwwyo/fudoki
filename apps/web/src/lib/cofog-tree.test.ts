@@ -9,7 +9,7 @@ import { buildCofogTree, type AggregateBudgetsResponse } from "./cofog-tree"
 /** テストに必要な最小限のフィールドだけを持つ応答を組み立てる */
 function fakeResponse(
   cells: { code: string; label: string; amount: number; lineCount: number; share: number }[],
-  notDescendedByDivision: { division: string; divisionLabel: string; amount: number; lineCount: number; share: number }[] = [],
+  notDescendedByDivision: { division: string; divisionLabel: string; stoppedAt: "division" | "group"; amount: number; lineCount: number; share: number }[] = [],
 ): AggregateBudgetsResponse {
   return {
     cells: cells.map((c) => ({
@@ -80,14 +80,14 @@ describe("buildCofogTree", () => {
     expect(() => buildCofogTree(res)).toThrow()
   })
 
-  test("止まった分（notDescendedByDivision）は、その division に既に降りた行があるときだけ子ノードとして現れる", () => {
+  test("止まった分（notDescendedByDivision, stoppedAt=division）は、その division に既に降りた行があるときだけ子ノードとして現れる", () => {
     const res = fakeResponse(
       [{ code: "04.5.1", label: "道路交通", amount: 1000, lineCount: 1, share: 0.4 }],
-      [{ division: "04", divisionLabel: "経済業務", amount: 300, lineCount: 2, share: 0.12 }],
+      [{ division: "04", divisionLabel: "経済業務", stoppedAt: "division", amount: 300, lineCount: 2, share: 0.12 }],
     )
     const tree = buildCofogTree(res)
     const division = tree.find((n) => n.code === "04")!
-    const own = division.children!.find((n) => n.code === "")!
+    const own = division.children!.find((n) => n.label === "（大分類までで止まった分）")!
     expect(own.sum).toBe(300)
     expect(own.count).toBe(2)
     expect(own.filter).toBeNull()
@@ -96,10 +96,30 @@ describe("buildCofogTree", () => {
     expect(division.count).toBe(3)
   })
 
+  test("stoppedAt=division と stoppedAt=group は別ノードになる（旧 getCofogBreakdown と同じ区別を復元）", () => {
+    const res = fakeResponse(
+      [{ code: "04.5.1", label: "道路交通", amount: 1000, lineCount: 1, share: 0.4 }],
+      [
+        { division: "04", divisionLabel: "経済業務", stoppedAt: "division", amount: 300, lineCount: 2, share: 0.12 },
+        { division: "04", divisionLabel: "経済業務", stoppedAt: "group", amount: 150, lineCount: 1, share: 0.06 },
+      ],
+    )
+    const tree = buildCofogTree(res)
+    const division = tree.find((n) => n.code === "04")!
+    const stoppedAtDivision = division.children!.find((n) => n.label === "（大分類までで止まった分）")!
+    const stoppedAtGroup = division.children!.find((n) => n.label === "（中分類までで止まった分）")!
+    expect(stoppedAtDivision.sum).toBe(300)
+    expect(stoppedAtGroup.sum).toBe(150)
+    expect(stoppedAtGroup.filter).toBeNull()
+    // division の合計は class + stoppedAt=division + stoppedAt=group の3つの和（分けても合計は変わらない）
+    expect(division.sum).toBe(1450)
+    expect(division.count).toBe(4)
+  })
+
   test("そのdivisionに降りた行が1つも無ければ、止まった分だけの division ノードになる（子ノードは無い）", () => {
     const res = fakeResponse(
       [],
-      [{ division: "09", divisionLabel: "教育", amount: 700, lineCount: 5, share: 0.3 }],
+      [{ division: "09", divisionLabel: "教育", stoppedAt: "division", amount: 700, lineCount: 5, share: 0.3 }],
     )
     const tree = buildCofogTree(res)
     const division = tree.find((n) => n.code === "09")!
@@ -109,7 +129,7 @@ describe("buildCofogTree", () => {
     expect(division.children).toBeUndefined()
   })
 
-  test("division の label は notDescendedByDivision にあればそれを、無ければ COFOG 標準名を使う", () => {
+  test("division の label は常に COFOG 標準名を使う（cofogLabel が唯一の宣言）", () => {
     const res = fakeResponse(
       [{ code: "04.5.1", label: "道路交通", amount: 1000, lineCount: 1, share: 1 }],
       [],

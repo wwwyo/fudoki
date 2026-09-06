@@ -527,7 +527,7 @@ type AggregateResponse = {
     unclassifiable: { amount: number; lineCount: number; share?: number }
     outOfScope: { amount: number; lineCount: number; share?: number }
     notDescended: { amount: number; lineCount: number; share?: number }
-    notDescendedByDivision?: { division: string; divisionLabel: string; amount: number; lineCount: number; share?: number }[]
+    notDescendedByDivision?: { division: string; divisionLabel: string; stoppedAt: 'division' | 'group'; amount: number; lineCount: number; share?: number }[]
   }
   total?: { amount: number; lineCount: number }
   supportedGroupings: string[][]
@@ -665,6 +665,37 @@ describe('budgets:aggregate (COFOG axis)', () => {
     )
     const body = await res.json() as AggregateResponse
     expect(body.residual.notDescendedByDivision).toBeUndefined()
+  })
+
+  test('notDescendedByDivision: groupBy=cofog.group のとき、stoppedAt は常に "division"（group 自身が目標の深さのため）', async () => {
+    const res = await get(
+      `/v0/budgets:aggregate?${aggQuery({ filter: 'jurisdiction = "132047" AND fiscalYear = 2024', direction: 'expenditure', phase: 'approved', groupBy: ['cofog.group'] })}`,
+    )
+    const body = await res.json() as AggregateResponse
+    const byDivision = body.residual.notDescendedByDivision!
+    for (const d of byDivision) expect(d.stoppedAt).toBe('division')
+  })
+
+  test('notDescendedByDivision: groupBy=cofog.class のとき、stoppedAt で division ごとに最大2エントリに分かれ、分けた合計が分ける前の合計と一致する', async () => {
+    const res = await get(
+      `/v0/budgets:aggregate?${aggQuery({ filter: 'jurisdiction = "132047" AND fiscalYear = 2024', direction: 'expenditure', phase: 'approved', groupBy: ['cofog.class'] })}`,
+    )
+    expect(res.status).toBe(200)
+    const body = await res.json() as AggregateResponse
+    const byDivision = body.residual.notDescendedByDivision
+    expect(byDivision).toBeDefined()
+    expect(byDivision!.length).toBeGreaterThan(0)
+    // 木の「どこで止まったか」の区別（AGENTS.md「木の『どこで止まったか』の区別が消えた」の復元）
+    for (const d of byDivision!) expect(['division', 'group']).toContain(d.stoppedAt)
+    // (division, stoppedAt) の組は重複しない（高々2エントリ/division）
+    const keys = byDivision!.map((d) => `${d.division}:${d.stoppedAt}`)
+    expect(new Set(keys).size).toBe(keys.length)
+    // ⚠️ 分ける前後で合計は変わらない。stoppedAt は既存の notDescended を2種類に振り分けるだけで、
+    // 新しい集計を足していない
+    const sumAmount = byDivision!.reduce((s, d) => s + d.amount, 0)
+    const sumLines = byDivision!.reduce((s, d) => s + d.lineCount, 0)
+    expect(sumAmount).toBe(body.residual.notDescended.amount)
+    expect(sumLines).toBe(body.residual.notDescended.lineCount)
   })
 
   test('複数団体にまたがるのに jurisdiction が groupBy に無いと 400（supportedGroupings 付き）', async () => {

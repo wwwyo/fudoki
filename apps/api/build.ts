@@ -933,19 +933,28 @@ function cellsAtDepth(
 }
 
 /**
- * `notDescended`（割当済みだが depth まで降りていない行）を division ごとに割った内訳。
- * depth='group' は division だけで止まった行（group が空）、depth='class' は
- * division か group のどちらかで止まった行（class が空）── どちらも division は必ず埋まっている
- * （割当済みの前提）ので、division でそのまま fold できる。
+ * `notDescended`（割当済みだが depth まで降りていない行）を division ×「どこで止まったか」で割った内訳。
+ * depth='group' は division だけで止まった行（group が空）しか無い ── group 自身が目標の深さなので
+ * 「group で止まる」という状態が無い。depth='class' は「division で止まった行」（group も空）と
+ * 「group で止まった行」（group はあるが class が空）の2種類があり、深さを区別しないと合算されてしまう
+ * （旧 getCofogBreakdown が「大分類までで止まった分」と「中分類までで止まった分」を別ノードにしていたのと同じ区別）。
+ * ⚠️ 数値の合計はここで区別を増やしても変わらない ── 同じ行を2つに割るのではなく、
+ * 1つの行を stoppedAt で正しい側へ振り分けるだけ。
  */
 function notDescendedByDivisionOf(
   byCode: readonly (CofogCode & { count: number; sum: number })[],
   depth: 'group' | 'class',
-): { division: string; divisionLabel: string; amount: number; lineCount: number }[] {
-  const rows = depth === 'group' ? byCode.filter((r) => r.group === '') : byCode.filter((r) => r.class === '')
-  return foldBy(rows, (r) => r.division)
-    .map((r) => ({ division: r.division, divisionLabel: r.divisionLabel, amount: r.sum, lineCount: r.count }))
-    .sort(byKey((r) => r.division))
+): { division: string; divisionLabel: string; stoppedAt: 'division' | 'group'; amount: number; lineCount: number }[] {
+  const notReached = depth === 'group' ? byCode.filter((r) => r.group === '') : byCode.filter((r) => r.class === '')
+  const stops: readonly ('division' | 'group')[] = depth === 'group' ? ['division'] : ['division', 'group']
+  const entries: { division: string; divisionLabel: string; stoppedAt: 'division' | 'group'; amount: number; lineCount: number }[] = []
+  for (const stoppedAt of stops) {
+    const rows = notReached.filter((r) => (stoppedAt === 'division' ? r.group === '' : r.group !== ''))
+    for (const r of foldBy(rows, (r) => r.division)) {
+      entries.push({ division: r.division, divisionLabel: r.divisionLabel, stoppedAt, amount: r.sum, lineCount: r.count })
+    }
+  }
+  return entries.sort(byKey((r) => `${r.division}${r.stoppedAt}`))
 }
 
 /**

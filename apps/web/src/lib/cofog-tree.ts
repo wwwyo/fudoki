@@ -59,12 +59,12 @@ function groupOf(classCode: string): string {
  * ⚠️ **単一 budget の応答（`residual.notDescendedByDivision` を持つ応答）専用。**
  * 団体横断の応答はこの内訳をまだ持たない（design doc の制約。procedure/budgets.ts 参照）。
  *
- * ⚠️ **「止まった分」は大分類単位でしか出せない。** 旧 `getCofogBreakdown` は
- * 「大分類までで止まった分」と「中分類までで止まった分」を別ノードとして分けていたが、
- * `budgets:aggregate` の `residual.notDescendedByDivision` は division 単位の合計しか
- * 持たない（`cofog.class` で集計した depth の残余なので、途中で止まった深さを区別しない）。
- * ここでは division 直下に「（分類が完全でない分）」という1本のノードにまとめる
- * ── 情報を捨てているわけではない（合計は一致する）が、旧実装より粒度が粗い。
+ * `residual.notDescendedByDivision` の各項目は `stoppedAt`（`division` / `group`）を持つ
+ * （apps/api/build.ts の `notDescendedByDivisionOf`）ので、旧 `getCofogBreakdown` と同じく
+ * 「大分類までで止まった分」と「中分類までで止まった分」を別ノードとして division 直下に並べる。
+ * ⚠️ **止まった深さの区別はできるが、group で止まった分の実際の group コードまでは復元しない。**
+ * 前計算アセットが group ごとではなく division ごとに畳んで持つため、「どの group で止まったか」は
+ * 失われている（合計は一致するので情報の欠落ではなく、旧実装より粒度が粗いだけ）。
  */
 export function buildCofogTree(response: AggregateBudgetsResponse): CofogTreeNode[] {
   type Leaf = { classCode: string; label: string; amount: number; lineCount: number; share: number }
@@ -82,7 +82,12 @@ export function buildCofogTree(response: AggregateBudgetsResponse): CofogTreeNod
     }
   })
 
-  const notDescendedByDivision = new Map((response.residual?.notDescendedByDivision ?? []).map((d) => [d.division, d]))
+  // stoppedAt ごとに division → エントリの map を分けて持つ（1 division に stoppedAt 違いで
+  // 最大2エントリあるので、単純な division キーの Map にはできない）
+  const notDescendedByDivisionAt = { division: new Map<string, { amount: number; lineCount: number; share?: number }>(), group: new Map<string, { amount: number; lineCount: number; share?: number }>() }
+  for (const d of response.residual?.notDescendedByDivision ?? []) {
+    notDescendedByDivisionAt[d.stoppedAt].set(d.division, { amount: d.amount, lineCount: d.lineCount, share: d.share })
+  }
 
   const leavesByDivision = new Map<string, Leaf[]>()
   for (const leaf of leaves) {
@@ -92,7 +97,11 @@ export function buildCofogTree(response: AggregateBudgetsResponse): CofogTreeNod
     leavesByDivision.set(div, arr)
   }
 
-  const divisionCodes = new Set([...leavesByDivision.keys(), ...notDescendedByDivision.keys()])
+  const divisionCodes = new Set([
+    ...leavesByDivision.keys(),
+    ...notDescendedByDivisionAt.division.keys(),
+    ...notDescendedByDivisionAt.group.keys(),
+  ])
 
   const divisionNodes: CofogTreeNode[] = [...divisionCodes].sort().map((divCode) => {
     const divLeaves = leavesByDivision.get(divCode) ?? []
@@ -132,32 +141,42 @@ export function buildCofogTree(response: AggregateBudgetsResponse): CofogTreeNod
       })
       .sort((a, b) => b.sum - a.sum)
 
-    const notDescended = notDescendedByDivision.get(divCode)
-    const children: CofogTreeNode[] =
-      notDescended && notDescended.amount > 0 && groupNodes.length > 0
-        ? [
-            {
-              key: `${divCode}/_own`,
-              code: "",
-              label: "（分類が完全でない分）",
-              depth: "group" as const,
-              sum: notDescended.amount,
-              count: notDescended.lineCount,
-              share: notDescended.share ?? 0,
-              filter: null,
-            },
-            ...groupNodes,
-          ]
-        : groupNodes
+    // 「大分類までで止まった分」（stoppedAt='division'）と「中分類までで止まった分」
+    // （stoppedAt='group'）を別ノードにする（旧 getCofogBreakdown と同じ区別。AGENTS.md 参照）。
+    // 「止まった分」は、同じ階層に実際に降りた兄弟（groupNodes）がいるときだけ出す ──
+    // 兄弟が無ければ子が無いこと自体が「ここで止まった」を意味し、出すと冗長になる
+    // （合計は division 自身の sum/count にそのまま残るので、ここで削っても値は変わらない）。
+    const stoppedAtDivision = notDescendedByDivisionAt.division.get(divCode)
+    const stoppedAtGroup = notDescendedByDivisionAt.group.get(divCode)
+    const stoppedNode = (
+      key: string,
+      label: string,
+      entry: { amount: number; lineCount: number; share?: number } | undefined,
+    ): CofogTreeNode | null =>
+      entry && entry.amount > 0
+        ? { key, code: "", label, depth: "group", sum: entry.amount, count: entry.lineCount, share: entry.share ?? 0, filter: null }
+        : null
+    const stoppedNodes: CofogTreeNode[] =
+      groupNodes.length === 0
+        ? []
+        : [
+            stoppedNode(`${divCode}/_own-division`, "（大分類までで止まった分）", stoppedAtDivision),
+            stoppedNode(`${divCode}/_own-group`, "（中分類までで止まった分）", stoppedAtGroup),
+          ].filter((n): n is CofogTreeNode => n !== null)
+    const children: CofogTreeNode[] = [...stoppedNodes, ...groupNodes]
+
+    const notDescendedAmount = (stoppedAtDivision?.amount ?? 0) + (stoppedAtGroup?.amount ?? 0)
+    const notDescendedCount = (stoppedAtDivision?.lineCount ?? 0) + (stoppedAtGroup?.lineCount ?? 0)
+    const notDescendedShare = (stoppedAtDivision?.share ?? 0) + (stoppedAtGroup?.share ?? 0)
 
     return {
       key: divCode,
       code: divCode,
-      label: notDescended?.divisionLabel ?? cofogLabel("division", divCode),
+      label: cofogLabel("division", divCode),
       depth: "division" as const,
-      sum: groupNodes.reduce((s, n) => s + n.sum, 0) + (notDescended?.amount ?? 0),
-      count: groupNodes.reduce((s, n) => s + n.count, 0) + (notDescended?.lineCount ?? 0),
-      share: groupNodes.reduce((s, n) => s + n.share, 0) + (notDescended?.share ?? 0),
+      sum: groupNodes.reduce((s, n) => s + n.sum, 0) + notDescendedAmount,
+      count: groupNodes.reduce((s, n) => s + n.count, 0) + notDescendedCount,
+      share: groupNodes.reduce((s, n) => s + n.share, 0) + notDescendedShare,
       filter: { division: divCode },
       children: children.length > 0 ? children : undefined,
     }

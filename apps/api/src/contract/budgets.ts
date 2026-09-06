@@ -595,6 +595,14 @@ const aggregationCell = z.object({
 const notDescendedByDivisionEntry = z.object({
   division: z.string(),
   divisionLabel: z.string(),
+  stoppedAt: z
+    .enum(['division', 'group'])
+    .describe(
+      '規則がどこで判断を止めたか。groupBy が `cofog.group` のときは常に "division"' +
+        '（group 自身が目標の深さなので「group で止まる」という状態が無い）。`cofog.class` のときは' +
+        '"division"（group も未定）と "group"（group は定まっているが class は未定）の両方が起こりうる。' +
+        '同じ division に対して stoppedAt 違いで最大2エントリを持つ',
+    ),
   amount: z.number(),
   lineCount: z.number(),
   share: z.number().min(0).max(1).optional().describe('`total` に対する構成比（0〜1）。`total` が無い応答では省略する'),

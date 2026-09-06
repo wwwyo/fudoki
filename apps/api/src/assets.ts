@@ -62,11 +62,16 @@ export type AggBudgetsAsset = {
     outOfScope: AggStat
     notDescended: AggStat
     /**
-     * `notDescended` を division ごとに割った内訳。`depth = 'division'` のときは
+     * `notDescended` を division ×「どの深さで止まったか」で割った内訳。`depth = 'division'` のときは
      * 「division まで降りていない」が起こり得ない（割当済みは常に division を持つ）ので、無い。
      * `depth = 'group' | 'class'` のときだけ持つ（procedure/budgets.ts がそのまま応答へ渡す）。
+     *
+     * `stoppedAt` は規則がどこで判断を止めたか。`depth = 'group'` のときは常に 'division'
+     * （group 自身が目標の深さなので「group で止まる」という状態が無い）。`depth = 'class'` のときは
+     * 'division'（group も未定）と 'group'（group は定まっているが class は未定）の両方が起こりうるので、
+     * 同じ division に対して最大2エントリを持つ（division ごとに1エントリだった旧形式から変更）。
      */
-    notDescendedByDivision?: { division: string; divisionLabel: string; amount: number; lineCount: number }[]
+    notDescendedByDivision?: { division: string; divisionLabel: string; stoppedAt: 'division' | 'group'; amount: number; lineCount: number }[]
   }
   total: AggStat
   consolidation: { retained: AggStat; eliminated: AggStat }
