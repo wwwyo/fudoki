@@ -144,13 +144,10 @@ export function extractedKindOf(p: Provenance): 'project-names' | 'statement' | 
 /**
  * 取得の証跡。原典1リソースにつき1件。
  *
- * ⚠️ **正本の取り込みだけが持つ項目を必須で宣言しない。** 名称を補う抽出物
- * （`extract_projects.py` / `extract_revenue_accounts.py`）は原典と1対1ではないので、
- * リソース名も行数も持たない。ここを必須と宣言すると、**型検査は通るのに実行時は
- * `undefined`** という状態になり、`rows` を足した先が黙って `NaN` になる
- * （狛江市の取得元ノードの行数で実際に起きた。抽出物が `direction: "revenue"` を
- * 名乗るので、行数を持つ決算歳入の証跡と一緒に合算された）。
- * 任意にしておけば、読む側は絞り込んでからでないと足せない。
+ * ⚠️ **正本の取り込みだけが持つ項目を必須で宣言しない。** 名称を補う抽出物は
+ * 原典と1対1ではなく、リソース名も行数も持たない。必須にすると
+ * **型検査は通るのに実行時は `undefined`** になり、行数を足した先が黙って `NaN` になる。
+ * 任意なら、読む側は `isCanonicalFetch` で絞ってからでないと足せない。
  */
 export type Provenance = {
   jurisdiction_code: string
@@ -159,7 +156,6 @@ export type Provenance = {
   direction?: string
   /** ⚠️ **正本の取り込みだけが持つ。** 抽出物は `document_title` を名乗る */
   resource_name?: string
-  /** ⚠️ 同上（正本の取り込みだけ） */
   fiscal_year_basis?: string
   request_url: string
   status: number
@@ -200,10 +196,8 @@ export type CanonicalFetch = Provenance & { rows: number; resource_name: string 
  * 見分けるのは行数の有無 — 正本の取り込みは CSV でも PDF でも必ず行数を持ち、
  * 名称を補う抽出物は原典と1対1でないので持たない。
  *
- * ⚠️ **戻り値を `boolean` にしない。** 型述語にしておくと、絞り込んでいない証跡から
- * `rows` を足すコードがコンパイルを通らなくなる。`Provenance` 側で `rows` を
- * 任意にしてあるのはこの検査を成立させるためで、必須と宣言すると
- * 「実行時だけ undefined」に戻る。
+ * ⚠️ **戻り値を `boolean` にしない。** 型述語だから、絞り込んでいない証跡から
+ * 行数を足すコードがコンパイルを通らなくなる。
  */
 export function isCanonicalFetch(p: Provenance): p is CanonicalFetch {
   return typeof p.rows === 'number' && Number.isFinite(p.rows) && p.resource_name !== undefined

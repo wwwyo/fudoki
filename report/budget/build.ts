@@ -458,10 +458,9 @@ const ALL_PROVENANCE = provenanceOf(join(ROOT, 'data/budget/raw'))
 function build(
   code: string, topology: Topology, checks: Check[],
 ): ReportData {
-  // ⚠️ **保証を作っているのはこの glob。だからここで検査する。**
-  // 名称を補う抽出物は団体のディレクトリの外（`raw/project-names/` `raw/revenue-accounts/`）に
-  // あるので、`jurisdiction=<code>` の下には正本の取り込みしか来ない。
-  // 型（`ReportEnvelope.ingestion`）はそれを前提にしているので、宣言しっぱなしにしない
+  // ⚠️ **保証を作っているのはこの glob。だからここで検査する。** 抽出物は団体の
+  // ディレクトリの外（`raw/project-names/` `raw/revenue-accounts/`）にあり、ここには来ない。
+  // 型（`ReportEnvelope.ingestion`）がそれを前提にしている以上、宣言しっぱなしにしない
   const prov = provenanceOf(join(ROOT, 'data/budget/raw', `jurisdiction=${code}`)).map((p) => {
     if (!isCanonicalFetch(p)) throw new Error(`${code} の団体ディレクトリに、行数を持たない証跡がある（${p.request_url}）`)
     return p

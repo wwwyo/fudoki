@@ -68,9 +68,6 @@ describe('assertRowSumsConsistent', () => {
     expect(() => assertRowSumsConsistent([n])).not.toThrow()
   })
 
-  // ⚠️ **NaN をスキップして通さない。** 行数を持たない証跡が正本の合算に混ざると
-  // `undefined + number` で NaN になる（狛江市の取得元で実際に起きた）。
-  // NaN は比較すると必ず不一致になるので、見なかったことにすると原因が画面から消える
   test('団体の total が数値でなければ止める', () => {
     const n = node({
       rows: null,

@@ -112,13 +112,10 @@ function introducesJudgment(n: DbtNode, stage: Stage['id']): boolean {
 }
 
 /**
- * その証跡が、この direction の「正本の取り込み」か。
- * 判別そのもの（行数の有無）は `isCanonicalFetch` が持つ。ここは direction の一致と、
- * 「正本らしいのに行数だけ無い」証跡を黙って落とさないための診断だけを足す。
+ * その証跡が、この direction の「正本の取り込み」か。判別そのものは `isCanonicalFetch`。
  *
- * ⚠️ **direction では見分けられない。** 名称を補う抽出物のうち revenue-accounts は
- * direction を名乗るので、混ざると行数を持たない値が合算に入り NaN になる
- * （狛江市の取得元が空欄で出ていた）。
+ * ⚠️ **direction で絞るだけでは足りない。** 抽出物のうち revenue-accounts も
+ * direction を名乗るので、これだけだと正本の合算に混ざる。
  */
 function isCanonicalFetchOf(p: Provenance, direction: string): p is CanonicalFetch {
   if (p.direction !== direction) return false
@@ -245,32 +242,32 @@ export function assertNoNullKeyRows(counts: CountRow[], hasYear: (node: number) 
 /**
  * 検査: `rows === Σ(rowsByJurisdiction[*].total)` と `total === Σ(byYear)`。
  *
- * ⚠️ **「行数が無い」と「行数を数え損ねた」を同じ扱いにしない。**
- * 前者は `null`（団体にも年度にも依らない規則表など、数えようが無いもの）で、
- * 検査から外してよい。後者は `NaN` で、必ず合算の誤りから来る
- * （行数を持たない抽出物が正本の証跡に混ざり `undefined + number` になった実例がある）。
- * `NaN` は比較すると常に不一致になるので、スキップすると**根本原因を隠したまま通る**。
- * ここで別の失敗として止める。
+ * ⚠️ **数値でない行数をスキップしない。** `NaN` は比較が必ず不一致になるので、
+ * 見なかったことにすると原因が画面から消える（`isCanonicalFetch` を参照）。
  */
 export function assertRowSumsConsistent(nodes: Node[]): void {
-  const finite = (id: string, what: string, v: number): number => {
-    if (!Number.isFinite(v)) throw new Error(`${id}: ${what} が数値でない（${v}）。行数を持たない証跡が合算に混ざっている`)
-    return v
-  }
+  // 文言は throw する側でだけ組む。検査のたびに組むと、捨てるだけの文字列を団体 × 年度ぶん作る
+  const notANumber = (id: string, what: string, v: unknown) =>
+    new Error(`${id}: ${what} が数値でない（${v}）。行数を持たない証跡が合算に混ざっている`)
   for (const n of nodes) {
     if (n.rowsByJurisdiction === null) continue
-    const perJurisdiction = Object.entries(n.rowsByJurisdiction)
-    for (const [code, v] of perJurisdiction) finite(n.id, `${code} の total`, v.total)
-    if (n.rows !== null) {
-      const sum = perJurisdiction.reduce((s, [, v]) => s + v.total, 0)
-      if (finite(n.id, 'rows', n.rows) !== sum)
-        throw new Error(`${n.id}: rows(${n.rows}) !== Σ(rowsByJurisdiction の total)(${sum})`)
-    }
-    for (const [code, v] of perJurisdiction) {
+    let acrossJurisdictions = 0
+    for (const [code, v] of Object.entries(n.rowsByJurisdiction)) {
+      if (!Number.isFinite(v.total)) throw notANumber(n.id, `${code} の total`, v.total)
+      acrossJurisdictions += v.total
       if (v.byYear === null) continue
-      const sum = Object.entries(v.byYear).reduce((s, [y, rows]) => s + finite(n.id, `${code} の ${y}年度`, rows), 0)
-      if (sum !== v.total) throw new Error(`${n.id}: total(${v.total}) !== Σ(byYear)(${sum})`)
+      let acrossYears = 0
+      for (const [year, rows] of Object.entries(v.byYear)) {
+        if (!Number.isFinite(rows)) throw notANumber(n.id, `${code} の ${year}年度`, rows)
+        acrossYears += rows
+      }
+      if (acrossYears !== v.total) throw new Error(`${n.id}: total(${v.total}) !== Σ(byYear)(${acrossYears})`)
     }
+    // `rows` だけは null を取りうる（行数を数えようが無いノード）
+    if (n.rows === null) continue
+    if (!Number.isFinite(n.rows)) throw notANumber(n.id, 'rows', n.rows)
+    if (acrossJurisdictions !== n.rows)
+      throw new Error(`${n.id}: rows(${n.rows}) !== Σ(rowsByJurisdiction の total)(${acrossJurisdictions})`)
   }
 }
 
@@ -377,7 +374,6 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
     const code = /\.raw_(\d{6})/.exec(src.id)?.[1]
     if (!code) continue
     // 2段に分けるのは、`&&` で束ねると `isCanonicalFetchOf` の型述語が効かなくなるため
-    // （行数を持たない証跡が混ざったことを型検査が言えなくなる）
     const ps = provenance
       .filter((p) => p.jurisdiction_code === code)
       .filter((p) => isCanonicalFetchOf(p, src.label))
