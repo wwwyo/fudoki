@@ -143,13 +143,17 @@ function CollectedAnalysis({
   const [year, setYear] = useState<number>(years.at(-1)!)
   const [direction, setDirection] = useState<Direction>("expenditure")
   const [agg, setAgg] = useState<AggregateBudgetsResponse | null>(null)
-  // 歳入の合計。budgets:aggregate の fiscalYear 軸（filter=jurisdiction のみ、groupBy=['fiscalYear']）を
-  // 呼び、その年度の cell をそのまま使う（画面では足し算しない。AGENTS.md「集計は1箇所」）。
-  const [revenueTotal, setRevenueTotal] = useState<{ lineCount: number; amount: number } | null>(null)
+  // 歳入の合計。budgets:aggregate の fiscalYear 軸（filter=jurisdiction のみ、groupBy=['fiscalYear']）の
+  // 応答をそのまま持つ（画面では足し算しない。AGENTS.md「集計は1箇所」）。**全年度ぶんを1回だけ取り**、
+  // 選択中の年度のセルは下の `revenueTotal` で都度取り出す ── year を fetch の依存に入れると、
+  // 「その団体の全年度」を返す呼び出しを年度を切り替えるたびに丸ごと取り直すことになる。
+  const [revenueCells, setRevenueCells] = useState<AggregateBudgetsResponse["cells"] | null>(null)
   const [apiError, setApiError] = useState<string | null>(null)
   const [selected, setSelected] = useState<CofogNodeFilter | null>(null)
-  // 明細の金額表示に使う予算段階。budgets:aggregate の phase（typed field）にも使う
-  const [amountPhase, setAmountPhase] = useState<string | null>(null)
+  // 明細の金額表示に使う予算段階。budgets:aggregate の phase（typed field）にも使う。
+  // 団体と年度だけで決まり、歳出・歳入の切り替えには依存しない。
+  // 型は getBudget の応答からそのまま導出する（union を web 側で書き直さない）。
+  const [amountPhase, setAmountPhase] = useState<Awaited<ReturnType<typeof apiClient.getBudget>>["budget"]["amountPhase"] | null>(null)
 
   // 団体を切り替えたら年度もその団体の最新年度に戻す（前の団体にしか無い年度を持ち越さない）。
   // 依存は `code` だけにする — `years` を足すと配列の参照が変わるたびに発火し、
@@ -158,47 +162,22 @@ function CollectedAnalysis({
     setYear(years.at(-1)!)
   }, [code])
 
-  // ⚠️ **歳入に COFOG 内訳は無い**（cofog_status が歳入では常に not-applicable）ので、
-  // groupBy=['cofog.class'] は歳出だけに使う。歳入は fiscalYear 軸（filter=jurisdiction のみ、
-  // fund=all）でその年度の合計だけを取る ── fund=all を取れるのはこの軸だけで、hierarchy 軸は
-  // 款・項のコードが会計内でしか一意でないため使えない（procedure/budgets.ts の同じ判断）。
+  // 団体・年度・歳出歳入を切り替えたら選択中の分類も捨てる（別の集計に対する古い選択を残さない）。
+  // ネットワークを伴わないので、他の effect と分けても往復は増えない。
+  useEffect(() => {
+    setSelected(null)
+  }, [code, year, direction])
+
+  // amountPhase は団体と年度だけで決まる（procedure/budgets.ts）。歳出・歳入のトグルでは
+  // 値が変わらないので、direction を依存に入れない ── 入れるとトグルのたびに取り直すことになる。
   useEffect(() => {
     let stale = false
-    setAgg(null)
-    setRevenueTotal(null)
-    setApiError(null)
     setAmountPhase(null)
-    setSelected(null) // 団体・年度・歳出歳入を切り替えたら選択中の分類も捨てる（別の集計に対する古い選択を残さない）
+    setApiError(null)
     apiClient
       .getBudget({ budget: `${code}:${year}` })
       .then((res) => {
-        if (stale) return undefined
-        setAmountPhase(res.budget.amountPhase)
-        if (direction === "expenditure") {
-          return apiClient
-            .aggregateBudgets({
-              filter: `jurisdiction = "${code}" AND fiscalYear = ${year}`,
-              direction: "expenditure",
-              phase: res.budget.amountPhase,
-              groupBy: ["cofog.class"],
-            })
-            .then((r) => {
-              if (!stale) setAgg(r)
-            })
-        }
-        return apiClient
-          .aggregateBudgets({
-            filter: `jurisdiction = "${code}"`,
-            direction: "revenue",
-            phase: res.budget.amountPhase,
-            groupBy: ["fiscalYear"],
-          })
-          .then((r) => {
-            if (stale) return
-            const cell = r.cells.find((c) => c.dimensions[0]?.code === String(year))
-            if (!cell) throw new Error(`no fiscalYear=${year} cell in revenue fiscalYear aggregate for ${code}`)
-            setRevenueTotal({ lineCount: cell.lineCount, amount: cell.amount })
-          })
+        if (!stale) setAmountPhase(res.budget.amountPhase)
       })
       .catch((e: unknown) => {
         if (!stale) setApiError(e instanceof Error ? e.message : String(e))
@@ -206,7 +185,72 @@ function CollectedAnalysis({
     return () => {
       stale = true
     }
-  }, [code, year, direction])
+  }, [code, year])
+
+  // ⚠️ **歳入に COFOG 内訳は無い**（cofog_status が歳入では常に not-applicable）ので、
+  // groupBy=['cofog.class'] は歳出だけに使う（fund=all を取れるのはこの軸だけで、hierarchy 軸は
+  // 款・項のコードが会計内でしか一意でないため使えない。procedure/budgets.ts の同じ判断）。
+  useEffect(() => {
+    setAgg(null)
+    if (direction !== "expenditure" || !amountPhase) return
+    let stale = false
+    apiClient
+      .aggregateBudgets({
+        filter: `jurisdiction = "${code}" AND fiscalYear = ${year}`,
+        direction: "expenditure",
+        phase: amountPhase,
+        groupBy: ["cofog.class"],
+      })
+      .then((r) => {
+        if (!stale) setAgg(r)
+      })
+      .catch((e: unknown) => {
+        if (!stale) setApiError(e instanceof Error ? e.message : String(e))
+      })
+    return () => {
+      stale = true
+    }
+  }, [code, year, direction, amountPhase])
+
+  // 歳入は fiscalYear 軸（filter=jurisdiction のみ）でその団体の全年度をまとめて取る。
+  // 依存に `year` を入れない ── 年度の選び直しは下の `revenueTotal` 側（フェッチ済みの
+  // cells から探すだけ）で行い、ここでは取り直さない。
+  useEffect(() => {
+    setRevenueCells(null)
+    if (direction !== "revenue" || !amountPhase) return
+    let stale = false
+    apiClient
+      .aggregateBudgets({
+        filter: `jurisdiction = "${code}"`,
+        direction: "revenue",
+        phase: amountPhase,
+        groupBy: ["fiscalYear"],
+      })
+      .then((r) => {
+        if (!stale) setRevenueCells(r.cells)
+      })
+      .catch((e: unknown) => {
+        if (!stale) setApiError(e instanceof Error ? e.message : String(e))
+      })
+    return () => {
+      stale = true
+    }
+  }, [code, direction, amountPhase])
+
+  // 取得済みの revenueCells から選択中の年度のセルを都度取り出す（ネットワークを伴わない）。
+  // 見つからない場合は本来ここに来ないはずの状態（全年度を取っているので必ずあるはず）なので、
+  // 元の実装と同じく明示的なエラーとして扱う。
+  useEffect(() => {
+    if (!revenueCells) return
+    const hasCell = revenueCells.some((c) => c.dimensions[0]?.code === String(year))
+    if (!hasCell) setApiError(`no fiscalYear=${year} cell in revenue fiscalYear aggregate for ${code}`)
+  }, [revenueCells, year, code])
+
+  const revenueTotal = (() => {
+    if (!revenueCells) return null
+    const cell = revenueCells.find((c) => c.dimensions[0]?.code === String(year))
+    return cell ? { lineCount: cell.lineCount, amount: cell.amount } : null
+  })()
 
   // 木の組み立て（並べ替え）は lib/cofog-tree.ts の buildCofogTree が行う。ここでは呼ぶだけ。
   const tree: CofogTreeNode[] = agg ? buildCofogTree(agg) : []
