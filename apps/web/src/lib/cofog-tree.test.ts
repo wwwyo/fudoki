@@ -7,6 +7,10 @@ import { describe, expect, test } from "bun:test"
 import { buildCofogTree, type AggregateBudgetsResponse } from "./cofog-tree"
 
 /** テストに必要な最小限のフィールドだけを持つ応答を組み立てる */
+// group・division の share は total から作り直す（cofog-tree.ts）ので、テストの入力側も
+// class の share（0.1 = 1000/10000 など）と辻褄が合う total を明示する。
+const FAKE_TOTAL = 10000
+
 function fakeResponse(
   cells: { code: string; label: string; amount: number; lineCount: number; share: number }[],
   notDescendedByDivision: { division: string; divisionLabel: string; stoppedAt: "division" | "group"; amount: number; lineCount: number; share: number }[] = [],
@@ -18,6 +22,7 @@ function fakeResponse(
       lineCount: c.lineCount,
       share: c.share,
     })),
+    total: { amount: FAKE_TOTAL, lineCount: 0 },
     residual: {
       unclassifiable: { amount: 0, lineCount: 0, share: 0 },
       outOfScope: { amount: 0, lineCount: 0, share: 0 },

@@ -19,6 +19,7 @@
 import type { RouterClient } from "@orpc/server"
 import type { Router } from "@fudoki/api/router"
 import { cofogLabel } from "@fudoki/report/budget/detail"
+import { share } from "@fudoki/report/budget/cofog"
 
 /** `aggregateBudgets` の応答。画面はここから導出した型だけを使い、別経路で導出し直さない */
 export type AggregateBudgetsResponse = Awaited<ReturnType<RouterClient<Router>["aggregateBudgets"]>>
@@ -67,6 +68,12 @@ function groupOf(classCode: string): string {
  * 失われている（合計は一致するので情報の欠落ではなく、旧実装より粒度が粗いだけ）。
  */
 export function buildCofogTree(response: AggregateBudgetsResponse): CofogTreeNode[] {
+  // group / division の share は子の share を足して作らない（浮動小数の和で誤差が積み上がり、
+  // share の定義を変えたときに追随しない）。`total` から `report/budget/cofog.ts` の share() で
+  // 都度作り直す。single-budget 応答専用というこの関数の前提（上のコメント）どおり total は必ず来る。
+  if (!response.total) throw new Error("buildCofogTree expects a single-budget response with `total`")
+  const total = response.total.amount
+
   type Leaf = { classCode: string; label: string; amount: number; lineCount: number; share: number }
   const leaves: Leaf[] = response.cells.map((c) => {
     const dim = c.dimensions[0]
@@ -127,14 +134,15 @@ export function buildCofogTree(response: AggregateBudgetsResponse): CofogTreeNod
             filter: { division: divCode, group: groupCode, class: leaf.classCode },
           }))
           .sort((a, b) => b.sum - a.sum)
+        const groupSum = classNodes.reduce((s, n) => s + n.sum, 0)
         return {
           key: groupCode,
           code: groupCode,
           label: cofogLabel("group", groupCode),
           depth: "group" as const,
-          sum: classNodes.reduce((s, n) => s + n.sum, 0),
+          sum: groupSum,
           count: classNodes.reduce((s, n) => s + n.count, 0),
-          share: classNodes.reduce((s, n) => s + n.share, 0),
+          share: share(groupSum, total),
           filter: { division: divCode, group: groupCode },
           children: classNodes,
         }
@@ -167,16 +175,16 @@ export function buildCofogTree(response: AggregateBudgetsResponse): CofogTreeNod
 
     const notDescendedAmount = (stoppedAtDivision?.amount ?? 0) + (stoppedAtGroup?.amount ?? 0)
     const notDescendedCount = (stoppedAtDivision?.lineCount ?? 0) + (stoppedAtGroup?.lineCount ?? 0)
-    const notDescendedShare = (stoppedAtDivision?.share ?? 0) + (stoppedAtGroup?.share ?? 0)
+    const divisionSum = groupNodes.reduce((s, n) => s + n.sum, 0) + notDescendedAmount
 
     return {
       key: divCode,
       code: divCode,
       label: cofogLabel("division", divCode),
       depth: "division" as const,
-      sum: groupNodes.reduce((s, n) => s + n.sum, 0) + notDescendedAmount,
+      sum: divisionSum,
       count: groupNodes.reduce((s, n) => s + n.count, 0) + notDescendedCount,
-      share: groupNodes.reduce((s, n) => s + n.share, 0) + notDescendedShare,
+      share: share(divisionSum, total),
       filter: { division: divCode },
       children: children.length > 0 ? children : undefined,
     }

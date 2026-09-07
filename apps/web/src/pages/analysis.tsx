@@ -40,6 +40,7 @@ import {
 } from "@/components/ui/select"
 import { withBase } from "@/lib/utils"
 import { DIVISION_COLOR, loadPipeline, pct, senYen, type Direction, type PipelineData, count } from "@/lib/pipeline"
+import { share } from "@fudoki/report/budget/cofog"
 import { apiClient } from "@/lib/api-client"
 import { buildCofogTree, type AggregateBudgetsResponse, type CofogNodeFilter, type CofogTreeNode } from "@/lib/cofog-tree"
 import { CofogTree } from "@/components/cofog-tree"
@@ -218,7 +219,8 @@ function CollectedAnalysis({
           const { unclassifiable, outOfScope } = agg.residual
           const unclassifiedSum = unclassifiable.amount + outOfScope.amount
           const unclassifiedCount = unclassifiable.lineCount + outOfScope.lineCount
-          const unclassifiedShare = (unclassifiable.share ?? 0) + (outOfScope.share ?? 0)
+          // share は子の和で作らない（cofog-tree.ts と同じ理由）。total.amount から作り直す
+          const unclassifiedShare = share(unclassifiedSum, total.amount)
           return {
             total,
             assigned: { sum: total.amount - unclassifiedSum, count: total.lineCount - unclassifiedCount },
