@@ -915,11 +915,12 @@ describe('budgets:aggregate (hierarchy axis)', () => {
       expect(cell.amount).toBe(exp!.amount)
       expect(cell.lineCount).toBe(exp!.lineCount)
     }
-    // hierarchy 単独に COFOG の残余は無い
+    // hierarchy 単独に COFOG の残余は無い。この応答も total を持つので share を付ける
+    // （AGENTS.md「total があれば share もある」。0/total = 0 になる）
     expect(body.residual).toEqual({
-      unclassifiable: { amount: 0, lineCount: 0 },
-      outOfScope: { amount: 0, lineCount: 0 },
-      notDescended: { amount: 0, lineCount: 0 },
+      unclassifiable: { amount: 0, lineCount: 0, share: 0 },
+      outOfScope: { amount: 0, lineCount: 0, share: 0 },
+      notDescended: { amount: 0, lineCount: 0, share: 0 },
     })
   })
 

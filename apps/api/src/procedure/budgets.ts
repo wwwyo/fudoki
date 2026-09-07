@@ -476,6 +476,31 @@ function withShare<T extends AggStat>(stat: T, totalAmount: number): T & { share
   return { ...stat, share: share(stat.amount, totalAmount) }
 }
 
+/**
+ * `residual`（unclassifiable / outOfScope / notDescended とその内訳）の各項目へ `withShare` を配る。
+ *
+ * `total` を返す応答はすべて `share` を付ける契約（design doc 相当の判断）なので、residual を持つ
+ * 経路（single budget / hierarchy / jurisdictionYears の cofog 版）はここを通す。3経路とも
+ * `total` を返すのに `singleBudgetAggregate` だけが `share` を付けていたのが揃っていなかった箇所。
+ */
+function withShareResidual<
+  R extends {
+    unclassifiable: AggStat
+    outOfScope: AggStat
+    notDescended: AggStat
+    notDescendedByDivision?: readonly (AggStat & { division: string; divisionLabel: string; stoppedAt: 'division' | 'group' })[]
+  },
+>(residual: R, totalAmount: number) {
+  return {
+    unclassifiable: withShare(residual.unclassifiable, totalAmount),
+    outOfScope: withShare(residual.outOfScope, totalAmount),
+    notDescended: withShare(residual.notDescended, totalAmount),
+    ...(residual.notDescendedByDivision
+      ? { notDescendedByDivision: residual.notDescendedByDivision.map((d) => withShare(d, totalAmount)) }
+      : {}),
+  }
+}
+
 async function singleBudgetAggregate(
   env: Env,
   meta: Meta,
@@ -557,14 +582,7 @@ async function singleBudgetAggregate(
     lineCount: c.lineCount,
     share: share(c.amount, asset.total.amount),
   }))
-  const residual = {
-    unclassifiable: withShare(asset.residual.unclassifiable, asset.total.amount),
-    outOfScope: withShare(asset.residual.outOfScope, asset.total.amount),
-    notDescended: withShare(asset.residual.notDescended, asset.total.amount),
-    ...(asset.residual.notDescendedByDivision
-      ? { notDescendedByDivision: asset.residual.notDescendedByDivision.map((d) => withShare(d, asset.total.amount)) }
-      : {}),
-  }
+  const residual = withShareResidual(asset.residual, asset.total.amount)
 
   const warnings: { code: 'UNCONSOLIDATED_INTERFUND_TRANSFERS'; message: string }[] = []
   if (input.fund === 'all' && asset.consolidation.eliminated.lineCount > 0) {
@@ -812,6 +830,8 @@ async function hierarchyAggregate(
     errors,
   )
 
+  // この応答も single budget と同じく total を持つので、cells・residual に share を付ける
+  // （AGENTS.md「total があれば share もある」を守る。以前はここだけ share を欠いていた）。
   const cells = includesCofog
     ? (items as AggHierarchyCofogAsset['cells']).map((c) => ({
         dimensions: [
@@ -820,15 +840,17 @@ async function hierarchyAggregate(
         ],
         amount: c.amount,
         lineCount: c.lineCount,
+        share: share(c.amount, asset.total.amount),
       }))
     : (items as AggHierarchyAsset['cells']).map((c) => ({
         dimensions: [{ dimension: 'hierarchy' as const, code: c.code, label: c.label }],
         amount: c.amount,
         lineCount: c.lineCount,
+        share: share(c.amount, asset.total.amount),
       }))
 
   // fund は特定の会計コードなので会計間の繰出という概念自体が無く、UNCONSOLIDATED_INTERFUND_TRANSFERS は起きない
-  const residual = includesCofog ? (asset as AggHierarchyCofogAsset).residual : ZERO_RESIDUAL
+  const residual = withShareResidual(includesCofog ? (asset as AggHierarchyCofogAsset).residual : ZERO_RESIDUAL, asset.total.amount)
 
   const jurisdiction = meta.jurisdictionById.get(jurisdictionId)!
   const { sources, byJurisdiction } = provenanceSourcesFor(meta, [jurisdictionId], false)
@@ -951,6 +973,14 @@ async function jurisdictionYearsAggregate(
     errors,
   )
 
+  // design doc「total は範囲が1つの団体に閉じているときだけ返す」「範囲全体の要約は
+  // アセットに一度だけ持つ」── total と query.fundScope はアセットが範囲全体（全年度）に
+  // ついて一度だけ計算した値を使う。ページ後の cells から作り直すと pageSize で値が変わる
+  // （PR #27 レビュー指摘: 全件 total と pageSize=1 の total が食い違っていた）
+  const total = asset.total
+
+  // この応答も total を持つので、cells・residual に share を付ける
+  // （AGENTS.md「total があれば share もある」を守る。以前はここだけ share を欠いていた）。
   const cells = includesCofog
     ? (items as AggYearsCofogDivisionAsset['cells']).map((c) => ({
         dimensions: [
@@ -959,31 +989,30 @@ async function jurisdictionYearsAggregate(
         ],
         amount: c.amount,
         lineCount: c.lineCount,
+        share: share(c.amount, total.amount),
         fundScope: c.fundScope,
       }))
     : (items as AggYearsTotalAsset['cells']).map((c) => ({
         dimensions: [{ dimension: 'fiscalYear' as const, code: c.fiscalYear, label: null }],
         amount: c.amount,
         lineCount: c.lineCount,
+        share: share(c.amount, total.amount),
         fundScope: c.fundScope,
       }))
 
-  const residual = includesCofog
-    ? Object.values((asset as AggYearsCofogDivisionAsset).residualByYear).reduce(
-        (s, r) => ({
-          unclassifiable: { amount: s.unclassifiable.amount + r.unclassifiable.amount, lineCount: s.unclassifiable.lineCount + r.unclassifiable.lineCount },
-          outOfScope: { amount: s.outOfScope.amount + r.outOfScope.amount, lineCount: s.outOfScope.lineCount + r.outOfScope.lineCount },
-          notDescended: { amount: s.notDescended.amount + r.notDescended.amount, lineCount: s.notDescended.lineCount + r.notDescended.lineCount },
-        }),
-        { unclassifiable: { amount: 0, lineCount: 0 }, outOfScope: { amount: 0, lineCount: 0 }, notDescended: { amount: 0, lineCount: 0 } },
-      )
-    : ZERO_RESIDUAL
-
-  // design doc「total は範囲が1つの団体に閉じているときだけ返す」「範囲全体の要約は
-  // アセットに一度だけ持つ」── total と query.fundScope はアセットが範囲全体（全年度）に
-  // ついて一度だけ計算した値を使う。ページ後の cells から作り直すと pageSize で値が変わる
-  // （PR #27 レビュー指摘: 全件 total と pageSize=1 の total が食い違っていた）
-  const total = asset.total
+  const residual = withShareResidual(
+    includesCofog
+      ? Object.values((asset as AggYearsCofogDivisionAsset).residualByYear).reduce(
+          (s, r) => ({
+            unclassifiable: { amount: s.unclassifiable.amount + r.unclassifiable.amount, lineCount: s.unclassifiable.lineCount + r.unclassifiable.lineCount },
+            outOfScope: { amount: s.outOfScope.amount + r.outOfScope.amount, lineCount: s.outOfScope.lineCount + r.outOfScope.lineCount },
+            notDescended: { amount: s.notDescended.amount + r.notDescended.amount, lineCount: s.notDescended.lineCount + r.notDescended.lineCount },
+          }),
+          { unclassifiable: { amount: 0, lineCount: 0 }, outOfScope: { amount: 0, lineCount: 0 }, notDescended: { amount: 0, lineCount: 0 } },
+        )
+      : ZERO_RESIDUAL,
+    total.amount,
+  )
 
   const omitted = asset.omittedYears.map((o) => ({ budget: `budgets/${jurisdictionId}:${o.fiscalYear}`, code: o.code }))
 
