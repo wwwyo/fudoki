@@ -959,26 +959,34 @@ function notDescendedByDivisionOf(
 }
 
 /**
- * 単一 budget（団体×年度×phase×fund）の COFOG 集計を生成し、アセットへ書く。
+ * 単一 budget（団体×年度×phase×fund）ぶんの COFOG 集計の材料。depth に依存しない部分だけを持つ
+ * （`cofogGranularity` の戻り値は division/group/class の3回とも同じなので、depth のループの外で
+ * 1回だけ計算する。depth に依存する後処理は `writeAggBudgetAssetAtDepth` 側でやる）。
+ */
+type AggBudgetBasis = {
+  byCode: readonly (CofogCode & { count: number; sum: number })[]
+  byDivision: readonly { division: string; divisionLabel: string; count: number; sum: number }[]
+  assigned: { count: number; sum: number }
+  total: { count: number; sum: number }
+  cofogReach: ReturnType<typeof cofogGranularity>['cofogReach']
+  unclassifiable: AggStat
+  outOfScope: AggStat
+  retained: AggStat
+  eliminated: AggStat
+}
+
+/**
+ * 単一 budget（団体×年度×phase×fund）の COFOG 集計材料を組み立てる。
  *
  * ⚠️ 数値の出所は `cofogGranularity`（report/budget/cofog.ts）一本にする。
- * ここでの仕事は1明細 = 1 StateRow を組み立てて渡すことと、その出力を depth に応じて
- * セル・残余へ折りたたむことだけ（AGENTS.md「集計は1箇所だけで行う」── ここに独自の
- * 4分岐を書くと、`budgets:aggregate` の中で同じ数字が2通りに計算される状態になる）。
+ * ここでの仕事は1明細 = 1 StateRow を組み立てて渡すことだけ（AGENTS.md「集計は1箇所だけで行う」
+ * ── ここに独自の4分岐を書くと、`budgets:aggregate` の中で同じ数字が2通りに計算される状態になる）。
  *
  * unclassifiable / out-of-scope だけは `cofogGranularity` を経由させない ── 割当済み以外を
  * 折りたたむ関数ではないので、ここは byState を直接 status で filter する単純な集計にとどめる
  * （`unclassifiedOf` は total と assigned の差でこの2つを合算してしまい、分けられない）。
  */
-function writeAggBudgetAsset(
-  jurisdiction: string,
-  year: string,
-  phase: string,
-  fund: string,
-  depth: CofogDepth,
-  rows: Record<string, string>[],
-  cofogAux: Map<string, CofogAux>,
-): void {
+function computeAggBudgetBasis(jurisdiction: string, year: string, rows: Record<string, string>[], cofogAux: Map<string, CofogAux>): AggBudgetBasis {
   const { retained, eliminated } = consolidationAt(rows, cofogAux)
   const byState: StateRow[] = rows.map((row) => {
     const id = row['budget_line_id']!
@@ -992,9 +1000,17 @@ function writeAggBudgetAsset(
     }
   })
   const { byCode, byDivision, assigned, total, cofogReach } = cofogGranularity(byState)
-
   const unclassifiable = toAggStat(sumCounted(byState.filter((r) => r.status === 'unclassifiable')))
   const outOfScope = toAggStat(sumCounted(byState.filter((r) => r.status === 'out-of-scope')))
+  return { byCode, byDivision, assigned, total, cofogReach, unclassifiable, outOfScope, retained, eliminated }
+}
+
+/**
+ * `computeAggBudgetBasis` の材料を depth に応じてセル・残余へ折りたたみ、アセットへ書く。
+ * depth に依存する後処理（`cellsAtDepth` / `notDescendedByDivisionOf`）だけをここでやる。
+ */
+function writeAggBudgetAssetAtDepth(jurisdiction: string, year: string, phase: string, fund: string, depth: CofogDepth, basis: AggBudgetBasis): void {
+  const { byCode, byDivision, assigned, total, cofogReach, unclassifiable, outOfScope, retained, eliminated } = basis
   // notDescended = 割当済みのうち、この depth まで reach していない分。unclassifiedOf(reached, assigned) は
   // 「assigned - reached」を count/sum/share で返す関数で、分母を入れ替えれば同じ式が notDescended の定義になる
   // （unclassifiedOf 本来の呼び方は total/assigned だが、「全体から一部を引いた残り」という形は同じ）。
@@ -1819,8 +1835,11 @@ for (const j of jurisdictionIds.sort()) {
           const phaseRows = yearRows.filter((r) => r['phase_id'] === phase)
           for (const fundOption of fundOptions) {
             const fundRows = fundOption === 'all' ? phaseRows : phaseRows.filter((r) => r['fund_code'] === fundOption)
+            // depth に依存しない材料（cofogGranularity の実行）は1回だけ計算する（division/group/class の
+            // 3回で byState を作り直してフルに再実行していた分を、accumulateCrossRows と同じ形に揃える）
+            const basis = computeAggBudgetBasis(j, year, fundRows, cofogAux)
             for (const depth of COFOG_DEPTHS) {
-              writeAggBudgetAsset(j, year, phase, fundOption, depth, fundRows, cofogAux)
+              writeAggBudgetAssetAtDepth(j, year, phase, fundOption, depth, basis)
               // ⚠️ 検査へは範囲選択前の yearRows を渡す（fundRows を渡さない）。範囲選択
               // （yearRows → phaseRows → fundRows）自体は検査関数が独立に行う（PR #27 レビュー指摘）
               checkAggBudgetAssetMatchesSource(j, year, phase, fundOption, depth, yearRows, cofogRowsForYear)
