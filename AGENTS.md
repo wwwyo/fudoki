@@ -404,6 +404,8 @@ uv sync
 uv add --exclude-newer $(date -v-7d +%Y-%m-%d) <package>
 ```
 
+**dependabot は bun workspace の root lockfile まで追従させない。** dependabot の対象ディレクトリは `apps/api` のように workspace 単位で設定されており、その配下の `package.json` だけを更新した PR では、`workspaces` で共有する root の `bun.lock` が古いまま残る。結果、CI の `bun install --frozen-lockfile` が `lockfile had changes, but lockfile is frozen` で必ず落ちる。エラー文面が cooldown（`blocked by minimum-release-age`）と紛らわしいが別原因で、publish 日時から解除日を計算しても解決しない。直すには root で `bun install` を実行し `bun.lock` を再生成して該当 PR に push する。この構造を変えない限り、workspace 配下のどの依存を bump しても同じ落ち方をする。
+
 ## 参考にする先行事例
 
 | | 借りるもの |
