@@ -29,23 +29,29 @@ curl 'https://api.fudoki.dev/v0/budgets?filter=jurisdiction%20%3D%20%22132195%22
 
 ## 3. 予算の明細を取る
 
-`/budgets/{id}/statement` が明細（行の集合）です。filter には `direction`（`expenditure` か `revenue`）が必須です。
+`/budgets/{id}/budgetLines` が明細（行の集合）です。filter には `direction`（`expenditure` か `revenue`）が必須です。既定（`view=BASIC`）は軽量な形で、名称・金額（isPrimary の1段階）・共通の COFOG 項目だけを返します。
 
 ```bash
-curl 'https://api.fudoki.dev/v0/budgets/132195:2023/statement?filter=direction%20%3D%20%22expenditure%22&pageSize=10'
+curl 'https://api.fudoki.dev/v0/budgets/132195:2023/budgetLines?filter=direction%20%3D%20%22expenditure%22&pageSize=10'
 ```
 
-各行は団体固有の科目階層（款・項・目など）と、段階ごとの金額（円に正規化済み）を持ちます。続きは応答の `nextPageToken` を `pageToken` に渡して辿ります。
+団体固有の科目階層（款・項・目など）や全段階の金額まで欲しいときは `view=FULL` を付けます（実在する budget を親にしたときだけ使えます）。
+
+```bash
+curl 'https://api.fudoki.dev/v0/budgets/132195:2023/budgetLines?filter=direction%20%3D%20%22expenditure%22&view=FULL&pageSize=10'
+```
+
+続きは応答の `nextPageToken` を `pageToken` に渡して辿ります。
 
 ## 4. 団体をまたいで COFOG で横断する
 
-budget の id にワイルドカード `-` を指定すると、全予算を COFOG（政府機能分類）で横断できます。filter には `cofog.division` が必須です。
+budget の id にワイルドカード `-` を指定すると、全予算を COFOG（政府機能分類）で横断できます。filter には `cofog.division` が必須です。横断の親（`-`）では団体固有の階層に意味が無いため `view=FULL` は使えません（400 になります）。
 
 ```bash
-curl 'https://api.fudoki.dev/v0/budgets/-/statement?filter=cofog.division%20%3D%20%2209%22&pageSize=10'
+curl 'https://api.fudoki.dev/v0/budgets/-/budgetLines?filter=cofog.division%20%3D%20%2209%22&pageSize=10'
 ```
 
-division `09` は教育です。横断応答の各行は親 budget への参照を持ち、そこから団体固有の形の行へ戻れます。
+division `09` は教育です。横断応答の各行は親 budget への参照を持ち、そこから `view=FULL` で団体固有の形の行へ戻れます。
 
 ## 5. 配布物そのものを取る
 

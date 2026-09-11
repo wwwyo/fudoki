@@ -1,0 +1,25 @@
+{
+  "name": "@fudoki/mcp",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "description": "fudoki の予算 API を束ねるだけの stdio MCP サーバ。集計・判断は持たず apps/api の router をそのまま呼ぶ",
+  "bin": {
+    "fudoki-mcp": "./src/index.ts"
+  },
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "@orpc/client": "1.15.0",
+    "@orpc/contract": "1.15.0",
+    "@orpc/server": "1.15.0",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/bun": "catalog:",
+    "typescript": "catalog:"
+  }
+}

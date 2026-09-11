@@ -62,4 +62,8 @@ ingestion/**/.http-cache/
 .wrangler/
 
 # 設計メモ・探索（グローバルの慣習に合わせる）
-.agent/
+# .agent/ は設計の記録（PRD・設計書・decision.log）の置き場。
+# global の ~/.gitignore が **/.agent を無視するので、このリポジトリだけ明示的に打ち消す。
+# 判断の記録をコードと同じ履歴に残すため（worktree の入れ替えで失った実例がある）。
+!.agent/
+!.agent/**
