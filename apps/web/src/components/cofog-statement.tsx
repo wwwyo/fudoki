@@ -11,8 +11,31 @@ import { yen, type Direction } from "@/lib/pipeline"
 import type { CofogNodeFilter } from "@/lib/cofog-tree"
 import { apiClient } from "@/lib/api-client"
 
-type StatementResult = Awaited<ReturnType<typeof apiClient.getStatement>>
-type BudgetLine = Extract<StatementResult, { scope: "budget" }>["lines"][number]
+type BudgetLinesResult = Awaited<ReturnType<typeof apiClient.getBudgetLines>>
+type BudgetLine = BudgetLinesResult["lines"][number]
+
+/**
+ * `view: "FULL"` で取った BudgetLine。contract 側は BASIC と FULL を同じスキーマで
+ * 表現しており、hierarchy / amounts / judgments は型の上では常に optional
+ * （apps/api/src/contract/budgets.ts の budgetLineSchema）。ここでは FULL しか要求しないので、
+ * 「本当に来ているか」を実行時に検査してから型を絞る（?? での握りつぶしはしない。
+ * AGENTS.md「型が効かない場所は壊れる場所」）。
+ */
+type FullBudgetLine = BudgetLine & {
+  hierarchy: NonNullable<BudgetLine["hierarchy"]>
+  amounts: NonNullable<BudgetLine["amounts"]>
+  judgments: NonNullable<BudgetLine["judgments"]>
+}
+
+/** view=FULL で要求したのに hierarchy/amounts/judgments が欠けていたら、握りつぶさずに投げる */
+function assertFullBudgetLine(line: BudgetLine): FullBudgetLine {
+  if (!line.hierarchy || !line.amounts || !line.judgments) {
+    throw new Error(
+      `expected view=FULL fields (hierarchy/amounts/judgments) on budgetLineId=${line.budgetLineId}, but at least one is missing`,
+    )
+  }
+  return line as FullBudgetLine
+}
 
 const PAGE_SIZE = 50
 
@@ -39,7 +62,7 @@ export function CofogStatement({
   filter: CofogNodeFilter
   amountPhase: string
 }) {
-  const [lines, setLines] = useState<BudgetLine[]>([])
+  const [lines, setLines] = useState<FullBudgetLine[]>([])
   const [nextPageToken, setNextPageToken] = useState<string | undefined>(undefined)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -59,10 +82,10 @@ export function CofogStatement({
     setError(null)
     setLoading(true)
     apiClient
-      .getStatement({ budget, filter: filterExpr(filter, direction), pageSize: PAGE_SIZE })
+      .getBudgetLines({ budget, view: "FULL", filter: filterExpr(filter, direction), pageSize: PAGE_SIZE })
       .then((res) => {
-        if (isStale() || res.scope !== "budget") return
-        setLines(res.lines)
+        if (isStale()) return
+        setLines(res.lines.map(assertFullBudgetLine))
         setNextPageToken(res.nextPageToken)
       })
       .catch((e: unknown) => {
@@ -84,10 +107,10 @@ export function CofogStatement({
     const isStale = () => requestId.current !== id
     setLoading(true)
     apiClient
-      .getStatement({ budget, filter: filterExpr(filter, direction), pageSize: PAGE_SIZE, pageToken: nextPageToken })
+      .getBudgetLines({ budget, view: "FULL", filter: filterExpr(filter, direction), pageSize: PAGE_SIZE, pageToken: nextPageToken })
       .then((res) => {
-        if (isStale() || res.scope !== "budget") return
-        setLines((prev) => [...prev, ...res.lines])
+        if (isStale()) return
+        setLines((prev) => [...prev, ...res.lines.map(assertFullBudgetLine)])
         setNextPageToken(res.nextPageToken)
       })
       .catch((e: unknown) => {
@@ -113,11 +136,14 @@ export function CofogStatement({
           </TableHeader>
           <TableBody>
             {lines.map((l) => {
+              // FullBudgetLine（assertFullBudgetLine で検査済み）なので hierarchy / judgments / amounts
+              // は必ず配列・オブジェクトとして存在する。`?.` は要らない ── 個々の要素が見つからない
+              // ケース（この phase の amounts エントリが無い等）だけ undefined になり得る
               const amount = l.amounts.find((a) => a.phase === amountPhase)?.amount
               return (
                 <TableRow key={l.budgetLineId}>
                   <TableCell className="whitespace-nowrap text-xs">
-                    {l.hierarchy.map((h) => h.label ?? h.code).join(" › ")}
+                    {l.hierarchy.map((h) => h.label ?? h.code).join(" › ") || "—"}
                   </TableCell>
                   <TableCell className="text-sm">{l.judgments.projectName ?? <span className="text-muted-foreground">—</span>}</TableCell>
                   <TableCell className="text-right tabular-nums">{amount !== undefined ? yen(amount) : "—"}</TableCell>

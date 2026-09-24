@@ -35,6 +35,7 @@
     "fetch:boundaries": "uv run python apps/web/map/build.py",
     "fetch:fdp-taxonomy": "bun run fdp/fetch-taxonomy.ts",
     "fetch:robots": "bun run ingestion/transcripts/fetch-robots.ts",
+    "mcp": "bun run apps/mcp/src/index.ts",
     "pipeline": "uv run python -m ingestion.budget.fetch && uv run python -m ingestion.budget.extract_projects && uv run python -m ingestion.budget.extract_revenue_accounts && uv run python -m ingestion.budget.extract_statement && bun run dbt && uv run python -m fdp.build && bun run report",
     "probe:documents": "uv run python -m ingestion.budget.probe_documents",
     "report": "bun run report/budget/build.ts",

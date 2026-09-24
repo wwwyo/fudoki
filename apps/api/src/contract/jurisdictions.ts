@@ -39,10 +39,33 @@ export const jurisdictionSchema = z.object({
       path: z.string().nullable().describe('出典の URL。無ければ null'),
     }))
     .describe('原典の出典。再配布時の帰属表示に使う'),
+  provenanceSources: z
+    .array(
+      z.object({
+        title: z.string().describe('出典の名前'),
+        path: z.string().nullable().describe('出典の URL。無ければ null'),
+        license: z.string().describe('SPDX 形式のライセンス名。判断（judgment）由来で確定していないものは NOASSERTION'),
+        kind: z
+          .enum(['canonical', 'judgment'])
+          .describe(
+            'canonical = カタログのライセンス表示に基づき再配布可の一次データ。' +
+              'judgment = 事業名など fudoki の判断を作るために参照した二次資料で、再配布可否が未確定（ingestion/budget/sources.toml の redistribute で決まる）',
+          ),
+      }),
+    )
+    .describe(
+      '重複排除済みの出典（kind・license 付き）。`sources`/`licenses` は datapackage.json の生の写しで種類を区別しないが、' +
+        'こちらは budgets:aggregate / budgetLines:search の provenance が実際に引く出典の正本',
+    ),
   consolidationScope: z.string().describe('会計間の繰出・繰入の連結（消去）をどの範囲で行ったか。消去していない団体は全会計合計が二重計上を含む'),
   caveats: z.array(caveatSchema).describe('この団体のデータを使う前に知るべき注意事項。データ（enum・数値・構造）から見えず解釈を変えるものに絞ってある。調査・検証の全記録はダッシュボード（https://fudoki.dev/）にある'),
 })
 export type Jurisdiction = z.infer<typeof jurisdictionSchema>
+
+export const listJurisdictionsOutput = z.object({
+  jurisdictions: z.array(jurisdictionSchema),
+  revision: z.string().describe('由来する配布物の revision（git commit）'),
+})
 
 export const listJurisdictions = base
   .route({
@@ -54,12 +77,7 @@ export const listJurisdictions = base
       '配布物（datapackage.json）への参照を返す。' +
       '収録している予算（年度）と分類率は /budgets?filter=jurisdiction%20=%20"{id}" から取得する（カバレッジは budgets の List から導出する）。',
   })
-  .output(
-    z.object({
-      jurisdictions: z.array(jurisdictionSchema),
-      revision: z.string().describe('由来する配布物の revision（git commit）'),
-    }),
-  )
+  .output(listJurisdictionsOutput)
 
 export const getJurisdiction = base
   .route({

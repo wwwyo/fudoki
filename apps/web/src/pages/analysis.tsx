@@ -2,8 +2,15 @@
  * 団体の支出を COFOG（政府支出の機能別分類）別に見る分析ダッシュボード。
  *
  * `/pipeline/` と違って**静的な生成物を読まない**。COFOG の内訳は
- * `apps/api` の `getCofogBreakdown`（`/rpc`）から取る — 数字は API 側の
- * `report/budget/cofog.ts` が持ち、ここでは足し直さない（AGENTS.md の「集計は1箇所」）。
+ * `apps/api` の `budgets:aggregate`（`groupBy: ['cofog.class']`、`/rpc`）から取る ──
+ * 数字は API 側（`report/budget/cofog.ts` 由来）が持ち、ここでは足し直さない
+ * （AGENTS.md の「集計は1箇所」）。木の組み立て（並べ替え）だけを `lib/cofog-tree.ts` で行う。
+ *
+ * ⚠️ **歳入に COFOG 内訳は無い。** cofog_status が歳入では常に not-applicable なので、
+ * `groupBy: ['cofog.class']` は歳入では 400 になる。ただし歳入の「合計」自体は
+ * `budgets:aggregate` の別の軸（`groupBy: ['fiscalYear']`、filter は jurisdiction のみ）で
+ * 引ける ── COFOG と違い fiscalYear 軸は歳入でも意味を持つ、かつ fund=all を取れる唯一の軸
+ * （hierarchy 軸は款・項のコードが会計内でしか一意でないため fund=all を取れない）。
  *
  * 「収録済みか」の判定と団体セレクタだけは `pipeline.json`（`loadPipeline`）を再利用する。
  * ELT パイプラインを通った団体の集合と、budget API が返せる団体の集合は同じ配布物から
@@ -33,8 +40,9 @@ import {
 } from "@/components/ui/select"
 import { withBase } from "@/lib/utils"
 import { DIVISION_COLOR, loadPipeline, pct, senYen, type Direction, type PipelineData, count } from "@/lib/pipeline"
+import { share } from "@fudoki/report/budget/cofog"
 import { apiClient } from "@/lib/api-client"
-import type { CofogBreakdown, CofogNodeFilter } from "@/lib/cofog-tree"
+import { buildCofogTree, type AggregateBudgetsResponse, type CofogNodeFilter, type CofogTreeNode } from "@/lib/cofog-tree"
 import { CofogTree } from "@/components/cofog-tree"
 import { CofogStatement } from "@/components/cofog-statement"
 
@@ -134,11 +142,18 @@ function CollectedAnalysis({
   const years = m.fiscalYears
   const [year, setYear] = useState<number>(years.at(-1)!)
   const [direction, setDirection] = useState<Direction>("expenditure")
-  const [cofog, setCofog] = useState<CofogBreakdown | null>(null)
+  const [agg, setAgg] = useState<AggregateBudgetsResponse | null>(null)
+  // 歳入の合計。budgets:aggregate の fiscalYear 軸（filter=jurisdiction のみ、groupBy=['fiscalYear']）の
+  // 応答をそのまま持つ（画面では足し算しない。AGENTS.md「集計は1箇所」）。**全年度ぶんを1回だけ取り**、
+  // 選択中の年度のセルは下の `revenueTotal` で都度取り出す ── year を fetch の依存に入れると、
+  // 「その団体の全年度」を返す呼び出しを年度を切り替えるたびに丸ごと取り直すことになる。
+  const [revenueCells, setRevenueCells] = useState<AggregateBudgetsResponse["cells"] | null>(null)
   const [apiError, setApiError] = useState<string | null>(null)
   const [selected, setSelected] = useState<CofogNodeFilter | null>(null)
-  // 明細の金額表示に使う予算段階。direction には依存しない（団体単位の宣言）ので別 effect にする
-  const [amountPhase, setAmountPhase] = useState<string | null>(null)
+  // 明細の金額表示に使う予算段階。budgets:aggregate の phase（typed field）にも使う。
+  // 団体と年度だけで決まり、歳出・歳入の切り替えには依存しない。
+  // 型は getBudget の応答からそのまま導出する（union を web 側で書き直さない）。
+  const [amountPhase, setAmountPhase] = useState<Awaited<ReturnType<typeof apiClient.getBudget>>["budget"]["amountPhase"] | null>(null)
 
   // 団体を切り替えたら年度もその団体の最新年度に戻す（前の団体にしか無い年度を持ち越さない）。
   // 依存は `code` だけにする — `years` を足すと配列の参照が変わるたびに発火し、
@@ -147,46 +162,117 @@ function CollectedAnalysis({
     setYear(years.at(-1)!)
   }, [code])
 
+  // 団体・年度・歳出歳入を切り替えたら選択中の分類も捨てる（別の集計に対する古い選択を残さない）。
+  // ネットワークを伴わないので、他の effect と分けても往復は増えない。
   useEffect(() => {
-    let stale = false
-    setCofog(null)
-    setApiError(null)
-    setSelected(null) // 団体・年度・歳出歳入を切り替えたら選択中の分類も捨てる（別の集計に対する古い選択を残さない）
-    apiClient
-      .getCofogBreakdown({ budget: `${code}:${year}`, direction })
-      .then((res) => {
-        if (!stale) setCofog(res.cofog)
-      })
-      .catch((e: unknown) => {
-        if (stale) return
-        setApiError(e instanceof Error ? e.message : String(e))
-      })
-    return () => {
-      stale = true
-    }
+    setSelected(null)
   }, [code, year, direction])
 
+  // amountPhase は団体と年度だけで決まる（procedure/budgets.ts）。歳出・歳入のトグルでは
+  // 値が変わらないので、direction を依存に入れない ── 入れるとトグルのたびに取り直すことになる。
   useEffect(() => {
     let stale = false
     setAmountPhase(null)
+    setApiError(null)
     apiClient
       .getBudget({ budget: `${code}:${year}` })
       .then((res) => {
         if (!stale) setAmountPhase(res.budget.amountPhase)
       })
-      .catch(() => {
-        // 明細の金額欄が「—」になるだけなので、ここは静かに諦める（apiError は cofog 取得の失敗用）
+      .catch((e: unknown) => {
+        if (!stale) setApiError(e instanceof Error ? e.message : String(e))
       })
     return () => {
       stale = true
     }
   }, [code, year])
 
-  // `cofog.tree` はすでに division → group → class の木として届く（report/budget/cofog.ts の
-  // `buildCofogTree()` が組む）。大分類ごとの帯グラフは、その木の最上位ノード（1団体1系列）を
-  // そのまま使う ── byDivision を別に取り出して割合を計算し直すと二重集計になる。
-  // 割合（`share`）と未分類（`cofog.unclassified`）も生成側が持つので、画面では割り算しない
-  // （AGENTS.md「集計は1箇所」）。
+  // ⚠️ **歳入に COFOG 内訳は無い**（cofog_status が歳入では常に not-applicable）ので、
+  // groupBy=['cofog.class'] は歳出だけに使う（fund=all を取れるのはこの軸だけで、hierarchy 軸は
+  // 款・項のコードが会計内でしか一意でないため使えない。procedure/budgets.ts の同じ判断）。
+  useEffect(() => {
+    setAgg(null)
+    if (direction !== "expenditure" || !amountPhase) return
+    let stale = false
+    apiClient
+      .aggregateBudgets({
+        filter: `jurisdiction = "${code}" AND fiscalYear = ${year}`,
+        direction: "expenditure",
+        phase: amountPhase,
+        groupBy: ["cofog.class"],
+      })
+      .then((r) => {
+        if (!stale) setAgg(r)
+      })
+      .catch((e: unknown) => {
+        if (!stale) setApiError(e instanceof Error ? e.message : String(e))
+      })
+    return () => {
+      stale = true
+    }
+  }, [code, year, direction, amountPhase])
+
+  // 歳入は fiscalYear 軸（filter=jurisdiction のみ）でその団体の全年度をまとめて取る。
+  // 依存に `year` を入れない ── 年度の選び直しは下の `revenueTotal` 側（フェッチ済みの
+  // cells から探すだけ）で行い、ここでは取り直さない。
+  useEffect(() => {
+    setRevenueCells(null)
+    if (direction !== "revenue" || !amountPhase) return
+    let stale = false
+    apiClient
+      .aggregateBudgets({
+        filter: `jurisdiction = "${code}"`,
+        direction: "revenue",
+        phase: amountPhase,
+        groupBy: ["fiscalYear"],
+      })
+      .then((r) => {
+        if (!stale) setRevenueCells(r.cells)
+      })
+      .catch((e: unknown) => {
+        if (!stale) setApiError(e instanceof Error ? e.message : String(e))
+      })
+    return () => {
+      stale = true
+    }
+  }, [code, direction, amountPhase])
+
+  // 取得済みの revenueCells から選択中の年度のセルを都度取り出す（ネットワークを伴わない）。
+  // 見つからない場合は本来ここに来ないはずの状態（全年度を取っているので必ずあるはず）なので、
+  // 元の実装と同じく明示的なエラーとして扱う。
+  useEffect(() => {
+    if (!revenueCells) return
+    const hasCell = revenueCells.some((c) => c.dimensions[0]?.code === String(year))
+    if (!hasCell) setApiError(`no fiscalYear=${year} cell in revenue fiscalYear aggregate for ${code}`)
+  }, [revenueCells, year, code])
+
+  const revenueTotal = (() => {
+    if (!revenueCells) return null
+    const cell = revenueCells.find((c) => c.dimensions[0]?.code === String(year))
+    return cell ? { lineCount: cell.lineCount, amount: cell.amount } : null
+  })()
+
+  // 木の組み立て（並べ替え）は lib/cofog-tree.ts の buildCofogTree が行う。ここでは呼ぶだけ。
+  const tree: CofogTreeNode[] = agg ? buildCofogTree(agg) : []
+  // `total`/`residual` は budgets:aggregate の応答から来る値のみを使い、画面で割り算しない
+  // （AGENTS.md「集計は1箇所」）。足し算・引き算だけで求まる値はここで組む。
+  const summary =
+    agg?.total && agg.residual
+      ? (() => {
+          const total = agg.total
+          const { unclassifiable, outOfScope } = agg.residual
+          const unclassifiedSum = unclassifiable.amount + outOfScope.amount
+          const unclassifiedCount = unclassifiable.lineCount + outOfScope.lineCount
+          // share は子の和で作らない（cofog-tree.ts と同じ理由）。total.amount から作り直す
+          const unclassifiedShare = share(unclassifiedSum, total.amount)
+          return {
+            total,
+            assigned: { sum: total.amount - unclassifiedSum, count: total.lineCount - unclassifiedCount },
+            assignedShare: 1 - unclassifiedShare,
+            unclassified: { sum: unclassifiedSum, count: unclassifiedCount, share: unclassifiedShare },
+          }
+        })()
+      : null
 
   return (
     <Layout>
@@ -242,13 +328,40 @@ function CollectedAnalysis({
           <Alert variant="destructive">
             <AlertTitle>分析データを読み込めませんでした</AlertTitle>
             <AlertDescription>
-              fudoki の API（api.fudoki.dev）から COFOG 別内訳を取得できませんでした。
-              API が止まっているか、この団体・年度・方向の組み合わせがまだ収録されていない可能性があります。
+              fudoki の API（api.fudoki.dev）から{direction === "expenditure" ? "COFOG 別内訳" : "合計"}
+              を取得できませんでした。
+              API が止まっているか、この団体・年度の組み合わせがまだ収録されていない可能性があります。
               <br />
               {apiError}
             </AlertDescription>
           </Alert>
-        ) : !cofog ? (
+        ) : direction !== "expenditure" ? (
+          // ⚠️ 歳入は COFOG 軸が無い（procedure/budgets.ts: cofog_status は歳入で常に
+          // not-applicable）ので、budgets:aggregate の fiscalYear 軸から合計だけを出す
+          // （COFOG が無いことを言うのと、合計を budgets:aggregate から出すことは両立する）。
+          !revenueTotal ? (
+            <p className="text-sm text-muted-foreground">読み込み中…</p>
+          ) : (
+            <>
+              <div className="flex flex-wrap gap-3">
+                <Card className="min-w-[9rem] flex-1 gap-1 py-4">
+                  <CardHeader className="px-4">
+                    <CardDescription className="text-xs">合計（歳入）・千円</CardDescription>
+                    <CardTitle className="text-xl tabular-nums">{senYen(revenueTotal.amount)}千円</CardTitle>
+                  </CardHeader>
+                </Card>
+              </div>
+              <Alert>
+                <AlertTitle>歳入は COFOG の対象外です</AlertTitle>
+                <AlertDescription>
+                  COFOG（Classification of the Functions of Government）は政府の支出を機能別に分類する体系で、
+                  歳入には分類の軸そのものが無い。この分析ダッシュボードの COFOG 内訳は歳出のみを対象にする
+                  （上の合計は{count(revenueTotal.lineCount)}件の歳入明細の合計そのもので、分類は含まない）。
+                </AlertDescription>
+              </Alert>
+            </>
+          )
+        ) : !summary ? (
           <p className="text-sm text-muted-foreground">読み込み中…</p>
         ) : (
           <>
@@ -256,19 +369,19 @@ function CollectedAnalysis({
               <Card className="min-w-[9rem] flex-1 gap-1 py-4">
                 <CardHeader className="px-4">
                   <CardDescription className="text-xs">合計（{DIRECTIONS.find((d) => d.value === direction)?.label}）・千円</CardDescription>
-                  <CardTitle className="text-xl tabular-nums">{senYen(cofog.total.sum)}千円</CardTitle>
+                  <CardTitle className="text-xl tabular-nums">{senYen(summary.total.amount)}千円</CardTitle>
                 </CardHeader>
               </Card>
               <Card className="min-w-[9rem] flex-1 gap-1 py-4">
                 <CardHeader className="px-4">
                   <CardDescription className="text-xs">COFOG 割当済み・千円</CardDescription>
-                  <CardTitle className="text-xl tabular-nums">{senYen(cofog.assigned.sum)}千円</CardTitle>
+                  <CardTitle className="text-xl tabular-nums">{senYen(summary.assigned.sum)}千円</CardTitle>
                 </CardHeader>
               </Card>
               <Card className="min-w-[9rem] flex-1 gap-1 py-4">
                 <CardHeader className="px-4">
                   <CardDescription className="text-xs">割当率（金額比・分母は合計）</CardDescription>
-                  <CardTitle className="text-xl tabular-nums">{pct(cofog.assignedShare.sum)}</CardTitle>
+                  <CardTitle className="text-xl tabular-nums">{pct(summary.assignedShare)}</CardTitle>
                 </CardHeader>
               </Card>
             </div>
@@ -279,41 +392,41 @@ function CollectedAnalysis({
                 className="flex h-6 overflow-hidden rounded-md border"
                 role="img"
                 aria-label={
-                  `合計 ${senYen(cofog.total.sum)} 千円の内訳: ` +
-                  cofog.tree.map((v) => `${v.code} ${v.label} ${pct(v.share)}`).join("、") +
-                  `、未分類 ${pct(cofog.unclassified.share)}`
+                  `合計 ${senYen(summary.total.amount)} 千円の内訳: ` +
+                  tree.map((v) => `${v.code} ${v.label} ${pct(v.share)}`).join("、") +
+                  `、未分類 ${pct(summary.unclassified.share)}`
                 }
               >
-                {cofog.tree.map((v) => (
+                {tree.map((v) => (
                   <div key={v.code} style={{ width: `${v.share * 100}%`, background: DIVISION_COLOR[v.code] }} />
                 ))}
-                {cofog.unclassified.sum > 0 && (
+                {summary.unclassified.sum > 0 && (
                   // ⚠️ 未分類はブランド色でも意味色でもない中立のグレー（DESIGN.md: データを表す面にブランド色を出さない）
                   <div
                     className="bg-muted-foreground/25"
-                    style={{ width: `${cofog.unclassified.share * 100}%` }}
+                    style={{ width: `${summary.unclassified.share * 100}%` }}
                     title="未分類"
                   />
                 )}
               </div>
               <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                {cofog.tree.map((v) => (
+                {tree.map((v) => (
                   <span key={v.code} className="inline-flex items-center gap-1.5">
                     <i aria-hidden className="size-2.5 rounded-sm" style={{ background: DIVISION_COLOR[v.code] }} />
                     <span className="font-medium text-foreground">{v.code}</span> {v.label}{" "}
                     <span className="tabular-nums">{pct(v.share)}</span>
                   </span>
                 ))}
-                {cofog.unclassified.sum > 0 && (
+                {summary.unclassified.sum > 0 && (
                   <span className="inline-flex items-center gap-1.5">
                     <i aria-hidden className="bg-muted-foreground/25 size-2.5 rounded-sm" />
-                    未分類 <span className="tabular-nums">{pct(cofog.unclassified.share)}</span>
+                    未分類 <span className="tabular-nums">{pct(summary.unclassified.share)}</span>
                   </span>
                 )}
               </div>
               <p className="max-w-[72ch] text-xs leading-relaxed text-muted-foreground">
-                割合の分母は{DIRECTIONS.find((d) => d.value === direction)?.label}の合計（{senYen(cofog.total.sum)}千円）。
-                COFOG に割り当てられなかった分（分類不能・対象外・歳入は分類の軸なし）も分母に含めて出す
+                割合の分母は{DIRECTIONS.find((d) => d.value === direction)?.label}の合計（{senYen(summary.total.amount)}千円）。
+                COFOG に割り当てられなかった分（分類不能・対象外）も分母に含めて出す
                 — 割当済みだけを分母にすると、実際には使途が見えていない分まで「見えている」ことになる。
               </p>
             </section>
@@ -321,13 +434,13 @@ function CollectedAnalysis({
             <section className="flex flex-col gap-2">
               <h2 className="font-medium">分類ごとの内訳（大分類 → 中分類 → 小分類）</h2>
               <p className="max-w-[72ch] text-xs leading-relaxed text-muted-foreground">
-                行を開くとさらに細かい分類へ降りられる。「（〜までで止まった分）」は
+                行を開くとさらに細かい分類へ降りられる。「（分類が完全でない分）」は
                 規則がそこより下まで判断していない金額で、割合の高さは分類の質を意味しない。
                 行をクリックすると、その分類に属する明細を下に出す。
               </p>
-              {cofog.tree.length > 0 && (
+              {tree.length > 0 && (
                 <CofogTree
-                  nodes={cofog.tree}
+                  nodes={tree}
                   selected={selected}
                   onSelect={setSelected}
                   renderDetail={(filter) =>
@@ -337,11 +450,11 @@ function CollectedAnalysis({
                   }
                 />
               )}
-              {cofog.unclassified.sum > 0 && (
+              {summary.unclassified.sum > 0 && (
                 <div className="flex items-center gap-2 rounded-lg border px-2 py-1.5 text-sm text-muted-foreground">
                   <Badge variant="outline">未分類</Badge>
-                  {count(cofog.unclassified.count)}件 ・ {senYen(cofog.unclassified.sum)}千円 ・{" "}
-                  {pct(cofog.unclassified.share)}
+                  {count(summary.unclassified.count)}件 ・ {senYen(summary.unclassified.sum)}千円 ・{" "}
+                  {pct(summary.unclassified.share)}
                   <span className="ml-1 text-xs">（分類不能・対象外。明細は下の分類ツリーには出ない）</span>
                 </div>
               )}

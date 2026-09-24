@@ -24,6 +24,31 @@ export const V0_PREFIX = '/v0'
 export const V0_DOCS_PATH = '/'
 /** OpenAPIReferencePlugin の specPath */
 export const V0_SPEC_PATH = '/openapi.json'
+/**
+ * MCP（remote）のエンドポイント。oRPC の router 外（index.ts が直接ハンドリングする）
+ * ので、除外判定と同じ理由でここに1つだけ宣言する。鍵不要（PRD の Goal）で
+ * アクセス制御は既定の keyed のまま通す ── path-class.ts がここを参照して
+ * 明示することで、将来 classifyPath の既定分岐を変えても `/mcp` の扱いが
+ * 黙って変わらないようにする。
+ */
+export const MCP_PATH = '/mcp'
+
+/**
+ * `/mcp` の Origin allowlist（PR #27 レビュー指摘）。
+ *
+ * MCP Streamable HTTP 仕様の Security Considerations「Origin Header Validation」は、
+ * サーバが Origin ヘッダを検証し、不正なら 403 を返すことを MUST としている ── ブラウザから DNS rebinding 等で叩かれたときに、匿名のレート制限枠
+ * （access-control.ts）を第三者のサイトが被害者のブラウザ経由で消費できてしまうのを防ぐため。
+ * 検証点は2つある（どちらもこの allowlist を見る）。preflight の CORS（index.ts の cors()）が
+ * ブラウザ経路を絞り、`app.all(MCP_PATH, ...)` の検証が preflight を通らない
+ * 非ブラウザ経路を含む実リクエストを絞る。
+ * Origin ヘッダが無い呼び出し（curl・ネイティブの MCP client など非ブラウザ）は検証の対象外
+ * （仕様が検証を求めているのはブラウザ由来の Origin ヘッダに対してであり、ヘッダを送らない
+ * client まで締め出すと PRD の Goal「URL を登録するだけで鍵無しに使える」を壊す）。
+ * RPC の allowlist（index.ts の RPC_ALLOWED_ORIGINS）とは目的が違うので値は揃えているが
+ * 宣言は分ける ── こちらはブラウザから直接 `/mcp` を叩く fudoki 自身のオリジンを許す口。
+ */
+export const MCP_ALLOWED_ORIGINS = new Set(['https://fudoki.dev', 'http://localhost:5173'])
 
 /**
  * 実行時（/v0/openapi.json）とビルド時（generate-spec.ts）の両方が使う converter 構成。
