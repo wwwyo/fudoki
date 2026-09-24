@@ -48,15 +48,16 @@ const app = new Hono<{ Bindings: Env }>()
 
 /**
  * CORS は口ごとに分ける。
- * - /v0/* とパススルー・/mcp: 全データ public なので origin は全開のまま。
+ * - /v0/* とパススルー: 全データ public なので origin は全開のまま。
  *   API キーは任意（ベータのアクセス制御。access-control.ts）なので、
- *   キー無しでも外部開発者のブラウザベースのツールから叩けることを維持する
- *   （MCP client がブラウザ内で動く場合も、鍵無しで使えることが PRD の Goal）。
- *   ⚠️ ただし /mcp は CORS とは別に Origin ヘッダの allowlist 検証も持つ（下記 `app.all(MCP_PATH, ...)`）。
- *   CORS の origin: '*' は「ブラウザに応答を読ませてよいか」だけを決め、リクエスト自体を
- *   拒否する力を持たない。MCP Streamable HTTP 仕様が Origin 検証を必須にしているのは、
+ *   キー無しでも外部開発者のブラウザベースのツールから叩けることを維持する。
+ * - /mcp: Origin の allowlist（spec.ts の MCP_ALLOWED_ORIGINS）に絞る。
+ *   MCP Streamable HTTP 仕様の Security Considerations が Origin 検証を MUST とするのは、
  *   第三者のサイトが被害者のブラウザ経由で `/mcp` を叩き、匿名のレート制限枠
  *   （access-control.ts）を消費できてしまうのを防ぐため（PR #27 レビュー指摘）。
+ *   preflight を allowlist に揃えておくと、不許可のオリジンはブラウザが実リクエストを
+ *   送る前に止まる。実リクエスト側も下記 `app.all(MCP_PATH, ...)` で同じ allowlist を
+ *   検証する（preflight を通らない非ブラウザ経路のための要件でもある）。
  * - /rpc/*: 自前フロント専用の口なので fudoki のオリジンだけに絞る。
  *   防御ではなく「公式クライアント以外はここを使わない」という契約の表明
  *   （CORS はブラウザにしか効かないので、curl 等は元から制限対象外）
@@ -76,8 +77,13 @@ app.use(
   '*',
   cors({
     origin: (origin, c) => {
-      if (!c.req.path.startsWith('/rpc')) return '*'
-      return RPC_ALLOWED_ORIGINS.has(origin) ? origin : ''
+      if (c.req.path === MCP_PATH) {
+        return MCP_ALLOWED_ORIGINS.has(origin) ? origin : ''
+      }
+      if (c.req.path.startsWith('/rpc')) {
+        return RPC_ALLOWED_ORIGINS.has(origin) ? origin : ''
+      }
+      return '*'
     },
     allowMethods: ['GET', 'HEAD', 'POST', 'DELETE', 'OPTIONS'],
     allowHeaders: ['Content-Type', 'Authorization', 'mcp-session-id', 'mcp-protocol-version', 'mcp-method', 'mcp-name', 'Last-Event-ID'],
@@ -115,10 +121,10 @@ app.get(ROOT_SPEC_REDIRECT_PATH, (c) => c.redirect(`${V0_PREFIX}${V0_SPEC_PATH}`
  *
  * ⚠️ Origin ヘッダの検証（MCP Streamable HTTP 仕様の Security Considerations が MUST とする）を
  * transport に渡す前に行う（v2 の entry も「Origin/Host 検証は handler の前に置け」と
- * 自身では検証しない設計）。CORS の `origin: '*'`（上の cors() ミドルウェア）はブラウザに
- * 応答を読ませるかどうかしか決めず、リクエストそのものを拒否できない。ここで弾かないと、
- * 悪意あるサイトが被害者のブラウザ経由で `/mcp` を叩き、匿名のレート制限枠
- * （access-control.ts）を被害者の IP で消費できてしまう（PR #27 レビュー指摘）。
+ * 自身では検証しない設計）。上の cors() でも同じ allowlist に絞っているが、CORS は
+ * preflight を出すブラウザ経路にしか効かない ── curl 等の非ブラウザ経路はここが
+ * 唯一の検証点であり、悪意あるサイトが被害者のブラウザ経由で `/mcp` を叩いて
+ * 匿名のレート制限枠（access-control.ts）を消費するのをここで止める（PR #27 レビュー指摘）。
  * Origin ヘッダが無いリクエスト（curl・ネイティブの MCP client など非ブラウザ）は対象外 ──
  * ブラウザ由来でなければ DNS rebinding 等の脅威が成立せず、ここで締め出すと
  * PRD の Goal「URL を登録するだけで鍵無しに使える」を壊す。

@@ -39,9 +39,9 @@ export const MCP_PATH = '/mcp'
  * MCP Streamable HTTP 仕様の Security Considerations「Origin Header Validation」は、
  * サーバが Origin ヘッダを検証し、不正なら 403 を返すことを MUST としている ── ブラウザから DNS rebinding 等で叩かれたときに、匿名のレート制限枠
  * （access-control.ts）を第三者のサイトが被害者のブラウザ経由で消費できてしまうのを防ぐため。
- * ⚠️ CORS の `origin: '*'`（index.ts）とは別レイヤ。CORS はブラウザの読み取りを許すかどうかで、
- * Origin 検証はリクエストそのものを受け付けるかどうか。両方を満たして初めて
- * ブラウザからの `/mcp` 利用が成立する。
+ * 検証点は2つある（どちらもこの allowlist を見る）。preflight の CORS（index.ts の cors()）が
+ * ブラウザ経路を絞り、`app.all(MCP_PATH, ...)` の検証が preflight を通らない
+ * 非ブラウザ経路を含む実リクエストを絞る。
  * Origin ヘッダが無い呼び出し（curl・ネイティブの MCP client など非ブラウザ）は検証の対象外
  * （仕様が検証を求めているのはブラウザ由来の Origin ヘッダに対してであり、ヘッダを送らない
  * client まで締め出すと PRD の Goal「URL を登録するだけで鍵無しに使える」を壊す）。

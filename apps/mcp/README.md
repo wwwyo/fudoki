@@ -115,16 +115,18 @@ text content にも入れる）。API が 400 / 404 を返したときは例外�
   ストリームを維持する理由が無い
 - アクセス制御（`access-control.ts`）は `/v0/*` と同じ「キー任意・匿名レート制限あり」（`classifyPath` の
   既定 `keyed`）。MCP 独自の認証は設けない（PRD の Non-Goal）
-- CORS は `/v0/*` と同じ全開。`mcp-session-id` / `mcp-protocol-version` / `Last-Event-ID` に加えて
+- CORS は `/mcp` だけ `MCP_ALLOWED_ORIGINS` に絞る（`/v0/*` は全開のまま）。
+  `mcp-session-id` / `mcp-protocol-version` / `Last-Event-ID` に加えて
   modern era が必須とする `mcp-method` / `mcp-name` も allow ヘッダに入れている
   （ブラウザの modern client が preflight で弾かれないため）
-- **Origin ヘッダの検証を別に持つ**（`index.ts` の `app.all(MCP_PATH, ...)`、allowlist は
-  `spec.ts` の `MCP_ALLOWED_ORIGINS`）。MCP Streamable HTTP 仕様の Security Considerations が
-  Origin ヘッダの検証を MUST としており、不正なら 403 を返す。CORS の `origin: '*'` はブラウザに
-  応答を読ませるかどうかしか決めず、リクエストそのものは拒否できない ── 検証が無いと、悪意ある
-  サイトが被害者のブラウザ経由で `/mcp` を叩き、匿名のレート制限枠を被害者の IP で消費できてしまう
-  （PR #27 レビュー指摘）。Origin ヘッダの無いリクエスト（curl・ネイティブの MCP client など
-  非ブラウザ）は検証の対象外 ── ブラウザ由来でなければこの脅威が成立せず、締め出すと
+- **Origin ヘッダの検証を実リクエスト側にも持つ**（`index.ts` の `app.all(MCP_PATH, ...)`、
+  allowlist は `spec.ts` の `MCP_ALLOWED_ORIGINS`）。MCP Streamable HTTP 仕様の
+  Security Considerations が Origin ヘッダの検証を MUST としており、不正なら 403 を返す。
+  CORS は preflight を出すブラウザ経路にしか効かないので、curl 等を含む実リクエスト側の
+  検証が依然として必要 ── 検証が無いと、悪意あるサイトが被害者のブラウザ経由で `/mcp` を叩き、
+  匿名のレート制限枠を被害者の IP で消費できてしまう（PR #27 レビュー指摘）。
+  Origin ヘッダの無いリクエスト（curl・ネイティブの MCP client など非ブラウザ）は検証の対象外 ──
+  ブラウザ由来でなければこの脅威が成立せず、締め出すと
   PRD の Goal「URL を登録するだけで鍵無しに使える」を壊す。
 
 ## 開発

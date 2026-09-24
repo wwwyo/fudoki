@@ -400,4 +400,32 @@ describe('/mcp (remote MCP server)', () => {
     const res = await rpc(initializeBody)
     expect(res.status).toBe(200)
   })
+
+  // `/mcp` の preflight も同じ allowlist に絞る（index.ts の cors()）。mcp-method 等の
+  // カスタムヘッダを使う modern client は必ず preflight を踏むので、不許可のオリジンは
+  // ブラウザが実リクエストを送る前にここで止まる。
+  async function preflight(origin: string): Promise<Response> {
+    return app.fetch(
+      new Request('http://localhost/mcp', {
+        method: 'OPTIONS',
+        headers: {
+          origin,
+          'access-control-request-method': 'POST',
+          'access-control-request-headers': 'content-type, mcp-protocol-version, mcp-method',
+        },
+      }),
+      env,
+    )
+  }
+
+  test('CORS preflight: allowlisted Origin gets ACAO for /mcp', async () => {
+    const res = await preflight('https://fudoki.dev')
+    expect(res.headers.get('access-control-allow-origin')).toBe('https://fudoki.dev')
+    expect(res.headers.get('access-control-allow-headers')).toContain('mcp-method')
+  })
+
+  test('CORS preflight: disallowed Origin gets no ACAO for /mcp', async () => {
+    const res = await preflight('https://evil.example')
+    expect(res.headers.get('access-control-allow-origin')).toBeNull()
+  })
 })
