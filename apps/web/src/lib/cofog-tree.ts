@@ -85,7 +85,7 @@ export function buildCofogTree(response: AggregateBudgetsResponse): CofogTreeNod
       label: dim.label ?? cofogLabel("class", dim.code),
       amount: c.amount,
       lineCount: c.lineCount,
-      share: c.share ?? 0,
+      share: c.share ?? share(c.amount, total),
     }
   })
 
@@ -162,7 +162,7 @@ export function buildCofogTree(response: AggregateBudgetsResponse): CofogTreeNod
       entry: { amount: number; lineCount: number; share?: number } | undefined,
     ): CofogTreeNode | null =>
       entry && entry.amount > 0
-        ? { key, code: "", label, depth: "group", sum: entry.amount, count: entry.lineCount, share: entry.share ?? 0, filter: null }
+        ? { key, code: "", label, depth: "group", sum: entry.amount, count: entry.lineCount, share: entry.share ?? share(entry.amount, total), filter: null }
         : null
     const stoppedNodes: CofogTreeNode[] =
       groupNodes.length === 0

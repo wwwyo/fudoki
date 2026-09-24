@@ -13,8 +13,9 @@ import { runTool } from '../result'
 const inputSchema = aggregateBudgetsInput.extend({
   filter: aggregateBudgetsInput.shape.filter.describe(
     'AIP-160 の部分集合（`=` と `AND` のみ）。使えるフィールドは jurisdiction / fiscalYear。' +
-      'fiscalYear は必須。jurisdiction も指定すると1つの予算（団体×年度）に閉じた集計になり、' +
-      '省略するとその年度の全団体を横断する集計になる（このときは groupBy に jurisdiction が必須）。' +
+      'jurisdiction・fiscalYear の少なくとも一方は必須。両方指定すると1つの予算（団体×年度）に閉じた集計、' +
+      'jurisdiction だけなら同一団体の年度横断（groupBy に fiscalYear）、' +
+      'fiscalYear だけならその年度の全団体を横断する集計になる（このときは groupBy に jurisdiction が必須）。' +
       '例: `jurisdiction = "<団体コード>" AND fiscalYear = "<年度>"`、`fiscalYear = "<年度>"`' +
       '（実在する値は list_jurisdictions / list_budgets の応答で確認する）',
   ),

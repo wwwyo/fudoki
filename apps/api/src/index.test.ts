@@ -178,6 +178,8 @@ describe('budgets (root collection = coverage)', () => {
     expect(budget.fiscalYear).toBe('2023')
     expect((await get('/v0/budgets/132195:1999')).status).toBe(404)
     expect((await get(`/v0/budgets?${q('direction = expenditure')}`)).status).toBe(400)
+    // parser が知っているが契約外のフィールドも黙って通さず 400（cofog.group は以前素通りだった）
+    expect((await get(`/v0/budgets?${q('cofog.group = "04.5"')}`)).status).toBe(400)
   })
 
   type Scopes = {
@@ -794,6 +796,14 @@ describe('budgets:aggregate (COFOG axis)', () => {
         )
       ).status,
     ).toBe(400)
+    // parser が知っているが契約外のフィールドも黙って通さず 400（cofog.group は以前素通りだった）
+    expect(
+      (
+        await get(
+          `/v0/budgets:aggregate?${aggQuery({ filter: 'jurisdiction = "132047" AND fiscalYear = 2024 AND cofog.group = "04.5"', direction: 'expenditure', phase: 'approved', groupBy: ['cofog.division'] })}`,
+        )
+      ).status,
+    ).toBe(400)
   })
 
   test('実在しない団体・年度は 404', async () => {
@@ -1278,6 +1288,8 @@ describe('budgetLines:search (名称の検索)', () => {
   test('未知の団体は404、実在しない filter フィールドは400', async () => {
     expect((await get(`/v0/budgets/-/budgetLines:search?${aggQuery({ query: 'いじめ', filter: 'jurisdiction = "999999"' })}`)).status).toBe(404)
     expect((await get(`/v0/budgets/-/budgetLines:search?${aggQuery({ query: 'いじめ', filter: 'direction = expenditure' })}`)).status).toBe(400)
+    // parser が知っているが契約外のフィールドも黙って通さず 400（cofog.group は以前素通りだった）
+    expect((await get(`/v0/budgets/-/budgetLines:search?${aggQuery({ query: 'いじめ', filter: 'cofog.group = "04.5"' })}`)).status).toBe(400)
   })
 
   test('phase を指定すると、その段階を持つ明細に絞られ、amounts もその段階だけになる', async () => {
@@ -1487,7 +1499,7 @@ describe('contract-only surface', () => {
     })
     expect(cross.lines.length).toBe(3)
 
-    // 収録済み3団体それぞれで、COFOG 別内訳が budgets:aggregate（RPC 経由）でも取れ、
+    // 収録団体のうち3団体それぞれで、COFOG 別内訳が budgets:aggregate（RPC 経由）でも取れ、
     // 分類できなかった分（total - cells の合計）が合計に残っていること
     for (const budget of ['132047:2024', '132195:2023', '132241:2023']) {
       const [jurisdiction, fiscalYear] = budget.split(':') as [string, string]

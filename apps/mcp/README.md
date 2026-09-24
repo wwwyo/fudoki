@@ -56,24 +56,25 @@ apps/api の `Contract`（`apps/api/src/contract/`）にある procedure を、�
 
 | tool | 対応する procedure | 何を返すか |
 |---|---|---|
-| `list_jurisdictions` | `listJurisdictions` | 収録団体（東京都3団体だけ）と caveats |
+| `list_jurisdictions` | `listJurisdictions` | 収録団体と caveats |
 | `list_budgets` | `listBudgets` | 収録範囲（団体×年度）そのもの。予算段階・会計範囲・COFOG 到達度を含む |
 | `get_budget_lines` | `getBudgetLines` | 予算の明細（ページングあり）。単一 budget か、`-` で全予算横断 |
 | `aggregate_budgets` | `aggregateBudgets` | 予算を COFOG（大分類・中分類・小分類）別、または科目階層（款・項・目）別に集計した結果 |
 | `search_budget_lines` | `searchBudgetLines` | 名称（原典の科目階層名 / fudoki が対応づけた事業名）の部分一致による横断検索 |
 
-収録団体は三鷹市（132047）・狛江市（132195）・多摩市（132241）の3団体だけで、
-予算段階が団体で違う（三鷹市・多摩市は当初予算、狛江市は決算）。tool の description に
-数値付きで書いてあるので、詳細はそちらを参照。
+収録団体と予算段階は `list_jurisdictions` / `list_budgets` の応答が正
+（団体を足すたびにここが古くなるので数は書かない）。段階は団体で違う ──
+当初予算の団体と決算の団体が混在する。
 
 ⚠️ `aggregate_budgets` の `direction` と `phase` は必須（既定値なし）。段階は団体で違うので、
 先に `list_budgets` で対象団体の `scopes[direction].phases` を見て、実在する phase を選んでから呼ぶこと。
 複数団体にまたがる集計（filter に jurisdiction を指定しない）は `groupBy` に `jurisdiction` を含める必要がある。
 
-⚠️ `aggregate_budgets` は v1 では `direction=expenditure` のみ対応。`revenue` を指定すると 400 になる ──
-理由は「歳入に COFOG が無いから」ではなく「歳入の集計自体を v1 でまだ実装していないから」（PR #27
-レビュー指摘。以前のメッセージは COFOG が理由であるかのように読めた）。応答・エラー応答の
-`supportedDirections` が、その時点で対応する direction を示す。
+⚠️ `aggregate_budgets` で歳入（`direction=revenue`）を集計できるのは `hierarchy` / `fiscalYear`
+の軸だけ。`groupBy` に COFOG 軸（`cofog.division` / `.group` / `.class`）を含めると 400 になる ──
+`cofog_status` が歳入では常に `not-applicable` で、COFOG そのものが歳入に適用されないため
+（v1 の制限ではなくデータの事実）。応答・エラー応答の `supportedGroupings` が、
+groupBy ごとに対応する direction を示す。
 
 ⚠️ `aggregate_budgets` の `groupBy` に `hierarchy` を含めるとき（科目階層＝款・項・目での集計）は、
 `fund` を会計コード1つに絞ることが必須（既定の `"all"` は 400）。款・項のコードは会計の中でしか意味を

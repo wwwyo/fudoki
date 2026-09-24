@@ -34,6 +34,24 @@ export function parseFilterOr400(raw: string | undefined, errors: Errors): Parse
   }
 }
 
+/**
+ * filter が endpoint の契約外フィールドを含んでいたら 400。
+ * 許可されたフィールドの allowlist で検査する ── 拒否フィールドの列挙だと、
+ * filter.ts の FIELDS に新しいフィールドを足したとき gate の更新を忘れて
+ * 指定が黙って無視される（cofog.group / cofog.class で実際に起きた）。
+ */
+export function rejectUnsupportedFilterFields(
+  filter: ParsedFilter,
+  allowed: readonly (keyof ParsedFilter)[],
+  errors: Errors,
+  message: string,
+): void {
+  const unsupported = (Object.keys(filter) as (keyof ParsedFilter)[]).filter((k) => !allowed.includes(k))
+  if (unsupported.length > 0) {
+    throw errors.BAD_REQUEST({ message, data: { reason: 'unsupported filter field' } })
+  }
+}
+
 export function verifyToken(
   raw: string,
   expected: { revision: string; family: string; fingerprint: string },

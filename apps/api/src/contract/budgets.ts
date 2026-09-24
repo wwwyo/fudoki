@@ -518,7 +518,7 @@ export function groupingsWithDirections(groupings: readonly (readonly GroupingKe
 
 /** groupBy の cofog.* 要素から前計算アセットの depth を導く（groupBy に cofog.* は高々1つ） */
 export function cofogDepthOf(groupBy: readonly GroupingKey[]): 'division' | 'group' | 'class' {
-  const g = groupBy.find((k) => k !== 'jurisdiction')
+  const g = groupBy.find((k) => COFOG_AXES.includes(k))
   if (g === 'cofog.division') return 'division'
   if (g === 'cofog.group') return 'group'
   if (g === 'cofog.class') return 'class'

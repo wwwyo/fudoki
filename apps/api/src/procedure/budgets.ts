@@ -51,6 +51,7 @@ import {
   pageAggregateCells,
   parseFilterOr400,
   readMeta,
+  rejectUnsupportedFilterFields,
   resolvePageSize,
   scanPage,
   verifyToken,
@@ -60,12 +61,12 @@ import {
 
 export const listBudgets = os.listBudgets.handler(async ({ context, input, errors }) => {
   const filter = parseFilterOr400(input.filter, errors)
-  if (filter.direction !== undefined || filter.phase !== undefined || filter.cofogDivision !== undefined) {
-    throw errors.BAD_REQUEST({
-      message: 'only jurisdiction and fiscalYear filters are supported for budgets',
-      data: { reason: 'unsupported filter field' },
-    })
-  }
+  rejectUnsupportedFilterFields(
+    filter,
+    ['jurisdiction', 'fiscalYear'],
+    errors,
+    'only jurisdiction and fiscalYear filters are supported for budgets',
+  )
   const meta = await readMeta(context.env)
   const budgets = meta.budgets.filter(
     (b) =>
@@ -394,14 +395,13 @@ function provenanceSourcesFor(
 
 export const aggregateBudgets = os.aggregateBudgets.handler(async ({ context, input, errors }) => {
   const filter = parseFilterOr400(input.filter, errors)
-  if (filter.direction !== undefined || filter.phase !== undefined || filter.cofogDivision !== undefined) {
-    throw errors.BAD_REQUEST({
-      message:
-        'direction, phase, and cofog.division are not filter fields for budgets:aggregate. ' +
-        'direction and phase are typed fields; cofog depth is chosen via groupBy',
-      data: { reason: 'unsupported filter field' },
-    })
-  }
+  rejectUnsupportedFilterFields(
+    filter,
+    ['jurisdiction', 'fiscalYear'],
+    errors,
+    'only jurisdiction and fiscalYear are filter fields for budgets:aggregate. ' +
+      'direction and phase are typed fields; cofog depth is chosen via groupBy',
+  )
   if (input.hierarchyParent !== undefined && !input.groupBy.includes('hierarchy')) {
     throw errors.BAD_REQUEST({
       message: 'hierarchyParent is only usable when groupBy includes "hierarchy"',
@@ -1301,12 +1301,12 @@ async function loadLinesFamily(env: Env, meta: Meta, family: string): Promise<Ma
 export const searchBudgetLines = os.searchBudgetLines.handler(async ({ context, input, errors }) => {
   const typedInput = input as SearchTypedInput
   const filter = parseFilterOr400(typedInput.filter, errors)
-  if (filter.direction !== undefined || filter.phase !== undefined || filter.cofogDivision !== undefined) {
-    throw errors.BAD_REQUEST({
-      message: 'only jurisdiction and fiscalYear filters are supported for budgetLines:search; direction/phase/fund are typed fields',
-      data: { reason: 'unsupported filter field' },
-    })
-  }
+  rejectUnsupportedFilterFields(
+    filter,
+    ['jurisdiction', 'fiscalYear'],
+    errors,
+    'only jurisdiction and fiscalYear filters are supported for budgetLines:search; direction/phase/fund are typed fields',
+  )
   if (typedInput.fund !== undefined && filter.jurisdiction === undefined) {
     throw errors.BAD_REQUEST({
       message:
