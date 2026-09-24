@@ -144,6 +144,12 @@ bun run deploy:web    # dbt → report → vite build → wrangler deploy
 ⚠️ **`deploy:web` が dbt から通しているのは、古い `dist` を黙って上げないため。**
 `wrangler deploy` だけを叩くと、手元に残っている前回の `dist` がそのまま公開される。
 
+`apps/web` の運用ハマりどころ（デプロイ後の確認方法・`DESIGN.md` に何を書くか）は
+`.agents/skills/web-frontend-ops/`（session-retro が維持）を参照。
+
+`apps/api`（Cloudflare Workers + oRPC）のデプロイ・運用のハマりどころは
+`.agents/skills/cloudflare-api-ops/`（session-retro が維持）を参照。
+
 **原典・証跡・配布物をリポジトリに置く。** 原典は Parquet で `data/raw/` へ、取得の単位（団体コード・年度・direction）で partition する。全量（62団体 × 9年度）で 79 MB と実測しており、git repo として普通の範囲に収まる。調査の観測とパイプライン報告は commit しない（再実行で得られるローカル作業ファイル。主張には調査日を添える）。
 
 ⚠️ **③会議録の原典は置けない。** `gate.redistribute` は allow 0 団体である。**raw を commit できるのは再配布可と判定済みの取得元だけ**で、これはコードで縛る（`gate.redistribute !== 'allow'` なら書き出さない）。①予算は CC BY なので置ける。
@@ -385,6 +391,8 @@ XLSX / XLS でしか出していない9団体が「予算データ無し」に�
 
 **系統（lineage）は dbt の `manifest.json` から取る。** 手で書かない。
 段とノードを手作りすると、パイプラインを変えても図が変わらない状態を作る（実際に作った）。
+
+学び・ハマりどころは `.agents/skills/dbt-pipeline/`（session-retro が維持）を参照。
 
 ## セットアップ
 
@@ -778,15 +786,14 @@ CC BY が求める帰属と改変の明示には標準のプロパティが無�
 
 ## 設計の記録
 
-PRD・設計書・意思決定の記録は `.agent/` に置き、**git 管理する**。
-
-⚠️ **global の `~/.gitignore` が `**/.agent` を無視するので、リポジトリの `.gitignore` で明示的に打ち消してある。**
-他のリポジトリでは gitignore されているのが既定なので、ここだけ違うことを憶えておくこと。
+PRD・設計書・意思決定の記録は `docs/` に置き、**git 管理する**。
+PRD は `docs/prd/<topic>/`（`prd.md`・`design-doc.md`・`decision.log`）、
+単体の設計書は `docs/design-doc-<topic>.md` の形。
 
 判断の記録はコードと同じ寿命を持つ。
 コードだけが残って「なぜそうしたか」が消えると、次に読む者は同じ検討をやり直す。
-実際に worktree の入れ替えで `.agent/` を一度失っており、PRD と設計書と決定記録を復元し直した
-（`.agent/prd/mcp-server/decision.log` の 28）。
+実際に worktree の入れ替えで記録を一度失っており、PRD と設計書と決定記録を復元し直した
+（`docs/prd/mcp-server/decision.log` の 28）。
 
 ## スクリプト
 
