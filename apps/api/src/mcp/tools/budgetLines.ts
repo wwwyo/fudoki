@@ -3,11 +3,11 @@
  * 団体によっては明細の件数が多いので、ページングをそのまま露出する。
  *
  * contract の `getBudgetLinesOutput` は判別可能な union をやめて view にした
- * 単一の object schema なので（design doc「明細の一覧」）、MCP SDK 1.30.0 の
+ * 単一の object schema なので（design doc「明細の一覧」）、SDK v1 系の
  * `registerTool` がトップレベル union の outputSchema を扱えない問題（旧 statement.ts が
  * 抱えていた制約）はそもそも起きない。outputSchema・inputSchema とも contract をそのまま使う。
  */
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+import type { McpServer } from '@modelcontextprotocol/server'
 import { getBudgetLinesInput, getBudgetLinesOutput } from '../../contract'
 import type { ApiClient } from '../client'
 import { runTool } from '../result'

@@ -7,10 +7,13 @@ tool の定義（[`apps/api/src/mcp/`](../api/src/mcp/)）は両方で共有し�
 tool は [`apps/api`](../api) の oRPC router をプロセス内でそのまま呼び、応答をそのまま返すだけ
 （AGENTS.md の「集計は1箇所」）。このパッケージが持つのは、Workers 版の `ASSETS` binding の代わりに
 `apps/api/dist/assets/` をファイルシステムから読む Env（[`src/env.ts`](./src/env.ts)）と、
-`StdioServerTransport` に繋ぐだけの薄いエントリ（[`src/index.ts`](./src/index.ts)）。
+`serveStdio` に繋ぐだけの薄いエントリ（[`src/index.ts`](./src/index.ts)）。
 
-対応する MCP 仕様は **2025-11-25 まで**（`@modelcontextprotocol/sdk` 1.30.0 がこの版までしか知らない。
-現行版の 2026-07-28 には未対応 ── 詳細は `.agent/prd/mcp-server/prd.md` の実測メモ）。
+SDK は **`@modelcontextprotocol/server` 2.x**（typescript-sdk の v2 stable line）を使う。
+`2026-07-28`（modern era）と `〜2025-11-25`（legacy era）の両方を出す ── どちらに振り分けるかは
+リクエストが `_meta['io.modelcontextprotocol/protocolVersion']` の envelope を持つかで決まる
+（remote は `isLegacyRequest`、stdio は `serveStdio` が era を決める）。modern には
+`initialize` が無く、能力の probe は `server/discover`。
 
 ## remote への登録（本番）
 
@@ -88,27 +91,33 @@ text content にも入れる）。API が 400 / 404 を返したときは例外�
 結果として理由と代替の問い方を本文に入れて返す（MCP 仕様が tool 実行エラーを
 言語モデルの自己修正の材料と位置づけているため）。
 
-⚠️ MCP SDK 1.30.0 の `registerTool` はトップレベルが object 型でない `outputSchema` を扱えない
-（実機で確認: `undefined.safeParseAsync` で落ちる）。`getBudgetLinesOutput`（`budgetLineSchema` を
-view で使い分ける単一の object schema）はこの制約に元から当たらないため、`get_budget_lines` の
-`outputSchema` は contract をそのまま流用できている。
+⚠️ SDK v1 系（旧 `@modelcontextprotocol/sdk`）の `registerTool` はトップレベルが object 型でない
+`outputSchema` を扱えなかった（実機で確認: `undefined.safeParseAsync` で落ちる）。
+`getBudgetLinesOutput`（`budgetLineSchema` を view で使い分ける単一の object schema）は
+この制約に元から当たらないため、`get_budget_lines` の `outputSchema` は contract を
+そのまま流用できている（v2 でも同じ形を維持している）。
 
 ## remote の構成（Workers）
 
 `apps/api/src/index.ts` の `app.all(MCP_PATH, ...)`（`MCP_PATH` は `apps/api/src/spec.ts` の唯一の宣言元）。
 
-- transport は SDK の `WebStandardStreamableHTTPServerTransport`（Request/Response ベース。外部依存ゼロで
-  Cloudflare Workers 上で直接動く。Node 版の `StreamableHTTPServerTransport` は `@hono/node-server` に
-  依存するので使わない）
+- **era で振り分ける**。`isLegacyRequest`（`createMcpHandler` と同じ分類コード）で
+  legacy / modern を判別する。legacy leg は `WebStandardStreamableHTTPServerTransport`
+  （Request/Response ベース。外部依存ゼロで Cloudflare Workers 上で直接動く）、
+  modern leg は `createMcpHandler(factory, { legacy: 'reject', responseMode: 'json' })`
+  を使う。fallback の legacy serving に任せないのは、そちらは transport に
+  `enableJsonResponse` を渡せず応答が SSE になるため ── 現行の単発 JSON を保つ
 - **stateless**。Workers はリクエストをまたいで状態を持てない（同じ isolate が次のリクエストも
-  処理するとは限らない）ので、transport と McpServer は**リクエストごとに作り直す**
+  処理するとは限らない）ので、transport / handler / McpServer は**リクエストごとに作り直す**
   （`sessionIdGenerator` を渡さない = SDK の既定でセッション管理が無効になる）
-- `enableJsonResponse: true` で応答は SSE ではなく単発の JSON。この tool 群はサーバ発の通知を送らない
-  参照専用の request/response なので、ストリームを維持する理由が無い
+- `enableJsonResponse: true` / `responseMode: 'json'` で応答は SSE ではなく単発の JSON。
+  この tool 群はサーバ発の通知を送らない参照専用の request/response なので、
+  ストリームを維持する理由が無い
 - アクセス制御（`access-control.ts`）は `/v0/*` と同じ「キー任意・匿名レート制限あり」（`classifyPath` の
   既定 `keyed`）。MCP 独自の認証は設けない（PRD の Non-Goal）
-- CORS は `/v0/*` と同じ全開。`mcp-session-id` / `mcp-protocol-version` / `Last-Event-ID` を
-  allow/expose ヘッダに足している（MCP Streamable HTTP がクライアント→サーバ・サーバ→クライアントで使うため）
+- CORS は `/v0/*` と同じ全開。`mcp-session-id` / `mcp-protocol-version` / `Last-Event-ID` に加えて
+  modern era が必須とする `mcp-method` / `mcp-name` も allow ヘッダに入れている
+  （ブラウザの modern client が preflight で弾かれないため）
 - **Origin ヘッダの検証を別に持つ**（`index.ts` の `app.all(MCP_PATH, ...)`、allowlist は
   `spec.ts` の `MCP_ALLOWED_ORIGINS`）。MCP Streamable HTTP 仕様の Security Considerations が
   Origin ヘッダの検証を MUST としており、不正なら 403 を返す。CORS の `origin: '*'` はブラウザに

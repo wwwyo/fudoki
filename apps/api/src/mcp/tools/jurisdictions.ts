@@ -1,7 +1,7 @@
 /**
  * list_jurisdictions tool。`listJurisdictions` procedure をそのまま呼ぶだけ。
  */
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+import type { McpServer } from '@modelcontextprotocol/server'
 import { listJurisdictionsOutput } from '../../contract'
 import type { ApiClient } from '../client'
 import { runTool } from '../result'

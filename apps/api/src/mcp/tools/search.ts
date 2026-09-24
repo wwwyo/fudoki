@@ -9,7 +9,7 @@
  * 型（SearchBudgetLinesOutput）しか再輸出していないので、schema 自体は contract/budgets
  * から直接 import する。
  */
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+import type { McpServer } from '@modelcontextprotocol/server'
 import { searchBudgetLinesInput, searchBudgetLinesOutput } from '../../contract/budgets'
 import type { ApiClient } from '../client'
 import { runTool } from '../result'

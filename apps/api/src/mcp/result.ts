@@ -6,7 +6,7 @@
  * 後方互換のため同じ JSON を text content にも入れる（PRD の指示どおり）。
  */
 import { ORPCError } from '@orpc/client'
-import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js'
+import type { CallToolResult } from '@modelcontextprotocol/server'
 
 export function ok(data: Record<string, unknown>): CallToolResult {
   return {

@@ -2,7 +2,7 @@
  * aggregate_budgets tool。`aggregateBudgets` procedure をそのまま呼ぶだけ。
  * MCP 側では集計しない・応答を組み替えない（AGENTS.md「集計は1箇所」）。
  */
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+import type { McpServer } from '@modelcontextprotocol/server'
 import { aggregateBudgetsInput, aggregateBudgetsOutput } from '../../contract'
 import type { ApiClient } from '../client'
 import { runTool } from '../result'

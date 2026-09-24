@@ -36,9 +36,8 @@ export const MCP_PATH = '/mcp'
 /**
  * `/mcp` の Origin allowlist（PR #27 レビュー指摘）。
  *
- * MCP Streamable HTTP 仕様（2025-11-25 の Security Considerations「Origin
- * Header Validation」）は、サーバが Origin ヘッダを検証し、不正なら 403 を返すことを
- * MUST としている ── ブラウザから DNS rebinding 等で叩かれたときに、匿名のレート制限枠
+ * MCP Streamable HTTP 仕様の Security Considerations「Origin Header Validation」は、
+ * サーバが Origin ヘッダを検証し、不正なら 403 を返すことを MUST としている ── ブラウザから DNS rebinding 等で叩かれたときに、匿名のレート制限枠
  * （access-control.ts）を第三者のサイトが被害者のブラウザ経由で消費できてしまうのを防ぐため。
  * ⚠️ CORS の `origin: '*'`（index.ts）とは別レイヤ。CORS はブラウザの読み取りを許すかどうかで、
  * Origin 検証はリクエストそのものを受け付けるかどうか。両方を満たして初めて

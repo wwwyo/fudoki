@@ -6,7 +6,7 @@
  * サーバは集計も判断も持たない ── tool は `ApiClient`（apps/api の router を
  * プロセス内でそのまま呼ぶクライアント）を right-through で呼ぶだけ。
  */
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+import { McpServer } from '@modelcontextprotocol/server'
 import type { ApiClient } from './client'
 import { registerAggregateBudgets } from './tools/aggregate'
 import { registerGetBudgetLines } from './tools/budgetLines'

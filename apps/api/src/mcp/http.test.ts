@@ -62,6 +62,10 @@ async function rpc(body: unknown, headers: Record<string, string> = {}): Promise
   )
 }
 
+/**
+ * legacy era（〜2025-11-25）の initialize。envelope claim を持たないので
+ * 旧来どおり transport の stateless serving に回る（index.ts の isLegacyRequest 分岐）。
+ */
 const initializeBody = {
   jsonrpc: '2.0' as const,
   id: 1,
@@ -73,14 +77,88 @@ const initializeBody = {
   },
 }
 
+/**
+ * modern era（2026-07-28）の envelope。modern には initialize が無く、
+ * 毎リクエストが params._meta で版と client capabilities を主張する
+ * （必須キーは io.modelcontextprotocol/protocolVersion と
+ * io.modelcontextprotocol/clientCapabilities。clientInfo は SHOULD）。
+ */
+const modernEnvelope = {
+  'io.modelcontextprotocol/protocolVersion': '2026-07-28',
+  'io.modelcontextprotocol/clientCapabilities': {},
+  'io.modelcontextprotocol/clientInfo': { name: 'test-client', version: '0.0.0' },
+}
+
+/**
+ * modern リクエストのヘッダ。`mcp-protocol-version` は envelope との cross-check、
+ * `Mcp-Method` は全リクエスト必須、`Mcp-Name` は tools/call のように params.name を
+ * 持つ method で必須（SEP-2243。欠落・不一致は -32020）。
+ */
+function modernHeaders(method: string, name?: string): Record<string, string> {
+  return {
+    'mcp-protocol-version': '2026-07-28',
+    'mcp-method': method,
+    ...(name !== undefined ? { 'mcp-name': name } : {}),
+  }
+}
+
+const discoverBody = {
+  jsonrpc: '2.0' as const,
+  id: 1,
+  method: 'server/discover',
+  params: { _meta: modernEnvelope },
+}
+
 describe('/mcp (remote MCP server)', () => {
-  test('initialize negotiates a protocol version the SDK supports (<= 2025-11-25)', async () => {
+  test('legacy initialize negotiates 2025-11-25 (claim-less request → legacy serving)', async () => {
     const res = await rpc(initializeBody)
     expect(res.status).toBe(200)
     const body = (await res.json()) as { result: { protocolVersion: string; serverInfo: { name: string } } }
     expect(body.result.serverInfo.name).toBe('fudoki-mcp')
-    // SDK 1.30.0 が知っている最大の仕様版（AGENTS.md の実測どおり、2026-07-28 ではない）
     expect(body.result.protocolVersion).toBe('2025-11-25')
+  })
+
+  test('modern server/discover answers the 2026-07-28 revision', async () => {
+    const res = await rpc(discoverBody, modernHeaders('server/discover'))
+    expect(res.status).toBe(200)
+    const body = (await res.json()) as {
+      result: { resultType: string; supportedVersions: string[]; _meta?: Record<string, unknown> }
+    }
+    expect(body.result.resultType).toBe('complete')
+    expect(body.result.supportedVersions).toContain('2026-07-28')
+  })
+
+  test('modern tools/call reaches the same tool handlers (aggregate_budgets)', async () => {
+    const res = await rpc(
+      {
+        jsonrpc: '2.0',
+        id: 12,
+        method: 'tools/call',
+        params: {
+          name: 'aggregate_budgets',
+          arguments: {
+            filter: 'jurisdiction = "132047" AND fiscalYear = "2024"',
+            direction: 'expenditure',
+            phase: 'approved',
+            groupBy: ['cofog.division'],
+          },
+          _meta: modernEnvelope,
+        },
+      },
+      modernHeaders('tools/call', 'aggregate_budgets'),
+    )
+    expect(res.status).toBe(200)
+    const body = (await res.json()) as {
+      result: {
+        resultType: string
+        structuredContent: { cells: { dimensions: { dimension: string; code: string }[]; amount: number }[] }
+      }
+    }
+    expect(body.result.resultType).toBe('complete')
+    const division01 = body.result.structuredContent.cells.find((c) =>
+      c.dimensions.some((d) => d.dimension === 'cofog.division' && d.code === '01'),
+    )
+    expect(division01?.amount).toBe(10_997_811_000)
   })
 
   test('tools/list exposes the 5 budget tools', async () => {

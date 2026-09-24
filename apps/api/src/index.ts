@@ -11,7 +11,7 @@
 import { OpenAPIHandler } from '@orpc/openapi/fetch'
 import { OpenAPIReferencePlugin } from '@orpc/openapi/plugins'
 import { RPCHandler } from '@orpc/server/fetch'
-import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js'
+import { createMcpHandler, isLegacyRequest, WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/server'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { accessControl } from './access-control'
@@ -65,6 +65,8 @@ const app = new Hono<{ Bindings: Env }>()
  * mcp-session-id / mcp-protocol-version / Last-Event-ID は MCP Streamable HTTP の
  * 仕様がクライアント→サーバで使うヘッダ（stateless 構成でもプロトコル版のネゴシエーションに
  * mcp-protocol-version が使われる）。DELETE は MCP のセッション終了リクエストで使う。
+ * mcp-method / mcp-name は modern era（2026-07-28、SEP-2243）が全リクエストに
+ * 要求するヘッダで、ブラウザの modern client はこれらを送る（無いと preflight で弾かれる）。
  * exposeHeaders はパススルーの revision・429 の Retry-After・MCP のセッションIDを
  * ブラウザから読むために要る。
  */
@@ -78,7 +80,7 @@ app.use(
       return RPC_ALLOWED_ORIGINS.has(origin) ? origin : ''
     },
     allowMethods: ['GET', 'HEAD', 'POST', 'DELETE', 'OPTIONS'],
-    allowHeaders: ['Content-Type', 'Authorization', 'mcp-session-id', 'mcp-protocol-version', 'Last-Event-ID'],
+    allowHeaders: ['Content-Type', 'Authorization', 'mcp-session-id', 'mcp-protocol-version', 'mcp-method', 'mcp-name', 'Last-Event-ID'],
     exposeHeaders: ['X-Fudoki-Revision', 'ETag', 'Retry-After', 'mcp-session-id', 'mcp-protocol-version'],
   }),
 )
@@ -93,17 +95,27 @@ app.get(ROOT_PATH, (c) => c.redirect(`${V0_PREFIX}${V0_DOCS_PATH}`, 302))
 app.get(ROOT_SPEC_REDIRECT_PATH, (c) => c.redirect(`${V0_PREFIX}${V0_SPEC_PATH}`, 302))
 
 /**
- * MCP（remote）。Workers はリクエストをまたいで状態を持てないので、
- * transport と server はリクエストごとに作り直す（stateless。SDK の
- * `WebStandardStreamableHTTPServerTransport` は `sessionIdGenerator` を渡さなければ
- * 既定でセッション管理を無効化する。公式の Hono 例もリクエストごとに作り直す形を採る）。
- * `enableJsonResponse: true` で応答を SSE ではなく単発の JSON にする ──
+ * MCP（remote）。仕様版が legacy（〜2025-11-25）と modern（2026-07-28）の2 era に
+ * 分かれているので、`isLegacyRequest`（`createMcpHandler` と同じ分類コードを走らせる
+ * predicate）で振り分ける ── modern は `initialize` を持たず、毎リクエストが
+ * `_meta['io.modelcontextprotocol/protocolVersion']` の envelope で版を主張する。
+ * tool 定義は apps/api/src/mcp/ を stdio 版（apps/mcp）と共有し、
+ * 2 era で同じ factory を使う（SDK の推奨どおり。両方が同じ tool 群を出すので
+ * era 間で定義がずれない）。
+ *
+ * legacy leg は `createMcpHandler` の fallback（transport に enableJsonResponse を
+ * 渡せず SSE 応答になる）ではなく、従来どおり `WebStandardStreamableHTTPServerTransport`
+ * を直に配線する。`sessionIdGenerator` を渡さなければ既定でセッション管理が無効
+ * （stateless）で、`enableJsonResponse: true` で応答を SSE ではなく単発の JSON にする ──
  * この tool 群はサーバ発の通知を送らない参照専用の request/response なので、
- * ストリームを維持する理由が無い（stateless 構成とも相性がよい）。
- * tool 定義は apps/api/src/mcp/ を stdio 版（apps/mcp）と共有する。
+ * ストリームを維持する理由が無い。modern leg は `legacy: 'reject'` の
+ * `createMcpHandler` で、`responseMode: 'json'` も同じ意図。
+ * Workers はリクエストをまたいで状態を持てないので、transport / handler / server は
+ * リクエストごとに作り直す。
  *
  * ⚠️ Origin ヘッダの検証（MCP Streamable HTTP 仕様の Security Considerations が MUST とする）を
- * transport に渡す前に行う。CORS の `origin: '*'`（上の cors() ミドルウェア）はブラウザに
+ * transport に渡す前に行う（v2 の entry も「Origin/Host 検証は handler の前に置け」と
+ * 自身では検証しない設計）。CORS の `origin: '*'`（上の cors() ミドルウェア）はブラウザに
  * 応答を読ませるかどうかしか決めず、リクエストそのものを拒否できない。ここで弾かないと、
  * 悪意あるサイトが被害者のブラウザ経由で `/mcp` を叩き、匿名のレート制限枠
  * （access-control.ts）を被害者の IP で消費できてしまう（PR #27 レビュー指摘）。
@@ -116,11 +128,15 @@ app.all(MCP_PATH, async (c) => {
   if (origin !== undefined && !MCP_ALLOWED_ORIGINS.has(origin)) {
     return c.json({ error: 'FORBIDDEN', message: `origin not allowed: ${origin}` }, 403)
   }
-  const transport = new WebStandardStreamableHTTPServerTransport({ enableJsonResponse: true })
   const client = createApiClient(c.env)
-  const server = createMcpServer(client)
-  await server.connect(transport)
-  return transport.handleRequest(c.req.raw)
+  if (await isLegacyRequest(c.req.raw)) {
+    const transport = new WebStandardStreamableHTTPServerTransport({ enableJsonResponse: true })
+    const server = createMcpServer(client)
+    await server.connect(transport)
+    return transport.handleRequest(c.req.raw)
+  }
+  const handler = createMcpHandler(() => createMcpServer(client), { legacy: 'reject', responseMode: 'json' })
+  return handler.fetch(c.req.raw)
 })
 
 // meta/files.json はデプロイに焼き込まれた不変データなので isolate 内で1回だけ読む

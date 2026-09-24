@@ -190,7 +190,7 @@ Codex のレビューで当初案の URL 設計が誤りだと分かった。
 **正しい理由**: 目より下は名称の欠損が多く（狛江市は金額のある大事業の 57.1% にしか名称が無い）、
 言語モデルがどのセルを問いの対象にすべきか選べない。
 
-## 24. 対応する MCP の仕様版を SDK の最大版に下げた
+## 24. 対応する MCP の仕様版を SDK の最大版に下げた → **34 で覆した**
 
 7 の決定を覆した。
 
@@ -200,6 +200,11 @@ Codex のレビューで当初案の URL 設計が誤りだと分かった。
 
 **採用: SDK が扱える範囲の版で出す。** 決め手は、選択肢が無いこと。
 自前で JSON-RPC を書いても client 側が現行版を話せないので、繋がる相手が増えない。
+
+⚠️ **この実測は調査漏れがあった**（34 参照）。`@modelcontextprotocol/sdk` は v1 の
+monolithic パッケージで、typescript-sdk repo は v2 でパッケージ分割済みだった。
+「対応した SDK がまだ無い」は旧パッケージ名だけを見た誤りで、書いた時点で
+`@modelcontextprotocol/server` 2.0.0（2026-07-27 公開、2026-07-28 対応）が既に存在した。
 
 ## 25. stdio 版を先に作った
 
@@ -304,3 +309,29 @@ root の `tsc --noEmit` は `apps/*` を含まない（CI は別に回してい�
 代償: 「cells は要求した深さの行だけ」という契約が変わる。応答の形を変える4回目になる。
 
 **判断待ち。**
+
+## 34. MCP SDK を v2（@modelcontextprotocol/server）へ移し、modern era も出す
+
+24 を覆した。24 の実測は `@modelcontextprotocol/sdk`（v1 の monolithic パッケージ）だけを
+見ていたが、typescript-sdk repo は v2 でパッケージ分割済みで、
+`@modelcontextprotocol/server` が stable line だった。2.0.0 は 2026-07-27 公開で
+2026-07-28 対応済み ── 24 を書いた時点で既に存在していた。
+
+**採用: `@modelcontextprotocol/server` 2.0.0 へ移行し、legacy / modern 両方を出す。**
+
+- 2.0.0 を選んだのは 2.1.0（2026-09-23 公開）が 7日 cooldown の対象だったため。
+  `server` に統一したのは remote（Workers）と stdio（`serveStdio`）の両方がこの1つで足り、
+  runtime adapter（`@modelcontextprotocol/hono` 等）を増やす理由が無かったため
+- remote は `isLegacyRequest` で振り分ける。modern は `createMcpHandler`（`legacy: 'reject'`、
+  `responseMode: 'json'`）、legacy は従来どおり
+  `WebStandardStreamableHTTPServerTransport` + `enableJsonResponse`
+  ── `createMcpHandler` の legacy fallback は `enableJsonResponse` を渡せず SSE になるので、
+  現行の単発 JSON を保つために自前で分岐する
+- modern（2026-07-28）には `initialize` が無い。リクエストごとに
+  `_meta['io.modelcontextprotocol/protocolVersion']` の envelope で版を主張し、
+  能力の probe は `server/discover`。HTTP では全リクエストに `mcp-method`、
+  `tools/call` には `mcp-name` ヘッダが必須（SEP-2243）で、ヘッダと本文が不一致だと
+  `-32020` で拒否される。CORS の allowHeaders にもこの2つを足した
+
+**教訓**: 「この SDK は X に未対応」を結論するとき、パッケージ名の改名・分割を
+upstream repo で確認すること。npm の旧パッケージのバージョンだけでは追えない。

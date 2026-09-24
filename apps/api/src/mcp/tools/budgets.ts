@@ -2,7 +2,7 @@
  * list_budgets tool。`listBudgets` procedure をそのまま呼ぶだけ。
  * これが収録範囲（カバレッジ）そのもの — 団体×年度がここに無ければ未収録。
  */
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+import type { McpServer } from '@modelcontextprotocol/server'
 import * as z from 'zod'
 import { listBudgetsOutput } from '../../contract'
 import type { ApiClient } from '../client'
