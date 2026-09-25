@@ -45,7 +45,7 @@ export default defineConfig({
     sidebar: [
       {
         label: 'Get started',
-        items: ['/', '/quickstart'],
+        items: ['/', '/quickstart', '/mcp'],
       },
     ],
     // ダッシュボード（apps/web）への導線。外部 URL なので新しいタブで開く
