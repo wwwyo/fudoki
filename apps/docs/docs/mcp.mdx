@@ -49,8 +49,8 @@ stdio しか話せない client からは `mcp-remote` などのブリッジを�
 |---|---|
 | `list_jurisdictions` | 収録団体の一覧。各団体の caveats に、予算段階や会計範囲など数値の意味を変える注意事項が入る |
 | `list_budgets` | 収録予算（団体 × 年度）の全件。各 budget の scopes に、その団体・年度で実在する予算段階（phase）・会計（fund）・COFOG 到達度が入る |
-| `get_budget_lines` | 予算の明細。`budget` に `{団体コード}:{年度}` を指定するほか、`-` で全予算を COFOG で横断できる。`view=FULL` で団体固有の科目階層と全段階の金額まで取れる |
-| `aggregate_budgets` | COFOG 別・科目階層（款・項）別・年度別の集計。`direction` と `phase` は必須 |
+| `get_budget_lines` | 予算の明細。`budget` に `{団体コード}:{年度}` を指定するほか、`-` で全予算を COFOG で横断できる。`view=FULL` で団体固有の科目階層と全段階の金額まで取れる。filter は必須（実在する budget では `direction`、`-` では `cofog.division`。省略すると 400） |
+| `aggregate_budgets` | COFOG 別・科目階層（款・項・目）別・年度別の集計。`direction` と `phase` は必須 |
 | `search_budget_lines` | 名称の部分一致で明細を横断検索。原典の科目名と、fudoki が対応づけた事業名の両方を対象にする |
 
 ## 応答の約束
