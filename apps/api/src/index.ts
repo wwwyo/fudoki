@@ -5,7 +5,7 @@
  * - `/rpc/*`: RPCHandler。自前のフロント向け（contract を import した
  *   型付きクライアントで叩く。OpenAPI には載せない）
  * - `/mcp`: MCP（remote）。tool は apps/api/src/mcp/ が router をそのまま
- *   呼ぶだけで、集計も判断も持たない（stdio 版 apps/mcp と tool 定義を共有）
+ *   呼ぶだけで、集計も判断も持たない
  * `run_worker_first` なので、ここを通らずにアセットが露出することはない。
  */
 import { OpenAPIHandler } from '@orpc/openapi/fetch'
@@ -105,9 +105,8 @@ app.get(ROOT_SPEC_REDIRECT_PATH, (c) => c.redirect(`${V0_PREFIX}${V0_SPEC_PATH}`
  * 分かれているので、`isLegacyRequest`（`createMcpHandler` と同じ分類コードを走らせる
  * predicate）で振り分ける ── modern は `initialize` を持たず、毎リクエストが
  * `_meta['io.modelcontextprotocol/protocolVersion']` の envelope で版を主張する。
- * tool 定義は apps/api/src/mcp/ を stdio 版（apps/mcp）と共有し、
- * 2 era で同じ factory を使う（SDK の推奨どおり。両方が同じ tool 群を出すので
- * era 間で定義がずれない）。
+ * 2 era で同じ factory（`createMcpServer`）を使う（SDK の推奨どおり。
+ * 両方が同じ tool 群を出すので era 間で定義がずれない）。
  *
  * legacy leg は `createMcpHandler` の fallback（transport に enableJsonResponse を
  * 渡せず SSE 応答になる）ではなく、従来どおり `WebStandardStreamableHTTPServerTransport`

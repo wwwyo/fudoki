@@ -335,3 +335,15 @@ root の `tsc --noEmit` は `apps/*` を含まない（CI は別に回してい�
 
 **教訓**: 「この SDK は X に未対応」を結論するとき、パッケージ名の改名・分割を
 upstream repo で確認すること。npm の旧パッケージのバージョンだけでは追えない。
+
+## 35. stdio 版（apps/mcp）を削除した
+
+25 でデモ用に作った local stdio 版を消した。PRD の Non-Goals と
+2 の「不採用: 両方（実装と検査が2系統に増える）」を覆す形で残っていたため。
+
+存在理由だった「手元の変更をすぐ試す」は `bunx wrangler dev`（apps/api）で
+満たせる ── `http://localhost:<port>/mcp` が本番と同一のコードパス
+（Hono のルーティング・Origin 検証・StreamableHTTP transport）を通るので、
+stdio 経路（`serveStdio`、本番では使われない）より検証として正確。
+stdio 固有の資産は `apps/mcp/src/env.ts`（ASSETS をファイルシステムから読む
+Env）だけで、他からは参照されていなかった。

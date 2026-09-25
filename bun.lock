@@ -43,24 +43,6 @@
         "wrangler": "catalog:",
       },
     },
-    "apps/mcp": {
-      "name": "@fudoki/mcp",
-      "version": "0.0.1",
-      "bin": {
-        "fudoki-mcp": "./src/index.ts",
-      },
-      "dependencies": {
-        "@modelcontextprotocol/server": "2.0.0",
-        "@orpc/client": "1.15.0",
-        "@orpc/contract": "1.15.0",
-        "@orpc/server": "1.15.0",
-        "zod": "catalog:",
-      },
-      "devDependencies": {
-        "@types/bun": "catalog:",
-        "typescript": "catalog:",
-      },
-    },
     "apps/slides": {
       "name": "slides",
       "devDependencies": {
@@ -401,8 +383,6 @@
     "@fudoki/api": ["@fudoki/api@workspace:apps/api"],
 
     "@fudoki/docs": ["@fudoki/docs@workspace:apps/docs"],
-
-    "@fudoki/mcp": ["@fudoki/mcp@workspace:apps/mcp"],
 
     "@fudoki/report": ["@fudoki/report@workspace:report"],
 

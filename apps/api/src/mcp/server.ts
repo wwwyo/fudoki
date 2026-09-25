@@ -1,7 +1,6 @@
 /**
  * fudoki の予算 tool を登録した McpServer を組み立てる、唯一の場所。
- *
- * remote（Workers の `/mcp`）と stdio（apps/mcp）の両方がこの1関数を呼ぶ。
+ * 呼び出し元は remote（Workers の `/mcp`）だけ。
  * tool の定義を2箇所に持たない（AGENTS.md「同じ事実を2箇所で宣言しない」）。
  * サーバは集計も判断も持たない ── tool は `ApiClient`（apps/api の router を
  * プロセス内でそのまま呼ぶクライアント）を right-through で呼ぶだけ。
