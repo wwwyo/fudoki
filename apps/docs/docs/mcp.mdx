@@ -15,7 +15,7 @@ transport は Streamable HTTP で、応答は SSE ではなく単発の JSON が
 
 サーバは stateless で、セッションを持ちません。「前の呼び出しで収録範囲を確認した」という状態をサーバが次の呼び出しで覚えていることはありません。その代わり、数値を返す応答には計算に使った条件（団体・年度・歳出歳入・予算段階・会計範囲）が必ず同梱されます。
 
-レート制限は REST API と共通で、匿名の方が厳しめです。API キーを持っている場合は `Authorization: Bearer <key>` ヘッダで送れます。ヘッダを設定できる client であれば、MCP 経由でも同じ緩和を受けられます。
+レート制限は REST API と同じ仕組みで、匿名と認証済みで別の枠を持ちます（匿名の方が厳しめです）。API キーを持っている場合は `Authorization: Bearer <key>` ヘッダで送ってください。ヘッダを設定できる client であれば、MCP 経由でも緩和が効きます。
 
 ## client に登録する
 
@@ -36,6 +36,8 @@ claude mcp add --transport http fudoki https://api.fudoki.dev/mcp
   }
 }
 ```
+
+API キーを付けるときは、Claude Code では `--header "Authorization: Bearer <key>"`、JSON 設定の client では `headers` フィールドで指定します（キーの発行は [Quickstart](/quickstart) を参照）。
 
 stdio しか話せない client からは `mcp-remote` などのブリッジを介して接続してください。
 
