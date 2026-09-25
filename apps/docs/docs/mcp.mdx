@@ -11,11 +11,7 @@ REST API と同じ予算データを、MCP server としても提供していま
 https://api.fudoki.dev/mcp
 ```
 
-transport は Streamable HTTP で、応答は SSE ではなく単発の JSON が返ります。プロトコル版は 2025-11-25 系と 2026-07-28 の両方を受理するので、client 側で版を意識する必要はありません。
-
-サーバは stateless で、セッションを持ちません。「前の呼び出しで収録範囲を確認した」という状態をサーバが次の呼び出しで覚えていることはありません。その代わり、数値を返す応答には計算に使った条件（団体・年度・歳出歳入・予算段階・会計範囲）が必ず同梱されます。
-
-レート制限は REST API と同じ仕組みで、匿名と認証済みで別の枠を持ちます（匿名の方が厳しめです）。API キーを持っている場合は `Authorization: Bearer <key>` ヘッダで送ってください。ヘッダを設定できる client であれば、MCP 経由でも緩和が効きます。
+MCP の Streamable HTTP transport に沿った remote サーバです。認証は不要ですが、API キーを `Authorization: Bearer <key>` ヘッダで送ると REST API と同じレート制限の緩和を受けられます。
 
 ## client に登録する
 
