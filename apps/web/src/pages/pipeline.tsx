@@ -63,7 +63,6 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
     docId: null,
     page: null,
   })
-  const [caveats, setCaveats] = useState(false)
   const [splitH, setSplitH] = useState(42)
 
   useEffect(() => {
@@ -301,9 +300,6 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
             {checkTally.failed ? `・失敗${checkTally.failed}` : ""}
             {checkTally.warned ? `・警告${checkTally.warned}` : ""}
           </span>
-          <button className="linky text-xs" onClick={() => setCaveats((v) => !v)}>
-            注意点 {report.caveats.length} 件{caveats ? " ▴" : " ▾"}
-          </button>
           <a
             href={withBase(`/analysis/${current.code}/`)}
             className="text-xs"
@@ -312,16 +308,6 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
             この団体の支出分析を見る
           </a>
         </div>
-        {caveats && (
-          <div className="caveat-drawer">
-            {report.caveats.map((c, i) => (
-              <div className="cv" key={i}>
-                <div className="t">{caveatText(c.topic)}</div>
-                <div className="b">{caveatText(c.body)}</div>
-              </div>
-            ))}
-          </div>
-        )}
         <div className="graphwrap-outer" style={{ flex: `0 0 ${splitH}%`, minHeight: 0, position: "relative" }}>
           <LineageGraph
             topology={visibleTopology}
@@ -346,6 +332,15 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
           }}
         />
         <div className="iowrap">
+          <details className="fold">
+            <summary>注意点 {report.caveats.length} 件</summary>
+            {report.caveats.map((c, i) => (
+              <div className="cv" key={i}>
+                <div className="t">{caveatText(c.topic)}</div>
+                <div className="b">{caveatText(c.body)}</div>
+              </div>
+            ))}
+          </details>
           <IoPanel
             report={report}
             code={current.code}

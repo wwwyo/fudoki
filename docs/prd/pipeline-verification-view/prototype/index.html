@@ -121,13 +121,12 @@ details.fold > summary { cursor: pointer; font-size: 12px; color: var(--muted-fo
 .harness-bar button { border: 0; border-radius: 6px; padding: 4px 10px; background: transparent; color: rgba(255,255,255,.55); font: inherit; cursor: pointer; }
 .harness-bar button[data-active] { background: rgba(255,255,255,.14); color: #fff; }
 
-/* 見出し + 注意点ドロワー */
+/* 見出し */
 .headline { display: flex; align-items: baseline; gap: 12px; padding: 10px 16px; flex-wrap: wrap; }
-.caveat-drawer { border-top: 1px solid var(--border); background: var(--muted); padding: 10px 16px; }
-.caveat-drawer .cv { padding: 6px 0; border-top: 1px solid var(--border); }
-.caveat-drawer .cv:first-child { border-top: 0; }
-.caveat-drawer .cv .t { font-weight: 500; }
-.caveat-drawer .cv .b { font-size: 12px; color: var(--muted-foreground); }
+details.fold .cv { padding: 6px 0; border-top: 1px solid var(--border); }
+details.fold .cv:first-of-type { border-top: 0; }
+details.fold .cv .t { font-weight: 500; }
+details.fold .cv .b { font-size: 12px; color: var(--muted-foreground); }
 
 /* ===== 上下レイアウト 3 サブ案。軸は「図と I/O が縦の空間をどう分けるか」 ===== */
 /* 図ペイン: ズーム/パン・組 hover 機構 */
@@ -183,7 +182,6 @@ const S = {
   nodeCand: null,       // node id whose edge candidates are shown
   row: null,            // selected source_row
   pdfPage: null,        // PDF ビューアの表示頁（1始まりの PDF 頁番号。null = 最初の hit 頁）
-  caveats: false,
 };
 let V1GEO = null; // 組 hover 判定用ジオメトリ（組矩形・辺のサンプル点）。案関数が mount のたびに作り直す
 let V1HOV = null; // hover 中の組キー "from|to"
@@ -785,9 +783,7 @@ function headlineHtml(j) {
       ${years.map((y) => `<option value="${y}" ${S.year === y ? 'selected' : ''}>${y}年度</option>`).join('')}
     </select>
     <span class="mut small">${esc(m.phase.label)}</span>
-    <button class="linky small" data-caveats>注意点 ${j.caveats.length} 件${S.caveats ? ' ▴' : ' ▾'}</button>
-  </div>
-  ${S.caveats ? `<div class="caveat-drawer">${j.caveats.map((c) => `<div class="cv"><div class="t">${md(c.topic)}</div><div class="b">${md(c.body)}</div></div>`).join('')}</div>` : ''}`;
+  </div>`;
 }
 function zoomctlHtml() {
   return `<div class="zoomctl" aria-label="図のズーム">
@@ -805,7 +801,7 @@ function vSplit() {
   return `<div class="v1 vsplit">${headlineHtml(j)}
     <div class="graphwrap" style="flex-basis:${SPLITH}%">${graphSvg(j, true, null, true, true)}${zoomctlHtml()}</div>
     <div class="splitsash" role="separator" aria-orientation="horizontal" title="ドラッグで上下の比率を変更"></div>
-    <div class="iowrap">${ioPanelHtml(j)}</div>${candPopHtml(j)}</div>`;
+    <div class="iowrap"><details class="fold"><summary>注意点 ${j.caveats.length} 件</summary>${j.caveats.map((c) => `<div class="cv"><div class="t">${md(c.topic)}</div><div class="b">${md(c.body)}</div></div>`).join('')}</details>${ioPanelHtml(j)}</div>${candPopHtml(j)}</div>`;
 }
 
 
@@ -867,7 +863,6 @@ stage.addEventListener('click', (e) => {
   }
   if (e.target.closest('[data-clear-row]')) { S.row = null; mount(); return; }
   if (e.target.closest('[data-clear-edge]')) { S.edge = null; S.row = null; S.pdfPage = null; mount(); return; }
-  if (e.target.closest('[data-caveats]')) { S.caveats = !S.caveats; mount(); return; }
 });
 stage.addEventListener('mousemove', (e) => {
   const svg = e.target.closest && e.target.closest('.v1 .graphsvg');

@@ -95,11 +95,10 @@
 
 /* ---- 見出し + 注意点ドロワー ---- */
 .pv .headline { display: flex; align-items: baseline; gap: 12px; padding: 10px 16px; flex-wrap: wrap; }
-.pv .caveat-drawer { border-top: 1px solid var(--border); background: var(--muted); padding: 10px 16px; max-height: 40vh; overflow: auto; }
-.pv .caveat-drawer .cv { padding: 6px 0; border-top: 1px solid var(--border); }
-.pv .caveat-drawer .cv:first-child { border-top: 0; }
-.pv .caveat-drawer .cv .t { font-weight: 500; font-size: 13px; }
-.pv .caveat-drawer .cv .b { font-size: 12px; color: var(--muted-foreground); }
+.pv details.fold .cv { padding: 6px 0; border-top: 1px solid var(--border); }
+.pv details.fold .cv:first-child { border-top: 0; }
+.pv details.fold .cv .t { font-weight: 500; font-size: 13px; }
+.pv details.fold .cv .b { font-size: 12px; color: var(--muted-foreground); }
 
 /* ---- 固定分割: 画面を上下2ペインに割り、各ペインが独立にスクロールする
    （図ペインではパンがスクロール相当）。ページ自体はスクロールせず、境目をドラッグで比率変更 ---- */
