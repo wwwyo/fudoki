@@ -91,8 +91,7 @@ uv add --exclude-newer $(date -v-7d +%Y-%m-%d) <package>
 
 構造・判断・手順の詳細は各文書へ逃がしてある。この文書には書かない。
 
-- 設計方針（標準の選び方・配布の向き・ライセンス）・対象と実装順・パイプラインの4段と境界・パーサ設計の原則 → `docs/design-principles.md`
-- ①予算の実装（取得経路・宣言・配布の単位・科目マスタ・団体を足す手順・未確定） → `docs/budget-pipeline.md`
+- 設計方針・対象・パイプライン・パーサ原則 → `docs/design-principles.md`。①予算の実装と手順 → `docs/budget-pipeline.md`。決定の記録 → `docs/adr/`
 - スクリプト一覧と観測の置き場 → `docs/scripts.md`
 - 団体固有の実測・原典の癖 → `ingestion/budget/jurisdictions/<団体コード>.md`
 - パイプライン（取得・PDF抽出・dbt）のハマりどころ → `.agents/skills/pipeline/`
