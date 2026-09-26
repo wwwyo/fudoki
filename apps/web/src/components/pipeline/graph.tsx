@@ -408,14 +408,32 @@ export const LineageGraph = memo(function LineageGraph({
               <path d="M0,0 L8,4 L0,8" fill="none" stroke="var(--primary)" strokeWidth="1.6" opacity=".55" />
             </marker>
           </defs>
-          {/* 段の見出し。層はデータが流れる下の方へ読むので、見出しは列の下に置く */}
-          {stageOrder.map((s, i) =>
-            topology.nodes.some((n) => n.stage === s && !isRes(n)) ? (
-              <text key={s} x={PAD + i * (NW + CGX)} y={lay.mainH + 30} fontSize="11" fill="var(--muted-foreground)">
-                {STAGE_JA[s]}
-              </text>
-            ) : null,
-          )}
+          {/* 段の見出し。層はデータが流れる下の方へ読むので、見出しは列の下に置く。
+              ⓘ に各段の責務（topology.stages の responsibility）を乗せる */}
+          {stageOrder.map((s, i) => {
+            const st = topology.stages.find((x) => x.id === s)
+            if (!topology.nodes.some((n) => n.stage === s && !isRes(n))) return null
+            const x = PAD + i * (NW + CGX)
+            return (
+              <g key={s}>
+                <text x={x} y={lay.mainH + 30} fontSize="11" fill="var(--muted-foreground)">
+                  {STAGE_JA[s]}
+                </text>
+                {st && (
+                  <text
+                    x={x + STAGE_JA[s].length * 11 + 8}
+                    y={lay.mainH + 30}
+                    fontSize="11"
+                    fill="var(--muted-foreground)"
+                    style={{ cursor: "help" }}
+                  >
+                    <title>{st.responsibility}</title>
+                    ⓘ
+                  </text>
+                )}
+              </g>
+            )
+          })}
           {topology.nodes.some(isRes) && (
             <text x={PAD} y={lay.resY - 8} fontSize="11" fill="var(--muted-foreground)">
               判断のリソース（共有・全団体共通）
