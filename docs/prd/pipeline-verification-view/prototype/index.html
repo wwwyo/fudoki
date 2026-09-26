@@ -45,7 +45,6 @@ select.ctl { font: inherit; font-size: 12px; padding: 3px 6px; border: 1px solid
 .graphsvg .edge-sel { stroke: var(--primary); stroke-width: 2.6; fill: none; opacity: 1; }
 .graphsvg .cand { stroke: var(--primary); stroke-width: 2; fill: none; opacity: .8; stroke-dasharray: 5 3; }
 .gnode rect.body { fill: var(--card); stroke: var(--border); stroke-width: 1.2; }
-.gnode[data-kind="res"] rect.body { fill: var(--muted); stroke-dasharray: 4 3; }
 .gnode:hover rect.body { stroke: var(--primary); }
 .gnode.sel rect.ring { fill: none; stroke: var(--primary); stroke-width: 3; }
 .gnode .io-tag { font-size: 9px; font-weight: 600; fill: var(--primary-foreground); }
@@ -194,7 +193,13 @@ let V1NOCLICK = false; // ドラッグ/ピンチ直後の click を1回だけ捨
 const V1PTS = new Map(); // graphwrap 内で押下された pointerId → 座標（ピンチ検出用）
 let SPLITH = 42;   // 図ペインの高さ（コンテナに対する %）
 let SASH = false;  // split の境目をドラッグ中
-function J() { return DATA[S.code]; }
+// 規則表・マスタデータ（共有リソース）は検証対象の流れではないので図から外す
+function J() {
+  const j = DATA[S.code];
+  const nodes = j.topology.nodes.filter((n) => !isRes(n));
+  const ids = new Set(nodes.map((n) => n.id));
+  return { ...j, topology: { ...j.topology, nodes, edges: j.topology.edges.filter((e) => ids.has(e.from) && ids.has(e.to)) } };
+}
 function pushUrl() {
   const url = new URL(location);
   url.searchParams.delete('v');
@@ -244,52 +249,38 @@ const NW = 190, NH = 44, CGX = 70, CGY = 12, PAD = 10, HDR = 24;
 function layoutH(j) {
   const pos = {};
   const cols = {};
-  for (const n of j.topology.nodes) {
-    if (isRes(n)) continue;
-    (cols[n.stage] ||= []).push(n);
-  }
+  for (const n of j.topology.nodes) (cols[n.stage] ||= []).push(n);
   STAGE_ORDER.forEach((s, i) => (cols[s] || []).forEach((n, k) => { pos[n.id] = { x: PAD + i * (NW + CGX), y: PAD + HDR + k * (NH + CGY), n }; }));
-  const mainW = STAGE_ORDER.length * (NW + CGX) + PAD;
-  const mainH = Math.max(...Object.values(cols).map((c) => c.length)) * (NH + CGY) + PAD + HDR;
-  const res = j.topology.nodes.filter(isRes);
-  const resY = mainH + 60;
-  res.forEach((n, k) => { pos[n.id] = { x: PAD + k * (NW + 24), y: resY, n }; });
-  const W = Math.max(mainW, res.length * (NW + 24) + PAD);
-  const H = res.length ? resY + NH + PAD : mainH;
-  return { pos, W, H, resY };
+  const W = STAGE_ORDER.length * (NW + CGX) + PAD;
+  const H = Math.max(...Object.values(cols).map((c) => c.length)) * (NH + CGY) + PAD + HDR;
+  return { pos, W, H };
 }
 function layoutV(j) {
   const pos = {};
   const rows = {};
-  for (const n of j.topology.nodes) {
-    if (isRes(n)) continue;
-    (rows[n.stage] ||= []).push(n);
-  }
-  const RGY = 52, RESX = 4;
+  for (const n of j.topology.nodes) (rows[n.stage] ||= []).push(n);
+  const RGY = 52;
   let y = PAD;
   let maxK = 0;
   for (const s of STAGE_ORDER) {
     (rows[s] || []).forEach((n, k) => { pos[n.id] = { x: PAD + 96 + k * (NW + 14), y, n }; maxK = Math.max(maxK, k); });
     if (rows[s]) y += NH + RGY;
   }
-  const res = j.topology.nodes.filter(isRes);
-  res.forEach((n, k) => { pos[n.id] = { x: PAD + RESX, y: PAD + k * (NH * 0.62), n, small: true }; });
   const W = PAD + 96 + (maxK + 1) * (NW + 14) + PAD;
-  return { pos, W, H: Math.max(y, res.length * NH * 0.62) + PAD, resY: 0 };
+  return { pos, W, H: y + PAD };
 }
 function edgePath(p1, p2, horiz) {
-  const w1 = p1.small ? 120 : NW, w2 = p2.small ? 120 : NW;
   if (horiz) {
-    const x1 = p1.x + w1, y1 = p1.y + NH / 2, x2 = p2.x, y2 = p2.y + NH / 2;
+    const x1 = p1.x + NW, y1 = p1.y + NH / 2, x2 = p2.x, y2 = p2.y + NH / 2;
     const mx = (x1 + x2) / 2;
     return { d: `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`, x1, y1, x2, y2 };
   }
-  const x1 = p1.x + w1 / 2, y1 = p1.y + NH, x2 = p2.x + w2 / 2, y2 = p2.y;
+  const x1 = p1.x + NW / 2, y1 = p1.y + NH, x2 = p2.x + NW / 2, y2 = p2.y;
   const my = (y1 + y2) / 2;
   return { d: `M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}`, x1, y1, x2, y2 };
 }
 function graphSvg(j, horiz, dimSet, pairHover, vp) {
-  const { pos, W, H, resY } = horiz ? layoutH(j) : layoutV(j);
+  const { pos, W, H } = horiz ? layoutH(j) : layoutV(j);
   const sel = S.edge;
   const candEdges = S.nodeCand ? j.topology.edges.filter((e) => e.from === S.nodeCand || e.to === S.nodeCand) : [];
   const isCand = (e) => candEdges.some((c) => c.from === e.from && c.to === e.to);
@@ -300,24 +291,21 @@ function graphSvg(j, horiz, dimSet, pairHover, vp) {
   if (horiz) {
     const stMap = Object.fromEntries(j.topology.stages.map((s) => [s.id, s]));
     STAGE_ORDER.forEach((s, i) => {
-      if (j.topology.nodes.some((n) => n.stage === s && !isRes(n))) {
+      if (j.topology.nodes.some((n) => n.stage === s)) {
         const x = PAD + i * (NW + CGX);
         out += `<text x="${x}" y="${PAD + 12}" font-size="11" fill="var(--muted-foreground)">${STAGE_JA[s]}</text>`;
         if (stMap[s]?.responsibility)
           out += `<text x="${x + STAGE_JA[s].length * 11 + 8}" y="${PAD + 12}" font-size="11" fill="var(--muted-foreground)" style="cursor:help"><title>${esc(stMap[s].responsibility)}</title>ⓘ</text>`;
       }
     });
-    if (j.topology.nodes.some(isRes))
-      out += `<text x="${PAD}" y="${resY - 8}" font-size="11" fill="var(--muted-foreground)">判断のリソース（共有・全団体共通）</text>`;
   } else {
     let y = PAD;
     STAGE_ORDER.forEach((s) => {
-      if (j.topology.nodes.some((n) => n.stage === s && !isRes(n))) {
+      if (j.topology.nodes.some((n) => n.stage === s)) {
         out += `<text x="${PAD + 96 - 8}" y="${y + NH / 2}" font-size="11" text-anchor="end" fill="var(--muted-foreground)">${STAGE_JA[s]}</text>`;
         y += NH + 52;
       }
     });
-    if (j.topology.nodes.some(isRes)) out += `<text x="${PAD + 4}" y="${H - 4}" font-size="11" fill="var(--muted-foreground)">判断のリソース（共有）</text>`;
   }
   const edgeEls = [];
   for (const e of j.topology.edges) {
@@ -338,24 +326,24 @@ function graphSvg(j, horiz, dimSet, pairHover, vp) {
     ${pairHover ? `<marker id="arw-hov" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="none" stroke="var(--primary)" stroke-width="1.6" opacity=".55"/></marker>` : ''}
   </defs>` + edgeEls.join('');
   for (const id in pos) {
-    const { x, y, n, small } = pos[id];
-    const w = small ? 120 : NW;
+    const { x, y, n } = pos[id];
+    const w = NW;
     const { rows, scoped, shared } = nodeRows(n, S.year);
     const isSelN = sel && (sel.from === id || sel.to === id);
     const dim = dimSet && !dimSet.has(id);
     const tag = sel && sel.from === id ? '入力' : sel && sel.to === id ? '出力' : null;
-    out += `<g class="gnode${isSelN ? ' sel' : ''}${dim ? ' dim' : ''}" data-kind="${isRes(n) ? 'res' : 'main'}" transform="translate(${x},${y})" data-node="${esc(id)}" style="cursor:pointer">
+    out += `<g class="gnode${isSelN ? ' sel' : ''}${dim ? ' dim' : ''}" transform="translate(${x},${y})" data-node="${esc(id)}" style="cursor:pointer">
       ${isSelN ? `<rect class="ring" x="-5" y="-5" width="${w + 10}" height="${NH + 10}" rx="11"/>` : ''}
       <rect class="body" width="${w}" height="${NH}" rx="7"/>
       ${pairHover ? `<rect class="hring" x="-5" y="-5" width="${w + 10}" height="${NH + 10}" rx="11"/>` : ''}
       ${tag ? `<rect class="io-tag-bg" x="${w / 2 - 18}" y="-9" width="36" height="14" rx="7"/><text class="io-tag" x="${w / 2}" y="1" text-anchor="middle">${tag}</text>` : ''}
-      <text x="10" y="17" font-size="11.5" font-weight="500" fill="var(--foreground)">${esc(fit(nodeLabel(n, j), small ? 16 : 26))}</text>
+      <text x="10" y="17" font-size="11.5" font-weight="500" fill="var(--foreground)">${esc(fit(nodeLabel(n, j), 26))}</text>
       <text x="10" y="34" font-size="10.5" fill="var(--muted-foreground)">${esc(fit(
-        (isRes(n) ? '共有リソース' : STAGE_JA[n.stage]) + ' · ' + (rows === null ? '—' : fmt(rows) + ' 行')
-        + (shared && !isRes(n) ? '（共有・この団体分）' : '')
+        STAGE_JA[n.stage] + ' · ' + (rows === null ? '—' : fmt(rows) + ' 行')
+        + (shared ? '（共有・この団体分）' : '')
         + (S.year !== null && !scoped && n.rowsByJurisdiction ? ' · 全年度' : '')
         + (!n.rowsByJurisdiction ? ' · 規則表' : ''),
-        small ? 20 : 36))}</text>
+        36))}</text>
     </g>`;
   }
   return out + (vp ? '</g>' : '') + '</svg>';
@@ -373,7 +361,6 @@ function buildPairGeo(j, lay) {
   for (const e of j.topology.edges) {
     const p1 = pos[e.from], p2 = pos[e.to];
     if (!p1 || !p2) continue;
-    const w1 = p1.small ? 120 : NW, w2 = p2.small ? 120 : NW;
     const { x1, y1, x2, y2 } = edgePath(p1, p2, true);
     const mx = (x1 + x2) / 2;
     const pts = [];
@@ -384,7 +371,7 @@ function buildPairGeo(j, lay) {
     }
     pairs.push({ from: e.from, to: e.to, pts,
       rx0: Math.min(p1.x, p2.x), ry0: Math.min(p1.y, p2.y),
-      rx1: Math.max(p1.x + w1, p2.x + w2), ry1: Math.max(p1.y + NH, p2.y + NH) });
+      rx1: Math.max(p1.x + NW, p2.x + NW), ry1: Math.max(p1.y + NH, p2.y + NH) });
   }
   return { pos, W, H, pairs };
 }
@@ -404,7 +391,7 @@ function v1HoverAt(px, py) {
   // 左半分=出力側の組（入ってくる辺）、右半分=入力側の組（出ていく辺）に限定する
   for (const id in pos) {
     const p = pos[id];
-    const w = p.small ? 120 : NW;
+    const w = NW;
     if (px >= p.x && px <= p.x + w && py >= p.y && py <= p.y + NH) {
       const ins = pairs.filter((q) => q.to === id);
       const outs = pairs.filter((q) => q.from === id);

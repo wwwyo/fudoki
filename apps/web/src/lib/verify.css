@@ -20,7 +20,6 @@
 .pv .graphsvg .edge-sel { stroke: var(--primary); stroke-width: 2.6; fill: none; opacity: 1; }
 .pv .graphsvg .cand { stroke: var(--primary); stroke-width: 2; fill: none; opacity: .8; stroke-dasharray: 5 3; }
 .pv .gnode rect.body { fill: var(--card); stroke: var(--border); stroke-width: 1.2; }
-.pv .gnode[data-kind="res"] rect.body { fill: var(--muted); stroke-dasharray: 4 3; }
 .pv .gnode.sel rect.ring { fill: none; stroke: var(--primary); stroke-width: 3; }
 .pv .gnode .io-tag { font-size: 9px; font-weight: 600; fill: var(--primary-foreground); }
 .pv .gnode .io-tag-bg { fill: var(--primary); }

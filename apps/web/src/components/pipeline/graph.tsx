@@ -11,7 +11,7 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import type { Edge, Node, Stage, Topology } from "@/lib/pipeline"
 import { count, nodeRows } from "@/lib/pipeline"
-import { STAGE_JA, isRes, nodeLabel, type Pair } from "@/lib/verify"
+import { STAGE_JA, nodeLabel, type Pair } from "@/lib/verify"
 
 const NW = 190
 const NH = 44
@@ -21,15 +21,14 @@ const PAD = 10
 // 段見出しの帯。列の見出しは最上段ノードの上（= 列の頭）に置く
 const HDR = 24
 
-type Pos = { x: number; y: number; n: Node; small?: boolean }
-type Layout = { pos: Record<string, Pos>; W: number; H: number; resY: number; mainH: number }
+type Pos = { x: number; y: number; n: Node }
+type Layout = { pos: Record<string, Pos>; W: number; H: number }
 
 /** 水平レイアウト: 段 = 列。共有リソースは段の列の下に横一列 */
 function layoutH(nodes: Node[], order: Stage["id"][]): Layout {
   const pos: Record<string, Pos> = {}
   const cols: Partial<Record<Node["stage"], Node[]>> = {}
   for (const n of nodes) {
-    if (isRes(n)) continue
     ;(cols[n.stage] ||= []).push(n)
   }
   order.forEach((s, i) =>
@@ -37,20 +36,13 @@ function layoutH(nodes: Node[], order: Stage["id"][]): Layout {
       pos[n.id] = { x: PAD + i * (NW + CGX), y: PAD + HDR + k * (NH + CGY), n }
     }),
   )
-  const mainW = order.length * (NW + CGX) + PAD
-  const mainH = Math.max(1, ...Object.values(cols).map((c) => c.length)) * (NH + CGY) + PAD + HDR
-  const res = nodes.filter(isRes)
-  const resY = mainH + 60
-  res.forEach((n, k) => {
-    pos[n.id] = { x: PAD + k * (NW + 24), y: resY, n, small: true }
-  })
-  const W = Math.max(mainW, res.length * (NW + 24) + PAD)
-  return { pos, W, H: res.length ? resY + NH + PAD : mainH, resY, mainH }
+  const W = order.length * (NW + CGX) + PAD
+  const H = Math.max(1, ...Object.values(cols).map((c) => c.length)) * (NH + CGY) + PAD + HDR
+  return { pos, W, H }
 }
 
 function edgePath(p1: Pos, p2: Pos) {
-  const w1 = p1.small ? 120 : NW
-  const x1 = p1.x + w1
+  const x1 = p1.x + NW
   const y1 = p1.y + NH / 2
   const x2 = p2.x
   const y2 = p2.y + NH / 2
@@ -71,8 +63,6 @@ function buildPairGeo(edges: Edge[], lay: Layout): PairGeo {
     const p1 = lay.pos[e.from]
     const p2 = lay.pos[e.to]
     if (!p1 || !p2) continue
-    const w1 = p1.small ? 120 : NW
-    const w2 = p2.small ? 120 : NW
     const { x1, y1, x2, y2 } = edgePath(p1, p2)
     const mx = (x1 + x2) / 2
     const pts: [number, number][] = []
@@ -90,7 +80,7 @@ function buildPairGeo(edges: Edge[], lay: Layout): PairGeo {
       pts,
       rx0: Math.min(p1.x, p2.x),
       ry0: Math.min(p1.y, p2.y),
-      rx1: Math.max(p1.x + w1, p2.x + w2),
+      rx1: Math.max(p1.x + NW, p2.x + NW),
       ry1: Math.max(p1.y + NH, p2.y + NH),
     })
   }
@@ -101,7 +91,7 @@ function buildPairGeo(edges: Edge[], lay: Layout): PairGeo {
 function pairKeyAt(geo: PairGeo, px: number, py: number): string | null {
   for (const id in geo.pos) {
     const p = geo.pos[id]!
-    const w = p.small ? 120 : NW
+    const w = NW
     if (px >= p.x && px <= p.x + w && py >= p.y && py <= p.y + NH) {
       const ins = geo.pairs.filter((q) => q.to === id)
       const outs = geo.pairs.filter((q) => q.from === id)
@@ -414,7 +404,7 @@ export const LineageGraph = memo(function LineageGraph({
               （topology.stages の responsibility）を乗せる */}
           {stageOrder.map((s, i) => {
             const st = topology.stages.find((x) => x.id === s)
-            if (!topology.nodes.some((n) => n.stage === s && !isRes(n))) return null
+            if (!topology.nodes.some((n) => n.stage === s)) return null
             const x = PAD + i * (NW + CGX)
             return (
               <g key={s}>
@@ -436,11 +426,6 @@ export const LineageGraph = memo(function LineageGraph({
               </g>
             )
           })}
-          {topology.nodes.some(isRes) && (
-            <text x={PAD} y={lay.resY - 8} fontSize="11" fill="var(--muted-foreground)">
-              判断のリソース（共有・全団体共通）
-            </text>
-          )}
           {/* 辺 */}
           {topology.edges.map((e) => {
             const p1 = lay.pos[e.from]
@@ -473,7 +458,7 @@ export const LineageGraph = memo(function LineageGraph({
           })}
           {/* ノード */}
           {Object.entries(lay.pos).map(([id, p]) => {
-            const w = p.small ? 120 : NW
+            const w = NW
             const { rows, scopedToYear } = nodeRows(p.n, code, year)
             const isSelN = sel && (sel.from === id || sel.to === id)
             const isHovN = hov ? hov.split("|").includes(id) : false
@@ -483,7 +468,6 @@ export const LineageGraph = memo(function LineageGraph({
               <g
                 key={id}
                 className={`gnode${isSelN ? " sel" : ""}${isHovN ? " hov" : ""}`}
-                data-kind={isRes(p.n) ? "res" : "main"}
                 transform={`translate(${p.x},${p.y})`}
                 data-node={id}
                 style={{ cursor: "pointer" }}
@@ -500,17 +484,17 @@ export const LineageGraph = memo(function LineageGraph({
                   </>
                 )}
                 <text x={10} y={17} fontSize="11.5" fontWeight={500} fill="var(--foreground)">
-                  {fitText(nodeLabel(p.n), p.small ? 16 : 26)}
+                  {fitText(nodeLabel(p.n), 26)}
                 </text>
                 <text x={10} y={34} fontSize="10.5" fill="var(--muted-foreground)">
                   {fitText(
-                    (isRes(p.n) ? "共有リソース" : STAGE_JA[p.n.stage]) +
+                    STAGE_JA[p.n.stage] +
                       " · " +
                       (rows === null ? "—" : `${count(rows)} 行`) +
-                      (shared && !isRes(p.n) ? "（共有・この団体分）" : "") +
+                      (shared ? "（共有・この団体分）" : "") +
                       (year !== null && !scopedToYear && p.n.rowsByJurisdiction ? " · 全年度" : "") +
                       (!p.n.rowsByJurisdiction ? " · 規則表" : ""),
-                    p.small ? 20 : 36,
+                    36,
                   )}
                 </text>
               </g>

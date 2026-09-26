@@ -19,7 +19,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { withBase } from "@/lib/utils"
 import { type PipelineData, loadPipeline } from "@/lib/pipeline"
 import "@/lib/verify.css"
-import { nodeLabel, type Pair } from "@/lib/verify"
+import { isRes, nodeLabel, type Pair } from "@/lib/verify"
 
 type Props = {
   /** `/pipeline/<団体コード>/` の団体コード。コードなしの `/pipeline/` では null */
@@ -114,11 +114,13 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
     if (!fiscalYears.includes(year)) changeYear(fiscalYears[fiscalYears.length - 1] ?? null)
   }, [current, year, changeYear])
 
-  // 系統は全団体で1本だが、図は見ている団体の分だけ出す（共有ノードは残す）
+  // 系統は全団体で1本だが、図は見ている団体の分だけ出す。共有の core モデルは
+  // 「この団体の行数」が切れるので残すが、規則表（マスタデータ）は検証対象の
+  // 流れではないので図から外す
   const visibleTopology = useMemo(() => {
     if (!current) return null
     const topo = current.report.topology
-    const nodes = topo.nodes.filter((n) => (n.jurisdictionCode ?? current.code) === current.code)
+    const nodes = topo.nodes.filter((n) => (n.jurisdictionCode ?? current.code) === current.code && !isRes(n))
     const ids = new Set(nodes.map((n) => n.id))
     return { ...topo, nodes, edges: topo.edges.filter((e) => ids.has(e.from) && ids.has(e.to)) }
   }, [current])

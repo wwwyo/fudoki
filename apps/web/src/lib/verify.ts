@@ -14,7 +14,7 @@ export const STAGE_JA: Record<Stage['id'], string> = {
 }
 
 /**
- * 共有リソース（判断の規則表）か。系統図では段の列ではなく下の別レーンに並べる。
+ * 共有リソース（account_map などの規則表・マスタデータ）か。系統図には出さない。
  * 共有の core モデルは jurisdictionCode が null だが `kind === 'model'` なので
  * ここには来ない — それらは「この団体の行数」が `rowsByJurisdiction` で切れる。
  */
