@@ -18,6 +18,8 @@ const NH = 44
 const CGX = 70
 const CGY = 12
 const PAD = 10
+// 段見出しの帯。列の見出しは最上段ノードの上（= 列の頭）に置く
+const HDR = 24
 
 type Pos = { x: number; y: number; n: Node; small?: boolean }
 type Layout = { pos: Record<string, Pos>; W: number; H: number; resY: number; mainH: number }
@@ -32,11 +34,11 @@ function layoutH(nodes: Node[], order: Stage["id"][]): Layout {
   }
   order.forEach((s, i) =>
     (cols[s] ?? []).forEach((n, k) => {
-      pos[n.id] = { x: PAD + i * (NW + CGX), y: PAD + k * (NH + CGY), n }
+      pos[n.id] = { x: PAD + i * (NW + CGX), y: PAD + HDR + k * (NH + CGY), n }
     }),
   )
   const mainW = order.length * (NW + CGX) + PAD
-  const mainH = Math.max(1, ...Object.values(cols).map((c) => c.length)) * (NH + CGY) + PAD
+  const mainH = Math.max(1, ...Object.values(cols).map((c) => c.length)) * (NH + CGY) + PAD + HDR
   const res = nodes.filter(isRes)
   const resY = mainH + 60
   res.forEach((n, k) => {
@@ -408,21 +410,21 @@ export const LineageGraph = memo(function LineageGraph({
               <path d="M0,0 L8,4 L0,8" fill="none" stroke="var(--primary)" strokeWidth="1.6" opacity=".55" />
             </marker>
           </defs>
-          {/* 段の見出し。層はデータが流れる下の方へ読むので、見出しは列の下に置く。
-              ⓘ に各段の責務（topology.stages の responsibility）を乗せる */}
+          {/* 段の見出しは各列の最上段ノードの上。ⓘ に各段の責務
+              （topology.stages の responsibility）を乗せる */}
           {stageOrder.map((s, i) => {
             const st = topology.stages.find((x) => x.id === s)
             if (!topology.nodes.some((n) => n.stage === s && !isRes(n))) return null
             const x = PAD + i * (NW + CGX)
             return (
               <g key={s}>
-                <text x={x} y={lay.mainH + 30} fontSize="11" fill="var(--muted-foreground)">
+                <text x={x} y={PAD + 12} fontSize="11" fill="var(--muted-foreground)">
                   {STAGE_JA[s]}
                 </text>
                 {st && (
                   <text
                     x={x + STAGE_JA[s].length * 11 + 8}
-                    y={lay.mainH + 30}
+                    y={PAD + 12}
                     fontSize="11"
                     fill="var(--muted-foreground)"
                     style={{ cursor: "help" }}

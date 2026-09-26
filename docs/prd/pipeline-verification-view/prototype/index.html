@@ -240,7 +240,7 @@ function pickEntry(j, nid, dir) {
   return (byYear.length ? byYear : pool)[0] || null;
 }
 /* ---- layout ---- */
-const NW = 190, NH = 44, CGX = 70, CGY = 12, PAD = 10;
+const NW = 190, NH = 44, CGX = 70, CGY = 12, PAD = 10, HDR = 24;
 function layoutH(j) {
   const pos = {};
   const cols = {};
@@ -248,9 +248,9 @@ function layoutH(j) {
     if (isRes(n)) continue;
     (cols[n.stage] ||= []).push(n);
   }
-  STAGE_ORDER.forEach((s, i) => (cols[s] || []).forEach((n, k) => { pos[n.id] = { x: PAD + i * (NW + CGX), y: PAD + k * (NH + CGY), n }; }));
+  STAGE_ORDER.forEach((s, i) => (cols[s] || []).forEach((n, k) => { pos[n.id] = { x: PAD + i * (NW + CGX), y: PAD + HDR + k * (NH + CGY), n }; }));
   const mainW = STAGE_ORDER.length * (NW + CGX) + PAD;
-  const mainH = Math.max(...Object.values(cols).map((c) => c.length)) * (NH + CGY) + PAD;
+  const mainH = Math.max(...Object.values(cols).map((c) => c.length)) * (NH + CGY) + PAD + HDR;
   const res = j.topology.nodes.filter(isRes);
   const resY = mainH + 60;
   res.forEach((n, k) => { pos[n.id] = { x: PAD + k * (NW + 24), y: resY, n }; });
@@ -295,17 +295,16 @@ function graphSvg(j, horiz, dimSet, pairHover, vp) {
   const isCand = (e) => candEdges.some((c) => c.from === e.from && c.to === e.to);
   // vp=true のとき全内容を <g class="vp"> に包み、ズーム/パンを transform で掛けられるようにする
   let out = `<svg class="graphsvg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${vp ? '<g class="vp">' : ''}`;
-  // 段の見出し。層はデータが流れる下の方へ読むので、見出しは列の下に置く。
-  // ⓘ に各段の責務（topology.stages の responsibility）を乗せる
+  // 段の見出しは各列の最上段ノードの上。ⓘ に各段の責務
+  // （topology.stages の responsibility）を乗せる
   if (horiz) {
     const stMap = Object.fromEntries(j.topology.stages.map((s) => [s.id, s]));
-    const labelY = j.topology.nodes.some(isRes) ? resY - 30 : H - 4;
     STAGE_ORDER.forEach((s, i) => {
       if (j.topology.nodes.some((n) => n.stage === s && !isRes(n))) {
         const x = PAD + i * (NW + CGX);
-        out += `<text x="${x}" y="${labelY}" font-size="11" fill="var(--muted-foreground)">${STAGE_JA[s]}</text>`;
+        out += `<text x="${x}" y="${PAD + 12}" font-size="11" fill="var(--muted-foreground)">${STAGE_JA[s]}</text>`;
         if (stMap[s]?.responsibility)
-          out += `<text x="${x + STAGE_JA[s].length * 11 + 8}" y="${labelY}" font-size="11" fill="var(--muted-foreground)" style="cursor:help"><title>${esc(stMap[s].responsibility)}</title>ⓘ</text>`;
+          out += `<text x="${x + STAGE_JA[s].length * 11 + 8}" y="${PAD + 12}" font-size="11" fill="var(--muted-foreground)" style="cursor:help"><title>${esc(stMap[s].responsibility)}</title>ⓘ</text>`;
       }
     });
     if (j.topology.nodes.some(isRes))
