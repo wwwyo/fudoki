@@ -383,7 +383,7 @@ function SideDetail({
                 {a.unit}（×{a.multiplier.toLocaleString("ja-JP")} → 円）・{a.phaseLabel}
                 {a.years ? `・${a.years.join("・")}年度` : "・全年度"}
                 {a.source !== "dbt_project" &&
-                  `・宣言: ${a.source === "source_amount_unit" ? "証跡" : "誤読の罠"}`}
+                  `・宣言: ${a.source === "source_amount_unit" ? "証跡" : "注意点"}`}
               </span>
             </div>
           ))}

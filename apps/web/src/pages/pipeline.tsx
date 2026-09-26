@@ -28,7 +28,7 @@ type Props = {
   jurisdictionName?: string
 }
 
-/** 誤読の罠の本文に含まれる `**強調**` だけを <strong> にする（記法は md ではない） */
+/** 注意点（caveat）の本文に含まれる `**強調**` だけを <strong> にする（記法は md ではない） */
 function caveatText(s: string) {
   return s.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
     part.startsWith("**") && part.endsWith("**") ? (
@@ -300,7 +300,7 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
             {checkTally.warned ? `・警告${checkTally.warned}` : ""}
           </span>
           <button className="linky text-xs" onClick={() => setCaveats((v) => !v)}>
-            誤読の罠 {report.caveats.length} 件{caveats ? " ▴" : " ▾"}
+            注意点 {report.caveats.length} 件{caveats ? " ▴" : " ▾"}
           </button>
           <a
             href={withBase(`/analysis/${current.code}/`)}

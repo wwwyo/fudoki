@@ -94,7 +94,7 @@
 .pv .pdfpage .srflag { position: absolute; transform: translate(calc(-100% - 4px), -50%); opacity: .45; pointer-events: none; z-index: 1; }
 .pv .pdfpage .srflag.sel { opacity: 1; box-shadow: 0 1px 4px rgba(0,0,0,.25); }
 
-/* ---- 見出し + 誤読の罠ドロワー ---- */
+/* ---- 見出し + 注意点ドロワー ---- */
 .pv .headline { display: flex; align-items: baseline; gap: 12px; padding: 10px 16px; flex-wrap: wrap; }
 .pv .caveat-drawer { border-top: 1px solid var(--border); background: var(--muted); padding: 10px 16px; max-height: 40vh; overflow: auto; }
 .pv .caveat-drawer .cv { padding: 6px 0; border-top: 1px solid var(--border); }

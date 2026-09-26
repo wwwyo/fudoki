@@ -18,8 +18,6 @@ const NH = 44
 const CGX = 70
 const CGY = 12
 const PAD = 10
-// 段見出しの帯。列の見出しは上に置くのが自然 — 下だとノード群に紛れて見出しに見えない
-const HDR = 24
 
 type Pos = { x: number; y: number; n: Node; small?: boolean }
 type Layout = { pos: Record<string, Pos>; W: number; H: number; resY: number; mainH: number }
@@ -34,11 +32,11 @@ function layoutH(nodes: Node[], order: Stage["id"][]): Layout {
   }
   order.forEach((s, i) =>
     (cols[s] ?? []).forEach((n, k) => {
-      pos[n.id] = { x: PAD + i * (NW + CGX), y: PAD + HDR + k * (NH + CGY), n }
+      pos[n.id] = { x: PAD + i * (NW + CGX), y: PAD + k * (NH + CGY), n }
     }),
   )
   const mainW = order.length * (NW + CGX) + PAD
-  const mainH = Math.max(1, ...Object.values(cols).map((c) => c.length)) * (NH + CGY) + PAD + HDR
+  const mainH = Math.max(1, ...Object.values(cols).map((c) => c.length)) * (NH + CGY) + PAD
   const res = nodes.filter(isRes)
   const resY = mainH + 60
   res.forEach((n, k) => {
@@ -410,10 +408,10 @@ export const LineageGraph = memo(function LineageGraph({
               <path d="M0,0 L8,4 L0,8" fill="none" stroke="var(--primary)" strokeWidth="1.6" opacity=".55" />
             </marker>
           </defs>
-          {/* 段の見出し */}
+          {/* 段の見出し。層はデータが流れる下の方へ読むので、見出しは列の下に置く */}
           {stageOrder.map((s, i) =>
             topology.nodes.some((n) => n.stage === s && !isRes(n)) ? (
-              <text key={s} x={PAD + i * (NW + CGX)} y={PAD + 12} fontSize="11" fontWeight={600} fill="var(--muted-foreground)">
+              <text key={s} x={PAD + i * (NW + CGX)} y={lay.mainH + 30} fontSize="11" fill="var(--muted-foreground)">
                 {STAGE_JA[s]}
               </text>
             ) : null,
