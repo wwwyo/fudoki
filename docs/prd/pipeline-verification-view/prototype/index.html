@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>pipeline-view prototypes v3（上下の空間配分3案） | fudoki</title>
+<title>pipeline-view prototype（上下分割） | fudoki</title>
 <style>
 :root {
   --background: oklch(1 0 0);
@@ -130,7 +130,7 @@ details.fold > summary { cursor: pointer; font-size: 12px; color: var(--muted-fo
 .caveat-drawer .cv .b { font-size: 12px; color: var(--muted-foreground); }
 
 /* ===== 上下レイアウト 3 サブ案。軸は「図と I/O が縦の空間をどう分けるか」 ===== */
-/* 図ペイン共通: 3案とも同じズーム/パン・組 hover 機構を使う。高さの決め方だけが違う */
+/* 図ペイン: ズーム/パン・組 hover 機構 */
 .v1 .graphwrap { overflow: hidden; position: relative; touch-action: none; user-select: none; }
 .v1 .graphsvg { display: block; cursor: grab; }
 .v1 .graphsvg.panning, .v1 .graphsvg.panning * { cursor: grabbing !important; }
@@ -152,7 +152,7 @@ details.fold > summary { cursor: pointer; font-size: 12px; color: var(--muted-fo
 .v1 .io { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 .v1 .io .side { min-width: 0; }
 
-/* 案1 固定分割（split）: 画面を上下2ペインに割り、各ペインが独立にスクロールする
+/* 固定分割: 画面を上下2ペインに割り、各ペインが独立にスクロールする
    （図ペインではパンがスクロール相当）。ページ自体はスクロールせず、境目をドラッグで比率変更 */
 .vsplit { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 .vsplit .graphwrap { flex: 0 0 auto; }
@@ -160,42 +160,6 @@ details.fold > summary { cursor: pointer; font-size: 12px; color: var(--muted-fo
 .splitsash::after { content: ""; position: absolute; left: 50%; top: 50%; width: 56px; height: 4px; transform: translate(-50%, -50%); border-radius: 2px; background: color-mix(in oklch, var(--muted-foreground) 45%, transparent); }
 .splitsash:hover::after, .splitsash.drag::after { background: var(--primary); }
 .vsplit .iowrap { flex: 1; overflow: auto; }
-
-/* 案2 一体スクロール（flow）: 1枚のページとして流れる。図は抑えめの高さで sticky に
-   画面上部へ残り、組を選ぶと I/O が見える位置までページが自動スクロールする */
-.vflow .graphwrap { position: sticky; top: 0; z-index: 8; height: 34vh; background: var(--background); border-bottom: 1px solid var(--border); }
-/* flow でページスクロールする sticky 要素（表ヘッダ・PDF ページ送り）は、上部の図の下に張り付く位置へずらす */
-.vflow table.t th { top: 34vh; }
-.vflow .pdfpager { top: 34vh; }
-/* sticky の図に隠れないよう、scrollIntoView の対象は帯の高さ分の逃げを持つ */
-.vflow tr[data-rowsel], .vflow .pdfpage .hit { scroll-margin-top: calc(34vh + 12px); }
-
-/* 案3 帯（peek）: 組を選ぶと図は上部の細い帯に縮む（全ノードのミニマップ＋選択組だけ強調）、
-   I/O が残りの画面を使う。帯の中でも組 hover・クリック選択が効く */
-.vpeek { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-.vpeek .peekband { flex: 0 0 auto; position: relative; border-bottom: 1px solid var(--border); }
-.vpeek .peekband.mini { background: var(--muted); }
-.vpeek .peekband .graphwrap { height: 100%; }
-.vpeek .iowrap { flex: 1; overflow: auto; }
-.peektoggle { position: absolute; right: 10px; top: 8px; z-index: 6; border: 1px solid var(--border); border-radius: 999px; background: var(--card); color: var(--foreground); padding: 3px 10px; font: inherit; font-size: 11px; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
-.peektoggle:hover { background: var(--accent); border-color: var(--primary); }
-/* 帯では選択中の組以外を薄くする。hover した組は不透明度を戻して予告が見えるようにする */
-.vpeek .peekband.mini .graphsvg g.dim { opacity: .12; }
-.vpeek .peekband.mini .graphsvg g.dim.hov { opacity: .6; }
-
-/* ===== picker verbatim ===== */
-.proto-picker { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 2147483647; display: flex; align-items: center; gap: 2px; padding: 4px; border-radius: 999px; background: rgba(10, 10, 10, 0.82); -webkit-backdrop-filter: blur(12px) saturate(1.4); backdrop-filter: blur(12px) saturate(1.4); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08) inset, 0 8px 24px rgba(0, 0, 0, 0.24), 0 2px 6px rgba(0, 0, 0, 0.12); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 13px; line-height: 1; -webkit-font-smoothing: antialiased; user-select: none; -webkit-user-select: none; }
-.proto-picker-highlight { position: absolute; top: 4px; left: 0; height: 28px; border-radius: 999px; background: rgba(255, 255, 255, 0.12); will-change: transform; }
-.proto-picker[data-ready] .proto-picker-highlight { transition: transform 250ms cubic-bezier(0.23, 1, 0.32, 1), width 250ms cubic-bezier(0.23, 1, 0.32, 1); }
-@media (prefers-reduced-motion: reduce) { .proto-picker[data-ready] .proto-picker-highlight { transition: none; } }
-.proto-picker-item { position: relative; display: flex; align-items: center; height: 28px; padding: 0 12px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.55); font: inherit; cursor: pointer; transition: color 150ms ease-out; }
-.proto-picker-item:hover { color: rgba(255, 255, 255, 0.85); }
-.proto-picker-item:active { transform: scale(0.97); }
-.proto-picker-item:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.4); outline-offset: 2px; }
-.proto-picker-item[data-active] { color: #fff; }
-.proto-picker-divider { width: 1px; height: 16px; margin: 0 4px; background: rgba(255, 255, 255, 0.12); }
-.proto-picker-replay { padding: 0 10px; font-size: 14px; }
-.proto-picker[data-position="top"] { bottom: auto; top: 24px; }
 </style>
 </head>
 <body>
@@ -204,12 +168,6 @@ details.fold > summary { cursor: pointer; font-size: 12px; color: var(--muted-fo
   <button data-j="132195">132195 狛江市（CSV）</button>
 </div>
 <div id="stage"></div>
-<nav class="proto-picker" aria-label="Prototype variants">
-  <span class="proto-picker-highlight" aria-hidden="true"></span>
-  <button class="proto-picker-item" data-active aria-current="true" title="上下2ペインに固定分割。境目をドラッグで比率変更">分割</button>
-  <button class="proto-picker-item" title="1枚のページとして流れる。選択で I/O まで自動スクロール">一体</button>
-  <button class="proto-picker-item" title="選択で図が上部の帯（ミニマップ）に縮み、I/O が画面を占める">帯</button>
-</nav>
 <script src="data.js"></script>
 <script>
 'use strict';
@@ -234,14 +192,12 @@ let V1DRAG = null; // パン試行中 {id,x0,y0,tx0,ty0,active}。active は移�
 let V1PINCH = null; // 2本指ピンチ中 {d0,mx0,my0,k0,tx0,ty0}（mx0,my0 は svg 座標に換算済み）
 let V1NOCLICK = false; // ドラッグ/ピンチ直後の click を1回だけ捨てる（辺・ノードの誤選択防止）
 const V1PTS = new Map(); // graphwrap 内で押下された pointerId → 座標（ピンチ検出用）
-let SPLITH = 42;   // 案1 split: 図ペインの高さ（コンテナに対する %）
+let SPLITH = 42;   // 図ペインの高さ（コンテナに対する %）
 let SASH = false;  // split の境目をドラッグ中
-let PEEKOPEN = false; // 案3 peek: 選択中に帯を手動で広げているか
-let EDGE_JUST_SET = false; // flow: 組を選んだ直後の mount で I/O まで自動スクロールする印
 function J() { return DATA[S.code]; }
 function pushUrl() {
   const url = new URL(location);
-  url.searchParams.set('v', current + 1);
+  url.searchParams.delete('v');
   url.searchParams.set('j', S.code);
   if (S.year == null) url.searchParams.delete('y'); else url.searchParams.set('y', S.year);
   history.replaceState(null, '', url);
@@ -388,7 +344,12 @@ function graphSvg(j, horiz, dimSet, pairHover, vp) {
       ${pairHover ? `<rect class="hring" x="-5" y="-5" width="${w + 10}" height="${NH + 10}" rx="11"/>` : ''}
       ${tag ? `<rect class="io-tag-bg" x="${w / 2 - 18}" y="-9" width="36" height="14" rx="7"/><text class="io-tag" x="${w / 2}" y="1" text-anchor="middle">${tag}</text>` : ''}
       <text x="10" y="17" font-size="11.5" font-weight="500" fill="var(--foreground)">${esc(fit(nodeLabel(n, j), small ? 16 : 26))}</text>
-      <text x="10" y="34" font-size="10.5" fill="var(--muted-foreground)">${rows === null ? '—' : fmt(rows) + ' 行'}${shared ? '（共有・この団体分）' : ''}${S.year !== null && !scoped && n.rowsByJurisdiction ? ' · 全年度' : ''}${!n.rowsByJurisdiction ? ' · 規則表' : ''}</text>
+      <text x="10" y="34" font-size="10.5" fill="var(--muted-foreground)">${esc(fit(
+        (isRes(n) ? '共有リソース' : STAGE_JA[n.stage]) + ' · ' + (rows === null ? '—' : fmt(rows) + ' 行')
+        + (shared && !isRes(n) ? '（共有・この団体分）' : '')
+        + (S.year !== null && !scoped && n.rowsByJurisdiction ? ' · 全年度' : '')
+        + (!n.rowsByJurisdiction ? ' · 規則表' : ''),
+        small ? 20 : 36))}</text>
     </g>`;
   }
   return out + (vp ? '</g>' : '') + '</svg>';
@@ -398,7 +359,7 @@ function fit(label, maxUnits) {
   for (const ch of label) { u += ch.codePointAt(0) > 255 ? 2 : 1; if (u > maxUnits) return out + '…'; out += ch; }
   return out;
 }
-/* ---- 組 hover（3案共通） ---- */
+/* ---- 組 hover ---- */
 // 組のホバー領域は「両ノードの bbox を含む最小の矩形」。重なった矩形どうしはポインタに一番近い辺の組を選ぶ。
 function buildPairGeo(j, lay) {
   const { pos, W, H } = lay;
@@ -474,7 +435,7 @@ function v1PairKeyAtClient(svg, cx, cy) {
   const p = new DOMPoint(cx, cy).matrixTransform(ctm.inverse());
   return v1HoverAt(p.x, p.y);
 }
-/* ---- ズーム/パン（3案共通） ---- */
+/* ---- ズーム/パン ---- */
 // svg 要素をコンテナと同じ大きさ・viewBox に揃え（1 user unit = 1 px）、内容を包んだ
 // <g class="vp"> に translate+scale を掛ける。こうするとブラウザのクリック判定が変換込みで成り立ち、
 // hover 側も vp.getScreenCTM() の逆行列で同じ変換を辿れるので、ズーム/パンしても実位置とズレない。
@@ -538,7 +499,7 @@ function candPopHtml(j) {
     ${es.map((e) => `<button data-pickedge="${esc(e.from)}|${esc(e.to)}">${e.from === S.nodeCand ? '→ ' : '← '}${esc(lab(e.from))} → ${esc(lab(e.to))}</button>`).join('')}
   </div>`;
 }
-/* ---- I/O パネル（3案共通） ---- */
+/* ---- I/O パネル ---- */
 /* peerSet（反対側で対応が付く source_row の集合）が渡った行だけ、source_row セルの値を番号バッジにする */
 function tableHtml(j, nid, dir, side, peerSet) {
   const e = pickEntry(j, nid, dir);
@@ -769,9 +730,6 @@ function headlineHtml(j) {
   </div>
   ${S.caveats ? `<div class="caveat-drawer">${j.caveats.map((c) => `<div class="cv"><div class="t">${md(c.topic)}</div><div class="b">${md(c.body)}</div></div>`).join('')}</div>` : ''}`;
 }
-/* ---- 案 ----
-   3案とも同じ部品（横方向の系統図＋組 hover＋ズーム/パン、ページ送り付き I/O パネル）を使い、
-   違いは図と I/O が縦の空間をどう分けるかだけ */
 function zoomctlHtml() {
   return `<div class="zoomctl" aria-label="図のズーム">
       <button data-zoom="in" title="拡大（ホイールでも可）">＋</button>
@@ -780,7 +738,7 @@ function zoomctlHtml() {
       <button data-zoom="one" title="等倍（1x）に戻す">1x</button>
     </div>`;
 }
-/* 案1 固定分割: 図ペインと I/O ペインを帯（splitsash）で区切る。どちらもペイン内で閉じて
+/* 固定分割: 図ペインと I/O ペインを帯（splitsash）で区切る。どちらもペイン内で閉じて
    スクロールする（図はパンがスクロール相当）のでページ自体は動かない */
 function vSplit() {
   const j = J();
@@ -790,36 +748,12 @@ function vSplit() {
     <div class="splitsash" role="separator" aria-orientation="horizontal" title="ドラッグで上下の比率を変更"></div>
     <div class="iowrap">${ioPanelHtml(j)}</div>${candPopHtml(j)}</div>`;
 }
-/* 案2 一体スクロール: 1枚のページ。図は 34vh に抑えて sticky で上部に残し、組を選ぶと
-   I/O が見える位置まで自動スクロールする（mount 側で EDGE_JUST_SET を見て動かす） */
-function vFlow() {
-  const j = J();
-  V1GEO = buildPairGeo(j, layoutH(j));
-  return `<div class="v1 vflow">${headlineHtml(j)}
-    <div class="graphwrap">${graphSvg(j, true, null, true, true)}${zoomctlHtml()}</div>
-    <div class="iowrap">${ioPanelHtml(j)}</div>${candPopHtml(j)}</div>`;
-}
-const PEEK_MINH = 112, PEEK_MAXH = '42vh';
-/* 案3 帯: 組を選ぶと図が上部の細い帯に縮み、残り全部を I/O が使う。帯は全ノードを
-   縮小表示するミニマップで選択組以外を薄くし、帯の中でも組 hover・クリック選択が効く */
-function vPeek() {
-  const j = J();
-  V1GEO = buildPairGeo(j, layoutH(j));
-  const mini = S.edge && !PEEKOPEN;
-  const dim = mini ? new Set([S.edge.from, S.edge.to]) : null;
-  return `<div class="v1 vpeek">${headlineHtml(j)}
-    <div class="peekband${mini ? ' mini' : ''}" style="height:${mini ? PEEK_MINH + 'px' : PEEK_MAXH}">
-      <div class="graphwrap">${graphSvg(j, true, dim, true, true)}${mini ? '' : zoomctlHtml()}</div>
-      ${S.edge ? `<button class="peektoggle" data-peektoggle>${mini ? '図を広げる ▾' : '図をたたむ ▴'}</button>` : ''}
-    </div>
-    <div class="iowrap">${ioPanelHtml(j)}</div>${candPopHtml(j)}</div>`;
-}
-const variants = [vSplit, vFlow, vPeek];
+
 
 /* ---- harness ---- */
 function syncBar() { document.querySelectorAll('.harness-bar button').forEach((x) => x.toggleAttribute('data-active', x.dataset.j === S.code)); }
 document.querySelectorAll('.harness-bar button').forEach((b) => {
-  b.addEventListener('click', () => { S.code = b.dataset.j; S.edge = null; S.nodeCand = null; S.row = null; S.pdfPage = null; V1Z = null; syncBar(); pushUrl(); mount(current); });
+  b.addEventListener('click', () => { S.code = b.dataset.j; S.edge = null; S.nodeCand = null; S.row = null; S.pdfPage = null; V1Z = null; syncBar(); pushUrl(); mount(); });
 });
 syncBar();
 
@@ -839,46 +773,30 @@ stage.addEventListener('click', (e) => {
     const pages = pdfPages(J().pdf || {});
     if (pages.length) {
       const i = Math.min(pages.length - 1, Math.max(0, pages.indexOf(S.pdfPage) + Number(pg.dataset.pg)));
-      S.pdfPage = pages[i]; mount(current);
+      S.pdfPage = pages[i]; mount();
     }
     return;
   }
   const gt = e.target.closest('[data-goto]');
-  if (gt) { S.pdfPage = Number(gt.dataset.goto); mount(current); return; }
-  const pt = e.target.closest('[data-peektoggle]');
-  if (pt) { PEEKOPEN = !PEEKOPEN; V1Z = null; mount(current); return; }
-  // 案3 の縮んだ帯の中では、押した位置の組を座標から引いてそのまま選択する
-  // （帯では辺の当たり判定が数 px に縮むため edge-hit ではなく組ホバー判定を使う）
-  const miniwrap = e.target.closest('.peekband.mini .graphwrap');
-  if (miniwrap) {
-    const key = v1PairKeyAtClient(miniwrap.querySelector('.graphsvg'), e.clientX, e.clientY);
-    if (key) {
-      const [f, t] = key.split('|');
-      if (!S.edge || S.edge.from !== f || S.edge.to !== t) {
-        S.edge = { from: f, to: t }; S.nodeCand = null; S.row = null; S.pdfPage = null; EDGE_JUST_SET = true;
-      }
-      mount(current);
-    }
-    return;
-  }
+  if (gt) { S.pdfPage = Number(gt.dataset.goto); mount(); return; }
   const hit = e.target.closest('[data-edge]');
-  if (hit) { const [f, t] = hit.dataset.edge.split('|'); S.edge = { from: f, to: t }; S.nodeCand = null; S.row = null; S.pdfPage = null; EDGE_JUST_SET = true; mount(current); return; }
+  if (hit) { const [f, t] = hit.dataset.edge.split('|'); S.edge = { from: f, to: t }; S.nodeCand = null; S.row = null; S.pdfPage = null; mount(); return; }
   const pe = e.target.closest('[data-pickedge]');
-  if (pe) { const [f, t] = pe.dataset.pickedge.split('|'); S.edge = { from: f, to: t }; S.nodeCand = null; S.row = null; S.pdfPage = null; EDGE_JUST_SET = true; mount(current); return; }
+  if (pe) { const [f, t] = pe.dataset.pickedge.split('|'); S.edge = { from: f, to: t }; S.nodeCand = null; S.row = null; S.pdfPage = null; mount(); return; }
   const nd = e.target.closest('[data-node]');
   if (nd) {
     const j = J();
     const es = j.topology.edges.filter((x) => x.from === nd.dataset.node || x.to === nd.dataset.node);
-    if (es.length === 1) { S.edge = { from: es[0].from, to: es[0].to }; S.nodeCand = null; S.pdfPage = null; EDGE_JUST_SET = true; }
+    if (es.length === 1) { S.edge = { from: es[0].from, to: es[0].to }; S.nodeCand = null; S.pdfPage = null; }
     else S.nodeCand = S.nodeCand === nd.dataset.node ? null : nd.dataset.node;
-    S.row = null; mount(current); return;
+    S.row = null; mount(); return;
   }
   const ws = e.target.closest('.wspan[data-sr]');
   if (ws) {
     S.row = Number(ws.dataset.sr);
     const p = pdfHitPage(J(), S.row);
     if (p != null) S.pdfPage = p;
-    mount(current); return;
+    mount(); return;
   }
   const tr = e.target.closest('tr[data-sr]');
   if (tr) {
@@ -886,11 +804,11 @@ stage.addEventListener('click', (e) => {
     S.row = S.row === sr ? null : sr;
     // 出力側の行を選んだら PDF 側をその行が載っている頁へ自動で合わせる（めくった状態でも追従）
     if (S.row != null) { const p = pdfHitPage(J(), sr); if (p != null) S.pdfPage = p; }
-    mount(current); scrollSelIntoView(); return;
+    mount(); scrollSelIntoView(); return;
   }
-  if (e.target.closest('[data-clear-row]')) { S.row = null; mount(current); return; }
-  if (e.target.closest('[data-clear-edge]')) { S.edge = null; S.row = null; S.pdfPage = null; mount(current); return; }
-  if (e.target.closest('[data-caveats]')) { S.caveats = !S.caveats; mount(current); return; }
+  if (e.target.closest('[data-clear-row]')) { S.row = null; mount(); return; }
+  if (e.target.closest('[data-clear-edge]')) { S.edge = null; S.row = null; S.pdfPage = null; mount(); return; }
+  if (e.target.closest('[data-caveats]')) { S.caveats = !S.caveats; mount(); return; }
 });
 stage.addEventListener('mousemove', (e) => {
   const svg = e.target.closest && e.target.closest('.v1 .graphsvg');
@@ -916,19 +834,18 @@ stage.addEventListener('mouseover', (e) => {
 stage.addEventListener('wheel', (e) => {
   if (!V1Z) return;
   const wrap = e.target.closest && e.target.closest('.v1 .graphwrap');
-  if (!wrap || wrap.closest('.peekband.mini')) return; // 帯は常に fit のミニマップに留める
+  if (!wrap) return;
   e.preventDefault();
   const r = wrap.querySelector('.graphsvg').getBoundingClientRect();
   const d = e.deltaY * (e.deltaMode === 1 ? 16 : 1);
   v1ZoomAt(e.clientX - r.left, e.clientY - r.top, V1Z.k * Math.exp(-d * (e.ctrlKey ? 0.01 : 0.0022)));
 }, { passive: false });
 stage.addEventListener('pointerdown', (e) => {
-  // 案1 split の境目ドラッグ。図のパンとは別系統なので先に拾う
+  // 境目ドラッグ。図のパンとは別系統なので先に拾う
   const sash = e.target.closest && e.target.closest('.splitsash');
   if (sash) { SASH = true; sash.classList.add('drag'); e.preventDefault(); return; }
   const wrap = e.target.closest && e.target.closest('.v1 .graphwrap');
-  // 帯（peekband.mini）の中はパンを無効にし、押下は組選択のクリックとして扱う
-  if (!wrap || e.target.closest('.zoomctl') || wrap.closest('.peekband.mini')) return;
+  if (!wrap || e.target.closest('.zoomctl')) return;
   if (e.pointerType === 'mouse' && e.button !== 0) return;
   if (!V1Z) V1Z = v1FitT();
   V1PTS.set(e.pointerId, { x: e.clientX, y: e.clientY });
@@ -945,7 +862,7 @@ stage.addEventListener('pointerdown', (e) => {
   }
 });
 window.addEventListener('pointermove', (e) => {
-  if (SASH) { // 案1 split: 境目をドラッグして図ペインの高さ（%）を変え、図を張り直す
+  if (SASH) { // 境目をドラッグして図ペインの高さ（%）を変え、図を張り直す
     const cont = stage.querySelector('.vsplit'), gw = stage.querySelector('.vsplit .graphwrap');
     if (cont && gw) {
       const r = cont.getBoundingClientRect();
@@ -993,7 +910,7 @@ window.addEventListener('pointerup', v1PointerEnd);
 window.addEventListener('pointercancel', v1PointerEnd);
 stage.addEventListener('change', (e) => {
   const y = e.target.closest('[data-year]');
-  if (y) { S.year = y.value ? Number(y.value) : null; V1Z = null; pushUrl(); mount(current); }
+  if (y) { S.year = y.value ? Number(y.value) : null; V1Z = null; pushUrl(); mount(); }
 });
 function scrollSelIntoView() {
   requestAnimationFrame(() => {
@@ -1001,60 +918,22 @@ function scrollSelIntoView() {
   });
 }
 
-/* picker wiring（verbatim, mount を同期化して非表示タブで止まらないようにした） */
-const picker = document.querySelector('.proto-picker');
-const highlight = picker.querySelector('.proto-picker-highlight');
-const items = [...picker.querySelectorAll('.proto-picker-item:not(.proto-picker-replay)')];
-const replay = picker.querySelector('.proto-picker-replay');
-let current = 0;
-function moveHighlight() {
-  const el = items[current];
-  highlight.style.width = el.offsetWidth + 'px';
-  highlight.style.transform = `translateX(${el.offsetLeft}px)`;
-}
-function mount(i) {
+function mount() {
   V1HOV = null;
-  stage.innerHTML = variants[i]();
-  if (stage.querySelector('.peekband.mini')) V1Z = null; // 帯は常に全体 fit のミニマップ
+  stage.innerHTML = vSplit();
   v1InitZoom();
-  // 案2 flow: 組を選んだ直後だけ I/O が見える位置までページを自動スクロールする
-  const scrollToIo = EDGE_JUST_SET && S.edge && i === 1;
-  EDGE_JUST_SET = false;
-  requestAnimationFrame(() => {
-    if (scrollToIo) {
-      const io = stage.querySelector('.vflow .iowrap'), gw = stage.querySelector('.vflow .graphwrap');
-      if (io && gw) window.scrollTo({ top: Math.max(0, io.getBoundingClientRect().top + window.scrollY - gw.offsetHeight - 8), behavior: 'smooth' });
-    }
-    scrollSelIntoView();
-  });
+  requestAnimationFrame(() => scrollSelIntoView());
 }
-function setActive(i) {
-  if (i < 0 || i >= variants.length) return;
-  current = i;
-  items.forEach((el, j) => {
-    el.toggleAttribute('data-active', j === i);
-    if (j === i) el.setAttribute('aria-current', 'true'); else el.removeAttribute('aria-current');
-  });
-  moveHighlight(); pushUrl(); mount(i);
-}
-items.forEach((el, i) => el.addEventListener('click', () => setActive(i)));
-replay?.addEventListener('click', () => mount(current));
 window.addEventListener('resize', () => {
-  moveHighlight();
   // svg の大きさはコンテナに合わせているので、リサイズ時は張り直す。fit モードなら合わせ直す
   if (v1SizeSvg()) { if (!V1Z || V1Z.fit) V1Z = v1FitT(); v1ApplyZ(); }
 });
 document.addEventListener('keydown', (e) => {
   if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return;
   if (e.metaKey || e.ctrlKey || e.altKey) return;
-  const num = parseInt(e.key, 10);
-  if (num >= 1 && num <= variants.length) setActive(num - 1);
-  else if (e.key === 'ArrowRight') setActive((current + 1) % variants.length);
-  else if (e.key === 'ArrowLeft') setActive((current - 1 + variants.length) % variants.length);
-  else if (e.key === 'r' || e.key === 'R') mount(current);
+  if (e.key === 'r' || e.key === 'R') mount();
 });
-setActive(Math.min(variants.length - 1, Math.max(0, (parseInt(qs.get('v'), 10) || 1) - 1)));
-requestAnimationFrame(() => requestAnimationFrame(() => picker.setAttribute('data-ready', '')));
+mount();
 </script>
 </body>
 </html>
