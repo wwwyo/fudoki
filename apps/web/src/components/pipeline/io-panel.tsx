@@ -207,6 +207,7 @@ function verificationLines(p: Provenance): { ok: boolean; text: string }[] {
 /** 側ごとの詳細トグル。原典側は出所・取り込みの検証・証跡、それ以外は検査・金額の単位 */
 function SideDetail({
   node,
+  srcId,
   dir,
   year,
   rows,
@@ -214,6 +215,8 @@ function SideDetail({
   code,
 }: {
   node: Node
+  /** 原典ノードの場合、その辺が指す取り込みソース（検査・証跡の引き当てに使う） */
+  srcId: string
   dir: Direction | null
   year: number | null
   rows: NodeRows | null
@@ -223,7 +226,7 @@ function SideDetail({
   // dbt の検査は source ノード（取り込み表）に bind する。原典ノードはその代理として
   // 図に出るので、証跡だけでなく `source.*` に bind した検査もここへ寄せる
   const checks = report.checks.filter(
-    (c) => c.binds.includes(node.id) || (node.kind === "origin" && c.binds.includes(srcIdOf(node.id))),
+    (c) => c.binds.includes(node.id) || (node.kind === "origin" && c.binds.includes(srcId)),
   )
   const bad = checks.filter((c) => c.status !== "pass" && c.status !== "warn").length
   const warn = checks.filter((c) => c.status === "warn").length
@@ -428,9 +431,14 @@ export function IoPanel({
   const b = pair ? nodeById.get(pair.to) : null
   const dir = pair ? edgeDir(pair.from, pair.to) : null
 
-  const inRows = useRows(pair?.from ?? null, code, year, dir)
+  // 原典ノードは文書単位にまとまりうる（歳出・歳入が同じ PDF なら1ノード）ので、
+  // id からは取り込み表を復元できない。入力側は辺が指す source で引く —
+  // `<source>.origin` の規約で解決すれば、まとめた原典でも direction ごとの
+  // 頁範囲・証跡・hit が出る
+  const inNodeId = a?.kind === "origin" && pair ? `${pair.to}.origin` : (pair?.from ?? null)
+  const inRows = useRows(inNodeId, code, year, dir)
   const outRows = useRows(pair?.to ?? null, code, year, dir)
-  const inHits = useHitMap(inRows, pair?.from ?? null)
+  const inHits = useHitMap(inRows, inNodeId)
   const outHits = useHitMap(outRows, pair?.to ?? null)
 
   const inTable = useRef<RowTableHandle>(null)
@@ -530,7 +538,7 @@ export function IoPanel({
           ) : (
             <p className="text-xs text-muted-foreground">行データなし（{inRows.reason}）</p>
           )}
-          <SideDetail node={a} dir={dir} year={year} rows={inRows} report={report} code={code} />
+          <SideDetail node={a} srcId={a.kind === "origin" ? pair.to : a.id} dir={dir} year={year} rows={inRows} report={report} code={code} />
         </div>
         <div className="side">
           <h3>{bName}</h3>
@@ -564,7 +572,7 @@ export function IoPanel({
           ) : (
             <p className="text-xs text-muted-foreground">行データなし（{outRows.reason}）</p>
           )}
-          <SideDetail node={b} dir={dir} year={year} rows={outRows} report={report} code={code} />
+          <SideDetail node={b} srcId={b.id} dir={dir} year={year} rows={outRows} report={report} code={code} />
         </div>
       </div>
     </>

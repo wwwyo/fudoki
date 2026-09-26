@@ -15,6 +15,7 @@ import fs from "node:fs"
 import path from "node:path"
 import type { Connect, Plugin } from "vite"
 import { provenanceForSource } from "@fudoki/report/common"
+import { originDocKey } from "@fudoki/report/origin-doc"
 
 export function localData(root: string): Plugin {
   const repo = path.resolve(root, "../..")
@@ -115,6 +116,22 @@ export function localData(root: string): Plugin {
   }
 
   /**
+   * `.origin` ノードが指す取り込みソースの id 一覧。同じ文書から起こした取り込みは
+   * 原典ノードを1つにまとめる（`source.fudoki.raw_<団体>.doc_<文書キー>` 形の id、
+   * report/lineage.ts が付ける）ので、その場合は文書キーでメンバーを引き直す
+   */
+  const originSrcIds = (srcId: string): string[] => {
+    const srcs = manifest().sources
+    if (srcs[srcId]) return [srcId]
+    const m = /^(source\.fudoki\.raw_\d{6})\.doc_([0-9a-f]{12})$/.exec(srcId)
+    if (!m) return [srcId]
+    const [prefix, key] = [m[1], m[2]]
+    return Object.keys(srcs)
+      .filter((id) => id.startsWith(`${prefix}.`))
+      .filter((id) => originDocKey(provsForSource(id)) === key)
+  }
+
+  /**
    * ノード id を「行を返せる表」へ解決する。
    * - model/seed → warehouse の表（pkg_* は external materialized で CSV が正本）
    * - source.* → manifest の `meta.external_location`（read_parquet の glob）
@@ -124,12 +141,15 @@ export function localData(root: string): Plugin {
   const resolveRows = async (nodeId: string, year: number | null, dir: string | null, code: string | null) => {
     if (nodeId.endsWith(".origin")) {
       const srcId = nodeId.slice(0, -".origin".length)
-      const provs = provsForSource(srcId)
+      const srcIds = originSrcIds(srcId)
+      const provs = srcIds.flatMap(provsForSource)
       if (provs.some((p) => p.extractor || p.raw_form === "extracted")) {
-        return { kind: "pdf", docs: pdfDocsFor(srcId), provs }
+        const docs = new Map<string, unknown>()
+        for (const s of srcIds) for (const d of pdfDocsFor(s)) docs.set(d.id, d)
+        return { kind: "pdf", docs: [...docs.values()], provs }
       }
       // 正本の CSV。原典ノードの中身は取り込み Parquet（= 原典の復元と一致が検査済み）
-      return { ...(await serveTable(parquetFor(srcId), year, dir, code)), provs }
+      return { ...(await serveTable(parquetFor(srcIds[0]!), year, dir, code)), provs }
     }
     const m = manifest()
     if (nodeId.startsWith("source.")) return serveTable(parquetFor(nodeId), year, dir, code)

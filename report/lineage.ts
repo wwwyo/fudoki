@@ -23,6 +23,7 @@
 import { readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { provenanceForSource } from './common'
+import { originDocKey } from './origin-doc'
 import type { CanonicalFetch, Check, CheckAttribution, Node, ProjectNamesExtract, Provenance, RevenueAccountsExtract, Stage, Topology } from './common'
 
 export const ROOT = resolve(import.meta.dirname, '..')
@@ -349,6 +350,13 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
   // ローカル画面の行取り出し（apps/web/vite-plugins/local-data.ts）が同じ規約で引くため。
   // ⚠️ **抽出物（PDF から起こした表）にも取得元ノードを付ける。** CSV の団体と同じ
   // 「原典 → 取り込み」の形にしないと、PDF の団体だけ系統が1段浅い図になる。
+  //
+  // **同じ文書から起こした取り込みは原典を1つにまとめる。** 歳入と歳出を同じ PDF
+  // から起こす団体（千代田区など）では、取り込み表が direction で分かれても原典は
+  // 同じものを指す。まとめるのは証跡の文書集合が完全一致するときだけ — 片方が
+  // 別の文書も含むなら別ノードのほうが実態に合う。
+  type SrcMember = { src: Node; code: string; hit: NonNullable<ReturnType<typeof provenanceForSource>> }
+  const srcGroups = new Map<string, SrcMember[]>()
   for (const src of nodes.filter((n) => n.kind === 'source')) {
     // ⚠️ **direction だけで引かない。** 2団体目からは `expenditure` という名前の
     // ソースが団体ごとにあり、direction だけで絞ると三鷹市の取得元ノードに
@@ -357,13 +365,24 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
     if (!code) continue
     const hit = provenanceForSource(src.id, src.label, provenance)
     if (!hit) continue
-    const { ps, kind } = hit
+    const gk = `${code}|${originDocKey(hit.ps)}`
+    const g = srcGroups.get(gk)
+    if (g) g.push({ src, code, hit })
+    else srcGroups.set(gk, [{ src, code, hit }])
+  }
+
+  // 原典ノード → 取り込み表の辺は `X.origin → X` の id 規約では追えなくなった
+  // （まとめた原典は複数の source に出る）ので、辺はここで持ち回る
+  const originTargets = new Map<string, string[]>()
+  for (const [gk, members] of srcGroups) {
+    const ps = members.flatMap((m) => m.hit.ps)
+    const code = members[0]!.code
     // ノードには見出しだけ出す。「※下水道事業会計除く」のような注記は
     // 詳細（title が正式名）と description に残る。
     // 複数年度あるときは先頭年の名前だけ出すと嘘になる（行数は全年度の合計）ので、範囲にする。
     // 名は正本の取り込みがリソース名、抽出物が文書名を持つ（resource_name を持たないため）。
     const years = [...new Set(ps.map((p) => p.fiscal_year))].sort()
-    const base = (ps[0]!.resource_name ?? ps[0]!.document_title ?? src.label).split('※')[0]!.trim()
+    const base = (ps[0]!.resource_name ?? ps[0]!.document_title ?? members[0]!.src.label).split('※')[0]!.trim()
     const label = years.length > 1
       ? `${base.replace(/（\d{4}）$/, '').trim()}（${years[0]}〜${years.at(-1)}）`
       : base
@@ -371,23 +390,35 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
     // 1団体ぶんを団体で引ける形へ包むのは `ownCount` と同じ処理なので、それを使う。
     // 抽出物は行数を持たないので、取得元ノードの「行数」は抽出した項目の数で代用する
     // （原典の内訳がその数だけある、という意味で）。
-    const counted = kind === 'canonical'
+    const counted = members.every((m) => m.hit.kind === 'canonical')
       ? countByYear((ps as CanonicalFetch[]).map((p) => [p.fiscal_year, p.rows]))
-      : countByYear(ps.map((p) => [p.fiscal_year, extractedCount(p, kind)]))
+      : countByYear(members.flatMap((m) => {
+          const k = m.hit.kind
+          return m.hit.ps.map((p): [number, number] =>
+            [p.fiscal_year, k === 'canonical' ? (p as CanonicalFetch).rows : extractedCount(p, k)])
+        }))
     const origin = ownCount(counted, code)!
+    const id = members.length === 1
+      ? `${members[0]!.src.id}.origin`
+      : `source.fudoki.raw_${code}.doc_${gk.slice(gk.indexOf('|') + 1)}.origin`
+    originTargets.set(id, members.map((m) => m.src.id))
+    const urls = [...new Set(ps.map((p) => p.request_url))]
     nodes.push({
-      id: `${src.id}.origin`, label, kind: 'origin', stage: 'origin',
+      id, label, kind: 'origin', stage: 'origin',
       jurisdictionCode: code,
       rows: origin.total,
       rowsByJurisdiction: origin.byJurisdiction,
-      description: `${ps[0]!.request_url}${ps.length > 1 ? `\nほか ${ps.length - 1} リソース` : ''}\n取得: ${ps[0]!.fetched_at}`,
+      description: `${urls[0]}${urls.length > 1 ? `\nほか ${urls.length - 1} リソース` : ''}\n取得: ${ps[0]!.fetched_at}`,
       introducesJudgment: false, containsJudgment: false, artifact: null,
     })
   }
 
   const edges = models.flatMap(([id, n]) =>
     (n.depends_on?.nodes ?? []).filter((d) => ids.has(d)).map((from) => ({ from, to: id, kind: 'flow' })))
-  for (const n of nodes) if (n.kind === 'origin') edges.push({ from: n.id, to: n.id.replace(/\.origin$/, ''), kind: 'flow' })
+  for (const n of nodes) {
+    if (n.kind !== 'origin') continue
+    for (const t of originTargets.get(n.id) ?? []) edges.push({ from: n.id, to: t, kind: 'flow' })
+  }
 
   // **判断は下流へ伝播する。** COFOG を含む派生の配布物は、それ自身が規則を
   // 適用していなくても判断を含む。ここを伝播させないと、配布物が「判断なし」と

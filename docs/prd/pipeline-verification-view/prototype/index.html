@@ -193,12 +193,42 @@ let V1NOCLICK = false; // ドラッグ/ピンチ直後の click を1回だけ捨
 const V1PTS = new Map(); // graphwrap 内で押下された pointerId → 座標（ピンチ検出用）
 let SPLITH = 42;   // 図ペインの高さ（コンテナに対する %）
 let SASH = false;  // split の境目をドラッグ中
-// 規則表・マスタデータ（共有リソース）は検証対象の流れではないので図から外す
+// 規則表・マスタデータ（共有リソース）は検証対象の流れではないので図から外す。
+// 同じ文書から起こした取り込み（歳出・歳入が同じ PDF）は原典を1つにまとめる —
+// 実装は証跡の sha256 集合で判定するが、data.js の原典ノードは文書の URL を
+// description に持つのでそれで代用する
 function J() {
   const j = DATA[S.code];
-  const nodes = j.topology.nodes.filter((n) => !isRes(n));
-  const ids = new Set(nodes.map((n) => n.id));
-  return { ...j, topology: { ...j.topology, nodes, edges: j.topology.edges.filter((e) => ids.has(e.from) && ids.has(e.to)) } };
+  const keep = [];
+  const origins = new Map();
+  for (const n of j.topology.nodes) {
+    if (isRes(n)) continue;
+    if (n.kind === 'origin') {
+      const key = `${n.jurisdictionCode}|${n.description || n.label}`;
+      if (!origins.has(key)) origins.set(key, []);
+      origins.get(key).push(n);
+      continue;
+    }
+    keep.push(n);
+  }
+  const mergedOf = new Map();
+  let gi = 0;
+  for (const members of origins.values()) {
+    if (members.length === 1) { keep.push(members[0]); continue; }
+    const code = members[0].jurisdictionCode;
+    const id = `source.fudoki.raw_${code}.doc${gi++}.origin`;
+    const byYear = {};
+    for (const m of members) {
+      const rb = m.rowsByJurisdiction?.[code]?.byYear;
+      for (const [y, n] of Object.entries(rb || {})) byYear[y] = (byYear[y] || 0) + n;
+    }
+    const total = members.reduce((s, m) => s + (m.rows || 0), 0);
+    keep.push({ ...members[0], id, rows: total, rowsByJurisdiction: { [code]: { total, byYear } } });
+    for (const m of members) mergedOf.set(m.id, id);
+  }
+  const edges = j.topology.edges.map((e) => ({ ...e, from: mergedOf.get(e.from) ?? e.from }));
+  const ids = new Set(keep.map((n) => n.id));
+  return { ...j, topology: { ...j.topology, nodes: keep, edges: edges.filter((e) => ids.has(e.from) && ids.has(e.to)) } };
 }
 function pushUrl() {
   const url = new URL(location);
@@ -576,8 +606,11 @@ function ioPanelHtml(j) {
   const a = j.topology.nodes.find((n) => n.id === e.from);
   const b = j.topology.nodes.find((n) => n.id === e.to);
   const dir = edgeDir(e);
-  const aPdf = j.samples[e.from]?.kind === 'pdf';
-  return ioPanelBodyHtml(j, e, a, b, dir, aPdf);
+  // 原典ノードは文書単位にまとまる（歳出・歳入が同じ PDF なら1ノード）ので、
+  // 入力側は辺が指す取り込み表の原典（`<source>.origin`）として引く
+  const fromKey = a.kind === 'origin' ? `${e.to}.origin` : e.from;
+  const aPdf = j.samples[fromKey]?.kind === 'pdf';
+  return ioPanelBodyHtml(j, e, a, b, dir, aPdf, fromKey);
 }
 /* ---- I/O パネル本体 ---- */
 /* 見出しは「入力 → 出力」1行。左右は短い見出し（原典なら形式付き）。出所・検査・閲覧の
@@ -638,11 +671,11 @@ function srSetOfEntry(e, isOrigin) {
   // 原典 CSV の行には source_row 列が無い。物理行番号（ヘッダ=1行目、データは2行目から）を採る
   return isOrigin ? new Set(e.rows.map((_, i) => i + 2)) : null;
 }
-function ioPanelBodyHtml(j, e, a, b, dir, aPdf) {
+function ioPanelBodyHtml(j, e, a, b, dir, aPdf, fromKey) {
   // 番号バッジは「反対側にも同じ source_row がある」行にだけ出す。PDF 側は hit の key が対応行
   const linkIn = aPdf
     ? new Set(Object.keys(((j.pdf || {})[dir || 'expenditure'] || {}).hits || {}).map(Number))
-    : srSetOfEntry(pickEntry(j, e.from, dir), a.kind === 'origin');
+    : srSetOfEntry(pickEntry(j, fromKey, dir), a.kind === 'origin');
   const linkOut = srSetOfEntry(pickEntry(j, e.to, dir), b.kind === 'origin');
   const inName = a.kind === 'origin' ? '原典' : nodeLabel(a, j);
   const bName = nodeLabel(b, j);
@@ -656,10 +689,10 @@ function ioPanelBodyHtml(j, e, a, b, dir, aPdf) {
       ${S.row != null ? `<button class="linky small" data-clear-row>行 ${S.row} の選択を解除</button>` : ''}
     </div>
     <div class="io">
-      <div class="side"><h3>${inH3}</h3>${aPdf ? pdfSideHtml(j, dir || 'expenditure', linkOut) : tableHtml(j, e.from, dir, 'in', linkOut)}
-        ${ioSideDetailHtml(j, a, dir, { isInput: true, aPdf })}</div>
+      <div class="side"><h3>${inH3}</h3>${aPdf ? pdfSideHtml(j, dir || 'expenditure', linkOut) : tableHtml(j, fromKey, dir, 'in', linkOut)}
+        ${ioSideDetailHtml(j, a, dir, { isInput: true, aPdf, srcId: a.kind === 'origin' ? e.to : null })}</div>
       <div class="side"><h3>${esc(bName)}</h3>${tableHtml(j, e.to, dir, 'out', linkIn)}
-        ${ioSideDetailHtml(j, b, dir, { isInput: false, aPdf })}</div>
+        ${ioSideDetailHtml(j, b, dir, { isInput: false, aPdf, srcId: null })}</div>
     </div>`;
 }
 /* サイドごとの詳細トグル。あるものだけ出す:
@@ -667,8 +700,9 @@ function ioPanelBodyHtml(j, e, a, b, dir, aPdf) {
      CSV は復元検査と sha256）・取得日時
    - どの側でも … そのノードを守る検査の一覧（あれば）
    両方無い側はトグル自体を出さない */
-function ioSideDetailHtml(j, node, dir, { isInput, aPdf }) {
-  const checks = j.checks.filter((c) => c.binds.includes(node.id));
+function ioSideDetailHtml(j, node, dir, { isInput, aPdf, srcId }) {
+  const checks = j.checks.filter((c) => c.binds.includes(node.id)
+    || (isInput && node.kind === 'origin' && srcId && c.binds.includes(srcId)));
   const bad = checks.filter((c) => c.status !== 'pass' && c.status !== 'warn').length;
   const warn = checks.filter((c) => c.status === 'warn').length;
   const ckBad = [bad && `失敗${bad}`, warn && `警告${warn}`].filter(Boolean).join('・');
