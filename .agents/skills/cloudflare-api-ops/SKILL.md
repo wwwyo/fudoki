@@ -18,4 +18,4 @@ user-invocable: false
 ## 関連 skill
 
 - apps/api の設計判断・トレードオフは repo 直下の `AGENTS.md` が正本（このスキルは重複させない）
-- dbt / duckdb 側のハマりどころは `.agents/skills/dbt-pipeline/`
+- dbt / duckdb 側のハマりどころは `.agents/skills/pipeline/`
