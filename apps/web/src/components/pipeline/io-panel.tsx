@@ -17,9 +17,8 @@ import type {
   RevenueAccountsExtract,
   StatementExtract,
 } from "@/lib/pipeline"
-import { extractedKindOf, isCanonicalFetch } from "@/lib/pipeline"
+import { DIR_JA, extractedKindOf, isCanonicalFetch } from "@/lib/pipeline"
 import {
-  DIR_JA,
   bareKey,
   edgeDir,
   keySpaceOf,
@@ -27,15 +26,15 @@ import {
   loadHitMap,
   loadRows,
   nodeLabel,
+  srcIdOf,
   type NodeRows,
+  type Pair,
   type PdfHitLoc,
   type PdfRows,
   type TableRows,
 } from "@/lib/verify"
 import { PdfSide } from "./pdf-side"
 import { RowTable, type RowTableHandle } from "./row-table"
-
-export type Pair = { from: string; to: string }
 
 /** 行を取りに行く hook。組を替えると両側とも取り直す（verify.ts 側でキャッシュ） */
 function useRows(nodeId: string | null, code: string, year: number | null, dir: Direction | null) {
@@ -393,11 +392,6 @@ function SideDetail({
       <CheckList checks={checks} code={code} />
     </details>
   )
-}
-
-/** `.origin` ノードから、ぶら下がっている source ノードの id を引く */
-function srcIdOf(originId: string): string {
-  return originId.endsWith(".origin") ? originId.slice(0, -".origin".length) : originId
 }
 
 export function IoPanel({

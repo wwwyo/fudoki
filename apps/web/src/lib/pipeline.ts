@@ -125,6 +125,9 @@ function assertShape(d: PipelineFile): void {
 
 export const yen = (v: number | string) => Number(v).toLocaleString('ja-JP')
 
+/** 歳出・歳入の表示名。画面で2箇所以上から参照されるのでここが正本 */
+export const DIR_JA: Record<Direction, string> = { expenditure: '歳出', revenue: '歳入' }
+
 /**
  * 件数の桁区切り。`yen` と実装は同じだが、**金額でないものに `yen` を使わない**
  * （読んだ者が単位を取り違える。実際に件数へ `yen` を当てていた箇所があった）。

@@ -99,16 +99,31 @@ export function PdfSide({
   const idx = shown !== null ? pages.indexOf(shown) : -1
   const selHit = selectedKey !== null && hits ? hits.get(selectedKey) : null
 
-  const hitsHere = docHits.filter(([, h]) => h.page === shown)
+  const hitsHere = useMemo(() => docHits.filter(([, h]) => h.page === shown), [docHits, shown])
 
   // 語がどの行の帯に入るか（逆方向の選択用）。縦位置が行の帯に入る語は
-  // すべてその行に紐づける（行番号など hit 矩形より左の文字も拾える）
+  // すべてその行に紐づける（行番号など hit 矩形より左の文字も拾える）。
+  // 帯は縦位置でソートして二分探索 — 頁の語数（数千）×帯数の全走査を毎 render で避ける
+  const bands = useMemo(
+    () => hitsHere.map(([k, h]) => ({ y0: h.box[1], y1: h.box[3], k })).sort((a, b) => a.y0 - b.y0),
+    [hitsHere],
+  )
   const wordKey = (w: [number, number, number, number, string]): string | null => {
     const cy = (w[1] + w[3]) / 2
-    for (const [k, h] of hitsHere) {
-      if (cy >= h.box[1] && cy <= h.box[3]) return k
+    // cy が入る帯 = 「y0 <= cy」を満たす最後（最も下から始まる）の帯
+    let lo = 0
+    let hi = bands.length - 1
+    let best: (typeof bands)[number] | null = null
+    while (lo <= hi) {
+      const mid = (lo + hi) >> 1
+      if (bands[mid]!.y0 <= cy) {
+        best = bands[mid]!
+        lo = mid + 1
+      } else {
+        hi = mid - 1
+      }
     }
-    return null
+    return best && cy <= best.y1 ? best.k : null
   }
 
   return (
@@ -168,7 +183,7 @@ export function PdfSide({
         )}
       </div>
       {shown !== null && (
-        <div className="pdfpage" data-page={shown}>
+        <div className="pdfpage">
           <img src={pdfPagePng(doc.id, shown)} alt={`PDF p.${shown}`} />
           {pageData &&
             pageData.words.map((w, i) => {

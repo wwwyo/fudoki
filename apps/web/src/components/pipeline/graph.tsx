@@ -8,10 +8,10 @@
  * ブラウザのクリック判定が変換込みで成り立ち、hover 判定も
  * vp.getScreenCTM() の逆行列で同じ変換を辿れる（ズーム/パンしても実位置とズレない）。
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import type { Edge, Node, Topology } from "@/lib/pipeline"
-import { nodeRows } from "@/lib/pipeline"
-import { STAGE_JA, STAGE_ORDER, isRes, nodeLabel } from "@/lib/verify"
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import type { Edge, Node, Stage, Topology } from "@/lib/pipeline"
+import { count, nodeRows } from "@/lib/pipeline"
+import { STAGE_JA, isRes, nodeLabel, type Pair } from "@/lib/verify"
 
 const NW = 190
 const NH = 44
@@ -20,22 +20,22 @@ const CGY = 12
 const PAD = 10
 
 type Pos = { x: number; y: number; n: Node; small?: boolean }
-type Layout = { pos: Record<string, Pos>; W: number; H: number; resY: number }
+type Layout = { pos: Record<string, Pos>; W: number; H: number; resY: number; mainH: number }
 
 /** 水平レイアウト: 段 = 列。共有リソースは段の列の下に横一列 */
-function layoutH(nodes: Node[]): Layout {
+function layoutH(nodes: Node[], order: Stage["id"][]): Layout {
   const pos: Record<string, Pos> = {}
   const cols: Partial<Record<Node["stage"], Node[]>> = {}
   for (const n of nodes) {
     if (isRes(n)) continue
     ;(cols[n.stage] ||= []).push(n)
   }
-  STAGE_ORDER.forEach((s, i) =>
+  order.forEach((s, i) =>
     (cols[s] ?? []).forEach((n, k) => {
       pos[n.id] = { x: PAD + i * (NW + CGX), y: PAD + k * (NH + CGY), n }
     }),
   )
-  const mainW = STAGE_ORDER.length * (NW + CGX) + PAD
+  const mainW = order.length * (NW + CGX) + PAD
   const mainH = Math.max(1, ...Object.values(cols).map((c) => c.length)) * (NH + CGY) + PAD
   const res = nodes.filter(isRes)
   const resY = mainH + 60
@@ -43,7 +43,7 @@ function layoutH(nodes: Node[]): Layout {
     pos[n.id] = { x: PAD + k * (NW + 24), y: resY, n, small: true }
   })
   const W = Math.max(mainW, res.length * (NW + 24) + PAD)
-  return { pos, W, H: res.length ? resY + NH + PAD : mainH, resY }
+  return { pos, W, H: res.length ? resY + NH + PAD : mainH, resY, mainH }
 }
 
 function edgePath(p1: Pos, p2: Pos) {
@@ -135,7 +135,7 @@ function pairKeyAt(geo: PairGeo, px: number, py: number): string | null {
 }
 
 /** ラベルを「ユニット幅」で切る（全角=2）。レイアウト幅が字幅基準なので */
-export function fitText(label: string, maxUnits: number): string {
+function fitText(label: string, maxUnits: number): string {
   let u = 0
   let out = ""
   for (const ch of label) {
@@ -148,9 +148,7 @@ export function fitText(label: string, maxUnits: number): string {
 
 type Zoom = { k: number; tx: number; ty: number; fit: boolean }
 
-export type PairSel = { from: string; to: string }
-
-export function LineageGraph({
+export const LineageGraph = memo(function LineageGraph({
   topology,
   code,
   year,
@@ -163,20 +161,23 @@ export function LineageGraph({
   /** 見ている団体。行数の引き当てに使う */
   code: string
   year: number | null
-  sel: PairSel | null
+  sel: Pair | null
   /** 候補ポップを出しているノード（その組を破線で予告する） */
   nodeCand: string | null
-  onSelectEdge: (e: PairSel) => void
+  onSelectEdge: (e: Pair) => void
   onSelectNode: (id: string) => void
 }) {
   const wrapRef = useRef<HTMLDivElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
+  const vpRef = useRef<SVGGElement>(null)
   const [size, setSize] = useState<{ w: number; h: number }>({ w: 800, h: 400 })
   const [z, setZ] = useState<Zoom>({ k: 1, tx: 0, ty: 0, fit: true })
   const [hov, setHov] = useState<string | null>(null)
   const panning = useRef(false)
 
-  const lay = useMemo(() => layoutH(topology.nodes), [topology.nodes])
+  // 段の並びは報告（topology.stages）が正本 — ここで写しを持つと段を足したときに置き場の無いノードが出る
+  const stageOrder = useMemo(() => topology.stages.map((s) => s.id), [topology.stages])
+  const lay = useMemo(() => layoutH(topology.nodes, stageOrder), [topology.nodes, stageOrder])
   const geo = useMemo(() => buildPairGeo(topology.edges, lay), [topology.edges, lay])
   const candEdges = useMemo(
     () => (nodeCand ? topology.edges.filter((e) => e.from === nodeCand || e.to === nodeCand) : []),
@@ -184,7 +185,9 @@ export function LineageGraph({
   )
   const fitT = useCallback((): Zoom => {
     const { w, h } = size
-    const k = Math.min(w / lay.W, h / lay.H)
+    // コンテナの高さが潰れている（sash の下端・レイアウト確定前）と k=0 になり、
+    // 以後のズーム計算が z0.k で割って NaN になる。k は必ず正を返す
+    const k = w > 0 && h > 0 ? Math.min(w / lay.W, h / lay.H) : 1
     return { k, tx: (w - lay.W * k) / 2, ty: (h - lay.H * k) / 2, fit: true }
   }, [size, lay.W, lay.H])
 
@@ -242,8 +245,7 @@ export function LineageGraph({
 
   // クライアント座標 → 図内座標（vp の変換を逆に辿る）
   const toGraph = (cx: number, cy: number): { x: number; y: number } | null => {
-    const vp = svgRef.current?.querySelector<SVGGElement>(".vp")
-    const ctm = vp?.getScreenCTM()
+    const ctm = vpRef.current?.getScreenCTM()
     if (!ctm) return null
     const p = new DOMPoint(cx, cy).matrixTransform(ctm.inverse())
     return { x: p.x, y: p.y }
@@ -394,7 +396,7 @@ export function LineageGraph({
         onPointerLeave={() => setHov(null)}
         onClick={onClick}
       >
-        <g className="vp" transform={`translate(${z.tx} ${z.ty}) scale(${z.k})`}>
+        <g className="vp" ref={vpRef} transform={`translate(${z.tx} ${z.ty}) scale(${z.k})`}>
           <defs>
             <marker id="arw" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
               <path d="M0,0 L7,3.5 L0,7" fill="none" stroke="var(--muted-foreground)" strokeWidth="1.2" />
@@ -407,9 +409,9 @@ export function LineageGraph({
             </marker>
           </defs>
           {/* 段の見出し */}
-          {STAGE_ORDER.map((s, i) =>
+          {stageOrder.map((s, i) =>
             topology.nodes.some((n) => n.stage === s && !isRes(n)) ? (
-              <text key={s} x={PAD + i * (NW + CGX)} y={lay.H - 4} fontSize="11" fill="var(--muted-foreground)">
+              <text key={s} x={PAD + i * (NW + CGX)} y={lay.mainH + 30} fontSize="11" fill="var(--muted-foreground)">
                 {STAGE_JA[s]}
               </text>
             ) : null,
@@ -484,7 +486,7 @@ export function LineageGraph({
                   {fitText(
                     (isRes(p.n) ? "共有リソース" : STAGE_JA[p.n.stage]) +
                       " · " +
-                      (rows === null ? "—" : `${rows.toLocaleString("ja-JP")} 行`) +
+                      (rows === null ? "—" : `${count(rows)} 行`) +
                       (shared && !isRes(p.n) ? "（共有・この団体分）" : "") +
                       (year !== null && !scopedToYear && p.n.rowsByJurisdiction ? " · 全年度" : "") +
                       (!p.n.rowsByJurisdiction ? " · 規則表" : ""),
@@ -512,4 +514,4 @@ export function LineageGraph({
       </div>
     </div>
   )
-}
+})

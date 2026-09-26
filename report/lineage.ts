@@ -22,7 +22,7 @@
  */
 import { readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { extractedKindOf, isCanonicalFetch } from './common'
+import { provenanceForSource } from './common'
 import type { CanonicalFetch, Check, CheckAttribution, Node, ProjectNamesExtract, Provenance, RevenueAccountsExtract, Stage, Topology } from './common'
 
 export const ROOT = resolve(import.meta.dirname, '..')
@@ -116,39 +116,15 @@ function introducesJudgment(n: DbtNode, stage: Stage['id']): boolean {
 }
 
 /**
- * その証跡が、この direction の「正本の取り込み」か。判別そのものは `isCanonicalFetch`。
- *
- * ⚠️ **direction で絞るだけでは足りない。** 抽出物のうち revenue-accounts も
- * direction を名乗るので、これだけだと正本の合算に混ざる。
- */
-function isCanonicalFetchOf(p: Provenance, direction: string): p is CanonicalFetch {
-  if (p.direction !== direction) return false
-  if (isCanonicalFetch(p)) return true
-  // 捨てる前に、正本らしいのに行数だけ無いものを止める。黙って落とすと
-  // 取得元の行数が実際より小さくなり、しかもそれが画面から分からない。
-  if (p.resource_name)
-    throw new Error(`${p.jurisdiction_code} の証跡「${p.resource_name}」に rows が無い（${p.fiscal_year}年度）`)
-  return false
-}
-
-/**
  * 原典（source）の行数を証跡から引く。
  *
  * ⚠️ **direction だけで引かない。** ソースは団体ごとに1つあり、名前はどちらも
  * `expenditure` / `revenue` である。direction だけで突き合わせると、
  * 狛江市の原典ノードに三鷹市の行数が出る（実際にそうなっていた）。
  * ソースの識別子（`source.fudoki.raw_132195.expenditure`）から団体コードを取る。
+ * 証跡の拾い方そのものは `common.ts` の `provenanceForSource`（検証画面の
+ * ローカル・データ口と共有）。
  */
-/**
- * 抽出物のソースノードがどの種類かを id で決める。
- * ⚠️ **団体の証跡から抽出物を種類で拾うだけだと、同じ団体に2つの抽出器があるとき
- * （狛江市の事業名と歳入の科目名称）両方のソースノードが同じ数字を出す。**
- */
-function extractedSourceKind(id: string): 'project-names' | 'revenue-accounts' | null {
-  if (/\.raw_\d{6}_project_names\./.test(id)) return 'project-names'
-  if (/\.raw_\d{6}_revenue_accounts\./.test(id)) return 'revenue-accounts'
-  return null
-}
 
 /** 抽出器ごとに「何を数えたか」が違う。事業名は事業の数、歳入の科目名称は目の数 */
 function extractedCount(p: Provenance, kind: 'project-names' | 'revenue-accounts' | 'statement'): number {
@@ -158,23 +134,6 @@ function extractedCount(p: Provenance, kind: 'project-names' | 'revenue-accounts
     : kind === 'revenue-accounts'
       ? (p.extracted as RevenueAccountsExtract).moku
       : (p.extracted as { leaves?: number }).leaves ?? 0
-}
-
-/**
- * ソースノードにぶら下がる証跡。
- * canonical の取り込みは direction（ソース名）で一致し、抽出物は種類と団体で引く。
- */
-function provenanceForSource(id: string, label: string, provenance: Provenance[]):
-  { ps: Provenance[]; kind: 'canonical' | 'project-names' | 'revenue-accounts' } | null {
-  const code = /\.raw_(\d{6})/.exec(id)?.[1]
-  if (!code) return null
-  const mine = provenance.filter((p) => p.jurisdiction_code === code)
-  const canonical = mine.filter((p) => isCanonicalFetchOf(p, label))
-  if (canonical.length > 0) return { ps: canonical, kind: 'canonical' }
-  const kind = extractedSourceKind(id)
-  if (kind === null) return null
-  const ps = mine.filter((p) => extractedKindOf(p) === kind)
-  return ps.length === 0 ? null : { ps, kind }
 }
 
 function sourceRows(id: string, name: string, provenance: Provenance[]): Counted | null {
@@ -544,26 +503,31 @@ const DBT_CWD = join(ROOT, 'dbt')
  */
 function attributeCheck(compiled: string): CheckAttribution | undefined {
   const inner = compiled.trim().replace(/;+\s*$/, '')
-  let columns: string[]
   try {
-    columns = q<{ column_name: string }>(`describe select * from (\n${inner}\n) t`, [], DBT_CWD)
-      .map((r) => r.column_name)
+    const SAMPLE = 8
+    const sample = q<Record<string, unknown>>(
+      `select * from (\n${inner}\n) t limit ${SAMPLE}`, [], DBT_CWD,
+    )
+    // 列名は行のキーから取れる（json 出力は全列をキーに持つ）。行が0のときだけ
+    // describe に頼る — それ以外で列の取得に問い合わせをもう1本立てない
+    const columns = sample.length
+      ? Object.keys(sample[0]!)
+      : q<{ column_name: string }>(`describe select * from (\n${inner}\n) t`, [], DBT_CWD)
+          .map((r) => r.column_name)
+    const rows = sample.map((r) => columns.map((c) => (r[c] === undefined ? null : r[c]) as string | number | null))
+    const jcol = columns.find((c) => c === 'jurisdiction_code' || c === 'jurisdiction')
+    if (!jcol) return { kind: 'cross', columns, rows }
+    const counts = Object.fromEntries(
+      q<{ j: string; c: number }>(
+        `select ${jcol} as j, count(*) as c from (\n${inner}\n) t group by 1 order by 2 desc`,
+        ['c'], DBT_CWD,
+      ).map((r) => [r.j, r.c]),
+    )
+    return { kind: 'jurisdiction', counts, columns, rows }
   } catch (e) {
-    console.warn(`warn  検査の再実行に失敗（列の解読）: ${e instanceof Error ? e.message.split('\n')[0] : e}`)
+    // 再実行に失敗しても帰属を欠くだけにする — 検査の失敗で報告の生成自体を止めない
+    console.warn(`warn  検査の再実行に失敗: ${e instanceof Error ? e.message.split('\n')[0] : e}`)
     return undefined
   }
-  const SAMPLE = 8
-  const rows = q<Record<string, unknown>>(
-    `select * from (\n${inner}\n) t limit ${SAMPLE}`, [], DBT_CWD,
-  ).map((r) => columns.map((c) => (r[c] === undefined ? null : r[c]) as string | number | null))
-  const jcol = columns.find((c) => c === 'jurisdiction_code' || c === 'jurisdiction')
-  if (!jcol) return { kind: 'cross', columns, rows }
-  const counts = Object.fromEntries(
-    q<{ j: string; c: number }>(
-      `select ${jcol} as j, count(*) as c from (\n${inner}\n) t group by 1 order by 2 desc`,
-      ['c'], DBT_CWD,
-    ).map((r) => [r.j, r.c]),
-  )
-  return { kind: 'jurisdiction', counts, columns, rows }
 }
 

@@ -281,6 +281,54 @@ export function isCanonicalFetch(p: Provenance): p is CanonicalFetch {
   return typeof p.rows === 'number' && Number.isFinite(p.rows) && p.resource_name !== undefined
 }
 
+/**
+ * その証跡が、この direction の「正本の取り込み」か。判別そのものは `isCanonicalFetch`。
+ *
+ * ⚠️ **direction で絞るだけでは足りない。** 抽出物のうち revenue-accounts も
+ * direction を名乗るので、これだけだと正本の合算に混ざる。
+ */
+function isCanonicalFetchOf(p: Provenance, direction: string): p is CanonicalFetch {
+  if (p.direction !== direction) return false
+  if (isCanonicalFetch(p)) return true
+  // 捨てる前に、正本らしいのに行数だけ無いものを止める。黙って落とすと
+  // 取得元の行数が実際より小さくなり、しかもそれが画面から分からない。
+  if (p.resource_name)
+    throw new Error(`${p.jurisdiction_code} の証跡「${p.resource_name}」に rows が無い（${p.fiscal_year}年度）`)
+  return false
+}
+
+/**
+ * 抽出物のソースノードがどの種類かを id で決める。
+ * ⚠️ **団体の証跡から抽出物を種類で拾うだけだと、同じ団体に2つの抽出器があるとき
+ * （狛江市の事業名と歳入の科目名称）両方のソースノードが同じ数字を出す。**
+ */
+function extractedSourceKind(id: string): 'project-names' | 'revenue-accounts' | null {
+  if (/\.raw_\d{6}_project_names\./.test(id)) return 'project-names'
+  if (/\.raw_\d{6}_revenue_accounts\./.test(id)) return 'revenue-accounts'
+  return null
+}
+
+/**
+ * ソースノードにぶら下がる証跡。
+ * canonical の取り込みは direction（ソース名）で一致し、抽出物は種類と団体で引く。
+ *
+ * 報告の生成（`lineage.ts`）と検証画面のローカル・データ口
+ * （`apps/web/vite-plugins/local-data.ts`）が同じ規則を使う —
+ * 規則を2箇所に書くと片方だけ直したとき証跡の拾い方がズレる。
+ */
+export function provenanceForSource(id: string, direction: string, provenance: Provenance[]):
+  { ps: Provenance[]; kind: 'canonical' | 'project-names' | 'revenue-accounts' } | null {
+  const code = /\.raw_(\d{6})/.exec(id)?.[1]
+  if (!code) return null
+  const mine = provenance.filter((p) => p.jurisdiction_code === code)
+  const canonical = mine.filter((p) => isCanonicalFetchOf(p, direction))
+  if (canonical.length > 0) return { ps: canonical, kind: 'canonical' }
+  const kind = extractedSourceKind(id)
+  if (kind === null) return null
+  const ps = mine.filter((p) => extractedKindOf(p) === kind)
+  return ps.length === 0 ? null : { ps, kind }
+}
+
 /** どの層の報告でも共通の外枠 */
 export type ReportEnvelope = {
   meta: {

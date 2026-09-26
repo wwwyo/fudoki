@@ -39,7 +39,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { withBase } from "@/lib/utils"
-import { DIVISION_COLOR, loadPipeline, pct, senYen, type Direction, type PipelineData, count } from "@/lib/pipeline"
+import { DIR_JA, DIVISION_COLOR, loadPipeline, pct, senYen, type Direction, type PipelineData, count } from "@/lib/pipeline"
 import { share } from "@fudoki/report/budget/cofog"
 import { apiClient } from "@/lib/api-client"
 import { buildCofogTree, type AggregateBudgetsResponse, type CofogNodeFilter, type CofogTreeNode } from "@/lib/cofog-tree"
@@ -55,10 +55,9 @@ type Props = {
   jurisdictionName?: string
 }
 
-const DIRECTIONS: { value: Direction; label: string }[] = [
-  { value: "expenditure", label: "歳出" },
-  { value: "revenue", label: "歳入" },
-]
+const DIRECTIONS: { value: Direction; label: string }[] = (
+  ["expenditure", "revenue"] as const
+).map((d) => ({ value: d, label: DIR_JA[d] }))
 
 export function AnalysisPage({ urlCode = null, jurisdictionName }: Props = {}) {
   const [data, setData] = useState<PipelineData | null>(null)

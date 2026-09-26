@@ -25,7 +25,7 @@ const pageInput = Object.fromEntries(
 )
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [react(), tailwindcss(), jurisdictionPages(ROOT), localData(ROOT)],
   resolve: {
     alias: {
@@ -41,8 +41,12 @@ export default defineConfig({
       // `base` に加えてそれらのリンクも直す必要がある。
       input: {
         main: path.resolve(ROOT, "index.html"),
-        ...pageInput,
+        // 検証画面（pipeline/）はローカル専用 — 行の出し口は dev middleware だけなので、
+        // ビルドに含めるとデータの取れない画面が公開される（PRD の Non-Goal）
+        ...Object.fromEntries(
+          Object.entries(pageInput).filter(([k]) => command !== "build" || k !== "pipeline"),
+        ),
       },
     },
   },
-})
+}))

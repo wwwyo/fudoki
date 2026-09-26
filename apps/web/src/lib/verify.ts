@@ -9,11 +9,9 @@ import type { Direction, Node, Provenance, Stage } from '@/lib/pipeline'
 
 /* ---- 段・向き ---- */
 
-export const STAGE_ORDER: Stage['id'][] = ['origin', 'ingestion', 'staging', 'core', 'package']
 export const STAGE_JA: Record<Stage['id'], string> = {
   origin: '原典', ingestion: '取り込み', staging: '正規化', core: '判断', package: '配布物',
 }
-export const DIR_JA: Record<Direction, string> = { expenditure: '歳出', revenue: '歳入' }
 
 /**
  * 共有リソース（判断の規則表）か。系統図では段の列ではなく下の別レーンに並べる。
@@ -21,6 +19,14 @@ export const DIR_JA: Record<Direction, string> = { expenditure: '歳出', revenu
  * ここには来ない — それらは「この団体の行数」が `rowsByJurisdiction` で切れる。
  */
 export const isRes = (n: Node) => !n.jurisdictionCode && n.kind !== 'model'
+
+/** 系統図で選んだ組（辺の両端のノード id） */
+export type Pair = { from: string; to: string }
+
+/** `.origin` ノードから、ぶら下がっている source ノードの id を引く */
+export function srcIdOf(originId: string): string {
+  return originId.endsWith('.origin') ? originId.slice(0, -'.origin'.length) : originId
+}
 
 /** ノードの表示名。id が向きを名乗るもの（`…expenditure` など）は末尾に（歳出）を添える。
  * 末尾一致で見るのは、「歳入歳出予算事項別明細書」のように題名の中に両方の字が
@@ -33,7 +39,7 @@ export function nodeLabel(n: Node): string {
     const m = /\.raw_\d{6}_(.+)\./.exec(n.id)
     if (m) l = m[1]!
   }
-  if (/\.(expenditure|revenue)(\.|$)/.test(n.id.replace(/\.origin$/, ''))) {
+  if (/\.(expenditure|revenue)(\.|$)/.test(srcIdOf(n.id))) {
     const d = n.id.includes('expenditure') ? '歳出' : '歳入'
     if (!l.endsWith(`（${d}）`)) l = `${l}（${d}）`
   }
@@ -76,6 +82,8 @@ export type TableRows = {
   /** 行対応に使う鍵列（source_row / ordinal / pdf_ordinal のうち存在するもの） */
   keyColumn: string | null
   totalRows: number
+  /** 行数の上限で打ち切られたか。見えていない行があることを画面が言うための印 */
+  truncated?: boolean
   /** 原典ノードだけが持つ、その原典の証跡 */
   provs?: Provenance[]
 }
@@ -94,23 +102,34 @@ export type NodeRows = TableRows | PdfRows | NoRows
 const rowsCache = new Map<string, Promise<NodeRows>>()
 
 /**
- * ノードの行を取りに行く。パイプラインを回し直さない限り結果は変わらないので
- * キャッシュする（団体・年度・向き・ノードで分ける）。
+ * fetch + JSON + 恒常キャッシュ。パイプラインを回し直さない限り結果は変わらない。
+ * ⚠️ **失敗した promise は残さない** — 一時的な不通をキャッシュに固定すると、
+ * 以後そのキーはリロードするまでずっと欠けたままになる。
+ */
+function cachedJson<T>(cache: Map<string, Promise<T>>, key: string, url: string, fallback: (reason: string) => T): Promise<T> {
+  let p = cache.get(key)
+  if (!p) {
+    p = fetch(url, { cache: 'no-store' })
+      .then((r) => (r.ok ? (r.json() as Promise<T>) : fallback(`HTTP ${r.status}`)))
+      .catch((e) => {
+        cache.delete(key)
+        return fallback(String(e).slice(0, 120))
+      })
+    cache.set(key, p)
+  }
+  return p
+}
+
+/**
+ * ノードの行を取りに行く（団体・年度・向き・ノードで分けてキャッシュ）。
  */
 export function loadRows(nodeId: string, code: string, year: number | null, dir: Direction | null): Promise<NodeRows> {
   const q = new URLSearchParams({ node: nodeId, code })
   if (year !== null) q.set('year', String(year))
   if (dir) q.set('dir', dir)
   const key = q.toString()
-  if (!rowsCache.has(key)) {
-    rowsCache.set(
-      key,
-      fetch(`${import.meta.env.BASE_URL}local/rows?${key}`, { cache: 'no-store' }).then((r) =>
-        r.ok ? (r.json() as Promise<NodeRows>) : { kind: 'none', reason: `HTTP ${r.status}` },
-      ),
-    )
-  }
-  return rowsCache.get(key)!
+  return cachedJson(rowsCache, key, `${import.meta.env.BASE_URL}local/rows?${key}`,
+    (reason) => ({ kind: 'none', reason }))
 }
 
 /* ---- 行対応キー ---- */
@@ -126,19 +145,35 @@ export function keySpaceOf(t: TableRows): 'sr' | 'ord' | null {
   return t.keyColumn ? KEY_SPACE[t.keyColumn] : null
 }
 
+/** 鍵列・年度列の位置。行ごとに indexOf を引き直さないよう表ごとに1回だけ引く */
+const colCache = new WeakMap<TableRows, { ki: number; yi: number }>()
+function colInfo(t: TableRows): { ki: number; yi: number } {
+  let c = colCache.get(t)
+  if (!c) {
+    c = {
+      ki: t.keyColumn ? t.columns.indexOf(t.keyColumn) : -1,
+      yi: t.columns.includes('fiscal_year')
+        ? t.columns.indexOf('fiscal_year')
+        : t.columns.indexOf('year'),
+    }
+    colCache.set(t, c)
+  }
+  return c
+}
+
 /** 行の対応キー（鍵列の値そのもの。表示はこれを使う） */
-export function rowKey(t: TableRows, row: unknown[]): string | null {
-  if (!t.keyColumn) return null
-  const v = row[t.columns.indexOf(t.keyColumn)]
+function rowKey(t: TableRows, row: unknown[]): string | null {
+  const { ki } = colInfo(t)
+  if (ki < 0) return null
+  const v = row[ki]
   return v == null ? null : String(v)
 }
 
 /** その行の年度。`fiscal_year`（stg/core/配布物）か `year`（raw の hive 列） */
-export function rowYear(t: TableRows, row: unknown[]): number | null {
-  const ci = t.columns.includes('fiscal_year') ? t.columns.indexOf('fiscal_year')
-    : t.columns.includes('year') ? t.columns.indexOf('year') : -1
-  if (ci < 0) return null
-  const y = Number(row[ci])
+function rowYear(t: TableRows, row: unknown[]): number | null {
+  const { yi } = colInfo(t)
+  if (yi < 0) return null
+  const y = Number(row[yi])
   return Number.isFinite(y) ? y : null
 }
 
@@ -150,11 +185,22 @@ export function rowYear(t: TableRows, row: unknown[]): number | null {
  * 2021年の ordinal=5 と一致したことになってしまう。年度列を持たない表（規則表）は
  * 裸の鍵のまま — 反対側も年度を持たないときだけ一致する。
  */
-export function linkKey(t: TableRows, row: unknown[]): string | null {
+function linkKey(t: TableRows, row: unknown[]): string | null {
   const k = rowKey(t, row)
   if (k === null) return null
   const y = rowYear(t, row)
   return y === null ? k : `${y}|${k}`
+}
+
+/** 各行の修飾キー（行数分の配列）。表ごとに1回だけ計算して使い回す */
+const linkKeysCache = new WeakMap<TableRows, (string | null)[]>()
+export function linkKeys(t: TableRows): (string | null)[] {
+  let ks = linkKeysCache.get(t)
+  if (!ks) {
+    ks = t.rows.map((r) => linkKey(t, r))
+    linkKeysCache.set(t, ks)
+  }
+  return ks
 }
 
 /** 修飾キーから表示用の鍵番号を取り出す */
@@ -163,10 +209,7 @@ export const bareKey = (k: string) => (k.includes('|') ? k.slice(k.indexOf('|') 
 /** 対応がある行の修飾キー集合（反対側のバッジ・PDF 側のフラッグに使う） */
 export function linkSetOf(t: TableRows): Set<string> {
   const s = new Set<string>()
-  for (const r of t.rows) {
-    const k = linkKey(t, r)
-    if (k !== null) s.add(k)
-  }
+  for (const k of linkKeys(t)) if (k !== null) s.add(k)
   return s
 }
 
@@ -184,29 +227,13 @@ export type PdfPageData = {
 const hitsCache = new Map<string, Promise<Record<string, Record<string, PdfHit>>>>()
 const pageCache = new Map<string, Promise<PdfPageData | null>>()
 
-export function loadPdfHits(docId: string): Promise<Record<string, Record<string, PdfHit>>> {
-  if (!hitsCache.has(docId)) {
-    hitsCache.set(
-      docId,
-      fetch(`${import.meta.env.BASE_URL}local/pdf/${docId}/hits.json`, { cache: 'no-store' }).then((r) =>
-        r.ok ? r.json() : {},
-      ),
-    )
-  }
-  return hitsCache.get(docId)!
+function loadPdfHits(docId: string): Promise<Record<string, Record<string, PdfHit>>> {
+  return cachedJson(hitsCache, docId, `${import.meta.env.BASE_URL}local/pdf/${docId}/hits.json`, () => ({}))
 }
 
 export function loadPdfPage(docId: string, page: number): Promise<PdfPageData | null> {
   const key = `${docId}/${page}`
-  if (!pageCache.has(key)) {
-    pageCache.set(
-      key,
-      fetch(`${import.meta.env.BASE_URL}local/pdf/${docId}/p${page}.json`, { cache: 'no-store' }).then((r) =>
-        r.ok ? r.json() : null,
-      ),
-    )
-  }
-  return pageCache.get(key)!
+  return cachedJson(pageCache, key, `${import.meta.env.BASE_URL}local/pdf/${docId}/p${page}.json`, () => null)
 }
 
 export const pdfPagePng = (docId: string, page: number) =>
@@ -225,16 +252,16 @@ export async function loadHitMap(
   docs: PdfDocMeta[],
   srcId: string,
 ): Promise<Map<string, PdfHitLoc>> {
+  const perDoc = await Promise.all(docs.map((d) => loadPdfHits(d.id)))
   const map = new Map<string, PdfHitLoc>()
-  for (const d of docs) {
-    const all = await loadPdfHits(d.id)
-    const hits = all[srcId]
-    if (!hits) continue
+  docs.forEach((d, i) => {
+    const hits = perDoc[i]?.[srcId]
+    if (!hits) return
     const y = d.years.length === 1 ? d.years[0] : null
     for (const [k, h] of Object.entries(hits)) {
       if (!h?.box) continue
       map.set(y === null ? k : `${y}|${k}`, { docId: d.id, page: h.page, box: h.box })
     }
-  }
+  })
   return map
 }

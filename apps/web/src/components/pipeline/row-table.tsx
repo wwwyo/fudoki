@@ -9,7 +9,7 @@
  */
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState, forwardRef } from "react"
 import type { TableRows } from "@/lib/verify"
-import { linkKey } from "@/lib/verify"
+import { linkKeys } from "@/lib/verify"
 
 const ROW_H = 24
 const OVERSCAN = 12
@@ -27,7 +27,7 @@ type Props = {
   selectedKey: string | null
   /** hover 中の行キー（反対側からの予告を受ける） */
   hoverKey: string | null
-  onSelectRow: (key: string, row: unknown[]) => void
+  onSelectRow: (key: string) => void
   onHoverRow: (key: string | null) => void
 }
 
@@ -39,8 +39,9 @@ export const RowTable = forwardRef<RowTableHandle, Props>(function RowTable(
   const [scrollTop, setScrollTop] = useState(0)
   const [viewH, setViewH] = useState(400)
 
-  // 対応・選択は修飾キー（`<年度>|<鍵>`）で比べる — 年度をまたぐ誤対応を防ぐ
-  const keys = useMemo(() => table.rows.map((r) => linkKey(table, r)), [table])
+  // 対応・選択は修飾キー（`<年度>|<鍵>`）で比べる — 年度をまたぐ誤対応を防ぐ。
+  // キー計算は verify 側で表ごとにキャッシュしてある（同じ表で何度も走らない）
+  const keys = linkKeys(table)
   const keyIndex = useMemo(() => {
     const m = new Map<string, number>()
     keys.forEach((k, i) => {
@@ -85,13 +86,20 @@ export const RowTable = forwardRef<RowTableHandle, Props>(function RowTable(
     // 高さに上限が要る — この div 自身がスクロールしないと仮想化の窓が動かない
     // （`.iowrap` が代わりにスクロールすると、画面外でも先頭窓のままになる）
     <div className="rows" ref={boxRef} onScroll={onScroll} style={{ maxHeight: 520 }}>
+      {table.truncated && (
+        <p className="text-xs" style={{ color: "var(--muted-foreground)", margin: "0 0 4px" }}>
+          ⚠️ 行が多すぎるため先頭 {table.rows.length.toLocaleString("ja-JP")} 行だけを表示（打ち切り）
+        </p>
+      )}
       <table className="t">
         <thead>
           <tr>
             {shown.map((c) => (
               <th key={c}>{c}</th>
             ))}
-            {table.columns.length > 14 && <th>…</th>}
+            {table.columns.length > 14 && (
+              <th title={`非表示の列: ${table.columns.slice(14).join("・")}`}>…</th>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -111,8 +119,7 @@ export const RowTable = forwardRef<RowTableHandle, Props>(function RowTable(
                 key={ri}
                 className={`${k !== null ? "rowhit" : ""}${sel ? " rowsel" : ""}${hov ? " rowhov" : ""}`}
                 data-sr={k ?? undefined}
-                data-rowsel={sel || undefined}
-                onClick={k !== null ? () => onSelectRow(k, r) : undefined}
+                onClick={k !== null ? () => onSelectRow(k) : undefined}
                 onMouseEnter={k !== null ? () => onHoverRow(k) : undefined}
                 onMouseLeave={k !== null ? () => onHoverRow(null) : undefined}
                 style={{ height: ROW_H }}
@@ -131,7 +138,11 @@ export const RowTable = forwardRef<RowTableHandle, Props>(function RowTable(
                     </td>
                   )
                 })}
-                {table.columns.length > 14 && <td className="mut">…</td>}
+                {table.columns.length > 14 && (
+                  <td className="mut" title={`非表示の列: ${table.columns.slice(14).join("・")}`}>
+                    …
+                  </td>
+                )}
               </tr>
             )
           })}

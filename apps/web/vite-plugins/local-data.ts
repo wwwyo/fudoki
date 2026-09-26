@@ -10,10 +10,11 @@
  * 原典の頁画像・語の文字層・行と頁の対応は再配布の判断が付いていないものを含むので
  * 公開アセット（`public/`）には置かない（`docs/prd/pipeline-verification-view/prd.md`）。
  */
-import { spawnSync } from "node:child_process"
+import { spawn } from "node:child_process"
 import fs from "node:fs"
 import path from "node:path"
 import type { Connect, Plugin } from "vite"
+import { provenanceForSource } from "@fudoki/report/common"
 
 export function localData(root: string): Plugin {
   const repo = path.resolve(root, "../..")
@@ -32,55 +33,72 @@ export function localData(root: string): Plugin {
     return manifestCache!.manifest
   }
 
-  const duckdb = (sql: string, cwd = repo): Record<string, unknown>[] => {
-    const r = spawnSync("duckdb", ["-json", warehouse, "-c", sql], { cwd, maxBuffer: 512 * 1024 * 1024 })
-    if (r.status !== 0) throw new Error(`duckdb: ${r.stderr?.toString().slice(0, 400)}`)
-    const out = r.stdout.toString().trim()
-    return out ? JSON.parse(out) : []
-  }
+  // spawnSync で同期取りすると1クエリの間 dev server 全体が止まる（HMR・他リクエストも）ので、
+  // 子プロセスは async にする。出力上限は従来と同じ — 超えたぶんは読み捨てて close で失敗にする
+  const MAX_OUT = 512 * 1024 * 1024
+  const duckdb = (sql: string, cwd = repo): Promise<Record<string, unknown>[]> =>
+    new Promise((resolve, reject) => {
+      const p = spawn("duckdb", ["-json", warehouse, "-c", sql], { cwd })
+      const chunks: Buffer[] = []
+      const err: Buffer[] = []
+      let size = 0
+      p.stdout.on("data", (c: Buffer) => {
+        size += c.length
+        if (size <= MAX_OUT) chunks.push(c)
+      })
+      p.stderr.on("data", (c: Buffer) => err.push(c))
+      p.on("error", reject)
+      p.on("close", (status) => {
+        if (status !== 0) {
+          return reject(new Error(`duckdb: ${Buffer.concat(err).toString().slice(0, 400)}`))
+        }
+        if (size > MAX_OUT) {
+          return reject(new Error(`duckdb: 出力が ${MAX_OUT / (1 << 20)}MB を超えた`))
+        }
+        const out = Buffer.concat(chunks).toString().trim()
+        resolve(out ? JSON.parse(out) : [])
+      })
+    })
 
-  /** 証跡（取得物の隣にある JSON）を団体で拾う。lineage.ts と同じ集め方 */
-  const provenanceOf = (dir: string): any[] =>
-    fs.existsSync(dir)
-      ? fs.readdirSync(dir, { recursive: true })
-          .filter((f): f is string => typeof f === "string" && f.endsWith("provenance.json"))
-          .sort()
-          .map((f) => JSON.parse(fs.readFileSync(path.join(dir, f), "utf8")))
-      : []
-
-  const isCanonical = (p: any) => typeof p.rows === "number" && Number.isFinite(p.rows) && p.resource_name !== undefined
-  const extractedKind = (p: any): string | null => {
-    if (!p.extracted) return null
-    if (p.extractor?.includes("extract_statement")) return "statement"
-    if (p.extractor?.includes("extract_projects")) return "project-names"
-    if (p.extractor?.includes("extract_revenue_accounts")) return "revenue-accounts"
-    return null
+  // 証跡 JSON の parse を mtime で使い回す。リクエストごとの全件 parse を避けるが、
+  // ディレクトリ列挙自体は毎回やる（取り込み直しでファイルが増減しても追い付く）
+  const provCache = new Map<string, { mtimeMs: number; json: any }>()
+  const provenanceOf = (dir: string): any[] => {
+    if (!fs.existsSync(dir)) return []
+    return fs.readdirSync(dir, { recursive: true })
+      .filter((f): f is string => typeof f === "string" && f.endsWith("provenance.json"))
+      .sort()
+      .map((f) => {
+        const fp = path.join(dir, f)
+        const mtimeMs = fs.statSync(fp).mtimeMs
+        const c = provCache.get(fp)
+        if (c && c.mtimeMs === mtimeMs) return c.json
+        const json = JSON.parse(fs.readFileSync(fp, "utf8"))
+        provCache.set(fp, { mtimeMs, json })
+        return json
+      })
   }
 
   /**
-   * source ノード id に対応する証跡。**`report/lineage.ts` の `provenanceForSource` と
-   * 同じ規則** — direction だけで引くと別団体の証跡が混ざるので団体コードから絞る。
+   * source ノード id に対応する証跡。規則の正本は `@fudoki/report/common` の
+   * `provenanceForSource`（報告生成と同じもの — direction だけで引くと別団体や
+   * 抽出物の証跡が混ざるので、団体・canonical・抽出種類の区別が要る）。
    */
   const provsForSource = (srcId: string): any[] => {
-    const code = /\.raw_(\d{6})/.exec(srcId)?.[1]
-    if (!code) return []
     const name = srcId.split(".").at(-1)!
-    const mine = provenanceOf(path.join(rawDir, `jurisdiction=${code}`))
-    const canonical = mine.filter((p) => isCanonical(p) && p.direction === name)
-    if (canonical.length) return canonical
-    const kind = /_project_names\./.test(srcId) ? "project-names"
-      : /_revenue_accounts\./.test(srcId) ? "revenue-accounts" : null
-    if (!kind) return []
-    return provenanceOf(path.join(rawDir, kind, `jurisdiction=${code}`))
-      .filter((p) => extractedKind(p) === kind)
+    return provenanceForSource(srcId, name, provenanceOf(rawDir))?.ps ?? []
   }
 
-  /** PDF 閲覧レイヤの索引。`bun run pdf:layer` が作る（無ければ null） */
+  /** PDF 閲覧レイヤの索引。`bun run pdf:layer` が作る（無ければ null）。mtime で使い回す */
+  let pdfIndexCache: { mtime: number; docs: Record<string, any> } | null = null
   const pdfIndex = (): Record<string, any> | null => {
-    const f = path.join(pdfDir, "index.json")
-    if (!fs.existsSync(f)) return null
     try {
-      return JSON.parse(fs.readFileSync(f, "utf8")).docs ?? {}
+      const f = path.join(pdfDir, "index.json")
+      const mtime = fs.statSync(f).mtimeMs
+      if (pdfIndexCache?.mtime !== mtime) {
+        pdfIndexCache = { mtime, docs: JSON.parse(fs.readFileSync(f, "utf8")).docs ?? {} }
+      }
+      return pdfIndexCache!.docs
     } catch {
       return null
     }
@@ -103,7 +121,7 @@ export function localData(root: string): Plugin {
    * - *.origin → 原典。PDF 原典なら {kind:'pdf'}、CSV 原典なら取り込み Parquet
    *   （raw の Parquet は原典 CSV と復元一致が検査済みなので、そのまま原典の姿として出せる）
    */
-  const resolveRows = (nodeId: string, year: number | null, dir: string | null, code: string | null) => {
+  const resolveRows = async (nodeId: string, year: number | null, dir: string | null, code: string | null) => {
     if (nodeId.endsWith(".origin")) {
       const srcId = nodeId.slice(0, -".origin".length)
       const provs = provsForSource(srcId)
@@ -111,7 +129,7 @@ export function localData(root: string): Plugin {
         return { kind: "pdf", docs: pdfDocsFor(srcId), provs }
       }
       // 正本の CSV。原典ノードの中身は取り込み Parquet（= 原典の復元と一致が検査済み）
-      return { ...serveTable(parquetFor(srcId), year, dir, code), provs }
+      return { ...(await serveTable(parquetFor(srcId), year, dir, code)), provs }
     }
     const m = manifest()
     if (nodeId.startsWith("source.")) return serveTable(parquetFor(nodeId), year, dir, code)
@@ -141,9 +159,13 @@ export function localData(root: string): Plugin {
   type TableReply = {
     kind: "table"; columns: string[]; rows: unknown[][]
     keyColumn: string | null; totalRows: number
+    /** 上限で打ち切ったか。検証ツールが「見えていない行がある」を黙らせないため返す */
+    truncated: boolean
   }
-  const serveTable = (rel: string, year: number | null, dir: string | null, code: string | null): TableReply => {
-    const cols = duckdb(`describe select * from ${rel}`).map((r) => String(r.column_name))
+  // 行数の上限。越えたらそのことを返す — 上限の中に収めるより「見えていない」と言うほうが重要
+  const ROW_LIMIT = 200000
+  const serveTable = async (rel: string, year: number | null, dir: string | null, code: string | null): Promise<TableReply> => {
+    const cols = (await duckdb(`describe select * from ${rel}`)).map((r) => String(r.column_name))
     const where: string[] = []
     if (year !== null && (cols.includes("fiscal_year") || cols.includes("year"))) {
       const c = cols.includes("fiscal_year") ? "fiscal_year" : "year"
@@ -156,13 +178,16 @@ export function localData(root: string): Plugin {
     const keyColumn = ["source_row", "ordinal", "pdf_ordinal"].find((c) => cols.includes(c)) ?? null
     const order = ["fiscal_year", "year", "direction", "source_row", "ordinal", "pdf_ordinal"]
       .filter((c) => cols.includes(c))
-    const rows = duckdb(
+    // 上限+1を取って打ち切りを判定する（count(*) をもう1本立てない）
+    const rows = await duckdb(
       `select * from ${rel}${where.length ? ` where ${where.join(" and ")}` : ""}` +
-      `${order.length ? ` order by ${order.map((c) => `"${c}"`).join(", ")}` : ""} limit 200000`)
+      `${order.length ? ` order by ${order.map((c) => `"${c}"`).join(", ")}` : ""} limit ${ROW_LIMIT + 1}`)
+    const truncated = rows.length > ROW_LIMIT
+    if (truncated) rows.pop()
     return {
       kind: "table", columns: cols,
       rows: rows.map((r) => cols.map((c) => r[c])),
-      keyColumn, totalRows: rows.length,
+      keyColumn, totalRows: rows.length, truncated,
     }
   }
 
@@ -181,23 +206,28 @@ export function localData(root: string): Plugin {
         const year = url.searchParams.get("year") ? Number(url.searchParams.get("year")) : null
         const dir = /^(expenditure|revenue)$/.test(url.searchParams.get("dir") ?? "") ? url.searchParams.get("dir") : null
         const code = /^\d{6}$/.test(url.searchParams.get("code") ?? "") ? url.searchParams.get("code") : null
-        try {
-          return send(res, 200, resolveRows(node, year, dir, code))
-        } catch (e) {
-          // 行を出せない（表が無い・PDF 原典だがレイヤ未生成等）は失敗ではなく「無い」の情報
-          return send(res, 200, { kind: "none", reason: String(e).slice(0, 300) })
-        }
+        // 行を出せない（表が無い・PDF 原典だがレイヤ未生成等）は失敗ではなく「無い」の情報
+        resolveRows(node, year, dir, code)
+          .then((r) => send(res, 200, r))
+          .catch((e) => send(res, 200, { kind: "none", reason: String(e).slice(0, 300) }))
+        return
       }
       if (url.pathname === "/local/pdf/index.json" || url.pathname === "/local/pdf-index") {
-        const f = path.join(pdfDir, "index.json")
-        return fs.existsSync(f) ? send(res, 200, fs.readFileSync(f)) : send(res, 404, { error: "no pdf layer" })
+        try {
+          return send(res, 200, fs.readFileSync(path.join(pdfDir, "index.json")))
+        } catch {
+          return send(res, 404, { error: "no pdf layer" })
+        }
       }
       const pdfFile = /^\/local\/pdf\/([\w-]+)\/(meta\.json|hits\.json|p(\d+)\.(?:json|png))$/.exec(url.pathname)
       if (pdfFile) {
         const f = path.join(pdfDir, pdfFile[1]!, pdfFile[2]!)
-        if (!fs.existsSync(f)) return send(res, 404, { error: "not found" })
-        return send(res, 200, fs.readFileSync(f),
-          f.endsWith(".png") ? "image/png" : "application/json")
+        try {
+          return send(res, 200, fs.readFileSync(f),
+            f.endsWith(".png") ? "image/png" : "application/json")
+        } catch {
+          return send(res, 404, { error: "not found" })
+        }
       }
       next()
     } catch (e) {

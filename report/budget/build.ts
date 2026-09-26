@@ -8,7 +8,7 @@
  * 階層・金額・段階の構造は `dbt/dbt_project.yml` の vars が正本で、
  * dbt のモデルも検査もそこを見ている。ここへ写すと片方だけ直る。
  */
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { loadJurisdictions } from '../../ingestion/shared/jurisdictions'
 import { isCanonicalFetch } from './schema'
@@ -436,28 +436,24 @@ const CODES = [...new Set(
   Object.keys(SOURCES).filter((k) => /^\d{6}:/.test(k)).map((k) => k.split(':')[0]!),
 )].sort()
 
-/** 証跡は取得物の隣にある。**この2つは不可分**なので同じ場所から読む */
-function provenanceOf(dir: string): Provenance[] {
-  return [...new Bun.Glob('**/provenance.json').scanSync({ cwd: dir, absolute: true })]
-    .sort().map((f) => readJson<Provenance>(f))
-}
-
-/**
- * 抽出物（PDF から起こした補助表）の証跡。**団体の `raw/jurisdiction=<code>/` の外に
- * 置かれる**ので `ingestion`（正本の取り込みだけ）とは別に集める。
- */
-function supplementProvenanceOf(code: string): Provenance[] {
-  return ['project-names', 'revenue-accounts'].flatMap((kind) => {
-    const dir = join(ROOT, 'data/budget/raw', kind, `jurisdiction=${code}`)
-    return existsSync(dir) ? provenanceOf(dir) : []
-  })
-}
-
 /**
  * 全団体の証跡。**系統の図は団体で切らない**（パイプラインは1本で、
  * どの団体のノードも同じ図に出る）ので、原典ノードの行数も全団体から引く。
+ * 1回の走査で、正本（`raw/jurisdiction=<code>/`）と抽出物
+ * （`raw/<project-names|revenue-accounts>/jurisdiction=<code>/`）の両方を団体別に分けて持つ
+ * — 団体ごとに同じファイルを glob し直すと62団体で O(N²) になる。
  */
-const ALL_PROVENANCE = provenanceOf(join(ROOT, 'data/budget/raw'))
+const ALL_PROVENANCE = [...new Bun.Glob('**/provenance.json')
+  .scanSync({ cwd: join(ROOT, 'data/budget/raw'), absolute: true })].sort()
+  .map((f) => ({ path: f, prov: readJson<Provenance>(f) }))
+
+const CANONICAL_PROV = new Map<string, Provenance[]>()
+const SUPPLEMENT_PROV = new Map<string, Provenance[]>()
+for (const { path: p, prov } of ALL_PROVENANCE) {
+  const m = /raw\/(?:jurisdiction=(\d{6})|(?:project-names|revenue-accounts)\/jurisdiction=(\d{6}))/.exec(p)
+  if (m?.[1]) CANONICAL_PROV.set(m[1], [...(CANONICAL_PROV.get(m[1]) ?? []), prov])
+  else if (m?.[2]) SUPPLEMENT_PROV.set(m[2], [...(SUPPLEMENT_PROV.get(m[2]) ?? []), prov])
+}
 
 /**
  * 系統と検査は**団体で変わらない**（パイプラインは1本で、どの団体のノードも同じ図に出る）。
@@ -470,7 +466,7 @@ function build(
   // ⚠️ **保証を作っているのはこの glob。だからここで検査する。** 抽出物は団体の
   // ディレクトリの外（`raw/project-names/` `raw/revenue-accounts/`）にあり、ここには来ない。
   // 型（`ReportEnvelope.ingestion`）がそれを前提にしている以上、宣言しっぱなしにしない
-  const prov = provenanceOf(join(ROOT, 'data/budget/raw', `jurisdiction=${code}`)).map((p) => {
+  const prov = (CANONICAL_PROV.get(code) ?? []).map((p) => {
     if (!isCanonicalFetch(p)) throw new Error(`${code} の団体ディレクトリに、行数を持たない証跡がある（${p.request_url}）`)
     return p
   })
@@ -519,7 +515,7 @@ function build(
         phase: a.phase, phaseLabel: a.phase_label, years: a.years ?? null,
       })),
     ])) as ReportData['amounts'],
-    supplements: supplementProvenanceOf(code),
+    supplements: SUPPLEMENT_PROV.get(code) ?? [],
     detailLevels: DIRECTIONS.map((direction) => ({ direction, levels: levelsOf(code, direction) })),
     levels: buildLevels(code),
     coverage: buildCoverage(code, cofogState),
@@ -539,18 +535,15 @@ const manifest = readJson<Manifest>(join(TARGET, 'manifest.json'))
 const results = readJson<RunResults>(join(TARGET, 'run_results.json'))
 
 // **団体で変わらないものは1回だけ作る。**
-const topology = buildTopology(manifest, ALL_PROVENANCE)
+const topology = buildTopology(manifest, ALL_PROVENANCE.map((p) => p.prov))
 const checks = buildChecks(manifest, results)
 
 const reports = CODES.map((code) => ({ code, report: build(code, topology, checks) }))
 
-// **報告と明細を分けて書く。** 明細は報告の 50 倍あり（2.4MB 対 0.05MB）、
-// 既定のタブは明細を使わない。1つにまとめると、報告だけ見る利用者にも全部を運ぶことになる。
-//
 // ⚠️ **団体で変わらないものを団体の数だけ運ばない。**
 // 系統・検査・移植性の判定・独自 ColumnType はどの団体でも同じ内容で、
 // 2団体でも 151.7 KB のうち 29.1 KB（19%）がバイト一致していた。62団体なら系統だけで約 11 MB になる。
-// しかも pipeline.json は明細タブを開かなくても読まれる**既定の payload** である。
+// しかも pipeline.json は検証画面を開くだけで読まれる**既定の payload** である。
 // 画面側（`loadPipeline`）が読み込み時に組み直すので、下流の型は変わらない。
 const { portability, customColumnTypes } = reports[0]!.report
 writeFileSync(join(ROOT, 'apps/web/public/pipeline.json'), `${JSON.stringify({

@@ -16,6 +16,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import pathlib
 import re
@@ -37,7 +38,7 @@ DPI = 110
 
 # 行→頁対応の作り方の版。照合ロジックを変えたら上げる（頁画像・語層は原典だけに
 # 依存するので作り直さず、hits.json だけを再計算する）
-HITS_VERSION = 4
+HITS_VERSION = 5
 
 
 def _source_id(prov: dict, prov_path: pathlib.Path) -> str | None:
@@ -88,7 +89,8 @@ def _lines(words: list[tuple[float, float, float, float, str]], tolerance: float
 def _statement_rows(parquet: pathlib.Path):
     """事項別明細書の抽出物。葉は内訳 → 節 → 事業 → 目の順で一番深い名前を持つ"""
     cols = "source_row, 款, 項, 目, 目名称, 事業名, 節名称, 内訳名称, 本年度予算額"
-    for r in duckdb.query(f"select {cols} from read_parquet('{parquet}')").fetchall():
+    for r in duckdb.query(
+            f"select {cols} from read_parquet('{parquet}') order by source_row").fetchall():
         (row, kan, kou, moku, moku_name, proj, setsu, detail, amount) = r
         names = [n for n in (detail, setsu, proj) if n]
         candidates = [normalize(n) for n in names] if names else [
@@ -98,7 +100,8 @@ def _statement_rows(parquet: pathlib.Path):
 
 def _project_name_rows(parquet: pathlib.Path):
     for row, name, amount in duckdb.query(
-            f"select ordinal, project_name, amount_thousand_yen from read_parquet('{parquet}')").fetchall():
+            f"select ordinal, project_name, amount_thousand_yen from read_parquet('{parquet}')"
+            " order by ordinal").fetchall():
         yield row, [normalize(name)] if name else [], int(amount or 0)
 
 
@@ -121,40 +124,48 @@ def _hits(prov: dict, prov_path: pathlib.Path, pages_lines: dict[int, list[Line]
         else _project_name_rows(prov_path.parent / "data.parquet")
     first, last = prov["pages"]
     out: dict[str, dict] = {}
+    # 抽出の順序 = 文書中の並び順（rowkey が文書順に振られている）。同名・同額の
+    # 別行（実在する）が全員同じ印字箇所を指さないよう、探索は前の行の一致位置の
+    # 後からだけ進める — 「最初の一致」に畳むと重複行すべてが誤対応になる
+    cur_p, cur_i = first, 0
     for rowkey, names, amount in rows:
         # 金額は語の中で `316,980千円` のように単位を伴うことがあり、また語の分割を
         # またぐことがある（`57,` `397`）。語単位と、隣接2語の連結の両方で見る。
         # 直前が数字・カンマのもの（`1,262` の `262`）は別の金額の一部なので弾く
         amount_re = re.compile(
             r"(?<![0-9,])" + re.escape(normalize(f"{amount:,}")) + r"(?:千円|円)?$")
+        found = None
         for name in names:
-            found = None
-            for pno in range(first, last + 1):
+            for pno in range(cur_p, last + 1):
                 lines = pages_lines.get(pno, [])
-                for i, (_, text, words) in enumerate(lines):
+                for i in range(cur_i if pno == cur_p else 0, len(lines)):
+                    _, text, words = lines[i]
                     hit_amount = any(amount_re.search(w) for w in words) or any(
                         amount_re.fullmatch(words[j] + words[j + 1])
                         for j in range(len(words) - 1))
                     if not hit_amount:
                         continue
                     if name in text:
-                        found = (pno, i, i)
-                        break
-                    for a, b in ((max(0, i - WRAP), i), (i, min(len(lines) - 1, i + WRAP))):
-                        if name in "".join(t for _, t, _ in lines[a:b + 1]):
-                            found = (pno, a, b)
-                            break
+                        found = (pno, i, i, i)
+                    else:
+                        for a, b in ((max(0, i - WRAP), i), (i, min(len(lines) - 1, i + WRAP))):
+                            if name in "".join(t for _, t, _ in lines[a:b + 1]):
+                                found = (pno, i, a, b)
+                                break
                     if found:
                         break
                 if found:
                     break
             if found:
-                pno, a, b = found
-                ls = pages_lines[pno][a:b + 1]
-                box = [min(l[0][0] for l in ls), min(l[0][1] for l in ls),
-                       max(l[0][2] for l in ls), max(l[0][3] for l in ls)]
-                out[str(rowkey)] = {"page": pno, "box": [round(v, 2) for v in box]}
                 break
+        if found:
+            pno, i, a, b = found
+            # 次の行はこの行の金額行より後にある — 同じ行へ二度割り当てない
+            cur_p, cur_i = pno, i + 1
+            ls = pages_lines[pno][a:b + 1]
+            box = [min(l[0][0] for l in ls), min(l[0][1] for l in ls),
+                   max(l[0][2] for l in ls), max(l[0][3] for l in ls)]
+            out[str(rowkey)] = {"page": pno, "box": [round(v, 2) for v in box]}
     return out
 
 
@@ -179,14 +190,26 @@ def main() -> None:
     for sha, doc in sorted(docs.items()):
         doc_id = f"{doc['code']}-{sha[:12]}"
         doc_dir = OUT / doc_id
+        # hits/meta は証跡の中身（URL・頁範囲・年度・ソース紐付け）にも依存する。
+        # sha と照合版だけで判定すると、同じ PDF を指す証跡が更新されても古い
+        # meta と対応を使い続ける — 証跡由来の部分もキャッシュキーに入れる
+        meta_key = json.dumps(sorted(
+            json.dumps([_source_id(p, pp), p["request_url"], p.get("pages"), p["fiscal_year"]],
+                       ensure_ascii=False)
+            for p, pp in doc["provs"]), ensure_ascii=False)
+        stamp = f"{sha} v{HITS_VERSION} {hashlib.sha256(meta_key.encode()).hexdigest()[:16]}"
         render_done = (doc_dir / ".rendered").exists() \
             and (doc_dir / ".rendered").read_text().strip() == sha
         hits_done = (doc_dir / ".hits").exists() \
-            and (doc_dir / ".hits").read_text().strip() == f"{sha} v{HITS_VERSION}"
+            and (doc_dir / ".hits").read_text().strip() == stamp
         if render_done and hits_done:
             index[doc_id] = json.loads((doc_dir / "meta.json").read_text())
             continue
 
+        if not doc["pages"]:
+            # 頁範囲を記録していない証跡では頁画像も対応も作れない（現行の証跡は全件記録）
+            print(f"warn  {doc_id}  証跡に頁範囲が無い — スキップ")
+            continue
         first = min(p[0] for p in doc["pages"])
         last = max(p[1] for p in doc["pages"])
         doc_dir.mkdir(parents=True, exist_ok=True)
@@ -199,7 +222,10 @@ def main() -> None:
         else:
             got = http_get(doc["url"])
             if got.sha256 != sha:
-                print(f"warn  {doc_id}  sha256 が証跡と違う（再掲載された?）— この取得物で進める")
+                # 証跡と違う内容の PDF から頁と行対応を作ると、証跡のハッシュを名乗った
+                # まま違う原典を見せることになる。取り込み直しが先 — ここでは作らない
+                print(f"warn  {doc_id}  取得物の sha256 が証跡と違う（再掲載された?）— スキップ")
+                continue
             for stale in [*doc_dir.glob("p*.png"), *doc_dir.glob("p*.json")]:
                 stale.unlink(missing_ok=True)
             with tempfile.NamedTemporaryFile(suffix=".pdf") as f:
@@ -233,7 +259,7 @@ def main() -> None:
             sources.append(src)
             hits[src] = _hits(prov, path, pages_lines)
         (doc_dir / "hits.json").write_text(json.dumps(hits, ensure_ascii=False))
-        (doc_dir / ".hits").write_text(f"{sha} v{HITS_VERSION}\n")
+        (doc_dir / ".hits").write_text(stamp + "\n")
 
         meta = {
             "code": doc["code"], "title": doc["title"], "url": doc["url"], "sha256": sha,

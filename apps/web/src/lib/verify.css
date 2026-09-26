@@ -25,7 +25,6 @@
 .pv .gnode .io-tag { font-size: 9px; font-weight: 600; fill: var(--primary-foreground); }
 .pv .gnode .io-tag-bg { fill: var(--primary); }
 .pv .graphsvg text { font-family: inherit; }
-.pv .dim { opacity: .18; }
 
 /* hover はノード単体ではなく組（入力＋線＋出力）の予告。選択済み（実線＋濃い輪）と区別するため破線＋薄い輪 */
 .pv .edge-hov-under, .pv .edge-hov, .pv .gnode rect.hring { pointer-events: none; }

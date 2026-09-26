@@ -13,13 +13,13 @@ import { FiscalYearSelect } from "@/components/fiscal-year-select"
 import { JurisdictionSelect } from "@/components/jurisdiction-select"
 import { Layout } from "@/components/layout"
 import { NotCollectedPage } from "@/components/not-collected-page"
-import { LineageGraph, type PairSel } from "@/components/pipeline/graph"
-import { IoPanel, type Pair } from "@/components/pipeline/io-panel"
+import { LineageGraph } from "@/components/pipeline/graph"
+import { IoPanel } from "@/components/pipeline/io-panel"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { withBase } from "@/lib/utils"
 import { type PipelineData, loadPipeline } from "@/lib/pipeline"
 import "@/lib/verify.css"
-import { nodeLabel } from "@/lib/verify"
+import { nodeLabel, type Pair } from "@/lib/verify"
 
 type Props = {
   /** `/pipeline/<団体コード>/` の団体コード。コードなしの `/pipeline/` では null */
@@ -49,8 +49,9 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
 
   // 年度は URL に持つ（ブックマーク・共有リンクが同じ状態を指すため）
   const [year, setYear] = useState<number | null>(() => {
-    const y = new URLSearchParams(window.location.search).get("y")
-    return y ? Number(y) : null
+    const n = Number(new URLSearchParams(window.location.search).get("y"))
+    // `?y=abc` は NaN になって `year=NaN` の問い合わせと「NaN年度」のタイトルを生む
+    return Number.isInteger(n) && n > 1900 && n < 2200 ? n : null
   })
 
   // 選択状態。組 → 行 → PDF 頁の順に下流が上流を従える
@@ -96,11 +97,22 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
 
   const changeYear = useCallback((y: number | null) => {
     setYear(y)
+    // 年度が変わると「その行」の指す実体も文書も変わる — 前年の選択を引きずると
+    // 表示年度と文書の年度が食い違う（複数文書の団体は文書ごとに年度が違う）
+    setSelKey(null)
+    setPdfNav({ docId: null, page: null })
     const url = new URL(window.location.href)
     if (y === null) url.searchParams.delete("y")
     else url.searchParams.set("y", String(y))
     window.history.replaceState(null, "", url)
   }, [])
+
+  // URL 直入力で収録外の年度が来たら範囲内に戻す（存在しない年度の空表を見せない）
+  useEffect(() => {
+    if (!current || year === null) return
+    const { fiscalYears } = current.report.meta
+    if (!fiscalYears.includes(year)) changeYear(fiscalYears[fiscalYears.length - 1] ?? null)
+  }, [current, year, changeYear])
 
   // 系統は全団体で1本だが、図は見ている団体の分だけ出す（共有ノードは残す）
   const visibleTopology = useMemo(() => {
@@ -116,7 +128,32 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
     [visibleTopology],
   )
 
-  const selectEdge = useCallback((e: PairSel) => {
+  // ヘッドラインの検査件数は「この団体に関係するもの」だけに絞る。
+  // 共有ノードにぶら下がる検査は全団体の図に出るが、警告が他団体の行にだけ
+  // 帰属するときまで件数に混ぜると、自分の団体の警告と誤認させる。
+  // 判定は build.ts の summary と同じ系（ok / severity / status）
+  const checkTally = useMemo(() => {
+    if (!visibleTopology || !current) {
+      return { total: 0, passed: 0, failed: 0, warned: 0 }
+    }
+    const ids = new Set(visibleTopology.nodes.map((n) => n.id))
+    const checks = current.report.checks.filter(
+      (c) =>
+        c.binds.some((b) => ids.has(b)) &&
+        (c.ok ||
+          c.attribution?.kind === "cross" ||
+          !c.attribution?.counts ||
+          (c.attribution.counts[current.code] ?? 0) > 0),
+    )
+    return {
+      total: checks.length,
+      passed: checks.filter((c) => c.ok).length,
+      failed: checks.filter((c) => !c.ok && c.severity === "error").length,
+      warned: checks.filter((c) => c.status === "warn").length,
+    }
+  }, [visibleTopology, current])
+
+  const selectEdge = useCallback((e: Pair) => {
     setPair({ from: e.from, to: e.to })
     setNodeCand(null)
     setSelKey(null)
@@ -217,7 +254,6 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
 
   const report = current.report
   const m = report.meta
-  const summary = report.summary
   const cand = nodeCand ? nodeById.get(nodeCand) : null
   const candEdges = nodeCand
     ? visibleTopology.edges.filter((e) => e.from === nodeCand || e.to === nodeCand)
@@ -259,9 +295,9 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
           )}
           <span className="text-sm text-muted-foreground">{m.phase.label}</span>
           <span className="text-xs text-muted-foreground">
-            検査 {summary.passed}/{summary.total}
-            {summary.failed ? `・失敗${summary.failed}` : ""}
-            {summary.warned ? `・警告${summary.warned}` : ""}
+            検査 {checkTally.passed}/{checkTally.total}
+            {checkTally.failed ? `・失敗${checkTally.failed}` : ""}
+            {checkTally.warned ? `・警告${checkTally.warned}` : ""}
           </span>
           <button className="linky text-xs" onClick={() => setCaveats((v) => !v)}>
             誤読の罠 {report.caveats.length} 件{caveats ? " ▴" : " ▾"}
