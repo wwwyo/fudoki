@@ -5,15 +5,42 @@
  * 食い違いはコンパイラが捕まえる。型を2箇所で宣言すると、
  * 生成側のキーを変えた瞬間に画面が黙って壊れる（実際にその状態を作った）。
  */
-import type { CofogCode, ReportData, Topology, Node, Edge, Stage, Check, NodePreview } from '@fudoki/report/budget/schema'
-import type { Direction, DetailRow, DetailTable, Level } from '@fudoki/report/budget/detail'
+import type {
+  AmountDecl,
+  CanonicalFetch,
+  Check,
+  CheckAttribution,
+  CofogCode,
+  Edge,
+  Node,
+  ProjectNamesExtract,
+  Provenance,
+  ReportData,
+  RevenueAccountsExtract,
+  Stage,
+  StatementExtract,
+  Topology,
+} from '@fudoki/report/budget/schema'
+import type { Direction } from '@fudoki/report/budget/detail'
 
-export type { CofogCode, ReportData, Topology, Node, Edge, Stage, Check, NodePreview }
-export { nodeRows } from '@fudoki/report/budget/schema'
-
-export type { Direction, DetailColumn, DetailRow, DetailTable, Level } from '@fudoki/report/budget/detail'
-export { LEVEL_JA, basisOf, cell, divisionLabelOf, levelCell } from '@fudoki/report/budget/detail'
-import { DIRECTIONS, expectedColumns } from '@fudoki/report/budget/detail'
+export type {
+  AmountDecl,
+  CanonicalFetch,
+  Check,
+  CheckAttribution,
+  CofogCode,
+  Direction,
+  Edge,
+  Node,
+  ProjectNamesExtract,
+  Provenance,
+  ReportData,
+  RevenueAccountsExtract,
+  Stage,
+  StatementExtract,
+  Topology,
+}
+export { extractedKindOf, isCanonicalFetch, nodeRows } from '@fudoki/report/budget/schema'
 
 /**
  * ⚠️ **複数団体を運ぶ。**
@@ -31,68 +58,6 @@ type Shared = Pick<ReportData, 'topology' | 'checks' | 'portability' | 'customCo
 type PipelineFile = {
   shared: Shared
   jurisdictions: { code: string; report: Omit<ReportData, keyof Shared> }[]
-}
-
-/** 明細。**報告とは別ファイルで運ぶ** — 報告の 50 倍あり、既定のタブでは使わない */
-export type DetailData = {
-  expenditure: DetailTable
-  revenue: DetailTable
-}
-
-/** 報告が渡した階層の並び。**画面は階層名を直書きしない**（団体ごとに違うため） */
-export function levelsOf(report: ReportData, direction: Direction): Level[] {
-  return report.detailLevels.find((d) => d.direction === direction)?.levels ?? []
-}
-
-/**
- * 明細を取りに行く。**明細タブを開いたときだけ**読む。
- * 報告（0.06MB）と一緒に運ぶと、報告しか見ない利用者にも 3.5MB を運ぶことになる。
- * 団体ごとに別ファイル（全団体を1つにすると、1団体だけ見る利用者に全部を運ぶ）。
- */
-export async function loadDetail(report: ReportData): Promise<DetailData> {
-  const code = report.meta.jurisdictionCode
-  const [expenditure, revenue] = await Promise.all(
-    DIRECTIONS.map(async (dir) => {
-      const res = await fetch(`${import.meta.env.BASE_URL}detail-${code}-${dir}.json`, { cache: 'no-store' })
-      if (!res.ok) throw new Error(`detail-${code}-${dir}.json を読めません（HTTP ${res.status}）`)
-      const t = (await res.json()) as DetailTable
-      const problems: string[] = []
-      // ⚠️ **列だけ見ても足りない。** 割当の根拠は行に持たず規則表として1回だけ運んでいるので、
-      // `ruleBasis` が欠けた古い明細を掴むと、**列検査を通ったまま根拠の表示だけ黙って空になる**。
-      // 型は生成側と画面側に効くが、間に挟まる JSON には効かない — 境界で確かめる。
-      if (!Array.isArray(t.columns)) problems.push('columns が配列でない')
-      if (t.ruleBasis === null || typeof t.ruleBasis !== 'object') problems.push('ruleBasis が無い')
-      problems.push(
-        ...expectedColumns(levelsOf(report, dir))
-          .filter((c) => !(t.columns as string[])?.includes(c))
-          .map((c) => `列が無い: ${c}`),
-      )
-      if (problems.length > 0) {
-        throw new Error(
-          `detail-${code}-${dir}.json が宣言と食い違っています（${problems.join(' / ')}）。` +
-            `bun run pipeline を回し直してください`,
-        )
-      }
-      return t
-    }),
-  )
-  return { expenditure: expenditure!, revenue: revenue! }
-}
-
-/** ノードの中身の先頭数行。**グラフでノードを選んだときだけ**取りに行く */
-export async function loadNodePreview(id: string): Promise<NodePreview> {
-  const res = await fetch(`${import.meta.env.BASE_URL}preview/${id}.json`, { cache: 'no-store' })
-  if (!res.ok) throw new Error(`preview/${id}.json を読めません（HTTP ${res.status}）。bun run report を回し直してください`)
-  return (await res.json()) as NodePreview
-}
-
-/**
- * 列指向を行指向へ。**列名は `@fudoki/report/budget/detail` の宣言に縛られる** —
- * 宣言に無い列を読むとコンパイルが落ちる。
- * 以前は Record<string, string> だったので、配布物から列を落としても画面が黙って空になった。
- */
-export function toRows(t: DetailTable): DetailRow[] {
-  return t.rows.map((r) => Object.fromEntries(t.columns.map((c, i) => [c, r[i] ?? ''])) as DetailRow)
 }
 
 /**
@@ -210,21 +175,4 @@ export const STATUS_JA: Record<string, string> = {
   // 歳入。COFOG は支出の機能別分類なので分類の軸そのものが無い。
   // 「分類できなかった」と混ぜないために別の状態にしてある。
   'not-applicable': '分類の軸なし',
-}
-
-/** 段ごとの並び順。dbt の置き場が段を決めるので、画面はこの順に並べるだけ */
-export const STAGE_ORDER: Stage['id'][] = ['origin', 'ingestion', 'staging', 'core', 'package']
-
-/** 検査をノードごとに引けるようにする。「どの段の何を守っているか」で見せるため */
-export function checksByNode(report: ReportData) {
-  const m = new Map<string, ReportData['checks']>()
-  for (const c of report.checks) {
-    for (const b of c.binds) m.set(b, [...(m.get(b) ?? []), c])
-  }
-  return m
-}
-
-/** どのノードにも紐づかない検査。パッケージ全体に掛かるもの */
-export function unboundChecks(report: ReportData) {
-  return report.checks.filter((c) => c.binds.length === 0)
 }

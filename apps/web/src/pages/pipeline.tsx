@@ -1,45 +1,25 @@
 /**
- * ELT の全体像を見るダッシュボード。
+ * パイプラインの検証画面（ローカル専用）。
  *
- * 集計はしない。数字はすべて `pipeline.json`（`report/budget/build.ts` の出力）を
- * そのまま出す。画面側でも集計すると、同じ数字が2通りに計算されて、いずれ食い違う。
+ * 「1団体の配布物が正しいか」を運営者が確かめる画面。上ペインに系統図、
+ * 下ペインに選んだ組（ノード→ノード）の入力と出力を並べる。
+ * 境目はドラッグで比率を変えられる。ページ自体はスクロールしない。
+ *
+ * 集計はしない。行数・検査・証跡はすべて報告（pipeline.json）と
+ * `/local/rows`・`/local/pdf/*` が返す値をそのまま出す。
  */
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { FiscalYearSelect } from "@/components/fiscal-year-select"
 import { JurisdictionSelect } from "@/components/jurisdiction-select"
 import { Layout } from "@/components/layout"
 import { NotCollectedPage } from "@/components/not-collected-page"
-import { FlowGraph } from "@/components/flow-graph"
-import { DetailBrowser } from "@/components/detail-browser"
-import { StageDetail } from "@/components/stage-detail"
-import { CofogPanel } from "@/components/cofog-panel"
-import { CoveragePanel } from "@/components/coverage-panel"
-import { ChecksPanel } from "@/components/checks-panel"
+import { LineageGraph, type PairSel } from "@/components/pipeline/graph"
+import { IoPanel, type Pair } from "@/components/pipeline/io-panel"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { Info } from "lucide-react"
 import { withBase } from "@/lib/utils"
-import {
-  levelsOf,
-  loadDetail,
-  loadPipeline,
-  pct,
-  toRows,
-  type DetailData,
-  type PipelineData,
-} from "@/lib/pipeline"
+import { type PipelineData, loadPipeline } from "@/lib/pipeline"
+import "@/lib/verify.css"
+import { nodeLabel } from "@/lib/verify"
 
 type Props = {
   /** `/pipeline/<団体コード>/` の団体コード。コードなしの `/pipeline/` では null */
@@ -48,105 +28,81 @@ type Props = {
   jurisdictionName?: string
 }
 
+/** 誤読の罠の本文に含まれる `**強調**` だけを <strong> にする（記法は md ではない） */
+function caveatText(s: string) {
+  return s.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
+    part.startsWith("**") && part.endsWith("**") ? (
+      <strong key={i}>{part.slice(2, -2)}</strong>
+    ) : (
+      <span key={i}>{part}</span>
+    ),
+  )
+}
+
 export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
   const [data, setData] = useState<PipelineData | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [selectedNode, setSelectedNode] = useState<string | null>(null)
-  // 見ている団体。**1団体だけを前提にしない** — 以前は pipeline.json が単一団体の形で、
-  // 2団体目を足したら生成側が例外で止まるようにしてあった。
-  // MPA なので団体は URL（≒ページ）ごとに固定。コードなしの `/pipeline/` は
-  // データを読んだ後に先頭団体の URL へ redirect する（下の useEffect）
+
+  // 見ている団体。MPA なので団体は URL（≒ページ）ごとに固定。
+  // コードなしの `/pipeline/` はデータを読んだ後に先頭団体の URL へ redirect する
   const code = urlCode
-  // 明細は報告の 50 倍あるので、タブを開いたときだけ取りに行く。
-  // ⚠️ **団体をまたいで溜めない。** 溜めると切り替えるたびに 40,383 行の表が積み上がり、
-  // 解放されない（対象は最終的に62団体になる）。見ている団体の分だけ持つ。
-  const [detail, setDetail] = useState<{ code: string; data: DetailData } | null>(null)
-  const [detailError, setDetailError] = useState<string | null>(null)
-  // 開いているタブ。**明細の取得はタブを開いた瞬間だけの出来事ではない** —
-  // 明細を見ている最中に団体を切り替えても取りに行く必要がある。
-  const [tab, setTab] = useState("checks")
-  /**
-   * 図の行数をどの年度で見るか。**既定は全年度（null）** — 収録範囲そのものが
-   * この画面の主張なので、最初に見えるのは全年度の姿でよい（分析画面は最新年度が既定だが、
-   * あちらは「いくら使ったか」を見る場所で、合算した金額に意味が無い）。
-   */
-  const [fiscalYear, setFiscalYear] = useState<number | null>(null)
+
+  // 年度は URL に持つ（ブックマーク・共有リンクが同じ状態を指すため）
+  const [year, setYear] = useState<number | null>(() => {
+    const y = new URLSearchParams(window.location.search).get("y")
+    return y ? Number(y) : null
+  })
+
+  // 選択状態。組 → 行 → PDF 頁の順に下流が上流を従える
+  const [pair, setPair] = useState<Pair | null>(null)
+  const [nodeCand, setNodeCand] = useState<string | null>(null)
+  const [selKey, setSelKey] = useState<string | null>(null)
+  const [hovKey, setHovKey] = useState<string | null>(null)
+  const [pdfNav, setPdfNav] = useState<{ docId: string | null; page: number | null }>({
+    docId: null,
+    page: null,
+  })
+  const [caveats, setCaveats] = useState(false)
+  const [splitH, setSplitH] = useState(42)
 
   useEffect(() => {
     loadPipeline()
       .then((d) => {
         setData(d)
-        // `/pipeline/`（コードなし）は常に収録済みの先頭団体の URL へ送る。
-        // state だけ変えると URL が `/pipeline/` のままになり、地図からの遷移や
-        // ブックマークが「どの団体を見ているか」を表さなくなる。
         if (!urlCode) {
           const first = d.jurisdictions[0]?.code
           if (first) window.location.replace(withBase(`/pipeline/${first}/`))
-          return
         }
       })
       .catch((e: Error) => setError(e.message))
   }, [urlCode])
 
   const found = data?.jurisdictions.find((j) => j.code === code) ?? null
-  // URL にコードがあるのに pipeline.json に無い＝まだ収録していない団体。
-  // 先頭団体へ fallback すると「収録済みのふり」をしてしまうので、ここでは fallback しない。
   const notCollected = data !== null && urlCode !== null && found === null
   const current = found ?? undefined
-  const loaded = detail?.code === code ? detail.data : undefined
 
-  /**
-   * 明細を取りに行く条件は「明細タブを見ていて、その団体の分をまだ持っていない」。
-   *
-   * ⚠️ **タブを開く操作に紐づけない。** 紐づけると、明細タブを開いたまま団体を切り替えたとき
-   * 取得が走らず「明細を読み込み中…」のまま止まる（操作しないと復帰できない）。
-   * 見ているものと持っているものの差で決めれば、どちらの順序でも同じ結果になる。
-   */
-  useEffect(() => {
-    if (tab !== "detail" || !current || loaded || detailError) return
-    let stale = false
-    const target = current.code
-    loadDetail(current.report)
-      .then((d) => {
-        if (!stale) setDetail({ code: target, data: d })
-      })
-      .catch((e: Error) => {
-        if (!stale) setDetailError(e.message)
-      })
-    // 取得中に団体を切り替えたら、遅れて届いた前の団体の明細を捨てる
-    return () => {
-      stale = true
-    }
-  }, [tab, current, loaded, detailError])
-
-  // 収録範囲（団体・年度）を知っているのは pipeline.json だけ。index.html の title に
-  // 写すと、対象を広げた瞬間に静かに嘘になるので、可変の部分だけ実行時に入れる。
+  // 団体ごとの収録年度・名称を title へ
   useEffect(() => {
     if (!current) return
     const { jurisdictionName: name, fiscalYears, phase } = current.report.meta
-    const years = fiscalYear === null ? fiscalYears.join("・") : String(fiscalYear)
-    document.title = `${name} ${years}年度 ${phase.label} | fudoki（風土記）`
-  }, [current, fiscalYear])
+    const years = year === null ? fiscalYears.join("・") : String(year)
+    document.title = `${name} ${years}年度 ${phase.label} 検証 | fudoki（風土記）`
+  }, [current, year])
 
-  // 未収録団体は report を持たないので上の effect と分ける。index.html の title
-  // 既定値と揃えつつ「未収録」だと分かる文言にする
   useEffect(() => {
     if (!notCollected) return
     document.title = `${jurisdictionName ?? urlCode} はまだ収録していません | fudoki（風土記）`
   }, [notCollected, jurisdictionName, urlCode])
 
-  const rows = useMemo(
-    () =>
-      loaded
-        ? { expenditure: toRows(loaded.expenditure), revenue: toRows(loaded.revenue) }
-        : null,
-    [loaded]
-  )
+  const changeYear = useCallback((y: number | null) => {
+    setYear(y)
+    const url = new URL(window.location.href)
+    if (y === null) url.searchParams.delete("y")
+    else url.searchParams.set("y", String(y))
+    window.history.replaceState(null, "", url)
+  }, [])
 
-  // 系統は全団体で1本だが、図は見ている団体の分だけ出す（共有ノードは残す）。
-  // 帰属はノードの jurisdictionCode（生成側が付ける）で引く — id の命名規則を画面で推定しない。
-  // ⚠️ useMemo は参照の安定のため。毎 render で作り直すと、topology を依存に持つ
-  // プレビューの fetch がタブ切替のたびに再発火する（同じ JSON の取り直し）
+  // 系統は全団体で1本だが、図は見ている団体の分だけ出す（共有ノードは残す）
   const visibleTopology = useMemo(() => {
     if (!current) return null
     const topo = current.report.topology
@@ -154,6 +110,77 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
     const ids = new Set(nodes.map((n) => n.id))
     return { ...topo, nodes, edges: topo.edges.filter((e) => ids.has(e.from) && ids.has(e.to)) }
   }, [current])
+
+  const nodeById = useMemo(
+    () => new Map((visibleTopology?.nodes ?? []).map((n) => [n.id, n])),
+    [visibleTopology],
+  )
+
+  const selectEdge = useCallback((e: PairSel) => {
+    setPair({ from: e.from, to: e.to })
+    setNodeCand(null)
+    setSelKey(null)
+    setPdfNav({ docId: null, page: null })
+  }, [])
+
+  const selectNode = useCallback(
+    (id: string) => {
+      if (!visibleTopology) return
+      const es = visibleTopology.edges.filter((x) => x.from === id || x.to === id)
+      if (es.length === 1) {
+        selectEdge({ from: es[0]!.from, to: es[0]!.to })
+      } else {
+        setNodeCand((prev) => (prev === id ? null : id))
+      }
+      setSelKey(null)
+    },
+    [visibleTopology, selectEdge],
+  )
+
+  const onPdfNavigate = useCallback((docId: string, page: number) => {
+    setPdfNav({ docId, page })
+  }, [])
+
+  /* ---- 境目ドラッグ ---- */
+  const splitRef = useRef<HTMLDivElement>(null)
+  const sashRef = useRef<HTMLDivElement>(null)
+  const sashDrag = useRef(false)
+  useEffect(() => {
+    const onMove = (e: PointerEvent) => {
+      if (!sashDrag.current) return
+      const cont = splitRef.current
+      const gw = cont?.querySelector<HTMLElement>(".graphwrap-outer")
+      if (!cont || !gw) return
+      const r = cont.getBoundingClientRect()
+      // 図ペインの下端をポインタに合わせる。ペインの高さはコンテナ高に対する % で保持する
+      const top = gw.getBoundingClientRect().top - r.top
+      setSplitH(Math.min(80, Math.max(12, ((e.clientY - r.top - top) / r.height) * 100)))
+    }
+    const onEnd = () => {
+      sashDrag.current = false
+      sashRef.current?.classList.remove("drag")
+    }
+    window.addEventListener("pointermove", onMove)
+    window.addEventListener("pointerup", onEnd)
+    window.addEventListener("pointercancel", onEnd)
+    return () => {
+      window.removeEventListener("pointermove", onMove)
+      window.removeEventListener("pointerup", onEnd)
+      window.removeEventListener("pointercancel", onEnd)
+    }
+  }, [])
+
+  /* ---- 再描画キー（`r`） ---- */
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement
+      if (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable) return
+      if (e.metaKey || e.ctrlKey || e.altKey) return
+      if (e.key === "r" || e.key === "R") window.location.reload()
+    }
+    document.addEventListener("keydown", onKey)
+    return () => document.removeEventListener("keydown", onKey)
+  }, [])
 
   if (error) {
     return (
@@ -188,220 +215,127 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
     )
   }
 
-  const { report } = current
+  const report = current.report
   const m = report.meta
-  const t = report.transform
-
-  // このページの目的は「配布データが正しいか」を判別できることなので、
-  // サマリも検証の指標だけを出す（総額のような分析の数字は明細タブが持つ）。
-  // ⚠️ **団体ごとに見る。** ノードは系統1本で共有なので、団体コードで引かないと
-  // 別の団体の行数と突き合わせることになる。
-  const prov = report.ingestion
-  const roundtripOk = prov.filter((p) => p.roundtrip_verified).length
-
-  const stats: { label: string; value: string | number; tone?: string; hint?: string }[] = [
-    {
-      label: "検査",
-      value: `${report.summary.passed}/${report.summary.total}`,
-      tone: report.summary.failed ? "bad" : "good",
-      hint: "1つでも落ちると成果物を書き出さない",
-    },
-    // ⚠️ 団体で意味が違う。三鷹市は当初予算額、狛江市は決算の予算現額（全会計・全年度の合計）。
-    {
-      label: "原文の復元",
-      value: `${roundtripOk}/${prov.length}`,
-      tone: roundtripOk === prov.length ? "good" : "bad",
-      hint: "文字コードの復号が可逆で、保存した Parquet から原文に戻ること",
-    },
-    // 判定は生成側（summary.rowsPreserved）。配布物は1行に複数の金額を展開する団体があり、
-    // 期待値（stg × 金額の数）は dbt の宣言を知る生成側にしか計算できない
-    {
-      label: "行の保存",
-      value: report.summary.rowsPreserved ? "一致" : "不一致",
-      tone: report.summary.rowsPreserved ? "good" : "bad",
-      hint: "staging の全行が配布物に残っていること（1行 × 金額の数）",
-    },
-    {
-      label: "COFOG 割当済み（金額比）",
-      // ⚠️ **ここで足し直さない。** 割合は生成側（report/budget/build.ts）が持つ
-      value: pct(t.assignedShare.sum),
-      // ⚠️ **全年度の合算だと明示する。** 名称の載った資料が一部の年度にしか無い団体では、
-      // 合算の割合が年度ごとの実態から離れる（狛江市は 73% の年度と 91% の年度がある）。
-      hint: "COFOG は政府支出の機能別分類（教育、保健など10区分）。国際標準。全年度の合算で、年度ごとは「年度ごとの収録」タブ",
-    },
-    // ⚠️ 消去が成立しない団体がある（狛江市は相手の会計が原典から決まらない）。
-    // 「相殺する」と決め打ちで書くと、消去していない団体で嘘になる。
-  ]
+  const summary = report.summary
+  const cand = nodeCand ? nodeById.get(nodeCand) : null
+  const candEdges = nodeCand
+    ? visibleTopology.edges.filter((e) => e.from === nodeCand || e.to === nodeCand)
+    : []
 
   return (
     <Layout>
-      <main className="mx-auto flex max-w-[1500px] flex-col gap-8 p-4 pb-24">
-        <section className="flex flex-col gap-4">
-          <h1 className="text-2xl font-semibold tracking-tight">
-            {m.jurisdictionName}の ELT パイプライン
+      {/* ヘッダー分（h-14=56px）を引いた残りを上下に割る。ページはスクロールしない */}
+      <div
+        className="pv vsplit"
+        ref={splitRef}
+        style={{ height: "calc(100dvh - 3.5rem)" }}
+      >
+        <div className="headline">
+          <h1 style={{ fontSize: 20, fontWeight: 600, lineHeight: "28px", margin: 0 }}>
+            {m.jurisdictionName}
           </h1>
-          <p className="max-w-[80ch] text-sm text-muted-foreground">
-            原典の取得から、検査・COFOG への分類・配布物の生成までを1本の系統で示す。
-            取得と正規化は分けてあり、分類の規則を変えても原典は取り直さない。
-          </p>
-          <div className="mb-2 flex flex-wrap items-baseline gap-3">
-            {data.jurisdictions.length > 1 ? (
-              <JurisdictionSelect
-                jurisdictions={data.jurisdictions.map((j) => ({
-                  code: j.code,
-                  name: j.report.meta.jurisdictionName,
-                }))}
-                value={current.code}
-                basePath="pipeline"
-              />
-            ) : // 団体が1つなら切り替える先が無い。名称は見出しが既に言っている
-            null}
-            {/* 年度。**切り替える先があるときだけ出す**（1年度の団体は選ばせても何も変わらない）。
-                置き場と見た目は分析画面の年度セレクタに揃える — 同じ操作が画面ごとに違う形で
-                現れると、どちらかが別の意味だと読まれる */}
-            {m.fiscalYears.length > 1 ? (
-              <FiscalYearSelect
-                years={m.fiscalYears}
-                value={fiscalYear}
-                onChange={setFiscalYear}
-                allowAll
-                className="w-32"
-              />
-            ) : (
-              <span className="truncate text-sm text-muted-foreground">
-                {m.fiscalYears[0]}年度
-              </span>
-            )}
-            <span className="truncate text-sm text-muted-foreground">{m.phase.label}</span>
-            {/* この団体の支出分析（COFOG 別の金額）への導線。パイプラインは検証、分析は数字を見る場所で目的が違う。
-                analysis.tsx 側の「ELT パイプラインを見る」ボタンと対になる導線なので、扱いを揃える。
-                ⚠️ `render` に `<a>` を渡すときは `nativeButton={false}` が要る（Base UI の既定は
-                `nativeButton: true` で、落とすとボタンのセマンティクスが外れて実行時に警告が出る） */}
-            <Button
-              variant="outline"
-              size="sm"
-              nativeButton={false}
-              className="ml-auto shrink-0"
-              render={<a href={withBase(`/analysis/${current.code}/`)}>この団体の支出分析を見る</a>}
+          {data.jurisdictions.length > 1 && (
+            <JurisdictionSelect
+              jurisdictions={data.jurisdictions.map((j) => ({
+                code: j.code,
+                name: j.report.meta.jurisdictionName,
+              }))}
+              value={current.code}
+              basePath="pipeline"
             />
-          </div>
-
-          <FlowGraph
-            topology={visibleTopology}
-            report={report}
-            fiscalYear={fiscalYear}
-            onSelectNode={setSelectedNode}
-            selected={selectedNode}
-          />
-
-          <div className="flex flex-wrap gap-3">
-            {stats.map((s) => (
-              <Card key={s.label} className="min-w-[9rem] flex-1 gap-1 py-4">
-                <CardHeader className="px-4">
-                  <CardDescription className="flex items-center gap-1 text-xs">
-                    {s.label}
-                    {s.hint && (
-                      <Tooltip>
-                        <TooltipTrigger
-                          className="text-muted-foreground hover:text-foreground focus-visible:ring-ring/50 rounded-full focus-visible:ring-[3px] focus-visible:outline-none"
-                          aria-label={`${s.label} の定義`}
-                        >
-                          <Info aria-hidden className="size-3" />
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-[36ch]">{s.hint}</TooltipContent>
-                      </Tooltip>
-                    )}
-                  </CardDescription>
-                  <CardTitle
-                    className={
-                      s.tone === "good"
-                        ? "text-xl text-[var(--color-chart-2)]"
-                        : s.tone === "bad"
-                          ? "text-xl text-destructive"
-                          : "text-xl"
-                    }
-                  >
-                    {s.value}
-                  </CardTitle>
-                </CardHeader>
-              </Card>
+          )}
+          {m.fiscalYears.length > 1 ? (
+            <FiscalYearSelect
+              years={m.fiscalYears}
+              value={year}
+              onChange={changeYear}
+              allowAll
+              className="w-32"
+              size="sm"
+            />
+          ) : (
+            <span className="text-sm text-muted-foreground">{m.fiscalYears[0]}年度</span>
+          )}
+          <span className="text-sm text-muted-foreground">{m.phase.label}</span>
+          <span className="text-xs text-muted-foreground">
+            検査 {summary.passed}/{summary.total}
+            {summary.failed ? `・失敗${summary.failed}` : ""}
+            {summary.warned ? `・警告${summary.warned}` : ""}
+          </span>
+          <button className="linky text-xs" onClick={() => setCaveats((v) => !v)}>
+            誤読の罠 {report.caveats.length} 件{caveats ? " ▴" : " ▾"}
+          </button>
+          <a
+            href={withBase(`/analysis/${current.code}/`)}
+            className="text-xs"
+            style={{ color: "var(--primary)", marginLeft: "auto" }}
+          >
+            この団体の支出分析を見る
+          </a>
+        </div>
+        {caveats && (
+          <div className="caveat-drawer">
+            {report.caveats.map((c, i) => (
+              <div className="cv" key={i}>
+                <div className="t">{caveatText(c.topic)}</div>
+                <div className="b">{caveatText(c.body)}</div>
+              </div>
             ))}
           </div>
-        </section>
-
-        <Tabs value={tab} onValueChange={setTab}>
-          <TabsList>
-            {/* 検証の順に並べる: 何を保証しているか（検査）→ どこまで取れているか（年度）
-                → どこから来たか（証跡）→ fudoki は何を足したか（COFOG）
-                → 1行ずつ確かめる（明細） */}
-            <TabsTrigger value="checks">検査</TabsTrigger>
-            <TabsTrigger value="coverage">年度ごとの収録</TabsTrigger>
-            <TabsTrigger value="stages">証跡</TabsTrigger>
-            <TabsTrigger value="cofog">COFOG の判断</TabsTrigger>
-            <TabsTrigger value="detail">明細</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="coverage" className="pt-4">
-            <CoveragePanel report={report} />
-          </TabsContent>
-
-          <TabsContent value="stages" className="pt-4">
-            <StageDetail report={report} />
-          </TabsContent>
-          <TabsContent value="cofog" className="pt-4">
-            <CofogPanel report={report} />
-          </TabsContent>
-          <TabsContent value="checks" className="pt-4">
-            <ChecksPanel
-              report={report}
-              selectedNode={selectedNode}
-              onClearNode={() => setSelectedNode(null)}
-            />
-          </TabsContent>
-          <TabsContent value="detail" className="pt-4">
-            {detailError ? (
-              <Alert variant="destructive">
-                <AlertTitle>明細を読み込めませんでした</AlertTitle>
-                <AlertDescription>{detailError}</AlertDescription>
-              </Alert>
-            ) : rows ? (
-              <DetailBrowser
-                code={current.code}
-                expenditure={rows.expenditure}
-                revenue={rows.revenue}
-                levels={{
-                  expenditure: levelsOf(report, "expenditure"),
-                  revenue: levelsOf(report, "revenue"),
-                }}
-                tables={{ expenditure: loaded!.expenditure, revenue: loaded!.revenue }}
-              />
-            ) : (
-              <p className="text-sm text-muted-foreground">明細を読み込み中…</p>
-            )}
-          </TabsContent>
-        </Tabs>
-
-        {/* ⚠️ 団体固有の帰属表示。Layout の共通フッターに入れられない
-            （current.code・m.landingPage・m.license.id という報告データに依存するため） */}
-        <footer className="border-t pt-6 text-xs leading-relaxed text-muted-foreground">
-          配布物 <code>data/budget/datapackages/{current.code}/</code> ／ 原典{" "}
-          <code>data/budget/raw/</code>
-          <br />
-          原典:{" "}
-          <a className="underline" href={m.landingPage} target="_blank" rel="noreferrer">
-            {m.attribution}
-          </a>{" "}
-          ／ {m.license.id} ／ 生成 {m.generatedAt.replace("T", " ").slice(0, 19)}
-        </footer>
-      </main>
+        )}
+        <div className="graphwrap-outer" style={{ flex: `0 0 ${splitH}%`, minHeight: 0, position: "relative" }}>
+          <LineageGraph
+            topology={visibleTopology}
+            code={current.code}
+            year={year}
+            sel={pair}
+            nodeCand={nodeCand}
+            onSelectEdge={selectEdge}
+            onSelectNode={selectNode}
+          />
+        </div>
+        <div
+          className="splitsash"
+          ref={sashRef}
+          role="separator"
+          aria-orientation="horizontal"
+          title="ドラッグで上下の比率を変更"
+          onPointerDown={(e) => {
+            sashDrag.current = true
+            e.currentTarget.classList.add("drag")
+            e.preventDefault()
+          }}
+        />
+        <div className="iowrap">
+          <IoPanel
+            report={report}
+            code={current.code}
+            pair={pair}
+            year={year}
+            selectedKey={selKey}
+            onSelectRow={setSelKey}
+            hoverKey={hovKey}
+            onHoverRow={setHovKey}
+            pdfDocId={pdfNav.docId}
+            pdfPage={pdfNav.page}
+            onPdfNavigate={onPdfNavigate}
+          />
+        </div>
+        {cand && candEdges.length > 0 && (
+          <div className="candpop" style={{ position: "fixed", left: 16, bottom: 16 }}>
+            <div className="text-xs text-muted-foreground" style={{ padding: "2px 8px 6px" }}>
+              {nodeLabel(cand)} に出入りする組（{candEdges.length}件）— 1つ選ぶ:
+            </div>
+            {candEdges.map((e) => (
+              <button key={`${e.from}|${e.to}`} onClick={() => selectEdge(e)}>
+                {e.from === nodeCand ? "→ " : "← "}
+                {nodeLabel(nodeById.get(e.from)!)} → {nodeLabel(nodeById.get(e.to)!)}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
     </Layout>
   )
 }
-
-/**
- * 未収録団体のページ（`/pipeline/<未収録の団体コード>/`）。
- *
- * 収録済みの先頭団体へ fallback しない代わりに、団体名は出す
- * （jurisdictions.json 由来。コードだけを見せない）。
- * 地図を経由せずに他の団体へ移れるよう、収録済みの団体へのセレクタは残す。
- */

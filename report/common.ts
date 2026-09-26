@@ -96,28 +96,69 @@ export type Topology = {
 export type Check = {
   name: string
   description: string
+  /**
+   * 検査の自然文の説明。**`dbt/tests/*.sql` 冒頭のコメントから取る** —
+   * 検査が何を見ているかはそこに書いてある。generic test（unique / not_null など）は
+   * コメントを持たないので `test_metadata` から組み立てる。
+   */
+  explanation: string
   binds: string[]
   ok: boolean
   severity: 'error' | 'warn'
   status: string
   failures: number | null
   detail: string
+  /**
+   * 非 pass の検査で、どの団体の行に当たったか。**dbt の結果文からは読めない**ので、
+   * 生成側が compiled SQL を読み直して付ける。結果行が団体コードの列を持てば団体ごとの
+   * 件数、持たなければ `cross`（横断・対象特定不能 — どの団体の分かは画面では言えない）。
+   */
+  attribution?: CheckAttribution
 }
+
+/** 非 pass の検査の帰属。`cross` は全団体を束ねる検査で、どの団体の行かを特定できないもの */
+export type CheckAttribution = {
+  kind: 'jurisdiction' | 'cross'
+  /** 団体コードごとの該当行数（kind === 'jurisdiction' のとき） */
+  counts?: Record<string, number>
+  /** 先頭の該当行（確認用。rows の各要素は columns の並びに対応） */
+  columns?: string[]
+  rows?: (string | number | null)[][]
+}
+
+/** 突合で残った不一致（原典に印字された合計と、抽出した行の合計が合わない箇所） */
+export type ExtractMismatch = Record<string, string | number | null>
 
 /** 事業名の抽出器（`extract_projects.py`）の要約 */
 export type ProjectNamesExtract = {
   kind: 'project-names'
   projects: number
+  /** 原典に印字された階層合計と一致した事業の数 */
+  projectsReconciled?: number
   moku: number
+  mokuHeadersFound?: number
+  mokuNotReconciled?: number
   totalThousandYen: number
+  notReconciled?: ExtractMismatch[]
 }
 
 /** 事項別明細書の抽出器（`extract_statement.py`）の要約 */
 export type StatementExtract = {
   kind: 'statement'
   leaves: number
+  /** リーフ項目の印字金額と抽出金額が一致した数 */
+  leavesReconciled?: number
   moku: number
+  mokuHeadersFound?: number
+  mokuNotReconciled?: number
+  setsuColumnNotReconciled?: number
+  /** 説明欄の段ごとの合計（project / detail など、千円） */
+  explanationLevelTotals?: Record<string, number>
+  annotationsDropped?: number
+  mokuWithoutExplanation?: number
   total: number
+  notReconciled?: ExtractMismatch[]
+  nameStable?: boolean
 }
 
 /** 歳入の科目名称の抽出器（`extract_revenue_accounts.py`）の要約 */
@@ -125,6 +166,10 @@ export type RevenueAccountsExtract = {
   kind: 'revenue-accounts'
   moku: number
   named: number
+  /** 金額の読み取りまで取れた目の数（OCR の原典は取れないものがある） */
+  withAmount?: number
+  kan?: number
+  duplicateKeys?: number
 }
 
 /**
@@ -156,8 +201,19 @@ export type Provenance = {
   direction?: string
   /** ⚠️ **正本の取り込みだけが持つ。** 抽出物は `document_title` を名乗る */
   resource_name?: string
+  /** 資料（文書）の名。PDF の取得元はリソース名でなく文書名を持つ */
+  document_title?: string
+  /** カタログ側のデータセット名（リソースの属する箱） */
+  dataset_title?: string
   fiscal_year_basis?: string
+  /** 直 URL の宣言しか無い取得元は、どうやって URL を決めたかを文章で持つ */
+  url_basis?: string
+  /** カタログのリソース URL が宣言済みか（名前解決で拾ったか直書きかの区別） */
+  resource_url_declared?: boolean
+  resource_url_basis?: string
   request_url: string
+  /** 原典の公開ページ（取得 URL ではなく人が辿るページ） */
+  landing_page?: string
   status: number
   bytes: number
   sha256: string
@@ -168,9 +224,31 @@ export type Provenance = {
   header?: string[]
   /** ⚠️ **正本の取り込みだけが持つ。** 抽出物は行数ではなく抽出の要約（`extracted`）を持つ */
   rows?: number
+  /**
+   * 取得物が原典そのものか。`verbatim` = 原文をそのまま置いた（復元検査が成り立つ）、
+   * `extracted` = 抽出した表しか置いていない（復元は成立しない）。
+   * 古い証跡は持たない — 無いものは verbatim と同じ扱いにする
+   */
+  raw_form?: 'verbatim' | 'extracted'
   roundtrip_verified: boolean
   /** 抽出した取得元だけが持つ。`ingestion/budget/extract_*.py@<版>` */
   extractor?: string
+  /** PDF の収録頁範囲 `[最初, 最後]`（抽出した取得元だけ） */
+  pages?: [number, number]
+  /** 頁の組版（spread = 見開き2頁で1行） */
+  layout?: string
+  /** 何を確かめて収録したかの方式名（`hierarchy-totals + name-stability` など） */
+  verification?: string
+  verification_note?: string
+  /** 抽出時に加えた正規化（検証の「何を見ていないか」を説明するため証跡が持つ） */
+  normalization?: string[]
+  /** 原典の金額の単位（「千円」など）。宣言は dbt_project.yml の budget_amounts が正本 */
+  source_amount_unit?: string
+  /** 再配布の可否とその根拠（取得元ごとに判断している） */
+  redistribute?: string
+  redistribute_basis?: string
+  license_id?: string
+  attribution?: string
   /**
    * PDF から起こした取得元だけが持つ、抽出の要約（原典と1対1ではない）。
    *

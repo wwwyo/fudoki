@@ -8,19 +8,17 @@
  * 階層・金額・段階の構造は `dbt/dbt_project.yml` の vars が正本で、
  * dbt のモデルも検査もそこを見ている。ここへ写すと片方だけ直る。
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { decodeText, fetchCapped, sha256, splitCsvLine } from '../../ingestion/lib/source'
 import { loadJurisdictions } from '../../ingestion/shared/jurisdictions'
 import { isCanonicalFetch } from './schema'
-import type { Check, CofogCode, NodePreview, Provenance, ReportData, Topology } from './schema'
+import type { Check, CofogCode, Provenance, ReportData, Topology } from './schema'
 import { ROOT, TARGET, buildChecks, buildTopology, q, readJson, type Manifest, type RunResults } from '../lineage'
 import { BY_JURISDICTION, SHARED } from './static'
 import { cofogGranularity, cmp, foldBy, share, type StateRow } from './cofog'
 import {
-  DIRECTIONS, LEVEL_JA,
-  assertDetailColumns, cofogLabel,
-  type CofogDepth, type Direction, type DetailTable, type Level,
+  DIRECTIONS, LEVEL_JA, cofogLabel,
+  type CofogDepth, type Direction, type Level,
 } from './detail'
 
 /**
@@ -445,6 +443,17 @@ function provenanceOf(dir: string): Provenance[] {
 }
 
 /**
+ * 抽出物（PDF から起こした補助表）の証跡。**団体の `raw/jurisdiction=<code>/` の外に
+ * 置かれる**ので `ingestion`（正本の取り込みだけ）とは別に集める。
+ */
+function supplementProvenanceOf(code: string): Provenance[] {
+  return ['project-names', 'revenue-accounts'].flatMap((kind) => {
+    const dir = join(ROOT, 'data/budget/raw', kind, `jurisdiction=${code}`)
+    return existsSync(dir) ? provenanceOf(dir) : []
+  })
+}
+
+/**
  * 全団体の証跡。**系統の図は団体で切らない**（パイプラインは1本で、
  * どの団体のノードも同じ図に出る）ので、原典ノードの行数も全団体から引く。
  */
@@ -502,6 +511,15 @@ function build(
     },
     topology,
     ingestion: prov,
+    // **原典の金額列と単位の宣言**（正本は dbt_project.yml — 画面はこれをそのまま出す）
+    amounts: Object.fromEntries(DIRECTIONS.map((direction) => [
+      direction,
+      amountsOf(code, direction).map((a) => ({
+        name: a.name, source: a.source, unit: a.unit, multiplier: a.multiplier,
+        phase: a.phase, phaseLabel: a.phase_label, years: a.years ?? null,
+      })),
+    ])) as ReportData['amounts'],
+    supplements: supplementProvenanceOf(code),
     detailLevels: DIRECTIONS.map((direction) => ({ direction, levels: levelsOf(code, direction) })),
     levels: buildLevels(code),
     coverage: buildCoverage(code, cofogState),
@@ -516,81 +534,6 @@ function build(
     customColumnTypes: CUSTOM_COLUMN_TYPES,
   }
 }
-
-/**
- * 明細。**配布する CSV を読み、画面用に join した射影を作る。**
- *
- * 配布物は正本（判断なし）と判断のリソースを別ファイルにしてある。
- * 画面はその両方を見せたいので、利用者が `budget_line_id` で join して得るのと
- * 同じものをここで組む。**配布物を太らせて画面に合わせない** —
- * それをやると正本に判断が混ざる。
- *
- * `*_source`（原典のセル全文）は配布物から落としてある（code‖label で復元できるため）。
- * 画面は階層の絞り込みに使うので、ここで組み立て直す。
- *
- * ⚠️ **配布物に phase_label / source_amount_unit の列が無い団体がある。**
- * 全行同じ値なら配布物から外して descriptor の定数にしてあるからで、
- * 画面は列として受け取るので無い側をここで補う。
- * ⚠️ **2つは別々に決まる。** 段階が1つなら phase_label は定数だが、
- * 単位は年度でも割れる（多摩市は令和3〜6年度が千円、令和7年度が円）ので列に残る。
- */
-/**
- * 割当の根拠。**規則ごとに1つ**なので行に複製せず、明細と一緒に1回だけ運ぶ。
- * 規則表は団体ごとの配布物にあり、その団体に効く規則だけが入っている。
- */
-function ruleBasisOf(code: string): Record<string, string> {
-  return Object.fromEntries(
-    q<{ rule_id: string; basis: string }>(
-      `select rule_id, basis from read_csv('${join(ROOT, 'data/budget/datapackages')}/${code}/cofog_rules.csv',
-       header = true, all_varchar = true)`,
-    ).map((r) => [r.rule_id, r.basis]),
-  )
-}
-
-function detailProjection(code: string, direction: Direction): DetailTable {
-  const levels = levelsOf(code, direction)
-  // 事業名は fudoki の判断（原典に無い）。階層に大事業を持つ団体だけに掛かる。
-  const PROJECT_NAMES = levels.includes('daijigyo' as Level)
-    ? `left join read_csv('${join(ROOT, `data/budget/datapackages/${code}/project_names.csv`)}',
-         header = true, all_varchar = true) pn
-       on pn.fiscal_year = c.fiscal_year and pn.fund_code = c.fund_code
-       and pn.kan_code = c.kan_code and pn.kou_code = c.kou_code
-       and pn.moku_code = c.moku_code and pn.daijigyo_code = c.daijigyo_code`
-    : ''
-  const amounts = amountsOf(code, direction)
-  const canonical = join(ROOT, `data/budget/datapackages/${code}/${direction}.csv`)
-  // ⚠️ join 相手にも同名の列があるので c. で明示する（曖昧参照で DuckDB が落ちる）
-  const src = levels.map((l) => `c.${l}_code || c.${l}_label as ${l}_source`).join(', ')
-  // ⚠️ **段階の数と宣言の数を分けて見る。** 多摩市は段階が1つ（approved）なので
-  // phase_label は配布物の定数だが、単位は年度で割れるので配布物の列になっている。
-  // 一緒くたにすると、既にある列を二重に select して DuckDB が落ちる。
-  const constants = [
-    phaseIdsOf(code, direction).size === 1 ? `, '${amounts[0]!.phase_label}' as phase_label` : '',
-    amounts.length === 1 ? `, '${amounts[0]!.unit}' as source_amount_unit` : '',
-  ].join('')
-  // ⚠️ **異なり数の少ない列を行へ join しない。** 根拠（basis）は19種類しかないのに
-  // 行へ入れると狛江市の歳出だけで 7.0 MB になる（`cofog_rule_id` が全行にあるので情報量ゼロ）。
-  // 大分類名も画面が宣言として持っている。どちらも規則表・宣言から引く。
-  const rows = q<Record<string, unknown>>(`
-    select c.*, ${src}${constants},
-           d.cofog_status, d.cofog_division as cofog_division_code,
-           d.cofog_consolidation, d.cofog_decided_at_level, d.cofog_rule_id,
-           ${levels.includes('daijigyo' as Level) ? "coalesce(pn.project_name, '')" : "''"} as project_name
-    from read_csv('${canonical}', header = true, all_varchar = true) c
-    left join read_csv('${join(ROOT, `data/budget/datapackages/${code}/cofog.csv`)}', header = true, all_varchar = true) d
-      using (budget_line_id)
-    ${PROJECT_NAMES}
-    order by c.fiscal_year, c.source_row, c.phase_id`)
-  const columns = rows.length ? Object.keys(rows[0]!) : []
-  // **宣言した列が欠けていたら落とす。** 画面が黙って空になるより、生成が止まるほうがよい。
-  assertDetailColumns(code, direction, levels, columns)
-  return {
-    columns: columns as DetailTable['columns'],
-    rows: rows.map((x) => columns.map((c) => String(x[c] ?? ''))),
-    ruleBasis: ruleBasisOf(code),
-  }
-}
-
 
 const manifest = readJson<Manifest>(join(TARGET, 'manifest.json'))
 const results = readJson<RunResults>(join(TARGET, 'run_results.json'))
@@ -618,104 +561,13 @@ writeFileSync(join(ROOT, 'apps/web/public/pipeline.json'), `${JSON.stringify({
   }),
 })}\n`)
 
-for (const { code } of reports) {
-  for (const direction of DIRECTIONS) {
-    const table = detailProjection(code, direction)
-    writeFileSync(
-      join(ROOT, `apps/web/public/detail-${code}-${direction}.json`),
-      `${JSON.stringify(table)}\n`,
-    )
-  }
-}
-
-/**
- * ノードごとの中身の先頭。グラフでノードを選んだときに画面が出す。
- * **原典（source）は raw の Parquet を直接読む** — 加工前の姿を見せるのが目的なので、
- * staging 以降のテーブルで代用しない。
- *
- * ⚠️ **原典ノードは団体ごとにある。** ソースの識別子（`source.fudoki.raw_132195.expenditure`）から
- * 団体コードを取る。1団体を前提に外から `code` を渡すと、狛江市のノードに三鷹市の原典が出る
- * （系統の行数で実際にその壊れ方をした）。
- */
-function previewFrom(node: ReportData['topology']['nodes'][number]): string {
-  if (node.kind === 'source') {
-    const owner = /\.raw_(\d{6})/.exec(node.id)?.[1]
-    if (!owner) throw new Error(`ソース ${node.id} の名前から団体コードを取れない`)
-    // 事業名・歳入科目名は原典の CSV とは別の場所（PDF から起こした抽出物）にある
-    if (node.id.includes('project_names'))
-      return `read_parquet('${join(ROOT, 'data/budget/raw/project-names')}/jurisdiction=${owner}/**/data.parquet')`
-    if (node.id.includes('revenue_accounts'))
-      return `read_parquet('${join(ROOT, 'data/budget/raw/revenue-accounts')}/jurisdiction=${owner}/**/data.parquet')`
-    return `read_parquet('${join(ROOT, 'data/budget/raw')}/jurisdiction=${owner}/**/direction=${node.label}/data.parquet')`
-  }
-  // package 段は外部 CSV。DuckDB のビューは dbt の作業ディレクトリ基準なので実ファイルを読む
-  if (node.artifact) return `read_csv('${join(ROOT, 'dbt', node.artifact)}', header = true, all_varchar = true)`
-  return `"${node.label}"`
-}
-
-// **プレビューは団体で分けない。** 系統が1本なので、ノードの集合も1つ。
-const PREVIEW_ROWS = 20
-mkdirSync(join(ROOT, 'apps/web/public/preview'), { recursive: true })
-// 取得元（origin）は DuckDB に無い。下の「取得元 CSV」節が fetch して書く
-for (const node of topology.nodes.filter((n) => n.kind !== 'origin')) {
-  const rows = q<Record<string, unknown>>(`select * from ${previewFrom(node)} limit ${PREVIEW_ROWS}`)
-  const columns = rows.length ? Object.keys(rows[0]!) : []
-  const preview: NodePreview = {
-    id: node.id,
-    columns,
-    rows: rows.map((r) => columns.map((c) => (r[c] == null ? '' : String(r[c])))),
-    limit: PREVIEW_ROWS,
-    totalRows: node.rows,
-  }
-  writeFileSync(join(ROOT, 'apps/web/public/preview', `${node.id}.json`), `${JSON.stringify(preview)}\n`)
-}
-
-/**
- * 原典ノードの「入力」= 取得元の CSV そのもの。**都度取りに行き、SHA-256 が同じ間はキャッシュを使う。**
- * raw（Parquet）は取り込み後の姿なので、その手前＝自治体が配っているファイルの生の姿を左に出す。
- * 取れなくても報告は止めない — オフラインでも報告は原典から作れるのが ELT の建付けで、
- * この節はその上に乗る飾りに過ぎない。
- *
- * ⚠️ **証跡は団体ごとに引く。** 2団体目からは direction だけでは決まらない。
- */
-const ORIGIN_CACHE = join(ROOT, '.cache/origin-csv')
-mkdirSync(ORIGIN_CACHE, { recursive: true })
-const provByCode = new Map(reports.map(({ code, report }) => [code, report.ingestion]))
-for (const node of topology.nodes.filter((n) => n.kind === 'source')) {
-  const code = /\.raw_(\d{6})/.exec(node.id)?.[1]
-  const p = provByCode.get(code ?? '')?.find((x) => x.direction === node.label)
-  if (!p) continue
-  // キャッシュキーは証跡の SHA-256。上流が差し替えたら証跡も変わり、キャッシュも取り直しになる
-  const cached = join(ORIGIN_CACHE, `${p.sha256}.csv`)
-  let bytes: Uint8Array | null = existsSync(cached) ? new Uint8Array(readFileSync(cached)) : null
-  if (!bytes) {
-    const f = await fetchCapped(p.request_url, 20 * 1024 * 1024)
-    if (!f.ok) {
-      console.warn(`warn  取得元 CSV を取れない（${node.label}: ${f.reason}）。入力プレビューは無しで続ける`)
-      continue
-    }
-    if (sha256(f.bytes) !== p.sha256)
-      console.warn(`warn  取得元 CSV が証跡の SHA-256 と一致しない（${node.label}）。上流が差し替えた可能性`)
-    bytes = f.bytes
-    writeFileSync(cached, bytes)
-  }
-  const lines = decodeText(bytes).split(/\r?\n/).filter((l) => l.trim())
-  const preview: NodePreview = {
-    id: `${node.id}.origin`,
-    columns: splitCsvLine(lines[0] ?? ''),
-    rows: lines.slice(1, 1 + PREVIEW_ROWS).map(splitCsvLine),
-    limit: PREVIEW_ROWS,
-    totalRows: Math.max(0, lines.length - 1),
-    title: p.resource_name,
-    sourceUrl: p.request_url,
-    fetchedAt: p.fetched_at,
-  }
-  writeFileSync(join(ROOT, 'apps/web/public/preview', `${node.id}.origin.json`), `${JSON.stringify(preview)}\n`)
-}
+// ⚠️ **ノードの中身（行データ）はここでは書かない。** 検証画面はローカルで動かす
+// dev サーバの middleware（apps/web/vite-plugins/local-data.ts）が、warehouse・
+// raw の Parquet・取得元 CSV から都度切り出す。事前生成にすると、全ノード × 全行の
+// JSON が公開アセットに載ってしまう（検証用の生の行は公開しない方針）。
 
 for (const { code, report } of reports) {
   const s = report.summary
   console.log(`ok  ${code}  検査 ${s.passed}/${s.total}（警告 ${s.warned}）  `
     + `ノード ${report.topology.nodes.length}  辺 ${report.topology.edges.length}`)
 }
-console.log(`ok  プレビュー ${topology.nodes.length} 件`)

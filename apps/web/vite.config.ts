@@ -4,6 +4,7 @@ import tailwindcss from "@tailwindcss/vite"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 import { jurisdictionPages } from "./vite-plugins/jurisdiction-pages.ts"
+import { localData } from "./vite-plugins/local-data.ts"
 
 const ROOT = import.meta.dirname
 
@@ -25,7 +26,7 @@ const pageInput = Object.fromEntries(
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss(), jurisdictionPages(ROOT)],
+  plugins: [react(), tailwindcss(), jurisdictionPages(ROOT), localData(ROOT)],
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "./src"),
