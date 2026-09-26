@@ -39,7 +39,9 @@ export function localData(root: string): Plugin {
   const MAX_OUT = 512 * 1024 * 1024
   const duckdb = (sql: string, cwd = repo): Promise<Record<string, unknown>[]> =>
     new Promise((resolve, reject) => {
-      const p = spawn("duckdb", ["-json", warehouse, "-c", sql], { cwd })
+      // 読むだけなので -readonly: read-write で開くとファイルロックを取り、
+      // 画面が一度に出す並行リクエスト同士で衝突する
+      const p = spawn("duckdb", ["-json", "-readonly", warehouse, "-c", sql], { cwd })
       const chunks: Buffer[] = []
       const err: Buffer[] = []
       let size = 0

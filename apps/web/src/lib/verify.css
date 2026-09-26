@@ -114,3 +114,4 @@
 .pv .splitsash::after { content: ""; position: absolute; left: 50%; top: 50%; width: 56px; height: 4px; transform: translate(-50%, -50%); border-radius: 2px; background: color-mix(in oklch, var(--muted-foreground) 45%, transparent); }
 .pv .splitsash:hover::after, .pv .splitsash.drag::after { background: var(--primary); }
 .pv .iowrap { flex: 1; overflow: auto; min-height: 0; padding: 12px 16px 110px; }
+.pv .io-node + .io-node { margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--border); }

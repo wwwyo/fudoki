@@ -207,7 +207,7 @@ function verificationLines(p: Provenance): { ok: boolean; text: string }[] {
 /** 側ごとの詳細トグル。原典側は出所・取り込みの検証・証跡、それ以外は検査・金額の単位 */
 function SideDetail({
   node,
-  srcId,
+  srcIds,
   dir,
   year,
   rows,
@@ -215,8 +215,8 @@ function SideDetail({
   code,
 }: {
   node: Node
-  /** 原典ノードの場合、その辺が指す取り込みソース（検査・証跡の引き当てに使う） */
-  srcId: string
+  /** 原典ノードの場合、その裏にある取り込みソース（検査・証跡の引き当てに使う） */
+  srcIds: string[]
   dir: Direction | null
   year: number | null
   rows: NodeRows | null
@@ -226,7 +226,7 @@ function SideDetail({
   // dbt の検査は source ノード（取り込み表）に bind する。原典ノードはその代理として
   // 図に出るので、証跡だけでなく `source.*` に bind した検査もここへ寄せる
   const checks = report.checks.filter(
-    (c) => c.binds.includes(node.id) || (node.kind === "origin" && c.binds.includes(srcId)),
+    (c) => c.binds.includes(node.id) || (node.kind === "origin" && srcIds.some((s) => c.binds.includes(s))),
   )
   const bad = checks.filter((c) => c.status !== "pass" && c.status !== "warn").length
   const warn = checks.filter((c) => c.status === "warn").length
@@ -478,9 +478,14 @@ export function IoPanel({
 
   if (!pair || !a || !b) {
     return (
-      <p className="text-muted-foreground" style={{ padding: "8px 0" }}>
-        図の線、またはノードを選んで組を指定すると、ここに入力と出力の行が並びます。
-      </p>
+      <Overview
+        report={report}
+        code={code}
+        year={year}
+        pdfDocId={pdfDocId}
+        pdfPage={pdfPage}
+        onPdfNavigate={onPdfNavigate}
+      />
     )
   }
 
@@ -538,7 +543,7 @@ export function IoPanel({
           ) : (
             <p className="text-xs text-muted-foreground">行データなし（{inRows.reason}）</p>
           )}
-          <SideDetail node={a} srcId={a.kind === "origin" ? pair.to : a.id} dir={dir} year={year} rows={inRows} report={report} code={code} />
+          <SideDetail node={a} srcIds={a.kind === "origin" ? [pair.to] : []} dir={dir} year={year} rows={inRows} report={report} code={code} />
         </div>
         <div className="side">
           <h3>{bName}</h3>
@@ -572,9 +577,139 @@ export function IoPanel({
           ) : (
             <p className="text-xs text-muted-foreground">行データなし（{outRows.reason}）</p>
           )}
-          <SideDetail node={b} srcId={b.id} dir={dir} year={year} rows={outRows} report={report} code={code} />
+          <SideDetail node={b} srcIds={[]} dir={dir} year={year} rows={outRows} report={report} code={code} />
         </div>
       </div>
     </>
+  )
+}
+
+/**
+ * 未選択時の一覧。系統の入口（原典）と出口（配布物）を左右に全部並べる。
+ * 行対応は区間（辺）の話なのでここでは付けない — 辺を選ぶと両側の対応が見られる。
+ */
+function Overview({
+  report,
+  code,
+  year,
+  pdfDocId,
+  pdfPage,
+  onPdfNavigate,
+}: {
+  report: ReportData
+  code: string
+  year: number | null
+  pdfDocId: string | null
+  pdfPage: number | null
+  onPdfNavigate: (docId: string, page: number) => void
+}) {
+  // 入口 = 原典ノード、出口 = 出ていく辺を持たない配布物ノード。共有リソースや
+  // 途中のモデルはここでは出さない（区間の中身は辺選択の役割）
+  const { origins, sinks } = useMemo(() => {
+    const hasOut = new Set(report.topology.edges.map((e) => e.from))
+    const nodes = report.topology.nodes.filter((n) => n.jurisdictionCode === code)
+    return {
+      origins: nodes.filter((n) => n.kind === "origin"),
+      sinks: nodes.filter((n) => n.stage === "package" && !hasOut.has(n.id)),
+    }
+  }, [report.topology, code])
+  // 原典 → 取り込み表の辺から、まとめられた原典でも裏の source を全部拾う
+  const memberSrcIds = (n: Node) =>
+    report.topology.edges.filter((e) => e.from === n.id).map((e) => e.to)
+
+  return (
+    <>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap", marginBottom: 8 }}>
+        <h2 style={{ fontSize: 14, margin: 0 }}>
+          原典 <span className="text-muted-foreground">→</span> 配布物
+        </h2>
+        <span className="text-muted-foreground text-xs">
+          図の辺・ノードを選ぶと、その区間の行対応を出します
+        </span>
+      </div>
+      <div className="io">
+        <div className="side">
+          {origins.map((n) => (
+            <OverviewNode
+              key={n.id}
+              node={n}
+              srcIds={memberSrcIds(n)}
+              code={code}
+              year={year}
+              report={report}
+              pdfDocId={pdfDocId}
+              pdfPage={pdfPage}
+              onPdfNavigate={onPdfNavigate}
+            />
+          ))}
+        </div>
+        <div className="side">
+          {sinks.map((n) => (
+            <OverviewNode key={n.id} node={n} srcIds={[]} code={code} year={year} report={report} />
+          ))}
+        </div>
+      </div>
+    </>
+  )
+}
+
+/** overview の1ノード分。原典なら PDF/CSV、配布物なら配布物の表を出す */
+function OverviewNode({
+  node,
+  srcIds,
+  code,
+  year,
+  report,
+  pdfDocId = null,
+  pdfPage = null,
+  onPdfNavigate = () => {},
+}: {
+  node: Node
+  srcIds: string[]
+  code: string
+  year: number | null
+  report: ReportData
+  pdfDocId?: string | null
+  pdfPage?: number | null
+  onPdfNavigate?: (docId: string, page: number) => void
+}) {
+  const rows = useRows(node.id, code, year, null)
+  const head =
+    node.kind === "origin"
+      ? `原典${rows?.kind === "pdf" ? "（PDF）" : rows?.kind === "table" ? "（CSV）" : ""} — ${node.label}`
+      : nodeLabel(node)
+  return (
+    <div className="io-node">
+      <h3>{head}</h3>
+      {rows === null ? (
+        <p className="text-xs text-muted-foreground">読み込み中…</p>
+      ) : rows.kind === "pdf" ? (
+        <PdfSide
+          docs={rows.docs}
+          hits={null}
+          year={year}
+          docId={pdfDocId}
+          page={pdfPage}
+          onNavigate={onPdfNavigate}
+          flagKeys={null}
+          selectedKey={null}
+          hoverKey={null}
+          onSelectRow={() => {}}
+          onHoverRow={() => {}}
+        />
+      ) : rows.kind === "table" ? (
+        <RowTable
+          table={rows}
+          linkedKeys={null}
+          selectedKey={null}
+          hoverKey={null}
+          onSelectRow={() => {}}
+          onHoverRow={() => {}}
+        />
+      ) : (
+        <p className="text-xs text-muted-foreground">行データなし（{rows.reason}）</p>
+      )}
+      <SideDetail node={node} srcIds={srcIds} dir={null} year={year} rows={rows} report={report} code={code} />
+    </div>
   )
 }
