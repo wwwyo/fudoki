@@ -712,11 +712,15 @@ function ioPanelBodyHtml(j, e, a, b, dir, aPdf, fromKey) {
   const dirShown = dir && (inName.includes(DIR[dir]) || bName.includes(DIR[dir]));
   const meta = [dir && !dirShown && DIR[dir], S.year != null && `${S.year}年度`].filter(Boolean).join(' ／ ');
   const inH3 = a.kind === 'origin' ? `原典（${aPdf ? 'PDF' : 'CSV'}）` : `入力 — ${esc(nodeLabel(a, j))}`;
+  // この区間でしている変換 = 出力側ノードの段の責務（topology.stages が正本）
+  const bSt = j.topology.stages.find((s) => s.id === b.stage);
+  const lead = bSt ? `${esc(bSt.responsibility)}${bSt.excludes ? `　·　しない: ${esc(bSt.excludes)}` : ''}` : '';
   return `<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px">
       <h2 style="font-size:14px;margin:0">${esc(inName)} <span class="mut">→</span> ${esc(bName)}</h2>
       ${meta ? `<span class="mut small">${meta}</span>` : ''}
       ${S.row != null ? `<button class="linky small" data-clear-row>行 ${S.row} の選択を解除</button>` : ''}
     </div>
+    ${lead ? `<p class="mut" style="font-size:12px;margin:-2px 0 10px">${lead}</p>` : ''}
     <div class="io">
       <div class="side"><h3>${inH3}</h3>${aPdf ? pdfSideHtml(j, dir || 'expenditure', linkOut) : tableHtml(j, fromKey, dir, 'in', linkOut)}
         ${ioSideDetailHtml(j, a, dir, { isInput: true, aPdf, srcIds: a.kind === 'origin' ? [e.to] : [] })}</div>

@@ -491,6 +491,9 @@ export function IoPanel({
 
   const inName = a.kind === "origin" ? "原典" : nodeLabel(a)
   const bName = nodeLabel(b)
+  // この区間でしている変換 = 出力側ノードの段の責務（topology.stages が正本。
+  // モデル自体の description は dbt 側で書かれていないので段の責務を使う）
+  const bStage = report.topology.stages.find((s) => s.id === b.stage)
   const dirShown = dir && (inName.includes(DIR_JA[dir]) || bName.includes(DIR_JA[dir]))
   const meta = [dir && !dirShown && DIR_JA[dir], year != null && `${year}年度`].filter(Boolean).join(" ／ ")
   const inH3 =
@@ -511,6 +514,12 @@ export function IoPanel({
           </button>
         )}
       </div>
+      {bStage?.responsibility && (
+        <p className="text-muted-foreground" style={{ fontSize: 12, margin: "-2px 0 10px" }}>
+          {bStage.responsibility}
+          {bStage.excludes ? `　·　しない: ${bStage.excludes}` : ""}
+        </p>
+      )}
       <div className="io">
         <div className="side">
           <h3>{inH3}</h3>
