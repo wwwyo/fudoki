@@ -289,20 +289,27 @@ function edgePath(p1, p2, horiz) {
   return { d: `M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}`, x1, y1, x2, y2 };
 }
 function graphSvg(j, horiz, dimSet, pairHover, vp) {
-  const { pos, W, H } = horiz ? layoutH(j) : layoutV(j);
+  const { pos, W, H, resY } = horiz ? layoutH(j) : layoutV(j);
   const sel = S.edge;
   const candEdges = S.nodeCand ? j.topology.edges.filter((e) => e.from === S.nodeCand || e.to === S.nodeCand) : [];
   const isCand = (e) => candEdges.some((c) => c.from === e.from && c.to === e.to);
   // vp=true のとき全内容を <g class="vp"> に包み、ズーム/パンを transform で掛けられるようにする
   let out = `<svg class="graphsvg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${vp ? '<g class="vp">' : ''}`;
-  // 段の見出し
+  // 段の見出し。層はデータが流れる下の方へ読むので、見出しは列の下に置く。
+  // ⓘ に各段の責務（topology.stages の responsibility）を乗せる
   if (horiz) {
+    const stMap = Object.fromEntries(j.topology.stages.map((s) => [s.id, s]));
+    const labelY = j.topology.nodes.some(isRes) ? resY - 30 : H - 4;
     STAGE_ORDER.forEach((s, i) => {
-      if (j.topology.nodes.some((n) => n.stage === s && !isRes(n)))
-        out += `<text x="${PAD + i * (NW + CGX)}" y="${H - 4}" font-size="11" fill="var(--muted-foreground)">${STAGE_JA[s]}</text>`;
+      if (j.topology.nodes.some((n) => n.stage === s && !isRes(n))) {
+        const x = PAD + i * (NW + CGX);
+        out += `<text x="${x}" y="${labelY}" font-size="11" fill="var(--muted-foreground)">${STAGE_JA[s]}</text>`;
+        if (stMap[s]?.responsibility)
+          out += `<text x="${x + STAGE_JA[s].length * 11 + 8}" y="${labelY}" font-size="11" fill="var(--muted-foreground)" style="cursor:help"><title>${esc(stMap[s].responsibility)}</title>ⓘ</text>`;
+      }
     });
     if (j.topology.nodes.some(isRes))
-      out += `<text x="${PAD}" y="${(layoutH(j).resY) - 8}" font-size="11" fill="var(--muted-foreground)">判断のリソース（共有・全団体共通）</text>`;
+      out += `<text x="${PAD}" y="${resY - 8}" font-size="11" fill="var(--muted-foreground)">判断のリソース（共有・全団体共通）</text>`;
   } else {
     let y = PAD;
     STAGE_ORDER.forEach((s) => {
