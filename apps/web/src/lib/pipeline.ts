@@ -11,6 +11,7 @@ import type {
   Check,
   CheckAttribution,
   CofogCode,
+  ColDoc,
   Edge,
   Node,
   ProjectNamesExtract,
@@ -29,6 +30,7 @@ export type {
   Check,
   CheckAttribution,
   CofogCode,
+  ColDoc,
   Direction,
   Edge,
   Node,
@@ -52,7 +54,7 @@ export type PipelineData = {
 }
 
 /** 団体で変わらない部分。**団体の数だけ運ばない**ので、生成側が1つに畳んである */
-type Shared = Pick<ReportData, 'topology' | 'checks' | 'portability' | 'customColumnTypes'>
+type Shared = Pick<ReportData, 'topology' | 'checks' | 'portability' | 'customColumnTypes' | 'columnDocs'>
 
 /** ファイル上の形。読み込み時に `PipelineData` へ組み直す */
 type PipelineFile = {
@@ -96,7 +98,7 @@ function assertShape(d: PipelineFile): void {
   const problems: string[] = []
   if (!d.shared) problems.push('shared が無い（団体ごとに複製していた古い形かもしれません）')
   else {
-    for (const k of ['topology', 'checks', 'portability', 'customColumnTypes'] as const) {
+    for (const k of ['topology', 'checks', 'portability', 'customColumnTypes', 'columnDocs'] as const) {
       if (d.shared[k] === undefined) problems.push(`shared.${k} が無い`)
     }
   }

@@ -8,11 +8,11 @@
  * 階層・金額・段階の構造は `dbt/dbt_project.yml` の vars が正本で、
  * dbt のモデルも検査もそこを見ている。ここへ写すと片方だけ直る。
  */
-import { readFileSync, writeFileSync } from 'node:fs'
+import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { loadJurisdictions } from '../../ingestion/shared/jurisdictions'
 import { isCanonicalFetch } from './schema'
-import type { Check, CofogCode, Provenance, ReportData, Topology } from './schema'
+import type { Check, CofogCode, ColDoc, Provenance, ReportData, Topology } from './schema'
 import { ROOT, TARGET, buildChecks, buildTopology, q, readJson, type Manifest, type RunResults } from '../lineage'
 import { BY_JURISDICTION, SHARED } from './static'
 import { cofogGranularity, cmp, foldBy, share, type StateRow } from './cofog'
@@ -456,6 +456,68 @@ for (const { path: p, prov } of ALL_PROVENANCE) {
 }
 
 /**
+ * 列の意味の語彙。**正本は配布物の descriptor（`data/budget/datapackages/`）と
+ * dbt manifest の列記述**（`_models.yml` / `_sources.yml` の `columns:` 節）。
+ * - `resources` — リソース名でスコープ。`saisetsu_code` が歳出・歳入で違う意味を
+ *   持つので、配布物側はリソース単位でしか引けない
+ * - `canonical` — manifest の列記述に、配布物語彙のうち全リソースで意味が一意な
+ *   ものを併せたもの。正規化・判断の表は配布物と同じ列語彙を使うのでこちらで引く
+ */
+function buildColumnDocs(manifest: Manifest): ReportData['columnDocs'] {
+  // リソース × 列で説明を集める。descriptor は fdp.build の同じ生成手順から生まれる
+  // ので団体間で一致するはず — 食い違いが出たら「リソース名でスコープすれば一意」
+  // という前提が崩れるので、黙って先勝ちせず止める
+  const byResource = new Map<string, Map<string, ColDoc>>()
+  const dpDir = join(ROOT, 'data/budget/datapackages')
+  for (const code of readdirSync(dpDir, { withFileTypes: true })) {
+    if (!code.isDirectory()) continue
+    const dp = readJson<{
+      resources?: {
+        name?: string
+        schema?: { fields?: { name?: string; title?: string; description?: string }[] }
+      }[]
+    }>(join(dpDir, code.name, 'datapackage.json'))
+    for (const r of dp.resources ?? []) {
+      if (!r.name) continue
+      const cols = byResource.get(r.name) ?? new Map()
+      for (const f of r.schema?.fields ?? []) {
+        if (!f.name || (!f.title && !f.description)) continue
+        const prev = cols.get(f.name)
+        if (prev && (prev.title !== f.title || prev.description !== f.description))
+          throw new Error(`列記述が団体間で食い違う: ${r.name}.${f.name}（${code.name}）`)
+        cols.set(f.name, { title: f.title, description: f.description })
+      }
+      byResource.set(r.name, cols)
+    }
+  }
+
+  const canonical: Record<string, ColDoc> = {}
+  for (const n of [...Object.values(manifest.nodes), ...Object.values(manifest.sources)])
+    for (const [name, c] of Object.entries(n.columns ?? {}))
+      if (c.description) canonical[name] = { description: c.description }
+  // 曖昧な列（saisetsu_code）を判断の表で一義に説明すると嘘になるので、
+  // どのリソースでも同じ説明のものだけ canonical に併せる。
+  // manifest の記述がある列はそちらを正とし、表題だけ配布物から補う
+  const byCol = new Map<string, Set<ColDoc>>()
+  for (const cols of byResource.values())
+    for (const [name, d] of cols) {
+      const set = byCol.get(name) ?? new Set()
+      byCol.set(name, set.add(d))
+    }
+  for (const [name, set] of byCol) {
+    const distinct = new Set([...set].map((d) => `${d.title ?? ''}${d.description ?? ''}`))
+    if (distinct.size !== 1) continue
+    const doc = [...set][0]!
+    canonical[name] = { title: doc.title, description: canonical[name]?.description ?? doc.description }
+  }
+
+  return {
+    resources: Object.fromEntries([...byResource].map(([k, m]) => [k, Object.fromEntries(m)])),
+    canonical,
+  }
+}
+
+/**
  * 系統と検査は**団体で変わらない**（パイプラインは1本で、どの団体のノードも同じ図に出る）。
  * ⚠️ 団体ごとに呼ぶと、入力が同じなのに DuckDB を起こし直して全配布物を数え直す。
  * 62団体だと配布物の走査が O(N²) になり、出力も同じ 8.9 KB を N 回書くことになる。
@@ -521,6 +583,7 @@ function build(
     coverage: buildCoverage(code, cofogState),
     transform: buildTransform(code, cofogState),
     checks,
+    columnDocs: COLUMN_DOCS,
     ...SHARED,
     // ⚠️ **団体固有の内容は宣言が無ければ止める。** 既定値で埋めると、
     // 三鷹市について書いた caveats が狛江市の報告に出たまま気づけない。
@@ -537,6 +600,7 @@ const results = readJson<RunResults>(join(TARGET, 'run_results.json'))
 // **団体で変わらないものは1回だけ作る。**
 const topology = buildTopology(manifest, ALL_PROVENANCE.map((p) => p.prov))
 const checks = buildChecks(manifest, results)
+const COLUMN_DOCS = buildColumnDocs(manifest)
 
 const reports = CODES.map((code) => ({ code, report: build(code, topology, checks) }))
 
@@ -545,11 +609,11 @@ const reports = CODES.map((code) => ({ code, report: build(code, topology, check
 // 2団体でも 151.7 KB のうち 29.1 KB（19%）がバイト一致していた。62団体なら系統だけで約 11 MB になる。
 // しかも pipeline.json は検証画面を開くだけで読まれる**既定の payload** である。
 // 画面側（`loadPipeline`）が読み込み時に組み直すので、下流の型は変わらない。
-const { portability, customColumnTypes } = reports[0]!.report
+const { portability, customColumnTypes, columnDocs } = reports[0]!.report
 writeFileSync(join(ROOT, 'apps/web/public/pipeline.json'), `${JSON.stringify({
-  shared: { topology, checks, portability, customColumnTypes },
+  shared: { topology, checks, portability, customColumnTypes, columnDocs },
   jurisdictions: reports.map(({ code, report }) => {
-    const { topology: _1, checks: _2, portability: _3, customColumnTypes: _4, ...rest } = report
+    const { topology: _1, checks: _2, portability: _3, customColumnTypes: _4, columnDocs: _5, ...rest } = report
     return { code, report: rest }
   }),
 })}\n`)

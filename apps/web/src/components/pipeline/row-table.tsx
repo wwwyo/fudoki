@@ -8,6 +8,7 @@
  * （全行並べると描画が間に合わない）。
  */
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState, forwardRef } from "react"
+import type { ColDoc } from "@/lib/pipeline"
 import type { TableRows } from "@/lib/verify"
 import { linkKeys } from "@/lib/verify"
 
@@ -27,12 +28,14 @@ type Props = {
   selectedKey: string | null
   /** hover 中の行キー（反対側からの予告を受ける） */
   hoverKey: string | null
+  /** 列名 → 意味（ヘッダのツールチップ用。語彙が引けない表は空） */
+  docs?: Record<string, ColDoc>
   onSelectRow: (key: string) => void
   onHoverRow: (key: string | null) => void
 }
 
 export const RowTable = forwardRef<RowTableHandle, Props>(function RowTable(
-  { table, linkedKeys, selectedKey, hoverKey, onSelectRow, onHoverRow },
+  { table, linkedKeys, selectedKey, hoverKey, docs, onSelectRow, onHoverRow },
   ref,
 ) {
   const boxRef = useRef<HTMLDivElement>(null)
@@ -94,9 +97,15 @@ export const RowTable = forwardRef<RowTableHandle, Props>(function RowTable(
       <table className="t">
         <thead>
           <tr>
-            {shown.map((c) => (
-              <th key={c}>{c}</th>
-            ))}
+            {shown.map((c) => {
+              const d = docs?.[c]
+              const tip = d ? [d.title, d.description].filter(Boolean).join(" — ") : undefined
+              return (
+                <th key={c} title={tip}>
+                  {c}
+                </th>
+              )
+            })}
             {table.columns.length > 14 && (
               <th title={`非表示の列: ${table.columns.slice(14).join("・")}`}>…</th>
             )}

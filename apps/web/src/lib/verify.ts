@@ -5,7 +5,7 @@
  * 行と頁の対応は dev server の middleware（`vite-plugins/local-data.ts`）だけが
  * 返す — ビルド成果物には載らない。ここで読むエンドポイントはすべて `/local/*`。
  */
-import type { Direction, Node, Provenance, Stage } from '@/lib/pipeline'
+import type { ColDoc, Direction, Node, Provenance, ReportData, Stage } from '@/lib/pipeline'
 
 /* ---- 段・向き ---- */
 
@@ -44,6 +44,20 @@ export function nodeLabel(n: Node): string {
     if (!l.endsWith(`（${d}）`)) l = `${l}（${d}）`
   }
   return l
+}
+
+/**
+ * そのノードの表で引ける列の意味（`列名 → 説明`）。
+ * 配布物ノードはリソース名でスコープした語彙を使う — 同じ列名でも歳出と歳入で
+ * 意味が違う列（`saisetsu_code`）があり、canonical 語彙で一義に説明すると嘘になる。
+ * 原典ノードは原典自身の見出しが列名なので語彙は引かない（説明は原典側の責任）。
+ */
+export function colDocsOf(n: Node, docs: ReportData['columnDocs']): Record<string, ColDoc> {
+  if (n.stage === 'package') {
+    const res = n.id.split('__').at(-1)
+    return (res && docs.resources[res]) || {}
+  }
+  return n.kind === 'origin' ? {} : docs.canonical
 }
 
 /**

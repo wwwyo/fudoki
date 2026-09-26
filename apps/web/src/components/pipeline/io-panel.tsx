@@ -20,6 +20,7 @@ import type {
 import { DIR_JA, extractedKindOf, isCanonicalFetch } from "@/lib/pipeline"
 import {
   bareKey,
+  colDocsOf,
   edgeDir,
   keySpaceOf,
   linkSetOf,
@@ -244,13 +245,19 @@ function SideDetail({
   const amounts = dir ? (report.amounts[dir] ?? []) : []
   const amountsShown = year == null ? amounts : amounts.filter((a) => a.years === null || a.years.includes(year))
 
-  if (!prov && !checks.length && !amountsShown.length) return null
+  // 見えている表の列のうち語彙が引けるもの。原典の列は原典自身の見出しなので引かない
+  const colDocs = rows?.kind === "table" ? colDocsOf(node, report.columnDocs) : {}
+  const docCols = rows?.kind === "table" ? rows.columns.filter((c) => colDocs[c]) : []
+
+  if (!prov && !checks.length && !amountsShown.length && !docCols.length) return null
 
   const summary = prov
     ? `詳細${checks.length ? `（検査${ckBad ? ` ${ckBad}` : ` ${checks.length}件`}）` : ""}`
-    : ckBad
-      ? `検査 ${checks.length}件（${ckBad}）`
-      : `検査 ${checks.length}件：すべて成功`
+    : checks.length
+      ? ckBad
+        ? `検査 ${checks.length}件（${ckBad}）`
+        : `検査 ${checks.length}件：すべて成功`
+      : `列の意味 ${docCols.length}列`
 
   return (
     <details className="fold">
@@ -390,6 +397,20 @@ function SideDetail({
               </span>
             </div>
           ))}
+        </>
+      )}
+      {docCols.length > 0 && (
+        <>
+          <div className="dh">列の意味（{docCols.length}/{rows?.kind === "table" ? rows.columns.length : 0}列）</div>
+          {docCols.map((c) => {
+            const d = colDocs[c]!
+            return (
+              <div className="drow" key={c}>
+                <span className="dk mono">{c}</span>
+                <span>{[d.title, d.description].filter(Boolean).join(" — ")}</span>
+              </div>
+            )
+          })}
         </>
       )}
       <CheckList checks={checks} code={code} />
@@ -546,6 +567,7 @@ export function IoPanel({
               linkedKeys={keysOut}
               selectedKey={selectedKey}
               hoverKey={hoverKey}
+              docs={colDocsOf(a, report.columnDocs)}
               onSelectRow={(k) => pick("in")(k)}
               onHoverRow={onHoverRow}
             />
@@ -565,6 +587,7 @@ export function IoPanel({
               linkedKeys={keysIn}
               selectedKey={selectedKey}
               hoverKey={hoverKey}
+              docs={colDocsOf(b, report.columnDocs)}
               onSelectRow={(k) => pick("out")(k)}
               onHoverRow={onHoverRow}
             />
@@ -712,6 +735,7 @@ function OverviewNode({
           linkedKeys={null}
           selectedKey={null}
           hoverKey={null}
+          docs={colDocsOf(node, report.columnDocs)}
           onSelectRow={() => {}}
           onHoverRow={() => {}}
         />

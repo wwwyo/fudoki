@@ -83,6 +83,8 @@ type DbtNode = {
   raw_code?: string; compiled_code?: string
   /** generic test（schema.yml の unique / not_null 等）はここに種類と対象列が入る */
   test_metadata?: { name?: string; kwargs?: Record<string, unknown> }
+  /** モデル・ソースの列記述（_models.yml / _sources.yml の columns 節） */
+  columns?: Record<string, { description?: string }>
 }
 export type Manifest = { nodes: Record<string, DbtNode>; sources: Record<string, DbtNode> }
 export type RunResults = { results: { unique_id: string; status: string; failures: number | null; message: string | null }[] }

@@ -166,6 +166,9 @@ export type AmountDecl = {
   years: number[] | null
 }
 
+/** 列の意味。`title` は短い表題（款コード など）、`description` は読み方の注意を含む説明 */
+export type ColDoc = { title?: string; description?: string }
+
 export type ReportData = ReportEnvelope & {
   meta: ReportEnvelope['meta'] & { fiscalYears: number[] }
   /**
@@ -191,6 +194,20 @@ export type ReportData = ReportEnvelope & {
   }[]
   /** 2団体目で壊れうる箇所と、次に何を実測すれば確かめられるか */
   portability: { element: string; kind: string; verifyNext: string }[]
+  /**
+   * 列名 → 意味。**正本は配布物の descriptor（datapackage.json）と dbt の列記述**。
+   * `resources` はリソース名でスコープする — 同じ列名でも歳出と歳入で意味が違う
+   * （`saisetsu_code`）ので、配布物側はリソース単位でしか引けない。
+   * `canonical` は dbt manifest の列記述に、配布物語彙のうち全リソースで意味が
+   * 一意なものを併せたもの。正規化・判断の表は配布物と同じ列語彙を使うので、
+   * こちらで引くと `kan_code` 等の意味が途中段でも出る。
+   */
+  columnDocs: {
+    /** 配布物のリソース名 → 列名 → 説明 */
+    resources: Record<string, Record<string, ColDoc>>
+    /** リソースに属さない表（取り込み・正規化・判断）での列名 → 説明 */
+    canonical: Record<string, ColDoc>
+  }
   /**
    * `api` は budget-api の jurisdiction 応答に載せるものだけ true にする。
    * 基準: データ（enum・数値・構造）から見えず、API 利用者の解釈を変えるもの。
