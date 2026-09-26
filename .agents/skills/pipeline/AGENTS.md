@@ -1,4 +1,4 @@
-# dbt-pipeline skill 保守規約
+# pipeline skill 保守規約
 
 - load order: SKILL.md（Routing table）→ 該当 reference のみ
 - validation: 追記するハマりどころは実際に発生させて解決した事実のみ（推測で埋めない）。解消済み・現行コードと矛盾する記述は根拠つきで削除する
