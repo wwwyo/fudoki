@@ -186,32 +186,57 @@ def main() -> None:
             doc["pages"].append(tuple(prov["pages"]))
         doc["provs"].append((prov, path))
 
+    def _parquet_fp(path: pathlib.Path) -> str | None:
+        # 抽出 parquet が作り直されると行↔頁の対応は変わる — 証跡が同じでも
+        # hits を再計算する必要があるので、読む parquet の内容を鍵に混ぜる
+        f = path.parent / "data.parquet"
+        return hashlib.sha256(f.read_bytes()).hexdigest()[:16] if f.exists() else None
+
+    def _rendered(d: pathlib.Path, sha: str, first: int, last: int) -> bool:
+        m = d / ".rendered"
+        if not m.exists():
+            return False
+        marker = m.read_text().strip()
+        if marker == f"{sha} {first}-{last}":
+            return True
+        if marker == sha:
+            # 範囲を記録しない旧形式。要求範囲の画像と語層が揃っていれば
+            # 新形式へ書き換えて済ませ、欠けていれば再レンダリングへ落とす
+            if all((d / f"p{p}.png").exists() and (d / f"p{p}.json").exists()
+                   for p in range(first, last + 1)):
+                m.write_text(f"{sha} {first}-{last}\n")
+                return True
+        return False
+
     index: dict[str, dict] = {}
     for sha, doc in sorted(docs.items()):
         doc_id = f"{doc['code']}-{sha[:12]}"
         doc_dir = OUT / doc_id
-        # hits/meta は証跡の中身（URL・頁範囲・年度・ソース紐付け）にも依存する。
-        # sha と照合版だけで判定すると、同じ PDF を指す証跡が更新されても古い
-        # meta と対応を使い続ける — 証跡由来の部分もキャッシュキーに入れる
-        meta_key = json.dumps(sorted(
-            json.dumps([_source_id(p, pp), p["request_url"], p.get("pages"), p["fiscal_year"]],
-                       ensure_ascii=False)
-            for p, pp in doc["provs"]), ensure_ascii=False)
-        stamp = f"{sha} v{HITS_VERSION} {hashlib.sha256(meta_key.encode()).hexdigest()[:16]}"
-        render_done = (doc_dir / ".rendered").exists() \
-            and (doc_dir / ".rendered").read_text().strip() == sha
-        hits_done = (doc_dir / ".hits").exists() \
-            and (doc_dir / ".hits").read_text().strip() == stamp
-        if render_done and hits_done:
-            index[doc_id] = json.loads((doc_dir / "meta.json").read_text())
-            continue
-
         if not doc["pages"]:
             # 頁範囲を記録していない証跡では頁画像も対応も作れない（現行の証跡は全件記録）
             print(f"warn  {doc_id}  証跡に頁範囲が無い — スキップ")
             continue
         first = min(p[0] for p in doc["pages"])
         last = max(p[1] for p in doc["pages"])
+
+        # hits/meta は証跡の中身（URL・頁範囲・年度・ソース紐付け）と抽出結果にも
+        # 依存する。sha と照合版だけで判定すると、同じ PDF を指す証跡や抽出した
+        # 行が更新されても古い meta と対応を使い続ける — 証跡・parquet 由来の
+        # 部分もキャッシュキーに入れる
+        meta_key = json.dumps(sorted(
+            json.dumps([_source_id(p, pp), p["request_url"], p.get("pages"),
+                        p["fiscal_year"], _parquet_fp(pp)], ensure_ascii=False)
+            for p, pp in doc["provs"]), ensure_ascii=False)
+        stamp = f"{sha} v{HITS_VERSION} {hashlib.sha256(meta_key.encode()).hexdigest()[:16]}"
+        # 頁範囲が広がったとき render_done のままだと、新しい頁には画像も語層も
+        # 無いまま meta だけ書くことになる — レンダリング済みの判定も範囲込みにする
+        render_done = _rendered(doc_dir, sha, first, last)
+        hits_done = (doc_dir / ".hits").exists() \
+            and (doc_dir / ".hits").read_text().strip() == stamp
+        if render_done and hits_done:
+            index[doc_id] = json.loads((doc_dir / "meta.json").read_text())
+            continue
+
         doc_dir.mkdir(parents=True, exist_ok=True)
 
         if render_done:
@@ -247,7 +272,7 @@ def main() -> None:
                      str(pdf), str(prefix)], check=True)
                 for img in doc_dir.glob("img-*.png"):
                     img.rename(doc_dir / f"p{int(img.stem.split('-')[-1])}.png")
-            (doc_dir / ".rendered").write_text(sha + "\n")
+            (doc_dir / ".rendered").write_text(f"{sha} {first}-{last}\n")
 
         pages_lines = {pno: _lines(ws) for pno, (_, _, ws) in words_by_page.items()}
         hits: dict[str, dict] = {}

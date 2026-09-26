@@ -113,17 +113,24 @@ export function PdfSide({
     // cy が入る帯 = 「y0 <= cy」を満たす最後（最も下から始まる）の帯
     let lo = 0
     let hi = bands.length - 1
-    let best: (typeof bands)[number] | null = null
+    // 「y0 <= cy」を満たす最後（最も下から始まる）の帯の index
+    let best = -1
     while (lo <= hi) {
       const mid = (lo + hi) >> 1
       if (bands[mid]!.y0 <= cy) {
-        best = bands[mid]!
+        best = mid
         lo = mid + 1
       } else {
         hi = mid - 1
       }
     }
-    return best && cy <= best.y1 ? best.k : null
+    // 帯は y0 ではソートできるが高さは揃っていない — 見つかった帯が cy を含まなくても、
+    // 上に広い帯（長い行）が残っていることがある。y0 <= cy の帯を上へ遡って、
+    // 含むもののうち最も下から始まる（= 行として最も内側の）ものを取る
+    for (let j = best; j >= 0; j--) {
+      if (cy <= bands[j]!.y1) return bands[j]!.k
+    }
+    return null
   }
 
   return (

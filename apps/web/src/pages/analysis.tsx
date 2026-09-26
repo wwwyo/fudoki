@@ -306,14 +306,17 @@ function CollectedAnalysis({
             </Select>
             {/* この団体の ELT パイプラインへの導線。分析は数字を見る場所、パイプラインは
                 その数字の根拠（集計・COFOG 割当）を検証する場所で目的が違う。pipeline.tsx 側の
-                「支出分析を見る」ボタンと対になる導線なので、扱いを揃える */}
-            <Button
-              variant="outline"
-              size="sm"
-              nativeButton={false}
-              className="ml-auto shrink-0"
-              render={<a href={withBase(`/pipeline/${code}/`)}>ELT パイプラインを見る</a>}
-            />
+                「支出分析を見る」ボタンと対になる導線なので、扱いを揃える。
+                検証画面はローカル専用なので、公開ビルドでは導線自体を出さない */}
+            {import.meta.env.DEV && (
+              <Button
+                variant="outline"
+                size="sm"
+                nativeButton={false}
+                className="ml-auto shrink-0"
+                render={<a href={withBase(`/pipeline/${code}/`)}>ELT パイプラインを見る</a>}
+              />
+            )}
           </div>
           <p className="max-w-[72ch] text-sm leading-relaxed text-muted-foreground">
             {m.jurisdictionName} の{DIRECTIONS.find((d) => d.value === direction)?.label}を、
