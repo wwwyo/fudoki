@@ -20,10 +20,10 @@
  * DuckDB へは CLI（mise で入っている）に `-json` で問い合わせる。
  * npm の binding を足さずに済む。
  */
-import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { extractedKindOf, isCanonicalFetch } from './common'
-import type { CanonicalFetch, Check, Node, ProjectNamesExtract, Provenance, RevenueAccountsExtract, Stage, Topology } from './common'
+import { provenanceForSource } from './common'
+import type { CanonicalFetch, Check, CheckAttribution, Node, ProjectNamesExtract, Provenance, RevenueAccountsExtract, Stage, Topology } from './common'
 
 export const ROOT = resolve(import.meta.dirname, '..')
 export const TARGET = join(ROOT, 'dbt/target')
@@ -41,8 +41,8 @@ export const readJson = <T,>(p: string): T => JSON.parse(readFileSync(p, 'utf8')
  *
  * 金額は最大でも 1.2×10^11 で Number.MAX_SAFE_INTEGER（9×10^15）に収まる。
  */
-export function q<T = Record<string, unknown>>(sql: string, nums: string[] = []): T[] {
-  const r = Bun.spawnSync(['duckdb', '-json', WAREHOUSE, '-c', sql])
+export function q<T = Record<string, unknown>>(sql: string, nums: string[] = [], cwd?: string): T[] {
+  const r = Bun.spawnSync(['duckdb', '-json', WAREHOUSE, '-c', sql], cwd ? { cwd } : undefined)
   if (r.exitCode !== 0) throw new Error(`DuckDB: ${r.stderr.toString()}\n--- SQL ---\n${sql}`)
   const out = r.stdout.toString().trim()
   if (!out) return []
@@ -76,8 +76,12 @@ export const STAGES: Stage[] = [
 
 type DbtNode = {
   name: string; resource_type: string; path?: string; description?: string
-  config?: { location?: string }; depends_on?: { nodes?: string[] }
+  config?: { location?: string; severity?: string }; depends_on?: { nodes?: string[] }
   meta?: { role?: 'judgment-rule' | 'external-reference' }
+  /** テストは定義 SQL（jinja 込み）と compile 済み SQL を持つ */
+  raw_code?: string; compiled_code?: string
+  /** generic test（schema.yml の unique / not_null 等）はここに種類と対象列が入る */
+  test_metadata?: { name?: string; kwargs?: Record<string, unknown> }
 }
 export type Manifest = { nodes: Record<string, DbtNode>; sources: Record<string, DbtNode> }
 export type RunResults = { results: { unique_id: string; status: string; failures: number | null; message: string | null }[] }
@@ -112,60 +116,36 @@ function introducesJudgment(n: DbtNode, stage: Stage['id']): boolean {
 }
 
 /**
- * その証跡が、この direction の「正本の取り込み」か。判別そのものは `isCanonicalFetch`。
- *
- * ⚠️ **direction で絞るだけでは足りない。** 抽出物のうち revenue-accounts も
- * direction を名乗るので、これだけだと正本の合算に混ざる。
- */
-function isCanonicalFetchOf(p: Provenance, direction: string): p is CanonicalFetch {
-  if (p.direction !== direction) return false
-  if (isCanonicalFetch(p)) return true
-  // 捨てる前に、正本らしいのに行数だけ無いものを止める。黙って落とすと
-  // 取得元の行数が実際より小さくなり、しかもそれが画面から分からない。
-  if (p.resource_name)
-    throw new Error(`${p.jurisdiction_code} の証跡「${p.resource_name}」に rows が無い（${p.fiscal_year}年度）`)
-  return false
-}
-
-/**
  * 原典（source）の行数を証跡から引く。
  *
  * ⚠️ **direction だけで引かない。** ソースは団体ごとに1つあり、名前はどちらも
  * `expenditure` / `revenue` である。direction だけで突き合わせると、
  * 狛江市の原典ノードに三鷹市の行数が出る（実際にそうなっていた）。
  * ソースの識別子（`source.fudoki.raw_132195.expenditure`）から団体コードを取る。
+ * 証跡の拾い方そのものは `common.ts` の `provenanceForSource`（検証画面の
+ * ローカル・データ口と共有）。
  */
+
+/** 抽出器ごとに「何を数えたか」が違う。事業名は事業の数、歳入の科目名称は目の数 */
+function extractedCount(p: Provenance, kind: 'project-names' | 'revenue-accounts' | 'statement'): number {
+  if (!p.extracted) return 0
+  return kind === 'project-names'
+    ? (p.extracted as ProjectNamesExtract).projects
+    : kind === 'revenue-accounts'
+      ? (p.extracted as RevenueAccountsExtract).moku
+      : (p.extracted as { leaves?: number }).leaves ?? 0
+}
+
 function sourceRows(id: string, name: string, provenance: Provenance[]): Counted | null {
-  const code = /\.raw_(\d{6})/.exec(id)?.[1]
-  if (!code) throw new Error(`ソース ${id} の名前から団体コードを取れない（raw_<団体コード> の形にすること）`)
-  const mine = provenance.filter((p) => p.jurisdiction_code === code)
+  const hit = provenanceForSource(id, name, provenance)
+  if (!hit) return null
   // ⚠️ **証跡の形が取得元で違う。** 正本の取り込み（CSV でも事項別明細書の PDF でも）は
   // direction ごとに `rows` を持つが、既収録の団体で欠けている名称を補う抽出物は
-  // `rows` を持たず、抽出の要約しか持たない。direction の有無は抽出器によって割れる。
-  // ⚠️ **要約の形は抽出器で違う**ので、どちらの抽出器かを `extractedKindOf` で判別する
-  // （形で見分けると、項目が増えたときに黙って別の枝へ落ちる）。
-  const byDirection = mine.filter((p) => isCanonicalFetchOf(p, name))
-  if (byDirection.length > 0) return countByYear(byDirection.map((p) => [p.fiscal_year, p.rows]))
-  // ⚠️ **どの抽出物かは id で決める。** 団体の証跡から抽出物を種類で拾うだけだと、
-  // 同じ団体に2つの抽出器があるとき（狛江市の事業名と歳入の科目名称）両方の
-  // ソースノードが同じ数字を出す。
-  const kind = /\.raw_\d{6}_project_names\./.test(id)
-    ? 'project-names'
-    : /\.raw_\d{6}_revenue_accounts\./.test(id)
-      ? 'revenue-accounts'
-      : null
-  if (kind === null) return null
-  const extracted = mine.filter((p) => extractedKindOf(p) === kind)
-  if (extracted.length === 0) return null
-  // 抽出器ごとに「何を数えたか」が違う。事業名は事業の数、歳入の科目名称は目の数
-  return countByYear(
-    extracted.map((p) => [
-      p.fiscal_year,
-      kind === 'project-names'
-        ? (p.extracted as ProjectNamesExtract).projects
-        : (p.extracted as RevenueAccountsExtract).moku,
-    ]),
-  )
+  // `rows` を持たず、抽出の要約しか持たない。
+  if (hit.kind === 'canonical')
+    return countByYear((hit.ps as CanonicalFetch[]).map((p) => [p.fiscal_year, p.rows]))
+  const kind = hit.kind
+  return countByYear(hit.ps.map((p) => [p.fiscal_year, extractedCount(p, kind)]))
 }
 
 /** 年度ごとの行数と、その合計。**合計は生成側で1回だけ足す**（画面では足さない） */
@@ -366,29 +346,35 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
   })
 
   // 取得元。dbt は知らないので証跡から組む。id を「source ノードid + .origin」にしてあるのは
-  // プレビュー（apps/web/public/preview/<id>.json）が同じ規約で書かれるため
+  // ローカル画面の行取り出し（apps/web/vite-plugins/local-data.ts）が同じ規約で引くため。
+  // ⚠️ **抽出物（PDF から起こした表）にも取得元ノードを付ける。** CSV の団体と同じ
+  // 「原典 → 取り込み」の形にしないと、PDF の団体だけ系統が1段浅い図になる。
   for (const src of nodes.filter((n) => n.kind === 'source')) {
     // ⚠️ **direction だけで引かない。** 2団体目からは `expenditure` という名前の
     // ソースが団体ごとにあり、direction だけで絞ると三鷹市の取得元ノードに
     // 狛江市の証跡が混ざる（`sourceRows` が同じ理由で団体コードを見ている）。
     const code = /\.raw_(\d{6})/.exec(src.id)?.[1]
     if (!code) continue
-    // 2段に分けるのは、`&&` で束ねると `isCanonicalFetchOf` の型述語が効かなくなるため
-    const ps = provenance
-      .filter((p) => p.jurisdiction_code === code)
-      .filter((p) => isCanonicalFetchOf(p, src.label))
-    if (ps.length === 0) continue
+    const hit = provenanceForSource(src.id, src.label, provenance)
+    if (!hit) continue
+    const { ps, kind } = hit
     // ノードには見出しだけ出す。「※下水道事業会計除く」のような注記は
-    // 選んだときのプレビュー（title が正式名）と description に残る。
-    // 複数年度あるときは先頭年の名前だけ出すと嘘になる（行数は全年度の合計）ので、範囲にする
+    // 詳細（title が正式名）と description に残る。
+    // 複数年度あるときは先頭年の名前だけ出すと嘘になる（行数は全年度の合計）ので、範囲にする。
+    // 名は正本の取り込みがリソース名、抽出物が文書名を持つ（resource_name を持たないため）。
     const years = [...new Set(ps.map((p) => p.fiscal_year))].sort()
-    const base = ps[0]!.resource_name.split('※')[0]!.trim()
+    const base = (ps[0]!.resource_name ?? ps[0]!.document_title ?? src.label).split('※')[0]!.trim()
     const label = years.length > 1
       ? `${base.replace(/（\d{4}）$/, '').trim()}（${years[0]}〜${years.at(-1)}）`
       : base
     // 証跡は年度ごとに1件あるので、取得元も年度で切れる（切れないのは規則表だけ）。
-    // 1団体ぶんを団体で引ける形へ包むのは `ownCount` と同じ処理なので、それを使う
-    const origin = ownCount(countByYear(ps.map((p) => [p.fiscal_year, p.rows])), code)!
+    // 1団体ぶんを団体で引ける形へ包むのは `ownCount` と同じ処理なので、それを使う。
+    // 抽出物は行数を持たないので、取得元ノードの「行数」は抽出した項目の数で代用する
+    // （原典の内訳がその数だけある、という意味で）。
+    const counted = kind === 'canonical'
+      ? countByYear((ps as CanonicalFetch[]).map((p) => [p.fiscal_year, p.rows]))
+      : countByYear(ps.map((p) => [p.fiscal_year, extractedCount(p, kind)]))
+    const origin = ownCount(counted, code)!
     nodes.push({
       id: `${src.id}.origin`, label, kind: 'origin', stage: 'origin',
       jurisdictionCode: code,
@@ -433,22 +419,115 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
  */
 export function buildChecks(m: Manifest, r: RunResults): Check[] {
   const byId = new Map(r.results.map((x) => [x.unique_id, x]))
+  const bindable = new Set([...Object.keys(m.nodes), ...Object.keys(m.sources)])
   return Object.entries(m.nodes)
     .filter(([, n]) => n.resource_type === 'test')
     .map(([id, n]) => {
       const res = byId.get(id)
       const status = res?.status ?? '未実行'
-      return {
+      const check: Check = {
         name: n.name,
         description: (n.description ?? '').trim(),
-        binds: n.depends_on?.nodes ?? [],
+        explanation: checkExplanation(n),
+        // マクロ等の依存はノードではないので落とす（画面が存在しないノードを引かないように）
+        binds: (n.depends_on?.nodes ?? []).filter((b) => bindable.has(b)),
         ok: status === 'pass',
-        severity: status === 'warn' ? ('warn' as const) : ('error' as const),
+        // ⚠️ severity は宣言から読む。status から逆算すると、実行前・通過済みの
+        // warn 検査が全部「失敗の検査」に見える
+        severity: n.config?.severity === 'warn' ? 'warn' : 'error',
         status,
         failures: res?.failures ?? null,
-        detail: res?.message ?? '',
+        detail: checkDetail(res?.message ?? ''),
       }
+      // 非 pass ではどの団体の行に当たったかを読み直して添える。
+      // dbt の結果文（"Got N results"）は件数しか言わず、画面の「この団体の分か」には答えられない
+      if (!check.ok && n.compiled_code) {
+        check.attribution = attributeCheck(n.compiled_code)
+      }
+      return check
     })
     .sort((a, b) => Number(a.ok) - Number(b.ok) || a.name.localeCompare(b.name))
+}
+
+/**
+ * 検査の説明。**`dbt/tests/*.sql` 冒頭のコメントをそのまま出す** —
+ * その検査が何を見ているか・なぜあるかはそこに書いてある（書かせる場所にしている）。
+ * generic test（schema.yml の unique / not_null 等）はコメントを持たないので
+ * `test_metadata` から組み立てる。
+ */
+function checkExplanation(n: DbtNode): string {
+  const out: string[] = []
+  for (const line of (n.raw_code ?? '').split('\n')) {
+    const t = line.trim()
+    if (t.startsWith('--')) {
+      out.push(t.replace(/^--\s?/, ''))
+      continue
+    }
+    // 冒頭の jinja（config 宣言）と空行は説明ではないので読み飛ばす。
+    // コメントを読み始めた後に SQL の行が来たら説明はそこで終わり
+    if (out.length === 0 && (t === '' || t.startsWith('{{') || t.startsWith('{%'))) continue
+    break
+  }
+  const text = out.join('\n').replace(/\*\*/g, '').trim()
+  if (text) return text
+  const tm = n.test_metadata
+  const col = tm?.kwargs?.column_name
+  const cols = tm?.kwargs?.combination_of_columns
+  const target = (Array.isArray(cols) ? cols.join(' + ') : col) as string | undefined
+  const label =
+    tm?.name === 'unique' ? `${target ?? 'キー'} が重複しない` :
+    tm?.name === 'not_null' ? `${target ?? '列'} が空でない` :
+    tm?.name === 'accepted_values' ? `${target ?? '列'} が宣言された値のどれか` :
+    tm?.name === 'relationships' ? `${target ?? '列'} が参照先に存在する` :
+    tm?.name && target ? `${tm.name}: ${target}` : n.name
+  return label
+}
+
+/**
+ * dbt の結果文を画面の言葉にする。"Got 3 results, configured to warn if != 0" は
+ * ツールの内部語なので「検出 3 件」とだけ言う（閾値の細部は severity が担う）。
+ */
+function checkDetail(message: string): string {
+  const hit = /^Got (\d+) results?/.exec(message)
+  return hit ? `検出 ${hit[1]} 件` : message
+}
+
+/** dbt コンパイル済み SQL の相対パスは dbt/ 基準なので、そこを cwd にして読み直す */
+const DBT_CWD = join(ROOT, 'dbt')
+
+/**
+ * 非 pass の検査がどの団体の行に当たったかを、compiled SQL を読み直して確かめる。
+ * 結果行が団体コードの列（`jurisdiction` / `jurisdiction_code`）を持てば団体ごとの
+ * 件数まで言える。持たなければ全団体を束ねる検査なので「横断・対象特定不能」とだけ付ける
+ * （どの団体の画面にも同じ警告が出るが、それはその団体の原典が原因とは限らない）。
+ */
+function attributeCheck(compiled: string): CheckAttribution | undefined {
+  const inner = compiled.trim().replace(/;+\s*$/, '')
+  try {
+    const SAMPLE = 8
+    const sample = q<Record<string, unknown>>(
+      `select * from (\n${inner}\n) t limit ${SAMPLE}`, [], DBT_CWD,
+    )
+    // 列名は行のキーから取れる（json 出力は全列をキーに持つ）。行が0のときだけ
+    // describe に頼る — それ以外で列の取得に問い合わせをもう1本立てない
+    const columns = sample.length
+      ? Object.keys(sample[0]!)
+      : q<{ column_name: string }>(`describe select * from (\n${inner}\n) t`, [], DBT_CWD)
+          .map((r) => r.column_name)
+    const rows = sample.map((r) => columns.map((c) => (r[c] === undefined ? null : r[c]) as string | number | null))
+    const jcol = columns.find((c) => c === 'jurisdiction_code' || c === 'jurisdiction')
+    if (!jcol) return { kind: 'cross', columns, rows }
+    const counts = Object.fromEntries(
+      q<{ j: string; c: number }>(
+        `select ${jcol} as j, count(*) as c from (\n${inner}\n) t group by 1 order by 2 desc`,
+        ['c'], DBT_CWD,
+      ).map((r) => [r.j, r.c]),
+    )
+    return { kind: 'jurisdiction', counts, columns, rows }
+  } catch (e) {
+    // 再実行に失敗しても帰属を欠くだけにする — 検査の失敗で報告の生成自体を止めない
+    console.warn(`warn  検査の再実行に失敗: ${e instanceof Error ? e.message.split('\n')[0] : e}`)
+    return undefined
+  }
 }
 

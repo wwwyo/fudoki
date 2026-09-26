@@ -15,7 +15,8 @@ import { withBase } from "@/lib/utils"
  */
 const NAV = [
   { href: "/analysis/", label: "分析" },
-  { href: "/pipeline/", label: "パイプライン" },
+  // 検証画面はローカル専用（公開ビルドにページが無い）。導線も dev だけに出す
+  ...(import.meta.env.DEV ? [{ href: "/pipeline/", label: "パイプライン" }] : []),
   { href: "https://docs.fudoki.dev/", label: "API docs", external: true },
   { href: "/terms/", label: "利用条件" },
 ] as const

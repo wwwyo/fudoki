@@ -1,0 +1,117 @@
+/**
+ * 検証画面（/pipeline/<団体コード>/）のスタイル。
+ * 全部 `.pv` の中に畳む — 他の画面（分析・トップ）と同じトークンを使うが、
+ * 表の行強調・PDF の語の層などこの画面固有の部品は別のルール空間に閉じる。
+ * 見た目の正本は docs/prd/pipeline-verification-view/prototype/index.html。
+ */
+
+.pv .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 500; line-height: 16px; border: 1px solid var(--border); background: var(--card); white-space: nowrap; }
+.pv .badge.ok { color: var(--accent-foreground); border-color: color-mix(in oklch, var(--primary) 25%, var(--border)); background: var(--accent); }
+.pv .badge.plain { color: var(--muted-foreground); }
+.pv .badge.bad { color: var(--destructive); border-color: color-mix(in oklch, var(--destructive) 40%, var(--border)); }
+.pv button.linky { border:0; background:none; font:inherit; cursor:pointer; color:var(--primary); padding:0; text-align:left; }
+.pv select.ctl { font: inherit; font-size: 12px; padding: 3px 6px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--card); color: var(--foreground); }
+.pv .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 12px; }
+
+/* ---- 系統図 ---- */
+.pv .graphsvg .edge { stroke: var(--muted-foreground); stroke-width: 1.4; fill: none; opacity: .55; }
+.pv .graphsvg .edge-hit { stroke: transparent; stroke-width: 24; fill: none; cursor: pointer; }
+.pv .graphsvg .edge-sel-under { stroke: var(--primary); stroke-width: 10; fill: none; opacity: .18; }
+.pv .graphsvg .edge-sel { stroke: var(--primary); stroke-width: 2.6; fill: none; opacity: 1; }
+.pv .graphsvg .cand { stroke: var(--primary); stroke-width: 2; fill: none; opacity: .8; stroke-dasharray: 5 3; }
+.pv .gnode rect.body { fill: var(--card); stroke: var(--border); stroke-width: 1.2; }
+.pv .gnode[data-kind="res"] rect.body { fill: var(--muted); stroke-dasharray: 4 3; }
+.pv .gnode.sel rect.ring { fill: none; stroke: var(--primary); stroke-width: 3; }
+.pv .gnode .io-tag { font-size: 9px; font-weight: 600; fill: var(--primary-foreground); }
+.pv .gnode .io-tag-bg { fill: var(--primary); }
+.pv .graphsvg text { font-family: inherit; }
+
+/* hover はノード単体ではなく組（入力＋線＋出力）の予告。選択済み（実線＋濃い輪）と区別するため破線＋薄い輪 */
+.pv .edge-hov-under, .pv .edge-hov, .pv .gnode rect.hring { pointer-events: none; }
+.pv .edge-hov-under { stroke: var(--primary); stroke-width: 10; fill: none; opacity: 0; }
+.pv .edge-hov { stroke: var(--primary); stroke-width: 2.2; fill: none; opacity: 0; stroke-dasharray: 6 4; }
+.pv g.hov .edge-hov-under { opacity: .10; }
+.pv g.hov .edge-hov { opacity: .6; }
+.pv .gnode rect.hring { fill: none; stroke: var(--primary); stroke-width: 2; opacity: 0; }
+.pv .gnode.hov rect.hring { opacity: .5; }
+.pv .gnode.hov rect.body { stroke: var(--primary); }
+
+/* 候補ポップ */
+.pv .candpop { position: absolute; z-index: 50; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: 0 8px 24px rgba(0,0,0,.12); padding: 6px; min-width: 220px; }
+.pv .candpop button { display: block; width: 100%; text-align: left; border: 0; background: none; font: inherit; font-size: 12px; padding: 6px 8px; border-radius: 4px; cursor: pointer; color: var(--foreground); }
+.pv .candpop button:hover { background: var(--accent); }
+
+/* ---- I/O パネル ---- */
+.pv .io { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.pv .io .side { min-width: 0; }
+.pv .io .side h3 { font-size: 12px; font-weight: 600; margin: 0 0 6px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.pv .rows { overflow: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.pv table.t { border-collapse: collapse; font-size: 11px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; width: 100%; }
+.pv table.t th { position: sticky; top: 0; background: var(--muted); text-align: left; font-weight: 500; color: var(--muted-foreground); padding: 4px 8px; border-bottom: 1px solid var(--border); white-space: nowrap; z-index: 1; }
+.pv table.t td { padding: 3px 8px; border-bottom: 1px solid var(--border); white-space: nowrap; max-width: 260px; overflow: hidden; text-overflow: ellipsis; }
+.pv table.t tr.rowhit { cursor: pointer; }
+/* 行の選択はセルごとの枠ではなく行全体に一続きの枠で示す。border-collapse でも
+   box-shadow(inset) は隣接セルと隙間なく連なるので、上下線は全 td、左右の端は
+   先頭/末尾の td に引く。反対側に点灯する対応行も同じ見た目になる */
+.pv table.t tr.rowhit:hover td, .pv table.t tr.rowhov td { box-shadow: inset 0 1.5px 0 color-mix(in oklch, var(--primary) 45%, transparent), inset 0 -1.5px 0 color-mix(in oklch, var(--primary) 45%, transparent); }
+.pv table.t tr.rowhit:hover td:first-child, .pv table.t tr.rowhov td:first-child { box-shadow: inset 1.5px 0 0 color-mix(in oklch, var(--primary) 45%, transparent), inset 0 1.5px 0 color-mix(in oklch, var(--primary) 45%, transparent), inset 0 -1.5px 0 color-mix(in oklch, var(--primary) 45%, transparent); }
+.pv table.t tr.rowhit:hover td:last-child, .pv table.t tr.rowhov td:last-child { box-shadow: inset -1.5px 0 0 color-mix(in oklch, var(--primary) 45%, transparent), inset 0 1.5px 0 color-mix(in oklch, var(--primary) 45%, transparent), inset 0 -1.5px 0 color-mix(in oklch, var(--primary) 45%, transparent); }
+.pv table.t tr.rowsel td, .pv table.t tr.rowsel:hover td { box-shadow: inset 0 2px 0 var(--primary), inset 0 -2px 0 var(--primary); }
+.pv table.t tr.rowsel td:first-child, .pv table.t tr.rowsel:hover td:first-child { box-shadow: inset 2px 0 0 var(--primary), inset 0 2px 0 var(--primary), inset 0 -2px 0 var(--primary); }
+.pv table.t tr.rowsel td:last-child, .pv table.t tr.rowsel:hover td:last-child { box-shadow: inset -2px 0 0 var(--primary), inset 0 2px 0 var(--primary), inset 0 -2px 0 var(--primary); }
+.pv details.fold { border-top: 1px solid var(--border); margin-top: 10px; padding-top: 8px; }
+.pv details.fold > summary { cursor: pointer; font-size: 12px; color: var(--muted-foreground); }
+.pv details.fold .dh { font-size: 11px; font-weight: 600; color: var(--muted-foreground); margin: 8px 0 2px; }
+.pv details.fold .dh:first-of-type { margin-top: 4px; }
+.pv details.fold .drow { display: flex; gap: 8px; font-size: 12px; line-height: 18px; padding: 1.5px 0; }
+.pv details.fold .drow > :last-child { min-width: 0; }
+.pv details.fold .dk { flex: 0 0 64px; color: var(--muted-foreground); }
+.pv details.fold a { color: var(--primary); word-break: break-all; }
+.pv details.fold .ck { padding: 2px 0; font-size: 12px; line-height: 18px; }
+
+/* ---- PDF ---- */
+.pv .pdfpage { position: relative; }
+.pv .pdfpage img { display: block; width: 100%; height: auto; }
+.pv .pdfpage .wspan { position: absolute; color: transparent; cursor: text; user-select: text; -webkit-user-select: text; overflow: hidden; line-height: 1; }
+.pv .pdfpage .wspan::selection { background: color-mix(in oklch, var(--primary) 25%, transparent); color: transparent; }
+.pv .pdfpage .hit { position: absolute; border-radius: 3px; background: color-mix(in oklch, var(--primary) 14%, transparent); outline: 1.5px solid var(--primary); pointer-events: none; }
+/* ページ送りはビューア上部のツールバーとして .pdfview の枠に収める。
+   sticky で残す（長い頁をスクロールしても送り口が見える） */
+.pv .pdfview { border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--card); }
+.pv .pdfpager { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 8px; padding: 4px 8px; background: var(--muted); border-bottom: 1px solid var(--border); border-radius: calc(var(--radius-sm) - 1px) calc(var(--radius-sm) - 1px) 0 0; }
+.pv .pdfview .pdfpage { margin-bottom: 0; border-radius: 0 0 calc(var(--radius-sm) - 1px) calc(var(--radius-sm) - 1px); overflow: hidden; }
+.pv .pgbtn { border: 1px solid var(--border); background: var(--card); border-radius: var(--radius-sm); font: inherit; font-size: 11px; padding: 2px 8px; cursor: pointer; line-height: 16px; color: var(--foreground); }
+.pv .pgbtn:hover:not([disabled]) { background: var(--accent); border-color: var(--primary); }
+.pv .pgbtn[disabled] { opacity: .4; cursor: default; }
+/* 押すと行が選べる単語だけ指カーソル。他の単語は text カーソルのまま（文字選択が生きている印） */
+.pv .pdfpage .wspan[data-sr] { cursor: pointer; }
+.pv .pdfpage .wspan[data-sr]:hover, .pv .pdfpage .wspan.srhov { background: color-mix(in oklch, var(--primary) 22%, transparent); border-radius: 2px; }
+.pv .pdfpage .srflag.flaghov { opacity: 1; }
+/* source_row の番号バッジ。表では source_row セルの値を、PDF では対応 hit の脇に
+   同じ見た目で出す。薄い = 対応がある行、塗り = 選択中（対応が無い行には出さない） */
+.pv .srnum, .pv .pdfpage .srflag { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 16px; padding: 0 5px; border-radius: 5px; border: 1px solid color-mix(in oklch, var(--primary) 40%, var(--border)); background: var(--accent); color: var(--accent-foreground); font-size: 10px; font-weight: 600; line-height: 1; }
+.pv tr.rowsel .srnum, .pv .pdfpage .srflag.sel { background: var(--primary); border-color: var(--primary); color: var(--primary-foreground); }
+.pv .pdfpage .srflag { position: absolute; transform: translate(calc(-100% - 4px), -50%); opacity: .45; pointer-events: none; z-index: 1; }
+.pv .pdfpage .srflag.sel { opacity: 1; box-shadow: 0 1px 4px rgba(0,0,0,.25); }
+
+/* ---- 見出し + 注意点ドロワー ---- */
+.pv .headline { display: flex; align-items: baseline; gap: 12px; padding: 10px 16px; flex-wrap: wrap; }
+.pv .caveat-drawer { border-top: 1px solid var(--border); background: var(--muted); padding: 10px 16px; max-height: 40vh; overflow: auto; }
+.pv .caveat-drawer .cv { padding: 6px 0; border-top: 1px solid var(--border); }
+.pv .caveat-drawer .cv:first-child { border-top: 0; }
+.pv .caveat-drawer .cv .t { font-weight: 500; font-size: 13px; }
+.pv .caveat-drawer .cv .b { font-size: 12px; color: var(--muted-foreground); }
+
+/* ---- 固定分割: 画面を上下2ペインに割り、各ペインが独立にスクロールする
+   （図ペインではパンがスクロール相当）。ページ自体はスクロールせず、境目をドラッグで比率変更 ---- */
+.pv.vsplit { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
+.pv .graphwrap { overflow: hidden; position: relative; touch-action: none; user-select: none; flex: 0 0 auto; }
+.pv .graphsvg { display: block; cursor: grab; }
+.pv .graphsvg.panning, .pv .graphsvg.panning * { cursor: grabbing !important; }
+.pv .zoomctl { position: absolute; right: 10px; bottom: 10px; z-index: 5; display: flex; flex-direction: column; gap: 4px; }
+.pv .zoomctl button { min-width: 28px; height: 26px; padding: 0 6px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--card); color: var(--foreground); font: inherit; font-size: 11px; line-height: 1; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+.pv .zoomctl button:hover { background: var(--accent); border-color: var(--primary); }
+.pv .splitsash { flex: 0 0 11px; cursor: row-resize; position: relative; z-index: 6; background: var(--muted); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.pv .splitsash::after { content: ""; position: absolute; left: 50%; top: 50%; width: 56px; height: 4px; transform: translate(-50%, -50%); border-radius: 2px; background: color-mix(in oklch, var(--muted-foreground) 45%, transparent); }
+.pv .splitsash:hover::after, .pv .splitsash.drag::after { background: var(--primary); }
+.pv .iowrap { flex: 1; overflow: auto; min-height: 0; padding: 12px 16px 110px; }
