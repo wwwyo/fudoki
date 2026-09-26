@@ -121,7 +121,7 @@ details.fold > summary { cursor: pointer; font-size: 12px; color: var(--muted-fo
 .harness-bar button { border: 0; border-radius: 6px; padding: 4px 10px; background: transparent; color: rgba(255,255,255,.55); font: inherit; cursor: pointer; }
 .harness-bar button[data-active] { background: rgba(255,255,255,.14); color: #fff; }
 
-/* 見出し + 誤読の罠ドロワー */
+/* 見出し + 注意点ドロワー */
 .headline { display: flex; align-items: baseline; gap: 12px; padding: 10px 16px; flex-wrap: wrap; }
 .caveat-drawer { border-top: 1px solid var(--border); background: var(--muted); padding: 10px 16px; }
 .caveat-drawer .cv { padding: 6px 0; border-top: 1px solid var(--border); }
@@ -726,7 +726,7 @@ function headlineHtml(j) {
       ${years.map((y) => `<option value="${y}" ${S.year === y ? 'selected' : ''}>${y}年度</option>`).join('')}
     </select>
     <span class="mut small">${esc(m.phase.label)}</span>
-    <button class="linky small" data-caveats>誤読の罠 ${j.caveats.length} 件${S.caveats ? ' ▴' : ' ▾'}</button>
+    <button class="linky small" data-caveats>注意点 ${j.caveats.length} 件${S.caveats ? ' ▴' : ' ▾'}</button>
   </div>
   ${S.caveats ? `<div class="caveat-drawer">${j.caveats.map((c) => `<div class="cv"><div class="t">${md(c.topic)}</div><div class="b">${md(c.body)}</div></div>`).join('')}</div>` : ''}`;
 }

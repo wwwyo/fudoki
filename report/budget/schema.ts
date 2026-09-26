@@ -154,7 +154,7 @@ export type LevelGroup = {
 export type AmountDecl = {
   /** 原典の列名 */
   name: string
-  /** 宣言の出所（dbt_project.yml / 証跡の source_amount_unit / 誤読の罠） */
+  /** 宣言の出所（dbt_project.yml / 証跡の source_amount_unit / 注意点） */
   source: 'dbt_project' | 'source_amount_unit' | 'caveat'
   /** 原典での単位（「円」「千円」など） */
   unit: string
