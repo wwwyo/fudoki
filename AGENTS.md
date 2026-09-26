@@ -98,4 +98,4 @@ uv add --exclude-newer $(date -v-7d +%Y-%m-%d) <package>
 - ③会議録の制約（著作権法40条1項）・manifest・driver → `ingestion/transcripts/README.md`
 - 存在価値・先行事例・将来展望 → `docs/product-context.md`
 - データ源の実測 → `docs/budget-availability.md` / `docs/kkj-api-notes.md` / `docs/fdp-spec-notes.md` / `docs/tokyo-survey.md`
-- PRD → `docs/prd/<prd name>/`（`prd` skill の手順に従う）
+- 設計の記録 → `docs/prd/<topic>/`（PRD）・`docs/design-doc-<topic>.md`（単体の設計書）・`docs/adr/`（決定）。判断の記録はコードと同じ寿命を持ち、git 管理する

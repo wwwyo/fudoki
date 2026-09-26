@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { ROOT_PATH, ROOT_SPEC_REDIRECT_PATH, V0_DOCS_PATH, V0_PREFIX, V0_SPEC_PATH } from '../spec'
+import { MCP_PATH, ROOT_PATH, ROOT_SPEC_REDIRECT_PATH, V0_DOCS_PATH, V0_PREFIX, V0_SPEC_PATH } from '../spec'
 import { classifyPath } from './path-class'
 
 /**
@@ -24,8 +24,12 @@ describe('classifyPath', () => {
 
   test('classifies /v0/* query endpoints and passthrough as keyed', () => {
     expect(classifyPath('/v0/jurisdictions')).toBe('keyed')
-    expect(classifyPath('/v0/budgets/-/statement')).toBe('keyed')
+    expect(classifyPath('/v0/budgets/-/budgetLines')).toBe('keyed')
     expect(classifyPath('/v0/datapackages/132195/expenditure.csv')).toBe('keyed')
+  })
+
+  test('classifies MCP_PATH as keyed (鍵不要だが匿名レート制限は掛かる)', () => {
+    expect(classifyPath(MCP_PATH)).toBe('keyed')
   })
 
   test('does not over-match: /v0openapi.json or /rpcfoo are not excluded/rpc', () => {
