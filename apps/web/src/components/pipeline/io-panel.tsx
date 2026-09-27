@@ -1011,9 +1011,6 @@ function Overview({
             行 {bareKey(selectedKey)} の選択を解除
           </button>
         )}
-        <span className="text-muted-foreground text-xs">
-          行を選ぶと対応する行が両側で点灯します。図の辺・ノードを選ぶと、その区間の行対応を出します
-        </span>
       </div>
       <div className="io">
         <div className="side">

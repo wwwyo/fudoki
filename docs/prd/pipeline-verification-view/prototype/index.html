@@ -736,7 +736,6 @@ function ioOverviewHtml(j) {
   return `<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px" data-ctx="ov:hdr">
       <h2 style="font-size:14px;margin:0">原典 <span class="mut">→</span> 配布物</h2>
       ${ost.row != null ? `<button class="linky small" data-clear-row>行 ${esc(bareSr(ost.row))} の選択を解除</button>` : ''}
-      <span class="mut small">行を選ぶと対応する行が両側で点灯します。図の辺・ノードを選ぶと、その区間の行対応を出します</span>
     </div>
     <div class="io" data-ov>
       <div class="side">${origins.map(originHtml).join('')}</div>
