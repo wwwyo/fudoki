@@ -8,7 +8,7 @@
  */
 import { useEffect, useMemo, useState } from "react"
 import type { PdfDocMeta, PdfHitLoc, PdfPageData } from "@/lib/verify"
-import { bareKey, loadPdfPage, pdfPagePng, printedPageNo } from "@/lib/verify"
+import { bareKey, loadPdfPage, pdfPagePng } from "@/lib/verify"
 
 type Props = {
   /** 原典ノードが対応する文書（複数年度なら複数） */
@@ -99,8 +99,15 @@ export function PdfSide({
 
   const idx = shown !== null ? pages.indexOf(shown) : -1
   const curData = pageData?.at === shown ? pageData.d : null
-  const printed = curData ? printedPageNo(curData) : null
   const selHit = selectedKey !== null && hits ? hits.get(selectedKey) : null
+
+  /** 頁送りの入力（取り込み範囲の序数）。範囲外はクランプ、同じ頁は何もしない */
+  const jumpToOrdinal = (raw: string) => {
+    const n = Number.parseInt(raw, 10)
+    if (!doc || Number.isNaN(n) || !pages.length) return
+    const p = pages[Math.min(Math.max(n, 1), pages.length) - 1]!
+    if (p !== shown) onNavigate(doc.id, p)
+  }
 
   const hitsHere = useMemo(() => docHits.filter(([, h]) => h.page === shown), [docHits, shown])
 
@@ -147,8 +154,33 @@ export function PdfSide({
         >
           ◀
         </button>
-        <span className="mono text-xs" title="PDF ファイルの通し頁番号">
-          p.{shown ?? "-"}
+        {/* 中央の「序数/総数」は入力で直接移動できる。key で頁が変わったら
+            入力値をその頁の序数に戻す */}
+        <input
+          key={`${doc.id}:${shown}`}
+          className="pgnum mono"
+          defaultValue={idx + 1}
+          inputMode="numeric"
+          disabled={!pages.length}
+          aria-label="取り込んだ頁の何枚目か（直接入力で移動）"
+          title="取り込んだ頁の何枚目か（直接入力で移動）"
+          onFocus={(e) => e.currentTarget.select()}
+          onKeyDown={(e) => {
+            if (e.nativeEvent.isComposing) return
+            if (e.key === "Enter") e.currentTarget.blur()
+            else if (e.key === "Escape") {
+              e.currentTarget.value = String(idx + 1)
+              e.currentTarget.blur()
+            }
+          }}
+          onBlur={(e) => jumpToOrdinal(e.currentTarget.value)}
+        />
+        <span
+          className="text-xs"
+          style={{ color: "var(--muted-foreground)" }}
+          title="この文書に取り込んだ頁数"
+        >
+          / {pages.length}
         </span>
         <button
           className="pgbtn"
@@ -158,25 +190,6 @@ export function PdfSide({
         >
           ▶
         </button>
-        {/* p.N は PDF の通し頁番号（証跡・hit・頁画像ファイルが指す番号）で主表示。
-            書類に印字された頁番号は冊子の通しとはずれる（表紙・目次の分）ので、
-            文字層から拾えて異なるときだけ並記する。取り込み範囲の序数は副表示 */}
-        {printed !== null && printed !== shown && (
-          <span
-            className="text-xs"
-            style={{ color: "var(--muted-foreground)" }}
-            title="書類に印字されている頁番号"
-          >
-            （書類頁 {printed}）
-          </span>
-        )}
-        <span
-          className="text-xs"
-          style={{ color: "var(--muted-foreground)" }}
-          title="この文書に取り込んだ頁範囲の何枚目か"
-        >
-          {shown !== null ? idx + 1 : "-"}/{pages.length}
-        </span>
         {/* 文書が年度ごとに分かれているときの切替。頁番号の意味が変わるので必須 */}
         {docs.length > 1 && (
           <select
@@ -206,6 +219,15 @@ export function PdfSide({
             選択行は別文書の p.{selHit.page} 頁
           </button>
         )}
+        {/* p.N は PDF の通し頁番号（証跡・hit・頁画像ファイルが指す番号）。
+            冊子の印字頁番号とはずれるが、証跡と対応させるためこちらで統一する */}
+        <span
+          className="mono text-xs"
+          style={{ marginLeft: "auto", color: "var(--muted-foreground)" }}
+          title="PDF ファイルの通し頁番号"
+        >
+          p.{shown ?? "-"}
+        </span>
       </div>
       {shown !== null && (
         <div className="pdfpage">

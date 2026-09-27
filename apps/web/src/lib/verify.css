@@ -86,6 +86,8 @@
 .pv .pgbtn { border: 1px solid var(--border); background: var(--card); border-radius: var(--radius-sm); font: inherit; font-size: 11px; padding: 2px 8px; cursor: pointer; line-height: 16px; color: var(--foreground); }
 .pv .pgbtn:hover:not([disabled]) { background: var(--accent); border-color: var(--primary); }
 .pv .pgbtn[disabled] { opacity: .4; cursor: default; }
+.pv .pgnum { width: 3.4em; border: 1px solid var(--border); background: var(--card); border-radius: var(--radius-sm); font: inherit; font-size: 11px; padding: 2px 4px; line-height: 16px; text-align: right; color: var(--foreground); }
+.pv .pgnum:focus { outline: none; border-color: var(--primary); }
 /* 押すと行が選べる単語だけ指カーソル。他の単語は text カーソルのまま（文字選択が生きている印） */
 .pv .pdfpage .wspan[data-sr] { cursor: pointer; }
 .pv .pdfpage .wspan[data-sr]:hover, .pv .pdfpage .wspan.srhov { background: color-mix(in oklch, var(--primary) 22%, transparent); border-radius: 2px; }

@@ -238,41 +238,6 @@ export type PdfPageData = {
   words: [number, number, number, number, string][]
 }
 
-/**
- * 書類に印字された頁番号を語の文字層から拾う（「－41－」「- 2 0 -」のような形式）。
- * 綴じられた冊子では PDF の通し頁番号（p.N）と書類の印字頁番号がずれる
- * （千代田区は表紙・目次の分だけ +2、昭島市は +4）ので、見つかって異なるときだけ
- * 頁送りに並記する。
- *
- * 上下の余白帯（8%）にある「数字と装飾だけ」の行を頁番号とみなす。ダッシュ類を
- * 必須にするのは、表の端にある数字だけの行や見出しの「5.」と取り違えないため。
- * 判定に失敗したら null — 並記なしに戻るだけなので頁番号を間違って出すよりは良い。
- */
-export function printedPageNo(page: PdfPageData): number | null {
-  const cy = (w: PdfPageData["words"][number]) => (w[1] + w[3]) / 2
-  const inMargin = page.words
-    .filter((w) => cy(w) < page.h * 0.08 || cy(w) > page.h * 0.92)
-    .sort((a, b) => cy(a) - cy(b))
-  // 縦中心が近い（語の高さ以内の）語を同じ行とみなす
-  const lines: PdfPageData["words"][] = []
-  for (const w of inMargin) {
-    const line = lines.at(-1)
-    const lastCy = line ? cy(line.at(-1)!) : -Infinity
-    if (line && cy(w) - lastCy <= w[3] - w[1]) line.push(w)
-    else lines.push([w])
-  }
-  // 下の余白から先に見る（頁番号は欄外の端にある）
-  for (const line of lines.reverse()) {
-    const raw = line
-      .sort((a, b) => a[0] - b[0])
-      .map((w) => w[4].replace(/[０-９]/g, (c) => String(c.charCodeAt(0) - 0xff10)))
-      .join("")
-    const digits = raw.replace(/[\s　.()（）\-－―–—‐‑‒−~〜]/g, "")
-    if (/^\d{1,4}$/.test(digits) && /[-－―–—‐‑‒−]/.test(raw)) return Number(digits)
-  }
-  return null
-}
-
 const hitsCache = new Map<string, Promise<Record<string, Record<string, PdfHit>>>>()
 const pageCache = new Map<string, Promise<PdfPageData | null>>()
 

@@ -104,6 +104,8 @@ details.caveats .cv:last-child { padding-bottom: 8px; }
 .v1 .pgbtn { border: 1px solid var(--border); background: var(--card); border-radius: var(--radius-sm); font: inherit; font-size: 11px; padding: 2px 8px; cursor: pointer; line-height: 16px; }
 .v1 .pgbtn:hover:not([disabled]) { background: var(--accent); border-color: var(--primary); }
 .v1 .pgbtn[disabled] { opacity: .4; cursor: default; }
+.v1 .pgnum { width: 3.4em; border: 1px solid var(--border); background: var(--card); border-radius: var(--radius-sm); font: inherit; font-size: 11px; padding: 2px 4px; line-height: 16px; text-align: right; }
+.v1 .pgnum:focus { outline: none; border-color: var(--primary); }
 /* 押すと行が選べる単語だけ指カーソル。他の単語は text カーソルのまま（文字選択が生きている印） */
 .v1 .pdfpage .wspan[data-sr] { cursor: pointer; }
 .v1 .pdfpage .wspan[data-sr]:hover, .v1 .pdfpage .wspan.srhov { background: rgba(47,93,67,.22); border-radius: 2px; }
@@ -615,33 +617,6 @@ function pdfPageHtml(pdf, hits, pno, flagSet, st) {
 function pdfPages(pdf) {
   return Object.keys(pdf.pages || {}).map(Number).sort((a, b) => a - b);
 }
-/* 書類に印字された頁番号を語の文字層から拾う（「－41－」「- 2 0 -」のような形式）。
-   冊子では PDF の通し頁番号（p.N）とずれる（千代田区は表紙・目次の分だけ +2）ので、
-   見つかって異なるときだけ頁送りに並記する。上下の余白帯にある「数字と装飾だけ」
-   の行を頁番号とみなす — ダッシュ類を必須にするのは表の端の数字行との区別のため */
-function printedPageNo(p) {
-  if (!p || !p.words) return null;
-  const ws = p.words
-    .map((w) => ({ ...w, cy: w.y + w.h / 2 }))
-    .filter((w) => w.cy < p.h * 0.08 || w.cy > p.h * 0.92)
-    .sort((a, b) => a.cy - b.cy);
-  const lines = [];
-  for (const w of ws) {
-    const line = lines[lines.length - 1];
-    const lastCy = line ? line[line.length - 1].cy : -Infinity;
-    if (line && w.cy - lastCy <= w.h) line.push(w);
-    else lines.push([w]);
-  }
-  for (const line of lines.reverse()) {
-    const raw = line
-      .sort((a, b) => a.x - b.x)
-      .map((w) => w.t.replace(/[０-９]/g, (c) => String(c.charCodeAt(0) - 0xff10)))
-      .join('');
-    const digits = raw.replace(/[\s　.()（）\-－―–—‐‑‒−~〜]/g, '');
-    if (/^\d{1,4}$/.test(digits) && /[-－―–—‐‑‒−]/.test(raw)) return Number(digits);
-  }
-  return null;
-}
 /* st はこの側の { row, pdfPage } を持つ ctx。interact=false のとき語に行選択を付けない
    （overview の閲覧用 — 頁送りだけは効かせる） */
 function pdfSideHtml(j, dir, flagSet, st, interact = true) {
@@ -658,15 +633,16 @@ function pdfSideHtml(j, dir, flagSet, st, interact = true) {
   const cur = st.pdfPage;
   const idx = pages.indexOf(cur);
   const selHit = st.row != null ? hits[String(st.row)] : null;
-  const printed = printedPageNo(pdf.pages[cur]);
-  // ページ送りはビューア上部のツールバーとして枠の中に収める
+  // ページ送りはビューア上部のツールバーとして枠の中に収める。中央の「序数/総数」は
+  // 入力で直接移動できる。右端の p.N は PDF の通し頁番号（証跡・hit が指す番号）で、
+  // 冊子の印字頁番号とはずれるが証跡と対応させるためこちらで統一する
   return `<div class="pdfview"><div class="pdfpager" role="group" aria-label="PDF のページ送り">
       <button class="pgbtn" data-pg="-1" ${idx <= 0 ? 'disabled' : ''} aria-label="前の頁">◀</button>
-      <span class="mono small" title="PDF ファイルの通し頁番号">p.${cur}</span>
+      <input class="pgnum mono" value="${idx + 1}" inputmode="numeric" title="取り込んだ頁の何枚目か（直接入力で移動）" aria-label="取り込んだ頁の何枚目か（直接入力で移動）">
+      <span class="small mut" title="この文書に取り込んだ頁数">/ ${pages.length}</span>
       <button class="pgbtn" data-pg="1" ${idx >= pages.length - 1 ? 'disabled' : ''} aria-label="次の頁">▶</button>
-      ${printed !== null && printed !== cur ? `<span class="small mut" title="書類に印字されている頁番号">（書類頁 ${printed}）</span>` : ''}
-      <span class="small mut" title="この文書に取り込んだ頁範囲の何枚目か">${idx + 1}/${pages.length}</span>
       ${selHit && selHit.page !== cur ? `<button class="linky small" data-goto="${selHit.page}">選択行は p.${selHit.page} 頁</button>` : ''}
+      <span class="mono small mut" style="margin-left:auto" title="PDF ファイルの通し頁番号">p.${cur}</span>
     </div>
     ${pdfPageHtml(pdf, hits, cur, flagSet, interact ? st : null)}</div>`;
 }
@@ -1131,7 +1107,26 @@ window.addEventListener('pointerup', v1PointerEnd);
 window.addEventListener('pointercancel', v1PointerEnd);
 stage.addEventListener('change', (e) => {
   const y = e.target.closest('[data-year]');
-  if (y) { S.year = Number(y.value); V1Z = null; pushUrl(); mount(); }
+  if (y) { S.year = Number(y.value); V1Z = null; pushUrl(); mount(); return; }
+  // 頁送りの入力 — 取り込み範囲の序数を受けて物理頁へ変換（範囲外はクランプ）
+  const pi = e.target.closest('input.pgnum');
+  if (pi) {
+    const ctxEl = e.target.closest('[data-ctx]');
+    const st = ctxEl ? ctxOf(ctxEl.dataset.ctx) : null;
+    const pages = pdfPages(J().pdf || {});
+    if (st && pages.length) {
+      const n = Number.parseInt(pi.value, 10);
+      if (!Number.isNaN(n)) st.pdfPage = pages[Math.min(Math.max(n, 1), pages.length) - 1];
+      mount();
+    }
+  }
+});
+/* 頁送り入力のキー操作 — Enter は確定（blur → change で commit）、Escape は元に戻してから
+   blur する（defaultValue に戻すと change が発火しない） */
+stage.addEventListener('keydown', (e) => {
+  if (!e.target.matches('input.pgnum')) return;
+  if (e.key === 'Enter') e.target.blur();
+  else if (e.key === 'Escape') { e.target.value = e.target.defaultValue; e.target.blur(); }
 });
 function scrollSelIntoView() {
   requestAnimationFrame(() => {
