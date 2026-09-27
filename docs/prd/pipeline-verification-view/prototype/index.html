@@ -639,7 +639,6 @@ function pdfSideHtml(j, dir, flagSet, st, interact = true, hitsOv = null) {
   }
   const cur = st.pdfPage;
   const idx = pages.indexOf(cur);
-  const selHit = st.row != null ? hits[st.row] : null;
   // ページ送りはビューア上部のツールバーとして枠の中に収める。中央の「序数/総数」は
   // 入力で直接移動できる。右端の p.N は PDF の通し頁番号（証跡・hit が指す番号）で、
   // 冊子の印字頁番号とはずれるが証跡と対応させるためこちらで統一する
@@ -648,7 +647,6 @@ function pdfSideHtml(j, dir, flagSet, st, interact = true, hitsOv = null) {
       <input class="pgnum mono" value="${idx + 1}" inputmode="numeric" title="取り込んだ頁の何枚目か（直接入力で移動）" aria-label="取り込んだ頁の何枚目か（直接入力で移動）">
       <span class="small mut" title="この文書に取り込んだ頁数">/ ${pages.length}</span>
       <button class="pgbtn" data-pg="1" ${idx >= pages.length - 1 ? 'disabled' : ''} aria-label="次の頁">▶</button>
-      ${selHit && selHit.page !== cur ? `<button class="linky small" data-goto="${selHit.page}">選択行は p.${selHit.page} 頁</button>` : ''}
       <span class="mono small mut" style="margin-left:auto" title="PDF ファイルの通し頁番号">p.${cur}</span>
     </div>
     ${pdfPageHtml(pdf, hits, cur, flagSet, interact ? st : null)}</div>`;
@@ -1025,8 +1023,6 @@ stage.addEventListener('click', (e) => {
     }
     return;
   }
-  const gt = e.target.closest('[data-goto]');
-  if (gt && st) { st.pdfPage = Number(gt.dataset.goto); mount(); return; }
   const hit = e.target.closest('[data-edge]');
   if (hit) { const [f, t] = hit.dataset.edge.split('|'); S.edges = [{ from: f, to: t }]; mount(); return; }
   const nd = e.target.closest('[data-node]');

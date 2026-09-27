@@ -99,7 +99,6 @@ export function PdfSide({
 
   const idx = shown !== null ? pages.indexOf(shown) : -1
   const curData = pageData?.at === shown ? pageData.d : null
-  const selHit = selectedKey !== null && hits ? hits.get(selectedKey) : null
 
   /** 頁送りの入力（取り込み範囲の序数）。範囲外はクランプ、同じ頁は何もしない */
   const jumpToOrdinal = (raw: string) => {
@@ -209,16 +208,7 @@ export function PdfSide({
             ))}
           </select>
         )}
-        {selHit && selHit.docId === doc.id && selHit.page !== shown && (
-          <button className="linky text-xs" onClick={() => onNavigate(doc.id, selHit.page)}>
-            選択行は p.{selHit.page} 頁
-          </button>
-        )}
-        {selHit && selHit.docId !== doc.id && (
-          <button className="linky text-xs" onClick={() => onNavigate(selHit.docId, selHit.page)}>
-            選択行は別文書の p.{selHit.page} 頁
-          </button>
-        )}
+
         {/* p.N は PDF の通し頁番号（証跡・hit・頁画像ファイルが指す番号）。
             冊子の印字頁番号とはずれるが、証跡と対応させるためこちらで統一する */}
         <span
