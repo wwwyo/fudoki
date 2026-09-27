@@ -180,9 +180,15 @@ const md = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 const qs = new URLSearchParams(location.search);
 const S = {
   code: qs.get('j') === '132195' ? '132195' : '131016',
-  year: qs.get('y') ? Number(qs.get('y')) : null,
+  // 年度は収録年度から選ぶ（全年度ビューは持たない — 複数年度を1画面に混ぜると
+  // 「この行はどの年度か」を行ごとに判別する必要が出る）。未指定・範囲外は最新年度に倒す
+  year: (() => {
+    const ys = DATA[qs.get('j') === '132195' ? '132195' : '131016'].meta.fiscalYears;
+    const v = Number(qs.get('y'));
+    return ys.includes(v) ? v : ys[ys.length - 1];
+  })(),
   edges: [],            // [{from,to}] 選択中の組。ノード側面クリックではその側の辺が全部入るので複数
-  ctx: {},              // "from|to"（組）や "ov:<node>"（overview）ごとの { row, pdfPage }
+  ctx: {},              // "from|to"（組）・"st:<node>"（星パネル）・"ov:<node>"（overview）の { row, pdfPage }
 };
 /* 組・overview ノードごとの行選択・PDF 表示頁。組を替えても残らず、並べても混ざらない */
 const ctxOf = (k) => (S.ctx[k] ||= { row: null, pdfPage: null });
@@ -236,7 +242,7 @@ function pushUrl() {
   const url = new URL(location);
   url.searchParams.delete('v');
   url.searchParams.set('j', S.code);
-  if (S.year == null) url.searchParams.delete('y'); else url.searchParams.set('y', S.year);
+  url.searchParams.set('y', S.year);
   history.replaceState(null, '', url);
 }
 
@@ -287,7 +293,7 @@ function pickEntry(j, nid, dir) {
   const y = S.year;
   const byDir = es.filter((e) => dir == null || e.direction == null || e.direction === dir);
   const pool = byDir.length ? byDir : es;
-  const byYear = pool.filter((e) => y == null || e.year == null || e.year === y);
+  const byYear = pool.filter((e) => e.year == null || e.year === y);
   return (byYear.length ? byYear : pool)[0] || null;
 }
 /* ---- layout ---- */
@@ -389,7 +395,7 @@ function graphSvg(j, horiz, dimSet, pairHover, vp) {
       <text x="10" y="34" font-size="10.5" fill="var(--muted-foreground)">${esc(fit(
         STAGE_JA[n.stage] + ' · ' + (rows === null ? '—' : fmt(rows) + ' 行')
         + (shared ? '（共有・この団体分）' : '')
-        + (S.year !== null && !scoped && n.rowsByJurisdiction ? ' · 全年度' : '')
+        + (!scoped && n.rowsByJurisdiction ? ' · 全年度' : '')
         + (!n.rowsByJurisdiction ? ' · 規則表' : ''),
         36))}</text>
     </g>`;
@@ -646,17 +652,16 @@ function ioOverviewHtml(j) {
 }
 function ioPanelHtml(j) {
   if (!S.edges.length) return ioOverviewHtml(j);
-  return S.edges.map((e) => {
-    const a = j.topology.nodes.find((n) => n.id === e.from);
-    const b = j.topology.nodes.find((n) => n.id === e.to);
-    if (!a || !b) return '';
-    const dir = edgeDir(e);
-    // 原典ノードは文書単位にまとまる（歳出・歳入が同じ PDF なら1ノード）ので、
-    // 入力側は辺が指す取り込み表の原典（`<source>.origin`）として引く
-    const fromKey = a.kind === 'origin' ? `${e.to}.origin` : e.from;
-    const aPdf = j.samples[fromKey]?.kind === 'pdf';
-    return ioPanelBodyHtml(j, e, a, b, dir, aPdf, fromKey);
-  }).join('');
+  const nodeById = new Map(j.topology.nodes.map((n) => [n.id, n]));
+  // 原典ノードは文書単位にまとまりうるので、「同じ入力表か」の判定は解決済みの
+  // ノード id（<source>.origin の規約）で比較する — まとめられた原典が歳出・歳入
+  // 両方の辺を持っても、direction ごとの頁範囲・証跡は別物なので星にはしない
+  const inIdOf = (e) => nodeById.get(e.from)?.kind === 'origin' ? `${e.to}.origin` : e.from;
+  const sameIn = S.edges.every((e) => inIdOf(e) === inIdOf(S.edges[0]));
+  const sameOut = S.edges.every((e) => e.to === S.edges[0].to);
+  if (sameIn || sameOut) return starHtml(j, nodeById, sameIn ? 'in' : 'out', S.edges);
+  // 共通の端点を持たない組み合わせ（側面クリックでは作れない）— 1組ずつの星として並べる
+  return S.edges.map((e) => starHtml(j, nodeById, 'in', [e])).join('');
 }
 /* ---- I/O パネル本体 ---- */
 /* 見出しは「入力 → 出力」1行。左右は短い見出し（原典なら形式付き）。出所・検査・閲覧の
@@ -716,36 +721,81 @@ function srSetOfEntry(e, isOrigin) {
   // 原典 CSV の行には source_row 列が無い。物理行番号（ヘッダ=1行目、データは2行目から）を採る
   return isOrigin ? new Set(e.rows.map((_, i) => i + 2)) : null;
 }
-function ioPanelBodyHtml(j, e, a, b, dir, aPdf, fromKey) {
-  const ctx = `${e.from}|${e.to}`;
-  const st = ctxOf(ctx);
-  // 番号バッジは「反対側にも同じ source_row がある」行にだけ出す。PDF 側は hit の key が対応行
-  const linkIn = aPdf
-    ? new Set(Object.keys(((j.pdf || {})[dir || 'expenditure'] || {}).hits || {}).map(Number))
-    : srSetOfEntry(pickEntry(j, fromKey, dir), a.kind === 'origin');
-  const linkOut = srSetOfEntry(pickEntry(j, e.to, dir), b.kind === 'origin');
-  const inName = a.kind === 'origin' ? '原典' : nodeLabel(a, j);
-  const bName = nodeLabel(b, j);
-  // ノード名が既に向きを名乗っている組（例: expenditure（歳出））でメタの「歳出」を重複させない
-  const dirShown = dir && (inName.includes(DIR[dir]) || bName.includes(DIR[dir]));
-  const meta = [dir && !dirShown && DIR[dir], S.year != null && `${S.year}年度`].filter(Boolean).join(' ／ ');
-  const inH3 = a.kind === 'origin' ? `原典（${aPdf ? 'PDF' : 'CSV'}）` : `入力 — ${esc(nodeLabel(a, j))}`;
-  // この区間でしている変換 = 出力側ノードの段の責務（topology.stages が正本）
-  const bSt = j.topology.stages.find((s) => s.id === b.stage);
-  const lead = bSt ? esc(bSt.responsibility) : '';
-  return `<div class="io-pair" data-ctx="${esc(ctx)}"><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px">
-      <h2 style="font-size:14px;margin:0">${esc(inName)} <span class="mut">→</span> ${esc(bName)}</h2>
-      ${meta ? `<span class="mut small">${meta}</span>` : ''}
-      ${st.row != null ? `<button class="linky small" data-clear-row>行 ${st.row} の選択を解除</button>` : ''}
-      <button class="pair-x" data-rmpair title="この組を外す" aria-label="この組を外す">✕</button>
-    </div>
-    ${lead ? `<p class="mut" style="font-size:12px;margin:-2px 0 10px">${lead}</p>` : ''}
-    <div class="io">
-      <div class="side"><h3>${inH3}</h3>${aPdf ? pdfSideHtml(j, dir || 'expenditure', linkOut, st) : tableHtml(j, fromKey, dir, 'in', linkOut, st)}
-        ${ioSideDetailHtml(j, a, dir, { isInput: true, aPdf, srcIds: a.kind === 'origin' ? [e.to] : [], tblKey: fromKey, tblDir: dir })}</div>
-      <div class="side"><h3>${esc(bName)}</h3>${tableHtml(j, e.to, dir, 'out', linkIn, st)}
-        ${ioSideDetailHtml(j, b, dir, { isInput: false, aPdf, srcIds: [], tblKey: e.to, tblDir: dir })}</div>
-    </div></div>`;
+/* ある側が持つ行キー（source_row / 物理行番号 / PDF hit の鍵）の集合。
+   「対応あり」バッジの母数。PDF 側は hit の key が対応行 */
+function sideKeySet(j, node, key, dir, pdf) {
+  if (pdf) return new Set(Object.keys(((j.pdf || {})[dir || 'expenditure'] || {}).hits || {}).map(Number));
+  return srSetOfEntry(pickEntry(j, key, dir), node.kind === 'origin');
+}
+/* ---- 星パネル ---- */
+/* 同じ側を共有する組はその側の表を1枚だけ出し、バラつく側を縦に並べる（同じ表を
+   組ごとに複写しない）。行選択はパネル単位 — 共有側で選んだ行は、鍵を持つすべての
+   側で点灯する。ctx は側ごと（pdfPage）は "from|to"・"st:<sharedKey>"、行選択は
+   パネル内の全 ctx に同じ値を書いてミラーする（click 側） */
+function starHtml(j, nodeById, shared, pairs) {
+  const sharedId = shared === 'in' ? pairs[0].from : pairs[0].to;
+  const sharedNode = nodeById.get(sharedId);
+  if (!sharedNode) return '';
+  const sharedKey = shared === 'in' && sharedNode.kind === 'origin' ? `${pairs[0].to}.origin` : sharedId;
+  const dir = edgeDir(pairs[0]);
+  const aPdf = j.samples[sharedKey]?.kind === 'pdf';
+  const starCtx = `st:${sharedKey}`;
+  const sst = ctxOf(starCtx);
+  const varSide = shared === 'in' ? 'out' : 'in';
+
+  // バラつく側が持つ鍵の和集合 = 共有側の「対応あり」母数。共有側が持つ鍵 = 各側の母数
+  const peerKeys = new Set();
+  for (const e of pairs) {
+    const n = nodeById.get(varSide === 'in' ? e.from : e.to);
+    if (!n) continue;
+    const d = edgeDir(e);
+    const key = varSide === 'in' ? (n.kind === 'origin' ? `${e.to}.origin` : e.from) : e.to;
+    const pdf = varSide === 'in' && j.samples[key]?.kind === 'pdf';
+    const ks = sideKeySet(j, n, key, d, pdf);
+    if (ks) ks.forEach((k) => peerKeys.add(k));
+  }
+  const sharedKeys = sideKeySet(j, sharedNode, sharedKey, dir, aPdf);
+
+  const sharedName = sharedNode.kind === 'origin' ? '原典' : nodeLabel(sharedNode, j);
+  const sharedHead = shared === 'in'
+    ? (sharedNode.kind === 'origin' ? `原典（${aPdf ? 'PDF' : 'CSV'}）` : `入力 — ${esc(sharedName)}`)
+    : esc(sharedName);
+  // 変換の説明 = 出力側ノードの段の責務。共有出力では全組で同じなので1回だけ出す
+  // （共有入力では出力ごとに違うので各側の見出しの下に出す）
+  const sSt = j.topology.stages.find((s) => s.id === sharedNode.stage);
+  const sharedLead = shared === 'out' && sSt
+    ? `<p class="mut" style="font-size:12px;margin:-2px 0 8px">${esc(sSt.responsibility)}</p>` : '';
+  const sharedSide = `<div class="side" data-ctx="${esc(starCtx)}"><h3>${sharedHead}${sst.row != null ? ` <button class="linky small" data-clear-row>行 ${sst.row} の選択を解除</button>` : ''}</h3>${sharedLead}`
+    + (aPdf ? pdfSideHtml(j, dir || 'expenditure', peerKeys, sst) : tableHtml(j, sharedKey, dir, 'in', peerKeys, sst))
+    + ioSideDetailHtml(j, sharedNode, dir, { isInput: shared === 'in', aPdf, srcIds: sharedNode.kind === 'origin' ? pairs.map((e) => e.to) : [], tblKey: sharedKey, tblDir: dir })
+    + `</div>`;
+
+  const varBlocks = pairs.map((e) => {
+    const n = nodeById.get(varSide === 'in' ? e.from : e.to);
+    if (!n) return '';
+    const d = edgeDir(e);
+    const key = varSide === 'in' ? (n.kind === 'origin' ? `${e.to}.origin` : e.from) : e.to;
+    const pdf = varSide === 'in' && j.samples[key]?.kind === 'pdf';
+    const own = ctxOf(`${e.from}|${e.to}`);
+    const name = n.kind === 'origin' ? '原典' : nodeLabel(n, j);
+    // ノード名が既に向きを名乗っている組（例: expenditure（歳出））でメタの「歳出」を重複させない
+    const dirShown = d && (name.includes(DIR[d]) || sharedName.includes(DIR[d]));
+    const meta = [d && !dirShown && DIR[d], `${S.year}年度`].filter(Boolean).join(' ／ ');
+    const nSt = j.topology.stages.find((s) => s.id === n.stage);
+    const nlead = varSide === 'out' && nSt
+      ? `<p class="mut" style="font-size:12px;margin:-2px 0 8px">${esc(nSt.responsibility)}</p>` : '';
+    return `<div class="io-node" data-ctx="${esc(e.from)}|${esc(e.to)}"><h3>${varSide === 'in' ? `${esc(name)} →` : `→ ${esc(name)}`}${meta ? ` <span class="mut">${meta}</span>` : ''}`
+      + `<button class="pair-x" data-rmpair title="この組を外す" aria-label="この組を外す">✕</button></h3>${nlead}`
+      + (pdf ? pdfSideHtml(j, d || 'expenditure', sharedKeys, own) : tableHtml(j, key, d, varSide, sharedKeys, own))
+      + ioSideDetailHtml(j, n, d, { isInput: varSide === 'in', aPdf: pdf, srcIds: n.kind === 'origin' ? [e.to] : [], tblKey: key, tblDir: d })
+      + `</div>`;
+  }).join('');
+
+  return `<div class="io-pair" data-star="${esc(starCtx)}"><div class="io">`
+    + (shared === 'in' ? sharedSide : '')
+    + `<div class="side">${varBlocks}</div>`
+    + (shared === 'out' ? sharedSide : '')
+    + `</div></div>`;
 }
 /* サイドごとの詳細トグル。あるものだけ出す:
    - 入力側に原典が来る組 … 資料名・取得元 URL（リンク）・形式・ページ範囲・証跡（PDF は突き合わせ、
@@ -775,9 +825,7 @@ function ioSideDetailHtml(j, node, dir, { isInput, aPdf, srcIds, tblKey, tblDir 
   if (ing) {
     const title = ing.document_title || ing.dataset_title || ing.resource_name || '';
     const link = (u) => `<a href="${esc(u)}" target="_blank" rel="noreferrer">${esc(u)}</a>`;
-    const urlRows = S.year == null && ings.length > 1
-      ? ings.map((i) => `<div class="drow"><span class="dk">${i.fiscal_year}年度</span><span>${link(i.request_url)}</span></div>`).join('')
-      : `<div class="drow"><span class="dk">取得元</span><span>${link(ing.request_url)}</span></div>`;
+    const urlRows = `<div class="drow"><span class="dk">取得元</span><span>${link(ing.request_url)}</span></div>`;
     const ex = ing.extracted || {};
     // PDF は抽出なので「原典へ戻して比べる」検査は成立しない。代わりに様式内の重複印字どうしを
     // 突き合わせた結果を、検査と同じ見た目で並べる。CSV なら復元検査がその役割になる
@@ -785,7 +833,7 @@ function ioSideDetailHtml(j, node, dir, { isInput, aPdf, srcIds, tblKey, tblDir 
       ? [`葉の合計と、同じ PDF 内の目の印字額が一致（${fmt(ex.leavesReconciled)}/${fmt(ex.leaves)} 行）`,
          `抽出した目すべてに、金額つきの見出しが PDF 内にあった（${fmt(ex.mokuHeadersFound)}/${fmt(ex.moku)}）`]
       : [`原典の CSV から同じ表を再構成できる（sha256 ${esc((ing.sha256 || '').slice(0, 12))}…）`];
-    body += (title ? `<div class="drow"><span class="dk">資料名</span><span>${esc(title)}${S.year == null && ings.length > 1 ? ` ほか全 ${ings.length} 年度分` : ''}</span></div>` : '')
+    body += (title ? `<div class="drow"><span class="dk">資料名</span><span>${esc(title)}</span></div>` : '')
       + `<div class="drow"><span class="dk">形式</span><span>${aPdf ? 'PDF（組版からの抽出）' : `CSV（そのまま取り込み${ing.encoding ? `・${esc(ing.encoding)}` : ''}）`}</span></div>`
       + urlRows
       + (ing.landing_page ? `<div class="drow"><span class="dk">公開ページ</span><span>${link(ing.landing_page)}</span></div>` : '')
@@ -810,7 +858,6 @@ function headlineHtml(j) {
   const years = m.fiscalYears;
   return `<div class="headline">
     <select class="ctl" data-year>
-      <option value="" ${S.year == null ? 'selected' : ''}>全年度</option>
       ${years.map((y) => `<option value="${y}" ${S.year === y ? 'selected' : ''}>${y}年度</option>`).join('')}
     </select>
     <span class="mut small">${esc(m.phase.label)}</span>
@@ -832,7 +879,7 @@ function vSplit() {
   return `<div class="v1 vsplit">${headlineHtml(j)}
     <div class="graphwrap" style="flex-basis:${SPLITH}%">${graphSvg(j, true, null, true, true)}${zoomctlHtml()}</div>
     <div class="splitsash" role="separator" aria-orientation="horizontal" title="ドラッグで上下の比率を変更"></div>
-    <div class="iowrap"><details class="fold caveats"><summary>⚠ 注意点 ${j.caveats.length} 件</summary>${j.caveats.map((c) => `<div class="cv"><div class="t">${md(c.topic)}</div><div class="b">${md(c.body)}</div></div>`).join('')}</details>${ioPanelHtml(j)}</div></div>`;
+    <div class="iowrap">${ioPanelHtml(j)}<details class="fold caveats"><summary>⚠ 注意点 ${j.caveats.length} 件</summary>${j.caveats.map((c) => `<div class="cv"><div class="t">${md(c.topic)}</div><div class="b">${md(c.body)}</div></div>`).join('')}</details></div></div>`;
 }
 
 
@@ -851,11 +898,17 @@ function pdfHitPage(j, sr, e) {
   return hit && hit.page ? hit.page : null;
 }
 const pairOfCtx = (k) => { const [f, t] = (k || '').split('|'); return f && t ? { from: f, to: t } : null; };
+/* 星パネル内の全 ctx（星 ctx + 各側の組 ctx）。行選択は全 ctx に同じ値を書いて
+   ミラーする — 描画側は自分の ctx を読むだけでパネル全体が同じ選択になる */
+const ctxKeysOfStar = (starEl) => {
+  const ks = [starEl.dataset.star, ...[...starEl.querySelectorAll('[data-ctx]')].map((x) => x.dataset.ctx)];
+  return [...new Set(ks)];
+};
 stage.addEventListener('click', (e) => {
   if (V1NOCLICK) { V1NOCLICK = false; return; } // パン/ピンチ直後の click は辺・ノード選択に回さない
   const zb = e.target.closest('[data-zoom]');
   if (zb) { v1ZoomAction(zb.dataset.zoom); return; }
-  // 行・頁・× は ctx（組 "from|to" または overview "ov:<node>"）に紐づく
+  // 行・頁・× は ctx（組 "from|to"・星 "st:<node>"・overview "ov:<node>"）に紐づく
   const ctxEl = e.target.closest('[data-ctx]');
   const ctxKey = ctxEl ? ctxEl.dataset.ctx : null;
   const st = ctxKey ? ctxOf(ctxKey) : null;
@@ -890,22 +943,33 @@ stage.addEventListener('click', (e) => {
     S.edges = picked.map((x) => ({ from: x.from, to: x.to }));
     mount(); return;
   }
+  // 行選択のスコープ。星パネルの中では全側が同じ選択を持つ
+  const starEl = e.target.closest('[data-star]');
+  const scope = starEl ? ctxKeysOfStar(starEl) : ctxKey ? [ctxKey] : [];
   const ws = e.target.closest('.wspan[data-sr]');
-  if (ws && st) {
-    st.row = Number(ws.dataset.sr);
-    const p = pdfHitPage(J(), st.row, pairOfCtx(ctxKey));
-    if (p != null) st.pdfPage = p;
+  if (ws && scope.length) {
+    const sr = Number(ws.dataset.sr);
+    scope.forEach((k) => {
+      const c = ctxOf(k);
+      c.row = sr;
+      const p = pdfHitPage(J(), sr, pairOfCtx(k) || S.edges[0]);
+      if (p != null) c.pdfPage = p;
+    });
     mount(); return;
   }
   const tr = e.target.closest('tr[data-sr]');
-  if (tr && st) {
+  if (tr && scope.length) {
     const sr = Number(tr.dataset.sr);
-    st.row = st.row === sr ? null : sr;
-    // 出力側の行を選んだら PDF 側をその行が載っている頁へ自動で合わせる（めくった状態でも追従）
-    if (st.row != null) { const p = pdfHitPage(J(), sr, pairOfCtx(ctxKey)); if (p != null) st.pdfPage = p; }
+    const next = st && st.row === sr ? null : sr;
+    scope.forEach((k) => {
+      const c = ctxOf(k);
+      c.row = next;
+      // 表側の行を選んだら PDF 側をその行が載っている頁へ自動で合わせる（めくった状態でも追従）
+      if (next != null) { const p = pdfHitPage(J(), sr, pairOfCtx(k) || S.edges[0]); if (p != null) c.pdfPage = p; }
+    });
     mount(); scrollSelIntoView(); return;
   }
-  if (st && e.target.closest('[data-clear-row]')) { st.row = null; mount(); return; }
+  if (scope.length && e.target.closest('[data-clear-row]')) { scope.forEach((k) => { ctxOf(k).row = null; }); mount(); return; }
 });
 stage.addEventListener('mousemove', (e) => {
   const svg = e.target.closest && e.target.closest('.v1 .graphsvg');
@@ -927,7 +991,8 @@ function setRowHover(ctxEl, sr) {
 }
 stage.addEventListener('mouseover', (e) => {
   const t = e.target.closest && e.target.closest('[data-sr]');
-  setRowHover(t ? t.closest('[data-ctx]') : null, t ? t.dataset.sr : null);
+  // 星パネルの中では同じ鍵が全側で点灯する（パネル単位の行選択と揃える）
+  setRowHover(t ? t.closest('.io-pair') || t.closest('[data-ctx]') : null, t ? t.dataset.sr : null);
 });
 // ホイール（ctrl+wheel のピンチ操作を含む）でポインタ位置をアンカーにズーム
 stage.addEventListener('wheel', (e) => {
@@ -1009,7 +1074,7 @@ window.addEventListener('pointerup', v1PointerEnd);
 window.addEventListener('pointercancel', v1PointerEnd);
 stage.addEventListener('change', (e) => {
   const y = e.target.closest('[data-year]');
-  if (y) { S.year = y.value ? Number(y.value) : null; V1Z = null; pushUrl(); mount(); }
+  if (y) { S.year = Number(y.value); V1Z = null; pushUrl(); mount(); }
 });
 function scrollSelIntoView() {
   requestAnimationFrame(() => {

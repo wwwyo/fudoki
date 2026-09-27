@@ -47,7 +47,9 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
   // コードなしの `/pipeline/` はデータを読んだ後に先頭団体の URL へ redirect する
   const code = urlCode
 
-  // 年度は URL に持つ（ブックマーク・共有リンクが同じ状態を指すため）
+  // 年度は URL に持つ（ブックマーク・共有リンクが同じ状態を指すため）。
+  // null は「未指定」— 画面側では収録年度の最新に倒す（全年度ビューは持たない。
+  // 複数年度を1画面に混ぜると「この行はどの年度か」を行ごとに判別する必要が出る）
   const [year, setYear] = useState<number | null>(() => {
     const n = Number(new URLSearchParams(window.location.search).get("y"))
     // `?y=abc` は NaN になって `year=NaN` の問い合わせと「NaN年度」のタイトルを生む
@@ -56,7 +58,7 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
 
   // 選択状態。組は複数持てる（ノード側面クリックでその側の辺が全部入る）。
   // 組 → 行 → PDF 頁の順に下流が上流を従えるが、行選択と PDF 頁は組ごとの状態なので
-  // PairPanel の内側に閉じる。overview の PDF 頁だけはここで持つ
+  // StarPanel の内側に閉じる。overview の PDF 頁だけはここで持つ
   const [pairs, setPairs] = useState<Pair[]>([])
   const [pdfNav, setPdfNav] = useState<{ docId: string | null; page: number | null }>({
     docId: null,
@@ -84,8 +86,8 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
   useEffect(() => {
     if (!current) return
     const { jurisdictionName: name, fiscalYears, phase } = current.report.meta
-    const years = year === null ? fiscalYears.join("・") : String(year)
-    document.title = `${name} ${years}年度 ${phase.label} 検証 | fudoki（風土記）`
+    const y = year ?? fiscalYears[fiscalYears.length - 1]
+    document.title = `${name} ${y}年度 ${phase.label} 検証 | fudoki（風土記）`
   }, [current, year])
 
   useEffect(() => {
@@ -227,6 +229,8 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
 
   const report = current.report
   const m = report.meta
+  // `?y=` 未指定は最新年度に倒す。年度セレクトは収録年度だけ出す
+  const y = year ?? m.fiscalYears[m.fiscalYears.length - 1]!
 
   return (
     <Layout>
@@ -248,9 +252,8 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
           />
           <FiscalYearSelect
             years={m.fiscalYears}
-            value={year}
+            value={y}
             onChange={changeYear}
-            allowAll
             className="w-32"
             size="sm"
           />
@@ -267,7 +270,7 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
           <LineageGraph
             topology={visibleTopology}
             code={current.code}
-            year={year}
+            year={y}
             sel={pairs}
             onSelectEdge={selectEdge}
             onSelectNode={selectNode}
@@ -286,6 +289,18 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
           }}
         />
         <div className="iowrap">
+          <IoPanel
+            report={report}
+            code={current.code}
+            pairs={pairs}
+            onRemovePair={removePair}
+            year={y}
+            pdfDocId={pdfNav.docId}
+            pdfPage={pdfNav.page}
+            onPdfNavigate={onPdfNavigate}
+          />
+          {/* 注意点は組の行検査の後・ペインの末尾 — 見出しの上に置くと読み始めの
+              行のすぐ上を塞ぐので、確認を終えた読み終わりに来る位置に置く */}
           <details className="fold caveats">
             <summary>⚠ 注意点 {report.caveats.length} 件</summary>
             {report.caveats.map((c, i) => (
@@ -295,16 +310,6 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
               </div>
             ))}
           </details>
-          <IoPanel
-            report={report}
-            code={current.code}
-            pairs={pairs}
-            onRemovePair={removePair}
-            year={year}
-            pdfDocId={pdfNav.docId}
-            pdfPage={pdfNav.page}
-            onPdfNavigate={onPdfNavigate}
-          />
         </div>
       </div>
     </Layout>

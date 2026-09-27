@@ -4,9 +4,11 @@
  * - 両側の行を `/local/rows` から読んで並べ、対応キーのある行にバッジを付ける
  * - 片側で行を押すと反対側の同じ鍵の行が点灯する（行対応は同じ鍵空間のときだけ）
  * - 入力側が PDF 原典なら頁画像ビューアを出し、行選択で該当頁へ飛ぶ
+ * - 同じ側を共有する組（例: 1つの入力→複数の出力）はその側を1枚だけ出し、
+ *   バラつく側を縦に並べる — 同じ表を組ごとに複写しない
  * - 各側の詳細トグルに 出所（証跡）・取り込みの検証・検査・金額の単位 を畳む
  */
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import type {
   Check,
   Direction,
@@ -219,7 +221,7 @@ function SideDetail({
   /** 原典ノードの場合、その裏にある取り込みソース（検査・証跡の引き当てに使う） */
   srcIds: string[]
   dir: Direction | null
-  year: number | null
+  year: number
   rows: NodeRows | null
   report: ReportData
   code: string
@@ -238,12 +240,12 @@ function SideDetail({
     node.kind === "origin" && rows && (rows.kind === "pdf" || rows.kind === "table")
       ? ((rows as PdfRows | TableRows).provs ?? [])
       : []
-  const provsShown = year == null ? provs : provs.filter((p) => p.fiscal_year === year)
+  const provsShown = provs.filter((p) => p.fiscal_year === year)
   const prov = provsShown[0] ?? provs[0] ?? null
 
   // 金額の単位の宣言（向きが決まる組だけ。年度が効く団体は年度で絞る）
   const amounts = dir ? (report.amounts[dir] ?? []) : []
-  const amountsShown = year == null ? amounts : amounts.filter((a) => a.years === null || a.years.includes(year))
+  const amountsShown = amounts.filter((a) => a.years === null || a.years.includes(year))
 
   // 見えている表の列のうち語彙が引けるもの。原典の列は原典自身の見出しなので引かない
   const colDocs = rows?.kind === "table" ? colDocsOf(node, report.columnDocs) : {}
@@ -267,10 +269,7 @@ function SideDetail({
           {(prov.document_title || prov.dataset_title || prov.resource_name) && (
             <div className="drow">
               <span className="dk">資料名</span>
-              <span>
-                {prov.document_title || prov.dataset_title || prov.resource_name}
-                {year == null && provs.length > 1 ? ` ほか全 ${provs.length} 年度分` : ""}
-              </span>
+              <span>{prov.document_title || prov.dataset_title || prov.resource_name}</span>
             </div>
           )}
           <div className="drow">
@@ -282,27 +281,14 @@ function SideDetail({
               {prov.layout ? `・${prov.layout}` : ""}
             </span>
           </div>
-          {year == null && provs.length > 1 ? (
-            provs.map((i) => (
-              <div className="drow" key={`${i.fiscal_year}-${i.request_url}`}>
-                <span className="dk">{i.fiscal_year}年度</span>
-                <span>
-                  <a href={i.request_url} target="_blank" rel="noreferrer">
-                    {i.request_url}
-                  </a>
-                </span>
-              </div>
-            ))
-          ) : (
-            <div className="drow">
-              <span className="dk">取得元</span>
-              <span>
-                <a href={prov.request_url} target="_blank" rel="noreferrer">
-                  {prov.request_url}
-                </a>
-              </span>
-            </div>
-          )}
+          <div className="drow">
+            <span className="dk">取得元</span>
+            <span>
+              <a href={prov.request_url} target="_blank" rel="noreferrer">
+                {prov.request_url}
+              </a>
+            </span>
+          </div>
           {prov.landing_page && (
             <div className="drow">
               <span className="dk">公開ページ</span>
@@ -433,12 +419,16 @@ export function IoPanel({
   /** 選択中の組。ノード側面クリックではその側の辺が全部入るので複数 */
   pairs: Pair[]
   onRemovePair: (p: Pair) => void
-  year: number | null
-  /** overview の PDF 側が見ている文書・頁（組の PDF は PairPanel 内で持つ） */
+  year: number
+  /** overview の PDF 側が見ている文書・頁（組の PDF は StarPanel 内で持つ） */
   pdfDocId: string | null
   pdfPage: number | null
   onPdfNavigate: (docId: string, page: number) => void
 }) {
+  const nodeById = useMemo(
+    () => new Map(report.topology.nodes.map((n) => [n.id, n])),
+    [report.topology.nodes],
+  )
   if (!pairs.length) {
     return (
       <Overview
@@ -451,48 +441,139 @@ export function IoPanel({
       />
     )
   }
+
+  // 原典ノードは文書単位にまとまりうる（歳出・歳入が同じ PDF なら1ノード）ので、
+  // 「同じ入力表か」の判定は解決済みのノード id（`<source>.origin` の規約）で比較する。
+  // まとめられた原典が歳出・歳入両方の辺を持っても、direction ごとの頁範囲・証跡は別物
+  const inIdOf = (p: Pair) =>
+    nodeById.get(p.from)?.kind === "origin" ? `${p.to}.origin` : p.from
+  const sameIn = pairs.every((p) => inIdOf(p) === inIdOf(pairs[0]!))
+  const sameOut = pairs.every((p) => p.to === pairs[0]!.to)
+
+  if (sameIn || sameOut) {
+    return (
+      <StarPanel
+        report={report}
+        code={code}
+        pairs={pairs}
+        shared={sameIn ? "in" : "out"}
+        year={year}
+        onRemovePair={onRemovePair}
+      />
+    )
+  }
+  // 共通の端点を持たない組み合わせ（側面クリックでは作れない）— 1組ずつの星として並べる
   return (
     <>
       {pairs.map((p) => (
-        <PairPanel
+        <StarPanel
           key={`${p.from}|${p.to}`}
           report={report}
           code={code}
-          pair={p}
+          pairs={[p]}
+          shared="in"
           year={year}
-          onClose={() => onRemovePair(p)}
+          onRemovePair={onRemovePair}
         />
       ))}
     </>
   )
 }
 
+/** 側の行ビュー（表 or PDF or 空）。スクロール用の ref は表のときだけ効く */
+function SideRows({
+  rows,
+  hits,
+  linkedKeys,
+  selectedKey,
+  hoverKey,
+  onSelectRow,
+  onHoverRow,
+  tableRef,
+  pdfNav,
+  onPdfNavigate,
+  year,
+  docs,
+}: {
+  rows: NodeRows
+  hits: Map<string, PdfHitLoc> | null
+  linkedKeys: Set<string> | null
+  selectedKey: string | null
+  hoverKey: string | null
+  onSelectRow: (key: string) => void
+  onHoverRow: (key: string | null) => void
+  tableRef: React.RefObject<RowTableHandle | null>
+  pdfNav: { docId: string | null; page: number | null }
+  onPdfNavigate: (docId: string, page: number) => void
+  year: number
+  docs: ReturnType<typeof colDocsOf>
+}) {
+  if (rows.kind === "pdf") {
+    return (
+      <PdfSide
+        docs={rows.docs}
+        hits={hits}
+        year={year}
+        docId={pdfNav.docId}
+        page={pdfNav.page}
+        onNavigate={onPdfNavigate}
+        flagKeys={linkedKeys}
+        selectedKey={selectedKey}
+        hoverKey={hoverKey}
+        onSelectRow={onSelectRow}
+        onHoverRow={onHoverRow}
+      />
+    )
+  }
+  if (rows.kind === "table") {
+    return (
+      <RowTable
+        ref={tableRef}
+        table={rows}
+        linkedKeys={linkedKeys}
+        selectedKey={selectedKey}
+        hoverKey={hoverKey}
+        docs={docs}
+        onSelectRow={onSelectRow}
+        onHoverRow={onHoverRow}
+      />
+    )
+  }
+  return <p className="text-xs text-muted-foreground">行データなし（{rows.reason}）</p>
+}
+
 /**
- * 組1件分の検査パネル。行選択・PDF の見ている頁は組ごとの状態なのでここに閉じる
- * （組を替えても残らないし、複数組を並べても混ざらない）。
+ * 同じ側を共有する組の検査パネル。共有側の表は1枚だけ出し、バラつく側を縦に並べる。
+ * 行選択はパネル単位 — 共有側の行を選ぶと、鍵を持つすべての側の対応行が光る。
+ * PDF の表示位置は PDF を持つ側ごと（共有側に1つ＋バラつく側それぞれ）。
  */
-function PairPanel({
+function StarPanel({
   report,
   code,
-  pair,
+  pairs,
+  shared,
   year,
-  onClose,
+  onRemovePair,
 }: {
   report: ReportData
   code: string
-  pair: Pair
-  year: number | null
-  onClose: () => void
+  pairs: Pair[]
+  /** どちら側を共有するか。"in" = 同じ入力→複数の出力、"out" = 複数の入力→同じ出力 */
+  shared: "in" | "out"
+  year: number
+  onRemovePair: (p: Pair) => void
 }) {
   const nodeById = useMemo(
     () => new Map(report.topology.nodes.map((n) => [n.id, n])),
     [report.topology.nodes],
   )
-  const a = nodeById.get(pair.from)
-  const b = nodeById.get(pair.to)
-  const dir = edgeDir(pair.from, pair.to)
+  const sharedId = shared === "in" ? pairs[0]!.from : pairs[0]!.to
+  const sharedNode = nodeById.get(sharedId)
+  const sharedNodeId =
+    shared === "in" && sharedNode?.kind === "origin" ? `${pairs[0]!.to}.origin` : sharedId
+  const dir = edgeDir(pairs[0]!.from, pairs[0]!.to)
 
-  // 行選択と PDF の表示位置は組に紐づく。年度が変わると行の実体も文書も変わるので捨てる
+  // 行選択と共有側の PDF 表示位置はパネルに紐づく。年度が変わると行の実体も文書も変わるので捨てる
   const [selectedKey, setSelectedKey] = useState<string | null>(null)
   const [hoverKey, setHoverKey] = useState<string | null>(null)
   const [pdfNav, setPdfNav] = useState<{ docId: string | null; page: number | null }>({
@@ -504,156 +585,293 @@ function PairPanel({
     setPdfNav({ docId: null, page: null })
   }, [year])
 
-  // 原典ノードは文書単位にまとまりうる（歳出・歳入が同じ PDF なら1ノード）ので、
-  // id からは取り込み表を復元できない。入力側は辺が指す source で引く —
-  // `<source>.origin` の規約で解決すれば、まとめた原典でも direction ごとの
-  // 頁範囲・証跡・hit が出る
-  const inNodeId = a?.kind === "origin" ? `${pair.to}.origin` : pair.from
-  const inRows = useRows(inNodeId, code, year, dir)
-  const outRows = useRows(pair.to, code, year, dir)
-  const inHits = useHitMap(inRows, inNodeId)
-  const outHits = useHitMap(outRows, pair.to)
-
-  const inTable = useRef<RowTableHandle>(null)
-  const outTable = useRef<RowTableHandle>(null)
+  const sharedRows = useRows(sharedNodeId, code, year, dir)
+  const sharedHits = useHitMap(sharedRows, sharedNodeId)
+  const sharedTable = useRef<RowTableHandle>(null)
 
   /**
-   * 対応バッジの母数 = それぞれの側に実在する行キーの集合。
-   * 表↔表は鍵空間（source_row 系 / ordinal 系）が同じときだけ対応を付ける。
-   * PDF 側は hit の鍵集合 — hit の鍵は取り込み側と同じ鍵列（source_row / ordinal）で
-   * `<年度>|<鍵>` に修飾してあるので、そのまま表の修飾キーと比べられる。
+   * 対応バッジの母数 = 反対側に実在する行キーの集合。共有側から見ると反対側は
+   * 複数あるので和集合を取る（どれか1つの側に載っていれば「対応あり」）。
+   * バラつく側から見た母数は共有側の鍵集合（StarSide が受け取って使う）。
    */
-  const sameSpace =
-    inRows?.kind === "table" && outRows?.kind === "table"
-      ? keySpaceOf(inRows) === keySpaceOf(outRows)
-      : true
-  const keysIn = useMemo<Set<string> | null>(() => {
-    if (inHits) return new Set(inHits.keys())
-    if (inRows?.kind === "table") return sameSpace ? linkSetOf(inRows) : null
-    return null
-  }, [inHits, inRows, sameSpace])
-  const keysOut = useMemo<Set<string> | null>(() => {
-    if (outHits) return new Set(outHits.keys())
-    if (outRows?.kind === "table") return sameSpace ? linkSetOf(outRows) : null
-    return null
-  }, [outHits, outRows, sameSpace])
+  const sharedKeys = useMemo<Set<string> | null>(() => {
+    if (sharedHits) return new Set(sharedHits.keys())
+    return sharedRows?.kind === "table" ? linkSetOf(sharedRows) : null
+  }, [sharedHits, sharedRows])
 
-  // 行選択。PDF が片側に居る組では、行が属する年度の文書の hit 頁へ飛ぶ
-  const pick = (side: "in" | "out") => (key: string) => {
+  const peerMap = useRef(new Map<string, Set<string>>())
+  const [peerKeys, setPeerKeys] = useState<Set<string> | null>(null)
+  const reportPeers = useCallback((k: string, s: Set<string> | null) => {
+    if (s === null) peerMap.current.delete(k)
+    else peerMap.current.set(k, s)
+    let u: Set<string> | null = null
+    peerMap.current.forEach((v) => v.forEach((x) => (u ??= new Set()).add(x)))
+    setPeerKeys(u)
+  }, [])
+
+  // 行が選ばれたらバラつく側の表・PDF を追わせるため、各側が jump 関数を登録する
+  const varJump = useRef(new Map<string, (key: string) => void>())
+  const regJump = useCallback((k: string, f: ((key: string) => void) | null) => {
+    if (f === null) varJump.current.delete(k)
+    else varJump.current.set(k, f)
+  }, [])
+
+  // 行選択。どの側で選んでも同じ — 残り全部の表をその鍵へ、hit を持つ PDF をその頁へ
+  const pick = (key: string) => {
     const next = selectedKey === key ? null : key
     setSelectedKey(next)
     if (next === null) return
-    ;(side === "in" ? outTable : inTable).current?.scrollToKey(next)
-    const h = (side === "in" ? outHits : inHits)?.get(next)
+    sharedTable.current?.scrollToKey(next)
+    varJump.current.forEach((f) => f(next))
+    const h = sharedHits?.get(next)
     if (h) setPdfNav({ docId: h.docId, page: h.page })
   }
 
-  if (!a || !b) return null
+  if (!sharedNode) return null
 
-  const inName = a.kind === "origin" ? "原典" : nodeLabel(a)
-  const bName = nodeLabel(b)
-  // この区間でしている変換 = 出力側ノードの段の責務（topology.stages が正本。
-  // モデル自体の description は dbt 側で書かれていないので段の責務を使う）
-  const bStage = report.topology.stages.find((s) => s.id === b.stage)
-  const dirShown = dir && (inName.includes(DIR_JA[dir]) || bName.includes(DIR_JA[dir]))
-  const meta = [dir && !dirShown && DIR_JA[dir], year != null && `${year}年度`].filter(Boolean).join(" ／ ")
-  const inH3 =
-    a.kind === "origin"
-      ? `原典${inRows?.kind === "pdf" ? "（PDF）" : inRows?.kind === "table" ? "（CSV）" : ""}`
-      : `入力 — ${inName}`
+  const sharedName = sharedNode.kind === "origin" ? "原典" : nodeLabel(sharedNode)
+  const sharedHead =
+    shared === "in"
+      ? sharedNode.kind === "origin"
+        ? `原典${sharedRows?.kind === "pdf" ? "（PDF）" : sharedRows?.kind === "table" ? "（CSV）" : ""}`
+        : `入力 — ${sharedName}`
+      : sharedName
+  // 変換の説明 = 出力側ノードの段の責務。共有出力では全組で同じなのでここで1回だけ出す
+  // （共有入力では出力ごとに違うので各側の見出しの下に出す）
+  const lead =
+    shared === "out"
+      ? report.topology.stages.find((s) => s.id === sharedNode.stage)?.responsibility
+      : null
 
-  return (
-    <div className="io-pair">
-      <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap", marginBottom: 8 }}>
-        <h2 style={{ fontSize: 14, margin: 0 }}>
-          {inName} <span className="text-muted-foreground">→</span> {bName}
-        </h2>
-        {meta && <span className="text-muted-foreground text-xs">{meta}</span>}
+  const sharedSide = (
+    <div className="side">
+      <h3>
+        {sharedHead}
         {selectedKey != null && (
           <button className="linky text-xs" onClick={() => setSelectedKey(null)}>
             行 {bareKey(selectedKey)} の選択を解除
           </button>
         )}
-        <button className="pair-x" onClick={onClose} title="この組を外す" aria-label="この組を外す">
-          ✕
-        </button>
-      </div>
-      {bStage?.responsibility && (
-        <p className="text-muted-foreground" style={{ fontSize: 12, margin: "-2px 0 10px" }}>
-          {bStage.responsibility}
+      </h3>
+      {lead && (
+        <p className="text-muted-foreground" style={{ fontSize: 12, margin: "-2px 0 8px" }}>
+          {lead}
         </p>
       )}
+      {sharedRows === null ? (
+        <p className="text-xs text-muted-foreground">読み込み中…</p>
+      ) : (
+        <SideRows
+          rows={sharedRows}
+          hits={sharedHits}
+          linkedKeys={peerKeys}
+          selectedKey={selectedKey}
+          hoverKey={hoverKey}
+          onSelectRow={pick}
+          onHoverRow={setHoverKey}
+          tableRef={sharedTable}
+          pdfNav={pdfNav}
+          onPdfNavigate={(docId, page) => setPdfNav({ docId, page })}
+          year={year}
+          docs={colDocsOf(sharedNode, report.columnDocs)}
+        />
+      )}
+      <SideDetail
+        node={sharedNode}
+        srcIds={sharedNode.kind === "origin" ? pairs.map((p) => p.to) : []}
+        dir={dir}
+        year={year}
+        rows={sharedRows}
+        report={report}
+        code={code}
+      />
+    </div>
+  )
+
+  const sharedSpace = sharedRows?.kind === "table" ? keySpaceOf(sharedRows) : null
+  const varSide = shared === "in" ? "out" : "in"
+
+  return (
+    <div className="io-pair">
       <div className="io">
+        {shared === "in" ? sharedSide : null}
         <div className="side">
-          <h3>{inH3}</h3>
-          {inRows === null ? (
-            <p className="text-xs text-muted-foreground">読み込み中…</p>
-          ) : inRows.kind === "pdf" ? (
-            <PdfSide
-              docs={inRows.docs}
-              hits={inHits}
+          {pairs.map((p) => (
+            <StarSide
+              key={`${p.from}|${p.to}`}
+              report={report}
+              code={code}
               year={year}
-              docId={pdfNav.docId}
-              page={pdfNav.page}
-              onNavigate={(docId, page) => setPdfNav({ docId, page })}
-              flagKeys={keysOut}
+              pair={p}
+              side={varSide}
+              node={nodeById.get(varSide === "in" ? p.from : p.to) ?? null}
+              sharedName={sharedName}
+              sharedSpace={sharedSpace}
+              sharedKeys={sharedKeys}
+              sharedKind={sharedRows?.kind ?? null}
               selectedKey={selectedKey}
               hoverKey={hoverKey}
-              onSelectRow={(k) => pick("in")(k)}
               onHoverRow={setHoverKey}
+              onPick={pick}
+              reportPeers={reportPeers}
+              register={regJump}
+              onRemovePair={onRemovePair}
             />
-          ) : inRows.kind === "table" ? (
-            <RowTable
-              ref={inTable}
-              table={inRows}
-              linkedKeys={keysOut}
-              selectedKey={selectedKey}
-              hoverKey={hoverKey}
-              docs={colDocsOf(a, report.columnDocs)}
-              onSelectRow={(k) => pick("in")(k)}
-              onHoverRow={setHoverKey}
-            />
-          ) : (
-            <p className="text-xs text-muted-foreground">行データなし（{inRows.reason}）</p>
-          )}
-          <SideDetail node={a} srcIds={a.kind === "origin" ? [pair.to] : []} dir={dir} year={year} rows={inRows} report={report} code={code} />
+          ))}
         </div>
-        <div className="side">
-          <h3>{bName}</h3>
-          {outRows === null ? (
-            <p className="text-xs text-muted-foreground">読み込み中…</p>
-          ) : outRows.kind === "table" ? (
-            <RowTable
-              ref={outTable}
-              table={outRows}
-              linkedKeys={keysIn}
-              selectedKey={selectedKey}
-              hoverKey={hoverKey}
-              docs={colDocsOf(b, report.columnDocs)}
-              onSelectRow={(k) => pick("out")(k)}
-              onHoverRow={setHoverKey}
-            />
-          ) : outRows.kind === "pdf" ? (
-            // 系統上「出力側が PDF 原典」の組は無いが、防御的に同じビューアを出す
-            <PdfSide
-              docs={outRows.docs}
-              hits={outHits}
-              year={year}
-              docId={pdfNav.docId}
-              page={pdfNav.page}
-              onNavigate={(docId, page) => setPdfNav({ docId, page })}
-              flagKeys={keysIn}
-              selectedKey={selectedKey}
-              hoverKey={hoverKey}
-              onSelectRow={(k) => pick("out")(k)}
-              onHoverRow={setHoverKey}
-            />
-          ) : (
-            <p className="text-xs text-muted-foreground">行データなし（{outRows.reason}）</p>
-          )}
-          <SideDetail node={b} srcIds={[]} dir={dir} year={year} rows={outRows} report={report} code={code} />
-        </div>
+        {shared === "out" ? sharedSide : null}
       </div>
+    </div>
+  )
+}
+
+/**
+ * バラつく側1件分（行・PDF・見出し・×）。自分の行選択・PDF 頁はここに閉じ、
+ * 自分が持つ鍵集合を共有側のバッジ母数へ供給する。
+ */
+function StarSide({
+  report,
+  code,
+  year,
+  pair,
+  side,
+  node,
+  sharedName,
+  sharedSpace,
+  sharedKeys,
+  sharedKind,
+  selectedKey,
+  hoverKey,
+  onHoverRow,
+  onPick,
+  reportPeers,
+  register,
+  onRemovePair,
+}: {
+  report: ReportData
+  code: string
+  year: number
+  pair: Pair
+  /** この側が入力か出力か */
+  side: "in" | "out"
+  node: Node | null
+  sharedName: string
+  sharedSpace: ReturnType<typeof keySpaceOf>
+  sharedKeys: Set<string> | null
+  sharedKind: NodeRows["kind"] | null
+  selectedKey: string | null
+  hoverKey: string | null
+  onHoverRow: (key: string | null) => void
+  onPick: (key: string) => void
+  reportPeers: (k: string, s: Set<string> | null) => void
+  register: (k: string, f: ((key: string) => void) | null) => void
+  onRemovePair: (p: Pair) => void
+}) {
+  const dir = edgeDir(pair.from, pair.to)
+  const nodeId =
+    side === "in"
+      ? node?.kind === "origin"
+        ? `${pair.to}.origin`
+        : pair.from
+      : pair.to
+  const rows = useRows(nodeId, code, year, dir)
+  const hits = useHitMap(rows, nodeId)
+  const tableRef = useRef<RowTableHandle>(null)
+  const [pdfNav, setPdfNav] = useState<{ docId: string | null; page: number | null }>({
+    docId: null,
+    page: null,
+  })
+  useEffect(() => {
+    setPdfNav({ docId: null, page: null })
+  }, [year])
+  const pairKey = `${pair.from}|${pair.to}`
+
+  // 表↔表は鍵空間（source_row 系 / ordinal 系）が同じときだけ対応を付ける。
+  // hit の鍵は取り込み側と同じ鍵列で `<年度>|<鍵>` に修飾してあるので PDF 側はそのまま比べられる
+  const sameSpace =
+    rows?.kind === "table" && sharedKind === "table" ? keySpaceOf(rows) === sharedSpace : true
+  const myKeys = useMemo<Set<string> | null>(() => {
+    if (hits) return new Set(hits.keys())
+    if (rows?.kind === "table") return sameSpace ? linkSetOf(rows) : null
+    return null
+  }, [hits, rows, sameSpace])
+
+  // 共有側の「対応あり」母数に自分の鍵集合を供給（外れたら引く）
+  useEffect(() => {
+    reportPeers(pairKey, myKeys)
+    return () => reportPeers(pairKey, null)
+  }, [pairKey, myKeys, reportPeers])
+
+  // 別の側で行が選ばれたら、自分の表をその鍵へ・hit があれば PDF をその頁へ追わせる
+  const jump = useCallback(
+    (key: string) => {
+      tableRef.current?.scrollToKey(key)
+      const h = hits?.get(key)
+      if (h) setPdfNav({ docId: h.docId, page: h.page })
+    },
+    [hits],
+  )
+  useEffect(() => {
+    register(pairKey, jump)
+    return () => register(pairKey, null)
+  }, [pairKey, jump, register])
+
+  if (!node) return null
+  const name = node.kind === "origin" ? "原典" : nodeLabel(node)
+  // この区間でしている変換 = 出力側ノードの段の責務（topology.stages が正本）
+  const lead =
+    side === "out"
+      ? report.topology.stages.find((s) => s.id === node.stage)?.responsibility
+      : null
+  const dirShown = dir && (name.includes(DIR_JA[dir]) || sharedName.includes(DIR_JA[dir]))
+  const meta = [dir && !dirShown && DIR_JA[dir], `${year}年度`].filter(Boolean).join(" ／ ")
+
+  return (
+    <div className="io-node">
+      <h3>
+        {side === "in" ? `${name} →` : `→ ${name}`}
+        {meta && <span className="text-muted-foreground">{meta}</span>}
+        <button
+          className="pair-x"
+          onClick={() => onRemovePair(pair)}
+          title="この組を外す"
+          aria-label="この組を外す"
+        >
+          ✕
+        </button>
+      </h3>
+      {lead && (
+        <p className="text-muted-foreground" style={{ fontSize: 12, margin: "-2px 0 8px" }}>
+          {lead}
+        </p>
+      )}
+      {rows === null ? (
+        <p className="text-xs text-muted-foreground">読み込み中…</p>
+      ) : (
+        <SideRows
+          rows={rows}
+          hits={hits}
+          linkedKeys={sharedKeys}
+          selectedKey={selectedKey}
+          hoverKey={hoverKey}
+          onSelectRow={onPick}
+          onHoverRow={onHoverRow}
+          tableRef={tableRef}
+          pdfNav={pdfNav}
+          onPdfNavigate={(docId, page) => setPdfNav({ docId, page })}
+          year={year}
+          docs={colDocsOf(node, report.columnDocs)}
+        />
+      )}
+      <SideDetail
+        node={node}
+        srcIds={node.kind === "origin" ? [pair.to] : []}
+        dir={dir}
+        year={year}
+        rows={rows}
+        report={report}
+        code={code}
+      />
     </div>
   )
 }
@@ -672,7 +890,7 @@ function Overview({
 }: {
   report: ReportData
   code: string
-  year: number | null
+  year: number
   pdfDocId: string | null
   pdfPage: number | null
   onPdfNavigate: (docId: string, page: number) => void
@@ -741,7 +959,7 @@ function OverviewNode({
   node: Node
   srcIds: string[]
   code: string
-  year: number | null
+  year: number
   report: ReportData
   pdfDocId?: string | null
   pdfPage?: number | null
