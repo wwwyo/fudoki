@@ -8,7 +8,7 @@
  * （全行並べると描画が間に合わない）。
  */
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState, forwardRef } from "react"
-import type { ColDoc } from "@/lib/pipeline"
+import type { ColDoc, Direction } from "@/lib/pipeline"
 import type { TableRows } from "@/lib/verify"
 import { linkKeys } from "@/lib/verify"
 
@@ -28,6 +28,13 @@ type Props = {
   selectedKey: string | null
   /** hover 中の行キー（反対側からの予告を受ける） */
   hoverKey: string | null
+  /**
+   * 修飾キーに載せる向き。歳出・歳入を併せて見せる表示（overview）では
+   * その表の向きを渡して `<年度>|<向き>|<鍵>` に揃える。
+   * `'row'` は行自身の direction 列で修飾する（向きが混ざる表用）。
+   * 渡さないと `<年度>|<鍵>` のまま（1方向の表示）。
+   */
+  keyDir?: Direction | "row"
   /** 列名 → 意味（ヘッダのツールチップ用。語彙が引けない表は空） */
   docs?: Record<string, ColDoc>
   onSelectRow: (key: string) => void
@@ -35,16 +42,16 @@ type Props = {
 }
 
 export const RowTable = forwardRef<RowTableHandle, Props>(function RowTable(
-  { table, linkedKeys, selectedKey, hoverKey, docs, onSelectRow, onHoverRow },
+  { table, linkedKeys, selectedKey, hoverKey, keyDir, docs, onSelectRow, onHoverRow },
   ref,
 ) {
   const boxRef = useRef<HTMLDivElement>(null)
   const [scrollTop, setScrollTop] = useState(0)
   const [viewH, setViewH] = useState(400)
 
-  // 対応・選択は修飾キー（`<年度>|<鍵>`）で比べる — 年度をまたぐ誤対応を防ぐ。
-  // キー計算は verify 側で表ごとにキャッシュしてある（同じ表で何度も走らない）
-  const keys = linkKeys(table)
+  // 対応・選択は修飾キー（`<年度>|<鍵>`。両方向表示では `<年度>|<向き>|<鍵>`）で比べる
+  // — 年度・向きをまたぐ誤対応を防ぐ。キー計算は verify 側で表ごとにキャッシュしてある
+  const keys = linkKeys(table, keyDir)
   const keyIndex = useMemo(() => {
     const m = new Map<string, number>()
     keys.forEach((k, i) => {

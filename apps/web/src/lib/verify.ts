@@ -159,9 +159,9 @@ export function keySpaceOf(t: TableRows): 'sr' | 'ord' | null {
   return t.keyColumn ? KEY_SPACE[t.keyColumn] : null
 }
 
-/** 鍵列・年度列の位置。行ごとに indexOf を引き直さないよう表ごとに1回だけ引く */
-const colCache = new WeakMap<TableRows, { ki: number; yi: number }>()
-function colInfo(t: TableRows): { ki: number; yi: number } {
+/** 鍵列・年度列・向き列の位置。行ごとに indexOf を引き直さないよう表ごとに1回だけ引く */
+const colCache = new WeakMap<TableRows, { ki: number; yi: number; di: number }>()
+function colInfo(t: TableRows): { ki: number; yi: number; di: number } {
   let c = colCache.get(t)
   if (!c) {
     c = {
@@ -169,6 +169,7 @@ function colInfo(t: TableRows): { ki: number; yi: number } {
       yi: t.columns.includes('fiscal_year')
         ? t.columns.indexOf('fiscal_year')
         : t.columns.indexOf('year'),
+      di: t.columns.indexOf('direction'),
     }
     colCache.set(t, c)
   }
@@ -191,40 +192,78 @@ function rowYear(t: TableRows, row: unknown[]): number | null {
   return Number.isFinite(y) ? y : null
 }
 
+/** その行の向き（`direction` 列を持つ表だけ）。値は expenditure / revenue */
+function rowDir(t: TableRows, row: unknown[]): string | null {
+  const { di } = colInfo(t)
+  if (di < 0) return null
+  const v = row[di]
+  return v == null ? null : String(v)
+}
+
 /**
- * 対応判定に使う修飾キー = `<年度>|<鍵>`。
+ * 対応判定に使う修飾キー = `<年度>|<向き>|<鍵>`（年度・向きは持つ分だけ前置）。
  *
  * ⚠️ **年度を入れないと年度をまたいで誤対応する。** 鍵番号は年度ごとに振り直される
  * （PDF の行番号・CSV の物理行番号）ので、「全年度」の表示で 2020年の ordinal=5 が
  * 2021年の ordinal=5 と一致したことになってしまう。年度列を持たない表（規則表）は
  * 裸の鍵のまま — 反対側も年度を持たないときだけ一致する。
+ *
+ * 向きも同じ理屈: 歳出と歳入は別の行番号体系なので、両方向を同時に見せる表示
+ * （overview）は `dir` を渡して `<年度>|<向き>|<鍵>` にする。`dir` を渡さない側は
+ * 従来どおり `<年度>|<鍵>` — 1組の表示（1辺=1方向）ではそちらで十分。
+ * `'row'` は行自身の direction 列の値で修飾する（併合原典の表など、表の中で
+ * 向きが混ざるもの用）。
  */
-function linkKey(t: TableRows, row: unknown[]): string | null {
+function linkKey(t: TableRows, row: unknown[], dir?: Direction | 'row'): string | null {
   const k = rowKey(t, row)
   if (k === null) return null
+  const d = dir === 'row' ? rowDir(t, row) : dir
   const y = rowYear(t, row)
-  return y === null ? k : `${y}|${k}`
+  return [y, d, k].filter((v) => v !== null && v !== undefined).join('|')
 }
 
-/** 各行の修飾キー（行数分の配列）。表ごとに1回だけ計算して使い回す */
-const linkKeysCache = new WeakMap<TableRows, (string | null)[]>()
-export function linkKeys(t: TableRows): (string | null)[] {
-  let ks = linkKeysCache.get(t)
+/** 各行の修飾キー（行数分の配列）。表×向き修飾ごとに1回だけ計算して使い回す */
+const linkKeysCache = new WeakMap<TableRows, Map<string, (string | null)[]>>()
+export function linkKeys(t: TableRows, dir?: Direction | 'row'): (string | null)[] {
+  let m = linkKeysCache.get(t)
+  if (!m) {
+    m = new Map()
+    linkKeysCache.set(t, m)
+  }
+  const cacheKey = dir ?? ''
+  let ks = m.get(cacheKey)
   if (!ks) {
-    ks = t.rows.map((r) => linkKey(t, r))
-    linkKeysCache.set(t, ks)
+    ks = t.rows.map((r) => linkKey(t, r, dir))
+    m.set(cacheKey, ks)
   }
   return ks
 }
 
 /** 修飾キーから表示用の鍵番号を取り出す */
-export const bareKey = (k: string) => (k.includes('|') ? k.slice(k.indexOf('|') + 1) : k)
+export const bareKey = (k: string) => k.slice(k.lastIndexOf('|') + 1)
 
 /** 対応がある行の修飾キー集合（反対側のバッジ・PDF 側のフラッグに使う） */
-export function linkSetOf(t: TableRows): Set<string> {
+export function linkSetOf(t: TableRows, dir?: Direction | 'row'): Set<string> {
   const s = new Set<string>()
-  for (const k of linkKeys(t)) if (k !== null) s.add(k)
+  for (const k of linkKeys(t, dir)) if (k !== null) s.add(k)
   return s
+}
+
+/**
+ * 修飾キーを行の direction ごとに分けた集合（向きが混ざる表用 — 併合原典の表）。
+ * 向き列を持たない表は `''` にまとまる。
+ */
+export function linkSetsByDir(t: TableRows): Map<string, Set<string>> {
+  const m = new Map<string, Set<string>>()
+  t.rows.forEach((r) => {
+    const k = linkKey(t, r, 'row')
+    if (k === null) return
+    const d = rowDir(t, r) ?? ''
+    let s = m.get(d)
+    if (!s) m.set(d, (s = new Set()))
+    s.add(k)
+  })
+  return m
 }
 
 /* ---- PDF レイヤ（/local/pdf/*） ---- */
@@ -261,10 +300,12 @@ export type PdfHitLoc = { docId: string; page: number; box: [number, number, num
  * ⚠️ **文書は年度ごとに別れうる**ので、hit の鍵は `doc.years[0]` で年度修飾する。
  * 複数年度をまたぐ文書（years が2つ以上）では修飾できないので裸の鍵のままになる
  * — その文書の hit は年度を持つ表の行とは一致しない（誤対応より対応なしのほうがまだ正しい）。
+ * `dir` は行の修飾キーと同じ向き修飾 — 歳出・歳入を併せて見せる表示で渡す。
  */
 export async function loadHitMap(
   docs: PdfDocMeta[],
   srcId: string,
+  dir?: Direction,
 ): Promise<Map<string, PdfHitLoc>> {
   const perDoc = await Promise.all(docs.map((d) => loadPdfHits(d.id)))
   const map = new Map<string, PdfHitLoc>()
@@ -274,7 +315,8 @@ export async function loadHitMap(
     const y = d.years.length === 1 ? d.years[0] : null
     for (const [k, h] of Object.entries(hits)) {
       if (!h?.box) continue
-      map.set(y === null ? k : `${y}|${k}`, { docId: d.id, page: h.page, box: h.box })
+      map.set([y, dir, k].filter((v) => v !== null && v !== undefined).join('|'),
+        { docId: d.id, page: h.page, box: h.box })
     }
   })
   return map

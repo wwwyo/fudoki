@@ -26,6 +26,7 @@ import {
   edgeDir,
   keySpaceOf,
   linkSetOf,
+  linkSetsByDir,
   loadHitMap,
   loadRows,
   nodeLabel,
@@ -60,7 +61,7 @@ function useRows(nodeId: string | null, code: string, year: number | null, dir: 
 }
 
 /** PDF 側が来たとき、hit の対応表を取りに行く hook */
-function useHitMap(rows: NodeRows | null, nodeId: string | null) {
+function useHitMap(rows: NodeRows | null, nodeId: string | null, dir: Direction | null = null) {
   const [map, setMap] = useState<Map<string, PdfHitLoc> | null>(null)
   const srcId = nodeId ? srcIdOf(nodeId) : null
   const docs = rows?.kind === "pdf" ? rows.docs : null
@@ -71,13 +72,13 @@ function useHitMap(rows: NodeRows | null, nodeId: string | null) {
     }
     let stale = false
     setMap(null)
-    loadHitMap(docs, srcId).then((m) => {
+    loadHitMap(docs, srcId, dir ?? undefined).then((m) => {
       if (!stale) setMap(m)
     })
     return () => {
       stale = true
     }
-  }, [docs, srcId])
+  }, [docs, srcId, dir])
   return map
 }
 
@@ -487,6 +488,7 @@ function SideRows({
   linkedKeys,
   selectedKey,
   hoverKey,
+  keyDir,
   onSelectRow,
   onHoverRow,
   tableRef,
@@ -500,6 +502,8 @@ function SideRows({
   linkedKeys: Set<string> | null
   selectedKey: string | null
   hoverKey: string | null
+  /** 表側の鍵に載せる向き修飾（'row' = 行自身の direction 列） */
+  keyDir?: Direction | "row"
   onSelectRow: (key: string) => void
   onHoverRow: (key: string | null) => void
   tableRef: React.RefObject<RowTableHandle | null>
@@ -533,6 +537,7 @@ function SideRows({
         linkedKeys={linkedKeys}
         selectedKey={selectedKey}
         hoverKey={hoverKey}
+        keyDir={keyDir}
         docs={docs}
         onSelectRow={onSelectRow}
         onHoverRow={onHoverRow}
@@ -586,17 +591,21 @@ function StarPanel({
   }, [year])
 
   const sharedRows = useRows(sharedNodeId, code, year, dir)
-  const sharedHits = useHitMap(sharedRows, sharedNodeId)
+  const sharedHits = useHitMap(sharedRows, sharedNodeId, dir)
   const sharedTable = useRef<RowTableHandle>(null)
 
   /**
    * 対応バッジの母数 = 反対側に実在する行キーの集合。共有側から見ると反対側は
    * 複数あるので和集合を取る（どれか1つの側に載っていれば「対応あり」）。
    * バラつく側から見た母数は共有側の鍵集合（StarSide が受け取って使う）。
+   *
+   * 鍵はバラつく側がその辺の向きで修飾する `<年度>|<向き>|<鍵>` と一致するよう、
+   * 共有側は行自身の direction 列で修飾する（'row'）。共有表が向き列を持たない
+   * ときは無修飾のまま — 向きを持つ側とは一致しなくなる（誤対応より対応なしのほうが正しい）。
    */
   const sharedKeys = useMemo<Set<string> | null>(() => {
     if (sharedHits) return new Set(sharedHits.keys())
-    return sharedRows?.kind === "table" ? linkSetOf(sharedRows) : null
+    return sharedRows?.kind === "table" ? linkSetOf(sharedRows, "row") : null
   }, [sharedHits, sharedRows])
 
   const peerMap = useRef(new Map<string, Set<string>>())
@@ -667,6 +676,7 @@ function StarPanel({
           linkedKeys={peerKeys}
           selectedKey={selectedKey}
           hoverKey={hoverKey}
+          keyDir="row"
           onSelectRow={pick}
           onHoverRow={setHoverKey}
           tableRef={sharedTable}
@@ -709,6 +719,7 @@ function StarPanel({
               sharedSpace={sharedSpace}
               sharedKeys={sharedKeys}
               sharedKind={sharedRows?.kind ?? null}
+              keyDir={edgeDir(p.from, p.to)}
               selectedKey={selectedKey}
               hoverKey={hoverKey}
               onHoverRow={setHoverKey}
@@ -740,6 +751,7 @@ function StarSide({
   sharedSpace,
   sharedKeys,
   sharedKind,
+  keyDir,
   selectedKey,
   hoverKey,
   onHoverRow,
@@ -759,6 +771,8 @@ function StarSide({
   sharedSpace: ReturnType<typeof keySpaceOf>
   sharedKeys: Set<string> | null
   sharedKind: NodeRows["kind"] | null
+  /** この側の辺の向き（鍵の向き修飾に使う） */
+  keyDir: Direction | null
   selectedKey: string | null
   hoverKey: string | null
   onHoverRow: (key: string | null) => void
@@ -775,7 +789,7 @@ function StarSide({
         : pair.from
       : pair.to
   const rows = useRows(nodeId, code, year, dir)
-  const hits = useHitMap(rows, nodeId)
+  const hits = useHitMap(rows, nodeId, dir)
   const tableRef = useRef<RowTableHandle>(null)
   const [pdfNav, setPdfNav] = useState<{ docId: string | null; page: number | null }>({
     docId: null,
@@ -787,14 +801,14 @@ function StarSide({
   const pairKey = `${pair.from}|${pair.to}`
 
   // 表↔表は鍵空間（source_row 系 / ordinal 系）が同じときだけ対応を付ける。
-  // hit の鍵は取り込み側と同じ鍵列で `<年度>|<鍵>` に修飾してあるので PDF 側はそのまま比べられる
+  // hit の鍵は取り込み側と同じ鍵列で `<年度>|<向き>|<鍵>` に修飾してあるので PDF 側はそのまま比べられる
   const sameSpace =
     rows?.kind === "table" && sharedKind === "table" ? keySpaceOf(rows) === sharedSpace : true
   const myKeys = useMemo<Set<string> | null>(() => {
     if (hits) return new Set(hits.keys())
-    if (rows?.kind === "table") return sameSpace ? linkSetOf(rows) : null
+    if (rows?.kind === "table") return sameSpace ? linkSetOf(rows, dir ?? undefined) : null
     return null
-  }, [hits, rows, sameSpace])
+  }, [hits, rows, sameSpace, dir])
 
   // 共有側の「対応あり」母数に自分の鍵集合を供給（外れたら引く）
   useEffect(() => {
@@ -854,6 +868,7 @@ function StarSide({
           linkedKeys={sharedKeys}
           selectedKey={selectedKey}
           hoverKey={hoverKey}
+          keyDir={keyDir ?? undefined}
           onSelectRow={onPick}
           onHoverRow={onHoverRow}
           tableRef={tableRef}
@@ -878,7 +893,10 @@ function StarSide({
 
 /**
  * 未選択時の一覧。系統の入口（原典）と出口（配布物）を左右に全部並べる。
- * 行対応は区間（辺）の話なのでここでは付けない — 辺を選ぶと両側の対応が見られる。
+ *
+ * 行選択はここでも効く: 原典の行・PDF hit と配布物の行は同じ source_row を運ぶので、
+ * 入口→出口まで通しの対応を直接見せる。歳出・歳入は別の行番号体系なので、
+ * ここでは全ての鍵を `<年度>|<向き>|<鍵>` に修飾して混同を防ぐ。
  */
 function Overview({
   report,
@@ -909,14 +927,80 @@ function Overview({
   const memberSrcIds = (n: Node) =>
     report.topology.edges.filter((e) => e.from === n.id).map((e) => e.to)
 
+  // 行選択は overview 全体で共有。年度が変わると行の実体も文書も変わるので捨てる
+  const [selectedKey, setSelectedKey] = useState<string | null>(null)
+  const [hoverKey, setHoverKey] = useState<string | null>(null)
+  useEffect(() => setSelectedKey(null), [year])
+
+  /**
+   * 各ノードが自分の鍵を報告する。
+   * - 原典: `{ byDir }`（向きごとの鍵集合）+ `{ hits }`（PDF hit の位置表 — 配布物の行を
+   *   選んだとき PDF をその頁へ飛ばすために使う）
+   * - 配布物: `{ keys }`（自分の鍵集合。原典側の「対応あり」バッジ・フラッグの母数）
+   */
+  const originInfo = useRef(new Map<string, { byDir: Map<string, Set<string>>; hits: Map<string, PdfHitLoc> | null }>())
+  const peerSets = useRef(new Map<string, Set<string>>())
+  const [originKeysByDir, setOriginKeysByDir] = useState<Map<string, Set<string>>>(new Map())
+  const [sinkKeys, setSinkKeys] = useState<Set<string> | null>(null)
+  const reportKeys = useCallback(
+    (
+      id: string,
+      v: { byDir?: Map<string, Set<string>>; hits?: Map<string, PdfHitLoc> | null; keys?: Set<string> } | null,
+    ) => {
+      if (v?.byDir) originInfo.current.set(id, { byDir: v.byDir, hits: v.hits ?? null })
+      else originInfo.current.delete(id)
+      if (v?.keys) peerSets.current.set(id, v.keys)
+      else peerSets.current.delete(id)
+      const u = new Map<string, Set<string>>()
+      originInfo.current.forEach(({ byDir }) =>
+        byDir.forEach((s, d) => {
+          let acc = u.get(d)
+          if (!acc) u.set(d, (acc = new Set()))
+          s.forEach((k) => acc.add(k))
+        }),
+      )
+      setOriginKeysByDir(u)
+      let sink: Set<string> | null = null
+      peerSets.current.forEach((s) => s.forEach((k) => (sink ??= new Set()).add(k)))
+      setSinkKeys(sink)
+    },
+    [],
+  )
+
+  // 行選択で各表を追わせるため、表を持つノードが jump 関数を登録する
+  const jumps = useRef(new Map<string, (key: string) => void>())
+  const regJump = useCallback((id: string, f: ((key: string) => void) | null) => {
+    if (f === null) jumps.current.delete(id)
+    else jumps.current.set(id, f)
+  }, [])
+
+  const pick = (key: string) => {
+    const next = selectedKey === key ? null : key
+    setSelectedKey(next)
+    if (next === null) return
+    jumps.current.forEach((f) => f(next))
+    for (const { hits } of originInfo.current.values()) {
+      const h = hits?.get(next)
+      if (h) {
+        onPdfNavigate(h.docId, h.page)
+        break
+      }
+    }
+  }
+
   return (
     <>
       <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap", marginBottom: 8 }}>
         <h2 style={{ fontSize: 14, margin: 0 }}>
           原典 <span className="text-muted-foreground">→</span> 配布物
         </h2>
+        {selectedKey != null && (
+          <button className="linky text-xs" onClick={() => setSelectedKey(null)}>
+            行 {bareKey(selectedKey)} の選択を解除
+          </button>
+        )}
         <span className="text-muted-foreground text-xs">
-          図の辺・ノードを選ぶと、その区間の行対応を出します
+          行を選ぶと対応する行が両側で点灯します。図の辺・ノードを選ぶと、その区間の行対応を出します
         </span>
       </div>
       <div className="io">
@@ -929,6 +1013,14 @@ function Overview({
               code={code}
               year={year}
               report={report}
+              reportKeys={reportKeys}
+              linkedKeys={sinkKeys}
+              keyDir="row"
+              selectedKey={selectedKey}
+              hoverKey={hoverKey}
+              onSelectRow={pick}
+              onHoverRow={setHoverKey}
+              register={regJump}
               pdfDocId={pdfDocId}
               pdfPage={pdfPage}
               onPdfNavigate={onPdfNavigate}
@@ -936,9 +1028,27 @@ function Overview({
           ))}
         </div>
         <div className="side">
-          {sinks.map((n) => (
-            <OverviewNode key={n.id} node={n} srcIds={[]} code={code} year={year} report={report} />
-          ))}
+          {sinks.map((n) => {
+            const dir = edgeDir(n.id, "")
+            return (
+              <OverviewNode
+                key={n.id}
+                node={n}
+                srcIds={[]}
+                code={code}
+                year={year}
+                report={report}
+                reportKeys={reportKeys}
+                linkedKeys={originKeysByDir.get(dir ?? "") ?? null}
+                keyDir={dir}
+                selectedKey={selectedKey}
+                hoverKey={hoverKey}
+                onSelectRow={pick}
+                onHoverRow={setHoverKey}
+                register={regJump}
+              />
+            )
+          })}
         </div>
       </div>
     </>
@@ -952,6 +1062,14 @@ function OverviewNode({
   code,
   year,
   report,
+  reportKeys,
+  linkedKeys,
+  keyDir,
+  selectedKey,
+  hoverKey,
+  onSelectRow,
+  onHoverRow,
+  register,
   pdfDocId = null,
   pdfPage = null,
   onPdfNavigate = () => {},
@@ -961,13 +1079,72 @@ function OverviewNode({
   code: string
   year: number
   report: ReportData
+  /** 鍵の報告先（原典は `{byDir, hits}`、配布物は `{keys}` を渡す） */
+  reportKeys: (id: string, v: { byDir?: Map<string, Set<string>>; hits?: Map<string, PdfHitLoc> | null; keys?: Set<string> } | null) => void
+  /** 「対応あり」の母数（原典: 配布物の鍵和集合 / 配布物: 自分の向きの原典鍵） */
+  linkedKeys: Set<string> | null
+  /** 表の鍵に載せる向き修飾（原典は 'row' = 行の direction 列、配布物は自分の向き） */
+  keyDir: Direction | "row" | null
+  selectedKey: string | null
+  hoverKey: string | null
+  onSelectRow: (key: string) => void
+  onHoverRow: (key: string | null) => void
+  register: (id: string, f: ((key: string) => void) | null) => void
   pdfDocId?: string | null
   pdfPage?: number | null
   onPdfNavigate?: (docId: string, page: number) => void
 }) {
+  const isOrigin = node.kind === "origin"
+  // 配布物ノードの向きは id から（expenditure / revenue のどちらか、または向きなし）
+  const dir = isOrigin ? null : edgeDir(node.id, "")
   const rows = useRows(node.id, code, year, null)
+  const tableRef = useRef<RowTableHandle>(null)
+  const srcKey = srcIds.join("|")
+
+  // PDF 原典はぶら下がる全 source の hit を向き修飾で併合する
+  // （歳出・歳入が同じ文書に綴じられている原典は1ノードで両方向を持つ）
+  const [hits, setHits] = useState<Map<string, PdfHitLoc> | null>(null)
+  useEffect(() => {
+    if (!isOrigin) {
+      // 配布物: 自分の鍵集合を原典側のフラッグ母数へ供給
+      reportKeys(node.id, rows?.kind === "table" ? { keys: linkSetOf(rows, dir ?? undefined) } : null)
+      return () => reportKeys(node.id, null)
+    }
+    let stale = false
+    if (rows?.kind === "pdf") {
+      const specs = srcIds.map((s) => ({ s, d: edgeDir("", s) }))
+      Promise.all(specs.map(({ s, d }) => loadHitMap(rows.docs, s, d ?? undefined))).then((ms) => {
+        if (stale) return
+        const merged = new Map<string, PdfHitLoc>()
+        const byDir = new Map<string, Set<string>>()
+        specs.forEach(({ d }, i) => {
+          ms[i]!.forEach((v, k) => merged.set(k, v))
+          byDir.set(d ?? "", new Set(ms[i]!.keys()))
+        })
+        setHits(merged)
+        reportKeys(node.id, { byDir, hits: merged })
+      })
+    } else if (rows?.kind === "table") {
+      setHits(null)
+      reportKeys(node.id, { byDir: linkSetsByDir(rows), hits: null })
+    } else {
+      setHits(null)
+      reportKeys(node.id, null)
+    }
+    return () => {
+      stale = true
+      reportKeys(node.id, null)
+    }
+  }, [isOrigin, rows, srcKey, dir, node.id, reportKeys]) // eslint-disable-line react-hooks/exhaustive-deps -- srcIds は render ごとに新しい配列なので srcKey で追う
+
+  // 別の側で行が選ばれたら自分の表をその鍵へ追わせる
+  useEffect(() => {
+    register(node.id, (k: string) => tableRef.current?.scrollToKey(k))
+    return () => register(node.id, null)
+  }, [node.id, register])
+
   const head =
-    node.kind === "origin"
+    isOrigin
       ? `原典${rows?.kind === "pdf" ? "（PDF）" : rows?.kind === "table" ? "（CSV）" : ""} — ${node.label}`
       : nodeLabel(node)
   return (
@@ -978,26 +1155,28 @@ function OverviewNode({
       ) : rows.kind === "pdf" ? (
         <PdfSide
           docs={rows.docs}
-          hits={null}
+          hits={hits}
           year={year}
           docId={pdfDocId}
           page={pdfPage}
           onNavigate={onPdfNavigate}
-          flagKeys={null}
-          selectedKey={null}
-          hoverKey={null}
-          onSelectRow={() => {}}
-          onHoverRow={() => {}}
+          flagKeys={linkedKeys}
+          selectedKey={selectedKey}
+          hoverKey={hoverKey}
+          onSelectRow={onSelectRow}
+          onHoverRow={onHoverRow}
         />
       ) : rows.kind === "table" ? (
         <RowTable
+          ref={tableRef}
           table={rows}
-          linkedKeys={null}
-          selectedKey={null}
-          hoverKey={null}
+          linkedKeys={linkedKeys}
+          selectedKey={selectedKey}
+          hoverKey={hoverKey}
+          keyDir={keyDir ?? undefined}
           docs={colDocsOf(node, report.columnDocs)}
-          onSelectRow={() => {}}
-          onHoverRow={() => {}}
+          onSelectRow={onSelectRow}
+          onHoverRow={onHoverRow}
         />
       ) : (
         <p className="text-xs text-muted-foreground">行データなし（{rows.reason}）</p>

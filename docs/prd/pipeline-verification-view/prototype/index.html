@@ -559,7 +559,9 @@ function v1ZoomAction(a) {
 /* ---- I/O パネル ---- */
 /* peerSet（反対側で対応が付く source_row の集合）が渡った行だけ、source_row セルの値を番号バッジにする。
    st は行選択の状態（組の ctx）。null のときは選択を出さない表（overview 用） */
-function tableHtml(j, nid, dir, side, peerSet, st) {
+/* qual: 行鍵に付ける向き修飾（overview で歳出・歳入の行番号の衝突を避けるため
+   `<向き>|<行番号>` にする）。'row' はエントリ自身の direction で修飾する */
+function tableHtml(j, nid, dir, side, peerSet, st, qual = null) {
   const e = pickEntry(j, nid, dir);
   if (!e) return '<p class="small mut">行データなし</p>';
   if (e.error) return `<p class="small mut">読み込み失敗: ${esc(e.error)}</p>`;
@@ -575,15 +577,18 @@ function tableHtml(j, nid, dir, side, peerSet, st) {
     const tip = d ? [d.title, d.description].filter(Boolean).join(' — ') : null;
     return `<th${tip ? ` title="${esc(tip)}"` : ''}>${esc(c)}</th>`;
   };
+  const qdir = qual === 'row' ? e.direction || '' : qual;
+  const key = (sr) => (qdir ? `${qdir}|${sr}` : `${sr}`);
   const head = (implicit ? '<th>行</th>' : '') + cols.slice(0, 14).map(th).join('') + (cols.length > 14 ? `<th>…</th>` : '');
   const body = e.rows.map((r, ri) => {
-    const sr = ci >= 0 ? Number(r[ci]) : implicit ? ri + 2 : null;
-    const linked = peerSet != null && sr != null && peerSet.has(Number(sr));
+    const sr = ci >= 0 ? String(r[ci]) : implicit ? String(ri + 2) : null;
+    const k = sr == null ? null : key(sr);
+    const linked = peerSet != null && k != null && peerSet.has(k);
     const cells = (implicit ? `<td>${linked ? `<span class="srnum">${sr}</span>` : sr}</td>` : '') + cols.slice(0, 14).map((c) =>
       linked && c === 'source_row' ? `<td><span class="srnum">${esc(r[idx(c)])}</span></td>` : `<td>${esc(r[idx(c)])}</td>`
     ).join('') + (cols.length > 14 ? '<td class="mut">…</td>' : '');
-    const sel = st != null && st.row != null && sr != null && Number(sr) === st.row;
-    return `<tr class="${(st != null && sr != null ? 'rowhit' : '') + (sel ? ' rowsel' : '')}" ${st != null && sr != null ? `data-sr="${sr}" data-side="${side}"` : ''} ${sel ? 'data-rowsel' : ''}>${cells}</tr>`;
+    const sel = st != null && st.row != null && k != null && k === st.row;
+    return `<tr class="${(st != null && k != null ? 'rowhit' : '') + (sel ? ' rowsel' : '')}" ${st != null && k != null ? `data-sr="${esc(k)}" data-side="${side}"` : ''} ${sel ? 'data-rowsel' : ''}>${cells}</tr>`;
   }).join('');
   return `<div class="rows"><table class="t"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
 }
@@ -602,27 +607,29 @@ function pdfPageHtml(pdf, hits, pno, flagSet, st) {
       const cy = w.y + w.h / 2;
       if (cy >= h.box[1] && cy <= h.box[3]) { sr = k; break; }
     }
-    return `<span class="wspan" ${st != null && sr ? `data-sr="${sr}"` : ''} style="left:${w.x / p.w * 100}%;top:${w.y / p.h * 100}%;width:${w.w / p.w * 100}%;height:${w.h / p.h * 100}%">${esc(w.t)}</span>`;
+    return `<span class="wspan" ${st != null && sr ? `data-sr="${esc(sr)}"` : ''} style="left:${w.x / p.w * 100}%;top:${w.y / p.h * 100}%;width:${w.w / p.w * 100}%;height:${w.h / p.h * 100}%">${esc(w.t)}</span>`;
   }).join('');
   const hl = Object.entries(hits).filter(([, h]) => h.page === pno && h.box)
-    .filter(([sr]) => st != null && st.row != null && Number(sr) === st.row)
+    .filter(([sr]) => st != null && st.row != null && sr === st.row)
     .map(([sr, h]) => `<div class="hit" style="left:${h.box[0] / p.w * 100}%;top:${h.box[1] / p.h * 100}%;width:${(h.box[2] - h.box[0]) / p.w * 100}%;height:${(h.box[3] - h.box[1]) / p.h * 100}%"></div>`).join('');
   // 出力側の表に実在する行に対応する hit の左端に、表と同じ番号バッジを重ねる。
   // 選択中は塗り（.sel）、それ以外は薄く
   const flags = !flagSet ? '' : Object.entries(hits)
-    .filter(([sr, h]) => h.page === pno && h.box && flagSet.has(Number(sr)))
-    .map(([sr, h]) => `<div class="srflag${st != null && st.row != null && Number(sr) === st.row ? ' sel' : ''}" data-sr="${esc(sr)}" style="left:${h.box[0] / p.w * 100}%;top:${(h.box[1] + h.box[3]) / 2 / p.h * 100}%">${esc(sr)}</div>`).join('');
+    .filter(([sr, h]) => h.page === pno && h.box && flagSet.has(sr))
+    .map(([sr, h]) => `<div class="srflag${st != null && st.row != null && sr === st.row ? ' sel' : ''}" data-sr="${esc(sr)}" style="left:${h.box[0] / p.w * 100}%;top:${(h.box[1] + h.box[3]) / 2 / p.h * 100}%">${esc(bareSr(sr))}</div>`).join('');
   return `<div class="pdfpage" data-page="${pno}"><img src="${p.png}" alt="PDF p.${pno}">${words}${hl}${flags}</div>`;
 }
 function pdfPages(pdf) {
   return Object.keys(pdf.pages || {}).map(Number).sort((a, b) => a - b);
 }
+/* 修飾キー `<向き>|<行番号>` から表示用の行番号を取り出す */
+const bareSr = (k) => String(k).split('|').pop();
 /* st はこの側の { row, pdfPage } を持つ ctx。interact=false のとき語に行選択を付けない
-   （overview の閲覧用 — 頁送りだけは効かせる） */
-function pdfSideHtml(j, dir, flagSet, st, interact = true) {
+   （overview の閲覧用 — 頁送りだけは効かせる）。hitsOv は併合原典用の全方向 hit 併合表 */
+function pdfSideHtml(j, dir, flagSet, st, interact = true, hitsOv = null) {
   const pdf = j.pdf, pd = pdf && pdf[dir];
-  if (!pdf || !pdf.pages || !pd) return '<p class="small mut">PDF レイヤなし</p>';
-  const hits = pd.hits || {};
+  if (!pdf || !pdf.pages || (!pd && !hitsOv)) return '<p class="small mut">PDF レイヤなし</p>';
+  const hits = hitsOv || pd.hits || {};
   const pages = pdfPages(pdf);
   if (!pages.length) return '<p class="small mut">PDF レイヤなし</p>';
   // 初期表示はこの向きの行が載っている最初の頁。行を選んだときは click 側で hit の頁に合わせてある
@@ -632,7 +639,7 @@ function pdfSideHtml(j, dir, flagSet, st, interact = true) {
   }
   const cur = st.pdfPage;
   const idx = pages.indexOf(cur);
-  const selHit = st.row != null ? hits[String(st.row)] : null;
+  const selHit = st.row != null ? hits[st.row] : null;
   // ページ送りはビューア上部のツールバーとして枠の中に収める。中央の「序数/総数」は
   // 入力で直接移動できる。右端の p.N は PDF の通し頁番号（証跡・hit が指す番号）で、
   // 冊子の印字頁番号とはずれるが証跡と対応させるためこちらで統一する
@@ -646,31 +653,82 @@ function pdfSideHtml(j, dir, flagSet, st, interact = true) {
     </div>
     ${pdfPageHtml(pdf, hits, cur, flagSet, interact ? st : null)}</div>`;
 }
-/* 未選択時は系統の入口（原典）と出口（配布物）を全部並べる。行対応は区間（辺）の
-   話なのでここでは付けない */
+/* 未選択時は系統の入口（原典）と出口（配布物）を全部並べる。
+   ここでも行対応を出す — 原典・配布物は同じ source_row を運ぶので入口→出口の
+   対応が直接見える。歳出・歳入は行番号が衝突するので、overview 内の鍵は全部
+   `<向き>|<行番号>` に修飾する */
 function ioOverviewHtml(j) {
   const hasOut = new Set(j.topology.edges.map((x) => x.from));
   const nodes = j.topology.nodes.filter((n) => n.jurisdictionCode === S.code);
   const origins = nodes.filter((n) => n.kind === 'origin');
   const sinks = nodes.filter((n) => n.stage === 'package' && !hasOut.has(n.id));
   const memberSrcs = (n) => j.topology.edges.filter((x) => x.from === n.id).map((x) => x.to);
+  const dirOf = (s) => edgeDir({ from: s, to: '' });
+  // 配布物側の鍵集合（原典側の「対応あり」フラッグの母数）
+  const sinkKeys = new Set();
+  const sinkDir = new Map(); // nodeId → dir
+  for (const n of sinks) {
+    const d = dirOf(n.id) || '';
+    sinkDir.set(n.id, d);
+    const e = pickEntry(j, n.id, null);
+    if (!e || e.error) continue;
+    const ci = e.columns.indexOf('source_row');
+    if (ci < 0) continue;
+    e.rows.forEach((r) => { if (r[ci] != null) sinkKeys.add(`${d}|${r[ci]}`); });
+  }
+  // 原典側: hit を全方向ぶん併合して `<向き>|<行番号>` の鍵で持つ。併合でない原典でも同じ形
+  const originHitMap = {}; // nodeId → merged hits
+  const originKeysByDir = {}; // dir → Set（配布物側のバッジ母数）
+  for (const n of origins) {
+    const srcs = memberSrcs(n);
+    const merged = {};
+    for (const s of srcs) {
+      const d = dirOf(s) || 'expenditure';
+      const hs = (j.pdf && j.pdf[d] && j.pdf[d].hits) || {};
+      for (const k in hs) merged[`${d}|${k}`] = hs[k];
+      (originKeysByDir[d] ||= new Set());
+      for (const k in hs) originKeysByDir[d].add(`${d}|${k}`);
+    }
+    originHitMap[n.id] = merged;
+    // CSV 原典なら表の行からも拾う
+    const e = pickEntry(j, `${srcs[0]}.origin`, null);
+    if (e && !e.error) {
+      const ci = e.columns.indexOf('source_row');
+      const d = e.direction || '';
+      if (ci >= 0) e.rows.forEach((r) => {
+        if (r[ci] == null) return;
+        (originKeysByDir[d] ||= new Set()).add(`${d}|${r[ci]}`);
+      });
+      else e.rows.forEach((_, ri) => { (originKeysByDir[d] ||= new Set()).add(`${d}|${ri + 2}`); });
+    }
+  }
+  // 選択は overview 内の全ノードで共有 — クリック側が `ov:` 始まりの全 ctx に
+  // ミラーするので、各ノードは自分の ctx 名で読むだけでよい（行解除ボタンの
+  // ためにヘッダにも ov:hdr ctx を置く）
+  const ost = ctxOf('ov:hdr');
   const originHtml = (n) => {
     const srcs = memberSrcs(n);
     const key = `${srcs[0]}.origin`;
     const dir = srcs[0] ? edgeDir({ from: n.id, to: srcs[0] }) : null;
     const pdf = j.samples[key]?.kind === 'pdf';
     const head = `原典${pdf ? '（PDF）' : '（CSV）'} — ${esc(n.label)}`;
-    // overview の表・PDF は閲覧だけ（行選択は組の文脈でのみ効かせる）
-    return `<div class="io-node" data-ctx="ov:${esc(n.id)}"><h3>${head}</h3>${pdf ? pdfSideHtml(j, dir || 'expenditure', null, ctxOf('ov:' + n.id), false) : tableHtml(j, key, dir, 'in', null, null)}
+    const body = pdf
+      ? pdfSideHtml(j, dir || 'expenditure', sinkKeys, ctxOf('ov:' + n.id), true, originHitMap[n.id])
+      : tableHtml(j, key, dir, 'in', sinkKeys, ctxOf('ov:' + n.id), 'row');
+    return `<div class="io-node" data-ctx="ov:${esc(n.id)}"><h3>${head}</h3>${body}
       ${ioSideDetailHtml(j, n, dir, { isInput: true, aPdf: pdf, srcIds: srcs, tblKey: key, tblDir: dir })}</div>`;
   };
-  const sinkHtml = (n) => `<div class="io-node"><h3>${esc(nodeLabel(n, j))}</h3>${tableHtml(j, n.id, null, 'out', null, null)}
+  const sinkHtml = (n) => {
+    const d = sinkDir.get(n.id) || '';
+    return `<div class="io-node" data-ctx="ov:${esc(n.id)}"><h3>${esc(nodeLabel(n, j))}</h3>${tableHtml(j, n.id, null, 'out', originKeysByDir[d] || null, ctxOf('ov:' + n.id), d || null)}
     ${ioSideDetailHtml(j, n, null, { isInput: false, aPdf: false, srcIds: [], tblKey: n.id, tblDir: null })}</div>`;
-  return `<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+  };
+  return `<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px" data-ctx="ov:hdr">
       <h2 style="font-size:14px;margin:0">原典 <span class="mut">→</span> 配布物</h2>
-      <span class="mut small">図の辺・ノードを選ぶと、その区間の行対応を出します</span>
+      ${ost.row != null ? `<button class="linky small" data-clear-row>行 ${esc(bareSr(ost.row))} の選択を解除</button>` : ''}
+      <span class="mut small">行を選ぶと対応する行が両側で点灯します。図の辺・ノードを選ぶと、その区間の行対応を出します</span>
     </div>
-    <div class="io">
+    <div class="io" data-ov>
       <div class="side">${origins.map(originHtml).join('')}</div>
       <div class="side">${sinks.map(sinkHtml).join('')}</div>
     </div>`;
@@ -930,6 +988,17 @@ function pdfHitPage(j, sr, e) {
   const hit = dir && j.pdf && j.pdf[dir] && j.pdf[dir].hits ? j.pdf[dir].hits[String(sr)] : null;
   return hit && hit.page ? hit.page : null;
 }
+/* 行鍵 → その行が載っている頁。overview の鍵は `<向き>|<行番号>` に修飾してあるので
+   向き部分で hit の表を選んで引く（組の鍵は裸のまま pair の向きで引く） */
+function hitPageOf(j, sr, ctxKey) {
+  const s = String(sr);
+  const i = s.indexOf('|');
+  if (i >= 0) {
+    const h = j.pdf && j.pdf[s.slice(0, i)] && j.pdf[s.slice(0, i)].hits[s.slice(i + 1)];
+    return h ? h.page : null;
+  }
+  return pdfHitPage(j, sr, pairOfCtx(ctxKey) || S.edges[0]);
+}
 const pairOfCtx = (k) => { const [f, t] = (k || '').split('|'); return f && t ? { from: f, to: t } : null; };
 /* 星パネル内の全 ctx（星 ctx + 各側の組 ctx）。行選択は全 ctx に同じ値を書いて
    ミラーする — 描画側は自分の ctx を読むだけでパネル全体が同じ選択になる */
@@ -976,29 +1045,33 @@ stage.addEventListener('click', (e) => {
     S.edges = picked.map((x) => ({ from: x.from, to: x.to }));
     mount(); return;
   }
-  // 行選択のスコープ。星パネルの中では全側が同じ選択を持つ
+  // 行選択のスコープ。星パネルの中では全側が、overview（ov:〜 の ctx）では
+  // 全ノードが同じ選択を持つ
   const starEl = e.target.closest('[data-star]');
-  const scope = starEl ? ctxKeysOfStar(starEl) : ctxKey ? [ctxKey] : [];
+  const scope = starEl ? ctxKeysOfStar(starEl)
+    : ctxKey && ctxKey.startsWith('ov:')
+      ? [...stage.querySelectorAll('[data-ctx^="ov:"]')].map((x) => x.dataset.ctx)
+      : ctxKey ? [ctxKey] : [];
   const ws = e.target.closest('.wspan[data-sr]');
   if (ws && scope.length) {
-    const sr = Number(ws.dataset.sr);
+    const sr = ws.dataset.sr;
     scope.forEach((k) => {
       const c = ctxOf(k);
       c.row = sr;
-      const p = pdfHitPage(J(), sr, pairOfCtx(k) || S.edges[0]);
+      const p = hitPageOf(J(), sr, k);
       if (p != null) c.pdfPage = p;
     });
     mount(); return;
   }
   const tr = e.target.closest('tr[data-sr]');
   if (tr && scope.length) {
-    const sr = Number(tr.dataset.sr);
+    const sr = tr.dataset.sr;
     const next = st && st.row === sr ? null : sr;
     scope.forEach((k) => {
       const c = ctxOf(k);
       c.row = next;
       // 表側の行を選んだら PDF 側をその行が載っている頁へ自動で合わせる（めくった状態でも追従）
-      if (next != null) { const p = pdfHitPage(J(), sr, pairOfCtx(k) || S.edges[0]); if (p != null) c.pdfPage = p; }
+      if (next != null) { const p = hitPageOf(J(), sr, k); if (p != null) c.pdfPage = p; }
     });
     mount(); scrollSelIntoView(); return;
   }
@@ -1024,8 +1097,8 @@ function setRowHover(ctxEl, sr) {
 }
 stage.addEventListener('mouseover', (e) => {
   const t = e.target.closest && e.target.closest('[data-sr]');
-  // 星パネルの中では同じ鍵が全側で点灯する（パネル単位の行選択と揃える）
-  setRowHover(t ? t.closest('.io-pair') || t.closest('[data-ctx]') : null, t ? t.dataset.sr : null);
+  // 星パネル・overview の中では同じ鍵が全側で点灯する（パネル単位の行選択と揃える）
+  setRowHover(t ? t.closest('.io-pair') || t.closest('[data-ov]') || t.closest('[data-ctx]') : null, t ? t.dataset.sr : null);
 });
 // ホイール（ctrl+wheel のピンチ操作を含む）でポインタ位置をアンカーにズーム
 stage.addEventListener('wheel', (e) => {
