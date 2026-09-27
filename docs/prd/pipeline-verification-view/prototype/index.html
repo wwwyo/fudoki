@@ -79,7 +79,7 @@ details.fold { border-top: 1px solid var(--border); margin-top: 10px; padding-to
 details.fold > summary { cursor: pointer; font-size: 12px; color: var(--muted-foreground); }
 /* 「注意点」トグルは I/O ペイン先頭で罫線の fold ではなく警告色の帯として出す */
 .iowrap > details.fold { border-top: 0; margin-top: 0; padding-top: 0; }
-details.caveats { border: 1px solid color-mix(in oklch, oklch(0.72 0.12 85) 50%, var(--border)); border-radius: 8px; background: color-mix(in oklch, oklch(0.94 0.05 95) 65%, var(--card)); padding: 0 12px; margin-bottom: 14px; }
+.iowrap > details.caveats { border: 1px solid color-mix(in oklch, oklch(0.72 0.12 85) 50%, var(--border)); border-radius: 8px; background: color-mix(in oklch, oklch(0.94 0.05 95) 65%, var(--card)); padding: 0 12px; margin-bottom: 14px; margin-top: 18px; }
 details.caveats > summary { color: oklch(0.52 0.12 75); font-weight: 600; padding: 7px 0; }
 details.caveats .cv:last-child { padding-bottom: 8px; }
 /* 詳細トグルの中身。項目名を狭い左列に、値を右に並べる。URL は折り返す */

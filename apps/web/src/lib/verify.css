@@ -61,7 +61,7 @@
 /* 「注意点」トグルは I/O ペイン先頭で罫線の fold ではなく警告色の帯として出す。
    畳まれていても目に入るよう、アンバー系にする（エラーではなく注意喚起なので destructive は使わない） */
 .pv .iowrap > details.fold { border-top: 0; margin-top: 0; padding-top: 0; }
-.pv details.caveats { border: 1px solid color-mix(in oklch, oklch(0.72 0.12 85) 50%, var(--border)); border-radius: 8px; background: color-mix(in oklch, oklch(0.94 0.05 95) 65%, var(--card)); padding: 0 12px; margin-bottom: 14px; }
+.pv .iowrap > details.caveats { border: 1px solid color-mix(in oklch, oklch(0.72 0.12 85) 50%, var(--border)); border-radius: 8px; background: color-mix(in oklch, oklch(0.94 0.05 95) 65%, var(--card)); padding: 0 12px; margin-bottom: 14px; margin-top: 18px; }
 .pv details.caveats > summary { color: oklch(0.52 0.12 75); font-weight: 600; padding: 7px 0; }
 .pv details.caveats .cv:last-child { padding-bottom: 8px; }
 .pv details.fold .dh { font-size: 11px; font-weight: 600; color: var(--muted-foreground); margin: 8px 0 2px; }
