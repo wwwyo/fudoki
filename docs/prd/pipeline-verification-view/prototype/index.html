@@ -59,6 +59,10 @@ select.ctl { font: inherit; font-size: 12px; padding: 3px 6px; border: 1px solid
 /* 側は内容の高さに収める。背の低い側は .sidestick でスクロールに張り付く
    （iowrap だけがスクロールするので、貼らないと短い側が流れて空列になる） */
 .io { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
+/* PDF を含む側を広く取る。原典は組版の余白込みの頁画像なので、表と同じ幅だと
+   文字が潰れて読みにくい。両側とも PDF のときは等分のまま */
+.io:has(> .side:first-child .pdfview):not(:has(> .side:nth-child(2) .pdfview)) { grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); }
+.io:has(> .side:nth-child(2) .pdfview):not(:has(> .side:first-child .pdfview)) { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
 .io > .side.sidestick { position: sticky; }
 .io .side h3 { font-size: 15px; font-weight: 700; margin: 0 0 6px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
 /* 見出し内の補足（年度・向き）は主題より一段落とす */
@@ -152,6 +156,11 @@ details.fold .cv .b code { font-size: 11px; background: color-mix(in oklch, var(
 /* 図ペイン: ズーム/パン・組 hover 機構 */
 .v1 .graphwrap { overflow: hidden; position: relative; touch-action: none; user-select: none; }
 .v1 .graphsvg { display: block; cursor: grab; }
+/* 段見出しはパンではなく情報 affordance — grab を継承させない */
+.v1 .graphsvg .stage-head { cursor: help; }
+/* 段の責務の自前 tooltip（<title> は埋め込みブラウザで出ないことがある） */
+#stagetip { position: fixed; z-index: 50; max-width: 320px; padding: 6px 10px; border-radius: 6px; background: var(--foreground); color: var(--background); font-size: 11px; line-height: 1.6; pointer-events: none; opacity: 0; transition: opacity .12s; }
+#stagetip.on { opacity: 1; }
 .v1 .graphsvg.panning, .v1 .graphsvg.panning * { cursor: grabbing !important; }
 .zoomctl { position: absolute; right: 10px; bottom: 10px; z-index: 5; display: flex; flex-direction: column; gap: 4px; }
 .zoomctl button { min-width: 28px; height: 26px; padding: 0 6px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--card); color: var(--foreground); font: inherit; font-size: 11px; line-height: 1; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
@@ -187,6 +196,7 @@ details.fold .cv .b code { font-size: 11px; background: color-mix(in oklch, var(
   <button data-j="132195">132195 狛江市（CSV）</button>
 </div>
 <div id="stage"></div>
+<div id="stagetip" role="tooltip"></div>
 <!-- 生成ファイルを index.html から指しているため、内容が変わるたびにブラウザの
      heuristic cache に引っかかる。data.js を差し替えたら ?v= を上げる -->
 <script src="data.js?v=2"></script>
@@ -380,11 +390,12 @@ function graphSvg(j, horiz, dimSet, pairHover, vp) {
     STAGE_ORDER.forEach((s, i) => {
       if (j.topology.nodes.some((n) => n.stage === s)) {
         const x = PAD + i * (NW + CGX);
-        // 見出し全体（段名＋ⓘ）の hover で責務を出す
-        out += `<g>`;
-        if (stMap[s]?.responsibility) out += `<title>${esc(stMap[s].responsibility)}</title>`;
+        // 見出し全体（段名＋ⓘ）の hover で責務を出す。<title> は埋め込みブラウザで
+        // 出ないことがあるので data-tip → #stagetip の自前 tooltip にする
+        const tip = stMap[s]?.responsibility;
+        out += tip ? `<g class="stage-head" data-tip="${esc(tip)}">` : `<g>`;
         out += `<text x="${x}" y="${PAD + 12}" font-size="11" fill="var(--muted-foreground)">${STAGE_JA[s]}</text>`;
-        if (stMap[s]?.responsibility)
+        if (tip)
           out += `<text x="${x + STAGE_JA[s].length * 11 + 8}" y="${PAD + 12}" font-size="11" fill="var(--muted-foreground)">ⓘ</text>`;
         out += `</g>`;
       }
@@ -1113,7 +1124,7 @@ stage.addEventListener('click', (e) => {
       // 表側の行を選んだら PDF 側をその行が載っている頁へ自動で合わせる（めくった状態でも追従）
       if (next != null) { const p = hitPageOf(J(), sr, k); if (p != null) c.pdfPage = p; }
     });
-    mount(); scrollSelIntoView(); return;
+    mount(); return;
   }
 });
 stage.addEventListener('mousemove', (e) => {
@@ -1139,6 +1150,18 @@ stage.addEventListener('mouseover', (e) => {
   // 星パネル・overview の中では同じ鍵が全側で点灯する（パネル単位の行選択と揃える）
   setRowHover(t ? t.closest('.io-pair') || t.closest('[data-ov]') || t.closest('[data-ctx]') : null, t ? t.dataset.sr : null);
 });
+// 段見出し（.stage-head）の責務 tooltip — <title> は出ない環境があるので自前で出す
+const stagetip = document.getElementById('stagetip');
+stage.addEventListener('mouseover', (e) => {
+  const h = e.target.closest && e.target.closest('.stage-head');
+  if (!h || !h.dataset.tip) { stagetip.classList.remove('on'); return; }
+  const r = h.getBoundingClientRect();
+  stagetip.textContent = h.dataset.tip;
+  stagetip.style.left = `${Math.max(8, Math.min(r.left, innerWidth - 336))}px`;
+  stagetip.style.top = `${r.bottom + 6}px`;
+  stagetip.classList.add('on');
+});
+stage.addEventListener('mouseleave', () => stagetip.classList.remove('on'));
 // ホイール（ctrl+wheel のピンチ操作を含む）でポインタ位置をアンカーにズーム
 stage.addEventListener('wheel', (e) => {
   if (!V1Z) return;
@@ -1242,9 +1265,9 @@ stage.addEventListener('keydown', (e) => {
   else if (e.key === 'Escape') { e.target.value = e.target.defaultValue; e.target.blur(); }
 });
 function scrollSelIntoView() {
-  requestAnimationFrame(() => {
-    document.querySelectorAll('tr[data-rowsel], .pdfpage .hit').forEach((el) => el.scrollIntoView({ block: 'nearest' }));
-  });
+  // mount() の innerHTML 差し替えは同期なのでここでは DOM 済み。
+  // rAF 経由にすると発火しない環境（occluded な埋め込みブラウザ）で死ぬ
+  document.querySelectorAll('tr[data-rowsel], .pdfpage .hit').forEach((el) => el.scrollIntoView({ block: 'nearest' }));
 }
 
 /* .io の2列で背の低い側を sticky にする — 高い側をスクロールしたとき短い側が
@@ -1282,7 +1305,7 @@ function mount() {
   // stickShortSide は描画同期ではなく DOM への追従なので rAF を待たない
   // （occluded タブで rAF が発火しない環境がある）
   stickShortSide();
-  requestAnimationFrame(() => scrollSelIntoView());
+  scrollSelIntoView();
 }
 window.addEventListener('resize', () => {
   // svg の大きさはコンテナに合わせているので、リサイズ時は張り直す。fit モードなら合わせ直す

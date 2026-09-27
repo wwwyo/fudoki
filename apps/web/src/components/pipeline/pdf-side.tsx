@@ -6,7 +6,7 @@
  * - 対応のある行の帯の左端には、表と同じ番号バッジ（srflag）を重ねる
  * - 文字層の無い原典（OCR のみ）は頁画像だけ出し、押せるものに見せない
  */
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import type { PdfDocMeta, PdfHitLoc, PdfPageData } from "@/lib/verify"
 import { bareKey, loadPdfPage, pdfPagePng } from "@/lib/verify"
 
@@ -82,6 +82,13 @@ export function PdfSide({
     }
   }, [doc?.id, shown])
 
+  const viewRef = useRef<HTMLDivElement>(null)
+  // 選択行の帯（.hit）は頁遷移＋文字層ロード後にやってくる — 描画された
+  // タイミングで外側のペイン（.iowrap）まで見える位置へ寄せる
+  useEffect(() => {
+    viewRef.current?.querySelector(".pdfpage .hit")?.scrollIntoView({ block: "nearest" })
+  }, [pageData, shown, selectedKey])
+
   if (!docs.length) {
     return (
       <p className="text-xs" style={{ color: "var(--muted-foreground)" }}>
@@ -148,7 +155,7 @@ export function PdfSide({
   }
 
   return (
-    <div className="pdfview">
+    <div className="pdfview" ref={viewRef}>
       <div className="pdfpager" role="group" aria-label="PDF のページ送り">
         <button
           className="pgbtn"

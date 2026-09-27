@@ -81,6 +81,23 @@ export const RowTable = forwardRef<RowTableHandle, Props>(function RowTable(
     return () => ro.disconnect()
   }, [])
 
+  // 選択された行は窓の外にあることが多い。scrollToKey が内側の .rows を動かしても
+  // その行が描画されるのは次の render なので、窓に現れたタイミングで
+  // scrollIntoView して外側の .iowrap も寄せる
+  // （内側だけだとパネル自体が画面外のままになる。毎 render ではなく選択ごと
+  // 1回に留めないと、選択行が窓端に居るとき通常スクロールと取り合いになる）
+  const pendingReveal = useRef(false)
+  useEffect(() => {
+    pendingReveal.current = selectedKey !== null
+  }, [selectedKey])
+  useEffect(() => {
+    if (!pendingReveal.current) return
+    const el = boxRef.current?.querySelector("tr.rowsel")
+    if (!el) return
+    el.scrollIntoView({ block: "nearest" })
+    pendingReveal.current = false
+  })
+
   const onScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
     setScrollTop(e.currentTarget.scrollTop)
   }, [])

@@ -42,6 +42,10 @@
 /* 側は内容の高さに収める（grid 既定の stretch だと短い側も全高に伸びて
    sticky の余地が無くなる）。背の低い側は .sidestick でスクロールに張り付く */
 .pv .io { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; align-items: start; }
+/* PDF を含む側を広く取る。原典は組版の余白込みの頁画像なので、表と同じ幅だと
+   文字が潰れて読みにくい。両側とも PDF のときは等分のまま */
+.pv .io:has(> .side:first-child .pdfview):not(:has(> .side:nth-child(2) .pdfview)) { grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); }
+.pv .io:has(> .side:nth-child(2) .pdfview):not(:has(> .side:first-child .pdfview)) { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
 .pv .io .side { min-width: 0; }
 .pv .io > .side.sidestick { position: sticky; }
 .pv .io .side h3 { font-size: 15px; font-weight: 700; margin: 0 0 6px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
@@ -127,6 +131,8 @@
 .pv.vsplit { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
 .pv .graphwrap { overflow: hidden; position: relative; touch-action: none; user-select: none; flex: 0 0 auto; }
 .pv .graphsvg { display: block; cursor: grab; }
+/* 段見出しはパンではなく情報 affordance — grab を継承させない */
+.pv .graphsvg .stage-head { cursor: help; }
 .pv .graphsvg.panning, .pv .graphsvg.panning * { cursor: grabbing !important; }
 .pv .zoomctl { position: absolute; right: 10px; bottom: 10px; z-index: 5; display: flex; flex-direction: column; gap: 4px; }
 .pv .zoomctl button { min-width: 28px; height: 26px; padding: 0 6px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--card); color: var(--foreground); font: inherit; font-size: 11px; line-height: 1; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.08); }

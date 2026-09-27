@@ -12,6 +12,7 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import type { Edge, Node, Stage, Topology } from "@/lib/pipeline"
 import { count, nodeRows } from "@/lib/pipeline"
 import { STAGE_JA, nodeLabel, type Pair } from "@/lib/verify"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
 const NW = 190
 const NH = 44
@@ -400,14 +401,14 @@ export const LineageGraph = memo(function LineageGraph({
             </marker>
           </defs>
           {/* 段の見出しは各列の最上段ノードの上。見出し全体（段名＋ⓘ）の
-              hover で各段の責務（topology.stages の responsibility）を出す */}
+              hover で各段の責務（topology.stages の responsibility）を出す。
+              <title> は埋め込みブラウザで出ないことがあるので Tooltip にする */}
           {stageOrder.map((s, i) => {
             const st = topology.stages.find((x) => x.id === s)
             if (!topology.nodes.some((n) => n.stage === s)) return null
             const x = PAD + i * (NW + CGX)
-            return (
-              <g key={s}>
-                {st && <title>{st.responsibility}</title>}
+            const head = (
+              <>
                 <text x={x} y={PAD + 12} fontSize="11" fill="var(--muted-foreground)">
                   {STAGE_JA[s]}
                 </text>
@@ -421,7 +422,15 @@ export const LineageGraph = memo(function LineageGraph({
                     ⓘ
                   </text>
                 )}
-              </g>
+              </>
+            )
+            return st ? (
+              <Tooltip key={s}>
+                <TooltipTrigger render={<g className="stage-head" />}>{head}</TooltipTrigger>
+                <TooltipContent side="bottom">{st.responsibility}</TooltipContent>
+              </Tooltip>
+            ) : (
+              <g key={s}>{head}</g>
             )
           })}
           {/* 辺 */}
