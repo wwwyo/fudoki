@@ -639,15 +639,18 @@ function pdfSideHtml(j, dir, flagSet, st, interact = true, hitsOv = null) {
   }
   const cur = st.pdfPage;
   const idx = pages.indexOf(cur);
-  // ページ送りはビューア上部のツールバーとして枠の中に収める。中央の「序数/総数」は
-  // 入力で直接移動できる。右端の p.N は PDF の通し頁番号（証跡・hit が指す番号）で、
-  // 冊子の印字頁番号とはずれるが証跡と対応させるためこちらで統一する
+  // hit が乗っていない頁（別の向きの頁など）では語を選べない — その事実を頁送りに
+  // 出しておかないと「選択できない」理由が見えない
+  const hitsOnCur = cur != null ? Object.values(hits).filter((h) => h.page === cur).length : 0;
+  // ページ送りはビューア上部のツールバーとして枠の中に収める。中央は物理頁番号の
+  // 直接入力（p.N と同じ番号体系 — 序数を打たせると証跡や外部ビューアの頁番号と
+  // ずれて必ず誤入力になる）。「/ 総数」はこの文書に取り込んだ頁数
   return `<div class="pdfview"><div class="pdfpager" role="group" aria-label="PDF のページ送り">
       <button class="pgbtn" data-pg="-1" ${idx <= 0 ? 'disabled' : ''} aria-label="前の頁">◀</button>
-      <input class="pgnum mono" value="${idx + 1}" inputmode="numeric" title="取り込んだ頁の何枚目か（直接入力で移動）" aria-label="取り込んだ頁の何枚目か（直接入力で移動）">
+      <span class="small mut">p.</span><input class="pgnum mono" value="${cur}" inputmode="numeric" title="PDF の頁番号（直接入力で移動）" aria-label="PDF の頁番号（直接入力で移動）">
       <span class="small mut" title="この文書に取り込んだ頁数">/ ${pages.length}</span>
+      ${cur != null && Object.keys(hits).length && !hitsOnCur ? '<span class="small mut" title="この頁には対象の行が載っていない（別の向きの頁など）">— この頁に対象の行なし</span>' : ''}
       <button class="pgbtn" data-pg="1" ${idx >= pages.length - 1 ? 'disabled' : ''} aria-label="次の頁">▶</button>
-      <span class="mono small mut" style="margin-left:auto" title="PDF ファイルの通し頁番号">p.${cur}</span>
     </div>
     ${pdfPageHtml(pdf, hits, cur, flagSet, interact ? st : null)}</div>`;
 }
@@ -1177,15 +1180,15 @@ window.addEventListener('pointercancel', v1PointerEnd);
 stage.addEventListener('change', (e) => {
   const y = e.target.closest('[data-year]');
   if (y) { S.year = Number(y.value); V1Z = null; pushUrl(); mount(); return; }
-  // 頁送りの入力 — 取り込み範囲の序数を受けて物理頁へ変換（範囲外はクランプ）
+  // 頁送りの入力 — PDF の通し頁番号を直接受ける。取り込み範囲外は端にクランプ
   const pi = e.target.closest('input.pgnum');
   if (pi) {
     const ctxEl = e.target.closest('[data-ctx]');
     const st = ctxEl ? ctxOf(ctxEl.dataset.ctx) : null;
     const pages = pdfPages(J().pdf || {});
     if (st && pages.length) {
-      const n = Number.parseInt(pi.value, 10);
-      if (!Number.isNaN(n)) st.pdfPage = pages[Math.min(Math.max(n, 1), pages.length) - 1];
+      const m = pi.value.match(/\d+/);
+      if (m) st.pdfPage = Math.min(Math.max(Number(m[0]), pages[0]), pages[pages.length - 1]);
       mount();
     }
   }

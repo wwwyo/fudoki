@@ -100,11 +100,16 @@ export function PdfSide({
   const idx = shown !== null ? pages.indexOf(shown) : -1
   const curData = pageData?.at === shown ? pageData.d : null
 
-  /** 頁送りの入力（取り込み範囲の序数）。範囲外はクランプ、同じ頁は何もしない */
-  const jumpToOrdinal = (raw: string) => {
-    const n = Number.parseInt(raw, 10)
-    if (!doc || Number.isNaN(n) || !pages.length) return
-    const p = pages[Math.min(Math.max(n, 1), pages.length) - 1]!
+  /** 頁送りの入力 — PDF の通し頁番号（p.N と同じ番号体系）を直接指定する。
+      序数（何枚目か）ではなく物理頁に揃えた: ユーザーが目にする頁番号は証跡・
+      hit・外部ビューアすべて物理頁なので、別の番号を打たせると必ず誤入力になる。
+      範囲外は端にクランプ、同じ頁は何もしない */
+  const jumpToPage = (raw: string) => {
+    const m = raw.match(/\d+/)
+    if (!doc || !m || !pages.length) return
+    const n = Number.parseInt(m[0], 10)
+    // pages は連続した範囲なので、範囲内ならその頁、外なら端
+    const p = Math.min(Math.max(n, pages[0]!), pages[pages.length - 1]!)
     if (p !== shown) onNavigate(doc.id, p)
   }
 
@@ -153,26 +158,29 @@ export function PdfSide({
         >
           ◀
         </button>
-        {/* 中央の「序数/総数」は入力で直接移動できる。key で頁が変わったら
-            入力値をその頁の序数に戻す */}
+        {/* 中央は物理頁番号（p.N と同じ番号）の直接入力で、「/ 総数」は取り込んだ
+            頁数。key で頁が変わったら入力値をその頁に戻す */}
+        <span className="text-xs" style={{ color: "var(--muted-foreground)" }}>
+          p.
+        </span>
         <input
           key={`${doc.id}:${shown}`}
           className="pgnum mono"
-          defaultValue={idx + 1}
+          defaultValue={shown ?? ""}
           inputMode="numeric"
           disabled={!pages.length}
-          aria-label="取り込んだ頁の何枚目か（直接入力で移動）"
-          title="取り込んだ頁の何枚目か（直接入力で移動）"
+          aria-label="PDF の頁番号（直接入力で移動）"
+          title="PDF の頁番号（直接入力で移動）"
           onFocus={(e) => e.currentTarget.select()}
           onKeyDown={(e) => {
             if (e.nativeEvent.isComposing) return
             if (e.key === "Enter") e.currentTarget.blur()
             else if (e.key === "Escape") {
-              e.currentTarget.value = String(idx + 1)
+              e.currentTarget.value = String(shown)
               e.currentTarget.blur()
             }
           }}
-          onBlur={(e) => jumpToOrdinal(e.currentTarget.value)}
+          onBlur={(e) => jumpToPage(e.currentTarget.value)}
         />
         <span
           className="text-xs"
@@ -181,6 +189,17 @@ export function PdfSide({
         >
           / {pages.length}
         </span>
+        {/* hit が乗っていない頁（別の向きの頁など）では語を選べない。
+            その事実を頁送りに出しておかないと「選択できない」理由が見えない */}
+        {shown !== null && docHits.length > 0 && !hitsHere.length && (
+          <span
+            className="text-xs"
+            style={{ color: "var(--muted-foreground)" }}
+            title="この頁には対象の行が載っていない（別の向きの頁など）"
+          >
+            — この頁に対象の行なし
+          </span>
+        )}
         <button
           className="pgbtn"
           disabled={idx < 0 || idx >= pages.length - 1}
@@ -208,16 +227,6 @@ export function PdfSide({
             ))}
           </select>
         )}
-
-        {/* p.N は PDF の通し頁番号（証跡・hit・頁画像ファイルが指す番号）。
-            冊子の印字頁番号とはずれるが、証跡と対応させるためこちらで統一する */}
-        <span
-          className="mono text-xs"
-          style={{ marginLeft: "auto", color: "var(--muted-foreground)" }}
-          title="PDF ファイルの通し頁番号"
-        >
-          p.{shown ?? "-"}
-        </span>
       </div>
       {shown !== null && (
         <div className="pdfpage">
