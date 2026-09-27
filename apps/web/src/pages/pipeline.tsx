@@ -8,6 +8,7 @@
  * 集計はしない。行数・検査・証跡はすべて報告（pipeline.json）と
  * `/local/rows`・`/local/pdf/*` が返す値をそのまま出す。
  */
+import { ArrowUpRight } from "lucide-react"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { FiscalYearSelect } from "@/components/fiscal-year-select"
 import { JurisdictionSelect } from "@/components/jurisdiction-select"
@@ -261,9 +262,16 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
           <a
             href={withBase(`/analysis/${current.code}/`)}
             className="text-xs"
-            style={{ color: "var(--primary)", marginLeft: "auto" }}
+            style={{
+              color: "var(--primary)",
+              marginLeft: "auto",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 3,
+            }}
           >
             この団体の支出分析を見る
+            <ArrowUpRight size={12} aria-hidden />
           </a>
         </div>
         <div className="graphwrap-outer" style={{ flex: `0 0 ${splitH}%`, minHeight: 0, position: "relative" }}>
