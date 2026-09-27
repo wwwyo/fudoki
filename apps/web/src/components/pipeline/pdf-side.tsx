@@ -8,7 +8,7 @@
  */
 import { useEffect, useMemo, useState } from "react"
 import type { PdfDocMeta, PdfHitLoc, PdfPageData } from "@/lib/verify"
-import { bareKey, loadPdfPage, pdfPagePng } from "@/lib/verify"
+import { bareKey, loadPdfPage, pdfPagePng, printedPageNo } from "@/lib/verify"
 
 type Props = {
   /** 原典ノードが対応する文書（複数年度なら複数） */
@@ -46,7 +46,8 @@ export function PdfSide({
     docs.find((d) => d.id === docId) ??
     docs.find((d) => year !== null && d.years.includes(year)) ??
     docs[0]
-  const [pageData, setPageData] = useState<PdfPageData | null>(null)
+  // `at` は読み込んだ頁 — 頁送りの間、前の頁の文字層が新しい画像に残るのを防ぐ
+  const [pageData, setPageData] = useState<{ at: number; d: PdfPageData | null } | null>(null)
 
   const pages = useMemo(() => {
     if (!doc) return [] as number[]
@@ -74,7 +75,7 @@ export function PdfSide({
     if (!doc || shown === null) return
     let stale = false
     loadPdfPage(doc.id, shown).then((d) => {
-      if (!stale) setPageData(d)
+      if (!stale) setPageData({ at: shown, d })
     })
     return () => {
       stale = true
@@ -97,6 +98,8 @@ export function PdfSide({
   }
 
   const idx = shown !== null ? pages.indexOf(shown) : -1
+  const curData = pageData?.at === shown ? pageData.d : null
+  const printed = curData ? printedPageNo(curData) : null
   const selHit = selectedKey !== null && hits ? hits.get(selectedKey) : null
 
   const hitsHere = useMemo(() => docHits.filter(([, h]) => h.page === shown), [docHits, shown])
@@ -144,7 +147,9 @@ export function PdfSide({
         >
           ◀
         </button>
-        <span className="mono text-xs">p.{shown ?? "-"}</span>
+        <span className="mono text-xs" title="PDF ファイルの通し頁番号">
+          p.{shown ?? "-"}
+        </span>
         <button
           className="pgbtn"
           disabled={idx < 0 || idx >= pages.length - 1}
@@ -153,12 +158,22 @@ export function PdfSide({
         >
           ▶
         </button>
-        {/* 主表示は原典の頁番号（p.N）。取り込み範囲の序数は副表示 —
-            「1/210 頁」が先に来ると頁番号と取り違える */}
+        {/* p.N は PDF の通し頁番号（証跡・hit・頁画像ファイルが指す番号）で主表示。
+            書類に印字された頁番号は冊子の通しとはずれる（表紙・目次の分）ので、
+            文字層から拾えて異なるときだけ並記する。取り込み範囲の序数は副表示 */}
+        {printed !== null && printed !== shown && (
+          <span
+            className="text-xs"
+            style={{ color: "var(--muted-foreground)" }}
+            title="書類に印字されている頁番号"
+          >
+            （書類頁 {printed}）
+          </span>
+        )}
         <span
           className="text-xs"
           style={{ color: "var(--muted-foreground)" }}
-          title="この文書に取り込んだ頁範囲の何枚目か。原典の頁番号は p. の数字"
+          title="この文書に取り込んだ頁範囲の何枚目か"
         >
           {shown !== null ? idx + 1 : "-"}/{pages.length}
         </span>
@@ -195,8 +210,8 @@ export function PdfSide({
       {shown !== null && (
         <div className="pdfpage">
           <img src={pdfPagePng(doc.id, shown)} alt={`PDF p.${shown}`} />
-          {pageData &&
-            pageData.words.map((w, i) => {
+          {curData &&
+            curData.words.map((w, i) => {
               const k = wordKey(w)
               return (
                 <span
@@ -204,10 +219,10 @@ export function PdfSide({
                   className={`wspan${k !== null && k === hoverKey ? " srhov" : ""}`}
                   data-sr={k ?? undefined}
                   style={{
-                    left: `${(w[0] / pageData.w) * 100}%`,
-                    top: `${(w[1] / pageData.h) * 100}%`,
-                    width: `${((w[2] - w[0]) / pageData.w) * 100}%`,
-                    height: `${((w[3] - w[1]) / pageData.h) * 100}%`,
+                    left: `${(w[0] / curData.w) * 100}%`,
+                    top: `${(w[1] / curData.h) * 100}%`,
+                    width: `${((w[2] - w[0]) / curData.w) * 100}%`,
+                    height: `${((w[3] - w[1]) / curData.h) * 100}%`,
                   }}
                   onClick={k !== null ? () => onSelectRow(k) : undefined}
                   onMouseEnter={k !== null ? () => onHoverRow(k) : undefined}
@@ -217,7 +232,7 @@ export function PdfSide({
                 </span>
               )
             })}
-          {pageData &&
+          {curData &&
             hitsHere
               .filter(([k]) => selectedKey !== null && k === selectedKey)
               .map(([k, h]) => (
@@ -225,14 +240,14 @@ export function PdfSide({
                   key={k}
                   className="hit"
                   style={{
-                    left: `${(h.box[0] / pageData.w) * 100}%`,
-                    top: `${(h.box[1] / pageData.h) * 100}%`,
-                    width: `${((h.box[2] - h.box[0]) / pageData.w) * 100}%`,
-                    height: `${((h.box[3] - h.box[1]) / pageData.h) * 100}%`,
+                    left: `${(h.box[0] / curData.w) * 100}%`,
+                    top: `${(h.box[1] / curData.h) * 100}%`,
+                    width: `${((h.box[2] - h.box[0]) / curData.w) * 100}%`,
+                    height: `${((h.box[3] - h.box[1]) / curData.h) * 100}%`,
                   }}
                 />
               ))}
-          {pageData &&
+          {curData &&
             flagKeys &&
             hitsHere
               .filter(([k]) => flagKeys.has(k))
@@ -242,8 +257,8 @@ export function PdfSide({
                   className={`srflag${selectedKey !== null && k === selectedKey ? " sel" : ""}${hoverKey !== null && k === hoverKey ? " flaghov" : ""}`}
                   data-sr={k}
                   style={{
-                    left: `${(h.box[0] / pageData.w) * 100}%`,
-                    top: `${(((h.box[1] + h.box[3]) / 2) / pageData.h) * 100}%`,
+                    left: `${(h.box[0] / curData.w) * 100}%`,
+                    top: `${(((h.box[1] + h.box[3]) / 2) / curData.h) * 100}%`,
                   }}
                 >
                   {bareKey(k)}

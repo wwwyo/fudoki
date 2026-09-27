@@ -615,6 +615,33 @@ function pdfPageHtml(pdf, hits, pno, flagSet, st) {
 function pdfPages(pdf) {
   return Object.keys(pdf.pages || {}).map(Number).sort((a, b) => a - b);
 }
+/* 書類に印字された頁番号を語の文字層から拾う（「－41－」「- 2 0 -」のような形式）。
+   冊子では PDF の通し頁番号（p.N）とずれる（千代田区は表紙・目次の分だけ +2）ので、
+   見つかって異なるときだけ頁送りに並記する。上下の余白帯にある「数字と装飾だけ」
+   の行を頁番号とみなす — ダッシュ類を必須にするのは表の端の数字行との区別のため */
+function printedPageNo(p) {
+  if (!p || !p.words) return null;
+  const ws = p.words
+    .map((w) => ({ ...w, cy: w.y + w.h / 2 }))
+    .filter((w) => w.cy < p.h * 0.08 || w.cy > p.h * 0.92)
+    .sort((a, b) => a.cy - b.cy);
+  const lines = [];
+  for (const w of ws) {
+    const line = lines[lines.length - 1];
+    const lastCy = line ? line[line.length - 1].cy : -Infinity;
+    if (line && w.cy - lastCy <= w.h) line.push(w);
+    else lines.push([w]);
+  }
+  for (const line of lines.reverse()) {
+    const raw = line
+      .sort((a, b) => a.x - b.x)
+      .map((w) => w.t.replace(/[０-９]/g, (c) => String(c.charCodeAt(0) - 0xff10)))
+      .join('');
+    const digits = raw.replace(/[\s　.()（）\-－―–—‐‑‒−~〜]/g, '');
+    if (/^\d{1,4}$/.test(digits) && /[-－―–—‐‑‒−]/.test(raw)) return Number(digits);
+  }
+  return null;
+}
 /* st はこの側の { row, pdfPage } を持つ ctx。interact=false のとき語に行選択を付けない
    （overview の閲覧用 — 頁送りだけは効かせる） */
 function pdfSideHtml(j, dir, flagSet, st, interact = true) {
@@ -631,12 +658,14 @@ function pdfSideHtml(j, dir, flagSet, st, interact = true) {
   const cur = st.pdfPage;
   const idx = pages.indexOf(cur);
   const selHit = st.row != null ? hits[String(st.row)] : null;
+  const printed = printedPageNo(pdf.pages[cur]);
   // ページ送りはビューア上部のツールバーとして枠の中に収める
   return `<div class="pdfview"><div class="pdfpager" role="group" aria-label="PDF のページ送り">
       <button class="pgbtn" data-pg="-1" ${idx <= 0 ? 'disabled' : ''} aria-label="前の頁">◀</button>
-      <span class="mono small">p.${cur}</span>
+      <span class="mono small" title="PDF ファイルの通し頁番号">p.${cur}</span>
       <button class="pgbtn" data-pg="1" ${idx >= pages.length - 1 ? 'disabled' : ''} aria-label="次の頁">▶</button>
-      <span class="small mut" title="この文書に取り込んだ頁範囲の何枚目か。原典の頁番号は p. の数字">${idx + 1}/${pages.length}</span>
+      ${printed !== null && printed !== cur ? `<span class="small mut" title="書類に印字されている頁番号">（書類頁 ${printed}）</span>` : ''}
+      <span class="small mut" title="この文書に取り込んだ頁範囲の何枚目か">${idx + 1}/${pages.length}</span>
       ${selHit && selHit.page !== cur ? `<button class="linky small" data-goto="${selHit.page}">選択行は p.${selHit.page} 頁</button>` : ''}
     </div>
     ${pdfPageHtml(pdf, hits, cur, flagSet, interact ? st : null)}</div>`;
