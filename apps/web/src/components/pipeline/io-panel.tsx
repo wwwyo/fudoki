@@ -437,10 +437,6 @@ export function IoPanel({
   pdfPage: number | null
   onPdfNavigate: (docId: string, page: number) => void
 }) {
-  const nodeById = useMemo(
-    () => new Map(report.topology.nodes.map((n) => [n.id, n])),
-    [report.topology.nodes],
-  )
   if (!pairs.length) {
     return (
       <Overview
@@ -454,12 +450,9 @@ export function IoPanel({
     )
   }
 
-  // 原典ノードは文書単位にまとまりうる（歳出・歳入が同じ PDF なら1ノード）ので、
-  // 「同じ入力表か」の判定は解決済みのノード id（`<source>.origin` の規約）で比較する。
-  // まとめられた原典が歳出・歳入両方の辺を持っても、direction ごとの頁範囲・証跡は別物
-  const inIdOf = (p: Pair) =>
-    nodeById.get(p.from)?.kind === "origin" ? `${p.to}.origin` : p.from
-  const sameIn = pairs.every((p) => inIdOf(p) === inIdOf(pairs[0]!))
+  // 「同じ側か」の判定は端点ノード id で十分 — 原典ノードは文書単位にまとまっている
+  // （歳出・歳入が同じ PDF なら1ノード）ので、これ以上分けると同じ文書が別枚に複写される
+  const sameIn = pairs.every((p) => p.from === pairs[0]!.from)
   const sameOut = pairs.every((p) => p.to === pairs[0]!.to)
 
   if (sameIn || sameOut) {
@@ -585,9 +578,11 @@ function StarPanel({
   )
   const sharedId = shared === "in" ? pairs[0]!.from : pairs[0]!.to
   const sharedNode = nodeById.get(sharedId)
-  const sharedNodeId =
-    shared === "in" && sharedNode?.kind === "origin" ? `${pairs[0]!.to}.origin` : sharedId
-  const dir = edgeDir(pairs[0]!.from, pairs[0]!.to)
+  // `.origin` ノードは文書単位で併合済み（歳出・歳入が同じ PDF なら1ノード）—
+  // その id で引くとぶら下がる全 source の行・証跡が返る。向きが混ざるときは
+  // 行・金額宣言を方向で絞れないので null に倒す
+  const sharedDirs = new Set(pairs.map((p) => edgeDir(p.from, p.to)))
+  const dir = sharedDirs.size === 1 ? [...sharedDirs][0]! : null
 
   // 行選択と共有側の PDF 表示位置はパネルに紐づく。年度が変わると行の実体も文書も変わるので捨てる
   const [selectedKey, setSelectedKey] = useState<string | null>(null)
@@ -601,8 +596,33 @@ function StarPanel({
     setPdfNav({ docId: null, page: null })
   }, [year])
 
-  const sharedRows = useRows(sharedNodeId, code, year, dir)
-  const sharedHits = useHitMap(sharedRows, sharedNodeId, dir)
+  const sharedRows = useRows(sharedId, code, year, dir)
+  // 原典の hit はぶら下がる source ごとに載っている。併合原典（歳出・歳入が同じ
+  // 文書に綴じられている）は両方向ぶんを、その辺の向き修飾で畳み込んで1枚にする
+  // （overview と同じ形 — 行鍵が向き修飾で衝突しないので共存できる）
+  const sharedIsOrigin = sharedNode?.kind === "origin"
+  const [sharedHits, setSharedHits] = useState<Map<string, PdfHitLoc> | null>(null)
+  const sharedDocs = sharedRows?.kind === "pdf" ? sharedRows.docs : null
+  const hitSpecKey = pairs.map((p) => `${p.to}:${edgeDir(p.from, p.to) ?? ""}`).join("|")
+  useEffect(() => {
+    if (!sharedDocs || !sharedIsOrigin) {
+      setSharedHits(null)
+      return
+    }
+    let stale = false
+    Promise.all(
+      pairs.map((p) => loadHitMap(sharedDocs, p.to, edgeDir(p.from, p.to) ?? undefined)),
+    ).then((ms) => {
+      if (stale) return
+      const m = new Map<string, PdfHitLoc>()
+      ms.forEach((x) => x.forEach((v, k) => m.set(k, v)))
+      setSharedHits(m)
+    })
+    return () => {
+      stale = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- pairs の中身は hitSpecKey で追う
+  }, [sharedDocs, sharedIsOrigin, hitSpecKey])
   const sharedTable = useRef<RowTableHandle>(null)
 
   /**

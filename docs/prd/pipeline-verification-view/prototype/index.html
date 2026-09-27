@@ -634,6 +634,12 @@ function pdfPages(pdf) {
 const bareSr = (k) => String(k).split('|').pop();
 /* st はこの側の { row, pdfPage } を持つ ctx。interact=false のとき語に行選択を付けない
    （overview の閲覧用 — 頁送りだけは効かせる）。hitsOv は併合原典用の全方向 hit 併合表 */
+/* hit 辞書の鍵を <向き>|<行番号> に修飾する（歳出・歳入を併せて見せる表示用） */
+const qualifyHits = (hs, d) => {
+  const m = {};
+  for (const k in (hs || {})) m[d ? `${d}|${k}` : k] = hs[k];
+  return m;
+};
 function pdfSideHtml(j, dir, flagSet, st, interact = true, hitsOv = null) {
   const pdf = j.pdf, pd = pdf && pdf[dir];
   if (!pdf || !pdf.pages || (!pd && !hitsOv)) return '<p class="small mut">PDF レイヤなし</p>';
@@ -742,11 +748,9 @@ function ioOverviewHtml(j) {
 function ioPanelHtml(j) {
   if (!S.edges.length) return ioOverviewHtml(j);
   const nodeById = new Map(j.topology.nodes.map((n) => [n.id, n]));
-  // 原典ノードは文書単位にまとまりうるので、「同じ入力表か」の判定は解決済みの
-  // ノード id（<source>.origin の規約）で比較する — まとめられた原典が歳出・歳入
-  // 両方の辺を持っても、direction ごとの頁範囲・証跡は別物なので星にはしない
-  const inIdOf = (e) => nodeById.get(e.from)?.kind === 'origin' ? `${e.to}.origin` : e.from;
-  const sameIn = S.edges.every((e) => inIdOf(e) === inIdOf(S.edges[0]));
+  // 「同じ側か」の判定は端点ノード id で十分 — 原典ノードは文書単位にまとまっている
+  // （歳出・歳入が同じ PDF なら1ノード）ので、これ以上分けると同じ文書が別枚に複写される
+  const sameIn = S.edges.every((e) => e.from === S.edges[0].from);
   const sameOut = S.edges.every((e) => e.to === S.edges[0].to);
   if (sameIn || sameOut) return starHtml(j, nodeById, sameIn ? 'in' : 'out', S.edges);
   // 共通の端点を持たない組み合わせ（側面クリックでは作れない）— 1組ずつの星として並べる
@@ -811,10 +815,13 @@ function srSetOfEntry(e, isOrigin) {
   return isOrigin ? new Set(e.rows.map((_, i) => i + 2)) : null;
 }
 /* ある側が持つ行キー（source_row / 物理行番号 / PDF hit の鍵）の集合。
-   「対応あり」バッジの母数。PDF 側は hit の key が対応行 */
+   「対応あり」バッジの母数。PDF 側は hit の key が対応行。
+   歳出・歳入を併せて見せる星では行番号が衝突するので `<向き>|<行番号>` に修飾する */
 function sideKeySet(j, node, key, dir, pdf) {
-  if (pdf) return new Set(Object.keys(((j.pdf || {})[dir || 'expenditure'] || {}).hits || {}).map(Number));
-  return srSetOfEntry(pickEntry(j, key, dir), node.kind === 'origin');
+  const q = (sr) => (dir ? `${dir}|${sr}` : `${sr}`);
+  if (pdf) return new Set(Object.keys(((j.pdf || {})[dir || 'expenditure'] || {}).hits || {}).map(q));
+  const s = srSetOfEntry(pickEntry(j, key, dir), node.kind === 'origin');
+  return s ? new Set([...s].map(q)) : null;
 }
 /* ---- 星パネル ---- */
 /* 同じ側を共有する組はその側の表を1枚だけ出し、バラつく側を縦に並べる（同じ表を
@@ -825,14 +832,28 @@ function starHtml(j, nodeById, shared, pairs) {
   const sharedId = shared === 'in' ? pairs[0].from : pairs[0].to;
   const sharedNode = nodeById.get(sharedId);
   if (!sharedNode) return '';
+  // `.origin` ノードは文書単位で併合済み — id がそのまま文書の正。
+  // 向きが混ざるときは方向絞りをしない（行・金額宣言を絞れないので null）
+  const sharedDirs = [...new Set(pairs.map(edgeDir))];
+  const dir = sharedDirs.length === 1 ? sharedDirs[0] : null;
+  // 行データは source ごとの `${source}.origin` キーで持つ — 併合原典は第1組の source で代表を引く
   const sharedKey = shared === 'in' && sharedNode.kind === 'origin' ? `${pairs[0].to}.origin` : sharedId;
-  const dir = edgeDir(pairs[0]);
-  const aPdf = j.samples[sharedKey]?.kind === 'pdf';
-  const starCtx = `st:${sharedKey}`;
+  const aPdf = sharedNode.kind === 'origin' && pairs.some((e) => j.samples[`${e.to}.origin`]?.kind === 'pdf');
+  const starCtx = `st:${sharedId}`;
   const sst = ctxOf(starCtx);
   const varSide = shared === 'in' ? 'out' : 'in';
 
-  // バラつく側が持つ鍵の和集合 = 共有側の「対応あり」母数。共有側が持つ鍵 = 各側の母数
+  // 原典の hit はぶら下がる source（=向き）ごとに載っている — 併合原典は両方向ぶんを
+  // <向き>|<行番号> に修飾して畳み込んで1枚にする（overview と同じ形）
+  const mergedHits = {};
+  for (const e of pairs) {
+    const d = edgeDir(e) || '';
+    const hs = (j.pdf && j.pdf[d] && j.pdf[d].hits) || {};
+    for (const k in hs) mergedHits[d ? `${d}|${k}` : k] = hs[k];
+  }
+
+  // バラつく側が持つ鍵の和集合 = 共有側の「対応あり」母数。共有側が持つ鍵 = 各側の母数。
+  // 併合原典は歳出・歳入の行番号が衝突するので鍵はすべて向き修飾
   const peerKeys = new Set();
   for (const e of pairs) {
     const n = nodeById.get(varSide === 'in' ? e.from : e.to);
@@ -843,7 +864,9 @@ function starHtml(j, nodeById, shared, pairs) {
     const ks = sideKeySet(j, n, key, d, pdf);
     if (ks) ks.forEach((k) => peerKeys.add(k));
   }
-  const sharedKeys = sideKeySet(j, sharedNode, sharedKey, dir, aPdf);
+  const sharedKeys = sharedNode.kind === 'origin' && aPdf
+    ? new Set(Object.keys(mergedHits))
+    : sideKeySet(j, sharedNode, sharedKey, dir, false);
 
   const sharedName = sharedNode.kind === 'origin' ? '原典' : nodeLabel(sharedNode, j);
   const sharedHead = shared === 'in'
@@ -856,7 +879,7 @@ function starHtml(j, nodeById, shared, pairs) {
   const sharedLead = (sharedNl ? `<p class="lead">${md(sharedNl)}</p>` : '')
     + (shared === 'out' && sSt ? `<p class="lead">${esc(sSt.responsibility)}</p>` : '');
   const sharedSide = `<div class="side" data-ctx="${esc(starCtx)}"><div class="sidehead"><h3>${sharedHead}</h3>${sharedLead}</div>`
-    + (aPdf ? pdfSideHtml(j, dir || 'expenditure', peerKeys, sst) : tableHtml(j, sharedKey, dir, 'in', peerKeys, sst))
+    + (aPdf ? pdfSideHtml(j, dir || 'expenditure', peerKeys, sst, true, mergedHits) : tableHtml(j, sharedKey, dir, 'in', peerKeys, sst, 'row'))
     + ioSideDetailHtml(j, sharedNode, dir, { isInput: shared === 'in', aPdf, srcIds: sharedNode.kind === 'origin' ? pairs.map((e) => e.to) : [], tblKey: sharedKey, tblDir: dir })
     + `</div>`;
 
@@ -877,7 +900,7 @@ function starHtml(j, nodeById, shared, pairs) {
       + (varSide === 'out' && nSt ? `<p class="lead">${esc(nSt.responsibility)}</p>` : '');
     return `<div class="io-node" data-ctx="${esc(e.from)}|${esc(e.to)}"><div class="sidehead"><h3>${varSide === 'in' ? `${esc(name)} →` : `→ ${esc(name)}`}${meta ? ` <span class="mut">${meta}</span>` : ''}`
       + `<button class="pair-x" data-rmpair title="この組を外す" aria-label="この組を外す">✕</button></h3>${nlead}</div>`
-      + (pdf ? pdfSideHtml(j, d || 'expenditure', sharedKeys, own) : tableHtml(j, key, d, varSide, sharedKeys, own))
+      + (pdf ? pdfSideHtml(j, d || 'expenditure', sharedKeys, own, true, qualifyHits(j.pdf && j.pdf[d] && j.pdf[d].hits, d)) : tableHtml(j, key, d, varSide, sharedKeys, own, d))
       + ioSideDetailHtml(j, n, d, { isInput: varSide === 'in', aPdf: pdf, srcIds: n.kind === 'origin' ? [e.to] : [], tblKey: key, tblDir: d })
       + `</div>`;
   }).join('');
