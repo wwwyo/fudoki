@@ -86,7 +86,7 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
     docId: null,
     page: null,
   })
-  const [splitH, setSplitH] = useState(42)
+  const [splitH, setSplitH] = useState(35)
 
   useEffect(() => {
     loadPipeline()

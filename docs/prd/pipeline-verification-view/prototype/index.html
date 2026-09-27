@@ -238,7 +238,7 @@ let V1DRAG = null; // パン試行中 {id,x0,y0,tx0,ty0,active}。active は移�
 let V1PINCH = null; // 2本指ピンチ中 {d0,mx0,my0,k0,tx0,ty0}（mx0,my0 は svg 座標に換算済み）
 let V1NOCLICK = false; // ドラッグ/ピンチ直後の click を1回だけ捨てる（辺・ノードの誤選択防止）
 const V1PTS = new Map(); // graphwrap 内で押下された pointerId → 座標（ピンチ検出用）
-let SPLITH = 42;   // 図ペインの高さ（コンテナに対する %）
+let SPLITH = 35;   // 図ペインの高さ（コンテナに対する %）
 let SASH = false;  // split の境目をドラッグ中
 // 規則表・マスタデータ（共有リソース）は検証対象の流れではないので図から外す。
 // 同じ文書から起こした取り込み（歳出・歳入が同じ PDF）は原典を1つにまとめる —
