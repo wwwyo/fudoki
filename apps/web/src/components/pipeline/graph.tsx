@@ -406,7 +406,7 @@ export const LineageGraph = memo(function LineageGraph({
             if (!topology.nodes.some((n) => n.stage === s)) return null
             const x = PAD + i * (NW + CGX)
             return (
-              <g key={s} style={{ cursor: st ? "help" : undefined }}>
+              <g key={s}>
                 {st && <title>{st.responsibility}</title>}
                 <text x={x} y={PAD + 12} fontSize="11" fill="var(--muted-foreground)">
                   {STAGE_JA[s]}

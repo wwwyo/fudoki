@@ -364,7 +364,7 @@ function graphSvg(j, horiz, dimSet, pairHover, vp) {
       if (j.topology.nodes.some((n) => n.stage === s)) {
         const x = PAD + i * (NW + CGX);
         // 見出し全体（段名＋ⓘ）の hover で責務を出す
-        out += `<g${stMap[s]?.responsibility ? ' style="cursor:help"' : ''}>`;
+        out += `<g>`;
         if (stMap[s]?.responsibility) out += `<title>${esc(stMap[s].responsibility)}</title>`;
         out += `<text x="${x}" y="${PAD + 12}" font-size="11" fill="var(--muted-foreground)">${STAGE_JA[s]}</text>`;
         if (stMap[s]?.responsibility)
