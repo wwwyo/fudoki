@@ -44,7 +44,9 @@
 .pv .io { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; align-items: start; }
 .pv .io .side { min-width: 0; }
 .pv .io > .side.sidestick { position: sticky; }
-.pv .io .side h3 { font-size: 12px; font-weight: 600; margin: 0 0 6px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.pv .io .side h3 { font-size: 15px; font-weight: 700; margin: 0 0 6px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+/* 見出し内の補足（年度・向き）は主題より一段落とす */
+.pv .io .side h3 .text-muted-foreground { font-size: 12px; font-weight: 500; }
 /* 見出し＋リードの塊。左右の高さ揃えは .sidehead 同士で計る（pipeline.tsx） */
 .pv .io .sidehead { margin-bottom: 8px; }
 .pv .io .sidehead h3 { margin: 0; }

@@ -60,7 +60,9 @@ select.ctl { font: inherit; font-size: 12px; padding: 3px 6px; border: 1px solid
    （iowrap だけがスクロールするので、貼らないと短い側が流れて空列になる） */
 .io { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
 .io > .side.sidestick { position: sticky; }
-.io .side h3 { font-size: 12px; font-weight: 600; margin: 0 0 6px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.io .side h3 { font-size: 15px; font-weight: 700; margin: 0 0 6px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+/* 見出し内の補足（年度・向き）は主題より一段落とす */
+.io .side h3 .mut { font-size: 12px; font-weight: 500; }
 /* 見出し＋リードの塊。左右の高さ揃えは .sidehead 同士で計る（stickShortSide） */
 .io .sidehead { margin-bottom: 8px; }
 .io .sidehead h3 { margin: 0; }
