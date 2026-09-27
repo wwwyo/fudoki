@@ -712,9 +712,7 @@ function ioOverviewHtml(j) {
     }
   }
   // 選択は overview 内の全ノードで共有 — クリック側が `ov:` 始まりの全 ctx に
-  // ミラーするので、各ノードは自分の ctx 名で読むだけでよい（行解除ボタンの
-  // ためにヘッダにも ov:hdr ctx を置く）
-  const ost = ctxOf('ov:hdr');
+  // ミラーするので、各ノードは自分の ctx 名で読むだけでよい
   const originHtml = (n) => {
     const srcs = memberSrcs(n);
     const key = `${srcs[0]}.origin`;
@@ -733,9 +731,8 @@ function ioOverviewHtml(j) {
     return `<div class="io-node" data-ctx="ov:${esc(n.id)}"><div class="sidehead"><h3>${esc(nodeLabel(n, j))}</h3>${nl ? `<p class="lead">${md(nl)}</p>` : ''}</div>${tableHtml(j, n.id, null, 'out', originKeysByDir[d] || null, ctxOf('ov:' + n.id), d || null)}
     ${ioSideDetailHtml(j, n, null, { isInput: false, aPdf: false, srcIds: [], tblKey: n.id, tblDir: null })}</div>`;
   };
-  return `<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px" data-ctx="ov:hdr">
+  return `<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px">
       <h2 style="font-size:14px;margin:0">原典 <span class="mut">→</span> 配布物</h2>
-      ${ost.row != null ? `<button class="linky small" data-clear-row>行 ${esc(bareSr(ost.row))} の選択を解除</button>` : ''}
     </div>
     <div class="io" data-ov>
       <div class="side">${origins.map(originHtml).join('')}</div>
@@ -858,7 +855,7 @@ function starHtml(j, nodeById, shared, pairs) {
   const sharedNl = nodeLeadOf(sharedNode);
   const sharedLead = (sharedNl ? `<p class="lead">${md(sharedNl)}</p>` : '')
     + (shared === 'out' && sSt ? `<p class="lead">${esc(sSt.responsibility)}</p>` : '');
-  const sharedSide = `<div class="side" data-ctx="${esc(starCtx)}"><div class="sidehead"><h3>${sharedHead}${sst.row != null ? ` <button class="linky small" data-clear-row>行 ${sst.row} の選択を解除</button>` : ''}</h3>${sharedLead}</div>`
+  const sharedSide = `<div class="side" data-ctx="${esc(starCtx)}"><div class="sidehead"><h3>${sharedHead}</h3>${sharedLead}</div>`
     + (aPdf ? pdfSideHtml(j, dir || 'expenditure', peerKeys, sst) : tableHtml(j, sharedKey, dir, 'in', peerKeys, sst))
     + ioSideDetailHtml(j, sharedNode, dir, { isInput: shared === 'in', aPdf, srcIds: sharedNode.kind === 'origin' ? pairs.map((e) => e.to) : [], tblKey: sharedKey, tblDir: dir })
     + `</div>`;
@@ -1084,7 +1081,6 @@ stage.addEventListener('click', (e) => {
     });
     mount(); scrollSelIntoView(); return;
   }
-  if (scope.length && e.target.closest('[data-clear-row]')) { scope.forEach((k) => { ctxOf(k).row = null; }); mount(); return; }
 });
 stage.addEventListener('mousemove', (e) => {
   const svg = e.target.closest && e.target.closest('.v1 .graphsvg');

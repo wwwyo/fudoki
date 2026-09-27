@@ -21,7 +21,6 @@ import type {
 } from "@/lib/pipeline"
 import { DIR_JA, extractedKindOf, isCanonicalFetch } from "@/lib/pipeline"
 import {
-  bareKey,
   colDocsOf,
   edgeDir,
   keySpaceOf,
@@ -668,14 +667,7 @@ function StarPanel({
   const sharedSide = (
     <div className="side">
       <div className="sidehead">
-        <h3>
-          {sharedHead}
-          {selectedKey != null && (
-            <button className="linky text-xs" onClick={() => setSelectedKey(null)}>
-              行 {bareKey(selectedKey)} の選択を解除
-            </button>
-          )}
-        </h3>
+        <h3>{sharedHead}</h3>
         {nodeLead && <p className="lead">{em(nodeLead)}</p>}
         {stageLead && <p className="lead">{em(stageLead)}</p>}
       </div>
@@ -1006,11 +998,6 @@ function Overview({
         <h2 style={{ fontSize: 14, margin: 0 }}>
           原典 <span className="text-muted-foreground">→</span> 配布物
         </h2>
-        {selectedKey != null && (
-          <button className="linky text-xs" onClick={() => setSelectedKey(null)}>
-            行 {bareKey(selectedKey)} の選択を解除
-          </button>
-        )}
       </div>
       <div className="io">
         <div className="side">
