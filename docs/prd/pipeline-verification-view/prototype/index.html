@@ -43,7 +43,6 @@ select.ctl { font: inherit; font-size: 12px; padding: 3px 6px; border: 1px solid
 .graphsvg .edge-hit { stroke: transparent; stroke-width: 24; fill: none; cursor: pointer; }
 .graphsvg .edge-sel-under { stroke: var(--primary); stroke-width: 10; fill: none; opacity: .18; }
 .graphsvg .edge-sel { stroke: var(--primary); stroke-width: 2.6; fill: none; opacity: 1; }
-.graphsvg .cand { stroke: var(--primary); stroke-width: 2; fill: none; opacity: .8; stroke-dasharray: 5 3; }
 .gnode rect.body { fill: var(--card); stroke: var(--border); stroke-width: 1.2; }
 .gnode:hover rect.body { stroke: var(--primary); }
 .gnode.sel rect.ring { fill: none; stroke: var(--primary); stroke-width: 3; }
@@ -52,12 +51,11 @@ select.ctl { font: inherit; font-size: 12px; padding: 3px 6px; border: 1px solid
 .graphsvg text { font-family: inherit; }
 .dim { opacity: .18; }
 
-/* 候補ポップ */
-.candpop { position: absolute; z-index: 50; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: 0 8px 24px rgba(0,0,0,.12); padding: 6px; min-width: 220px; }
-.candpop button { display: block; width: 100%; text-align: left; border: 0; background: none; font: inherit; font-size: 12px; padding: 6px 8px; border-radius: 4px; cursor: pointer; }
-.candpop button:hover { background: var(--accent); }
-
 /* I/O パネル */
+/* 選んだ組を並べる。2件目以降は罫線で区切る */
+.io-pair + .io-pair { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--border); }
+.pair-x { border: 0; background: none; font: inherit; font-size: 12px; line-height: 1; color: var(--muted-foreground); cursor: pointer; margin-left: auto; padding: 2px 4px; border-radius: 4px; }
+.pair-x:hover { color: var(--foreground); background: var(--accent); }
 .io { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .io .side h3 { font-size: 12px; font-weight: 600; margin: 0 0 6px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
 .io-node + .io-node { margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--border); }
@@ -79,6 +77,11 @@ table.t tr.rowsel td { background: var(--accent); outline: 2px solid var(--prima
 .v1 table.t tr.rowsel td:last-child, .v1 table.t tr.rowsel:hover td:last-child { box-shadow: inset -2px 0 0 var(--primary), inset 0 2px 0 var(--primary), inset 0 -2px 0 var(--primary); }
 details.fold { border-top: 1px solid var(--border); margin-top: 10px; padding-top: 8px; }
 details.fold > summary { cursor: pointer; font-size: 12px; color: var(--muted-foreground); }
+/* 「注意点」トグルは I/O ペイン先頭で罫線の fold ではなく警告色の帯として出す */
+.iowrap > details.fold { border-top: 0; margin-top: 0; padding-top: 0; }
+details.caveats { border: 1px solid color-mix(in oklch, oklch(0.72 0.12 85) 50%, var(--border)); border-radius: 8px; background: color-mix(in oklch, oklch(0.94 0.05 95) 65%, var(--card)); padding: 0 12px; margin-bottom: 14px; }
+details.caveats > summary { color: oklch(0.52 0.12 75); font-weight: 600; padding: 7px 0; }
+details.caveats .cv:last-child { padding-bottom: 8px; }
 /* 詳細トグルの中身。項目名を狭い左列に、値を右に並べる。URL は折り返す */
 .v1 details.fold .dh { font-size: 11px; font-weight: 600; color: var(--muted-foreground); margin: 8px 0 2px; }
 .v1 details.fold .dh:first-of-type { margin-top: 4px; }
@@ -178,11 +181,11 @@ const qs = new URLSearchParams(location.search);
 const S = {
   code: qs.get('j') === '132195' ? '132195' : '131016',
   year: qs.get('y') ? Number(qs.get('y')) : null,
-  edge: null,           // {from,to}
-  nodeCand: null,       // node id whose edge candidates are shown
-  row: null,            // selected source_row
-  pdfPage: null,        // PDF ビューアの表示頁（1始まりの PDF 頁番号。null = 最初の hit 頁）
+  edges: [],            // [{from,to}] 選択中の組。ノード側面クリックではその側の辺が全部入るので複数
+  ctx: {},              // "from|to"（組）や "ov:<node>"（overview）ごとの { row, pdfPage }
 };
+/* 組・overview ノードごとの行選択・PDF 表示頁。組を替えても残らず、並べても混ざらない */
+const ctxOf = (k) => (S.ctx[k] ||= { row: null, pdfPage: null });
 let V1GEO = null; // 組 hover 判定用ジオメトリ（組矩形・辺のサンプル点）。案関数が mount のたびに作り直す
 let V1HOV = null; // hover 中の組キー "from|to"
 let V1Z = null;    // 図のズーム/パン {k,tx,ty,fit}。null = 次の mount で fit に初期化
@@ -324,9 +327,7 @@ function edgePath(p1, p2, horiz) {
 }
 function graphSvg(j, horiz, dimSet, pairHover, vp) {
   const { pos, W, H } = horiz ? layoutH(j) : layoutV(j);
-  const sel = S.edge;
-  const candEdges = S.nodeCand ? j.topology.edges.filter((e) => e.from === S.nodeCand || e.to === S.nodeCand) : [];
-  const isCand = (e) => candEdges.some((c) => c.from === e.from && c.to === e.to);
+  const selKeys = new Set(S.edges.map((p) => p.from + '|' + p.to));
   // vp=true のとき全内容を <g class="vp"> に包み、ズーム/パンを transform で掛けられるようにする
   let out = `<svg class="graphsvg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${vp ? '<g class="vp">' : ''}`;
   // 段の見出しは各列の最上段ノードの上。ⓘ に各段の責務
@@ -336,9 +337,13 @@ function graphSvg(j, horiz, dimSet, pairHover, vp) {
     STAGE_ORDER.forEach((s, i) => {
       if (j.topology.nodes.some((n) => n.stage === s)) {
         const x = PAD + i * (NW + CGX);
+        // 見出し全体（段名＋ⓘ）の hover で責務を出す
+        out += `<g${stMap[s]?.responsibility ? ' style="cursor:help"' : ''}>`;
+        if (stMap[s]?.responsibility) out += `<title>${esc(stMap[s].responsibility)}</title>`;
         out += `<text x="${x}" y="${PAD + 12}" font-size="11" fill="var(--muted-foreground)">${STAGE_JA[s]}</text>`;
         if (stMap[s]?.responsibility)
-          out += `<text x="${x + STAGE_JA[s].length * 11 + 8}" y="${PAD + 12}" font-size="11" fill="var(--muted-foreground)" style="cursor:help"><title>${esc(stMap[s].responsibility)}</title>ⓘ</text>`;
+          out += `<text x="${x + STAGE_JA[s].length * 11 + 8}" y="${PAD + 12}" font-size="11" fill="var(--muted-foreground)">ⓘ</text>`;
+        out += `</g>`;
       }
     });
   } else {
@@ -355,11 +360,11 @@ function graphSvg(j, horiz, dimSet, pairHover, vp) {
     const p1 = pos[e.from], p2 = pos[e.to];
     if (!p1 || !p2) continue;
     const { d } = edgePath(p1, p2, horiz);
-    const isSel = sel && sel.from === e.from && sel.to === e.to;
+    const isSel = selKeys.has(e.from + '|' + e.to);
     const dim = dimSet && !(dimSet.has(e.from) && dimSet.has(e.to));
     edgeEls.push(`<g class="${dim ? 'dim' : ''}"${pairHover ? ` data-e="${esc(e.from)}|${esc(e.to)}"` : ''}>
       ${pairHover ? `<path class="edge-hov-under" d="${d}"/><path class="edge-hov" d="${d}" marker-end="url(#arw-hov)"/>` : ''}
-      ${isSel ? `<path class="edge-sel-under" d="${d}"/><path class="edge-sel" d="${d}" marker-end="url(#arw-sel)"/>` : `<path class="${isCand(e) ? 'cand' : 'edge'}" d="${d}" marker-end="url(#arw)"/>`}
+      ${isSel ? `<path class="edge-sel-under" d="${d}"/><path class="edge-sel" d="${d}" marker-end="url(#arw-sel)"/>` : `<path class="edge" d="${d}" marker-end="url(#arw)"/>`}
       <path class="edge-hit" d="${d}" data-edge="${esc(e.from)}|${esc(e.to)}"><title>${esc(nodeLabel(p1.n, j))} → ${esc(nodeLabel(p2.n, j))}</title></path>
     </g>`);
   }
@@ -372,9 +377,9 @@ function graphSvg(j, horiz, dimSet, pairHover, vp) {
     const { x, y, n } = pos[id];
     const w = NW;
     const { rows, scoped, shared } = nodeRows(n, S.year);
-    const isSelN = sel && (sel.from === id || sel.to === id);
+    const isSelN = S.edges.some((p) => p.from === id || p.to === id);
     const dim = dimSet && !dimSet.has(id);
-    const tag = sel && sel.from === id ? '入力' : sel && sel.to === id ? '出力' : null;
+    const tag = S.edges.some((p) => p.from === id) ? '入力' : S.edges.some((p) => p.to === id) ? '出力' : null;
     out += `<g class="gnode${isSelN ? ' sel' : ''}${dim ? ' dim' : ''}" transform="translate(${x},${y})" data-node="${esc(id)}" style="cursor:pointer">
       ${isSelN ? `<rect class="ring" x="-5" y="-5" width="${w + 10}" height="${NH + 10}" rx="11"/>` : ''}
       <rect class="body" width="${w}" height="${NH}" rx="7"/>
@@ -423,7 +428,7 @@ function setV1Hover(key) {
   V1HOV = key;
   stage.querySelectorAll('.v1 .hov').forEach((el) => el.classList.remove('hov'));
   // 選択済みの組は選択スタイルが既に出ているので予告は重ねない
-  if (!key || (S.edge && S.edge.from + '|' + S.edge.to === key)) return;
+  if (!key || S.edges.some((x) => x.from + '|' + x.to === key)) return;
   stage.querySelector(`.v1 g[data-e="${key}"]`)?.classList.add('hov');
   const [f, t] = key.split('|');
   for (const id of [f, t]) stage.querySelector(`.v1 g[data-node="${id}"]`)?.classList.add('hov');
@@ -523,21 +528,10 @@ function v1ZoomAction(a) {
   else if (a === 'one') v1ZoomAt(cx, cy, 1);
   else if (a === 'fit') { V1Z = v1FitT(); v1ApplyZ(); }
 }
-/* ---- 組の候補ポップ ---- */
-function candPopHtml(j) {
-  if (!S.nodeCand) return '';
-  const n = j.topology.nodes.find((x) => x.id === S.nodeCand);
-  const es = j.topology.edges.filter((e) => e.from === S.nodeCand || e.to === S.nodeCand);
-  if (!es.length) return '';
-  const lab = (id) => nodeLabel(j.topology.nodes.find((x) => x.id === id), j);
-  return `<div class="candpop" style="left:16px;bottom:16px;position:fixed">
-    <div class="small mut" style="padding:2px 8px 6px">${esc(nodeLabel(n, j))} に出入りする組（${es.length}件）— 1つ選ぶ:</div>
-    ${es.map((e) => `<button data-pickedge="${esc(e.from)}|${esc(e.to)}">${e.from === S.nodeCand ? '→ ' : '← '}${esc(lab(e.from))} → ${esc(lab(e.to))}</button>`).join('')}
-  </div>`;
-}
 /* ---- I/O パネル ---- */
-/* peerSet（反対側で対応が付く source_row の集合）が渡った行だけ、source_row セルの値を番号バッジにする */
-function tableHtml(j, nid, dir, side, peerSet) {
+/* peerSet（反対側で対応が付く source_row の集合）が渡った行だけ、source_row セルの値を番号バッジにする。
+   st は行選択の状態（組の ctx）。null のときは選択を出さない表（overview 用） */
+function tableHtml(j, nid, dir, side, peerSet, st) {
   const e = pickEntry(j, nid, dir);
   if (!e) return '<p class="small mut">行データなし</p>';
   if (e.error) return `<p class="small mut">読み込み失敗: ${esc(e.error)}</p>`;
@@ -560,14 +554,14 @@ function tableHtml(j, nid, dir, side, peerSet) {
     const cells = (implicit ? `<td>${linked ? `<span class="srnum">${sr}</span>` : sr}</td>` : '') + cols.slice(0, 14).map((c) =>
       linked && c === 'source_row' ? `<td><span class="srnum">${esc(r[idx(c)])}</span></td>` : `<td>${esc(r[idx(c)])}</td>`
     ).join('') + (cols.length > 14 ? '<td class="mut">…</td>' : '');
-    const sel = S.row != null && sr != null && Number(sr) === S.row;
-    return `<tr class="${(sr != null ? 'rowhit' : '') + (sel ? ' rowsel' : '')}" ${sr != null ? `data-sr="${sr}" data-side="${side}"` : ''} ${sel ? 'data-rowsel' : ''}>${cells}</tr>`;
+    const sel = st != null && st.row != null && sr != null && Number(sr) === st.row;
+    return `<tr class="${(st != null && sr != null ? 'rowhit' : '') + (sel ? ' rowsel' : '')}" ${st != null && sr != null ? `data-sr="${sr}" data-side="${side}"` : ''} ${sel ? 'data-rowsel' : ''}>${cells}</tr>`;
   }).join('');
   return `<div class="rows"><table class="t"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
 }
 /* 1頁分の描画。単語の文字層は全描画頁に載せるが、行への data-sr が付くのは
    その向き（歳出/歳入）の hit 頁に入る単語だけ */
-function pdfPageHtml(pdf, hits, pno, flagSet) {
+function pdfPageHtml(pdf, hits, pno, flagSet, st) {
   const p = pdf.pages[pno];
   if (!p) return '';
   const words = (p.words || []).map((w) => {
@@ -580,35 +574,37 @@ function pdfPageHtml(pdf, hits, pno, flagSet) {
       const cy = w.y + w.h / 2;
       if (cy >= h.box[1] && cy <= h.box[3]) { sr = k; break; }
     }
-    return `<span class="wspan" ${sr ? `data-sr="${sr}"` : ''} style="left:${w.x / p.w * 100}%;top:${w.y / p.h * 100}%;width:${w.w / p.w * 100}%;height:${w.h / p.h * 100}%">${esc(w.t)}</span>`;
+    return `<span class="wspan" ${st != null && sr ? `data-sr="${sr}"` : ''} style="left:${w.x / p.w * 100}%;top:${w.y / p.h * 100}%;width:${w.w / p.w * 100}%;height:${w.h / p.h * 100}%">${esc(w.t)}</span>`;
   }).join('');
   const hl = Object.entries(hits).filter(([, h]) => h.page === pno && h.box)
-    .filter(([sr]) => S.row != null && Number(sr) === S.row)
+    .filter(([sr]) => st != null && st.row != null && Number(sr) === st.row)
     .map(([sr, h]) => `<div class="hit" style="left:${h.box[0] / p.w * 100}%;top:${h.box[1] / p.h * 100}%;width:${(h.box[2] - h.box[0]) / p.w * 100}%;height:${(h.box[3] - h.box[1]) / p.h * 100}%"></div>`).join('');
   // 出力側の表に実在する行に対応する hit の左端に、表と同じ番号バッジを重ねる。
   // 選択中は塗り（.sel）、それ以外は薄く
   const flags = !flagSet ? '' : Object.entries(hits)
     .filter(([sr, h]) => h.page === pno && h.box && flagSet.has(Number(sr)))
-    .map(([sr, h]) => `<div class="srflag${S.row != null && Number(sr) === S.row ? ' sel' : ''}" data-sr="${esc(sr)}" style="left:${h.box[0] / p.w * 100}%;top:${(h.box[1] + h.box[3]) / 2 / p.h * 100}%">${esc(sr)}</div>`).join('');
+    .map(([sr, h]) => `<div class="srflag${st != null && st.row != null && Number(sr) === st.row ? ' sel' : ''}" data-sr="${esc(sr)}" style="left:${h.box[0] / p.w * 100}%;top:${(h.box[1] + h.box[3]) / 2 / p.h * 100}%">${esc(sr)}</div>`).join('');
   return `<div class="pdfpage" data-page="${pno}"><img src="${p.png}" alt="PDF p.${pno}">${words}${hl}${flags}</div>`;
 }
 function pdfPages(pdf) {
   return Object.keys(pdf.pages || {}).map(Number).sort((a, b) => a - b);
 }
-function pdfSideHtml(j, dir, flagSet) {
+/* st はこの側の { row, pdfPage } を持つ ctx。interact=false のとき語に行選択を付けない
+   （overview の閲覧用 — 頁送りだけは効かせる） */
+function pdfSideHtml(j, dir, flagSet, st, interact = true) {
   const pdf = j.pdf, pd = pdf && pdf[dir];
   if (!pdf || !pdf.pages || !pd) return '<p class="small mut">PDF レイヤなし</p>';
   const hits = pd.hits || {};
   const pages = pdfPages(pdf);
   if (!pages.length) return '<p class="small mut">PDF レイヤなし</p>';
   // 初期表示はこの向きの行が載っている最初の頁。行を選んだときは click 側で hit の頁に合わせてある
-  if (S.pdfPage == null || !pdf.pages[S.pdfPage]) {
+  if (st.pdfPage == null || !pdf.pages[st.pdfPage]) {
     const hp = Object.values(hits).map((h) => h.page).filter((pno) => pdf.pages[pno]);
-    S.pdfPage = hp.length ? Math.min(...hp) : pages[0];
+    st.pdfPage = hp.length ? Math.min(...hp) : pages[0];
   }
-  const cur = S.pdfPage;
+  const cur = st.pdfPage;
   const idx = pages.indexOf(cur);
-  const selHit = S.row != null ? hits[String(S.row)] : null;
+  const selHit = st.row != null ? hits[String(st.row)] : null;
   // ページ送りはビューア上部のツールバーとして枠の中に収める
   return `<div class="pdfview"><div class="pdfpager" role="group" aria-label="PDF のページ送り">
       <button class="pgbtn" data-pg="-1" ${idx <= 0 ? 'disabled' : ''} aria-label="前の頁">◀</button>
@@ -617,7 +613,7 @@ function pdfSideHtml(j, dir, flagSet) {
       <span class="mono small">p.${cur}</span>
       ${selHit && selHit.page !== cur ? `<button class="linky small" data-goto="${selHit.page}">選択行は p.${selHit.page} 頁</button>` : ''}
     </div>
-    ${pdfPageHtml(pdf, hits, cur, flagSet)}</div>`;
+    ${pdfPageHtml(pdf, hits, cur, flagSet, interact ? st : null)}</div>`;
 }
 /* 未選択時は系統の入口（原典）と出口（配布物）を全部並べる。行対応は区間（辺）の
    話なのでここでは付けない */
@@ -633,10 +629,11 @@ function ioOverviewHtml(j) {
     const dir = srcs[0] ? edgeDir({ from: n.id, to: srcs[0] }) : null;
     const pdf = j.samples[key]?.kind === 'pdf';
     const head = `原典${pdf ? '（PDF）' : '（CSV）'} — ${esc(n.label)}`;
-    return `<div class="io-node"><h3>${head}</h3>${pdf ? pdfSideHtml(j, dir || 'expenditure', null) : tableHtml(j, key, dir, 'in', null)}
+    // overview の表・PDF は閲覧だけ（行選択は組の文脈でのみ効かせる）
+    return `<div class="io-node" data-ctx="ov:${esc(n.id)}"><h3>${head}</h3>${pdf ? pdfSideHtml(j, dir || 'expenditure', null, ctxOf('ov:' + n.id), false) : tableHtml(j, key, dir, 'in', null, null)}
       ${ioSideDetailHtml(j, n, dir, { isInput: true, aPdf: pdf, srcIds: srcs, tblKey: key, tblDir: dir })}</div>`;
   };
-  const sinkHtml = (n) => `<div class="io-node"><h3>${esc(nodeLabel(n, j))}</h3>${tableHtml(j, n.id, null, 'out', null)}
+  const sinkHtml = (n) => `<div class="io-node"><h3>${esc(nodeLabel(n, j))}</h3>${tableHtml(j, n.id, null, 'out', null, null)}
     ${ioSideDetailHtml(j, n, null, { isInput: false, aPdf: false, srcIds: [], tblKey: n.id, tblDir: null })}</div>`;
   return `<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px">
       <h2 style="font-size:14px;margin:0">原典 <span class="mut">→</span> 配布物</h2>
@@ -648,16 +645,18 @@ function ioOverviewHtml(j) {
     </div>`;
 }
 function ioPanelHtml(j) {
-  const e = S.edge;
-  if (!e) return ioOverviewHtml(j);
-  const a = j.topology.nodes.find((n) => n.id === e.from);
-  const b = j.topology.nodes.find((n) => n.id === e.to);
-  const dir = edgeDir(e);
-  // 原典ノードは文書単位にまとまる（歳出・歳入が同じ PDF なら1ノード）ので、
-  // 入力側は辺が指す取り込み表の原典（`<source>.origin`）として引く
-  const fromKey = a.kind === 'origin' ? `${e.to}.origin` : e.from;
-  const aPdf = j.samples[fromKey]?.kind === 'pdf';
-  return ioPanelBodyHtml(j, e, a, b, dir, aPdf, fromKey);
+  if (!S.edges.length) return ioOverviewHtml(j);
+  return S.edges.map((e) => {
+    const a = j.topology.nodes.find((n) => n.id === e.from);
+    const b = j.topology.nodes.find((n) => n.id === e.to);
+    if (!a || !b) return '';
+    const dir = edgeDir(e);
+    // 原典ノードは文書単位にまとまる（歳出・歳入が同じ PDF なら1ノード）ので、
+    // 入力側は辺が指す取り込み表の原典（`<source>.origin`）として引く
+    const fromKey = a.kind === 'origin' ? `${e.to}.origin` : e.from;
+    const aPdf = j.samples[fromKey]?.kind === 'pdf';
+    return ioPanelBodyHtml(j, e, a, b, dir, aPdf, fromKey);
+  }).join('');
 }
 /* ---- I/O パネル本体 ---- */
 /* 見出しは「入力 → 出力」1行。左右は短い見出し（原典なら形式付き）。出所・検査・閲覧の
@@ -718,6 +717,8 @@ function srSetOfEntry(e, isOrigin) {
   return isOrigin ? new Set(e.rows.map((_, i) => i + 2)) : null;
 }
 function ioPanelBodyHtml(j, e, a, b, dir, aPdf, fromKey) {
+  const ctx = `${e.from}|${e.to}`;
+  const st = ctxOf(ctx);
   // 番号バッジは「反対側にも同じ source_row がある」行にだけ出す。PDF 側は hit の key が対応行
   const linkIn = aPdf
     ? new Set(Object.keys(((j.pdf || {})[dir || 'expenditure'] || {}).hits || {}).map(Number))
@@ -732,18 +733,19 @@ function ioPanelBodyHtml(j, e, a, b, dir, aPdf, fromKey) {
   // この区間でしている変換 = 出力側ノードの段の責務（topology.stages が正本）
   const bSt = j.topology.stages.find((s) => s.id === b.stage);
   const lead = bSt ? esc(bSt.responsibility) : '';
-  return `<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+  return `<div class="io-pair" data-ctx="${esc(ctx)}"><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px">
       <h2 style="font-size:14px;margin:0">${esc(inName)} <span class="mut">→</span> ${esc(bName)}</h2>
       ${meta ? `<span class="mut small">${meta}</span>` : ''}
-      ${S.row != null ? `<button class="linky small" data-clear-row>行 ${S.row} の選択を解除</button>` : ''}
+      ${st.row != null ? `<button class="linky small" data-clear-row>行 ${st.row} の選択を解除</button>` : ''}
+      <button class="pair-x" data-rmpair title="この組を外す" aria-label="この組を外す">✕</button>
     </div>
     ${lead ? `<p class="mut" style="font-size:12px;margin:-2px 0 10px">${lead}</p>` : ''}
     <div class="io">
-      <div class="side"><h3>${inH3}</h3>${aPdf ? pdfSideHtml(j, dir || 'expenditure', linkOut) : tableHtml(j, fromKey, dir, 'in', linkOut)}
+      <div class="side"><h3>${inH3}</h3>${aPdf ? pdfSideHtml(j, dir || 'expenditure', linkOut, st) : tableHtml(j, fromKey, dir, 'in', linkOut, st)}
         ${ioSideDetailHtml(j, a, dir, { isInput: true, aPdf, srcIds: a.kind === 'origin' ? [e.to] : [], tblKey: fromKey, tblDir: dir })}</div>
-      <div class="side"><h3>${esc(bName)}</h3>${tableHtml(j, e.to, dir, 'out', linkIn)}
+      <div class="side"><h3>${esc(bName)}</h3>${tableHtml(j, e.to, dir, 'out', linkIn, st)}
         ${ioSideDetailHtml(j, b, dir, { isInput: false, aPdf, srcIds: [], tblKey: e.to, tblDir: dir })}</div>
-    </div>`;
+    </div></div>`;
 }
 /* サイドごとの詳細トグル。あるものだけ出す:
    - 入力側に原典が来る組 … 資料名・取得元 URL（リンク）・形式・ページ範囲・証跡（PDF は突き合わせ、
@@ -807,7 +809,6 @@ function headlineHtml(j) {
   const m = j.meta;
   const years = m.fiscalYears;
   return `<div class="headline">
-    <h1>${esc(m.jurisdictionName)}</h1>
     <select class="ctl" data-year>
       <option value="" ${S.year == null ? 'selected' : ''}>全年度</option>
       ${years.map((y) => `<option value="${y}" ${S.year === y ? 'selected' : ''}>${y}年度</option>`).join('')}
@@ -831,68 +832,80 @@ function vSplit() {
   return `<div class="v1 vsplit">${headlineHtml(j)}
     <div class="graphwrap" style="flex-basis:${SPLITH}%">${graphSvg(j, true, null, true, true)}${zoomctlHtml()}</div>
     <div class="splitsash" role="separator" aria-orientation="horizontal" title="ドラッグで上下の比率を変更"></div>
-    <div class="iowrap"><details class="fold"><summary>注意点 ${j.caveats.length} 件</summary>${j.caveats.map((c) => `<div class="cv"><div class="t">${md(c.topic)}</div><div class="b">${md(c.body)}</div></div>`).join('')}</details>${ioPanelHtml(j)}</div>${candPopHtml(j)}</div>`;
+    <div class="iowrap"><details class="fold caveats"><summary>⚠ 注意点 ${j.caveats.length} 件</summary>${j.caveats.map((c) => `<div class="cv"><div class="t">${md(c.topic)}</div><div class="b">${md(c.body)}</div></div>`).join('')}</details>${ioPanelHtml(j)}</div></div>`;
 }
 
 
 /* ---- harness ---- */
 function syncBar() { document.querySelectorAll('.harness-bar button').forEach((x) => x.toggleAttribute('data-active', x.dataset.j === S.code)); }
 document.querySelectorAll('.harness-bar button').forEach((b) => {
-  b.addEventListener('click', () => { S.code = b.dataset.j; S.edge = null; S.nodeCand = null; S.row = null; S.pdfPage = null; V1Z = null; syncBar(); pushUrl(); mount(); });
+  b.addEventListener('click', () => { S.code = b.dataset.j; S.edges = []; S.ctx = {}; V1Z = null; syncBar(); pushUrl(); mount(); });
 });
 syncBar();
 
 const stage = document.getElementById('stage');
-/* 行 source_row が現在の向きのどの PDF 頁に載っているか。選択側が呼んで表示頁を合わせる */
-function pdfHitPage(j, sr) {
-  const dir = S.edge ? edgeDir(S.edge) : null;
+/* 行 source_row がその組の向きのどの PDF 頁に載っているか。選択側が呼んで表示頁を合わせる */
+function pdfHitPage(j, sr, e) {
+  const dir = e ? edgeDir(e) : null;
   const hit = dir && j.pdf && j.pdf[dir] && j.pdf[dir].hits ? j.pdf[dir].hits[String(sr)] : null;
   return hit && hit.page ? hit.page : null;
 }
+const pairOfCtx = (k) => { const [f, t] = (k || '').split('|'); return f && t ? { from: f, to: t } : null; };
 stage.addEventListener('click', (e) => {
   if (V1NOCLICK) { V1NOCLICK = false; return; } // パン/ピンチ直後の click は辺・ノード選択に回さない
   const zb = e.target.closest('[data-zoom]');
   if (zb) { v1ZoomAction(zb.dataset.zoom); return; }
+  // 行・頁・× は ctx（組 "from|to" または overview "ov:<node>"）に紐づく
+  const ctxEl = e.target.closest('[data-ctx]');
+  const ctxKey = ctxEl ? ctxEl.dataset.ctx : null;
+  const st = ctxKey ? ctxOf(ctxKey) : null;
+  const rm = e.target.closest('[data-rmpair]');
+  if (rm && ctxKey) { S.edges = S.edges.filter((x) => x.from + '|' + x.to !== ctxKey); delete S.ctx[ctxKey]; mount(); return; }
   const pg = e.target.closest('[data-pg]');
-  if (pg) { // PDF のページ送り。表示中頁から ±1（描画済み範囲でクランプ）
+  if (pg && st) { // PDF のページ送り。表示中頁から ±1（描画済み範囲でクランプ）
     const pages = pdfPages(J().pdf || {});
     if (pages.length) {
-      const i = Math.min(pages.length - 1, Math.max(0, pages.indexOf(S.pdfPage) + Number(pg.dataset.pg)));
-      S.pdfPage = pages[i]; mount();
+      const i = Math.min(pages.length - 1, Math.max(0, pages.indexOf(st.pdfPage) + Number(pg.dataset.pg)));
+      st.pdfPage = pages[i]; mount();
     }
     return;
   }
   const gt = e.target.closest('[data-goto]');
-  if (gt) { S.pdfPage = Number(gt.dataset.goto); mount(); return; }
+  if (gt && st) { st.pdfPage = Number(gt.dataset.goto); mount(); return; }
   const hit = e.target.closest('[data-edge]');
-  if (hit) { const [f, t] = hit.dataset.edge.split('|'); S.edge = { from: f, to: t }; S.nodeCand = null; S.row = null; S.pdfPage = null; mount(); return; }
-  const pe = e.target.closest('[data-pickedge]');
-  if (pe) { const [f, t] = pe.dataset.pickedge.split('|'); S.edge = { from: f, to: t }; S.nodeCand = null; S.row = null; S.pdfPage = null; mount(); return; }
+  if (hit) { const [f, t] = hit.dataset.edge.split('|'); S.edges = [{ from: f, to: t }]; mount(); return; }
   const nd = e.target.closest('[data-node]');
   if (nd) {
     const j = J();
-    const es = j.topology.edges.filter((x) => x.from === nd.dataset.node || x.to === nd.dataset.node);
-    if (es.length === 1) { S.edge = { from: es[0].from, to: es[0].to }; S.nodeCand = null; S.pdfPage = null; }
-    else S.nodeCand = S.nodeCand === nd.dataset.node ? null : nd.dataset.node;
-    S.row = null; mount(); return;
+    // 左半分 = ノードを出力とする側（入ってくる辺）、右半分 = 入力とする側（出ていく辺）。
+    // その側に辺を持たない端点ノード（原典・配布物）は残っている側の全辺に倒す
+    const svg = e.target.closest('.graphsvg');
+    const ctm = svg && svg.querySelector('.vp') && svg.querySelector('.vp').getScreenCTM();
+    const p = ctm ? new DOMPoint(e.clientX, e.clientY).matrixTransform(ctm.inverse()) : null;
+    const np = V1GEO && V1GEO.pos[nd.dataset.node];
+    const left = !!(p && np && p.x < np.x + NW / 2);
+    const ins = j.topology.edges.filter((x) => x.to === nd.dataset.node);
+    const outs = j.topology.edges.filter((x) => x.from === nd.dataset.node);
+    const picked = left ? (ins.length ? ins : outs) : (outs.length ? outs : ins);
+    S.edges = picked.map((x) => ({ from: x.from, to: x.to }));
+    mount(); return;
   }
   const ws = e.target.closest('.wspan[data-sr]');
-  if (ws) {
-    S.row = Number(ws.dataset.sr);
-    const p = pdfHitPage(J(), S.row);
-    if (p != null) S.pdfPage = p;
+  if (ws && st) {
+    st.row = Number(ws.dataset.sr);
+    const p = pdfHitPage(J(), st.row, pairOfCtx(ctxKey));
+    if (p != null) st.pdfPage = p;
     mount(); return;
   }
   const tr = e.target.closest('tr[data-sr]');
-  if (tr) {
+  if (tr && st) {
     const sr = Number(tr.dataset.sr);
-    S.row = S.row === sr ? null : sr;
+    st.row = st.row === sr ? null : sr;
     // 出力側の行を選んだら PDF 側をその行が載っている頁へ自動で合わせる（めくった状態でも追従）
-    if (S.row != null) { const p = pdfHitPage(J(), sr); if (p != null) S.pdfPage = p; }
+    if (st.row != null) { const p = pdfHitPage(J(), sr, pairOfCtx(ctxKey)); if (p != null) st.pdfPage = p; }
     mount(); scrollSelIntoView(); return;
   }
-  if (e.target.closest('[data-clear-row]')) { S.row = null; mount(); return; }
-  if (e.target.closest('[data-clear-edge]')) { S.edge = null; S.row = null; S.pdfPage = null; mount(); return; }
+  if (st && e.target.closest('[data-clear-row]')) { st.row = null; mount(); return; }
 });
 stage.addEventListener('mousemove', (e) => {
   const svg = e.target.closest && e.target.closest('.v1 .graphsvg');
@@ -902,17 +915,19 @@ stage.addEventListener('mousemove', (e) => {
   setV1Hover(v1PairKeyAtClient(svg, e.clientX, e.clientY));
 });
 stage.addEventListener('mouseleave', () => setV1Hover(null));
-// I/O の行 ↔ PDF の語の対応を hover で予告する。選択（rowsel）とは別に、薄い点灯だけ付け外しする
-function setRowHover(sr) {
+// I/O の行 ↔ PDF の語の対応を hover で予告する。選択（rowsel）とは別に、薄い点灯だけ付け外しする。
+// 組ごとの鍵空間は別物なので、同じ source_row が並んだ複数の組を跨いで点灯させないよう
+// 発生元の ctx（io-pair / io-node）内に限る
+function setRowHover(ctxEl, sr) {
   stage.querySelectorAll('.srhov, .rowhov, .flaghov').forEach((el) => el.classList.remove('srhov', 'rowhov', 'flaghov'));
-  if (sr == null) return;
-  stage.querySelectorAll(`.wspan[data-sr="${sr}"]`).forEach((el) => el.classList.add('srhov'));
-  stage.querySelectorAll(`tr[data-sr="${sr}"]`).forEach((el) => el.classList.add('rowhov'));
-  stage.querySelectorAll(`.srflag[data-sr="${sr}"]`).forEach((el) => el.classList.add('flaghov'));
+  if (sr == null || !ctxEl) return;
+  ctxEl.querySelectorAll(`.wspan[data-sr="${sr}"]`).forEach((el) => el.classList.add('srhov'));
+  ctxEl.querySelectorAll(`tr[data-sr="${sr}"]`).forEach((el) => el.classList.add('rowhov'));
+  ctxEl.querySelectorAll(`.srflag[data-sr="${sr}"]`).forEach((el) => el.classList.add('flaghov'));
 }
 stage.addEventListener('mouseover', (e) => {
   const t = e.target.closest && e.target.closest('[data-sr]');
-  setRowHover(t ? t.dataset.sr : null);
+  setRowHover(t ? t.closest('[data-ctx]') : null, t ? t.dataset.sr : null);
 });
 // ホイール（ctrl+wheel のピンチ操作を含む）でポインタ位置をアンカーにズーム
 stage.addEventListener('wheel', (e) => {

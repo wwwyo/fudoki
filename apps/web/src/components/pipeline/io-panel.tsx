@@ -421,46 +421,98 @@ function SideDetail({
 export function IoPanel({
   report,
   code,
-  pair,
+  pairs,
+  onRemovePair,
   year,
-  selectedKey,
-  onSelectRow,
-  hoverKey,
-  onHoverRow,
   pdfDocId,
   pdfPage,
   onPdfNavigate,
 }: {
   report: ReportData
   code: string
-  pair: Pair | null
+  /** 選択中の組。ノード側面クリックではその側の辺が全部入るので複数 */
+  pairs: Pair[]
+  onRemovePair: (p: Pair) => void
   year: number | null
-  selectedKey: string | null
-  onSelectRow: (key: string | null) => void
-  hoverKey: string | null
-  onHoverRow: (key: string | null) => void
-  /** PDF 側が見ている文書・頁（行選択時の遷移で親が更新） */
+  /** overview の PDF 側が見ている文書・頁（組の PDF は PairPanel 内で持つ） */
   pdfDocId: string | null
   pdfPage: number | null
   onPdfNavigate: (docId: string, page: number) => void
+}) {
+  if (!pairs.length) {
+    return (
+      <Overview
+        report={report}
+        code={code}
+        year={year}
+        pdfDocId={pdfDocId}
+        pdfPage={pdfPage}
+        onPdfNavigate={onPdfNavigate}
+      />
+    )
+  }
+  return (
+    <>
+      {pairs.map((p) => (
+        <PairPanel
+          key={`${p.from}|${p.to}`}
+          report={report}
+          code={code}
+          pair={p}
+          year={year}
+          onClose={() => onRemovePair(p)}
+        />
+      ))}
+    </>
+  )
+}
+
+/**
+ * 組1件分の検査パネル。行選択・PDF の見ている頁は組ごとの状態なのでここに閉じる
+ * （組を替えても残らないし、複数組を並べても混ざらない）。
+ */
+function PairPanel({
+  report,
+  code,
+  pair,
+  year,
+  onClose,
+}: {
+  report: ReportData
+  code: string
+  pair: Pair
+  year: number | null
+  onClose: () => void
 }) {
   const nodeById = useMemo(
     () => new Map(report.topology.nodes.map((n) => [n.id, n])),
     [report.topology.nodes],
   )
-  const a = pair ? nodeById.get(pair.from) : null
-  const b = pair ? nodeById.get(pair.to) : null
-  const dir = pair ? edgeDir(pair.from, pair.to) : null
+  const a = nodeById.get(pair.from)
+  const b = nodeById.get(pair.to)
+  const dir = edgeDir(pair.from, pair.to)
+
+  // 行選択と PDF の表示位置は組に紐づく。年度が変わると行の実体も文書も変わるので捨てる
+  const [selectedKey, setSelectedKey] = useState<string | null>(null)
+  const [hoverKey, setHoverKey] = useState<string | null>(null)
+  const [pdfNav, setPdfNav] = useState<{ docId: string | null; page: number | null }>({
+    docId: null,
+    page: null,
+  })
+  useEffect(() => {
+    setSelectedKey(null)
+    setPdfNav({ docId: null, page: null })
+  }, [year])
 
   // 原典ノードは文書単位にまとまりうる（歳出・歳入が同じ PDF なら1ノード）ので、
   // id からは取り込み表を復元できない。入力側は辺が指す source で引く —
   // `<source>.origin` の規約で解決すれば、まとめた原典でも direction ごとの
   // 頁範囲・証跡・hit が出る
-  const inNodeId = a?.kind === "origin" && pair ? `${pair.to}.origin` : (pair?.from ?? null)
+  const inNodeId = a?.kind === "origin" ? `${pair.to}.origin` : pair.from
   const inRows = useRows(inNodeId, code, year, dir)
-  const outRows = useRows(pair?.to ?? null, code, year, dir)
+  const outRows = useRows(pair.to, code, year, dir)
   const inHits = useHitMap(inRows, inNodeId)
-  const outHits = useHitMap(outRows, pair?.to ?? null)
+  const outHits = useHitMap(outRows, pair.to)
 
   const inTable = useRef<RowTableHandle>(null)
   const outTable = useRef<RowTableHandle>(null)
@@ -488,27 +540,15 @@ export function IoPanel({
 
   // 行選択。PDF が片側に居る組では、行が属する年度の文書の hit 頁へ飛ぶ
   const pick = (side: "in" | "out") => (key: string) => {
-    if (!pair) return
     const next = selectedKey === key ? null : key
-    onSelectRow(next)
+    setSelectedKey(next)
     if (next === null) return
     ;(side === "in" ? outTable : inTable).current?.scrollToKey(next)
     const h = (side === "in" ? outHits : inHits)?.get(next)
-    if (h) onPdfNavigate(h.docId, h.page)
+    if (h) setPdfNav({ docId: h.docId, page: h.page })
   }
 
-  if (!pair || !a || !b) {
-    return (
-      <Overview
-        report={report}
-        code={code}
-        year={year}
-        pdfDocId={pdfDocId}
-        pdfPage={pdfPage}
-        onPdfNavigate={onPdfNavigate}
-      />
-    )
-  }
+  if (!a || !b) return null
 
   const inName = a.kind === "origin" ? "原典" : nodeLabel(a)
   const bName = nodeLabel(b)
@@ -523,17 +563,20 @@ export function IoPanel({
       : `入力 — ${inName}`
 
   return (
-    <>
+    <div className="io-pair">
       <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap", marginBottom: 8 }}>
         <h2 style={{ fontSize: 14, margin: 0 }}>
           {inName} <span className="text-muted-foreground">→</span> {bName}
         </h2>
         {meta && <span className="text-muted-foreground text-xs">{meta}</span>}
         {selectedKey != null && (
-          <button className="linky text-xs" onClick={() => onSelectRow(null)}>
+          <button className="linky text-xs" onClick={() => setSelectedKey(null)}>
             行 {bareKey(selectedKey)} の選択を解除
           </button>
         )}
+        <button className="pair-x" onClick={onClose} title="この組を外す" aria-label="この組を外す">
+          ✕
+        </button>
       </div>
       {bStage?.responsibility && (
         <p className="text-muted-foreground" style={{ fontSize: 12, margin: "-2px 0 10px" }}>
@@ -550,14 +593,14 @@ export function IoPanel({
               docs={inRows.docs}
               hits={inHits}
               year={year}
-              docId={pdfDocId}
-              page={pdfPage}
-              onNavigate={onPdfNavigate}
+              docId={pdfNav.docId}
+              page={pdfNav.page}
+              onNavigate={(docId, page) => setPdfNav({ docId, page })}
               flagKeys={keysOut}
               selectedKey={selectedKey}
               hoverKey={hoverKey}
               onSelectRow={(k) => pick("in")(k)}
-              onHoverRow={onHoverRow}
+              onHoverRow={setHoverKey}
             />
           ) : inRows.kind === "table" ? (
             <RowTable
@@ -568,7 +611,7 @@ export function IoPanel({
               hoverKey={hoverKey}
               docs={colDocsOf(a, report.columnDocs)}
               onSelectRow={(k) => pick("in")(k)}
-              onHoverRow={onHoverRow}
+              onHoverRow={setHoverKey}
             />
           ) : (
             <p className="text-xs text-muted-foreground">行データなし（{inRows.reason}）</p>
@@ -588,7 +631,7 @@ export function IoPanel({
               hoverKey={hoverKey}
               docs={colDocsOf(b, report.columnDocs)}
               onSelectRow={(k) => pick("out")(k)}
-              onHoverRow={onHoverRow}
+              onHoverRow={setHoverKey}
             />
           ) : outRows.kind === "pdf" ? (
             // 系統上「出力側が PDF 原典」の組は無いが、防御的に同じビューアを出す
@@ -596,14 +639,14 @@ export function IoPanel({
               docs={outRows.docs}
               hits={outHits}
               year={year}
-              docId={pdfDocId}
-              page={pdfPage}
-              onNavigate={onPdfNavigate}
+              docId={pdfNav.docId}
+              page={pdfNav.page}
+              onNavigate={(docId, page) => setPdfNav({ docId, page })}
               flagKeys={keysIn}
               selectedKey={selectedKey}
               hoverKey={hoverKey}
               onSelectRow={(k) => pick("out")(k)}
-              onHoverRow={onHoverRow}
+              onHoverRow={setHoverKey}
             />
           ) : (
             <p className="text-xs text-muted-foreground">行データなし（{outRows.reason}）</p>
@@ -611,7 +654,7 @@ export function IoPanel({
           <SideDetail node={b} srcIds={[]} dir={dir} year={year} rows={outRows} report={report} code={code} />
         </div>
       </div>
-    </>
+    </div>
   )
 }
 

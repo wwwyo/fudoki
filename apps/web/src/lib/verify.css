@@ -18,7 +18,6 @@
 .pv .graphsvg .edge-hit { stroke: transparent; stroke-width: 24; fill: none; cursor: pointer; }
 .pv .graphsvg .edge-sel-under { stroke: var(--primary); stroke-width: 10; fill: none; opacity: .18; }
 .pv .graphsvg .edge-sel { stroke: var(--primary); stroke-width: 2.6; fill: none; opacity: 1; }
-.pv .graphsvg .cand { stroke: var(--primary); stroke-width: 2; fill: none; opacity: .8; stroke-dasharray: 5 3; }
 .pv .gnode rect.body { fill: var(--card); stroke: var(--border); stroke-width: 1.2; }
 .pv .gnode.sel rect.ring { fill: none; stroke: var(--primary); stroke-width: 3; }
 .pv .gnode .io-tag { font-size: 9px; font-weight: 600; fill: var(--primary-foreground); }
@@ -35,12 +34,11 @@
 .pv .gnode.hov rect.hring { opacity: .5; }
 .pv .gnode.hov rect.body { stroke: var(--primary); }
 
-/* 候補ポップ */
-.pv .candpop { position: absolute; z-index: 50; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: 0 8px 24px rgba(0,0,0,.12); padding: 6px; min-width: 220px; }
-.pv .candpop button { display: block; width: 100%; text-align: left; border: 0; background: none; font: inherit; font-size: 12px; padding: 6px 8px; border-radius: 4px; cursor: pointer; color: var(--foreground); }
-.pv .candpop button:hover { background: var(--accent); }
-
 /* ---- I/O パネル ---- */
+/* 選んだ組を並べる。2件目以降は罫線で区切る */
+.pv .io-pair + .io-pair { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--border); }
+.pv .pair-x { border: 0; background: none; font: inherit; font-size: 12px; line-height: 1; color: var(--muted-foreground); cursor: pointer; margin-left: auto; padding: 2px 4px; border-radius: 4px; }
+.pv .pair-x:hover { color: var(--foreground); background: var(--accent); }
 .pv .io { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
 .pv .io .side { min-width: 0; }
 .pv .io .side h3 { font-size: 12px; font-weight: 600; margin: 0 0 6px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
@@ -60,6 +58,12 @@
 .pv table.t tr.rowsel td:last-child, .pv table.t tr.rowsel:hover td:last-child { box-shadow: inset -2px 0 0 var(--primary), inset 0 2px 0 var(--primary), inset 0 -2px 0 var(--primary); }
 .pv details.fold { border-top: 1px solid var(--border); margin-top: 10px; padding-top: 8px; }
 .pv details.fold > summary { cursor: pointer; font-size: 12px; color: var(--muted-foreground); }
+/* 「注意点」トグルは I/O ペイン先頭で罫線の fold ではなく警告色の帯として出す。
+   畳まれていても目に入るよう、アンバー系にする（エラーではなく注意喚起なので destructive は使わない） */
+.pv .iowrap > details.fold { border-top: 0; margin-top: 0; padding-top: 0; }
+.pv details.caveats { border: 1px solid color-mix(in oklch, oklch(0.72 0.12 85) 50%, var(--border)); border-radius: 8px; background: color-mix(in oklch, oklch(0.94 0.05 95) 65%, var(--card)); padding: 0 12px; margin-bottom: 14px; }
+.pv details.caveats > summary { color: oklch(0.52 0.12 75); font-weight: 600; padding: 7px 0; }
+.pv details.caveats .cv:last-child { padding-bottom: 8px; }
 .pv details.fold .dh { font-size: 11px; font-weight: 600; color: var(--muted-foreground); margin: 8px 0 2px; }
 .pv details.fold .dh:first-of-type { margin-top: 4px; }
 .pv details.fold .drow { display: flex; gap: 8px; font-size: 12px; line-height: 18px; padding: 1.5px 0; }

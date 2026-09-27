@@ -145,7 +145,6 @@ export const LineageGraph = memo(function LineageGraph({
   code,
   year,
   sel,
-  nodeCand,
   onSelectEdge,
   onSelectNode,
 }: {
@@ -153,11 +152,11 @@ export const LineageGraph = memo(function LineageGraph({
   /** 見ている団体。行数の引き当てに使う */
   code: string
   year: number | null
-  sel: Pair | null
-  /** 候補ポップを出しているノード（その組を破線で予告する） */
-  nodeCand: string | null
+  /** 選択中の組。ノード側面クリックではその側の辺が全部入るので複数 */
+  sel: Pair[]
   onSelectEdge: (e: Pair) => void
-  onSelectNode: (id: string) => void
+  /** side: "out" = ノードの左半分（入ってくる辺側）、"in" = 右半分（出ていく辺側） */
+  onSelectNode: (id: string, side: "in" | "out") => void
 }) {
   const wrapRef = useRef<HTMLDivElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
@@ -171,10 +170,7 @@ export const LineageGraph = memo(function LineageGraph({
   const stageOrder = useMemo(() => topology.stages.map((s) => s.id), [topology.stages])
   const lay = useMemo(() => layoutH(topology.nodes, stageOrder), [topology.nodes, stageOrder])
   const geo = useMemo(() => buildPairGeo(topology.edges, lay), [topology.edges, lay])
-  const candEdges = useMemo(
-    () => (nodeCand ? topology.edges.filter((e) => e.from === nodeCand || e.to === nodeCand) : []),
-    [topology.edges, nodeCand],
-  )
+  const selKeys = useMemo(() => new Set(sel.map((p) => `${p.from}|${p.to}`)), [sel])
   const fitT = useCallback((): Zoom => {
     const { w, h } = size
     // コンテナの高さが潰れている（sash の下端・レイアウト確定前）と k=0 になり、
@@ -355,7 +351,7 @@ export const LineageGraph = memo(function LineageGraph({
     }
     const key = pairKeyAt(geo, g.x, g.y)
     // 選択済みの組は選択スタイルが既に出ているので予告は重ねない
-    setHov(key && sel && `${sel.from}|${sel.to}` === key ? null : key)
+    setHov(key && selKeys.has(key) ? null : key)
   }
 
   const onClick = (e: React.MouseEvent) => {
@@ -370,10 +366,13 @@ export const LineageGraph = memo(function LineageGraph({
       return
     }
     const nd = (e.target as Element).closest("[data-node]")
-    if (nd) onSelectNode(nd.getAttribute("data-node")!)
+    if (!nd) return
+    const id = nd.getAttribute("data-node")!
+    // 左半分 = ノードを出力とする側（入ってくる辺）、右半分 = 入力とする側（出ていく辺）
+    const g = toGraph(e.clientX, e.clientY)
+    const p = lay.pos[id]
+    onSelectNode(id, g && p && g.x < p.x + NW / 2 ? "out" : "in")
   }
-
-  const selKey = sel ? `${sel.from}|${sel.to}` : null
 
   return (
     <div ref={wrapRef} className="graphwrap" style={{ flexBasis: "100%", height: "100%" }}>
@@ -400,14 +399,15 @@ export const LineageGraph = memo(function LineageGraph({
               <path d="M0,0 L8,4 L0,8" fill="none" stroke="var(--primary)" strokeWidth="1.6" opacity=".55" />
             </marker>
           </defs>
-          {/* 段の見出しは各列の最上段ノードの上。ⓘ に各段の責務
-              （topology.stages の responsibility）を乗せる */}
+          {/* 段の見出しは各列の最上段ノードの上。見出し全体（段名＋ⓘ）の
+              hover で各段の責務（topology.stages の responsibility）を出す */}
           {stageOrder.map((s, i) => {
             const st = topology.stages.find((x) => x.id === s)
             if (!topology.nodes.some((n) => n.stage === s)) return null
             const x = PAD + i * (NW + CGX)
             return (
-              <g key={s}>
+              <g key={s} style={{ cursor: st ? "help" : undefined }}>
+                {st && <title>{st.responsibility}</title>}
                 <text x={x} y={PAD + 12} fontSize="11" fill="var(--muted-foreground)">
                   {STAGE_JA[s]}
                 </text>
@@ -417,9 +417,7 @@ export const LineageGraph = memo(function LineageGraph({
                     y={PAD + 12}
                     fontSize="11"
                     fill="var(--muted-foreground)"
-                    style={{ cursor: "help" }}
                   >
-                    <title>{st.responsibility}</title>
                     ⓘ
                   </text>
                 )}
@@ -433,8 +431,7 @@ export const LineageGraph = memo(function LineageGraph({
             if (!p1 || !p2) return null
             const { d } = edgePath(p1, p2)
             const key = `${e.from}|${e.to}`
-            const isSel = selKey === key
-            const isCand = candEdges.some((c) => c.from === e.from && c.to === e.to)
+            const isSel = selKeys.has(key)
             const isHov = hov === key
             return (
               <g key={key} className={isHov ? "hov" : ""}>
@@ -446,7 +443,7 @@ export const LineageGraph = memo(function LineageGraph({
                     <path className="edge-sel" d={d} markerEnd="url(#arw-sel)" />
                   </>
                 ) : (
-                  <path className={isCand ? "cand" : "edge"} d={d} markerEnd="url(#arw)" />
+                  <path className="edge" d={d} markerEnd="url(#arw)" />
                 )}
                 <path className="edge-hit" d={d} data-edge={key}>
                   <title>
@@ -460,9 +457,13 @@ export const LineageGraph = memo(function LineageGraph({
           {Object.entries(lay.pos).map(([id, p]) => {
             const w = NW
             const { rows, scopedToYear } = nodeRows(p.n, code, year)
-            const isSelN = sel && (sel.from === id || sel.to === id)
+            const isSelN = sel.some((p) => p.from === id || p.to === id)
             const isHovN = hov ? hov.split("|").includes(id) : false
-            const tag = sel && sel.from === id ? "入力" : sel && sel.to === id ? "出力" : null
+            const tag = sel.some((p) => p.from === id)
+              ? "入力"
+              : sel.some((p) => p.to === id)
+                ? "出力"
+                : null
             const shared = !p.n.jurisdictionCode
             return (
               <g

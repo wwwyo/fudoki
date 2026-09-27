@@ -19,7 +19,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { withBase } from "@/lib/utils"
 import { type PipelineData, loadPipeline } from "@/lib/pipeline"
 import "@/lib/verify.css"
-import { isRes, nodeLabel, type Pair } from "@/lib/verify"
+import { isRes, type Pair } from "@/lib/verify"
 
 type Props = {
   /** `/pipeline/<団体コード>/` の団体コード。コードなしの `/pipeline/` では null */
@@ -54,11 +54,10 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
     return Number.isInteger(n) && n > 1900 && n < 2200 ? n : null
   })
 
-  // 選択状態。組 → 行 → PDF 頁の順に下流が上流を従える
-  const [pair, setPair] = useState<Pair | null>(null)
-  const [nodeCand, setNodeCand] = useState<string | null>(null)
-  const [selKey, setSelKey] = useState<string | null>(null)
-  const [hovKey, setHovKey] = useState<string | null>(null)
+  // 選択状態。組は複数持てる（ノード側面クリックでその側の辺が全部入る）。
+  // 組 → 行 → PDF 頁の順に下流が上流を従えるが、行選択と PDF 頁は組ごとの状態なので
+  // PairPanel の内側に閉じる。overview の PDF 頁だけはここで持つ
+  const [pairs, setPairs] = useState<Pair[]>([])
   const [pdfNav, setPdfNav] = useState<{ docId: string | null; page: number | null }>({
     docId: null,
     page: null,
@@ -98,7 +97,6 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
     setYear(y)
     // 年度が変わると「その行」の指す実体も文書も変わる — 前年の選択を引きずると
     // 表示年度と文書の年度が食い違う（複数文書の団体は文書ごとに年度が違う）
-    setSelKey(null)
     setPdfNav({ docId: null, page: null })
     const url = new URL(window.location.href)
     if (y === null) url.searchParams.delete("y")
@@ -124,56 +122,30 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
     return { ...topo, nodes, edges: topo.edges.filter((e) => ids.has(e.from) && ids.has(e.to)) }
   }, [current])
 
-  const nodeById = useMemo(
-    () => new Map((visibleTopology?.nodes ?? []).map((n) => [n.id, n])),
-    [visibleTopology],
-  )
-
-  // ヘッドラインの検査件数は「この団体に関係するもの」だけに絞る。
-  // 共有ノードにぶら下がる検査は全団体の図に出るが、警告が他団体の行にだけ
-  // 帰属するときまで件数に混ぜると、自分の団体の警告と誤認させる。
-  // 判定は build.ts の summary と同じ系（ok / severity / status）
-  const checkTally = useMemo(() => {
-    if (!visibleTopology || !current) {
-      return { total: 0, passed: 0, failed: 0, warned: 0 }
-    }
-    const ids = new Set(visibleTopology.nodes.map((n) => n.id))
-    const checks = current.report.checks.filter(
-      (c) =>
-        c.binds.some((b) => ids.has(b)) &&
-        (c.ok ||
-          c.attribution?.kind === "cross" ||
-          !c.attribution?.counts ||
-          (c.attribution.counts[current.code] ?? 0) > 0),
-    )
-    return {
-      total: checks.length,
-      passed: checks.filter((c) => c.ok).length,
-      failed: checks.filter((c) => !c.ok && c.severity === "error").length,
-      warned: checks.filter((c) => c.status === "warn").length,
-    }
-  }, [visibleTopology, current])
-
   const selectEdge = useCallback((e: Pair) => {
-    setPair({ from: e.from, to: e.to })
-    setNodeCand(null)
-    setSelKey(null)
+    setPairs([{ from: e.from, to: e.to }])
     setPdfNav({ docId: null, page: null })
   }, [])
 
+  // ノードの側面クリック。左半分 = そのノードを出力とする辺全部（入ってくる側）、
+  // 右半分 = 入力とする辺全部（出ていく側）。その側に辺を持たない端点ノード
+  // （原典・配布物）は残っている側の全辺に倒す
   const selectNode = useCallback(
-    (id: string) => {
+    (id: string, side: "in" | "out") => {
       if (!visibleTopology) return
-      const es = visibleTopology.edges.filter((x) => x.from === id || x.to === id)
-      if (es.length === 1) {
-        selectEdge({ from: es[0]!.from, to: es[0]!.to })
-      } else {
-        setNodeCand((prev) => (prev === id ? null : id))
-      }
-      setSelKey(null)
+      const es = visibleTopology.edges.filter((x) =>
+        side === "out" ? x.to === id : x.from === id,
+      )
+      const any = visibleTopology.edges.filter((x) => x.from === id || x.to === id)
+      setPairs((es.length ? es : any).map((x) => ({ from: x.from, to: x.to })))
+      setPdfNav({ docId: null, page: null })
     },
-    [visibleTopology, selectEdge],
+    [visibleTopology],
   )
+
+  const removePair = useCallback((p: Pair) => {
+    setPairs((prev) => prev.filter((x) => !(x.from === p.from && x.to === p.to)))
+  }, [])
 
   const onPdfNavigate = useCallback((docId: string, page: number) => {
     setPdfNav({ docId, page })
@@ -255,10 +227,6 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
 
   const report = current.report
   const m = report.meta
-  const cand = nodeCand ? nodeById.get(nodeCand) : null
-  const candEdges = nodeCand
-    ? visibleTopology.edges.filter((e) => e.from === nodeCand || e.to === nodeCand)
-    : []
 
   return (
     <Layout>
@@ -269,37 +237,24 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
         style={{ height: "calc(100dvh - 3.5rem)" }}
       >
         <div className="headline">
-          <h1 style={{ fontSize: 20, fontWeight: 600, lineHeight: "28px", margin: 0 }}>
-            {m.jurisdictionName}
-          </h1>
-          {data.jurisdictions.length > 1 && (
-            <JurisdictionSelect
-              jurisdictions={data.jurisdictions.map((j) => ({
-                code: j.code,
-                name: j.report.meta.jurisdictionName,
-              }))}
-              value={current.code}
-              basePath="pipeline"
-            />
-          )}
-          {m.fiscalYears.length > 1 ? (
-            <FiscalYearSelect
-              years={m.fiscalYears}
-              value={year}
-              onChange={changeYear}
-              allowAll
-              className="w-32"
-              size="sm"
-            />
-          ) : (
-            <span className="text-sm text-muted-foreground">{m.fiscalYears[0]}年度</span>
-          )}
+          {/* 団体名はセレクトの表示値が担う（見出しを別に置くと二重になる） */}
+          <JurisdictionSelect
+            jurisdictions={data.jurisdictions.map((j) => ({
+              code: j.code,
+              name: j.report.meta.jurisdictionName,
+            }))}
+            value={current.code}
+            basePath="pipeline"
+          />
+          <FiscalYearSelect
+            years={m.fiscalYears}
+            value={year}
+            onChange={changeYear}
+            allowAll
+            className="w-32"
+            size="sm"
+          />
           <span className="text-sm text-muted-foreground">{m.phase.label}</span>
-          <span className="text-xs text-muted-foreground">
-            検査 {checkTally.passed}/{checkTally.total}
-            {checkTally.failed ? `・失敗${checkTally.failed}` : ""}
-            {checkTally.warned ? `・警告${checkTally.warned}` : ""}
-          </span>
           <a
             href={withBase(`/analysis/${current.code}/`)}
             className="text-xs"
@@ -313,8 +268,7 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
             topology={visibleTopology}
             code={current.code}
             year={year}
-            sel={pair}
-            nodeCand={nodeCand}
+            sel={pairs}
             onSelectEdge={selectEdge}
             onSelectNode={selectNode}
           />
@@ -332,8 +286,8 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
           }}
         />
         <div className="iowrap">
-          <details className="fold">
-            <summary>注意点 {report.caveats.length} 件</summary>
+          <details className="fold caveats">
+            <summary>⚠ 注意点 {report.caveats.length} 件</summary>
             {report.caveats.map((c, i) => (
               <div className="cv" key={i}>
                 <div className="t">{caveatText(c.topic)}</div>
@@ -344,30 +298,14 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
           <IoPanel
             report={report}
             code={current.code}
-            pair={pair}
+            pairs={pairs}
+            onRemovePair={removePair}
             year={year}
-            selectedKey={selKey}
-            onSelectRow={setSelKey}
-            hoverKey={hovKey}
-            onHoverRow={setHovKey}
             pdfDocId={pdfNav.docId}
             pdfPage={pdfNav.page}
             onPdfNavigate={onPdfNavigate}
           />
         </div>
-        {cand && candEdges.length > 0 && (
-          <div className="candpop" style={{ position: "fixed", left: 16, bottom: 16 }}>
-            <div className="text-xs text-muted-foreground" style={{ padding: "2px 8px 6px" }}>
-              {nodeLabel(cand)} に出入りする組（{candEdges.length}件）— 1つ選ぶ:
-            </div>
-            {candEdges.map((e) => (
-              <button key={`${e.from}|${e.to}`} onClick={() => selectEdge(e)}>
-                {e.from === nodeCand ? "→ " : "← "}
-                {nodeLabel(nodeById.get(e.from)!)} → {nodeLabel(nodeById.get(e.to)!)}
-              </button>
-            ))}
-          </div>
-        )}
       </div>
     </Layout>
   )
