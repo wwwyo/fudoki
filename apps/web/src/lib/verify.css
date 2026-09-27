@@ -45,6 +45,10 @@
 .pv .io .side { min-width: 0; }
 .pv .io > .side.sidestick { position: sticky; }
 .pv .io .side h3 { font-size: 12px; font-weight: 600; margin: 0 0 6px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+/* 見出し＋リードの塊。左右の高さ揃えは .sidehead 同士で計る（pipeline.tsx） */
+.pv .io .sidehead { margin-bottom: 8px; }
+.pv .io .sidehead h3 { margin: 0; }
+.pv .io .lead { font-size: 12px; margin: 2px 0 0; color: var(--muted-foreground); }
 .pv .rows { overflow: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); }
 .pv table.t { border-collapse: collapse; font-size: 11px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; width: 100%; }
 .pv table.t th { position: sticky; top: 0; background: var(--muted); text-align: left; font-weight: 500; color: var(--muted-foreground); padding: 4px 8px; border-bottom: 1px solid var(--border); white-space: nowrap; z-index: 1; }

@@ -1,11 +1,36 @@
 import { describe, expect, test } from 'bun:test'
 import type { Node } from './common'
-import { assertNoNullKeyRows, assertRowSumsConsistent } from './lineage'
+import { assertNoNullKeyRows, assertRowSumsConsistent, leadOf } from './lineage'
 
 const node = (over: Partial<Node>): Node => ({
   id: 'model.fudoki.x', label: 'x', kind: 'model', jurisdictionCode: null, stage: 'core',
   rows: 0, rowsByJurisdiction: null, description: '', introducesJudgment: false,
   containsJudgment: false, artifact: null, ...over,
+})
+
+describe('leadOf', () => {
+  test('冒頭の `--` 行をリードとして取る', () => {
+    expect(leadOf('-- 科目の名称と法定マスタへの対応\nselect 1')).toBe('科目の名称と法定マスタへの対応')
+  })
+
+  test('config の jinja と空行は飛ばして最初の `--` 行に着く', () => {
+    const sql = "{{ config(materialized = 'external') }}\n\n-- 正本（歳出）\nselect 1"
+    expect(leadOf(sql)).toBe('正本（歳出）')
+  })
+
+  test('複数行の jinja ブロックも丸ごと飛ばす', () => {
+    const sql = '{% set x =\n  1 %}\n-- リード\nselect 1'
+    expect(leadOf(sql)).toBe('リード')
+  })
+
+  test('コメントの前に別の文があるならリードとはみなさない', () => {
+    expect(leadOf('select 1\n-- 説明')).toBe('')
+  })
+
+  test('リードの無い SQL では空を返す', () => {
+    expect(leadOf('{{ config() }}\nselect 1')).toBe('')
+    expect(leadOf(undefined)).toBe('')
+  })
 })
 
 describe('assertNoNullKeyRows', () => {

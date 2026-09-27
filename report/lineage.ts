@@ -74,6 +74,8 @@ export const STAGES: Stage[] = [
 
 type DbtNode = {
   name: string; resource_type: string; path?: string; description?: string
+  /** source 側にぶら下がる宣言の説明（`_sources.yml` の source レベル）。表レベルの description とは別欄 */
+  source_description?: string
   config?: { location?: string; severity?: string }; depends_on?: { nodes?: string[] }
   meta?: { role?: 'judgment-rule' | 'external-reference' }
   /** テストは定義 SQL（jinja 込み）と compile 済み SQL を持つ */
@@ -186,6 +188,30 @@ function tally(rows: CountRow[], hasYear: boolean, hasJurisdiction: boolean, nam
       slot.byYear[r.fiscal_year] = (slot.byYear[r.fiscal_year] ?? 0) + r.n_rows
   }
   return { total, byJurisdiction }
+}
+
+/**
+ * モデルのリード文。**約束: モデルの SQL は `--` の1行リードから始める**（書き手の文書化
+ * スタイルがその形に揃っている）。manifest の description（_models.yml）が無いモデルの
+ * リードとしてここから拾う — 同じ説明を2箇所に書かせないため。
+ * 冒頭の空行・jinja ブロック（`{{ config }}` など）を飛ばし、最初の `--` 行の1行だけを取る。
+ */
+export function leadOf(rawCode: string | undefined): string {
+  let jinja = false
+  for (const line of (rawCode ?? '').split('\n')) {
+    const s = line.trim()
+    if (jinja) {
+      if (s.includes('}}') || s.includes('%}')) jinja = false
+      continue
+    }
+    if (!s) continue
+    if (s.startsWith('{{') || s.startsWith('{%')) {
+      if (!s.includes('}}') && !s.includes('%}')) jinja = true
+      continue
+    }
+    return s.startsWith('--') ? s.slice(2).trim() : ''
+  }
+  return ''
 }
 
 /** ノードの団体。**id か名前のどちらかが名乗る**（`raw_132241` / `pkg_132241__expenditure`） */
@@ -338,7 +364,12 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
       rowsByJurisdiction: count?.byJurisdiction ?? null,
       // 団体の帰属はここで1回だけ id / 名前から決める。画面はこのフィールドで絞る
       jurisdictionCode,
-      description: (n.description ?? '').trim(),
+      // 説明の取り方: ① _models.yml/_seeds.yml の description、② モデル SQL の冒頭
+      // `--` リード（yml に無いモデルはコメントが正本）、③ source は宣言レベルの説明の
+      // 先頭行（表ごとの description を _sources.yml は持たないため団体のものを使う）
+      description: (n.description ?? '').trim()
+        || leadOf(n.raw_code)
+        || (n.source_description ?? '').split('\n')[0]!.trim(),
       introducesJudgment: introducesJudgment(n, stage),
       containsJudgment: false, // 下で上流から伝播させる
       artifact: loc ?? null,

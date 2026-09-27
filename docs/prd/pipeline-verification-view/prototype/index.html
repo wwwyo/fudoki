@@ -61,6 +61,10 @@ select.ctl { font: inherit; font-size: 12px; padding: 3px 6px; border: 1px solid
 .io { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
 .io > .side.sidestick { position: sticky; }
 .io .side h3 { font-size: 12px; font-weight: 600; margin: 0 0 6px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+/* 見出し＋リードの塊。左右の高さ揃えは .sidehead 同士で計る（stickShortSide） */
+.io .sidehead { margin-bottom: 8px; }
+.io .sidehead h3 { margin: 0; }
+.io .lead { font-size: 12px; margin: 2px 0 0; color: var(--muted-foreground); }
 .io-node + .io-node { margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--border); }
 .rows { overflow: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); max-height: 100%; }
 table.t { border-collapse: collapse; font-size: 11px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; width: 100%; }
@@ -186,6 +190,8 @@ details.fold .cv .b code { font-size: 11px; background: color-mix(in oklch, var(
 'use strict';
 const DATA = window.PIPELINE_DATA;
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+/* ノードのリード（表が何であるか）。原典は description が URL と取得日時なので出さない（詳細トグルが持つ） */
+const nodeLeadOf = (n) => (n && n.kind !== 'origin' ? (n.description || '').split('\n')[0].trim() : '');
 const fmt = (n) => n == null ? '—' : Number(n).toLocaleString('ja-JP');
 const md = (s) => esc(s).replace(/\*\*(.+?)\*\*|`([^`]+)`/g, (_, b, c) => b != null ? `<strong>${b}</strong>` : `<code>${c}</code>`);
 /* 注意点の本文書式（report/budget/schema.ts 参照）: 空行で段落、`- ` 始まりの段落は箇条書き */
@@ -718,12 +724,13 @@ function ioOverviewHtml(j) {
     const body = pdf
       ? pdfSideHtml(j, dir || 'expenditure', sinkKeys, ctxOf('ov:' + n.id), true, originHitMap[n.id])
       : tableHtml(j, key, dir, 'in', sinkKeys, ctxOf('ov:' + n.id), 'row');
-    return `<div class="io-node" data-ctx="ov:${esc(n.id)}"><h3>${head}</h3>${body}
+    return `<div class="io-node" data-ctx="ov:${esc(n.id)}"><div class="sidehead"><h3>${head}</h3></div>${body}
       ${ioSideDetailHtml(j, n, dir, { isInput: true, aPdf: pdf, srcIds: srcs, tblKey: key, tblDir: dir })}</div>`;
   };
   const sinkHtml = (n) => {
     const d = sinkDir.get(n.id) || '';
-    return `<div class="io-node" data-ctx="ov:${esc(n.id)}"><h3>${esc(nodeLabel(n, j))}</h3>${tableHtml(j, n.id, null, 'out', originKeysByDir[d] || null, ctxOf('ov:' + n.id), d || null)}
+    const nl = nodeLeadOf(n);
+    return `<div class="io-node" data-ctx="ov:${esc(n.id)}"><div class="sidehead"><h3>${esc(nodeLabel(n, j))}</h3>${nl ? `<p class="lead">${md(nl)}</p>` : ''}</div>${tableHtml(j, n.id, null, 'out', originKeysByDir[d] || null, ctxOf('ov:' + n.id), d || null)}
     ${ioSideDetailHtml(j, n, null, { isInput: false, aPdf: false, srcIds: [], tblKey: n.id, tblDir: null })}</div>`;
   };
   return `<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px" data-ctx="ov:hdr">
@@ -849,9 +856,10 @@ function starHtml(j, nodeById, shared, pairs) {
   // 変換の説明 = 出力側ノードの段の責務。共有出力では全組で同じなので1回だけ出す
   // （共有入力では出力ごとに違うので各側の見出しの下に出す）
   const sSt = j.topology.stages.find((s) => s.id === sharedNode.stage);
-  const sharedLead = shared === 'out' && sSt
-    ? `<p class="mut" style="font-size:12px;margin:-2px 0 8px">${esc(sSt.responsibility)}</p>` : '';
-  const sharedSide = `<div class="side" data-ctx="${esc(starCtx)}"><h3>${sharedHead}${sst.row != null ? ` <button class="linky small" data-clear-row>行 ${sst.row} の選択を解除</button>` : ''}</h3>${sharedLead}`
+  const sharedNl = nodeLeadOf(sharedNode);
+  const sharedLead = (sharedNl ? `<p class="lead">${md(sharedNl)}</p>` : '')
+    + (shared === 'out' && sSt ? `<p class="lead">${esc(sSt.responsibility)}</p>` : '');
+  const sharedSide = `<div class="side" data-ctx="${esc(starCtx)}"><div class="sidehead"><h3>${sharedHead}${sst.row != null ? ` <button class="linky small" data-clear-row>行 ${sst.row} の選択を解除</button>` : ''}</h3>${sharedLead}</div>`
     + (aPdf ? pdfSideHtml(j, dir || 'expenditure', peerKeys, sst) : tableHtml(j, sharedKey, dir, 'in', peerKeys, sst))
     + ioSideDetailHtml(j, sharedNode, dir, { isInput: shared === 'in', aPdf, srcIds: sharedNode.kind === 'origin' ? pairs.map((e) => e.to) : [], tblKey: sharedKey, tblDir: dir })
     + `</div>`;
@@ -868,10 +876,11 @@ function starHtml(j, nodeById, shared, pairs) {
     const dirShown = d && (name.includes(DIR[d]) || sharedName.includes(DIR[d]));
     const meta = [d && !dirShown && DIR[d], `${S.year}年度`].filter(Boolean).join(' ／ ');
     const nSt = j.topology.stages.find((s) => s.id === n.stage);
-    const nlead = varSide === 'out' && nSt
-      ? `<p class="mut" style="font-size:12px;margin:-2px 0 8px">${esc(nSt.responsibility)}</p>` : '';
-    return `<div class="io-node" data-ctx="${esc(e.from)}|${esc(e.to)}"><h3>${varSide === 'in' ? `${esc(name)} →` : `→ ${esc(name)}`}${meta ? ` <span class="mut">${meta}</span>` : ''}`
-      + `<button class="pair-x" data-rmpair title="この組を外す" aria-label="この組を外す">✕</button></h3>${nlead}`
+    const nl = nodeLeadOf(n);
+    const nlead = (nl ? `<p class="lead">${md(nl)}</p>` : '')
+      + (varSide === 'out' && nSt ? `<p class="lead">${esc(nSt.responsibility)}</p>` : '');
+    return `<div class="io-node" data-ctx="${esc(e.from)}|${esc(e.to)}"><div class="sidehead"><h3>${varSide === 'in' ? `${esc(name)} →` : `→ ${esc(name)}`}${meta ? ` <span class="mut">${meta}</span>` : ''}`
+      + `<button class="pair-x" data-rmpair title="この組を外す" aria-label="この組を外す">✕</button></h3>${nlead}</div>`
       + (pdf ? pdfSideHtml(j, d || 'expenditure', sharedKeys, own) : tableHtml(j, key, d, varSide, sharedKeys, own))
       + ioSideDetailHtml(j, n, d, { isInput: varSide === 'in', aPdf: pdf, srcIds: n.kind === 'origin' ? [e.to] : [], tblKey: key, tblDir: d })
       + `</div>`;
@@ -1224,8 +1233,8 @@ function stickShortSide() {
     const [a, b] = sides;
     a.classList.remove('sidestick'); b.classList.remove('sidestick');
     a.style.top = ''; b.style.top = '';
-    // 左右の先頭見出しの高さを揃える — 片側だけ改行すると表/PDF の上端がずれる
-    const ha = a.querySelector('h3'), hb = b.querySelector('h3');
+    // 左右の先頭見出し（見出し＋リード文の塊）の高さを揃える — 片側だけ改行すると表/PDF の上端がずれる
+    const ha = a.querySelector('.sidehead'), hb = b.querySelector('.sidehead');
     if (ha && hb) {
       ha.style.minHeight = ''; hb.style.minHeight = '';
       const max = Math.max(ha.offsetHeight, hb.offsetHeight);

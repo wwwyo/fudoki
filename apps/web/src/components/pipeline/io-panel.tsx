@@ -84,6 +84,18 @@ function useHitMap(rows: NodeRows | null, nodeId: string | null, dir: Direction 
 
 const fmt = (n: number | null | undefined) => (n == null ? "—" : Number(n).toLocaleString("ja-JP"))
 
+/** リード文（SQL コメント・宣言 yml の description）は `**…**` で強調を書く約束。画面でそのまま出すと `**` が見えるので畳む */
+function em(text: string) {
+  return text.split(/\*\*([^*]+)\*\*/g).map((p, i) => (i % 2 ? <strong key={i}>{p}</strong> : p))
+}
+
+/** ノードのリード（表が何であるか）。複数行の説明は先頭行だけを見出しの下に出す */
+function nodeLeadOf(n: Node): string | null {
+  if (n.kind === "origin") return null // 原典の description は URL と取得日時 — 出所は詳細トグルが持つ
+  const lead = (n.description ?? "").split("\n")[0]?.trim()
+  return lead || null
+}
+
 /** 検査の表示名。自然文の説明があればそれを使い、なければテスト名をそのまま出す */
 function checkLabel(c: Check): string {
   if (c.description) return c.description
@@ -647,26 +659,26 @@ function StarPanel({
       : sharedName
   // 変換の説明 = 出力側ノードの段の責務。共有出力では全組で同じなのでここで1回だけ出す
   // （共有入力では出力ごとに違うので各側の見出しの下に出す）
-  const lead =
+  const stageLead =
     shared === "out"
       ? report.topology.stages.find((s) => s.id === sharedNode.stage)?.responsibility
       : null
+  const nodeLead = sharedNode ? nodeLeadOf(sharedNode) : null
 
   const sharedSide = (
     <div className="side">
-      <h3>
-        {sharedHead}
-        {selectedKey != null && (
-          <button className="linky text-xs" onClick={() => setSelectedKey(null)}>
-            行 {bareKey(selectedKey)} の選択を解除
-          </button>
-        )}
-      </h3>
-      {lead && (
-        <p className="text-muted-foreground" style={{ fontSize: 12, margin: "-2px 0 8px" }}>
-          {lead}
-        </p>
-      )}
+      <div className="sidehead">
+        <h3>
+          {sharedHead}
+          {selectedKey != null && (
+            <button className="linky text-xs" onClick={() => setSelectedKey(null)}>
+              行 {bareKey(selectedKey)} の選択を解除
+            </button>
+          )}
+        </h3>
+        {nodeLead && <p className="lead">{em(nodeLead)}</p>}
+        {stageLead && <p className="lead">{em(stageLead)}</p>}
+      </div>
       {sharedRows === null ? (
         <p className="text-xs text-muted-foreground">読み込み中…</p>
       ) : (
@@ -833,32 +845,32 @@ function StarSide({
   if (!node) return null
   const name = node.kind === "origin" ? "原典" : nodeLabel(node)
   // この区間でしている変換 = 出力側ノードの段の責務（topology.stages が正本）
-  const lead =
+  const stageLead =
     side === "out"
       ? report.topology.stages.find((s) => s.id === node.stage)?.responsibility
       : null
+  const nodeLead = nodeLeadOf(node)
   const dirShown = dir && (name.includes(DIR_JA[dir]) || sharedName.includes(DIR_JA[dir]))
   const meta = [dir && !dirShown && DIR_JA[dir], `${year}年度`].filter(Boolean).join(" ／ ")
 
   return (
     <div className="io-node">
-      <h3>
-        {side === "in" ? `${name} →` : `→ ${name}`}
-        {meta && <span className="text-muted-foreground">{meta}</span>}
-        <button
-          className="pair-x"
-          onClick={() => onRemovePair(pair)}
-          title="この組を外す"
-          aria-label="この組を外す"
-        >
-          ✕
-        </button>
-      </h3>
-      {lead && (
-        <p className="text-muted-foreground" style={{ fontSize: 12, margin: "-2px 0 8px" }}>
-          {lead}
-        </p>
-      )}
+      <div className="sidehead">
+        <h3>
+          {side === "in" ? `${name} →` : `→ ${name}`}
+          {meta && <span className="text-muted-foreground">{meta}</span>}
+          <button
+            className="pair-x"
+            onClick={() => onRemovePair(pair)}
+            title="この組を外す"
+            aria-label="この組を外す"
+          >
+            ✕
+          </button>
+        </h3>
+        {nodeLead && <p className="lead">{em(nodeLead)}</p>}
+        {stageLead && <p className="lead">{em(stageLead)}</p>}
+      </div>
       {rows === null ? (
         <p className="text-xs text-muted-foreground">読み込み中…</p>
       ) : (
@@ -1147,9 +1159,13 @@ function OverviewNode({
     isOrigin
       ? `原典${rows?.kind === "pdf" ? "（PDF）" : rows?.kind === "table" ? "（CSV）" : ""} — ${node.label}`
       : nodeLabel(node)
+  const nodeLead = nodeLeadOf(node)
   return (
     <div className="io-node">
-      <h3>{head}</h3>
+      <div className="sidehead">
+        <h3>{head}</h3>
+        {nodeLead && <p className="lead">{em(nodeLead)}</p>}
+      </div>
       {rows === null ? (
         <p className="text-xs text-muted-foreground">読み込み中…</p>
       ) : rows.kind === "pdf" ? (

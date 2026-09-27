@@ -473,6 +473,8 @@ export const LineageGraph = memo(function LineageGraph({
                 data-node={id}
                 style={{ cursor: "pointer" }}
               >
+                {/* ノードが何の表かは description が持つ（リードと同じ文）。title は平文なので強調記号は剥がす */}
+                {p.n.description && <title>{p.n.description.replaceAll("**", "")}</title>}
                 {isSelN && <rect className="ring" x={-5} y={-5} width={w + 10} height={NH + 10} rx={11} />}
                 <rect className="body" width={w} height={NH} rx={7} />
                 <rect className="hring" x={-5} y={-5} width={w + 10} height={NH + 10} rx={11} />
