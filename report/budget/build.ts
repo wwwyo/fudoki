@@ -11,8 +11,8 @@
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { loadJurisdictions } from '../../ingestion/shared/jurisdictions'
-import { isCanonicalFetch } from './schema'
-import type { Check, CofogCode, ColDoc, Provenance, ReportData, Topology } from './schema'
+import { DOCUMENT_PHASES, isCanonicalFetch } from './schema'
+import type { Check, CofogCode, ColDoc, DocumentPhaseId, Provenance, ReportData, Topology } from './schema'
 import { ROOT, TARGET, buildChecks, buildTopology, q, readJson, type Manifest, type RunResults } from '../lineage'
 import { BY_JURISDICTION, SHARED } from './static'
 import { cofogGranularity, cmp, foldBy, share, type StateRow } from './cofog'
@@ -362,6 +362,24 @@ type SourceEntry = {
 }
 
 /**
+ * `sources.toml` の `phase_id` を文書種別の語彙（`DOCUMENT_PHASES`）の1つに確定する。
+ * ⚠️ 語彙の外の値を黙って通すと、画面は「この団体の文書が語彙のどれか」を
+ * 選択肢の中で示せなくなり、団体固有のラベルだけが残る — ここで止める。
+ */
+function documentPhaseOf(code: string, src: SourceEntry): { id: DocumentPhaseId; label: string } {
+  const hit = DOCUMENT_PHASES.find((p) => p.id === src.phase_id)
+  if (!hit) {
+    throw new Error(
+      `取得元 ${code}: phase_id「${src.phase_id}」は DOCUMENT_PHASES（report/common.ts）に無い。文書種別が増えるなら語彙のほうに足す`,
+    )
+  }
+  if (src.phase_label && src.phase_label !== hit.label) {
+    throw new Error(`取得元 ${code}: phase_label「${src.phase_label}」が語彙の表示名「${hit.label}」と食い違う`)
+  }
+  return { id: hit.id, label: hit.label }
+}
+
+/**
  * 取得元の定義。**団体コードを直書きしない** — `sources.toml` が正本。
  *
  * ⚠️ TOML を正規表現で読まない。最初に一致した key を返すので、
@@ -546,10 +564,10 @@ function build(
       jurisdictionCode: code,
       jurisdictionName: jurisdictionNameOf(code),
       fiscalYears: [...new Set(prov.map((p) => p.fiscal_year))].sort(),
-      // **原典の文書の種類**（当初予算 / 決算）。行が持つ予算段階とは別の軸で、
+      // **原典の文書の種類**（語彙は DOCUMENT_PHASES）。行が持つ予算段階とは別の軸で、
       // 狛江市の決算書は1行が予算現額と執行済額の両方を持つ。
       // 行の段階は配布物の列にあり、画面はデータから拾う（段階の数が団体ごとに違うため）。
-      phase: { id: pick('phase_id'), label: pick('phase_label') },
+      phase: documentPhaseOf(code, src),
       license: { id: pick('license_id'), url: 'https://creativecommons.org/licenses/by/4.0/' },
       attribution: pick('attribution'),
       landingPage: pick('landing_page'),

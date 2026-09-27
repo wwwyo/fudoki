@@ -328,12 +328,29 @@ export function provenanceForSource(id: string, direction: string, provenance: P
   return ps.length === 0 ? null : { ps, kind }
 }
 
+/**
+ * 原典の文書の種類の語彙（`meta.phase.id` が取り得る値）。
+ * 地方自治体の予算関係の文書は当初予算・補正予算・決算の3種で、
+ * 1団体の収録はこの中の1種類を原典にする。
+ *
+ * ⚠️ **行が持つ FDP の予算段階（approved / adjusted / executed）とは別の軸。**
+ * 狛江市の決算書は1行が予算現額と執行済額の両方を持つ。`approved`（当初予算）は
+ * 宣言済みの id をそのまま使うが、補正予算は行段階の `adjusted` と混ざるので
+ * 文書種別側は `supplementary` とする。
+ */
+export const DOCUMENT_PHASES = [
+  { id: 'approved', label: '当初予算' },
+  { id: 'supplementary', label: '補正予算' },
+  { id: 'settlement', label: '決算' },
+] as const
+export type DocumentPhaseId = (typeof DOCUMENT_PHASES)[number]['id']
+
 /** どの層の報告でも共通の外枠 */
 export type ReportEnvelope = {
   meta: {
     jurisdictionCode: string
     jurisdictionName: string
-    phase: { id: string; label: string }
+    phase: { id: DocumentPhaseId; label: string }
     license: { id: string; url: string }
     attribution: string
     landingPage: string

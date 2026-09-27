@@ -8,6 +8,9 @@
 import type { Provenance, ReportEnvelope } from '../common'
 import type { CofogDepth, Direction, Level } from './detail'
 
+export type { DocumentPhaseId } from '../common'
+export { DOCUMENT_PHASES } from '../common'
+
 export type {
   CanonicalFetch,
   Check,

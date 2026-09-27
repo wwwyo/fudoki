@@ -12,6 +12,7 @@ import { ArrowUpRight } from "lucide-react"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { FiscalYearSelect } from "@/components/fiscal-year-select"
 import { JurisdictionSelect } from "@/components/jurisdiction-select"
+import { PhaseSelect } from "@/components/phase-select"
 import { Layout } from "@/components/layout"
 import { NotCollectedPage } from "@/components/not-collected-page"
 import { LineageGraph } from "@/components/pipeline/graph"
@@ -279,7 +280,7 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
             className="w-32"
             size="sm"
           />
-          <span className="text-sm text-muted-foreground">{m.phase.label}</span>
+          <PhaseSelect value={m.phase.id} className="w-32" size="sm" />
           <a
             href={withBase(`/analysis/${current.code}/`)}
             className="text-xs"

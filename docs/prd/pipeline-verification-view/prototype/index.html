@@ -261,6 +261,14 @@ function pushUrl() {
 const STAGE_JA = { origin: '原典', ingestion: '取り込み', staging: '正規化', core: '判断', package: '配布物' };
 const STAGE_ORDER = ['origin', 'ingestion', 'staging', 'core', 'package'];
 const DIR = { expenditure: '歳出', revenue: '歳入' };
+/* 原典の文書種別の語彙（正本は report/common.ts の DOCUMENT_PHASES）。
+   「当初予算」とだけ書くと enum の1要素ではなく暗黙の前提に見えるので、
+   収録していない種類も選択肢に残して disabled にする */
+const PHASES = [
+  { id: 'approved', label: '当初予算' },
+  { id: 'supplementary', label: '補正予算' },
+  { id: 'settlement', label: '決算' },
+];
 /* 列の意味の語彙。実装は pipeline.json の shared.columnDocs を読むが、data.js は
    生成時点のスナップショットなのでここに埋め込む（正本: 配布物の descriptor と
    dbt manifest の列記述。resources はリソース名でスコープ — saisetsu_code が
@@ -872,7 +880,9 @@ function headlineHtml(j) {
     <select class="ctl" data-year>
       ${years.map((y) => `<option value="${y}" ${S.year === y ? 'selected' : ''}>${y}年度</option>`).join('')}
     </select>
-    <span class="mut small">${esc(m.phase.label)}</span>
+    <select class="ctl" title="原典の文書種別（この団体が収録しているのは1種類。語彙を見せるために残す）">
+      ${PHASES.map((p) => `<option value="${p.id}" ${m.phase.id === p.id ? 'selected' : 'disabled'}>${esc(p.label)}</option>`).join('')}
+    </select>
   </div>`;
 }
 function zoomctlHtml() {
@@ -898,7 +908,13 @@ function vSplit() {
 /* ---- harness ---- */
 function syncBar() { document.querySelectorAll('.harness-bar button').forEach((x) => x.toggleAttribute('data-active', x.dataset.j === S.code)); }
 document.querySelectorAll('.harness-bar button').forEach((b) => {
-  b.addEventListener('click', () => { S.code = b.dataset.j; S.edges = []; S.ctx = {}; V1Z = null; syncBar(); pushUrl(); mount(); });
+  b.addEventListener('click', () => {
+    S.code = b.dataset.j; S.edges = []; S.ctx = {}; V1Z = null;
+    // 収録外の年度を持ち越すとその団体の空表が出る — 実装（pipeline.tsx）と同じく最新年度に倒す
+    const ys = DATA[S.code].meta.fiscalYears;
+    if (!ys.includes(S.year)) S.year = ys[ys.length - 1];
+    syncBar(); pushUrl(); mount();
+  });
 });
 syncBar();
 

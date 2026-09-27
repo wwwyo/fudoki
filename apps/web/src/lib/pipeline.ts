@@ -5,6 +5,7 @@
  * 食い違いはコンパイラが捕まえる。型を2箇所で宣言すると、
  * 生成側のキーを変えた瞬間に画面が黙って壊れる（実際にその状態を作った）。
  */
+import { DOCUMENT_PHASES } from '@fudoki/report/budget/schema'
 import type {
   AmountDecl,
   CanonicalFetch,
@@ -12,6 +13,7 @@ import type {
   CheckAttribution,
   CofogCode,
   ColDoc,
+  DocumentPhaseId,
   Edge,
   Node,
   ProjectNamesExtract,
@@ -32,6 +34,7 @@ export type {
   CofogCode,
   ColDoc,
   Direction,
+  DocumentPhaseId,
   Edge,
   Node,
   ProjectNamesExtract,
@@ -42,7 +45,7 @@ export type {
   StatementExtract,
   Topology,
 }
-export { extractedKindOf, isCanonicalFetch, nodeRows } from '@fudoki/report/budget/schema'
+export { DOCUMENT_PHASES, extractedKindOf, isCanonicalFetch, nodeRows } from '@fudoki/report/budget/schema'
 
 /**
  * ⚠️ **複数団体を運ぶ。**
@@ -109,6 +112,12 @@ function assertShape(d: PipelineFile): void {
     if (!j.report) { problems.push(`${j.code}: report が無い`); continue }
     for (const k of ['meta', 'summary', 'ingestion', 'detailLevels', 'levels', 'coverage', 'transform'] as const) {
       if (j.report[k] === undefined) problems.push(`${j.code}: report.${k} が無い`)
+    }
+    // 文書種別は語彙（DOCUMENT_PHASES）の中の1つとして画面が出す — 語彙外の id は
+    // 選択肢の中に置けない（語彙を増やしたなら report/common.ts と pipeline.json の両方を直す）
+    if (j.report.meta?.phase?.id !== undefined
+        && !DOCUMENT_PHASES.some((p) => p.id === j.report.meta.phase.id)) {
+      problems.push(`${j.code}: meta.phase.id「${j.report.meta.phase.id}」が文書種別の語彙に無い`)
     }
     // ⚠️ **transform の中まで見る。** COFOG の集計は生成側が持っていて画面は表示だけなので、
     // 古い pipeline.json を掴むと**型が「ある」と言っている節が実際には無い**まま画面が落ちる。
