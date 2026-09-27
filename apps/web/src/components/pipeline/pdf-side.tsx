@@ -144,12 +144,7 @@ export function PdfSide({
         >
           ◀
         </button>
-        <span className="text-xs" style={{ color: "var(--muted-foreground)" }}>
-          <span className="mono">
-            {shown !== null ? idx + 1 : "-"}/{pages.length}
-          </span>{" "}
-          頁
-        </span>
+        <span className="mono text-xs">p.{shown ?? "-"}</span>
         <button
           className="pgbtn"
           disabled={idx < 0 || idx >= pages.length - 1}
@@ -158,7 +153,15 @@ export function PdfSide({
         >
           ▶
         </button>
-        <span className="mono text-xs">p.{shown ?? "-"}</span>
+        {/* 主表示は原典の頁番号（p.N）。取り込み範囲の序数は副表示 —
+            「1/210 頁」が先に来ると頁番号と取り違える */}
+        <span
+          className="text-xs"
+          style={{ color: "var(--muted-foreground)" }}
+          title="この文書に取り込んだ頁範囲の何枚目か。原典の頁番号は p. の数字"
+        >
+          {shown !== null ? idx + 1 : "-"}/{pages.length}
+        </span>
         {/* 文書が年度ごとに分かれているときの切替。頁番号の意味が変わるので必須 */}
         {docs.length > 1 && (
           <select
