@@ -132,7 +132,7 @@
 .pv .graphwrap { overflow: hidden; position: relative; touch-action: none; user-select: none; flex: 0 0 auto; }
 .pv .graphsvg { display: block; cursor: grab; }
 /* 段見出しはパンではなく情報 affordance — grab を継承させない */
-.pv .graphsvg .stage-head { cursor: help; }
+.pv .graphsvg .stage-head { cursor: default; }
 .pv .graphsvg.panning, .pv .graphsvg.panning * { cursor: grabbing !important; }
 .pv .zoomctl { position: absolute; right: 10px; bottom: 10px; z-index: 5; display: flex; flex-direction: column; gap: 4px; }
 .pv .zoomctl button { min-width: 28px; height: 26px; padding: 0 6px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--card); color: var(--foreground); font: inherit; font-size: 11px; line-height: 1; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.08); }

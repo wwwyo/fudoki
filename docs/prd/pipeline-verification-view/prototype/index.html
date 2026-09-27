@@ -157,7 +157,7 @@ details.fold .cv .b code { font-size: 11px; background: color-mix(in oklch, var(
 .v1 .graphwrap { overflow: hidden; position: relative; touch-action: none; user-select: none; }
 .v1 .graphsvg { display: block; cursor: grab; }
 /* 段見出しはパンではなく情報 affordance — grab を継承させない */
-.v1 .graphsvg .stage-head { cursor: help; }
+.v1 .graphsvg .stage-head { cursor: default; }
 /* 段の責務の自前 tooltip（<title> は埋め込みブラウザで出ないことがある） */
 #stagetip { position: fixed; z-index: 50; max-width: 320px; padding: 6px 10px; border-radius: 6px; background: var(--foreground); color: var(--background); font-size: 11px; line-height: 1.6; pointer-events: none; opacity: 0; transition: opacity .12s; }
 #stagetip.on { opacity: 1; }
@@ -199,7 +199,7 @@ details.fold .cv .b code { font-size: 11px; background: color-mix(in oklch, var(
 <div id="stagetip" role="tooltip"></div>
 <!-- 生成ファイルを index.html から指しているため、内容が変わるたびにブラウザの
      heuristic cache に引っかかる。data.js を差し替えたら ?v= を上げる -->
-<script src="data.js?v=2"></script>
+<script src="data.js?v=3"></script>
 <script>
 'use strict';
 const DATA = window.PIPELINE_DATA;

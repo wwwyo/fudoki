@@ -61,7 +61,7 @@ export const STAGES: Stage[] = [
   // 取得元だけは dbt の外にある（パイプラインが始まる前の、自治体が配っているファイルそのもの）。
   // ノードは provenance から組む — 手で並べると取得元を変えても図が変わらない
   { id: 'origin', label: '取得元', introducesJudgment: false,
-    responsibility: '自治体が公開しているファイルそのもの。fudoki の外にあり、fudoki は変更できない' },
+    responsibility: '自治体が公開しているファイルそのもの' },
   { id: 'ingestion', label: 'ingestion', introducesJudgment: false,
     responsibility: '取得元から取り、無加工のまま Parquet で置く。取得 URL・status・SHA-256・取得時刻を添える' },
   { id: 'staging', label: 'staging', introducesJudgment: false,
