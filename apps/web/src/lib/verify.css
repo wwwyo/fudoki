@@ -103,6 +103,11 @@
 .pv details.fold .cv:first-child { border-top: 0; }
 .pv details.fold .cv .t { font-weight: 500; font-size: 13px; }
 .pv details.fold .cv .b { font-size: 12px; color: var(--muted-foreground); }
+.pv details.fold .cv .b p { margin: 0 0 6px; }
+.pv details.fold .cv .b ul { margin: 4px 0 8px; padding-left: 18px; list-style: disc; }
+.pv details.fold .cv .b li { margin: 2px 0; }
+.pv details.fold .cv .b > :last-child { margin-bottom: 0; }
+.pv details.fold .cv .b code { font-size: 11px; background: color-mix(in oklch, var(--foreground) 7%, transparent); padding: 0 3px; border-radius: 3px; }
 
 /* ---- 固定分割: 画面を上下2ペインに割り、各ペインが独立にスクロールする
    （図ペインではパンがスクロール相当）。ページ自体はスクロールせず、境目をドラッグで比率変更 ---- */

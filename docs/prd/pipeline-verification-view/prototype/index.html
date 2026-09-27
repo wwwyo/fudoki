@@ -130,6 +130,11 @@ details.fold .cv { padding: 6px 0; border-top: 1px solid var(--border); }
 details.fold .cv:first-of-type { border-top: 0; }
 details.fold .cv .t { font-weight: 500; }
 details.fold .cv .b { font-size: 12px; color: var(--muted-foreground); }
+details.fold .cv .b p { margin: 0 0 6px; }
+details.fold .cv .b ul { margin: 4px 0 8px; padding-left: 18px; list-style: disc; }
+details.fold .cv .b li { margin: 2px 0; }
+details.fold .cv .b > :last-child { margin-bottom: 0; }
+details.fold .cv .b code { font-size: 11px; background: color-mix(in oklch, var(--foreground) 7%, transparent); padding: 0 3px; border-radius: 3px; }
 
 /* ===== 上下レイアウト 3 サブ案。軸は「図と I/O が縦の空間をどう分けるか」 ===== */
 /* 図ペイン: ズーム/パン・組 hover 機構 */
@@ -170,13 +175,20 @@ details.fold .cv .b { font-size: 12px; color: var(--muted-foreground); }
   <button data-j="132195">132195 狛江市（CSV）</button>
 </div>
 <div id="stage"></div>
-<script src="data.js"></script>
+<!-- 生成ファイルを index.html から指しているため、内容が変わるたびにブラウザの
+     heuristic cache に引っかかる。data.js を差し替えたら ?v= を上げる -->
+<script src="data.js?v=2"></script>
 <script>
 'use strict';
 const DATA = window.PIPELINE_DATA;
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt = (n) => n == null ? '—' : Number(n).toLocaleString('ja-JP');
-const md = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+const md = (s) => esc(s).replace(/\*\*(.+?)\*\*|`([^`]+)`/g, (_, b, c) => b != null ? `<strong>${b}</strong>` : `<code>${c}</code>`);
+/* 注意点の本文書式（report/budget/schema.ts 参照）: 空行で段落、`- ` 始まりの段落は箇条書き */
+const mdBody = (s) => String(s ?? '').split(/\n{2,}/).map((block) =>
+  block.startsWith('- ')
+    ? `<ul>${block.split('\n').map((l) => `<li>${md(l.slice(2))}</li>`).join('')}</ul>`
+    : `<p>${md(block)}</p>`).join('');
 const qs = new URLSearchParams(location.search);
 const S = {
   code: qs.get('j') === '132195' ? '132195' : '131016',
@@ -879,7 +891,7 @@ function vSplit() {
   return `<div class="v1 vsplit">${headlineHtml(j)}
     <div class="graphwrap" style="flex-basis:${SPLITH}%">${graphSvg(j, true, null, true, true)}${zoomctlHtml()}</div>
     <div class="splitsash" role="separator" aria-orientation="horizontal" title="ドラッグで上下の比率を変更"></div>
-    <div class="iowrap">${ioPanelHtml(j)}<details class="fold caveats"><summary>⚠ 注意点 ${j.caveats.length} 件</summary>${j.caveats.map((c) => `<div class="cv"><div class="t">${md(c.topic)}</div><div class="b">${md(c.body)}</div></div>`).join('')}</details></div></div>`;
+    <div class="iowrap">${ioPanelHtml(j)}<details class="fold caveats"><summary>⚠ 注意点 ${j.caveats.length} 件</summary>${j.caveats.map((c) => `<div class="cv"><div class="t">${md(c.topic)}</div><div class="b">${mdBody(c.body)}</div></div>`).join('')}</details></div></div>`;
 }
 
 

@@ -213,6 +213,9 @@ export type ReportData = ReportEnvelope & {
    * 基準: データ（enum・数値・構造）から見えず、API 利用者の解釈を変えるもの。
    * 構造が既に語っている事実、fudoki 側で吸収済みの経緯、repo の再現性の話は載せない
    * （報告=ダッシュボードには全量を出す）。
+   *
+   * `body` の書式: 空行で段落を分け、`- ` で始まる段落は1行1項目の箇条書き、
+   * `**強調**` と `` `コード` `` が使える（md ではなくこの3つだけ）。
    */
   caveats: { topic: string; body: string; category: CaveatCategory; api?: boolean }[]
   /**

@@ -29,14 +29,35 @@ type Props = {
   jurisdictionName?: string
 }
 
-/** 注意点（caveat）の本文に含まれる `**強調**` だけを <strong> にする（記法は md ではない） */
+/** 注意点（caveat）の本文に含まれる `**強調**` と `` `コード` `` だけを要素にする（記法は md ではない） */
 function caveatText(s: string) {
-  return s.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
+  return s.split(/(\*\*[^*]+\*\*|`[^`]+`)/g).map((part, i) =>
     part.startsWith("**") && part.endsWith("**") ? (
       <strong key={i}>{part.slice(2, -2)}</strong>
+    ) : part.startsWith("`") && part.endsWith("`") ? (
+      <code key={i} className="mono">{part.slice(1, -1)}</code>
     ) : (
       <span key={i}>{part}</span>
     ),
+  )
+}
+
+/** 本文を空行でブロックに分け、`- ` 始まりのブロックを箇条書きにする（書式は schema.ts 参照） */
+function CaveatBody({ body }: { body: string }) {
+  return (
+    <>
+      {body.split(/\n{2,}/).map((block, i) =>
+        block.startsWith("- ") ? (
+          <ul key={i}>
+            {block.split("\n").map((line, j) => (
+              <li key={j}>{caveatText(line.slice(2))}</li>
+            ))}
+          </ul>
+        ) : (
+          <p key={i}>{caveatText(block)}</p>
+        ),
+      )}
+    </>
   )
 }
 
@@ -314,7 +335,7 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
             {report.caveats.map((c, i) => (
               <div className="cv" key={i}>
                 <div className="t">{caveatText(c.topic)}</div>
-                <div className="b">{caveatText(c.body)}</div>
+                <div className="b"><CaveatBody body={c.body} /></div>
               </div>
             ))}
           </details>
