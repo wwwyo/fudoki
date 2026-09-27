@@ -158,11 +158,8 @@ export function PdfSide({
         >
           ◀
         </button>
-        {/* 中央は物理頁番号（p.N と同じ番号）の直接入力で、「/ 総数」は取り込んだ
-            頁数。key で頁が変わったら入力値をその頁に戻す */}
-        <span className="text-xs" style={{ color: "var(--muted-foreground)" }}>
-          p.
-        </span>
+        {/* 中央は物理頁番号（hit・証跡と同じ番号）の直接入力で、「/ 総数」は
+            取り込んだ頁数。key で頁が変わったら入力値をその頁に戻す */}
         <input
           key={`${doc.id}:${shown}`}
           className="pgnum mono"

@@ -81,10 +81,9 @@
 .pv .pdfpage .wspan { position: absolute; color: transparent; cursor: text; user-select: text; -webkit-user-select: text; overflow: hidden; line-height: 1; }
 .pv .pdfpage .wspan::selection { background: color-mix(in oklch, var(--primary) 25%, transparent); color: transparent; }
 .pv .pdfpage .hit { position: absolute; border-radius: 3px; background: color-mix(in oklch, var(--primary) 14%, transparent); outline: 1.5px solid var(--primary); pointer-events: none; }
-/* ページ送りはビューア上部のツールバーとして .pdfview の枠に収める。
-   sticky で残す（長い頁をスクロールしても送り口が見える） */
+/* ページ送りはビューア上部のツールバーとして .pdfview の枠に収める（画像とひとまとまり） */
 .pv .pdfview { border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--card); }
-.pv .pdfpager { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 8px; padding: 4px 8px; background: var(--muted); border-bottom: 1px solid var(--border); border-radius: calc(var(--radius-sm) - 1px) calc(var(--radius-sm) - 1px) 0 0; }
+.pv .pdfpager { display: flex; align-items: center; gap: 8px; padding: 4px 8px; background: var(--muted); border-bottom: 1px solid var(--border); border-radius: calc(var(--radius-sm) - 1px) calc(var(--radius-sm) - 1px) 0 0; }
 .pv .pdfview .pdfpage { margin-bottom: 0; border-radius: 0 0 calc(var(--radius-sm) - 1px) calc(var(--radius-sm) - 1px); overflow: hidden; }
 .pv .pgbtn { border: 1px solid var(--border); background: var(--card); border-radius: var(--radius-sm); font: inherit; font-size: 11px; padding: 2px 8px; cursor: pointer; line-height: 16px; color: var(--foreground); }
 .pv .pgbtn:hover:not([disabled]) { background: var(--accent); border-color: var(--primary); }

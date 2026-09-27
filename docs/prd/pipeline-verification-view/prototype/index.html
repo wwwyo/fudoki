@@ -99,10 +99,9 @@ details.caveats .cv:last-child { padding-bottom: 8px; }
 .pdfpage .wspan { position: absolute; color: transparent; cursor: text; user-select: text; -webkit-user-select: text; overflow: hidden; line-height: 1; }
 .pdfpage .wspan::selection { background: rgba(47,93,67,.25); color: transparent; }
 .pdfpage .hit { position: absolute; border-radius: 3px; background: rgba(47,93,67,.14); outline: 1.5px solid var(--primary); pointer-events: none; }
-/* ページ送りはビューア上部のツールバーとして .pdfview の枠に収める（画像とひとまとまり）。
-   sticky で残すのは変えない（長い頁をスクロールしても送り口が見える） */
+/* ページ送りはビューア上部のツールバーとして .pdfview の枠に収める（画像とひとまとまり） */
 .v1 .pdfview { border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--card); }
-.v1 .pdfpager { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 8px; padding: 4px 8px; background: var(--muted); border-bottom: 1px solid var(--border); border-radius: calc(var(--radius-sm) - 1px) calc(var(--radius-sm) - 1px) 0 0; }
+.v1 .pdfpager { display: flex; align-items: center; gap: 8px; padding: 4px 8px; background: var(--muted); border-bottom: 1px solid var(--border); border-radius: calc(var(--radius-sm) - 1px) calc(var(--radius-sm) - 1px) 0 0; }
 .v1 .pdfview .pdfpage { margin-bottom: 0; border-radius: 0 0 calc(var(--radius-sm) - 1px) calc(var(--radius-sm) - 1px); overflow: hidden; }
 .v1 .pgbtn { border: 1px solid var(--border); background: var(--card); border-radius: var(--radius-sm); font: inherit; font-size: 11px; padding: 2px 8px; cursor: pointer; line-height: 16px; }
 .v1 .pgbtn:hover:not([disabled]) { background: var(--accent); border-color: var(--primary); }
@@ -650,7 +649,7 @@ function pdfSideHtml(j, dir, flagSet, st, interact = true, hitsOv = null) {
   // ずれて必ず誤入力になる）。「/ 総数」はこの文書に取り込んだ頁数
   return `<div class="pdfview"><div class="pdfpager" role="group" aria-label="PDF のページ送り">
       <button class="pgbtn" data-pg="-1" ${idx <= 0 ? 'disabled' : ''} aria-label="前の頁">◀</button>
-      <span class="small mut">p.</span><input class="pgnum mono" value="${cur}" inputmode="numeric" title="PDF の頁番号（直接入力で移動）" aria-label="PDF の頁番号（直接入力で移動）">
+      <input class="pgnum mono" value="${cur}" inputmode="numeric" title="PDF の頁番号（直接入力で移動）" aria-label="PDF の頁番号（直接入力で移動）">
       <span class="small mut" title="この文書に取り込んだ頁数">/ ${pages.length}</span>
       ${cur != null && Object.keys(hits).length && !hitsOnCur ? '<span class="small mut" title="この頁には対象の行が載っていない（別の向きの頁など）">— この頁に対象の行なし</span>' : ''}
       <button class="pgbtn" data-pg="1" ${idx >= pages.length - 1 ? 'disabled' : ''} aria-label="次の頁">▶</button>
@@ -1225,6 +1224,13 @@ function stickShortSide() {
     const [a, b] = sides;
     a.classList.remove('sidestick'); b.classList.remove('sidestick');
     a.style.top = ''; b.style.top = '';
+    // 左右の先頭見出しの高さを揃える — 片側だけ改行すると表/PDF の上端がずれる
+    const ha = a.querySelector('h3'), hb = b.querySelector('h3');
+    if (ha && hb) {
+      ha.style.minHeight = ''; hb.style.minHeight = '';
+      const max = Math.max(ha.offsetHeight, hb.offsetHeight);
+      ha.style.minHeight = hb.style.minHeight = `${max}px`;
+    }
     if (a.offsetHeight === b.offsetHeight) return;
     const s = a.offsetHeight < b.offsetHeight ? a : b;
     s.classList.add('sidestick');

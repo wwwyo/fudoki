@@ -239,6 +239,15 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
           s.classList.remove("sidestick")
           s.style.top = ""
         }
+        // 左右の先頭見出しの高さを揃える — 片側だけ改行すると表/PDF の上端がずれる
+        const ha = a.querySelector("h3")
+        const hb = b.querySelector("h3")
+        if (ha && hb) {
+          ha.style.minHeight = ""
+          hb.style.minHeight = ""
+          const max = Math.max(ha.offsetHeight, hb.offsetHeight)
+          ha.style.minHeight = hb.style.minHeight = `${max}px`
+        }
         if (a.offsetHeight === b.offsetHeight) continue
         const s = a.offsetHeight < b.offsetHeight ? a : b
         s.classList.add("sidestick")
