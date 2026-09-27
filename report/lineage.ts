@@ -61,18 +61,15 @@ export const STAGES: Stage[] = [
   // 取得元だけは dbt の外にある（パイプラインが始まる前の、自治体が配っているファイルそのもの）。
   // ノードは provenance から組む — 手で並べると取得元を変えても図が変わらない
   { id: 'origin', label: '取得元', introducesJudgment: false,
-    responsibility: '自治体が公開しているファイルそのもの。fudoki の外にあり、fudoki は変更できない',
-    excludes: 'fudoki の関与すべて' },
+    responsibility: '自治体が公開しているファイルそのもの。fudoki の外にあり、fudoki は変更できない' },
   { id: 'ingestion', label: 'ingestion', introducesJudgment: false,
-    responsibility: '取得元から取り、無加工のまま Parquet で置く。取得 URL・status・SHA-256・取得時刻を添える',
-    excludes: '解釈・整形・結合' },
+    responsibility: '取得元から取り、無加工のまま Parquet で置く。取得 URL・status・SHA-256・取得時刻を添える' },
   { id: 'staging', label: 'staging', introducesJudgment: false,
-    responsibility: '原典と1対1。列名の付け替えと型付けだけ',
-    excludes: '判断（分類・名寄せ・推定）。行を増減させること' },
+    responsibility: '原典と1対1。列名の付け替えと型付けだけ' },
   { id: 'core', label: 'core', introducesJudgment: true,
-    responsibility: '判断が入る段。COFOG 写像、連結の消去', excludes: '取得' },
+    responsibility: '判断が入る段。COFOG 写像、連結の消去' },
   { id: 'package', label: 'package', introducesJudgment: false,
-    responsibility: '配布物へ。Fiscal Data Package の形にする', excludes: '判断' },
+    responsibility: '配布物へ。Fiscal Data Package の形にする' },
 ]
 
 type DbtNode = {

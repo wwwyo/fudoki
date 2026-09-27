@@ -538,7 +538,6 @@ export function IoPanel({
       {bStage?.responsibility && (
         <p className="text-muted-foreground" style={{ fontSize: 12, margin: "-2px 0 10px" }}>
           {bStage.responsibility}
-          {bStage.excludes ? `　·　しない: ${bStage.excludes}` : ""}
         </p>
       )}
       <div className="io">

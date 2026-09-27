@@ -11,7 +11,6 @@ export type Stage = {
   id: 'origin' | 'ingestion' | 'staging' | 'core' | 'package'
   label: string
   responsibility: string
-  excludes: string
   /** fudoki の判断が入る段か。境界はここにある */
   introducesJudgment: boolean
 }

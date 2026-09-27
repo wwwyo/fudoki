@@ -731,7 +731,7 @@ function ioPanelBodyHtml(j, e, a, b, dir, aPdf, fromKey) {
   const inH3 = a.kind === 'origin' ? `原典（${aPdf ? 'PDF' : 'CSV'}）` : `入力 — ${esc(nodeLabel(a, j))}`;
   // この区間でしている変換 = 出力側ノードの段の責務（topology.stages が正本）
   const bSt = j.topology.stages.find((s) => s.id === b.stage);
-  const lead = bSt ? `${esc(bSt.responsibility)}${bSt.excludes ? `　·　しない: ${esc(bSt.excludes)}` : ''}` : '';
+  const lead = bSt ? esc(bSt.responsibility) : '';
   return `<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px">
       <h2 style="font-size:14px;margin:0">${esc(inName)} <span class="mut">→</span> ${esc(bName)}</h2>
       ${meta ? `<span class="mut small">${meta}</span>` : ''}
