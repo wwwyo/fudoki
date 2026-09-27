@@ -10,61 +10,66 @@
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState, forwardRef } from "react"
 import type { ColDoc, Direction } from "@/lib/pipeline"
 import type { TableRows } from "@/lib/verify"
-import { linkKeys } from "@/lib/verify"
+import { keysIntersect, rowKeySets } from "@/lib/verify"
 
 const ROW_H = 24
 const OVERSCAN = 12
 
 export type RowTableHandle = {
-  /** その鍵の行が見える位置までスクロールする */
-  scrollToKey: (key: string) => void
+  /** いずれかの鍵を持つ行が見える位置までスクロールする */
+  scrollToKeys: (keys: Iterable<string>) => void
 }
 
 type Props = {
   table: TableRows
   /** 反対側にも同じ鍵がある行の集合（バッジを出す母数） */
   linkedKeys: Set<string> | null
-  /** 選択中の行キー（両側で共有する） */
-  selectedKey: string | null
-  /** hover 中の行キー（反対側からの予告を受ける） */
-  hoverKey: string | null
+  /** 選択中の行の鍵集合（両側で共有する。行は複数の鍵空間を持ちうる） */
+  selectedKeys: Set<string> | null
+  /** hover 中の行の鍵集合（反対側からの予告を受ける） */
+  hoverKeys: Set<string> | null
   /**
    * 修飾キーに載せる向き。歳出・歳入を併せて見せる表示（overview）では
-   * その表の向きを渡して `<年度>|<向き>|<鍵>` に揃える。
+   * その表の向きを渡して `<空間>|<年度>|<向き>|<鍵>` に揃える。
    * `'row'` は行自身の direction 列で修飾する（向きが混ざる表用）。
-   * 渡さないと `<年度>|<鍵>` のまま（1方向の表示）。
+   * 渡さないと向き修飾なし（1方向の表示）。
    */
   keyDir?: Direction | "row"
   /** 列名 → 意味（ヘッダのツールチップ用。語彙が引けない表は空） */
   docs?: Record<string, ColDoc>
-  onSelectRow: (key: string) => void
-  onHoverRow: (key: string | null) => void
+  onSelectRow: (keys: Set<string>) => void
+  onHoverRow: (keys: Set<string> | null) => void
 }
 
 export const RowTable = forwardRef<RowTableHandle, Props>(function RowTable(
-  { table, linkedKeys, selectedKey, hoverKey, keyDir, docs, onSelectRow, onHoverRow },
+  { table, linkedKeys, selectedKeys, hoverKeys, keyDir, docs, onSelectRow, onHoverRow },
   ref,
 ) {
   const boxRef = useRef<HTMLDivElement>(null)
   const [scrollTop, setScrollTop] = useState(0)
   const [viewH, setViewH] = useState(400)
 
-  // 対応・選択は修飾キー（`<年度>|<鍵>`。両方向表示では `<年度>|<向き>|<鍵>`）で比べる
-  // — 年度・向きをまたぐ誤対応を防ぐ。キー計算は verify 側で表ごとにキャッシュしてある
-  const keys = linkKeys(table, keyDir)
+  // 対応・選択は修飾キー（`<空間>|<年度>|<鍵>`。両方向表示では `<空間>|<年度>|<向き>|<鍵>`）で比べる
+  // — 空間・年度・向きをまたぐ誤対応を防ぐ。キー計算は verify 側で表ごとにキャッシュしてある
+  const keySets = rowKeySets(table, keyDir)
   const keyIndex = useMemo(() => {
     const m = new Map<string, number>()
-    keys.forEach((k, i) => {
-      if (k !== null && !m.has(k)) m.set(k, i)
+    keySets.forEach((ks, i) => {
+      if (ks) for (const k of ks) if (!m.has(k)) m.set(k, i)
     })
     return m
-  }, [keys])
+  }, [keySets])
 
   useImperativeHandle(ref, () => ({
-    scrollToKey(key: string) {
-      const i = keyIndex.get(key)
+    scrollToKeys(keys: Iterable<string>) {
       const el = boxRef.current
-      if (i === undefined || !el) return
+      if (!el) return
+      let i: number | undefined
+      for (const k of keys) {
+        i = keyIndex.get(k)
+        if (i !== undefined) break
+      }
+      if (i === undefined) return
       const top = i * ROW_H
       if (top < el.scrollTop || top + ROW_H > el.scrollTop + el.clientHeight) {
         el.scrollTop = Math.max(0, top - el.clientHeight / 2)
@@ -88,8 +93,8 @@ export const RowTable = forwardRef<RowTableHandle, Props>(function RowTable(
   // 1回に留めないと、選択行が窓端に居るとき通常スクロールと取り合いになる）
   const pendingReveal = useRef(false)
   useEffect(() => {
-    pendingReveal.current = selectedKey !== null
-  }, [selectedKey])
+    pendingReveal.current = selectedKeys !== null
+  }, [selectedKeys])
   useEffect(() => {
     if (!pendingReveal.current) return
     const el = boxRef.current?.querySelector("tr.rowsel")
@@ -145,33 +150,37 @@ export const RowTable = forwardRef<RowTableHandle, Props>(function RowTable(
           )}
           {table.rows.slice(start, end).map((r, i) => {
             const ri = start + i
-            const k = keys[ri]
-            const linked = k !== null && linkedKeys !== null && linkedKeys.has(k)
-            const sel = k !== null && k === selectedKey
-            const hov = k !== null && k === hoverKey
+            const ks = keySets[ri] ?? null
+            const linked = keysIntersect(ks, linkedKeys)
+            const sel = keysIntersect(ks, selectedKeys)
+            const hov = keysIntersect(ks, hoverKeys)
             return (
               <tr
                 key={ri}
-                className={`${k !== null ? "rowhit" : ""}${sel ? " rowsel" : ""}${hov ? " rowhov" : ""}`}
-                data-sr={k ?? undefined}
-                onClick={k !== null ? () => onSelectRow(k) : undefined}
-                onMouseEnter={k !== null ? () => onHoverRow(k) : undefined}
-                onMouseLeave={k !== null ? () => onHoverRow(null) : undefined}
+                className={`${ks !== null ? "rowhit" : ""}${sel ? " rowsel" : ""}${hov ? " rowhov" : ""}`}
+                data-sr={ks ? [...ks].join("\n") : undefined}
+                onClick={ks !== null ? () => onSelectRow(ks) : undefined}
+                onMouseEnter={ks !== null ? () => onHoverRow(ks) : undefined}
+                onMouseLeave={ks !== null ? () => onHoverRow(null) : undefined}
                 style={{ height: ROW_H }}
               >
                 {shownIdx.map((ci) => {
                   const v = r[ci]
-                  return (
-                    <td key={ci}>
-                      {linked && ci === ki ? (
+                  // 番号バッジは鍵列のセルに出す。鍵列を持たない表（COFOG 割当など）は
+                  // 先頭セルの先頭に行番号を添える — バッジが無いと「対応がある行」が見えない
+                  if (linked && ci === ki)
+                    return (
+                      <td key={ci}>
                         <span className="srnum">{String(v ?? "")}</span>
-                      ) : v == null ? (
-                        ""
-                      ) : (
-                        String(v)
-                      )}
-                    </td>
-                  )
+                      </td>
+                    )
+                  if (linked && ki < 0 && ci === shownIdx[0])
+                    return (
+                      <td key={ci}>
+                        <span className="srnum">{ri + 1}</span> {v == null ? "" : String(v)}
+                      </td>
+                    )
+                  return <td key={ci}>{v == null ? "" : String(v)}</td>
                 })}
                 {table.columns.length > 14 && (
                   <td className="mut" title={`非表示の列: ${table.columns.slice(14).join("・")}`}>

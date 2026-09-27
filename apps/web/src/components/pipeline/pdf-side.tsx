@@ -23,10 +23,11 @@ type Props = {
   onNavigate: (docId: string, page: number) => void
   /** 出力側に実在する行キーの集合 — その行だけフラッグを立てる */
   flagKeys: Set<string> | null
-  selectedKey: string | null
-  hoverKey: string | null
-  onSelectRow: (key: string) => void
-  onHoverRow: (key: string | null) => void
+  /** 選択中の行の鍵集合（表側と共有。hit の鍵は行が持つ集合の1つに入る） */
+  selectedKeys: Set<string> | null
+  hoverKeys: Set<string> | null
+  onSelectRow: (keys: Set<string>) => void
+  onHoverRow: (keys: Set<string> | null) => void
 }
 
 export function PdfSide({
@@ -37,8 +38,8 @@ export function PdfSide({
   page,
   onNavigate,
   flagKeys,
-  selectedKey,
-  hoverKey,
+  selectedKeys,
+  hoverKeys,
   onSelectRow,
   onHoverRow,
 }: Props) {
@@ -87,7 +88,7 @@ export function PdfSide({
   // タイミングで外側のペイン（.iowrap）まで見える位置へ寄せる
   useEffect(() => {
     viewRef.current?.querySelector(".pdfpage .hit")?.scrollIntoView({ block: "nearest" })
-  }, [pageData, shown, selectedKey])
+  }, [pageData, shown, selectedKeys])
 
   if (!docs.length) {
     return (
@@ -241,7 +242,7 @@ export function PdfSide({
               return (
                 <span
                   key={i}
-                  className={`wspan${k !== null && k === hoverKey ? " srhov" : ""}`}
+                  className={`wspan${k !== null && hoverKeys?.has(k) ? " srhov" : ""}`}
                   data-sr={k ?? undefined}
                   style={{
                     left: `${(w[0] / curData.w) * 100}%`,
@@ -249,8 +250,8 @@ export function PdfSide({
                     width: `${((w[2] - w[0]) / curData.w) * 100}%`,
                     height: `${((w[3] - w[1]) / curData.h) * 100}%`,
                   }}
-                  onClick={k !== null ? () => onSelectRow(k) : undefined}
-                  onMouseEnter={k !== null ? () => onHoverRow(k) : undefined}
+                  onClick={k !== null ? () => onSelectRow(new Set([k])) : undefined}
+                  onMouseEnter={k !== null ? () => onHoverRow(new Set([k])) : undefined}
                   onMouseLeave={k !== null ? () => onHoverRow(null) : undefined}
                 >
                   {w[4]}
@@ -259,7 +260,7 @@ export function PdfSide({
             })}
           {curData &&
             hitsHere
-              .filter(([k]) => selectedKey !== null && k === selectedKey)
+              .filter(([k]) => selectedKeys?.has(k))
               .map(([k, h]) => (
                 <div
                   key={k}
@@ -279,14 +280,14 @@ export function PdfSide({
               .map(([k, h]) => (
                 <div
                   key={k}
-                  className={`srflag${selectedKey !== null && k === selectedKey ? " sel" : ""}${hoverKey !== null && k === hoverKey ? " flaghov" : ""}`}
+                  className={`srflag${selectedKeys?.has(k) ? " sel" : ""}${hoverKeys?.has(k) ? " flaghov" : ""}`}
                   data-sr={k}
                   style={{
                     left: `${(h.box[0] / curData.w) * 100}%`,
                     top: `${(((h.box[1] + h.box[3]) / 2) / curData.h) * 100}%`,
                   }}
-                  onClick={() => onSelectRow(k)}
-                  onMouseEnter={() => onHoverRow(k)}
+                  onClick={() => onSelectRow(new Set([k]))}
+                  onMouseEnter={() => onHoverRow(new Set([k]))}
                   onMouseLeave={() => onHoverRow(null)}
                 >
                   {bareKey(k)}
