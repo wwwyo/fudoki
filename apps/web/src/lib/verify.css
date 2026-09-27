@@ -39,8 +39,11 @@
 .pv .io-pair + .io-pair { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--border); }
 .pv .pair-x { border: 0; background: none; font: inherit; font-size: 12px; line-height: 1; color: var(--muted-foreground); cursor: pointer; margin-left: auto; padding: 2px 4px; border-radius: 4px; }
 .pv .pair-x:hover { color: var(--foreground); background: var(--accent); }
-.pv .io { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+/* 側は内容の高さに収める（grid 既定の stretch だと短い側も全高に伸びて
+   sticky の余地が無くなる）。背の低い側は .sidestick でスクロールに張り付く */
+.pv .io { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; align-items: start; }
 .pv .io .side { min-width: 0; }
+.pv .io > .side.sidestick { position: sticky; }
 .pv .io .side h3 { font-size: 12px; font-weight: 600; margin: 0 0 6px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
 .pv .rows { overflow: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); }
 .pv table.t { border-collapse: collapse; font-size: 11px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; width: 100%; }

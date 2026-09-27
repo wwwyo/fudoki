@@ -56,7 +56,10 @@ select.ctl { font: inherit; font-size: 12px; padding: 3px 6px; border: 1px solid
 .io-pair + .io-pair { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--border); }
 .pair-x { border: 0; background: none; font: inherit; font-size: 12px; line-height: 1; color: var(--muted-foreground); cursor: pointer; margin-left: auto; padding: 2px 4px; border-radius: 4px; }
 .pair-x:hover { color: var(--foreground); background: var(--accent); }
-.io { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+/* 側は内容の高さに収める。背の低い側は .sidestick でスクロールに張り付く
+   （iowrap だけがスクロールするので、貼らないと短い側が流れて空列になる） */
+.io { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
+.io > .side.sidestick { position: sticky; }
 .io .side h3 { font-size: 12px; font-weight: 600; margin: 0 0 6px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
 .io-node + .io-node { margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--border); }
 .rows { overflow: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); max-height: 100%; }
@@ -1138,6 +1141,7 @@ window.addEventListener('pointermove', (e) => {
       SPLITH = Math.min(80, Math.max(12, (e.clientY - gw.getBoundingClientRect().top) / r.height * 100));
       gw.style.flexBasis = SPLITH + '%';
       if (v1SizeSvg()) { if (!V1Z || V1Z.fit) V1Z = v1FitT(); v1ApplyZ(); }
+      stickShortSide(); // iowrap の高さが変わるので sticky の下端アンカーを合わせ直す
     }
     return;
   }
@@ -1206,15 +1210,40 @@ function scrollSelIntoView() {
   });
 }
 
+/* .io の2列で背の低い側を sticky にする — 高い側をスクロールしたとき短い側が
+   流れて空の列になるのを防ぐ。viewport より高い側は下端アンカーで辿り着けるようにする。
+   頁画像の読み込みで側の高さは後から変わるので ResizeObserver で追う */
+const SIDE_RO = new ResizeObserver(() => stickShortSide());
+function stickShortSide() {
+  const wrap = document.querySelector('.iowrap');
+  if (!wrap) return;
+  const vp = wrap.clientHeight;
+  wrap.querySelectorAll('.io').forEach((io) => {
+    const sides = [...io.children].filter((c) => c.classList && c.classList.contains('side'));
+    if (sides.length !== 2) return;
+    sides.forEach((s) => SIDE_RO.observe(s));
+    const [a, b] = sides;
+    a.classList.remove('sidestick'); b.classList.remove('sidestick');
+    a.style.top = ''; b.style.top = '';
+    if (a.offsetHeight === b.offsetHeight) return;
+    const s = a.offsetHeight < b.offsetHeight ? a : b;
+    s.classList.add('sidestick');
+    s.style.top = `${Math.min(0, vp - s.offsetHeight)}px`;
+  });
+}
 function mount() {
   V1HOV = null;
   stage.innerHTML = vSplit();
   v1InitZoom();
+  // stickShortSide は描画同期ではなく DOM への追従なので rAF を待たない
+  // （occluded タブで rAF が発火しない環境がある）
+  stickShortSide();
   requestAnimationFrame(() => scrollSelIntoView());
 }
 window.addEventListener('resize', () => {
   // svg の大きさはコンテナに合わせているので、リサイズ時は張り直す。fit モードなら合わせ直す
   if (v1SizeSvg()) { if (!V1Z || V1Z.fit) V1Z = v1FitT(); v1ApplyZ(); }
+  stickShortSide();
 });
 document.addEventListener('keydown', (e) => {
   if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return;

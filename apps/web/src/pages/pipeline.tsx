@@ -9,7 +9,7 @@
  * `/local/rows`・`/local/pdf/*` が返す値をそのまま出す。
  */
 import { ArrowUpRight } from "lucide-react"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { FiscalYearSelect } from "@/components/fiscal-year-select"
 import { JurisdictionSelect } from "@/components/jurisdiction-select"
 import { PhaseSelect } from "@/components/phase-select"
@@ -179,6 +179,7 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
   /* ---- 境目ドラッグ ---- */
   const splitRef = useRef<HTMLDivElement>(null)
   const sashRef = useRef<HTMLDivElement>(null)
+  const ioWrapRef = useRef<HTMLDivElement>(null)
   const sashDrag = useRef(false)
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
@@ -204,6 +205,57 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
       window.removeEventListener("pointercancel", onEnd)
     }
   }, [])
+
+  /* ---- I/O の左右で背の低い側を sticky にする ----
+     高い側をスクロールしたとき短い側が流れて空の列になるのを防ぐ。
+     viewport より高い側は下端アンカー（下端まで辿れる）にして見えない領域を作らない。
+     DOM は組の選択・非同期の hit 読み込みで増減するので MutationObserver で追う */
+  useLayoutEffect(() => {
+    const wrap = ioWrapRef.current
+    if (!wrap) return
+    // rAF は occluded/バックグラウンドのタブで発火しないことがある。
+    // ここは描画同期ではなく「DOM 変化への追従」なので、常に回る microtask で束ねる
+    let scheduled = false
+    const schedule = () => {
+      if (scheduled) return
+      scheduled = true
+      queueMicrotask(() => {
+        scheduled = false
+        apply()
+      })
+    }
+    const ro = new ResizeObserver(schedule)
+    const apply = () => {
+      const vp = wrap.clientHeight
+      for (const io of wrap.querySelectorAll<HTMLElement>(".io")) {
+        const sides = [...io.children].filter(
+          (c): c is HTMLElement => c instanceof HTMLElement && c.classList.contains("side"),
+        )
+        if (sides.length !== 2) continue
+        // 画像の読み込みで側の高さは後から変わる — 高さの変化を拾うため側自体を監視する
+        sides.forEach((s) => ro.observe(s))
+        const [a, b] = sides as [HTMLElement, HTMLElement]
+        for (const s of [a, b]) {
+          s.classList.remove("sidestick")
+          s.style.top = ""
+        }
+        if (a.offsetHeight === b.offsetHeight) continue
+        const s = a.offsetHeight < b.offsetHeight ? a : b
+        s.classList.add("sidestick")
+        s.style.top = `${Math.min(0, vp - s.offsetHeight)}px`
+      }
+    }
+    const mo = new MutationObserver(schedule)
+    mo.observe(wrap, { childList: true, subtree: true })
+    ro.observe(wrap)
+    window.addEventListener("resize", schedule)
+    apply()
+    return () => {
+      mo.disconnect()
+      ro.disconnect()
+      window.removeEventListener("resize", schedule)
+    }
+  })
 
   /* ---- 再描画キー（`r`） ---- */
   useEffect(() => {
@@ -318,7 +370,7 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
             e.preventDefault()
           }}
         />
-        <div className="iowrap">
+        <div className="iowrap" ref={ioWrapRef}>
           <IoPanel
             report={report}
             code={current.code}
