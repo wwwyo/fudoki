@@ -162,7 +162,14 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
         side === "out" ? x.to === id : x.from === id,
       )
       const any = visibleTopology.edges.filter((x) => x.from === id || x.to === id)
-      setPairs((es.length ? es : any).map((x) => ({ from: x.from, to: x.to })))
+      const next = (es.length ? es : any).map((x) => ({ from: x.from, to: x.to }))
+      // 同じノード・同じ側の再クリックは選択解除（overview に戻る）
+      setPairs((prev) =>
+        prev.length === next.length &&
+        next.every((p, i) => prev[i]!.from === p.from && prev[i]!.to === p.to)
+          ? []
+          : next,
+      )
       setPdfNav({ docId: null, page: null })
     },
     [visibleTopology],

@@ -1071,7 +1071,9 @@ stage.addEventListener('click', (e) => {
     const ins = j.topology.edges.filter((x) => x.to === nd.dataset.node);
     const outs = j.topology.edges.filter((x) => x.from === nd.dataset.node);
     const picked = left ? (ins.length ? ins : outs) : (outs.length ? outs : ins);
-    S.edges = picked.map((x) => ({ from: x.from, to: x.to }));
+    const next = picked.map((x) => ({ from: x.from, to: x.to }));
+    // 同じノード・同じ側の再クリックは選択解除（overview に戻る）
+    S.edges = S.edges.length === next.length && next.every((p, i) => S.edges[i].from === p.from && S.edges[i].to === p.to) ? [] : next;
     mount(); return;
   }
   // 行選択のスコープ。星パネルの中では全側が、overview（ov:〜 の ctx）では
