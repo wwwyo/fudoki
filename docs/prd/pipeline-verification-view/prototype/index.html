@@ -191,10 +191,13 @@ details.fold .cv .b code { font-size: 11px; background: color-mix(in oklch, var(
 'use strict';
 const DATA = window.PIPELINE_DATA;
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-/* ノードのリード（表が何であるか）。原典は description が URL と取得日時なので出さない（詳細トグルが持つ） */
-const nodeLeadOf = (n) => (n && n.kind !== 'origin' ? (n.description || '').split('\n')[0].trim() : '');
+/* ノードのリード（表が何であるか）。原典の description は URL と取得日時 — 表の意味ではないので定型を出す（出所は詳細トグルが持つ） */
+const nodeLeadOf = (n) => (n ? (n.kind === 'origin' ? '自治体が公開した予算・決算の資料そのもの' : (n.description || '').split('\n')[0].trim()) : '');
 const fmt = (n) => n == null ? '—' : Number(n).toLocaleString('ja-JP');
-const md = (s) => esc(s).replace(/\*\*(.+?)\*\*|`([^`]+)`/g, (_, b, c) => b != null ? `<strong>${b}</strong>` : `<code>${c}</code>`);
+/* `**強調**` は画面に出さない（太字を使わないので剥がす）。コード片だけ要素にする。
+   属性値など要素にできない場所には plain を使う */
+const md = (s) => esc(s).replace(/\*\*(.+?)\*\*|`([^`]+)`/g, (_, b, c) => b != null ? b : `<code>${c}</code>`);
+const plain = (s) => String(s ?? '').replaceAll('**', '');
 /* 注意点の本文書式（report/budget/schema.ts 参照）: 空行で段落、`- ` 始まりの段落は箇条書き */
 const mdBody = (s) => String(s ?? '').split(/\n{2,}/).map((block) =>
   block.startsWith('- ')
@@ -583,7 +586,7 @@ function tableHtml(j, nid, dir, side, peerSet, st, qual = null) {
   const docs = node ? colDocsOf(node) : {};
   const th = (c) => {
     const d = docs[c];
-    const tip = d ? [d.title, d.description].filter(Boolean).join(' — ') : null;
+    const tip = d ? plain([d.title, d.description].filter(Boolean).join(' — ')) : null;
     return `<th${tip ? ` title="${esc(tip)}"` : ''}>${esc(c)}</th>`;
   };
   const qdir = qual === 'row' ? e.direction || '' : qual;
@@ -878,7 +881,7 @@ function starHtml(j, nodeById, shared, pairs) {
   const sSt = j.topology.stages.find((s) => s.id === sharedNode.stage);
   const sharedNl = nodeLeadOf(sharedNode);
   const sharedLead = (sharedNl ? `<p class="lead">${md(sharedNl)}</p>` : '')
-    + (shared === 'out' && sSt ? `<p class="lead">${esc(sSt.responsibility)}</p>` : '');
+    + (shared === 'out' && sSt ? `<p class="lead">${md(sSt.responsibility)}</p>` : '');
   const sharedSide = `<div class="side" data-ctx="${esc(starCtx)}"><div class="sidehead"><h3>${sharedHead}</h3>${sharedLead}</div>`
     + (aPdf ? pdfSideHtml(j, dir || 'expenditure', peerKeys, sst, true, mergedHits) : tableHtml(j, sharedKey, dir, 'in', peerKeys, sst, 'row'))
     + ioSideDetailHtml(j, sharedNode, dir, { isInput: shared === 'in', aPdf, srcIds: sharedNode.kind === 'origin' ? pairs.map((e) => e.to) : [], tblKey: sharedKey, tblDir: dir })
@@ -898,7 +901,7 @@ function starHtml(j, nodeById, shared, pairs) {
     const nSt = j.topology.stages.find((s) => s.id === n.stage);
     const nl = nodeLeadOf(n);
     const nlead = (nl ? `<p class="lead">${md(nl)}</p>` : '')
-      + (varSide === 'out' && nSt ? `<p class="lead">${esc(nSt.responsibility)}</p>` : '');
+      + (varSide === 'out' && nSt ? `<p class="lead">${md(nSt.responsibility)}</p>` : '');
     return `<div class="io-node" data-ctx="${esc(e.from)}|${esc(e.to)}"><div class="sidehead"><h3>${varSide === 'in' ? `${esc(name)} →` : `→ ${esc(name)}`}${meta ? ` <span class="mut">${meta}</span>` : ''}`
       + `<button class="pair-x" data-rmpair title="この組を外す" aria-label="この組を外す">✕</button></h3>${nlead}</div>`
       + (pdf ? pdfSideHtml(j, d || 'expenditure', sharedKeys, own, true, qualifyHits(j.pdf && j.pdf[d] && j.pdf[d].hits, d)) : tableHtml(j, key, d, varSide, sharedKeys, own, d))
@@ -959,11 +962,11 @@ function ioSideDetailHtml(j, node, dir, { isInput, aPdf, srcIds, tblKey, tblDir 
   }
   if (docCols.length) {
     body += `<div class="dh">列の意味（${docCols.length}/${tblCols.length}列）</div>`
-      + docCols.map((c) => `<div class="drow"><span class="dk mono">${esc(c)}</span><span>${esc([docMap[c].title, docMap[c].description].filter(Boolean).join(' — '))}</span></div>`).join('');
+      + docCols.map((c) => `<div class="drow"><span class="dk mono">${esc(c)}</span><span>${md([docMap[c].title, docMap[c].description].filter(Boolean).join(' — '))}</span></div>`).join('');
   }
   if (checks.length) {
     body += `<div class="dh">検査（${checks.length}件）</div>`
-      + checks.map((c) => `<div class="small" style="padding:2px 0"><span class="badge ${c.status === 'pass' ? 'ok' : c.status === 'warn' ? 'plain' : 'bad'}">${c.status === 'pass' ? '成功' : c.status === 'warn' ? '警告' : '失敗'}</span> <span title="${esc(c.name)}">${esc(checkLabel(c))}</span>${c.status !== 'pass' && crossJur(c) ? `<span class="mut" title="${esc(c.binds.join(', '))}">（全団体を束ねた検査。警告・失敗がこの団体のものとは限らない）</span>` : ''}${c.detail && c.status !== 'pass' ? `<div class="mut" style="padding-left:44px">${esc(c.detail)}</div>` : ''}</div>`).join('');
+      + checks.map((c) => `<div class="small" style="padding:2px 0"><span class="badge ${c.status === 'pass' ? 'ok' : c.status === 'warn' ? 'plain' : 'bad'}">${c.status === 'pass' ? '成功' : c.status === 'warn' ? '警告' : '失敗'}</span> <span title="${esc(plain(c.name))}">${md(checkLabel(c))}</span>${c.status !== 'pass' && crossJur(c) ? `<span class="mut" title="${esc(plain(c.binds.join(', ')))}">（全団体を束ねた検査。警告・失敗がこの団体のものとは限らない）</span>` : ''}${c.detail && c.status !== 'pass' ? `<div class="mut" style="padding-left:44px">${md(c.detail)}</div>` : ''}</div>`).join('');
   }
   return `<details class="fold"><summary>${esc(summary)}</summary>${body}</details>`;
 }

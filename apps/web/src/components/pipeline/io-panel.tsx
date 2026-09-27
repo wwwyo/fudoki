@@ -83,14 +83,14 @@ function useHitMap(rows: NodeRows | null, nodeId: string | null, dir: Direction 
 
 const fmt = (n: number | null | undefined) => (n == null ? "—" : Number(n).toLocaleString("ja-JP"))
 
-/** リード文（SQL コメント・宣言 yml の description）は `**…**` で強調を書く約束。画面でそのまま出すと `**` が見えるので畳む */
-function em(text: string) {
-  return text.split(/\*\*([^*]+)\*\*/g).map((p, i) => (i % 2 ? <strong key={i}>{p}</strong> : p))
-}
+/** リード文（SQL コメント・宣言 yml の description）の `**…**` 強調マーカー。画面では太字を使わないので剥がす */
+const plain = (text: string) => text.replaceAll("**", "")
 
 /** ノードのリード（表が何であるか）。複数行の説明は先頭行だけを見出しの下に出す */
 function nodeLeadOf(n: Node): string | null {
-  if (n.kind === "origin") return null // 原典の description は URL と取得日時 — 出所は詳細トグルが持つ
+  // 原典の description は URL と取得日時 — 表の意味ではないので定型を出す
+  // （出所は従来通り詳細トグルが持つ）
+  if (n.kind === "origin") return "自治体が公開した予算・決算の資料そのもの"
   const lead = (n.description ?? "").split("\n")[0]?.trim()
   return lead || null
 }
@@ -132,11 +132,11 @@ function CheckList({ checks, code }: { checks: Check[]; code: string }) {
             <span className={`badge ${c.status === "pass" ? "ok" : c.status === "warn" ? "plain" : "bad"}`}>
               {c.status === "pass" ? "成功" : c.status === "warn" ? "警告" : "失敗"}
             </span>{" "}
-            <span title={c.name}>{checkLabel(c)}</span>
+            <span title={c.name}>{plain(checkLabel(c))}</span>
             {att && <span className="text-muted-foreground">（{att}）</span>}
             {c.status !== "pass" && c.detail && (
               <div className="text-muted-foreground" style={{ paddingLeft: 44 }}>
-                {c.detail}
+                {plain(c.detail)}
                 {c.failures != null ? ` — ${fmt(c.failures)} 行` : ""}
               </div>
             )}
@@ -147,7 +147,7 @@ function CheckList({ checks, code }: { checks: Check[]; code: string }) {
                 className="text-muted-foreground"
                 style={{ paddingLeft: 44, fontSize: 11, whiteSpace: "pre-wrap" }}
               >
-                {c.explanation}
+                {plain(c.explanation)}
               </div>
             )}
             {c.attribution?.rows?.length ? (
@@ -405,7 +405,7 @@ function SideDetail({
             return (
               <div className="drow" key={c}>
                 <span className="dk mono">{c}</span>
-                <span>{[d.title, d.description].filter(Boolean).join(" — ")}</span>
+                <span>{plain([d.title, d.description].filter(Boolean).join(" — "))}</span>
               </div>
             )
           })}
@@ -688,8 +688,8 @@ function StarPanel({
     <div className="side">
       <div className="sidehead">
         <h3>{sharedHead}</h3>
-        {nodeLead && <p className="lead">{em(nodeLead)}</p>}
-        {stageLead && <p className="lead">{em(stageLead)}</p>}
+        {nodeLead && <p className="lead">{plain(nodeLead)}</p>}
+        {stageLead && <p className="lead">{plain(stageLead)}</p>}
       </div>
       {sharedRows === null ? (
         <p className="text-xs text-muted-foreground">読み込み中…</p>
@@ -880,8 +880,8 @@ function StarSide({
             ✕
           </button>
         </h3>
-        {nodeLead && <p className="lead">{em(nodeLead)}</p>}
-        {stageLead && <p className="lead">{em(stageLead)}</p>}
+        {nodeLead && <p className="lead">{plain(nodeLead)}</p>}
+        {stageLead && <p className="lead">{plain(stageLead)}</p>}
       </div>
       {rows === null ? (
         <p className="text-xs text-muted-foreground">読み込み中…</p>
@@ -1168,7 +1168,7 @@ function OverviewNode({
     <div className="io-node">
       <div className="sidehead">
         <h3>{head}</h3>
-        {nodeLead && <p className="lead">{em(nodeLead)}</p>}
+        {nodeLead && <p className="lead">{plain(nodeLead)}</p>}
       </div>
       {rows === null ? (
         <p className="text-xs text-muted-foreground">読み込み中…</p>

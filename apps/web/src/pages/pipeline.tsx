@@ -30,15 +30,14 @@ type Props = {
   jurisdictionName?: string
 }
 
-/** 注意点（caveat）の本文に含まれる `**強調**` と `` `コード` `` だけを要素にする（記法は md ではない） */
+/** 注意点（caveat）の本文に含まれる `**強調**`・`` `コード` `` マーカー。画面では
+    太字を使わないので `**` は剥がし、コード片だけ要素にする（記法は md ではない） */
 function caveatText(s: string) {
-  return s.split(/(\*\*[^*]+\*\*|`[^`]+`)/g).map((part, i) =>
-    part.startsWith("**") && part.endsWith("**") ? (
-      <strong key={i}>{part.slice(2, -2)}</strong>
-    ) : part.startsWith("`") && part.endsWith("`") ? (
+  return s.split(/(`[^`]+`)/g).map((part, i) =>
+    part.startsWith("`") && part.endsWith("`") ? (
       <code key={i} className="mono">{part.slice(1, -1)}</code>
     ) : (
-      <span key={i}>{part}</span>
+      <span key={i}>{part.replaceAll("**", "")}</span>
     ),
   )
 }

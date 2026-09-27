@@ -106,7 +106,9 @@ export const RowTable = forwardRef<RowTableHandle, Props>(function RowTable(
           <tr>
             {shown.map((c) => {
               const d = docs?.[c]
-              const tip = d ? [d.title, d.description].filter(Boolean).join(" — ") : undefined
+              const tip = d
+                ? [d.title, d.description].filter(Boolean).join(" — ").replaceAll("**", "")
+                : undefined
               return (
                 <th key={c} title={tip}>
                   {c}
