@@ -124,7 +124,8 @@ details.caveats .cv:last-child { padding-bottom: 8px; }
    同じ見た目で出す。薄い = 対応がある行、塗り = 選択中（対応が無い行には出さない） */
 .srnum, .v1 .pdfpage .srflag { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 16px; padding: 0 5px; border-radius: 5px; border: 1px solid color-mix(in oklch, var(--primary) 40%, var(--border)); background: var(--accent); color: var(--accent-foreground); font-size: 10px; font-weight: 600; line-height: 1; }
 .v1 tr.rowsel .srnum, .v1 .pdfpage .srflag.sel { background: var(--primary); border-color: var(--primary); color: var(--primary-foreground); }
-.v1 .pdfpage .srflag { position: absolute; transform: translate(calc(-100% - 4px), -50%); opacity: .45; pointer-events: none; z-index: 1; }
+.v1 .pdfpage .srflag { position: absolute; transform: translate(calc(-100% - 4px), -50%); opacity: .45; cursor: pointer; z-index: 1; }
+.v1 .pdfpage .srflag:hover { opacity: 1; }
 .v1 .pdfpage .srflag.sel { opacity: 1; box-shadow: 0 1px 4px rgba(0,0,0,.25); }
 
 /* harness bar */
@@ -1083,14 +1084,15 @@ stage.addEventListener('click', (e) => {
     : ctxKey && ctxKey.startsWith('ov:')
       ? [...stage.querySelectorAll('[data-ctx^="ov:"]')].map((x) => x.dataset.ctx)
       : ctxKey ? [ctxKey] : [];
-  const ws = e.target.closest('.wspan[data-sr]');
+  // 頁上の語・行番号バッジのどちらでも同じ行選択 — 再クリックで解除（表の行と同じ）
+  const ws = e.target.closest('.wspan[data-sr], .srflag[data-sr]');
   if (ws && scope.length) {
     const sr = ws.dataset.sr;
+    const next = st && st.row === sr ? null : sr;
     scope.forEach((k) => {
       const c = ctxOf(k);
-      c.row = sr;
-      const p = hitPageOf(J(), sr, k);
-      if (p != null) c.pdfPage = p;
+      c.row = next;
+      if (next != null) { const p = hitPageOf(J(), sr, k); if (p != null) c.pdfPage = p; }
     });
     mount(); return;
   }

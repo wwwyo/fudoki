@@ -102,7 +102,8 @@
    同じ見た目で出す。薄い = 対応がある行、塗り = 選択中（対応が無い行には出さない） */
 .pv .srnum, .pv .pdfpage .srflag { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 16px; padding: 0 5px; border-radius: 5px; border: 1px solid color-mix(in oklch, var(--primary) 40%, var(--border)); background: var(--accent); color: var(--accent-foreground); font-size: 10px; font-weight: 600; line-height: 1; }
 .pv tr.rowsel .srnum, .pv .pdfpage .srflag.sel { background: var(--primary); border-color: var(--primary); color: var(--primary-foreground); }
-.pv .pdfpage .srflag { position: absolute; transform: translate(calc(-100% - 4px), -50%); opacity: .45; pointer-events: none; z-index: 1; }
+.pv .pdfpage .srflag { position: absolute; transform: translate(calc(-100% - 4px), -50%); opacity: .45; cursor: pointer; z-index: 1; }
+.pv .pdfpage .srflag:hover { opacity: 1; }
 .pv .pdfpage .srflag.sel { opacity: 1; box-shadow: 0 1px 4px rgba(0,0,0,.25); }
 
 /* ---- 見出し + 注意点ドロワー ---- */

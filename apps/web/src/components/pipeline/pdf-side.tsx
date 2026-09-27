@@ -278,6 +278,9 @@ export function PdfSide({
                     left: `${(h.box[0] / curData.w) * 100}%`,
                     top: `${(((h.box[1] + h.box[3]) / 2) / curData.h) * 100}%`,
                   }}
+                  onClick={() => onSelectRow(k)}
+                  onMouseEnter={() => onHoverRow(k)}
+                  onMouseLeave={() => onHoverRow(null)}
                 >
                   {bareKey(k)}
                 </div>
