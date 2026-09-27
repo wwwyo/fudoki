@@ -287,7 +287,7 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
 
   if (error) {
     return (
-      <Layout>
+      <Layout bare>
         <main className="mx-auto max-w-2xl p-6">
           <Alert variant="destructive">
             <AlertTitle>データを読み込めませんでした</AlertTitle>
@@ -312,7 +312,7 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
   }
   if (!data || !current || !visibleTopology) {
     return (
-      <Layout>
+      <Layout bare>
         <main className="p-6 text-sm text-muted-foreground">読み込み中…</main>
       </Layout>
     )
@@ -324,14 +324,17 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
   const y = year ?? m.fiscalYears[m.fiscalYears.length - 1]!
 
   return (
-    <Layout>
-      {/* ヘッダー分（h-14=56px）を引いた残りを上下に割る。ページはスクロールしない */}
+    <Layout bare>
       <div
         className="pv vsplit"
         ref={splitRef}
-        style={{ height: "calc(100dvh - 3.5rem)" }}
+        style={{ height: "100dvh" }}
       >
         <div className="headline">
+          {/* ロゴはサイトヘッダーが無いこの画面では団体セレクトの左に置く。
+              ⚠️ `<img>` は OS のメディアクエリしか見ないので、画面ダーク対応は2枚を切り替える */}
+          <img src={`${import.meta.env.BASE_URL}mark.svg`} alt="風土記" className="pvmark dark:hidden" />
+          <img src={`${import.meta.env.BASE_URL}mark-dark.svg`} alt="" aria-hidden className="pvmark hidden dark:block" />
           {/* 団体名はセレクトの表示値が担う（見出しを別に置くと二重になる） */}
           <JurisdictionSelect
             jurisdictions={data.jurisdictions.map((j) => ({

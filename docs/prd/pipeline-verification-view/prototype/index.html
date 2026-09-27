@@ -137,6 +137,7 @@ details.caveats .cv:last-child { padding-bottom: 8px; }
 
 /* 見出し */
 .headline { display: flex; align-items: baseline; gap: 12px; padding: 10px 16px; flex-wrap: wrap; }
+.headline .pvmark { width: 20px; height: 20px; align-self: center; }
 details.fold .cv { padding: 6px 0; border-top: 1px solid var(--border); }
 details.fold .cv:first-of-type { border-top: 0; }
 details.fold .cv .t { font-weight: 500; }
@@ -977,6 +978,7 @@ function headlineHtml(j) {
   const m = j.meta;
   const years = m.fiscalYears;
   return `<div class="headline">
+    <svg class="pvmark" viewBox="0 0 32 32" role="img" aria-label="風土記"><g><rect fill="#2f5d43" x="2" y="14" width="4" height="14" rx="2"/><rect fill="#2f5d43" x="8" y="6" width="4" height="22" rx="2"/><rect fill="#2f5d43" x="14" y="18" width="4" height="10" rx="2"/><rect fill="#2f5d43" x="20" y="2" width="4" height="26" rx="2"/><rect fill="#2f5d43" x="26" y="11" width="4" height="17" rx="2"/><rect fill="#c1553a" x="2" y="29" width="28" height="2" rx="1"/></g></svg>
     <select class="ctl" data-year>
       ${years.map((y) => `<option value="${y}" ${S.year === y ? 'selected' : ''}>${y}年度</option>`).join('')}
     </select>

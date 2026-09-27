@@ -110,6 +110,8 @@
 
 /* ---- 見出し + 注意点ドロワー ---- */
 .pv .headline { display: flex; align-items: baseline; gap: 12px; padding: 10px 16px; flex-wrap: wrap; }
+/* サイトヘッダーを持たない画面の mark — 団体セレクトの左に置く */
+.pv .headline .pvmark { width: 20px; height: 20px; align-self: center; }
 .pv details.fold .cv { padding: 6px 0; border-top: 1px solid var(--border); }
 .pv details.fold .cv:first-child { border-top: 0; }
 .pv details.fold .cv .t { font-weight: 500; font-size: 13px; }

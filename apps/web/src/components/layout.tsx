@@ -23,13 +23,16 @@ const NAV = [
 
 type LayoutProps = {
   children: ReactNode
+  /** サイトのナビヘッダーを出さない（ローカル専用の検証画面など、公開サイトの文脈が無いページ用） */
+  bare?: boolean
 }
 
-export function Layout({ children }: LayoutProps) {
+export function Layout({ children, bare }: LayoutProps) {
   return (
     <ThemeProvider>
       <TooltipProvider>
         <div className="min-h-dvh bg-background text-foreground">
+          {!bare && (
           <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background/95 px-4 backdrop-blur">
             {/* ⚠️ ロゴを1枚にしない。`<img>` の中のメディアクエリは OS 設定しか見ないので、
                 OS がライトのまま画面をダークにするとロゴだけ取り残される */}
@@ -73,6 +76,7 @@ export function Layout({ children }: LayoutProps) {
               </svg>
             </a>
           </header>
+          )}
 
           {children}
         </div>
