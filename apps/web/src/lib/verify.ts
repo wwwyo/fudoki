@@ -175,7 +175,7 @@ const ACCT_COLS = ['fund_code', 'kan_code', 'kou_code', 'moku_code']
 
 /** 鍵列・年度列・向き列・鍵空間列の位置。行ごとに indexOf を引き直さないよう表ごとに1回だけ引く */
 const colCache = new WeakMap<TableRows, {
-  ki: number; yi: number; di: number
+  yi: number; di: number
   /** 鍵空間 → 列 index（その表が持つ分だけ） */
   sp: [string, number][]
   /** acct 複合の列 index（全列あるときだけ） */
@@ -191,7 +191,6 @@ function colInfo(t: TableRows) {
     })
     const acctIdx = ACCT_COLS.map((n) => t.columns.indexOf(n))
     c = {
-      ki: t.keyColumn ? t.columns.indexOf(t.keyColumn) : -1,
       yi: t.columns.includes('fiscal_year')
         ? t.columns.indexOf('fiscal_year')
         : t.columns.indexOf('year'),
