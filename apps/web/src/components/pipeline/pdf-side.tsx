@@ -43,8 +43,15 @@ export function PdfSide({
   onSelectRow,
   onHoverRow,
 }: Props) {
+  // 年度は上段で選ぶので、文書切替に年度を混ぜない — 選択肢はその年度の文書だけ。
+  // 1文書しかなければ切替自体が無意味なのでタイトルを出すだけにする
+  const yearDocs = useMemo(
+    () => (year === null ? docs : docs.filter((d) => d.years.includes(year))),
+    [docs, year],
+  )
   const doc =
-    docs.find((d) => d.id === docId) ??
+    yearDocs.find((d) => d.id === docId) ??
+    yearDocs[0] ??
     docs.find((d) => year !== null && d.years.includes(year)) ??
     docs[0]
   // `at` は読み込んだ頁 — 頁送りの間、前の頁の文字層が新しい画像に残るのを防ぐ
@@ -213,24 +220,29 @@ export function PdfSide({
         >
           ▶
         </button>
-        {/* 文書が年度ごとに分かれているときの切替。頁番号の意味が変わるので必須 */}
-        {docs.length > 1 && (
+        {/* 文書が年度ごとに分かれているときの切替。頁番号の意味が変わるので必須。
+            その年度の文書が1つなら選択肢は無いのでタイトルだけ出す */}
+        {yearDocs.length > 1 ? (
           <select
             className="ctl"
             aria-label="文書"
             value={doc.id}
             onChange={(e) => {
-              const d = docs.find((x) => x.id === e.target.value)!
+              const d = yearDocs.find((x) => x.id === e.target.value)!
               onNavigate(d.id, d.first)
             }}
           >
-            {docs.map((d) => (
+            {yearDocs.map((d) => (
               <option key={d.id} value={d.id}>
                 {d.years.length ? `${d.years.join("・")}年度 ` : ""}
                 {d.title.length > 24 ? `${d.title.slice(0, 24)}…` : d.title}
               </option>
             ))}
           </select>
+        ) : (
+          <span className="docname text-xs" title={doc.title}>
+            {doc.title}
+          </span>
         )}
       </div>
       {shown !== null && (

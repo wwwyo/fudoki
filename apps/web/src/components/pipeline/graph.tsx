@@ -407,14 +407,16 @@ export const LineageGraph = memo(function LineageGraph({
             const st = topology.stages.find((x) => x.id === s)
             if (!topology.nodes.some((n) => n.stage === s)) return null
             const x = PAD + i * (NW + CGX)
+            // 段名は「用語（dbt のディレクトリ名）」— 判断=core という対応が見出しで読める
+            const label = `${STAGE_JA[s]}（${s}）`
             const head = (
               <>
                 <text x={x} y={PAD + 12} fontSize="11" fill="var(--muted-foreground)">
-                  {STAGE_JA[s]}
+                  {label}
                 </text>
                 {st && (
                   <text
-                    x={x + STAGE_JA[s].length * 11 + 8}
+                    x={x + STAGE_JA[s].length * 11 + (s.length + 2) * 6 + 8}
                     y={PAD + 12}
                     fontSize="11"
                     fill="var(--muted-foreground)"
