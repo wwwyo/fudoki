@@ -111,8 +111,17 @@ export const RowTable = forwardRef<RowTableHandle, Props>(function RowTable(
   const end = Math.min(table.rows.length, Math.ceil((scrollTop + viewH) / ROW_H) + OVERSCAN)
 
   const ki = table.keyColumn ? table.columns.indexOf(table.keyColumn) : -1
-  const shownIdx = table.columns.slice(0, 14).map((c) => table.columns.indexOf(c))
-  const shown = shownIdx.map((i) => table.columns[i]!)
+  // 行番号系の鍵列（source_row など）は常に先頭に出す — 対応番号が表ごとに
+  // 違う列に居ると見比べにくい。原典 CSV は source_row 列自体が無いので
+  // 物理行番号の gutter（sr 鍵 ri+2 と同じ番号）を列として足す
+  const implicit = !table.columns.includes("source_row") && !!table.provs
+  const ordered = ki >= 0
+    ? [table.keyColumn!, ...table.columns.filter((c) => c !== table.keyColumn)]
+    : table.columns
+  const shown = ordered.slice(0, 14)
+  const hidden = ordered.slice(14)
+  const shownIdx = shown.map((c) => table.columns.indexOf(c))
+  const colsN = shown.length + (implicit ? 1 : 0) + (hidden.length > 0 ? 1 : 0)
 
   return (
     // 高さに上限が要る — この div 自身がスクロールしないと仮想化の窓が動かない
@@ -126,6 +135,7 @@ export const RowTable = forwardRef<RowTableHandle, Props>(function RowTable(
       <table className="t">
         <thead>
           <tr>
+            {implicit && <th className="mut">行</th>}
             {shown.map((c) => {
               const d = docs?.[c]
               const tip = d
@@ -137,15 +147,13 @@ export const RowTable = forwardRef<RowTableHandle, Props>(function RowTable(
                 </th>
               )
             })}
-            {table.columns.length > 14 && (
-              <th title={`非表示の列: ${table.columns.slice(14).join("・")}`}>…</th>
-            )}
+            {hidden.length > 0 && <th title={`非表示の列: ${hidden.join("・")}`}>…</th>}
           </tr>
         </thead>
         <tbody>
           {start > 0 && (
             <tr style={{ height: start * ROW_H }}>
-              <td colSpan={shown.length + 1} />
+              <td colSpan={colsN} />
             </tr>
           )}
           {table.rows.slice(start, end).map((r, i) => {
@@ -164,17 +172,20 @@ export const RowTable = forwardRef<RowTableHandle, Props>(function RowTable(
                 onMouseLeave={ks !== null ? () => onHoverRow(null) : undefined}
                 style={{ height: ROW_H }}
               >
+                {implicit && (
+                  <td>{linked ? <span className="srnum">{ri + 2}</span> : ri + 2}</td>
+                )}
                 {shownIdx.map((ci) => {
                   const v = r[ci]
                   // 番号バッジは鍵列のセルに出す。鍵列を持たない表（COFOG 割当など）は
                   // 先頭セルの先頭に行番号を添える — バッジが無いと「対応がある行」が見えない
-                  if (linked && ci === ki)
+                  if (linked && !implicit && ci === ki)
                     return (
                       <td key={ci}>
                         <span className="srnum">{String(v ?? "")}</span>
                       </td>
                     )
-                  if (linked && ki < 0 && ci === shownIdx[0])
+                  if (linked && ki < 0 && !implicit && ci === shownIdx[0])
                     return (
                       <td key={ci}>
                         <span className="srnum">{ri + 1}</span> {v == null ? "" : String(v)}
@@ -182,8 +193,8 @@ export const RowTable = forwardRef<RowTableHandle, Props>(function RowTable(
                     )
                   return <td key={ci}>{v == null ? "" : String(v)}</td>
                 })}
-                {table.columns.length > 14 && (
-                  <td className="mut" title={`非表示の列: ${table.columns.slice(14).join("・")}`}>
+                {hidden.length > 0 && (
+                  <td className="mut" title={`非表示の列: ${hidden.join("・")}`}>
                     …
                   </td>
                 )}
@@ -192,7 +203,7 @@ export const RowTable = forwardRef<RowTableHandle, Props>(function RowTable(
           })}
           {end < table.rows.length && (
             <tr style={{ height: (table.rows.length - end) * ROW_H }}>
-              <td colSpan={shown.length + 1} />
+              <td colSpan={colsN} />
             </tr>
           )}
         </tbody>

@@ -591,12 +591,13 @@ function tableHtml(j, nid, dir, side, peerSet, st, qual = null) {
   const e = pickEntry(j, nid, dir);
   if (!e) return '<p class="small mut">行データなし</p>';
   if (e.error) return `<p class="small mut">読み込み失敗: ${esc(e.error)}</p>`;
-  const ci = e.columns.indexOf('source_row');
+  const keyCi = ['source_row', 'ordinal', 'pdf_ordinal'].map((c) => e.columns.indexOf(c)).find((i) => i >= 0) ?? -1;
   const node = j.topology.nodes.find((n) => n.id === nid);
   const isOrigin = !!(node && node.kind === 'origin');
   // 原典表の行には source_row 列が無い — 物理行番号で対応を付けるので行番号の列を足す
-  const implicit = ci < 0 && isOrigin;
-  const cols = ci > 0 ? [e.columns[ci], ...e.columns.filter((_, i) => i !== ci)] : e.columns;
+  const implicit = e.columns.indexOf('source_row') < 0 && isOrigin;
+  // 行番号系の鍵列は常に先頭に出す — 対応番号が表ごとに違う列に居ると見比べにくい
+  const cols = keyCi > 0 ? [e.columns[keyCi], ...e.columns.filter((_, i) => i !== keyCi)] : e.columns;
   const idx = (name) => e.columns.indexOf(name);
   const docs = node ? colDocsOf(node) : {};
   const th = (c) => {
@@ -605,9 +606,6 @@ function tableHtml(j, nid, dir, side, peerSet, st, qual = null) {
     return `<th${tip ? ` title="${esc(tip)}"` : ''}>${esc(c)}</th>`;
   };
   const keySets = rowKeysOf(e, qual, isOrigin);
-  // 番号バッジは source_row 列のセルに出す。source_row を持たない表（COFOG 割当・
-  // 科目名マスタなど）は行番号を先頭セルに添える — バッジが無いと「対応がある行」が見えない
-  const keyCi = ['source_row', 'ordinal', 'pdf_ordinal'].map((c) => e.columns.indexOf(c)).find((i) => i >= 0) ?? -1;
   const head = (implicit ? '<th>行</th>' : '') + cols.slice(0, 14).map(th).join('') + (cols.length > 14 ? `<th>…</th>` : '');
   const body = e.rows.map((r, ri) => {
     const ks = keySets[ri];
