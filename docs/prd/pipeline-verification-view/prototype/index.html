@@ -898,9 +898,9 @@ function starHtml(j, nodeById, shared, pairs) {
     : sideKeySet(j, sharedNode, sharedKey, 'row', false);
 
   const sharedName = sharedNode.kind === 'origin' ? '原典' : nodeLabel(sharedNode, j);
-  const sharedHead = shared === 'in'
-    ? (sharedNode.kind === 'origin' ? `原典（${aPdf ? 'PDF' : 'CSV'}）` : `入力 — ${esc(sharedName)}`)
-    : esc(sharedName);
+  // 見出しは両側とも `In:`/`Out:` + 名で揃える。原典は種別名では粒度が粗いので文書名を出す
+  const sharedDisp = sharedNode.kind === 'origin' ? sharedNode.label : sharedName;
+  const sharedHead = `${shared === 'in' ? 'In' : 'Out'}: ${esc(sharedDisp)}`;
   // 変換の説明 = 出力側ノードの段の責務。共有出力では全組で同じなので1回だけ出す
   // （共有入力では出力ごとに違うので各側の見出しの下に出す）
   const sSt = j.topology.stages.find((s) => s.id === sharedNode.stage);
@@ -927,7 +927,7 @@ function starHtml(j, nodeById, shared, pairs) {
     const nl = nodeLeadOf(n);
     const nlead = (nl ? `<p class="lead">${md(nl)}</p>` : '')
       + (varSide === 'out' && nSt ? `<p class="lead">${md(nSt.responsibility)}</p>` : '');
-    return `<div class="io-node" data-ctx="${esc(e.from)}|${esc(e.to)}"><div class="sidehead"><h3>${varSide === 'in' ? `${esc(name)} →` : `→ ${esc(name)}`}${meta ? ` <span class="mut">${meta}</span>` : ''}`
+    return `<div class="io-node" data-ctx="${esc(e.from)}|${esc(e.to)}"><div class="sidehead"><h3>${varSide === 'in' ? `In: ${esc(name)}` : `Out: ${esc(name)}`}${meta ? ` <span class="mut">${meta}</span>` : ''}`
       + `<button class="pair-x" data-rmpair title="この組を外す" aria-label="この組を外す">✕</button></h3>${nlead}</div>`
       + (pdf ? pdfSideHtml(j, d || 'expenditure', sharedKeys, own, true, qualifyHits(j.pdf && j.pdf[d] && j.pdf[d].hits, d)) : tableHtml(j, key, d, varSide, sharedKeys, own, d))
       + ioSideDetailHtml(j, n, d, { isInput: varSide === 'in', aPdf: pdf, srcIds: n.kind === 'origin' ? [e.to] : [], tblKey: key, tblDir: d })

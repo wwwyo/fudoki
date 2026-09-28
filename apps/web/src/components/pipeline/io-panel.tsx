@@ -674,12 +674,10 @@ function StarPanel({
   if (!sharedNode) return null
 
   const sharedName = sharedNode.kind === "origin" ? "原典" : nodeLabel(sharedNode)
-  const sharedHead =
-    shared === "in"
-      ? sharedNode.kind === "origin"
-        ? `原典${sharedRows?.kind === "pdf" ? "（PDF）" : sharedRows?.kind === "table" ? "（CSV）" : ""}`
-        : `入力 — ${sharedName}`
-      : sharedName
+  // 見出しは両側とも `In:`/`Out:` + 名で揃える。原典は「原典（PDF）」のような種別名では
+  // 粒度が粗いので文書名（label）を出す
+  const sharedDisp = sharedNode.kind === "origin" ? sharedNode.label : sharedName
+  const sharedHead = `${shared === "in" ? "In" : "Out"}: ${sharedDisp}`
   // 変換の説明 = 出力側ノードの段の責務。共有出力では全組で同じなのでここで1回だけ出す
   // （共有入力では出力ごとに違うので各側の見出しの下に出す）
   const stageLead =
@@ -867,7 +865,7 @@ function StarSide({
     <div className="io-node">
       <div className="sidehead">
         <h3>
-          {side === "in" ? `${name} →` : `→ ${name}`}
+          {side === "in" ? `In: ${name}` : `Out: ${name}`}
           {meta && <span className="text-muted-foreground">{meta}</span>}
           <button
             className="pair-x"
