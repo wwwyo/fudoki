@@ -23,7 +23,11 @@ export const isRes = (n: Node) => !n.jurisdictionCode && n.kind !== 'model'
 /** 系統図で選んだ組（辺の両端のノード id） */
 export type Pair = { from: string; to: string }
 
-/** `.origin` ノードから、ぶら下がっている source ノードの id を引く */
+/**
+ * `.origin` ノード id の `.origin` を外したもの。向きの語（expenditure/revenue）を
+ * id から拾うためだけに使う — ファイル単位の原典 id（`…doc_<sha>.origin`）は
+ * 向きを名乗らないので何も付かず、文書を歳出・歳入が分かち合う場合はそれが正しい
+ */
 export function srcIdOf(originId: string): string {
   return originId.endsWith('.origin') ? originId.slice(0, -'.origin'.length) : originId
 }

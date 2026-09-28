@@ -120,7 +120,9 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
   const changeYear = useCallback((y: number | null) => {
     setYear(y)
     // 年度が変わると「その行」の指す実体も文書も変わる — 前年の選択を引きずると
-    // 表示年度と文書の年度が食い違う（複数文書の団体は文書ごとに年度が違う）
+    // 表示年度と文書の年度が食い違う（複数文書の団体は文書ごとに年度が違う）。
+    // 原典はファイル単位なので選んでいた辺のノード自体が消えうる — 組も捨てる
+    setPairs([])
     setPdfNav({ docId: null, page: null })
     const url = new URL(window.location.href)
     if (y === null) url.searchParams.delete("y")
@@ -137,14 +139,24 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
 
   // 系統は全団体で1本だが、図は見ている団体の分だけ出す。共有の core モデルは
   // 「この団体の行数」が切れるので残すが、規則表（マスタデータ）は検証対象の
-  // 流れではないので図から外す
+  // 流れではないので図から外す。原典はファイル単位のノードなので、選中年度を
+  // 含まないファイルも外す（外すと選んだ年度と無関係なリソースまで辺選択に出る）
   const visibleTopology = useMemo(() => {
     if (!current) return null
     const topo = current.report.topology
-    const nodes = topo.nodes.filter((n) => (n.jurisdictionCode ?? current.code) === current.code && !isRes(n))
+    // `?y=` 未指定は最新年度として扱う（描画側の `y` と同じ倒し方）
+    const y = year ?? current.report.meta.fiscalYears.at(-1) ?? null
+    const nodes = topo.nodes.filter(
+      (n) =>
+        (n.jurisdictionCode ?? current.code) === current.code &&
+        !isRes(n) &&
+        (n.kind !== "origin" ||
+          y === null ||
+          n.rowsByJurisdiction?.[current.code]?.byYear?.[String(y)] != null),
+    )
     const ids = new Set(nodes.map((n) => n.id))
     return { ...topo, nodes, edges: topo.edges.filter((e) => ids.has(e.from) && ids.has(e.to)) }
-  }, [current])
+  }, [current, year])
 
   const selectEdge = useCallback((e: Pair) => {
     setPairs([{ from: e.from, to: e.to }])

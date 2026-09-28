@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test'
-import type { Node } from './common'
-import { assertNoNullKeyRows, assertRowSumsConsistent, leadOf } from './lineage'
+import type { Node, Provenance } from './common'
+import { assertNoNullKeyRows, assertRowSumsConsistent, collectOriginGroups, leadOf } from './lineage'
 
 const node = (over: Partial<Node>): Node => ({
   id: 'model.fudoki.x', label: 'x', kind: 'model', jurisdictionCode: null, stage: 'core',
@@ -107,5 +107,46 @@ describe('assertRowSumsConsistent', () => {
       rowsByJurisdiction: { '132195': { total: 10, byYear: { '2020': Number.NaN } } },
     })
     expect(() => assertRowSumsConsistent([n])).toThrow(/2020年度/)
+  })
+})
+
+describe('collectOriginGroups', () => {
+  const src = (id: string, label = 'expenditure'): Node =>
+    node({ id, label, kind: 'source', jurisdictionCode: /\.raw_(\d{6})/.exec(id)?.[1] ?? null, stage: 'ingestion' })
+  const prov = (sha: string, over: Partial<Provenance> = {}): Provenance => ({
+    jurisdiction_code: '999999', fiscal_year: 2024, direction: 'expenditure',
+    resource_name: 'r', request_url: 'u', status: 200, bytes: 1,
+    sha256: sha.repeat(64), fetched_at: 't', roundtrip_verified: true, rows: 1, ...over,
+  })
+
+  test('1ソースが複数年度のファイルを持つとき、証跡（ファイル）ごとに別グループ', () => {
+    const groups = collectOriginGroups(
+      [src('source.fudoki.raw_999999.expenditure')],
+      [prov('a', { fiscal_year: 2023 }), prov('b', { fiscal_year: 2024 })],
+    )
+    expect(groups.size).toBe(2)
+  })
+
+  test('同じファイルを歳出・歳入が共有するときは1グループ', () => {
+    const groups = collectOriginGroups(
+      [src('source.fudoki.raw_999999.expenditure'), src('source.fudoki.raw_999999.revenue', 'revenue')],
+      [
+        prov('a'),
+        prov('a', { direction: 'revenue', resource_name: 'r2' }),
+      ],
+    )
+    expect(groups.size).toBe(1)
+    expect([...groups.values()][0]!.map((m) => m.src.id)).toEqual([
+      'source.fudoki.raw_999999.expenditure',
+      'source.fudoki.raw_999999.revenue',
+    ])
+  })
+
+  test('同じ sha256 でも団体が違えば別グループ', () => {
+    const groups = collectOriginGroups(
+      [src('source.fudoki.raw_999999.expenditure'), src('source.fudoki.raw_888888.expenditure')],
+      [prov('a'), prov('a', { jurisdiction_code: '888888' })],
+    )
+    expect(groups.size).toBe(2)
   })
 })

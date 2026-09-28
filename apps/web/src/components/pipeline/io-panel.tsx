@@ -29,7 +29,6 @@ import {
   loadHitMap,
   loadRows,
   nodeLabel,
-  srcIdOf,
   type NodeRows,
   type Pair,
   type PdfHitLoc,
@@ -59,10 +58,9 @@ function useRows(nodeId: string | null, code: string, year: number | null, dir: 
   return rows
 }
 
-/** PDF 側が来たとき、hit の対応表を取りに行く hook */
-function useHitMap(rows: NodeRows | null, nodeId: string | null, dir: Direction | null = null) {
+/** PDF 側が来たとき、hit の対応表を取りに行く hook。hit は source 単位で載るので実ソース id を取る */
+function useHitMap(rows: NodeRows | null, srcId: string | null, dir: Direction | null = null) {
   const [map, setMap] = useState<Map<string, PdfHitLoc> | null>(null)
-  const srcId = nodeId ? srcIdOf(nodeId) : null
   const docs = rows?.kind === "pdf" ? rows.docs : null
   useEffect(() => {
     if (!docs || !srcId) {
@@ -805,14 +803,11 @@ function StarSide({
   onRemovePair: (p: Pair) => void
 }) {
   const dir = edgeDir(pair.from, pair.to)
-  const nodeId =
-    side === "in"
-      ? node?.kind === "origin"
-        ? `${pair.to}.origin`
-        : pair.from
-      : pair.to
+  const nodeId = side === "in" ? pair.from : pair.to
   const rows = useRows(nodeId, code, year, dir)
-  const hits = useHitMap(rows, nodeId, dir)
+  // hit は source 単位で載る — 原典ノード（doc_<sha>）はファイルの id なので、
+  // その辺が向かう実ソースの hit を引く
+  const hits = useHitMap(rows, node?.kind === "origin" ? pair.to : nodeId, dir)
   const tableRef = useRef<RowTableHandle>(null)
   const [pdfNav, setPdfNav] = useState<{ docId: string | null; page: number | null }>({
     docId: null,
@@ -941,15 +936,20 @@ function Overview({
   onPdfNavigate: (docId: string, page: number) => void
 }) {
   // 入口 = 原典ノード、出口 = 出ていく辺を持たない配布物ノード。共有リソースや
-  // 途中のモデルはここでは出さない（区間の中身は辺選択の役割）
+  // 途中のモデルはここでは出さない（区間の中身は辺選択の役割）。
+  // 原典はファイル単位なので、選中年度を持たないファイルは入口にも出さない
   const { origins, sinks } = useMemo(() => {
     const hasOut = new Set(report.topology.edges.map((e) => e.from))
     const nodes = report.topology.nodes.filter((n) => n.jurisdictionCode === code)
     return {
-      origins: nodes.filter((n) => n.kind === "origin"),
+      origins: nodes.filter(
+        (n) =>
+          n.kind === "origin" &&
+          n.rowsByJurisdiction?.[code]?.byYear?.[String(year)] != null,
+      ),
       sinks: nodes.filter((n) => n.stage === "package" && !hasOut.has(n.id)),
     }
-  }, [report.topology, code])
+  }, [report.topology, code, year])
   // 原典 → 取り込み表の辺から、まとめられた原典でも裏の source を全部拾う
   const memberSrcIds = (n: Node) =>
     report.topology.edges.filter((e) => e.from === n.id).map((e) => e.to)

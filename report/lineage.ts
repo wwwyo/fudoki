@@ -23,12 +23,45 @@
 import { readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { provenanceForSource } from './common'
-import { originDocKey } from './origin-doc'
 import type { CanonicalFetch, Check, CheckAttribution, Node, ProjectNamesExtract, Provenance, RevenueAccountsExtract, Stage, Topology } from './common'
 
 export const ROOT = resolve(import.meta.dirname, '..')
 export const TARGET = join(ROOT, 'dbt/target')
 const WAREHOUSE = join(ROOT, 'data/fudoki.duckdb')
+
+export type OriginMember = {
+  src: Node
+  code: string
+  hit: NonNullable<ReturnType<typeof provenanceForSource>>
+  p: Provenance
+}
+
+/**
+ * 原典ノードへの束ね。**「自治体が公開したファイル」単位**（団体 × 証跡の sha256）—
+ * 年度ごとの別ファイルは別ノードにする（束ねると「何を・いつ取ったか」がノードから
+ * 読めず、リソース名1つが全ファイルを代表して嘘をつく）。同じ文書から起こした
+ * 取り込み（歳入と歳出を同じ PDF から起こす団体など）はファイルが同一なので
+ * sha256 が一致し、ここで自然に1ノードにまとまる。
+ */
+export function collectOriginGroups(nodes: Node[], provenance: Provenance[]): Map<string, OriginMember[]> {
+  const groups = new Map<string, OriginMember[]>()
+  for (const src of nodes.filter((n) => n.kind === 'source')) {
+    // ⚠️ **direction だけで引かない。** 2団体目からは `expenditure` という名前の
+    // ソースが団体ごとにあり、direction だけで絞ると三鷹市の取得元ノードに
+    // 狛江市の証跡が混ざる（`sourceRows` が同じ理由で団体コードを見ている）。
+    const code = /\.raw_(\d{6})/.exec(src.id)?.[1]
+    if (!code) continue
+    const hit = provenanceForSource(src.id, src.label, provenance)
+    if (!hit) continue
+    for (const p of hit.ps) {
+      const gk = `${code}|${p.sha256}`
+      const g = groups.get(gk)
+      if (g) g.push({ src, code, hit, p })
+      else groups.set(gk, [{ src, code, hit, p }])
+    }
+  }
+  return groups
+}
 
 export const readJson = <T,>(p: string): T => JSON.parse(readFileSync(p, 'utf8')) as T
 
@@ -376,45 +409,26 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
     }
   })
 
-  // 取得元。dbt は知らないので証跡から組む。id を「source ノードid + .origin」にしてあるのは
-  // ローカル画面の行取り出し（apps/web/vite-plugins/local-data.ts）が同じ規約で引くため。
+  // 取得元。dbt は知らないので証跡から組む。束ね方は `collectOriginGroups` を見よ —
+  // ローカル画面の行取り出し（apps/web/vite-plugins/local-data.ts）が同じ id 規約で引く。
   // ⚠️ **抽出物（PDF から起こした表）にも取得元ノードを付ける。** CSV の団体と同じ
   // 「原典 → 取り込み」の形にしないと、PDF の団体だけ系統が1段浅い図になる。
-  //
-  // **同じ文書から起こした取り込みは原典を1つにまとめる。** 歳入と歳出を同じ PDF
-  // から起こす団体（千代田区など）では、取り込み表が direction で分かれても原典は
-  // 同じものを指す。まとめるのは証跡の文書集合が完全一致するときだけ — 片方が
-  // 別の文書も含むなら別ノードのほうが実態に合う。
-  type SrcMember = { src: Node; code: string; hit: NonNullable<ReturnType<typeof provenanceForSource>> }
-  const srcGroups = new Map<string, SrcMember[]>()
-  for (const src of nodes.filter((n) => n.kind === 'source')) {
-    // ⚠️ **direction だけで引かない。** 2団体目からは `expenditure` という名前の
-    // ソースが団体ごとにあり、direction だけで絞ると三鷹市の取得元ノードに
-    // 狛江市の証跡が混ざる（`sourceRows` が同じ理由で団体コードを見ている）。
-    const code = /\.raw_(\d{6})/.exec(src.id)?.[1]
-    if (!code) continue
-    const hit = provenanceForSource(src.id, src.label, provenance)
-    if (!hit) continue
-    const gk = `${code}|${originDocKey(hit.ps)}`
-    const g = srcGroups.get(gk)
-    if (g) g.push({ src, code, hit })
-    else srcGroups.set(gk, [{ src, code, hit }])
-  }
+  const srcGroups = collectOriginGroups(nodes, provenance)
 
   // 原典ノード → 取り込み表の辺は `X.origin → X` の id 規約では追えなくなった
-  // （まとめた原典は複数の source に出る）ので、辺はここで持ち回る
+  // （原典 id はファイルの sha256 を名乗る）ので、辺はここで持ち回る
   const originTargets = new Map<string, string[]>()
   for (const [gk, members] of srcGroups) {
-    const ps = members.flatMap((m) => m.hit.ps)
+    const ps = members.map((m) => m.p)
     const code = members[0]!.code
     // ノードには見出しだけ出す。「※下水道事業会計除く」のような注記は
     // 詳細（title が正式名）と description に残る。
-    // 複数年度あるときは先頭年の名前だけ出すと嘘になる（行数は全年度の合計）ので、範囲にする。
     // 名は正本の取り込みがリソース名、抽出物が文書名を持つ（resource_name を持たないため）。
-    const years = [...new Set(ps.map((p) => p.fiscal_year))].sort()
     const base = (ps[0]!.resource_name ?? ps[0]!.document_title ?? members[0]!.src.label).split('※')[0]!.trim()
-    const label = years.length > 1
-      ? `${base.replace(/（\d{4}）$/, '').trim()}（${years[0]}〜${years.at(-1)}）`
+    const years = [...new Set(ps.map((p) => p.fiscal_year))].sort()
+    // リソース名に年度が無い名前だけ補う（「決算書歳出データ（2018）」はそのまま）
+    const label = years.length === 1 && !base.includes(String(years[0]))
+      ? `${base}（${years[0]}）`
       : base
     // 証跡は年度ごとに1件あるので、取得元も年度で切れる（切れないのは規則表だけ）。
     // 1団体ぶんを団体で引ける形へ包むのは `ownCount` と同じ処理なので、それを使う。
@@ -422,23 +436,22 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
     // （原典の内訳がその数だけある、という意味で）。
     const counted = members.every((m) => m.hit.kind === 'canonical')
       ? countByYear((ps as CanonicalFetch[]).map((p) => [p.fiscal_year, p.rows]))
-      : countByYear(members.flatMap((m) => {
-          const k = m.hit.kind
-          return m.hit.ps.map((p): [number, number] =>
-            [p.fiscal_year, k === 'canonical' ? (p as CanonicalFetch).rows : extractedCount(p, k)])
-        }))
+      : countByYear(members.map((m): [number, number] =>
+          [m.p.fiscal_year, m.hit.kind === 'canonical'
+            ? (m.p as CanonicalFetch).rows
+            : extractedCount(m.p, m.hit.kind)]))
     const origin = ownCount(counted, code)!
-    const id = members.length === 1
-      ? `${members[0]!.src.id}.origin`
-      : `source.fudoki.raw_${code}.doc_${gk.slice(gk.indexOf('|') + 1)}.origin`
-    originTargets.set(id, members.map((m) => m.src.id))
+    // id はファイルの sha256 を名乗る — PDF レイヤの文書 id（`<code>-<sha256:12>`）と
+    // 同じ素で、ローカル・データ口は suffix の一致でそのファイルだけに解決する
+    const id = `source.fudoki.raw_${code}.doc_${members[0]!.p.sha256.slice(0, 12)}.origin`
+    originTargets.set(id, [...new Set(members.map((m) => m.src.id))])
     const urls = [...new Set(ps.map((p) => p.request_url))]
     nodes.push({
       id, label, kind: 'origin', stage: 'origin',
       jurisdictionCode: code,
       rows: origin.total,
       rowsByJurisdiction: origin.byJurisdiction,
-      description: `${urls[0]}${urls.length > 1 ? `\nほか ${urls.length - 1} リソース` : ''}\n取得: ${ps[0]!.fetched_at}`,
+      description: `${urls.join('\n')}\n取得: ${ps[0]!.fetched_at}`,
       introducesJudgment: false, containsJudgment: false, artifact: null,
     })
   }

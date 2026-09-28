@@ -199,7 +199,7 @@ details.fold .cv .b code { font-size: 11px; background: color-mix(in oklch, var(
 <div id="stagetip" role="tooltip"></div>
 <!-- 生成ファイルを index.html から指しているため、内容が変わるたびにブラウザの
      heuristic cache に引っかかる。data.js を差し替えたら ?v= を上げる -->
-<script src="data.js?v=3"></script>
+<script src="data.js?v=5"></script>
 <script>
 'use strict';
 const DATA = window.PIPELINE_DATA;
@@ -241,41 +241,15 @@ const V1PTS = new Map(); // graphwrap 内で押下された pointerId → 座標
 let SPLITH = 35;   // 図ペインの高さ（コンテナに対する %）
 let SASH = false;  // split の境目をドラッグ中
 // 規則表・マスタデータ（共有リソース）は検証対象の流れではないので図から外す。
-// 同じ文書から起こした取り込み（歳出・歳入が同じ PDF）は原典を1つにまとめる —
-// 実装は証跡の sha256 集合で判定するが、data.js の原典ノードは文書の URL を
-// description に持つのでそれで代用する
+// 原典はファイル単位のノード（`doc_<sha256>` id）— 選中年度を持たないファイルも外す
 function J() {
   const j = DATA[S.code];
-  const keep = [];
-  const origins = new Map();
-  for (const n of j.topology.nodes) {
-    if (isRes(n)) continue;
-    if (n.kind === 'origin') {
-      const key = `${n.jurisdictionCode}|${n.description || n.label}`;
-      if (!origins.has(key)) origins.set(key, []);
-      origins.get(key).push(n);
-      continue;
-    }
-    keep.push(n);
-  }
-  const mergedOf = new Map();
-  let gi = 0;
-  for (const members of origins.values()) {
-    if (members.length === 1) { keep.push(members[0]); continue; }
-    const code = members[0].jurisdictionCode;
-    const id = `source.fudoki.raw_${code}.doc${gi++}.origin`;
-    const byYear = {};
-    for (const m of members) {
-      const rb = m.rowsByJurisdiction?.[code]?.byYear;
-      for (const [y, n] of Object.entries(rb || {})) byYear[y] = (byYear[y] || 0) + n;
-    }
-    const total = members.reduce((s, m) => s + (m.rows || 0), 0);
-    keep.push({ ...members[0], id, rows: total, rowsByJurisdiction: { [code]: { total, byYear } } });
-    for (const m of members) mergedOf.set(m.id, id);
-  }
-  const edges = j.topology.edges.map((e) => ({ ...e, from: mergedOf.get(e.from) ?? e.from }));
+  const keep = j.topology.nodes.filter((n) =>
+    !isRes(n) &&
+    (n.kind !== 'origin' ||
+      (n.rowsByJurisdiction?.[S.code]?.byYear?.[S.year] ?? null) !== null));
   const ids = new Set(keep.map((n) => n.id));
-  return { ...j, topology: { ...j.topology, nodes: keep, edges: edges.filter((e) => ids.has(e.from) && ids.has(e.to)) } };
+  return { ...j, topology: { ...j.topology, nodes: keep, edges: j.topology.edges.filter((e) => ids.has(e.from) && ids.has(e.to)) } };
 }
 function pushUrl() {
   const url = new URL(location);
@@ -304,7 +278,7 @@ const COLUMN_DOCS = {"resources": {"expenditure": {"budget_line_id": {"title": "
 const isRes = (n) => !n.jurisdictionCode && n.kind !== 'model';
 function nodeLabel(n, j) {
   let l = n.label;
-  if (/\.(expenditure|revenue)$/.test(n.id) || /\.(expenditure|revenue)\.origin$/.test(n.id)) {
+  if (/\.(expenditure|revenue)$/.test(n.id)) {
     const d = n.id.includes('expenditure') ? '歳出' : '歳入';
     if (!l.includes(d)) l = `${l}（${d}）`;
   }
@@ -742,7 +716,8 @@ function ioOverviewHtml(j) {
   const origins = nodes.filter((n) => n.kind === 'origin');
   const sinks = nodes.filter((n) => n.stage === 'package' && !hasOut.has(n.id));
   const memberSrcs = (n) => j.topology.edges.filter((x) => x.from === n.id).map((x) => x.to);
-  const dirOf = (s) => edgeDir({ from: s, to: '' });
+  const dirOf = (s) => edgeDir({ from: s, to: '' })
+    || (s.includes('_revenue_accounts') ? 'revenue' : s.includes('_project_names') || s.includes('_statement') ? 'expenditure' : null);
   // 配布物側の鍵集合（原典側の「対応あり」フラッグの母数）。行は複数の鍵空間を
   // 持ちうるので全空間の和集合を取る
   const sinkKeys = new Set();
@@ -768,8 +743,8 @@ function ioOverviewHtml(j) {
       for (const k in hs) originKeysByDir[d].add(`sr|${d}|${k}`);
     }
     originHitMap[n.id] = merged;
-    // CSV 原典なら表の行からも拾う
-    const e = pickEntry(j, `${srcs[0]}.origin`, null);
+    // CSV 原典なら表の行からも拾う（原典ノード id がそのまま行データの鍵）
+    const e = pickEntry(j, n.id, null);
     if (e && !e.error) {
       const d = e.direction || '';
       rowKeysOf(e, e.direction || null, true).forEach((ks) => ks && ks.forEach((k) => (originKeysByDir[d] ||= new Set()).add(k)));
@@ -779,7 +754,7 @@ function ioOverviewHtml(j) {
   // ミラーするので、各ノードは自分の ctx 名で読むだけでよい
   const originHtml = (n) => {
     const srcs = memberSrcs(n);
-    const key = `${srcs[0]}.origin`;
+    const key = n.id;
     const dir = srcs[0] ? edgeDir({ from: n.id, to: srcs[0] }) : null;
     const pdf = j.samples[key]?.kind === 'pdf';
     const head = `原典${pdf ? '（PDF）' : '（CSV）'} — ${esc(n.label)}`;
@@ -890,9 +865,9 @@ function starHtml(j, nodeById, shared, pairs) {
   // 向きが混ざるときは方向絞りをしない（行・金額宣言を絞れないので null）
   const sharedDirs = [...new Set(pairs.map(edgeDir))];
   const dir = sharedDirs.length === 1 ? sharedDirs[0] : null;
-  // 行データは source ごとの `${source}.origin` キーで持つ — 併合原典は第1組の source で代表を引く
-  const sharedKey = shared === 'in' && sharedNode.kind === 'origin' ? `${pairs[0].to}.origin` : sharedId;
-  const aPdf = sharedNode.kind === 'origin' && pairs.some((e) => j.samples[`${e.to}.origin`]?.kind === 'pdf');
+  // 原典ノード id がそのまま行データ・文書の鍵（`doc_<sha256>` はファイルの正）
+  const sharedKey = sharedId;
+  const aPdf = sharedNode.kind === 'origin' && pairs.some((e) => j.samples[e.from]?.kind === 'pdf');
   const starCtx = `st:${sharedId}`;
   const sst = ctxOf(starCtx);
   const varSide = shared === 'in' ? 'out' : 'in';
@@ -913,7 +888,7 @@ function starHtml(j, nodeById, shared, pairs) {
     const n = nodeById.get(varSide === 'in' ? e.from : e.to);
     if (!n) continue;
     const d = edgeDir(e);
-    const key = varSide === 'in' ? (n.kind === 'origin' ? `${e.to}.origin` : e.from) : e.to;
+    const key = varSide === 'in' ? e.from : e.to;
     const pdf = varSide === 'in' && j.samples[key]?.kind === 'pdf';
     const ks = sideKeySet(j, n, key, d, pdf);
     if (ks) ks.forEach((k) => peerKeys.add(k));
@@ -941,7 +916,7 @@ function starHtml(j, nodeById, shared, pairs) {
     const n = nodeById.get(varSide === 'in' ? e.from : e.to);
     if (!n) return '';
     const d = edgeDir(e);
-    const key = varSide === 'in' ? (n.kind === 'origin' ? `${e.to}.origin` : e.from) : e.to;
+    const key = varSide === 'in' ? e.from : e.to;
     const pdf = varSide === 'in' && j.samples[key]?.kind === 'pdf';
     const own = ctxOf(`${e.from}|${e.to}`);
     const name = n.kind === 'origin' ? '原典' : nodeLabel(n, j);
@@ -977,7 +952,12 @@ function ioSideDetailHtml(j, node, dir, { isInput, aPdf, srcIds, tblKey, tblDir 
   const warn = checks.filter((c) => c.status === 'warn').length;
   const ckBad = [bad && `失敗${bad}`, warn && `警告${warn}`].filter(Boolean).join('・');
   const isOrigin = isInput && node.kind === 'origin';
-  const ings = isOrigin && dir ? j.ingestion.filter((i) => i.direction === dir) : [];
+  // 原典はファイル単位のノード — 同じ向き・年度に複数ファイルがあってもそのファイルの
+  // 証跡だけを出す（id の doc_<sha> で絞る）
+  const sha = /\.doc_([0-9a-f]{12})\.origin$/.exec(node.id || '')?.[1];
+  const ings = isOrigin && dir
+    ? j.ingestion.filter((i) => i.direction === dir && (!sha || (i.sha256 || '').startsWith(sha)))
+    : [];
   const ing = ings.find((i) => i.fiscal_year === S.year) || ings[0] || null;
   // 見えている表の列のうち語彙が引けるもの（原典の列は原典自身の見出しなので引かない）
   const docMap = node ? colDocsOf(node) : {};
@@ -1288,7 +1268,7 @@ window.addEventListener('pointerup', v1PointerEnd);
 window.addEventListener('pointercancel', v1PointerEnd);
 stage.addEventListener('change', (e) => {
   const y = e.target.closest('[data-year]');
-  if (y) { S.year = Number(y.value); V1Z = null; pushUrl(); mount(); return; }
+  if (y) { S.year = Number(y.value); V1Z = null; S.edges = []; pushUrl(); mount(); return; }
   // 頁送りの入力 — PDF の通し頁番号を直接受ける。取り込み範囲外は端にクランプ
   const pi = e.target.closest('input.pgnum');
   if (pi) {

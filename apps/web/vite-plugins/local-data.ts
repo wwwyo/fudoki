@@ -15,7 +15,6 @@ import fs from "node:fs"
 import path from "node:path"
 import type { Connect, Plugin } from "vite"
 import { provenanceForSource } from "@fudoki/report/common"
-import { originDocKey } from "@fudoki/report/origin-doc"
 
 export function localData(root: string): Plugin {
   const repo = path.resolve(root, "../..")
@@ -118,9 +117,9 @@ export function localData(root: string): Plugin {
   }
 
   /**
-   * `.origin` ノードが指す取り込みソースの id 一覧。同じ文書から起こした取り込みは
-   * 原典ノードを1つにまとめる（`source.fudoki.raw_<団体>.doc_<文書キー>` 形の id、
-   * report/lineage.ts が付ける）ので、その場合は文書キーでメンバーを引き直す
+   * `.origin` ノードが指す取り込みソースの id 一覧。原典ノードはファイル単位で
+   * `source.fudoki.raw_<団体>.doc_<sha256:12>` 形の id を持つ（report/lineage.ts
+   * が付ける）ので、そのファイルを読むメンバーを sha256 前置で引き直す
    */
   const originSrcIds = (srcId: string): string[] => {
     const srcs = manifest().sources
@@ -128,9 +127,10 @@ export function localData(root: string): Plugin {
     const m = /^(source\.fudoki\.raw_\d{6})\.doc_([0-9a-f]{12})$/.exec(srcId)
     if (!m) return [srcId]
     const [prefix, key] = [m[1], m[2]]
+    // `raw_<団体>.<向き>` のほか `raw_<団体>_<種類>.data`（抽出物のソース）もこの団体のソース
     return Object.keys(srcs)
-      .filter((id) => id.startsWith(`${prefix}.`))
-      .filter((id) => originDocKey(provsForSource(id)) === key)
+      .filter((id) => id.startsWith(`${prefix}.`) || id.startsWith(`${prefix}_`))
+      .filter((id) => provsForSource(id).some((p) => p.sha256.startsWith(key)))
   }
 
   /**
@@ -138,20 +138,26 @@ export function localData(root: string): Plugin {
    * - model/seed → warehouse の表（pkg_* は external materialized で CSV が正本）
    * - source.* → manifest の `meta.external_location`（read_parquet の glob）
    * - *.origin → 原典。PDF 原典なら {kind:'pdf'}、CSV 原典なら取り込み Parquet
-   *   （raw の Parquet は原典 CSV と復元一致が検査済みなので、そのまま原典の姿として出せる）
+   *   （raw の Parquet は原典 CSV と復元一致が検査済みなので、そのまま原典の姿として出せる）。
+   *   `.doc_<sha>` 形ならそのファイルの証跡・年度・文書だけに絞る
    */
   const resolveRows = async (nodeId: string, year: number | null, dir: string | null, code: string | null) => {
     if (nodeId.endsWith(".origin")) {
       const srcId = nodeId.slice(0, -".origin".length)
       const srcIds = originSrcIds(srcId)
-      const provs = srcIds.flatMap(provsForSource)
+      const sha = /\.doc_([0-9a-f]{12})$/.exec(srcId)?.[1]
+      const provs = srcIds.flatMap(provsForSource).filter((p) => !sha || p.sha256.startsWith(sha))
       if (provs.some((p) => p.extractor || p.raw_form === "extracted")) {
         const docs = new Map<string, unknown>()
         for (const s of srcIds) for (const d of pdfDocsFor(s)) docs.set(d.id, d)
-        return { kind: "pdf", docs: [...docs.values()], provs }
+        // 文書 id は `<団体>-<sha256:12>` — 同じ素で引ける
+        const all = [...docs.values()]
+        return { kind: "pdf", docs: sha ? all.filter((d: any) => d.id.endsWith(`-${sha}`)) : all, provs }
       }
-      // 正本の CSV。原典ノードの中身は取り込み Parquet（= 原典の復元と一致が検査済み）
-      return { ...(await serveTable(parquetFor(srcIds[0]!), year, dir, code)), provs }
+      // 正本の CSV。原典ノードの中身は取り込み Parquet（= 原典の復元と一致が検査済み）。
+      // ファイルの中身は UI の年度選択に依存しないので、そのファイルの年度で引く
+      const fy = provs.find((p) => p.fiscal_year != null)?.fiscal_year
+      return { ...(await serveTable(parquetFor(srcIds[0]!), (fy as number) ?? year, dir, code)), provs }
     }
     const m = manifest()
     if (nodeId.startsWith("source.")) return serveTable(parquetFor(nodeId), year, dir, code)
