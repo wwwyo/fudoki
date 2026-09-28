@@ -19,6 +19,9 @@ tmp/
 apps/web/public/pipeline.json
 apps/web/public/preview/
 
+# 検証画面のローカル・データ口（原典 PDF の頁画像・語層・行対応）。公開しない
+apps/web/.local/
+
 # 団体ごとの /pipeline/<団体コード>/ と /analysis/<団体コード>/ は vite plugin が
 # jurisdictions.json から生成する（apps/web/vite-plugins/jurisdiction-pages.ts）。
 # コードなしの apps/web/{pipeline,analysis}/index.html は手書きなので残す（配下だけを無視する）

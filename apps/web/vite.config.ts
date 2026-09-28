@@ -4,6 +4,7 @@ import tailwindcss from "@tailwindcss/vite"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 import { jurisdictionPages } from "./vite-plugins/jurisdiction-pages.ts"
+import { localData } from "./vite-plugins/local-data.ts"
 
 const ROOT = import.meta.dirname
 
@@ -24,8 +25,8 @@ const pageInput = Object.fromEntries(
 )
 
 // https://vite.dev/config/
-export default defineConfig({
-  plugins: [react(), tailwindcss(), jurisdictionPages(ROOT)],
+export default defineConfig(({ command }) => ({
+  plugins: [react(), tailwindcss(), jurisdictionPages(ROOT), localData(ROOT)],
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "./src"),
@@ -40,8 +41,12 @@ export default defineConfig({
       // `base` に加えてそれらのリンクも直す必要がある。
       input: {
         main: path.resolve(ROOT, "index.html"),
-        ...pageInput,
+        // 検証画面（pipeline/）はローカル専用 — 行の出し口は dev middleware だけなので、
+        // ビルドに含めるとデータの取れない画面が公開される（PRD の Non-Goal）
+        ...Object.fromEntries(
+          Object.entries(pageInput).filter(([k]) => command !== "build" || k !== "pipeline"),
+        ),
       },
     },
   },
-})
+}))

@@ -39,7 +39,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { withBase } from "@/lib/utils"
-import { DIVISION_COLOR, loadPipeline, pct, senYen, type Direction, type PipelineData, count } from "@/lib/pipeline"
+import { DIR_JA, DIVISION_COLOR, loadPipeline, pct, senYen, type Direction, type PipelineData, count } from "@/lib/pipeline"
 import { share } from "@fudoki/report/budget/cofog"
 import { apiClient } from "@/lib/api-client"
 import { buildCofogTree, type AggregateBudgetsResponse, type CofogNodeFilter, type CofogTreeNode } from "@/lib/cofog-tree"
@@ -55,10 +55,9 @@ type Props = {
   jurisdictionName?: string
 }
 
-const DIRECTIONS: { value: Direction; label: string }[] = [
-  { value: "expenditure", label: "歳出" },
-  { value: "revenue", label: "歳入" },
-]
+const DIRECTIONS: { value: Direction; label: string }[] = (
+  ["expenditure", "revenue"] as const
+).map((d) => ({ value: d, label: DIR_JA[d] }))
 
 export function AnalysisPage({ urlCode = null, jurisdictionName }: Props = {}) {
   const [data, setData] = useState<PipelineData | null>(null)
@@ -307,14 +306,17 @@ function CollectedAnalysis({
             </Select>
             {/* この団体の ELT パイプラインへの導線。分析は数字を見る場所、パイプラインは
                 その数字の根拠（集計・COFOG 割当）を検証する場所で目的が違う。pipeline.tsx 側の
-                「支出分析を見る」ボタンと対になる導線なので、扱いを揃える */}
-            <Button
-              variant="outline"
-              size="sm"
-              nativeButton={false}
-              className="ml-auto shrink-0"
-              render={<a href={withBase(`/pipeline/${code}/`)}>ELT パイプラインを見る</a>}
-            />
+                「支出分析を見る」ボタンと対になる導線なので、扱いを揃える。
+                検証画面はローカル専用なので、公開ビルドでは導線自体を出さない */}
+            {import.meta.env.DEV && (
+              <Button
+                variant="outline"
+                size="sm"
+                nativeButton={false}
+                className="ml-auto shrink-0"
+                render={<a href={withBase(`/pipeline/${code}/`)}>ELT パイプラインを見る</a>}
+              />
+            )}
           </div>
           <p className="max-w-[72ch] text-sm leading-relaxed text-muted-foreground">
             {m.jurisdictionName} の{DIRECTIONS.find((d) => d.value === direction)?.label}を、

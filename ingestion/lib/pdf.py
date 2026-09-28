@@ -16,6 +16,42 @@ import subprocess
 import tempfile
 
 Char = tuple[float, float, str]     # (x, y, 1文字)
+Word = tuple[float, float, float, float, str]   # (x0, y0, x1, y1, 語)
+PageWords = tuple[float, float, list[Word]]     # (幅, 高さ, 語のリスト)
+
+
+def pages_of(pdf: pathlib.Path, first: int, last: int, *, redistill: bool = False) -> list[PageWords]:
+    """ページごとに (幅, 高さ, 語の bbox) を返す。
+
+    検証画面の文字層（選択可能なテキスト・行への紐づけ）が語の座標を要るため、
+    `chars_of` とは別に語のまま返す経路。`pdftotext -bbox-layout` を使うのは同じ。
+    """
+    if redistill:
+        with tempfile.NamedTemporaryFile(suffix=".pdf") as f:
+            subprocess.run(["pdftocairo", "-pdf", str(pdf), f.name], check=True)  # noqa: S603
+            return pages_of(pathlib.Path(f.name), first, last)
+    xml = subprocess.run(  # noqa: S603
+        ["pdftotext", "-bbox-layout", "-f", str(first), "-l", str(last), str(pdf), "-"],
+        capture_output=True, check=True,
+    ).stdout.decode()
+    pages: list[PageWords] = []
+    for page in xml.split("<page ")[1:]:
+        m = re.match(r'width="([\d.]+)" height="([\d.]+)"', page)
+        w, h = float(m[1]), float(m[2])
+        seen: set = set()
+        words: list[Word] = []
+        for wm in re.finditer(
+            r'<word xMin="([\d.]+)" yMin="([\d.]+)" xMax="([\d.]+)" yMax="([\d.]+)"[^>]*>(.*?)</word>', page
+        ):
+            x0, y0, x1, y1 = (float(wm[i]) for i in range(1, 5))
+            text = wm[5]
+            key = (x0, y0, text)
+            if key in seen:   # bbox は同じ語を2回吐くことがある
+                continue
+            seen.add(key)
+            words.append((x0, y0, x1, y1, text))
+        pages.append((w, h, words))
+    return pages
 
 
 def chars_of(pdf: pathlib.Path, first: int, last: int, *, redistill: bool = False):

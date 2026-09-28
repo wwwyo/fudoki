@@ -5,11 +5,26 @@
  * ②調達（OCDS）③会議録（Popolo）は別の schema を持つので、
  * 巨大な optional の塊にしない。
  */
-import type { ReportEnvelope } from '../common'
+import type { Provenance, ReportEnvelope } from '../common'
 import type { CofogDepth, Direction, Level } from './detail'
 
-export type { CanonicalFetch, Check, Edge, Node, Provenance, Stage, Topology } from '../common'
-export { isCanonicalFetch } from '../common'
+export type { DocumentPhaseId } from '../common'
+export { DOCUMENT_PHASES } from '../common'
+
+export type {
+  CanonicalFetch,
+  Check,
+  CheckAttribution,
+  Edge,
+  Node,
+  ProjectNamesExtract,
+  Provenance,
+  RevenueAccountsExtract,
+  Stage,
+  StatementExtract,
+  Topology,
+} from '../common'
+export { extractedKindOf, isCanonicalFetch } from '../common'
 // 行数の集計（団体 × 年度へのグルーピング・合算）は lineage.ts の1箇所で終わらせてあり、
 // 画面側の nodeRows はその結果から選ぶだけ
 export { nodeRows } from '../common'
@@ -134,6 +149,29 @@ export type LevelGroup = {
   }[]
 }
 
+/**
+ * 原典の金額列の宣言1件。**正本は `dbt/dbt_project.yml` の `budget_amounts`**。
+ * 「今見ている行の金額が何の単位か」を画面が言えるように、生成側がそのまま運ぶ。
+ * 年度で割れる団体（多摩市は年度で単位が変わる）では `years` で範囲を持つ。
+ */
+export type AmountDecl = {
+  /** 原典の列名 */
+  name: string
+  /** 宣言の出所（dbt_project.yml / 証跡の source_amount_unit / 注意点） */
+  source: 'dbt_project' | 'source_amount_unit' | 'caveat'
+  /** 原典での単位（「円」「千円」など） */
+  unit: string
+  /** 円へ換算する倍率 */
+  multiplier: number
+  phase: string
+  phaseLabel: string
+  /** 宣言が効く年度。null = 全年度 */
+  years: number[] | null
+}
+
+/** 列の意味。`title` は短い表題（款コード など）、`description` は読み方の注意を含む説明 */
+export type ColDoc = { title?: string; description?: string }
+
 export type ReportData = ReportEnvelope & {
   meta: ReportEnvelope['meta'] & { fiscalYears: number[] }
   /**
@@ -160,12 +198,41 @@ export type ReportData = ReportEnvelope & {
   /** 2団体目で壊れうる箇所と、次に何を実測すれば確かめられるか */
   portability: { element: string; kind: string; verifyNext: string }[]
   /**
+   * 列名 → 意味。**正本は配布物の descriptor（datapackage.json）と dbt の列記述**。
+   * `resources` はリソース名でスコープする — 同じ列名でも歳出と歳入で意味が違う
+   * （`saisetsu_code`）ので、配布物側はリソース単位でしか引けない。
+   * `canonical` は dbt manifest の列記述に、配布物語彙のうち全リソースで意味が
+   * 一意なものを併せたもの。正規化・判断の表は配布物と同じ列語彙を使うので、
+   * こちらで引くと `kan_code` 等の意味が途中段でも出る。
+   */
+  columnDocs: {
+    /** 配布物のリソース名 → 列名 → 説明 */
+    resources: Record<string, Record<string, ColDoc>>
+    /** リソースに属さない表（取り込み・正規化・判断）での列名 → 説明 */
+    canonical: Record<string, ColDoc>
+  }
+  /**
    * `api` は budget-api の jurisdiction 応答に載せるものだけ true にする。
    * 基準: データ（enum・数値・構造）から見えず、API 利用者の解釈を変えるもの。
    * 構造が既に語っている事実、fudoki 側で吸収済みの経緯、repo の再現性の話は載せない
    * （報告=ダッシュボードには全量を出す）。
+   *
+   * `body` の書式: 空行で段落を分け、`- ` で始まる段落は1行1項目の箇条書き、
+   * `**強調**` と `` `コード` `` が使える（md ではなくこの3つだけ）。
    */
   caveats: { topic: string; body: string; category: CaveatCategory; api?: boolean }[]
+  /**
+   * 原典の金額列と単位の宣言（direction ごと）。
+   * 「今見ている行の単位」を画面が言うためのもの。年度・予算段階で単位が変わる
+   * 団体は宣言が年度で割れている。
+   */
+  amounts: Record<Direction, AmountDecl[]>
+  /**
+   * 正本の取り込み以外の証跡（PDF から起こした補助表 — 狛江市の事業名・歳入科目名）。
+   * **団体の `raw/jurisdiction=<code>/` の外に置かれる**ので `ingestion` には来ない。
+   * 抽出物の原典ノードの詳細を出すために運ぶ。
+   */
+  supplements: Provenance[]
 }
 
 /**
@@ -179,21 +246,3 @@ export type CaveatCategory =
   | 'classification'
   | 'sourceAndLicense'
   | 'other'
-
-/**
- * ノード1つの中身の先頭数行。**グラフでノードを選んだときに画面が読む。**
- * 報告本体に入れないのは、13ノード分を常に運ぶと報告が明細と同じ太り方をするため
- * （`apps/web/public/preview/<ノードid>.json` に分けて置き、選んだときだけ取りに行く）。
- */
-export type NodePreview = {
-  id: string
-  columns: string[]
-  rows: string[][]
-  /** 何行で切ったか。全行は totalRows（グラフのノードと同じ数字）を見る */
-  limit: number
-  totalRows: number | null
-  /** 取得元 CSV のプレビュー（`<ノードid>.origin.json`）だけが持つ */
-  title?: string
-  sourceUrl?: string
-  fetchedAt?: string
-}
