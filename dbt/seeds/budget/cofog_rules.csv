@@ -1,5 +1,5 @@
 priority,rule_id,applies_to,match_fund,match_kan,match_kou,match_kan_code,match_moku,moku_mode,match_setsu,status,cofog_code,consolidation,decided_at_level,counterpart_fund,basis
-1,komae-transfer,132195,一般会計,,,,,eq,繰出金,unclassifiable,,retained,節,,狛江市の会計間繰出。**受け皿の会計が決まらない。** 決算書 PDF から目の名称は解決したが、繰出先を書いた列も、繰出先を特定できる目の名称（社会福祉総務費・老人福祉費・再開発費）も無い。三鷹市のように受け皿の機能へ割り当てることも、連結で消去することもできないので、捨てずに分類不能として残す。全会計を合計すると会計間の移転を二重に含む
+1,komae-transfer,132195,一般会計,,,,,eq,繰出金,unclassifiable,,retained,節,,狛江市の会計間繰出のうち、宣言が無い行。決算書 PDF から目の名称は解決したが、繰出先を書いた列も、繰出先を特定できる目の名称（社会福祉総務費・老人福祉費・再開発費）も無い。対を検算できた移転は interfund_transfers.csv の宣言で消去しており、この規則には宣言が当たらなかった行だけが落ちる。捨てずに分類不能として残す。全会計を合計すると会計間の移転を（消去分を除いて）含む
 2,transfer-kokuho,132047,,,,,国民健康保険事業特別会計繰出金,contains,繰出金,assigned,07,eliminated,目,国民健康保険事業特別会計,同一主体内の会計間繰出。連結時は消去する。分類は受け皿である国民健康保険事業特別会計の機能に対応し、医療給付を担うため 07 保健
 3,transfer-kaigo-service,132047,,,,,介護サービス事業特別会計繰出金,contains,繰出金,assigned,10,eliminated,目,介護サービス事業特別会計,同一主体内の会計間繰出。連結時は消去する。分類は受け皿である介護サービス事業特別会計の機能に対応し、介護サービスの提供であり 10 社会保護
 4,transfer-kaigo-hoken,132047,,,,,介護保険事業特別会計繰出金,contains,繰出金,assigned,10,eliminated,目,介護保険事業特別会計,同一主体内の会計間繰出。連結時は消去する。分類は受け皿である介護保険事業特別会計の機能に対応し、長期介護の社会保険であり 10 社会保護
