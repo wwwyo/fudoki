@@ -193,9 +193,12 @@ left join kou_map as xm
     on xm.jurisdiction_code = a.jurisdiction_code
     and xm.direction = a.direction
     and xm.kan_code = a.kan_code
-    -- 項名がある団体は名称で、無い団体は項コードで当てる
+    -- 項名がある団体は名称で、無い団体は項コードで当てる。
+    -- ⚠️ コード照合は対象行の項名が空のときだけ効かせる — 項名がある行まで
+    -- コードで当たると、同名でない別構造の項へ誤写像する経路ができる
     and ((nullif(xm.kou_name, '') is not null and xm.kou_name = a.kou_name)
-         or (nullif(xm.kou_code, '') is not null and xm.kou_code = a.kou_code))
+         or (nullif(xm.kou_code, '') is not null and xm.kou_code = a.kou_code
+             and nullif(a.kou_name, '') is null))
     and coalesce(xm.fund, '一般会計') = a.canonical_fund
     -- ⚠️ 款と同じ年度条件。項だけ無条件だと、款体系が違う年度に項の対応が誤適用される
     and (nullif(xm.fiscal_year_from, '') is null or a.fiscal_year >= cast(xm.fiscal_year_from as integer))
