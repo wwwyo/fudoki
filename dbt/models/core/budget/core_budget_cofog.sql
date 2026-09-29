@@ -85,6 +85,18 @@ transfers as (
         and fr.match_fund = t.counterpart_fund
         and fr.decided_at_level = '会計'
     where t.direction = 'expenditure'
+    -- ⚠️ **1行に1宣言。** ワイルドカード宣言と詳細宣言が同じ行に当たり得るので
+    -- ここで1件に畳まないと下流の行が増殖する（cofog.csv の主キー違反）。
+    -- 採る順: キーが具体的な宣言 > 団体スコープ付きの受け皿規則 > 汎用規則。
+    -- 競合する宣言自体は作らない — tests/interfund_declarations_no_overlap が止める
+    qualify row_number() over (
+        partition by l.budget_line_id
+        order by
+            (t.moku_code <> '*')::integer + (t.setsu_code <> '*')::integer
+                + (t.amount_yen <> '*')::integer desc,
+            fr.applies_to is null,
+            fr.applies_to = ''
+    ) = 1
 ),
 
 matched as (

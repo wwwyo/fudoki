@@ -34,6 +34,13 @@ transfers as (
         and (t.setsu_code = '*' or t.setsu_code = l.setsu_code)
         and (t.amount_yen = '*' or t.amount_yen = cast(l.amount_yen as varchar))
     where t.direction = 'revenue'
+    -- ⚠️ 歳出側と同じく1行に1宣言（ワイルドカード宣言と詳細宣言が同じ行に当たり得る）。
+    -- 競合自体は tests/interfund_declarations_no_overlap が止める
+    qualify row_number() over (
+        partition by l.budget_line_id
+        order by (t.moku_code <> '*')::integer + (t.setsu_code <> '*')::integer
+            + (t.amount_yen <> '*')::integer desc
+    ) = 1
 ),
 
 judged as (

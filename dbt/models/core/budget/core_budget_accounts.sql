@@ -25,8 +25,8 @@
 -- 後期高齢者医療）は会計ごとの調査票の勘定科目（special_account_master）に当てる。
 -- 特別会計の款名が一般会計の款名と同じでも（例: 総務費）、一般会計のマスタへは
 -- 当てない — 会計固有の体系であり、同名は同じ区分を意味しない。
--- その他の特別会計（介護サービス事業・駐車場・下水道など）は会計固有の
--- 調査票が無いので master_* が null のまま残る。
+-- 介護サービス事業は 64 表の勘定科目、駐車場・下水道などの収益事業型は
+-- 50 表・64 表に共通する勘定構造を canonical な比較軸として写す（special_account_master）。
 with names as (
     -- 原典の行がそのまま名称を持つ団体。**写経しない** — 出所の語彙は
     -- `budget_account_name_sources` が団体ごとに宣言する。
@@ -123,7 +123,7 @@ kan_map as (
     select jurisdiction_code, direction, fund, kan_code, fiscal_year_from, fiscal_year_to,
            kind, master_kan_code, basis
     from {{ ref('account_map') }}
-    where coalesce(kou_name, '') = '' and kou_code is null
+    where coalesce(kou_name, '') = '' and nullif(kou_code, '') is null
 ),
 
 kou_map as (
@@ -131,7 +131,7 @@ kou_map as (
     select jurisdiction_code, direction, fund, kan_code, kou_name, kou_code, fiscal_year_from, fiscal_year_to,
            kind, master_kan_code, master_kou_code, basis
     from {{ ref('account_map') }}
-    where coalesce(kou_name, '') != '' or kou_code is not null
+    where coalesce(kou_name, '') != '' or nullif(kou_code, '') is not null
 )
 
 select
@@ -195,7 +195,7 @@ left join kou_map as xm
     and xm.kan_code = a.kan_code
     -- 項名がある団体は名称で、無い団体は項コードで当てる
     and ((nullif(xm.kou_name, '') is not null and xm.kou_name = a.kou_name)
-         or (xm.kou_code is not null and xm.kou_code = a.kou_code))
+         or (nullif(xm.kou_code, '') is not null and xm.kou_code = a.kou_code))
     and coalesce(xm.fund, '一般会計') = a.canonical_fund
     -- ⚠️ 款と同じ年度条件。項だけ無条件だと、款体系が違う年度に項の対応が誤適用される
     and (nullif(xm.fiscal_year_from, '') is null or a.fiscal_year >= cast(xm.fiscal_year_from as integer))
