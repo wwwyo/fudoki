@@ -1,5 +1,7 @@
 # budget-fdp-pilot
 
+関連 PRD: [budget-account-structure](../budget-account-structure/prd.md)
+
 ## Problem
 
 自治体の予算は公開されているが、機械では読めない。
