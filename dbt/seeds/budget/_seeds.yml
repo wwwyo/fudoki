@@ -163,8 +163,11 @@ seeds:
       retained のまま残る — 捏造しない。キーは (団体, 年度, 方向, 会計, 款, 項)
       に必要なだけ 目・節・額 を足す（空はワイルドカード）。
       amount_yen は同じ科目に複数の受け皿があるとき、額で行を確定するためのもの。
+      fund_label と counterpart_fund は**原典の会計名**（fund_label の語彙）で書く。
+      canonical_fund（名寄せ後の制度名）では当たらない — 名寄せは下流でやる。
       宣言が実際の行に当たるかは tests/interfund_declarations_resolve.sql、
-      両側の合計が釣り合うかは tests/consolidation_pairs_balance.sql が見る。
+      両側の合計が釣り合うかは tests/consolidation_pairs_balance.sql、
+      相手方が収録済みの会計かは tests/consolidation_counterpart_is_recorded.sql が見る。
     config:
       # 空の多い列と長い日本語セルの組合せ（account_map と同じ失敗パターン）
       fast: false

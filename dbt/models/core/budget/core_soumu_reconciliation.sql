@@ -17,7 +17,11 @@
 --   unresolved     大きな差分で要因が確定していない（soumu_expected_diffs に宣言）
 --   unmapped       fudoki 側がマスタに写像していない款（説明不能な差ではない）
 --   no-reference   その scope の参照データが無い（駐車場・下水道など調査票が無い会計）
---   unexplained    **宣言されていない差分。** tests/soumu_reconciliation.sql が止める
+--   unexplained    **宣言されていない差分。** tests/soumu_reconciliation_explained.sql が止める
+--
+-- ⚠️ 執行額の列は団体ごとの宣言なので `ours` は狛江市の staging に限定している。
+-- 参照値を他団体に増やすと fudoki 側の行が出ず verdict が unexplained で止まる
+-- — 増やした団体の執行列の宣言まで足すのが正しい拡張（黙って skip はしない）
 with accounts as (
     select distinct
         a.jurisdiction_code, a.fiscal_year, a.fund_label, a.kan_code,
