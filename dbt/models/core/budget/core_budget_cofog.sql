@@ -59,7 +59,7 @@ rules as (
 
 transfers as (
     -- 宣言した会計間移転（seeds/budget/interfund_transfers.csv）。
-    -- 受け皿の会計が分かる行だけを行・項・款の粒度で宣言してあり、
+    -- 受け皿の会計が分かる行だけを行・項・款の粒度で宣言してあり（`*` はワイルドカード）、
     -- 宣言したものは規則の結果より先に効く。
     -- amount_yen を書いた行は**額まで一致しないと当たらない**（同じ科目に
     -- 複数の受け皿があるとき、受け皿を行単位で確定するため）。
@@ -75,9 +75,9 @@ transfers as (
         and l.fund_label        = t.fund_label
         and l.kan_code          = t.kan_code
         and l.kou_code          = t.kou_code
-        and (t.moku_code  is null or t.moku_code  = l.moku_code)
-        and (t.setsu_code is null or t.setsu_code = l.setsu_code)
-        and (t.amount_yen is null or cast(t.amount_yen as bigint) = l.amount_yen)
+        and (t.moku_code  = '*' or t.moku_code  = l.moku_code)
+        and (t.setsu_code = '*' or t.setsu_code = l.setsu_code)
+        and (t.amount_yen = '*' or t.amount_yen = cast(l.amount_yen as varchar))
     left join rules as fr
         -- 受け皿の会計が決まる行は、受け皿側の会計規則の COFOG を借りる
         -- （一般会計へ戻す繰出はどの機能にも割り当てられないので空のまま）。

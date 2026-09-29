@@ -10,9 +10,9 @@ with e as (
         and l.fund_label        = t.fund_label
         and l.kan_code          = t.kan_code
         and l.kou_code          = t.kou_code
-        and (t.moku_code  is null or t.moku_code  = l.moku_code)
-        and (t.setsu_code is null or t.setsu_code = l.setsu_code)
-        and (t.amount_yen is null or cast(t.amount_yen as bigint) = l.amount_yen)
+        and (t.moku_code  = '*' or t.moku_code  = l.moku_code)
+        and (t.setsu_code = '*' or t.setsu_code = l.setsu_code)
+        and (t.amount_yen = '*' or t.amount_yen = cast(l.amount_yen as varchar))
     where t.direction = 'expenditure'
 ),
 
@@ -25,9 +25,9 @@ r as (
         and l.fund_label        = t.fund_label
         and l.kan_code          = t.kan_code
         and l.kou_code          = t.kou_code
-        and (t.moku_code  is null or t.moku_code  = l.moku_code)
-        and (t.setsu_code is null or t.setsu_code = l.setsu_code)
-        and (t.amount_yen is null or cast(t.amount_yen as bigint) = l.amount_yen)
+        and (t.moku_code  = '*' or t.moku_code  = l.moku_code)
+        and (t.setsu_code = '*' or t.setsu_code = l.setsu_code)
+        and (t.amount_yen = '*' or t.amount_yen = cast(l.amount_yen as varchar))
     where t.direction = 'revenue'
 )
 
