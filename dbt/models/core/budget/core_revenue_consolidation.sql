@@ -73,7 +73,9 @@ select
     case when declared_counterpart is not null then '行'
          when is_interfund then '項'
          else '（規則なし）' end                          as cofog_decided_at_level,
-    case when is_interfund then 'revenue-interfund' end  as cofog_rule_id,
+    -- 宣言が当たった行は規則ではなく宣言が決めた — rule_id は推測の規則に限る
+    case when is_interfund and declared_counterpart is null
+         then 'revenue-interfund' end                     as cofog_rule_id,
     -- 出し手の会計。項が「特別会計繰入金」のときだけ目に会計名が入る
     -- （一般会計が受け皿になる唯一の対）。それ以外の受け皿は一般会計から受ける。
     case
