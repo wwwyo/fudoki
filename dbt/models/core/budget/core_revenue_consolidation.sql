@@ -63,7 +63,7 @@ select
     ''                                                   as cofog_class,
     case when is_interfund or declared_counterpart is not null
          then 'eliminated' else 'retained' end           as cofog_consolidation,
-    case when declared_counterpart is not null then '宣言'
+    case when declared_counterpart is not null then '行'
          when is_interfund then '項'
          else '（規則なし）' end                          as cofog_decided_at_level,
     case when is_interfund then 'revenue-interfund' end  as cofog_rule_id,

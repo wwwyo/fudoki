@@ -159,7 +159,6 @@ left join matched as m
 left join transfers as t
     on t.budget_line_id = l.budget_line_id
 cross join lateral (
-    -- 実効の COFOG コード。宣言が当たった行は受け皿会計の規則のもの
     -- 宣言が当たった行は受け皿の会計だけが COFOG を決める
     -- （一般会計へ戻す繰出は機能が決まらないので空）
     select case when t.budget_line_id is not null
