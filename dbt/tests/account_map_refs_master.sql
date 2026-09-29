@@ -17,12 +17,19 @@ master_kan as (
     select '一般会計' as fund, direction, kan_code
     from (select distinct direction, kan_code from {{ ref('account_master') }})
     union all
+    -- kou_code が入る行は項の定義なので款の参照先には含めない
     select canonical_fund, direction, kan_code from {{ ref('special_account_master') }}
+    where kou_code is null
 ),
 
 master_kou as (
     select '一般会計' as fund, direction, kan_code, kou_code
     from (select distinct direction, kan_code, kou_code from {{ ref('account_master') }})
+    union all
+    -- 特別会計の項マスタ（kou_code が空の行は款の定義なので除く）
+    select canonical_fund, direction, kan_code, kou_code
+    from {{ ref('special_account_master') }}
+    where kou_code is not null
 )
 
 select m.jurisdiction_code, m.direction, m.fund, m.kan_code, m.kou_name,

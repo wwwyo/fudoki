@@ -100,26 +100,38 @@ master_kan as (
     select '一般会計' as canonical_fund, direction, kan_code, kan_name
     from (select distinct direction, kan_code, kan_name from {{ ref('account_master') }})
     union all
+    -- ⚠️ kou_code が入る行は項の定義。款のマスタに混ぜると、款の join が
+    -- 項行のぶんだけ行を増殖させる
     select canonical_fund, direction, kan_code, kan_name
-    from {{ ref('special_account_master') }}
+    from {{ ref('special_account_master') }} where kou_code is null
 ),
 
 -- ⚠️ **direction を落とさない。** 歳入の款6（法人事業税交付金）と歳出の款6（農林水産業費）は
 -- 同じコードで別物。direction 抜きで join すると両方に当たる。
 master_kou as (
-    select distinct direction, kan_code, kan_name, kou_code, kou_name from {{ ref('account_master') }}
+    -- ⚠️ distinct は落とさない。account_master は目の粒度で、項の行は重複する
+    select '一般会計' as canonical_fund, direction, kan_code, kan_name, kou_code, kou_name
+    from (select distinct direction, kan_code, kan_name, kou_code, kou_name from {{ ref('account_master') }})
+    union all
+    -- 特別会計の項マスタ。調査票の内訳列と帳簿で共通する項から作ってある。
+    -- kou_code が空の行は款の定義なので項には入れない
+    select canonical_fund, direction, kan_code, kan_name, kou_code, kou_name
+    from {{ ref('special_account_master') }} where kou_code is not null
 ),
 
 kan_map as (
     select jurisdiction_code, direction, fund, kan_code, fiscal_year_from, fiscal_year_to,
            kind, master_kan_code, basis
-    from {{ ref('account_map') }} where kou_name = '' or kou_name is null
+    from {{ ref('account_map') }}
+    where coalesce(kou_name, '') = '' and kou_code is null
 ),
 
 kou_map as (
-    select jurisdiction_code, direction, fund, kan_code, kou_name, fiscal_year_from, fiscal_year_to,
+    -- 項の対応は名称（項名がある団体）か項コード（名称が無い団体）のどちらかで書く
+    select jurisdiction_code, direction, fund, kan_code, kou_name, kou_code, fiscal_year_from, fiscal_year_to,
            kind, master_kan_code, master_kou_code, basis
-    from {{ ref('account_map') }} where kou_name != ''
+    from {{ ref('account_map') }}
+    where coalesce(kou_name, '') != '' or kou_code is not null
 )
 
 select
@@ -172,16 +184,24 @@ left join master_kan as mk
 -- 2. 名称の完全一致（一般会計のマスタの款の下に同名の項があるか）
 left join master_kou as mc
     on a.canonical_fund = '一般会計'
+    -- ⚠️ master_kou は特別会計の項も持つ。canonical_fund を落とすと
+    -- 一般会計の項が特別会計マスタの同名項にも当たって行が増殖する
+    and mc.canonical_fund = '一般会計'
     and mc.direction = a.direction and mc.kan_code = km.master_kan_code and mc.kou_name = a.kou_name
 -- 1. 明示の対応（表記差・追加）。あればこちらが勝つ
 left join kou_map as xm
     on xm.jurisdiction_code = a.jurisdiction_code
     and xm.direction = a.direction
     and xm.kan_code = a.kan_code
-    and xm.kou_name = a.kou_name
+    -- 項名がある団体は名称で、無い団体は項コードで当てる
+    and ((nullif(xm.kou_name, '') is not null and xm.kou_name = a.kou_name)
+         or (xm.kou_code is not null and xm.kou_code = a.kou_code))
     and coalesce(xm.fund, '一般会計') = a.canonical_fund
     -- ⚠️ 款と同じ年度条件。項だけ無条件だと、款体系が違う年度に項の対応が誤適用される
     and (nullif(xm.fiscal_year_from, '') is null or a.fiscal_year >= cast(xm.fiscal_year_from as integer))
     and (nullif(xm.fiscal_year_to, '')   is null or a.fiscal_year <= cast(xm.fiscal_year_to   as integer))
 left join master_kou as mc2
-    on mc2.direction = a.direction and mc2.kan_code = xm.master_kan_code and mc2.kou_code = xm.master_kou_code
+    -- ⚠️ canonical_fund を落とすと、特別会計の対応が一般会計のマスタの
+    -- 同じ款コードの項に当たる
+    on mc2.canonical_fund = a.canonical_fund
+    and mc2.direction = a.direction and mc2.kan_code = xm.master_kan_code and mc2.kou_code = xm.master_kou_code
