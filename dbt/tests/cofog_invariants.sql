@@ -58,3 +58,11 @@ union all
 select '消去なのに相手側が無い', count(*), 0
 from e where cofog_consolidation = 'eliminated' and cofog_counterpart_fund is null
 having count(*) > 0
+
+union all
+
+-- 7. 歳入側も同じ。消去する行には相手側が要る
+select '歳入側で消去なのに相手側が無い', count(*), 0
+from {{ ref('core_revenue_consolidation') }}
+where cofog_consolidation = 'eliminated' and cofog_counterpart_fund is null
+having count(*) > 0

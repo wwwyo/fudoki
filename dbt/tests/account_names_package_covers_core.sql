@@ -19,6 +19,7 @@
 with in_core as (
     select jurisdiction_code, fiscal_year::varchar as fiscal_year, direction,
            coalesce(fund_code, '') as fund_code,
+           coalesce(canonical_fund, '') as canonical_fund,
            kan_code, coalesce(kan_name, '') as kan_name,
            kou_code, coalesce(kou_name, '') as kou_name,
            moku_code, coalesce(moku_name, '') as moku_name,
@@ -32,6 +33,7 @@ in_package as (
     {% for code in var('budget_levels').keys() | list | sort %}
     select '{{ code }}' as jurisdiction_code, fiscal_year, direction,
            coalesce(fund_code, '') as fund_code,
+           coalesce(canonical_fund, '') as canonical_fund,
            kan_code, coalesce(kan_name, '') as kan_name,
            kou_code, coalesce(kou_name, '') as kou_name,
            moku_code, coalesce(moku_name, '') as moku_name,

@@ -9,13 +9,24 @@
 -- どちらも (団体, 年度, 会計, 款, 項, 目) → 名称という同じ形へ畳み、
 -- **どこから来た名称かを name_source で区別する**（事実と判断を列で見分けられるように）。
 --
+-- canonical_fund は会計の名寄せ（fund_directory）。同じ制度を担う会計は
+-- 団体ごとに名前が違う（「国民健康保険事業特別会計」「国民健康保険特別会計」）ので、
+-- 比較は fund_label ではなく canonical_fund で行う。
+--
 -- マスタへの解決は3段で当てる。
 --   1. account_map の項の明示行（表記差・追加区分。判断そのもの）
 --   2. 名称がマスタと完全一致（款は map の款対応を介す）
 --   3. どれにも当たらない → master_* が null のまま残る
 -- ⚠️ **null を黙って配らない** — 一般会計の歳出で null が出る状態は
--- tests/account_map_covers_lines.sql が止める。特別会計はマスタの対象外
--- （施行規則の備考6）なので null が正しい。
+-- tests/account_map_covers_lines.sql が止める。
+--
+-- ⚠️ **どのマスタに当てるかは会計で決まる。** 一般会計は地方自治法施行規則
+-- 別記の区分（account_master）、法定の特別会計（国民健康保険・介護保険・
+-- 後期高齢者医療）は会計ごとの調査票の勘定科目（special_account_master）に当てる。
+-- 特別会計の款名が一般会計の款名と同じでも（例: 総務費）、一般会計のマスタへは
+-- 当てない — 会計固有の体系であり、同名は同じ区分を意味しない。
+-- その他の特別会計（介護サービス事業・駐車場・下水道など）は会計固有の
+-- 調査票が無いので master_* が null のまま残る。
 with names as (
     -- 原典の行がそのまま名称を持つ団体。**写経しない** — 出所の語彙は
     -- `budget_account_name_sources` が団体ごとに宣言する。
@@ -75,6 +86,24 @@ distinct_accounts as (
     from names
 ),
 
+accounts as (
+    select a.*, fd.canonical_fund
+    from distinct_accounts as a
+    left join {{ ref('fund_directory') }} as fd
+        on fd.jurisdiction_code = a.jurisdiction_code and fd.fund_label = a.fund_label
+),
+
+-- 款のマスタ。一般会計は地方自治法施行規則 別記、法定の特別会計は
+-- 会計ごとの調査票の勘定科目。canonical_fund で突き分けるので
+-- 特別会計の款が一般会計の区分に誤って写ることはない。
+master_kan as (
+    select '一般会計' as canonical_fund, direction, kan_code, kan_name
+    from (select distinct direction, kan_code, kan_name from {{ ref('account_master') }})
+    union all
+    select canonical_fund, direction, kan_code, kan_name
+    from {{ ref('special_account_master') }}
+),
+
 -- ⚠️ **direction を落とさない。** 歳入の款6（法人事業税交付金）と歳出の款6（農林水産業費）は
 -- 同じコードで別物。direction 抜きで join すると両方に当たる。
 master_kou as (
@@ -82,12 +111,13 @@ master_kou as (
 ),
 
 kan_map as (
-    select jurisdiction_code, direction, kan_code, fiscal_year_from, kind, master_kan_code, basis
+    select jurisdiction_code, direction, fund, kan_code, fiscal_year_from, fiscal_year_to,
+           kind, master_kan_code, basis
     from {{ ref('account_map') }} where kou_name = '' or kou_name is null
 ),
 
 kou_map as (
-    select jurisdiction_code, direction, kan_code, kou_name, fiscal_year_from,
+    select jurisdiction_code, direction, fund, kan_code, kou_name, fiscal_year_from, fiscal_year_to,
            kind, master_kan_code, master_kou_code, basis
     from {{ ref('account_map') }} where kou_name != ''
 )
@@ -98,12 +128,11 @@ select
     a.direction,
     a.fund_code,
     a.fund_label,
+    a.canonical_fund,
     a.kan_code, a.kan_name,
     a.kou_code, a.kou_name,
     a.moku_code, a.moku_name,
     a.name_source,
-    -- マスタ側。一般会計の歳入・歳出に付く（特別会計は様式の対象外 = 備考5・6）。
-    -- 名称の無い団体 × 方向（狛江市の歳入）は対応を保留し、null のまま残す
     km.master_kan_code,
     mk.kan_name as master_kan_name,
     coalesce(xm.master_kou_code, mc.kou_code)  as master_kou_code,
@@ -117,31 +146,42 @@ select
         --   addition    様式の備考が条件付きで認める款（例: ゴルフ場利用税交付金は
         --               歳入の備考2がゴルフ場所在市町村に挿入を認めている）
         when km.kind in ('historical', 'addition') then km.kind
+        -- 特別会計の款対応はすべて明示行なので、当たれば 'map'
+        when km.master_kan_code is not null then 'map'
     end as master_kind,
     coalesce(xm.basis, case when mc.kou_code is not null
         then '項の名称がマスタと完全一致（款は account_map の対応を介す）'
-        when km.kind in ('historical', 'addition') then km.basis end) as master_basis
-from distinct_accounts as a
+        when km.kind in ('historical', 'addition') then km.basis
+        when km.master_kan_code is not null then km.basis end) as master_basis
+from accounts as a
 left join kan_map as km
     on km.jurisdiction_code = a.jurisdiction_code
     and km.direction = a.direction
     and km.kan_code = a.kan_code
-    and a.fund_label = '一般会計'
+    -- ⚠️ **fund 列が空の行は一般会計だけに効く。** 特別会計への対応は
+    -- fund に canonical_fund を書いた行だけが当たる。空を「全会計に効く」と
+    -- 読むと一般会計用の行が特別会計にも当たってしまう（同名款の誤写像）
+    and coalesce(km.fund, '一般会計') = a.canonical_fund
     -- ⚠️ 款コードの意味が年度で変わる団体がある（狛江市の歳入は 2019/2020 の境界で
-    -- 款の新設により繰り下がった）。対応はそれが確認できた年度からしか効かせない
+    -- 款の新設により繰り下がった）。対応はそれが確認できた年度にだけ効かせる
     and (nullif(km.fiscal_year_from, '') is null or a.fiscal_year >= cast(km.fiscal_year_from as integer))
-left join (select distinct direction, kan_code, kan_name from {{ ref('account_master') }}) as mk
-    on mk.direction = a.direction and mk.kan_code = km.master_kan_code
--- 2. 名称の完全一致（マスタの款の下に同名の項があるか）
+    and (nullif(km.fiscal_year_to, '')   is null or a.fiscal_year <= cast(km.fiscal_year_to   as integer))
+left join master_kan as mk
+    on mk.canonical_fund = a.canonical_fund
+    and mk.direction = a.direction and mk.kan_code = km.master_kan_code
+-- 2. 名称の完全一致（一般会計のマスタの款の下に同名の項があるか）
 left join master_kou as mc
-    on mc.direction = a.direction and mc.kan_code = km.master_kan_code and mc.kou_name = a.kou_name
+    on a.canonical_fund = '一般会計'
+    and mc.direction = a.direction and mc.kan_code = km.master_kan_code and mc.kou_name = a.kou_name
 -- 1. 明示の対応（表記差・追加）。あればこちらが勝つ
 left join kou_map as xm
     on xm.jurisdiction_code = a.jurisdiction_code
     and xm.direction = a.direction
     and xm.kan_code = a.kan_code
     and xm.kou_name = a.kou_name
+    and coalesce(xm.fund, '一般会計') = a.canonical_fund
     -- ⚠️ 款と同じ年度条件。項だけ無条件だと、款体系が違う年度に項の対応が誤適用される
     and (nullif(xm.fiscal_year_from, '') is null or a.fiscal_year >= cast(xm.fiscal_year_from as integer))
+    and (nullif(xm.fiscal_year_to, '')   is null or a.fiscal_year <= cast(xm.fiscal_year_to   as integer))
 left join master_kou as mc2
     on mc2.direction = a.direction and mc2.kan_code = xm.master_kan_code and mc2.kou_code = xm.master_kou_code

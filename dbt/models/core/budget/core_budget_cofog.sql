@@ -57,6 +57,36 @@ rules as (
     from {{ ref('cofog_rules') }}
 ),
 
+transfers as (
+    -- 宣言した会計間移転（seeds/budget/interfund_transfers.csv）。
+    -- 受け皿の会計が分かる行だけを行・項・款の粒度で宣言してあり、
+    -- 宣言したものは規則の結果より先に効く。
+    -- amount_yen を書いた行は**額まで一致しないと当たらない**（同じ科目に
+    -- 複数の受け皿があるとき、受け皿を行単位で確定するため）。
+    select
+        l.budget_line_id,
+        t.counterpart_fund,
+        t.basis,
+        fr.cofog_code as counterpart_cofog_code
+    from {{ ref('interfund_transfers') }} as t
+    join lines as l
+        on  l.jurisdiction_code = t.jurisdiction_code
+        and l.fiscal_year       = cast(t.fiscal_year as integer)
+        and l.fund_label        = t.fund_label
+        and l.kan_code          = t.kan_code
+        and l.kou_code          = t.kou_code
+        and (t.moku_code  is null or t.moku_code  = l.moku_code)
+        and (t.setsu_code is null or t.setsu_code = l.setsu_code)
+        and (t.amount_yen is null or cast(t.amount_yen as bigint) = l.amount_yen)
+    left join rules as fr
+        -- 受け皿の会計が決まる行は、受け皿側の会計規則の COFOG を借りる
+        -- （一般会計へ戻す繰出はどの機能にも割り当てられないので空のまま）。
+        on (fr.applies_to = '' or fr.applies_to = l.jurisdiction_code)
+        and fr.match_fund = t.counterpart_fund
+        and fr.decided_at_level = '会計'
+    where t.direction = 'expenditure'
+),
+
 matched as (
     select
         l.budget_line_id,
@@ -91,24 +121,48 @@ select
     l.direction,
     l.budget_line_id,
     l.source_row,
-    coalesce(m.status, 'unclassifiable')          as cofog_status,
+    case
+        -- 宣言した会計間移転が当たった行。受け皿が一般会計の繰出は
+        -- どの機能にも割り当てられない（対象外）。特別会計への繰出は
+        -- 受け皿の会計の機能を借りる。
+        when t.budget_line_id is not null
+            then case when t.counterpart_fund = '一般会計' then 'out-of-scope' else 'assigned' end
+        else coalesce(m.status, 'unclassifiable')
+    end                                             as cofog_status,
     -- COFOG の階層。**規則が言った粒度までしか埋めない。**
     -- 款の名称だけで決まる規則は division 止まりで、group / class は空になる。
     -- 「分からない」を空で正直に出す（原則6）。
     -- ⚠️ **NULL を先に潰す。** 規則に当たらなかった行は m.* が NULL で、
     -- split_part(NULL) が NULL を返すことに頼ると、空文字で揃えるという意図が
     -- SQL の方言差に委ねられる。列ごとに coalesce を書くのではなく1度だけ潰す。
-    split_part(coalesce(m.cofog_code, ''), '.', 1)                         as cofog_division,
-    case when coalesce(m.cofog_code, '') like '%.%'
-         then split_part(m.cofog_code, '.', 1) || '.' || split_part(m.cofog_code, '.', 2)
+    split_part(coalesce(e.code, ''), '.', 1)                              as cofog_division,
+    case when coalesce(e.code, '') like '%.%'
+         then split_part(e.code, '.', 1) || '.' || split_part(e.code, '.', 2)
          else '' end                                                       as cofog_group,
-    case when regexp_full_match(coalesce(m.cofog_code, ''), '\d+\.\d+\.\d+')
-         then m.cofog_code else '' end                                     as cofog_class,
-    coalesce(m.consolidation, 'retained')         as cofog_consolidation,
-    coalesce(m.decided_at_level, '（規則なし）')   as cofog_decided_at_level,
-    m.rule_id                                     as cofog_rule_id,
-    nullif(coalesce(m.counterpart_fund, ''), '')  as cofog_counterpart_fund,
-    coalesce(m.basis, 'どの規則にも当たらなかった。捨てずに分類不能として残す') as cofog_basis
+    case when regexp_full_match(coalesce(e.code, ''), '\d+\.\d+\.\d+')
+         then e.code else '' end                                           as cofog_class,
+    case when t.budget_line_id is not null then 'eliminated'
+         else coalesce(m.consolidation, 'retained') end                    as cofog_consolidation,
+    case when t.budget_line_id is not null then '行'
+         else coalesce(m.decided_at_level, '（規則なし）') end              as cofog_decided_at_level,
+    -- 宣言ベースの行は規則表に当たる規則が無い。根拠は cofog_basis が持つ
+    case when t.budget_line_id is not null then null else m.rule_id end    as cofog_rule_id,
+    case when t.budget_line_id is not null then t.counterpart_fund
+         else nullif(coalesce(m.counterpart_fund, ''), '') end             as cofog_counterpart_fund,
+    case when t.budget_line_id is not null
+         then 'interfund_transfers.csv の宣言: ' || t.basis
+         else coalesce(m.basis, 'どの規則にも当たらなかった。捨てずに分類不能として残す')
+    end                                             as cofog_basis
 from lines as l
 left join matched as m
     on l.budget_line_id = m.budget_line_id and m.rn = 1
+left join transfers as t
+    on t.budget_line_id = l.budget_line_id
+cross join lateral (
+    -- 実効の COFOG コード。宣言が当たった行は受け皿会計の規則のもの
+    -- 宣言が当たった行は受け皿の会計だけが COFOG を決める
+    -- （一般会計へ戻す繰出は機能が決まらないので空）
+    select case when t.budget_line_id is not null
+                then t.counterpart_cofog_code
+                else m.cofog_code end as code
+) as e
