@@ -1,5 +1,5 @@
 /**
- * 4ページ（/ ・ /pipeline/ ・ /analysis/ ・ /terms/）に共通する外枠。
+ * ローカル検証画面の外枠。
  *
  * Vite の MPA なので、ページ間の遷移は素の `<a>` によるフルロードになる
  * （React Router は入れない）。ThemeProvider / TooltipProvider もここで1回だけ張る。
@@ -10,17 +10,12 @@ import { TooltipProvider } from '@/components/ui/tooltip'
 import { withBase } from '@/lib/utils'
 
 /**
- * `external` は別サイト（docs.fudoki.dev）への導線。新しいタブで開く。
+ * 公開サイトと API docs は新しいタブで開く。
  * ⚠️ ホームへの導線はロゴが持つので、ナビには置かない（同じ行き先が2つ並ぶ）。
  */
 const NAV = [
-  { href: '/analysis/', label: '分析' },
-  // 検証画面はローカル専用（公開ビルドにページが無い）。導線も dev だけに出す
-  ...(import.meta.env.DEV
-    ? [{ href: '/pipeline/', label: 'パイプライン' }]
-    : []),
-  { href: 'https://docs.fudoki.dev/', label: 'API docs', external: true },
-  { href: '/terms/', label: '利用条件' },
+  { href: 'https://fudoki.dev/', label: '公開サイト' },
+  { href: 'https://docs.fudoki.dev/', label: 'API docs' },
 ] as const
 
 type LayoutProps = {
@@ -39,9 +34,9 @@ export function Layout({ children, bare }: LayoutProps) {
               {/* ⚠️ ロゴを1枚にしない。`<img>` の中のメディアクエリは OS 設定しか見ないので、
                 OS がライトのまま画面をダークにするとロゴだけ取り残される */}
               <a
-                href={withBase('/')}
+                href={withBase('/pipeline/')}
                 className="flex shrink-0 items-center gap-2"
-                aria-label="風土記 ホーム"
+                aria-label="風土記 ローカル検証の概要"
               >
                 <img
                   src={`${import.meta.env.BASE_URL}mark.svg`}
@@ -55,14 +50,16 @@ export function Layout({ children, bare }: LayoutProps) {
                   className="hidden size-6 shrink-0 dark:block"
                 />
               </a>
+              <span className="shrink-0 text-sm font-semibold">
+                ローカル検証
+              </span>
               <nav className="flex items-center gap-4 text-sm">
                 {NAV.map((n) => (
                   <a
                     key={n.href}
-                    href={'external' in n ? n.href : withBase(n.href)}
-                    {...('external' in n
-                      ? { target: '_blank', rel: 'noreferrer' }
-                      : {})}
+                    href={n.href}
+                    target="_blank"
+                    rel="noreferrer"
                     className="shrink-0 text-muted-foreground transition-colors hover:text-foreground"
                   >
                     {n.label}

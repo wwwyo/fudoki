@@ -50,7 +50,7 @@ const stepDetails = {
     icon: Table2,
     description:
       '原典ごとに列名と型を整え、コードと名称を取り出します。行との1対1の対応と、原典の金額単位を保ちます。風土記では円への換算や団体をまたぐ統合は、後続の intermediate で行います。',
-    path: 'dbt/models/staging/budget/',
+    path: 'pipeline/dbt/models/staging/fiscal/',
   },
   intermediate: {
     summary: '共通の構造へ統合・分類する',
@@ -58,7 +58,7 @@ const stepDetails = {
     icon: Scale,
     description:
       '提供用データを作るための中間処理です。団体間の構造を揃え、金額を円に換算し、共通科目への対応と COFOG（政府支出の機能別分類）を付与します。二重計上を避けるための会計間移転の消去対象も記録します。',
-    path: 'dbt/models/intermediate/budget/',
+    path: 'pipeline/dbt/models/intermediate/fiscal/',
   },
   marts: {
     summary: '利用者向けの列・粒度を確定する',
@@ -66,7 +66,7 @@ const stepDetails = {
     icon: FolderOpen,
     description:
       '利用者が使う最終データモデルです。団体ごとに提供する列と粒度を確定し、この repo では CSV に書き出します。原典由来の金額と風土記の判断は別のリソースに分け、行の ID で結合できるようにします。CSV に列の定義・出典・利用条件を添える配布処理は dbt の外で行います。',
-    path: 'dbt/models/marts/budget/',
+    path: 'pipeline/dbt/models/marts/fiscal/',
   },
 } satisfies Record<
   Stage['id'],
@@ -324,32 +324,39 @@ const repositoryGuide = [
   },
   {
     purpose: '列・階層・金額の読み方を確認する',
-    paths: ['dbt/dbt_project.yml', 'dbt/models/staging/budget/'],
+    paths: [
+      'pipeline/dbt/dbt_project.yml',
+      'pipeline/dbt/models/staging/fiscal/',
+    ],
     description: '団体ごとの階層、原典の列名、金額の単位と、その正規化。',
   },
   {
     purpose: '分類や科目の対応の根拠を読む',
-    paths: ['dbt/seeds/budget/', 'dbt/models/intermediate/budget/'],
+    paths: [
+      'pipeline/dbt/seeds/fiscal/',
+      'pipeline/dbt/models/intermediate/fiscal/',
+    ],
     description:
       '科目マスタ・対応表・COFOG 規則の CSV と、それを適用する SQL。各宣言の basis に根拠を記録。',
   },
   {
     purpose: 'どこまで検査しているかを確認する',
-    paths: ['dbt/tests/'],
+    paths: ['pipeline/dbt/tests/'],
     description:
       '行や金額の保存、集計の一致、対応表の整合性などを確かめる SQL。',
   },
   {
     purpose: '配布データや画面の数字を辿る',
     paths: [
-      'dbt/models/marts/budget/',
-      'fdp/',
-      'data/budget/datapackages/',
+      'pipeline/dbt/models/marts/fiscal/',
+      'pipeline/fdp/',
+      'pipeline/publish/',
       'pipeline/verify/report/fiscal/',
-      'apps/web/',
+      'pipeline/verify/view/',
+      'apps/api/',
     ],
     description:
-      '団体別の配布物、それを読む報告の生成処理、報告を表示する画面。',
+      '配布 CSV と API 参照表の生成、公開時の検査、ローカルの検証報告と画面。',
   },
 ]
 
@@ -553,10 +560,11 @@ export function PipelineOverview({
               目的から repo を読む
             </h2>
             <p className="text-sm leading-relaxed text-muted-foreground">
-              原典・証跡・配布物と、分類の判断はリポジトリで管理します。 DuckDB
-              は実行時に組む一時ファイルで、API
-              と画面は配布物から生成する派生物です。 以下のリンクは GitHub の
-              main ブランチを開きます。
+              コード・取得元・固定入力の一覧・分類の判断はリポジトリで管理します。
+              原典・取り込み済みの表・証跡・配布物は R2、公開 API の参照表は D1
+              に保存します。DuckDB は build の作業用で、報告と閲覧用の PDF
+              レイヤは ローカルで生成します。以下のリンクは GitHub の main
+              ブランチを開きます。
             </p>
           </div>
           <Table>

@@ -39,8 +39,8 @@ describe('PipelineOverview', () => {
     expect(collection).toBeGreaterThan(summary)
     expect(repository).toBeGreaterThan(collection)
     expect(markup).toContain('収録済みの自治体を読み込み中')
-    expect(markup).toContain('dbt/models/intermediate/budget/')
-    expect(markup).toContain('dbt/models/marts/budget/')
+    expect(markup).toContain('pipeline/dbt/models/intermediate/fiscal/')
+    expect(markup).toContain('pipeline/dbt/models/marts/fiscal/')
     expect(markup).not.toContain('ここで判断を加える')
   })
 
