@@ -38,9 +38,10 @@ flowchart LR
   N -->|固定した入力をローカルへ復元| D
   P --> R["R2：版ごとの配布用ファイル"]
   P --> Q["D1：検索用の表・公開メタデータ"]
-  A["apps/api：認可・契約・問い合わせ"] -->|ファイルの配信| R
+  A["apps/api：認可・契約・問い合わせ"]
   A -->|検索・集計| Q
   B["apps/download：一括配布の独立した入口"] --> R
+  A -->|不変の配布URLを返す| B
   W["apps/web：公開画面"] --> A
 ```
 
@@ -51,7 +52,7 @@ flowchart LR
 ```text
 .
 ├── apps/
-│   ├── api/                         # 公開 API・MCP、D1/R2 の参照
+│   ├── api/                         # 公開 API・MCP、D1 の参照
 │   ├── download/                    # API と別に動く配布ファイルの入口
 │   ├── web/                         # 公開画面
 │   └── docs/
@@ -120,7 +121,7 @@ API 用の保存形式の schema・テーブル定義・契約版は `packages/d
 
 dataset は団体・年度・歳入歳出・文書種別・採用した原典の版を識別できるようにする。別の予算書と決算書の行は、階層名が似ていても自動で同じ明細と扱わない。明細は所属する dataset を含めて識別し、団体・年度・共通科目等の比較軸は中間処理で揃える。
 
-明細の識別子は配布物・DB・API を通して `fiscal_line_id` に統一する。API は `listFiscalDatasets`・`getFiscalDataset`・`getFiscalLines`・`searchFiscalLines`・`aggregateFiscalDatasets` 等、MCP は対応する `list_fiscal_datasets` 等の名称に揃える。既存名の alias や互換用の列は設けない。FDP の resource schema・主キー・外部キー・財政上の役割の記述も新しい列名に合わせる。
+明細の識別子は配布物・DB・API を通して `fiscal_line_id` に統一する。`fiscal_line_id` は dataset の識別情報を含み、一つの release 内で dataset をまたいでも一意とする。API は `listFiscalDatasets`・`getFiscalDataset`・`getFiscalLines`・`searchFiscalLines`・`aggregateFiscalDatasets` 等、MCP は対応する `list_fiscal_datasets` 等の名称に揃える。既存名の alias や互換用の列は設けない。FDP の resource schema・主キー・外部キー・財政上の役割の記述も新しい列名に合わせる。
 
 ### API がファイルの組合せを管理せずに問い合わせる
 
@@ -140,13 +141,13 @@ dataset は団体・年度・歳入歳出・文書種別・採用した原典の
 
 基本の索引は版・団体・年度・歳入歳出・会計と、明細識別子・予算段階に合わせる。行数と問い合わせを計測して確定し、すべての組合せに索引を作らない。任意の入力文字列を SQL の列名へ使わず、フィルタ・groupBy は契約の語彙から許可した SQL へ変換する。
 
-明細の取得・条件検索・ページ分割は SQL で行う。ページトークンには `release_id`・問い合わせの指紋・安定した並び順の続き位置を持たせ、次ページも同じ版を読む。公開版が切り替わっても、その版を D1 に保持している間は続きを返す。削除済みの版は期限切れとして返し、異なる問い合わせや未公開の候補を指定するトークンは拒否する。応答に `releaseId` を含め、内部の chunk 番号への依存をなくす。
+明細の取得・条件検索・ページ分割は SQL で行う。ページトークンには `release_id`・問い合わせの指紋・安定した並び順の続き位置を持たせ、全体を HMAC で認証して改変を検出する。鍵は Worker の secret として管理する。署名を検証したうえで、正規形に揃えた問い合わせ条件の指紋を照合し、次ページも同じ版を読む。トークンを認可の代わりにせず、各リクエストで認可を行う。公開版が切り替わっても、その版を D1 に保持している間は続きを返す。削除済みの版は期限切れとして返し、異なる問い合わせや未公開の候補を指定するトークンは拒否する。応答に `releaseId` を含め、内部の chunk 番号への依存をなくす。
 
 **検索・集計は金額の意味と収録範囲を明示する。** phase の必須条件、会計間の繰出入、分類不能・対象外・目標の深さに達していない分類、団体横断時の未収録・段階不一致を扱う。団体間の金額は合算せずに比較する。同じ団体・年度・direction で複数の原典版や文書種別がある場合、対象の dataset を明示するか、宣言した選択規則で一つに固定する。選択した dataset と対象外の理由を応答に含め、同じ支出を複数の文書から足し合わせない。
 
 集計は索引付き SQL を基本案とするが、現行の分類率・残余・連結の検算を移す。実測で重い問い合わせに限り、同じ表から生成した集計表を D1 に持つ。問い合わせごとの JSON ファイルを R2 に戻すことで対応しない。集計規則は現在の純粋関数と同じ例で比較し、取得時と書き出し時に異なる規則を持たせない。
 
-名称検索は、大小文字を区別する文字通りの部分一致とする。初期案は `instr(value, ?) > 0` とし、入力の `%`・`_` を wildcard と扱わない。D1 の LIKE/GLOB パターンには 50 bytes の上限があるため、日本語の検索語をその制限で切らない方法を選ぶ。[D1 の制限](https://developers.cloudflare.com/d1/platform/limits/)。大小文字、wildcard に使われる文字、50 bytes を超える日本語、Unicode を検査する。検索文字列の正規化や FTS を導入する場合は、その一致条件を公開契約に明記する。
+名称検索は、大小文字を区別する文字通りの部分一致とする。初期案は `instr(value, ?) > 0` とし、入力の `%`・`_` を wildcard と扱わない。名称と検索語に Unicode 正規化や全角半角の統一は行わず、結合文字・合成済み文字、全角・半角、異体字は異なる文字列として扱う。D1 の LIKE/GLOB パターンには 50 bytes の上限があるため、日本語の検索語をその制限で切らない方法を選ぶ。[D1 の制限](https://developers.cloudflare.com/d1/platform/limits/)。大小文字、wildcard に使われる文字、50 bytes を超える日本語、Unicode の表現差を検査する。検索文字列の正規化や FTS を導入する場合は、その一致条件を公開契約に明記する。
 
 ### dbt と D1 の役割を分けて容量・性能を確かめる
 
@@ -172,15 +173,19 @@ R2 のオブジェクトは `releases/<release_id>/fiscal/<code>/...` に置き�
 4. 候補の版を明示した検証経路で API 応答と R2 ダウンロードを確かめ、R2 と D1 の件数・金額・識別子・内容を照合する。検査済みの配布ファイル一覧を含む公開用 manifest を R2 に最後に書き、版を指定した一括取得を可能にする。D1 に完成した manifest のキーと内容ハッシュを記録し、参照表との一致を確認する。
 5. 公開する Worker が契約版に対応していることを確認し、D1 の公開状態と `active_release` を一つの短い atomic な処理で更新する。
 
+候補の検証は公開 API に未公開版を読む権限を足さず、publish 実行者だけが使う非公開の検証 Worker から行う。候補 D1/R2 へのアクセスをこの経路に限定し、通常の API key やページトークンで検証経路を利用できないようにする。検証 Worker は公開 API と同じ問い合わせ処理を使う。
+
+publish と切り戻しは同じ排他実行の入口に集める。公開参照の更新は、開始時に読んだ版と現在の `active_release` が一致する場合だけ行い、不一致なら再検査を要求する。中断した処理を再開するときも候補のハッシュ・状態・公開参照を確認し、切り戻し後に古い試行がそのまま公開参照を進めないようにする。後片付けは実行中の候補・active な版・切り戻し用の版を削除対象から除外する。
+
 R2 と D1 全体を一つのトランザクションにできるとは扱わない。両方を完成させてから API の公開参照 `active_release` を切り替える。R2 のオブジェクト操作は強い整合性を持ち、D1 の `batch()` は途中の statement が失敗すると全体を戻す。[R2 の整合性](https://developers.cloudflare.com/r2/reference/consistency/)、[D1 batch](https://developers.cloudflare.com/d1/worker-api/d1-database/#batch)。
 
 全量の取込を単一 batch に詰め込まず、上限内の再実行可能な単位で行う。候補が完成していない間は現行版を返す。失敗時は active の版を変更せず、完成済みの版へ参照を戻せば切り戻せる。
 
 この切り戻しはデータ版に対するもので、D1 の schema を元に戻す手段とは区別する。初回は新しい契約で DB と Worker をまとめて構築する。publish は候補・D1・Worker の契約版を照合し、対応しない版へ切り替えない。将来 schema を変更する場合は、その変更と再構築・復元の手順を同じ変更で検査する。
 
-API はリクエストの最初に版を一度だけ解決し、そのリクエスト内の D1 問い合わせと R2 の配信をすべてその版に固定する。ページトークンがあればその公開済みの版、通常の問い合わせでは active な版を使う。isolate の生存中ずっと公開参照を保持する単一 cache は使わない。初期は D1 primary を参照し、read replica を使う場合は Sessions API で公開参照と後続の読み取りの整合性を保つ。[D1 read replication](https://developers.cloudflare.com/d1/best-practices/read-replication/)。
+API はリクエストの最初に版を一度だけ解決し、そのリクエスト内の D1 問い合わせと配布 URL をすべてその版に固定する。ページトークンがあればその公開済みの版、通常の問い合わせでは active な版を使う。isolate の生存中ずっと公開参照を保持する単一 cache は使わない。初期は D1 primary を参照し、read replica を使う場合は Sessions API で公開参照と後続の読み取りの整合性を保つ。[D1 read replication](https://developers.cloudflare.com/d1/best-practices/read-replication/)。
 
-API のファイル取得も、リクエストで解決した版のファイルを配信する。URL と認可は新しい API 契約で定義し、旧 URL への転送や alias は設けない。
+ファイル配信の入口は `apps/download/` に統一する。API は D1 の `files` を読み、解決した版の不変のダウンロード URL とファイル属性を返す。API Worker に配布用の R2 binding や body の転送処理は持たせない。URL と認可は新しい契約で定義し、旧 URL への転送や alias は設けない。
 
 一括配布は API とは別に動く `apps/download/` の小さな Worker から提供する。例えば `data.fudoki.dev` を入口にし、版を指定した不変 URL と release manifest を公開する。R2 bucket 自体は非公開にし、この Worker は R2 の公開用 manifest に列挙されたファイルだけを読む。公開用 manifest がまだ無い候補、任意キー、書込操作は提供しない。D1 や API の認可サービスへは依存させない。R2 の body は stream として配信し、全ファイルを Worker のメモリへ読み込まない。原典 PDF 等は配布 bucket に入れない。
 
@@ -273,7 +278,7 @@ mise のツールの版、Python 3.13、exact ピン留めと更新時の 7 日 
 - `pipeline:publish`: build 済みの候補を指定して R2/D1 へ反映し、取込後の照合と API の検査を経て切り替える。dbt や build を暗黙に再実行しない。
 - `report` / `dev`: 報告の再生成 / ローカル検証画面の起動。
 - `pdf:layer`: 固定した原典 PDF をローカルキャッシュまたは R2 から復元し、閲覧レイヤを生成。自治体の最新 PDF で置き換えず、build・publish の前提にはしない。
-- `dev:web` / `dev:api`: 公開アプリの開発。API は release fixture をローカル D1/R2 に読み込んで動かす。
+- `dev:web` / `dev:api` / `dev:download`: 公開アプリの開発。API は release fixture をローカル D1 に、download は配布 fixture をローカル R2 に読み込んで動かす。
 - `build:api` / `deploy:api`: API のコードを構築・配信。配布物の全量生成を実行しない。
 
 生成結果の配置は以下とする。`pipeline/build.ts` はコードであり、`pipeline/build/` の中には置かない。
