@@ -14,6 +14,7 @@ const allowed = new Set([
   'downloads',
   'download',
   'measure',
+  'report',
 ])
 const ready = (async () => {
   platform = await getPlatformProxy({

@@ -17,7 +17,9 @@
 - バックアップから復元した固定入力で再 build し、完成済み候補の manifest が完全一致した。macOS のネットワーク拒否 sandbox 内でも全量 build と再 build が成功した。
 - ローカル download Worker から配布38ファイルを GET し、内容の SHA-256・サイズ・ETag が一致した。
 - download の版一覧は公開用 manifest のある版だけを列挙し、D1 を使わず次ページと個別 manifest へ辿れる。未完成の版だけのページ、入力不正、ストレージ障害を検査した。全量 CI に同一コード・固定入力の再 build と manifest 一致検査を追加した。
-- TypeScript の91テスト・各 workspace の型検査・Python の8テスト・公開アプリの依存境界検査が通過した。API のコードを誤って除外する ignore を修正し、公開 web の component 検査も CI の実行対象に含めた。
+- TypeScript の92テスト・各 workspace の型検査・Python の11テスト・公開アプリの依存境界検査が通過した。API のコードを誤って除外する ignore を修正し、公開 web の component 検査も CI の実行対象に含めた。修正後の GitHub の新規 checkout の fixture・コード CI も成功した。
+- ローカル download Worker の manifest と配布38ファイルを比較元として取得し、内容ハッシュを確認したうえで全46範囲の金額・ID・分類・注意点・出典に変更がないことを確認した。相殺される金額変更、版変更による ID の交代、出典・分類変更、壊れた比較元を Python の3検査で区別した。全量 CI は比較元を取得してから通信を禁止して build する。
+- publish の検証結果を非公開 R2 に保存し、GET の内容を確認してから公開切替する処理を追加した。fixture では保存済み記録のハッシュ・download の非公開境界を確認し、記録の内容が壊れた場合は旧公開版が維持されること、再実行で復旧できることを検査した。
 
 ## 未完了の移行条件
 

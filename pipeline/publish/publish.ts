@@ -1,5 +1,6 @@
-import { readFile } from 'node:fs/promises'
+import { readFile, writeFile, mkdtemp, rm } from 'node:fs/promises'
 import { join } from 'node:path'
+import { tmpdir } from 'node:os'
 import { createReadStream } from 'node:fs'
 import { createInterface } from 'node:readline'
 import {
@@ -25,6 +26,7 @@ export interface Verifier extends Pick<
   | 'downloads'
   | 'download'
   | 'measure'
+  | 'report'
 > {
   existingManifest(
     releaseId: string,
@@ -151,7 +153,7 @@ export async function publish(
             file.contentType
           ),
       ])
-    await verify.publicContracts(manifest.releaseId)
+    const contracts = await verify.publicContracts(manifest.releaseId)
     const probes = []
     for (const total of manifest.totals) {
       const result = await verify.api(
@@ -169,6 +171,8 @@ export async function publish(
       probes.push({
         datasetId: total.datasetId,
         phase: total.phase,
+        rows: total.rows,
+        amount: total.amount,
         milliseconds: result.milliseconds,
       })
       await guardedBatch(db, lease, [])
@@ -181,10 +185,46 @@ export async function publish(
         manifestPath,
         'application/json; charset=utf-8'
       )
-    await verify.downloads(manifest.releaseId)
+    const downloads = await verify.downloads(manifest.releaseId)
     for (const file of manifest.files) {
       await verify.download(manifest.releaseId, file.path)
       await guardedBatch(db, lease, [])
+    }
+    const reportDirectory = await mkdtemp(join(tmpdir(), 'fudoki-validation-'))
+    let reportKey: string
+    try {
+      const body =
+        JSON.stringify(
+          {
+            schemaVersion: 1,
+            stage: 'pre-activation-verified',
+            verifiedAt: new Date().toISOString(),
+            releaseId: manifest.releaseId,
+            manifestSha256: manifestHash,
+            inputFingerprint: manifest.inputFingerprint,
+            codeRevision: manifest.codeRevision,
+            previousReleaseId: lease.expectedReleaseId,
+            tables: manifest.tables,
+            contracts,
+            downloads,
+            probes,
+            performance,
+            localValidation: JSON.parse(
+              await readFile(join(candidate, 'validation.json'), 'utf8')
+            ),
+          },
+          null,
+          2
+        ) + '\n'
+      const hash = sha256(body)
+      reportKey = `_verification/${manifest.releaseId}/${hash}.json`
+      const path = join(reportDirectory, 'validation.json')
+      await writeFile(path, body, { mode: 0o600 })
+      await store.put(reportKey, path, 'application/json; charset=utf-8')
+      await verify.report(manifest.releaseId, hash, Buffer.byteLength(body))
+      await guardedBatch(db, lease, [])
+    } finally {
+      await rm(reportDirectory, { recursive: true, force: true })
     }
     await activate(
       db,
@@ -198,6 +238,7 @@ export async function publish(
       previousReleaseId: lease.expectedReleaseId,
       probes,
       performance,
+      reportKey,
     }
   } finally {
     await release(db, lease)

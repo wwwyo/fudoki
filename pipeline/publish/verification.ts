@@ -5,6 +5,7 @@ import {
   canonicalRow,
   manifestSchema,
   releaseIdSchema,
+  sha256Schema,
   type D1Database,
   type D1Statement,
   type R2Bucket,
@@ -38,6 +39,24 @@ export class Verification {
     private env: VerificationEnv,
     private hashStream: HashStream
   ) {}
+  async report(releaseId: string, sha256: string, bytes: number) {
+    await this.candidate(releaseId)
+    sha256Schema.parse(sha256)
+    z.number()
+      .int()
+      .min(1)
+      .max(4 * 1024 * 1024)
+      .parse(bytes)
+    const object = await this.env.RELEASES.get(
+      `_verification/${releaseId}/${sha256}.json`
+    )
+    if (!object || object.size !== bytes)
+      throw new Error('Verification report is missing or differs in size')
+    const actual = await this.hashStream(object.body)
+    if (actual.sha256 !== sha256 || actual.bytes !== bytes)
+      throw new Error('Verification report content differs')
+    return actual
+  }
   async existingManifest(releaseId: string, sha256: string) {
     releaseIdSchema.parse(releaseId)
     z.string()

@@ -85,3 +85,15 @@ uv run python -m ingestion.inputs restore-backup --lock pipeline/ingestion/fisca
 `bun run dev:setup:download` は完成済み候補を検査してからローカル R2 に配布ファイルと最終 manifest を入れる。続いて `bun run dev:download` で配布 URL を確認できる。遠隔 R2 への転送は行わない。
 
 fixture は `verify/fixture.ts` にある架空団体の501行で、境界をまたぐ取込・照合・再実行・切り戻しを検査する。自治体の原典を含まない。`bun run test` はこの fixture と単体検査を実行し、全量 dbt build は別に実行する。
+
+## 公開版との内容の変更を確認する
+
+全量 CI は R2 の固定入力を復元し、比較元の公開 manifest と配布ファイルを取得して内容ハッシュを照合する。その後はネットワーク namespace を分離して、全量 build・再 build・報告を生成する。PR の CI は publish を実行しない。
+
+GitHub の `FUDOKI_REVIEW_BASELINE_URL` に比較元の不変な manifest URL を指定する。初回公開だけは URL を空にして `FUDOKI_REVIEW_INITIAL_RELEASE=true` を明示する。比較元の取得失敗や改変を初回公開として扱わない。公開切替後は比較元 URL を新しい公開版へ更新する。
+
+`bun run pipeline/verify/summary.ts --prepare-baseline` が比較元を `.cache/review/` に固定し、`bun run pipeline/verify/summary.ts` が `build/review-summary.json` と Markdown を生成する。ローカルの完成済み候補との比較には `--baseline <候補ディレクトリ>` を使える。
+
+変更報告は団体・年度・歳入歳出・文書・段階ごとの行数と円金額、追加・削除された明細 ID、金額変更、分類変更の行数と変更前後の金額を含む。原典の版が変わって ID が交代した場合、同じ明細との対応を推定せず追加・削除として示す。注意点・原典・出典・利用条件・名称・分類規則等の変更前後の内容も JSON に記録し、CI の artifact と概要から確認できる。
+
+publish の公開前検証結果は R2 の `_verification/<releaseId>/<内容ハッシュ>.json` に保存し、非公開検証 Worker の GET でハッシュ・サイズを再確認してから API の公開版を切り替える。再試行の計測結果も内容ごとに残し、download からは配信しない。記録の `pre-activation-verified` は公開切替前の検証状態を表し、公開済みかどうかは D1 の運用状態で判断する。

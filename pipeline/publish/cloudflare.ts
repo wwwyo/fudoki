@@ -94,7 +94,7 @@ export function cloudflareObjects(bucket: string): ObjectStore {
   return {
     async put(key, path, contentType) {
       if (
-        !/^(?:_candidates|releases)\/r-[a-f0-9]{32}\/(?:manifest\.json|catalog\.json|fiscal\/\d{6}\/[a-z_]+\.(?:csv|json))$/.test(
+        !/^(?:(?:_candidates|releases)\/r-[a-f0-9]{32}\/(?:manifest\.json|catalog\.json|fiscal\/\d{6}\/[a-z_]+\.(?:csv|json))|_verification\/r-[a-f0-9]{32}\/[a-f0-9]{64}\.json)$/.test(
           key
         )
       )

@@ -41,6 +41,9 @@ export class PipelineVerification extends WorkerEntrypoint<VerificationEnv> {
   existingFile(releaseId: string, path: string) {
     return this.verifier().existingFile(releaseId, path)
   }
+  report(releaseId: string, sha256: string, bytes: number) {
+    return this.verifier().report(releaseId, sha256, bytes)
+  }
   candidate(releaseId: string) {
     return this.verifier().candidate(releaseId)
   }

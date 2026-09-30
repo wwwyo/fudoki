@@ -49,6 +49,7 @@ export function remoteVerification() {
     downloads: (id) => call('downloads', id),
     download: (id, path) => call('download', id, path),
     measure: (id) => call('measure', id),
+    report: (id, sha256, bytes) => call('report', id, sha256, bytes),
   }
   return {
     verifier,

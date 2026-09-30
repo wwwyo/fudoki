@@ -116,6 +116,7 @@ function methods(overrides: Partial<Verifier> = {}): Verifier {
     downloads: verifier.downloads.bind(verifier),
     download: verifier.download.bind(verifier),
     measure: verifier.measure.bind(verifier),
+    report: verifier.report.bind(verifier),
     ...overrides,
   }
 }
@@ -167,6 +168,65 @@ test('a D1 verification failure preserves the prior release and retry checks the
   expect(
     sqlite.query('SELECT count(*) AS count FROM fiscal_lines').get()
   ).toEqual({ count: 1002 })
+})
+test('validation evidence is private and verified before activation; corrupted evidence preserves the prior release', async () => {
+  const result = await publish(join(directory, R1), db, store, methods())
+  const report = objects.get(result.reportKey)!
+  const body = JSON.parse(new TextDecoder().decode(report))
+  expect(body.stage).toBe('pre-activation-verified')
+  expect(body.releaseId).toBe(R1)
+  expect(body.probes[0].amount).toBe(50100)
+  const hidden = await download.fetch(
+    new Request(`https://download.internal/${result.reportKey}`),
+    {
+      RELEASES: {
+        async get() {
+          throw new Error('Private report must not be read')
+        },
+        async head() {
+          throw new Error('Private report must not be read')
+        },
+        async list() {
+          throw new Error('Private report must not be listed')
+        },
+      },
+    }
+  )
+  expect(hidden.status).toBe(404)
+  expect(result.reportKey).toBe(
+    `_verification/${R1}/${createHash('sha256').update(report).digest('hex')}.json`
+  )
+  expect(
+    await verifier.report(
+      R1,
+      result.reportKey.split('/')[2]!.replace('.json', ''),
+      report.byteLength
+    )
+  ).toEqual({
+    bytes: report.byteLength,
+    sha256: createHash('sha256').update(report).digest('hex'),
+  })
+  await expect(
+    publish(
+      join(directory, R2),
+      db,
+      {
+        async put(key, path, type) {
+          await store.put(key, path, type)
+          if (key.startsWith('_verification/')) {
+            const original = objects.get(key)!
+            const changed = original.slice()
+            changed[0] = changed[0]! ^ 1
+            objects.set(key, changed)
+          }
+        },
+      },
+      methods()
+    )
+  ).rejects.toThrow('report content differs')
+  expect(await resolveRelease(db)).toBe(R1)
+  await publish(join(directory, R2), db, store, methods())
+  expect(await resolveRelease(db)).toBe(R2)
 })
 test('API mismatch refuses publication and cannot be bypassed by a successful file transfer', async () => {
   await expect(
