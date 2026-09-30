@@ -6,14 +6,27 @@
  * 生成側と画面が同じ型を見るので、食い違いはコンパイラが捕まえる。
  */
 
-/** 段。**dbt のモデルの置き場がそのまま段になる**（report/build.py の STAGES） */
+/** 段。**dbt のモデルの置き場がそのまま段になる** */
 export type Stage = {
-  id: 'origin' | 'ingestion' | 'staging' | 'core' | 'package'
+  id: 'origin' | 'ingestion' | 'staging' | 'intermediate' | 'marts'
   label: string
   responsibility: string
   /** fudoki の判断が入る段か。境界はここにある */
   introducesJudgment: boolean
 }
+
+export const STAGES: Stage[] = [
+  { id: 'origin', label: '取得元', introducesJudgment: false,
+    responsibility: '自治体が公開しているファイルそのもの' },
+  { id: 'ingestion', label: 'ingestion', introducesJudgment: false,
+    responsibility: '取得元から取り、無加工のまま Parquet で置く。取得 URL・status・SHA-256・取得時刻を添える' },
+  { id: 'staging', label: 'staging', introducesJudgment: false,
+    responsibility: '原典と1対1。列名の付け替えと型付けだけ' },
+  { id: 'intermediate', label: 'intermediate', introducesJudgment: true,
+    responsibility: '提供用データの準備。団体間の構造・金額単位の統一、共通科目への対応、COFOG 分類' },
+  { id: 'marts', label: 'marts', introducesJudgment: false,
+    responsibility: '利用者に提供するデータの列・粒度を確定する。この repo では CSV に書き出す' },
+]
 
 /** ノード = dbt のモデル・ソース・seed。手で並べていない */
 export type Node = {
@@ -21,21 +34,21 @@ export type Node = {
   label: string
   kind: 'model' | 'source' | 'seed' | 'origin'
   /**
-   * どの団体のノードか。null は団体をまたぐ共有ノード（規則表・core）。
+   * どの団体のノードか。null は団体をまたぐ共有ノード（規則表・intermediate）。
    * **生成側が1箇所で付ける** — 画面が id の命名規則を正規表現で推定すると、
    * id の形式を変えたとき絞り込みが黙って壊れる
    */
   jurisdictionCode: string | null
   stage: Stage['id']
-  /** 全団体・全年度の行数。core は系統1本を共有するので、ここには他団体の行も入る */
+  /** 全団体・全年度の行数。intermediate は系統1本を共有するので、ここには他団体の行も入る */
   rows: number | null
   /**
    * 団体 × 年度で数え直した行数。**画面は選んだ団体・年度でここを引くだけ**にする
    * （画面で足し込むと、同じ数字が2通りに計算されていずれ食い違う）。
    *
-   * ⚠️ **`rows` では1団体のページを作れない。** core のモデルは全団体を1つの表に
+   * ⚠️ **`rows` では1団体のページを作れない。** intermediate のモデルは全団体を1つの表に
    * 持つので、`rows` をそのまま出すと多摩市のページにも三鷹市の行が混ざった数字が出る
-   * （raw・staging・package は団体ごとなので、同じ図の中で数字の意味が変わる）。
+   * （raw・staging・marts は団体ごとなので、同じ図の中で数字の意味が変わる）。
    *
    * - null: 団体にも年度にも依らない規則表（`rows` がすべて）
    * - `byYear` が null: その団体では年度に依らない（年度を持たない表）。
@@ -43,7 +56,7 @@ export type Node = {
    */
   rowsByJurisdiction: Record<string, { total: number; byYear: Record<string, number> | null }> | null
   description: string
-  /** このノード自身が判断を持ち込むか（規則を適用する core のモデルと、判断を宣言した seed） */
+  /** このノード自身が判断を持ち込むか（規則を適用する intermediate のモデルと、判断を宣言した seed） */
   introducesJudgment: boolean
   /**
    * このノードのデータが判断を含むか。**上流から伝播する。**
@@ -53,7 +66,7 @@ export type Node = {
    * 画面が説明している不変条件そのものを、画面が誤って伝えることになる。
    */
   containsJudgment: boolean
-  /** 配布物として書き出されるファイル。package 段のノードだけ持つ */
+  /** 提供用データとして書き出されるファイル。marts 段のノードだけ持つ */
   artifact: string | null
 }
 

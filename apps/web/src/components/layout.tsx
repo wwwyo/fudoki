@@ -36,7 +36,7 @@ export function Layout({ children, bare }: LayoutProps) {
           <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background/95 px-4 backdrop-blur">
             {/* ⚠️ ロゴを1枚にしない。`<img>` の中のメディアクエリは OS 設定しか見ないので、
                 OS がライトのまま画面をダークにするとロゴだけ取り残される */}
-            <a href={withBase("/")} className="flex shrink-0 items-center gap-2" aria-label="fudoki ホーム">
+            <a href={withBase("/")} className="flex shrink-0 items-center gap-2" aria-label="風土記 ホーム">
               <img
                 src={`${import.meta.env.BASE_URL}mark.svg`}
                 alt="風土記"

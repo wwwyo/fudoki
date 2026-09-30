@@ -753,7 +753,7 @@ if __name__ == "__main__":
     # 依存に宣言しているが、dbt は無いノードを**警告して検査ごと無効化する**。
     # つまり団体を足してモデルを足し忘れると、4本の検査が黙って消える。
     # 宣言（budget_levels）を母集団にして、ファイルの存在をここで見る。
-    models = pathlib.Path(__file__).resolve().parent.parent / "dbt" / "models" / "package" / "budget"
+    models = pathlib.Path(__file__).resolve().parent.parent / "dbt" / "models" / "marts" / "budget"
     missing = sorted(
         f"pkg_{code}__{name}.sql"
         for code in declared

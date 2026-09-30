@@ -945,7 +945,7 @@ function Overview({
           n.kind === "origin" &&
           n.rowsByJurisdiction?.[code]?.byYear?.[String(year)] != null,
       ),
-      sinks: nodes.filter((n) => n.stage === "package" && !hasOut.has(n.id)),
+      sinks: nodes.filter((n) => n.stage === "marts" && !hasOut.has(n.id)),
     }
   }, [report.topology, code, year])
   // 原典 → 取り込み表の辺から、まとめられた原典でも裏の source を全部拾う

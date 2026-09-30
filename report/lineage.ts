@@ -7,7 +7,7 @@
  * 以前は `topology.ts` が段・ノード・辺を宣言しており、パイプラインを変えても
  * 図が変わらない状態を2度作った。系統はツールが持っている情報なので、そこから引く。
  *
- * 数値は core への問い合わせで作る。**集計はここ1箇所だけ**で行う
+ * 数値は中間モデルへの問い合わせで作る。**集計はここ1箇所だけ**で行う
  * （画面側でも集計すると、同じ数字が2通りに計算されていずれ食い違う）。
  *
  * ## なぜ画面と同じ言語で書くか
@@ -22,7 +22,7 @@
  */
 import { readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { provenanceForSource } from './common'
+import { provenanceForSource, STAGES } from './common'
 import type { CanonicalFetch, Check, CheckAttribution, Node, ProjectNamesExtract, Provenance, RevenueAccountsExtract, Stage, Topology } from './common'
 
 export const ROOT = resolve(import.meta.dirname, '..')
@@ -89,21 +89,7 @@ export function q<T = Record<string, unknown>>(sql: string, nums: string[] = [],
   return rows as T[]
 }
 
-/** 段。**dbt のディレクトリがそのまま段になる。** 名前も並びもここでしか宣言しない */
-export const STAGES: Stage[] = [
-  // 取得元だけは dbt の外にある（パイプラインが始まる前の、自治体が配っているファイルそのもの）。
-  // ノードは provenance から組む — 手で並べると取得元を変えても図が変わらない
-  { id: 'origin', label: '取得元', introducesJudgment: false,
-    responsibility: '自治体が公開しているファイルそのもの' },
-  { id: 'ingestion', label: 'ingestion', introducesJudgment: false,
-    responsibility: '取得元から取り、無加工のまま Parquet で置く。取得 URL・status・SHA-256・取得時刻を添える' },
-  { id: 'staging', label: 'staging', introducesJudgment: false,
-    responsibility: '原典と1対1。列名の付け替えと型付けだけ' },
-  { id: 'core', label: 'core', introducesJudgment: true,
-    responsibility: '判断が入る段。COFOG 写像、連結の消去' },
-  { id: 'package', label: 'package', introducesJudgment: false,
-    responsibility: '配布物へ。Fiscal Data Package の形にする' },
-]
+export { STAGES } from './common'
 
 type DbtNode = {
   name: string; resource_type: string; path?: string; description?: string
@@ -124,12 +110,12 @@ export type RunResults = { results: { unique_id: string; status: string; failure
 /**
  * 段はノードの置き場から決まる。宣言と実装がずれないのはこれが理由。
  *
- * ⚠️ **未知の置き場を core に落とさない。** 落とすと、段を1つ増やしたときに
- * 黙って core に混ざり、判断の境界を誤って表示する。宣言されていなければ止める。
+ * ⚠️ **未知の置き場を intermediate に落とさない。** 落とすと、段を1つ増やしたときに
+ * 黙って intermediate に混ざり、判断の境界を誤って表示する。宣言されていなければ止める。
  */
-function stageOf(n: DbtNode): Stage['id'] {
+export function stageOf(n: DbtNode): Stage['id'] {
   if (n.resource_type === 'source') return 'ingestion'
-  if (n.resource_type === 'seed') return 'core'
+  if (n.resource_type === 'seed') return 'intermediate'
   const hit = STAGES.find((s) => (n.path ?? '').startsWith(`${s.id}/`))
   if (!hit) throw new Error(`モデル ${n.name}（${n.path}）の置き場が段の宣言に無い`)
   return hit.id
@@ -147,7 +133,7 @@ function introducesJudgment(n: DbtNode, stage: Stage['id']): boolean {
     if (!role) throw new Error(`seed ${n.name} に meta.role の宣言が無い（judgment-rule / external-reference）`)
     return role === 'judgment-rule'
   }
-  return stage === 'core'
+  return stage === 'intermediate'
 }
 
 /**
@@ -319,8 +305,8 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
   // プロセス起動がノード数だけ増える。原典（source）は DuckDB にテーブルとして
   // 存在しないので証跡から取る。
   //
-  // ⚠️ **どのモデルが年度・団体の列を持つかをここで宣言しない。** core と staging は
-  // 両方持ち、package は団体をモデル名で名乗って列を持たず、規則表はどちらも持たない。
+  // ⚠️ **どのモデルが年度・団体の列を持つかをここで宣言しない。** intermediate と staging は
+  // 両方持ち、marts は団体をモデル名で名乗って列を持たず、規則表はどちらも持たない。
   // 宣言すると、モデルに列を足した日に古い数え方が黙って残る。**実物に名乗らせる**。
   //
   // ⚠️ **全行を `to_json` する方式は避ける。** 実測で 200万行のテーブルにおいて
@@ -331,7 +317,7 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
   const counted = models.filter(([, n]) => n.resource_type !== 'source')
   const from = (n: DbtNode) => {
     const loc = n.config?.location
-    // package 段は外部ファイルとして書き出される。DuckDB のビューは dbt の
+    // marts は外部ファイルとして書き出される。DuckDB のビューは dbt の
     // 作業ディレクトリ基準の相対パスなので、実ファイルを直接数える。
     return loc
       ? `read_csv('${join(ROOT, 'dbt', loc)}', header = true, all_varchar = true)`
@@ -604,4 +590,3 @@ function attributeCheck(compiled: string): CheckAttribution | undefined {
     return undefined
   }
 }
-

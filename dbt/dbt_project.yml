@@ -14,7 +14,7 @@ models:
       # 縛られ、他所から DuckDB を開いたときに解決できない。
       # DuckDB 自体が捨てられるビルド生成物なので、自己完結させたほうがよい。
       +materialized: table
-    core:
+    intermediate:
       +materialized: table
 
 vars:

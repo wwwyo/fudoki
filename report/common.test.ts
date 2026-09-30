@@ -2,7 +2,7 @@ import { describe, expect, test } from 'bun:test'
 import { nodeRows, type Node } from './common'
 
 const node = (over: Partial<Node>): Node => ({
-  id: 'model.fudoki.x', label: 'x', kind: 'model', jurisdictionCode: null, stage: 'core',
+  id: 'model.fudoki.x', label: 'x', kind: 'model', jurisdictionCode: null, stage: 'intermediate',
   rows: 0, rowsByJurisdiction: null, description: '', introducesJudgment: false,
   containsJudgment: false, artifact: null, ...over,
 })
