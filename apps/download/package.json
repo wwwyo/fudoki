@@ -1,0 +1,8 @@
+{
+  "name":"@fudoki/download",
+  "private":true,
+  "type":"module",
+  "scripts":{"dev":"wrangler dev --ip 127.0.0.1 --port 8788","build":"wrangler deploy --dry-run --outdir dist","deploy":"wrangler deploy","test":"bun test","typecheck":"tsc --noEmit"},
+  "dependencies":{"@fudoki/data-contracts":"workspace:*"},
+  "devDependencies":{"@types/bun":"catalog:","typescript":"catalog:","wrangler":"catalog:"}
+}

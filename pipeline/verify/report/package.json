@@ -1,0 +1,19 @@
+{
+  "name": "@fudoki/report",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "\u30ed\u30fc\u30ab\u30eb\u691c\u8a3c\u5831\u544a\u306e\u751f\u6210\u3068\u578b\u3002pipeline/verify/view \u304c\u540c\u3058\u578b\u3092\u8aad\u3080",
+  "exports": {
+    "./common": "./common.ts",
+    "./fiscal/schema": "./fiscal/schema.ts"
+  },
+  "scripts": {
+    "test": "bun test"
+  },
+  "dependencies": {
+    "zod": "catalog:",
+    "@fudoki/fiscal": "workspace:*",
+    "@fudoki/jurisdictions": "workspace:*"
+  }
+}

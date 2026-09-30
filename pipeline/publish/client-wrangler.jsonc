@@ -1,0 +1,8 @@
+{
+  "$schema":"../../node_modules/wrangler/config-schema.json",
+  "name":"fudoki-publish-client",
+  "compatibility_date":"2026-08-18",
+  "workers_dev":false,
+  "preview_urls":false,
+  "services":[{"binding":"VERIFICATION","service":"fudoki-pipeline-verification","entrypoint":"PipelineVerification","remote":true}]
+}

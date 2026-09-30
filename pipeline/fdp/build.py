@@ -1,0 +1,769 @@
+"""dbt の出力を Fiscal Data Package として配れる形にする。
+
+（配布物そのものは data/budget/datapackages/ にある。ここはそれを組み立てる側）
+
+**データは dbt が既に書いている**（`materialized: external`）。
+ここが足すのは datapackage.json だけ、つまり**列の意味づけと出所**である。
+
+列の ColumnType は `field_types.json` の宣言から引く。
+未宣言の列があれば落とす（意味づけの無い列を配らないため）。
+仕様が「正準」と呼ぶ taxonomy の URL は 404 なので、宣言を自分で持つのが既定の運用。
+
+⚠️ **独自フィールドを積まない。** descriptor に独自の property を足すほど、
+標準しか読まない実装から見える情報が減る（読み手は property の名前を知らない）。
+足す前に仕様本文を当たること。実際、当初 `constants` として独自に持っていたものは
+仕様の `extraFields` + `constant` そのものだったし、`provenance` は取得物の隣の
+provenance.json と同じ内容を descriptor へ写しただけだった。
+
+⚠️ **`profile` は `tabular-data-package` が正しい値であって、妥協ではない。**
+FDP の profile は Tabular Data Package を `allOf` で継承しており、継承元の `profile` は
+enum で `tabular-data-package` に固定されている。FDP の URL を入れると継承元の制約に
+違反する。**「これは FDP である」を宣言する口は、仕様の設計上どこにも無い**
+（`columnTypes` を持っていることが事実上の印になるだけ）。
+だから `fudoki.specification` は代替が見つかるまでの間に合わせではなく、
+構造的に標準へ寄せられないものである。
+
+⚠️ 別件として、**1.0.0 に対応する profile JSON も存在しない**（2026-08-23 実測）。
+仕様本文が Profile として挙げる fiscal.datapackage.org/profiles/fiscal-data-package.json は
+0.3 世代のままで、1.0.0 が廃止した `model`（measures / dimensions）を required に持つ。
+1.0.0 への適合を機械に検査させる経路が無いということで、AGENTS.md に記録してある
+（配布物には載せない — 利用者の行動が変わらないため）。
+"""
+
+from __future__ import annotations
+
+import csv
+import hashlib
+import json
+import pathlib
+
+import yaml
+
+from ingestion.fiscal.sources import all_sources, load_project_names, load_revenue_accounts
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+# 変換の宣言。**金額の段階と単位はここが正本**（dbt のモデルが同じ宣言から組まれる）。
+# ⚠️ 写すと、モデルの倍率を直したのに descriptor だけ古い前提のまま出る。
+DBT_VARS = yaml.safe_load((ROOT / "dbt" / "dbt_project.yml").read_text())["vars"]
+# ライセンスの表示。**1箇所で持つ** — 正本（素通し）と派生（fudoki の選択）で
+# 意味は違うが、表示する内容が食い違うと利用者はどちらを信じるか決められない。
+LICENSE_CC_BY_4 = {
+    "name": "CC-BY-4.0",
+    "title": "Creative Commons Attribution 4.0 International",
+    "path": "https://creativecommons.org/licenses/by/4.0/",
+}
+# 原典が名乗るライセンスのうち、CC BY 4.0 として配ってよいもの。
+# ⚠️ **「オープンだから同じだろう」で足さない。** 継承条件が違えば下流の義務が変わる。
+# 足すときは、その規約の原文が CC BY での利用を許諾していることを確かめて根拠を書く。
+CC_BY_COMPATIBLE = {
+    "CC-BY-4.0",
+    # 公共データ利用規約（第1.0版）。デジタル庁の原文（2026-08-30 実測）に
+    # 「本利用ルールは、クリエイティブ・コモンズ・ライセンスの表示4.0 国際ライセンスに
+    # 規定される著作権利用許諾条件（以下「CC BY」といいます。）と互換性があります。…
+    # 利用者がCC BYに従って利用することを許諾します。」とある。
+    # https://www.digital.go.jp/resources/open_data/public_data_license_v1.0
+    "PDL-1.0",
+}
+
+
+def licenses_of(srcs: list) -> list[dict]:
+    """配布物に貼るライセンス。**取得元の宣言から決める。定数を貼らない。**
+
+    ⚠️ 以前はここが定数の直書きだった。別の関数が値域を守っていたので今のところ
+    結果は同じだったが、**「勝手にライセンスを付ける」そのもの**である。
+    宣言が変わっても配布物が変わらない状態を残してはいけない。
+
+      原典が CC BY を付けている        → それを素通しする
+      原典が CC BY 互換を明示している   → それも素通しする（`CC_BY_COMPATIBLE`）
+      原典の利用許諾が未判断（NOASSERTION）**だけ** → **`licenses` を書かない**
+
+    ⚠️ **判断が付いた原典と未判断の原典が混ざる団体では、付いているほうを出す。**
+    `licenses` が伝えるのは**下流が負う義務**である。CC BY の原典が1つでも入っていれば、
+    下流には帰属・ライセンス表示・改変の明示の義務が実際に生じるので、
+    書かないと**義務を伝え損ねる**（未判断だから伏せる、では下流が帰属を落とす）。
+    逆に、どの原典も未判断のパッケージには伝えるべき義務がまだ無いので、書かない。
+    どのリソースがどの原典から来たかは `sources` と `description` が言う。
+
+    ⚠️ **最後の場合に fudoki のライセンスを貼らない。** 抽出した事実には原典のライセンスが
+    付いてこないので、選択と構成にあたる部分を fudoki が CC BY 4.0 で配ることは**できる**。
+    だがそれは「配ってよい条件を fudoki が決めた」という主張であって、
+    **原典の許諾をまだ判断していない段階でそれを出すと、判断が済んだように読める**。
+    `licenses` は Data Package の仕様でも任意なので、決まっていない状態は
+    **書かないことで表す**（未定を表す値が仕様に無いため）。決まったら足す。
+    """
+    known = sorted({s.license_id for s in srcs} - {"NOASSERTION"})
+    if any(lic not in CC_BY_COMPATIBLE for lic in known):
+        raise SystemExit(
+            f"原典のライセンスに {known} が含まれる。CC BY 4.0 以外は継承条件が違いうるので、"
+            f"配布物のライセンスを決め直してから配ること"
+        )
+    return [LICENSE_CC_BY_4] if known else []
+
+
+# CC BY 4.0 §3(a)(1)(B) が求める「改変した旨」の表示。**descriptor の `description` に書く。**
+# ⚠️ 以前は独自の `modified` / `modifications` を足していたが、`modified` は
+# **fudoki の配布物がすべて加工物なので常に true** で、情報量が無かった。
+# 中身のあるリストのほうは標準の `description`（Markdown 可）に書けば
+# 標準しか読まない実装からも読める。義務の伝達を独自フィールドに預けない。
+# ⚠️ **やっていない改変を書かない。** 一度、原典1行が複数の予算段階を持つ団体のための
+# 「段階ごとの行へ展開した」を全団体共通のリストへ入れており、1行1金額の三鷹市にも付いていた。
+# 改変の明示は CC BY が求めているものなので、嘘を書くと表示そのものの信用が落ちる。
+# 団体で改変が変わるなら、そのときリストを団体ごとに分けること。
+CANONICAL_MODIFICATIONS = [
+    "セルの前後の空白を除去した",
+    "コードと名称が同居するセルを分けた",
+    "金額を円へ正規化した（原典の値と単位も残してある）",
+]
+# 判断のリソースごとの改変。**そのリソースが実際にある団体にだけ付ける。**
+# ⚠️ やっていない改変を書かない。事業名は狛江市にしか無い。
+JUDGMENT_MODIFICATIONS = {
+    "cofog": "原典の各行に COFOG の分類と連結の判断を付け加えた（自治体が言っていないこと）",
+    "account_names": "科目に法定マスタへの対応を付け加えた（一般会計は地方自治法施行規則"
+                     " 別記の区分、法定の特別会計は会計別の調査票の勘定科目。"
+                     " コードのずれと表記差の吸収は fudoki の判断）",
+    "project_names": "原典に無い事業名を決算資料 PDF の事項別明細から起こし、"
+                     "同じ目の中で金額が一致する大事業へ対応づけた"
+                     "（自治体がこの対応を宣言しているわけではない）",
+    "funds": "会計の表示名を制度としての名前へ名寄せし、"
+             "普通会計/公営事業会計の枠組みを割り振った（自治体が言っていない区分）",
+    "interfund_transfers": "会計間の繰出入を行・項・款の粒度で宣言して連結消去の判断に使った",
+}
+
+# 判断のリソース。**原典と突き合わせる相手がいない**ので、正本と同じ検査は掛からない。
+# どう決めたかは dbt の core モデルにあり、規則そのものも cofog_rules で配る。
+JUDGMENT_RESOURCES = [
+    ("cofog", "COFOG の割当（fudoki の判断）",
+     "自治体が言っていないことを付け加えている。正本とは fiscal_line_id で join する。"
+     "根拠は cofog_rules に規則として出してあり、cofog_rule_id で引ける。"
+     "分類不能の割合の低さは品質の指標ではない（成立範囲を正直に調べるのが目的）",
+     ["fiscal_line_id"]),
+    ("cofog_rules", "COFOG の割り当て規則（fudoki の判断）",
+     "判断の中身そのもの。結果だけを配ると、利用者は検算できても判断を検討できない。"
+     "その団体に効く規則だけを収めている（applies_to が空の規則はどの団体にも効く）",
+     ["rule_id"]),
+    ("account_names", "科目の名称と法定マスタへの対応（fudoki の判断を含む）",
+     "款・項・目の名称のカタログと、法定マスタへの対応。"
+     "**対応先は会計で違う**: 一般会計は地方自治法施行規則 別記の区分、"
+     "法定の特別会計（国民健康保険・介護保険・後期高齢者医療）は"
+     "地方財政状況調査の会計別表の勘定科目。それ以外の特別会計は調査票が無いので"
+     "master_* が空のまま。"
+     "**款のコードは団体ごとに法定とずれる**（災害復旧費を持たない市では以降が詰まる）ので、"
+     "団体をまたぐ比較は canonical_fund と master_kan_code / master_kou_code で行う。"
+     "名称の出所（原典 CSV か、事項別明細書 PDF からの抽出か、決算書 PDF から fudoki が解決したか）は name_source が言う",
+     ["fiscal_year", "direction", "fund_code", "kan_code", "kou_code", "moku_code"]),
+    ("funds", "会計の名寄せと帳簿上の区分（fudoki の判断）",
+     "同じ制度を担う会計の呼び名は団体で違う（「国民健康保険事業特別会計」"
+     "「国民健康保険特別会計」）ので、比較は fund_label ではなく canonical_fund で行う。"
+     "account_class は帳簿上の区分、sector は普通会計/公営事業会計の枠組み。"
+     "**同名の款が会計によって別の科目になる**ことと、**会計間の繰出入を全会計で"
+     "合算すると二重計上になる**ことが利用上の注意点（消去の判断は cofog.csv）",
+     ["fund_label"]),
+    ("interfund_transfers", "会計間移転の宣言（fudoki の判断）",
+     "連結消去できると判断した会計間移転の宣言そのもの。"
+     "ここにある行が cofog.csv で cofog_consolidation=eliminated になっている。"
+     "宣言が無い繰出入は相手方会計が確定できないため retained のまま",
+     ["fiscal_year", "direction", "fund_label", "kan_code", "kou_code",
+      "moku_code", "setsu_code", "amount_yen"]),
+    ("project_names", "事業名の対応づけ（fudoki の判断）",
+     "原典の CSV に事業の名称が無い団体で、決算資料 PDF から起こした名称を"
+     "金額で大事業へ対応づけたもの。対応づけの確からしさ（match_method / match_basis / "
+     "candidate_count）を併記してある",
+     ["fiscal_year", "fund_code", "kan_code", "kou_code", "moku_code", "daijigyo_code"]),
+]
+
+
+def amounts_of(code: str, direction: str) -> list[dict]:
+    """そのリソースが持つ金額の宣言（段階・単位・倍率）。
+
+    **正本は `dbt/dbt_project.yml` の `fiscal_amounts`。** ここへ写すと、
+    モデルの倍率や段階を直したのに descriptor が古い前提のまま出る。
+    宣言どおりに書けているかは `verify_against_csv` が配布物そのものを見て確かめる。
+    """
+    return DBT_VARS["fiscal_amounts"][code][direction]
+
+
+def phase_ids(amounts: list[dict]) -> set[str]:
+    """そのリソースに現れる予算段階。**行を段階ごとに展開したかはこれで決まる。**
+
+    ⚠️ **宣言の件数で決めない。** 多摩市は同じ approved の宣言が年度で2件に割れている
+    （令和7年度で列名と単位が変わった）ので、件数で見ると1行しかない原典を
+    2行へ展開したことになってしまう。
+    """
+    return {a["phase"] for a in amounts}
+
+
+def unit_is_column(amounts: list[dict]) -> bool:
+    """単位を**行の列**（`source_amount_unit`）で持つか、descriptor の定数にできるか。
+
+    **規則の正本は dbt の同名マクロ**（`fiscal_amount_unit_is_column`）で、
+    列を出すのはあちらのモデルである。ここへ違う規則を書くと、CSV に列があるのに
+    descriptor が定数だと言う（あるいはその逆の）状態になる。
+    食い違いは `verify_against_csv` が配布物そのものを見て止める。
+
+    ⚠️ 「宣言が1つか」であって「単位が1種類か」ではない。狛江市の歳出は3段階とも円だが、
+    段階ごとの行へ展開する以上その行が何の単位かは行が言うべきで、定数にはできない。
+    """
+    return len(amounts) > 1
+
+
+def amount_at(amounts: list[dict], year: int, phase: str) -> dict | None:
+    """その (年度, 段階) に効く宣言。**解決の規則は dbt 側と同じ**
+    （`years` を持つ宣言が優先し、無ければ `years` を持たない宣言）。
+
+    正本は `dbt/dbt_project.yml` で、規則そのものは
+    `dbt/macros/fiscal_amount_scope.sql` にある。ここはそれを Python で読むだけ。
+    """
+    hit = [a for a in amounts if a["phase"] == phase]
+    scoped = [a for a in hit if year in (a.get("years") or [])]
+    # ⚠️ **黙って先頭を採らない。** dbt 側は `years` の重なりをコンパイルエラーにするので
+    # 通しの pipeline なら手前で止まるが、`fdp.build` を単独で回すとここが最初の関門になる。
+    # 順序依存で「たまたま正しい倍率」を採る状態を作らない。
+    if len(scoped) > 1:
+        raise RuntimeError(
+            f"{year}年度の段階「{phase}」に効く宣言が {len(scoped)} 件ある。years は重ねてはいけない"
+        )
+    if scoped:
+        return scoped[0]
+    return next((a for a in hit if a.get("years") is None), None)
+
+
+def verify_against_csv(path: pathlib.Path, amounts: list[dict]) -> None:
+    """宣言と配布物が食い違っていないか。**descriptor だけ正しい状態を作らない。**"""
+    with path.open(encoding="utf-8", newline="") as f:
+        rows = csv.DictReader(f)
+        header = rows.fieldnames or []
+        if "phase_id" not in header:
+            raise RuntimeError(f"{path.name}: phase_id の列が無い")
+        if unit_is_column(amounts) and "source_amount_unit" not in header:
+            raise RuntimeError(
+                f"{path.name}: 金額の宣言が {len(amounts)} 件あるのに source_amount_unit の列が無い"
+            )
+        seen: set[tuple[str, str]] = set()
+        for row in rows:
+            unit = row.get("source_amount_unit", amounts[0]["unit"])
+            seen.add((row["phase_id"], unit))
+            src, val = int(row["source_amount"]), int(row["value"])
+            # ⚠️ **段階だけでは宣言が決まらない。** 多摩市は同じ approved が年度で
+            # 千円と円に割れているので、段階で先頭を採ると令和7年度に 1000 を掛けてしまう。
+            spec = amount_at(amounts, int(row["fiscal_year"]), row["phase_id"])
+            if spec is None:
+                raise RuntimeError(
+                    f"{path.name}: {row['fiscal_year']}年度の予算段階「{row['phase_id']}」に効く宣言が無い"
+                )
+            if val != src * spec["multiplier"]:
+                raise RuntimeError(
+                    f"{path.name}: value {val} が source_amount {src} × {spec['multiplier']} と違う"
+                )
+            if unit != spec["unit"]:
+                raise RuntimeError(
+                    f"{path.name}: {row['fiscal_year']}年度の単位が配布物では {unit}、宣言では {spec['unit']}"
+                )
+    declared = {(a["phase"], a["unit"]) for a in amounts}
+    if seen != declared:
+        raise RuntimeError(
+            f"{path.name}: 配布物の (段階, 単位) {sorted(seen)} が宣言 {sorted(declared)} と違う"
+        )
+from ingestion.paths import PACKAGES
+from ingestion.paths import RAW
+# 配布物から fudoki 本体へ戻る道。標準の `homepage` に入れる。
+# 取得の証跡（provenance.json）を descriptor へ写すのをやめた代わりに、
+# **どこを見れば証跡があるか**を利用者へ伝える経路がここになる。
+HOMEPAGE = "https://github.com/wwwyo/fudoki"
+# ⚠️ **正本にしか成り立たない一文を混ぜない。** 派生のリソースは `sources` を持たないので、
+# 「`sources[].path` が取得 URL」と書くと存在しないフィールドを案内することになる。
+CANONICAL_SOURCES_NOTE = (
+    "リソースの `sources[].path` は、その証跡が記録している取得 URL そのものである。"
+    "正本は団体ごと・全年度で1リソースなので、年度の数だけ並ぶ。"
+)
+PROVENANCE_NOTE = (
+    "取得の証跡（取得 URL・HTTP status・SHA-256・取得時刻・ヘッダ・行数）は、"
+    "非公開 R2 の固定入力にある。採用した版と個別ハッシュは `pipeline/ingestion/fiscal/sources.lock.json` が記録する。"
+
+)
+
+# **特別会計を持つ団体でしか意味をなさない注意書き**なので、一般会計しか無い団体には付けない。
+ACCOUNT_STRUCTURE_NOTE = (
+    "## 複数の会計を持つ団体の読み方\n\n"
+    "- **帳簿の区分と総務省統計の枠組みは別物。** 特別会計のうち法定の制度会計"
+    "（国民健康保険・介護保険・後期高齢者医療）や収益事業の会計は、"
+    "地方財政状況調査では公営事業会計として扱われ普通会計の合計には入らない。"
+    "どの会計が普通会計に入るかは funds.csv の sector が言う。素朴に全会計を"
+    "合計すると、その合計はどの公式区分の額とも一致しない\n"
+    "- **会計間の繰出入は行として残る。** 全会計を合計すると繰出と繰入で二重に"
+    "数えるので、連結で除くべきものは cofog.csv の cofog_consolidation=eliminated"
+    "と cofog_counterpart_fund が示す（相手を特定できない移転は残してある）\n"
+    "- **同名の款が会計で別物を指す。** 特別会計の「総務費」は一般会計の総務費ではない。"
+    "比較は account_names.csv の canonical_fund と master_* の組で行う\n"
+    "- **同じ事業でも団体や年度で会計形態が違うことがある。** 狛江市の下水道は"
+    "特別会計（2018〜2019収録）から公営企業会計へ移行して原典から消えた。"
+    "収録が減ったのではなく帳簿の枠組みが変わった"
+)
+TYPES = json.loads((pathlib.Path(__file__).parent / "field_types.json").read_text())
+# FDP の ColumnType 一覧。**仕様が「正準」と宣言する URL は 404** なので、
+# 仕様の原文（Markdown）から起こして持っている（scripts/fetch-fdp-taxonomy.ts）。
+# 「止まったら自分で維持する」が保険ではなく既定の運用だという方針の実例。
+TAXONOMY = json.loads((pathlib.Path(__file__).parent / "budget-taxonomy.json").read_text())
+STANDARD_COLUMN_TYPES = {c["name"] for c in TAXONOMY["columnTypes"]}
+# FDP に無い概念のために自作したもの。**宣言から引く**（ハードコードすると
+# 宣言と食い違い、自作した覚えのない名前が通ってしまう）。
+# 自作は最小限に留める — 標準に載ること自体が相互運用性の主張なので、
+# 増やすほど主張が弱くなる。
+DECLARED_CUSTOM = {c["name"] for c in TYPES["columnTypes"][1]}
+
+
+def header_of(body: bytes) -> list[str]:
+    """既に読んだバイト列からヘッダを切り出す。同じファイルを2回開かない"""
+    first = body.split(b"\n", 1)[0].decode("utf-8")
+    return next(csv.reader([first]))
+
+
+def field_spec(path: pathlib.Path, name: str, scope: str | None = None) -> dict:
+    """列の意味づけを引く。**同じ列名が direction で別の概念になることがある。**
+
+    ⚠️ 昭島市の歳出の `saisetsu`（節の下の内訳）は経済性質の分類だが、
+    歳入の `saisetsu`（細節）は財源の分類で、標準の列型が別物になる。
+    列名だけで引くと、片方が黙ってもう片方の意味で配られる。
+    そこで `<direction>:<列名>` の宣言があればそちらを先に使う。
+    """
+    spec = TYPES["fields"].get(f"{scope}:{name}") if scope else None
+    if spec is None:
+        spec = TYPES["fields"].get(name)
+    if spec is None:
+        raise RuntimeError(
+            f"{path.name} の列「{name}」に ColumnType の宣言が無い。"
+            f"fdp/field_types.json に定義を足すこと"
+        )
+    return dict(spec)
+
+
+def schema_for(path: pathlib.Path, body: bytes, primary_key: list[str],
+               constants: dict[str, object] | None = None, scope: str | None = None) -> dict:
+    """列に意味づけを与える。**宣言の無い列は配らない。**
+
+    `constants` は全行同じ値なので CSV の列から外したもの。仕様の
+    **Constant Fields**（`extraFields` の各項目に `constant` を持たせる）で表す。
+    ⚠️ 独自の `constants` プロパティで持っていたときは、標準しか読まない実装から
+    「団体コードも通貨も direction も分からない配布物」に見えていた。
+    `extraFields` は定義上「非正規化した形には現れるが原典には無い列」なので、
+    **CSV の列は1つも変わらない**（`fiscal_line_id` を含め公開済みの参照は無傷）。
+    """
+    fields = [field_spec(path, name, scope) for name in header_of(body)]
+    extra = []
+    for name, value in (constants or {}).items():
+        spec = field_spec(path, name, scope)
+        if name in {f["name"] for f in fields}:
+            raise RuntimeError(f"{path.name} の「{name}」は実在の列。定数として二重に宣言できない")
+        extra.append({**spec, "constant": value})
+    declared = fields + extra  # 型と ColumnType の検査は実在の列と同じに掛ける
+
+    # Table Schema への適合。型が無い列や主キーに無い列があれば配らない。
+    for f in declared:
+        if "type" not in f:
+            raise RuntimeError(f"{path.name} の列「{f['name']}」に type が無い（Table Schema 違反）")
+    missing = [k for k in primary_key if k not in {f["name"] for f in fields}]
+    if missing:
+        raise RuntimeError(f"{path.name} の primaryKey {missing} が列に無い（Table Schema 違反）")
+
+    # ColumnType への適合。標準の語彙にも自作の宣言にも無いものは、意味が誰にも伝わらない。
+    for f in declared:
+        ct = f.get("columnType")
+        if ct is None or ct in STANDARD_COLUMN_TYPES or ct in DECLARED_CUSTOM:
+            continue
+        raise RuntimeError(
+            f"{path.name} の列「{f['name']}」の columnType「{ct}」が "
+            f"Budget Standard Taxonomy にも自作の宣言にも無い"
+        )
+    schema = {"fields": fields, "primaryKey": primary_key}
+    if extra:
+        schema["extraFields"] = extra
+    return schema
+
+
+def resource(path: pathlib.Path, name: str, title: str, description: str, primary_key: list[str],
+             sources: list[dict] | None = None, constants: dict[str, object] | None = None,
+             scope: str | None = None) -> dict:
+    body = path.read_bytes()
+    r = {
+        "name": name,
+        "path": path.name,
+        "profile": "tabular-data-resource",
+        "title": title,
+        "description": description,
+        "format": "csv",
+        "mediatype": "text/csv",
+        "encoding": "utf-8",
+        "bytes": len(body),
+        "hash": "sha256:" + hashlib.sha256(body).hexdigest(),
+        "dialect": {"delimiter": ",", "header": True},
+        "schema": schema_for(path, body, primary_key, constants, scope),
+    }
+    if sources:
+        # リソース単位の出所。パッケージ単位の `sources` が「どの資料か」を言うのに対し、
+        # ここは**この1ファイルがどの URL から来たか**を言う。
+        r["sources"] = sources
+    return r
+
+
+def latest_fetch(pattern: str = "**/provenance.json") -> str:
+    """収録した原典のうち最も新しい取得時刻。パッケージの版がいつ時点かを表す。
+
+    ⚠️ **団体ごとのパッケージでは、その団体の証跡だけを見る。**
+    全体の最大を入れると、別の団体を取り直しただけで無関係なパッケージの
+    `created` が動き、中身が同じなのに差分が出る（実際に三鷹市でそうなった）。
+    """
+    stamps = [json.loads(p.read_text())["fetched_at"] for p in RAW.glob(pattern)]
+    if not stamps:
+        raise RuntimeError(f"証跡が1つも無い（{pattern}）。先に ingestion を回すこと")
+    return max(stamps)
+
+
+def described(body: str, credits: list[str], modifications: list[str], notes: list[str]) -> str:
+    """`description` を組み立てる。**CC BY の義務をここへ集める。**
+
+    ⚠️ 帰属（§3(a)(1)(A)）と改変の明示（§3(a)(1)(B)）に FDP の標準プロパティは無い。
+    以前は独自の `attribution` / `modified` / `modifications` に置いていたが、
+    独自プロパティは**標準しか読まない実装からは存在しないのと同じ**なので、
+    義務の伝達をそこに預けるのは弱かった（data/LICENSE がその弱点を明記していた）。
+    `description` は Markdown が使える標準プロパティで、必ず人の目に触れる。
+
+    機械可読なほうは標準の置き場に残してある —
+    出典の文字列は `sources[].title`、条件は `licenses`、加工者は `contributors`。
+    ここはそれを「どう表示してほしいか」に翻訳した一文である。
+    """
+    # ⚠️ **収録年度で取得元が違う団体がある。** 多摩市は令和3・4年度がカタログ、
+    # 令和5〜7年度が市サイトで、原典の名乗りもそれぞれ違う。先頭の1件だけを
+    # 「そのまま使うこと」と示すと、**利用者が3年度ぶん誤った帰属を書く**ことになる。
+    # 1件しか無い団体の見え方は変えない（三鷹市・狛江市はここを通っても1行のまま）。
+    if len(credits) == 1:
+        credit_note = f"次の一文をそのまま使うこと。\n\n> {credits[0]}\n\n"
+    else:
+        credit_note = (
+            "**収録した年度で原典の取得元が違うので、出典表示も1つではない。**\n"
+            "使った年度に対応する次の一文をそのまま使うこと"
+            "（全年度を使うなら全部を並べる）。\n\n"
+            + "".join(f"> {c}\n>\n" for c in credits)
+            + "\n"
+        )
+    parts = [
+        body,
+        "## 出典表示（CC BY 4.0 §3(a)(1)(A)）\n\n"
+        + credit_note
+        + "機械可読な同じ内容は `sources[].title`（原典）と `contributors`（加工者）にある"
+        "（並びは収録年度の順）。",
+        "## 改変（CC BY 4.0 §3(a)(1)(B)）\n\n"
+        "原典に対して次のことをしている。\n\n"
+        + "\n".join(f"- {m}" for m in modifications)
+        + "\n\n原典 CSV/PDF のバイト列と、取り込み済み Parquet を別々に非公開 R2 へ保管する。固定した原典版と表の対応を入力一覧から辿れる。",
+        *notes,
+    ]
+    return "\n\n".join(parts)
+
+
+def base(name: str, title: str, description: str, created: str) -> dict:
+    # ⚠️ **`created` を呼ぶ側から渡す。** 団体ごとのパッケージはその団体の証跡だけを見る。
+    return {
+        # ⚠️ **1.0.0 の profile JSON は存在しない**（AGENTS.md に実測を記録）。
+        # ここに書けるのは下層の Tabular Data Package v1 だけである。
+        "profile": "tabular-data-package",
+        "name": name,
+        "title": title,
+        "description": description,
+        "homepage": HOMEPAGE,
+        "version": "0.1.0",
+        # 生成した時刻ではなく**原典を取得した時刻**を入れる。
+        # 実行した瞬間を入れると、中身が同じでも回すたびに差分が出る。
+        # 意味としても「いつ時点の原典から作られたか」のほうが利用者に要る。
+        "created": created,
+        "countryCode": "JP",
+        # 仕様の「_ColumnType_ definition package」。**パッケージ直下が仕様どおりの置き場**で、
+        # リソース側の `schema.fields[].columnType`（単数）が個々の列をここへ結び付ける。
+        # 両方あるのは重複ではなく、宣言と参照の関係である。
+        "columnTypes": TYPES["columnTypes"],
+        "fudoki": TYPES["fudoki"],
+    }
+
+
+def build_jurisdiction(code: str) -> None:
+    """正本。**団体ごと・全年度で1パッケージ。** 判断を含まない。"""
+    d = PACKAGES / code
+    # ⚠️ **`redistribute` で絞らない。** 原文を置けない取得元でも、そこから抽出した事実は
+    # 配布物に入る。絞ると、PDF から起こした団体の配布物が丸ごと空になる。理屈は data/LICENSE。
+    srcs = [s for s in all_sources().values() if s.jurisdiction_code == code]
+    if not srcs:
+        raise RuntimeError(f"団体 {code} の取得元が sources.toml に無い")
+    years = sorted(s.fiscal_year for s in srcs)
+
+    # 原典の文書そのものの種類（当初予算 / 決算）。**行が持つ予算段階とは別の軸。**
+    # 「予算（事業単位）」と決め打ちすると、決算書から作った狛江市のパッケージが嘘になる。
+    document = sorted({s.document_label for s in srcs})
+
+    # ⚠️ **金額の段階と単位は取得元ではなく変換の宣言から引く。**
+    # 決算書は原典1行が複数段階の金額を持ち（狛江市は予算額 / 予算計 / 執行累計）、
+    # 段階ごとに単位も違う（歳入の予算現額だけ千円）。
+    # `Source` は (団体, 年度) の粒度なので、この割れ方を表せない。
+    amounts = {name: amounts_of(code, name) for name in ("expenditure", "revenue")}
+    flat = [a for v in amounts.values() for a in v]
+    # descriptor の定数を決めるための集合。**検査ではない** — 単位の宣言が正しいかは
+    # dbt が見る（tests/amount_units_match_source.sql）。ここが見るのは配布物との一致だけ
+    # （verify_against_csv）。
+    declared_units = {(a["unit"], a["multiplier"]) for a in flat}
+
+    # ⚠️ **どの判断が入るかは description より先に決める。** 改変の明示（CC BY §3(a)(1)(B)）は
+    # description に載るので、リソースを足しながら後から追記すると説明文に反映されない。
+    present = [j for j in JUDGMENT_RESOURCES if (d / f"{j[0]}.csv").exists()]
+    modifications = CANONICAL_MODIFICATIONS + [
+        JUDGMENT_MODIFICATIONS[n] for n, *_ in present if n in JUDGMENT_MODIFICATIONS
+    ]
+    # 事業名・歳入科目名の取得元（PDF）。原典の CSV とは別の資料で、再配布の可否も別に判定している。
+    pdf_specs = {**load_project_names(),
+                 **{f"revenue/{k}": v for k, v in load_revenue_accounts().items()}}
+    pdfs = [spec for key, spec in sorted(pdf_specs.items())
+            if key.split("/")[-1].split(":")[0] == code]
+    # 同じ PDF（歳出と歳入で同一文書）を2回出典に載せない
+    seen_urls: set[str] = set()
+    pdfs = [s for s in pdfs if not (s["url"] in seen_urls or seen_urls.add(s["url"]))]
+
+    constants = {
+        "jurisdiction_code": code,
+        "jurisdiction_label": srcs[0].jurisdiction_name,
+        "currency": "JPY",
+    }
+    # ⚠️ **1回だけ決める。** description の分岐と `pkg["licenses"]` の両方が同じ答えを要る。
+    # 2回呼ぶと、間に何か挟まったときに食い違う余地ができる。
+    licenses = licenses_of(srcs)
+    # ⚠️ **定数にしてよいのは、実際に1種類しか無いときだけ。**
+    # 複数あるものを定数にすると、CSV の列は正しいまま descriptor だけが嘘になる。
+    phase_labels = {(a["phase"], a["phase_label"]) for a in flat}
+    if len(phase_labels) == 1:
+        constants["phase_label"] = next(iter(phase_labels))[1]
+    # ⚠️ **単位が1種類であることと、宣言が1つであることは別。** 多摩市は単位が
+    # 年度で千円と円に割れるので、宣言が1つの団体でしか定数にはできない。
+    if len(declared_units) == 1 and not any(unit_is_column(v) for v in amounts.values()):
+        constants["source_amount_unit"] = next(iter(declared_units))[0]
+    pkg = base(
+        f"fudoki-budget-{code}",
+        f"{srcs[0].jurisdiction_name} {'・'.join(document)}（事業単位）",
+        described(
+            f"自治体が公開した{'・'.join(document)}データを Fiscal Data Package の形にしたもの。"
+            "歳出・歳入のリソースは**原典を正規化しただけで、fudoki の判断を含まない**"
+            "（分類・名寄せ・推定を一切していない）。"
+            "COFOG の割当と事業名の対応づけは fudoki の判断で、"
+            "同じパッケージの別リソースにしてある（fiscal_line_id などのキーで join する）。"
+            "原典 CSV/PDF は非公開 R2 に保管し、取り込み済みの表と別の内容ハッシュで固定している。",
+            # ⚠️ **先頭1件で代表させない。** 年度で取得元が違えば名乗りも違う。
+            # 並びは収録年度の順（`srcs` は年度順）で、重複はここで落とす。
+            list(dict.fromkeys(s_.attribution for s_ in srcs)),
+            modifications,
+            [
+                PROVENANCE_NOTE,
+                CANONICAL_SOURCES_NOTE,
+                # 特別会計を持つ団体にだけ付ける（一般会計のみの団体では意味をなさない）
+                *([ACCOUNT_STRUCTURE_NOTE]
+                  if (d / "funds.csv").exists()
+                     and len((d / "funds.csv").read_text().splitlines()) > 2 else []),
+                # ⚠️ **定数の一覧を散文で書き写さない。** 書き写すと、定数を1つ足したとき
+                # descriptor は正しいまま説明文だけが黙ってずれる。宣言（`field_types.json` の
+                # `title`）から組み立てれば、出所が1つのままになる。
+                "## 全行で同じ値の列\n\n"
+                + "、".join(field_spec(d / "expenditure.csv", n)["title"]
+                             for n in [*constants, "direction"])
+                + "は行ごとに変わらないので、CSV の列から外して `schema.extraFields` に"
+                "定数として置いてある（仕様の Constant Fields）。"
+                "非正規化した形へ戻すときは、その列を全行に補う。",
+                # ⚠️ **年度で割れる宣言があるなら、その年度を書く。** 単位が年度で変わる団体で
+                # 「原典の千円」とだけ書くと、別の年度の行について嘘になる。
+                "## 金額の段階と単位\n\n"
+                + "\n".join(
+                    f"- {name}: "
+                    + "、".join((f"{'・'.join(str(y) for y in a['years'])}年度の"
+                                 if a.get("years") else "")
+                                + f"{a['phase_label']}（{a['phase']}）は原典の {a['unit']} で、"
+                                f"円へ直すには {a['multiplier']} を掛ける"
+                                for a in amounts[name])
+                    for name in amounts)
+                + "\n\n段階が複数ある場合は原典1行を段階ごとの行へ展開してあるので、"
+                "主キーは fiscal_line_id と phase_id の組になる。"
+                "単位が段階や年度で割れるリソースでは、単位を行の列（source_amount_unit）に持つ"
+                "（1種類しか無いリソースでは `schema.extraFields` の定数にしてある）。",
+                *([
+                    "## 利用条件は未確定\n\n"
+                    "⚠️ **この配布物には `licenses` を付けていない。**"
+                    "原典の取得元はいずれも利用条件を判断できていない（`NOASSERTION`）。"
+                    "取得元のページは複製・翻案を許諾しているが、"
+                    "既知のライセンスとの互換をどこにも明示していないため、"
+                    "fudoki の側でどの条件に当たるかを決めていない。\n\n"
+                    "配っているのは抽出した事実（科目名・事業名・コード・金額）であって"
+                    "原文の複製ではなく、事実に原典の著作権は及ばない。"
+                    "それでも**利用する前に原典の利用条件を確認すること** — "
+                    "出典と取得 URL は `sources` にある。"
+                ] if not licenses else []),
+                *([
+                    "## 事業名の出所\n\n"
+                    "原典の CSV に事業の名称が無いため、市が公開している決算資料 PDF から起こした。"
+                    "⚠️ **その PDF は再配布の可否が未確定である**（`licenses` には入れていない）。"
+                    "配っているのは抽出した事実（事業名・コード・金額）であって原文の複製ではないが、"
+                    "列の出所を辿れるよう `sources` に出典として並べてある。\n\n"
+                    + "\n".join(f"- {s['document_title']}" for s in pdfs)
+                ] if pdfs else []),
+            ],
+        ),
+        latest_fetch(f"jurisdiction={code}/**/provenance.json"),
+    )
+    pkg["fiscalPeriod"] = {"start": f"{years[0]}-04-01", "end": f"{years[-1] + 1}-03-31"}
+    # ⚠️ **空なら書かない。** 原典の許諾がどれも未判断の団体では、`licenses` を出すこと自体が
+    # 「条件が決まっている」という主張になる。仕様上も任意のフィールドである。
+    if licenses:
+        pkg["licenses"] = licenses
+    # **加工したのは誰か。** Data Package v1 の role の推奨語彙は
+    # author / publisher / maintainer / wrangler / contributor の5つで、
+    # 仕様は「author を使っても原典の作成者という意味にはならない。
+    # 原典の出所は `sources` で示せ」と明記している（実測: specs.frictionlessdata.io/data-package/）。
+    # ⚠️ したがって**自治体を contributors に入れない**。自治体はこのパッケージを作っていない。
+    # 正本で fudoki がしたのは他人のデータの荷造りなので `wrangler`（派生は `author`）。
+    pkg["contributors"] = [{"title": "fudoki", "path": HOMEPAGE, "role": "wrangler"}]
+    pkg["sources"] = ([{"title": s.attribution, "path": s.landing_page} for s in srcs]
+                      + [{"title": s["document_title"], "path": s["url"]} for s in pdfs])
+    # 全行同じ値なのでリソースの列から外したもの。**リソースの `extraFields` に置く。**
+    # ⚠️ 以前は独自の `constants` に置いていたが、仕様が Constant Fields として
+    # まさにこれを規定していた（`extraFields` の項目に `constant` を持たせる）。
+    # 独自プロパティのままだと、標準しか読まない実装からは団体コードも通貨も見えない。
+    # ⚠️ **direction ごとに1件ではない。** 正本は団体ごと・全年度で1リソースなので、
+    # 同じ direction の証跡が年度の数だけある。dict のキーを direction にすると
+    # 最後の1件で上書きされ、**残りが黙って消える**（1年度しか無いうちは表面化しない）。
+    prov: dict[str, list[dict]] = {}
+    for path in sorted(RAW.glob(f"jurisdiction={code}/**/provenance.json")):
+        entry = json.loads(path.read_text())
+        prov.setdefault(entry["direction"], []).append(entry)
+
+    # ⚠️ **保証の強さが取得元で違う。証跡の主張と `raw_form` が食い違っていないか見る。**
+    #
+    # dbt の原典突合（staging_is_one_to_one / canonical_preserves_source /
+    # package_preserves_source）は「staging が raw と同じであること」しか言わない。
+    # raw が原文なら、それは推移的に「原典と同じ」まで届く（取得時に復元一致を検査している）。
+    # **raw が抽出結果なら、届くのは「抽出結果と同じ」まで**で、抽出そのものの忠実さは
+    # 別の検査（階層の合計突合）が受け持つ。検査の意味は成立するが、**強さが違う**。
+    #
+    # ⚠️ 以前ここは「extracted が原典突合の対象になっていたら停止」だった。だがそれは
+    # PDF を原典とする経路そのものを禁じており、**59/62 団体を配れない**ことを意味していた。
+    # 止めるべきなのは検査を掛けること自体ではなく、**弱い保証を強い保証として配ること**なので、
+    # 証跡が名乗る保証と `raw_form` が一致しているかを見る形へ変えた。
+    for direction, entries in sorted(prov.items()):
+        for e in entries:
+            form, roundtrip = e.get("raw_form"), e.get("roundtrip_verified")
+            if form == "verbatim" and not roundtrip:
+                raise SystemExit(
+                    f"{code}/{direction} {e['fiscal_year']}年度: raw_form=verbatim なのに"
+                    f" roundtrip_verified が偽。原文だと名乗るなら復元一致を検査すること")
+            if form == "extracted" and roundtrip:
+                raise SystemExit(
+                    f"{code}/{direction} {e['fiscal_year']}年度: raw_form=extracted なのに"
+                    f" roundtrip_verified が真。抽出は不可逆なので復元一致は成立しない")
+            if form == "extracted" and not e.get("verification"):
+                raise SystemExit(
+                    f"{code}/{direction} {e['fiscal_year']}年度: 抽出結果なのに verification が空。"
+                    f"復元一致の代わりに何を確かめたのかを証跡に書くこと")
+
+    def guarantee(direction: str) -> str:
+        """このリソースの原典との突合が、どこまで届くか。**配布物の説明文に出す。**
+
+        利用者が「市が公表した数字と一致することを誰が確かめたのか」を判断できるように、
+        強さの違いを説明文に載せる（証跡の在り処だけでは、開くまで分からない）。
+        """
+        forms = {e.get("raw_form") for e in prov.get(direction, [])}
+        if forms == {"verbatim"}:
+            return ""
+        return ("。⚠️ 原典は PDF で、取り込みは組版からの抽出にあたる（不可逆）。"
+                "原文へ戻して突き合わせる検査は成立しないので、"
+                "様式が階層ごとに重複して印字している合計との突合で縛っている"
+                "（詳細は raw の provenance.json の verification）")
+
+    def origin(direction: str) -> list[dict]:
+        """この1ファイルを構成する原典。**年度の数だけある。**
+
+        証跡の写しではなく入口を置く。SHA-256・取得時刻・HTTP status は
+        非公開 R2 の固定入力にあり、その在り処は description が示す。
+        """
+        entries = prov.get(direction)
+        if not entries:
+            raise RuntimeError(f"{code}/{direction} の証跡が無い。先に ingestion を回すこと")
+        # ⚠️ **カタログを引いていない年度には、載せているデータセットが無い。**
+        # 以前はここが証跡の `dataset_title` をそのまま出しており、市サイトから
+        # 直接取った年度にもカタログのデータセット名が並んでいた。
+        # その年度の在り処はパッケージ単位の `sources`（landing_page）が持つ。
+        # ⚠️ **PDF の証跡はカタログの語彙を持たない。** CSV の取得元は
+        # （データセット名／リソース名）で資料を名指すが、事項別明細書は資料そのものが
+        # 1つなので `document_title` しか無い。無いものを埋めず、有るほうを使う。
+        return [{"title": "／".join(part for part in (
+                     f"{e['fiscal_year']}年度", e.get("dataset_title"),
+                     e.get("resource_name") or e.get("document_title")) if part),
+                 "path": e["request_url"]} for e in entries]
+
+    pkg["resources"] = []
+    for name, title in (("expenditure", "歳出"), ("revenue", "歳入")):
+        path = d / f"{name}.csv"
+        # 行を段階ごとに展開したか（主キーと phase_label の置き場が変わる）
+        multi = len(phase_ids(amounts[name])) > 1
+        # ⚠️ **主キーは段階の数で変わる。** 決算書は原典1行を段階ごとの行へ展開するので、
+        # fiscal_line_id だけでは一意でない（Table Schema の primaryKey が嘘になる）。
+        const = {**constants, "direction": name}
+        # ⚠️ **段階が複数あるリソースは、段階と単位を行の列で持っている。**
+        # 定数として二重に宣言できない（`schema_for` が実在の列との重複で止める）。
+        # 定数にできるのは、段階が1つでその値が全行で同じときだけ。
+        if not multi:
+            const["phase_label"] = amounts[name][0]["phase_label"]
+        if not unit_is_column(amounts[name]):
+            const["source_amount_unit"] = amounts[name][0]["unit"]
+        verify_against_csv(path, amounts[name])
+        pkg["resources"].append(resource(
+            path, name, title,
+            ("原典1行が1行。判断を含まない" if not multi
+             else "原典1行を予算段階ごとの行へ展開している。判断を含まない") + guarantee(name),
+            ["fiscal_line_id", "phase_id"] if multi else ["fiscal_line_id"],
+            origin(name), const, scope=name))
+
+    # ⚠️ **判断のリソースも同じパッケージに入れる。** 以前は `derived/` へ団体をまたいで
+    # 置いていたが、畳むと**団体ごとに違うライセンスと出典が1つの表示に潰れる**。
+    # 横断は失われない — 各団体の cofog.csv は同じスキーマなので
+    # `read_csv('data/budget/datapackages/*/cofog.csv')` で1行で束ねられる。
+    for name, title, description, key in present:
+        path = d / f"{name}.csv"
+        pkg["resources"].append(resource(path, name, title, description, key))
+    if (d / "cofog.csv").exists():
+        # COFOG の版と出典。**割当列を持つパッケージにだけ置く。**
+        pkg["cofog"] = TYPES["cofog"]
+    (d / "datapackage.json").write_text(json.dumps(pkg, ensure_ascii=False, indent=2) + "\n")
+    print(f"ok  {code}  {len(pkg['resources'])} リソース  {sum(r['bytes'] for r in pkg['resources']):,} バイト")
+
+
+if __name__ == "__main__":
+    # **団体の一覧を手で持たない。** 取得元（sources.toml）と変換の宣言（dbt_project.yml）が
+    # それぞれ正本なので、生成対象はその一致として決まる。
+    # ⚠️ 以前は3つ目の手書きリスト（IMPLEMENTED）があり、団体を足すたびに3箇所へ登録していた。
+    # しかも突き合わせは sources.toml とだけで、**dbt の宣言との食い違いは誰も見ていなかった**。
+    registered = {s.jurisdiction_code for s in all_sources().values()}
+    declared = set(DBT_VARS["fiscal_levels"])
+    if registered != declared:
+        raise SystemExit(
+            f"sources.toml の団体 {sorted(registered)} と dbt の宣言 {sorted(declared)} が一致しない。"
+            f"配布物を欠けたまま書き出さないため停止する"
+        )
+    # ⚠️ **package モデルの足し忘れは dbt では止まらない。**
+    # 検査（judgment_package_covers_core / account_names_package_covers_core /
+    # package_preserves_source / amount_normalization）は `ref('pkg_<団体>__*')` を
+    # 依存に宣言しているが、dbt は無いノードを**警告して検査ごと無効化する**。
+    # つまり団体を足してモデルを足し忘れると、4本の検査が黙って消える。
+    # 宣言（fiscal_levels）を母集団にして、ファイルの存在をここで見る。
+    models = pathlib.Path(__file__).resolve().parent.parent / "dbt" / "models" / "marts" / "fiscal"
+    missing = sorted(
+        f"pkg_{code}__{name}.sql"
+        for code in declared
+        for name in ("expenditure", "revenue", "cofog", "cofog_rules", "account_names", "funds")
+        if not (models / f"pkg_{code}__{name}.sql").exists()
+    )
+    if missing:
+        raise SystemExit(
+            f"package モデルが足りない: {missing}。"
+            f"dbt は無いノードを警告して検査ごと無効化するので、ここで止める"
+        )
+    for code in sorted(registered):
+        build_jurisdiction(code)

@@ -1,0 +1,13 @@
+{
+  "name": "@fudoki/fiscal",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./detail": "./detail.ts",
+    "./cofog": "./cofog.ts",
+    "./types": "./types.ts"
+  },
+  "scripts": {
+    "test": "bun test"
+  }
+}

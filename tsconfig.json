@@ -3,12 +3,20 @@
     "target": "ESNext",
     "module": "Preserve",
     "moduleResolution": "bundler",
-    "types": ["bun"],
+    "types": [
+      "bun"
+    ],
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "resolveJsonModule": true,
     "noEmit": true,
     "skipLibCheck": true
   },
-  "include": ["ingestion", "fdp", "report"]
+  "include": [
+    "pipeline",
+    "packages"
+  ],
+  "exclude": [
+    "pipeline/verify/view"
+  ]
 }

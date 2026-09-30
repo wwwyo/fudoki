@@ -6,7 +6,7 @@
 import { describe, expect, test } from 'bun:test'
 import { Hono } from 'hono'
 import { accessControl } from './access-control'
-import type { Env, KVNamespaceLike, RateLimiterLike } from './assets'
+import type { Env, KVNamespaceLike, RateLimiterLike } from './env'
 
 const alwaysAllow: RateLimiterLike = {
   async limit() {
@@ -20,7 +20,17 @@ const emptyKv: KVNamespaceLike = {
   async put() {},
 }
 const env: Env = {
-  ASSETS: { async fetch() { return new Response(null, { status: 404 }) } },
+  DB: {
+    prepare() {
+      throw new Error('This test does not query data')
+    },
+    async batch() {
+      return []
+    },
+  },
+  QUERY_FINGERPRINT: 'a'.repeat(64),
+  CURSOR_SECRET: 'test-only-cursor-secret-32-characters',
+  DOWNLOAD_BASE_URL: 'http://localhost:8788',
   API_KEYS: emptyKv,
   RATE_LIMIT_ANONYMOUS: alwaysAllow,
   RATE_LIMIT_AUTHENTICATED: alwaysAllow,

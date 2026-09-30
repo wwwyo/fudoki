@@ -44,7 +44,7 @@ _Avoid_: パース、OCR（OCR は抽出の手段の1つ）
 原典にない対応・分類・推定を風土記が定めること。層名ではなく処理やデータの性質であり、dbt の標準用語ではない。
 
 **配布物（package）**:
-団体ごとに風土記が配る Fiscal Data Package。原典から生成した派生物であり、正本はリポジトリにある。
+団体ごとに風土記が配る Fiscal Data Package。原典と Git の宣言・判断から生成し、版を固定して R2 から配る。
 _Avoid_: 成果物、出力
 
 **証跡（provenance）**:
@@ -55,13 +55,11 @@ _Avoid_: ログ
 
 ```
 .
-├── ingestion/        # 原典の取得と取得元の宣言（sources.toml）。団体固有の実測は budget/jurisdictions/
-├── dbt/              # staging → intermediate → marts の変換と検査
-├── fdp/              # Fiscal Data Package の生成
-├── report/           # 報告データ（pipeline.json）の生成
-├── apps/             # web（fudoki.dev。派生物）、api、slides
-├── data/             # 原典・証跡・配布物（正本。commit する）
-├── docs/             # プロジェクトの設計・調査文書（共有・tracked）
+├── pipeline/         # ingestion/fiscal、dbt、fdp、publish、verify/report と verify/view
+├── packages/         # fiscal の純粋な型・名称、data-contracts、jurisdictions
+├── apps/             # 公開 web、D1 を読む api、R2 を配信する download、docs
+├── slides/           # 発表資料
+├── docs/             # 設計・調査文書
 └── .agent/           # 個人メモ・試作（gitignore）
 ```
 
@@ -74,8 +72,9 @@ mise install
 bun install
 uv sync
 
-bun run pipeline    # 取得（CSV と PDF）→ dbt → 配布物 → 報告
-bun run dev         # 報告を作り直してダッシュボードを上げる
+bun run pipeline:inputs  # sources.lock.json の固定入力を R2 から復元
+bun run pipeline:build   # オフラインで dbt・FDP・manifest を生成
+bun run dev              # ローカル専用の検証画面（5174）
 ```
 
 **Python の版は 3.13 に固定してある。** dbt-duckdb 1.11.0 が classifiers で 3.14 を宣言していないため（`requires-python` は `>=3.10` なので入りはするが、テストされていない組み合わせになる）。
@@ -88,11 +87,12 @@ uv add --exclude-newer $(date -v-7d +%Y-%m-%d) <package>
 
 ## 技術スタック
 
-- **取得（ingestion）**: Python。原典を Parquet で `data/raw/` へ落とす。「無加工」は主張ではなく検査（復号の可逆性・原文の復元）
-- **変換**: dbt（dbt-core + dbt-duckdb）。DuckDB は実行時に組む一時ファイルで、正は Parquet 側
-- **配布パッケージの生成**: Python（`fdp/`）
-- **報告の生成と画面**: Bun + TypeScript。報告の出力を `ReportData` 型に固定し、**生成側と画面側の食い違いをコンパイラに捕まえさせる**
-- 配布: 原典・正本・判断をリポジトリに commit。①は Fiscal Data Package、②は OCDS、③は Popolo
+- **取得**: Python。原典 CSV/PDF のバイト列を非公開 R2 に保存し、取り込み Parquet・証跡を別のハッシュで保管する。採用した入力一覧は ingestion の `sources.lock.json`。
+- **変換・検査**: dbt-duckdb。marts が配布 CSV と D1 用の表を生成し、相互の行・金額・分類を検査する。
+- **説明ファイル**: Python/TypeScript の `pipeline/fdp/`。FDP descriptor・catalog・manifest を生成する。
+- **検索・配布**: API は D1 の SQL を実行し、download は公開 manifest に列挙した R2 ファイルを配信する。API に R2 やデータ ASSETS を bind しない。
+- **検証**: Bun/TypeScript の `pipeline/verify/report/` とループバック専用の view。公開 web と UI は共有しない。
+- **保存**: Git はコード・宣言・判断・入力一覧、R2 は原典・取り込み・証跡・配布物、D1 は検索用の派生表。`.cache/` と `build/` は再生成可能なローカル作業領域。
 
 **系統（lineage）は dbt の `manifest.json` から取る。** 手で書かない。
 段とノードを手作りすると、パイプラインを変えても図が変わらない状態を作る（実際に作った）。
@@ -101,11 +101,13 @@ uv add --exclude-newer $(date -v-7d +%Y-%m-%d) <package>
 
 構造・判断・手順の詳細は各文書へ逃がしてある。この文書には書かない。
 
-- 設計方針・対象・パイプライン・パーサ原則 → `docs/design-principles.md`。①予算の実装と手順 → `docs/budget-pipeline.md`。決定の記録 → `docs/adr/`
+- 設計方針・対象・パイプライン・パーサ原則 → `docs/design-principles.md`。①予算の実装と手順 → `docs/fiscal-pipeline.md`。決定の記録 → `docs/adr/`
 - スクリプト一覧と観測の置き場 → `docs/scripts.md`
-- 団体固有の実測・原典の癖 → `ingestion/budget/jurisdictions/<団体コード>.md`
+- 団体固有の実測・原典の癖 → `pipeline/ingestion/fiscal/jurisdictions/<団体コード>.md`
 - パイプライン（取得・PDF抽出・dbt）のハマりどころ → `.agents/skills/pipeline/`
-- ③会議録の制約（著作権法40条1項）・manifest・driver → `ingestion/transcripts/README.md`
+- ③会議録の制約（著作権法40条1項）・manifest・driver → `pipeline/ingestion/transcripts/README.md`
 - 存在価値・先行事例・将来展望 → `docs/product-context.md`
 - データ源の実測 → `docs/budget-availability.md` / `docs/kkj-api-notes.md` / `docs/fdp-spec-notes.md` / `docs/tokyo-survey.md`
 - 設計の記録 → `docs/prd/<topic>/`（PRD）・`docs/design-doc-<topic>.md`（単体の設計書）・`docs/adr/`（決定）。判断の記録はコードと同じ寿命を持ち、git 管理する
+
+全体設計・公開切替・保持条件 → `docs/design-doc-monorepo.md`。実行手順 → `pipeline/README.md`。移行の検証記録と未完了項目 → `docs/monorepo-migration.md`。

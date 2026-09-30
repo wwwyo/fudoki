@@ -1,10 +1,9 @@
-import { existsSync, readdirSync } from "node:fs"
-import path from "node:path"
-import tailwindcss from "@tailwindcss/vite"
-import react from "@vitejs/plugin-react"
-import { defineConfig } from "vite"
-import { jurisdictionPages } from "./vite-plugins/jurisdiction-pages.ts"
-import { localData } from "./vite-plugins/local-data.ts"
+import { existsSync, readdirSync } from 'node:fs'
+import path from 'node:path'
+import tailwindcss from '@tailwindcss/vite'
+import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
+import { jurisdictionPages } from './vite-plugins/jurisdiction-pages.ts'
 
 const ROOT = import.meta.dirname
 
@@ -16,21 +15,31 @@ const ROOT = import.meta.dirname
 // ⚠️ `pipeline/<団体コード>/` `analysis/<団体コード>/` は1階層下なのでこの走査には拾われない
 // （このファイル自体が書いている通り直下1階層だけ）。62団体 × 2種類分は
 // jurisdictionPages プラグインが `config` フックで別途 input へ足す。
-const EXCLUDED_DIRS = new Set(["node_modules", "dist", "public", "src", "brand", "vite-plugins"])
+const EXCLUDED_DIRS = new Set([
+  'node_modules',
+  'dist',
+  'public',
+  'src',
+  'brand',
+  'vite-plugins',
+])
 const pageInput = Object.fromEntries(
   readdirSync(ROOT, { withFileTypes: true })
-    .filter((e) => e.isDirectory() && !e.name.startsWith(".") && !EXCLUDED_DIRS.has(e.name))
-    .filter((e) => existsSync(path.join(ROOT, e.name, "index.html")))
-    .map((e) => [e.name, path.resolve(ROOT, e.name, "index.html")])
+    .filter(
+      (e) =>
+        e.isDirectory() && !e.name.startsWith('.') && !EXCLUDED_DIRS.has(e.name)
+    )
+    .filter((e) => existsSync(path.join(ROOT, e.name, 'index.html')))
+    .map((e) => [e.name, path.resolve(ROOT, e.name, 'index.html')])
 )
 
 // https://vite.dev/config/
-export default defineConfig(({ command }) => ({
-  plugins: [react(), tailwindcss(), jurisdictionPages(ROOT), localData(ROOT)],
+export default defineConfig(() => ({
+  plugins: [react(), tailwindcss(), jurisdictionPages(ROOT)],
+  server: { host: '127.0.0.1', port: 5173, strictPort: true },
   resolve: {
     alias: {
-      "@": path.resolve(import.meta.dirname, "./src"),
-      // 報告の型は workspace 依存 @fudoki/report から取る（web 側で写しを持たない）
+      '@': path.resolve(import.meta.dirname, './src'),
     },
   },
   build: {
@@ -40,12 +49,8 @@ export default defineConfig(({ command }) => ({
       // のようなルート絶対パスも残っているので、置き場所をサブディレクトリへ移すときは
       // `base` に加えてそれらのリンクも直す必要がある。
       input: {
-        main: path.resolve(ROOT, "index.html"),
-        // 検証画面（pipeline/）はローカル専用 — 行の出し口は dev middleware だけなので、
-        // ビルドに含めるとデータの取れない画面が公開される（PRD の Non-Goal）
-        ...Object.fromEntries(
-          Object.entries(pageInput).filter(([k]) => command !== "build" || k !== "pipeline"),
-        ),
+        main: path.resolve(ROOT, 'index.html'),
+        ...pageInput,
       },
     },
   },

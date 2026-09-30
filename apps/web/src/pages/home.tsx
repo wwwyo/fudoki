@@ -6,12 +6,12 @@
  * `pipeline.json` を読む必要が生まれ、報告の生成物が欠けただけで
  * 入口が壊れる（実際に古い pipeline.json を掴んで塗り分けが全部外れた）。
  */
-import { Layout } from "@/components/layout"
-import { TokyoMap } from "@/components/tokyo-map"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Button } from "@/components/ui/button"
-import { Info } from "lucide-react"
-import { withBase } from "@/lib/utils"
+import { Layout } from '@/components/layout'
+import { TokyoMap } from '@/components/tokyo-map'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
+import { Info } from 'lucide-react'
+import { withBase } from '@/lib/utils'
 
 export function HomePage() {
   return (
@@ -47,8 +47,9 @@ export function HomePage() {
             年をまたぐ比較も、市をまたぐ比較も、事実上できない。
           </p>
           <p className="leading-relaxed">
-            風土記は日本の地方自治体の支出を<strong>事業単位まで</strong>構造化し、
-            COFOG を割り当てて、外部データと join できる形で配布する。
+            風土記は日本の地方自治体の支出を<strong>事業単位まで</strong>
+            構造化し、 COFOG を割り当てて、外部データと join
+            できる形で配布する。
             デジタル庁のダッシュボードが目的別と性質別まで出している以上、
             欠けているのは粒度と横断性の2つだけで、そこだけを埋める。
           </p>
@@ -64,12 +65,10 @@ export function HomePage() {
           <Info aria-hidden />
           <AlertTitle>ベータです</AlertTitle>
           <AlertDescription>
-            URL・応答スキーマ・提供そのものを予告なく変更または停止することがあります。詳しくは
-            {" "}
-            <a className="underline" href={withBase("/terms/")}>
+            URL・応答スキーマ・提供そのものを予告なく変更または停止することがあります。詳しくは{' '}
+            <a className="underline" href={withBase('/terms/')}>
               ベータ利用条件
-            </a>
-            {" "}
+            </a>{' '}
             を確認してください。
           </AlertDescription>
         </Alert>
@@ -84,17 +83,34 @@ export function HomePage() {
               Base UI の既定は `nativeButton: true`（＝ネイティブの `<button>` が来る前提）で、
               指定を落とすとボタンのセマンティクスが外れたまま実行時に警告が出る。
               ここは見た目だけボタンの「リンク」なので、false が正しい。 */}
-          <Button variant="outline" size="sm" nativeButton={false} render={
-            <a href="https://docs.fudoki.dev/" target="_blank" rel="noreferrer">
-              API docs
-            </a>
-          } />
-          <Button variant="outline" size="sm" nativeButton={false} render={
-            <a href="https://github.com/wwwyo/fudoki" target="_blank" rel="noreferrer">
-              GitHub
-            </a>
-          } />
-          <Button variant="outline" size="sm" nativeButton={false} render={<a href={withBase("/pipeline/")}>ELT パイプライン</a>} />
+          <Button
+            variant="outline"
+            size="sm"
+            nativeButton={false}
+            render={
+              <a
+                href="https://docs.fudoki.dev/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                API docs
+              </a>
+            }
+          />
+          <Button
+            variant="outline"
+            size="sm"
+            nativeButton={false}
+            render={
+              <a
+                href="https://github.com/wwwyo/fudoki"
+                target="_blank"
+                rel="noreferrer"
+              >
+                GitHub
+              </a>
+            }
+          />
         </section>
       </main>
     </Layout>

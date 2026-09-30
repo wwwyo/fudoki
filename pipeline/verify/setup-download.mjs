@@ -1,0 +1,53 @@
+import { readFile } from 'node:fs/promises'
+import { fileURLToPath } from 'node:url'
+import { getPlatformProxy } from 'wrangler'
+
+const build = new URL('../build/', import.meta.url)
+const latest = JSON.parse(await readFile(new URL('latest.json', build), 'utf8'))
+if (!/^r-[a-f0-9]{32}$/.test(latest.releaseId))
+  throw new Error('A verified local release is required')
+const directory = new URL(`releases/${latest.releaseId}/`, build)
+const manifest = JSON.parse(
+  await readFile(new URL('manifest.json', directory), 'utf8')
+)
+const platform = await getPlatformProxy({
+  configPath: fileURLToPath(
+    new URL('../../apps/download/wrangler.jsonc', import.meta.url)
+  ),
+  persist: {
+    path: fileURLToPath(
+      new URL('../../apps/download/.wrangler/state/v3', import.meta.url)
+    ),
+  },
+  remoteBindings: false,
+  envFiles: [],
+})
+try {
+  for (const file of manifest.files) {
+    if (
+      !/^(?:catalog\.json|fiscal\/\d{6}\/[a-z_]+\.(?:csv|json))$/.test(
+        file.path
+      )
+    )
+      throw new Error('Unexpected distribution file')
+    await platform.env.RELEASES.put(
+      `releases/${latest.releaseId}/${file.path}`,
+      await readFile(new URL(file.path, directory)),
+      { httpMetadata: { contentType: file.contentType } }
+    )
+  }
+  await platform.env.RELEASES.put(
+    `releases/${latest.releaseId}/manifest.json`,
+    await readFile(new URL('manifest.json', directory)),
+    { httpMetadata: { contentType: 'application/json; charset=utf-8' } }
+  )
+  console.log(
+    JSON.stringify({
+      mode: 'local',
+      releaseId: latest.releaseId,
+      files: manifest.files.length,
+    })
+  )
+} finally {
+  await platform.dispose()
+}

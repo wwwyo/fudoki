@@ -1,0 +1,13 @@
+{
+  "$schema":"../../node_modules/wrangler/config-schema.json",
+  "name":"fudoki-pipeline-verification",
+  "main":"worker.ts",
+  "compatibility_date":"2026-08-18",
+  "workers_dev":false,
+  "preview_urls":false,
+  "d1_databases":[{"binding":"DB","database_name":"fudoki","database_id":"ae57ff6e-9684-4730-a854-43c173306f85"}],
+  "r2_buckets":[{"binding":"RELEASES","bucket_name":"fudoki-releases"}],
+  "services":[{"binding":"PUBLIC_API","service":"fudoki-api"},{"binding":"PUBLIC_DOWNLOAD","service":"fudoki-download"}],
+  "limits":{"cpu_ms":300000},
+  "observability":{"enabled":true}
+}

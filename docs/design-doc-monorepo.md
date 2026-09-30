@@ -1,6 +1,6 @@
 # データ構築をまとめ、配布物を R2、API の参照データを D1 に置く
 
-設計案。2026-09-30 時点の実装を確認して作成した。ディレクトリ移動・Cloudflare への反映は未着手。
+2026-09-30 時点の実装を確認して合意した設計。実装・移行の検証状況は [移行記録](monorepo-migration.md)、現行コマンドは [pipeline/README.md](../pipeline/README.md) を参照。
 
 ## Objectives
 

@@ -1,0 +1,75 @@
+version: 2
+
+sources:
+  # 取得の単位（団体コード, 年度, direction）ごとに1ソース。
+  # **団体ごとに列が違う**（三鷹市には事項があり多摩市には無い）ので、
+  # 団体をまたいで1つのソースにはできない。団体を足すときはこのブロックを足す。
+  - name: raw_131016
+    description: |
+      千代田区。**原典は PDF の事項別明細書**（当初予算。令和8年度の一般会計）。
+      ⚠️ ここにあるのは `pipeline/ingestion/fiscal/extract_statement.py` が起こした表で、
+      原文のバイト列ではない（`raw_form = "extracted"`）。復元一致の検査は成立しない。
+    meta:
+      external_location: "read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/jurisdiction=131016/year=*/document_kind=*/edition=*/direction={name}/data.parquet', hive_partitioning=true)"
+    tables:
+      - name: expenditure
+      - name: revenue
+  - name: raw_132047
+    description: 三鷹市。原典の Parquet を直接読む
+    meta:
+      external_location: "read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/jurisdiction=132047/year=*/document_kind=*/edition=*/direction={name}/data.parquet', hive_partitioning=true)"
+    tables:
+      - name: expenditure
+      - name: revenue
+  - name: raw_132071
+    description: |
+      昭島市。**原典は PDF の事項別明細書**（当初予算。令和7年度）。
+      ⚠️ ここにあるのは `pipeline/ingestion/fiscal/extract_statement.py` が起こした表で、
+      原文のバイト列ではない（`raw_form = "extracted"`）。復元一致の検査は成立しない。
+      保証の強さは取得物の隣の `provenance.json`（`verification`）に書いてある。
+    meta:
+      external_location: "read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/jurisdiction=132071/year=*/document_kind=*/edition=*/direction={name}/data.parquet', hive_partitioning=true)"
+    tables:
+      - name: expenditure
+      - name: revenue
+  - name: raw_132195
+    description: 狛江市。原典の Parquet を直接読む（決算書。2018〜2023 の6年度）
+    meta:
+      external_location: "read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/jurisdiction=132195/year=*/document_kind=*/edition=*/direction={name}/data.parquet', hive_partitioning=true)"
+    tables:
+      - name: expenditure
+      - name: revenue
+  - name: raw_132241
+    description: |
+      多摩市。原典の Parquet を直接読む（当初予算。2021〜2025 の5年度）。
+      ⚠️ **年度で列構成が違うので `union_by_name` が要る。** 令和7年度は金額の列名が
+      `予算額` から `合計 / 予算額` へ変わり、歳出からは `年度` の列が消えた。
+      無い列は NULL として読まれるので、**列名の書き間違いが黙って NULL になる**経路が
+      この団体にだけ開く。塞ぐのは
+      `amount_declarations_cover_years`（宣言が原典の全年度を覆っているか）と
+      `source_year_column_scope_is_real`（年度の列を外した年度で本当に列が無いか）、
+      それに従来からの `canonical_preserves_source`（原典と staging の多重集合一致）。
+    meta:
+      external_location: "read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/jurisdiction=132241/year=*/document_kind=*/edition=*/direction={name}/data.parquet', hive_partitioning=true, union_by_name=true)"
+    tables:
+      - name: expenditure
+      - name: revenue
+  - name: raw_132195_project_names
+    description: |
+      狛江市。決算資料 PDF から起こした事業名。**原典そのものではない。**
+      ⚠️ 抽出は不可逆なので、CSV のような復元一致の検査ができない。
+      保証の強さは証跡（`verification: hierarchy-totals`）に書いてある。
+    meta:
+      external_location: "read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/project-names/jurisdiction=132195/year=*/data.parquet', hive_partitioning=true)"
+    tables:
+      - name: data
+
+  - name: raw_132195_revenue_accounts
+    description: |
+      狛江市。決算資料の歳入事項別明細から起こした歳入の科目名称。**原典そのものではない。**
+      ⚠️ 2023 はテキスト抽出、2020〜2022 は OCR（誤読が混ざる前提の経路）。
+      調定額が原典 CSV と一致した科目だけを下流が名称に使う。
+    meta:
+      external_location: "read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/revenue-accounts/jurisdiction=132195/year=*/data.parquet', hive_partitioning=true)"
+    tables:
+      - name: data

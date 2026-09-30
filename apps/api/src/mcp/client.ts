@@ -5,11 +5,11 @@
  * 「入力を router に渡し、応答をそのまま返す」だけにするため、HTTP を経由せず
  * `createRouterClient` で contract 型のまま呼べる形にする。
  *
- * 呼び出し元は remote（Workers）だけで、Hono の `c.env`（ASSETS binding）を
+ * 呼び出し元は remote（Workers）だけで、Hono の `c.env`（D1 binding）を
  * そのまま渡す。
  */
 import { createRouterClient } from '@orpc/server'
-import type { Env } from '../assets'
+import type { Env } from '../env'
 import { router } from '../router'
 
 export type ApiClient = ReturnType<typeof createApiClient>

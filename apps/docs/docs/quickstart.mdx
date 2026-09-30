@@ -1,68 +1,45 @@
 ---
 title: Quickstart
-description: curl で風土記 API に最初のリクエストを投げる。
+description: 団体・収録文書・金額段階を選んで、風土記のデータを取得する。
 ---
 
-API キーは任意です。curl だけで、キー無しでも始められます（レート制限は匿名の方が低くなります）。キーを取りたい場合は [GitHub の Issue](https://github.com/wwwyo/fudoki/issues) で申請してください。手動発行後、`Authorization: Bearer <key>` ヘッダで送ります。制限を超えると `429` が返ります。
+API キーは任意です。キー無しでも始められ、キーは `Authorization: Bearer <key>` で送ります。制限を超えると `429` が返ります。
 
-## 1. 収録されている団体を見る
+## 団体と文書を選ぶ
 
 ```bash
 curl 'https://api.fudoki.dev/v0/jurisdictions'
+curl 'https://api.fudoki.dev/v0/fiscal-datasets?jurisdictionCode=132195&direction=expenditure'
 ```
 
-団体は総務省の全国地方公共団体コード（6桁）で識別されます。
+応答の `releaseId` と dataset の `id` を使います。dataset は団体・年度・歳入歳出・文書種別・原典版を識別します。同じ年度に予算書と決算書がある場合も別 dataset です。`phases` はその文書で利用できる金額段階を示します。
 
-## 2. 予算の一覧を見る
+## 明細と集計を取得する
 
-予算は「団体 × 年度」の単位で、id は `{団体コード}:{年度}` です。
+以下の値は、実際の一覧応答の ID と利用可能な段階に置き換えます。
 
 ```bash
-curl 'https://api.fudoki.dev/v0/budgets'
+curl 'https://api.fudoki.dev/v0/fiscal-lines/query' \
+  -H 'Content-Type: application/json' \
+  -d '{"releaseId":"<releaseId>","datasetIds":["<datasetId>"],"phase":"executed","pageSize":50}'
+
+curl 'https://api.fudoki.dev/v0/fiscal-datasets/aggregate' \
+  -H 'Content-Type: application/json' \
+  -d '{"releaseId":"<releaseId>","datasetIds":["<datasetId>"],"phase":"executed","groupBy":["cofog.division"],"consolidation":"retained"}'
 ```
 
-filter で団体や年度を絞れます（文法は AIP-160 の部分集合。`=` と `AND` のみ）。
+金額は円の整数で返します。原典の金額と単位、名称の出所、分類の判断根拠も明細に含めます。次ページは `nextCursor` を同じ問い合わせの `cursor` に渡します。公開版が切り替わっても保持中の版を使い、期限切れは `410`、問い合わせの変更は拒否します。
+
+団体間の比較では `groupBy` に `jurisdiction`、年度間では `year` を含めます。同じ団体・年度・歳入歳出の複数文書をまとめた集計は二重計上の恐れがあるため拒否します。収録していない金額段階へ自動で置き換えません。
+
+名称検索は `/v0/fiscal-lines/search` に `name` を指定します。完全な文字列の部分一致で検索し、SQL やワイルドカードの式として解釈しません。
+
+## 一括配布を取得する
 
 ```bash
-curl 'https://api.fudoki.dev/v0/budgets?filter=jurisdiction%20%3D%20%22132195%22'
+curl 'https://api.fudoki.dev/v0/files?jurisdictionCode=132195'
 ```
 
-## 3. 予算の明細を取る
+応答の `manifestUrl` と各 `url` が独立した download Worker を指します。release を含む URL は不変で、API/D1 を利用できなくても配布ファイルを取得できます。`ETag` は manifest の SHA-256、`X-Fudoki-Release` は release ID です。API はファイル本体を転送しません。
 
-`/budgets/{id}/budgetLines` が明細（行の集合）です。filter には `direction`（`expenditure` か `revenue`）が必須です。既定（`view=BASIC`）は軽量な形で、名称・金額（isPrimary の1段階）・共通の COFOG 項目だけを返します。
-
-```bash
-curl 'https://api.fudoki.dev/v0/budgets/132195:2023/budgetLines?filter=direction%20%3D%20%22expenditure%22&pageSize=10'
-```
-
-団体固有の科目階層（款・項・目など）や全段階の金額まで欲しいときは `view=FULL` を付けます（実在する budget を親にしたときだけ使えます）。
-
-```bash
-curl 'https://api.fudoki.dev/v0/budgets/132195:2023/budgetLines?filter=direction%20%3D%20%22expenditure%22&view=FULL&pageSize=10'
-```
-
-続きは応答の `nextPageToken` を `pageToken` に渡して辿ります。
-
-## 4. 団体をまたいで COFOG で横断する
-
-budget の id にワイルドカード `-` を指定すると、全予算を COFOG（政府機能分類）で横断できます。filter には `cofog.division` が必須です。横断の親（`-`）では団体固有の階層に意味が無いため `view=FULL` は使えません（400 になります）。
-
-```bash
-curl 'https://api.fudoki.dev/v0/budgets/-/budgetLines?filter=cofog.division%20%3D%20%2209%22&pageSize=10'
-```
-
-division `09` は教育です。横断応答の各行は親 budget への参照を持ち、そこから `view=FULL` で団体固有の形の行へ戻れます。
-
-## 5. 配布物そのものを取る
-
-API を経由せず、正本の配布物（Fiscal Data Package）をバイト同一で取得できます。
-
-```bash
-curl 'https://api.fudoki.dev/v0/datapackages/132195/datapackage.json'
-```
-
-応答ヘッダの `X-Fudoki-Revision` が由来する配布物の revision（git commit）、`ETag` がファイルの SHA-256 です。
-
-## 次に読む
-
-各エンドポイントのスキーマ、filter の詳細、Try it は [API リファレンス](/reference)にあります。
+入出力の完全なスキーマは [API リファレンス](/reference) にあります。

@@ -1,65 +1,36 @@
 node_modules/
+.venv/
 .DS_Store
 .env
 .env.local
 *.log
-# 実装時の判断の記録は commit する（*.log の例外）
 !/decision.log
-
-# ビルド成果物
-dist/
-build/
-*.tsbuildinfo
-
-# 取得直後の生レスポンス（正規化前）。data/ 配下の成果物は意図して commit する
-.cache/
-tmp/
-
-# ビューア用の生成物（data/ の成果物から再生成できる）
-apps/web/public/pipeline.json
-apps/web/public/preview/
-
-# 検証画面のローカル・データ口（原典 PDF の頁画像・語層・行対応）。公開しない
-apps/web/.local/
-
-# 団体ごとの /pipeline/<団体コード>/ と /analysis/<団体コード>/ は vite plugin が
-# jurisdictions.json から生成する（apps/web/vite-plugins/jurisdiction-pages.ts）。
-# コードなしの apps/web/{pipeline,analysis}/index.html は手書きなので残す（配下だけを無視する）
-apps/web/pipeline/*/
-apps/web/analysis/*/
-# 同じ plugin が62団体 × 2種類分を書き出す。手書きだと3 URL のまま古びていた
-apps/web/public/sitemap.xml
-apps/web/node_modules/
-apps/web/dist/
-
-# Python / dbt
-.venv/
 __pycache__/
 *.pyc
-dbt/target/
-dbt/logs/
-dbt/dbt_packages/
-
-# 実行時に data/raw/ の Parquet から組む一時ファイル。正は Parquet 側
-data/raw.duckdb
-
-# 調査の観測はスクリプトの隣に書き出すローカル作業ファイル（commit するのは原典・証跡・配布物だけ）
-ingestion/**/observations/
-
-# Python / dbt
-.venv/
-__pycache__/
-dbt/target/
-dbt/logs/
-dbt/dbt_packages/
-# DuckDB は実行時に組む一時ファイル。正は data/raw/ の Parquet 側にある
-# 置き場所に依存しないパターンにする（`dbt/fudoki.duckdb` を誤って commit した事故があった。d2d414c）
-**/fudoki.duckdb
-**/fudoki.duckdb.wal
-dbt/.user.yml
-
-# 取得したもののローカルキャッシュ（自治体サーバへ何度も取りに行かないため）
-ingestion/**/.http-cache/
-
-# wrangler
+*.tsbuildinfo
+*.duckdb
+*.duckdb.wal
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+dist/
+build/
+.cache/
+.http-cache/
 .wrangler/
+tmp/
+.agent/
+
+# Generated routes; the hand-written index pages remain tracked.
+apps/web/analysis/*/
+apps/web/public/sitemap.xml
+pipeline/verify/view/pipeline/*/
+pipeline/dbt/.user.yml
+pipeline/dbt/logs/
+pipeline/dbt/dbt_packages/
+pipeline/dbt/target/
+pipeline/ingestion/**/observations/
+
+# Existing tracked data is retained until remote transfer and restore are verified.
+# New originals, tables, provenance and release outputs belong in R2/D1.
+data/

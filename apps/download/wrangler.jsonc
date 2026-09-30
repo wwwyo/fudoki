@@ -1,0 +1,9 @@
+{
+  "$schema":"node_modules/wrangler/config-schema.json",
+  "name":"fudoki-download",
+  "main":"src/index.ts",
+  "compatibility_date":"2026-08-18",
+  "routes":[{"pattern":"download.fudoki.dev","custom_domain":true}],
+  "r2_buckets":[{"binding":"RELEASES","bucket_name":"fudoki-releases"}],
+  "observability":{"enabled":true}
+}

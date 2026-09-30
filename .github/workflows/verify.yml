@@ -1,87 +1,16 @@
-# パイプラインの検査を CI で回す。
-#
-# **ネットワークを叩く取得（ingestion）は回さない。**
-# 原典を Parquet で commit してあるので、変換・配布物の生成・検査はそこから再現できる。
-# 「原典から成果物を再生成できる」という再現性の定義が、そのまま CI の内容になる。
-#
-# 最後に `git diff --exit-code` で、再生成しても commit 済みの成果物と一致することを確かめる。
-# 一致しなければ、コードと配布物のどちらかが手で触られている。
 name: verify
-
 on:
   pull_request:
   push:
     branches: [main]
-
-# llama.cpp は ingestion の OCR（歳入科目名の抽出）だけが使う。CI は ingestion を回さないので、
-# 数百MB を落とさせない。
-# ⚠️ **`mise-action` の `install_args` で入れるものを列挙しない。**
-# それはツールの宣言を mise.toml と workflow の2箇所に割ることになり、
-# 新しいツールを足したとき CI 側の追従を誰も検査しない。除外の側を書けば宣言は1箇所のまま。
+  workflow_dispatch:
+permissions:
+  contents: read
 env:
   MISE_DISABLE_TOOLS: llama.cpp
-
 jobs:
-  # ①予算のパイプライン。取得（ingestion）はネットワークを叩くので回さない。
-  budget:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: jdx/mise-action@v3
-        with:
-          version: 2026.8.6
-
-      - name: 依存を入れる
-        run: |
-          uv sync --frozen
-          # workspaces なので root の install が apps/web の依存も入れる
-          bun install --frozen-lockfile
-
-      - name: 型検査
-        run: |
-          bun run typecheck
-          bun run --cwd apps/web typecheck
-
-      - name: 変換と検査（dbt）
-        run: bun run dbt
-
-      - name: 配布物を組み立てる
-        run: uv run python -m fdp.build
-
-      # apps/api は data/budget/datapackages/ を読んで配布物の宣言（AMOUNT_PHASE、levelName の enum など）を
-      # 手で持っている。団体を足したとき配布物側だけ更新して apps/api 側を足し忘れると、
-      # ここより後ろのどのステップも検知できない（実際に PR #18 で発生し、CI green のまま main が壊れた）。
-      # `test` script は `bun run build && bun test` なので、build と test の両方をここで検査する。
-      - name: apps/api のビルドと検査
-        run: bun run --cwd apps/api test
-
-      # report/budget/cofog.ts の純粋関数テスト。apps/api と report の両方から呼ぶ集計本体なので、
-      # 統合テスト（apps/api）とは別に境界値を直接検査する。
-      - name: report のテスト
-        run: bun run --cwd report test
-
-      # apps/web/src/lib/cofog-tree.ts の invariant テスト。ビルド前のソースだけで完結する。
-      - name: apps/web のテスト
-        run: bun run --cwd apps/web test
-
-      - name: 報告を作る
-        run: bun run report
-
-      - name: 画面をビルドする
-        run: bun run --cwd apps/web build
-
-      - name: 再生成しても commit 済みの成果物と一致するか
-        run: |
-          if ! git diff --exit-code -- data/budget/; then
-            echo "::error::再生成した成果物が commit 済みのものと一致しない。"
-            echo "::error::bun run pipeline を回して差分を commit してください。"
-            exit 1
-          fi
-
-  # ①予算のパイプラインとは別物。**commit 済みデータが宣言と食い違っていないか**を見る。
-  # ③会議録のゲート判定は取得も変換もまだ実装が無いが、判定そのものは commit してあるので、
-  # 誰かが編集したときに壊れるのを止める必要がある。
-  data-guards:
+  fixture-and-code:
+    name: Synthetic fixture and code (not full fiscal build)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -89,6 +18,45 @@ jobs:
         with:
           version: 2026.8.6
       - run: bun install --frozen-lockfile
-
-      - name: ③会議録のゲート判定（62団体）を宣言と、団体 registry とコード集合で突き合わせる
-        run: bun run validate
+      - run: uv sync --frozen
+      - run: bun run typecheck:all
+      - run: bun run test
+      - run: uv run python -m unittest discover -s pipeline/ingestion -p '*_test.py'
+      - run: bun run validate
+      - run: bun run build:web
+      - run: bun run build:api
+      - run: bun run build:download
+      - run: bun run build:verification
+      - run: bun run build:docs
+      - run: bun run pipeline/verify/boundaries.ts
+      - name: 検証範囲を表示
+        run: echo '架空団体の fixture とコードの検証。非公開原典の全量 dbt build は別 job。' >> "$GITHUB_STEP_SUMMARY"
+  full-fiscal:
+    name: Full fixed fiscal inputs from private R2
+    # R2 転送・正規の入力一覧の固定・CI credentials の設定が済んだ後に有効化する。
+    if: vars.FUDOKI_FIXED_INPUTS_READY == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: jdx/mise-action@v3
+        with:
+          version: 2026.8.6
+      - run: bun install --frozen-lockfile
+      - run: uv sync --frozen
+      - name: 正規の固定入力だけを復元
+        run: bun run pipeline:inputs
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.FUDOKI_INPUTS_READ_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+      - name: オフライン全量 build と報告
+        run: |
+          bun run pipeline:build
+          bun run pipeline:report
+      - name: 公開用の件数・金額・ファイルハッシュを記録
+        run: bun run pipeline/verify/summary.ts
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fiscal-release-validation
+          path: |
+            pipeline/build/review-summary.json
+            pipeline/build/releases/*/manifest.json
