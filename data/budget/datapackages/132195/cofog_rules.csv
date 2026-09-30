@@ -1,5 +1,5 @@
 priority,rule_id,applies_to,match_fund,match_kan,match_kou,match_kan_code,match_moku,moku_mode,match_setsu,status,cofog_code,consolidation,decided_at_level,counterpart_fund,basis
-1,komae-transfer,132195,一般会計,,,,,eq,繰出金,unclassifiable,,retained,節,,狛江市の会計間繰出。**受け皿の会計が決まらない。** 決算書 PDF から目の名称は解決したが、繰出先を書いた列も、繰出先を特定できる目の名称（社会福祉総務費・老人福祉費・再開発費）も無い。三鷹市のように受け皿の機能へ割り当てることも、連結で消去することもできないので、捨てずに分類不能として残す。全会計を合計すると会計間の移転を二重に含む
+1,komae-transfer,132195,一般会計,,,,,eq,繰出金,unclassifiable,,retained,節,,狛江市の会計間繰出のうち、宣言が無い行。決算書 PDF から目の名称は解決したが、繰出先を書いた列も、繰出先を特定できる目の名称（社会福祉総務費・老人福祉費・再開発費）も無い。対を検算できた移転は interfund_transfers.csv の宣言で消去しており、この規則には宣言が当たらなかった行だけが落ちる。捨てずに分類不能として残す。全会計を合計すると会計間の移転を（消去分を除いて）含む
 7,debt-principal,,,公債費,,,元金,eq,,out-of-scope,,retained,目,,市債の元金償還。金融負債の返済であり、COFOG の対象である経費・非金融資産への純投資のいずれでもない
 8,debt-interest,,,公債費,,,利子,eq,,assigned,01.7,retained,目,,市債利子。COFOG 01.7 公債取引にあたる
 9,fund-accumulation,,,,,,,eq,積立金,out-of-scope,,retained,節,,基金への積立。金融資産の取得であり COFOG の集計対象ではない

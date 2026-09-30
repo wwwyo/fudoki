@@ -59,8 +59,8 @@ export const cofogConsolidation = z
   .describe('連結状態（retained=保持 / eliminated=会計間移転として消去済み）。全会計を合計するとき eliminated を除くと二重計上を避けられる')
 
 export const cofogDecidedAtLevel = z
-  .enum(['会計', '款', '項', '目', '節', '（規則なし）'])
-  .describe('どの階層の単位で分類が決まったか')
+  .enum(['会計', '款', '項', '目', '節', '行', '（規則なし）'])
+  .describe('どの階層の単位で分類が決まったか。行 = 会計間移転の宣言が行単位で効いたもの（階層ではなく特定の行）')
 
 /** 全 procedure 共通のエラー語彙 */
 export const base = oc.errors({

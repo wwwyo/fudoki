@@ -1,9 +1,28 @@
 import { describe, expect, test } from 'bun:test'
 import type { Node, Provenance } from './common'
-import { assertNoNullKeyRows, assertRowSumsConsistent, collectOriginGroups, leadOf } from './lineage'
+import { assertNoNullKeyRows, assertRowSumsConsistent, collectOriginGroups, leadOf, stageOf } from './lineage'
+
+describe('stageOf', () => {
+  test('モデルの実際のディレクトリを dbt の層として表示する', () => {
+    for (const stage of ['staging', 'intermediate', 'marts'] as const) {
+      expect(stageOf({ name: 'example', resource_type: 'model', path: `${stage}/budget/example.sql` })).toBe(stage)
+    }
+  })
+
+  test('取り込みと参照表をモデルの層と区別して配置する', () => {
+    expect(stageOf({ name: 'raw', resource_type: 'source' })).toBe('ingestion')
+    expect(stageOf({ name: 'account_map', resource_type: 'seed' })).toBe('intermediate')
+  })
+
+  test('旧ディレクトリや未宣言の層を推測で割り当てない', () => {
+    for (const stage of ['core', 'package', 'unknown']) {
+      expect(() => stageOf({ name: 'example', resource_type: 'model', path: `${stage}/budget/example.sql` })).toThrow('置き場が段の宣言に無い')
+    }
+  })
+})
 
 const node = (over: Partial<Node>): Node => ({
-  id: 'model.fudoki.x', label: 'x', kind: 'model', jurisdictionCode: null, stage: 'core',
+  id: 'model.fudoki.x', label: 'x', kind: 'model', jurisdictionCode: null, stage: 'intermediate',
   rows: 0, rowsByJurisdiction: null, description: '', introducesJudgment: false,
   containsJudgment: false, artifact: null, ...over,
 })

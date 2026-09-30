@@ -1,7 +1,7 @@
 /**
- * パイプラインの検証画面（ローカル専用）。
+ * パイプラインの共通案内と団体別の検証画面（ローカル専用）。
  *
- * 「1団体の配布物が正しいか」を運営者が確かめる画面。上ペインに系統図、
+ * 団体別では「1団体の配布物が正しいか」を確かめる。上ペインに系統図、
  * 下ペインに選んだ組（ノード→ノード）の入力と出力を並べる。
  * 境目はドラッグで比率を変えられる。ページ自体はスクロールしない。
  *
@@ -17,6 +17,7 @@ import { Layout } from "@/components/layout"
 import { NotCollectedPage } from "@/components/not-collected-page"
 import { LineageGraph } from "@/components/pipeline/graph"
 import { IoPanel } from "@/components/pipeline/io-panel"
+import { PipelineOverview } from "@/components/pipeline/overview"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { withBase } from "@/lib/utils"
 import { type PipelineData, loadPipeline } from "@/lib/pipeline"
@@ -66,7 +67,6 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
   const [error, setError] = useState<string | null>(null)
 
   // 見ている団体。MPA なので団体は URL（≒ページ）ごとに固定。
-  // コードなしの `/pipeline/` はデータを読んだ後に先頭団体の URL へ redirect する
   const code = urlCode
 
   // 年度は URL に持つ（ブックマーク・共有リンクが同じ状態を指すため）。
@@ -90,15 +90,9 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
 
   useEffect(() => {
     loadPipeline()
-      .then((d) => {
-        setData(d)
-        if (!urlCode) {
-          const first = d.jurisdictions[0]?.code
-          if (first) window.location.replace(withBase(`/pipeline/${first}/`))
-        }
-      })
+      .then(setData)
       .catch((e: Error) => setError(e.message))
-  }, [urlCode])
+  }, [])
 
   const found = data?.jurisdictions.find((j) => j.code === code) ?? null
   const notCollected = data !== null && urlCode !== null && found === null
@@ -109,12 +103,12 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
     if (!current) return
     const { jurisdictionName: name, fiscalYears, phase } = current.report.meta
     const y = year ?? fiscalYears[fiscalYears.length - 1]
-    document.title = `${name} ${y}年度 ${phase.label} 検証 | fudoki（風土記）`
+    document.title = `${name} ${y}年度 ${phase.label} 検証 | 風土記`
   }, [current, year])
 
   useEffect(() => {
     if (!notCollected) return
-    document.title = `${jurisdictionName ?? urlCode} はまだ収録していません | fudoki（風土記）`
+    document.title = `${jurisdictionName ?? urlCode} はまだ収録していません | 風土記`
   }, [notCollected, jurisdictionName, urlCode])
 
   const changeYear = useCallback((y: number | null) => {
@@ -297,6 +291,9 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
     return () => document.removeEventListener("keydown", onKey)
   }, [])
 
+  if (urlCode === null) {
+    return <PipelineOverview data={data} error={error} />
+  }
   if (error) {
     return (
       <Layout bare>
@@ -345,8 +342,14 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
         <div className="headline">
           {/* ロゴはサイトヘッダーが無いこの画面では団体セレクトの左に置く。
               ⚠️ `<img>` は OS のメディアクエリしか見ないので、画面ダーク対応は2枚を切り替える */}
-          <img src={`${import.meta.env.BASE_URL}mark.svg`} alt="風土記" className="pvmark dark:hidden" />
-          <img src={`${import.meta.env.BASE_URL}mark-dark.svg`} alt="" aria-hidden className="pvmark hidden dark:block" />
+          <a
+            href={withBase("/pipeline/")}
+            aria-label="風土記 パイプラインのトップへ"
+            className="rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+          >
+            <img src={`${import.meta.env.BASE_URL}mark.svg`} alt="" className="pvmark dark:hidden" />
+            <img src={`${import.meta.env.BASE_URL}mark-dark.svg`} alt="" aria-hidden className="pvmark hidden dark:block" />
+          </a>
           {/* 団体名はセレクトの表示値が担う（見出しを別に置くと二重になる） */}
           <JurisdictionSelect
             jurisdictions={data.jurisdictions.map((j) => ({

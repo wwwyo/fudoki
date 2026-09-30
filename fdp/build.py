@@ -118,11 +118,15 @@ CANONICAL_MODIFICATIONS = [
 # ⚠️ やっていない改変を書かない。事業名は狛江市にしか無い。
 JUDGMENT_MODIFICATIONS = {
     "cofog": "原典の各行に COFOG の分類と連結の判断を付け加えた（自治体が言っていないこと）",
-    "account_names": "科目に法定マスタ（地方自治法施行規則 別記の区分）への対応を付け加えた"
-                     "（コードのずれと表記差の吸収は fudoki の判断）",
+    "account_names": "科目に法定マスタへの対応を付け加えた（一般会計は地方自治法施行規則"
+                     " 別記の区分、法定の特別会計は会計別の調査票の勘定科目。"
+                     " コードのずれと表記差の吸収は fudoki の判断）",
     "project_names": "原典に無い事業名を決算資料 PDF の事項別明細から起こし、"
                      "同じ目の中で金額が一致する大事業へ対応づけた"
                      "（自治体がこの対応を宣言しているわけではない）",
+    "funds": "会計の表示名を制度としての名前へ名寄せし、"
+             "普通会計/公営事業会計の枠組みを割り振った（自治体が言っていない区分）",
+    "interfund_transfers": "会計間の繰出入を行・項・款の粒度で宣言して連結消去の判断に使った",
 }
 
 # 判断のリソース。**原典と突き合わせる相手がいない**ので、正本と同じ検査は掛からない。
@@ -138,11 +142,28 @@ JUDGMENT_RESOURCES = [
      "その団体に効く規則だけを収めている（applies_to が空の規則はどの団体にも効く）",
      ["rule_id"]),
     ("account_names", "科目の名称と法定マスタへの対応（fudoki の判断を含む）",
-     "款・項・目の名称のカタログと、地方自治法施行規則 別記の区分への対応。"
+     "款・項・目の名称のカタログと、法定マスタへの対応。"
+     "**対応先は会計で違う**: 一般会計は地方自治法施行規則 別記の区分、"
+     "法定の特別会計（国民健康保険・介護保険・後期高齢者医療）は"
+     "地方財政状況調査の会計別表の勘定科目。それ以外の特別会計は調査票が無いので"
+     "master_* が空のまま。"
      "**款のコードは団体ごとに法定とずれる**（災害復旧費を持たない市では以降が詰まる）ので、"
-     "団体をまたぐ比較は master_kan_code / master_kou_code で行う。"
+     "団体をまたぐ比較は canonical_fund と master_kan_code / master_kou_code で行う。"
      "名称の出所（原典 CSV か、事項別明細書 PDF からの抽出か、決算書 PDF から fudoki が解決したか）は name_source が言う",
      ["fiscal_year", "direction", "fund_code", "kan_code", "kou_code", "moku_code"]),
+    ("funds", "会計の名寄せと帳簿上の区分（fudoki の判断）",
+     "同じ制度を担う会計の呼び名は団体で違う（「国民健康保険事業特別会計」"
+     "「国民健康保険特別会計」）ので、比較は fund_label ではなく canonical_fund で行う。"
+     "account_class は帳簿上の区分、sector は普通会計/公営事業会計の枠組み。"
+     "**同名の款が会計によって別の科目になる**ことと、**会計間の繰出入を全会計で"
+     "合算すると二重計上になる**ことが利用上の注意点（消去の判断は cofog.csv）",
+     ["fund_label"]),
+    ("interfund_transfers", "会計間移転の宣言（fudoki の判断）",
+     "連結消去できると判断した会計間移転の宣言そのもの。"
+     "ここにある行が cofog.csv で cofog_consolidation=eliminated になっている。"
+     "宣言が無い繰出入は相手方会計が確定できないため retained のまま",
+     ["fiscal_year", "direction", "fund_label", "kan_code", "kou_code",
+      "moku_code", "setsu_code", "amount_yen"]),
     ("project_names", "事業名の対応づけ（fudoki の判断）",
      "原典の CSV に事業の名称が無い団体で、決算資料 PDF から起こした名称を"
      "金額で大事業へ対応づけたもの。対応づけの確からしさ（match_method / match_basis / "
@@ -258,6 +279,24 @@ PROVENANCE_NOTE = (
     "取得の証跡（取得 URL・HTTP status・SHA-256・取得時刻・ヘッダ・行数）は、"
     "原典の隣（`data/budget/raw/**/provenance.json`）にある。"
 
+)
+
+# **特別会計を持つ団体でしか意味をなさない注意書き**なので、一般会計しか無い団体には付けない。
+ACCOUNT_STRUCTURE_NOTE = (
+    "## 複数の会計を持つ団体の読み方\n\n"
+    "- **帳簿の区分と総務省統計の枠組みは別物。** 特別会計のうち法定の制度会計"
+    "（国民健康保険・介護保険・後期高齢者医療）や収益事業の会計は、"
+    "地方財政状況調査では公営事業会計として扱われ普通会計の合計には入らない。"
+    "どの会計が普通会計に入るかは funds.csv の sector が言う。素朴に全会計を"
+    "合計すると、その合計はどの公式区分の額とも一致しない\n"
+    "- **会計間の繰出入は行として残る。** 全会計を合計すると繰出と繰入で二重に"
+    "数えるので、連結で除くべきものは cofog.csv の cofog_consolidation=eliminated"
+    "と cofog_counterpart_fund が示す（相手を特定できない移転は残してある）\n"
+    "- **同名の款が会計で別物を指す。** 特別会計の「総務費」は一般会計の総務費ではない。"
+    "比較は account_names.csv の canonical_fund と master_* の組で行う\n"
+    "- **同じ事業でも団体や年度で会計形態が違うことがある。** 狛江市の下水道は"
+    "特別会計（2018〜2019収録）から公営企業会計へ移行して原典から消えた。"
+    "収録が減ったのではなく帳簿の枠組みが変わった"
 )
 TYPES = json.loads((pathlib.Path(__file__).parent / "field_types.json").read_text())
 # FDP の ColumnType 一覧。**仕様が「正準」と宣言する URL は 404** なので、
@@ -518,6 +557,10 @@ def build_jurisdiction(code: str) -> None:
             [
                 PROVENANCE_NOTE,
                 CANONICAL_SOURCES_NOTE,
+                # 特別会計を持つ団体にだけ付ける（一般会計のみの団体では意味をなさない）
+                *([ACCOUNT_STRUCTURE_NOTE]
+                  if (d / "funds.csv").exists()
+                     and len((d / "funds.csv").read_text().splitlines()) > 2 else []),
                 # ⚠️ **定数の一覧を散文で書き写さない。** 書き写すと、定数を1つ足したとき
                 # descriptor は正しいまま説明文だけが黙ってずれる。宣言（`field_types.json` の
                 # `title`）から組み立てれば、出所が1つのままになる。
@@ -710,11 +753,11 @@ if __name__ == "__main__":
     # 依存に宣言しているが、dbt は無いノードを**警告して検査ごと無効化する**。
     # つまり団体を足してモデルを足し忘れると、4本の検査が黙って消える。
     # 宣言（budget_levels）を母集団にして、ファイルの存在をここで見る。
-    models = pathlib.Path(__file__).resolve().parent.parent / "dbt" / "models" / "package" / "budget"
+    models = pathlib.Path(__file__).resolve().parent.parent / "dbt" / "models" / "marts" / "budget"
     missing = sorted(
         f"pkg_{code}__{name}.sql"
         for code in declared
-        for name in ("expenditure", "revenue", "cofog", "cofog_rules", "account_names")
+        for name in ("expenditure", "revenue", "cofog", "cofog_rules", "account_names", "funds")
         if not (models / f"pkg_{code}__{name}.sql").exists()
     )
     if missing:

@@ -35,7 +35,7 @@ export function HomePage() {
             height={768}
             className="h-auto w-full rounded-lg border object-cover object-right sm:max-h-56"
           />
-          <h1 className="text-3xl font-semibold">風土記（fudoki）</h1>
+          <h1 className="text-3xl font-semibold">風土記</h1>
           <p className="text-lg leading-relaxed text-muted-foreground">
             あなたの街の家計簿をオープンに。
           </p>
@@ -47,7 +47,7 @@ export function HomePage() {
             年をまたぐ比較も、市をまたぐ比較も、事実上できない。
           </p>
           <p className="leading-relaxed">
-            fudoki は日本の地方自治体の支出を<strong>事業単位まで</strong>構造化し、
+            風土記は日本の地方自治体の支出を<strong>事業単位まで</strong>構造化し、
             COFOG を割り当てて、外部データと join できる形で配布する。
             デジタル庁のダッシュボードが目的別と性質別まで出している以上、
             欠けているのは粒度と横断性の2つだけで、そこだけを埋める。

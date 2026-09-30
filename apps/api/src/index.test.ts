@@ -830,8 +830,14 @@ describe('budgets:aggregate (COFOG axis)', () => {
     expect(body.judgment).toEqual(['cofog'])
     expect(body.provenance.sources.length).toBeGreaterThan(0)
     expect(Object.keys(body.provenance.byBudget)).toEqual(['budgets/132195:2023'])
-    // 狛江市は連結消去の対象外（三鷹市だけ eliminated がある）なので警告は立たない
-    expect(body.warnings).toEqual([])
+    // 狛江市も宣言ベースの連結消去が効く（三鷹市と同じく eliminated が非0）ので警告が立つ。
+    // 消去できず retained に残している移転もあるため、全会計の合計はなお移転を含む
+    expect(body.warnings).toEqual([
+      {
+        code: 'UNCONSOLIDATED_INTERFUND_TRANSFERS',
+        message: '会計間の繰出を消去していないため、全会計の合計は移転を二重に含む',
+      },
+    ])
 
     // PR #27 レビュー指摘: 狛江市の provenance.sources が、決算資料 PDF（事業名の判断由来。
     // ingestion/budget/sources.toml では redistribute=review / license_id=NOASSERTION）まで

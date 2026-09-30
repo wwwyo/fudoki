@@ -10,12 +10,12 @@ import type { ColDoc, Direction, Node, Provenance, ReportData, Stage } from '@/l
 /* ---- 段・向き ---- */
 
 export const STAGE_JA: Record<Stage['id'], string> = {
-  origin: '原典', ingestion: '取り込み', staging: '正規化', core: '判断', package: '配布物',
+  origin: '原典', ingestion: '取り込み', staging: '原典別の整形', intermediate: '統合・分類', marts: '提供用データ',
 }
 
 /**
  * 共有リソース（account_map などの規則表・マスタデータ）か。系統図には出さない。
- * 共有の core モデルは jurisdictionCode が null だが `kind === 'model'` なので
+ * 共有の intermediate モデルは jurisdictionCode が null だが `kind === 'model'` なので
  * ここには来ない — それらは「この団体の行数」が `rowsByJurisdiction` で切れる。
  */
 export const isRes = (n: Node) => !n.jurisdictionCode && n.kind !== 'model'
@@ -57,7 +57,7 @@ export function nodeLabel(n: Node): string {
  * 原典ノードは原典自身の見出しが列名なので語彙は引かない（説明は原典側の責任）。
  */
 export function colDocsOf(n: Node, docs: ReportData['columnDocs']): Record<string, ColDoc> {
-  if (n.stage === 'package') {
+  if (n.stage === 'marts') {
     const res = n.id.split('__').at(-1)
     return (res && docs.resources[res]) || {}
   }
@@ -160,7 +160,7 @@ export function loadRows(nodeId: string, code: string, year: number | null, dir:
  * 空間:
  * - `sr`   … source_row（原典→取り込み→配布物を貫く行番号。PDF の hit 鍵もこの空間）
  * - `ord`  … ordinal / pdf_ordinal（同じ番号の別名列）
- * - `bli`  … budget_line_id（事業行 id。core/package が共有 — 行番号を持たない
+ * - `bli`  … budget_line_id（事業行 id。intermediate/marts が共有 — 行番号を持たない
  *            COFOG 割当表などもこれで支出・収入の行と対応が取れる）
  * - `rule` … rule_id / cofog_rule_id（COFOG 規則。ルール側と割当側で列名が
  *            違うだけで同じ値域）
@@ -203,7 +203,7 @@ function colInfo(t: TableRows) {
   return c
 }
 
-/** その行の年度。`fiscal_year`（stg/core/配布物）か `year`（raw の hive 列） */
+/** その行の年度。`fiscal_year`（staging/intermediate/marts）か `year`（raw の hive 列） */
 function rowYear(t: TableRows, row: unknown[]): number | null {
   const { yi } = colInfo(t)
   if (yi < 0) return null
@@ -221,7 +221,7 @@ function rowDir(t: TableRows, row: unknown[]): string | null {
 
 /**
  * 行が持つ対応キー全て（存在する鍵空間ごとに1つずつ）。鍵が1つも無ければ null。
- * 1行が複数の空間に同時に居られる（例: core の行は `sr` と `bli` を両方持つ）—
+ * 1行が複数の空間に同時に居られる（例: intermediate の行は `sr` と `bli` を両方持つ）—
  * どれか1つの鍵が一致すれば対応と見なすので、行番号を経由しない対応も拾える。
  *
  * ⚠️ **年度を入れないと年度をまたいで誤対応する。** 鍵番号は年度ごとに振り直される

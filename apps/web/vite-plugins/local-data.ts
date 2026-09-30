@@ -164,7 +164,7 @@ export function localData(root: string): Plugin {
     const node = m.nodes[nodeId]
     if (!node) return { kind: "none", reason: `unknown node: ${nodeId}` }
     if (node.resource_type === "model" && node.config?.location) {
-      // package 段は warehouse の view ではなく配布物 CSV が正本
+      // marts は warehouse の view ではなく配布物 CSV が正本
       // （view の相対パスは dbt 実行時の cwd でしか解けない）
       const csv = path.join(repo, "dbt", node.config.location)
       return serveTable(`read_csv('${csv}', header=true)`, year, dir, code)

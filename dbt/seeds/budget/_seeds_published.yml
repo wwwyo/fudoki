@@ -17,3 +17,24 @@ seeds:
     description: 公表資料そのものの出所。PDF の SHA-256 とバイト数を含む
     config:
       column_types: {jurisdiction_code: varchar, fiscal_year: integer, total_thousand_yen: bigint, bytes: bigint}
+
+  - name: soumu_reference
+    meta:
+      # **外部資料の書き写し。判断ではない。**
+      role: external-reference
+    description: |
+      総務省の地方財政状況調査から書き写した款別の決算額（千円）。
+      scope は突合の単位: futsu-kaikei = 状況調カードの目的別歳出内訳、
+      会計名 = e-Stat 会計別表（52表 国民健康保険・63表 介護保険・94表 後期高齢者医療）
+      の市町村別の勘定科目。原典とは別の経路の資料なので、款別で突合すると
+      取り込みの誤りを外から検出できる。
+      ⚠️ 市町村別の目的別歳出は e-Stat の統計表に無い（統計表は道府県集計）。
+      その scope の機械可読な出所は状況調カード（総務省サイトの Excel）。
+    config:
+      column_types: {jurisdiction_code: varchar, fiscal_year: integer, scope: varchar, direction: varchar, kan_label: varchar, amount_thousand_yen: bigint}
+  - name: soumu_reference_meta
+    meta:
+      role: external-reference
+    description: 参照データそのものの出所（統計表または状況調カードの取得元・単位・段階）
+    config:
+      column_types: {jurisdiction_code: varchar, fiscal_year: integer, scope: varchar, source_name: varchar, source_url: varchar, unit: varchar, phase: varchar, retrieved_at: varchar, note: varchar}

@@ -11,20 +11,36 @@ with map as (
     where master_kan_code is not null or master_kou_code is not null
 ),
 
+-- どのマスタを引くかは対応の fund で決まる。空（一般会計）は地方自治法施行規則の
+-- 別記、特別会計は会計固有の調査票の勘定科目。
 master_kan as (
-    select distinct direction, kan_code from {{ ref('account_master') }}
+    select '一般会計' as fund, direction, kan_code
+    from (select distinct direction, kan_code from {{ ref('account_master') }})
+    union all
+    -- kou_code が入る行は項の定義なので款の参照先には含めない
+    select canonical_fund, direction, kan_code from {{ ref('special_account_master') }}
+    where kou_code is null
 ),
 
 master_kou as (
-    select distinct direction, kan_code, kou_code from {{ ref('account_master') }}
+    select '一般会計' as fund, direction, kan_code, kou_code
+    from (select distinct direction, kan_code, kou_code from {{ ref('account_master') }})
+    union all
+    -- 特別会計の項マスタ（kou_code が空の行は款の定義なので除く）
+    select canonical_fund, direction, kan_code, kou_code
+    from {{ ref('special_account_master') }}
+    where kou_code is not null
 )
 
-select m.jurisdiction_code, m.direction, m.kan_code, m.kou_name,
+select m.jurisdiction_code, m.direction, m.fund, m.kan_code, m.kou_name,
        m.master_kan_code, m.master_kou_code,
        '参照先がマスタに無い' as problem
 from map as m
-left join master_kan as k on k.direction = m.direction and k.kan_code = m.master_kan_code
+left join master_kan as k
+    on k.fund = coalesce(m.fund, '一般会計')
+    and k.direction = m.direction and k.kan_code = m.master_kan_code
 left join master_kou as u
-    on u.direction = m.direction and u.kan_code = m.master_kan_code and u.kou_code = m.master_kou_code
+    on u.fund = coalesce(m.fund, '一般会計')
+    and u.direction = m.direction and u.kan_code = m.master_kan_code and u.kou_code = m.master_kou_code
 where k.kan_code is null
    or (m.master_kou_code is not null and u.kou_code is null)

@@ -299,6 +299,7 @@
           "項",
           "目",
           "節",
+          "行",
           "（規則なし）"
         ]
       }
@@ -858,6 +859,30 @@
       "type": "number",
       "description": "原典の千円を円へ正規化した値",
       "columnType": "value"
+    },
+    "canonical_fund": {
+      "name": "canonical_fund",
+      "title": "会計（制度名寄せ）",
+      "type": "string",
+      "description": "同じ制度を担う会計をまたいで名寄せした名前（fudoki の判断）。団体をまたぐ比較は fund_label ではなくこちらで行う"
+    },
+    "account_class": {
+      "name": "account_class",
+      "title": "帳簿上の会計区分",
+      "type": "string",
+      "description": "一般会計 / 特別会計 / 公営企業会計。帳簿上の区分"
+    },
+    "sector": {
+      "name": "sector",
+      "title": "財政調査の枠組み",
+      "type": "string",
+      "description": "地方財政状況調査の枠組みで会計を分けたもの。futsu-kaikei = 調査の普通会計に入る会計（一般会計＋普通会計相当と読んだ特別会計）、koei-jigyo-kaikei = 公営事業会計として調査される会計（法定の社会保険系会計と収益事業の会計）。法定かどうかではなく調査票上の実際の区分で割り振る —帳簿上の特別会計でも収益事業は公営事業会計になる（狛江市の駐車場・下水道）。funds.csv の basis に会計ごとの判断がある"
+    },
+    "amount_yen": {
+      "name": "amount_yen",
+      "title": "金額（円）",
+      "type": "integer",
+      "description": "円へ正規化した金額"
     }
   }
 }

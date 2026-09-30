@@ -82,12 +82,12 @@ export function AnalysisPage({ urlCode = null, jurisdictionName }: Props = {}) {
 
   useEffect(() => {
     if (!found) return
-    document.title = `${found.report.meta.jurisdictionName} の支出分析 | fudoki（風土記）`
+    document.title = `${found.report.meta.jurisdictionName} の支出分析 | 風土記`
   }, [found])
 
   useEffect(() => {
     if (!notCollected) return
-    document.title = `${jurisdictionName ?? urlCode} はまだ収録していません | fudoki（風土記）`
+    document.title = `${jurisdictionName ?? urlCode} はまだ収録していません | 風土記`
   }, [notCollected, jurisdictionName, urlCode])
 
   if (error) {
@@ -330,7 +330,7 @@ function CollectedAnalysis({
           <Alert variant="destructive">
             <AlertTitle>分析データを読み込めませんでした</AlertTitle>
             <AlertDescription>
-              fudoki の API（api.fudoki.dev）から{direction === "expenditure" ? "COFOG 別内訳" : "合計"}
+              風土記の API（api.fudoki.dev）から{direction === "expenditure" ? "COFOG 別内訳" : "合計"}
               を取得できませんでした。
               API が止まっているか、この団体・年度の組み合わせがまだ収録されていない可能性があります。
               <br />

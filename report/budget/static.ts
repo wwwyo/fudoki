@@ -85,7 +85,7 @@ export const SHARED: Shared = {
     {
       "element": "1リソース = 1予算段階という前提",
       "kind": "決算書では成立しない",
-      "verifyNext": "⚠️ **決算書は1行が複数段階の金額を持つ**（狛江市の歳出は予算額・予算計・執行累計）。FDP は `value` の列型を1つしか持たず段階を行の列で表すので、package 段で段階ごとの行へ展開する形にした。主キーも (budget_line_id, phase_id) になる"
+      "verifyNext": "⚠️ **決算書は1行が複数段階の金額を持つ**（狛江市の歳出は予算額・予算計・執行累計）。FDP は `value` の列型を1つしか持たず段階を行の列で表すので、marts で段階ごとの行へ展開する形にした。主キーも (budget_line_id, phase_id) になる"
     },
     {
       "element": "`fin-source:generic:level4〜6` という標準の拡張",

@@ -111,7 +111,7 @@ select
     -- **phase は partition から取る。** 固定値にすると、補正予算を足したとき
     -- partition の phase と staging の phase が食い違う（取得側は既に phase で切っている）。
     -- ⚠️ これは**文書の種類**であって、FDP の phase（行が持つ予算段階）とは別物。
-    -- 決算書は1行に複数の段階の金額を持つので、そちらは package 段で展開する。
+    -- 決算書は1行に複数の段階の金額を持つので、そちらは marts で展開する。
     phase as phase_id,
     -- 識別子。**公開 API の一部**なので導出を変えると permalink が全滅する。
     jurisdiction_code || ':' || fiscal_year || ':' || direction || ':' || phase || ':'

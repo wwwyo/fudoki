@@ -14,7 +14,7 @@ models:
       # 縛られ、他所から DuckDB を開いたときに解決できない。
       # DuckDB 自体が捨てられるビルド生成物なので、自己完結させたほうがよい。
       +materialized: table
-    core:
+    intermediate:
       +materialized: table
 
 vars:
@@ -244,7 +244,7 @@ vars:
   # **金額。原典の列を FDP の phase へ対応づける。**
   #
   # FDP は phase を**行の列**として持つ設計で、`value` の列型は1つしかない。
-  # だから金額が複数ある決算書は、package 段で段階ごとの行へ展開する。
+  # だから金額が複数ある決算書は、marts で段階ごとの行へ展開する。
   #
   # phase の語彙は FDP の慣行（proposed / approved / adjusted / executed）に寄せるが、
   # `phase:id` は仕様上ただの文字列なので、該当が無いものは fudoki が宣言する

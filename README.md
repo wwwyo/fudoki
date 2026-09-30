@@ -90,7 +90,7 @@ bun run dev            # ダッシュボードを開く（http://localhost:5173�
 - [AGENTS.md](./AGENTS.md): 設計方針、実測にもとづく判断、パーサ設計の原則
 - [data/budget/datapackages/README.md](./data/budget/datapackages/README.md): 配布物の読み方
 - [apps/web/README.md](./apps/web/README.md): ダッシュボードの構成
-- [dbt/models/](./dbt/models/): staging（判断なし）と core（判断あり）。層の境界はテストで縛っている
+- [dbt/models/](./dbt/models/): staging（原典別の整形）→ intermediate（統合・分類）→ marts（提供用データ）。配布処理は `fdp/` に分け、原典の保存と判断の整合性はテストで縛っている
 - [ingestion/budget/sources.toml](./ingestion/budget/sources.toml): 取得元の定義。団体を足すときはここから
 
 名前は『風土記』から。
