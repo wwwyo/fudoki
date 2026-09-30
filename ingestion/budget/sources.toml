@@ -61,7 +61,7 @@ resource_name = "令和６年度予算データ（歳入）※下水道事業会
 #     まで含めて初めて一意になる（2023 歳出 2,224 行が 2,224 通り）。
 #  4. **決算書なので金額が段階ごとに複数ある。** 歳出は予算額 / 予算計 / 執行累計、
 #     歳入は予算現額 / 収入累計。FDP は phase を**行の列**として持つ設計なので、
-#     package 段で段階ごとの行へ展開する（詳細は pkg_132195__*.sql）。
+#     marts で段階ごとの行へ展開する（詳細は pkg_132195__*.sql）。
 #  5. **歳入の予算現額だけ単位が千円。** 同じファイルの他の金額はすべて円。
 #     宣言は段階ごとに budget_amounts が持つ（列名が `予算現額(千円)` と名乗っており、
 #     宣言がそれと食い違えば dbt がコンパイル時に止める）。
@@ -85,7 +85,7 @@ fiscal_year = 2018
 # 列と partition が食い違っていないことは dbt の検査（source_year_matches_partition）が見る。
 fiscal_year_label = "（2018）"
 # 予算段階は**文書の種類**。決算書なので settlement。
-# 行が持つ FDP の phase（approved / adjusted / executed）はこれとは別で、package 段で展開する。
+# 行が持つ FDP の phase（approved / adjusted / executed）はこれとは別で、marts で展開する。
 phase_id = "settlement"
 phase_label = "決算"
 # ⚠️ 歳出と歳入が**別のデータセット**になっている（三鷹市は1データセットに2リソース）。
@@ -118,7 +118,7 @@ fiscal_year = 2019
 # 列と partition が食い違っていないことは dbt の検査（source_year_matches_partition）が見る。
 fiscal_year_label = "（2019）"
 # 予算段階は**文書の種類**。決算書なので settlement。
-# 行が持つ FDP の phase（approved / adjusted / executed）はこれとは別で、package 段で展開する。
+# 行が持つ FDP の phase（approved / adjusted / executed）はこれとは別で、marts で展開する。
 phase_id = "settlement"
 phase_label = "決算"
 # ⚠️ 歳出と歳入が**別のデータセット**になっている（三鷹市は1データセットに2リソース）。
@@ -151,7 +151,7 @@ fiscal_year = 2020
 # 列と partition が食い違っていないことは dbt の検査（source_year_matches_partition）が見る。
 fiscal_year_label = "（2020）"
 # 予算段階は**文書の種類**。決算書なので settlement。
-# 行が持つ FDP の phase（approved / adjusted / executed）はこれとは別で、package 段で展開する。
+# 行が持つ FDP の phase（approved / adjusted / executed）はこれとは別で、marts で展開する。
 phase_id = "settlement"
 phase_label = "決算"
 # ⚠️ 歳出と歳入が**別のデータセット**になっている（三鷹市は1データセットに2リソース）。
@@ -184,7 +184,7 @@ fiscal_year = 2021
 # 列と partition が食い違っていないことは dbt の検査（source_year_matches_partition）が見る。
 fiscal_year_label = "（2021）"
 # 予算段階は**文書の種類**。決算書なので settlement。
-# 行が持つ FDP の phase（approved / adjusted / executed）はこれとは別で、package 段で展開する。
+# 行が持つ FDP の phase（approved / adjusted / executed）はこれとは別で、marts で展開する。
 phase_id = "settlement"
 phase_label = "決算"
 # ⚠️ 歳出と歳入が**別のデータセット**になっている（三鷹市は1データセットに2リソース）。
@@ -217,7 +217,7 @@ fiscal_year = 2022
 # 列と partition が食い違っていないことは dbt の検査（source_year_matches_partition）が見る。
 fiscal_year_label = "（2022）"
 # 予算段階は**文書の種類**。決算書なので settlement。
-# 行が持つ FDP の phase（approved / adjusted / executed）はこれとは別で、package 段で展開する。
+# 行が持つ FDP の phase（approved / adjusted / executed）はこれとは別で、marts で展開する。
 phase_id = "settlement"
 phase_label = "決算"
 # ⚠️ 歳出と歳入が**別のデータセット**になっている（三鷹市は1データセットに2リソース）。
@@ -250,7 +250,7 @@ fiscal_year = 2023
 # 列と partition が食い違っていないことは dbt の検査（source_year_matches_partition）が見る。
 fiscal_year_label = "（2023）"
 # 予算段階は**文書の種類**。決算書なので settlement。
-# 行が持つ FDP の phase（approved / adjusted / executed）はこれとは別で、package 段で展開する。
+# 行が持つ FDP の phase（approved / adjusted / executed）はこれとは別で、marts で展開する。
 phase_id = "settlement"
 phase_label = "決算"
 # ⚠️ 歳出と歳入が**別のデータセット**になっている（三鷹市は1データセットに2リソース）。

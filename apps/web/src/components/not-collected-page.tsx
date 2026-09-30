@@ -24,7 +24,7 @@ export function NotCollectedPage({
         <Alert>
           <AlertTitle>この団体はまだ収録していません</AlertTitle>
           <AlertDescription>
-            {name ?? code}（団体コード {code}）の予算データは、まだ fudoki のパイプラインを通していません。
+            {name ?? code}（団体コード {code}）の予算データは、まだ風土記のパイプラインを通していません。
           </AlertDescription>
         </Alert>
         {jurisdictions.length > 0 && (

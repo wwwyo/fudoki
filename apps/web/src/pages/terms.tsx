@@ -18,7 +18,7 @@ export function TermsPage() {
         <section className="flex flex-col gap-2">
           <h2 className="text-lg font-semibold">1. ベータである</h2>
           <p>
-            fudoki（風土記）が配布する API・データセット・URL・応答スキーマは、いずれもベータの
+            風土記が配布する API・データセット・URL・応答スキーマは、いずれもベータの
             提供物である。予告なく変更または停止することがある。特定の URL やフィールドが今後も
             存在し続けることを前提に本番の仕組みを組まないこと。
           </p>
@@ -40,7 +40,7 @@ export function TermsPage() {
         <section className="flex flex-col gap-2">
           <h2 className="text-lg font-semibold">3. 責任制限</h2>
           <p>
-            fudoki のデータまたは API を利用したことによって生じた損害について、fudoki は責任を
+            風土記のデータまたは API を利用したことによって生じた損害について、風土記は責任を
             負わない。データの誤り、API の停止・変更、それらに起因する判断の誤りを含む。
           </p>
         </section>
@@ -67,7 +67,7 @@ export function TermsPage() {
 
         <section className="flex flex-col gap-2">
           <h2 className="text-lg font-semibold">5. API について</h2>
-          <p>fudoki は API に対して次の権限を持つ。</p>
+          <p>風土記は API に対して次の権限を持つ。</p>
           <Card>
             <CardContent>
               <ul className="list-disc pl-5">
@@ -94,7 +94,7 @@ export function TermsPage() {
         <section className="flex flex-col gap-2">
           <h2 className="text-lg font-semibold">6. 法的な最終判断</h2>
           <p>
-            本条件および data/LICENSE の記載は fudoki の判断であり、法的助言ではない。
+            本条件および data/LICENSE の記載は風土記の判断であり、法的助言ではない。
             商用利用や再配布など、権利関係の最終的な判断が必要な場面では専門家に確認すること。
           </p>
         </section>

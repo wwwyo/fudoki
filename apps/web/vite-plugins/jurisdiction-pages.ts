@@ -100,8 +100,8 @@ const ROUTE_KINDS: RouteKind[] = [
       return page({
         // ⚠️ document.title はここから団体・年度に応じて実行時に書き換わる（src/pages/pipeline.tsx）。
         // ここに書くのは JS 実行前 / SEO 用の既定値
-        title: `${safeName} の配布物の検証 | fudoki（風土記）`,
-        description: `${safeName}の予算データが原典からどう取得され、何を検査され、どこで fudoki の判断（COFOG への分類）が入って配布物になるかを、行と原典の対応まで確かめる検証画面。系統は dbt の manifest から生成する。`,
+        title: `${safeName} の配布物の検証 | 風土記`,
+        description: `${safeName}の予算データが原典からどう取得され、何を検査され、どこで風土記の判断（COFOG への分類）が入って配布物になるかを、行と原典の対応まで確かめる検証画面。系統は dbt の manifest から生成する。`,
         canonical: `https://fudoki.dev/pipeline/${code}/`,
         globalName: "__FUDOKI_PIPELINE_JURISDICTION__",
         injected,
@@ -117,8 +117,8 @@ const ROUTE_KINDS: RouteKind[] = [
       const safeName = escapeHtml(name)
       return page({
         // ⚠️ document.title はここから団体・年度に応じて実行時に書き換わる（src/pages/analysis.tsx）。
-        title: `${safeName} の支出分析 | fudoki（風土記）`,
-        description: `${safeName} の予算を COFOG（政府支出の機能別分類）の10区分ごとに集計した分析。fudoki の budget API から取得する。`,
+        title: `${safeName} の支出分析 | 風土記`,
+        description: `${safeName} の予算を COFOG（政府支出の機能別分類）の10区分ごとに集計した分析。風土記の budget API から取得する。`,
         canonical: `https://fudoki.dev/analysis/${code}/`,
         globalName: "__FUDOKI_ANALYSIS_JURISDICTION__",
         injected,

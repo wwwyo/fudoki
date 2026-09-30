@@ -102,7 +102,7 @@ COFOG の分類率は次のとおり定義する。
 
 ## Glossary
 
-- **配布物**：dbt の package 段と `fdp/build.py` が生成する、団体ごとの Fiscal Data Package。正本と判断の両方を含む
+- **配布物**：dbt の marts が書き出した CSV に `fdp/build.py` が定義・出典・利用条件を添える、団体ごとの Fiscal Data Package。正本と判断の両方を含む
 - **正本**：市が公表した事実と1対1のリソース（expenditure / revenue）。原典と突き合わせて検証できる
 - **判断**：fudoki が加えた解釈のリソース（cofog / project_names）。正本と別リソースで配る
 - **COFOG**：国連の政府機能分類。団体をまたぐ歳出比較の共通軸として fudoki が割り当てる。割当は部分的で、明細ごとに割当済み、分類不能、対象外の状態を持つ
