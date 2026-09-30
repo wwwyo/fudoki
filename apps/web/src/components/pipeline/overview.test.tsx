@@ -2,7 +2,10 @@ import { afterAll, beforeAll, describe, expect, test } from "bun:test"
 import { renderToStaticMarkup } from "react-dom/server"
 import { PipelineOverview } from "./overview"
 
-const originalStorage = Object.getOwnPropertyDescriptor(globalThis, "localStorage")
+const originalStorage = Object.getOwnPropertyDescriptor(
+  globalThis,
+  "localStorage"
+)
 const originalBase = process.env.BASE_URL
 
 beforeAll(() => {
@@ -26,7 +29,7 @@ afterAll(() => {
 describe("PipelineOverview", () => {
   test("報告が未生成でも概要・全体像・repo の案内を順に読める", () => {
     const markup = renderToStaticMarkup(
-      <PipelineOverview data={null} error={null} />,
+      <PipelineOverview data={null} error={null} />
     )
     const summary = markup.indexOf('id="summary"')
     const collection = markup.indexOf('id="collection"')
@@ -43,7 +46,7 @@ describe("PipelineOverview", () => {
 
   test("読み込みが失敗しても共通案内を保持し、団体選択にエラーを表示する", () => {
     const markup = renderToStaticMarkup(
-      <PipelineOverview data={null} error="pipeline.json がありません" />,
+      <PipelineOverview data={null} error="pipeline.json がありません" />
     )
 
     expect(markup).toContain('id="summary"')
