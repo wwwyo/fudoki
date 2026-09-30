@@ -51,6 +51,7 @@ jobs:
       - name: オフライン全量 build と報告
         run: |
           bun run pipeline:build
+          bun run pipeline:build --rebuild
           bun run pipeline:report
       - name: 公開用の件数・金額・ファイルハッシュを記録
         run: bun run pipeline/verify/summary.ts

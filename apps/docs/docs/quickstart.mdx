@@ -40,6 +40,15 @@ curl 'https://api.fudoki.dev/v0/fiscal-datasets/aggregate' \
 curl 'https://api.fudoki.dev/v0/files?jurisdictionCode=132195'
 ```
 
-応答の `manifestUrl` と各 `url` が独立した download Worker を指します。release を含む URL は不変で、API/D1 を利用できなくても配布ファイルを取得できます。`ETag` は manifest の SHA-256、`X-Fudoki-Release` は release ID です。API はファイル本体を転送しません。
+応答の `manifestUrl` と各 `url` が独立した download Worker を指します。release を含む URL は不変で、API/D1 を利用できなくても配布ファイルを取得できます。`ETag` は取得したファイルの SHA-256、`X-Fudoki-Release` は release ID です。API はファイル本体を転送しません。
+
+API が使えない場合は download の公開版一覧から辿れます。
+
+```bash
+curl 'https://download.fudoki.dev/releases'
+curl 'https://download.fudoki.dev/releases?cursor=<nextCursor>'
+```
+
+一覧の `manifestUrl` は download origin に対する相対 URL です。完成した公開用 manifest がある版だけを返します。`nextCursor` があれば一覧が空でも続きを取得してください。
 
 入出力の完全なスキーマは [API リファレンス](/reference) にあります。

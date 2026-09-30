@@ -57,6 +57,8 @@ publish は clean な commit・正規の入力一覧・そのコードで作っ�
 
 R2 の最終 manifest は全量照合後に書き、その配布 URL と D1 のファイルメタデータを検査する。最後に D1 の一括更新で候補を published にして active_release を切り替える。転送途中や検査失敗では API の公開参照を変えない。最終 manifest の後で切り替えに失敗した場合、完成したダウンロードは利用可能だが、API は旧版を返す。再実行は既存の内容を再照合して切り替えを完了する。
 
+`GET https://download.fudoki.dev/releases` は完成した公開用 manifest がある版だけを返す。D1 を参照しない。`manifestUrl` は同じ download origin に対する相対 URL。`nextCursor` があれば `?cursor=<値>` で続きを取得する。転送中の版だけが含まれるページは一覧が空でも続きを持つことがある。公開版一覧は変わるため、個別ファイルの不変キャッシュとは分ける。
+
 publish と rollback は同じ lease・fence・公開世代を使い、期限切れの処理による上書きを拒否する。rollback はファイル・D1 の全行・API の件数と金額・Worker 契約を再検査する。API の cursor は保持中の公開 release と問い合わせに固定され、公開切り替えで次ページの版が変わらない。
 
 ## 保持・容量・バックアップ

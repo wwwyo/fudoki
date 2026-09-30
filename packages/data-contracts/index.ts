@@ -1,43 +1,43 @@
-import { z } from 'zod'
+import { z } from "zod";
 
-export const CONTRACT_VERSION = 1
+export const CONTRACT_VERSION = 1;
 export const TABLES = [
-  'jurisdictions',
-  'fiscal_datasets',
-  'fiscal_lines',
-  'amounts',
-  'cofog',
-  'line_hierarchy',
-  'line_dimensions',
-  'names',
-] as const
-export const sha256Schema = z.string().regex(/^[a-f0-9]{64}$/)
-export const releaseIdSchema = z.string().regex(/^r-[a-f0-9]{32}$/)
-export const directionSchema = z.enum(['expenditure', 'revenue'])
+  "jurisdictions",
+  "fiscal_datasets",
+  "fiscal_lines",
+  "amounts",
+  "cofog",
+  "line_hierarchy",
+  "line_dimensions",
+  "names",
+] as const;
+export const sha256Schema = z.string().regex(/^[a-f0-9]{64}$/);
+export const releaseIdSchema = z.string().regex(/^r-[a-f0-9]{32}$/);
+export const directionSchema = z.enum(["expenditure", "revenue"]);
 export const documentKindSchema = z.enum([
-  'budget',
-  'supplementary',
-  'settlement',
-])
+  "budget",
+  "supplementary",
+  "settlement",
+]);
 export const phaseSchema = z.enum([
-  'approved',
-  'adjusted',
-  'adjusted-before-transfer',
-  'executed',
-])
+  "approved",
+  "adjusted",
+  "adjusted-before-transfer",
+  "executed",
+]);
 export const cofogStatusSchema = z.enum([
-  'assigned',
-  'unclassifiable',
-  'out-of-scope',
-  'not-applicable',
-])
+  "assigned",
+  "unclassifiable",
+  "out-of-scope",
+  "not-applicable",
+]);
 export const nameSourceSchema = z.enum([
-  'canonical',
-  'settlement-pdf',
-  'judgment',
-  '',
-])
-export const amountUnitSchema = z.enum(['円', '千円'])
+  "canonical",
+  "settlement-pdf",
+  "judgment",
+  "",
+]);
+export const amountUnitSchema = z.enum(["円", "千円"]);
 export const fileSchema = z.object({
   path: z
     .string()
@@ -45,10 +45,10 @@ export const fileSchema = z.object({
   sha256: sha256Schema,
   bytes: z.number().int().nonnegative(),
   contentType: z.enum([
-    'text/csv; charset=utf-8',
-    'application/json; charset=utf-8',
+    "text/csv; charset=utf-8",
+    "application/json; charset=utf-8",
   ]),
-})
+});
 export const manifestSchema = z
   .object({
     schemaVersion: z.literal(CONTRACT_VERSION),
@@ -65,7 +65,7 @@ export const manifestSchema = z
           phase: phaseSchema,
           rows: z.number().int().nonnegative(),
           amount: z.number().int().safe(),
-        })
+        }),
       )
       .default([]),
     tables: z.record(
@@ -75,7 +75,7 @@ export const manifestSchema = z
         sha256: sha256Schema,
         canonicalSha256: sha256Schema,
         chunks: z.array(sha256Schema),
-      })
+      }),
     ),
   })
   .superRefine((manifest, context) => {
@@ -83,145 +83,147 @@ export const manifestSchema = z
       new Set(manifest.files.map((file) => file.path)).size !==
       manifest.files.length
     )
-      context.addIssue({ code: 'custom', message: 'Duplicate release file' })
+      context.addIssue({ code: "custom", message: "Duplicate release file" });
     if (
       new Set(
-        manifest.totals.map((total) => `${total.datasetId}:${total.phase}`)
+        manifest.totals.map((total) => `${total.datasetId}:${total.phase}`),
       ).size !== manifest.totals.length
     )
       context.addIssue({
-        code: 'custom',
-        message: 'Duplicate dataset phase total',
-      })
+        code: "custom",
+        message: "Duplicate dataset phase total",
+      });
     for (const table of TABLES)
       if (
         manifest.tables[table].chunks.length !==
         Math.ceil(manifest.tables[table].rows / 500)
       )
         context.addIssue({
-          code: 'custom',
+          code: "custom",
           message: `Chunk count differs: ${table}`,
-        })
-  })
-export type ReleaseManifest = z.infer<typeof manifestSchema>
+        });
+  });
+export type ReleaseManifest = z.infer<typeof manifestSchema>;
 
 export interface D1Statement {
-  bind(...values: unknown[]): D1Statement
+  bind(...values: unknown[]): D1Statement;
   all<T = Record<string, unknown>>(): Promise<{
-    results: T[]
-    success: boolean
-    meta?: { changes?: number; rows_read?: number }
-  }>
-  first<T = Record<string, unknown>>(): Promise<T | null>
-  run(): Promise<{ success: boolean; meta: { changes: number } }>
+    results: T[];
+    success: boolean;
+    meta?: { changes?: number; rows_read?: number };
+  }>;
+  first<T = Record<string, unknown>>(): Promise<T | null>;
+  run(): Promise<{ success: boolean; meta: { changes: number } }>;
 }
 export interface D1Database {
-  prepare(sql: string): D1Statement
+  prepare(sql: string): D1Statement;
   batch<T = Record<string, unknown>>(
-    statements: D1Statement[]
-  ): Promise<{ results: T[]; success: boolean; meta: { changes: number } }[]>
+    statements: D1Statement[],
+  ): Promise<{ results: T[]; success: boolean; meta: { changes: number } }[]>;
 }
 export interface R2Object {
-  key: string
-  size: number
-  httpEtag: string
-  body: ReadableStream<Uint8Array>
-  json<T>(): Promise<T>
-  arrayBuffer(): Promise<ArrayBuffer>
-  writeHttpMetadata(headers: Headers): void
+  key: string;
+  size: number;
+  httpEtag: string;
+  body: ReadableStream<Uint8Array>;
+  json<T>(): Promise<T>;
+  arrayBuffer(): Promise<ArrayBuffer>;
+  writeHttpMetadata(headers: Headers): void;
 }
 export interface R2Bucket {
-  get(key: string): Promise<R2Object | null>
-  head(key: string): Promise<{ size: number; httpEtag: string } | null>
+  get(key: string): Promise<R2Object | null>;
+  head(key: string): Promise<{ size: number; httpEtag: string } | null>;
   list(options: {
-    prefix: string
-    cursor?: string
-    limit?: number
+    prefix: string;
+    delimiter?: string;
+    cursor?: string;
+    limit?: number;
   }): Promise<{
-    objects: { key: string }[]
-    truncated: boolean
-    cursor?: string
-  }>
+    objects: { key: string }[];
+    delimitedPrefixes: string[];
+    truncated: boolean;
+    cursor?: string;
+  }>;
 }
 
 export const TABLE_COLUMNS = {
-  jurisdictions: ['jurisdiction_code', 'name', 'ocd_id', 'caveats_json'],
+  jurisdictions: ["jurisdiction_code", "name", "ocd_id", "caveats_json"],
   fiscal_datasets: [
-    'dataset_id',
-    'jurisdiction_code',
-    'fiscal_year',
-    'direction',
-    'document_kind',
-    'origin_sha256',
-    'phases_json',
-    'source_json',
-    'structure_json',
-    'line_count',
+    "dataset_id",
+    "jurisdiction_code",
+    "fiscal_year",
+    "direction",
+    "document_kind",
+    "origin_sha256",
+    "phases_json",
+    "source_json",
+    "structure_json",
+    "line_count",
   ],
   fiscal_lines: [
-    'fiscal_line_id',
-    'dataset_id',
-    'source_row',
-    'fund_code',
-    'fund_label',
+    "fiscal_line_id",
+    "dataset_id",
+    "source_row",
+    "fund_code",
+    "fund_label",
   ],
   amounts: [
-    'fiscal_line_id',
-    'phase',
-    'value',
-    'source_amount',
-    'source_amount_unit',
-    'is_primary',
+    "fiscal_line_id",
+    "phase",
+    "value",
+    "source_amount",
+    "source_amount_unit",
+    "is_primary",
   ],
   cofog: [
-    'fiscal_line_id',
-    'status',
-    'division',
-    'group',
-    'class',
-    'consolidation',
-    'decided_at_level',
-    'rule_id',
-    'basis',
-    'counterpart_fund',
+    "fiscal_line_id",
+    "status",
+    "division",
+    "group",
+    "class",
+    "consolidation",
+    "decided_at_level",
+    "rule_id",
+    "basis",
+    "counterpart_fund",
   ],
   line_hierarchy: [
-    'fiscal_line_id',
-    'ordinal',
-    'level',
-    'code',
-    'label',
-    'name_source',
+    "fiscal_line_id",
+    "ordinal",
+    "level",
+    "code",
+    "label",
+    "name_source",
   ],
-  line_dimensions: ['fiscal_line_id', 'dimension', 'code', 'label'],
+  line_dimensions: ["fiscal_line_id", "dimension", "code", "label"],
   names: [
-    'fiscal_line_id',
-    'name_kind',
-    'level',
-    'value',
-    'name_source',
-    'basis',
+    "fiscal_line_id",
+    "name_kind",
+    "level",
+    "value",
+    "name_source",
+    "basis",
   ],
-} as const
+} as const;
 export const TABLE_KEYS = {
-  jurisdictions: ['jurisdiction_code'],
-  fiscal_datasets: ['dataset_id'],
-  fiscal_lines: ['fiscal_line_id'],
-  amounts: ['fiscal_line_id', 'phase'],
-  cofog: ['fiscal_line_id'],
-  line_hierarchy: ['fiscal_line_id', 'ordinal'],
-  line_dimensions: ['fiscal_line_id', 'dimension'],
-  names: ['fiscal_line_id', 'name_kind', 'level'],
-} as const
+  jurisdictions: ["jurisdiction_code"],
+  fiscal_datasets: ["dataset_id"],
+  fiscal_lines: ["fiscal_line_id"],
+  amounts: ["fiscal_line_id", "phase"],
+  cofog: ["fiscal_line_id"],
+  line_hierarchy: ["fiscal_line_id", "ordinal"],
+  line_dimensions: ["fiscal_line_id", "dimension"],
+  names: ["fiscal_line_id", "name_kind", "level"],
+} as const;
 export function canonicalRow(
   table: (typeof TABLES)[number],
-  row: Record<string, unknown>
+  row: Record<string, unknown>,
 ): string {
   return (
     JSON.stringify(
       Object.fromEntries(
-        TABLE_COLUMNS[table].map((column) => [column, row[column]])
-      )
-    ) + '\n'
-  )
+        TABLE_COLUMNS[table].map((column) => [column, row[column]]),
+      ),
+    ) + "\n"
+  );
 }
