@@ -119,7 +119,7 @@ API 用の保存形式の schema・テーブル定義・契約版は `packages/d
 
 現行の狛江市の決算書には、同じ行に補正後予算額・予算現額・執行済額がある。したがって `documentKind = settlement` の原典から `phase = adjusted` や `executed` の金額を取り込み、決算書にある金額をすべて執行済額とは扱わない。現行 sources の `phase_id = settlement` は文書種別なので、新しい宣言・lock・公開メタデータでは `documentKind` に整理する。
 
-dataset は団体・年度・歳入歳出・文書種別・採用した原典の版を識別できるようにする。別の予算書と決算書の行は、階層名が似ていても自動で同じ明細と扱わない。明細は所属する dataset を含めて識別し、団体・年度・共通科目等の比較軸は中間処理で揃える。
+dataset は団体・年度・歳入歳出・文書種別・採用した原典の版を識別できるようにする。 複数年度は別 dataset、当初予算と補正予算と決算も別 dataset として扱う。補正予算は `documentKind = supplementary` として識別できるが、現行の取得対象には含めていない。第1号・第2号等の号数、金額が差額か補正後総額か、有効な時点は原典ごとの宣言が必要であり、原典ハッシュだけで推測しない。これらの宣言・取得設定は補正予算を収録するときに追加する。別の予算書と決算書の行は、階層名が似ていても自動で同じ明細と扱わない。明細は所属する dataset を含めて識別し、団体・年度・共通科目等の比較軸は中間処理で揃える。
 
 明細の識別子は配布物・DB・API を通して `fiscal_line_id` に統一する。`fiscal_line_id` は dataset の識別情報を含み、一つの release 内で dataset をまたいでも一意とする。API は `listFiscalDatasets`・`getFiscalDataset`・`getFiscalLines`・`searchFiscalLines`・`aggregateFiscalDatasets` 等、MCP は対応する `list_fiscal_datasets` 等の名称に揃える。既存名の alias や互換用の列は設けない。FDP の resource schema・主キー・外部キー・財政上の役割の記述も新しい列名に合わせる。
 
@@ -163,14 +163,16 @@ D1 の採用は容量・性能を確認して実装へ進める。現行の配�
 
 build はローカルで検査済みの公開候補を作り、publish が R2 と D1 に反映する。publish は候補を作り直さず、dbt が生成した API 用の表を D1 に取り込む。転送時の型の対応・SQL の生成・`release_id` の付与は取込処理の責務とし、金額・分類・行の意味を変更しない。データの更新に API コードの再ビルドを必要とさせない。API の deploy はコード・bindings・対応する契約版を更新する作業とする。
 
-R2 のオブジェクトは `releases/<release_id>/fiscal/<code>/...` に置き、公開済みの版を上書きしない。release manifest はファイルのハッシュ・件数・合計・契約版・コード版・入力と判断の fingerprint を持つ。ローカル絶対パスと生成時刻を内容ハッシュの材料にしない。`release_id` はコードの commit だけから決めず、入力データと判断の版も識別できるものにする。
+全体の release と団体別の配布物の版を分ける。全体の `releases/<releaseId>/manifest.json` と catalog は収録する団体・配布物の版・dataset を記録し、実体は `fiscal/<団体コード>/<packageId>/` に置く。`packageId` は団体の全配布ファイルの名前・SHA-256・サイズ・content type から決まり、コードの更新だけで配布内容が変わらなければ同じ値を使う。publish は既存オブジェクトの内容を照合して再利用する。公開済みのキーを異なる内容で上書きしない。
 
-現行実装の release は全体の版であり、新しい release ID ごとに全団体分のファイルを配置する。同じ release の再実行では既存ファイルを検査して再利用するが、異なる release 間の内容重複は排除していない。団体コードは `fiscal/<code>/` と catalog の dataset に対応する。全体の収録一覧と団体ごとの配布物の版を分け、未変更の団体のファイルを複数 release から参照する案は検討対象であり、現行実装には反映していない。
+release manifest は `packages` に団体コード・`packageId`・dataset ID の対応、`files` にローカル候補内の `path` と R2 の `objectKey`・個別ハッシュ・サイズを持つ。全体の release は件数・合計・契約版・コード版・入力と判断の fingerprint を記録する。ローカル絶対パスと生成時刻を内容ハッシュの材料にしない。`releaseId` はコード・入力・判断の版を識別し、配布物の内容版とは区別する。[ADR 0013](adr/0013-jurisdiction-package-versions.md) を参照。
+
+配布単位は現在の FDP と同じ団体全体で、収録する複数年度・当初予算・決算等を CSV の dataset ID で区別する。一年度の変更でもその団体の配布物全体が新しい版になる一方、他団体の配布物はコピーしない。年度ごとの独立した配布物ならコピーをさらに減らせるが、今回は団体別の一括取得と相対 resource path を保つ。D1 の表は全体の release ごとの保持を継続し、この R2 の共有によって D1 の重複まで除去したとは扱わない。
 
 公開は次の順序とする。
 
 1. ローカルの変換・書き出しを終え、提供用データ・CSV・API 用の表の一致、出典と注意点、集計を検査する。
-2. R2 の新しい版の prefix へファイルを転送し、manifest と各ファイルの SHA-256 を確認する。
+2. 新しい団体別配布物と release の catalog を R2 へ転送する。既存の共有配布物も manifest の SHA-256 と照合し、一致すれば再転送しない。
 3. D1 にその版を `staging` として取り込む。API は active な版以外を既定で参照しない。
 4. 候補の版を明示した検証経路で API 応答と R2 ダウンロードを確かめ、R2 と D1 の件数・金額・識別子・内容を照合する。検査済みの配布ファイル一覧を含む公開用 manifest を R2 に最後に書き、静的な版一覧へ追加する。D1 に完成した manifest のキーと内容ハッシュを記録し、参照表との一致を確認する。公開 bucket の転送済みファイルは manifest の配置前でも取得できる。
 5. 公開する Worker が契約版に対応していることを確認し、D1 の公開状態と `active_release` を一つの短い atomic な処理で更新する。
@@ -191,9 +193,9 @@ API はリクエストの最初に版を一度だけ解決し、そのリクエ�
 
 公開 bucket には公開してよい配布ファイル・完成した manifest・静的な版一覧だけを置く。原典・取り込み、候補 manifest、内部検証結果は非公開 bucket に分離する。採用した入力の証跡は Git から参照する。公開用 manifest は完成を示す記録であり、配信の allowlist ではない。転送中でも配置済みの公開ファイルは URL を知っていれば取得できる。版一覧は完成後に更新し、D1 や API の認可サービスへ依存させない。
 
-キャッシュ・WAF を使うため、R2 と同じアカウントで管理する既存の `fudoki.dev` のサブドメインを用いる。新しい登録ドメインの購入は不要で、`r2.dev` の入口は無効にする。CSV・JSON を Cache Rules で明示的に対象にし、版別ファイルは長く、版一覧は短くキャッシュする。現在の Free zone のレート制限では hostname 条件を使えないため、配布専用の `/releases/` パスを対象にする。IP ごとの値は一括取得を妨げないよう測定して調整する。[R2 の公開 bucket](https://developers.cloudflare.com/r2/buckets/public-buckets/)、[レート制限のプラン別機能](https://developers.cloudflare.com/waf/rate-limiting-rules/)。
+キャッシュ・WAF を使うため、R2 と同じアカウントで管理する既存の `fudoki.dev` のサブドメインを用いる。新しい登録ドメインの購入は不要で、`r2.dev` の入口は無効にする。CSV・JSON を Cache Rules で明示的に対象にし、版別ファイルは長く、版一覧は短くキャッシュする。現在の Free zone のレート制限では hostname 条件を使えないため、配布専用の `/fiscal/` と `/releases/` パスを対象にする。IP ごとの値は一括取得を妨げないよう測定して調整する。[R2 の公開 bucket](https://developers.cloudflare.com/r2/buckets/public-buckets/)、[レート制限のプラン別機能](https://developers.cloudflare.com/waf/rate-limiting-rules/)。
 
-不変のダウンロード URL は active な版が変わっても保持中の旧版を取得できる。D1 の公開切替が失敗しても、完成して検査済みの一括配布版は取得でき、API は従来の版を返す。API/D1 の不調と配布の入口を分けるが、Cloudflare 全体や R2 の障害から独立する保証ではない。HTTP の ETag を SHA-256 と同一視せず、公開前検証では取得内容を manifest のハッシュと照合する。旧版の削除は切り戻し期間と処理中のリクエストが終わる猶予を定めてから行う。
+不変のダウンロード URL は active な版が変わっても保持中の旧版を取得できる。D1 の公開切替が失敗しても、完成して検査済みの一括配布版は取得でき、API は従来の版を返す。API/D1 の不調と配布の入口を分けるが、Cloudflare 全体や R2 の障害から独立する保証ではない。HTTP の ETag を SHA-256 と同一視せず、公開前検証では取得内容を manifest のハッシュと照合する。旧版の削除は切り戻し期間と処理中のリクエストが終わる猶予を定めてから行う。共有配布物は保持中の全 release と処理中候補から参照されていないものだけを削除する。
 
 ### Git に残すものと Cloudflare に置くものを分ける
 
@@ -231,24 +233,33 @@ CI はこの入力復元を先に実行し、その後の dbt と説明ファイ
 
 R2 release manifest は「どの入力 snapshot・コード・判断を使って、どの配布物を公開したか」を結ぶ。入力一覧を含む Git commit と一覧の内容ハッシュを持ち、取得元の設定や個別入力の一覧、ingestion の証跡をコピーしない。入力 snapshot は未公開の構築や失敗した構築でも存在し、公開 release とは一対一ではない。manifest を組み立てるコードは `fdp/`、R2 に反映して公開状態を確定するコードは `publish/` が持つ。
 
-R2 に置く `releases/2026-09-30-01/manifest.json` の内容の一部を以下に示す。これは形式を説明する例で、公開済みの版や実際のハッシュではない。
+R2 に置く `releases/r-<32桁のhash>/manifest.json` の内容の一部を以下に示す。これは形式を説明する抜粋で、公開済みの版や実際のハッシュではない。
 
 ```json
 {
-  "releaseId": "2026-09-30-01",
-  "codeCommit": "<Git commit SHA>",
-  "inputManifestPath": "pipeline/ingestion/fiscal/sources.lock.json",
-  "inputManifestSha256": "<入力一覧の SHA-256>",
+  "releaseId": "r-<32桁のhash>",
+  "codeRevision": "<Git commit SHA>",
+  "inputFingerprint": "<入力一覧の SHA-256>",
+  "packages": [
+    {
+      "jurisdictionCode": "132241",
+      "packageId": "p-<64桁のhash>",
+      "datasetIds": ["132241:2025:expenditure:budget:<原典の SHA-256>"]
+    }
+  ],
   "files": [
     {
-      "key": "releases/2026-09-30-01/fiscal/132241/datapackage.json",
-      "sha256": "<配布ファイルの SHA-256>"
+      "path": "fiscal/132241/datapackage.json",
+      "objectKey": "fiscal/132241/p-<64桁のhash>/datapackage.json",
+      "sha256": "<配布ファイルの SHA-256>",
+      "bytes": 12345,
+      "contentType": "application/json; charset=utf-8"
     }
   ]
 }
 ```
 
-`codeCommit` の版から入力一覧と判断の宣言を取得し、R2 の release manifest から配布ファイルの一覧・個別ハッシュ・件数を取得する。D1 は manifest 自体のキーと内容ハッシュも記録し、取込時の版との一致を検査できる。公開用 manifest と非公開の検査結果は区別し、内部の原典や証跡を公開用 manifest に含めない。
+`codeRevision` の版から入力一覧と判断の宣言を取得し、R2 の release manifest から収録する団体別配布物とファイルの一覧・個別ハッシュ・件数を取得する。D1 は manifest 自体のキーと内容ハッシュも記録し、取込時の版との一致を検査できる。公開用 manifest と非公開の検査結果は区別し、内部の原典や証跡を公開用 manifest に含めない。
 
 公開済み release が参照する入力 snapshot・原典・表・証跡は保管対象とし、配布物の整理に連動して削除しない。入力 bucket を公開配布の Worker に bind せず、bucket 全体に自動削除の lifecycle を設定しない。自治体サイトが消えても R2 の固定入力から再構築できること、R2 以外へのバックアップとその復元手順を用意する。
 

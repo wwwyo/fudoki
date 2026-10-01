@@ -8,6 +8,8 @@ import {
 } from "@fudoki/data-contracts";
 const releaseId = "r-" + "a".repeat(32);
 const file = "fiscal/132195/expenditure.csv";
+const packageId = "p-" + "e".repeat(64);
+const key = `fiscal/132195/${packageId}/expenditure.csv`;
 const body = "value\n100\n";
 const manifest: ReleaseManifest = manifestSchema.parse({
   schemaVersion: 1,
@@ -17,9 +19,13 @@ const manifest: ReleaseManifest = manifestSchema.parse({
   judgmentFingerprint: "c".repeat(64),
   queryFingerprint: "e".repeat(64),
   totals: [],
+  packages: [
+    { jurisdictionCode: "132195", packageId, datasetIds: ["fixture"] },
+  ],
   files: [
     {
       path: file,
+      objectKey: key,
       sha256: "d".repeat(64),
       bytes: body.length,
       contentType: "text/csv; charset=utf-8",
@@ -72,40 +78,34 @@ function storage(published: boolean) {
 }
 const request = (path: string, method = "GET") =>
   new Request(`https://download.example.org${path}`, { method });
-test("candidate objects are inaccessible before their finalized public manifest exists", async () => {
+test("public package files are independent of the global release manifest", async () => {
   const { bucket, reads } = storage(false);
-  const response = await worker.fetch(
-    request(`/releases/${releaseId}/${file}`),
-    { RELEASES: bucket },
-  );
-  expect(response.status).toBe(404);
-  expect(reads).toEqual([`releases/${releaseId}/manifest.json`]);
+  const response = await worker.fetch(request(`/${key}`), { RELEASES: bucket });
+  expect(response.status).toBe(200);
+  expect(await response.text()).toBe(body);
+  expect(reads).toEqual([key]);
 });
-test("only listed files are served; internal objects and write methods are refused", async () => {
-  const { bucket, reads } = storage(true);
+test("internal objects, legacy release file paths and write methods are refused", async () => {
+  const { bucket } = storage(true);
   for (const path of [
     "/inputs/origin/sha256/x",
-    `/releases/${releaseId}/api/amounts.jsonl`,
-    `/releases/${releaseId}/fiscal/132195/unlisted.csv`,
+    "/_candidates/x/manifest.json",
+    `/releases/${releaseId}/${file}`,
   ])
     expect(
       (await worker.fetch(request(path), { RELEASES: bucket })).status,
     ).toBe(404);
   expect(
-    (
-      await worker.fetch(request(`/releases/${releaseId}/${file}`, "PUT"), {
-        RELEASES: bucket,
-      })
-    ).status,
+    (await worker.fetch(request(`/${key}`, "PUT"), { RELEASES: bucket }))
+      .status,
   ).toBe(405);
-  expect(reads.every((k) => k.endsWith("/manifest.json"))).toBe(true);
 });
-test("file body streams without arrayBuffer or json and exposes immutable hash and release headers", async () => {
+test("package bodies stream and use the storage ETag independently of the release", async () => {
   const { bucket } = storage(true),
     get = bucket.get;
   bucket.get = async (key) => {
     const object = await get(key);
-    if (object && !key.endsWith("/manifest.json")) {
+    if (object) {
       object.arrayBuffer = async () => {
         throw new Error("Do not buffer CSV");
       };
@@ -115,31 +115,24 @@ test("file body streams without arrayBuffer or json and exposes immutable hash a
     }
     return object;
   };
-  const response = await worker.fetch(
-    request(`/releases/${releaseId}/${file}`),
-    { RELEASES: bucket },
-  );
-  expect(response.status).toBe(200);
+  const response = await worker.fetch(request(`/${key}`), { RELEASES: bucket });
   expect(await response.text()).toBe(body);
-  expect(response.headers.get("ETag")).toBe('"' + "d".repeat(64) + '"');
-  expect(response.headers.get("X-Fudoki-Release")).toBe(releaseId);
+  expect(response.headers.get("ETag")).toBe('"r2-etag"');
+  expect(response.headers.has("X-Fudoki-Release")).toBe(false);
   expect(response.headers.get("Cache-Control")).toContain("immutable");
 });
-test("HEAD and conditional GET omit the file body", async () => {
-  const { bucket, reads } = storage(true);
+test("HEAD and conditional GET omit the package body", async () => {
+  const { bucket } = storage(true);
   expect(
     await (
-      await worker.fetch(request(`/releases/${releaseId}/${file}`, "HEAD"), {
-        RELEASES: bucket,
-      })
+      await worker.fetch(request(`/${key}`, "HEAD"), { RELEASES: bucket })
     ).text(),
   ).toBe("");
-  const conditional = request(`/releases/${releaseId}/${file}`);
-  conditional.headers.set("if-none-match", '"' + "d".repeat(64) + '"');
-  expect((await worker.fetch(conditional, { RELEASES: bucket })).status).toBe(
-    304,
-  );
-  expect(reads.filter((k) => k.endsWith("/expenditure.csv")).length).toBe(1);
+  const conditional = request(`/${key}`);
+  conditional.headers.set("if-none-match", '"r2-etag"');
+  const response = await worker.fetch(conditional, { RELEASES: bucket });
+  expect(response.status).toBe(304);
+  expect(await response.text()).toBe("");
 });
 
 test("release discovery excludes unfinished objects and continues even when a page has no finalized manifests", async () => {

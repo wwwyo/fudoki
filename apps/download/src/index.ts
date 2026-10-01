@@ -104,11 +104,39 @@ async function listReleases(request: Request, bucket: R2Bucket) {
     return reply(503, "RELEASE_LIST_UNAVAILABLE");
   }
 }
+async function packageFile(request: Request, bucket: R2Bucket, key: string) {
+  const file = request.method === "HEAD" ? null : await bucket.get(key);
+  const object = request.method === "HEAD" ? await bucket.head(key) : file;
+  if (!object) return reply(404, "NOT_FOUND");
+  const headers = new Headers({
+    "Content-Type": key.endsWith(".csv")
+      ? "text/csv; charset=utf-8"
+      : "application/json; charset=utf-8",
+    "Content-Length": String(object.size),
+    ETag: object.httpEtag,
+    "Cache-Control": immutable,
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Expose-Headers": "ETag,Content-Length",
+  });
+  if (request.headers.get("if-none-match") === object.httpEtag) {
+    if (file) await file.body.cancel();
+    headers.delete("Content-Length");
+    return new Response(null, { status: 304, headers });
+  }
+  return new Response(file?.body ?? null, { headers });
+}
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     if (request.method !== "GET" && request.method !== "HEAD")
       return reply(405, "METHOD_NOT_ALLOWED");
     const path = new URL(request.url).pathname;
+    if (/^\/fiscal\/\d{6}\/p-[a-f0-9]{64}\/[a-z_]+\.(?:csv|json)$/.test(path)) {
+      try {
+        return await packageFile(request, env.RELEASES, path.slice(1));
+      } catch {
+        return reply(503, "PACKAGE_UNAVAILABLE");
+      }
+    }
     if (path === "/releases") return listReleases(request, env.RELEASES);
     if (path === "/contract")
       return Response.json(
@@ -121,7 +149,7 @@ export default {
         },
       );
     const match =
-      /^\/releases\/(r-[a-f0-9]{32})\/(manifest\.json|catalog\.json|fiscal\/\d{6}\/[a-z_]+\.(?:csv|json))$/.exec(
+      /^\/releases\/(r-[a-f0-9]{32})\/(manifest\.json|catalog\.json)$/.exec(
         path,
       );
     if (!match || !releaseIdSchema.safeParse(match[1]).success)
@@ -134,6 +162,7 @@ export default {
       const attributes =
         file === "manifest.json"
           ? {
+              objectKey: `releases/${releaseId}/manifest.json`,
               sha256: entry.sha,
               bytes: entry.body.byteLength,
               contentType: "application/json; charset=utf-8",
@@ -157,7 +186,7 @@ export default {
         return new Response(request.method === "HEAD" ? null : entry.body, {
           headers,
         });
-      const key = `releases/${releaseId}/${file}`;
+      const key = attributes.objectKey;
       if (request.method === "HEAD") {
         const object = await env.RELEASES.head(key);
         if (!object || object.size !== attributes.bytes)

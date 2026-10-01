@@ -31,6 +31,24 @@ bun run dev
 
 文書種別は budget / supplementary / settlement、金額段階は approved / adjusted / adjusted-before-transfer / executed。決算書にある予算現額と決算額を区別する。dataset は団体・年度・歳入歳出・文書種別・原典版を含み、明細 ID は dataset を含めて一意にする。
 
+## 全体の release と団体別の配布物
+
+全体の release は収録一覧とコード・入力・判断の対応、`packageId` は団体別の配布ファイル全体の内容を識別する。同じ配布物を複数の release から参照し、publish は既存の内容を照合して転送を省く。
+
+```text
+fiscal/<団体コード>/p-<64桁のhash>/
+  datapackage.json
+  expenditure.csv
+  ...
+releases/r-<32桁のhash>/
+  manifest.json   # packages と files[].objectKey で上記を参照
+  catalog.json    # 収録 dataset と団体・配布物の版の対応
+```
+
+団体別 FDP は収録する全年度を含み、CSV の `dataset_id` で年度・文書・原典版を区別する。一年度の更新でもその団体の配布物全体が新しい版になり、他の団体の配布物は再利用する。D1 の派生表は今回の共有対象に含まず、全体の release ごとに保持する。[ADR 0013](../docs/adr/0013-jurisdiction-package-versions.md) を参照。
+
+補正予算の複数原典は別 dataset として識別できるが、現行の取得対象には補正予算を含めていない。第1号・第2号等の号数、差額なのか補正後総額なのか、有効な時点を取得元の宣言で定めてから追加する。同じ年度の当初・補正・決算を自動で足さず、API の集計は同じ団体・年度・歳入歳出から複数 dataset を選んだ場合に拒否する。
+
 ## publish と切り戻し
 
 Cloudflare の操作には mise 管理の `cf` と既存の認証を使う。 Worker の宣言は各 `cloudflare.config.ts`、ビルダーの設定は `wrangler.config.ts`。公開 web は Vite のビルド後に `apps/web/deploy/` の静的 Worker を `cf` で構築・配備する。生成される Build Output は各 `.cloudflare/output/v0/` に入り、Git 管理しない。先に非公開 `fudoki-inputs` と配布用 `fudoki-releases` を用意する。bucket の公開 URL・自動削除 lifecycle は設定しない。入力 bucket は公開 Worker に bind しない。
@@ -65,7 +83,7 @@ publish と rollback は同じ lease・fence・公開世代を使い、期限切
 
 ## 保持・容量・バックアップ
 
-公開版・次の候補・切り戻し用の最低3版を保持する。`publish/control.ts` の `protectedReleases` が active・直近3公開版・処理中候補を返す。自動 cleanup はまだ導入していない。入力と証跡を配布物の削除に連動させない。
+公開版・次の候補・切り戻し用の最低3版を保持する。`publish/control.ts` の `protectedReleases` が active・直近3公開版・処理中候補を返す。自動 cleanup はまだ導入していない。共有配布物は保持中の全 release と処理中候補からの参照が無くなってから削除する。release の削除だけを理由に団体別配布物を削除しない。入力と証跡を配布物の削除に連動させない。
 
 現行全量の D1 用 SQLite は約424 MB、3版の単純推計は約1.27 GB。Free の単一 DB の容量と日次書込上限では全量運用できないため、Workers Paid と候補環境の容量・読取行数・性能の検証が必要。SQLite の計測を D1 の実測として扱わない。[D1 制限](https://developers.cloudflare.com/d1/platform/limits/)、[料金](https://developers.cloudflare.com/d1/platform/pricing/)。
 

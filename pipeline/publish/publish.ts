@@ -80,7 +80,7 @@ export async function publish(
     for (const file of manifest.files) {
       if (!(await verify.existingFile(manifest.releaseId, file.path)))
         await store.put(
-          `releases/${manifest.releaseId}/${file.path}`,
+          file.objectKey,
           join(candidate, file.path),
           file.contentType
         )
@@ -147,7 +147,7 @@ export async function publish(
           .bind(
             manifest.releaseId,
             file.path,
-            `releases/${manifest.releaseId}/${file.path}`,
+            file.objectKey,
             file.sha256,
             file.bytes,
             file.contentType

@@ -31,9 +31,17 @@
 
 新規依存の追加には cooldown 7日を指定した。公式設定ライブラリ 0.17.0・ビルダー 4.137.0 は exact pin、既存の mise CLI 1.0.0-beta.6 は維持した。現在の CLI でローカル D1 query が未対応、ローカル KV/R2 コマンドが書込後に終了しないことを確認したため、その操作だけはビルダーの proxy ライブラリを使う。CLI での本番配備・遠隔 RPC 接続は、下記の公開前検証で実施する。
 
+## 全体の release と団体別配布物の版の分離
+
+[ADR 0013](adr/0013-jurisdiction-package-versions.md) により、団体別配布物を `fiscal/<団体コード>/p-<内容hash>/` に置き、全体の release manifest と catalog から参照する実装に変更した。未変更の団体を複数 release から再利用し、D1 の `files.object_key` に同じキーを記録して API の配布 URL を生成する。D1 の派生表の保持単位は全体の release のままである。
+
+Bun の97テスト・全 workspace の型検査が通過した。新しい全体の release で配布物を再転送しないこと、一団体の変更で他団体のキーが変わらないこと、複数年度・補正の原典版を別 dataset として収録すること、FDP の相対 resource path と API の共有 URL を検査した。補正予算のテストは架空の dataset であり、実際の取得対象には補正予算を追加していない。
+
+全量 dbt build は156項目が成功し、5団体・28 dataset・46 dataset/phase を照合した。`cf dev` のローカル R2 から38ファイルの GET・HEAD・ETag による条件付き取得を確認し、全ファイルの SHA-256・サイズ・content type が manifest と一致した。遠隔 R2 への反映と直接配信への置き換えは下記の未完了条件に残る。
+
 ## 未完了の移行条件
 
-- [ADR 0011](adr/0011-public-r2-distribution.md) の直接配信への変更。現行の download Worker を置き換え、候補記録・内部検証結果を非公開 bucket に分離する。既存の `download.fudoki.dev` を R2 に接続し、CSV/JSON のキャッシュと `/releases/` のレート制限を設定・検証する。`fudoki.dev` は現在のアカウントで active / Free Website と確認したが、R2 の接続とルールは未反映。
+- [ADR 0011](adr/0011-public-r2-distribution.md) の直接配信への変更。現行の download Worker を置き換え、候補記録・内部検証結果を非公開 bucket に分離する。既存の `download.fudoki.dev` を R2 に接続し、CSV/JSON のキャッシュと `/fiscal/`・`/releases/` のレート制限を設定・検証する。`fudoki.dev` は現在のアカウントで active / Free Website と確認したが、R2 の接続とルールは未反映。
 - R2 の有効化。CLI は現在「Please enable R2 through the Cloudflare Dashboard」（HTTP403 / 10042）を返す。cf の account subscription 作成・更新 API は存在するが、R2 の契約 ID と有効化の可否は未確認であり、Dashboard 専用とは断定しない。
 - Workers Paid の確認。全量を Free の日次書込上限内で一度に取り込むことはできず、3版は Free の単一 DB 容量にも収まらない。`cf accounts subscriptions get` で取得した契約一覧は Teams Free のみであり、Workers Paid は未確認。公式の [契約 ID 一覧](https://developers.cloudflare.com/tenant/reference/subscriptions/) と `cf billing rate-plans get WORKERS_PAID` から契約 ID・基本月額 $5 を確認し、`cf accounts subscriptions create --rate-plan-id WORKERS_PAID --frequency monthly --dry-run` で作成リクエストを確認した。dry-run は実際の契約可否を検査せず、契約の作成も行っていない。
 - 原典・取り込みの全量 R2 転送、GET での内容ハッシュ照合、Git の証跡と空のキャッシュからの復元・再構築。現在の入力一覧は `.cache/migration/sources.lock.json` にあり、遠隔保管を検証するまでは正規の Git 入力一覧として固定していない。

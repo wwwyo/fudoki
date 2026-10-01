@@ -46,7 +46,7 @@ beforeEach(async () => {
     sqlite.run('INSERT INTO files VALUES(?,?,?,?,?,?)', [
       id,
       file.path,
-      `releases/${id}/${file.path}`,
+      file.objectKey,
       file.sha256,
       file.bytes,
       file.contentType,

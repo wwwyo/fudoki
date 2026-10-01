@@ -55,9 +55,11 @@ beforeEach(() => {
     judgmentFingerprint: 'd'.repeat(64),
     queryFingerprint: fingerprint,
     totals: [],
+    packages: [],
     files: [
       {
         path: file,
+        objectKey: `releases/${id}/${file}`,
         sha256: hash(content),
         bytes: Buffer.byteLength(content),
         contentType: 'application/json; charset=utf-8',

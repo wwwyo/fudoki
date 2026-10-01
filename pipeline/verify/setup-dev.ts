@@ -55,7 +55,7 @@ try {
       insert.run(
         manifest.releaseId,
         file.path,
-        `releases/${manifest.releaseId}/${file.path}`,
+        file.objectKey,
         file.sha256,
         file.bytes,
         file.contentType

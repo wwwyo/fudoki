@@ -403,14 +403,15 @@ export async function files(
     sha256: string;
     bytes: number;
     content_type: string;
+    object_key: string;
   }>(
     db,
-    `SELECT path,sha256,bytes,content_type FROM files WHERE release_id=?${scope} ORDER BY path`,
+    `SELECT path,object_key,sha256,bytes,content_type FROM files WHERE release_id=?${scope} ORDER BY path`,
     args,
   );
   return result.map((r) => ({
     path: r.path,
-    url: `${baseUrl.replace(/\/$/, "")}/releases/${releaseId}/${r.path}`,
+    url: `${baseUrl.replace(/\/$/, "")}/${r.object_key}`,
     sha256: r.sha256,
     bytes: r.bytes,
     contentType: r.content_type,

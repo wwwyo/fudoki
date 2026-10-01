@@ -213,6 +213,22 @@ test("download URLs come from file metadata without requesting R2 or reading the
     `https://download.example.org/releases/${R1}/catalog.json`,
   );
 });
+test("two releases use the same immutable package URL for unchanged data", async () => {
+  const key = `fiscal/000001/p-${"b".repeat(64)}/expenditure.csv`;
+  for (const release of [R1, R2])
+    sqlite.run("INSERT INTO files VALUES(?,?,?,?,?,?)", [
+      release,
+      "fiscal/000001/expenditure.csv",
+      key,
+      "a".repeat(64),
+      100,
+      "text/csv; charset=utf-8",
+    ]);
+  const first = await files(db, R1, "https://download.example.org", "000001");
+  const next = await files(db, R2, "https://download.example.org", "000001");
+  expect(first).toEqual(next);
+  expect(next[0]?.url).toBe(`https://download.example.org/${key}`);
+});
 
 test("name matching respects case and Unicode representation and accepts Japanese phrases longer than 50 bytes", async () => {
   const long = "児童福祉施設における保育サービスの運営及び施設整備事業";

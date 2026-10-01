@@ -19,7 +19,7 @@ fudoki は日本の地方自治体の**支出を事業単位まで**構造化し
 |---|---|
 | 原典の CSV・PDF、取り込み済み Parquet | 非公開 R2。採用する個別ハッシュとキーは `pipeline/ingestion/fiscal/sources.lock.json` |
 | 採用した入力の証跡 | Git 管理する `pipeline/ingestion/fiscal/provenance/`。lock が相対パス・ハッシュ・サイズを固定 |
-| 団体別の CSV・Fiscal Data Package | release ごとの R2。現行は download Worker、[直接配信への変更](docs/adr/0011-public-r2-distribution.md)は未反映 |
+| 団体別の CSV・Fiscal Data Package | 内容で版を決めた団体別 R2。全体の release から参照。現行は download Worker、[直接配信への変更](docs/adr/0011-public-r2-distribution.md)は未反映 |
 | 検索・集計用の表、公開メタデータ | D1。公開 API と MCP が同じ問い合わせを使う |
 | 系統・検査結果・原典との行対応 | ローカル専用 `pipeline/verify/view/` |
 
@@ -45,7 +45,7 @@ bun run dev                   # 報告を生成し、ローカル検証画面を
 
 ```bash
 bun run dev:api               # 公開 API のローカル Worker
-bun run dev:download          # 配布 Worker。公開 manifest があるファイルだけを配信
+bun run dev:download          # 配布 Worker。団体別の不変ファイル・完成した release の案内を配信
 bun run dev:web               # 公開 UI、5173。検証画面とは別のアプリ
 bun run test
 bun run typecheck:all

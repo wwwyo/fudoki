@@ -15,6 +15,6 @@
 
 CSV・JSON は Cache Rules で明示的にキャッシュ対象にし、固定した版のファイルは長く、更新する版一覧は短く保持する。HTTP の ETag を配布物の SHA-256 と同一視せず、公開前検証では取得した内容と manifest の SHA-256 を照合する。
 
-現在の zone は Free プランであり、レート制限の条件に hostname を指定できないため、配布専用の `/releases/` パスを対象にする。IP ごとの制限値は一括取得と共有 IP の利用を妨げないよう実測で調整し、通常の分析ツールや bot の取得も許容する。レート制限は応答を抑制する手段であり、請求額の上限を保証しない。[レート制限のプラン別機能](https://developers.cloudflare.com/waf/rate-limiting-rules/)。
+現在の zone は Free プランであり、レート制限の条件に hostname を指定できないため、配布専用の `/fiscal/` と `/releases/` パスを対象にする。IP ごとの制限値は一括取得と共有 IP の利用を妨げないよう実測で調整し、通常の分析ツールや bot の取得も許容する。レート制限は応答を抑制する手段であり、請求額の上限を保証しない。[レート制限のプラン別機能](https://developers.cloudflare.com/waf/rate-limiting-rules/)。
 
 現行コードと report の ER 図・R2 構造図は download Worker を使う実装を示す。移行では内部オブジェクトを非公開 bucket へ分離し、配信・publish 検証・ローカルの Cloudflare 検証経路を変更してから独自ドメインを接続する。

@@ -7,6 +7,7 @@ import {
   manifestSchema,
   TABLES,
   canonicalRow,
+  derivePackageId,
   type ReleaseManifest,
 } from '@fudoki/data-contracts'
 import { sha256, type releaseIdentity } from '../release'
@@ -59,7 +60,7 @@ export async function finalizeCandidate(
     caveats: JSON.parse(row.caveats_json as string),
     caveats_json: undefined,
   }))
-  const datasets = (
+  const datasets: Record<string, unknown>[] = (
     await jsonLines(join(directory, 'api/fiscal_datasets.jsonl'))
   ).map((row) => ({
     ...row,
@@ -70,11 +71,48 @@ export async function finalizeCandidate(
     source_json: undefined,
     structure_json: undefined,
   }))
+  const packages: ReleaseManifest['packages'] = []
+  const files: ReleaseManifest['files'] = []
+  for (const code of (await readdir(join(directory, 'fiscal'))).sort()) {
+    if (!/^\d{6}$/.test(code))
+      throw new Error('Unexpected distribution directory')
+    const contents = []
+    for (const name of (
+      await readdir(join(directory, 'fiscal', code))
+    ).sort()) {
+      const path = `fiscal/${code}/${name}`
+      const body = await readFile(join(directory, path))
+      contents.push({
+        path,
+        sha256: sha256(body),
+        bytes: body.length,
+        contentType: name.endsWith('.csv')
+          ? ('text/csv; charset=utf-8' as const)
+          : ('application/json; charset=utf-8' as const),
+      })
+    }
+    const packageId = await derivePackageId(contents)
+    packages.push({
+      jurisdictionCode: code,
+      packageId,
+      datasetIds: datasets
+        .filter((dataset) => dataset.jurisdiction_code === code)
+        .map((dataset) => String(dataset.dataset_id))
+        .sort(),
+    })
+    files.push(
+      ...contents.map((file) => ({
+        ...file,
+        objectKey: `fiscal/${code}/${packageId}/${file.path.split('/')[2]}`,
+      }))
+    )
+  }
   const catalog = {
     schemaVersion: 1,
     releaseId: identity.releaseId,
     jurisdictions,
     datasets,
+    packages,
     amountUnit: 'JPY',
     documents: ['budget', 'supplementary', 'settlement'],
     phases: ['approved', 'adjusted', 'adjusted-before-transfer', 'executed'],
@@ -85,28 +123,10 @@ export async function finalizeCandidate(
     join(directory, 'catalog.json'),
     JSON.stringify(catalog, null, 2) + '\n'
   )
-  const files: ReleaseManifest['files'] = []
-  for (const code of (await readdir(join(directory, 'fiscal'))).sort()) {
-    if (!/^\d{6}$/.test(code))
-      throw new Error('Unexpected distribution directory')
-    for (const file of (
-      await readdir(join(directory, 'fiscal', code))
-    ).sort()) {
-      const path = `fiscal/${code}/${file}`
-      const body = await readFile(join(directory, path))
-      files.push({
-        path,
-        sha256: sha256(body),
-        bytes: body.length,
-        contentType: file.endsWith('.csv')
-          ? 'text/csv; charset=utf-8'
-          : 'application/json; charset=utf-8',
-      })
-    }
-  }
   const body = await readFile(join(directory, 'catalog.json'))
   files.push({
     path: 'catalog.json',
+    objectKey: `releases/${identity.releaseId}/catalog.json`,
     sha256: sha256(body),
     bytes: body.length,
     contentType: 'application/json; charset=utf-8',
@@ -128,6 +148,7 @@ export async function finalizeCandidate(
     schemaVersion: 1,
     ...identity,
     files,
+    packages,
     tables,
     totals: validation.scopeTotals.map(
       ([datasetId, phase, rows, amount]: [string, string, number, number]) => ({
@@ -169,6 +190,17 @@ export async function verifyCandidate(
     if (sha256(body) !== file.sha256 || body.length !== file.bytes)
       throw new Error(`Candidate file differs from manifest: ${file.path}`)
   }
+  for (const pkg of manifest.packages)
+    if (
+      (await derivePackageId(
+        manifest.files.filter((file) =>
+          file.path.startsWith(`fiscal/${pkg.jurisdictionCode}/`)
+        )
+      )) !== pkg.packageId
+    )
+      throw new Error(
+        `Package identity differs from contents: ${pkg.jurisdictionCode}`
+      )
   for (const name of TABLES) {
     const digest = await tableDigest(
       join(directory, 'api', `${name}.jsonl`),

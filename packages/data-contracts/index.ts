@@ -13,6 +13,12 @@ export const TABLES = [
 ] as const;
 export const sha256Schema = z.string().regex(/^[a-f0-9]{64}$/);
 export const releaseIdSchema = z.string().regex(/^r-[a-f0-9]{32}$/);
+export const packageIdSchema = z.string().regex(/^p-[a-f0-9]{64}$/);
+export const distributionKeySchema = z
+  .string()
+  .regex(
+    /^(?:fiscal\/\d{6}\/p-[a-f0-9]{64}\/[a-z_]+\.(?:csv|json)|releases\/r-[a-f0-9]{32}\/catalog\.json)$/,
+  );
 export const directionSchema = z.enum(["expenditure", "revenue"]);
 export const documentKindSchema = z.enum([
   "budget",
@@ -42,6 +48,7 @@ export const fileSchema = z.object({
   path: z
     .string()
     .regex(/^(?:fiscal\/\d{6}\/[a-z_]+\.(?:csv|json)|catalog\.json)$/),
+  objectKey: distributionKeySchema,
   sha256: sha256Schema,
   bytes: z.number().int().nonnegative(),
   contentType: z.enum([
@@ -49,6 +56,36 @@ export const fileSchema = z.object({
     "application/json; charset=utf-8",
   ]),
 });
+export const packageSchema = z.object({
+  jurisdictionCode: z.string().regex(/^\d{6}$/),
+  packageId: packageIdSchema,
+  datasetIds: z.array(z.string().min(1)).min(1),
+});
+export async function derivePackageId(
+  files: Pick<
+    z.infer<typeof fileSchema>,
+    "path" | "sha256" | "bytes" | "contentType"
+  >[],
+): Promise<string> {
+  const contents = [...files]
+    .sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0))
+    .map(({ path, sha256, bytes, contentType }) => ({
+      path,
+      sha256,
+      bytes,
+      contentType,
+    }));
+  const hash = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(JSON.stringify(contents)),
+  );
+  return (
+    "p-" +
+    [...new Uint8Array(hash)]
+      .map((byte) => byte.toString(16).padStart(2, "0"))
+      .join("")
+  );
+}
 export const manifestSchema = z
   .object({
     schemaVersion: z.literal(CONTRACT_VERSION),
@@ -58,6 +95,7 @@ export const manifestSchema = z
     judgmentFingerprint: sha256Schema,
     queryFingerprint: sha256Schema,
     files: z.array(fileSchema).min(1),
+    packages: z.array(packageSchema),
     totals: z
       .array(
         z.object({
@@ -79,6 +117,44 @@ export const manifestSchema = z
     ),
   })
   .superRefine((manifest, context) => {
+    const packages = new Map(
+      manifest.packages.map((pkg) => [pkg.jurisdictionCode, pkg]),
+    );
+    if (packages.size !== manifest.packages.length)
+      context.addIssue({
+        code: "custom",
+        message: "Duplicate jurisdiction package",
+      });
+    const datasets = manifest.packages.flatMap((pkg) => pkg.datasetIds);
+    if (new Set(datasets).size !== datasets.length)
+      context.addIssue({
+        code: "custom",
+        message: "Dataset belongs to multiple packages",
+      });
+    for (const file of manifest.files) {
+      const match = /^fiscal\/(\d{6})\/([a-z_]+\.(?:csv|json))$/.exec(
+        file.path,
+      );
+      const pkg = match ? packages.get(match[1]!) : undefined;
+      const expected =
+        match && pkg
+          ? `fiscal/${pkg.jurisdictionCode}/${pkg.packageId}/${match[2]}`
+          : file.path === "catalog.json"
+            ? `releases/${manifest.releaseId}/catalog.json`
+            : undefined;
+      if (!expected || file.objectKey !== expected)
+        context.addIssue({
+          code: "custom",
+          message: "File key differs from its package or release",
+        });
+    }
+    for (const pkg of manifest.packages)
+      if (
+        !manifest.files.some((file) =>
+          file.path.startsWith(`fiscal/${pkg.jurisdictionCode}/`),
+        )
+      )
+        context.addIssue({ code: "custom", message: "Package has no files" });
     if (
       new Set(manifest.files.map((file) => file.path)).size !==
       manifest.files.length

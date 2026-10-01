@@ -82,7 +82,7 @@ export class Verification {
     const manifest = await this.candidate(releaseId)
     const file = manifest.files.find((f) => f.path === path)
     if (!file) throw new Error('File is not listed in candidate manifest')
-    const object = await this.env.RELEASES.get(`releases/${releaseId}/${path}`)
+    const object = await this.env.RELEASES.get(file.objectKey)
     if (!object) return false
     const actual = await this.hashStream(object.body)
     if (actual.sha256 !== file.sha256 || actual.bytes !== file.bytes)
@@ -132,9 +132,7 @@ export class Verification {
     const manifest = await this.candidate(releaseId)
     const file = manifest.files.find((f) => f.path === path)
     if (!file) throw new Error('File is not listed in candidate manifest')
-    const object = await this.env.RELEASES.get(
-      `releases/${releaseId}/${file.path}`
-    )
+    const object = await this.env.RELEASES.get(file.objectKey)
     if (!object) throw new Error('Candidate file is missing')
     const result = await this.hashStream(object.body)
     if (result.sha256 !== file.sha256 || result.bytes !== file.bytes)
@@ -416,7 +414,7 @@ export class Verification {
       const row = metadata.results.find((r) => r.path === file.path)
       if (
         !row ||
-        row.object_key !== `releases/${releaseId}/${file.path}` ||
+        row.object_key !== file.objectKey ||
         row.sha256 !== file.sha256 ||
         row.bytes !== file.bytes ||
         row.content_type !== file.contentType
@@ -430,14 +428,12 @@ export class Verification {
       file = manifest.files.find((file) => file.path === path)
     if (!file) throw new Error('File is not listed in manifest')
     const response = await this.env.PUBLIC_DOWNLOAD.fetch(
-      new Request(`https://download.internal/releases/${releaseId}/${path}`)
+      new Request(`https://download.internal/${file.objectKey}`)
     )
     if (
       !response.ok ||
-      response.headers.get('ETag') !== `"${file.sha256}"` ||
       Number(response.headers.get('Content-Length')) !== file.bytes ||
-      response.headers.get('Content-Type') !== file.contentType ||
-      response.headers.get('X-Fudoki-Release') !== releaseId
+      response.headers.get('Content-Type') !== file.contentType
     )
       throw new Error(`Download headers differ: ${path}`)
     if (!response.body) throw new Error('Download body is missing')

@@ -48,7 +48,7 @@ try {
     )
       throw new Error('Unexpected distribution file')
     await platform.env.RELEASES.put(
-      `releases/${latest.releaseId}/${file.path}`,
+      file.objectKey,
       await readFile(new URL(file.path, directory)),
       { httpMetadata: { contentType: file.contentType } }
     )

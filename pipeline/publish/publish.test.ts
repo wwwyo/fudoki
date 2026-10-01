@@ -169,6 +169,29 @@ test('a D1 verification failure preserves the prior release and retry checks the
     sqlite.query('SELECT count(*) AS count FROM fiscal_lines').get()
   ).toEqual({ count: 1002 })
 })
+test('another release with unchanged package contents does not upload package files again', async () => {
+  const id = 'r-' + '3'.repeat(32)
+  const next = await fixture(join(directory, id), id)
+  await publish(join(directory, R1), db, store, methods())
+  const uploaded: string[] = []
+  await publish(
+    join(directory, id),
+    db,
+    {
+      async put(key, path, type) {
+        uploaded.push(key)
+        await store.put(key, path, type)
+      },
+    },
+    methods()
+  )
+  expect(uploaded.some((key) => key.startsWith('fiscal/'))).toBe(false)
+  expect(await resolveRelease(db)).toBe(id)
+  expect((await verifier.candidate(R1)).packages).toEqual(next.packages)
+  expect((await verifier.download(id, next.files[0]!.path)).bytes).toBe(
+    next.files[0]!.bytes
+  )
+})
 test('validation evidence is private and verified before activation; corrupted evidence preserves the prior release', async () => {
   const result = await publish(join(directory, R1), db, store, methods())
   const report = objects.get(result.reportKey)!

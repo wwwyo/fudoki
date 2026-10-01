@@ -53,7 +53,7 @@ if (values['prepare-baseline']) {
     const directory = join(CACHE, 'review', sha256(body))
     await mkdir(directory, { recursive: true })
     for (const file of manifest.files) {
-      const result = await fetch(new URL(file.path, url))
+      const result = await fetch(new URL('/' + file.objectKey, url))
       if (!result.ok)
         throw new Error(`Baseline file fetch failed: ${file.path}`)
       const content = new Uint8Array(await result.arrayBuffer())
