@@ -288,6 +288,7 @@ test('verified many-to-many correspondence counts actuals once, applies signed c
   })
   expect(result.changes).toHaveLength(1)
   expect((await budgetHistory(db, { ...input, fundCode: 'missing' })).items).toHaveLength(0)
+  expect((await budgetHistory(db, budgetHistoryQuerySchema.parse({ ...input, fundCode: '' }))).items).toHaveLength(0)
   for (const table of ['fiscal_expenditure_budget_items', 'fiscal_expenditure_budget_changes']) {
     const rows = sqlite.query(`SELECT * FROM ${table}`).all()
     await writeFile(join(directory, 'api', table + '.jsonl'), rows.map((r) => JSON.stringify(r)).join('\n') + '\n')

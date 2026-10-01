@@ -525,11 +525,11 @@ export async function budgetHistory(
       'Jurisdiction does not have a fiscal version'
     )
   const args: (string | number)[] = [version.versionId, input.jurisdictionCode, input.fiscalYear]
-  if (input.fundCode) args.push(input.fundCode)
+  if (input.fundCode !== undefined) args.push(input.fundCode)
   const direction = input.direction
   const items = await rows<Record<string, unknown>>(
     db,
-    `SELECT * FROM fiscal_${direction}_budget_items WHERE version_id=? AND jurisdiction_code=? AND fiscal_year=?${input.fundCode ? " AND fund_code=?" : ""} ORDER BY budget_item_id LIMIT 10001`,
+    `SELECT * FROM fiscal_${direction}_budget_items WHERE version_id=? AND jurisdiction_code=? AND fiscal_year=?${input.fundCode !== undefined ? " AND fund_code=?" : ""} ORDER BY budget_item_id LIMIT 10001`,
     args
   )
   if (items.length > 10000)

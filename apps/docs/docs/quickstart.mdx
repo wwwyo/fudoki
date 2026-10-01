@@ -36,6 +36,8 @@ curl 'https://api.fudoki.dev/v0/fiscal-datasets/aggregate' \
 
 ## 予算の変更履歴を取得する
 
+年度と `fundCode` は選んだ文書の値に置き換えます。原典に会計コードがない場合は空文字で指定できます。`fundCode` を省略すると全会計を対象にします。
+
 ```bash
 curl 'https://api.fudoki.dev/v0/fiscal-budget-history/query' \
   -H 'Content-Type: application/json' \
