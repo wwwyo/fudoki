@@ -58,6 +58,6 @@ test('responses from different releases cannot form one tree', () => {
     { jurisdictionCode: '000001', versionId: 'v-' + 'b'.repeat(64) },
   ]
   expect(() => buildCofogTree(division, group, classification)).toThrow(
-    'release or scope'
+    'versions or scope'
   )
 })
