@@ -15,11 +15,11 @@ bun run dev
 
 `pipeline:inputs` は schema 2 の `ingestion/fiscal/sources.lock.json` が指定する個別キー・SHA-256・サイズを検査し、`.cache/inputs/<入力一覧のハッシュ>/raw/` に表と証跡を復元する。表は R2、証跡は lock と同じディレクトリの `provenance/<論理入力パス>/provenance.json` から読む。原典は `.cache/objects/inputs/origin/sha256/<hash>` に保存する。入力欠落・異なるハッシュ・文書版と証跡の不一致は失敗とする。Git の証跡が無い場合に R2 で補わない。build は自治体サイトにも Cloudflare にも接続しない。
 
-`build.ts` は dbt build、FDP descriptor、Git manifest、内部の検査記録の生成・検査を順に実行する。配布 CSV と D1 取込表の数値・識別子・分類は dbt の marts が確定する。完成した候補は `build/releases/r-<hash>/`。manifest とファイルを照合する `complete.json` がある候補だけを publish できる。完成済み候補は書き換えない。候補の `manifest.json` を `publish/manifest.json` に反映し、D1 の照合情報は候補の `verification.json` に分ける。
+`build.ts` は dbt build、FDP descriptor、Git manifest、内部の検査記録の生成・検査を順に実行する。配布 CSV と D1 取込表の数値・識別子・分類は dbt の marts が確定する。完成した候補は `.build/releases/r-<hash>/`。manifest とファイルを照合する `complete.json` がある候補だけを publish できる。完成済み候補は書き換えない。候補の `manifest.json` を `publish/manifest.json` に反映し、D1 の照合情報は候補の `verification.json` に分ける。
 
-`build/latest.json` はローカルで最後に検査した候補の参照であり、公開版の指定ではない。warehouse・dbt の manifest/検査結果・ローカル報告も `build/` に入る。Git 管理しない。
+`.build/latest.json` はローカルで最後に検査した候補の参照であり、公開版の指定ではない。warehouse・dbt の manifest/検査結果・ローカル報告も `.build/` に入る。Git 管理しない。
 
-`bun run pipeline:build --rebuild` は同じコード・固定入力を別の作業場所で再構築し、完成済み候補の manifest と一致することを検査する。`build/warehouse.json` が現在の warehouse と候補の対応を記録し、報告の取り違えを防ぐ。DuckDB が参照する再構築用ファイルも `build/` に残す。
+`bun run pipeline:build --rebuild` は同じコード・固定入力を別の作業場所で再構築し、完成済み候補の manifest と一致することを検査する。`.build/warehouse.json` が現在の warehouse と候補の対応を記録し、報告の取り違えを防ぐ。DuckDB が参照する再構築用ファイルも `.build/` に残す。
 
 ## 新しい原典の取得
 
@@ -46,7 +46,7 @@ fiscal/<団体コード>/p-<64桁のhash>/
   ...
 Git: pipeline/publish/manifest.json
   # 団体・年度・文書・出典・注意点・packages・files[].objectKey
-ローカル: build/releases/r-<内部構築ID>/verification.json
+ローカル: .build/releases/r-<内部構築ID>/verification.json
   # D1 全行照合のための chunk hash・件数・合計
 ```
 
@@ -109,7 +109,7 @@ uv run python -m ingestion.inputs restore-backup --lock pipeline/ingestion/fisca
 
 `bun run dev` の view は 127.0.0.1:5174 のみで動かす。`bun run pdf:layer` は固定済み PDF から頁画像・文字層・行対応を `.cache/pdf/` に作る。最新の PDF を再取得せず、build / publish の前提にしない。
 
-公開 web は 5173、API は 8787、download は 8788。`FUDOKI_API_PORT` で API のポートを変更できる。`dev:setup` は API を停止した状態で、`build/candidate.sqlite` を自分の開発 Worker のローカル D1 にコピーする。公開画面は報告や原典を読まない。公開 web と view の UI は独立している。
+公開 web は 5173、API は 8787、download は 8788。`FUDOKI_API_PORT` で API のポートを変更できる。`dev:setup` は API を停止した状態で、`.build/candidate.sqlite` を自分の開発 Worker のローカル D1 にコピーする。公開画面は報告や原典を読まない。公開 web と view の UI は独立している。
 
 `bun run dev:setup:download` は完成済み候補を検査してからローカル R2 に団体別配布ファイルだけを入れる。続いて `bun run dev:download` で配布 URL を確認できる。遠隔 R2 への転送は行わない。
 
@@ -121,7 +121,7 @@ fixture は `verify/fixture.ts` にある架空団体の501行で、境界をま
 
 GitHub の `FUDOKI_REVIEW_BASELINE_URL` に比較元の Git commit に固定した raw manifest URL を指定する。初回公開だけは URL を空にして `FUDOKI_REVIEW_INITIAL_RELEASE=true` を明示する。比較元の取得失敗や改変を初回公開として扱わない。公開切替後は比較元 URL を D1 に記録した公開中の Git manifest URL へ更新する。`FUDOKI_DOWNLOAD_BASE_URL` は配布ファイルの origin で、既定は `https://download.fudoki.dev`。
 
-`bun run pipeline/verify/summary.ts --prepare-baseline` が比較元を `.cache/review/` に固定し、`bun run pipeline/verify/summary.ts` が `build/review-summary.json` と Markdown を生成する。ローカルの完成済み候補との比較には `--baseline <候補ディレクトリ>` を使える。
+`bun run pipeline/verify/summary.ts --prepare-baseline` が比較元を `.cache/review/` に固定し、`bun run pipeline/verify/summary.ts` が `.build/review-summary.json` と Markdown を生成する。ローカルの完成済み候補との比較には `--baseline <候補ディレクトリ>` を使える。
 
 変更報告は団体・年度・歳入歳出・文書・段階ごとの行数と円金額、追加・削除された明細 ID、金額変更、分類変更の行数と変更前後の金額を含む。原典の版が変わって ID が交代した場合、同じ明細との対応を推定せず追加・削除として示す。注意点・原典・出典・利用条件・名称・分類規則等の変更前後の内容も JSON に記録し、CI の artifact と概要から確認できる。
 

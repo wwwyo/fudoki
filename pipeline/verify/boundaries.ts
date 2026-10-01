@@ -9,7 +9,7 @@ async function files(directory: string): Promise<string[]> {
       [
         'node_modules',
         'dist',
-        'build',
+        '.build',
         '.cache',
         '.wrangler',
         '.cloudflare',

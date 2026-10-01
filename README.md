@@ -42,7 +42,7 @@ bun run pipeline:build        # ネットワークを使わず dbt・FDP・manif
 bun run dev                   # 報告を生成し、ローカル検証画面を 127.0.0.1:5174 で起動
 ```
 
-`pipeline:build` の結果は `pipeline/build/releases/<release_id>/` に入り、公開中のデータは変わらない。`pipeline:publish publish --release-id <release_id>` が完成済みの候補を転送・照合し、D1 の公開参照を切り替える。publish は build を再実行しない。API や web の deploy はコードだけを扱う。
+`pipeline:build` の結果は `pipeline/.build/releases/<release_id>/` に入り、公開中のデータは変わらない。`pipeline:publish publish --release-id <release_id>` が完成済みの候補を転送・照合し、D1 の公開参照を切り替える。publish は build を再実行しない。API や web の deploy はコードだけを扱う。
 
 ```bash
 bun run dev:api               # 公開 API のローカル Worker

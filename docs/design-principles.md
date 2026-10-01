@@ -79,7 +79,7 @@ CC BY が求める帰属を下流が落とす。層ごとの宣言は `docs/data
 bun run deploy:web    # vite build → cf deploy
 ```
 
-ローカル検証画面は `pipeline/verify/view/` にあり、報告は `pipeline/build/report/`、PDF 閲覧レイヤは `pipeline/.cache/pdf/` に置く。公開 web の配信物には含めない。
+ローカル検証画面は `pipeline/verify/view/` にあり、報告は `pipeline/.build/report/`、PDF 閲覧レイヤは `pipeline/.cache/pdf/` に置く。公開 web の配信物には含めない。
 
 `apps/web` の運用ハマりどころ（デプロイ後の確認方法・`DESIGN.md` に何を書くか）は
 `.agents/skills/web-frontend-ops/`（session-retro が維持）を参照。
@@ -111,7 +111,7 @@ PDF の抽出は1本あたり数十秒かかるので、**抽出を走らせる�
 | 配布 CSV/FDP/catalog/manifest | release ごとの R2 | 管理しない |
 | D1 の検索用表・公開メタデータ | D1 | schema と生成コードだけ |
 | 復元済み入力・PDF/OCR キャッシュ | pipeline/.cache/ | 管理しない |
-| DuckDB・dbt manifest・検査結果・ローカル報告 | pipeline/build/ | 管理しない |
+| DuckDB・dbt manifest・検査結果・ローカル報告 | pipeline/.build/ | 管理しない |
 
 原典と証跡を公開 Worker へ bind しない。公開済み release の再構築に必要な入力を保持し、配布物の cleanup に連動させない。既存 data/ は遠隔保管・復元を確認してから tracking を外す。
 

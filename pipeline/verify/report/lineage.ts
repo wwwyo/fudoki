@@ -21,6 +21,7 @@
  * npm の binding を足さずに済む。
  */
 import { readFileSync } from 'node:fs'
+import { DBT_TARGET, WAREHOUSE } from '../../paths'
 import { join, resolve, resolve as resolvePath } from 'node:path'
 import { provenanceForSource, STAGES } from './common'
 import type {
@@ -36,8 +37,7 @@ import type {
 } from './common'
 
 export const ROOT = resolve(import.meta.dirname, '../..')
-export const TARGET = join(ROOT, 'build/dbt')
-const WAREHOUSE = join(ROOT, 'build/warehouse.duckdb')
+export const TARGET = DBT_TARGET
 
 export type OriginMember = {
   src: Node

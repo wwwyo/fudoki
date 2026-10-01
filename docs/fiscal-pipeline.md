@@ -1,7 +1,7 @@
 # ① 予算・決算パイプライン
 
 
-保存先・build/publish の現行手順は [pipeline/README.md](../pipeline/README.md) を参照。原典 CSV/PDF は非公開 R2、入力一覧は ingestion の sources.lock.json、ローカル生成物は .cache/ と build/ に置く。
+保存先・.build/publish の現行手順は [pipeline/README.md](../pipeline/README.md) を参照。原典 CSV/PDF は非公開 R2、入力一覧は ingestion の sources.lock.json、ローカル生成物は .cache/ と .build/ に置く。
 
 ⚠️ **この文書に個別の団体の話を書かない。** 団体固有の実測・原典の癖・注意は
 `pipeline/ingestion/fiscal/jurisdictions/<団体コード>.md` に書く（取得元の宣言の隣）。
@@ -61,7 +61,7 @@ CC BY 4.0 で配ることは**できる**。だがそれは「配ってよい条
 | | 単位 | 中身 |
 |---|---|---|
 | `.cache/inputs/<snapshot>/raw/` | (団体, 年度, direction) | 取り込み済み Parquet。原典の値・単位を保つ |
-| `build/releases/<release>/fiscal/<団体>/` | 団体ごと・**全年度** | 正本（`expenditure` / `revenue`）と判断（`cofog` / `cofog_rules` / `project_names`） |
+| `.build/releases/<release>/fiscal/<団体>/` | 団体ごと・**全年度** | 正本（`expenditure` / `revenue`）と判断（`cofog` / `cofog_rules` / `project_names`） |
 
 **正本と判断はリソースで分ける。ファイルは混ぜない。**
 `expenditure.csv` は原典と突き合わせて検証できるが、`cofog.csv` には突き合わせる相手がいない。
@@ -70,7 +70,7 @@ CC BY 4.0 で配ることは**できる**。だがそれは「配ってよい条
 
 ⚠️ **団体をまたぐ結合ファイルは作らない。** 以前は判断だけを `derived/` へ団体をまたいで1つに集めていたが、
 横断が派生でしか成立しないという主張自体が誤りだった。実際には団体ごとのファイルを1行の glob で読める
-（`read_csv('pipeline/build/releases/<release>/fiscal/*/cofog.csv')`）。横断の問い合わせは API 側の仕事で、
+（`read_csv('pipeline/.build/releases/<release>/fiscal/*/cofog.csv')`）。横断の問い合わせは API 側の仕事で、
 配布物を1つに畳む理由にならない。むしろ結合ファイルは、
 **正本ごとに違うライセンスと出典を1つのライセンス表示に潰す**という害がある。
 判断を各団体のパッケージへ置けば、その団体の `licenses` / `sources` / `modifications` がそのまま効く。

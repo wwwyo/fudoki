@@ -49,7 +49,7 @@ flowchart LR
   W["apps/web：公開画面"] --> A
 ```
 
-実行の境界は **build と publish** とする。build は固定したローカル入力から dbt と説明ファイルの生成を実行するスクリプトで、結果を `pipeline/build/` に置く。publish はその結果を R2/D1 に反映し、取込後の検査を経て公開版を切り替える。build だけでは公開中のデータは変わらない。
+実行の境界は **build と publish** とする。build は固定したローカル入力から dbt と説明ファイルの生成を実行するスクリプトで、結果を `pipeline/.build/` に置く。publish はその結果を R2/D1 に反映し、取込後の検査を経て公開版を切り替える。build だけでは公開中のデータは変わらない。
 
 表の変換・検査と、配布 CSV・D1 用の表の生成は dbt の marts までに完了する。現行の marts は既に CSV を書き出しており、その CSV をそのまま配布する。FDP の descriptor・公開メタデータの JSON・配布ファイル一覧とハッシュを記録する manifest の生成は `fdp/`、報告とローカル画面は `verify/` に置く。build は dbt と `fdp/` の処理を呼び出す。報告生成と view の起動は別のコマンドで行う。
 
@@ -79,7 +79,7 @@ flowchart LR
 │   │   ├── report/                  # manifest・検査結果から報告を作る
 │   │   └── view/                    # ローカル専用の検証画面とデータ口
 │   ├── .cache/                      # 復元済みの入力・OCR結果・PDF閲覧レイヤ
-│   └── build/                       # warehouse・dbt出力・配布候補・報告
+│   └── .build/                       # warehouse・dbt出力・配布候補・報告
 ├── packages/
 │   ├── fiscal/                      # 予算・決算の純粋な集計・型・名称
 │   ├── data-contracts/              # pipeline と API が共有する保存形式の契約
@@ -91,7 +91,7 @@ flowchart LR
 └── mise.toml                       # ツールの版
 ```
 
-これは責務の配置であり、全ディレクトリを独立したパッケージにする意味ではない。build は実行スクリプト、`pipeline/build/` は生成結果のディレクトリである。収録範囲・出典・注意点と配布物の参照は一つの manifest にまとめ、catalog を別ファイルにしない。
+これは責務の配置であり、全ディレクトリを独立したパッケージにする意味ではない。build は実行スクリプト、`pipeline/.build/` は生成結果のディレクトリである。収録範囲・出典・注意点と配布物の参照は一つの manifest にまとめ、catalog を別ファイルにしない。
 
 ## Detailed Design
 
@@ -234,7 +234,7 @@ API はリクエストの最初に版を一度だけ解決し、そのリクエ�
 
 ファイル配信は公開 R2 bucket を `download.fudoki.dev` に接続して直接提供する。API は D1 の `fiscal_package_files` を読み、解決した自治体データ版の不変のダウンロード URL とファイル属性を返す。manifest の URL は D1 の `fiscal_publications.manifest_url` に記録した Git commit 固定の URL を返す。API Worker に配布用の R2 binding や body の転送処理は持たせない。配布経路の更新は [ADR 0011](adr/0011-public-r2-distribution.md) に記録した。現行の `apps/download/` はまだ置き換えていない。
 
-公開 bucket には団体別の配布ファイルだけを置く。原典・取り込みは非公開入力 bucket、採用証跡と最新の manifest は Git、候補・検証結果はローカルの `build/` に置く。公開一覧を読む経路は Git とし、ダウンロードは R2 の固定キーで行う。公開 API と Git の状態が異なる場合、実際の公開状態は D1 の参照で判断する。
+公開 bucket には団体別の配布ファイルだけを置く。原典・取り込みは非公開入力 bucket、採用証跡と最新の manifest は Git、候補・検証結果はローカルの `.build/` に置く。公開一覧を読む経路は Git とし、ダウンロードは R2 の固定キーで行う。公開 API と Git の状態が異なる場合、実際の公開状態は D1 の参照で判断する。
 
 キャッシュ・WAF を使うため、R2 と同じアカウントで管理する既存の `fudoki.dev` のサブドメインを用いる。新しい登録ドメインの購入は不要で、`r2.dev` の入口は無効にする。CSV・JSON を Cache Rules で明示的に対象にし、団体別の不変ファイルは長くキャッシュする。現在の Free zone のレート制限では hostname 条件を使えないため、配布専用の `/fiscal/` パスを対象にする。IP ごとの値は一括取得を妨げないよう測定して調整する。[R2 の公開 bucket](https://developers.cloudflare.com/r2/buckets/public-buckets/)、[レート制限のプラン別機能](https://developers.cloudflare.com/waf/rate-limiting-rules/)。
 
@@ -270,7 +270,7 @@ ingestion は取得した原典の CSV・PDF のバイト列をそのまま非�
 
 ローカルキャッシュは R2 から復元した原典・取り込み済みの表のコピーであり、消しても固定した入力一覧から復元できる。原典の保存先とは区別し、毎回のダウンロードを省くために使う。PDF の OCR 結果・頁画像・閲覧レイヤなどの派生データも、毎回の抽出や描画を省くためにローカルで再利用できる。これらの生成キャッシュは原典のハッシュ・生成処理の版・設定で区切り、処理を変更したときに古い結果を使わない。抽出行との対応を持つ閲覧レイヤには、参照する取り込み済み表のハッシュも含める。R2 に固定保存した取り込み済みの表を変える場合は、別途生成・検査して Git の入力一覧を更新する。
 
-再利用のためのコピーと生成キャッシュは `pipeline/.cache/`、一回の build が作る warehouse・dbt の出力・配布候補・報告は `pipeline/build/` に分け、両方とも Git 管理外にする。キャッシュの整理で公開前の候補や検査結果を削除しない。build の出力も再生成できるが、実行中の build や publish が参照するものは保持する。
+再利用のためのコピーと生成キャッシュは `pipeline/.cache/`、一回の build が作る warehouse・dbt の出力・配布候補・報告は `pipeline/.build/` に分け、両方とも Git 管理外にする。キャッシュの整理で公開前の候補や検査結果を削除しない。build の出力も再生成できるが、実行中の build や publish が参照するものは保持する。
 
 CI はこの入力復元を先に実行し、その後の dbt と説明ファイル生成の検査をネットワークなしで実行する。非公開 R2 の読取権限が必要なので、権限のある CI では固定した全量入力で検査し、権限のない fork PR では Git に置いた小さな公開可能な fixture による検査と区別する。fixture の成功を全量検証済みと表示しない。原典の再取得は CI の build に含めない。
 
@@ -322,7 +322,7 @@ raw や配布物を tracking から外しても過去の Git 履歴のサイズ�
 
 web と view の UI は共有しない。部品・テーマ・色・金額や割合の表示形式は各アプリで管理し、view の分離時に必要な既存 UI は view 側へコピーする。利用者向けの公開画面と運営者向けの検証画面を、それぞれの用途に合わせて変更できるようにする。データの型・集計規則・分類名称は引き続き共有し、見せ方の違いで数字や分類の意味を変えない。
 
-view は `/pipeline/` と `/pipeline/<code>/` を入口にし、公開 web と別のループバックポートで動かす。公開 web の dev は 5173 を使う。PDF 閲覧レイヤは `pipeline/.cache/`、報告は `pipeline/build/` に置き、公開配信物へコピーしない。検証ページは sitemap を生成せず、公開 web が自分の公開 URL だけを生成する。
+view は `/pipeline/` と `/pipeline/<code>/` を入口にし、公開 web と別のループバックポートで動かす。公開 web の dev は 5173 を使う。PDF 閲覧レイヤは `pipeline/.cache/`、報告は `pipeline/.build/` に置き、公開配信物へコピーしない。検証ページは sitemap を生成せず、公開 web が自分の公開 URL だけを生成する。
 
 ### ツール設定と実行順序を一箇所で管理する
 
@@ -343,10 +343,10 @@ mise のツールの版、Python 3.13、exact ピン留めと更新時の 7 日 
 - `dev:web` / `dev:api`: 公開アプリの開発。API は release fixture をローカル D1 に読み込んで動かす。直接配信のローカル検証も Cloudflare の R2 実行環境を使い、配布 fixture の HTTP 取得を検査する。現行の `dev:download` は置き換え対象。
 - `build:api` / `deploy:api`: API のコードを構築・配信。配布物の全量生成を実行しない。
 
-生成結果の配置は以下とする。`pipeline/build.ts` はコードであり、`pipeline/build/` の中には置かない。
+生成結果の配置は以下とする。`pipeline/build.ts` はコードであり、`pipeline/.build/` の中には置かない。
 
 ```text
-pipeline/build/
+pipeline/.build/
 ├── warehouse.duckdb                # dbt が使うローカル DB
 ├── dbt/                            # compiled SQL・manifest・検査結果
 ├── builds/<build_id>/          # 一回の build の公開候補

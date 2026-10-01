@@ -65,8 +65,9 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: fiscal-release-validation
+          include-hidden-files: true
           path: |
-            pipeline/build/review-summary.json
-            pipeline/build/review-summary.md
+            pipeline/.build/review-summary.json
+            pipeline/.build/review-summary.md
             pipeline/publish/manifest.json
-            pipeline/build/releases/*/verification.json
+            pipeline/.build/releases/*/verification.json

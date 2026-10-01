@@ -14,7 +14,9 @@ __pycache__/
 *.sqlite-wal
 *.sqlite-shm
 dist/
+# Cloudflare tooling uses its own default build directory.
 build/
+.build/
 .cache/
 .http-cache/
 .wrangler/

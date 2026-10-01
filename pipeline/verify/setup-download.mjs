@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import config from '../../apps/download/cloudflare.config.ts'
 
-const build = new URL('../build/', import.meta.url)
+const build = new URL('../.build/', import.meta.url)
 const latest = JSON.parse(await readFile(new URL('latest.json', build), 'utf8'))
 if (!/^r-[a-f0-9]{32}$/.test(latest.releaseId))
   throw new Error('A verified local release is required')

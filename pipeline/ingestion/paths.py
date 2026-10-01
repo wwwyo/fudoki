@@ -8,7 +8,7 @@ from pathlib import Path
 PIPELINE = Path(__file__).resolve().parents[1]
 REPO = PIPELINE.parent
 CACHE = PIPELINE / '.cache'
-BUILD = PIPELINE / 'build'
+BUILD = PIPELINE / '.build'
 LATEST = json.loads((BUILD / 'latest.json').read_text()) if (BUILD / 'latest.json').exists() else None
 canonical_lock = PIPELINE / 'ingestion/fiscal/sources.lock.json'
 INPUT_LOCK = Path(os.environ.get('FUDOKI_INPUT_LOCK', canonical_lock if canonical_lock.exists() else (LATEST or {}).get('inputLock', canonical_lock))).resolve()
