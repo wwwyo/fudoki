@@ -26,7 +26,7 @@ export function buildCofogTree(
     versionKey(division) !== versionKey(classification) ||
     !division.total
   )
-    throw new Error('COFOG responses differ in release or scope')
+    throw new Error('COFOG responses differ in versions or scope')
   const total = division.total.amount
   function node(
     cell: AggregateResponse['cells'][number],
