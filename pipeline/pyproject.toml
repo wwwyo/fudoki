@@ -1,7 +1,7 @@
 [project]
 name = "fudoki-pipeline"
 version = "0.1.0"
-description = "fudoki の取得層。取得元から原典を無加工のまま data/raw/ へ Parquet で落とす"
+description = "風土記の取得層。原典を非公開 R2 に保存し、取り込み表を Parquet として固定する"
 # dbt-duckdb 1.11.0 は classifiers が 3.13 止まりで 3.14 を宣言していないため上限を切る
 requires-python = ">=3.13,<3.14"
 # exact ピン留め（supply chain リスクを避けるため範囲指定は使わない）
