@@ -51,6 +51,13 @@ _Avoid_: 成果物、出力
 原典をいつ・どこから・どの版の手順で取り込み、どう確かめたかの記録。
 _Avoid_: ログ
 
+**自治体データ版（jurisdiction version）**:
+一団体の収録範囲・提供用データ・説明・配布参照を固定した内容の版。配布ファイルだけの版とは区別する。
+
+**公開一覧（publication）**:
+公開対象の団体と、それぞれの自治体データ版の組合せを固定した一覧。
+_Avoid_: 全体のデータ版、構築版
+
 ## ディレクトリ構造
 
 ```
@@ -110,4 +117,4 @@ uv add --exclude-newer $(date -v-7d +%Y-%m-%d) <package>
 - データ源の実測 → `docs/budget-availability.md` / `docs/kkj-api-notes.md` / `docs/fdp-spec-notes.md` / `docs/tokyo-survey.md`
 - 設計の記録 → `docs/prd/<topic>/`（PRD）・`docs/design-doc-<topic>.md`（単体の設計書）・`docs/adr/`（決定）。判断の記録はコードと同じ寿命を持ち、git 管理する
 
-全体設計・公開切替・保持条件 → `docs/design-doc-monorepo.md`。実行手順 → `pipeline/README.md`。移行の検証記録と未完了項目 → `docs/monorepo-migration.md`。
+全体設計 → `docs/design-doc-monorepo.md`。自治体別のデータ版・公開切替・保持条件の再設計 → `docs/design-doc-jurisdiction-versions.md`（実装未完了）。現行の実行手順 → `pipeline/README.md`。移行の検証記録と未完了項目 → `docs/monorepo-migration.md`。

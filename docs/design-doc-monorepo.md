@@ -2,6 +2,8 @@
 
 2026-09-30 時点の実装を確認して合意した設計。実装・移行の検証状況は [移行記録](monorepo-migration.md)、現行コマンドは [pipeline/README.md](../pipeline/README.md) を参照。
 
+2026-10-01 に、D1 の全体構築版による明細複製を廃止する [自治体データ版と公開一覧の再設計](design-doc-jurisdiction-versions.md) を採用した。以下の保存・公開の説明は再設計後の目標とし、現行コードの `release_id`・CLI・schema の置き換えは未完了である。
+
 ## Objectives
 
 - **Goal**: 取得・変換・書き出し・公開・ローカル検証を `pipeline/` にまとめる。原典の CSV・PDF、取り込み済みの表、大きな配布物、API の参照データを Git 管理の対象にせず、R2 と D1 に保管・公開する。採用した入力の証跡は Git でレビューする。API がファイルの分割方式を知らずに検索・集計できるようにする。
@@ -121,7 +123,7 @@ API 用の保存形式の schema・テーブル定義・契約版は `packages/d
 
 dataset は団体・年度・歳入歳出・文書種別・採用した原典の版を識別できるようにする。 複数年度は別 dataset、当初予算と補正予算と決算も別 dataset として扱う。補正予算は `documentKind = supplementary` として識別できるが、現行の取得対象には含めていない。第1号・第2号等の号数、金額が差額か補正後総額か、有効な時点は原典ごとの宣言が必要であり、原典ハッシュだけで推測しない。これらの宣言・取得設定は補正予算を収録するときに追加する。別の予算書と決算書の行は、階層名が似ていても自動で同じ明細と扱わない。明細は所属する dataset を含めて識別し、団体・年度・共通科目等の比較軸は中間処理で揃える。
 
-明細の識別子は配布物・DB・API を通して `fiscal_line_id` に統一する。`fiscal_line_id` は dataset の識別情報を含み、一つの release 内で dataset をまたいでも一意とする。API は `listFiscalDatasets`・`getFiscalDataset`・`getFiscalLines`・`searchFiscalLines`・`aggregateFiscalDatasets` 等、MCP は対応する `list_fiscal_datasets` 等の名称に揃える。既存名の alias や互換用の列は設けない。FDP の resource schema・主キー・外部キー・財政上の役割の記述も新しい列名に合わせる。
+明細の識別子は配布物・DB・API を通して `fiscal_line_id` に統一する。`fiscal_line_id` は dataset の識別情報を含み、一つの自治体データ版内で dataset をまたいでも一意とする。API は `listFiscalDatasets`・`getFiscalDataset`・`getFiscalLines`・`searchFiscalLines`・`aggregateFiscalDatasets` 等、MCP は対応する `list_fiscal_datasets` 等の名称に揃える。既存名の alias や互換用の列は設けない。FDP の resource schema・主キー・外部キー・財政上の役割の記述も新しい列名に合わせる。
 
 ### API がファイルの組合せを管理せずに問い合わせる
 
@@ -129,19 +131,20 @@ dataset は団体・年度・歳入歳出・文書種別・採用した原典の
 
 現在の `agg/<団体>/<年度>/<歳入歳出>/<段階>/<会計>/...json` というパスを問い合わせ条件として使う構造を廃止する。Worker の procedure は入力検査・認可・出典の選択・応答検査を持ち、問い合わせの実行を `apps/api/src/data/` に集める。
 
-表の境界は以下とする。団体マスタは公開版から独立させ、提供用の派生データを `release_id` で区切る。
+表の境界は以下とする。共通マスタは版から独立させ、提供用の派生データを自治体別の `version_id` で区切る。公開一覧は団体と版の参照だけを持ち、明細を複製しない。
 
-- `releases` と `active_release`: 構築版・契約版・検査記録のハッシュ・Git manifest の不変 URL・公開状態と、現在公開する版。
-- `jurisdictions`: 団体コードを主キーとする共通マスタ。名称・OCD ID を持ち、`release_id` は持たない。Git の `packages/jurisdictions/jurisdictions.json` から生成する。
-- `release_jurisdictions`: 公開版に収録した団体の情報。団体マスタを外部キーで参照し、注意点と、その版で採用した名称・OCD ID の記録を持つ。マスタを更新しても公開中・過去の API の説明を変えないための記録である。
-- `fiscal_datasets`: 団体・年度・歳入歳出・文書種別・原典の版・利用条件・注意点・収録範囲・実在する金額段階。`release_id / jurisdiction_code` で `release_jurisdictions` を参照する。JSON が必要な説明項目は、検索対象の列と区別して保存する。
+- `jurisdiction_versions`: 一団体の内容を固定した版。団体コード・契約版・配布物の版と、その版で採用した名称・OCD ID・注意点を持つ。
+- `publications` と `publication_members`: 公開する団体と各自治体データ版の組合せ、採用した Git manifest の不変 URL、公開・保持状態。公開ごとに増えるのは小さな対応一覧である。
+- `publish_control`: 排他実行の状態と、現在の `active_publication_id`・切替世代。現行 `releases`・`active_release`・`release_history` は廃止する。
+- `jurisdictions`: 団体コードを主キーとする共通マスタ。名称・OCD ID を持ち、版 ID は持たない。Git の `packages/jurisdictions/jurisdictions.json` から生成する。
+- `fiscal_datasets`: 団体・年度・歳入歳出・文書種別・原典の版・利用条件・注意点・収録範囲・実在する金額段階。`version_id / jurisdiction_code` で自治体データ版を参照する。JSON が必要な説明項目は、検索対象の列と区別して保存する。
 - `fiscal_lines`: 原典由来の明細と分類の割当結果。所属 dataset・明細識別子・会計に加え、`cofog_code` を分類マスタへの外部キーとして持つ。分類状態・割当規則・根拠・連結の判断も明細に保持する。別の文書の行を同一 ID にまとめない。
-- `amounts`: 明細×金額段階の金額。一つの明細に複数の段階があることを保ち、主キーは `release_id / fiscal_line_id / phase` とする。
+- `amounts`: 明細×金額段階の金額。一つの明細に複数の段階があることを保ち、主キーは `version_id / fiscal_line_id / phase` とする。
 - `cofog_codes`: コード・名称・階層・親コードを持つ COFOG 1999 の共通マスタ。公開版に依存しない。`packages/fiscal/detail.ts` の名称定義を正本とし、現在使用するコードと祖先の37件を生成する。全分類を収録した一覧ではない。
 - `line_hierarchy` と `line_dimensions`: 団体ごとの階層順と追加の同一性の軸。共通の階層一覧から順序を推測しない。
 - `names` と `files`: 現在検索対象にしている名称と、R2 の配布ファイルのキー・サイズ・SHA-256・content type。
 
-団体マスタは publish 時に共通の表へ更新し、7表の公開版別データとは別に検査する。候補の公開が失敗してもマスタの更新は残り得るが、公開 API は `release_jurisdictions` の記録を読むため説明は変わらない。切り戻しでも当時の記録を読む。[ADR 0015](adr/0015-jurisdiction-master.md)。
+団体マスタは共通の表へ更新するが、公開 API の説明は自治体データ版の記録から読む。候補の公開が失敗しても公開中の説明は変わらず、切り戻しでも当時の記録を読む。現行 `release_jurisdictions` は自治体データ版へ統合する。[ADR 0017](adr/0017-jurisdiction-data-versions.md)。
 
 **D1 の1対1の `cofog` 表を廃止し、割当結果を明細へ統合した。** 明細は割り当てた粒度のコード一つだけを持ち、大分類までしか決まらない場合もそのコードを参照する。中分類・大分類はマスタの親子関係から取得し、同じ割当を3列で管理しない。分類不能・対象外・歳入の適用対象外はコードを NULL とし、状態を別列に保持する。コードの存在と状態との整合性は外部キーと CHECK 制約で検査する。共通マスタの既存定義が候補と異なる場合は publish を拒否し、過去の明細の意味を勝手に変えない。[ADR 0016](adr/0016-cofog-master-and-assignment.md)。
 
@@ -151,7 +154,7 @@ dataset は団体・年度・歳入歳出・文書種別・採用した原典の
 
 基本の索引は版・団体・年度・歳入歳出・会計と、明細識別子・予算段階に合わせる。行数と問い合わせを計測して確定し、すべての組合せに索引を作らない。任意の入力文字列を SQL の列名へ使わず、フィルタ・groupBy は契約の語彙から許可した SQL へ変換する。
 
-明細の取得・条件検索・ページ分割は SQL で行う。ページトークンには `release_id`・問い合わせの指紋・安定した並び順の続き位置を持たせ、全体を HMAC で認証して改変を検出する。鍵は Worker の secret として管理する。署名を検証したうえで、正規形に揃えた問い合わせ条件の指紋を照合し、次ページも同じ版を読む。トークンを認可の代わりにせず、各リクエストで認可を行う。公開版が切り替わっても、その版を D1 に保持している間は続きを返す。削除済みの版は期限切れとして返し、異なる問い合わせや未公開の候補を指定するトークンは拒否する。応答に `releaseId` を含め、内部の chunk 番号への依存をなくす。
+明細の取得・条件検索・ページ分割は SQL で行う。ページトークンには `publicationId`・契約版・有効期限・問い合わせの指紋・安定した並び順の続き位置を持たせ、全体を HMAC で認証する。続きも同じ公開一覧を読む。応答は `publicationId` と対象 dataset の自治体データ版を返し、別の API 呼出しでも参照を固定できる。候補・参照受付終了・削除済みの一覧、期限切れ・問い合わせ不一致のトークンは拒否する。保持と削除の条件は [再設計書](design-doc-jurisdiction-versions.md) に集約する。
 
 **検索・集計は金額の意味と収録範囲を明示する。** phase の必須条件、会計間の繰出入、分類不能・対象外・目標の深さに達していない分類、団体横断時の未収録・段階不一致を扱う。団体間の金額は合算せずに比較する。同じ団体・年度・direction で複数の原典版や文書種別がある場合、対象の dataset を明示するか、宣言した選択規則で一つに固定する。選択した dataset と対象外の理由を応答に含め、同じ支出を複数の文書から足し合わせない。
 
@@ -171,15 +174,15 @@ D1 の採用は容量・性能を確認して実装へ進める。現行の配�
 
 ### データの公開をアプリの deploy から切り離す
 
-build はローカルで検査済みの公開候補を作り、publish が R2 と D1 に反映する。publish は候補を作り直さず、dbt が生成した API 用の表を D1 に取り込む。転送時の型の対応・SQL の生成・`release_id` の付与は取込処理の責務とし、金額・分類・行の意味を変更しない。データの更新に API コードの再ビルドを必要とさせない。API の deploy はコード・bindings・対応する契約版を更新する作業とする。
+build はローカルで検査済みの公開候補を作り、publish が R2 と D1 に反映する。publish は候補を作り直さず、dbt が生成した API 用の表を D1 に取り込む。転送時の型の対応・SQL の生成・`version_id` の付与は取込処理の責務とし、金額・分類・行の意味を変更しない。データの更新に API コードの再ビルドを必要とさせない。API の deploy はコード・bindings・対応する契約版を更新する作業とする。
 
 団体別の配布物に独立した内容版を付け、実体を `fiscal/<団体コード>/<packageId>/` に置く。`packageId` は団体の全配布ファイルの名前・SHA-256・サイズ・content type から決まり、コードの更新だけで配布内容が変わらなければ同じ値を使う。publish は既存オブジェクトの内容を照合して再利用し、公開済みのキーを異なる内容で上書きしない。[ADR 0013](adr/0013-jurisdiction-package-versions.md) を参照。
 
 収録一覧は Git の `pipeline/publish/manifest.json` 一つにまとめる。`packages` に団体コード・`packageId`・dataset ID、`datasets` に年度・文書・金額段階・出典等、`files` にローカル候補の `path` と R2 の `objectKey`・ハッシュ・サイズを記録する。R2 の `releases/`、日付別ディレクトリ、catalog、公開版一覧は廃止し、過去の採用一覧は Git 履歴から取得する。[ADR 0014](adr/0014-git-distribution-manifest.md) を参照。
 
-内部の構築 ID は候補・D1 の切替・ページトークンの識別に用いる。Git manifest の `buildId` はこの ID であり、公開 R2 に構築版別のコピーを作るためのものではない。D1 の照合用の chunk hash・件数・合計・query fingerprint はローカル候補の `verification.json`、公開前検証の結果は `publication-verification.json` に分ける。これらを Git manifest や R2 に保存しない。
+構築 ID はローカル候補と構築・検証記録に用い、D1 の明細・公開切替・ページトークンのキーにはしない。Git manifest は `publicationId` と団体別の `versionId / packageId` を持つ。コード commit・入力 fingerprint・D1 の chunk hash・件数・合計・query fingerprint はローカルの構築・検証記録へ分ける。構築し直しただけで内容版を増やさない。
 
-配布単位は現在の FDP と同じ団体全体で、収録する複数年度・当初予算・決算等を CSV の dataset ID で区別する。一年度の変更でもその団体の配布物全体が新しい版になる一方、他団体の配布物はコピーしない。年度別ならコピーをさらに減らせるが、今回は団体別の一括取得と相対 resource path を保つ。D1 は構築 ID で候補と公開中の行を分け、未完成の候補を API の既定参照にしない。
+配布物と D1 の保存単位は団体全体とし、複数年度・当初予算・決算等は dataset ID で区別する。一年度の変更でもその団体の新版になる一方、他団体の R2 ファイルと D1 明細は再利用する。D1 の候補は公開一覧の採用前には公開 API から読ませない。
 
 #### 団体別配布物のファイルと使い方
 
@@ -209,13 +212,13 @@ build はローカルで検査済みの公開候補を作り、publish が R2 �
 2. 採用する manifest を Git に commit する。生成 manifest 自体を構築 fingerprint とコード commit の選定から除き、manifest の commit だけで次の版が発生する循環を防ぐ。publish は clean な checkout の Git ファイル・commit 内の内容・候補の manifest の一致を要求する。
 3. 新しい団体別配布物を R2 へ転送する。既存の共有配布物も SHA-256 と照合し、一致すれば再転送しない。公開 bucket の配置済みファイルは、この段階でも取得できる。
 4. D1 に候補の表とファイル metadata を取り込み、非公開検証 Worker の RPC セッションにローカルの検査情報を渡す。Worker はセッションの内容ハッシュを D1 の候補登録と照合し、全行・API 応答・公開 URL の取得内容を検査する。候補 manifest や検証結果を R2 に置かない。
-5. 検証結果をローカルへ記録し、D1 の公開状態と `active_release` を一つの atomic な処理で更新する。D1 は採用した Git commit に固定した manifest URL を記録し、API はその URL を返す。Git の採用と Cloudflare の公開成功を同一視しない。
+5. 検証結果をローカルへ記録し、所属版の検査済み状態・採用 manifest との一致・開始時の公開参照を確認したうえで、公開一覧の状態と `publish_control.active_publication_id` を一つの atomic な処理で更新する。D1 は採用した Git commit に固定した manifest URL を記録し、API はその URL を返す。Git の採用と Cloudflare の公開成功を同一視しない。
 
 候補の検証は publish 実行者だけが使う非公開 Worker から行い、通常の API key やページトークンで候補を読ませない。検証 Worker は公開 API と同じ問い合わせ処理を使い、公開 route を持たない。RPC セッションは処理終了時に破棄し、再実行ではローカルの同じ候補から新しいセッションを開く。
 
-publish と切り戻しは同じ排他実行の入口に集める。公開参照の更新は、開始時に読んだ版と現在の `active_release` が一致する場合だけ行い、不一致なら再検査を要求する。中断した処理を再開するときも候補のハッシュ・状態・公開参照を確認し、切り戻し後に古い試行がそのまま公開参照を進めないようにする。後片付けは実行中の候補・active な版・切り戻し用の版を削除対象から除外する。
+publish・切り戻し・削除は同じ排他実行の入口に集める。開始時と現在の公開一覧・世代が一致する場合だけ公開参照を更新する。他団体の更新が先に公開された場合は、最新の一覧から採用 manifest を作り直す。団体別の切り戻しはその団体の参照だけを戻し、全体の切り戻しと区別する。[再設計書の公開・保持条件](design-doc-jurisdiction-versions.md) に従う。
 
-R2 と D1 全体を一つのトランザクションにできるとは扱わない。両方を完成させてから API の公開参照 `active_release` を切り替える。R2 のオブジェクト操作は強い整合性を持ち、D1 の `batch()` は途中の statement が失敗すると全体を戻す。[R2 の整合性](https://developers.cloudflare.com/r2/reference/consistency/)、[D1 batch](https://developers.cloudflare.com/d1/worker-api/d1-database/#batch)。
+R2 と D1 全体を一つのトランザクションにできるとは扱わない。両方を完成させてから API の公開一覧の参照を切り替える。R2 のオブジェクト操作は強い整合性を持ち、D1 の `batch()` は途中の statement が失敗すると全体を戻す。[R2 の整合性](https://developers.cloudflare.com/r2/reference/consistency/)、[D1 batch](https://developers.cloudflare.com/d1/worker-api/d1-database/#batch)。
 
 全量の取込を単一 batch に詰め込まず、上限内の再実行可能な単位で行う。候補が完成していない間は現行版を返す。失敗時は active の版を変更せず、完成済みの版へ参照を戻せば切り戻せる。
 
@@ -223,23 +226,23 @@ R2 と D1 全体を一つのトランザクションにできるとは扱わな�
 
 API はリクエストの最初に版を一度だけ解決し、そのリクエスト内の D1 問い合わせと配布 URL をすべてその版に固定する。ページトークンがあればその公開済みの版、通常の問い合わせでは active な版を使う。isolate の生存中ずっと公開参照を保持する単一 cache は使わない。初期は D1 primary を参照し、read replica を使う場合は Sessions API で公開参照と後続の読み取りの整合性を保つ。[D1 read replication](https://developers.cloudflare.com/d1/best-practices/read-replication/)。
 
-ファイル配信は公開 R2 bucket を `download.fudoki.dev` に接続して直接提供する。API は D1 の `files` を読み、解決した構築版の不変のダウンロード URL とファイル属性を返す。manifest の URL は D1 の `releases.manifest_url` に記録した Git commit 固定の URL を返す。API Worker に配布用の R2 binding や body の転送処理は持たせない。配布経路の更新は [ADR 0011](adr/0011-public-r2-distribution.md) に記録した。現行の `apps/download/` はまだ置き換えていない。
+ファイル配信は公開 R2 bucket を `download.fudoki.dev` に接続して直接提供する。API は D1 の `files` を読み、解決した自治体データ版の不変のダウンロード URL とファイル属性を返す。manifest の URL は D1 の `publications.manifest_url` に記録した Git commit 固定の URL を返す。API Worker に配布用の R2 binding や body の転送処理は持たせない。配布経路の更新は [ADR 0011](adr/0011-public-r2-distribution.md) に記録した。現行の `apps/download/` はまだ置き換えていない。
 
 公開 bucket には団体別の配布ファイルだけを置く。原典・取り込みは非公開入力 bucket、採用証跡と最新の manifest は Git、候補・検証結果はローカルの `build/` に置く。公開一覧を読む経路は Git とし、ダウンロードは R2 の固定キーで行う。公開 API と Git の状態が異なる場合、実際の公開状態は D1 の参照で判断する。
 
 キャッシュ・WAF を使うため、R2 と同じアカウントで管理する既存の `fudoki.dev` のサブドメインを用いる。新しい登録ドメインの購入は不要で、`r2.dev` の入口は無効にする。CSV・JSON を Cache Rules で明示的に対象にし、団体別の不変ファイルは長くキャッシュする。現在の Free zone のレート制限では hostname 条件を使えないため、配布専用の `/fiscal/` パスを対象にする。IP ごとの値は一括取得を妨げないよう測定して調整する。[R2 の公開 bucket](https://developers.cloudflare.com/r2/buckets/public-buckets/)、[レート制限のプラン別機能](https://developers.cloudflare.com/waf/rate-limiting-rules/)。
 
-不変のダウンロード URL は active な版が変わっても保持中の旧版を取得できる。D1 の公開切替が失敗しても、転送・検査済みの団体別配布物は取得でき、API は従来の版を返す。API/D1 の不調と配布の入口を分けるが、Cloudflare 全体や R2 の障害から独立する保証ではない。HTTP の ETag を SHA-256 と同一視せず、公開前検証では取得内容を manifest のハッシュと照合する。旧版の削除は切り戻し期間と処理中のリクエストが終わる猶予を定めてから行う。共有配布物は保持中の全 release と処理中候補から参照されていないものだけを削除する。
+不変のダウンロード URL は active な版が変わっても保持中の旧版を取得できる。D1 の公開切替が失敗しても、転送・検査済みの団体別配布物は取得でき、API は従来の版を返す。API/D1 の不調と配布の入口を分けるが、Cloudflare 全体や R2 の障害から独立する保証ではない。HTTP の ETag を SHA-256 と同一視せず、公開前検証では取得内容を manifest のハッシュと照合する。旧版の削除は切り戻し期間と処理中のリクエストが終わる猶予を定めてから行う。共有配布物は保持中の全自治体データ版と処理中候補から参照されていないものだけを削除する。
 
 ### Git に残すものと Cloudflare に置くものを分ける
 
 Git に残すのはコード、取得元・利用条件の宣言、dbt モデル・検査・判断、団体マスタ、設計文書、入力一覧と個別ハッシュ、採用した入力の証跡である。原典の CSV・PDF と取り込み済みの表は非公開の R2 入力 bucket、配布物は別の R2 配布 bucket、API の参照表は D1 に置く。ローカル候補・入力キャッシュ・warehouse・報告・PDF 閲覧レイヤは Git に入れない。
 
-採用した収録一覧・出典・配布ファイルの参照の正本は Git の `pipeline/publish/manifest.json` とする。Git には最新の一つを置き、過去の一覧は Git 履歴で辿る。D1 の公開 metadata と `files` は同じ構築から生成し、公開候補の検査で一致を確認する。取込・公開状態と `active_release` は D1 が管理する運用状態であり、Git の採用記録とは区別する。
+採用した収録一覧・出典・配布ファイルの参照の正本は Git の `pipeline/publish/manifest.json` とする。Git には最新の一つを置き、過去の一覧は Git 履歴で辿る。D1 の公開 metadata と `files` は同じ構築から生成し、公開候補の検査で一致を確認する。取込・公開状態と `publish_control` の公開参照は D1 が管理する運用状態であり、Git の採用記録とは区別する。
 
 配布 CSV の Git diff によるレビューの代わりに、変更前後の団体・年度・歳入歳出・予算段階別の行数・金額・識別子の増減、分類の変更件数と金額、注意点と出典の変更を CI に提示する。ハッシュ一致だけで内容の正しさを検査したことにはしない。
 
-現行の「生成し直して `git diff -- data/budget/` が空か」という CI は、固定した入力 snapshot からの二回の deterministic な生成結果の比較と、release の fingerprint・公開済みデータとの検算へ置き換える。PR の CI は本番へ publish しない。R2 からの入力復元、ネットワークなしの build 検査、Cloudflare 上の候補への反映・公開前検査を分ける。
+現行の「生成し直して `git diff -- data/budget/` が空か」という CI は、固定した入力 snapshot からの二回の deterministic な生成結果の比較と、自治体データ版・公開一覧の fingerprint・公開済みデータとの検算へ置き換える。PR の CI は本番へ publish しない。R2 からの入力復元、ネットワークなしの build 検査、Cloudflare 上の候補への反映・公開前検査を分ける。
 
 ### 取得元の宣言・固定した入力・公開版を区別する
 
@@ -265,13 +268,16 @@ ingestion は取得した原典の CSV・PDF のバイト列をそのまま非�
 
 CI はこの入力復元を先に実行し、その後の dbt と説明ファイル生成の検査をネットワークなしで実行する。非公開 R2 の読取権限が必要なので、権限のある CI では固定した全量入力で検査し、権限のない fork PR では Git に置いた小さな公開可能な fixture による検査と区別する。fixture の成功を全量検証済みと表示しない。原典の再取得は CI の build に含めない。
 
-Git manifest は「どのコード・入力・判断を使って、どの団体・年度・文書を採用し、どの配布物を参照するか」を結ぶ。取得元の宣言や入力の証跡をコピーせず、構築に用いた Git のコード版と固定入力のハッシュを記録する。build が検査済み候補の manifest を `pipeline/publish/manifest.json` に反映し、採用 commit 後に publish する。Git manifest の採用 commit と、その manifest を生成したコード commit は異なり得る。
+Git manifest は「どの団体・年度・文書・自治体データ版を採用し、どの配布物を参照するか」を結ぶ。全団体の `versionId` は `jurisdictions` に置き、未収録団体も明示する。構築コード・入力・判断の fingerprint はローカルの構築記録へ分け、採用した Git commit のコード・固定入力と照合する。build が検査済み候補の manifest を `pipeline/publish/manifest.json` に反映し、採用 commit 後に publish する。
 
 ```json
 {
-  "buildId": "r-<内部の構築ID>",
-  "codeRevision": "<生成に用いたコードの Git commit>",
-  "inputFingerprint": "<入力一覧の SHA-256>",
+  "publicationId": "pub-<団体と版の対応hash>",
+  "contractVersion": 2,
+  "jurisdictions": [{
+    "jurisdictionCode": "132241",
+    "versionId": "v-<自治体データ内容のhash>"
+  }],
   "packages": [{
     "jurisdictionCode": "132241",
     "packageId": "p-<配布内容のhash>",
@@ -294,9 +300,9 @@ Git manifest は「どのコード・入力・判断を使って、どの団体�
 }
 ```
 
-これは項目の関係を示す抜粋で、実際のハッシュや完全な schema ではない。D1 の `releases.manifest_url` は公開に成功した Git commit のファイルを指し、`verification_sha256` はローカル検査記録と候補表の対応を検査する。Git の履歴だけでは公開成功の履歴を証明せず、D1 の運用状態を参照する。
+これは項目の関係を示す再設計後の抜粋で、実際のハッシュや完全な schema ではない。D1 の `publications.manifest_url` は採用した Git commit のファイルを指し、その SHA-256 と団体別の内容版を照合する。Git の履歴だけでは公開成功を証明せず、D1 の運用状態を参照する。
 
-公開済み release が参照する入力 snapshot・原典・表・証跡は保管対象とし、配布物の整理に連動して削除しない。入力 bucket を公開配布の Worker に bind せず、bucket 全体に自動削除の lifecycle を設定しない。自治体サイトが消えても R2 の固定入力から再構築できること、R2 以外へのバックアップとその復元手順を用意する。
+公開した自治体データ版が参照する入力 snapshot・原典・表・証跡は保管対象とし、配布物の整理に連動して削除しない。入力 bucket を公開配布の Worker に bind せず、bucket 全体に自動削除の lifecycle を設定しない。自治体サイトが消えても R2 の固定入力から再構築できること、R2 以外へのバックアップとその復元手順を用意する。
 
 raw や配布物を tracking から外しても過去の Git 履歴のサイズは減らない。通常の移行では今後の増加を止める。既存履歴の削減は clone・branch・PR への影響を整理した別作業とし、この設計の実装で自動的に履歴を書き換えない。
 
@@ -337,7 +343,7 @@ mise のツールの版、Python 3.13、exact ピン留めと更新時の 7 日 
 pipeline/build/
 ├── warehouse.duckdb                # dbt が使うローカル DB
 ├── dbt/                            # compiled SQL・manifest・検査結果
-├── releases/<release_id>/          # 一回の build の公開候補
+├── builds/<build_id>/          # 一回の build の公開候補
 │   ├── fiscal/<code>/              # marts の CSV と datapackage.json
 │   ├── api/                        # marts の D1 取込用の表
 │   ├── manifest.json               # Git に採用する収録範囲・出典・配布先
@@ -345,7 +351,7 @@ pipeline/build/
 └── report/                         # report コマンドが作るローカル検証報告
 ```
 
-publish は `releases/<release_id>/` の候補を指定して実行する。公開するファイルだけを manifest に列挙して R2 に送り、`api/` の表は D1 へ取り込む。候補ディレクトリ全体を公開 bucket にコピーしない。API 用の取込ファイル・warehouse・dbt の内部情報・ローカル報告は配布対象に含めない。build の途中結果から候補を公開しないよう、全検査の完了を候補の内容ハッシュとともに記録し、publish はその記録とファイルの一致を確認する。
+publish は `builds/<build_id>/` の候補を指定して実行する。公開するファイルだけを manifest に列挙して R2 に送り、`api/` の表は D1 へ取り込む。候補ディレクトリ全体を公開 bucket にコピーしない。API 用の取込ファイル・warehouse・dbt の内部情報・ローカル報告は配布対象に含めない。build の途中結果から候補を公開しないよう、全検査の完了を候補の内容ハッシュとともに記録し、publish はその記録とファイルの一致を確認する。
 
 pipeline の内部で repo root・入力キャッシュ・dbt project・生成先を一度解決し、TS/Python の共通の読み口を通す。dbt の input/output と compiled SQL の作業ディレクトリも揃える。移動だけで原典の再取得・PDF の全量再抽出が起きないよう、記録済みの証跡のパスと実行時のファイル解決を区別する。
 
@@ -385,7 +391,7 @@ R2＋D1 はダウンロードと問い合わせを別の保存形式で支えら
 - 固定した input snapshot を R2 から復元し、原典の再取得なしで build・ローカル検証が成立する。キャッシュ済みならネットワークなしで build でき、同じ入力・コード・判断から同じ候補を生成できる。新しい列名・契約で原典の金額・識別子の対応・分類判断を照合し、descriptor は配布内容と FDP の仕様に一致する。
 - build の表の生成・整合性検査が dbt で完了し、説明ファイルはその結果から生成される。build の成功だけでは R2/D1 の公開状態が変わらず、publish は指定した候補を再生成せず反映する。
 - R2 入力の欠落・ハッシュ不一致・未完了 snapshot では build を止める。新規取得の原典 CSV・PDF がそのまま保存され、取り込みと原典の対応を辿れる。移行時に原典が欠けている過去の版は、その制約を明記する。入力 bucket と証跡が公開 download/API から取得できず、公開済み release の再構築に必要な入力を保持する。
-- D1 の行・金額・分類と R2 の配布物が同じ release に由来する。件数・合計だけでなく識別子と行内容も照合する。
+- D1 の行・金額・分類と R2 の配布物が同じ自治体データ版に対応する。件数・合計だけでなく識別子と行内容も照合する。
 - 決算書にある予算現額・執行済額を別々の金額段階として扱い、文書種別と混同しない。複数の文書や原典版がある団体・年度の問い合わせで対象 dataset を固定し、二重計上せず選択根拠を示す。
 - 明細・検索・集計・未収録・段階不一致・残余・連結・ページング・拒否条件を新しい契約で検査する。公開切替後も保持中の版で次ページを取得でき、期限切れ・問い合わせ不一致・未公開版を拒否する。
 - D1 の容量・索引・読取行数・主要問い合わせ時間を候補環境で測り、公開版と次の候補・切り戻し用を保持する余裕を確認する。
