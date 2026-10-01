@@ -125,6 +125,13 @@
         "wrangler": "catalog:",
       },
     },
+    "pipeline/verify/r2": {
+      "name": "@fudoki/local-r2",
+      "devDependencies": {
+        "@cloudflare/config": "catalog:",
+        "wrangler": "catalog:",
+      },
+    },
     "pipeline/verify/report": {
       "name": "@fudoki/report",
       "version": "0.0.0",
@@ -474,6 +481,8 @@
     "@fudoki/fiscal": ["@fudoki/fiscal@workspace:packages/fiscal"],
 
     "@fudoki/jurisdictions": ["@fudoki/jurisdictions@workspace:packages/jurisdictions"],
+
+    "@fudoki/local-r2": ["@fudoki/local-r2@workspace:pipeline/verify/r2"],
 
     "@fudoki/pipeline": ["@fudoki/pipeline@workspace:pipeline"],
 

@@ -1,6 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import {
+  CONTRACT_VERSION,
   TABLES,
   TABLE_COLUMNS,
   TABLE_KEYS,
@@ -189,7 +190,7 @@ export async function publish(
     const values = {
       version_id: version.versionId,
       jurisdiction_code: version.jurisdictionCode,
-      contract_version: 2,
+      contract_version: CONTRACT_VERSION,
       package_id: version.packageId,
       name_snapshot: version.name,
       ocd_id_snapshot: version.ocdId,

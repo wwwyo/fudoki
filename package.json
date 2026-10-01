@@ -11,7 +11,8 @@
       "pipeline/verify/report",
       "pipeline/verify/view",
       "slides",
-      "apps/web/deploy"
+      "apps/web/deploy",
+      "pipeline/verify/r2"
     ],
     "catalog": {
       "@types/bun": "1.3.14",
@@ -34,7 +35,7 @@
     "deploy:web": "bun run --cwd apps/web deploy",
     "dev": "bun run pipeline:report && bun run --cwd pipeline/verify/view dev",
     "dev:api": "bun run --cwd apps/api dev",
-    "dev:download": "cd pipeline/verify/r2 && mise exec -- cf dev --host 127.0.0.1 --port 8788",
+    "dev:download": "cd pipeline/verify/r2 && mise exec -- cf dev --mode development --host 127.0.0.1 --port 8788",
     "dev:setup": "bun run pipeline/verify/setup-dev.ts",
     "dev:web": "bun run --cwd apps/web dev",
     "eval:extraction": "uv run python -m ingestion.fiscal.eval_extraction",

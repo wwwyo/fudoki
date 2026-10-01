@@ -1,3 +1,4 @@
+import { CONTRACT_VERSION } from '@fudoki/data-contracts'
 import { OpenAPIHandler } from '@orpc/openapi/fetch'
 import { OpenAPIReferencePlugin } from '@orpc/openapi/plugins'
 import { RPCHandler } from '@orpc/server/fetch'
@@ -114,7 +115,7 @@ app.get(`${V0_PREFIX}/contract`, async (c) => {
   ).first<{ identity: string }>()
   if (!row) return c.json({ error: 'UNAVAILABLE' }, 503)
   return c.json({
-    contractVersion: 2,
+    contractVersion: CONTRACT_VERSION,
     queryFingerprint: c.env.QUERY_FINGERPRINT,
     databaseIdentity: row.identity,
   })

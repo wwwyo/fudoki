@@ -10,15 +10,20 @@ import { STATUS_JA } from './display'
 export type AggregateResponse = Awaited<
   ReturnType<typeof apiClient.aggregateFiscalDatasets>
 >
+const versionKey = (response: AggregateResponse) =>
+  response.versions
+    .map((v) => `${v.jurisdictionCode}:${v.versionId}`)
+    .sort()
+    .join('|')
+
 export function buildCofogTree(
   division: AggregateResponse,
   group: AggregateResponse,
   classification: AggregateResponse
 ): CofogTreeNode[] {
   if (
-    JSON.stringify(division.versions) !== JSON.stringify(group.versions) ||
-    JSON.stringify(division.versions) !==
-      JSON.stringify(classification.versions) ||
+    versionKey(division) !== versionKey(group) ||
+    versionKey(division) !== versionKey(classification) ||
     !division.total
   )
     throw new Error('COFOG responses differ in release or scope')

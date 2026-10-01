@@ -8,6 +8,7 @@ import {
 } from '@fudoki/data-contracts'
 import { verifyCandidate } from '../fdp/manifest'
 import { contract } from '../../apps/api/src/contract'
+import { verifyBudgetChanges } from '../verify/budget-changes'
 import { createPublicClient } from '../../apps/api/src/client'
 
 export async function verifyApiContract(
@@ -130,9 +131,15 @@ export async function verifyPublicApi(
         throw new Error('Distribution object scope differs')
     }
   }
+  const budgetChanges = await verifyBudgetChanges(
+    directory,
+    verification.versions.filter((v) => jurisdictionCodes.includes(v.jurisdictionCode))
+      .map((v) => ({ jurisdictionCode: v.jurisdictionCode, versionId: v.versionId })),
+    (input) => client.getFiscalBudgetHistory(input)
+  )
   await writeFile(
     join(directory, 'public-api-verification.json'),
-    JSON.stringify({ verified: true, results }, null, 2) + '\n'
+    JSON.stringify({ verified: true, results, budgetChanges }, null, 2) + '\n'
   )
   return results
 }

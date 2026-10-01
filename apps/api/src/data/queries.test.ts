@@ -1,6 +1,6 @@
 import { beforeEach, afterEach, expect, test } from 'bun:test'
 import { Database } from 'bun:sqlite'
-import { mkdtemp, readFile, rm } from 'node:fs/promises'
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { sqliteD1 } from '../../test/database'
@@ -287,6 +287,20 @@ test('verified many-to-many correspondence counts actuals once, applies signed c
     status: 'complete',
   })
   expect(result.changes).toHaveLength(1)
+  expect((await budgetHistory(db, { ...input, fundCode: 'missing' })).items).toHaveLength(0)
+  for (const table of ['fiscal_expenditure_budget_items', 'fiscal_expenditure_budget_changes']) {
+    const rows = sqlite.query(`SELECT * FROM ${table}`).all()
+    await writeFile(join(directory, 'api', table + '.jsonl'), rows.map((r) => JSON.stringify(r)).join('\n') + '\n')
+  }
+  const { verifyBudgetChanges } = await import('../../../../pipeline/verify/budget-changes')
+  const versions = [{ jurisdictionCode: '000001', versionId: version }]
+  expect((await verifyBudgetChanges(directory, versions, (q) => budgetHistory(db, q)))[0]!.rows).toBe(2)
+  await expect(verifyBudgetChanges(directory, versions, async (q) => {
+    const response = await budgetHistory(db, q)
+    response.changes[0]!.amountDelta += 1
+    return response
+  })).rejects.toThrow('differs from built changes')
+
   sqlite.run(
     "UPDATE fiscal_datasets SET coverage_json='{}' WHERE dataset_id='amendment'"
   )

@@ -190,6 +190,7 @@ export const budgetHistoryQuerySchema = z
     fiscalYear: z.number().int(),
     direction: directionSchema,
     asOf: z.iso.date(),
+    fundCode: z.string().min(1).max(128).optional(),
   })
   .strict()
 const budgetItemSchema = z.object({

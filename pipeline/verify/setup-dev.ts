@@ -1,10 +1,9 @@
-import { copyFile, readFile, readdir, rm } from 'node:fs/promises'
+import { copyFile, readdir, rm } from 'node:fs/promises'
 import { Database } from 'bun:sqlite'
 import { join } from 'node:path'
 import { REPO, BUILD } from '../paths'
 import { verifyCandidate } from '../fdp/manifest'
 import { LATEST } from '../paths'
-import { sha256 } from '../release'
 
 const revision = Bun.spawnSync(['git', 'rev-parse', 'HEAD'], {
   cwd: REPO,
@@ -17,7 +16,6 @@ if (revision.exitCode !== 0)
 if (!LATEST) throw new Error('Run pipeline:build before loading local D1')
 const candidate = join(BUILD, 'builds', LATEST.releaseId)
 const manifest = await verifyCandidate(candidate)
-const manifestBytes = await readFile(join(candidate, 'verification.json'))
 
 const api = join(REPO, 'apps/api')
 const init = Bun.spawn(['node', 'scripts/local-bindings.mjs', 'init-d1'], {

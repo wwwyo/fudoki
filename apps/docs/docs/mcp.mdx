@@ -43,16 +43,17 @@ stdio しか話せない client からは `mcp-remote` などのブリッジを�
 
 | tool | 返すもの |
 |---|---|
-| `list_jurisdictions` | 団体と、収録範囲・段階・出典に関する注意点 |
+| `list_jurisdictions` | 団体と、収録範囲・出典に関する注意点 |
 | `list_fiscal_datasets` | 団体・年度・歳入歳出・文書種別・原典版で区別した文書一覧 |
-| `get_fiscal_dataset` | 選択した文書の出典・金額段階・階層・会計 |
-| `get_fiscal_lines` | 選択した dataset と段階の明細、原典の単位、名称の出所と分類根拠 |
+| `get_fiscal_dataset` | 選択した文書の出典・文書種別・階層・会計 |
+| `get_fiscal_lines` | 選択した dataset の金額一つの明細、名称の出所と歳出の分類根拠 |
 | `search_fiscal_lines` | 原典の名称と判断による名称の文字列部分一致検索 |
-| `aggregate_fiscal_datasets` | 明示した段階での集計。団体間・年度間の比較は各団体・年度を分ける |
-| `list_files` | 同じ release の manifest と配布ファイルの download URL |
+| `aggregate_fiscal_datasets` | 選択した文書での集計。団体間・年度間の比較は各団体・年度を分ける |
+| `get_fiscal_budget_history` | 当初予算、符号付き変更額、決算との対応と収録状況 |
+| `list_files` | 団体別の版に対応する配布ファイルの R2 URL |
 
 ## 応答の約束
 
-各応答は `releaseId` に固定されます。利用できない金額段階、同じ団体・年度・歳入歳出の複数文書の合算、対応していない集計は拒否します。金額は円の整数です。
+各応答の `versions` は団体別の内容の版を示します。文書を選んで明細と集計を取得し、同じ団体・年度・歳入歳出の複数文書の合算は拒否します。金額は円の整数です。予算変更は変更額を返し、必要な原典が未収録の場合は予算額を未確認として扱います。
 
-明細の `nextCursor` は問い合わせと保持中の release に固定され、公開版の切り替えで途中から版が変わりません。集計の `datasets` と `totals` は対象文書・出典・段階を示します。tool の入出力は REST API と同じ契約を使います。[Quickstart](/quickstart) と [API リファレンス](/reference) を参照してください。
+明細の `nextCursor` は問い合わせと団体別の版に固定され、有効期限は1時間です。集計の `datasets` は対象文書・出典を示します。tool の入出力は REST API と同じ契約を使います。[Quickstart](/quickstart) と [API リファレンス](/reference) を参照してください。

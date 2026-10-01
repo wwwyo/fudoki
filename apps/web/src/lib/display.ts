@@ -32,15 +32,6 @@ export const senYen = (v: number | string) =>
 /** 割合（0〜1）の書式。**割り算は生成側が済ませてある** — ここでは桁の揃え方だけを1箇所で決める */
 export const pct = (v: number) => `${(v * 100).toFixed(1)}%`
 
-/** 円は桁が多い。俯瞰する場所では丸め、厳密な値は必ず併記する */
-export function yenShort(v: number | string): string {
-  const x = Number(v)
-  if (Math.abs(x) >= 1e8) return `${(x / 1e8).toFixed(x >= 1e10 ? 0 : 1)}億円`
-  if (Math.abs(x) >= 1e4)
-    return `${Math.round(x / 1e4).toLocaleString('ja-JP')}万円`
-  return `${yen(x)}円`
-}
-
 /** COFOG 1999 の大分類。色は識別の補助で、コードは必ず文字でも出す */
 export const DIVISION_COLOR: Record<string, string> = {
   '01': 'oklch(62% 0.06 260)',

@@ -1,9 +1,9 @@
 ---
 title: Quickstart
-description: 団体・収録文書・金額段階を選んで、風土記のデータを取得する。
+description: 団体と文書を選んで、風土記の明細と配布物を取得する。
 ---
 
-API キーは任意です。キー無しでも始められ、キーは `Authorization: Bearer <key>` で送ります。制限を超えると `429` が返ります。
+API キーは任意です。キーは `Authorization: Bearer <key>` で送ります。制限を超えると `429` が返ります。
 
 ## 団体と文書を選ぶ
 
@@ -12,27 +12,37 @@ curl 'https://api.fudoki.dev/v0/jurisdictions'
 curl 'https://api.fudoki.dev/v0/fiscal-datasets?jurisdictionCode=132195&direction=expenditure'
 ```
 
-応答の `releaseId` と dataset の `id` を使います。dataset は団体・年度・歳入歳出・文書種別・原典版を識別します。同じ年度に予算書と決算書がある場合も別 dataset です。`phases` はその文書で利用できる金額段階を示します。
+応答の `versions` と dataset の `id` を使います。`versions` は団体コードと、その団体の内容を固定する `versionId` の一覧です。dataset は団体・年度・歳入歳出・文書種別・原典版を識別します。同じ年度の当初予算書と決算書も別 dataset です。
 
 ## 明細と集計を取得する
 
-以下の値は、実際の一覧応答の ID と利用可能な段階に置き換えます。
+以下の `<versionId>` と `<datasetId>` は一覧の値に置き換えます。
 
 ```bash
 curl 'https://api.fudoki.dev/v0/fiscal-lines/query' \
   -H 'Content-Type: application/json' \
-  -d '{"releaseId":"<releaseId>","datasetIds":["<datasetId>"],"phase":"executed","pageSize":50}'
+  -d '{"versions":[{"jurisdictionCode":"132195","versionId":"<versionId>"}],"datasetIds":["<datasetId>"],"pageSize":50}'
 
 curl 'https://api.fudoki.dev/v0/fiscal-datasets/aggregate' \
   -H 'Content-Type: application/json' \
-  -d '{"releaseId":"<releaseId>","datasetIds":["<datasetId>"],"phase":"executed","groupBy":["cofog.division"],"consolidation":"retained"}'
+  -d '{"versions":[{"jurisdictionCode":"132195","versionId":"<versionId>"}],"datasetIds":["<datasetId>"],"groupBy":["cofog.division"],"consolidation":"retained"}'
 ```
 
-金額は円の整数で返します。原典の金額と単位、名称の出所、分類の判断根拠も明細に含めます。次ページは `nextCursor` を同じ問い合わせの `cursor` に渡します。公開版が切り替わっても保持中の版を使い、期限切れは `410`、問い合わせの変更は拒否します。
+明細の `amount` は円の整数です。決算は実際の支出・収入、当初予算は当初の予算額を返します。科目階層・名称の出所・歳出の COFOG 分類根拠も明細に含みます。歳入には COFOG がなく、集計は `year` や `fund` を指定します。
 
-団体間の比較では `groupBy` に `jurisdiction`、年度間では `year` を含めます。同じ団体・年度・歳入歳出の複数文書をまとめた集計は二重計上の恐れがあるため拒否します。収録していない金額段階へ自動で置き換えません。
+次ページは `nextCursor` を同じ問い合わせの `cursor` に渡します。cursor は団体別の版と問い合わせに固定され、有効期限は1時間です。期限切れや問い合わせの変更は `400`、保持されていない版の指定は `410` を返します。
 
-名称検索は `/v0/fiscal-lines/search` に `name` を指定します。完全な文字列の部分一致で検索し、SQL やワイルドカードの式として解釈しません。
+団体間の比較では `groupBy` に `jurisdiction`、年度間では `year` を含めます。同じ団体・年度・歳入歳出の複数文書をまとめた集計は二重計上の恐れがあるため拒否します。名称検索は `/v0/fiscal-lines/search` に `name` を指定します。文字列の部分一致で、SQL やワイルドカードとして解釈しません。
+
+## 予算の変更履歴を取得する
+
+```bash
+curl 'https://api.fudoki.dev/v0/fiscal-budget-history/query' \
+  -H 'Content-Type: application/json' \
+  -d '{"versions":[{"jurisdictionCode":"132195","versionId":"<versionId>"}],"jurisdictionCode":"132195","fiscalYear":2024,"direction":"expenditure","fundCode":"01","asOf":"2025-03-31"}'
+```
+
+当初予算、基準日までの符号付き変更額、決算との対応を返します。補正予算・繰越などの入力が揃っていない範囲は `unconfirmed` で、復元した予算額は `null` です。未収録の変更をゼロとは扱いません。
 
 ## 一括配布を取得する
 
@@ -40,15 +50,10 @@ curl 'https://api.fudoki.dev/v0/fiscal-datasets/aggregate' \
 curl 'https://api.fudoki.dev/v0/files?jurisdictionCode=132195'
 ```
 
-応答の `manifestUrl` と各 `url` が独立した download Worker を指します。release を含む URL は不変で、API/D1 を利用できなくても配布ファイルを取得できます。`ETag` は取得したファイルの SHA-256、`X-Fudoki-Release` は release ID です。API はファイル本体を転送しません。
+応答の `files[].url` から取得します。公開 R2 のカスタムドメインが配布し、API はファイル本体を転送しません。URL は `fiscal/<団体コード>/p-<配布内容の SHA-256>/<ファイル名>` で内容を固定します。取得したバイト列は API が返す `sha256` と照合できます。R2 の `ETag` を SHA-256 として扱わないでください。
 
-API が使えない場合は download の公開版一覧から辿れます。
+API が使えない場合も、[Git の配布 manifest](https://github.com/wwwyo/fudoki/blob/main/pipeline/publish/manifest.json) に記録された `objectKey` を `https://download.fudoki.dev/` に続ければ取得できます。manifest はファイルの一覧・サイズ・SHA-256 を記録します。
 
-```bash
-curl 'https://download.fudoki.dev/releases'
-curl 'https://download.fudoki.dev/releases?cursor=<nextCursor>'
-```
-
-一覧の `manifestUrl` は download origin に対する相対 URL です。完成した公開用 manifest がある版だけを返します。`nextCursor` があれば一覧が空でも続きを取得してください。
+版を指定しない問い合わせは、その団体で最も新しく登録された版を使います。取り込み途中の明細も応答に含まれます。
 
 入出力の完全なスキーマは [API リファレンス](/reference) にあります。

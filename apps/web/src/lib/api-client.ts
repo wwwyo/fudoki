@@ -15,7 +15,7 @@
  *   `bun run --cwd apps/api dev` で起動する）
  *
  * ⚠️ **dev サーバは 5173 番ポートで動かすこと。** apps/api の CORS は `/rpc` を
- * `https://fudoki.dev` と `http://localhost:5173` にしか許していない
+ * `https://fudoki.dev`、`http://localhost:5173`、`http://127.0.0.1:5173` に許可している
  * （apps/api/src/index.ts の `RPC_ALLOWED_ORIGINS`）。他のポートで vite を上げると
  * preflight で弾かれる。
  */
