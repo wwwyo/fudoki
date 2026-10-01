@@ -33,9 +33,11 @@
 ## 未完了の移行条件
 
 - R2 の有効化。CLI は現在「Please enable R2 through the Cloudflare Dashboard」（HTTP403 / 10042）を返す。cf の account subscription 作成・更新 API は存在するが、R2 の契約 ID と有効化の可否は未確認であり、Dashboard 専用とは断定しない。
-- Workers Paid の確認。全量を Free の日次書込上限内で一度に取り込むことはできず、3版は Free の単一 DB 容量にも収まらない。
+- Workers Paid の確認。全量を Free の日次書込上限内で一度に取り込むことはできず、3版は Free の単一 DB 容量にも収まらない。`cf accounts subscriptions get` で取得した契約一覧は Teams Free のみであり、Workers Paid は未確認。公式の [契約 ID 一覧](https://developers.cloudflare.com/tenant/reference/subscriptions/) と `cf billing rate-plans get WORKERS_PAID` から契約 ID・基本月額 $5 を確認し、`cf accounts subscriptions create --rate-plan-id WORKERS_PAID --frequency monthly --dry-run` で作成リクエストを確認した。dry-run は実際の契約可否を検査せず、契約の作成も行っていない。
 - 原典・取り込み・証跡の全量 R2 転送、GET での内容ハッシュ照合、空のキャッシュからの復元と再構築。現在の入力一覧は `.cache/migration/sources.lock.json` にあり、遠隔保管を検証するまでは正規の Git 入力一覧として固定していない。
 - download / API / 非公開検証 Worker が同じ契約を持つ候補環境での全量 publish、D1 の読取行数・問い合わせ時間・複数版の保持容量の測定。
 - 上記を確認してから既存 `data/` の tracking を外す。既存 Git 履歴を書き換えない。
 
 全量 build は移行キャッシュから実行しており、新規 checkout と R2 のみでの再現はまだ検証していない。fixture の CI は全量検証の代用ではない。
+
+現在の固定入力は36件・重複を除いた105オブジェクト・36,651,262 bytes。R2 の初回有効化を必要とすることと、入力の保管量を区別する。[R2 Standard の無料枠](https://developers.cloudflare.com/r2/pricing/) はアカウントの他の利用と合算されるため、この入力サイズだけからアカウント全体の料金を確定しない。
