@@ -1,2 +1,2 @@
-{{ config(materialized='table', post_hook="COPY " ~ this ~ " TO '" ~ env_var('FUDOKI_PACKAGE_DIR') ~ "/132195/settlement_expenditure.csv' (FORMAT CSV, HEADER TRUE)") }}
+{{ fiscal_distribution_csv('132195', 'settlement_expenditure') }}
 select p.* exclude(phase_id,value,source_amount ,source_amount_unit),p.value as amount from {{ ref('pkg_132195__expenditure') }} p join {{ ref('int_fiscal_datasets') }} d using(dataset_id) where d.document_kind='settlement' and p.phase_id='executed'

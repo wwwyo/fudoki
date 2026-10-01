@@ -1,2 +1,2 @@
-{{ config(materialized='table', post_hook="COPY " ~ this ~ " TO '" ~ env_var('FUDOKI_PACKAGE_DIR') ~ "/132047/account_names.csv' (FORMAT CSV, HEADER TRUE)") }}
+{{ fiscal_distribution_csv('132047', 'account_names') }}
 select * from {{ ref('pkg_132047__account_names') }}
