@@ -70,6 +70,9 @@ function dataset(row: Record<string, unknown>): Dataset {
     structure: JSON.parse(String(row.structure_json)),
     coverage: JSON.parse(String(row.coverage_json)),
     lineCount: Number(row.line_count),
+    amendmentNumber: row.amendment_number as number | null,
+    effectiveAt: row.effective_at as string | null,
+    sourceAmountKind: row.source_amount_kind as Dataset['sourceAmountKind'],
   }
 }
 export async function listDatasets(

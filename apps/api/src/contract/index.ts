@@ -64,6 +64,12 @@ export const datasetSchema = z.object({
       .default([]),
   }),
   lineCount: z.number().int(),
+  amendmentNumber: z.number().int().nullable().default(null),
+  effectiveAt: z.string().nullable().default(null),
+  sourceAmountKind: z
+    .enum(['initial', 'delta', 'before', 'after', 'executed'])
+    .nullable()
+    .default(null),
 })
 const levelSchema = z.enum([
   'fund',

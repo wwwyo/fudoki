@@ -140,7 +140,7 @@ CREATE TABLE IF NOT EXISTS fiscal_settlement_revenue_lines (
   amount INTEGER NOT NULL CHECK(typeof(amount)='integer' AND abs(amount)<=9007199254740991),
   consolidation TEXT NOT NULL CHECK(consolidation IN ('retained','eliminated')),
   counterpart_fund TEXT NOT NULL,
-  
+
   PRIMARY KEY(version_id,fiscal_line_id),
   FOREIGN KEY(version_id,dataset_id) REFERENCES fiscal_datasets(version_id,dataset_id)
 );
@@ -173,7 +173,7 @@ CREATE TABLE IF NOT EXISTS fiscal_initial_revenue_budget_lines (
   budget_item_id TEXT NOT NULL,source_row INTEGER NOT NULL,amount INTEGER NOT NULL CHECK(typeof(amount)='integer' AND abs(amount)<=9007199254740991),
   consolidation TEXT NOT NULL CHECK(consolidation IN ('retained','eliminated')),
   counterpart_fund TEXT NOT NULL,
-  
+
   PRIMARY KEY(version_id,fiscal_line_id),UNIQUE(version_id,budget_item_id),
   FOREIGN KEY(version_id,dataset_id) REFERENCES fiscal_datasets(version_id,dataset_id),
   FOREIGN KEY(version_id,budget_item_id) REFERENCES fiscal_revenue_budget_items(version_id,budget_item_id)
@@ -184,7 +184,7 @@ CREATE TABLE IF NOT EXISTS fiscal_revenue_budget_changes (
   change_kind TEXT NOT NULL CHECK(change_kind IN ('supplementary','carryover')),
   effective_at TEXT NOT NULL,sequence INTEGER NOT NULL,source_row INTEGER NOT NULL,
   counterpart_budget_item_id TEXT,carryover_from_year INTEGER,carryover_to_year INTEGER,
-  
+
   PRIMARY KEY(version_id,change_id),
   FOREIGN KEY(version_id,dataset_id) REFERENCES fiscal_datasets(version_id,dataset_id),
   FOREIGN KEY(version_id,budget_item_id) REFERENCES fiscal_revenue_budget_items(version_id,budget_item_id),
