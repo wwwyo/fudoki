@@ -38,9 +38,26 @@ flowchart LR
 
 ## Detailed Design
 
+### 財政以外のデータと混同しない名前を付ける
+
+この設計の版・公開一覧・明細・配布参照は財政データ専用であり、テーブル名には `fiscal_` を付ける。dbt のモデル名も `api_fiscal_line_amounts` のように生成先の表名へ揃える。処理層の接頭辞だけでは対象を説明できないため、`api_names` や `api_line_dimensions` のような名前は採用しない。以下は再設計後の名前であり、現行 SQL・dbt はまだ改名していない。
+
+- `fiscal_datasets` と `fiscal_lines`: 財政資料の収録単位と、その原典由来の明細。
+- `fiscal_line_amounts`: 財政明細ごとの金額段階・金額・原典の単位。
+- `fiscal_line_hierarchy`: 財政明細が属する、会計・款・項・目・事業等の階層経路。1行が一明細の経路の一段を表し、`ordinal` で順序を保持する。独立した科目マスタや COFOG の階層ではない。
+- `fiscal_line_dimensions`: 階層経路に加えて財政明細を識別する原典の区分。狛江市の `org`（所属）と `fiscal_class`（予算区分：現年度・繰越明許・事故繰越）が該当する。団体別に宣言した区分だけを持ち、任意の属性を入れる汎用表にはしない。
+- `fiscal_line_names`: 財政明細に関連する科目・事業・追加区分の検索用名称と、その名称の出典・判断根拠。
+- `fiscal_jurisdiction_versions` と `fiscal_package_files`: 一団体の財政データ版と、その版が参照する Fiscal Data Package の配布ファイル。
+- `fiscal_publications` と `fiscal_publication_members`: 財政 API が読む団体別の版の組合せと、その所属参照。
+- `fiscal_publish_control` と `fiscal_publish_guard`: 財政データの公開参照・排他実行・切替検査。
+
+`jurisdictions` は団体そのものの共通マスタであり、財政以外からも参照できる。`cofog_codes` は COFOG 分類という対象が名前に含まれており、汎用の分類表に拡張しない。`database_identity` は DB 自体の検証用識別である。
+
+会議録等を追加するときは、その領域のモデル・配布参照・版の管理を別に定義する。財政の公開一覧へ会議録の版を入れたり、`fiscal_lines` に `domain` 列を追加して異なる種類の明細を詰めたりしない。領域間では団体コードを共有し、公開切替の仕組みの共通化は複数の実装で必要性が確認できてから判断する。名前が長くなる代わりに、D1 の表名や dbt の系統図だけでも対象と粒度を読めるようにする。
+
 ### 団体の内容が変わったときだけデータ版を作る
 
-`jurisdiction_versions` は一団体の全収録年度・文書・会計をまとめた不変のデータ版である。`version_id`、団体コード、契約版、`package_id`、その版で採用した名称・OCD ID・注意点、取込状態を持つ。団体コードは `jurisdictions` を参照する。提供用の団体情報もこの版から読むため、共通マスタの更新で過去の説明を変えない。
+`fiscal_jurisdiction_versions` は一団体の全収録年度・文書・会計をまとめた不変のデータ版である。`version_id`、団体コード、契約版、`package_id`、その版で採用した名称・OCD ID・注意点、取込状態を持つ。団体コードは `jurisdictions` を参照する。提供用の団体情報もこの版から読むため、共通マスタの更新で過去の説明を変えない。
 
 版の内容には、団体の説明、dataset の出典・利用条件・収録範囲、6つの提供用表、配布ファイル一覧を含める。`versionId` は団体コード・契約版と、これらを正規化した内容の SHA-256 から生成する。行順・JSON のキー順・NULL と空文字の扱い・文字列としてのコード・整数単位を契約で固定する。版 ID 自身、取込状態、構築実行の ID、コード commit、実行時刻はハッシュの対象にしない。
 
@@ -52,21 +69,21 @@ API 用の内容だけが変われば `versionId` は変わり、配布ファイ
 
 ### 明細を公開一覧に複製しない
 
-提供用の6表は `fiscal_datasets`、`fiscal_lines`、`amounts`、`line_hierarchy`、`line_dimensions`、`names` とする。各表の現行 `release_id` を `version_id` に置き換え、主キー・外部キーも自治体データ版に揃える。dataset は `(version_id, jurisdiction_code)` で自治体データ版を参照し、別団体の版に混入することを禁止する。明細 ID と dataset ID の財政上の意味は維持する。
+提供用の6表は `fiscal_datasets`、`fiscal_lines`、`fiscal_line_amounts`、`fiscal_line_hierarchy`、`fiscal_line_dimensions`、`fiscal_line_names` とする。各表の現行 `release_id` を `version_id` に置き換え、主キー・外部キーも自治体データ版に揃える。dataset は `(version_id, jurisdiction_code)` で自治体データ版を参照し、別団体の版に混入することを禁止する。明細 ID と dataset ID の財政上の意味は維持する。
 
-`files` は `(version_id, path)` を主キーとする。その団体の R2 キー・SHA-256・サイズ・content type を持ち、ファイル本体は持たない。Git manifest から生成する検索用の参照であり、独立して編集しない。API 用の内容だけが変わる場合にファイル参照が数行重複することは許容し、同じ R2 オブジェクトを参照する。配布物専用の追加テーブルは作らない。
+`fiscal_package_files` は `(version_id, path)` を主キーとする。その団体の R2 キー・SHA-256・サイズ・content type を持ち、ファイル本体は持たない。Git manifest から生成する検索用の参照であり、独立して編集しない。API 用の内容だけが変わる場合にファイル参照が数行重複することは許容し、同じ R2 オブジェクトを参照する。配布物専用の追加テーブルは作らない。
 
 団体と COFOG の共通マスタは版の外に置く。現行 `release_jurisdictions` の名称・注意点は自治体データ版へ統合し、`releases`、`active_release`、`release_history`、`release_jurisdictions` は廃止する。
 
 ### 問い合わせが読む団体別の版を固定する
 
-`publications` は `publication_id`、契約版、状態、採用した Git manifest の不変 URL と SHA-256、最後に公開参照となった時刻、active から外れた時刻、参照受付終了時刻、明示保持のフラグを持つ。状態は `candidate / published / retired` とする。`publication_members` は `(publication_id, jurisdiction_code)` を主キーに、対応する `version_id` を一つだけ持つ。団体コードと版の複合外部キーで取り違えを禁止する。
+`fiscal_publications` は `publication_id`、契約版、状態、採用した Git manifest の不変 URL と SHA-256、最後に公開参照となった時刻、active から外れた時刻、参照受付終了時刻、明示保持のフラグを持つ。状態は `candidate / published / retired` とする。`fiscal_publication_members` は `(publication_id, jurisdiction_code)` を主キーに、対応する `version_id` を一つだけ持つ。団体コードと版の複合外部キーで取り違えを禁止する。
 
 `publicationId` は契約版と、団体コード順に並べた `団体コード → versionId` の対応から生成する。例えば `{狛江:A1, 三鷹:B1}` を `{狛江:A2, 三鷹:B1}` に更新すると、追加する財政データは狛江 A2 だけである。公開一覧の団体数分の参照は増えるが、三鷹 B1 の明細は同じ行を使う。
 
 公開一覧は構築実行の記録を持たず、再公開でも同じ内容なら同じ ID を使う。一度公開した対応を編集しない。採用 manifest は全団体の収録範囲・各版・配布先をまとめた最新の一つを Git に置き、過去は Git 履歴から取得する。構築 ID・コード commit・全入力 fingerprint はローカルの構築記録へ移し、公開一覧の内容 ID を変える理由にしない。同じ公開一覧を採用し直す場合、D1 は最初に記録した有効な manifest URL を維持できる。
 
-`publish_control` の singleton 行に現在の `active_publication_id` と切替世代を保持する。別の `active_publication` テーブルは作らない。この行は排他実行の owner・fence・有効期限、開始時の公開参照・世代、処理中の候補公開一覧も持つ。過去の構築 ID に全データをぶら下げる代わりに、一行の公開参照を切り替える。
+`fiscal_publish_control` の singleton 行に現在の `active_publication_id` と切替世代を保持する。別の `active_publication` テーブルは作らない。この行は排他実行の owner・fence・有効期限、開始時の公開参照・世代、処理中の候補公開一覧も持つ。過去の構築 ID に全データをぶら下げる代わりに、一行の公開参照を切り替える。
 
 ### 公開前の候補を API から見せない
 

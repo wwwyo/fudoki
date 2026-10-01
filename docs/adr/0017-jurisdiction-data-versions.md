@@ -8,7 +8,7 @@ D1 の全体構築版に全明細を複製する構造を廃止し、自治体�
 
 ## Consequences
 
-- `releases`、`active_release`、`release_history`、`release_jurisdictions` を廃止する。団体別のデータ版、公開一覧と所属参照、公開参照を持つ `publish_control` に役割を整理する。
+- `releases`、`active_release`、`release_history`、`release_jurisdictions` を廃止する。団体別のデータ版、公開一覧と所属参照、公開参照を持つ `fiscal_publish_control` に役割を整理する。
 - 公開参照は小さな一覧として全体単位で切り替えるが、データの生成・保存・保持は自治体単位とする。団体一つの切り戻しで他団体を巻き戻さない。
 - 内容が同じ再構築では版を増やさず、コード・入力・検証結果の履歴は構築記録と Git から辿る。
 - この決定は [ADR 0013](0013-jurisdiction-package-versions.md) の D1 全体版、[ADR 0014](0014-git-distribution-manifest.md) の内部構築 ID による公開切替、[ADR 0015](0015-jurisdiction-master.md) の `release_jurisdictions` の配置を置き換える。Git manifest 一つ、R2 の団体別固定キー、共通団体マスタという方針は維持する。

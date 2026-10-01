@@ -131,18 +131,22 @@ dataset は団体・年度・歳入歳出・文書種別・採用した原典の
 
 現在の `agg/<団体>/<年度>/<歳入歳出>/<段階>/<会計>/...json` というパスを問い合わせ条件として使う構造を廃止する。Worker の procedure は入力検査・認可・出典の選択・応答検査を持ち、問い合わせの実行を `apps/api/src/data/` に集める。
 
+財政専用の表・dbt モデルは `fiscal_` を名前に含める。団体マスタは領域共通とし、会議録等の追加時には財政とは別のモデル・版・公開一覧を定義する。命名と領域の境界は [再設計書](design-doc-jurisdiction-versions.md) に従う。
+
 表の境界は以下とする。共通マスタは版から独立させ、提供用の派生データを自治体別の `version_id` で区切る。公開一覧は団体と版の参照だけを持ち、明細を複製しない。
 
-- `jurisdiction_versions`: 一団体の内容を固定した版。団体コード・契約版・配布物の版と、その版で採用した名称・OCD ID・注意点を持つ。
-- `publications` と `publication_members`: 公開する団体と各自治体データ版の組合せ、採用した Git manifest の不変 URL、公開・保持状態。公開ごとに増えるのは小さな対応一覧である。
-- `publish_control`: 排他実行の状態と、現在の `active_publication_id`・切替世代。現行 `releases`・`active_release`・`release_history` は廃止する。
+- `fiscal_jurisdiction_versions`: 一団体の内容を固定した版。団体コード・契約版・配布物の版と、その版で採用した名称・OCD ID・注意点を持つ。
+- `fiscal_publications` と `fiscal_publication_members`: 公開する団体と各自治体データ版の組合せ、採用した Git manifest の不変 URL、公開・保持状態。公開ごとに増えるのは小さな対応一覧である。
+- `fiscal_publish_control`: 排他実行の状態と、現在の `active_publication_id`・切替世代。現行 `releases`・`active_release`・`release_history` は廃止する。
 - `jurisdictions`: 団体コードを主キーとする共通マスタ。名称・OCD ID を持ち、版 ID は持たない。Git の `packages/jurisdictions/jurisdictions.json` から生成する。
 - `fiscal_datasets`: 団体・年度・歳入歳出・文書種別・原典の版・利用条件・注意点・収録範囲・実在する金額段階。`version_id / jurisdiction_code` で自治体データ版を参照する。JSON が必要な説明項目は、検索対象の列と区別して保存する。
 - `fiscal_lines`: 原典由来の明細と分類の割当結果。所属 dataset・明細識別子・会計に加え、`cofog_code` を分類マスタへの外部キーとして持つ。分類状態・割当規則・根拠・連結の判断も明細に保持する。別の文書の行を同一 ID にまとめない。
-- `amounts`: 明細×金額段階の金額。一つの明細に複数の段階があることを保ち、主キーは `version_id / fiscal_line_id / phase` とする。
+- `fiscal_line_amounts`: 明細×金額段階の金額。一つの明細に複数の段階があることを保ち、主キーは `version_id / fiscal_line_id / phase` とする。
 - `cofog_codes`: コード・名称・階層・親コードを持つ COFOG 1999 の共通マスタ。公開版に依存しない。`packages/fiscal/detail.ts` の名称定義を正本とし、現在使用するコードと祖先の37件を生成する。全分類を収録した一覧ではない。
-- `line_hierarchy` と `line_dimensions`: 団体ごとの階層順と追加の同一性の軸。共通の階層一覧から順序を推測しない。
-- `names` と `files`: 現在検索対象にしている名称と、R2 の配布ファイルのキー・サイズ・SHA-256・content type。
+- `fiscal_line_hierarchy`: 各財政明細の会計・款・項・目・事業等の階層経路。1行が経路の一段を表し、団体別の順序を保持する。
+- `fiscal_line_dimensions`: 階層経路だけでは識別できない財政明細の追加区分。狛江市の所属・予算区分など、団体別に宣言した原典の区分を持つ。任意の属性を受け入れる汎用表にはしない。
+- `fiscal_line_names`: 財政明細に関連する科目・事業・追加区分の検索用名称と、その出典・判断根拠。
+- `fiscal_package_files`: 財政データ版が参照する R2 配布ファイルのキー・サイズ・SHA-256・content type。
 
 団体マスタは共通の表へ更新するが、公開 API の説明は自治体データ版の記録から読む。候補の公開が失敗しても公開中の説明は変わらず、切り戻しでも当時の記録を読む。現行 `release_jurisdictions` は自治体データ版へ統合する。[ADR 0017](adr/0017-jurisdiction-data-versions.md)。
 
@@ -226,7 +230,7 @@ R2 と D1 全体を一つのトランザクションにできるとは扱わな�
 
 API はリクエストの最初に版を一度だけ解決し、そのリクエスト内の D1 問い合わせと配布 URL をすべてその版に固定する。ページトークンがあればその公開済みの版、通常の問い合わせでは active な版を使う。isolate の生存中ずっと公開参照を保持する単一 cache は使わない。初期は D1 primary を参照し、read replica を使う場合は Sessions API で公開参照と後続の読み取りの整合性を保つ。[D1 read replication](https://developers.cloudflare.com/d1/best-practices/read-replication/)。
 
-ファイル配信は公開 R2 bucket を `download.fudoki.dev` に接続して直接提供する。API は D1 の `files` を読み、解決した自治体データ版の不変のダウンロード URL とファイル属性を返す。manifest の URL は D1 の `publications.manifest_url` に記録した Git commit 固定の URL を返す。API Worker に配布用の R2 binding や body の転送処理は持たせない。配布経路の更新は [ADR 0011](adr/0011-public-r2-distribution.md) に記録した。現行の `apps/download/` はまだ置き換えていない。
+ファイル配信は公開 R2 bucket を `download.fudoki.dev` に接続して直接提供する。API は D1 の `fiscal_package_files` を読み、解決した自治体データ版の不変のダウンロード URL とファイル属性を返す。manifest の URL は D1 の `fiscal_publications.manifest_url` に記録した Git commit 固定の URL を返す。API Worker に配布用の R2 binding や body の転送処理は持たせない。配布経路の更新は [ADR 0011](adr/0011-public-r2-distribution.md) に記録した。現行の `apps/download/` はまだ置き換えていない。
 
 公開 bucket には団体別の配布ファイルだけを置く。原典・取り込みは非公開入力 bucket、採用証跡と最新の manifest は Git、候補・検証結果はローカルの `build/` に置く。公開一覧を読む経路は Git とし、ダウンロードは R2 の固定キーで行う。公開 API と Git の状態が異なる場合、実際の公開状態は D1 の参照で判断する。
 
@@ -238,7 +242,7 @@ API はリクエストの最初に版を一度だけ解決し、そのリクエ�
 
 Git に残すのはコード、取得元・利用条件の宣言、dbt モデル・検査・判断、団体マスタ、設計文書、入力一覧と個別ハッシュ、採用した入力の証跡である。原典の CSV・PDF と取り込み済みの表は非公開の R2 入力 bucket、配布物は別の R2 配布 bucket、API の参照表は D1 に置く。ローカル候補・入力キャッシュ・warehouse・報告・PDF 閲覧レイヤは Git に入れない。
 
-採用した収録一覧・出典・配布ファイルの参照の正本は Git の `pipeline/publish/manifest.json` とする。Git には最新の一つを置き、過去の一覧は Git 履歴で辿る。D1 の公開 metadata と `files` は同じ構築から生成し、公開候補の検査で一致を確認する。取込・公開状態と `publish_control` の公開参照は D1 が管理する運用状態であり、Git の採用記録とは区別する。
+採用した収録一覧・出典・配布ファイルの参照の正本は Git の `pipeline/publish/manifest.json` とする。Git には最新の一つを置き、過去の一覧は Git 履歴で辿る。D1 の公開 metadata と `fiscal_package_files` は同じ構築から生成し、公開候補の検査で一致を確認する。取込・公開状態と `fiscal_publish_control` の公開参照は D1 が管理する運用状態であり、Git の採用記録とは区別する。
 
 配布 CSV の Git diff によるレビューの代わりに、変更前後の団体・年度・歳入歳出・予算段階別の行数・金額・識別子の増減、分類の変更件数と金額、注意点と出典の変更を CI に提示する。ハッシュ一致だけで内容の正しさを検査したことにはしない。
 
@@ -300,7 +304,7 @@ Git manifest は「どの団体・年度・文書・自治体データ版を採�
 }
 ```
 
-これは項目の関係を示す再設計後の抜粋で、実際のハッシュや完全な schema ではない。D1 の `publications.manifest_url` は採用した Git commit のファイルを指し、その SHA-256 と団体別の内容版を照合する。Git の履歴だけでは公開成功を証明せず、D1 の運用状態を参照する。
+これは項目の関係を示す再設計後の抜粋で、実際のハッシュや完全な schema ではない。D1 の `fiscal_publications.manifest_url` は採用した Git commit のファイルを指し、その SHA-256 と団体別の内容版を照合する。Git の履歴だけでは公開成功を証明せず、D1 の運用状態を参照する。
 
 公開した自治体データ版が参照する入力 snapshot・原典・表・証跡は保管対象とし、配布物の整理に連動して削除しない。入力 bucket を公開配布の Worker に bind せず、bucket 全体に自動削除の lifecycle を設定しない。自治体サイトが消えても R2 の固定入力から再構築できること、R2 以外へのバックアップとその復元手順を用意する。
 
