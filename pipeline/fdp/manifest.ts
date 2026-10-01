@@ -56,9 +56,11 @@ export async function finalizeCandidate(
   validation: Record<string, any>
 ): Promise<ReleaseManifest> {
   const jurisdictions = (
-    await jsonLines(join(directory, 'api/jurisdictions.jsonl'))
+    await jsonLines(join(directory, 'api/release_jurisdictions.jsonl'))
   ).map((row) => ({
-    ...row,
+    jurisdiction_code: row.jurisdiction_code,
+    name: row.name_snapshot,
+    ocd_id: row.ocd_id_snapshot,
     caveats: JSON.parse(row.caveats_json as string),
     caveats_json: undefined,
   }))
@@ -144,6 +146,9 @@ export async function finalizeCandidate(
     schemaVersion: 1,
     ...identity,
     manifestSha256: sha256(distributionText),
+    jurisdictionMasterSha256: sha256(
+      await readFile(join(directory, 'api/jurisdictions.jsonl'))
+    ),
     files,
     packages,
     tables,
@@ -174,6 +179,11 @@ export async function verifyCandidate(
 ): Promise<ReleaseManifest> {
   const raw = await readFile(join(directory, 'verification.json'))
   const manifest = manifestSchema.parse(JSON.parse(raw.toString()))
+  if (
+    sha256(await readFile(join(directory, 'api/jurisdictions.jsonl'))) !==
+    manifest.jurisdictionMasterSha256
+  )
+    throw new Error('Jurisdiction master differs from verification record')
   const complete = JSON.parse(
     await readFile(join(directory, 'complete.json'), 'utf8')
   )

@@ -19,10 +19,15 @@ CREATE TABLE IF NOT EXISTS active_release (
   generation INTEGER NOT NULL DEFAULT 0
 );
 CREATE TABLE IF NOT EXISTS jurisdictions (
-  release_id TEXT NOT NULL REFERENCES releases(release_id),
-  jurisdiction_code TEXT NOT NULL,
+  jurisdiction_code TEXT PRIMARY KEY,
   name TEXT NOT NULL,
-  ocd_id TEXT NOT NULL,
+  ocd_id TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS release_jurisdictions (
+  release_id TEXT NOT NULL REFERENCES releases(release_id),
+  jurisdiction_code TEXT NOT NULL REFERENCES jurisdictions(jurisdiction_code),
+  name_snapshot TEXT NOT NULL,
+  ocd_id_snapshot TEXT NOT NULL,
   caveats_json TEXT NOT NULL,
   PRIMARY KEY (release_id, jurisdiction_code)
 );
@@ -38,7 +43,8 @@ CREATE TABLE IF NOT EXISTS fiscal_datasets (
   source_json TEXT NOT NULL,
   structure_json TEXT NOT NULL,
   line_count INTEGER NOT NULL,
-  PRIMARY KEY (release_id, dataset_id)
+  PRIMARY KEY (release_id, dataset_id),
+  FOREIGN KEY (release_id, jurisdiction_code) REFERENCES release_jurisdictions(release_id, jurisdiction_code)
 );
 CREATE TABLE IF NOT EXISTS fiscal_lines (
   release_id TEXT NOT NULL,

@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { createHash } from 'node:crypto'
 import { sqliteD1 } from '../../apps/api/test/database'
-import { resolveRelease } from '../../apps/api/src/data/queries'
+import { resolveRelease, jurisdictions } from '../../apps/api/src/data/queries'
 import download from '../../apps/download/src/index'
 import type { R2Bucket } from '@fudoki/data-contracts'
 import { fixture } from '../verify/fixture'
@@ -294,4 +294,46 @@ test('activation failure keeps the API on the old version while finalized downlo
     )
   ).rejects.toThrow('D1 contents differ')
   expect(await resolveRelease(db)).toBe(R1)
+})
+
+test('a shared jurisdiction master is reused while old API metadata survives candidate failure, publication and rollback', async () => {
+  await publish(join(directory, R1), db, store, methods())
+  await fixture(join(directory, R2), R2, 200, 501, '新しい団体名')
+  await expect(
+    publish(
+      join(directory, R2),
+      db,
+      store,
+      methods({
+        async chunk() {
+          throw new Error('candidate interrupted')
+        },
+      })
+    )
+  ).rejects.toThrow('candidate interrupted')
+  expect(await resolveRelease(db)).toBe(R1)
+  expect((await jurisdictions(db, R1))[0]?.name).toBe('検証用の架空団体')
+  expect(sqlite.query('SELECT name FROM jurisdictions').get()).toEqual({
+    name: '新しい団体名',
+  })
+  await publish(join(directory, R2), db, store, methods())
+  expect((await jurisdictions(db, R2))[0]?.name).toBe('新しい団体名')
+  expect((await jurisdictions(db, R1))[0]?.name).toBe('検証用の架空団体')
+  expect(
+    sqlite.query('SELECT count(*) AS count FROM jurisdictions').get()
+  ).toEqual({ count: 1 })
+  expect(
+    sqlite.query('SELECT count(*) AS count FROM release_jurisdictions').get()
+  ).toEqual({ count: 2 })
+  await rollback(
+    db,
+    methods(),
+    await verification(R1).candidate(R1),
+    createHash('sha256')
+      .update(await readFile(join(directory, R1, 'verification.json')))
+      .digest('hex'),
+    manifestUrl
+  )
+  expect(await resolveRelease(db)).toBe(R1)
+  expect((await jurisdictions(db, R1))[0]?.name).toBe('検証用の架空団体')
 })

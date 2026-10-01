@@ -58,3 +58,49 @@ test('initialization refuses to reinterpret existing publication data', async ()
     sqlite.close()
   }
 })
+
+test('initialization separates an empty legacy jurisdiction table and refuses to discard its populated rows', async () => {
+  for (const populated of [false, true]) {
+    const sqlite = new Database(':memory:')
+    try {
+      const sql = await readFile(
+        new URL('../../packages/data-contracts/schema.sql', import.meta.url),
+        'utf8'
+      )
+      sqlite.exec(sql)
+      sqlite.exec(
+        'DROP TABLE jurisdictions; CREATE TABLE jurisdictions(release_id TEXT,jurisdiction_code TEXT,name TEXT,ocd_id TEXT,caveats_json TEXT,PRIMARY KEY(release_id,jurisdiction_code))'
+      )
+      if (populated)
+        sqlite.run('INSERT INTO jurisdictions VALUES(?,?,?,?,?)', [
+          'unused',
+          '000001',
+          '団体',
+          'test',
+          '[]',
+        ])
+      if (populated) {
+        await expect(initializeSchema(sqliteD1(sqlite))).rejects.toThrow(
+          'Existing jurisdiction data'
+        )
+        expect(
+          sqlite.query('SELECT count(*) AS count FROM jurisdictions').get()
+        ).toEqual({ count: 1 })
+      } else {
+        await initializeSchema(sqliteD1(sqlite))
+        expect(
+          (
+            sqlite.query('PRAGMA table_info(jurisdictions)').all() as {
+              name: string
+              pk: number
+            }[]
+          )
+            .filter((c) => c.pk)
+            .map((c) => c.name)
+        ).toEqual(['jurisdiction_code'])
+      }
+    } finally {
+      sqlite.close()
+    }
+  }
+})

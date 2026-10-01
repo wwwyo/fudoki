@@ -5,6 +5,8 @@ import { createInterface } from 'node:readline'
 import {
   TABLES,
   TABLE_COLUMNS,
+  canonicalRow,
+  jurisdictionMasterSchema,
   type D1Database,
   type ReleaseManifest,
 } from '@fudoki/data-contracts'
@@ -63,6 +65,45 @@ export async function publish(
         )
         .bind(manifest.releaseId, manifestHash, manifest.schemaVersion),
     ])
+    const masters = (
+      await readFile(join(candidate, 'api/jurisdictions.jsonl'), 'utf8')
+    )
+      .split('\n')
+      .filter(Boolean)
+      .map((line) => jurisdictionMasterSchema.parse(JSON.parse(line)))
+    if (
+      new Set(masters.map((row) => row.jurisdiction_code)).size !==
+      masters.length
+    )
+      throw new Error('Duplicate jurisdiction master identity')
+    for (let offset = 0; offset < masters.length; offset += 500) {
+      const batch = masters.slice(offset, offset + 500)
+      await guardedBatch(db, lease, [
+        db
+          .prepare(
+            `INSERT INTO jurisdictions(jurisdiction_code,name,ocd_id)
+         SELECT json_extract(value,'$.jurisdiction_code'),json_extract(value,'$.name'),json_extract(value,'$.ocd_id') FROM json_each(?) WHERE true
+         ON CONFLICT(jurisdiction_code) DO UPDATE SET name=excluded.name,ocd_id=excluded.ocd_id`
+          )
+          .bind(JSON.stringify(batch)),
+      ])
+      const actual = await db
+        .prepare(
+          'SELECT jurisdiction_code,name,ocd_id FROM jurisdictions WHERE jurisdiction_code IN (SELECT value FROM json_each(?)) ORDER BY jurisdiction_code'
+        )
+        .bind(JSON.stringify(batch.map((row) => row.jurisdiction_code)))
+        .all<Record<string, unknown>>()
+      const expected = [...batch].sort((a, b) =>
+        a.jurisdiction_code.localeCompare(b.jurisdiction_code)
+      )
+      if (
+        actual.results
+          .map((row) => canonicalRow('jurisdictions', row))
+          .join('') !==
+        expected.map((row) => canonicalRow('jurisdictions', row)).join('')
+      )
+        throw new Error('Jurisdiction master differs after transfer')
+    }
     for (const file of manifest.files) {
       if (!(await verify.existingFile(manifest.releaseId, file.path)))
         await store.put(

@@ -30,6 +30,18 @@ beforeEach(async () => {
     'a'.repeat(40),
     'b'.repeat(64),
   ])
+  const masters = (
+    await readFile(join(directory, 'api/jurisdictions.jsonl'), 'utf8')
+  )
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => JSON.parse(line))
+  for (const master of masters)
+    sqlite.run('INSERT INTO jurisdictions VALUES(?,?,?)', [
+      master.jurisdiction_code,
+      master.name,
+      master.ocd_id,
+    ])
   for (const table of TABLES) {
     const columns = TABLE_COLUMNS[table],
       sql = `INSERT INTO "${table}"(release_id,${columns.map((c) => `"${c}"`).join(',')}) VALUES(${columns.map(() => '?').join(',')},?)`

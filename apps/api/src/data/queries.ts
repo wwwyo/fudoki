@@ -379,7 +379,7 @@ export async function jurisdictions(db: D1Database, releaseId: string) {
     caveats_json: string;
   }>(
     db,
-    "SELECT * FROM jurisdictions WHERE release_id=? ORDER BY jurisdiction_code",
+    "SELECT jurisdiction_code,name_snapshot AS name,ocd_id_snapshot AS ocd_id,caveats_json FROM release_jurisdictions WHERE release_id=? ORDER BY jurisdiction_code",
     [releaseId],
   );
   return result.map((r) => ({

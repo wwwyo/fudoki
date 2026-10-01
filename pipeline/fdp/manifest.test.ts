@@ -15,6 +15,7 @@ async function candidate(releaseId: string, changed = false) {
   const directory = await mkdtemp(join(tmpdir(), 'fudoki-package-test-'))
   directories.push(directory)
   await mkdir(join(directory, 'api'))
+  await writeFile(join(directory, 'api/jurisdictions.jsonl'), '')
   const datasets = [
     ['000001', 2024, 'budget', 'a'],
     ['000001', 2025, 'budget', 'b'],
@@ -144,4 +145,12 @@ test('the Git manifest contains scope and references without catalog or internal
     'manifest differs'
   )
   expect(JSON.parse(await readFile(target, 'utf8'))).toEqual(publicManifest)
+})
+
+test('a changed jurisdiction master input cannot be published with a previously verified candidate', async () => {
+  const { directory } = await candidate('r-' + '1'.repeat(32))
+  await writeFile(join(directory, 'api/jurisdictions.jsonl'), '{}\n')
+  await expect(verifyCandidate(directory)).rejects.toThrow(
+    'Jurisdiction master differs'
+  )
 })

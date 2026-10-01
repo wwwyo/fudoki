@@ -22,11 +22,23 @@ beforeEach(() => {
     ),
   );
   db = sqliteD1(sqlite);
+  sqlite.run("INSERT INTO jurisdictions VALUES(?,?,?)", [
+    "132195",
+    "狛江市",
+    "ocd-division/country:jp/prefecture:13/city:132195",
+  ]);
   for (const release of [R1, R2]) {
     sqlite.run("INSERT INTO releases VALUES(?,1,'published',NULL,NULL,?,?)", [
       release,
       "a".repeat(40),
       "b".repeat(64),
+    ]);
+    sqlite.run("INSERT INTO release_jurisdictions VALUES(?,?,?,?,?)", [
+      release,
+      "132195",
+      "狛江市",
+      "ocd-division/country:jp/prefecture:13/city:132195",
+      "[]",
     ]);
     for (const [dataset, kind, phase] of [
       ["budget", "budget", "approved"],

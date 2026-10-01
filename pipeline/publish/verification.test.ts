@@ -56,6 +56,7 @@ beforeEach(() => {
     judgmentFingerprint: 'd'.repeat(64),
     queryFingerprint: fingerprint,
     manifestSha256: 'e'.repeat(64),
+    jurisdictionMasterSha256: 'f'.repeat(64),
     totals: [],
     packages: [
       {
@@ -170,35 +171,44 @@ test('table verification uses a bounded keyset and canonical values across chunk
   for (let i = 0; i < 501; i++) {
     const row = {
       jurisdiction_code: String(i).padStart(6, '0'),
-      name: `団体${i}`,
-      ocd_id: 'test',
+      name_snapshot: `団体${i}`,
+      ocd_id_snapshot: 'test',
       caveats_json: '[]',
     }
     rows.push(row)
-    sqlite.run('INSERT INTO jurisdictions VALUES(?,?,?,?,?)', [
+    sqlite.run('INSERT INTO jurisdictions VALUES(?,?,?)', [
+      row.jurisdiction_code,
+      row.name_snapshot,
+      row.ocd_id_snapshot,
+    ])
+    sqlite.run('INSERT INTO release_jurisdictions VALUES(?,?,?,?,?)', [
       id,
       row.jurisdiction_code,
-      row.name,
-      row.ocd_id,
+      row.name_snapshot,
+      row.ocd_id_snapshot,
       row.caveats_json,
     ])
   }
-  const first = await verifier.chunk(id, 'jurisdictions')
+  const first = await verifier.chunk(id, 'release_jurisdictions')
   expect(first.rows).toBe(500)
   expect(first.sha256).toBe(
     hash(
       rows
         .slice(0, 500)
-        .map((r) => canonicalRow('jurisdictions', r))
+        .map((r) => canonicalRow('release_jurisdictions', r))
         .join('')
     )
   )
-  const last = await verifier.chunk(id, 'jurisdictions', first.after)
+  const last = await verifier.chunk(id, 'release_jurisdictions', first.after)
   expect(last.rows).toBe(1)
-  expect(last.sha256).toBe(hash(canonicalRow('jurisdictions', rows[500]!)))
-  expect((await verifier.chunk(id, 'jurisdictions', last.after)).rows).toBe(0)
+  expect(last.sha256).toBe(
+    hash(canonicalRow('release_jurisdictions', rows[500]!))
+  )
+  expect(
+    (await verifier.chunk(id, 'release_jurisdictions', last.after)).rows
+  ).toBe(0)
   await expect(
-    verifier.chunk(id, 'jurisdictions', ["x' OR 1=1 --", 'extra'])
+    verifier.chunk(id, 'release_jurisdictions', ["x' OR 1=1 --", 'extra'])
   ).rejects.toThrow('Invalid table continuation')
 })
 

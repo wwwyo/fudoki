@@ -31,6 +31,8 @@ bun run dev
 
 文書種別は budget / supplementary / settlement、金額段階は approved / adjusted / adjusted-before-transfer / executed。決算書にある予算現額と決算額を区別する。dataset は団体・年度・歳入歳出・文書種別・原典版を含み、明細 ID は dataset を含めて一意にする。
 
+D1 の `jurisdictions` は団体コードを主キーとする共通マスタで、公開版に依存しない。`release_jurisdictions` は公開版ごとの注意点と名称・OCD ID の記録を持つ。build はそれぞれの JSONL を生成し、publish は共通マスタを更新してから8表の公開版別データを検査・転送する。候補が失敗しても、API は公開中の版の記録を読むため名称は変わらない。
+
 ## 全体の release と団体別の配布物
 
 Git manifest は採用する収録一覧とコード・入力・判断の対応、`packageId` は団体別の配布内容を識別する。未変更の配布物は同じ R2 キーを参照し、publish は既存の内容を照合して転送を省く。

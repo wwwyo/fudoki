@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const CONTRACT_VERSION = 1;
 export const TABLES = [
-  "jurisdictions",
+  "release_jurisdictions",
   "fiscal_datasets",
   "fiscal_lines",
   "amounts",
@@ -12,6 +12,13 @@ export const TABLES = [
   "names",
 ] as const;
 export const sha256Schema = z.string().regex(/^[a-f0-9]{64}$/);
+export const jurisdictionMasterSchema = z
+  .object({
+    jurisdiction_code: z.string().regex(/^\d{6}$/),
+    name: z.string().min(1),
+    ocd_id: z.string().min(1),
+  })
+  .strict();
 export const releaseIdSchema = z.string().regex(/^r-[a-f0-9]{32}$/);
 export const packageIdSchema = z.string().regex(/^p-[a-f0-9]{64}$/);
 export const distributionKeySchema = z
@@ -91,6 +98,7 @@ export const manifestSchema = z
     judgmentFingerprint: sha256Schema,
     queryFingerprint: sha256Schema,
     manifestSha256: sha256Schema,
+    jurisdictionMasterSha256: sha256Schema,
     files: z.array(fileSchema).min(1),
     packages: z.array(packageSchema),
     totals: z
@@ -302,7 +310,13 @@ export interface R2Bucket {
 }
 
 export const TABLE_COLUMNS = {
-  jurisdictions: ["jurisdiction_code", "name", "ocd_id", "caveats_json"],
+  jurisdictions: ["jurisdiction_code", "name", "ocd_id"],
+  release_jurisdictions: [
+    "jurisdiction_code",
+    "name_snapshot",
+    "ocd_id_snapshot",
+    "caveats_json",
+  ],
   fiscal_datasets: [
     "dataset_id",
     "jurisdiction_code",
@@ -362,6 +376,7 @@ export const TABLE_COLUMNS = {
 } as const;
 export const TABLE_KEYS = {
   jurisdictions: ["jurisdiction_code"],
+  release_jurisdictions: ["jurisdiction_code"],
   fiscal_datasets: ["dataset_id"],
   fiscal_lines: ["fiscal_line_id"],
   amounts: ["fiscal_line_id", "phase"],
@@ -371,7 +386,7 @@ export const TABLE_KEYS = {
   names: ["fiscal_line_id", "name_kind", "level"],
 } as const;
 export function canonicalRow(
-  table: (typeof TABLES)[number],
+  table: keyof typeof TABLE_COLUMNS,
   row: Record<string, unknown>,
 ): string {
   return (

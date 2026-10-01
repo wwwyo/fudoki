@@ -13,14 +13,15 @@ export async function fixture(
   directory: string,
   releaseId: string,
   amount = 100,
-  rows = 501
+  rows = 501,
+  jurisdictionName = '検証用の架空団体'
 ): Promise<ReleaseManifest> {
   const tables: Record<(typeof TABLES)[number], Record<string, unknown>[]> = {
-    jurisdictions: [
+    release_jurisdictions: [
       {
         jurisdiction_code: '000001',
-        name: '検証用の架空団体',
-        ocd_id: 'ocd-division/country:jp/fixture:1',
+        name_snapshot: jurisdictionName,
+        ocd_id_snapshot: 'ocd-division/country:jp/fixture:1',
         caveats_json: '[]',
       },
     ],
@@ -102,6 +103,19 @@ export async function fixture(
     })
   }
   await mkdir(join(directory, 'api'), { recursive: true })
+  await writeFile(
+    join(directory, 'api/jurisdictions.jsonl'),
+    tables.release_jurisdictions
+      .map(
+        (row) =>
+          JSON.stringify({
+            jurisdiction_code: row.jurisdiction_code,
+            name: row.name_snapshot,
+            ocd_id: row.ocd_id_snapshot,
+          }) + '\n'
+      )
+      .join('')
+  )
   await mkdir(join(directory, 'fiscal/000001'), { recursive: true })
   const validation: {
     tables: Record<string, { rows: number; sha256: string }>

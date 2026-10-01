@@ -11,7 +11,7 @@ from pathlib import Path
 
 from ingestion.paths import BUILD, PACKAGES, REPO
 
-TABLES = ['jurisdictions', 'fiscal_datasets', 'fiscal_lines', 'amounts', 'cofog', 'line_hierarchy', 'line_dimensions', 'names']
+TABLES = ['release_jurisdictions', 'fiscal_datasets', 'fiscal_lines', 'amounts', 'cofog', 'line_hierarchy', 'line_dimensions', 'names']
 
 
 def load_tables(directory: Path, database: Path, release: str = 'r-' + '0' * 32) -> dict:
@@ -20,6 +20,12 @@ def load_tables(directory: Path, database: Path, release: str = 'r-' + '0' * 32)
     con = sqlite3.connect(database)
     con.executescript((REPO / 'packages/data-contracts/schema.sql').read_text())
     con.execute('INSERT INTO releases VALUES (?, 1, ?, NULL, NULL, ?, ?)', (release, 'staging', '0' * 40, '0' * 64))
+    master_path = directory / 'jurisdictions.jsonl'
+    masters = [json.loads(line) for line in master_path.read_text().splitlines() if line]
+    for row in masters:
+        if set(row) != {'jurisdiction_code', 'name', 'ocd_id'}:
+            raise ValueError('Jurisdiction master storage columns differ')
+        con.execute('INSERT INTO jurisdictions VALUES(?,?,?)', [row['jurisdiction_code'], row['name'], row['ocd_id']])
     tables = {}
     for name in TABLES:
         path = directory / f'{name}.jsonl'
@@ -65,7 +71,7 @@ def load_tables(directory: Path, database: Path, release: str = 'r-' + '0' * 32)
         measurements[label] = {'milliseconds': round((time.perf_counter() - start) * 1000, 2), 'resultRows': len(result),
                                'plan': con.execute('EXPLAIN QUERY PLAN ' + statement, values).fetchall()}
     con.close()
-    return {'tables': tables, 'bytes': database.stat().st_size, 'threeReleasesEstimateBytes': database.stat().st_size * 3,
+    return {'masters': {'jurisdictions': {'rows': len(masters), 'sha256': hashlib.sha256(master_path.read_bytes()).hexdigest()}}, 'tables': tables, 'bytes': database.stat().st_size, 'threeReleasesEstimateBytes': database.stat().st_size * 3,
             'scopeTotals': scope_totals, 'localMeasurements': measurements}
 
 
