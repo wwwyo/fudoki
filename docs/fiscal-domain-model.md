@@ -50,14 +50,8 @@ classDiagram
     }
     class CofogClassification["COFOG分類結果"] {
         分類状態
-        根拠
-    }
-    class CofogRule["COFOG分類規則"] {
         規則ID
-        優先順位
-        対象団体と条件
-        分類状態とコード
-        判断する粒度
+        根拠
     }
     class CofogCode["COFOG分類"] {
         コード
@@ -73,7 +67,6 @@ classDiagram
     RevenueLine "1" *-- "1..*" RevenueAmount : 金額を持つ
     ExpenditureLine "1" *-- "1" CofogClassification : 分類結果を持つ
     CofogClassification "0..*" --> "0..1" CofogCode : 割り当てる
-    CofogClassification "0..*" --> "0..1" CofogRule : 判断に使った規則を参照する
 ```
 
 - 自治体は、年度・文書種別ごとに歳出／歳入データセットを持つ。財政データが未収録の自治体は、どちらも0件になる。
@@ -81,7 +74,7 @@ classDiagram
 - 当初予算と決算は別データセットにする。同じ科目経路でも、別資料の明細を同一の明細にまとめない。将来の補正予算も、号数・時点・金額の意味を別途定める。
 - 歳出の金額と歳入の金額は別の型にする。歳出の実績は支出済額、歳入の実績は収入済額である。原典に複数の金額段階があれば保持し、異なる段階を合算しない。
 - COFOG の分類結果は歳出明細だけが持つ。状態は `assigned / unclassifiable / out-of-scope` とし、`assigned` のときだけ分類コードを一つ参照する。歳入モデルには COFOG の属性も `not-applicable` の行も作らない。
-- 分類規則は Git の `pipeline/dbt/seeds/fiscal/cofog_rules.csv` に定義し、複数の分類結果から共有して参照できる。規則 ID は分類を決めた規則を指す。規則なしの場合や会計間移転の個別宣言で判断した場合は、分類規則の参照を必須にせず根拠を残す。規則のクラスを示すことは、D1 に規則マスタを追加したり R2 で配布したりする方針を意味しない。
+- 分類規則は Git の `pipeline/dbt/seeds/fiscal/cofog_rules.csv` に定義し、変換処理で適用する。DB に規則マスタを設けず、分類結果に使った規則 ID と根拠を記録する。規則なしの場合や会計間移転の個別宣言で判断した場合は、規則 ID を必須にせず根拠を残す。
 
 黒い菱形は、その明細や金額が所属するデータセット／明細の一部であることを表す。普通の矢印は参照を表す。例えば同じ COFOG 分類を、複数の歳出明細の分類結果が参照できる。
 
