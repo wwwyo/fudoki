@@ -4,20 +4,20 @@ import { getPlatformProxy } from 'wrangler'
 import { mkdtemp, writeFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import config from '../../apps/download/cloudflare.config.ts'
+import config from './r2/cloudflare.config.ts'
 
 const build = new URL('../.build/', import.meta.url)
 const latest = JSON.parse(await readFile(new URL('latest.json', build), 'utf8'))
 if (!/^r-[a-f0-9]{32}$/.test(latest.releaseId))
   throw new Error('A verified local release is required')
-const directory = new URL(`releases/${latest.releaseId}/`, build)
+const directory = new URL(`builds/${latest.releaseId}/`, build)
 const manifest = JSON.parse(
   await readFile(new URL('manifest.json', directory), 'utf8')
 )
 const temporary = await mkdtemp(join(tmpdir(), 'fudoki-local-downloads-'))
 let platform
 try {
-  const { worker } = config
+  const { worker } = await config({ mode: 'development', isPreview: false })
   const configPath = join(temporary, 'proxy.json')
   await writeFile(
     configPath,
@@ -35,9 +35,7 @@ try {
     remoteBindings: false,
     envFiles: [],
     persist: {
-      path: fileURLToPath(
-        new URL('../../apps/download/.wrangler/state/v3', import.meta.url)
-      ),
+      path: fileURLToPath(new URL('./r2/.wrangler/state/v3', import.meta.url)),
     },
   })
   for (const file of manifest.files) {

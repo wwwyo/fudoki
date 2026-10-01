@@ -15,7 +15,7 @@ if (revision.exitCode !== 0)
   throw new Error('Unable to resolve Git manifest URL')
 
 if (!LATEST) throw new Error('Run pipeline:build before loading local D1')
-const candidate = join(BUILD, 'releases', LATEST.releaseId)
+const candidate = join(BUILD, 'builds', LATEST.releaseId)
 const manifest = await verifyCandidate(candidate)
 const manifestBytes = await readFile(join(candidate, 'verification.json'))
 
@@ -48,36 +48,22 @@ for (const suffix of ['-wal', '-shm'])
 await copyFile(join(BUILD, 'candidate.sqlite'), target)
 const db = new Database(target)
 try {
-  const active = db
-    .query('SELECT release_id FROM active_release WHERE singleton=1')
-    .get() as { release_id: string } | null
-  if (active?.release_id !== manifest.releaseId)
-    throw new Error(
-      'Local database belongs to another candidate; rebuild before loading it'
+  const versions = db
+    .query(
+      'SELECT version_id FROM fiscal_jurisdiction_versions ORDER BY jurisdiction_code'
     )
-  db.transaction(() => {
-    const insert = db.prepare(
-      'INSERT INTO files(release_id,path,object_key,sha256,bytes,content_type) VALUES(?,?,?,?,?,?)'
-    )
-    for (const file of manifest.files)
-      insert.run(
-        manifest.releaseId,
-        file.path,
-        file.objectKey,
-        file.sha256,
-        file.bytes,
-        file.contentType
-      )
-    db.prepare(
-      'UPDATE releases SET manifest_url=?,verification_sha256=?,code_revision=?,input_fingerprint=? WHERE release_id=?'
-    ).run(
-      `https://raw.githubusercontent.com/wwwyo/fudoki/${revision.stdout.toString().trim()}/pipeline/publish/manifest.json`,
-      sha256(manifestBytes),
-      manifest.codeRevision,
-      manifest.inputFingerprint,
-      manifest.releaseId
-    )
-  })()
+    .all() as { version_id: string }[]
+  if (
+    JSON.stringify(versions.map((row) => row.version_id)) !==
+    JSON.stringify(manifest.versions.map((row) => row.versionId))
+  )
+    throw new Error('Local database belongs to another candidate')
+  db.prepare(
+    'UPDATE fiscal_jurisdiction_versions SET manifest_url=?,manifest_sha256=?'
+  ).run(
+    `https://raw.githubusercontent.com/wwwyo/fudoki/${revision.stdout.toString().trim()}/pipeline/publish/manifest.json`,
+    manifest.manifestSha256
+  )
 } finally {
   db.close()
 }

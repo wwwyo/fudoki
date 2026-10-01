@@ -1,4 +1,4 @@
-{{ config(materialized = 'external', location = env_var('FUDOKI_PACKAGE_DIR') ~ '/132195/revenue.csv', format = 'csv') }}
+{{ config(materialized = 'external', location = env_var('FUDOKI_INTERNAL_PACKAGE_DIR') ~ '/132195/revenue.csv', format = 'csv') }}
 -- 狛江市 正本（歳入）。**団体ごと・全年度で1リソース。**
 --
 -- ⚠️ **1行が原典の1行ではない。原典1行 × 予算段階の数だけ行がある。**

@@ -20,13 +20,13 @@ fudoki は日本の地方自治体の**支出を事業単位まで**構造化し
 | 原典の CSV・PDF、取り込み済み Parquet | 非公開 R2。採用する個別ハッシュとキーは `pipeline/ingestion/fiscal/sources.lock.json` |
 | 採用した入力の証跡 | Git 管理する `pipeline/ingestion/fiscal/provenance/`。lock が相対パス・ハッシュ・サイズを固定 |
 | 最新の収録範囲・出典・配布先 | Git の [`manifest.json`](pipeline/publish/manifest.json)。過去の一覧は Git 履歴 |
-| 団体別の CSV・Fiscal Data Package | 内容で版を決めた団体別 R2。Git manifest から参照。現行は download Worker、[直接配信への変更](docs/adr/0011-public-r2-distribution.md)は未反映 |
+| 団体別の CSV・Fiscal Data Package | 内容で版を決めた団体別 R2。Git manifest から参照し、R2 の custom domain から直接配信する設計。遠隔適用は移行記録を参照 |
 | 検索・集計用の表、公開メタデータ | D1。公開 API と MCP が同じ問い合わせを使う |
 | 系統・検査結果・原典との行対応 | ローカル専用 `pipeline/verify/view/` |
 
-取得元の宣言は [`sources.toml`](pipeline/ingestion/fiscal/sources.toml)、団体別の実測は [`jurisdictions/`](pipeline/ingestion/fiscal/jurisdictions/) にある。公開 API の `listFiscalDatasets` が収録した文書・年度・原典版・金額段階を返し、`listFiles` が版を固定した配布 URL を返す。
+取得元の宣言は [`sources.toml`](pipeline/ingestion/fiscal/sources.toml)、団体別の実測は [`jurisdictions/`](pipeline/ingestion/fiscal/jurisdictions/) にある。公開 API の `listFiscalDatasets` が収録した文書・年度・原典版・資料の収録状態を返し、`listFiles` が版を固定した配布 URL を返す。
 
-**移行中**: 新構造のローカル build と検証を実装している。R2 の有効化・全量転送と候補環境での確認が完了するまで、既存の `data/` は保管する。新しい download/API の公開済み状態をこの文書から推定しない。進捗と採用条件は [移行記録](docs/monorepo-migration.md) に記載する。
+**移行中**: 新構造のローカル build と検証を実装している。R2 の有効化・全量転送と遠隔での確認が完了するまで、既存の `data/` は保管する。新しい download/API の公開済み状態をこの文書から推定しない。進捗と採用条件は [移行記録](docs/monorepo-migration.md) に記載する。
 
 ## 開発
 
@@ -42,17 +42,17 @@ bun run pipeline:build        # ネットワークを使わず dbt・FDP・manif
 bun run dev                   # 報告を生成し、ローカル検証画面を 127.0.0.1:5174 で起動
 ```
 
-`pipeline:build` の結果は `pipeline/.build/releases/<release_id>/` に入り、公開中のデータは変わらない。`pipeline:publish publish --release-id <release_id>` が完成済みの候補を転送・照合し、D1 の公開参照を切り替える。publish は build を再実行しない。API や web の deploy はコードだけを扱う。
+`pipeline:build` の結果は `pipeline/.build/builds/r-<内部構築ID>/` に入り、`pipeline:publish publish --build-id r-<内部構築ID>` が団体別の配布物と D1 の表を反映する。取り込み途中の明細も公開し、全体の公開切替は行わない。publish は build を再実行しない。API や web の deploy はコードだけを扱う。
 
 ```bash
 bun run dev:api               # 公開 API のローカル Worker
-bun run dev:download          # 配布 Worker。団体別の不変ファイル・完成した release の案内を配信
+bun run dev:download          # 検証側のローカル専用 R2 配信
 bun run dev:web               # 公開 UI、5173。検証画面とは別のアプリ
 bun run test
 bun run typecheck:all
 ```
 
-全量入力へアクセスできない環境では、Git にある架空団体の fixture で保存形式・問い合わせ・公開切り替えを検査する。fixture の成功は自治体データの全量 build 成功を意味しない。セットアップ・取得・移行・保持・バックアップの手順は [pipeline/README.md](pipeline/README.md) にある。
+全量入力へアクセスできない環境では、Git にある架空団体の fixture で保存形式・問い合わせ・途中の公開・再試行を検査する。fixture の成功は自治体データの全量 build 成功を意味しない。セットアップ・取得・移行・保持・バックアップの手順は [pipeline/README.md](pipeline/README.md) にある。
 
 ## 用語
 
@@ -80,7 +80,7 @@ bun run typecheck:all
 | ② いつ何が公告されたか（調達） | [OCDS](https://standard.open-contracting.org/) | 未着手 |
 | ③ どう決まったか（会議録） | [Popolo](https://www.popoloproject.com/) | 権利判定のみ（再配布可の団体は0） |
 
-- 配布データは原典の利用条件に従って download Worker から公開
+- 配布データは原典の利用条件に従って R2 の custom domain から公開
 - コードは MIT。データは原典のライセンスに従う（下記）
 - MCP サーバとしても配布し、AI エージェントが直接読める形にする
 

@@ -1,4 +1,4 @@
-{{ config(materialized = 'external', location = env_var('FUDOKI_PACKAGE_DIR') ~ '/132195/project_names.csv', format = 'csv') }}
+{{ config(materialized = 'external', location = env_var('FUDOKI_INTERNAL_PACKAGE_DIR') ~ '/132195/project_names.csv', format = 'csv') }}
 -- 事業名の対応づけ。**fudoki の判断**（自治体は「大事業37 は○○のことだ」と言っていない）。
 --
 -- 原典の CSV は大事業を数字コードでしか持たず、名称は決算資料 PDF にしかない。

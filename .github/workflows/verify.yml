@@ -25,8 +25,6 @@ jobs:
       - run: bun run validate
       - run: bun run build:web
       - run: bun run build:api
-      - run: bun run build:download
-      - run: bun run build:verification
       - run: bun run build:docs
       - run: bun run pipeline/verify/boundaries.ts
       - name: 検証範囲を表示
@@ -70,4 +68,4 @@ jobs:
             pipeline/.build/review-summary.json
             pipeline/.build/review-summary.md
             pipeline/publish/manifest.json
-            pipeline/.build/releases/*/verification.json
+            pipeline/.build/builds/*/verification.json

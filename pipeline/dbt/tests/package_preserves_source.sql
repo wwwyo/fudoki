@@ -35,7 +35,7 @@ with from_package as (
     -- ⚠️ **`all_varchar = true` で読む。** 狛江市のコードは先頭ゼロが無い数字なので、
     -- 型推論に任せると BIGINT になり、三鷹市（`01` 形式で VARCHAR）と型が割れて
     -- 突合そのものが組めない。原典との比較は文字列で行うのが正しい。
-    from read_csv('{{ env_var('FUDOKI_PACKAGE_DIR') }}/{{ code }}/{{ direction }}.csv',
+    from read_csv('{{ env_var('FUDOKI_INTERNAL_PACKAGE_DIR') }}/{{ code }}/{{ direction }}.csv',
                   header = true, all_varchar = true)
     group by 1, 2, 3, 4, 5
     {% if not loop.last %}union all{% endif %}

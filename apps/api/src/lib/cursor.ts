@@ -1,12 +1,15 @@
 import { z } from 'zod'
-import { releaseIdSchema } from '@fudoki/data-contracts'
+import { sha256Schema } from '@fudoki/data-contracts'
+import { sha256Hex } from './apiKey'
+import { versionRefSchema } from '../contract'
 
 const payloadSchema = z
   .object({
-    v: z.literal(1),
-    releaseId: releaseIdSchema,
-    fingerprint: z.string().regex(/^[a-f0-9]{64}$/),
-    after: z.string().min(1).max(512),
+    v: z.literal(2),
+    versions: z.array(versionRefSchema).max(100),
+    expiresAt: z.number().int(),
+    fingerprint: sha256Schema,
+    after: z.tuple([z.string(), z.string()]),
   })
   .strict()
 export type Cursor = z.infer<typeof payloadSchema>
@@ -37,13 +40,7 @@ async function key(secret: string) {
   )
 }
 export async function fingerprint(value: unknown): Promise<string> {
-  const bytes = await crypto.subtle.digest(
-    'SHA-256',
-    encoder.encode(JSON.stringify(value))
-  )
-  return [...new Uint8Array(bytes)]
-    .map((b) => b.toString(16).padStart(2, '0'))
-    .join('')
+  return sha256Hex(JSON.stringify(value))
 }
 export async function encodeCursor(
   cursor: Cursor,
@@ -69,7 +66,9 @@ export async function decodeCursor(
     encoder.encode(body)
   )
   if (!valid) throw new Error('Invalid cursor signature')
-  return payloadSchema.parse(
+  const payload = payloadSchema.parse(
     JSON.parse(new TextDecoder().decode(unbase64(body)))
   )
+  if (payload.expiresAt <= Date.now()) throw new Error('Cursor expired')
+  return payload
 }

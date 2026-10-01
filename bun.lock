@@ -47,18 +47,6 @@
         "wrangler": "catalog:",
       },
     },
-    "apps/download": {
-      "name": "@fudoki/download",
-      "dependencies": {
-        "@fudoki/data-contracts": "workspace:*",
-      },
-      "devDependencies": {
-        "@cloudflare/config": "catalog:",
-        "@types/bun": "catalog:",
-        "typescript": "catalog:",
-        "wrangler": "catalog:",
-      },
-    },
     "apps/web": {
       "name": "@fudoki/web",
       "version": "0.0.1",
@@ -482,8 +470,6 @@
     "@fudoki/data-contracts": ["@fudoki/data-contracts@workspace:packages/data-contracts"],
 
     "@fudoki/docs": ["@fudoki/docs@workspace:apps/docs"],
-
-    "@fudoki/download": ["@fudoki/download@workspace:apps/download"],
 
     "@fudoki/fiscal": ["@fudoki/fiscal@workspace:packages/fiscal"],
 

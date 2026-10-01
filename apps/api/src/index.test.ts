@@ -3,7 +3,7 @@ import { Database } from 'bun:sqlite'
 import { readFile, mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { TABLES, TABLE_COLUMNS } from '@fudoki/data-contracts'
+import { publish } from '../../../pipeline/publish/publish'
 import { fixture } from '../../../pipeline/verify/fixture'
 import { sqliteD1 } from '../test/database'
 import type { Env } from './env'
@@ -24,61 +24,18 @@ beforeEach(async () => {
       'utf8'
     )
   )
-  sqlite.run("INSERT INTO releases VALUES(?,1,'published',?,NULL,?,?)", [
-    id,
-    `https://raw.githubusercontent.com/wwwyo/fudoki/${'a'.repeat(40)}/pipeline/publish/manifest.json`,
-    'a'.repeat(40),
-    'b'.repeat(64),
-  ])
-  const masters = (
-    await readFile(join(directory, 'api/jurisdictions.jsonl'), 'utf8')
+  const objects = new Map<string, Uint8Array>()
+  await publish(
+    directory,
+    sqliteD1(sqlite),
+    {
+      read: async (key) => objects.get(key) ?? null,
+      put: async (key, path) => {
+        objects.set(key, new Uint8Array(await readFile(path)))
+      },
+    },
+    `https://raw.githubusercontent.com/wwwyo/fudoki/${'a'.repeat(40)}/pipeline/publish/manifest.json`
   )
-    .split('\n')
-    .filter(Boolean)
-    .map((line) => JSON.parse(line))
-  for (const master of masters)
-    sqlite.run('INSERT INTO jurisdictions VALUES(?,?,?)', [
-      master.jurisdiction_code,
-      master.name,
-      master.ocd_id,
-    ])
-  const codes = (
-    await readFile(join(directory, 'api/cofog_codes.jsonl'), 'utf8')
-  )
-    .split('\n')
-    .filter(Boolean)
-    .map((line) => JSON.parse(line))
-  for (const row of codes)
-    sqlite.run('INSERT INTO cofog_codes VALUES(?,?,?,?)', [
-      row.code,
-      row.label,
-      row.level,
-      row.parent_code,
-    ])
-  for (const table of TABLES) {
-    const columns = TABLE_COLUMNS[table],
-      sql = `INSERT INTO "${table}"(release_id,${columns.map((c) => `"${c}"`).join(',')}) VALUES(${columns.map(() => '?').join(',')},?)`
-    for (const text of (
-      await readFile(join(directory, 'api', table + '.jsonl'), 'utf8')
-    )
-      .split('\n')
-      .filter(Boolean)) {
-      const row = JSON.parse(text)
-      sqlite.run(sql, [id, ...columns.map((c) => row[c])])
-    }
-  }
-  for (const file of manifest.files)
-    sqlite.run('INSERT INTO files VALUES(?,?,?,?,?,?)', [
-      id,
-      file.path,
-      file.objectKey,
-      file.sha256,
-      file.bytes,
-      file.contentType,
-    ])
-  sqlite.run('INSERT INTO active_release(singleton,release_id) VALUES(1,?)', [
-    id,
-  ])
   env = {
     DB: sqliteD1(sqlite),
     QUERY_FINGERPRINT: 'e'.repeat(64),
@@ -107,10 +64,10 @@ afterEach(async () => {
   log.mockRestore()
   await rm(directory, { recursive: true, force: true })
 })
-test('HTTP contract, datasets and files expose one release without an assets or R2 binding', async () => {
+test('HTTP contract, datasets and files expose municipality versions without an assets or R2 binding', async () => {
   const response = await app.request('/v0/contract', {}, env)
   expect(await response.json()).toMatchObject({
-    contractVersion: 1,
+    contractVersion: 2,
     queryFingerprint: 'e'.repeat(64),
     databaseIdentity: expect.any(String),
   })
@@ -123,13 +80,13 @@ test('HTTP contract, datasets and files expose one release without an assets or 
   const data = contract.listFiscalDatasets['~orpc'].outputSchema!.parse(
     await datasets.json()
   )
-  expect(data.releaseId).toBe(id)
+  expect(data.versions[0]!.jurisdictionCode).toBe('000001')
   expect(data.datasets[0]?.documentKind).toBe('settlement')
   const files = await app.request('/v0/files', {}, env)
   expect(files.status).toBe(200)
   expect(
     contract.listFiles['~orpc'].outputSchema!.parse(await files.json())
-      .manifestUrl
+      .manifests[0]!.url
   ).toBe(
     `https://raw.githubusercontent.com/wwwyo/fudoki/${'a'.repeat(40)}/pipeline/publish/manifest.json`
   )
@@ -139,7 +96,7 @@ test('HTTP contract, datasets and files expose one release without an assets or 
       .status
   ).toBe(404)
 })
-test('HTTP query returns bound results and rejects unknown filters and unavailable phases', async () => {
+test('HTTP query returns bound results and rejects unknown filters and obsolete phases', async () => {
   const request = (body: unknown) =>
     app.request(
       '/v0/fiscal-lines/query',
@@ -151,24 +108,23 @@ test('HTTP query returns bound results and rejects unknown filters and unavailab
       env
     )
   const result = await request({
-    datasetIds: ['fixture-dataset'],
-    phase: 'executed',
+    datasetIds: ['000001:settlement'],
     pageSize: 1,
   })
   expect(result.status).toBe(200)
   const body = contract.getFiscalLines['~orpc'].outputSchema!.parse(
     await result.json()
   )
-  expect(body.lines[0]?.value).toBe(100)
+  expect(body.lines[0]?.amount).toBe(100)
   expect(body.nextCursor).toBeString()
   expect(
-    (await request({ datasetIds: ['fixture-dataset'], phase: 'approved' }))
+    (await request({ datasetIds: ['000001:settlement'], phase: 'approved' }))
       .status
   ).toBe(400)
   expect(
     (
       await request({
-        datasetIds: ['fixture-dataset'],
+        datasetIds: ['000001:settlement'],
         unrecognizedFilter: 'ignored?',
       })
     ).status
@@ -226,13 +182,16 @@ test('MCP exposes the same fiscal tools in legacy and modern transports', async 
   const expected = [
     'aggregate_fiscal_datasets',
     'get_fiscal_dataset',
+    'get_fiscal_budget_history',
     'get_fiscal_lines',
     'list_files',
     'list_fiscal_datasets',
     'list_jurisdictions',
     'search_fiscal_lines',
   ]
-  expect(old.result.tools.map((t: any) => t.name).sort()).toEqual(expected)
+  expect(old.result.tools.map((t: any) => t.name).sort()).toEqual(
+    expected.sort()
+  )
   expect(current.result.tools.map((t: any) => t.name).sort()).toEqual(expected)
   const called = await app.request(
     '/mcp',
@@ -251,8 +210,7 @@ test('MCP exposes the same fiscal tools in legacy and modern transports', async 
         params: {
           name: 'get_fiscal_lines',
           arguments: {
-            datasetIds: ['fixture-dataset'],
-            phase: 'executed',
+            datasetIds: ['000001:settlement'],
             pageSize: 1,
           },
           _meta: {
@@ -272,8 +230,10 @@ test('MCP exposes the same fiscal tools in legacy and modern transports', async 
       }),
     })
     .parse(await called.json())
-  expect(tool.result.structuredContent.releaseId).toBe(id)
-  expect(tool.result.structuredContent.lines[0]?.value).toBe(100)
+  expect(tool.result.structuredContent.versions[0]!.jurisdictionCode).toBe(
+    '000001'
+  )
+  expect(tool.result.structuredContent.lines[0]?.amount).toBe(100)
   const rejected = await app.request(
     '/mcp',
     { method: 'POST', headers: { origin: 'https://untrusted.example.org' } },

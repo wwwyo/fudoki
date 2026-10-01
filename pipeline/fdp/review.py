@@ -46,15 +46,21 @@ def read_release(directory: Path):
                     raise ValueError(f'Duplicate distribution identity: {resource_path}')
                 indexed[key] = row
             resources[resource_path] = indexed
-        classifications = {row['fiscal_line_id']: row for row in resources.get(f'fiscal/{code}/cofog.csv', {}).values()}
         for direction in ('expenditure', 'revenue'):
-            for row in resources.get(f'fiscal/{code}/{direction}.csv', {}).values():
-                scope = (code, str(row['fiscal_year']), direction, row['document_kind'], row['phase_id'])
-                group = scopes.setdefault(scope, {})
-                line_id = row['fiscal_line_id']
-                if line_id in group:
-                    raise ValueError('Duplicate line and phase in distribution')
-                group[line_id] = {'amount': int(row['value']), 'classification': classifications.get(line_id)}
+            for name in (f'settlement_{direction}', f'initial_{direction}_budget', f'{direction}_budget_changes'):
+                classification_name = f'{direction}_budget_change_cofog' if name.endswith('_budget_changes') else name + '_cofog'
+                classifications = {row.get('fiscal_line_id', row.get('change_id')): row for row in resources.get(f'fiscal/{code}/{classification_name}.csv', {}).values()}
+                for row in resources.get(f'fiscal/{code}/{name}.csv', {}).values():
+                    year = row.get('fiscal_year')
+                    if year is None:
+                        dataset = next(entry for entry in manifest['datasets'] if entry['dataset_id'] == row['dataset_id'])
+                        year = dataset['fiscal_year']
+                    scope = (code, str(year), direction, row.get('document_kind', 'change'), name)
+                    group = scopes.setdefault(scope, {})
+                    line_id = row.get('fiscal_line_id', row.get('change_id'))
+                    if line_id in group:
+                        raise ValueError('Duplicate record identity in distribution')
+                    group[line_id] = {'amount': int(row.get('amount', row.get('amount_delta'))), 'classification': classifications.get(line_id)}
     return {'manifest': manifest, 'scopes': scopes, 'resources': resources, 'descriptors': descriptors}
 
 
@@ -72,7 +78,7 @@ def compare(before, after):
         amounts = sorted(key for key in common if old[key]['amount'] != new[key]['amount'])
         old_amount, new_amount = sum(row['amount'] for row in old.values()), sum(row['amount'] for row in new.values())
         groups.append({
-            'jurisdictionCode': scope[0], 'fiscalYear': int(scope[1]), 'direction': scope[2], 'documentKind': scope[3], 'phase': scope[4],
+            'jurisdictionCode': scope[0], 'fiscalYear': int(scope[1]), 'direction': scope[2], 'documentKind': scope[3], 'resource': scope[4],
             'before': {'rows': len(old), 'amount': old_amount}, 'after': {'rows': len(new), 'amount': new_amount},
             'delta': {'rows': len(new) - len(old), 'amount': new_amount - old_amount},
             'identifiers': {'added': sorted(added), 'removed': sorted(removed)},
@@ -84,12 +90,12 @@ def compare(before, after):
             },
         })
     def caveats(release):
-        return {row['jurisdiction_code']: row.get('caveats', []) for row in release['manifest']['jurisdictions']}
+        return {row['jurisdictionCode']: row.get('caveats', []) for row in release['manifest']['jurisdictions']}
     def sources(release):
         result = {}
         for row in release['manifest']['datasets']:
             scope = (row['jurisdiction_code'], str(row['fiscal_year']), row['direction'], row['document_kind'])
-            result.setdefault(scope, []).append({key: row[key] for key in ('dataset_id', 'origin_sha256', 'source')})
+            result.setdefault(scope, []).append({key: row[key] for key in ('dataset_id', 'origin_sha256', 'source_json')})
         return {key: sorted(rows, key=lambda row: row['dataset_id']) for key, rows in result.items()}
     resource_changes = []
     for path in sorted(before['resources'].keys() | after['resources'].keys()):
@@ -99,7 +105,7 @@ def compare(before, after):
         if changes:
             resource_changes.append({'path': path, 'rows': changes})
     return {
-        'baselineReleaseId': before['manifest']['buildId'], 'releaseId': after['manifest']['buildId'],
+        'baselineVersions': before['manifest']['jurisdictions'], 'versions': after['manifest']['jurisdictions'],
         'amountUnit': 'JPY', 'scopes': groups,
         'caveatChanges': changed_records(caveats(before), caveats(after)),
         'sourceChanges': changed_records(sources(before), sources(after)),
@@ -109,15 +115,15 @@ def compare(before, after):
 
 def markdown(review):
     comparison = review['comparison'] or review['initialContents']
-    heading = '公開前の初回構築。比較対象の公開版はありません。全件を新規追加として記録します。' if review['comparison'] is None else f"比較: {comparison['baselineReleaseId']} → {comparison['releaseId']}。"
-    lines = [heading + ' 金額は円。各文書・段階を別々に表示し、合算しません。', '',
-             '| 団体 / 年度 / 歳入歳出 / 文書 / 段階 | 行数差 | 金額差 | ID 追加 / 削除 | 金額変更行 | 分類変更行 | 分類変更行の旧 / 新金額 |',
+    heading = '公開前の初回構築。比較対象の公開版はありません。全件を新規追加として記録します。' if review['comparison'] is None else "団体別のデータ版を比較。"
+    lines = [heading + ' 金額は円。各文書・リソースを別々に表示し、合算しません。', '',
+             '| 団体 / 年度 / 歳入歳出 / 文書 / リソース | 行数差 | 金額差 | ID 追加 / 削除 | 金額変更行 | 分類変更行 | 分類変更行の旧 / 新金額 |',
              '| --- | ---: | ---: | ---: | ---: | ---: | ---: |']
     for row in comparison['scopes']:
-        scope = ' / '.join(str(row[key]) for key in ('jurisdictionCode', 'fiscalYear', 'direction', 'documentKind', 'phase'))
+        scope = ' / '.join(str(row[key]) for key in ('jurisdictionCode', 'fiscalYear', 'direction', 'documentKind', 'resource'))
         ids, classification = row['identifiers'], row['classificationChanges']
         lines.append(f"| {scope} | {row['delta']['rows']:+,} | {row['delta']['amount']:+,} | {len(ids['added']):,} / {len(ids['removed']):,} | {len(row['amountChanges']):,} | {classification['rows']:,} | {classification['beforeAmount']:,} / {classification['afterAmount']:,} |")
-    lines.extend(['', f"注意点: {len(comparison['caveatChanges'])}団体、原典・出典: {len(comparison['sourceChanges'])}範囲、利用条件・出典宣言: {len(comparison['licenseAndSourceChanges'])}団体、名称・規則等: {len(comparison['resourceChanges'])}リソースの変更。個別 ID と変更前後の内容は review-summary.json を参照。", ''])
+    lines.extend(['', f"注意点: {len(comparison['caveatChanges'])}団体、原典・出典: {len(comparison['sourceChanges'])}範囲、利用条件・出典宣言: {len(comparison['licenseAndSourceChanges'])}団体、名称・対応等: {len(comparison['resourceChanges'])}リソースの変更。個別 ID と変更前後の内容は review-summary.json を参照。", ''])
     return '\n'.join(lines)
 
 
@@ -131,17 +137,16 @@ def main():
     args = parser.parse_args()
     current = read_release(args.candidate)
     comparison = compare(read_release(args.baseline), current) if args.baseline else None
-    baseline = {'kind': 'release', 'releaseId': comparison['baselineReleaseId']} if comparison else {'kind': 'initial-publication'}
+    baseline = {'kind': 'versions', 'versions': comparison['baselineVersions']} if comparison else {'kind': 'initial-publication'}
     manifest = current['manifest']
-    review = {key: manifest[key] for key in ('inputFingerprint', 'codeRevision', 'files')}
-    review['releaseId'] = manifest['buildId']
+    review = {key: manifest[key] for key in ('jurisdictions', 'files')}
     review.update({'baseline': baseline, 'comparison': comparison})
     if comparison is None:
-        empty = {'manifest': {'buildId': None, 'jurisdictions': [], 'datasets': []}, 'scopes': {}, 'resources': {}, 'descriptors': {}}
+        empty = {'manifest': {'jurisdictions': [], 'datasets': []}, 'scopes': {}, 'resources': {}, 'descriptors': {}}
         review['initialContents'] = compare(empty, current)
     args.output.write_text(json.dumps(review, ensure_ascii=False, indent=2) + '\n')
     args.output.with_suffix('.md').write_text(markdown(review))
-    print(json.dumps({'path': str(args.output), 'releaseId': manifest['buildId'], 'baseline': baseline}))
+    print(json.dumps({'path': str(args.output), 'versions': manifest['jurisdictions'], 'baseline': baseline}))
 
 
 if __name__ == '__main__':

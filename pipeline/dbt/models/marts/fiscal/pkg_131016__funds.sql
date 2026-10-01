@@ -1,4 +1,4 @@
-{{ config(materialized = 'external', location = env_var('FUDOKI_PACKAGE_DIR') ~ '/131016/funds.csv', format = 'csv') }}
+{{ config(materialized = 'external', location = env_var('FUDOKI_INTERNAL_PACKAGE_DIR') ~ '/131016/funds.csv', format = 'csv') }}
 -- 会計の名寄せと帳簿上の区分。**fudoki の判断**（名寄せと枠組みへの割り振りは
 -- 自治体が言っていないこと。根拠は basis に書いてある）。
 --

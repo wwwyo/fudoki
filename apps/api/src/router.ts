@@ -3,12 +3,13 @@ import { contract } from './contract'
 import type { Env } from './env'
 import {
   aggregate,
+  budgetHistory,
   files,
   jurisdictions,
   listDatasets,
   pageLines,
   QueryError,
-  resolveRelease,
+  resolveVersions,
 } from './data/queries'
 
 const os = implement(contract)
@@ -20,7 +21,7 @@ const os = implement(contract)
       if (error instanceof QueryError)
         throw new ORPCError(error.code, {
           status:
-            error.code === 'RELEASE_EXPIRED'
+            error.code === 'VERSION_EXPIRED'
               ? 410
               : error.code === 'UNAVAILABLE'
                 ? 503
@@ -37,33 +38,32 @@ const os = implement(contract)
 export const router = os.router({
   getFiscalDataset: os.getFiscalDataset.handler(
     async ({ input, context: { env } }) => {
-      const releaseId = await resolveRelease(env.DB, input.releaseId)
-      const selected = await listDatasets(env.DB, releaseId)
-      const dataset = selected.find((d) => d.id === input.datasetId)
+      const dataset = (
+        await listDatasets(env.DB, { ...input, datasetIds: [input.datasetId] })
+      ).find((d) => d.id === input.datasetId)
       if (!dataset)
         throw new QueryError(
           'NOT_FOUND',
-          'Dataset is not present in this release'
+          'Dataset is not present in the selected jurisdiction version'
         )
-      return { releaseId, dataset }
+      return {
+        versions: [
+          {
+            jurisdictionCode: dataset.jurisdictionCode,
+            versionId: dataset.versionId,
+          },
+        ],
+        dataset,
+      }
     }
   ),
   listJurisdictions: os.listJurisdictions.handler(
-    async ({ input, context: { env } }) => {
-      const releaseId = await resolveRelease(env.DB, input.releaseId)
-      return {
-        releaseId,
-        jurisdictions: await jurisdictions(env.DB, releaseId),
-      }
-    }
+    ({ input, context: { env } }) => jurisdictions(env.DB, input.versions)
   ),
   listFiscalDatasets: os.listFiscalDatasets.handler(
     async ({ input, context: { env } }) => {
-      const releaseId = await resolveRelease(env.DB, input.releaseId)
-      return {
-        releaseId,
-        datasets: await listDatasets(env.DB, releaseId, input),
-      }
+      const versions = await resolveVersions(env.DB, input.versions)
+      return { versions, datasets: await listDatasets(env.DB, input, versions) }
     }
   ),
   searchFiscalLines: os.searchFiscalLines.handler(
@@ -73,27 +73,13 @@ export const router = os.router({
     pageLines(env.DB, env.CURSOR_SECRET, input)
   ),
   aggregateFiscalDatasets: os.aggregateFiscalDatasets.handler(
-    async ({ input, context: { env } }) =>
-      aggregate(env.DB, await resolveRelease(env.DB, input.releaseId), input)
+    ({ input, context: { env } }) => aggregate(env.DB, input)
   ),
-  listFiles: os.listFiles.handler(async ({ input, context: { env } }) => {
-    const releaseId = await resolveRelease(env.DB, input.releaseId)
-    const publication = await env.DB.prepare(
-      'SELECT manifest_url FROM releases WHERE release_id=?'
-    )
-      .bind(releaseId)
-      .first<{ manifest_url: string | null }>()
-    if (!publication?.manifest_url) throw new ORPCError('SERVICE_UNAVAILABLE')
-    return {
-      releaseId,
-      manifestUrl: publication.manifest_url,
-      files: await files(
-        env.DB,
-        releaseId,
-        env.DOWNLOAD_BASE_URL,
-        input.jurisdictionCode
-      ),
-    }
-  }),
+  getFiscalBudgetHistory: os.getFiscalBudgetHistory.handler(
+    ({ input, context: { env } }) => budgetHistory(env.DB, input)
+  ),
+  listFiles: os.listFiles.handler(({ input, context: { env } }) =>
+    files(env.DB, env.DOWNLOAD_BASE_URL, input)
+  ),
 })
 export type Router = typeof router

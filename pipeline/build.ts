@@ -17,10 +17,15 @@ import {
 } from './paths'
 import { writeDeclarations } from './declarations'
 import { releaseIdentity, sha256 } from './release'
-import { finalizeCandidate, verifyCandidate, pinManifest } from './fdp/manifest'
+import {
+  prepareCandidate,
+  finalizeCandidate,
+  verifyCandidate,
+  pinManifest,
+} from './fdp/manifest'
 
 const identity = await releaseIdentity()
-const candidate = join(BUILD, 'releases', identity.releaseId)
+const candidate = join(BUILD, 'builds', identity.releaseId)
 let working = candidate
 const declarations = await writeDeclarations()
 async function run(command: string[], cwd = PIPELINE) {
@@ -32,6 +37,7 @@ async function run(command: string[], cwd = PIPELINE) {
       FUDOKI_INPUT_DIR: INPUTS,
       FUDOKI_PACKAGE_DIR: join(working, 'fiscal'),
       FUDOKI_API_DIR: join(working, 'api'),
+      FUDOKI_INTERNAL_PACKAGE_DIR: join(working, 'internal/fiscal'),
       FUDOKI_DECLARATIONS_DIR: declarations,
       FUDOKI_RELEASE_ID: identity.releaseId,
     },
@@ -82,8 +88,10 @@ if (rebuild) {
   const sources = JSON.parse(
     await readFile(join(declarations, 'sources.json'), 'utf8')
   ) as { jurisdiction_code: string }[]
-  for (const code of new Set(sources.map((s) => s.jurisdiction_code)))
+  for (const code of new Set(sources.map((s) => s.jurisdiction_code))) {
     await mkdir(join(packages, code), { recursive: true })
+    await mkdir(join(working, 'internal/fiscal', code), { recursive: true })
+  }
   await rm(WAREHOUSE, { force: true })
   await rm(DBT_TARGET, { recursive: true, force: true })
   await run(
@@ -91,6 +99,7 @@ if (rebuild) {
     join(PIPELINE, 'dbt')
   )
   await run(['uv', 'run', 'python', '-m', 'fdp.build'])
+  await prepareCandidate(working, identity)
   await run(['uv', 'run', 'python', '-m', 'fdp.validate_d1'])
   await run(['bun', 'run', 'verify/api.ts'])
   const validation = JSON.parse(

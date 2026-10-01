@@ -5,7 +5,7 @@
 - **Goal**: 歳出と歳入、予算と決算の表を分け、決算明細に実績の `amount` 一つを持たせる。当初予算・各変更・決算の対応を検査し、指定時点の予算と実績を比較できるようにする。
 - **Not goal**: 資料が欠けた変更のゼロ補完、根拠のない配賦、予算からの実績推定、公営企業会計の収録。
 
-これは [予算変更履歴の PRD](prd/fiscal-budget-history/prd.md) を適用した移行後の設計である。現行 DB/API/dbt と配布物の変更は未実装。PRD の資料収録・対応・照合条件を満たした範囲から移行する。
+これは [予算変更履歴の PRD](prd/fiscal-budget-history/prd.md) を適用した移行後の設計である。新しい DB/API/dbt と配布物の契約を実装した。決算の実績・当初予算は現在の固定入力から構築する。変更履歴と確認済み対応の実資料は未収録で、API はその範囲を未確認として提供する。
 
 ## Background
 
@@ -13,7 +13,7 @@
 
 ## System Overview
 
-図を二つに分ける。版・公開の ER 図は [自治体データ版の設計](design-doc-jurisdiction-versions.md)、財政データの ER 図は以下を正本とする。すべての提供用レコードは自治体データ版に属し、公開一覧に複製しない。
+図を二つに分ける。団体別の版の ER 図は [自治体データ版の設計](design-doc-jurisdiction-versions.md)、財政データの ER 図は以下を正本とする。すべての提供用レコードは自治体データ版に属し、全体構築版に複製しない。
 
 ```mermaid
 erDiagram
@@ -64,7 +64,7 @@ dataset の歳入歳出・文書種別と、保存先の表の意味を取込検
 
 ### 予算の対象と、資料に載る額を分ける
 
-`fiscal_expenditure_budget_items` と `fiscal_revenue_budget_items` は、その年度に予算を追跡する科目・事業の対象を表す。共通科目マスタではなく、資料間の対応を確かめて作る団体・年度内の対象である。主キーは `(version_id, budget_item_id)`、`(version_id, jurisdiction_code)` は自治体データ版への外部キーとする。団体コード・年度・会計・科目経路・追加区分と、当初額の確認状態 `recorded / verified-zero / unknown` を持つ。
+`fiscal_expenditure_budget_items` と `fiscal_revenue_budget_items` は、その年度に予算を追跡する科目・事業の対象を表す。共通科目マスタではなく、資料間の対応を確かめて作る団体・年度内の対象である。主キーは `(version_id, budget_item_id)`、`(version_id, jurisdiction_code)` は自治体データ版への外部キーとする。団体コード・年度・会計・科目経路・追加区分・検索用名称と、当初額の確認状態 `recorded / verified-zero / unknown` を持つ。
 
 当初予算は `fiscal_initial_expenditure_budget_lines` と `fiscal_initial_revenue_budget_lines` に保存する。各行は一つの `amount` と、原典の `dataset_id / fiscal_line_id / source_row`、対応する `budget_item_id` を持つ。主キーは `(version_id, fiscal_line_id)`、`(version_id, budget_item_id)` は UNIQUE とし、確認した対象ごとに当初額を一つだけ採用する。資料が訂正された場合も複数版を重ねて計上しない。
 
@@ -112,6 +112,8 @@ R2 と D1 は同じ dbt の提供モデルから生成する。対応する明�
 
 - [ ] 移行対象の団体・年度・会計と資料の収録範囲を固定する。
 - [ ] 当初額、変更額、文書間の対応、原典の報告値との照合を実資料で確認する。
-- [ ] 型・dbt・D1・API・FDP を新しい明細と予算履歴の契約に揃える。
+- [x] 型・dbt・D1・API・FDP を新しい明細と予算履歴の契約に揃える。
 - [ ] 新 schema の同一版参照・歳入歳出の混入拒否・多対多の比較・資料欠落・訂正・円換算・R2/D1 一致を検証する。
-- [ ] 版・公開・切り戻しは自治体データ版の設計に従って検証する。
+- [x] 団体別の取り込み・再実行は自治体データ版の設計に従って検証する。
+
+提供契約は適用済み。Bun fixture では同一版・歳入歳出の分離・多対多の重複排除・資料欠落・負の変更額と指定時点を検査した。現在の実資料は 5 団体・28 dataset で、決算実績と当初予算を生成する。補正・繰越等の取得と照合は PRD の未完了条件として残り、空の変更表から完全な予算額を返さない。

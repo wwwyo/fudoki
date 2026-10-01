@@ -114,7 +114,7 @@ app.get(`${V0_PREFIX}/contract`, async (c) => {
   ).first<{ identity: string }>()
   if (!row) return c.json({ error: 'UNAVAILABLE' }, 503)
   return c.json({
-    contractVersion: 1,
+    contractVersion: 2,
     queryFingerprint: c.env.QUERY_FINGERPRINT,
     databaseIdentity: row.identity,
   })

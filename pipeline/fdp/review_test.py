@@ -13,9 +13,9 @@ class ReleaseReview(unittest.TestCase):
         return {
             'manifest': {
                 'buildId': 'previous',
-                'jurisdictions': [{'jurisdiction_code': '000001', 'caveats': ['Before']}],
+                'jurisdictions': [{'jurisdictionCode': '000001', 'caveats': ['Before']}],
                 'datasets': [{'dataset_id': 'edition-1', 'jurisdiction_code': '000001', 'fiscal_year': 2026,
-                              'direction': 'expenditure', 'document_kind': 'settlement', 'origin_sha256': 'old', 'source': {'url': 'original'}}],
+                              'direction': 'expenditure', 'document_kind': 'settlement', 'origin_sha256': 'old', 'source_json': '{"url":"original"}'}],
             },
             'scopes': {('000001', '2026', 'expenditure', 'settlement', 'executed'): {
                 'a': {'amount': 1000, 'classification': {'cofog_class': '01.1.1'}},
@@ -33,7 +33,7 @@ class ReleaseReview(unittest.TestCase):
         rows['b']['amount'] = 1900
         rows['a']['classification'] = {'cofog_class': '02.1.1'}
         new['manifest']['jurisdictions'][0]['caveats'] = ['After']
-        new['manifest']['datasets'][0]['source']['url'] = 'corrected'
+        new['manifest']['datasets'][0]['source_json'] = '{"url":"corrected"}'
         new['descriptors']['000001']['licenses'] = ['CC0']
         new['resources']['fiscal/000001/cofog_rules.csv'][('rule',)]['label'] = 'after'
         actual = compare(old, new)
@@ -65,9 +65,9 @@ class ReleaseReview(unittest.TestCase):
             root = Path(temporary)
             files = {
                 'fiscal/000001/datapackage.json': json.dumps({'resources': [{
-                    'path': 'expenditure.csv', 'schema': {'primaryKey': ['fiscal_line_id'], 'extraFields': [
-                        {'name': 'document_kind', 'constant': 'settlement'}, {'name': 'phase_id', 'constant': 'executed'}]}}]}).encode(),
-                'fiscal/000001/expenditure.csv': b'fiscal_line_id,fiscal_year,value,label\na,2026,123,"line one\nline two"\n',
+                    'path': 'settlement_expenditure.csv', 'schema': {'primaryKey': ['fiscal_line_id'], 'extraFields': [
+                        {'name': 'document_kind', 'constant': 'settlement'}, {'name': 'direction', 'constant': 'expenditure'}]}}]}).encode(),
+                'fiscal/000001/settlement_expenditure.csv': b'fiscal_line_id,fiscal_year,amount,label\na,2026,123,"line one\nline two"\n',
             }
             manifest = {'buildId': 'candidate', 'jurisdictions': [], 'datasets': [], 'files': []}
             for path, body in files.items():
@@ -77,10 +77,10 @@ class ReleaseReview(unittest.TestCase):
                 manifest['files'].append({'path': path, 'bytes': len(body), 'sha256': hashlib.sha256(body).hexdigest()})
             (root / 'manifest.json').write_text(json.dumps(manifest))
             release = read_release(root)
-            self.assertEqual(release['scopes'][('000001', '2026', 'expenditure', 'settlement', 'executed')]['a']['amount'], 123)
-            row = release['resources']['fiscal/000001/expenditure.csv'][('a',)]
+            self.assertEqual(release['scopes'][('000001', '2026', 'expenditure', 'settlement', 'settlement_expenditure')]['a']['amount'], 123)
+            row = release['resources']['fiscal/000001/settlement_expenditure.csv'][('a',)]
             self.assertEqual(row['label'], 'line one\nline two')
-            (root / 'fiscal/000001/expenditure.csv').write_bytes(b'corrupt')
+            (root / 'fiscal/000001/settlement_expenditure.csv').write_bytes(b'corrupt')
             with self.assertRaisesRegex(ValueError, 'hash or size'):
                 read_release(root)
 

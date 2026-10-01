@@ -1,12 +1,14 @@
 import { expect, test } from 'bun:test'
 import { buildCofogTree, type AggregateResponse } from './cofog-tree'
-const releaseId = 'r-' + 'a'.repeat(32)
+const versions = [
+  { jurisdictionCode: '000001', versionId: 'v-' + 'a'.repeat(64) },
+]
 function result(
   groupBy: AggregateResponse['groupBy'],
   cells: AggregateResponse['cells']
 ): AggregateResponse {
   return {
-    releaseId,
+    versions,
     datasets: [],
     groupBy,
     cells,
@@ -52,7 +54,9 @@ test('responses from different releases cannot form one tree', () => {
       ['cofog.division', 'cofog.group', 'cofog.class'],
       []
     )
-  group.releaseId = 'r-' + 'b'.repeat(32)
+  group.versions = [
+    { jurisdictionCode: '000001', versionId: 'v-' + 'b'.repeat(64) },
+  ]
   expect(() => buildCofogTree(division, group, classification)).toThrow(
     'release or scope'
   )

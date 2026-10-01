@@ -75,9 +75,6 @@ _Avoid_: ログ
 **自治体データ版（jurisdiction version）**:
 一団体の財政資料の収録範囲・提供用データ・説明・配布参照を固定した内容の版。配布ファイルだけの版とは区別する。
 
-**公開一覧（publication）**:
-財政データの公開対象の団体と、それぞれの自治体データ版の組合せを固定した一覧。
-_Avoid_: 全体のデータ版、構築版
 
 ## ディレクトリ構造
 
@@ -85,7 +82,7 @@ _Avoid_: 全体のデータ版、構築版
 .
 ├── pipeline/         # ingestion/fiscal、dbt、fdp、publish、verify/report と verify/view
 ├── packages/         # fiscal の純粋な型・名称、data-contracts、jurisdictions
-├── apps/             # 公開 web、D1 を読む api、R2 を配信する download、docs
+├── apps/             # 公開 web、D1 を読む api、docs
 ├── slides/           # 発表資料
 ├── docs/             # 設計・調査文書
 └── .agent/           # 個人メモ・試作（gitignore）
@@ -118,7 +115,7 @@ uv add --exclude-newer $(date -v-7d +%Y-%m-%d) <package>
 - **取得**: Python。原典 CSV/PDF のバイト列と取り込み Parquet を非公開 R2 に保存する。採用した入力の証跡は ingestion 配下の `provenance/`、入力一覧は `sources.lock.json` として Git 管理し、個別ハッシュを照合する。
 - **変換・検査**: dbt-duckdb。marts が配布 CSV と D1 用の表を生成し、相互の行・金額・分類を検査する。
 - **説明ファイル**: Python/TypeScript の `pipeline/fdp/`。FDP descriptor と収録範囲・出典・配布先をまとめた Git manifest を生成する。
-- **検索・配布**: API は D1 の SQL を実行し、API は公開中の Git manifest URL を返し、download は R2 の団体別配布物を配信する。API に R2 やデータ ASSETS を bind しない。
+- **検索・配布**: API は D1 の SQL を実行し、API は公開中の Git manifest URL を返し、R2 は custom domain から団体別配布物を直接配信する。API に R2 やデータ ASSETS を bind しない。
 - **検証**: Bun/TypeScript の `pipeline/verify/report/` とループバック専用の view。公開 web と UI は共有しない。
 - **保存**: Git はコード・宣言・判断・入力一覧・採用した入力の証跡・最新 manifest、R2 は原典・取り込み・配布物、D1 は検索用の派生表。`.cache/` と `.build/` は再生成可能なローカル作業領域。
 
@@ -138,4 +135,4 @@ uv add --exclude-newer $(date -v-7d +%Y-%m-%d) <package>
 - データ源の実測 → `docs/budget-availability.md` / `docs/kkj-api-notes.md` / `docs/fdp-spec-notes.md` / `docs/tokyo-survey.md`
 - 設計の記録 → `docs/prd/<topic>/`（PRD）・`docs/design-doc-<topic>.md`（単体の設計書）・`docs/adr/`（決定）。判断の記録はコードと同じ寿命を持ち、git 管理する
 
-歳出・歳入のドメインモデルとクラス図 → `docs/fiscal-domain-model.md`。予算・決算の保存境界と ER 図 → `docs/design-doc-fiscal-records.md`。全体設計 → `docs/design-doc-monorepo.md`。自治体別のデータ版・公開切替・保持条件の再設計 → `docs/design-doc-jurisdiction-versions.md`（実装未完了）。現行の実行手順 → `pipeline/README.md`。移行の検証記録と未完了項目 → `docs/monorepo-migration.md`。
+歳出・歳入のドメインモデルとクラス図 → `docs/fiscal-domain-model.md`。予算・決算の保存境界と ER 図 → `docs/design-doc-fiscal-records.md`。全体設計 → `docs/design-doc-monorepo.md`。自治体別のデータ版・直接取り込み・保持条件の再設計 → `docs/design-doc-jurisdiction-versions.md`（実装未完了）。現行の実行手順 → `pipeline/README.md`。移行の検証記録と未完了項目 → `docs/monorepo-migration.md`。

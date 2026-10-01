@@ -6,5 +6,5 @@ from {{ ref('pkg_' ~ code ~ '__' ~ direction) }}
 {% endfor %}
 )
 select coalesce(e.fiscal_line_id, a.fiscal_line_id) as fiscal_line_id
-from expected as e full outer join {{ ref('api_amounts') }} as a using (fiscal_line_id, phase)
+from expected as e full outer join {{ ref('int_fiscal_amounts') }} as a using (fiscal_line_id, phase)
 where e.value is distinct from a.value or e.source_amount is distinct from a.source_amount

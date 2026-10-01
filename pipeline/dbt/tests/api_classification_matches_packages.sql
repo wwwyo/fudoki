@@ -14,7 +14,7 @@ select l.fiscal_line_id, l.cofog_status,
        coalesce(case c.level when 'group' then c.code when 'class' then p.code else '' end, '') as cofog_group,
        coalesce(case c.level when 'class' then c.code else '' end, '') as cofog_class,
        l.consolidation as cofog_consolidation, l.cofog_decided_at_level, l.cofog_rule_id, l.counterpart_fund
-from {{ ref('api_fiscal_lines') }} l
+from {{ ref('int_fiscal_lines') }} l
 left join {{ ref('api_cofog_codes') }} c on c.code=l.cofog_code
 left join {{ ref('api_cofog_codes') }} p on p.code=c.parent_code
 left join {{ ref('api_cofog_codes') }} g on g.code=p.parent_code

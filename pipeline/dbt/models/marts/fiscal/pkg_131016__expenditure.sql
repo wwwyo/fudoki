@@ -1,4 +1,4 @@
-{{ config(materialized = 'external', location = env_var('FUDOKI_PACKAGE_DIR') ~ '/131016/expenditure.csv', format = 'csv') }}
+{{ config(materialized = 'external', location = env_var('FUDOKI_INTERNAL_PACKAGE_DIR') ~ '/131016/expenditure.csv', format = 'csv') }}
 -- 正本（歳出）。**団体ごと・全年度で1リソース。**
 --
 -- (団体, 年度) ごとに分けると全量で 558 パッケージになり、

@@ -71,22 +71,18 @@ Bun の107テスト、全 workspace の型検査が通過した。全量 dbt bui
 
 `cf dev` のローカル D1 で、大分類・中分類・小分類の割当、分類不能・対象外・歳入の適用対象外の6ケースを確認した。各階層の集計とページ継続も同じ候補の SQL 結果に一致した。既存配布物との差分は全46範囲でゼロであり、再構築時の manifest・内部検査記録も一致した。遠隔への適用は未完了である。
 
-## 自治体データ版と公開一覧への再設計
+## 自治体別の直接取り込みへの再設計
 
-[ADR 0017](adr/0017-jurisdiction-data-versions.md) により、D1 の全体版ごとの明細複製を廃止する設計を採用した。自治体別の内容版へ6つの提供用表とファイル参照を紐づけ、公開一覧は団体と版の対応だけを保持する。団体別更新・切り戻し・ページ取得・削除条件は [再設計書](design-doc-jurisdiction-versions.md) にまとめた。
+[ADR 0017](adr/0017-jurisdiction-data-versions.md) を更新した。団体別の内容版は維持し、全体公開一覧・公開切替・非公開候補・guard を廃止する。取り込み途中の明細も通常 API から取得できる。部分失敗は反映済みの行を残し、同じ主キーで再実行する。
 
-この節は設計の採用記録であり、実装完了の記録ではない。現在の DB・CLI・API は全体 `release_id` を使う。上記の107テスト・158 dbt 検査・ローカル Cloudflare・容量の実測は現行構造に対する結果であり、再設計の検証には流用しない。
+上記は各段階の旧実装の履歴である。以下の新しい実装は22表へ変更し、決算実績と当初予算を分離した。5団体・28 dataset の254項目の dbt build と、D1/API の28範囲の件数・金額照合が通った。D1 用 SQLite は218,005,504 bytesで、遠隔 D1 の性能値ではない。変更・対応の実資料は未収録で `unconfirmed`。2026-10-02の遠隔 R2 確認も403/10042だった。
 
-## 未完了の移行条件
+- [x] D1 と dbt の団体別内容版、歳出歳入・予算決算の分離。
+- [x] 実績 amount 一つ、原典の報告値の保持、予算履歴の未確認範囲の明示。
+- [x] Git manifest と R2 固定 URL、未変更団体の再利用。
+- [x] 公開切替・guard・全体 release のコードと API 契約の除去。
+- [x] 部分取り込みの通常 API での取得と再実行。
+- [ ] Cloudflare ローカル環境・全量入力の検証と新しい overview。
+- [ ] PR の作成、Pi レビューと指摘対応。
 
-- [ADR 0011](adr/0011-public-r2-distribution.md) の直接配信への変更。現行の download Worker を置き換え、既存の `download.fudoki.dev` を配布ファイルだけの公開 R2 に接続する。CSV/JSON のキャッシュと `/fiscal/` のレート制限を設定・検証する。候補記録・内部検証結果は R2 へ保存しない。`fudoki.dev` は現在のアカウントで active / Free Website と確認したが、R2 の接続とルールは未反映。
-- R2 の有効化。CLI は現在「Please enable R2 through the Cloudflare Dashboard」（HTTP403 / 10042）を返す。cf の account subscription 作成・更新 API は存在するが、R2 の契約 ID と有効化の可否は未確認であり、Dashboard 専用とは断定しない。
-- Workers Paid の確認。全量を Free の日次書込上限内で一度に取り込むことはできず、公開中と候補の同時保持も Free の単一 DB 容量に収まらない。旧版を最低3版残す要件は廃止した。`cf accounts subscriptions get` で取得した契約一覧は Teams Free のみであり、Workers Paid は未確認。公式の [契約 ID 一覧](https://developers.cloudflare.com/tenant/reference/subscriptions/) と `cf billing rate-plans get WORKERS_PAID` から契約 ID・基本月額 $5 を確認し、`cf accounts subscriptions create --rate-plan-id WORKERS_PAID --frequency monthly --dry-run` で作成リクエストを確認した。dry-run は実際の契約可否を検査せず、契約の作成も行っていない。
-- 原典・取り込みの全量 R2 転送、GET での内容ハッシュ照合、Git の証跡と空のキャッシュからの復元・再構築。現在の入力一覧は `.cache/migration/sources.lock.json` にあり、遠隔保管を検証するまでは正規の Git 入力一覧として固定していない。
-- 初期の空の遠隔 D1 に新しい `manifest_url`・`verification_sha256`、団体マスタの分離、COFOG マスタへの外部キーを適用する。init は旧データが空の場合だけ列と外部キーを再作成し、既存の公開データは自動で読み替えない。
-- R2 直接配信 / API / 非公開検証 Worker が同じ配布契約を持つ候補環境での全量 publish、D1 の読取行数・問い合わせ時間・複数版の保持容量の測定。
-- 上記を確認してから既存 `data/` の tracking を外す。既存 Git 履歴を書き換えない。
-
-全量 build は移行キャッシュから実行しており、新規 checkout と R2 のみでの再現はまだ検証していない。fixture の CI は全量検証の代用ではない。
-
-現在の固定入力は36件。証跡を Git に分けたため、R2 保管対象は原典33・表36の計69オブジェクト・36,591,263 bytes、Git の証跡は36件・59,999 bytesである。R2 の初回有効化を必要とすることと、入力の保管量を区別する。[R2 Standard の無料枠](https://developers.cloudflare.com/r2/pricing/) はアカウントの他の利用と合算されるため、この入力サイズだけからアカウント全体の料金を確定しない。
+最新版のコード検証では Bun 85 件、Python 15 件、全 workspace の型検査と公開アプリのビルド・境界検査が通過した。新提供 CSV と D1 の明細・金額・分類・連結判断を dbt の双方向差分で検査する。応答途中に新版が登録されても応答内の版が混ざらないことを競合の fixture で確認した。

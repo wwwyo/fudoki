@@ -1,4 +1,4 @@
-{{ config(materialized = 'external', location = env_var('FUDOKI_PACKAGE_DIR') ~ '/132241/revenue.csv', format = 'csv') }}
+{{ config(materialized = 'external', location = env_var('FUDOKI_INTERNAL_PACKAGE_DIR') ~ '/132241/revenue.csv', format = 'csv') }}
 -- 正本（歳入）。**団体ごと・全年度で1リソース。**
 --
 -- 落とした列と、その理由。

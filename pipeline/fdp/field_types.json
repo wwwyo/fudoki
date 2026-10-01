@@ -188,9 +188,8 @@
     },
     "basis": {
       "name": "basis",
-      "title": "根拠",
       "type": "string",
-      "description": "なぜその割当にしたか。**fudoki の判断そのもの**なので配布物に出す"
+      "description": "basis"
     },
     "fiscal_class_code": {
       "name": "fiscal_class_code",
@@ -250,9 +249,8 @@
     },
     "cofog_code": {
       "name": "cofog_code",
-      "title": "割当先の COFOG",
       "type": "string",
-      "description": "その規則が決めた粒度をそのまま持つ（`01` / `04.5` / `04.5.1`）。assigned のときだけ入る。⚠️ **division / group / class を別々に宣言しない** — 同じ事実が3箇所に分かれると、粒度を下げたときに片方だけ古くなる。割当の結果（cofog.csv）では分解して出す"
+      "description": "Git で宣言した COFOG マスタへの分類コード"
     },
     "cofog_consolidation": {
       "name": "cofog_consolidation",
@@ -355,15 +353,13 @@
     },
     "consolidation": {
       "name": "consolidation",
-      "title": "連結の軸",
       "type": "string",
-      "description": "retained / eliminated"
+      "description": "consolidation"
     },
     "counterpart_fund": {
       "name": "counterpart_fund",
-      "title": "消去の相手側",
       "type": "string",
-      "description": "eliminated のときだけ入る"
+      "description": "counterpart fund"
     },
     "currency": {
       "name": "currency",
@@ -898,6 +894,93 @@
       "name": "origin_sha256",
       "type": "string",
       "description": "この行の原典の SHA-256"
+    },
+    "amount": {
+      "name": "amount",
+      "title": "金額（JPY）",
+      "type": "number",
+      "description": "決算の支出済額・収入済額、または当初予算額。円換算した整数。金額の意味はリソースと文書種別で区別する。",
+      "columnType": "value"
+    },
+    "budget_item_id": {
+      "name": "budget_item_id",
+      "type": "string",
+      "description": "年度内で対応を確認した予算対象の識別子"
+    },
+    "change_id": {
+      "name": "change_id",
+      "type": "string",
+      "description": "change id"
+    },
+    "settlement_line_id": {
+      "name": "settlement_line_id",
+      "type": "string",
+      "description": "settlement line id"
+    },
+    "change_kind": {
+      "name": "change_kind",
+      "type": "string",
+      "description": "change kind"
+    },
+    "effective_at": {
+      "name": "effective_at",
+      "type": "string",
+      "description": "effective at"
+    },
+    "counterpart_budget_item_id": {
+      "name": "counterpart_budget_item_id",
+      "type": "string",
+      "description": "counterpart budget item id"
+    },
+    "initial_state": {
+      "name": "initial_state",
+      "type": "string",
+      "description": "recorded / verified-zero / unknown。当初額が未確認の場合はゼロではない"
+    },
+    "match_status": {
+      "name": "match_status",
+      "type": "string",
+      "description": "match status"
+    },
+    "match_group_id": {
+      "name": "match_group_id",
+      "type": "string",
+      "description": "match group id"
+    },
+    "amount_delta": {
+      "name": "amount_delta",
+      "type": "integer",
+      "description": "変更の増減額（減額は負数、単位は円）"
+    },
+    "sequence": {
+      "name": "sequence",
+      "type": "integer",
+      "description": "sequence"
+    },
+    "carryover_from_year": {
+      "name": "carryover_from_year",
+      "type": "integer",
+      "description": "carryover from year"
+    },
+    "carryover_to_year": {
+      "name": "carryover_to_year",
+      "type": "integer",
+      "description": "carryover to year"
+    },
+    "account_path_json": {
+      "name": "account_path_json",
+      "type": "array",
+      "description": "account path"
+    },
+    "dimensions_json": {
+      "name": "dimensions_json",
+      "type": "array",
+      "description": "dimensions"
+    },
+    "names_json": {
+      "name": "names_json",
+      "type": "array",
+      "description": "names"
     }
   }
 }

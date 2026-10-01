@@ -13,18 +13,16 @@ import type { CofogNodeFilter } from '@/lib/cofog-tree'
 import { apiClient } from '@/lib/api-client'
 
 type Result = Awaited<ReturnType<typeof apiClient.getFiscalLines>>
-type Phase = Parameters<typeof apiClient.getFiscalLines>[0]['phase']
+type Versions = Parameters<typeof apiClient.getFiscalLines>[0]['versions']
 export function CofogStatement({
-  releaseId,
+  versions,
   datasetId,
-  phase,
   filter,
   fund,
   consolidation,
 }: {
-  releaseId: string
+  versions: Versions
   datasetId: string
-  phase: Phase
   filter?: CofogNodeFilter
   fund?: string
   consolidation: 'all' | 'retained' | 'eliminated'
@@ -35,9 +33,8 @@ export function CofogStatement({
     [error, setError] = useState<string | null>(null)
   const generation = useRef(0)
   const query = {
-    releaseId,
+    versions,
     datasetIds: [datasetId],
-    phase,
     cofog: filter,
     fund,
     consolidation,
@@ -67,9 +64,8 @@ export function CofogStatement({
       generation.current++
     }
   }, [
-    releaseId,
+    versions,
     datasetId,
-    phase,
     filter?.division,
     filter?.group,
     filter?.class,
@@ -128,18 +124,16 @@ export function CofogStatement({
                     </div>
                   ))}
                 <div className="text-xs text-muted-foreground">
-                  {STATUS_JA[line.cofog.status] ?? line.cofog.status} /{' '}
-                  {line.cofog.consolidation === 'eliminated'
+                  {line.cofog &&
+                    `${STATUS_JA[line.cofog.status] ?? line.cofog.status} / `}
+                  {line.consolidation === 'eliminated'
                     ? '会計間移転'
                     : '合算対象'}
-                  {line.cofog.basis && ` / ${line.cofog.basis}`}
+                  {line.cofog?.basis && ` / ${line.cofog.basis}`}
                 </div>
               </TableCell>
-              <TableCell
-                className="text-right tabular-nums"
-                title={`原典: ${line.sourceAmount} ${line.sourceAmountUnit}`}
-              >
-                {yen(line.value)}
+              <TableCell className="text-right tabular-nums">
+                {yen(line.amount)}
               </TableCell>
             </TableRow>
           ))}

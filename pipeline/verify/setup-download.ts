@@ -4,7 +4,7 @@ import { verifyCandidate } from '../fdp/manifest'
 
 if (!LATEST)
   throw new Error('Run pipeline:build before loading local downloads')
-await verifyCandidate(join(BUILD, 'releases', LATEST.releaseId))
+await verifyCandidate(join(BUILD, 'builds', LATEST.releaseId))
 const child = Bun.spawn(
   ['node', join(import.meta.dirname, 'setup-download.mjs')],
   {

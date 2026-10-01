@@ -32,17 +32,13 @@ import { CofogStatement } from '@/components/cofog-statement'
 type Catalog = Awaited<ReturnType<typeof apiClient.listFiscalDatasets>> &
   Awaited<ReturnType<typeof apiClient.listJurisdictions>>
 type Dataset = Catalog['datasets'][number]
-type Phase = Dataset['phases'][number]
-const PHASE_LABELS: Record<Phase, string> = {
-  approved: '当初予算額',
-  adjusted: '予算現額',
-  'adjusted-before-transfer': '補正後予算額（流用・充用前）',
-  executed: '執行済額',
-}
 const DOCUMENT_LABELS: Record<Dataset['documentKind'], string> = {
   budget: '予算書',
   supplementary: '補正予算書',
   settlement: '決算書',
+  carryover: '繰越計算書',
+  'reserve-allocation': '予備費充用',
+  transfer: '流用',
 }
 export function AnalysisPage({
   urlCode = null,
@@ -56,7 +52,7 @@ export function AnalysisPage({
       .listJurisdictions({})
       .then(async (jurisdictions) => {
         const datasets = await apiClient.listFiscalDatasets({
-          releaseId: jurisdictions.releaseId,
+          versions: jurisdictions.versions,
         })
         if (stale) return
         setData({ ...jurisdictions, ...datasets })
@@ -149,8 +145,7 @@ function CollectedAnalysis({ data, code }: { data: Catalog; code: string }) {
   )
   const [year, setYear] = useState(years.at(-1)!),
     [direction, setDirection] = useState<Direction>('expenditure'),
-    [datasetId, setDatasetId] = useState(''),
-    [phase, setPhase] = useState<Phase | null>(null)
+    [datasetId, setDatasetId] = useState('')
   const [consolidation, setConsolidation] = useState<
       'all' | 'retained' | 'eliminated'
     >('retained'),
@@ -163,7 +158,10 @@ function CollectedAnalysis({ data, code }: { data: Catalog; code: string }) {
     Awaited<ReturnType<typeof apiClient.listFiles>>['files']
   >([])
   const choices = collected.filter(
-    (d) => d.fiscalYear === year && d.direction === direction
+    (d) =>
+      d.fiscalYear === year &&
+      d.direction === direction &&
+      (d.documentKind === 'budget' || d.documentKind === 'settlement')
   )
   const dataset = choices.find((d) => d.id === datasetId) ?? null
   useEffect(() => {
@@ -171,23 +169,16 @@ function CollectedAnalysis({ data, code }: { data: Catalog; code: string }) {
   }, [jurisdiction.name])
   useEffect(() => {
     setDatasetId(choices.length === 1 ? choices[0]!.id : '')
-    setPhase(null)
     setFund('all')
     setSelected(null)
   }, [year, direction])
   useEffect(() => {
-    if (dataset)
-      setPhase(
-        dataset.phases.includes('executed')
-          ? 'executed'
-          : (dataset.phases[0] ?? null)
-      )
     setSelected(null)
   }, [dataset?.id])
   useEffect(() => {
     let stale = false
     apiClient
-      .listFiles({ releaseId: data.releaseId, jurisdictionCode: code })
+      .listFiles({ versions: data.versions, jurisdictionCode: code })
       .then((result) => {
         if (!stale) setFiles(result.files)
       })
@@ -197,18 +188,17 @@ function CollectedAnalysis({ data, code }: { data: Catalog; code: string }) {
     return () => {
       stale = true
     }
-  }, [code, data.releaseId])
+  }, [code, data.versions])
   useEffect(() => {
     let stale = false
     setAggregate(null)
     setNodes([])
     setSelected(null)
     setError(null)
-    if (!dataset || !phase) return
+    if (!dataset) return
     const query = {
-      releaseId: data.releaseId,
+      versions: data.versions,
       datasetIds: [dataset.id],
-      phase,
       consolidation,
       fund: fund === 'all' ? undefined : fund,
     }
@@ -244,7 +234,7 @@ function CollectedAnalysis({ data, code }: { data: Catalog; code: string }) {
     return () => {
       stale = true
     }
-  }, [dataset?.id, phase, direction, data.releaseId, consolidation, fund])
+  }, [dataset?.id, direction, data.versions, consolidation, fund])
   return (
     <Layout>
       <main className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-8">
@@ -290,17 +280,6 @@ function CollectedAnalysis({ data, code }: { data: Catalog; code: string }) {
                     label: `${DOCUMENT_LABELS[d.documentKind]} (${d.originSha256.slice(0, 12)})`,
                   })),
                 ]}
-              />
-            )}
-            {dataset && phase && (
-              <Choice
-                label="金額段階"
-                value={phase}
-                onChange={setPhase}
-                items={dataset.phases.map((p) => ({
-                  value: p,
-                  label: PHASE_LABELS[p],
-                }))}
               />
             )}
             {dataset && (
@@ -358,11 +337,14 @@ function CollectedAnalysis({ data, code }: { data: Catalog; code: string }) {
             同じ年度の資料を重ねて集計しないため、参照する原典を一つ選んでください。
           </p>
         )}
-        {dataset && phase && aggregate?.total && (
+        {dataset && aggregate?.total && (
           <Card>
             <CardHeader>
               <CardDescription>
-                {year}年度 {DIR_JA[direction]} / {PHASE_LABELS[phase]}
+                {year}年度 {DIR_JA[direction]} /{' '}
+                {dataset.documentKind === 'settlement'
+                  ? '実績額'
+                  : '当初予算額'}
               </CardDescription>
               <CardTitle>{senYen(aggregate.total.amount)} 千円</CardTitle>
               <CardDescription>
@@ -376,31 +358,26 @@ function CollectedAnalysis({ data, code }: { data: Catalog; code: string }) {
             </CardHeader>
           </Card>
         )}
-        {dataset &&
-          phase &&
-          direction === 'expenditure' &&
-          nodes.length > 0 && (
-            <CofogTree
-              nodes={nodes}
-              selected={selected}
-              onSelect={setSelected}
-              renderDetail={(filter) => (
-                <CofogStatement
-                  releaseId={data.releaseId}
-                  datasetId={dataset.id}
-                  phase={phase}
-                  filter={filter}
-                  consolidation={consolidation}
-                  fund={fund === 'all' ? undefined : fund}
-                />
-              )}
-            />
-          )}
-        {dataset && phase && direction === 'revenue' && (
+        {dataset && direction === 'expenditure' && nodes.length > 0 && (
+          <CofogTree
+            nodes={nodes}
+            selected={selected}
+            onSelect={setSelected}
+            renderDetail={(filter) => (
+              <CofogStatement
+                versions={data.versions}
+                datasetId={dataset.id}
+                filter={filter}
+                consolidation={consolidation}
+                fund={fund === 'all' ? undefined : fund}
+              />
+            )}
+          />
+        )}
+        {dataset && direction === 'revenue' && (
           <CofogStatement
-            releaseId={data.releaseId}
+            versions={data.versions}
             datasetId={dataset.id}
-            phase={phase}
             consolidation={consolidation}
             fund={fund === 'all' ? undefined : fund}
           />
@@ -426,7 +403,7 @@ function CollectedAnalysis({ data, code }: { data: Catalog; code: string }) {
             ))}
           </div>
           <p className="text-xs text-muted-foreground">
-            公開版: {data.releaseId}
+            団体のデータ版: {jurisdiction.versionId}
           </p>
         </section>
       </main>

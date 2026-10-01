@@ -20,7 +20,7 @@ with in_core as (
 in_package as (
     {% for code in var('fiscal_levels').keys() | list | sort %}
     select fiscal_line_id
-    from read_csv('{{ env_var('FUDOKI_PACKAGE_DIR') }}/{{ code }}/cofog.csv', header = true, all_varchar = true)
+    from read_csv('{{ env_var('FUDOKI_INTERNAL_PACKAGE_DIR') }}/{{ code }}/cofog.csv', header = true, all_varchar = true)
     {% if not loop.last %}union all{% endif %}
     {% endfor %}
 )

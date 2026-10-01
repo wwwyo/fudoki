@@ -1,361 +1,371 @@
-import { beforeEach, afterEach, expect, test } from "bun:test";
-import { Database } from "bun:sqlite";
-import { readFileSync } from "node:fs";
-import { sqliteD1 } from "../../test/database";
-import {
-  aggregate,
-  files,
-  pageLines,
-  queryLines,
-  resolveRelease,
-} from "./queries";
-import { aggregateQuerySchema, lineQuerySchema } from "../contract";
-
-const R1 = "r-" + "1".repeat(32),
-  R2 = "r-" + "2".repeat(32);
-const secret = "test-only-secret-with-at-least-32-characters";
-let sqlite: Database;
-let db: ReturnType<typeof sqliteD1>;
-test("COFOG parent references preserve coarse assignments and unclassified lines without multiplying amounts", async () => {
-  sqlite.run(
-    "UPDATE fiscal_lines SET cofog_code='09' WHERE release_id=? AND fiscal_line_id='budget:1'",
-    [R1],
-  );
-  sqlite.run(
-    "UPDATE fiscal_lines SET cofog_code=NULL,cofog_status='unclassifiable' WHERE release_id=? AND fiscal_line_id='budget:2'",
-    [R1],
-  );
-  sqlite.run(
-    "UPDATE fiscal_lines SET cofog_code='09.1' WHERE release_id=? AND fiscal_line_id='budget:3'",
-    [R1],
-  );
-  const lines = await queryLines(
+import { beforeEach, afterEach, expect, test } from 'bun:test'
+import { Database } from 'bun:sqlite'
+import { mkdtemp, readFile, rm } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { sqliteD1 } from '../../test/database'
+import { fixture } from '../../../../pipeline/verify/fixture'
+import { publish } from '../../../../pipeline/publish/publish'
+import { initializeSchema } from '../../../../pipeline/publish/cloudflare'
+import { aggregate, pageLines, listDatasets, queryLines } from './queries'
+import { aggregateQuerySchema, lineQuerySchema } from '../contract'
+let directory: string, sqlite: Database, db: ReturnType<typeof sqliteD1>
+const secret = 'test-cursor-secret-with-at-least-32-characters'
+beforeEach(async () => {
+  directory = await mkdtemp(join(tmpdir(), 'fudoki-query-'))
+  await fixture(directory, 'r-' + '1'.repeat(32), 100, 3)
+  sqlite = new Database(':memory:')
+  db = sqliteD1(sqlite)
+  await initializeSchema(db)
+  const objects = new Map<string, Uint8Array>()
+  await publish(
+    directory,
     db,
-    R1,
-    lineQuerySchema.parse({
-      datasetIds: ["budget"],
-      phase: "approved",
-      consolidation: "all",
-    }),
-  );
+    {
+      read: async (key) => objects.get(key) ?? null,
+      put: async (key, path) => {
+        objects.set(key, new Uint8Array(await readFile(path)))
+      },
+    },
+    'https://example.org/manifest.json'
+  )
+})
+afterEach(async () => {
+  sqlite.close()
+  await rm(directory, { recursive: true, force: true })
+})
+test('coarse assignments and unclassifiable expenditure each retain exactly one amount', async () => {
+  sqlite.run(
+    "UPDATE fiscal_settlement_expenditure_lines SET cofog_code='09' WHERE source_row=1"
+  )
+  sqlite.run(
+    "UPDATE fiscal_settlement_expenditure_lines SET cofog_code=NULL,cofog_status='unclassifiable' WHERE source_row=2"
+  )
+  sqlite.run(
+    "UPDATE fiscal_settlement_expenditure_lines SET cofog_code='09.1' WHERE source_row=3"
+  )
+  const input = lineQuerySchema.parse({ datasetIds: ['000001:settlement'] })
+  const lines = await queryLines(db, await listDatasets(db), input)
   expect(lines.map((line) => line.cofog)).toMatchObject([
-    { status: "assigned", division: "09", group: "", class: "" },
-    { status: "unclassifiable", division: "", group: "", class: "" },
-    { status: "assigned", division: "09", group: "09.1", class: "" },
-  ]);
-  const grouped = await aggregate(
-    db,
-    R1,
-    aggregateQuerySchema.parse({
-      datasetIds: ["budget"],
-      phase: "approved",
-      consolidation: "all",
-      groupBy: ["cofog.group"],
-    }),
-  );
-  expect(grouped.total).toEqual({ amount: 600, lineCount: 3 });
-  expect(grouped.cells).toEqual([
-    { keys: ["09.1"], amount: 300, lineCount: 1 },
-    { keys: ["not-descended"], amount: 100, lineCount: 1 },
-    { keys: ["unclassifiable"], amount: 200, lineCount: 1 },
-  ]);
+    { status: 'assigned', division: '09', group: '', class: '' },
+    { status: 'unclassifiable', division: '', group: '', class: '' },
+    { status: 'assigned', division: '09', group: '09.1', class: '' },
+  ])
   expect(
-    (
-      await queryLines(
-        db,
-        R1,
-        lineQuerySchema.parse({
-          datasetIds: ["budget"],
-          cofog: { status: "unclassifiable" },
-        }),
-      )
-    ).map((line) => line.id),
-  ).toEqual(["budget:2"]);
-  expect(() =>
-    sqlite.run(
-      "UPDATE fiscal_lines SET cofog_code='99' WHERE release_id=? AND fiscal_line_id='budget:1'",
-      [R1],
-    ),
-  ).toThrow();
-  expect(() =>
-    sqlite.run(
-      "UPDATE fiscal_lines SET cofog_code=NULL WHERE release_id=? AND fiscal_line_id='budget:1'",
-      [R1],
-    ),
-  ).toThrow();
-});
-beforeEach(() => {
-  sqlite = new Database(":memory:");
-  sqlite.exec(
-    readFileSync(
-      new URL(
-        "../../../../packages/data-contracts/schema.sql",
-        import.meta.url,
-      ),
-      "utf8",
-    ),
-  );
-  db = sqliteD1(sqlite);
-  sqlite.exec(
-    "INSERT INTO cofog_codes VALUES('09','教育','division',NULL),('09.1','初等教育','group','09'),('09.1.1','検証用の小分類','class','09.1')",
-  );
-  sqlite.run("INSERT INTO jurisdictions VALUES(?,?,?)", [
-    "132195",
-    "狛江市",
-    "ocd-division/country:jp/prefecture:13/city:132195",
-  ]);
-  for (const release of [R1, R2]) {
-    sqlite.run("INSERT INTO releases VALUES(?,1,'published',NULL,NULL,?,?)", [
-      release,
-      "a".repeat(40),
-      "b".repeat(64),
-    ]);
-    sqlite.run("INSERT INTO release_jurisdictions VALUES(?,?,?,?,?)", [
-      release,
-      "132195",
-      "狛江市",
-      "ocd-division/country:jp/prefecture:13/city:132195",
-      "[]",
-    ]);
-    for (const [dataset, kind, phase] of [
-      ["budget", "budget", "approved"],
-      ["settlement", "settlement", "executed"],
-    ]) {
-      sqlite.run("INSERT INTO fiscal_datasets VALUES(?,?,?,?,?,?,?,?,?,?,?)", [
-        release,
-        dataset!,
-        "132195",
-        2026,
-        "expenditure",
-        kind!,
-        "c".repeat(64),
-        JSON.stringify([phase]),
-        JSON.stringify({
-          documentLabel: kind,
-          landingPage: "https://example.org",
-          licenseId: "NOASSERTION",
-          attribution: "自治体",
-          rawForm: "extracted",
-        }),
-        JSON.stringify({ hierarchy: ["moku"], dimensions: [] }),
-        3,
-      ]);
-      for (let i = 1; i <= 3; i++) {
-        const id = dataset + ":" + i;
-        sqlite.run(
-          "INSERT INTO fiscal_lines VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
-          [
-            release,
-            id,
-            dataset!,
-            i,
-            "01",
-            "一般会計",
-            "09.1.1",
-            "assigned",
-            i === 3 ? "eliminated" : "retained",
-            "目",
-            "rule",
-            "根拠",
-            "",
-          ],
-        );
-        sqlite.run("INSERT INTO amounts VALUES(?,?,?,?,?,?,?)", [
-          release,
-          id,
-          phase!,
-          i * (release === R1 ? 100 : 1000),
-          i,
-          "円",
-          1,
-        ]);
-        sqlite.run("INSERT INTO line_hierarchy VALUES(?,?,?,?,?,?,?)", [
-          release,
-          id,
-          0,
-          "moku",
-          "001",
-          "教育",
-          "original",
-        ]);
-        sqlite.run("INSERT INTO names VALUES(?,?,?,?,?,?,?)", [
-          release,
-          id,
-          "hierarchy",
-          "moku",
-          i === 1 ? "教育%_" : "教育' OR 1=1 --",
-          "canonical",
-          "",
-        ]);
-      }
-    }
-  }
-  sqlite.run("INSERT INTO active_release(singleton,release_id) VALUES(1,?)", [
-    R1,
-  ]);
-});
-afterEach(() => sqlite.close());
-const query = () =>
-  lineQuerySchema.parse({ datasetIds: ["budget"], pageSize: 2 });
-test("a cursor keeps the old published release after active release changes", async () => {
-  const first = await pageLines(db, secret, query());
-  expect(first.lines.map((l) => l.value)).toEqual([100, 200]);
-  sqlite.run("UPDATE active_release SET release_id=?", [R2]);
-  const next = await pageLines(db, secret, {
-    ...query(),
-    cursor: first.nextCursor,
-  });
-  expect(next.releaseId).toBe(R1);
-  expect(next.lines.map((l) => l.value)).toEqual([300]);
-  expect(next.nextCursor).toBeUndefined();
-  expect((await pageLines(db, secret, query())).releaseId).toBe(R2);
-});
-test("tampering with sort position or query cannot produce an accepted cursor", async () => {
-  const first = await pageLines(db, secret, query());
-  const [body, sig] = first.nextCursor!.split(".");
-  const payload = JSON.parse(Buffer.from(body!, "base64url").toString());
-  payload.after = "budget:0";
-  const forged =
-    Buffer.from(JSON.stringify(payload)).toString("base64url") + "." + sig;
+    lines.every(
+      (line) =>
+        !('ruleId' in line.cofog!) &&
+        !('phase' in line) &&
+        !('sourceAmount' in line)
+    )
+  ).toBe(true)
+  const result = await aggregate(
+    db,
+    aggregateQuerySchema.parse({
+      datasetIds: input.datasetIds,
+      groupBy: ['cofog.group'],
+    })
+  )
+  expect(result.total).toEqual({ amount: 300, lineCount: 3 })
+  expect(result.cells).toEqual([
+    { keys: ['09.1'], amount: 100, lineCount: 1 },
+    { keys: ['not-descended'], amount: 100, lineCount: 1 },
+    { keys: ['unclassifiable'], amount: 100, lineCount: 1 },
+  ])
+})
+test('keyset pagination rejects altered filters and cursors, and name search binds SQL metacharacters', async () => {
+  const input = lineQuerySchema.parse({
+    datasetIds: ['000001:settlement'],
+    pageSize: 1,
+  })
+  const first = await pageLines(db, secret, input),
+    second = await pageLines(db, secret, { ...input, cursor: first.nextCursor })
+  expect(first.lines[0]!.id).not.toBe(second.lines[0]!.id)
   await expect(
-    pageLines(db, secret, { ...query(), cursor: forged }),
-  ).rejects.toThrow("Invalid cursor");
+    pageLines(db, secret, { ...input, fund: '02', cursor: first.nextCursor })
+  ).rejects.toThrow('mismatched cursor')
   await expect(
     pageLines(db, secret, {
-      ...query(),
-      pageSize: 1,
-      cursor: first.nextCursor,
-    }),
-  ).rejects.toThrow("another query");
-});
-test("missing or unpublished cursor release expires without silently changing its version", async () => {
-  const first = await pageLines(db, secret, query());
-  sqlite.run("UPDATE releases SET state='staging' WHERE release_id=?", [R1]);
-  await expect(
-    pageLines(db, secret, { ...query(), cursor: first.nextCursor }),
-  ).rejects.toMatchObject({ code: "RELEASE_EXPIRED" });
-  await expect(resolveRelease(db)).rejects.toMatchObject({
-    code: "UNAVAILABLE",
-  });
-});
-test("aggregation refuses two documents from the same scope and unavailable money phases", async () => {
+      ...input,
+      cursor: first.nextCursor!.slice(0, -6) + 'invalid',
+    })
+  ).rejects.toThrow('cursor')
+  expect(
+    (await pageLines(db, secret, { ...input, name: "' OR 1=1 --" })).lines
+  ).toEqual([])
+  expect(
+    (await pageLines(db, secret, { ...input, name: '教育' })).lines
+  ).toHaveLength(1)
+})
+test('strict query contracts reject obsolete amount phases and ambiguous aggregates', async () => {
+  expect(() =>
+    lineQuerySchema.parse({
+      datasetIds: ['000001:settlement'],
+      phase: 'executed',
+    })
+  ).toThrow()
   await expect(
     aggregate(
       db,
-      R1,
       aggregateQuerySchema.parse({
-        datasetIds: ["budget", "settlement"],
-        phase: "approved",
-        groupBy: ["year"],
-      }),
-    ),
-  ).rejects.toThrow("double counting");
+        datasetIds: ['000001:settlement', '000001:settlement'],
+        groupBy: ['year'],
+      })
+    )
+  ).rejects.toThrow('duplicates')
   await expect(
-    pageLines(
+    aggregate(
       db,
-      secret,
-      lineQuerySchema.parse({ datasetIds: ["settlement"], phase: "approved" }),
-    ),
-  ).rejects.toThrow("not available");
+      aggregateQuerySchema.parse({
+        datasetIds: ['000001:settlement'],
+        groupBy: ['year', 'year'],
+      })
+    )
+  ).rejects.toThrow('duplicates')
+  await expect(
+    aggregate(
+      db,
+      aggregateQuerySchema.parse({
+        datasetIds: ['000001:settlement'],
+        groupBy: ['kan'],
+      })
+    )
+  ).rejects.toThrow('unavailable')
+})
+test('hierarchy grouping keeps repeated child codes in different parent branches separate', async () => {
+  sqlite.run(
+    'UPDATE fiscal_settlement_expenditure_line_hierarchy SET ordinal=1'
+  )
+  const parent = sqlite.query(
+    'INSERT INTO fiscal_settlement_expenditure_line_hierarchy VALUES(?,?,0,?,?,?,?)'
+  )
+  const lines = sqlite
+    .query(
+      'SELECT version_id,fiscal_line_id,source_row FROM fiscal_settlement_expenditure_lines'
+    )
+    .all() as {
+    version_id: string
+    fiscal_line_id: string
+    source_row: number
+  }[]
+  for (const line of lines)
+    parent.run(
+      line.version_id,
+      line.fiscal_line_id,
+      'kan',
+      String(line.source_row),
+      '親',
+      'canonical'
+    )
   const result = await aggregate(
     db,
-    R1,
     aggregateQuerySchema.parse({
-      datasetIds: ["budget"],
-      phase: "approved",
-      groupBy: ["cofog.division"],
-      consolidation: "retained",
-    }),
-  );
-  expect(result.total).toEqual({ amount: 300, lineCount: 2 });
-  expect(result.cells[0]?.keys).toEqual(["09"]);
-});
-test("names are matched literally with bound SQL, including SQL and LIKE metacharacters", async () => {
-  const percent = await pageLines(
-    db,
-    secret,
-    lineQuerySchema.parse({ datasetIds: ["budget"], name: "%_" }),
-  );
-  expect(percent.lines.map((l) => l.id)).toEqual(["budget:1"]);
-  const sql = await pageLines(
-    db,
-    secret,
-    lineQuerySchema.parse({ datasetIds: ["budget"], name: "' OR 1=1 --" }),
-  );
-  expect(sql.lines.map((l) => l.id)).toEqual(["budget:2", "budget:3"]);
-  expect(sql.lines[0]?.hierarchy[0]?.label).toBe("教育");
-});
-test("download URLs come from file metadata without requesting R2 or reading the file body", async () => {
-  sqlite.run("INSERT INTO files VALUES(?,?,?,?,?,?)", [
-    R1,
-    "fiscal/000001/expenditure.csv",
-    `fiscal/000001/p-${"a".repeat(64)}/expenditure.csv`,
-    "a".repeat(64),
-    100,
-    "application/json; charset=utf-8",
-  ]);
-  const result = await files(db, R1, "https://download.example.org");
-  expect(result[0]?.url).toBe(
-    `https://download.example.org/fiscal/000001/p-${"a".repeat(64)}/expenditure.csv`,
-  );
-});
-test("two releases use the same immutable package URL for unchanged data", async () => {
-  const key = `fiscal/000001/p-${"b".repeat(64)}/expenditure.csv`;
-  for (const release of [R1, R2])
-    sqlite.run("INSERT INTO files VALUES(?,?,?,?,?,?)", [
-      release,
-      "fiscal/000001/expenditure.csv",
-      key,
-      "a".repeat(64),
-      100,
-      "text/csv; charset=utf-8",
-    ]);
-  const first = await files(db, R1, "https://download.example.org", "000001");
-  const next = await files(db, R2, "https://download.example.org", "000001");
-  expect(first).toEqual(next);
-  expect(next[0]?.url).toBe(`https://download.example.org/${key}`);
-});
+      datasetIds: ['000001:settlement'],
+      groupBy: ['moku'],
+    })
+  )
+  expect(result.cells).toHaveLength(3)
+  expect(result.cells.reduce((sum, cell) => sum + cell.amount, 0)).toBe(300)
+})
 
-test("name matching respects case and Unicode representation and accepts Japanese phrases longer than 50 bytes", async () => {
-  const long = "児童福祉施設における保育サービスの運営及び施設整備事業";
-  const variants = ["ABC", "ＡＢＣ", "é", "e\u0301", long];
-  for (const [i, name] of variants.entries())
-    sqlite.run("INSERT INTO names VALUES(?,?,?,?,?,?,?)", [
-      R1,
-      "budget:1",
-      "project",
-      "variant" + i,
-      name,
-      "canonical",
-      "",
-    ]);
-  for (const name of variants)
-    expect(
-      (
-        await pageLines(
-          db,
-          secret,
-          lineQuerySchema.parse({ datasetIds: ["budget"], name }),
+test('verified many-to-many correspondence counts actuals once, applies signed changes by date, and keeps unknown initial amounts unknown', async () => {
+  const { version_id: version } = sqlite
+    .query('SELECT version_id FROM fiscal_jurisdiction_versions')
+    .get() as { version_id: string }
+  const original = sqlite
+    .query('SELECT * FROM fiscal_datasets')
+    .get() as Record<string, unknown>
+  const addDataset = (id: string, kind: string) => {
+    const row = {
+      ...original,
+      dataset_id: id,
+      document_kind: kind,
+      line_count: 1,
+      source_amount_kind: kind === 'budget' ? 'initial' : 'delta',
+      coverage_json:
+        '{"budgetHistory":"complete","verifiedThrough":"2026-12-31"}',
+    }
+    sqlite
+      .query(
+        `INSERT INTO fiscal_datasets (${Object.keys(row).join(',')}) VALUES(${Object.keys(
+          row
         )
-      ).lines.map((l) => l.id),
-    ).toEqual(["budget:1"]);
-  expect(
-    (
-      await pageLines(
-        db,
-        secret,
-        lineQuerySchema.parse({ datasetIds: ["budget"], name: "abc" }),
+          .map(() => '?')
+          .join(',')})`
       )
-    ).lines,
-  ).toEqual([]);
-  expect(
-    (
-      await pageLines(
-        db,
-        secret,
-        lineQuerySchema.parse({ datasetIds: ["budget"], name: "ＡBC" }),
+      .run(...(Object.values(row) as any[]))
+  }
+  addDataset('initial', 'budget')
+  addDataset('amendment', 'supplementary')
+  for (const [id, initial] of [
+    ['item-a', 200],
+    ['item-b', 400],
+  ] as const) {
+    sqlite.run(
+      'INSERT INTO fiscal_expenditure_budget_items VALUES(?,?,?,?,?,?,?,?,?,?)',
+      [
+        version,
+        id,
+        '000001',
+        2026,
+        '01',
+        '一般会計',
+        '[]',
+        '[]',
+        '[]',
+        'recorded',
+      ]
+    )
+    sqlite.run(
+      'INSERT INTO fiscal_initial_expenditure_budget_lines VALUES(?,?,?,?,?,?,?,?,?,?,?)',
+      [
+        version,
+        id,
+        'initial',
+        id,
+        1,
+        initial,
+        'retained',
+        '',
+        '09',
+        'assigned',
+        '根拠',
+      ]
+    )
+    for (let index = 0; index < 3; index++)
+      sqlite.run(
+        'INSERT INTO fiscal_expenditure_settlement_links VALUES(?,?,?,?,?,?)',
+        [
+          version,
+          id,
+          `000001:${String(index).padStart(6, '0')}`,
+          'verified',
+          'group-a',
+          '原典で対応を確認',
+        ]
       )
-    ).lines,
-  ).toEqual([]);
-  expect(new TextEncoder().encode(long).length).toBeGreaterThan(50);
-});
+  }
+  for (const [id, delta, date] of [
+    ['change-a', -20, '2026-05-01'],
+    ['change-b', 30, '2026-10-01'],
+  ] as const) {
+    sqlite.run(
+      'INSERT INTO fiscal_expenditure_budget_changes VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+      [
+        version,
+        id,
+        'amendment',
+        'item-a',
+        delta,
+        'supplementary',
+        date,
+        1,
+        1,
+        null,
+        null,
+        null,
+        '09',
+        'assigned',
+        '根拠',
+      ]
+    )
+  }
+  const { budgetHistory } = await import('./queries'),
+    { budgetHistoryQuerySchema, budgetHistorySchema } =
+      await import('../contract')
+  const input = budgetHistoryQuerySchema.parse({
+    jurisdictionCode: '000001',
+    fiscalYear: 2026,
+    direction: 'expenditure',
+    asOf: '2026-06-01',
+  })
+  const result = budgetHistorySchema.parse(await budgetHistory(db, input))
+  expect(result.comparisons[0]).toMatchObject({
+    budgetAmount: 580,
+    recordedChangeSubtotal: -20,
+    actualAmount: 300,
+    status: 'complete',
+  })
+  expect(result.changes).toHaveLength(1)
+  sqlite.run(
+    "UPDATE fiscal_datasets SET coverage_json='{}' WHERE dataset_id='amendment'"
+  )
+  expect((await budgetHistory(db, input)).comparisons[0]).toMatchObject({
+    budgetAmount: null,
+    actualAmount: 300,
+    status: 'unconfirmed',
+  })
+  sqlite.run(
+    'INSERT INTO fiscal_expenditure_budget_items VALUES(?,?,?,?,?,?,?,?,?,?)',
+    [
+      version,
+      'new-item',
+      '000001',
+      2026,
+      '01',
+      '一般会計',
+      '[]',
+      '[]',
+      '[]',
+      'unknown',
+    ]
+  )
+  sqlite.run(
+    'INSERT INTO fiscal_expenditure_settlement_links VALUES(?,?,?,?,?,?)',
+    [
+      version,
+      'new-item',
+      '000001:000000',
+      'verified',
+      'group-a',
+      '初期入力欠落',
+    ]
+  )
+  expect(
+    (await budgetHistory(db, input)).comparisons[0]!.budgetAmount
+  ).toBeNull()
+})
+
+test('a version registered during budget history lookup cannot mix the response versions', async () => {
+  const { budgetHistory } = await import('./queries')
+  const { budgetHistoryQuerySchema } = await import('../contract')
+  const old = sqlite
+    .query('SELECT version_id FROM fiscal_jurisdiction_versions')
+    .get() as { version_id: string }
+  let registered = false
+  const racingDB = {
+    ...db,
+    prepare(sql: string) {
+      if (!registered && sql.startsWith('SELECT * FROM fiscal_datasets')) {
+        registered = true
+        sqlite.run(
+          `INSERT INTO fiscal_jurisdiction_versions SELECT ?,jurisdiction_code,contract_version,package_id,name_snapshot,ocd_id_snapshot,caveats_json,?,manifest_url,manifest_sha256 FROM fiscal_jurisdiction_versions WHERE version_id=?`,
+          ['v-' + 'b'.repeat(64), '2099-01-01T00:00:00.000Z', old.version_id]
+        )
+      }
+      return db.prepare(sql)
+    },
+  }
+  const result = await budgetHistory(
+    racingDB,
+    budgetHistoryQuerySchema.parse({
+      jurisdictionCode: '000001',
+      fiscalYear: 2026,
+      direction: 'expenditure',
+      asOf: '2026-06-01',
+    })
+  )
+  expect(registered).toBe(true)
+  expect(result.versions[0]?.versionId).toBe(old.version_id)
+  expect(result.datasets.every((d) => d.versionId === old.version_id)).toBe(
+    true
+  )
+  expect(() =>
+    budgetHistoryQuerySchema.parse({
+      jurisdictionCode: '000001',
+      fiscalYear: 2026,
+      direction: 'expenditure',
+      asOf: '2026-02-30',
+    })
+  ).toThrow()
+})

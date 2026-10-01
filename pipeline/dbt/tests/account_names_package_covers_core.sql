@@ -40,7 +40,7 @@ in_package as (
            coalesce(master_kan_code, '') as master_kan_code,
            coalesce(master_kou_code, '') as master_kou_code,
            coalesce(master_kind, '') as master_kind
-    from read_csv('{{ env_var('FUDOKI_PACKAGE_DIR') }}/{{ code }}/account_names.csv', header = true, all_varchar = true)
+    from read_csv('{{ env_var('FUDOKI_INTERNAL_PACKAGE_DIR') }}/{{ code }}/account_names.csv', header = true, all_varchar = true)
     {% if not loop.last %}union all{% endif %}
     {% endfor %}
 )

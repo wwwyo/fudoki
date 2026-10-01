@@ -1,359 +1,285 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { createReadStream } from 'node:fs'
-import { createInterface } from 'node:readline'
 import {
   TABLES,
   TABLE_COLUMNS,
+  TABLE_KEYS,
   canonicalRow,
+  canonicalJson,
   jurisdictionMasterSchema,
   cofogMasterSchema,
+  distributionManifestSchema,
   type D1Database,
-  type ReleaseManifest,
 } from '@fudoki/data-contracts'
-import { verifyCandidate } from '../fdp/manifest'
+import {
+  verifyCandidate,
+  candidateRows,
+  partitionAllRows,
+  partitionRows,
+  jsonLines,
+} from '../fdp/manifest'
 import { sha256 } from '../release'
-import { acquire, activate, guardedBatch, release } from './control'
-import type { Verification } from './verification'
 
 export interface ObjectStore {
+  read(key: string): Promise<Uint8Array | null>
   put(key: string, path: string, contentType: string): Promise<void>
 }
-export interface Verifier extends Pick<
-  Verification,
-  | 'file'
-  | 'chunk'
-  | 'api'
-  | 'publicContracts'
-  | 'downloads'
-  | 'download'
-  | 'measure'
-> {
-  existingFile(releaseId: string, path: string): Promise<boolean>
-}
 export type Progress = (event: Record<string, unknown>) => void
+const BATCH_SIZE = 500
+
+/** Retry identical rows; a content address must never acquire different contents. */
+async function appendRows(
+  db: D1Database,
+  table: keyof typeof TABLE_COLUMNS,
+  rows: Record<string, unknown>[],
+  versionId?: string
+) {
+  const columns = [
+    ...(versionId ? ['version_id'] : []),
+    ...TABLE_COLUMNS[table],
+  ]
+  const keys = [...(versionId ? ['version_id'] : []), ...TABLE_KEYS[table]]
+  const joinKeys = keys
+    .map((key) => `stored."${key}" IS json_extract(incoming.value,'$.${key}')`)
+    .join(' AND ')
+  for (let offset = 0; offset < rows.length; offset += BATCH_SIZE) {
+    const batch = rows
+      .slice(offset, offset + BATCH_SIZE)
+      .map((row) => (versionId ? { version_id: versionId, ...row } : row))
+    const existing = await db
+      .prepare(
+        `SELECT stored.* FROM "${table}" stored JOIN json_each(?) incoming ON ${joinKeys}`
+      )
+      .bind(JSON.stringify(batch))
+      .all<Record<string, unknown>>()
+    const byKey = new Map(
+      batch.map((row) => [canonicalJson(keys.map((key) => row[key])), row])
+    )
+    for (const row of existing.results) {
+      const incoming = byKey.get(canonicalJson(keys.map((key) => row[key])))!
+      if (canonicalJson(row) !== canonicalJson(incoming))
+        throw new Error(`Existing content differs: ${table}`)
+    }
+    await db
+      .prepare(
+        `INSERT INTO "${table}" (${columns.map((c) => `"${c}"`).join(',')}) SELECT ${columns.map((c) => `json_extract(value,'$.${c}')`).join(',')} FROM json_each(?) WHERE true ON CONFLICT(${keys.join(',')}) DO NOTHING`
+      )
+      .bind(JSON.stringify(batch))
+      .run()
+  }
+}
+
+async function verifyTables(
+  db: D1Database,
+  versionId: string,
+  data: Awaited<ReturnType<typeof candidateRows>>
+) {
+  for (const table of TABLES) {
+    const keys = TABLE_KEYS[table]
+    let after: unknown[] | undefined
+    let count = 0
+    const hash = new Bun.CryptoHasher('sha256')
+    while (true) {
+      const cursor = after
+        ? ` AND (${keys.join(',')}) > (${keys.map(() => '?').join(',')})`
+        : ''
+      const page = await db
+        .prepare(
+          `SELECT ${TABLE_COLUMNS[table].join(',')} FROM ${table} WHERE version_id=?${cursor} ORDER BY ${keys.join(',')} LIMIT 500`
+        )
+        .bind(versionId, ...(after ?? []))
+        .all<Record<string, unknown>>()
+      for (const row of page.results) hash.update(canonicalRow(table, row))
+      count += page.results.length
+      if (page.results.length < 500) break
+      after = keys.map((key) => page.results.at(-1)![key])
+    }
+    const expected = new Bun.CryptoHasher('sha256')
+    for (const row of data[table]) expected.update(canonicalRow(table, row))
+    if (
+      count !== data[table].length ||
+      hash.digest('hex') !== expected.digest('hex')
+    )
+      throw new Error(`Imported data differs: ${table}`)
+  }
+}
+
+/** Rows become visible as they are inserted; failed imports remain resumable. */
 export async function publish(
-  candidate: string,
+  directory: string,
   db: D1Database,
   store: ObjectStore,
-  verify: Verifier,
   manifestUrl: string,
-  progress: Progress = () => {}
+  progress: Progress = () => {},
+  options: { jurisdictionCodes?: string[]; registeredAt?: string } = {}
 ) {
-  const manifest = await verifyCandidate(candidate)
-  const manifestHash = sha256(
-    await readFile(join(candidate, 'verification.json'))
+  const verification = await verifyCandidate(directory)
+  const manifest = distributionManifestSchema.parse(
+    JSON.parse(await readFile(join(directory, 'manifest.json'), 'utf8'))
   )
-  const lease = await acquire(db, crypto.randomUUID(), manifest.releaseId)
-  try {
-    const sql = db
+  const wanted = new Set(
+    options.jurisdictionCodes ??
+      verification.versions.map((v) => v.jurisdictionCode)
+  )
+  if (
+    [...wanted].some(
+      (code) => !verification.versions.some((v) => v.jurisdictionCode === code)
+    )
+  )
+    throw new Error('Unknown jurisdiction in candidate')
+  const parsedUrl = new URL(manifestUrl)
+  if (parsedUrl.protocol !== 'https:')
+    throw new Error('The manifest must have an HTTPS URL')
+  const data = await candidateRows(directory)
+  const partitions = partitionAllRows(data)
+  const masters = jurisdictionMasterSchema
+    .array()
+    .parse(await jsonLines(join(directory, 'api/jurisdictions.jsonl')))
+  // Names in retained versions are snapshots, so current master names may change.
+  for (const master of masters.filter((row) =>
+    wanted.has(row.jurisdiction_code)
+  )) {
+    await db
       .prepare(
-        `INSERT INTO releases(release_id,contract_version,state,verification_sha256,code_revision,input_fingerprint)
-      VALUES(?,?,'staging',?,?,?) ON CONFLICT(release_id) DO NOTHING`
+        'INSERT INTO jurisdictions VALUES(?,?,?) ON CONFLICT(jurisdiction_code) DO UPDATE SET name=excluded.name,ocd_id=excluded.ocd_id'
       )
-      .bind(
-        manifest.releaseId,
-        manifest.schemaVersion,
-        manifestHash,
-        manifest.codeRevision,
-        manifest.inputFingerprint
-      )
-    await guardedBatch(db, lease, [
-      sql,
-      db
-        .prepare(
-          'INSERT INTO publish_guard(valid) SELECT CASE WHEN EXISTS(SELECT 1 FROM releases WHERE release_id=? AND verification_sha256=? AND contract_version=?) THEN 1 ELSE 0 END'
-        )
-        .bind(manifest.releaseId, manifestHash, manifest.schemaVersion),
-    ])
-    const masters = (
-      await readFile(join(candidate, 'api/jurisdictions.jsonl'), 'utf8')
+      .bind(master.jurisdiction_code, master.name, master.ocd_id)
+      .run()
+  }
+  const cofog = cofogMasterSchema
+    .array()
+    .parse(await jsonLines(join(directory, 'api/cofog_codes.jsonl')))
+  await appendRows(db, 'cofog_codes', cofog)
+  const versions = []
+  for (const version of verification.versions.filter((v) =>
+    wanted.has(v.jurisdictionCode)
+  )) {
+    const files = manifest.files.filter((file) =>
+      file.path.startsWith(`fiscal/${version.jurisdictionCode}/`)
     )
-      .split('\n')
-      .filter(Boolean)
-      .map((line) => jurisdictionMasterSchema.parse(JSON.parse(line)))
-    if (
-      new Set(masters.map((row) => row.jurisdiction_code)).size !==
-      masters.length
-    )
-      throw new Error('Duplicate jurisdiction master identity')
-    for (let offset = 0; offset < masters.length; offset += 500) {
-      const batch = masters.slice(offset, offset + 500)
-      await guardedBatch(db, lease, [
-        db
-          .prepare(
-            `INSERT INTO jurisdictions(jurisdiction_code,name,ocd_id)
-         SELECT json_extract(value,'$.jurisdiction_code'),json_extract(value,'$.name'),json_extract(value,'$.ocd_id') FROM json_each(?) WHERE true
-         ON CONFLICT(jurisdiction_code) DO UPDATE SET name=excluded.name,ocd_id=excluded.ocd_id`
-          )
-          .bind(JSON.stringify(batch)),
-      ])
-      const actual = await db
-        .prepare(
-          'SELECT jurisdiction_code,name,ocd_id FROM jurisdictions WHERE jurisdiction_code IN (SELECT value FROM json_each(?)) ORDER BY jurisdiction_code'
+    for (const file of files) {
+      const current = await store.read(file.objectKey)
+      if (current) {
+        if (
+          current.byteLength !== file.bytes ||
+          sha256(current) !== file.sha256
         )
-        .bind(JSON.stringify(batch.map((row) => row.jurisdiction_code)))
-        .all<Record<string, unknown>>()
-      const expected = [...batch].sort((a, b) =>
-        a.jurisdiction_code.localeCompare(b.jurisdiction_code)
-      )
-      if (
-        actual.results
-          .map((row) => canonicalRow('jurisdictions', row))
-          .join('') !==
-        expected.map((row) => canonicalRow('jurisdictions', row)).join('')
-      )
-        throw new Error('Jurisdiction master differs after transfer')
-    }
-    const codes = (
-      await readFile(join(candidate, 'api/cofog_codes.jsonl'), 'utf8')
-    )
-      .split('\n')
-      .filter(Boolean)
-      .map((line) => cofogMasterSchema.parse(JSON.parse(line)))
-    if (new Set(codes.map((row) => row.code)).size !== codes.length)
-      throw new Error('Duplicate COFOG master identity')
-    for (let offset = 0; offset < codes.length; offset += 500) {
-      const batch = codes.slice(offset, offset + 500)
-      await guardedBatch(db, lease, [
-        db
-          .prepare(
-            `INSERT OR IGNORE INTO cofog_codes(code,label,level,parent_code)
-        SELECT json_extract(value,'$.code'),json_extract(value,'$.label'),json_extract(value,'$.level'),json_extract(value,'$.parent_code') FROM json_each(?)`
-          )
-          .bind(JSON.stringify(batch)),
-      ])
-      const actual = await db
-        .prepare(
-          'SELECT code,label,level,parent_code FROM cofog_codes WHERE code IN (SELECT value FROM json_each(?)) ORDER BY code'
-        )
-        .bind(JSON.stringify(batch.map((row) => row.code)))
-        .all<Record<string, unknown>>()
-      const expected = [...batch].sort((a, b) => a.code.localeCompare(b.code))
-      if (
-        actual.results
-          .map((row) => canonicalRow('cofog_codes', row))
-          .join('') !==
-        expected.map((row) => canonicalRow('cofog_codes', row)).join('')
-      )
-        throw new Error(
-          'COFOG master differs after transfer; existing definitions cannot be reinterpreted'
-        )
-    }
-    for (const file of manifest.files) {
-      if (!(await verify.existingFile(manifest.releaseId, file.path)))
+          throw new Error('Existing immutable object differs')
+      } else {
         await store.put(
           file.objectKey,
-          join(candidate, file.path),
+          join(directory, file.path),
           file.contentType
         )
-      await verify.file(manifest.releaseId, file.path)
-      await guardedBatch(db, lease, [])
+        const uploaded = await store.read(file.objectKey)
+        if (
+          !uploaded ||
+          uploaded.byteLength !== file.bytes ||
+          sha256(uploaded) !== file.sha256
+        )
+          throw new Error('Uploaded immutable object differs')
+      }
       progress({
-        stage: 'file-verified',
-        releaseId: manifest.releaseId,
+        stage: 'object',
+        jurisdictionCode: version.jurisdictionCode,
         path: file.path,
+        reused: !!current,
       })
     }
-    for (const table of TABLES) {
-      const columns = TABLE_COLUMNS[table]
-      const sql = `INSERT OR IGNORE INTO "${table}"(release_id,${columns.map((c) => `"${c}"`).join(',')}) SELECT ?,${columns.map((c) => `json_extract(value,'$.${c}')`).join(',')} FROM json_each(?)`
-      let batch: Record<string, unknown>[] = []
-      for await (const line of createInterface({
-        input: createReadStream(join(candidate, 'api', `${table}.jsonl`)),
-        crlfDelay: Infinity,
-      })) {
-        if (!line) continue
-        batch.push(JSON.parse(line))
-        if (batch.length === 500) {
-          await guardedBatch(db, lease, [
-            db.prepare(sql).bind(manifest.releaseId, JSON.stringify(batch)),
-          ])
-          batch = []
-        }
-      }
-      if (batch.length)
-        await guardedBatch(db, lease, [
-          db.prepare(sql).bind(manifest.releaseId, JSON.stringify(batch)),
-        ])
-      let after: unknown[] | undefined,
-        offset = 0
-      while (true) {
-        const chunk = await verify.chunk(manifest.releaseId, table, after)
-        const expected = Math.min(500, manifest.tables[table].rows - offset)
-        if (
-          chunk.rows !== expected ||
-          (expected > 0 &&
-            chunk.sha256 !== manifest.tables[table].chunks[offset / 500])
-        )
-          throw new Error(`D1 contents differ: ${table} at row ${offset}`)
-        offset += chunk.rows
-        after = chunk.after
-        await guardedBatch(db, lease, [])
-        if (chunk.rows < 500) break
-      }
-      if (offset !== manifest.tables[table]!.rows)
-        throw new Error(`D1 row count differs: ${table}`)
-      progress({
-        stage: 'table-verified',
-        releaseId: manifest.releaseId,
-        table,
-        rows: offset,
-      })
+    const values = {
+      version_id: version.versionId,
+      jurisdiction_code: version.jurisdictionCode,
+      contract_version: 2,
+      package_id: version.packageId,
+      name_snapshot: version.name,
+      ocd_id_snapshot: version.ocdId,
+      caveats_json: JSON.stringify(version.caveats),
     }
-    for (const file of manifest.files)
-      await guardedBatch(db, lease, [
-        db
-          .prepare(
-            `INSERT INTO files(release_id,path,object_key,sha256,bytes,content_type) VALUES(?,?,?,?,?,?) ON CONFLICT(release_id,path) DO NOTHING`
+    const existing = await db
+      .prepare('SELECT * FROM fiscal_jurisdiction_versions WHERE version_id=?')
+      .bind(version.versionId)
+      .first<Record<string, unknown>>()
+    if (existing) {
+      for (const [key, value] of Object.entries(values))
+        if (existing[key] !== value)
+          throw new Error('Existing version metadata differs')
+    } else {
+      const row = {
+        ...values,
+        registered_at: options.registeredAt ?? new Date().toISOString(),
+        manifest_url: manifestUrl,
+        manifest_sha256: verification.manifestSha256,
+      }
+      await db
+        .prepare(
+          `INSERT INTO fiscal_jurisdiction_versions (${Object.keys(row).join(',')}) VALUES (${Object.keys(
+            row
           )
-          .bind(
-            manifest.releaseId,
-            file.path,
-            file.objectKey,
-            file.sha256,
-            file.bytes,
-            file.contentType
-          ),
-      ])
-    const contracts = await verify.publicContracts(manifest.releaseId)
-    const probes = []
-    for (const total of manifest.totals) {
-      const result = await verify.api(
-        manifest.releaseId,
-        total.datasetId,
-        total.phase
-      )
-      if (
-        result.total?.amount !== total.amount ||
-        result.total?.lineCount !== total.rows
-      )
-        throw new Error(
-          `API amounts or counts differ: ${total.datasetId}:${total.phase}`
+            .map(() => '?')
+            .join(',')})`
         )
-      probes.push({
-        datasetId: total.datasetId,
-        phase: total.phase,
-        rows: total.rows,
-        amount: total.amount,
-        milliseconds: result.milliseconds,
-      })
-      await guardedBatch(db, lease, [])
+        .bind(...Object.values(row))
+        .run()
     }
-    const performance = await verify.measure(manifest.releaseId)
-    await guardedBatch(db, lease, [])
-    const downloads = await verify.downloads(manifest.releaseId)
-    for (const file of manifest.files) {
-      await verify.download(manifest.releaseId, file.path)
-      await guardedBatch(db, lease, [])
-    }
-    const reportPath = join(candidate, 'publication-verification.json')
-    const report =
-      JSON.stringify(
-        {
-          schemaVersion: 1,
-          stage: 'pre-activation-verified',
-          verifiedAt: new Date().toISOString(),
-          releaseId: manifest.releaseId,
-          manifestSha256: manifest.manifestSha256,
-          verificationSha256: manifestHash,
-          manifestUrl,
-          inputFingerprint: manifest.inputFingerprint,
-          codeRevision: manifest.codeRevision,
-          previousReleaseId: lease.expectedReleaseId,
-          tables: manifest.tables,
-          contracts,
-          downloads,
-          probes,
-          performance,
-          localValidation: JSON.parse(
-            await readFile(join(candidate, 'validation.json'), 'utf8')
-          ),
-        },
-        null,
-        2
-      ) + '\n'
-    await writeFile(reportPath, report, { mode: 0o600 })
-    if (sha256(await readFile(reportPath)) !== sha256(report))
-      throw new Error('Local publication record differs')
-    await guardedBatch(db, lease, [])
-    await activate(db, lease, manifestUrl, manifestHash)
-    progress({ stage: 'active', releaseId: manifest.releaseId })
-    return {
-      releaseId: manifest.releaseId,
-      previousReleaseId: lease.expectedReleaseId,
-      probes,
-      performance,
-      reportPath,
-    }
-  } finally {
-    await release(db, lease)
-  }
-}
-export async function rollback(
-  db: D1Database,
-  verify: Verifier,
-  manifest: ReleaseManifest,
-  manifestHash: string,
-  manifestUrl: string
-) {
-  const lease = await acquire(db, crypto.randomUUID(), manifest.releaseId)
-  try {
-    const row = await db
-      .prepare(
-        'SELECT state,verification_sha256 FROM releases WHERE release_id=? AND contract_version=?'
-      )
-      .bind(manifest.releaseId, manifest.schemaVersion)
-      .first<{ state: string; verification_sha256: string }>()
-    if (row?.state !== 'published' || row.verification_sha256 !== manifestHash)
-      throw new Error('Rollback target must be a retained, published release')
-    for (const file of manifest.files) {
-      await verify.file(manifest.releaseId, file.path)
-      await guardedBatch(db, lease, [])
-    }
+    progress({
+      stage: 'registered',
+      jurisdictionCode: version.jurisdictionCode,
+      versionId: version.versionId,
+    })
+    const scoped = partitionRows(data, version.jurisdictionCode, partitions)
     for (const table of TABLES) {
-      let after: unknown[] | undefined,
-        offset = 0
-      while (true) {
-        const chunk = await verify.chunk(manifest.releaseId, table, after)
-        const expected = Math.min(500, manifest.tables[table].rows - offset)
-        if (
-          chunk.rows !== expected ||
-          (expected > 0 &&
-            chunk.sha256 !== manifest.tables[table].chunks[offset / 500])
-        )
-          throw new Error(`Rollback D1 contents differ: ${table}`)
-        offset += chunk.rows
-        after = chunk.after
-        await guardedBatch(db, lease, [])
-        if (chunk.rows < 500) break
+      await appendRows(db, table, scoped[table], version.versionId)
+      progress({
+        stage: 'table',
+        jurisdictionCode: version.jurisdictionCode,
+        versionId: version.versionId,
+        table,
+        rows: scoped[table].length,
+      })
+    }
+    for (const file of files) {
+      const row = {
+        version_id: version.versionId,
+        path: file.path,
+        jurisdiction_code: version.jurisdictionCode,
+        object_key: file.objectKey,
+        sha256: file.sha256,
+        bytes: file.bytes,
+        content_type: file.contentType,
       }
+      const old = await db
+        .prepare(
+          'SELECT * FROM fiscal_package_files WHERE version_id=? AND path=?'
+        )
+        .bind(version.versionId, file.path)
+        .first<Record<string, unknown>>()
+      if (old && canonicalJson(old) !== canonicalJson(row))
+        throw new Error('Existing file metadata differs')
+      if (!old)
+        await db
+          .prepare(
+            `INSERT INTO fiscal_package_files VALUES(${Object.keys(row)
+              .map(() => '?')
+              .join(',')})`
+          )
+          .bind(...Object.values(row))
+          .run()
     }
-    await verify.publicContracts(manifest.releaseId)
-    await verify.downloads(manifest.releaseId)
-    for (const file of manifest.files) {
-      await verify.download(manifest.releaseId, file.path)
-      await guardedBatch(db, lease, [])
-    }
-    for (const total of manifest.totals) {
-      const result = await verify.api(
-        manifest.releaseId,
-        total.datasetId,
-        total.phase
-      )
-      if (
-        result.total?.amount !== total.amount ||
-        result.total?.lineCount !== total.rows
-      )
-        throw new Error('Rollback API totals differ')
-      await guardedBatch(db, lease, [])
-    }
-    await activate(db, lease, manifestUrl, manifestHash)
-    return {
-      releaseId: manifest.releaseId,
-      previousReleaseId: lease.expectedReleaseId,
-    }
-  } finally {
-    await release(db, lease)
+    await verifyTables(db, version.versionId, scoped)
+    versions.push({
+      jurisdictionCode: version.jurisdictionCode,
+      versionId: version.versionId,
+    })
+    progress({
+      stage: 'verified',
+      jurisdictionCode: version.jurisdictionCode,
+      versionId: version.versionId,
+    })
   }
+  const result = { buildId: verification.buildId, versions, imported: true }
+  await writeFile(
+    join(directory, 'publish-result.json'),
+    JSON.stringify(result, null, 2) + '\n'
+  )
+  return result
 }

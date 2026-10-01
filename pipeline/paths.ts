@@ -31,7 +31,7 @@ export const INPUTS =
     : join(CACHE, 'acquisition', 'raw'))
 export const PACKAGES =
   process.env.FUDOKI_PACKAGE_DIR ??
-  join(BUILD, 'releases', LATEST?.releaseId ?? 'candidate', 'fiscal')
+  join(BUILD, 'builds', LATEST?.releaseId ?? 'candidate', 'fiscal')
 export const WAREHOUSE = join(BUILD, 'warehouse.duckdb')
 export const DBT_TARGET = join(BUILD, 'dbt')
 export const REPORT = join(BUILD, 'report')

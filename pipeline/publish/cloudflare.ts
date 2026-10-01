@@ -3,7 +3,11 @@ import { promisify } from 'node:util'
 import { mkdtemp, readFile, writeFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import type { D1Database, D1Statement } from '@fudoki/data-contracts'
+import {
+  distributionKeySchema,
+  type D1Database,
+  type D1Statement,
+} from '@fudoki/data-contracts'
 import type { ObjectStore } from './publish'
 
 const exec = promisify(execFile)
@@ -34,7 +38,7 @@ export function cloudflareD1(databaseId: string): D1Database {
         ))
       } catch {
         throw new Error(
-          'Cloudflare D1 batch failed; publication remains incomplete'
+          'Cloudflare D1 batch failed; imported rows remain visible'
         )
       }
       const result = JSON.parse(stdout) as Result[]
@@ -88,12 +92,25 @@ export function cloudflareD1(databaseId: string): D1Database {
   }
 }
 
-export function cloudflareObjects(bucket: string): ObjectStore {
+export function cloudflareObjects(
+  bucket: string,
+  publicBase: string
+): ObjectStore {
   if (!/^[a-z0-9-]{3,63}$/.test(bucket))
     throw new Error('Invalid R2 bucket name')
   return {
+    async read(key) {
+      const response = await fetch(
+        new URL(key, publicBase.endsWith('/') ? publicBase : publicBase + '/'),
+        { cache: 'no-store' }
+      )
+      if (response.status === 404) return null
+      if (!response.ok)
+        throw new Error(`Public R2 read failed: ${response.status}`)
+      return new Uint8Array(await response.arrayBuffer())
+    },
     async put(key, path, contentType) {
-      if (!/^fiscal\/\d{6}\/p-[a-f0-9]{64}\/[a-z_]+\.(?:csv|json)$/.test(key))
+      if (!distributionKeySchema.safeParse(key).success)
         throw new Error('Invalid release object key')
       await exec(
         'cf',
@@ -116,117 +133,39 @@ export function cloudflareObjects(bucket: string): ObjectStore {
   }
 }
 
+export function schemaStatements(sql: string): string[] {
+  const statements: string[] = []
+  let remaining = sql.trim()
+  while (remaining) {
+    const statement = remaining.startsWith('CREATE TRIGGER')
+      ? remaining.match(/^CREATE TRIGGER[\s\S]*?END;/)?.[0]
+      : remaining.match(/^[^;]+;/)?.[0]
+    if (!statement) throw new Error('Invalid schema statement')
+    statements.push(statement)
+    remaining = remaining.slice(statement.length).trim()
+  }
+  return statements
+}
+
 export async function initializeSchema(db: D1Database) {
-  const columns = await db
-    .prepare('PRAGMA table_info(releases)')
+  const old = await db
+    .prepare(
+      "SELECT name FROM sqlite_master WHERE type='table' AND name IN ('releases','active_release','fiscal_lines','amounts','publications','publish_control')"
+    )
     .all<{ name: string }>()
-  const names = new Set(columns.results.map((column) => column.name))
-  const jurisdictionColumns = await db
+  if (old.results.length)
+    throw new Error(
+      'Use a fresh D1 database for the new fiscal contract; legacy storage is not deleted automatically'
+    )
+  const columns = await db
     .prepare('PRAGMA table_info(jurisdictions)')
     .all<{ name: string }>()
-  const scopedMaster = jurisdictionColumns.results.some(
-    (column) => column.name === 'release_id'
-  )
-  const lineColumns = await db
-    .prepare('PRAGMA table_info(fiscal_lines)')
-    .all<{ name: string }>()
-  const legacyCofog = await db
-    .prepare(
-      "SELECT name FROM sqlite_master WHERE type='table' AND name='cofog'"
-    )
-    .first<{ name: string }>()
-  const separateClassification =
-    Boolean(legacyCofog) ||
-    (lineColumns.results.length > 0 &&
-      !lineColumns.results.some((column) => column.name === 'cofog_code'))
-  const classificationTables = [
-    'names',
-    'line_dimensions',
-    'line_hierarchy',
-    'amounts',
-    'cofog',
-    'fiscal_lines',
-  ]
-  if (names.has('manifest_key') || scopedMaster || separateClassification) {
-    const row = await db
-      .prepare('SELECT count(*) AS count FROM releases')
-      .first<{ count: number }>()
-    if (row?.count !== 0)
-      throw new Error(
-        'Existing release data requires explicit schema reconstruction before init'
-      )
-    if (separateClassification) {
-      for (const table of classificationTables) {
-        const present = await db
-          .prepare(
-            "SELECT name FROM sqlite_master WHERE type='table' AND name=?"
-          )
-          .bind(table)
-          .first<{ name: string }>()
-        if (!present) continue
-        const count = await db
-          .prepare(`SELECT count(*) AS count FROM "${table}"`)
-          .first<{ count: number }>()
-        if (count?.count !== 0)
-          throw new Error(
-            'Existing classification data requires explicit schema reconstruction before init'
-          )
-      }
-    }
-    if (scopedMaster) {
-      const masterRows = await db
-        .prepare('SELECT count(*) AS count FROM jurisdictions')
-        .first<{ count: number }>()
-      if (masterRows?.count !== 0)
-        throw new Error(
-          'Existing jurisdiction data requires explicit schema reconstruction before init'
-        )
-      const datasets = await db
-        .prepare(
-          "SELECT name FROM sqlite_master WHERE type='table' AND name='fiscal_datasets'"
-        )
-        .first<{ name: string }>()
-      if (datasets) {
-        const datasetRows = await db
-          .prepare('SELECT count(*) AS count FROM fiscal_datasets')
-          .first<{ count: number }>()
-        if (datasetRows?.count !== 0)
-          throw new Error(
-            'Existing dataset data requires explicit schema reconstruction before init'
-          )
-      }
-    }
-    if (names.has('manifest_key'))
-      await db.batch([
-        db.prepare(
-          'ALTER TABLE releases RENAME COLUMN manifest_key TO manifest_url'
-        ),
-        db.prepare(
-          'ALTER TABLE releases RENAME COLUMN manifest_sha256 TO verification_sha256'
-        ),
-      ])
-    if (separateClassification)
-      await db.batch(
-        classificationTables.map((table) =>
-          db.prepare(`DROP TABLE IF EXISTS "${table}"`)
-        )
-      )
-    if (scopedMaster) {
-      await db.batch([
-        db.prepare('DROP TABLE IF EXISTS fiscal_datasets'),
-        db.prepare('DROP TABLE jurisdictions'),
-      ])
-    }
-  }
+  if (columns.results.some((column) => column.name === 'release_id'))
+    throw new Error('Use a fresh D1 database for the new fiscal contract')
   const sql = await readFile(
     new URL('../../packages/data-contracts/schema.sql', import.meta.url),
     'utf8'
   )
-  await db.batch(
-    sql
-      .split(';')
-      .map((part) => part.trim())
-      .filter(Boolean)
-      .map((part) => db.prepare(part))
-  )
+  for (const statement of schemaStatements(sql))
+    await db.prepare(statement).run()
 }

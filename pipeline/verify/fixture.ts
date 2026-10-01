@@ -1,85 +1,66 @@
-import { mkdir, writeFile, readFile } from 'node:fs/promises'
+import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import {
   TABLES,
   TABLE_KEYS,
-  type ReleaseManifest,
+  type CandidateManifest,
 } from '@fudoki/data-contracts'
 import { finalizeCandidate } from '../fdp/manifest'
 import { sha256 } from '../release'
 
-/** Synthetic, redistributable fiscal data; it does not stand in for a full dbt run. */
+/** Synthetic municipal records exercise storage and delivery independently of real inputs. */
 export async function fixture(
   directory: string,
-  releaseId: string,
+  buildId: string,
   amount = 100,
   rows = 501,
-  jurisdictionName = '検証用の架空団体'
-): Promise<ReleaseManifest> {
-  const tables: Record<(typeof TABLES)[number], Record<string, unknown>[]> = {
-    release_jurisdictions: [
-      {
-        jurisdiction_code: '000001',
-        name_snapshot: jurisdictionName,
-        ocd_id_snapshot: 'ocd-division/country:jp/fixture:1',
-        caveats_json: '[]',
-      },
-    ],
-    fiscal_datasets: [
-      {
-        dataset_id: 'fixture-dataset',
-        jurisdiction_code: '000001',
-        fiscal_year: 2026,
-        direction: 'expenditure',
-        document_kind: 'settlement',
-        origin_sha256: 'c'.repeat(64),
-        phases_json: '["executed"]',
-        source_json: JSON.stringify({
-          documentLabel: '架空の決算',
-          landingPage: 'https://example.org/fixture',
-          licenseId: 'CC0-1.0',
-          attribution: 'Synthetic fixture',
-          rawForm: 'synthetic',
-        }),
-        structure_json: JSON.stringify({
-          hierarchy: ['moku'],
-          dimensions: [],
-          funds: [{ code: '01', label: '一般会計' }],
-        }),
-        line_count: rows,
-      },
-    ],
-    fiscal_lines: [],
-    amounts: [],
-    line_hierarchy: [],
-    line_dimensions: [],
-    names: [],
-  }
-  for (let i = 0; i < rows; i++) {
-    const id = 'fixture:' + String(i).padStart(6, '0')
-    tables.fiscal_lines.push({
+  jurisdictionName = '検証用の架空団体',
+  code = '000001'
+): Promise<CandidateManifest> {
+  const tables = Object.fromEntries(
+    TABLES.map((table) => [table, []])
+  ) as unknown as Record<(typeof TABLES)[number], Record<string, unknown>[]>
+  tables.fiscal_datasets.push({
+    dataset_id: `${code}:settlement`,
+    jurisdiction_code: code,
+    fiscal_year: 2026,
+    direction: 'expenditure',
+    document_kind: 'settlement',
+    origin_sha256: 'c'.repeat(64),
+    source_json: JSON.stringify({
+      documentLabel: '架空の決算',
+      landingPage: 'https://example.org/fixture',
+      licenseId: 'CC0-1.0',
+      attribution: 'Synthetic fixture',
+      rawForm: 'synthetic',
+    }),
+    structure_json: JSON.stringify({
+      hierarchy: ['moku'],
+      dimensions: [],
+      funds: [{ code: '01', label: '一般会計' }],
+    }),
+    line_count: rows,
+    amendment_number: null,
+    effective_at: null,
+    source_amount_kind: 'executed',
+    coverage_json: '{"budgetHistory":"unconfirmed"}',
+  })
+  for (let index = 0; index < rows; index++) {
+    const id = `${code}:${String(index).padStart(6, '0')}`
+    tables.fiscal_settlement_expenditure_lines.push({
       fiscal_line_id: id,
-      dataset_id: 'fixture-dataset',
-      source_row: i + 1,
+      dataset_id: `${code}:settlement`,
+      source_row: index + 1,
       fund_code: '01',
       fund_label: '一般会計',
+      amount,
+      consolidation: 'retained',
+      counterpart_fund: '',
       cofog_code: '09.1.1',
       cofog_status: 'assigned',
-      consolidation: 'retained',
-      cofog_decided_at_level: '目',
-      cofog_rule_id: 'fixture-rule',
       cofog_basis: '検証用の分類',
-      counterpart_fund: '',
     })
-    tables.amounts.push({
-      fiscal_line_id: id,
-      phase: 'executed',
-      value: amount,
-      source_amount: amount,
-      source_amount_unit: '円',
-      is_primary: 1,
-    })
-    tables.line_hierarchy.push({
+    tables.fiscal_settlement_expenditure_line_hierarchy.push({
       fiscal_line_id: id,
       ordinal: 0,
       level: 'moku',
@@ -87,7 +68,7 @@ export async function fixture(
       label: '教育',
       name_source: 'canonical',
     })
-    tables.names.push({
+    tables.fiscal_settlement_expenditure_line_names.push({
       fiscal_line_id: id,
       name_kind: 'hierarchy',
       level: 'moku',
@@ -97,46 +78,43 @@ export async function fixture(
     })
   }
   await mkdir(join(directory, 'api'), { recursive: true })
-  await writeFile(
-    join(directory, 'api/cofog_codes.jsonl'),
-    [
-      { code: '09', label: '教育', level: 'division', parent_code: null },
-      {
-        code: '09.1',
-        label: '就学前教育及び初等教育',
-        level: 'group',
-        parent_code: '09',
-      },
-      {
-        code: '09.1.1',
-        label: '検証用の小分類',
-        level: 'class',
-        parent_code: '09.1',
-      },
-    ]
-      .map((row) => JSON.stringify(row) + '\n')
-      .join('')
-  )
-  await writeFile(
-    join(directory, 'api/jurisdictions.jsonl'),
-    tables.release_jurisdictions
-      .map(
-        (row) =>
-          JSON.stringify({
-            jurisdiction_code: row.jurisdiction_code,
-            name: row.name_snapshot,
-            ocd_id: row.ocd_id_snapshot,
-          }) + '\n'
-      )
-      .join('')
-  )
-  await mkdir(join(directory, 'fiscal/000001'), { recursive: true })
-  const validation: {
-    tables: Record<string, { rows: number; sha256: string }>
-    scopeTotals: unknown[]
-  } = {
-    tables: {},
-    scopeTotals: [['fixture-dataset', 'executed', rows, rows * amount]],
+  const writeRows = (name: string, values: Record<string, unknown>[]) =>
+    writeFile(
+      join(directory, 'api', name + '.jsonl'),
+      values.map((row) => JSON.stringify(row) + '\n').join('')
+    )
+  await writeRows('cofog_codes', [
+    { code: '09', label: '教育', level: 'division', parent_code: null },
+    {
+      code: '09.1',
+      label: '就学前教育及び初等教育',
+      level: 'group',
+      parent_code: '09',
+    },
+    {
+      code: '09.1.1',
+      label: '検証用の小分類',
+      level: 'class',
+      parent_code: '09.1',
+    },
+  ])
+  await writeRows('jurisdictions', [
+    {
+      jurisdiction_code: code,
+      name: jurisdictionName,
+      ocd_id: `ocd-division/country:jp/fixture:${code}`,
+    },
+  ])
+  await writeRows('jurisdiction_metadata', [
+    {
+      jurisdiction_code: code,
+      name_snapshot: jurisdictionName,
+      ocd_id_snapshot: `ocd-division/country:jp/fixture:${code}`,
+      caveats_json: '[]',
+    },
+  ])
+  const validation = {
+    tables: {} as Record<string, { rows: number; sha256: string }>,
   }
   for (const table of TABLES) {
     const keys = TABLE_KEYS[table]
@@ -154,23 +132,26 @@ export async function fixture(
       sha256: sha256(body),
     }
   }
+  await mkdir(join(directory, 'fiscal', code), { recursive: true })
   await writeFile(
-    join(directory, 'fiscal/000001/expenditure.csv'),
-    'fiscal_line_id,value\n' +
-      tables.fiscal_lines
-        .map((row) => `${row.fiscal_line_id},${amount}\n`)
+    join(directory, 'fiscal', code, 'settlement_expenditure.csv'),
+    'fiscal_line_id,amount\n' +
+      tables.fiscal_settlement_expenditure_lines
+        .map((row) => `${row.fiscal_line_id},${row.amount}\n`)
         .join('')
   )
   await writeFile(
-    join(directory, 'fiscal/000001/datapackage.json'),
+    join(directory, 'fiscal', code, 'datapackage.json'),
     JSON.stringify({
-      resources: [{ name: 'expenditure', path: 'expenditure.csv' }],
+      resources: [
+        { name: 'settlement_expenditure', path: 'settlement_expenditure.csv' },
+      ],
     })
   )
   return finalizeCandidate(
     directory,
     {
-      releaseId,
+      releaseId: buildId,
       codeRevision: 'a'.repeat(40),
       codeFingerprint: 'b'.repeat(64),
       inputFingerprint: 'c'.repeat(64),

@@ -76,13 +76,13 @@ if (values['prepare-baseline']) {
     await writeFile(join(directory, 'manifest.json'), body)
     await writeFile(
       marker,
-      JSON.stringify({ directory, releaseId: manifest.buildId }) + '\n'
+      JSON.stringify({ directory, manifestSha256: sha256(body) }) + '\n'
     )
   }
   console.log(JSON.stringify({ prepared: true, marker }))
 } else {
   if (!LATEST) throw new Error('A verified candidate is required')
-  const directory = join(BUILD, 'releases', LATEST.releaseId)
+  const directory = join(BUILD, 'builds', LATEST.releaseId)
   await verifyCandidate(directory)
   let baseline = values.baseline
   if (!baseline) {

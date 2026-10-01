@@ -1,35 +1,24 @@
 import type { apiClient } from './api-client'
 import { cofogLabel } from '@fudoki/fiscal/detail'
-import { share } from '@fudoki/fiscal/cofog'
+import { share, type CofogTreeNode } from '@fudoki/fiscal/cofog'
+export type {
+  CofogTreeFilter as CofogNodeFilter,
+  CofogTreeNode,
+} from '@fudoki/fiscal/cofog'
 import { STATUS_JA } from './display'
 
 export type AggregateResponse = Awaited<
   ReturnType<typeof apiClient.aggregateFiscalDatasets>
 >
-export type CofogNodeFilter = {
-  division: string
-  group?: string
-  class?: string
-}
-export type CofogTreeNode = {
-  key: string
-  code: string
-  label: string
-  depth: 'division' | 'group' | 'class'
-  count: number
-  sum: number
-  share: number
-  filter: CofogNodeFilter | null
-  children?: CofogTreeNode[]
-}
 export function buildCofogTree(
   division: AggregateResponse,
   group: AggregateResponse,
   classification: AggregateResponse
 ): CofogTreeNode[] {
   if (
-    division.releaseId !== group.releaseId ||
-    division.releaseId !== classification.releaseId ||
+    JSON.stringify(division.versions) !== JSON.stringify(group.versions) ||
+    JSON.stringify(division.versions) !==
+      JSON.stringify(classification.versions) ||
     !division.total
   )
     throw new Error('COFOG responses differ in release or scope')

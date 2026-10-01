@@ -1,4 +1,4 @@
-{{ config(materialized = 'external', location = env_var('FUDOKI_PACKAGE_DIR') ~ '/131016/account_names.csv', format = 'csv') }}
+{{ config(materialized = 'external', location = env_var('FUDOKI_INTERNAL_PACKAGE_DIR') ~ '/131016/account_names.csv', format = 'csv') }}
 -- 科目（款・項・目）の名称と、法定マスタへの対応。**fudoki の判断を含む。**
 --
 -- 名称の出所は name_source が言う（source-csv = 原典 CSV の文字列そのまま /

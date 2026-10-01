@@ -1,4 +1,4 @@
-{{ config(materialized = 'external', location = env_var('FUDOKI_PACKAGE_DIR') ~ '/132195/interfund_transfers.csv', format = 'csv') }}
+{{ config(materialized = 'external', location = env_var('FUDOKI_INTERNAL_PACKAGE_DIR') ~ '/132195/interfund_transfers.csv', format = 'csv') }}
 -- 会計間移転の宣言。**fudoki の判断そのもの。**
 -- ここに宣言した行が cofog.csv で cofog_consolidation=eliminated になっている。
 -- 行・項・款のどの粒度でも宣言できる（`*` のキーはワイルドカード）。
