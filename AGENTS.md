@@ -52,7 +52,13 @@ _Avoid_: 成果物、出力
 _Avoid_: ログ
 
 **財政明細（fiscal line）**:
-一つの財政資料に載る歳出または歳入の明細。別年度・別文書の明細とは区別する。
+歳出明細と歳入明細の総称。両者を同じ種類の明細とは扱わない。
+
+**歳出明細（fiscal expenditure line）**:
+一つの財政資料に載る、支出の目的・科目・金額を表す明細。別年度・別文書の明細とは区別する。
+
+**歳入明細（fiscal revenue line）**:
+一つの財政資料に載る、収入の種類・科目・金額を表す明細。歳出明細とは別の概念であり、COFOG の分類対象ではない。
 
 **財政明細の階層経路（fiscal line hierarchy）**:
 一明細が属する会計・款・項・目・事業等を、団体の科目体系の順序で並べたもの。
@@ -126,4 +132,4 @@ uv add --exclude-newer $(date -v-7d +%Y-%m-%d) <package>
 - データ源の実測 → `docs/budget-availability.md` / `docs/kkj-api-notes.md` / `docs/fdp-spec-notes.md` / `docs/tokyo-survey.md`
 - 設計の記録 → `docs/prd/<topic>/`（PRD）・`docs/design-doc-<topic>.md`（単体の設計書）・`docs/adr/`（決定）。判断の記録はコードと同じ寿命を持ち、git 管理する
 
-全体設計 → `docs/design-doc-monorepo.md`。自治体別のデータ版・公開切替・保持条件の再設計 → `docs/design-doc-jurisdiction-versions.md`（実装未完了）。現行の実行手順 → `pipeline/README.md`。移行の検証記録と未完了項目 → `docs/monorepo-migration.md`。
+歳出・歳入のドメインモデルとクラス図 → `docs/fiscal-domain-model.md`。全体設計 → `docs/design-doc-monorepo.md`。自治体別のデータ版・公開切替・保持条件の再設計 → `docs/design-doc-jurisdiction-versions.md`（実装未完了）。現行の実行手順 → `pipeline/README.md`。移行の検証記録と未完了項目 → `docs/monorepo-migration.md`。
