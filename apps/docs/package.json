@@ -6,7 +6,7 @@
   "scripts": {
     "generate": "bun run --cwd ../api spec ../docs/openapi.json",
     "dev": "bun run generate && blume dev",
-    "build": "bun run generate && blume build",
+    "build": "bun run generate && blume build && mise exec -- cf deploy --dry-run",
     "deploy": "bun run build && mise exec -- cf deploy",
     "typecheck": "tsc --noEmit"
   },

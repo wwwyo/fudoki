@@ -62,7 +62,7 @@
     "test": "bun test packages pipeline/publish pipeline/verify/report apps/api/src apps/download/src apps/web/src pipeline/verify/view/src",
     "test:api": "bun run --cwd apps/api test",
     "typecheck": "tsc --noEmit",
-    "typecheck:all": "bun run typecheck && bun run --cwd apps/api typecheck && bun run --cwd apps/download typecheck && bun run --cwd apps/web typecheck && bun run --cwd pipeline/verify/view typecheck",
+    "typecheck:all": "bun run typecheck && bun run --cwd apps/api typecheck && bun run --cwd apps/download typecheck && bun run --cwd apps/web typecheck && bun run --cwd pipeline/verify/view typecheck && bun run --cwd apps/docs typecheck",
     "validate": "bun run pipeline/ingestion/transcripts/validate.ts",
     "report": "bun run pipeline:report",
     "dev:setup:download": "bun run pipeline/verify/setup-download.ts"
