@@ -51,13 +51,21 @@ Bun の100テスト・全 workspace の型検査・Python の比較検査3件が
 
 非公開検証 Worker と呼出側 Worker を `cf dev` で別々に起動し、実際の service binding / RPC session から候補照合と D1 の1行 chunk を取得した。コード revision を改変した検査情報は拒否された。これは Cloudflare のローカル実行であり、遠隔 binding・全量 D1 の性能は未検証である。
 
+## 団体マスタの分離
+
+[ADR 0015](adr/0015-jurisdiction-master.md) により、`jurisdictions` は団体コードだけを主キーとする共通マスタへ変更した。公開版の注意点と名称・OCD ID の記録は `release_jurisdictions` に移し、dataset からの複合外部キーを追加した。候補の途中失敗・再試行・切り戻しで API の説明が公開版に対応することを検査した。空の旧 schema の初期化では団体表と dataset の外部キーを再作成し、既存データがある場合は拒否する。
+
+Bun の103テスト、全 workspace の型検査、API と非公開検証 Worker のビルドが通過した。全量 dbt build の157項目が成功し、5団体・28 dataset・46 dataset/phase の API と dbt の集計が一致した。共通マスタ62行と公開版別8表732,065行を分けて検査し、SQLite は423,690,240 bytesとなった。これはローカルの候補であり、遠隔 D1 の適用・性能確認ではない。
+
+COFOG マスタと明細の外部キーへの統合案、補正予算の再計算条件は設計書に整理した。COFOG の現行表は変更しておらず、補正予算の取得・文書間の明細対応・再計算も未実装である。
+
 ## 未完了の移行条件
 
 - [ADR 0011](adr/0011-public-r2-distribution.md) の直接配信への変更。現行の download Worker を置き換え、既存の `download.fudoki.dev` を配布ファイルだけの公開 R2 に接続する。CSV/JSON のキャッシュと `/fiscal/` のレート制限を設定・検証する。候補記録・内部検証結果は R2 へ保存しない。`fudoki.dev` は現在のアカウントで active / Free Website と確認したが、R2 の接続とルールは未反映。
 - R2 の有効化。CLI は現在「Please enable R2 through the Cloudflare Dashboard」（HTTP403 / 10042）を返す。cf の account subscription 作成・更新 API は存在するが、R2 の契約 ID と有効化の可否は未確認であり、Dashboard 専用とは断定しない。
 - Workers Paid の確認。全量を Free の日次書込上限内で一度に取り込むことはできず、公開中と候補の同時保持も Free の単一 DB 容量に収まらない。旧版を最低3版残す要件は廃止した。`cf accounts subscriptions get` で取得した契約一覧は Teams Free のみであり、Workers Paid は未確認。公式の [契約 ID 一覧](https://developers.cloudflare.com/tenant/reference/subscriptions/) と `cf billing rate-plans get WORKERS_PAID` から契約 ID・基本月額 $5 を確認し、`cf accounts subscriptions create --rate-plan-id WORKERS_PAID --frequency monthly --dry-run` で作成リクエストを確認した。dry-run は実際の契約可否を検査せず、契約の作成も行っていない。
 - 原典・取り込みの全量 R2 転送、GET での内容ハッシュ照合、Git の証跡と空のキャッシュからの復元・再構築。現在の入力一覧は `.cache/migration/sources.lock.json` にあり、遠隔保管を検証するまでは正規の Git 入力一覧として固定していない。
-- 初期の空の遠隔 D1 に新しい `manifest_url`・`verification_sha256` の schema を適用する。init は旧 metadata が空の場合だけ列を変更し、既存の公開データは自動で読み替えない。
+- 初期の空の遠隔 D1 に新しい `manifest_url`・`verification_sha256` と団体マスタ・公開版の団体情報の分離を適用する。init は旧データが空の場合だけ列と外部キーを再作成し、既存の公開データは自動で読み替えない。
 - R2 直接配信 / API / 非公開検証 Worker が同じ配布契約を持つ候補環境での全量 publish、D1 の読取行数・問い合わせ時間・複数版の保持容量の測定。
 - 上記を確認してから既存 `data/` の tracking を外す。既存 Git 履歴を書き換えない。
 
