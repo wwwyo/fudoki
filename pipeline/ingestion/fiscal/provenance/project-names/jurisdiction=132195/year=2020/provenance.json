@@ -1,0 +1,57 @@
+{
+  "jurisdiction_code": "132195",
+  "fiscal_year": 2020,
+  "document_title": "令和2年度　歳出事項別明細",
+  "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,130247,c,html/130247/R2-saishutsu-jikoubetsu-meisai.pdf",
+  "status": 200,
+  "bytes": 1912742,
+  "sha256": "4d5d3764576e4d04c3450d248a9a59cbe260f2edd31ca9b832cccf2ac76ea6e6",
+  "fetched_at": "2026-08-23T04:47:40+00:00",
+  "pages": [
+    1,
+    216
+  ],
+  "extractor": "ingestion/budget/extract_projects.py@3",
+  "verification": "hierarchy-totals + name-stability",
+  "verification_note": "PDF のバイト列は保存していない（再配布の判断が別のため）。無加工であることは検査できないので、階層の合計突合と、dbt 側の原典 CSV との結合率で縛る",
+  "roundtrip_verified": false,
+  "extracted": {
+    "projects": 528,
+    "projectsReconciled": 515,
+    "moku": 103,
+    "mokuHeadersFound": 103,
+    "mokuNotReconciled": 4,
+    "totalThousandYen": 38800970,
+    "notReconciled": [
+      {
+        "moku": "2-1-11",
+        "printedThousandYen": 8587945,
+        "extractedThousandYen": 8587554
+      },
+      {
+        "moku": "3-2-3",
+        "printedThousandYen": 229218,
+        "extractedThousandYen": 166599
+      },
+      {
+        "moku": "8-2-1",
+        "printedThousandYen": 7713,
+        "extractedThousandYen": 4457
+      },
+      {
+        "moku": "10-5-2",
+        "printedThousandYen": 47373,
+        "extractedThousandYen": 15243
+      }
+    ],
+    "nameStable": true,
+    "kan_name": 528,
+    "kou_name": 528,
+    "moku_name": 528,
+    "unstableNames": []
+  },
+  "raw_form": "extracted",
+  "redistribute": "review",
+  "redistribute_basis": "市サイトの著作権表示（https://www.city.komae.tokyo.jp/index.cfm/4,19790,10,html）。事実に著作権が及ぶかは解釈が割れるので照会中",
+  "license_id": "NOASSERTION"
+}

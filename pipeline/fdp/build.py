@@ -277,7 +277,7 @@ CANONICAL_SOURCES_NOTE = (
 )
 PROVENANCE_NOTE = (
     "取得の証跡（取得 URL・HTTP status・SHA-256・取得時刻・ヘッダ・行数）は、"
-    "非公開 R2 の固定入力にある。採用した版と個別ハッシュは `pipeline/ingestion/fiscal/sources.lock.json` が記録する。"
+    "Git 管理する `pipeline/ingestion/fiscal/provenance/` にある。採用した版・証跡の相対パス・個別ハッシュは `pipeline/ingestion/fiscal/sources.lock.json` が記録する。"
 
 )
 

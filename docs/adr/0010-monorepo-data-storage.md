@@ -3,6 +3,9 @@
 - 日付: 2026-10-01
 - 状態: Accepted（遠隔移行は継続中）
 
+配布経路の決定は [ADR 0011](0011-public-r2-distribution.md) で更新した。以下の download Worker に関する記述は更新前の決定を残している。
+証跡の保管先は [ADR 0012](0012-git-input-provenance.md) で Git に更新した。
+
 構築処理が ingestion・dbt・FDP・report と公開 web に分散し、Git 管理する生成データが増えていた。API は多数の JSON アセットを選び、Worker 内で走査・ページングしていた。
 
 構築・公開・ローカル検証は `pipeline/` に集める。文書領域を fiscal とし、予算・決算・補正の文書種別と金額段階を区別する。純粋な型・名称・団体マスタ・保存形式は `packages/`、公開 web/API/download は `apps/`、slides は root に置く。web と view の UI は共有しない。

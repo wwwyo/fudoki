@@ -560,8 +560,8 @@ export function PipelineOverview({
               目的から repo を読む
             </h2>
             <p className="text-sm leading-relaxed text-muted-foreground">
-              コード・取得元・固定入力の一覧・分類の判断はリポジトリで管理します。
-              原典・取り込み済みの表・証跡・配布物は R2、公開 API の参照表は D1
+              コード・取得元・固定入力の一覧・採用した入力の証跡・分類の判断はリポジトリで管理します。
+              原典・取り込み済みの表・配布物は R2、公開 API の参照表は D1
               に保存します。DuckDB は build の作業用で、報告と閲覧用の PDF
               レイヤは ローカルで生成します。以下のリンクは GitHub の main
               ブランチを開きます。

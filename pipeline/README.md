@@ -1,6 +1,6 @@
 # データ構築
 
-原典・取り込み済みの表・証跡は非公開 R2、宣言・判断・採用した入力一覧は Git が保持する。DuckDB と D1 は再生成できる表であり、入力の正本ではない。配布物は release を固定して R2 から提供する。
+原典・取り込み済みの表は非公開 R2、宣言・判断・採用した入力一覧と証跡は Git が保持する。DuckDB と D1 は再生成できる表であり、入力の正本ではない。配布物は release を固定して R2 から提供する。
 
 ## 固定入力からの build
 
@@ -13,7 +13,7 @@ bun run pipeline:build
 bun run dev
 ```
 
-`pipeline:inputs` は `ingestion/fiscal/sources.lock.json` の個別キー・SHA-256・サイズを検査し、`.cache/inputs/<入力一覧のハッシュ>/raw/` に表と証跡を復元する。原典は `.cache/objects/inputs/origin/sha256/<hash>` に保存する。入力欠落・異なるハッシュ・文書版と証跡の不一致は失敗とする。build は自治体サイトにも Cloudflare にも接続しない。
+`pipeline:inputs` は schema 2 の `ingestion/fiscal/sources.lock.json` が指定する個別キー・SHA-256・サイズを検査し、`.cache/inputs/<入力一覧のハッシュ>/raw/` に表と証跡を復元する。表は R2、証跡は lock と同じディレクトリの `provenance/<論理入力パス>/provenance.json` から読む。原典は `.cache/objects/inputs/origin/sha256/<hash>` に保存する。入力欠落・異なるハッシュ・文書版と証跡の不一致は失敗とする。Git の証跡が無い場合に R2 で補わない。build は自治体サイトにも Cloudflare にも接続しない。
 
 `build.ts` は dbt build、FDP descriptor、catalog、manifest の生成・検査を順に実行する。配布 CSV と D1 取込表の数値・識別子・分類は dbt の marts が確定する。完成した候補は `build/releases/r-<hash>/`。manifest とファイルを照合する `complete.json` がある候補だけを publish できる。完成済み候補は書き換えない。
 
@@ -23,9 +23,11 @@ bun run dev
 
 ## 新しい原典の取得
 
-`bun run pipeline` は原典の再取得 → 非公開 R2 への保管 → 抽出 → 表と証跡の保管・GET によるハッシュ照合 → 入力一覧の固定 → build → 報告を実行する。公開版は変更しない。
+`bun run pipeline` は原典の再取得 → 非公開 R2 への保管 → 抽出 → 表の保管・GET によるハッシュ照合 → Git の証跡と入力一覧の更新 → build → 報告を実行する。公開版は変更しない。
 
-再取得は HTTP キャッシュを使わず、実際のバイト列を比較する。原典が同じなら同じ内容アドレスを使い、異なれば別の原典版として保存する。原典を保存できなければ抽出を開始しない。原典・表・証跡は別オブジェクトであり、異なる内容で既存のハッシュキーを上書きしない。抽出の失敗で `sources.lock.json` を更新しない。
+再取得は HTTP キャッシュを使わず、実際のバイト列を比較する。原典が同じなら同じ内容アドレスを使い、異なれば別の原典版として保存する。原典を保存できなければ抽出を開始しない。原典・表は別オブジェクトであり、異なる内容で既存のハッシュキーを上書きしない。抽出や遠隔照合の失敗で Git の採用証跡・`sources.lock.json` を更新しない。作業ツリーの証跡は採用した入力だけとし、過去の採用版は Git 履歴で辿る。全取得履歴を残す場合は別途 R2 に保存する。
+
+既存の証跡は取得時点の記録であり、旧パスや当時の保存方針の記述も保持する。現在の保存方式は [ADR 0012](../docs/adr/0012-git-input-provenance.md) を参照する。移行用の lock と証跡は `.cache/migration/` に用意し、原典・表の遠隔保管を照合してから正規 lock を固定する。
 
 文書種別は budget / supplementary / settlement、金額段階は approved / adjusted / adjusted-before-transfer / executed。決算書にある予算現額と決算額を区別する。dataset は団体・年度・歳入歳出・文書種別・原典版を含み、明細 ID は dataset を含めて一意にする。
 

@@ -17,15 +17,16 @@ class FixedInputs(unittest.TestCase):
             item.start()
         origin = inputs.save_object('origin', b'unchanged synthetic original\n')
         provenance = {'jurisdiction_code': '000001', 'fiscal_year': 2026, 'sha256': origin['sha256']}
+        self.lock = self.root / 'sources.lock.json'
         self.entry = {'jurisdiction': '000001', 'fiscalYear': 2026, 'documentKind': 'settlement', 'direction': 'expenditure', 'originEdition': origin['sha256'],
                       'path': f'jurisdiction=000001/year=2026/document_kind=settlement/edition={origin["sha256"]}/direction=expenditure',
                       'origin': {'availability': 'stored', 'sha256': origin['sha256'], 'object': origin},
-                      'table': inputs.save_object('table', b'synthetic table bytes\n'), 'provenance': inputs.save_object('provenance', inputs.encode(provenance))}
-        self.lock = self.root / 'sources.lock.json'
+                      'table': inputs.save_object('table', b'synthetic table bytes\n')}
+        self.entry['provenance'] = inputs.save_provenance(self.lock, self.entry['path'], inputs.encode(provenance))
         self.write_lock(self.entry)
 
     def write_lock(self, entry):
-        self.lock.write_bytes(inputs.encode({'schemaVersion': 1, 'entries': [entry]}))
+        self.lock.write_bytes(inputs.encode({'schemaVersion': 2, 'entries': [entry]}))
 
     def tearDown(self):
         for item in reversed(self.patches):
@@ -36,6 +37,43 @@ class FixedInputs(unittest.TestCase):
         with patch.object(inputs, 'remote_object', side_effect=AssertionError('network requested')):
             target = inputs.restore(self.lock)
         self.assertEqual((target / self.entry['path'] / 'data.parquet').read_bytes(), b'synthetic table bytes\n')
+        self.assertEqual((target / self.entry['path'] / 'provenance.json').read_bytes(), (self.lock.parent / self.entry['provenance']['path']).read_bytes())
+
+    def test_changed_git_provenance_is_rejected_before_any_remote_request(self):
+        (self.lock.parent / self.entry['provenance']['path']).write_bytes(b'{}\n')
+        with patch.object(inputs, 'remote_object', side_effect=AssertionError('network requested')):
+            with self.assertRaisesRegex(ValueError, 'hash or size'):
+                inputs.restore(self.lock, remote=True)
+
+    def test_missing_git_provenance_does_not_fall_back_to_r2(self):
+        (self.lock.parent / self.entry['provenance']['path']).unlink()
+        with patch.object(inputs, 'remote_object', side_effect=AssertionError('network requested')):
+            with self.assertRaises(FileNotFoundError):
+                inputs.restore(self.lock, remote=True)
+
+    def test_pinning_uploads_only_originals_and_tables_and_keeps_provenance_in_git(self):
+        raw = inputs.restore(self.lock)
+        canonical = self.root / 'ingestion/fiscal/sources.lock.json'
+        obsolete = canonical.parent / 'provenance/obsolete/provenance.json'
+        obsolete.parent.mkdir(parents=True)
+        obsolete.write_text('{}')
+        with patch.object(inputs, 'LOCK', canonical), patch.object(inputs, 'remote_object') as remote, patch('ingestion.fiscal.sources.all_sources', return_value={}):
+            result = inputs.migrate(raw, remote=True)
+        self.assertEqual(result, canonical)
+        self.assertFalse(obsolete.exists())
+        self.assertCountEqual([(args[0]['key'], args[1]) for args, _ in remote.call_args_list],
+                              [(ref['key'], operation) for ref in [self.entry['table'], self.entry['origin']['object']] for operation in ['put', 'get']])
+        restored = inputs.restore(canonical)
+        self.assertEqual((restored / self.entry['path'] / 'provenance.json').read_bytes(), (canonical.parent / self.entry['provenance']['path']).read_bytes())
+
+    def test_failed_remote_transfer_does_not_replace_git_snapshot(self):
+        raw = inputs.restore(self.lock)
+        before = self.lock.read_bytes()
+        with patch.object(inputs, 'LOCK', self.lock), patch.object(inputs, 'remote_object', side_effect=RuntimeError('transfer failed')), patch('ingestion.fiscal.sources.all_sources', return_value={}):
+            with self.assertRaisesRegex(RuntimeError, 'transfer failed'):
+                inputs.migrate(raw, remote=True)
+        self.assertEqual(self.lock.read_bytes(), before)
+        inputs.restore(self.lock)
 
     def test_modified_cached_table_is_rejected(self):
         (inputs.OBJECTS / self.entry['table']['key']).write_bytes(b'modified table\n')
@@ -65,7 +103,7 @@ class FixedInputs(unittest.TestCase):
 
     def test_valid_provenance_hash_cannot_refer_to_another_scope(self):
         entry = copy.deepcopy(self.entry)
-        entry['provenance'] = inputs.save_object('provenance', inputs.encode({'jurisdiction_code': '000002', 'fiscal_year': 2026, 'sha256': entry['originEdition']}))
+        entry['provenance'] = inputs.save_provenance(self.lock, entry['path'], inputs.encode({'jurisdiction_code': '000002', 'fiscal_year': 2026, 'sha256': entry['originEdition']}))
         self.write_lock(entry)
         with self.assertRaisesRegex(ValueError, 'scope or edition'):
             inputs.restore(self.lock)

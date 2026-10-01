@@ -21,7 +21,7 @@
 | `fetch:account-master` | `pipeline/dbt/seeds/fiscal/account_master.csv` | Git（宣言・判断のみ） |
 | `survey:fiscal-years` | `pipeline/ingestion/fiscal/observations/mitaka-budget-years.json` | しない（ローカル観測） |
 | `survey:structure` | `pipeline/ingestion/fiscal/observations/<団体コード>-budget-structure.json` | しない（ローカル観測） |
-| `extract:statements` | `pipeline/.cache/acquisition/<run>/raw/jurisdiction=*/`（事項別明細書 PDF から起こした表と証跡） | 非公開 R2 |
+| `extract:statements` | `pipeline/.cache/acquisition/<run>/raw/jurisdiction=*/`（事項別明細書 PDF から起こした表と証跡） | pipeline が表を R2、採用証跡を ingestion 配下の Git ファイルへ固定 |
 | `eval:extraction` | `pipeline/ingestion/fiscal/observations/<団体コード>-extraction-recall.json` | しない（ローカル観測） |
 | `validate` | （検査。`pipeline/ingestion/transcripts/gates.json` を宣言と、`packages/jurisdictions/jurisdictions.json` とコード集合で突き合わせる） | — |
 

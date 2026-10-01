@@ -33,5 +33,5 @@ pipeline/dbt/target/
 pipeline/ingestion/**/observations/
 
 # Existing tracked data is retained until remote transfer and restore are verified.
-# New originals, tables, provenance and release outputs belong in R2/D1.
+# New originals, tables and release outputs belong in R2/D1; selected provenance stays in ingestion.
 /data/

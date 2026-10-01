@@ -35,6 +35,8 @@ def safe_relative(value: str) -> str:
 
 
 def save_object(kind: str, body: bytes) -> dict:
+    if kind not in ['origin', 'table']:
+        raise ValueError('Only original documents and tables belong in R2 input storage')
     sha = digest(body)
     key = f'inputs/{kind}/sha256/{sha}'
     out = OBJECTS / key
@@ -47,7 +49,28 @@ def save_object(kind: str, body: bytes) -> dict:
 
 def verify_object(ref: dict, body: bytes) -> None:
     if digest(body) != ref['sha256'] or len(body) != ref['bytes']:
-        raise ValueError(f'Input hash or size mismatch: {ref["key"]}')
+        raise ValueError(f'Input hash or size mismatch: {ref.get("key", ref.get("path"))}')
+
+
+def save_provenance(lock_path: Path, logical_path: str, body: bytes) -> dict:
+    path = f'provenance/{safe_relative(logical_path)}/provenance.json'
+    target = lock_path.parent / path
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(body)
+    return {'path': path, 'sha256': digest(body), 'bytes': len(body)}
+
+
+def provenance_bytes(lock_path: Path, entry: dict) -> bytes:
+    ref = entry['provenance']
+    path = safe_relative(ref['path'])
+    if path != f'provenance/{entry["path"]}/provenance.json' or 'key' in ref:
+        raise ValueError('Provenance must refer to its Git file, not an R2 object')
+    body = (lock_path.parent / path).read_bytes()
+    verify_object(ref, body)
+    provenance = json.loads(body)
+    if provenance['sha256'] != entry['originEdition'] or provenance['jurisdiction_code'] != entry['jurisdiction'] or provenance['fiscal_year'] != entry['fiscalYear']:
+        raise ValueError('Provenance differs from fixed input scope or edition')
+    return body
 
 
 def remote_object(ref: dict, operation: str) -> None:
@@ -79,7 +102,7 @@ def remote_object(ref: dict, operation: str) -> None:
 
 def read_lock(path: Path = LOCK) -> dict:
     lock = json.loads(path.read_text())
-    if lock['schemaVersion'] != 1 or not lock['entries']:
+    if lock['schemaVersion'] != 2 or not lock['entries']:
         raise ValueError('Unsupported or empty input snapshot')
     logical = [safe_relative(e['path']) for e in lock['entries']]
     if len(set(logical)) != len(logical):
@@ -100,11 +123,15 @@ def read_lock(path: Path = LOCK) -> dict:
             raise ValueError('Logical input path differs from its scope')
         if e['direction'] is not None and any(partitions.get(key) != value for key, value in [('document_kind', e['documentKind']), ('edition', e['originEdition']), ('direction', e['direction'])]):
             raise ValueError('Statement input path differs from its document or edition')
-        for kind, ref in [('table', e['table']), ('provenance', e['provenance']), ('origin', e['origin']['object'])]:
+        for kind, ref in [('table', e['table']), ('origin', e['origin']['object'])]:
             safe_relative(ref['key'])
             expected = f'inputs/{kind}/sha256/{ref["sha256"]}'
             if ref['key'] != expected or not re.fullmatch(r'[a-f0-9]{64}', ref['sha256']) or type(ref['bytes']) is not int or ref['bytes'] < 0:
                 raise ValueError('Input object key does not identify its hash and kind')
+        ref = e['provenance']
+        if not re.fullmatch(r'[a-f0-9]{64}', ref['sha256']) or type(ref['bytes']) is not int or ref['bytes'] < 0:
+            raise ValueError('Invalid provenance hash or size')
+        provenance_bytes(path, e)
     return lock
 
 
@@ -116,17 +143,16 @@ def restore(path: Path = LOCK, *, remote: bool = False) -> Path:
     for entry in lock['entries']:
         directory = out / safe_relative(entry['path'])
         for name, ref in [('data.parquet', entry['table']), ('provenance.json', entry['provenance'])]:
-            cached = OBJECTS / ref['key']
-            if not cached.exists():
-                if not remote:
-                    raise FileNotFoundError(f'Input not cached: {ref["key"]}; run pipeline:inputs restore --remote')
-                remote_object(ref, 'get')
-            body = cached.read_bytes()
-            verify_object(ref, body)
             if name == 'provenance.json':
-                provenance = json.loads(body)
-                if provenance['sha256'] != entry['originEdition'] or provenance['jurisdiction_code'] != entry['jurisdiction'] or provenance['fiscal_year'] != entry['fiscalYear']:
-                    raise ValueError('Provenance differs from fixed input scope or edition')
+                body = provenance_bytes(path, entry)
+            else:
+                cached = OBJECTS / ref['key']
+                if not cached.exists():
+                    if not remote:
+                        raise FileNotFoundError(f'Input not cached: {ref["key"]}; run pipeline:inputs restore --remote')
+                    remote_object(ref, 'get')
+                body = cached.read_bytes()
+                verify_object(ref, body)
             directory.mkdir(parents=True, exist_ok=True)
             (directory / name).write_bytes(body)
             expected_paths.add(directory / name)
@@ -154,7 +180,24 @@ def origin_path(sha: str) -> Path:
 
 
 def locked_objects(lock: dict) -> dict:
-    return {ref['key']: ref for entry in lock['entries'] for ref in [entry['table'], entry['provenance'], entry['origin']['object']]}
+    return {ref['key']: ref for entry in lock['entries'] for ref in [entry['table'], entry['origin']['object']]}
+
+
+def locked_provenance(lock_path: Path, lock: dict) -> dict[str, bytes]:
+    return {entry['provenance']['path']: provenance_bytes(lock_path, entry) for entry in lock['entries']}
+
+
+def pin_snapshot(draft: Path, target: Path) -> None:
+    lock = read_lock(draft)
+    for entry in lock['entries']:
+        save_provenance(target, entry['path'], provenance_bytes(draft, entry))
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(encode(lock))
+    selected = {entry['provenance']['path'] for entry in lock['entries']}
+    # 過去の採用版は Git 履歴で辿れるため、作業ツリーへ全取得履歴を蓄積しない。
+    for path in (target.parent / 'provenance').rglob('provenance.json'):
+        if str(path.relative_to(target.parent)) not in selected:
+            path.unlink()
 
 
 def backup(lock_path: Path, output: Path) -> None:
@@ -163,6 +206,8 @@ def backup(lock_path: Path, output: Path) -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(output, 'x', allowZip64=True) as archive:
         archive.writestr('sources.lock.json', lock_path.read_bytes())
+        for path, body in sorted(locked_provenance(lock_path, lock).items()):
+            archive.writestr(path, body)
         for key, ref in sorted(refs.items()):
             body = (OBJECTS / key).read_bytes()
             verify_object(ref, body)
@@ -172,11 +217,16 @@ def backup(lock_path: Path, output: Path) -> None:
 def restore_backup(lock_path: Path, archive_path: Path) -> Path:
     lock = read_lock(lock_path)
     refs = locked_objects(lock)
+    provenance = locked_provenance(lock_path, lock)
     with zipfile.ZipFile(archive_path) as archive:
         if archive.read('sources.lock.json') != lock_path.read_bytes():
             raise ValueError('Backup belongs to another fixed input snapshot')
-        if len(archive.namelist()) != len(refs) + 1 or set(archive.namelist()) != set(refs) | {'sources.lock.json'}:
+        expected = set(refs) | set(provenance) | {'sources.lock.json'}
+        if len(archive.namelist()) != len(expected) or set(archive.namelist()) != expected:
             raise ValueError('Backup objects differ from the fixed snapshot')
+        for path, body in provenance.items():
+            if archive.getinfo(path).file_size != len(body) or archive.read(path) != body:
+                raise ValueError('Backup provenance differs from its Git file')
         for key, ref in sorted(refs.items()):
             if archive.getinfo(key).file_size != ref['bytes']:
                 raise ValueError('Backup object size differs from fixed snapshot')
@@ -197,6 +247,7 @@ def migrate(raw: Path, *, fetch_origins: bool = False, remote: bool = False) -> 
     entries = []
     origins = {}
     missing = []
+    draft = CACHE / 'migration/sources.lock.json'
     for provenance in sorted(raw.rglob('provenance.json')):
         prov = json.loads(provenance.read_text())
         sha = prov['sha256']
@@ -225,21 +276,20 @@ def migrate(raw: Path, *, fetch_origins: bool = False, remote: bool = False) -> 
                         'documentKind': next((p.split('=', 1)[1] for p in Path(relative).parts if p.startswith('document_kind=')), None) or next(s.document_kind for s in declared.values() if s.jurisdiction_code == prov['jurisdiction_code'] and s.fiscal_year == prov['fiscal_year']), 'originEdition': sha,
                         'direction': next((p.split('=', 1)[1] for p in Path(relative).parts if p.startswith('direction=')), None),
                         'table': save_object('table', (provenance.parent / 'data.parquet').read_bytes()),
-                        'provenance': save_object('provenance', provenance.read_bytes()), 'origin': origins[sha]})
-    lock = {'schemaVersion': 1, 'entries': entries}
-    draft = CACHE / 'migration/sources.lock.json'
+                        'provenance': save_provenance(draft, relative, provenance.read_bytes()), 'origin': origins[sha]})
+    lock = {'schemaVersion': 2, 'entries': entries}
     draft.parent.mkdir(parents=True, exist_ok=True)
     draft.write_bytes(encode(lock))
     (CACHE / 'migration/missing-origins.json').write_bytes(encode(missing))
     if remote:
         if any(e['origin']['availability'] != 'stored' for e in entries):
             raise ValueError('Cannot pin remote inputs while original documents are missing')
-        refs = {r['key']: r for e in entries for r in [e['table'], e['provenance'], e['origin'].get('object')] if r}
+        refs = locked_objects(lock)
         for ref in refs.values():
             remote_object(ref, 'put')
             remote_object(ref, 'get')
             verify_object(ref, (OBJECTS / ref['key']).read_bytes())
-        LOCK.write_bytes(encode(lock))
+        pin_snapshot(draft, LOCK)
         draft = LOCK
     restore(draft)
     return draft
