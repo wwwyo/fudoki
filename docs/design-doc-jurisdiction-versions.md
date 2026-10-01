@@ -1,11 +1,11 @@
 # 自治体ごとにデータを更新し、横断検索の参照を固定する
 
-歳出・歳入の明細モデルを分ける方針は [ドメインモデルとクラス図](fiscal-domain-model.md) を正本とする。予算変更履歴の PRD を反映し、予算と実績を分け、決算明細は `amount` 一つを持つ。提供用の分類結果から規則 ID を外し、規則の追跡は Git と検証記録で扱う。以下に残る共有の明細・独立金額表・金額段階の記述は、これらを適用する前の設計である。版・公開の方針は維持し、DB/API/dbt の境界は新しいモデルに合わせて改訂する。
+歳出・歳入、予算・決算の保存モデルは [財政データの設計と ER 図](design-doc-fiscal-records.md) に従う。決算明細は実績の `amount` 一つを持ち、当初予算・変更履歴・決算との対応を別表に置く。分類規則と規則 ID は提供用 DB/API・配布物に含めない。
 
 ## Objectives
 
 - **Goal**: D1 の明細・金額・階層・名称を自治体別の内容版に持たせ、未変更の自治体を再取り込みせずに公開する。R2 の配布物も再利用し、横断検索・ページ取得・切り戻しでは自治体別の版の組合せを固定する。
-- **Not goal**: 年度ごとの細分化、団体別 DB への分割、R2 配布物の自動削除、決算の金額段階の変更。後者は [予算変更履歴の PRD](prd/fiscal-budget-history/prd.md) で扱う。
+- **Not goal**: 年度ごとの細分化、団体別 DB への分割、R2 配布物の自動削除。財政レコードの保存境界は [財政データの設計](design-doc-fiscal-records.md) に集約する。
 
 この文書は採用する再設計を示す。現行コードの `release_id` による全体複製はまだ置き換えていない。既存のローカル検証結果は旧構造の結果であり、この設計の実装完了や容量・性能の検証とは扱わない。
 
@@ -40,28 +40,39 @@ flowchart LR
 
 ## Detailed Design
 
-### 財政以外のデータと混同しない名前を付ける
+### 版・公開と財政明細の表を分ける
 
-この設計の版・公開一覧・明細・配布参照は財政データ専用であり、テーブル名には `fiscal_` を付ける。dbt のモデル名も `api_fiscal_line_amounts` のように生成先の表名へ揃える。処理層の接頭辞だけでは対象を説明できないため、`api_names` や `api_line_dimensions` のような名前は採用しない。以下は再設計後の名前であり、現行 SQL・dbt はまだ改名していない。
+版・公開の ER 図は以下とする。財政明細の ER 図と列・外部キーは [財政データの設計](design-doc-fiscal-records.md) を正本とする。
 
-- `fiscal_datasets` と `fiscal_lines`: 財政資料の収録単位と、その原典由来の明細。
-- `fiscal_line_amounts`: 財政明細ごとの金額段階・金額・原典の単位。
-- `fiscal_line_hierarchy`: 財政明細が属する、会計・款・項・目・事業等の階層経路。1行が一明細の経路の一段を表し、`ordinal` で順序を保持する。独立した科目マスタや COFOG の階層ではない。
-- `fiscal_line_dimensions`: 階層経路に加えて財政明細を識別する原典の区分。狛江市の `org`（所属）と `fiscal_class`（予算区分：現年度・繰越明許・事故繰越）が該当する。団体別に宣言した区分だけを持ち、任意の属性を入れる汎用表にはしない。
-- `fiscal_line_names`: 財政明細に関連する科目・事業・追加区分の検索用名称と、その名称の出典・判断根拠。
-- `fiscal_jurisdiction_versions` と `fiscal_package_files`: 一団体の財政データ版と、その版が参照する Fiscal Data Package の配布ファイル。
-- `fiscal_publications` と `fiscal_publication_members`: 財政 API が読む団体別の版の組合せと、その所属参照。
-- `fiscal_publish_control` と `fiscal_publish_guard`: 財政データの公開参照・排他実行・切替検査。
+```mermaid
+erDiagram
+    jurisdictions ||--o{ fiscal_jurisdiction_versions : identifies
+    fiscal_publications ||--o{ fiscal_publication_members : selects
+    fiscal_jurisdiction_versions ||--o{ fiscal_publication_members : selected_version
+    fiscal_publications o|--o| fiscal_publish_control : active_publication
+    fiscal_jurisdiction_versions ||--o{ fiscal_datasets : source_scope
+    fiscal_jurisdiction_versions ||--o{ fiscal_package_files : distribution
+```
 
-`jurisdictions` は団体そのものの共通マスタであり、財政以外からも参照できる。`cofog_codes` は COFOG 分類という対象が名前に含まれており、汎用の分類表に拡張しない。`database_identity` は DB 自体の検証用識別である。
+- `fiscal_datasets`: 財政資料の収録単位。団体・年度・歳入歳出・文書種別・採用原典版と出典・利用条件・範囲を持つ。提供用の金額段階は持たない。
+- `fiscal_settlement_expenditure_lines` / `fiscal_settlement_revenue_lines`: 決算の歳出／歳入明細。各行に実績の `amount` を直接持つ。科目経路・追加区分・検索用名称もそれぞれの専用子表に分ける。
+- `fiscal_expenditure_budget_items` / `fiscal_revenue_budget_items`: 団体・年度内の予算対象。対応を確かめた当初額・変更と決算を結ぶ対象であり、共通マスタではない。
+- `fiscal_initial_expenditure_budget_lines` / `fiscal_initial_revenue_budget_lines`: 当初予算の基準額。
+- `fiscal_expenditure_budget_changes` / `fiscal_revenue_budget_changes`: 各補正・その他変更の増減額と時点・出典。
+- `fiscal_expenditure_settlement_links` / `fiscal_revenue_settlement_links`: 予算対象と決算明細の対応。金額を複製せず、分割・統合や未確認を扱う。
+- `fiscal_jurisdiction_versions` / `fiscal_package_files`: 一団体の財政データ版と、R2 の配布参照。
+- `fiscal_publications` / `fiscal_publication_members`: API が読む団体別の版の組合せと所属参照。
+- `fiscal_publish_control` / `fiscal_publish_guard`: 公開参照・排他実行・切替検査。
 
-会議録等を追加するときは、その領域のモデル・配布参照・版の管理を別に定義する。財政の公開一覧へ会議録の版を入れたり、`fiscal_lines` に `domain` 列を追加して異なる種類の明細を詰めたりしない。領域間では団体コードを共有し、公開切替の仕組みの共通化は複数の実装で必要性が確認できてから判断する。名前が長くなる代わりに、D1 の表名や dbt の系統図だけでも対象と粒度を読めるようにする。
+共通団体マスタ `jurisdictions`、分類マスタ `cofog_codes`、DB の識別子 `database_identity` は版から独立させる。財政の表と dbt モデルには `fiscal_` を付け、例えば `api_fiscal_settlement_expenditure_lines` と生成先の表名へ揃える。現行 SQL・dbt の置き換えは未完了である。
+
+会議録等を追加するときはその領域のモデル・配布参照・版を別に定義し、財政明細へ `domain` 列を追加して混在させない。領域間では団体コードを共有する。
 
 ### 団体の内容が変わったときだけデータ版を作る
 
 `fiscal_jurisdiction_versions` は一団体の全収録年度・文書・会計をまとめた不変のデータ版である。`version_id`、団体コード、契約版、`package_id`、その版で採用した名称・OCD ID・注意点、取込状態を持つ。団体コードは `jurisdictions` を参照する。提供用の団体情報もこの版から読むため、共通マスタの更新で過去の説明を変えない。
 
-版の内容には、団体の説明、dataset の出典・利用条件・収録範囲、6つの提供用表、配布ファイル一覧を含める。`versionId` は団体コード・契約版と、これらを正規化した内容の SHA-256 から生成する。行順・JSON のキー順・NULL と空文字の扱い・文字列としてのコード・整数単位を契約で固定する。版 ID 自身、取込状態、構築実行の ID、コード commit、実行時刻はハッシュの対象にしない。
+版の内容には、団体の説明、dataset の出典・利用条件・収録範囲、財政データの提供用表、配布ファイル一覧を含める。`versionId` は団体コード・契約版と、これらを正規化した内容の SHA-256 から生成する。行順・JSON のキー順・NULL と空文字の扱い・文字列としてのコード・整数単位を契約で固定する。版 ID 自身、取込状態、構築実行の ID、コード commit、実行時刻はハッシュの対象にしない。
 
 API 用の内容だけが変われば `versionId` は変わり、配布ファイルが同じなら `packageId` は再利用する。逆に、配布 descriptor や利用条件の変更も利用者に見える内容なので版に含める。COFOG の共通マスタは既存コードの意味・名称を公開後に書き換えず、新しい分類体系が必要な場合は契約を移行する。
 
@@ -71,7 +82,7 @@ API 用の内容だけが変われば `versionId` は変わり、配布ファイ
 
 ### 明細を公開一覧に複製しない
 
-提供用の6表は `fiscal_datasets`、`fiscal_lines`、`fiscal_line_amounts`、`fiscal_line_hierarchy`、`fiscal_line_dimensions`、`fiscal_line_names` とする。各表の現行 `release_id` を `version_id` に置き換え、主キー・外部キーも自治体データ版に揃える。dataset は `(version_id, jurisdiction_code)` で自治体データ版を参照し、別団体の版に混入することを禁止する。明細 ID と dataset ID の財政上の意味は維持する。
+財政の提供用表はすべて自治体データ版の `version_id` に属する。dataset は `(version_id, jurisdiction_code)` で自治体データ版を参照し、別団体の版に混入することを禁止する。決算明細・当初予算・変更は `(version_id, dataset_id)` で同じ版の原典範囲を参照する。予算対象との対応や子表にも同じ版の複合外部キーを使い、別版・別団体・歳入歳出の混入を拒否する。dataset の種類と行の保存先は build で照合する。
 
 `fiscal_package_files` は `(version_id, path)` を主キーとする。その団体の R2 キー・SHA-256・サイズ・content type を持ち、ファイル本体は持たない。Git manifest から生成する検索用の参照であり、独立して編集しない。API 用の内容だけが変わる場合にファイル参照が数行重複することは許容し、同じ R2 オブジェクトを参照する。配布物専用の追加テーブルは作らない。
 
