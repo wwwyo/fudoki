@@ -59,6 +59,8 @@ Bun の103テスト、全 workspace の型検査、API と非公開検証 Worker
 
 COFOG マスタと明細の外部キーへの統合案、補正予算の再計算条件は設計書に整理した。COFOG の現行表は変更しておらず、補正予算の取得・文書間の明細対応・再計算も未実装である。
 
+`cf dev` のローカル D1 で団体情報62件の名称・OCD ID・注意点が Git manifest と一致し、28 dataset の取得が成功した。既存配布物との比較では全46範囲の明細・金額・分類に差分がなく、manifest 採用後も同じ構築版を再利用できた。
+
 ## 未完了の移行条件
 
 - [ADR 0011](adr/0011-public-r2-distribution.md) の直接配信への変更。現行の download Worker を置き換え、既存の `download.fudoki.dev` を配布ファイルだけの公開 R2 に接続する。CSV/JSON のキャッシュと `/fiscal/` のレート制限を設定・検証する。候補記録・内部検証結果は R2 へ保存しない。`fudoki.dev` は現在のアカウントで active / Free Website と確認したが、R2 の接続とルールは未反映。
