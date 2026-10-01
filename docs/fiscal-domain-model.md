@@ -1,6 +1,6 @@
 # 歳出と歳入を別の明細として理解する
 
-この図は、歳出・歳入を分ける方針を反映したドメインモデルである。クラスは財政上の概念や値を表すため、クラス数とテーブル数は一致させる必要がない。現行コードはまだ共有の `fiscal_lines` を使っており、この境界への移行は未実装である。
+この図は、歳出・歳入の分離と [予算変更履歴の PRD](prd/fiscal-budget-history/prd.md) を適用した提供モデルを示す。決算の明細は実績の `amount` 一つを持ち、予算とその変更履歴は別に管理する。現行 DB/API/dbt の移行は未実装であり、この図を現行の保存形式として読まない。
 
 具体的な値と参照の関係は [狛江市2023年度決算のオブジェクト図](fiscal-object-example.md) を参照。
 
@@ -18,65 +18,54 @@ classDiagram
         公開元
         CSVまたはPDF
     }
-    class ExpenditureDataset["歳出データセット"] {
+    class SettlementExpenditureDataset["決算歳出データセット"] {
         年度
-        文書種別
+        原典版
     }
-    class RevenueDataset["歳入データセット"] {
+    class SettlementRevenueDataset["決算歳入データセット"] {
         年度
-        文書種別
+        原典版
     }
-    class ExpenditureLine["歳出明細"] {
+    class SettlementExpenditureLine["決算歳出明細"] {
         会計
         科目経路
         追加区分
         連結判断
+        amount_円
     }
-    class RevenueLine["歳入明細"] {
+    class SettlementRevenueLine["決算歳入明細"] {
         会計
         科目経路
         追加区分
         連結判断
-    }
-    class ExpenditureAmount["歳出金額"] {
-        金額の意味
-        円換算値
-        原典の金額と単位
-    }
-    class RevenueAmount["歳入金額"] {
-        金額の意味
-        円換算値
-        原典の金額と単位
+        amount_円
     }
     class CofogClassification["COFOG分類結果"] {
         分類状態
-        規則ID
         根拠
     }
     class CofogCode["COFOG分類"] {
         コード
         名称
     }
-    Jurisdiction "1" --> "0..*" ExpenditureDataset : 収録する
-    Jurisdiction "1" --> "0..*" RevenueDataset : 収録する
-    Origin "1" <-- "0..*" ExpenditureDataset : 基づく
-    Origin "1" <-- "0..*" RevenueDataset : 基づく
-    ExpenditureDataset "1" *-- "1..*" ExpenditureLine : 明細を持つ
-    RevenueDataset "1" *-- "1..*" RevenueLine : 明細を持つ
-    ExpenditureLine "1" *-- "1..*" ExpenditureAmount : 金額を持つ
-    RevenueLine "1" *-- "1..*" RevenueAmount : 金額を持つ
-    ExpenditureLine "1" *-- "1" CofogClassification : 分類結果を持つ
+    Jurisdiction "1" --> "0..*" SettlementExpenditureDataset : 収録する
+    Jurisdiction "1" --> "0..*" SettlementRevenueDataset : 収録する
+    Origin "1" <-- "0..*" SettlementExpenditureDataset : 基づく
+    Origin "1" <-- "0..*" SettlementRevenueDataset : 基づく
+    SettlementExpenditureDataset "1" *-- "1..*" SettlementExpenditureLine : 明細を持つ
+    SettlementRevenueDataset "1" *-- "1..*" SettlementRevenueLine : 明細を持つ
+    SettlementExpenditureLine "1" *-- "1" CofogClassification : 分類結果を持つ
     CofogClassification "0..*" --> "0..1" CofogCode : 割り当てる
 ```
 
-- 自治体は、年度・文書種別ごとに歳出／歳入データセットを持つ。財政データが未収録の自治体は、どちらも0件になる。
+- 自治体は年度ごとに決算歳出／歳入データセットを持つ。財政データが未収録の自治体は、どちらも0件になる。この図は決算の提供用明細を示し、予算の管理は別にする。
 - 一つのデータセットは一団体・一年度・一文書種別・一原典版を対象にする。原典の実体と、その原典から収録する範囲を区別する。同じ PDF に歳出と歳入が載る場合は両データセットが同じ原典を参照し、別の資料で公開された場合は別の原典を参照する。
-- 当初予算と決算は別データセットにする。同じ科目経路でも、別資料の明細を同一の明細にまとめない。将来の補正予算も、号数・時点・金額の意味を別途定める。
-- 歳出の金額と歳入の金額は別の型にする。歳出の実績は支出済額、歳入の実績は収入済額である。原典に複数の金額段階があれば保持し、異なる段階を合算しない。
+- 当初予算の基準額、補正予算の増減額、繰越・予備費充用・流用などの変更は、決算実績と別に管理する。別資料の明細を同一視せず、資料間の対応を確かめて比較する。
+- 決算歳出明細の `amount` は支出済額、決算歳入明細の `amount` は収入済額で、いずれも円換算した一金額を属性として持つ。独立した金額クラス・金額表や、実績を選ぶ `phase` は設けない。原典の金額・単位と報告された予算額は、取り込み・照合用に保持する。
 - COFOG の分類結果は歳出明細だけが持つ。状態は `assigned / unclassifiable / out-of-scope` とし、`assigned` のときだけ分類コードを一つ参照する。歳入モデルには COFOG の属性も `not-applicable` の行も作らない。
-- 分類規則は Git の `pipeline/dbt/seeds/fiscal/cofog_rules.csv` に定義し、変換処理で適用する。DB に規則マスタを設けず、分類結果に使った規則 ID と根拠を記録する。規則なしの場合や会計間移転の個別宣言で判断した場合は、規則 ID を必須にせず根拠を残す。
+- 分類規則は Git の `pipeline/dbt/seeds/fiscal/cofog_rules.csv` に定義し、変換処理で適用する。提供用の DB/API・配布物には規則マスタも規則 ID も設けない。使った規則の追跡は、コード版と入力を固定したパイプラインの検証記録で扱う。
 
-黒い菱形は、その明細や金額が所属するデータセット／明細の一部であることを表す。普通の矢印は参照を表す。例えば同じ COFOG 分類を、複数の歳出明細の分類結果が参照できる。
+黒い菱形は、明細が所属するデータセットの一部であることや、分類結果が明細の一部であることを表す。普通の矢印は参照を表す。例えば同じ COFOG 分類を、複数の歳出明細の分類結果が参照できる。
 
 ## 明細に含まれる値の意味を分ける
 
@@ -92,10 +81,12 @@ classDiagram
 
 ## 予算と決算の比較は、資料の違いを消さずに行う
 
-予算書と決算書の明細の対応は、自動の同一視ではなく別途確かめる関係である。現在の収録では、決算書由来の明細にも予算現額などを保持する。決算の提供用明細を実績一金額にする変更や、補正・繰越等から予算を復元するモデルは [予算変更履歴の PRD](prd/fiscal-budget-history/prd.md) の対象であり、このクラス図で実装済みとして扱わない。
+予算書と決算書の明細の対応は、自動の同一視ではなく別途確かめる関係である。当初予算を基準に各号の補正の増減額と、繰越・予備費充用・流用などの変更から、指定時点の予算額を求める。補正後総額を号ごとに重ねて足さず、決算実績も予算の履歴から推定しない。
+
+原典に載る予算現額は照合用の報告値として保存し、計算値で上書きしない。未取得の変更をゼロとみなさず、明細対応や理由不明の差異が残る範囲は未確認とする。移行対象は PRD の入力・照合条件を満たす範囲に限定する。この図は移行後の目標であり、既存の金額段階の削除や予算復元の実装が完了したことを意味しない。
 
 ## 財政上の概念と公開の管理を分けて読む
 
 原典は入力、データセットと明細はその資料から収録した財政データ、COFOG 分類結果は風土記の判断である。これらを固定する自治体データ版、配布物、公開一覧は [版・公開の設計](design-doc-jurisdiction-versions.md) で扱う。年度・科目の意味を、公開 ID やファイル配置から定義しない。
 
-DB への投影でも歳出明細と歳入明細を分け、金額・科目経路・追加区分・検索用名称はそれぞれの明細に紐づける。団体マスタ・出典の記録・収録情報・自治体データ版・公開一覧は共通に保つ。共有の明細表に例外的な COFOG 属性を詰める設計を、この境界に合わせて改める。DB/API/dbt の具体的な改訂はまだ行っていない。
+DB への投影でも決算歳出明細と決算歳入明細を分け、各行に `amount` を直接持たせる。科目経路・追加区分・検索用名称はそれぞれの明細に紐づけ、予算の基準額・変更履歴と照合用の報告値は提供用決算明細から分ける。団体マスタ・出典の記録・収録情報・自治体データ版・公開一覧は共通に保つ。共有の明細表に例外的な COFOG 属性を詰める設計を、この境界に合わせて改める。DB/API/dbt の具体的な改訂はまだ行っていない。
