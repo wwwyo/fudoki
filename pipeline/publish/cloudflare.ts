@@ -143,6 +143,20 @@ export async function initializeSchema(db: D1Database) {
         throw new Error(
           'Existing jurisdiction data requires explicit schema reconstruction before init'
         )
+      const datasets = await db
+        .prepare(
+          "SELECT name FROM sqlite_master WHERE type='table' AND name='fiscal_datasets'"
+        )
+        .first<{ name: string }>()
+      if (datasets) {
+        const datasetRows = await db
+          .prepare('SELECT count(*) AS count FROM fiscal_datasets')
+          .first<{ count: number }>()
+        if (datasetRows?.count !== 0)
+          throw new Error(
+            'Existing dataset data requires explicit schema reconstruction before init'
+          )
+      }
     }
     if (names.has('manifest_key'))
       await db.batch([
@@ -154,7 +168,10 @@ export async function initializeSchema(db: D1Database) {
         ),
       ])
     if (scopedMaster) {
-      await db.prepare('DROP TABLE jurisdictions').run()
+      await db.batch([
+        db.prepare('DROP TABLE IF EXISTS fiscal_datasets'),
+        db.prepare('DROP TABLE jurisdictions'),
+      ])
     }
   }
   const sql = await readFile(

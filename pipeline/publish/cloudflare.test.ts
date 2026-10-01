@@ -67,7 +67,12 @@ test('initialization separates an empty legacy jurisdiction table and refuses to
         new URL('../../packages/data-contracts/schema.sql', import.meta.url),
         'utf8'
       )
-      sqlite.exec(sql)
+      sqlite.exec(
+        sql.replace(
+          ',\n  FOREIGN KEY (release_id, jurisdiction_code) REFERENCES release_jurisdictions(release_id, jurisdiction_code)',
+          ''
+        )
+      )
       sqlite.exec(
         'DROP TABLE jurisdictions; CREATE TABLE jurisdictions(release_id TEXT,jurisdiction_code TEXT,name TEXT,ocd_id TEXT,caveats_json TEXT,PRIMARY KEY(release_id,jurisdiction_code))'
       )
@@ -98,6 +103,14 @@ test('initialization separates an empty legacy jurisdiction table and refuses to
             .filter((c) => c.pk)
             .map((c) => c.name)
         ).toEqual(['jurisdiction_code'])
+        expect(
+          (
+            sqlite.query('PRAGMA foreign_key_list(fiscal_datasets)').all() as {
+              table: string
+            }[]
+          ).map((fk) => fk.table)
+        ).toContain('release_jurisdictions')
+        await initializeSchema(sqliteD1(sqlite))
       }
     } finally {
       sqlite.close()
