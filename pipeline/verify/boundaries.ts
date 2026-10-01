@@ -6,9 +6,15 @@ async function files(directory: string): Promise<string[]> {
   const out: string[] = []
   for (const item of await readdir(directory, { withFileTypes: true })) {
     if (
-      ['node_modules', 'dist', 'build', '.cache', '.wrangler', '.git'].includes(
-        item.name
-      )
+      [
+        'node_modules',
+        'dist',
+        'build',
+        '.cache',
+        '.wrangler',
+        '.cloudflare',
+        '.git',
+      ].includes(item.name)
     )
       continue
     const path = join(directory, item.name)
@@ -55,8 +61,11 @@ for (const root of ['apps', 'packages'])
         )
     }
   }
-const apiConfig = await readFile(join(REPO, 'apps/api/wrangler.jsonc'), 'utf8')
-if (/"(?:assets|r2_buckets)"\s*:/.test(apiConfig))
+const apiConfig = await readFile(
+  join(REPO, 'apps/api/cloudflare.config.ts'),
+  'utf8'
+)
+if (/\b(?:assets\s*:|bindings\.(?:r2|assets)\s*\()/.test(apiConfig))
   throw new Error(
     'API must query D1 and return download URLs without a data assets or R2 binding'
   )

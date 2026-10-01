@@ -22,9 +22,17 @@
 - publish の検証結果を非公開 R2 に保存し、GET の内容を確認してから公開切替する処理を追加した。fixture では保存済み記録のハッシュ・download の非公開境界を確認し、記録の内容が壊れた場合は旧公開版が維持されること、再実行で復旧できることを検査した。
 - ローカル view の実画面で、狛江市2023決算の原典 CSV と取り込み済みの表の行2が同時に選択されることを確認した。千代田区2026予算では、表の行4から PDF 45頁の該当行へ移動し、PDF の行5の文字から表の行5を選択できた。画面の repo 案内も新配置・R2/D1 の役割に更新した。
 
+## Cloudflare CLI への移行
+
+公開 API・download・docs・web の配信と非公開検証 Worker を `cloudflare.config.ts` / `cf` に移行し、旧 `wrangler.jsonc` を削除した。全5 Worker の `cf deploy --dry-run`、各 workspace の型検査、92個の Bun 検査を実施した。Web は Vite で画面を build し、`apps/web/deploy/` で静的配信用の Build Output を作る。
+
+`cf dev` の API と download をループバックで起動し、狛江市2023決算の retained / executed を 2,217行・48,685,415,877円と照合した。download の38ファイルは全てハッシュ・サイズが一致した。ローカル D1 の投入、KV のキー発行・失効も確認した。ビルダーの既定保存先 `.wrangler/state/v3/` を共有し、ローカル投入と RPC に使う一時 JSON は cf の宣言から生成する。
+
+新規依存の追加には cooldown 7日を指定した。公式設定ライブラリ 0.17.0・ビルダー 4.137.0 は exact pin、既存の mise CLI 1.0.0-beta.6 は維持した。現在の CLI でローカル D1 query が未対応、ローカル KV/R2 コマンドが書込後に終了しないことを確認したため、その操作だけはビルダーの proxy ライブラリを使う。CLI での本番配備・遠隔 RPC 接続は、下記の公開前検証で実施する。
+
 ## 未完了の移行条件
 
-- R2 の有効化。CLI は現在「Please enable R2 through the Cloudflare Dashboard」（HTTP403 / 10042）を返す。
+- R2 の有効化。CLI は現在「Please enable R2 through the Cloudflare Dashboard」（HTTP403 / 10042）を返す。cf の account subscription 作成・更新 API は存在するが、R2 の契約 ID と有効化の可否は未確認であり、Dashboard 専用とは断定しない。
 - Workers Paid の確認。全量を Free の日次書込上限内で一度に取り込むことはできず、3版は Free の単一 DB 容量にも収まらない。
 - 原典・取り込み・証跡の全量 R2 転送、GET での内容ハッシュ照合、空のキャッシュからの復元と再構築。現在の入力一覧は `.cache/migration/sources.lock.json` にあり、遠隔保管を検証するまでは正規の Git 入力一覧として固定していない。
 - download / API / 非公開検証 Worker が同じ契約を持つ候補環境での全量 publish、D1 の読取行数・問い合わせ時間・複数版の保持容量の測定。

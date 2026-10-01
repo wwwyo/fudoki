@@ -7,15 +7,18 @@
       "apps/*",
       "packages/*",
       "pipeline",
+      "pipeline/publish",
       "pipeline/verify/report",
       "pipeline/verify/view",
-      "slides"
+      "slides",
+      "apps/web/deploy"
     ],
     "catalog": {
       "@types/bun": "1.3.14",
       "typescript": "7.0.2",
-      "wrangler": "4.123.0",
-      "zod": "4.4.3"
+      "wrangler": "4.137.0",
+      "zod": "4.4.3",
+      "@cloudflare/config": "0.17.0"
     }
   },
   "scripts": {

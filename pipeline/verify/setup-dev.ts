@@ -12,20 +12,11 @@ const manifest = await verifyCandidate(candidate)
 const manifestBytes = await readFile(join(candidate, 'manifest.json'))
 
 const api = join(REPO, 'apps/api')
-const init = Bun.spawn(
-  [
-    'bun',
-    'run',
-    'wrangler',
-    'd1',
-    'execute',
-    'fudoki',
-    '--local',
-    '--command',
-    'SELECT 1',
-  ],
-  { cwd: api, stdout: 'ignore', stderr: 'inherit' }
-)
+const init = Bun.spawn(['node', 'scripts/local-bindings.mjs', 'init-d1'], {
+  cwd: api,
+  stdout: 'ignore',
+  stderr: 'inherit',
+})
 if ((await init.exited) !== 0) throw new Error('Unable to initialize local D1')
 const directory = join(api, '.wrangler/state/v3/d1/miniflare-D1DatabaseObject')
 const files = (await readdir(directory)).filter((name) =>

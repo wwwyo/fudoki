@@ -1,6 +1,10 @@
 import { readFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import { getPlatformProxy } from 'wrangler'
+import { mkdtemp, writeFile, rm } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import config from '../../apps/download/cloudflare.config.ts'
 
 const build = new URL('../build/', import.meta.url)
 const latest = JSON.parse(await readFile(new URL('latest.json', build), 'utf8'))
@@ -10,19 +14,32 @@ const directory = new URL(`releases/${latest.releaseId}/`, build)
 const manifest = JSON.parse(
   await readFile(new URL('manifest.json', directory), 'utf8')
 )
-const platform = await getPlatformProxy({
-  configPath: fileURLToPath(
-    new URL('../../apps/download/wrangler.jsonc', import.meta.url)
-  ),
-  persist: {
-    path: fileURLToPath(
-      new URL('../../apps/download/.wrangler/state/v3', import.meta.url)
-    ),
-  },
-  remoteBindings: false,
-  envFiles: [],
-})
+const temporary = await mkdtemp(join(tmpdir(), 'fudoki-local-downloads-'))
+let platform
 try {
+  const { worker } = config
+  const configPath = join(temporary, 'proxy.json')
+  await writeFile(
+    configPath,
+    JSON.stringify({
+      name: worker.name,
+      compatibility_date: worker.compatibilityDate,
+      r2_buckets: [
+        { binding: 'RELEASES', bucket_name: worker.env.RELEASES.name },
+      ],
+    }),
+    { mode: 0o600 }
+  )
+  platform = await getPlatformProxy({
+    configPath,
+    remoteBindings: false,
+    envFiles: [],
+    persist: {
+      path: fileURLToPath(
+        new URL('../../apps/download/.wrangler/state/v3', import.meta.url)
+      ),
+    },
+  })
   for (const file of manifest.files) {
     if (
       !/^(?:catalog\.json|fiscal\/\d{6}\/[a-z_]+\.(?:csv|json))$/.test(
@@ -49,5 +66,6 @@ try {
     })
   )
 } finally {
-  await platform.dispose()
+  await platform?.dispose()
+  await rm(temporary, { recursive: true, force: true })
 }

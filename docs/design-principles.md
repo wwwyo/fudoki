@@ -70,13 +70,13 @@ CC BY が求める帰属を下流が落とす。層ごとの宣言は `docs/data
 置き場は Cloudflare。apex をそのまま向けられるのは Cloudflare が CNAME flattening をするからで、
 `CNAME` ファイルは要らない（GitHub Pages なら要る）。
 
-配信は **Cloudflare Workers の静的アセット**（`apps/web/wrangler.jsonc`）。`main` を持たない
+配信は **Cloudflare Workers の静的アセット**（`apps/web/deploy/cloudflare.config.ts`）。`entrypoint` を持たない
 アセットだけの Worker で、画面はサーバ側で何もしないのでスクリプトは置かない。
 
 公開 web は API から dataset と release を選び、SQL 集計の応答を表示する。build/deploy は公開 UI のコードだけを扱い、dbt・報告・原典の全量生成は実行しない。
 
 ```bash
-bun run deploy:web    # vite build → wrangler deploy
+bun run deploy:web    # vite build → cf deploy
 ```
 
 ローカル検証画面は `pipeline/verify/view/` にあり、報告は `pipeline/build/report/`、PDF 閲覧レイヤは `pipeline/.cache/pdf/` に置く。公開 web の配信物には含めない。

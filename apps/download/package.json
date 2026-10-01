@@ -1,8 +1,21 @@
 {
-  "name":"@fudoki/download",
-  "private":true,
-  "type":"module",
-  "scripts":{"dev":"wrangler dev --ip 127.0.0.1 --port 8788","build":"wrangler deploy --dry-run --outdir dist","deploy":"wrangler deploy","test":"bun test","typecheck":"tsc --noEmit"},
-  "dependencies":{"@fudoki/data-contracts":"workspace:*"},
-  "devDependencies":{"@types/bun":"catalog:","typescript":"catalog:","wrangler":"catalog:"}
+  "name": "@fudoki/download",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "mise exec -- cf dev --host 127.0.0.1 --port 8788",
+    "build": "mise exec -- cf deploy --dry-run",
+    "deploy": "mise exec -- cf deploy",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fudoki/data-contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/bun": "catalog:",
+    "typescript": "catalog:",
+    "wrangler": "catalog:",
+    "@cloudflare/config": "catalog:"
+  }
 }

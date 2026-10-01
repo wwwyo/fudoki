@@ -1,0 +1,13 @@
+{
+  "name": "@fudoki/web-deploy",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "mise exec -- cf deploy --dry-run",
+    "deploy": "mise exec -- cf deploy"
+  },
+  "devDependencies": {
+    "@cloudflare/config": "catalog:",
+    "wrangler": "catalog:"
+  }
+}

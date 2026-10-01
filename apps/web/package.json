@@ -4,8 +4,8 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "build": "tsc -b && vite build",
-    "deploy": "wrangler deploy",
+    "build": "tsc -b && vite build && bun run --cwd deploy build",
+    "deploy": "bun run build && bun run --cwd deploy deploy",
     "dev": "vite",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "preview": "vite preview",
@@ -42,7 +42,6 @@
     "prettier": "3.9.6",
     "prettier-plugin-tailwindcss": "0.8.1",
     "typescript": "catalog:",
-    "vite": "8.2.1",
-    "wrangler": "catalog:"
+    "vite": "8.2.1"
   }
 }

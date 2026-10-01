@@ -10,7 +10,14 @@
     "noEmit": true,
     "skipLibCheck": true,
     "isolatedModules": true,
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": true
   },
-  "include": ["src", "build.ts", "generate-spec.ts"]
+  "include": [
+    "src",
+    "build.ts",
+    "generate-spec.ts",
+    "cloudflare.config.ts",
+    "wrangler.config.ts"
+  ]
 }

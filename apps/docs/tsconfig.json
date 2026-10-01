@@ -9,7 +9,8 @@
     "noEmit": true,
     "skipLibCheck": true,
     "isolatedModules": true,
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": true
   },
-  "include": ["blume.config.ts"]
+  "include": ["blume.config.ts", "cloudflare.config.ts", "wrangler.config.ts"]
 }

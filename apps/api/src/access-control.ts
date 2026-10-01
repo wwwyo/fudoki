@@ -16,6 +16,7 @@ import type { Context, MiddlewareHandler } from 'hono'
 import type { Env } from './env'
 import { apiKeyEntrySchema, sha256Hex } from './lib/apiKey'
 import { classifyPath } from './lib/path-class'
+import { rateLimitRules } from './lib/rate-limit-rules'
 
 /**
  * 構造化ログ（Workers Logs 経由の console.log）。
@@ -37,21 +38,10 @@ function logAccess(entry: AccessLogEntry): void {
   console.log(JSON.stringify(entry))
 }
 
-/**
- * Rate Limiting binding の period（秒）。429 の Retry-After をここから
- * 組み立てる ── wrangler.jsonc の `ratelimits[].simple.period` を手で
- * コピーしてハードコードすると、片方だけ変えたときに Retry-After が
- * 黙って嘘の値になる（simple.period は 10 か 60 しか選べないので、
- * 匿名側だけ 10 に変える判断は普通に起こりうる）。
- * ⚠️ TypeScript から wrangler.jsonc の値を直接参照する経路は無いので、
- * 対応関係はコメントでしか保証できない。wrangler.jsonc 側を変えたら
- * 必ずここも合わせて変えること。
- */
+/** The Worker cannot import the Node-only deployment config; both use these pure rules. */
 const RATE_LIMIT_PERIOD_SECONDS = {
-  /** wrangler.jsonc: ratelimits[name=RATE_LIMIT_ANONYMOUS].simple.period */
-  anonymous: 60,
-  /** wrangler.jsonc: ratelimits[name=RATE_LIMIT_AUTHENTICATED].simple.period */
-  authenticated: 60,
+  anonymous: rateLimitRules.anonymous.period,
+  authenticated: rateLimitRules.authenticated.period,
 } as const
 
 function clientIp(c: Context<{ Bindings: Env }>): string {
@@ -208,7 +198,7 @@ export function accessControl(): MiddlewareHandler<{ Bindings: Env }> {
     }
 
     // ⚠️ キーごとにレートを変えたくなっても、Rate Limiting binding は
-    // limit/period をデプロイ時（wrangler.jsonc）に固定する仕組みで、
+    // limit/period をデプロイ時（cloudflare.config.ts）に固定する仕組みで、
     // 実行時にキー単位でパラメータを変えることはできない
     // （変えるならキー単位のカウンタを KV 等で自前実装する必要がある）。
     const limiter =

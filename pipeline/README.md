@@ -31,7 +31,7 @@ bun run dev
 
 ## publish と切り戻し
 
-Cloudflare の操作には mise 管理の `cf` と既存の認証を使う。先に非公開 `fudoki-inputs` と配布用 `fudoki-releases` を用意する。bucket の公開 URL・自動削除 lifecycle は設定しない。入力 bucket は公開 Worker に bind しない。
+Cloudflare の操作には mise 管理の `cf` と既存の認証を使う。 Worker の宣言は各 `cloudflare.config.ts`、ビルダーの設定は `wrangler.config.ts`。公開 web は Vite のビルド後に `apps/web/deploy/` の静的 Worker を `cf` で構築・配備する。生成される Build Output は各 `.cloudflare/output/v0/` に入り、Git 管理しない。先に非公開 `fudoki-inputs` と配布用 `fudoki-releases` を用意する。bucket の公開 URL・自動削除 lifecycle は設定しない。入力 bucket は公開 Worker に bind しない。
 
 ```bash
 bun run pipeline:publish schema
@@ -80,7 +80,7 @@ uv run python -m ingestion.inputs restore-backup --lock pipeline/ingestion/fisca
 
 `bun run dev` の view は 127.0.0.1:5174 のみで動かす。`bun run pdf:layer` は固定済み PDF から頁画像・文字層・行対応を `.cache/pdf/` に作る。最新の PDF を再取得せず、build / publish の前提にしない。
 
-公開 web は 5173、API は 8787、download は 8788。`FUDOKI_API_PORT` で API のポートを変更できる。`dev:setup` は API を停止した状態で、`build/candidate.sqlite` を自分の Wrangler ローカル D1 にコピーする。公開画面は報告や原典を読まない。公開 web と view の UI は独立している。
+公開 web は 5173、API は 8787、download は 8788。`FUDOKI_API_PORT` で API のポートを変更できる。`dev:setup` は API を停止した状態で、`build/candidate.sqlite` を自分の開発 Worker のローカル D1 にコピーする。公開画面は報告や原典を読まない。公開 web と view の UI は独立している。
 
 `bun run dev:setup:download` は完成済み候補を検査してからローカル R2 に配布ファイルと最終 manifest を入れる。続いて `bun run dev:download` で配布 URL を確認できる。遠隔 R2 への転送は行わない。
 
@@ -97,3 +97,11 @@ GitHub の `FUDOKI_REVIEW_BASELINE_URL` に比較元の不変な manifest URL �
 変更報告は団体・年度・歳入歳出・文書・段階ごとの行数と円金額、追加・削除された明細 ID、金額変更、分類変更の行数と変更前後の金額を含む。原典の版が変わって ID が交代した場合、同じ明細との対応を推定せず追加・削除として示す。注意点・原典・出典・利用条件・名称・分類規則等の変更前後の内容も JSON に記録し、CI の artifact と概要から確認できる。
 
 publish の公開前検証結果は R2 の `_verification/<releaseId>/<内容ハッシュ>.json` に保存し、非公開検証 Worker の GET でハッシュ・サイズを再確認してから API の公開版を切り替える。再試行の計測結果も内容ごとに残し、download からは配信しない。記録の `pre-activation-verified` は公開切替前の検証状態を表し、公開済みかどうかは D1 の運用状態で判断する。
+
+## Cloudflare CLI とローカル保存
+
+操作の入口は mise で固定した `cf`。プロジェクト依存には CLI を重複導入せず、`cloudflare.config.ts` が公式の `@cloudflare/config/public` を読み込む。設定ライブラリ 0.17.0 とビルダー 4.137.0 は cooldown 7 日を満たす版に exact pin した。CLI は既に導入済みの 1.0.0-beta.6 を維持している。
+
+この構成の `cf` は内部で Wrangler ビルダーを使う。旧 `wrangler.jsonc` は廃止した。ローカルデータはビルダーの既定で各アプリの `.wrangler/state/v3/` に保存され、Git 管理しない。名前を変えるために別の保存先を作らない。
+
+現在の cf CLI のローカル D1 query は未対応で、ローカル KV/R2 の操作では書込後にプロセスが終了しないため、ローカル投入と publish の RPC 接続にはビルダーの proxy ライブラリを使う。Worker と binding の名前・ID は `cloudflare.config.ts` から読み、一時 JSON は終了時に削除する。運用する遠隔 D1/R2/KV と Worker の dev/build/deploy は cf を使う。API のキー発行・失効も、remote を指定したときだけ cf による遠隔 KV 操作を行う。

@@ -1,1 +1,5 @@
-{"extends":"../../tsconfig.json","include":["src/**/*.ts"],"exclude":["dist","node_modules"]}
+{
+  "extends": "../../tsconfig.json",
+  "include": ["src/**/*.ts", "cloudflare.config.ts", "wrangler.config.ts"],
+  "exclude": ["dist", "node_modules"]
+}

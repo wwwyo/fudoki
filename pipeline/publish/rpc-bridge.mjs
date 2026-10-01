@@ -1,8 +1,12 @@
 import { getPlatformProxy } from 'wrangler'
-import { fileURLToPath } from 'node:url'
+import { mkdtemp, writeFile, rm } from 'node:fs/promises'
+import { join } from 'node:path'
+import { tmpdir } from 'node:os'
+import clientConfig from './client/cloudflare.config.ts'
 
 // Wrangler's proxy runs under Node; the pipeline caller retains Bun's runtime.
 let platform
+let directory
 const allowed = new Set([
   'candidate',
   'existingManifest',
@@ -17,10 +21,31 @@ const allowed = new Set([
   'report',
 ])
 const ready = (async () => {
+  // The proxy library still reads JSON; derive its transient input from cf's declaration.
+  const worker = clientConfig.worker
+  const binding = worker.env.VERIFICATION
+  directory = await mkdtemp(join(tmpdir(), 'fudoki-verification-proxy-'))
+  const configPath = join(directory, 'proxy.json')
+  await writeFile(
+    configPath,
+    JSON.stringify({
+      name: worker.name,
+      compatibility_date: worker.compatibilityDate,
+      workers_dev: worker.workersDev,
+      preview_urls: worker.previewUrls,
+      services: [
+        {
+          binding: 'VERIFICATION',
+          service: binding.worker,
+          entrypoint: binding.exportName,
+          remote: binding.dev.remote,
+        },
+      ],
+    }),
+    { mode: 0o600 }
+  )
   platform = await getPlatformProxy({
-    configPath: fileURLToPath(
-      new URL('./client-wrangler.jsonc', import.meta.url)
-    ),
+    configPath,
     remoteBindings: true,
     persist: false,
     envFiles: [],
@@ -32,6 +57,7 @@ process.on('message', async (message) => {
     await ready
     if (method === 'dispose') {
       await platform.dispose()
+      await rm(directory, { recursive: true, force: true })
       process.send({ id, result: null })
       process.disconnect()
       return
@@ -51,5 +77,6 @@ process.on('message', async (message) => {
 })
 process.on('disconnect', async () => {
   await platform?.dispose()
+  if (directory) await rm(directory, { recursive: true, force: true })
 })
 ready.catch(() => {})
