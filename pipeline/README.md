@@ -54,6 +54,8 @@ Git: pipeline/publish/manifest.json
 
 補正予算の複数原典は別 dataset として識別できるが、現行の取得対象には補正予算を含めていない。第1号・第2号等の号数、差額なのか補正後総額なのか、有効な時点を取得元の宣言で定めてから追加する。同じ年度の当初・補正・決算を自動で足さず、API の集計は同じ団体・年度・歳入歳出から複数 dataset を選んだ場合に拒否する。
 
+補正予算・繰越計算書等の取得と、決算の提供用明細を実績の一金額へ整理する将来の変更は、[予算変更履歴の PRD](../docs/prd/fiscal-budget-history/prd.md) を参照する。現行の金額段階は維持する。
+
 ## publish と切り戻し
 
 Cloudflare の操作には mise 管理の `cf` と既存の認証を使う。 Worker の宣言は各 `cloudflare.config.ts`、ビルダーの設定は `wrangler.config.ts`。公開 web は Vite のビルド後に `apps/web/deploy/` の静的 Worker を `cf` で構築・配備する。生成される Build Output は各 `.cloudflare/output/v0/` に入り、Git 管理しない。先に非公開 `fudoki-inputs` と配布用 `fudoki-releases` を用意する。公開 bucket には配布物だけを置き、manifest・候補記録・検証結果を入れない。直接配信への接続は移行条件の検証後に設定する。入力 bucket の公開 URL と自動削除 lifecycle は設定しない。入力 bucket は公開 Worker に bind しない。
