@@ -6,7 +6,6 @@ export const TABLES = [
   "fiscal_datasets",
   "fiscal_lines",
   "amounts",
-  "cofog",
   "line_hierarchy",
   "line_dimensions",
   "names",
@@ -19,6 +18,27 @@ export const jurisdictionMasterSchema = z
     ocd_id: z.string().min(1),
   })
   .strict();
+export const cofogMasterSchema = z
+  .object({
+    code: z.string().regex(/^\d{2}(?:\.\d){0,2}$/),
+    label: z.string().min(1),
+    level: z.enum(["division", "group", "class"]),
+    parent_code: z.string().nullable(),
+  })
+  .strict()
+  .superRefine((row, ctx) => {
+    const depth = row.code.split(".").length;
+    const parent =
+      depth === 1 ? null : row.code.slice(0, row.code.lastIndexOf("."));
+    if (
+      row.level !== ["division", "group", "class"][depth - 1] ||
+      row.parent_code !== parent
+    )
+      ctx.addIssue({
+        code: "custom",
+        message: "COFOG code, level and parent differ",
+      });
+  });
 export const releaseIdSchema = z.string().regex(/^r-[a-f0-9]{32}$/);
 export const packageIdSchema = z.string().regex(/^p-[a-f0-9]{64}$/);
 export const distributionKeySchema = z
@@ -99,6 +119,7 @@ export const manifestSchema = z
     queryFingerprint: sha256Schema,
     manifestSha256: sha256Schema,
     jurisdictionMasterSha256: sha256Schema,
+    cofogMasterSha256: sha256Schema,
     files: z.array(fileSchema).min(1),
     packages: z.array(packageSchema),
     totals: z
@@ -311,6 +332,7 @@ export interface R2Bucket {
 
 export const TABLE_COLUMNS = {
   jurisdictions: ["jurisdiction_code", "name", "ocd_id"],
+  cofog_codes: ["code", "label", "level", "parent_code"],
   release_jurisdictions: [
     "jurisdiction_code",
     "name_snapshot",
@@ -335,6 +357,13 @@ export const TABLE_COLUMNS = {
     "source_row",
     "fund_code",
     "fund_label",
+    "cofog_code",
+    "cofog_status",
+    "consolidation",
+    "cofog_decided_at_level",
+    "cofog_rule_id",
+    "cofog_basis",
+    "counterpart_fund",
   ],
   amounts: [
     "fiscal_line_id",
@@ -343,18 +372,6 @@ export const TABLE_COLUMNS = {
     "source_amount",
     "source_amount_unit",
     "is_primary",
-  ],
-  cofog: [
-    "fiscal_line_id",
-    "status",
-    "division",
-    "group",
-    "class",
-    "consolidation",
-    "decided_at_level",
-    "rule_id",
-    "basis",
-    "counterpart_fund",
   ],
   line_hierarchy: [
     "fiscal_line_id",
@@ -376,11 +393,11 @@ export const TABLE_COLUMNS = {
 } as const;
 export const TABLE_KEYS = {
   jurisdictions: ["jurisdiction_code"],
+  cofog_codes: ["code"],
   release_jurisdictions: ["jurisdiction_code"],
   fiscal_datasets: ["dataset_id"],
   fiscal_lines: ["fiscal_line_id"],
   amounts: ["fiscal_line_id", "phase"],
-  cofog: ["fiscal_line_id"],
   line_hierarchy: ["fiscal_line_id", "ordinal"],
   line_dimensions: ["fiscal_line_id", "dimension"],
   names: ["fiscal_line_id", "name_kind", "level"],

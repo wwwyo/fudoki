@@ -13,9 +13,10 @@ union all
 select 'duplicate_jurisdiction_master', jurisdiction_code
 from {{ ref('api_jurisdictions') }} group by jurisdiction_code having count(*) != 1
 union all
-select 'line_without_classification', l.fiscal_line_id
-from {{ ref('api_fiscal_lines') }} as l left join {{ ref('api_cofog') }} as c using (fiscal_line_id)
-where c.fiscal_line_id is null
+select 'unresolved_cofog_code', l.fiscal_line_id
+from {{ ref('api_fiscal_lines') }} as l left join {{ ref('api_cofog_codes') }} as c on c.code=l.cofog_code
+where (l.cofog_status='assigned' and (l.cofog_code is null or c.code is null))
+   or (l.cofog_status!='assigned' and l.cofog_code is not null)
 union all
 select 'line_without_primary_amount', fiscal_line_id
 from {{ ref('api_amounts') }} group by fiscal_line_id having sum(is_primary) != 1

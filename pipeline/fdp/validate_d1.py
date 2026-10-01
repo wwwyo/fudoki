@@ -11,7 +11,7 @@ from pathlib import Path
 
 from ingestion.paths import BUILD, PACKAGES, REPO
 
-TABLES = ['release_jurisdictions', 'fiscal_datasets', 'fiscal_lines', 'amounts', 'cofog', 'line_hierarchy', 'line_dimensions', 'names']
+TABLES = ['release_jurisdictions', 'fiscal_datasets', 'fiscal_lines', 'amounts', 'line_hierarchy', 'line_dimensions', 'names']
 
 
 def load_tables(directory: Path, database: Path, release: str = 'r-' + '0' * 32) -> dict:
@@ -26,6 +26,12 @@ def load_tables(directory: Path, database: Path, release: str = 'r-' + '0' * 32)
         if set(row) != {'jurisdiction_code', 'name', 'ocd_id'}:
             raise ValueError('Jurisdiction master storage columns differ')
         con.execute('INSERT INTO jurisdictions VALUES(?,?,?)', [row['jurisdiction_code'], row['name'], row['ocd_id']])
+    cofog_path = directory / 'cofog_codes.jsonl'
+    codes = [json.loads(line) for line in cofog_path.read_text().splitlines() if line]
+    for row in codes:
+        if set(row) != {'code', 'label', 'level', 'parent_code'}:
+            raise ValueError('COFOG master storage columns differ')
+        con.execute('INSERT INTO cofog_codes VALUES(?,?,?,?)', [row['code'], row['label'], row['level'], row['parent_code']])
     tables = {}
     for name in TABLES:
         path = directory / f'{name}.jsonl'
@@ -59,11 +65,11 @@ def load_tables(directory: Path, database: Path, release: str = 'r-' + '0' * 32)
     statements = {
         'dataset_lines': ('SELECT fiscal_line_id FROM fiscal_lines WHERE release_id=? AND dataset_id=? ORDER BY fiscal_line_id LIMIT 51', (release, scope_totals[0][0])),
         'name_search': ('SELECT DISTINCT fiscal_line_id FROM names WHERE release_id=? AND instr(value, ?)>0 ORDER BY fiscal_line_id LIMIT 51', (release, '教育')),
-        'cofog_comparison': ('''SELECT d.jurisdiction_code, d.fiscal_year, c.division, sum(a.value), count(*)
+        'cofog_comparison': ('''SELECT d.jurisdiction_code, d.fiscal_year, substr(l.cofog_code,1,2), sum(a.value), count(*)
           FROM fiscal_datasets d JOIN fiscal_lines l USING (release_id,dataset_id)
-          JOIN amounts a USING (release_id,fiscal_line_id) JOIN cofog c USING (release_id,fiscal_line_id)
+          JOIN amounts a USING (release_id,fiscal_line_id)
           WHERE d.release_id=? AND a.phase=? AND d.direction='expenditure'
-          GROUP BY d.jurisdiction_code,d.fiscal_year,c.division''', (release, 'approved')),
+          GROUP BY d.jurisdiction_code,d.fiscal_year,substr(l.cofog_code,1,2)''', (release, 'approved')),
     }
     for label, (statement, values) in statements.items():
         start = time.perf_counter()
@@ -71,7 +77,7 @@ def load_tables(directory: Path, database: Path, release: str = 'r-' + '0' * 32)
         measurements[label] = {'milliseconds': round((time.perf_counter() - start) * 1000, 2), 'resultRows': len(result),
                                'plan': con.execute('EXPLAIN QUERY PLAN ' + statement, values).fetchall()}
     con.close()
-    return {'masters': {'jurisdictions': {'rows': len(masters), 'sha256': hashlib.sha256(master_path.read_bytes()).hexdigest()}}, 'tables': tables, 'bytes': database.stat().st_size, 'threeReleasesEstimateBytes': database.stat().st_size * 3,
+    return {'masters': {'jurisdictions': {'rows': len(masters), 'sha256': hashlib.sha256(master_path.read_bytes()).hexdigest()}, 'cofog_codes': {'rows': len(codes), 'sha256': hashlib.sha256(cofog_path.read_bytes()).hexdigest()}}, 'tables': tables, 'bytes': database.stat().st_size, 'threeReleasesEstimateBytes': database.stat().st_size * 3,
             'scopeTotals': scope_totals, 'localMeasurements': measurements}
 
 

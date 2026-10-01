@@ -7,6 +7,7 @@ import {
   TABLE_COLUMNS,
   canonicalRow,
   jurisdictionMasterSchema,
+  cofogMasterSchema,
   type D1Database,
   type ReleaseManifest,
 } from '@fudoki/data-contracts'
@@ -103,6 +104,41 @@ export async function publish(
         expected.map((row) => canonicalRow('jurisdictions', row)).join('')
       )
         throw new Error('Jurisdiction master differs after transfer')
+    }
+    const codes = (
+      await readFile(join(candidate, 'api/cofog_codes.jsonl'), 'utf8')
+    )
+      .split('\n')
+      .filter(Boolean)
+      .map((line) => cofogMasterSchema.parse(JSON.parse(line)))
+    if (new Set(codes.map((row) => row.code)).size !== codes.length)
+      throw new Error('Duplicate COFOG master identity')
+    for (let offset = 0; offset < codes.length; offset += 500) {
+      const batch = codes.slice(offset, offset + 500)
+      await guardedBatch(db, lease, [
+        db
+          .prepare(
+            `INSERT OR IGNORE INTO cofog_codes(code,label,level,parent_code)
+        SELECT json_extract(value,'$.code'),json_extract(value,'$.label'),json_extract(value,'$.level'),json_extract(value,'$.parent_code') FROM json_each(?)`
+          )
+          .bind(JSON.stringify(batch)),
+      ])
+      const actual = await db
+        .prepare(
+          'SELECT code,label,level,parent_code FROM cofog_codes WHERE code IN (SELECT value FROM json_each(?)) ORDER BY code'
+        )
+        .bind(JSON.stringify(batch.map((row) => row.code)))
+        .all<Record<string, unknown>>()
+      const expected = [...batch].sort((a, b) => a.code.localeCompare(b.code))
+      if (
+        actual.results
+          .map((row) => canonicalRow('cofog_codes', row))
+          .join('') !==
+        expected.map((row) => canonicalRow('cofog_codes', row)).join('')
+      )
+        throw new Error(
+          'COFOG master differs after transfer; existing definitions cannot be reinterpreted'
+        )
     }
     for (const file of manifest.files) {
       if (!(await verify.existingFile(manifest.releaseId, file.path)))

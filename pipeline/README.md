@@ -31,7 +31,9 @@ bun run dev
 
 文書種別は budget / supplementary / settlement、金額段階は approved / adjusted / adjusted-before-transfer / executed。決算書にある予算現額と決算額を区別する。dataset は団体・年度・歳入歳出・文書種別・原典版を含み、明細 ID は dataset を含めて一意にする。
 
-D1 の `jurisdictions` は団体コードを主キーとする共通マスタで、公開版に依存しない。`release_jurisdictions` は公開版ごとの注意点と名称・OCD ID の記録を持つ。build はそれぞれの JSONL を生成し、publish は共通マスタを更新してから8表の公開版別データを検査・転送する。候補が失敗しても、API は公開中の版の記録を読むため名称は変わらない。
+D1 の `jurisdictions` は団体コードを主キーとする共通マスタで、公開版に依存しない。`release_jurisdictions` は公開版ごとの注意点と名称・OCD ID の記録を持つ。build はそれぞれの JSONL を生成し、publish は共通マスタを更新してから7表の公開版別データを検査・転送する。候補が失敗しても、API は公開中の版の記録を読むため名称は変わらない。
+
+COFOG のコード・名称・階層は `packages/fiscal/detail.ts` が正本。現在使用するコードと祖先37件を `cofog_codes` 共通マスタへ生成し、明細の `cofog_code` から外部キー参照する。状態・規則・根拠・連結の判断は明細に保持する。D1 の1対1の `cofog` 表は作らない。割当を dbt で一度決め、配布 CSV と D1 の全明細の分類・連結判断が一致することを検査する。R2/D1 は直接編集しない。
 
 ## 全体の release と団体別の配布物
 

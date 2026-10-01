@@ -57,6 +57,7 @@ beforeEach(() => {
     queryFingerprint: fingerprint,
     manifestSha256: 'e'.repeat(64),
     jurisdictionMasterSha256: 'f'.repeat(64),
+    cofogMasterSha256: 'f'.repeat(64),
     totals: [],
     packages: [
       {

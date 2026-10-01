@@ -42,6 +42,19 @@ beforeEach(async () => {
       master.name,
       master.ocd_id,
     ])
+  const codes = (
+    await readFile(join(directory, 'api/cofog_codes.jsonl'), 'utf8')
+  )
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => JSON.parse(line))
+  for (const row of codes)
+    sqlite.run('INSERT INTO cofog_codes VALUES(?,?,?,?)', [
+      row.code,
+      row.label,
+      row.level,
+      row.parent_code,
+    ])
   for (const table of TABLES) {
     const columns = TABLE_COLUMNS[table],
       sql = `INSERT INTO "${table}"(release_id,${columns.map((c) => `"${c}"`).join(',')}) VALUES(${columns.map(() => '?').join(',')},?)`

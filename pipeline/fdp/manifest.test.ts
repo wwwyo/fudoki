@@ -16,6 +16,7 @@ async function candidate(releaseId: string, changed = false) {
   directories.push(directory)
   await mkdir(join(directory, 'api'))
   await writeFile(join(directory, 'api/jurisdictions.jsonl'), '')
+  await writeFile(join(directory, 'api/cofog_codes.jsonl'), '')
   const datasets = [
     ['000001', 2024, 'budget', 'a'],
     ['000001', 2025, 'budget', 'b'],
@@ -153,4 +154,10 @@ test('a changed jurisdiction master input cannot be published with a previously 
   await expect(verifyCandidate(directory)).rejects.toThrow(
     'Jurisdiction master differs'
   )
+})
+
+test('a changed COFOG master cannot be published with a previously verified candidate', async () => {
+  const { directory } = await candidate('r-' + '1'.repeat(32))
+  await writeFile(join(directory, 'api/cofog_codes.jsonl'), '{}\n')
+  await expect(verifyCandidate(directory)).rejects.toThrow('COFOG master differs')
 })

@@ -46,6 +46,15 @@ CREATE TABLE IF NOT EXISTS fiscal_datasets (
   PRIMARY KEY (release_id, dataset_id),
   FOREIGN KEY (release_id, jurisdiction_code) REFERENCES release_jurisdictions(release_id, jurisdiction_code)
 );
+CREATE TABLE IF NOT EXISTS cofog_codes (
+  code TEXT PRIMARY KEY,
+  label TEXT NOT NULL,
+  level TEXT NOT NULL CHECK (level IN ('division', 'group', 'class')),
+  parent_code TEXT REFERENCES cofog_codes(code),
+  CHECK ((level='division' AND length(code)=2 AND parent_code IS NULL)
+    OR (level='group' AND length(code)=4 AND parent_code IS NOT NULL AND parent_code=substr(code,1,2))
+    OR (level='class' AND length(code)=6 AND parent_code IS NOT NULL AND parent_code=substr(code,1,4)))
+);
 CREATE TABLE IF NOT EXISTS fiscal_lines (
   release_id TEXT NOT NULL,
   fiscal_line_id TEXT NOT NULL,
@@ -53,7 +62,15 @@ CREATE TABLE IF NOT EXISTS fiscal_lines (
   source_row INTEGER NOT NULL,
   fund_code TEXT NOT NULL,
   fund_label TEXT NOT NULL,
+  cofog_code TEXT REFERENCES cofog_codes(code),
+  cofog_status TEXT NOT NULL CHECK (cofog_status IN ('assigned', 'unclassifiable', 'out-of-scope', 'not-applicable')),
+  consolidation TEXT NOT NULL CHECK (consolidation IN ('retained', 'eliminated')),
+  cofog_decided_at_level TEXT NOT NULL,
+  cofog_rule_id TEXT NOT NULL,
+  cofog_basis TEXT NOT NULL,
+  counterpart_fund TEXT NOT NULL,
   PRIMARY KEY (release_id, fiscal_line_id),
+  CHECK ((cofog_status='assigned' AND cofog_code IS NOT NULL) OR (cofog_status!='assigned' AND cofog_code IS NULL)),
   FOREIGN KEY (release_id, dataset_id) REFERENCES fiscal_datasets(release_id, dataset_id)
 );
 CREATE TABLE IF NOT EXISTS amounts (
@@ -65,21 +82,6 @@ CREATE TABLE IF NOT EXISTS amounts (
   source_amount_unit TEXT NOT NULL,
   is_primary INTEGER NOT NULL CHECK (is_primary IN (0, 1)),
   PRIMARY KEY (release_id, fiscal_line_id, phase),
-  FOREIGN KEY (release_id, fiscal_line_id) REFERENCES fiscal_lines(release_id, fiscal_line_id)
-);
-CREATE TABLE IF NOT EXISTS cofog (
-  release_id TEXT NOT NULL,
-  fiscal_line_id TEXT NOT NULL,
-  status TEXT NOT NULL,
-  division TEXT NOT NULL,
-  "group" TEXT NOT NULL,
-  class TEXT NOT NULL,
-  consolidation TEXT NOT NULL,
-  decided_at_level TEXT NOT NULL,
-  rule_id TEXT NOT NULL,
-  basis TEXT NOT NULL,
-  counterpart_fund TEXT NOT NULL,
-  PRIMARY KEY (release_id, fiscal_line_id),
   FOREIGN KEY (release_id, fiscal_line_id) REFERENCES fiscal_lines(release_id, fiscal_line_id)
 );
 CREATE TABLE IF NOT EXISTS line_hierarchy (

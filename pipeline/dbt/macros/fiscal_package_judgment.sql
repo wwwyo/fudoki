@@ -12,6 +12,11 @@
   何を保証しているのか言えなくなる。ファイルは分け、パッケージは1つにする。
 #}
 {% macro fiscal_package_cofog(code) %}
+{# 自動推論では 09 が数値、04.5.1 が日付になり、配布物を読み直す検査でコードが変わる。 #}
+{{ config(csv_read_options={'auto_detect': true, 'types': {
+    'cofog_division': 'VARCHAR', 'cofog_group': 'VARCHAR', 'cofog_class': 'VARCHAR',
+    'cofog_rule_id': 'VARCHAR', 'cofog_counterpart_fund': 'VARCHAR'
+}}) }}
 -- COFOG の割当。**fudoki の判断**で、自治体が言っていないことを付け加えている。
 -- 正本（expenditure / revenue）とは fiscal_line_id で join する。
 -- 根拠は cofog_rules に規則として出してあり、cofog_rule_id で引ける。

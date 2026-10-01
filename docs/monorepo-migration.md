@@ -61,13 +61,21 @@ COFOG マスタと明細の外部キーへの統合案、補正予算の再計�
 
 `cf dev` のローカル D1 で団体情報62件の名称・OCD ID・注意点が Git manifest と一致し、28 dataset の取得が成功した。既存配布物との比較では全46範囲の明細・金額・分類に差分がなく、manifest 採用後も同じ構築版を再利用できた。
 
+## COFOG マスタと明細の統合
+
+[ADR 0016](adr/0016-cofog-master-and-assignment.md) により、D1 の1対1の `cofog` 表を廃止した。分類コード・名称・階層は共通マスタ `cofog_codes` へ生成し、明細の `cofog_code` から外部キー参照する。現在使用するコードと祖先の37件を保持し、全分類の一覧を新たに管理してはいない。状態・規則・根拠・連結の判断は明細に保持する。
+
+Bun の107テスト、全 workspace の型検査が通過した。全量 dbt build の158項目が成功し、R2 の分類 CSV と D1 の39,552明細で分類・連結判断が一致した。分類コードを CSV の自動型推論で数値や日付へ変換しないよう、配布物の再読込時の型を明示した。粗い粒度の割当・NULL の分類不能・存在しないコードの拒否・マスタの定義の衝突・空の旧 schema の置換も検査した。
+
+公開版別の7表は692,513行、共通マスタは団体62行・分類37行となった。SQLite は410,300,416 bytes。5団体・28 dataset・46 dataset/phase の API と dbt の集計が一致した。補正等の取得と照合が揃った後に決算の提供用明細を実績1金額へ整理する方針は設計書に反映し、今回の金額段階は変更していない。
+
 ## 未完了の移行条件
 
 - [ADR 0011](adr/0011-public-r2-distribution.md) の直接配信への変更。現行の download Worker を置き換え、既存の `download.fudoki.dev` を配布ファイルだけの公開 R2 に接続する。CSV/JSON のキャッシュと `/fiscal/` のレート制限を設定・検証する。候補記録・内部検証結果は R2 へ保存しない。`fudoki.dev` は現在のアカウントで active / Free Website と確認したが、R2 の接続とルールは未反映。
 - R2 の有効化。CLI は現在「Please enable R2 through the Cloudflare Dashboard」（HTTP403 / 10042）を返す。cf の account subscription 作成・更新 API は存在するが、R2 の契約 ID と有効化の可否は未確認であり、Dashboard 専用とは断定しない。
 - Workers Paid の確認。全量を Free の日次書込上限内で一度に取り込むことはできず、公開中と候補の同時保持も Free の単一 DB 容量に収まらない。旧版を最低3版残す要件は廃止した。`cf accounts subscriptions get` で取得した契約一覧は Teams Free のみであり、Workers Paid は未確認。公式の [契約 ID 一覧](https://developers.cloudflare.com/tenant/reference/subscriptions/) と `cf billing rate-plans get WORKERS_PAID` から契約 ID・基本月額 $5 を確認し、`cf accounts subscriptions create --rate-plan-id WORKERS_PAID --frequency monthly --dry-run` で作成リクエストを確認した。dry-run は実際の契約可否を検査せず、契約の作成も行っていない。
 - 原典・取り込みの全量 R2 転送、GET での内容ハッシュ照合、Git の証跡と空のキャッシュからの復元・再構築。現在の入力一覧は `.cache/migration/sources.lock.json` にあり、遠隔保管を検証するまでは正規の Git 入力一覧として固定していない。
-- 初期の空の遠隔 D1 に新しい `manifest_url`・`verification_sha256` と団体マスタ・公開版の団体情報の分離を適用する。init は旧データが空の場合だけ列と外部キーを再作成し、既存の公開データは自動で読み替えない。
+- 初期の空の遠隔 D1 に新しい `manifest_url`・`verification_sha256`、団体マスタの分離、COFOG マスタへの外部キーを適用する。init は旧データが空の場合だけ列と外部キーを再作成し、既存の公開データは自動で読み替えない。
 - R2 直接配信 / API / 非公開検証 Worker が同じ配布契約を持つ候補環境での全量 publish、D1 の読取行数・問い合わせ時間・複数版の保持容量の測定。
 - 上記を確認してから既存 `data/` の tracking を外す。既存 Git 履歴を書き換えない。
 

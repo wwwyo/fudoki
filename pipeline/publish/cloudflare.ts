@@ -127,7 +127,27 @@ export async function initializeSchema(db: D1Database) {
   const scopedMaster = jurisdictionColumns.results.some(
     (column) => column.name === 'release_id'
   )
-  if (names.has('manifest_key') || scopedMaster) {
+  const lineColumns = await db
+    .prepare('PRAGMA table_info(fiscal_lines)')
+    .all<{ name: string }>()
+  const legacyCofog = await db
+    .prepare(
+      "SELECT name FROM sqlite_master WHERE type='table' AND name='cofog'"
+    )
+    .first<{ name: string }>()
+  const separateClassification =
+    Boolean(legacyCofog) ||
+    (lineColumns.results.length > 0 &&
+      !lineColumns.results.some((column) => column.name === 'cofog_code'))
+  const classificationTables = [
+    'names',
+    'line_dimensions',
+    'line_hierarchy',
+    'amounts',
+    'cofog',
+    'fiscal_lines',
+  ]
+  if (names.has('manifest_key') || scopedMaster || separateClassification) {
     const row = await db
       .prepare('SELECT count(*) AS count FROM releases')
       .first<{ count: number }>()
@@ -135,6 +155,24 @@ export async function initializeSchema(db: D1Database) {
       throw new Error(
         'Existing release data requires explicit schema reconstruction before init'
       )
+    if (separateClassification) {
+      for (const table of classificationTables) {
+        const present = await db
+          .prepare(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name=?"
+          )
+          .bind(table)
+          .first<{ name: string }>()
+        if (!present) continue
+        const count = await db
+          .prepare(`SELECT count(*) AS count FROM "${table}"`)
+          .first<{ count: number }>()
+        if (count?.count !== 0)
+          throw new Error(
+            'Existing classification data requires explicit schema reconstruction before init'
+          )
+      }
+    }
     if (scopedMaster) {
       const masterRows = await db
         .prepare('SELECT count(*) AS count FROM jurisdictions')
@@ -167,6 +205,12 @@ export async function initializeSchema(db: D1Database) {
           'ALTER TABLE releases RENAME COLUMN manifest_sha256 TO verification_sha256'
         ),
       ])
+    if (separateClassification)
+      await db.batch(
+        classificationTables.map((table) =>
+          db.prepare(`DROP TABLE IF EXISTS "${table}"`)
+        )
+      )
     if (scopedMaster) {
       await db.batch([
         db.prepare('DROP TABLE IF EXISTS fiscal_datasets'),

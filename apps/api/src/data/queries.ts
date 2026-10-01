@@ -161,7 +161,7 @@ function conditions(
     args.push(input.fund);
   }
   if (input.consolidation !== "all") {
-    where.push("c.consolidation=?");
+    where.push("l.consolidation=?");
     args.push(input.consolidation);
   }
   for (const h of input.hierarchy) {
@@ -173,7 +173,7 @@ function conditions(
   for (const field of ["division", "group", "class", "status"] as const) {
     const value = input.cofog?.[field];
     if (value !== undefined) {
-      where.push(`c."${field}"=?`);
+      where.push(field === "status" ? "l.cofog_status=?" : `c."${field}"=?`);
       args.push(value);
     }
   }
@@ -185,14 +185,19 @@ function conditions(
   }
   return { where: where.join(" AND "), args };
 }
-const joined =
-  "FROM fiscal_lines l JOIN amounts a ON a.release_id=l.release_id AND a.fiscal_line_id=l.fiscal_line_id JOIN cofog c ON c.release_id=l.release_id AND c.fiscal_line_id=l.fiscal_line_id";
+const joined = `FROM fiscal_lines l JOIN amounts a ON a.release_id=l.release_id AND a.fiscal_line_id=l.fiscal_line_id
+   LEFT JOIN (SELECT n.code,
+     CASE n.level WHEN 'division' THEN n.code WHEN 'group' THEN p.code ELSE g.code END AS division,
+     CASE n.level WHEN 'group' THEN n.code WHEN 'class' THEN p.code ELSE '' END AS "group",
+     CASE n.level WHEN 'class' THEN n.code ELSE '' END AS class
+     FROM cofog_codes n LEFT JOIN cofog_codes p ON p.code=n.parent_code LEFT JOIN cofog_codes g ON g.code=p.parent_code
+   ) c ON c.code=l.cofog_code`;
 const lineSelect = `SELECT l.fiscal_line_id AS id,l.dataset_id AS datasetId,l.source_row AS sourceRow,l.fund_code AS fundCode,l.fund_label AS fundLabel,
  a.phase,a.value,a.source_amount AS sourceAmount,a.source_amount_unit AS sourceAmountUnit,
  (SELECT json_group_array(json_object('level',h.level,'code',h.code,'label',h.label,'nameSource',h.name_source)) FROM (SELECT * FROM line_hierarchy WHERE release_id=l.release_id AND fiscal_line_id=l.fiscal_line_id ORDER BY ordinal) h) AS hierarchy,
  (SELECT json_group_array(json_object('dimension',d.dimension,'code',d.code,'label',d.label)) FROM (SELECT * FROM line_dimensions WHERE release_id=l.release_id AND fiscal_line_id=l.fiscal_line_id ORDER BY dimension) d) AS dimensions,
  (SELECT json_group_array(json_object('kind',n.name_kind,'level',n.level,'value',n.value,'nameSource',n.name_source,'basis',n.basis)) FROM (SELECT * FROM names WHERE release_id=l.release_id AND fiscal_line_id=l.fiscal_line_id ORDER BY name_kind,level) n) AS names,
- json_object('status',c.status,'division',c.division,'group',c."group",'class',c.class,'consolidation',c.consolidation,'decidedAtLevel',c.decided_at_level,'ruleId',c.rule_id,'basis',c.basis,'counterpartFund',c.counterpart_fund) AS cofog`;
+ json_object('status',l.cofog_status,'division',coalesce(c.division,''),'group',coalesce(c."group",''),'class',coalesce(c.class,''),'consolidation',l.consolidation,'decidedAtLevel',l.cofog_decided_at_level,'ruleId',l.cofog_rule_id,'basis',l.cofog_basis,'counterpartFund',l.counterpart_fund) AS cofog`;
 export async function queryLines(
   db: D1Database,
   releaseId: string,
@@ -303,7 +308,7 @@ export async function aggregate(
     if (key === "year") return "CAST(d.fiscal_year AS TEXT)";
     if (key === "fund") return "l.fund_code";
     if (key.startsWith("cofog."))
-      return `CASE WHEN c.status!='assigned' THEN c.status ELSE coalesce(nullif(c."${key.slice(6)}",''),'not-descended') END`;
+      return `CASE WHEN l.cofog_status!='assigned' THEN l.cofog_status ELSE coalesce(nullif(c."${key.slice(6)}",''),'not-descended') END`;
     return `(SELECT json_group_array(json_array(h.level,h.code)) FROM (SELECT level,code FROM line_hierarchy WHERE release_id=l.release_id AND fiscal_line_id=l.fiscal_line_id AND ordinal<=(SELECT ordinal FROM line_hierarchy WHERE release_id=l.release_id AND fiscal_line_id=l.fiscal_line_id AND level='${key}') ORDER BY ordinal) h)`;
   });
   if (

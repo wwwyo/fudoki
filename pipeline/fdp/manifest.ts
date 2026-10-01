@@ -149,6 +149,9 @@ export async function finalizeCandidate(
     jurisdictionMasterSha256: sha256(
       await readFile(join(directory, 'api/jurisdictions.jsonl'))
     ),
+    cofogMasterSha256: sha256(
+      await readFile(join(directory, 'api/cofog_codes.jsonl'))
+    ),
     files,
     packages,
     tables,
@@ -184,6 +187,11 @@ export async function verifyCandidate(
     manifest.jurisdictionMasterSha256
   )
     throw new Error('Jurisdiction master differs from verification record')
+  if (
+    sha256(await readFile(join(directory, 'api/cofog_codes.jsonl'))) !==
+    manifest.cofogMasterSha256
+  )
+    throw new Error('COFOG master differs from verification record')
   const complete = JSON.parse(
     await readFile(join(directory, 'complete.json'), 'utf8')
   )

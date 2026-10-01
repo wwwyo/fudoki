@@ -1,12 +1,17 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { loadJurisdictions } from '@fudoki/jurisdictions'
+import { cofogMaster } from '@fudoki/fiscal/cofog-master'
 import { BY_JURISDICTION } from './ingestion/fiscal/metadata'
 import { BUILD, PIPELINE } from './paths'
 
 export async function writeDeclarations() {
   const directory = join(BUILD, 'declarations')
   await mkdir(directory, { recursive: true })
+  await writeFile(
+    join(directory, 'cofog_codes.json'),
+    JSON.stringify(cofogMaster())
+  )
   const registry = await loadJurisdictions()
   const jurisdictions = Object.entries(registry.jurisdictions)
     .sort()

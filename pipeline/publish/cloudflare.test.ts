@@ -4,6 +4,56 @@ import { readFile } from 'node:fs/promises'
 import { sqliteD1 } from '../../apps/api/test/database'
 import { initializeSchema } from './cloudflare'
 
+test('initialization replaces only empty legacy classification storage and installs the master foreign key', async () => {
+  for (const populated of [false, true]) {
+    const sqlite = new Database(':memory:')
+    try {
+      const sql = await readFile(
+        new URL('../../packages/data-contracts/schema.sql', import.meta.url),
+        'utf8'
+      )
+      sqlite.exec(
+        sql.replace(
+          /CREATE TABLE IF NOT EXISTS fiscal_lines \([\s\S]*?\);/,
+          'CREATE TABLE fiscal_lines(release_id TEXT,fiscal_line_id TEXT,dataset_id TEXT,source_row INTEGER,fund_code TEXT,fund_label TEXT,PRIMARY KEY(release_id,fiscal_line_id));'
+        )
+      )
+      sqlite.exec(
+        'CREATE TABLE cofog(release_id TEXT,fiscal_line_id TEXT,status TEXT)'
+      )
+      if (populated)
+        sqlite.run(
+          "INSERT INTO fiscal_lines VALUES('unused','line','dataset',1,'01','一般会計')"
+        )
+      if (populated) {
+        await expect(initializeSchema(sqliteD1(sqlite))).rejects.toThrow(
+          'Existing classification data'
+        )
+        expect(
+          sqlite.query('SELECT count(*) AS count FROM fiscal_lines').get()
+        ).toEqual({ count: 1 })
+      } else {
+        await initializeSchema(sqliteD1(sqlite))
+        expect(
+          sqlite
+            .query("SELECT name FROM sqlite_master WHERE name='cofog'")
+            .get()
+        ).toBeNull()
+        expect(
+          (
+            sqlite.query('PRAGMA foreign_key_list(fiscal_lines)').all() as {
+              table: string
+            }[]
+          ).map((fk) => fk.table)
+        ).toContain('cofog_codes')
+        await initializeSchema(sqliteD1(sqlite))
+      }
+    } finally {
+      sqlite.close()
+    }
+  }
+})
+
 test('initialization replaces the empty pre-publication metadata columns and remains repeatable', async () => {
   const sqlite = new Database(':memory:')
   try {

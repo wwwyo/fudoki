@@ -2,7 +2,13 @@ import { beforeEach, afterEach, expect, test } from "bun:test";
 import { Database } from "bun:sqlite";
 import { readFileSync } from "node:fs";
 import { sqliteD1 } from "../../test/database";
-import { aggregate, files, pageLines, resolveRelease } from "./queries";
+import {
+  aggregate,
+  files,
+  pageLines,
+  queryLines,
+  resolveRelease,
+} from "./queries";
 import { aggregateQuerySchema, lineQuerySchema } from "../contract";
 
 const R1 = "r-" + "1".repeat(32),
@@ -10,6 +16,74 @@ const R1 = "r-" + "1".repeat(32),
 const secret = "test-only-secret-with-at-least-32-characters";
 let sqlite: Database;
 let db: ReturnType<typeof sqliteD1>;
+test("COFOG parent references preserve coarse assignments and unclassified lines without multiplying amounts", async () => {
+  sqlite.run(
+    "UPDATE fiscal_lines SET cofog_code='09' WHERE release_id=? AND fiscal_line_id='budget:1'",
+    [R1],
+  );
+  sqlite.run(
+    "UPDATE fiscal_lines SET cofog_code=NULL,cofog_status='unclassifiable' WHERE release_id=? AND fiscal_line_id='budget:2'",
+    [R1],
+  );
+  sqlite.run(
+    "UPDATE fiscal_lines SET cofog_code='09.1' WHERE release_id=? AND fiscal_line_id='budget:3'",
+    [R1],
+  );
+  const lines = await queryLines(
+    db,
+    R1,
+    lineQuerySchema.parse({
+      datasetIds: ["budget"],
+      phase: "approved",
+      consolidation: "all",
+    }),
+  );
+  expect(lines.map((line) => line.cofog)).toMatchObject([
+    { status: "assigned", division: "09", group: "", class: "" },
+    { status: "unclassifiable", division: "", group: "", class: "" },
+    { status: "assigned", division: "09", group: "09.1", class: "" },
+  ]);
+  const grouped = await aggregate(
+    db,
+    R1,
+    aggregateQuerySchema.parse({
+      datasetIds: ["budget"],
+      phase: "approved",
+      consolidation: "all",
+      groupBy: ["cofog.group"],
+    }),
+  );
+  expect(grouped.total).toEqual({ amount: 600, lineCount: 3 });
+  expect(grouped.cells).toEqual([
+    { keys: ["09.1"], amount: 300, lineCount: 1 },
+    { keys: ["not-descended"], amount: 100, lineCount: 1 },
+    { keys: ["unclassifiable"], amount: 200, lineCount: 1 },
+  ]);
+  expect(
+    (
+      await queryLines(
+        db,
+        R1,
+        lineQuerySchema.parse({
+          datasetIds: ["budget"],
+          cofog: { status: "unclassifiable" },
+        }),
+      )
+    ).map((line) => line.id),
+  ).toEqual(["budget:2"]);
+  expect(() =>
+    sqlite.run(
+      "UPDATE fiscal_lines SET cofog_code='99' WHERE release_id=? AND fiscal_line_id='budget:1'",
+      [R1],
+    ),
+  ).toThrow();
+  expect(() =>
+    sqlite.run(
+      "UPDATE fiscal_lines SET cofog_code=NULL WHERE release_id=? AND fiscal_line_id='budget:1'",
+      [R1],
+    ),
+  ).toThrow();
+});
 beforeEach(() => {
   sqlite = new Database(":memory:");
   sqlite.exec(
@@ -22,6 +96,9 @@ beforeEach(() => {
     ),
   );
   db = sqliteD1(sqlite);
+  sqlite.exec(
+    "INSERT INTO cofog_codes VALUES('09','教育','division',NULL),('09.1','初等教育','group','09'),('09.1.1','検証用の小分類','class','09.1')",
+  );
   sqlite.run("INSERT INTO jurisdictions VALUES(?,?,?)", [
     "132195",
     "狛江市",
@@ -65,14 +142,24 @@ beforeEach(() => {
       ]);
       for (let i = 1; i <= 3; i++) {
         const id = dataset + ":" + i;
-        sqlite.run("INSERT INTO fiscal_lines VALUES(?,?,?,?,?,?)", [
-          release,
-          id,
-          dataset!,
-          i,
-          "01",
-          "一般会計",
-        ]);
+        sqlite.run(
+          "INSERT INTO fiscal_lines VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          [
+            release,
+            id,
+            dataset!,
+            i,
+            "01",
+            "一般会計",
+            "09.1.1",
+            "assigned",
+            i === 3 ? "eliminated" : "retained",
+            "目",
+            "rule",
+            "根拠",
+            "",
+          ],
+        );
         sqlite.run("INSERT INTO amounts VALUES(?,?,?,?,?,?,?)", [
           release,
           id,
@@ -81,19 +168,6 @@ beforeEach(() => {
           i,
           "円",
           1,
-        ]);
-        sqlite.run("INSERT INTO cofog VALUES(?,?,?,?,?,?,?,?,?,?,?)", [
-          release,
-          id,
-          "assigned",
-          "09",
-          "09.1",
-          "09.1.1",
-          i === 3 ? "eliminated" : "retained",
-          "目",
-          "rule",
-          "根拠",
-          "",
         ]);
         sqlite.run("INSERT INTO line_hierarchy VALUES(?,?,?,?,?,?,?)", [
           release,

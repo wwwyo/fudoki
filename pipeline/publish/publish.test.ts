@@ -123,6 +123,21 @@ const manifestUrl =
   'https://raw.githubusercontent.com/wwwyo/fudoki/' +
   'a'.repeat(40) +
   '/pipeline/publish/manifest.json'
+test('COFOG master is shared across releases and a conflicting definition cannot replace existing meanings', async () => {
+  await publish(join(directory, R1), db, store, methods())
+  await publish(join(directory, R2), db, store, methods())
+  expect(
+    sqlite.query('SELECT count(*) AS count FROM cofog_codes').get()
+  ).toEqual({ count: 3 })
+  expect(
+    sqlite.query('SELECT count(*) AS count FROM fiscal_lines').get()
+  ).toEqual({ count: 1002 })
+  sqlite.run("UPDATE cofog_codes SET label='別の意味' WHERE code='09'")
+  await expect(
+    publish(join(directory, R1), db, store, methods())
+  ).rejects.toThrow('COFOG master differs')
+  expect(await resolveRelease(db)).toBe(R2)
+})
 function publish(
   candidate: string,
   db: ReturnType<typeof sqliteD1>,

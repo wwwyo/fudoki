@@ -51,7 +51,6 @@ export async function fixture(
     ],
     fiscal_lines: [],
     amounts: [],
-    cofog: [],
     line_hierarchy: [],
     line_dimensions: [],
     names: [],
@@ -64,6 +63,13 @@ export async function fixture(
       source_row: i + 1,
       fund_code: '01',
       fund_label: '一般会計',
+      cofog_code: '09.1.1',
+      cofog_status: 'assigned',
+      consolidation: 'retained',
+      cofog_decided_at_level: '目',
+      cofog_rule_id: 'fixture-rule',
+      cofog_basis: '検証用の分類',
+      counterpart_fund: '',
     })
     tables.amounts.push({
       fiscal_line_id: id,
@@ -72,18 +78,6 @@ export async function fixture(
       source_amount: amount,
       source_amount_unit: '円',
       is_primary: 1,
-    })
-    tables.cofog.push({
-      fiscal_line_id: id,
-      status: 'assigned',
-      division: '09',
-      group: '09.1',
-      class: '09.1.1',
-      consolidation: 'retained',
-      decided_at_level: '目',
-      rule_id: 'fixture-rule',
-      basis: '検証用の分類',
-      counterpart_fund: '',
     })
     tables.line_hierarchy.push({
       fiscal_line_id: id,
@@ -103,6 +97,26 @@ export async function fixture(
     })
   }
   await mkdir(join(directory, 'api'), { recursive: true })
+  await writeFile(
+    join(directory, 'api/cofog_codes.jsonl'),
+    [
+      { code: '09', label: '教育', level: 'division', parent_code: null },
+      {
+        code: '09.1',
+        label: '就学前教育及び初等教育',
+        level: 'group',
+        parent_code: '09',
+      },
+      {
+        code: '09.1.1',
+        label: '検証用の小分類',
+        level: 'class',
+        parent_code: '09.1',
+      },
+    ]
+      .map((row) => JSON.stringify(row) + '\n')
+      .join('')
+  )
   await writeFile(
     join(directory, 'api/jurisdictions.jsonl'),
     tables.release_jurisdictions
