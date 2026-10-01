@@ -17,7 +17,7 @@ import {
 } from './paths'
 import { writeDeclarations } from './declarations'
 import { releaseIdentity, sha256 } from './release'
-import { finalizeCandidate, verifyCandidate } from './fdp/manifest'
+import { finalizeCandidate, verifyCandidate, pinManifest } from './fdp/manifest'
 
 const identity = await releaseIdentity()
 const candidate = join(BUILD, 'releases', identity.releaseId)
@@ -99,13 +99,14 @@ if (rebuild) {
   await finalizeCandidate(working, identity, validation)
   await verifyCandidate(working)
   if (complete) {
-    if (
-      sha256(await readFile(join(working, 'manifest.json'))) !==
-      sha256(await readFile(join(candidate, 'manifest.json')))
-    )
-      throw new Error(
-        'The same code and fixed inputs produced a different candidate'
+    for (const name of ['manifest.json', 'verification.json'])
+      if (
+        sha256(await readFile(join(working, name))) !==
+        sha256(await readFile(join(candidate, name)))
       )
+        throw new Error(
+          'The same code and fixed inputs produced a different candidate'
+        )
   }
   await writeFile(
     join(BUILD, 'warehouse.json'),
@@ -123,6 +124,7 @@ await writeFile(
     inputFingerprint: identity.inputFingerprint,
   }) + '\n'
 )
+await pinManifest(candidate)
 console.log(
   JSON.stringify({
     releaseId: identity.releaseId,

@@ -1,7 +1,7 @@
 import { readFile, writeFile, mkdir, appendFile, rm } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { parseArgs } from 'node:util'
-import { manifestSchema } from '@fudoki/data-contracts'
+import { distributionManifestSchema } from '@fudoki/data-contracts'
 import { BUILD, CACHE, LATEST, PIPELINE } from '../paths'
 import { verifyCandidate } from '../fdp/manifest'
 import { sha256 } from '../release'
@@ -38,22 +38,32 @@ if (values['prepare-baseline']) {
           url.protocol === 'http:' &&
           ['127.0.0.1', 'localhost'].includes(url.hostname)
         )) ||
-      !/^\/releases\/r-[a-f0-9]{32}\/manifest\.json$/.test(url.pathname)
+      !(
+        (url.hostname === 'raw.githubusercontent.com' &&
+          /^\/wwwyo\/fudoki\/[a-f0-9]{40}\/pipeline\/publish\/manifest\.json$/.test(
+            url.pathname
+          )) ||
+        (['127.0.0.1', 'localhost'].includes(url.hostname) &&
+          url.pathname === '/manifest.json')
+      )
     )
-      throw new Error('Expected a public immutable release manifest URL')
+      throw new Error('Expected a commit-pinned Git manifest URL')
     const response = await fetch(url)
     if (!response.ok)
       throw new Error(`Baseline manifest fetch failed: ${response.status}`)
     const body = new Uint8Array(await response.arrayBuffer())
-    const manifest = manifestSchema.parse(
+    const manifest = distributionManifestSchema.parse(
       JSON.parse(new TextDecoder().decode(body))
     )
-    if (url.pathname !== `/releases/${manifest.releaseId}/manifest.json`)
-      throw new Error('Baseline manifest belongs to another release')
     const directory = join(CACHE, 'review', sha256(body))
     await mkdir(directory, { recursive: true })
     for (const file of manifest.files) {
-      const result = await fetch(new URL('/' + file.objectKey, url))
+      const result = await fetch(
+        new URL(
+          '/' + file.objectKey,
+          process.env.FUDOKI_DOWNLOAD_BASE_URL ?? 'https://download.fudoki.dev'
+        )
+      )
       if (!result.ok)
         throw new Error(`Baseline file fetch failed: ${file.path}`)
       const content = new Uint8Array(await result.arrayBuffer())
@@ -66,7 +76,7 @@ if (values['prepare-baseline']) {
     await writeFile(join(directory, 'manifest.json'), body)
     await writeFile(
       marker,
-      JSON.stringify({ directory, releaseId: manifest.releaseId }) + '\n'
+      JSON.stringify({ directory, releaseId: manifest.buildId }) + '\n'
     )
   }
   console.log(JSON.stringify({ prepared: true, marker }))

@@ -88,12 +88,12 @@ export async function activate(
   await guardedBatch(db, lease, [
     db
       .prepare(
-        `INSERT INTO publish_guard(valid) SELECT CASE WHEN EXISTS(SELECT 1 FROM releases WHERE release_id=? AND contract_version=1 AND manifest_sha256=?) THEN 1 ELSE 0 END`
+        `INSERT INTO publish_guard(valid) SELECT CASE WHEN EXISTS(SELECT 1 FROM releases WHERE release_id=? AND contract_version=1 AND verification_sha256=?) THEN 1 ELSE 0 END`
       )
       .bind(lease.candidateReleaseId, manifestSha256),
     db
       .prepare(
-        "UPDATE releases SET state='published',manifest_key=? WHERE release_id=?"
+        "UPDATE releases SET state='published',manifest_url=? WHERE release_id=?"
       )
       .bind(manifestKey, lease.candidateReleaseId),
     db
@@ -121,7 +121,6 @@ export async function protectedReleases(db: D1Database): Promise<Set<string>> {
   const result = await db
     .prepare(
       `SELECT release_id FROM active_release
-    UNION SELECT release_id FROM (SELECT release_id FROM release_history ORDER BY generation DESC LIMIT 3)
     UNION SELECT candidate_release_id AS release_id FROM publish_control WHERE candidate_release_id IS NOT NULL`
     )
     .all<{ release_id: string }>()

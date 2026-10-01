@@ -41,11 +41,7 @@ try {
     },
   })
   for (const file of manifest.files) {
-    if (
-      !/^(?:catalog\.json|fiscal\/\d{6}\/[a-z_]+\.(?:csv|json))$/.test(
-        file.path
-      )
-    )
+    if (!/^fiscal\/\d{6}\/[a-z_]+\.(?:csv|json)$/.test(file.path))
       throw new Error('Unexpected distribution file')
     await platform.env.RELEASES.put(
       file.objectKey,
@@ -53,11 +49,6 @@ try {
       { httpMetadata: { contentType: file.contentType } }
     )
   }
-  await platform.env.RELEASES.put(
-    `releases/${latest.releaseId}/manifest.json`,
-    await readFile(new URL('manifest.json', directory)),
-    { httpMetadata: { contentType: 'application/json; charset=utf-8' } }
-  )
   console.log(
     JSON.stringify({
       mode: 'local',

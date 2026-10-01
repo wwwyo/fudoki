@@ -89,10 +89,10 @@ uv add --exclude-newer $(date -v-7d +%Y-%m-%d) <package>
 
 - **取得**: Python。原典 CSV/PDF のバイト列と取り込み Parquet を非公開 R2 に保存する。採用した入力の証跡は ingestion 配下の `provenance/`、入力一覧は `sources.lock.json` として Git 管理し、個別ハッシュを照合する。
 - **変換・検査**: dbt-duckdb。marts が配布 CSV と D1 用の表を生成し、相互の行・金額・分類を検査する。
-- **説明ファイル**: Python/TypeScript の `pipeline/fdp/`。FDP descriptor・catalog・manifest を生成する。
-- **検索・配布**: API は D1 の SQL を実行し、download は公開 manifest に列挙した R2 ファイルを配信する。API に R2 やデータ ASSETS を bind しない。
+- **説明ファイル**: Python/TypeScript の `pipeline/fdp/`。FDP descriptor と収録範囲・出典・配布先をまとめた Git manifest を生成する。
+- **検索・配布**: API は D1 の SQL を実行し、API は公開中の Git manifest URL を返し、download は R2 の団体別配布物を配信する。API に R2 やデータ ASSETS を bind しない。
 - **検証**: Bun/TypeScript の `pipeline/verify/report/` とループバック専用の view。公開 web と UI は共有しない。
-- **保存**: Git はコード・宣言・判断・入力一覧・採用した入力の証跡、R2 は原典・取り込み・配布物、D1 は検索用の派生表。`.cache/` と `build/` は再生成可能なローカル作業領域。
+- **保存**: Git はコード・宣言・判断・入力一覧・採用した入力の証跡・最新 manifest、R2 は原典・取り込み・配布物、D1 は検索用の派生表。`.cache/` と `build/` は再生成可能なローカル作業領域。
 
 **系統（lineage）は dbt の `manifest.json` から取る。** 手で書かない。
 段とノードを手作りすると、パイプラインを変えても図が変わらない状態を作る（実際に作った）。

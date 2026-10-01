@@ -26,7 +26,7 @@ beforeEach(async () => {
   )
   sqlite.run("INSERT INTO releases VALUES(?,1,'published',?,NULL,?,?)", [
     id,
-    `releases/${id}/manifest.json`,
+    `https://raw.githubusercontent.com/wwwyo/fudoki/${'a'.repeat(40)}/pipeline/publish/manifest.json`,
     'a'.repeat(40),
     'b'.repeat(64),
   ])
@@ -105,7 +105,9 @@ test('HTTP contract, datasets and files expose one release without an assets or 
   expect(
     contract.listFiles['~orpc'].outputSchema!.parse(await files.json())
       .manifestUrl
-  ).toBe(`https://download.example.org/releases/${id}/manifest.json`)
+  ).toBe(
+    `https://raw.githubusercontent.com/wwwyo/fudoki/${'a'.repeat(40)}/pipeline/publish/manifest.json`
+  )
   expect((await app.request('/v0/budgets', {}, env)).status).toBe(404)
   expect(
     (await app.request('/v0/datapackages/000001/expenditure.csv', {}, env))

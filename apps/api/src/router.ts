@@ -78,9 +78,15 @@ export const router = os.router({
   ),
   listFiles: os.listFiles.handler(async ({ input, context: { env } }) => {
     const releaseId = await resolveRelease(env.DB, input.releaseId)
+    const publication = await env.DB.prepare(
+      'SELECT manifest_url FROM releases WHERE release_id=?'
+    )
+      .bind(releaseId)
+      .first<{ manifest_url: string | null }>()
+    if (!publication?.manifest_url) throw new ORPCError('SERVICE_UNAVAILABLE')
     return {
       releaseId,
-      manifestUrl: `${env.DOWNLOAD_BASE_URL.replace(/\/$/, '')}/releases/${releaseId}/manifest.json`,
+      manifestUrl: publication.manifest_url,
       files: await files(
         env.DB,
         releaseId,

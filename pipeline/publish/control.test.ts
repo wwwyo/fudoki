@@ -58,15 +58,36 @@ test('a failed batch leaves both publication state and active release unchanged'
 })
 test('a stale attempt cannot reactivate its candidate after rollback, even when the release ID is the same', async () => {
   const initial = await acquire(db, 'initial', R1)
-  await activate(db, initial, `releases/${R1}/manifest.json`, sha)
+  await activate(
+    db,
+    initial,
+    'https://raw.githubusercontent.com/wwwyo/fudoki/' +
+      'a'.repeat(40) +
+      '/pipeline/publish/manifest.json',
+    sha
+  )
   await release(db, initial)
   const stale = await acquire(db, 'stale', R2)
   sqlite.run('UPDATE publish_control SET expires_at=0')
   const rollback = await acquire(db, 'rollback', R1)
-  await activate(db, rollback, `releases/${R1}/manifest.json`, sha)
+  await activate(
+    db,
+    rollback,
+    'https://raw.githubusercontent.com/wwwyo/fudoki/' +
+      'a'.repeat(40) +
+      '/pipeline/publish/manifest.json',
+    sha
+  )
   await release(db, rollback)
   await expect(
-    activate(db, stale, `releases/${R2}/manifest.json`, sha)
+    activate(
+      db,
+      stale,
+      'https://raw.githubusercontent.com/wwwyo/fudoki/' +
+        'b'.repeat(40) +
+        '/pipeline/publish/manifest.json',
+      sha
+    )
   ).rejects.toThrow()
   expect(
     await db
@@ -83,10 +104,24 @@ test('a stale attempt cannot reactivate its candidate after rollback, even when 
 test('manifest mismatch cannot publish and cleanup protects active, retained and running candidate releases', async () => {
   const lease = await acquire(db, 'publisher', R1)
   await expect(
-    activate(db, lease, `releases/${R1}/manifest.json`, 'b'.repeat(64))
+    activate(
+      db,
+      lease,
+      'https://raw.githubusercontent.com/wwwyo/fudoki/' +
+        'a'.repeat(40) +
+        '/pipeline/publish/manifest.json',
+      'b'.repeat(64)
+    )
   ).rejects.toThrow()
   expect((await protectedReleases(db)).has(R1)).toBe(true)
-  await activate(db, lease, `releases/${R1}/manifest.json`, sha)
+  await activate(
+    db,
+    lease,
+    'https://raw.githubusercontent.com/wwwyo/fudoki/' +
+      'a'.repeat(40) +
+      '/pipeline/publish/manifest.json',
+    sha
+  )
   await release(db, lease)
   const next = await acquire(db, 'next', R2)
   expect(await protectedReleases(db)).toEqual(new Set([R1, R2]))

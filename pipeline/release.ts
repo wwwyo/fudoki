@@ -41,6 +41,7 @@ export async function sourceFingerprint(): Promise<string> {
       )
     )
       continue
+    if (path === 'pipeline/publish/manifest.json') continue
     const file = join(REPO, path)
     try {
       const info = await lstat(file)
@@ -73,8 +74,32 @@ async function directoryHash(path: string): Promise<string> {
   await visit(path)
   return hash.digest('hex')
 }
+export async function sourceRevision(repo = REPO): Promise<string> {
+  const { stdout } = await promisify(execFile)(
+    'git',
+    [
+      'log',
+      '-1',
+      '--format=%H',
+      '--',
+      'pipeline',
+      'packages',
+      'apps/api/src',
+      'apps/api/scripts',
+      'package.json',
+      'bun.lock',
+      'pyproject.toml',
+      'uv.lock',
+      'mise.toml',
+      'tsconfig.json',
+      ':!pipeline/publish/manifest.json',
+    ],
+    { cwd: repo }
+  )
+  return stdout.trim()
+}
 export async function releaseIdentity() {
-  const codeRevision = await git('rev-parse', 'HEAD')
+  const codeRevision = await sourceRevision()
   const inputFingerprint = sha256(await readFile(INPUT_LOCK))
   const codeFingerprint = await sourceFingerprint()
   const judgmentFingerprint = sha256(

@@ -5,9 +5,9 @@ import { readFile } from 'node:fs/promises'
 import { relative, resolve, sep, join } from 'node:path'
 import { z } from 'zod'
 import { releaseIdSchema } from '@fudoki/data-contracts'
-import { BUILD, INPUT_LOCK, REPO } from '../paths'
+import { BUILD, INPUT_LOCK, REPO, PUBLICATION_MANIFEST } from '../paths'
 import { verifyCandidate } from '../fdp/manifest'
-import { sourceFingerprint, sha256 } from '../release'
+import { sourceFingerprint, sourceRevision, sha256 } from '../release'
 import { cloudflareD1, cloudflareObjects, initializeSchema } from './cloudflare'
 import { remoteVerification } from './remote'
 import { publish, rollback } from './publish'
@@ -86,6 +86,12 @@ async function main() {
       throw new Error(
         'Candidate differs from current code or fixed inputs; build the committed version explicitly'
       )
+    if (
+      sha256(await readFile(PUBLICATION_MANIFEST)) !== manifest.manifestSha256
+    )
+      throw new Error(
+        'Git manifest differs from the verified candidate; run pipeline:build'
+      )
     if (input.dryRun) {
       console.log(
         JSON.stringify({
@@ -106,19 +112,30 @@ async function main() {
     })
     if (
       status.trim() ||
-      manifest.codeRevision !== revision.trim() ||
+      manifest.codeRevision !== (await sourceRevision()) ||
       INPUT_LOCK !== join(REPO, 'pipeline/ingestion/fiscal/sources.lock.json')
     )
       throw new Error(
         'Publish requires a clean commit and the canonical, remotely verified input lock'
       )
-    const rpc = remoteVerification()
+    const { stdout: committedManifest } = await exec(
+      'git',
+      ['show', 'HEAD:pipeline/publish/manifest.json'],
+      { cwd: REPO, maxBuffer: 16 * 1024 * 1024 }
+    )
+    if (sha256(committedManifest) !== manifest.manifestSha256)
+      throw new Error(
+        'The distribution manifest must be committed before publication'
+      )
+    const manifestUrl = `https://raw.githubusercontent.com/wwwyo/fudoki/${revision.trim()}/pipeline/publish/manifest.json`
+    const rpc = remoteVerification(manifest)
     try {
       const result = await publish(
         directory,
         db,
         cloudflareObjects('fudoki-releases'),
         rpc.verifier,
+        manifestUrl,
         (event) => console.error(JSON.stringify(event))
       )
       console.log(JSON.stringify({ command: 'publish', ...result }))
@@ -136,20 +153,26 @@ async function main() {
       )
       return
     }
-    const rpc = remoteVerification()
+    const manifest = await verifyCandidate(directory)
+    const rpc = remoteVerification(manifest)
     try {
-      const manifest = await rpc.verifier.candidate(input.releaseId)
       const row = await db
         .prepare(
-          "SELECT manifest_sha256 FROM releases WHERE release_id=? AND state='published'"
+          "SELECT verification_sha256,manifest_url FROM releases WHERE release_id=? AND state='published'"
         )
         .bind(input.releaseId)
-        .first<{ manifest_sha256: string }>()
+        .first<{ verification_sha256: string; manifest_url: string }>()
       if (!row) throw new Error('Rollback target is not retained and published')
       console.log(
         JSON.stringify({
           command: 'rollback',
-          ...(await rollback(db, rpc.verifier, manifest, row.manifest_sha256)),
+          ...(await rollback(
+            db,
+            rpc.verifier,
+            manifest,
+            row.verification_sha256,
+            row.manifest_url
+          )),
         })
       )
     } finally {

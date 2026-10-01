@@ -202,15 +202,15 @@ test("names are matched literally with bound SQL, including SQL and LIKE metacha
 test("download URLs come from file metadata without requesting R2 or reading the file body", async () => {
   sqlite.run("INSERT INTO files VALUES(?,?,?,?,?,?)", [
     R1,
-    "catalog.json",
-    `releases/${R1}/catalog.json`,
+    "fiscal/000001/expenditure.csv",
+    `fiscal/000001/p-${"a".repeat(64)}/expenditure.csv`,
     "a".repeat(64),
     100,
     "application/json; charset=utf-8",
   ]);
   const result = await files(db, R1, "https://download.example.org");
   expect(result[0]?.url).toBe(
-    `https://download.example.org/releases/${R1}/catalog.json`,
+    `https://download.example.org/fiscal/000001/p-${"a".repeat(64)}/expenditure.csv`,
   );
 });
 test("two releases use the same immutable package URL for unchanged data", async () => {

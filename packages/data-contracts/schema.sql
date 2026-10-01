@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS releases (
   release_id TEXT PRIMARY KEY,
   contract_version INTEGER NOT NULL CHECK (contract_version = 1),
   state TEXT NOT NULL CHECK (state IN ('staging', 'published')),
-  manifest_key TEXT,
-  manifest_sha256 TEXT,
+  manifest_url TEXT,
+  verification_sha256 TEXT,
   code_revision TEXT NOT NULL,
   input_fingerprint TEXT NOT NULL
 );

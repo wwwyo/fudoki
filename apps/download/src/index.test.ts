@@ -1,57 +1,17 @@
 import { expect, test } from "bun:test";
 import worker from "./index";
-import {
-  TABLES,
-  manifestSchema,
-  type R2Bucket,
-  type ReleaseManifest,
-} from "@fudoki/data-contracts";
+import type { R2Bucket } from "@fudoki/data-contracts";
 const releaseId = "r-" + "a".repeat(32);
 const file = "fiscal/132195/expenditure.csv";
 const packageId = "p-" + "e".repeat(64);
 const key = `fiscal/132195/${packageId}/expenditure.csv`;
 const body = "value\n100\n";
-const manifest: ReleaseManifest = manifestSchema.parse({
-  schemaVersion: 1,
-  releaseId,
-  codeRevision: "a".repeat(40),
-  inputFingerprint: "b".repeat(64),
-  judgmentFingerprint: "c".repeat(64),
-  queryFingerprint: "e".repeat(64),
-  totals: [],
-  packages: [
-    { jurisdictionCode: "132195", packageId, datasetIds: ["fixture"] },
-  ],
-  files: [
-    {
-      path: file,
-      objectKey: key,
-      sha256: "d".repeat(64),
-      bytes: body.length,
-      contentType: "text/csv; charset=utf-8",
-    },
-  ],
-  tables: Object.fromEntries(
-    TABLES.map((table) => [
-      table,
-      {
-        rows: 0,
-        sha256: "a".repeat(64),
-        canonicalSha256: "a".repeat(64),
-        chunks: [],
-      },
-    ]),
-  ),
-});
-function storage(published: boolean) {
+function storage() {
   const reads: string[] = [];
   const bucket: R2Bucket = {
     async get(key) {
       reads.push(key);
-      if (key.endsWith("/manifest.json") && !published) return null;
-      const value = key.endsWith("/manifest.json")
-        ? JSON.stringify(manifest)
-        : body;
+      const value = body;
       return {
         key,
         size: value.length,
@@ -79,14 +39,14 @@ function storage(published: boolean) {
 const request = (path: string, method = "GET") =>
   new Request(`https://download.example.org${path}`, { method });
 test("public package files are independent of the global release manifest", async () => {
-  const { bucket, reads } = storage(false);
+  const { bucket, reads } = storage();
   const response = await worker.fetch(request(`/${key}`), { RELEASES: bucket });
   expect(response.status).toBe(200);
   expect(await response.text()).toBe(body);
   expect(reads).toEqual([key]);
 });
 test("internal objects, legacy release file paths and write methods are refused", async () => {
-  const { bucket } = storage(true);
+  const { bucket } = storage();
   for (const path of [
     "/inputs/origin/sha256/x",
     "/_candidates/x/manifest.json",
@@ -101,7 +61,7 @@ test("internal objects, legacy release file paths and write methods are refused"
   ).toBe(405);
 });
 test("package bodies stream and use the storage ETag independently of the release", async () => {
-  const { bucket } = storage(true),
+  const { bucket } = storage(),
     get = bucket.get;
   bucket.get = async (key) => {
     const object = await get(key);
@@ -122,7 +82,7 @@ test("package bodies stream and use the storage ETag independently of the releas
   expect(response.headers.get("Cache-Control")).toContain("immutable");
 });
 test("HEAD and conditional GET omit the package body", async () => {
-  const { bucket } = storage(true);
+  const { bucket } = storage();
   expect(
     await (
       await worker.fetch(request(`/${key}`, "HEAD"), { RELEASES: bucket })
@@ -135,82 +95,16 @@ test("HEAD and conditional GET omit the package body", async () => {
   expect(await response.text()).toBe("");
 });
 
-test("release discovery excludes unfinished objects and continues even when a page has no finalized manifests", async () => {
-  const { bucket } = storage(true);
-  const staged = "r-" + "b".repeat(32);
-  const get = bucket.get;
-  bucket.get = async (key) => (key.includes(staged) ? null : get(key));
-  const calls: Parameters<R2Bucket["list"]>[0][] = [];
-  bucket.list = async (options) => {
-    calls.push(options);
-    return options.cursor === undefined
-      ? {
-          objects: [],
-          delimitedPrefixes: [`releases/${staged}/`],
-          truncated: true,
-          cursor: "next-page",
-        }
-      : {
-          objects: [],
-          delimitedPrefixes: [`releases/${releaseId}/`],
-          truncated: false,
-        };
-  };
-  const first = await worker.fetch(request("/releases"), { RELEASES: bucket });
-  expect(first.status).toBe(200);
-  expect(first.headers.get("Cache-Control")).toBe("no-store");
-  expect(await first.json()).toEqual({ releases: [], nextCursor: "next-page" });
-  const next = await worker.fetch(request("/releases?cursor=next-page"), {
-    RELEASES: bucket,
-  });
-  expect(await next.json()).toEqual({
-    releases: [
-      {
-        releaseId,
-        manifestUrl: `/releases/${releaseId}/manifest.json`,
-        codeRevision: manifest.codeRevision,
-      },
-    ],
-  });
-  expect(calls).toEqual([
-    { prefix: "releases/", delimiter: "/", limit: 20, cursor: undefined },
-    { prefix: "releases/", delimiter: "/", limit: 20, cursor: "next-page" },
-  ]);
-});
-test("release discovery refuses malformed requests and reports a storage failure instead of an empty published history", async () => {
-  const { bucket } = storage(true);
-  for (const query of [
-    "?cursor=",
-    "?cursor=a&cursor=b",
-    "?prefix=inputs/",
-    "?limit=1000",
-  ]) {
+test("manifest and release discovery are not R2 resources", async () => {
+  const { bucket, reads } = storage();
+  for (const path of [
+    "/manifest.json",
+    "/catalog.json",
+    "/releases",
+    `/releases/${releaseId}/manifest.json`,
+  ])
     expect(
-      (await worker.fetch(request("/releases" + query), { RELEASES: bucket }))
-        .status,
-    ).toBe(400);
-  }
-  expect(
-    (await worker.fetch(request("/releases"), { RELEASES: bucket })).status,
-  ).toBe(503);
-  bucket.list = async () => ({
-    objects: [],
-    delimitedPrefixes: [`releases/${releaseId}/`],
-    truncated: false,
-  });
-  expect(
-    await (
-      await worker.fetch(request("/releases", "HEAD"), { RELEASES: bucket })
-    ).text(),
-  ).toBe("");
-  const get = bucket.get;
-  bucket.get = async (key) => {
-    const object = await get(key);
-    if (object)
-      object.arrayBuffer = async () => new TextEncoder().encode("{}").buffer;
-    return object;
-  };
-  expect(
-    (await worker.fetch(request("/releases"), { RELEASES: bucket })).status,
-  ).toBe(503);
+      (await worker.fetch(request(path), { RELEASES: bucket })).status,
+    ).toBe(404);
+  expect(reads).toEqual([]);
 });

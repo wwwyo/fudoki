@@ -12,7 +12,7 @@ def read_release(directory: Path):
     files = {}
     for entry in manifest['files']:
         path = entry['path']
-        if not re.fullmatch(r'(?:catalog\.json|fiscal/\d{6}/[a-z_]+\.(?:csv|json))', path):
+        if not re.fullmatch(r'fiscal/\d{6}/[a-z_]+\.(?:csv|json)', path):
             raise ValueError('Invalid distribution path')
         body = (directory / path).read_bytes()
         if len(body) != entry['bytes'] or hashlib.sha256(body).hexdigest() != entry['sha256']:
@@ -20,9 +20,6 @@ def read_release(directory: Path):
         if path in files:
             raise ValueError('Duplicate distribution path')
         files[path] = body
-    catalog = json.loads(files['catalog.json'])
-    if catalog['releaseId'] != manifest['releaseId']:
-        raise ValueError('Catalog belongs to another release')
     scopes, resources, descriptors = {}, {}, {}
     for path, body in files.items():
         if not path.endswith('/datapackage.json'):
@@ -58,7 +55,7 @@ def read_release(directory: Path):
                 if line_id in group:
                     raise ValueError('Duplicate line and phase in distribution')
                 group[line_id] = {'amount': int(row['value']), 'classification': classifications.get(line_id)}
-    return {'manifest': manifest, 'catalog': catalog, 'scopes': scopes, 'resources': resources, 'descriptors': descriptors}
+    return {'manifest': manifest, 'scopes': scopes, 'resources': resources, 'descriptors': descriptors}
 
 
 def changed_records(before, after):
@@ -87,10 +84,10 @@ def compare(before, after):
             },
         })
     def caveats(release):
-        return {row['jurisdiction_code']: row.get('caveats', []) for row in release['catalog']['jurisdictions']}
+        return {row['jurisdiction_code']: row.get('caveats', []) for row in release['manifest']['jurisdictions']}
     def sources(release):
         result = {}
-        for row in release['catalog']['datasets']:
+        for row in release['manifest']['datasets']:
             scope = (row['jurisdiction_code'], str(row['fiscal_year']), row['direction'], row['document_kind'])
             result.setdefault(scope, []).append({key: row[key] for key in ('dataset_id', 'origin_sha256', 'source')})
         return {key: sorted(rows, key=lambda row: row['dataset_id']) for key, rows in result.items()}
@@ -102,7 +99,7 @@ def compare(before, after):
         if changes:
             resource_changes.append({'path': path, 'rows': changes})
     return {
-        'baselineReleaseId': before['manifest']['releaseId'], 'releaseId': after['manifest']['releaseId'],
+        'baselineReleaseId': before['manifest']['buildId'], 'releaseId': after['manifest']['buildId'],
         'amountUnit': 'JPY', 'scopes': groups,
         'caveatChanges': changed_records(caveats(before), caveats(after)),
         'sourceChanges': changed_records(sources(before), sources(after)),
@@ -136,14 +133,15 @@ def main():
     comparison = compare(read_release(args.baseline), current) if args.baseline else None
     baseline = {'kind': 'release', 'releaseId': comparison['baselineReleaseId']} if comparison else {'kind': 'initial-publication'}
     manifest = current['manifest']
-    review = {key: manifest[key] for key in ('releaseId', 'inputFingerprint', 'codeRevision', 'files', 'tables', 'totals')}
+    review = {key: manifest[key] for key in ('inputFingerprint', 'codeRevision', 'files')}
+    review['releaseId'] = manifest['buildId']
     review.update({'baseline': baseline, 'comparison': comparison})
     if comparison is None:
-        empty = {'manifest': {'releaseId': None}, 'catalog': {'jurisdictions': [], 'datasets': []}, 'scopes': {}, 'resources': {}, 'descriptors': {}}
+        empty = {'manifest': {'buildId': None, 'jurisdictions': [], 'datasets': []}, 'scopes': {}, 'resources': {}, 'descriptors': {}}
         review['initialContents'] = compare(empty, current)
     args.output.write_text(json.dumps(review, ensure_ascii=False, indent=2) + '\n')
     args.output.with_suffix('.md').write_text(markdown(review))
-    print(json.dumps({'path': str(args.output), 'releaseId': manifest['releaseId'], 'baseline': baseline}))
+    print(json.dumps({'path': str(args.output), 'releaseId': manifest['buildId'], 'baseline': baseline}))
 
 
 if __name__ == '__main__':

@@ -1,6 +1,7 @@
 import { beforeEach, afterEach, expect, test } from 'bun:test'
 import { Database } from 'bun:sqlite'
-import { readFile, mkdtemp, rm } from 'node:fs/promises'
+import { readFile, mkdtemp, rm, mkdir } from 'node:fs/promises'
+import { readFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { createHash } from 'node:crypto'
@@ -9,8 +10,17 @@ import { resolveRelease } from '../../apps/api/src/data/queries'
 import download from '../../apps/download/src/index'
 import type { R2Bucket } from '@fudoki/data-contracts'
 import { fixture } from '../verify/fixture'
-import { Verification, type HashStream } from './verification'
-import { publish, rollback, type Verifier, type ObjectStore } from './publish'
+import {
+  Verification,
+  type HashStream,
+  type VerificationEnv,
+} from './verification'
+import {
+  publish as publishVerified,
+  rollback,
+  type Verifier,
+  type ObjectStore,
+} from './publish'
 
 const R1 = 'r-' + '1'.repeat(32),
   R2 = 'r-' + '2'.repeat(32)
@@ -18,7 +28,7 @@ let directory: string,
   sqlite: Database,
   db: ReturnType<typeof sqliteD1>,
   objects: Map<string, Uint8Array<ArrayBuffer>>,
-  verifier: Verification,
+  verificationEnv: VerificationEnv,
   store: ObjectStore
 const hashStream: HashStream = async (stream) => {
   const hash = createHash('sha256'),
@@ -71,30 +81,27 @@ beforeEach(async () => {
       throw new Error('No listing')
     },
   }
-  verifier = new Verification(
-    {
-      DB: db,
-      RELEASES: bucket,
-      QUERY_FINGERPRINT: 'e'.repeat(64),
-      PUBLIC_API: {
-        async fetch() {
-          return Response.json({
-            contractVersion: 1,
-            queryFingerprint: 'e'.repeat(64),
-            databaseIdentity: (
-              sqlite.query('SELECT identity FROM database_identity').get() as {
-                identity: string
-              }
-            ).identity,
-          })
-        },
-      },
-      PUBLIC_DOWNLOAD: {
-        fetch: (request) => download.fetch(request, { RELEASES: bucket }),
+  verificationEnv = {
+    DB: db,
+    RELEASES: bucket,
+    QUERY_FINGERPRINT: 'e'.repeat(64),
+    PUBLIC_API: {
+      async fetch() {
+        return Response.json({
+          contractVersion: 1,
+          queryFingerprint: 'e'.repeat(64),
+          databaseIdentity: (
+            sqlite.query('SELECT identity FROM database_identity').get() as {
+              identity: string
+            }
+          ).identity,
+        })
       },
     },
-    hashStream
-  )
+    PUBLIC_DOWNLOAD: {
+      fetch: (request) => download.fetch(request, { RELEASES: bucket }),
+    },
+  }
   store = {
     async put(key, path) {
       objects.set(key, new Uint8Array(await readFile(path)))
@@ -105,18 +112,35 @@ afterEach(async () => {
   sqlite.close()
   await rm(directory, { recursive: true, force: true })
 })
+function verification(id: string) {
+  return new Verification(
+    verificationEnv,
+    hashStream,
+    JSON.parse(readFileSync(join(directory, id, 'verification.json'), 'utf8'))
+  )
+}
+const manifestUrl =
+  'https://raw.githubusercontent.com/wwwyo/fudoki/' +
+  'a'.repeat(40) +
+  '/pipeline/publish/manifest.json'
+function publish(
+  candidate: string,
+  db: ReturnType<typeof sqliteD1>,
+  store: ObjectStore,
+  verify: Verifier
+) {
+  return publishVerified(candidate, db, store, verify, manifestUrl)
+}
 function methods(overrides: Partial<Verifier> = {}): Verifier {
   return {
-    existingManifest: verifier.existingManifest.bind(verifier),
-    existingFile: verifier.existingFile.bind(verifier),
-    file: verifier.file.bind(verifier),
-    chunk: verifier.chunk.bind(verifier),
-    api: verifier.api.bind(verifier),
-    publicContracts: verifier.publicContracts.bind(verifier),
-    downloads: verifier.downloads.bind(verifier),
-    download: verifier.download.bind(verifier),
-    measure: verifier.measure.bind(verifier),
-    report: verifier.report.bind(verifier),
+    existingFile: (id, path) => verification(id).existingFile(id, path),
+    file: (id, path) => verification(id).file(id, path),
+    chunk: (id, table, after) => verification(id).chunk(id, table, after),
+    api: (id, dataset, phase) => verification(id).api(id, dataset, phase),
+    publicContracts: (id) => verification(id).publicContracts(id),
+    downloads: (id) => verification(id).downloads(id),
+    download: (id, path) => verification(id).download(id, path),
+    measure: (id) => verification(id).measure(id),
     ...overrides,
   }
 }
@@ -128,7 +152,7 @@ test('an interrupted file transfer cannot become active and can be resumed witho
       db,
       {
         async put(key, path, type) {
-          if (++puts === 3) throw new Error('transfer interrupted')
+          if (++puts === 2) throw new Error('transfer interrupted')
           await store.put(key, path, type)
         },
       },
@@ -156,7 +180,7 @@ test('a D1 verification failure preserves the prior release and retry checks the
         async chunk(id, table, after) {
           if (table === 'fiscal_lines')
             throw new Error('verification interrupted')
-          return verifier.chunk(id, table, after)
+          return verification(id).chunk(id, table, after)
         },
       })
     )
@@ -187,67 +211,28 @@ test('another release with unchanged package contents does not upload package fi
   )
   expect(uploaded.some((key) => key.startsWith('fiscal/'))).toBe(false)
   expect(await resolveRelease(db)).toBe(id)
-  expect((await verifier.candidate(R1)).packages).toEqual(next.packages)
-  expect((await verifier.download(id, next.files[0]!.path)).bytes).toBe(
+  expect((await verification(R1).candidate(R1)).packages).toEqual(next.packages)
+  expect((await verification(id).download(id, next.files[0]!.path)).bytes).toBe(
     next.files[0]!.bytes
   )
 })
-test('validation evidence is private and verified before activation; corrupted evidence preserves the prior release', async () => {
+test('publication evidence stays local and must be written before activation', async () => {
   const result = await publish(join(directory, R1), db, store, methods())
-  const report = objects.get(result.reportKey)!
-  const body = JSON.parse(new TextDecoder().decode(report))
-  expect(body.stage).toBe('pre-activation-verified')
-  expect(body.releaseId).toBe(R1)
-  expect(body.probes[0].amount).toBe(50100)
-  const hidden = await download.fetch(
-    new Request(`https://download.internal/${result.reportKey}`),
-    {
-      RELEASES: {
-        async get() {
-          throw new Error('Private report must not be read')
-        },
-        async head() {
-          throw new Error('Private report must not be read')
-        },
-        async list() {
-          throw new Error('Private report must not be listed')
-        },
-      },
-    }
+  const report = JSON.parse(await readFile(result.reportPath, 'utf8'))
+  expect(report.stage).toBe('pre-activation-verified')
+  expect(report.probes[0].amount).toBe(50100)
+  expect(report.manifestUrl).toBe(manifestUrl)
+  expect([...objects.keys()].every((key) => key.startsWith('fiscal/'))).toBe(
+    true
   )
-  expect(hidden.status).toBe(404)
-  expect(result.reportKey).toBe(
-    `_verification/${R1}/${createHash('sha256').update(report).digest('hex')}.json`
-  )
-  expect(
-    await verifier.report(
-      R1,
-      result.reportKey.split('/')[2]!.replace('.json', ''),
-      report.byteLength
-    )
-  ).toEqual({
-    bytes: report.byteLength,
-    sha256: createHash('sha256').update(report).digest('hex'),
-  })
+  await mkdir(join(directory, R2, 'publication-verification.json'))
   await expect(
-    publish(
-      join(directory, R2),
-      db,
-      {
-        async put(key, path, type) {
-          await store.put(key, path, type)
-          if (key.startsWith('_verification/')) {
-            const original = objects.get(key)!
-            const changed = original.slice()
-            changed[0] = changed[0]! ^ 1
-            objects.set(key, changed)
-          }
-        },
-      },
-      methods()
-    )
-  ).rejects.toThrow('report content differs')
+    publish(join(directory, R2), db, store, methods())
+  ).rejects.toThrow()
   expect(await resolveRelease(db)).toBe(R1)
+  await rm(join(directory, R2, 'publication-verification.json'), {
+    recursive: true,
+  })
   await publish(join(directory, R2), db, store, methods())
   expect(await resolveRelease(db)).toBe(R2)
 })
@@ -259,7 +244,7 @@ test('API mismatch refuses publication and cannot be bypassed by a successful fi
       store,
       methods({
         async api(id, dataset, phase) {
-          const result = await verifier.api(id, dataset, phase)
+          const result = await verification(id).api(id, dataset, phase)
           return { ...result, total: { amount: 0, lineCount: 501 } }
         },
       })
@@ -282,17 +267,18 @@ test('activation failure keeps the API on the old version while finalized downlo
   await expect(resolveRelease(db, R2)).rejects.toMatchObject({
     code: 'RELEASE_EXPIRED',
   })
-  expect(await verifier.downloads(R2)).toEqual({ files: 2 })
+  expect(await verification(R2).downloads(R2)).toEqual({ files: 2 })
   sqlite.exec('DROP TRIGGER fail_activation')
   await publish(join(directory, R2), db, store, methods())
   expect(await resolveRelease(db)).toBe(R2)
-  const manifest = await verifier.candidate(R1),
-    text = objects.get(`releases/${R1}/manifest.json`)!
+  const manifest = await verification(R1).candidate(R1),
+    text = await readFile(join(directory, R1, 'verification.json'))
   await rollback(
     db,
     methods(),
     manifest,
-    createHash('sha256').update(text).digest('hex')
+    createHash('sha256').update(text).digest('hex'),
+    manifestUrl
   )
   expect(await resolveRelease(db)).toBe(R1)
   sqlite.run('UPDATE amounts SET value=999 WHERE release_id=?', [R2])
@@ -300,10 +286,11 @@ test('activation failure keeps the API on the old version while finalized downlo
     rollback(
       db,
       methods(),
-      await verifier.candidate(R2),
+      await verification(R2).candidate(R2),
       createHash('sha256')
-        .update(objects.get(`releases/${R2}/manifest.json`)!)
-        .digest('hex')
+        .update(await readFile(join(directory, R2, 'verification.json')))
+        .digest('hex'),
+      manifestUrl
     )
   ).rejects.toThrow('D1 contents differ')
   expect(await resolveRelease(db)).toBe(R1)

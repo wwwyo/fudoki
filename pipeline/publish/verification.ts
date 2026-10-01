@@ -5,7 +5,6 @@ import {
   canonicalRow,
   manifestSchema,
   releaseIdSchema,
-  sha256Schema,
   type D1Database,
   type D1Statement,
   type R2Bucket,
@@ -35,48 +34,13 @@ export interface VerificationEnv {
 }
 const CHUNK_SIZE = 500
 export class Verification {
+  #manifest: ReleaseManifest
   constructor(
     private env: VerificationEnv,
-    private hashStream: HashStream
-  ) {}
-  async report(releaseId: string, sha256: string, bytes: number) {
-    await this.candidate(releaseId)
-    sha256Schema.parse(sha256)
-    z.number()
-      .int()
-      .min(1)
-      .max(4 * 1024 * 1024)
-      .parse(bytes)
-    const object = await this.env.RELEASES.get(
-      `_verification/${releaseId}/${sha256}.json`
-    )
-    if (!object || object.size !== bytes)
-      throw new Error('Verification report is missing or differs in size')
-    const actual = await this.hashStream(object.body)
-    if (actual.sha256 !== sha256 || actual.bytes !== bytes)
-      throw new Error('Verification report content differs')
-    return actual
-  }
-  async existingManifest(releaseId: string, sha256: string) {
-    releaseIdSchema.parse(releaseId)
-    z.string()
-      .regex(/^[a-f0-9]{64}$/)
-      .parse(sha256)
-    const result = { candidate: false, published: false }
-    for (const [kind, key] of [
-      ['candidate', `_candidates/${releaseId}/manifest.json`],
-      ['published', `releases/${releaseId}/manifest.json`],
-    ] as const) {
-      const object = await this.env.RELEASES.get(key)
-      if (!object) continue
-      const actual = await this.hashStream(object.body)
-      if (actual.sha256 !== sha256)
-        throw new Error(
-          'Refusing to overwrite an existing release manifest with different content'
-        )
-      result[kind] = true
-    }
-    return result
+    private hashStream: HashStream,
+    manifest: ReleaseManifest
+  ) {
+    this.#manifest = manifestSchema.parse(manifest)
   }
   async existingFile(releaseId: string, path: string) {
     const manifest = await this.candidate(releaseId)
@@ -94,24 +58,17 @@ export class Verification {
   async candidate(releaseId: string): Promise<ReleaseManifest> {
     releaseIdSchema.parse(releaseId)
     const release = await this.env.DB.prepare(
-      'SELECT contract_version,manifest_sha256,state FROM releases WHERE release_id=?'
+      'SELECT contract_version,verification_sha256,state FROM releases WHERE release_id=?'
     )
       .bind(releaseId)
       .first<{
         contract_version: number
-        manifest_sha256: string
+        verification_sha256: string
         state: string
       }>()
-    const object = await this.env.RELEASES.get(
-      release?.state === 'published'
-        ? `releases/${releaseId}/manifest.json`
-        : `_candidates/${releaseId}/manifest.json`
-    )
-    if (!object || object.size > 4 * 1024 * 1024)
-      throw new Error('Candidate manifest is missing or too large')
-    const body = await object.arrayBuffer()
-    const manifest = manifestSchema.parse(
-      JSON.parse(new TextDecoder().decode(body))
+    const manifest = this.#manifest
+    const body = new TextEncoder().encode(
+      JSON.stringify(manifest, null, 2) + '\n'
     )
     if (
       manifest.releaseId !== releaseId ||
@@ -123,7 +80,7 @@ export class Verification {
     if (
       !release ||
       release.contract_version !== manifest.schemaVersion ||
-      verified.sha256 !== release.manifest_sha256
+      verified.sha256 !== release.verification_sha256
     )
       throw new Error('D1 candidate contract or manifest hash differs')
     return manifest
@@ -385,18 +342,6 @@ export class Verification {
   }
   async downloads(releaseId: string) {
     const manifest = await this.candidate(releaseId)
-    const response = await this.env.PUBLIC_DOWNLOAD.fetch(
-      new Request(
-        `https://download.internal/releases/${releaseId}/manifest.json`
-      )
-    )
-    if (!response.ok || response.headers.get('X-Fudoki-Release') !== releaseId)
-      throw new Error(
-        'Finalized manifest is not available through download Worker'
-      )
-    const published = manifestSchema.parse(await response.json())
-    if (JSON.stringify(published) !== JSON.stringify(manifest))
-      throw new Error('Published and candidate manifests differ')
     const metadata = await this.env.DB.prepare(
       'SELECT path,object_key,sha256,bytes,content_type FROM files WHERE release_id=? ORDER BY path'
     )

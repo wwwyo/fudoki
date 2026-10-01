@@ -93,11 +93,7 @@ export function cloudflareObjects(bucket: string): ObjectStore {
     throw new Error('Invalid R2 bucket name')
   return {
     async put(key, path, contentType) {
-      if (
-        !/^(?:fiscal\/\d{6}\/p-[a-f0-9]{64}\/[a-z_]+\.(?:csv|json)|(?:_candidates|releases)\/r-[a-f0-9]{32}\/(?:manifest\.json|catalog\.json)|_verification\/r-[a-f0-9]{32}\/[a-f0-9]{64}\.json)$/.test(
-          key
-        )
-      )
+      if (!/^fiscal\/\d{6}\/p-[a-f0-9]{64}\/[a-z_]+\.(?:csv|json)$/.test(key))
         throw new Error('Invalid release object key')
       await exec(
         'cf',
@@ -121,6 +117,27 @@ export function cloudflareObjects(bucket: string): ObjectStore {
 }
 
 export async function initializeSchema(db: D1Database) {
+  const columns = await db
+    .prepare('PRAGMA table_info(releases)')
+    .all<{ name: string }>()
+  const names = new Set(columns.results.map((column) => column.name))
+  if (names.has('manifest_key')) {
+    const row = await db
+      .prepare('SELECT count(*) AS count FROM releases')
+      .first<{ count: number }>()
+    if (row?.count !== 0)
+      throw new Error(
+        'Existing release data requires explicit schema reconstruction before init'
+      )
+    await db.batch([
+      db.prepare(
+        'ALTER TABLE releases RENAME COLUMN manifest_key TO manifest_url'
+      ),
+      db.prepare(
+        'ALTER TABLE releases RENAME COLUMN manifest_sha256 TO verification_sha256'
+      ),
+    ])
+  }
   const sql = await readFile(
     new URL('../../packages/data-contracts/schema.sql', import.meta.url),
     'utf8'

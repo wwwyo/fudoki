@@ -133,6 +133,12 @@ export async function fixture(
         .map((row) => `${row.fiscal_line_id},${amount}\n`)
         .join('')
   )
+  await writeFile(
+    join(directory, 'fiscal/000001/datapackage.json'),
+    JSON.stringify({
+      resources: [{ name: 'expenditure', path: 'expenditure.csv' }],
+    })
+  )
   return finalizeCandidate(
     directory,
     {

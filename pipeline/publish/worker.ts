@@ -1,10 +1,14 @@
-import { WorkerEntrypoint } from 'cloudflare:workers'
+import { WorkerEntrypoint, RpcTarget } from 'cloudflare:workers'
 import {
   Verification,
   type VerificationEnv,
   type HashStream,
 } from './verification'
-import type { TABLES } from '@fudoki/data-contracts'
+import {
+  manifestSchema,
+  type ReleaseManifest,
+  type TABLES,
+} from '@fudoki/data-contracts'
 
 const hashStream: HashStream = async (stream) => {
   const runtime = crypto as typeof crypto & {
@@ -31,42 +35,43 @@ const hashStream: HashStream = async (stream) => {
       .join(''),
   }
 }
-export class PipelineVerification extends WorkerEntrypoint<VerificationEnv> {
-  private verifier() {
-    return new Verification(this.env, hashStream)
-  }
-  existingManifest(releaseId: string, sha256: string) {
-    return this.verifier().existingManifest(releaseId, sha256)
+class VerificationSession extends RpcTarget {
+  #verification: Verification
+  constructor(env: VerificationEnv, manifest: ReleaseManifest) {
+    super()
+    this.#verification = new Verification(env, hashStream, manifest)
   }
   existingFile(releaseId: string, path: string) {
-    return this.verifier().existingFile(releaseId, path)
-  }
-  report(releaseId: string, sha256: string, bytes: number) {
-    return this.verifier().report(releaseId, sha256, bytes)
+    return this.#verification.existingFile(releaseId, path)
   }
   candidate(releaseId: string) {
-    return this.verifier().candidate(releaseId)
+    return this.#verification.candidate(releaseId)
   }
   file(releaseId: string, path: string) {
-    return this.verifier().file(releaseId, path)
+    return this.#verification.file(releaseId, path)
   }
   chunk(releaseId: string, table: (typeof TABLES)[number], after?: unknown[]) {
-    return this.verifier().chunk(releaseId, table, after)
+    return this.#verification.chunk(releaseId, table, after)
   }
   api(releaseId: string, datasetId: string, phase: string) {
-    return this.verifier().api(releaseId, datasetId, phase)
+    return this.#verification.api(releaseId, datasetId, phase)
   }
   measure(releaseId: string) {
-    return this.verifier().measure(releaseId)
+    return this.#verification.measure(releaseId)
   }
   publicContracts(releaseId: string) {
-    return this.verifier().publicContracts(releaseId)
+    return this.#verification.publicContracts(releaseId)
   }
   downloads(releaseId: string) {
-    return this.verifier().downloads(releaseId)
+    return this.#verification.downloads(releaseId)
   }
   download(releaseId: string, path: string) {
-    return this.verifier().download(releaseId, path)
+    return this.#verification.download(releaseId, path)
+  }
+}
+export class PipelineVerification extends WorkerEntrypoint<VerificationEnv> {
+  session(manifest: ReleaseManifest) {
+    return new VerificationSession(this.env, manifestSchema.parse(manifest))
   }
 }
 export default {

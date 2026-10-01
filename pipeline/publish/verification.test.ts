@@ -14,8 +14,9 @@ import { Verification, type HashStream } from './verification'
 import download from '../../apps/download/src/index'
 const id = 'r-' + 'a'.repeat(32),
   fingerprint = 'b'.repeat(64),
-  file = 'catalog.json',
+  file = 'fiscal/000001/expenditure.csv',
   content = '{"example":true}\n'
+const objectKey = 'fiscal/000001/p-' + 'f'.repeat(64) + '/expenditure.csv'
 const hash = (body: string) => createHash('sha256').update(body).digest('hex')
 const hashStream: HashStream = async (stream) => {
   const hash = createHash('sha256'),
@@ -54,15 +55,22 @@ beforeEach(() => {
     inputFingerprint: 'c'.repeat(64),
     judgmentFingerprint: 'd'.repeat(64),
     queryFingerprint: fingerprint,
+    manifestSha256: 'e'.repeat(64),
     totals: [],
-    packages: [],
+    packages: [
+      {
+        jurisdictionCode: '000001',
+        packageId: 'p-' + 'f'.repeat(64),
+        datasetIds: ['fixture'],
+      },
+    ],
     files: [
       {
         path: file,
-        objectKey: `releases/${id}/${file}`,
+        objectKey: objectKey,
         sha256: hash(content),
         bytes: Buffer.byteLength(content),
-        contentType: 'application/json; charset=utf-8',
+        contentType: 'text/csv; charset=utf-8',
       },
     ],
     tables: Object.fromEntries(
@@ -72,7 +80,7 @@ beforeEach(() => {
       ])
     ),
   })
-  const text = JSON.stringify(manifest) + '\n'
+  const text = JSON.stringify(manifest, null, 2) + '\n'
   sqlite.run("INSERT INTO releases VALUES(?,1,'staging',NULL,?,?,?)", [
     id,
     hash(text),
@@ -82,15 +90,12 @@ beforeEach(() => {
   sqlite.run('INSERT INTO files VALUES(?,?,?,?,?,?)', [
     id,
     file,
-    `releases/${id}/${file}`,
+    objectKey,
     hash(content),
     Buffer.byteLength(content),
-    'application/json; charset=utf-8',
+    'text/csv; charset=utf-8',
   ])
-  objects = new Map([
-    [`_candidates/${id}/manifest.json`, text],
-    [`releases/${id}/${file}`, content],
-  ])
+  objects = new Map([[objectKey, content]])
   const bucket: R2Bucket = {
     async get(key) {
       const value = objects.get(key)
@@ -137,33 +142,27 @@ beforeEach(() => {
         fetch: (request) => download.fetch(request, { RELEASES: bucket }),
       },
     },
-    hashStream
+    hashStream,
+    manifest
   )
 })
 afterEach(() => sqlite.close())
 test('candidate files are checked by their bytes, not by object metadata or ETag', async () => {
   expect((await verifier.file(id, file)).sha256).toBe(hash(content))
-  objects.set(`releases/${id}/${file}`, content.replace('true', 'null'))
+  objects.set(objectKey, content.replace('true', 'null'))
   await expect(verifier.file(id, file)).rejects.toThrow('hash or size')
 })
-test('unpublished candidate is private until the final manifest, then download headers must match', async () => {
-  await expect(verifier.downloads(id)).rejects.toThrow('not available')
-  objects.set(
-    `releases/${id}/manifest.json`,
-    objects.get(`_candidates/${id}/manifest.json`)!
-  )
+test('D1 file metadata is verified without any R2 manifest or catalog', async () => {
   expect(await verifier.downloads(id)).toEqual({ files: 1 })
   expect(await verifier.publicContracts(id)).toEqual({
     contractVersion: 1,
     queryFingerprint: fingerprint,
     databaseIdentity,
   })
+  expect([...objects.keys()]).toEqual([objectKey])
 })
-test('changing the candidate manifest is detected against its D1 hash', async () => {
-  objects.set(
-    `_candidates/${id}/manifest.json`,
-    JSON.stringify({ ...manifest, codeRevision: 'e'.repeat(40) })
-  )
+test('a different RPC candidate is detected against its D1 verification hash', async () => {
+  sqlite.run('UPDATE releases SET verification_sha256=?', ['a'.repeat(64)])
   await expect(verifier.candidate(id)).rejects.toThrow('manifest hash differs')
 })
 test('table verification uses a bounded keyset and canonical values across chunk boundaries', async () => {
@@ -210,11 +209,7 @@ test('a public API bound to another D1 database refuses the candidate despite ma
   )
 })
 test('download content is verified even when all public headers and byte lengths match', async () => {
-  objects.set(
-    `releases/${id}/manifest.json`,
-    objects.get(`_candidates/${id}/manifest.json`)!
-  )
-  objects.set(`releases/${id}/${file}`, content.replace('true', 'null'))
+  objects.set(objectKey, content.replace('true', 'null'))
   await expect(verifier.download(id, file)).rejects.toThrow(
     'download content differs'
   )

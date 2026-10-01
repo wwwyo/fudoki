@@ -6,6 +6,7 @@ export const PIPELINE = import.meta.dirname
 export const REPO = resolve(PIPELINE, '..')
 export const CACHE = join(PIPELINE, '.cache')
 export const BUILD = join(PIPELINE, 'build')
+export const PUBLICATION_MANIFEST = join(PIPELINE, 'publish/manifest.json')
 const latestPath = join(BUILD, 'latest.json')
 export const LATEST = existsSync(latestPath)
   ? (JSON.parse(readFileSync(latestPath, 'utf8')) as {

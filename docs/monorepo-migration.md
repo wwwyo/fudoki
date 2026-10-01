@@ -2,6 +2,8 @@
 
 2026-10-01。設計 PR [#38](https://github.com/wwwyo/fudoki/pull/38) はマージ済み。実装の完了をこの記録の途中結果だけから判断しない。
 
+これまでの検証を時点ごとに記録する。初期の R2 manifest・catalog・版一覧・遠隔検証記録の配置は、後述の Git manifest 統合で置き換えた。現在の設計は [ADR 0014](adr/0014-git-distribution-manifest.md) を参照する。
+
 ## 確認できたこと
 
 - ingestion・dbt・FDP・報告・ローカル検証画面を `pipeline/`、共有する純粋なデータ規則を `packages/`、slides を root に移した。
@@ -39,12 +41,23 @@ Bun の97テスト・全 workspace の型検査が通過した。新しい全体
 
 全量 dbt build は156項目が成功し、5団体・28 dataset・46 dataset/phase を照合した。`cf dev` のローカル R2 から38ファイルの GET・HEAD・ETag による条件付き取得を確認し、全ファイルの SHA-256・サイズ・content type が manifest と一致した。遠隔 R2 への反映と直接配信への置き換えは下記の未完了条件に残る。
 
+## 最新 manifest の Git 統合
+
+[ADR 0014](adr/0014-git-distribution-manifest.md) により、収録範囲と配布物の参照を `pipeline/publish/manifest.json` 一つに統合した。Git には最新の採用候補を置き、過去は Git 履歴で辿る。R2 の catalog・release manifest・版一覧・候補 manifest・検証記録は廃止し、公開 R2 の対象は団体別の CSV と FDP descriptor の37ファイルとなる。D1 の公開中 metadata は Git commit 固定の manifest URL を持ち、Git の採用だけでは公開成功と扱わない。
+
+Bun の100テスト・全 workspace の型検査・Python の比較検査3件が通過した。manifest だけの commit が構築版を変えないこと、空の初期 D1 schema の列変更と既存公開データがある場合の拒否、Git manifest とローカル照合記録の内容一致を検査した。配布物のファイルごとの用途、複数年度・補正予算の未実装条件も設計書に追記した。
+
+全量 build の156項目が成功し、5団体・28 dataset・46 dataset/phase を確認した。`cf dev` の公開配信から37ファイル全件の SHA-256・サイズを照合し、旧 manifest・catalog・版一覧の route が404となることを確認した。Git manifest 相当の比較元を別のローカル HTTP 入口から取得し、配布物の別入口からのハッシュ照合と全46範囲の意味の比較が通過した。
+
+非公開検証 Worker と呼出側 Worker を `cf dev` で別々に起動し、実際の service binding / RPC session から候補照合と D1 の1行 chunk を取得した。コード revision を改変した検査情報は拒否された。これは Cloudflare のローカル実行であり、遠隔 binding・全量 D1 の性能は未検証である。
+
 ## 未完了の移行条件
 
-- [ADR 0011](adr/0011-public-r2-distribution.md) の直接配信への変更。現行の download Worker を置き換え、候補記録・内部検証結果を非公開 bucket に分離する。既存の `download.fudoki.dev` を R2 に接続し、CSV/JSON のキャッシュと `/fiscal/`・`/releases/` のレート制限を設定・検証する。`fudoki.dev` は現在のアカウントで active / Free Website と確認したが、R2 の接続とルールは未反映。
+- [ADR 0011](adr/0011-public-r2-distribution.md) の直接配信への変更。現行の download Worker を置き換え、既存の `download.fudoki.dev` を配布ファイルだけの公開 R2 に接続する。CSV/JSON のキャッシュと `/fiscal/` のレート制限を設定・検証する。候補記録・内部検証結果は R2 へ保存しない。`fudoki.dev` は現在のアカウントで active / Free Website と確認したが、R2 の接続とルールは未反映。
 - R2 の有効化。CLI は現在「Please enable R2 through the Cloudflare Dashboard」（HTTP403 / 10042）を返す。cf の account subscription 作成・更新 API は存在するが、R2 の契約 ID と有効化の可否は未確認であり、Dashboard 専用とは断定しない。
-- Workers Paid の確認。全量を Free の日次書込上限内で一度に取り込むことはできず、3版は Free の単一 DB 容量にも収まらない。`cf accounts subscriptions get` で取得した契約一覧は Teams Free のみであり、Workers Paid は未確認。公式の [契約 ID 一覧](https://developers.cloudflare.com/tenant/reference/subscriptions/) と `cf billing rate-plans get WORKERS_PAID` から契約 ID・基本月額 $5 を確認し、`cf accounts subscriptions create --rate-plan-id WORKERS_PAID --frequency monthly --dry-run` で作成リクエストを確認した。dry-run は実際の契約可否を検査せず、契約の作成も行っていない。
+- Workers Paid の確認。全量を Free の日次書込上限内で一度に取り込むことはできず、公開中と候補の同時保持も Free の単一 DB 容量に収まらない。旧版を最低3版残す要件は廃止した。`cf accounts subscriptions get` で取得した契約一覧は Teams Free のみであり、Workers Paid は未確認。公式の [契約 ID 一覧](https://developers.cloudflare.com/tenant/reference/subscriptions/) と `cf billing rate-plans get WORKERS_PAID` から契約 ID・基本月額 $5 を確認し、`cf accounts subscriptions create --rate-plan-id WORKERS_PAID --frequency monthly --dry-run` で作成リクエストを確認した。dry-run は実際の契約可否を検査せず、契約の作成も行っていない。
 - 原典・取り込みの全量 R2 転送、GET での内容ハッシュ照合、Git の証跡と空のキャッシュからの復元・再構築。現在の入力一覧は `.cache/migration/sources.lock.json` にあり、遠隔保管を検証するまでは正規の Git 入力一覧として固定していない。
+- 初期の空の遠隔 D1 に新しい `manifest_url`・`verification_sha256` の schema を適用する。init は旧 metadata が空の場合だけ列を変更し、既存の公開データは自動で読み替えない。
 - R2 直接配信 / API / 非公開検証 Worker が同じ配布契約を持つ候補環境での全量 publish、D1 の読取行数・問い合わせ時間・複数版の保持容量の測定。
 - 上記を確認してから既存 `data/` の tracking を外す。既存 Git 履歴を書き換えない。
 

@@ -1,8 +1,9 @@
 import { fileURLToPath } from 'node:url'
 import type { Verifier } from './publish'
+import type { ReleaseManifest } from '@fudoki/data-contracts'
 import type { Verification } from './verification'
 
-export function remoteVerification() {
+export function remoteVerification(manifest: ReleaseManifest) {
   let nextId = 0
   const pending = new Map<
     number,
@@ -38,18 +39,21 @@ export function remoteVerification() {
       child.send({ id, method, args })
     })
   }
+  const ready = call('session', manifest)
+  async function invoke(method: string, ...args: unknown[]) {
+    await ready
+    return call(method, ...args)
+  }
   const verifier: Verifier & Pick<Verification, 'candidate'> = {
-    candidate: (id) => call('candidate', id),
-    existingManifest: (id, hash) => call('existingManifest', id, hash),
-    existingFile: (id, path) => call('existingFile', id, path),
-    file: (id, path) => call('file', id, path),
-    chunk: (id, table, after) => call('chunk', id, table, after),
-    api: (id, dataset, phase) => call('api', id, dataset, phase),
-    publicContracts: (id) => call('publicContracts', id),
-    downloads: (id) => call('downloads', id),
-    download: (id, path) => call('download', id, path),
-    measure: (id) => call('measure', id),
-    report: (id, sha256, bytes) => call('report', id, sha256, bytes),
+    candidate: (id) => invoke('candidate', id),
+    existingFile: (id, path) => invoke('existingFile', id, path),
+    file: (id, path) => invoke('file', id, path),
+    chunk: (id, table, after) => invoke('chunk', id, table, after),
+    api: (id, dataset, phase) => invoke('api', id, dataset, phase),
+    publicContracts: (id) => invoke('publicContracts', id),
+    downloads: (id) => invoke('downloads', id),
+    download: (id, path) => invoke('download', id, path),
+    measure: (id) => invoke('measure', id),
   }
   return {
     verifier,

@@ -59,7 +59,7 @@
     "probe:documents": "uv run python -m ingestion.fiscal.probe_documents",
     "survey:fiscal-years": "uv run python -m ingestion.fiscal.survey_years",
     "survey:structure": "uv run python -m ingestion.fiscal.survey_structure",
-    "test": "bun test packages pipeline/fdp pipeline/publish pipeline/verify/report apps/api/src apps/download/src apps/web/src pipeline/verify/view/src",
+    "test": "bun test packages pipeline/release.test.ts pipeline/fdp pipeline/publish pipeline/verify/report apps/api/src apps/download/src apps/web/src pipeline/verify/view/src",
     "test:api": "bun run --cwd apps/api test",
     "typecheck": "tsc --noEmit",
     "typecheck:all": "bun run typecheck && bun run --cwd apps/api typecheck && bun run --cwd apps/download typecheck && bun run --cwd apps/web typecheck && bun run --cwd pipeline/verify/view typecheck && bun run --cwd apps/docs typecheck",

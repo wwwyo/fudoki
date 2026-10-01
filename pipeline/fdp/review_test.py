@@ -11,8 +11,8 @@ from fdp.review import compare, read_release
 class ReleaseReview(unittest.TestCase):
     def snapshot(self):
         return {
-            'manifest': {'releaseId': 'previous'},
-            'catalog': {
+            'manifest': {
+                'buildId': 'previous',
                 'jurisdictions': [{'jurisdiction_code': '000001', 'caveats': ['Before']}],
                 'datasets': [{'dataset_id': 'edition-1', 'jurisdiction_code': '000001', 'fiscal_year': 2026,
                               'direction': 'expenditure', 'document_kind': 'settlement', 'origin_sha256': 'old', 'source': {'url': 'original'}}],
@@ -32,8 +32,8 @@ class ReleaseReview(unittest.TestCase):
         rows['a']['amount'] = 1100
         rows['b']['amount'] = 1900
         rows['a']['classification'] = {'cofog_class': '02.1.1'}
-        new['catalog']['jurisdictions'][0]['caveats'] = ['After']
-        new['catalog']['datasets'][0]['source']['url'] = 'corrected'
+        new['manifest']['jurisdictions'][0]['caveats'] = ['After']
+        new['manifest']['datasets'][0]['source']['url'] = 'corrected'
         new['descriptors']['000001']['licenses'] = ['CC0']
         new['resources']['fiscal/000001/cofog_rules.csv'][('rule',)]['label'] = 'after'
         actual = compare(old, new)
@@ -64,13 +64,12 @@ class ReleaseReview(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             files = {
-                'catalog.json': json.dumps({'releaseId': 'candidate', 'jurisdictions': [], 'datasets': []}).encode(),
                 'fiscal/000001/datapackage.json': json.dumps({'resources': [{
                     'path': 'expenditure.csv', 'schema': {'primaryKey': ['fiscal_line_id'], 'extraFields': [
                         {'name': 'document_kind', 'constant': 'settlement'}, {'name': 'phase_id', 'constant': 'executed'}]}}]}).encode(),
                 'fiscal/000001/expenditure.csv': b'fiscal_line_id,fiscal_year,value,label\na,2026,123,"line one\nline two"\n',
             }
-            manifest = {'releaseId': 'candidate', 'files': []}
+            manifest = {'buildId': 'candidate', 'jurisdictions': [], 'datasets': [], 'files': []}
             for path, body in files.items():
                 target = root / path
                 target.parent.mkdir(parents=True, exist_ok=True)

@@ -1,6 +1,5 @@
-import { readFile, writeFile, mkdtemp, rm } from 'node:fs/promises'
+import { readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { tmpdir } from 'node:os'
 import { createReadStream } from 'node:fs'
 import { createInterface } from 'node:readline'
 import {
@@ -26,12 +25,7 @@ export interface Verifier extends Pick<
   | 'downloads'
   | 'download'
   | 'measure'
-  | 'report'
 > {
-  existingManifest(
-    releaseId: string,
-    sha256: string
-  ): Promise<{ candidate: boolean; published: boolean }>
   existingFile(releaseId: string, path: string): Promise<boolean>
 }
 export type Progress = (event: Record<string, unknown>) => void
@@ -40,20 +34,18 @@ export async function publish(
   db: D1Database,
   store: ObjectStore,
   verify: Verifier,
+  manifestUrl: string,
   progress: Progress = () => {}
 ) {
   const manifest = await verifyCandidate(candidate)
-  const manifestPath = join(candidate, 'manifest.json'),
-    manifestHash = sha256(await readFile(manifestPath))
+  const manifestHash = sha256(
+    await readFile(join(candidate, 'verification.json'))
+  )
   const lease = await acquire(db, crypto.randomUUID(), manifest.releaseId)
   try {
-    const existing = await verify.existingManifest(
-      manifest.releaseId,
-      manifestHash
-    )
     const sql = db
       .prepare(
-        `INSERT INTO releases(release_id,contract_version,state,manifest_sha256,code_revision,input_fingerprint)
+        `INSERT INTO releases(release_id,contract_version,state,verification_sha256,code_revision,input_fingerprint)
       VALUES(?,?,'staging',?,?,?) ON CONFLICT(release_id) DO NOTHING`
       )
       .bind(
@@ -67,16 +59,10 @@ export async function publish(
       sql,
       db
         .prepare(
-          'INSERT INTO publish_guard(valid) SELECT CASE WHEN EXISTS(SELECT 1 FROM releases WHERE release_id=? AND manifest_sha256=? AND contract_version=?) THEN 1 ELSE 0 END'
+          'INSERT INTO publish_guard(valid) SELECT CASE WHEN EXISTS(SELECT 1 FROM releases WHERE release_id=? AND verification_sha256=? AND contract_version=?) THEN 1 ELSE 0 END'
         )
         .bind(manifest.releaseId, manifestHash, manifest.schemaVersion),
     ])
-    if (!existing.candidate)
-      await store.put(
-        `_candidates/${manifest.releaseId}/manifest.json`,
-        manifestPath,
-        'application/json; charset=utf-8'
-      )
     for (const file of manifest.files) {
       if (!(await verify.existingFile(manifest.releaseId, file.path)))
         await store.put(
@@ -179,66 +165,49 @@ export async function publish(
     }
     const performance = await verify.measure(manifest.releaseId)
     await guardedBatch(db, lease, [])
-    if (!existing.published)
-      await store.put(
-        `releases/${manifest.releaseId}/manifest.json`,
-        manifestPath,
-        'application/json; charset=utf-8'
-      )
     const downloads = await verify.downloads(manifest.releaseId)
     for (const file of manifest.files) {
       await verify.download(manifest.releaseId, file.path)
       await guardedBatch(db, lease, [])
     }
-    const reportDirectory = await mkdtemp(join(tmpdir(), 'fudoki-validation-'))
-    let reportKey: string
-    try {
-      const body =
-        JSON.stringify(
-          {
-            schemaVersion: 1,
-            stage: 'pre-activation-verified',
-            verifiedAt: new Date().toISOString(),
-            releaseId: manifest.releaseId,
-            manifestSha256: manifestHash,
-            inputFingerprint: manifest.inputFingerprint,
-            codeRevision: manifest.codeRevision,
-            previousReleaseId: lease.expectedReleaseId,
-            tables: manifest.tables,
-            contracts,
-            downloads,
-            probes,
-            performance,
-            localValidation: JSON.parse(
-              await readFile(join(candidate, 'validation.json'), 'utf8')
-            ),
-          },
-          null,
-          2
-        ) + '\n'
-      const hash = sha256(body)
-      reportKey = `_verification/${manifest.releaseId}/${hash}.json`
-      const path = join(reportDirectory, 'validation.json')
-      await writeFile(path, body, { mode: 0o600 })
-      await store.put(reportKey, path, 'application/json; charset=utf-8')
-      await verify.report(manifest.releaseId, hash, Buffer.byteLength(body))
-      await guardedBatch(db, lease, [])
-    } finally {
-      await rm(reportDirectory, { recursive: true, force: true })
-    }
-    await activate(
-      db,
-      lease,
-      `releases/${manifest.releaseId}/manifest.json`,
-      manifestHash
-    )
+    const reportPath = join(candidate, 'publication-verification.json')
+    const report =
+      JSON.stringify(
+        {
+          schemaVersion: 1,
+          stage: 'pre-activation-verified',
+          verifiedAt: new Date().toISOString(),
+          releaseId: manifest.releaseId,
+          manifestSha256: manifest.manifestSha256,
+          verificationSha256: manifestHash,
+          manifestUrl,
+          inputFingerprint: manifest.inputFingerprint,
+          codeRevision: manifest.codeRevision,
+          previousReleaseId: lease.expectedReleaseId,
+          tables: manifest.tables,
+          contracts,
+          downloads,
+          probes,
+          performance,
+          localValidation: JSON.parse(
+            await readFile(join(candidate, 'validation.json'), 'utf8')
+          ),
+        },
+        null,
+        2
+      ) + '\n'
+    await writeFile(reportPath, report, { mode: 0o600 })
+    if (sha256(await readFile(reportPath)) !== sha256(report))
+      throw new Error('Local publication record differs')
+    await guardedBatch(db, lease, [])
+    await activate(db, lease, manifestUrl, manifestHash)
     progress({ stage: 'active', releaseId: manifest.releaseId })
     return {
       releaseId: manifest.releaseId,
       previousReleaseId: lease.expectedReleaseId,
       probes,
       performance,
-      reportKey,
+      reportPath,
     }
   } finally {
     await release(db, lease)
@@ -248,17 +217,18 @@ export async function rollback(
   db: D1Database,
   verify: Verifier,
   manifest: ReleaseManifest,
-  manifestHash: string
+  manifestHash: string,
+  manifestUrl: string
 ) {
   const lease = await acquire(db, crypto.randomUUID(), manifest.releaseId)
   try {
     const row = await db
       .prepare(
-        'SELECT state,manifest_sha256 FROM releases WHERE release_id=? AND contract_version=?'
+        'SELECT state,verification_sha256 FROM releases WHERE release_id=? AND contract_version=?'
       )
       .bind(manifest.releaseId, manifest.schemaVersion)
-      .first<{ state: string; manifest_sha256: string }>()
-    if (row?.state !== 'published' || row.manifest_sha256 !== manifestHash)
+      .first<{ state: string; verification_sha256: string }>()
+    if (row?.state !== 'published' || row.verification_sha256 !== manifestHash)
       throw new Error('Rollback target must be a retained, published release')
     for (const file of manifest.files) {
       await verify.file(manifest.releaseId, file.path)
@@ -301,12 +271,7 @@ export async function rollback(
         throw new Error('Rollback API totals differ')
       await guardedBatch(db, lease, [])
     }
-    await activate(
-      db,
-      lease,
-      `releases/${manifest.releaseId}/manifest.json`,
-      manifestHash
-    )
+    await activate(db, lease, manifestUrl, manifestHash)
     return {
       releaseId: manifest.releaseId,
       previousReleaseId: lease.expectedReleaseId,

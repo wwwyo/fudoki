@@ -5,12 +5,14 @@ import { createInterface } from 'node:readline'
 import { createHash } from 'node:crypto'
 import {
   manifestSchema,
+  distributionManifestSchema,
   TABLES,
   canonicalRow,
   derivePackageId,
   type ReleaseManifest,
 } from '@fudoki/data-contracts'
 import { sha256, type releaseIdentity } from '../release'
+import { PUBLICATION_MANIFEST } from '../paths'
 
 async function jsonLines(path: string): Promise<Record<string, unknown>[]> {
   return (await readFile(path, 'utf8'))
@@ -107,30 +109,24 @@ export async function finalizeCandidate(
       }))
     )
   }
-  const catalog = {
+  const distribution = distributionManifestSchema.parse({
     schemaVersion: 1,
-    releaseId: identity.releaseId,
+    buildId: identity.releaseId,
+    codeRevision: identity.codeRevision,
+    inputFingerprint: identity.inputFingerprint,
+    judgmentFingerprint: identity.judgmentFingerprint,
     jurisdictions,
     datasets,
     packages,
+    files,
     amountUnit: 'JPY',
     documents: ['budget', 'supplementary', 'settlement'],
     phases: ['approved', 'adjusted', 'adjusted-before-transfer', 'executed'],
     selection:
       'Choose one document and edition per jurisdiction, year and direction. Comparisons keep jurisdictions and years separate.',
-  }
-  await writeFile(
-    join(directory, 'catalog.json'),
-    JSON.stringify(catalog, null, 2) + '\n'
-  )
-  const body = await readFile(join(directory, 'catalog.json'))
-  files.push({
-    path: 'catalog.json',
-    objectKey: `releases/${identity.releaseId}/catalog.json`,
-    sha256: sha256(body),
-    bytes: body.length,
-    contentType: 'application/json; charset=utf-8',
   })
+  const distributionText = JSON.stringify(distribution, null, 2) + '\n'
+  await writeFile(join(directory, 'manifest.json'), distributionText)
   const tables = {} as ReleaseManifest['tables']
   for (const name of TABLES) {
     const digest = await tableDigest(
@@ -147,6 +143,7 @@ export async function finalizeCandidate(
   const manifest = manifestSchema.parse({
     schemaVersion: 1,
     ...identity,
+    manifestSha256: sha256(distributionText),
     files,
     packages,
     tables,
@@ -160,14 +157,14 @@ export async function finalizeCandidate(
     ),
   })
   const text = JSON.stringify(manifest, null, 2) + '\n'
-  await writeFile(join(directory, 'manifest.json'), text)
+  await writeFile(join(directory, 'verification.json'), text)
   await writeFile(
     join(directory, 'validation.json'),
     JSON.stringify(validation, null, 2) + '\n'
   )
   await writeFile(
     join(directory, 'complete.json'),
-    JSON.stringify({ ...identity, manifestSha256: sha256(text) }, null, 2) +
+    JSON.stringify({ ...identity, verificationSha256: sha256(text) }, null, 2) +
       '\n'
   )
   return manifest
@@ -175,16 +172,27 @@ export async function finalizeCandidate(
 export async function verifyCandidate(
   directory: string
 ): Promise<ReleaseManifest> {
-  const raw = await readFile(join(directory, 'manifest.json'))
+  const raw = await readFile(join(directory, 'verification.json'))
   const manifest = manifestSchema.parse(JSON.parse(raw.toString()))
   const complete = JSON.parse(
     await readFile(join(directory, 'complete.json'), 'utf8')
   )
   if (
-    complete.manifestSha256 !== sha256(raw) ||
+    complete.verificationSha256 !== sha256(raw) ||
     complete.releaseId !== manifest.releaseId
   )
     throw new Error('Candidate completion marker differs from manifest')
+  const distributionBytes = await readFile(join(directory, 'manifest.json'))
+  const distribution = distributionManifestSchema.parse(
+    JSON.parse(distributionBytes.toString())
+  )
+  if (
+    sha256(distributionBytes) !== manifest.manifestSha256 ||
+    distribution.buildId !== manifest.releaseId ||
+    JSON.stringify(distribution.files) !== JSON.stringify(manifest.files) ||
+    JSON.stringify(distribution.packages) !== JSON.stringify(manifest.packages)
+  )
+    throw new Error('Distribution manifest differs from verification record')
   for (const file of manifest.files) {
     const body = await readFile(join(directory, file.path))
     if (sha256(body) !== file.sha256 || body.length !== file.bytes)
@@ -210,4 +218,12 @@ export async function verifyCandidate(
       throw new Error(`Candidate table differs from manifest: ${name}`)
   }
   return manifest
+}
+
+export async function pinManifest(
+  directory: string,
+  target = PUBLICATION_MANIFEST
+) {
+  await verifyCandidate(directory)
+  await writeFile(target, await readFile(join(directory, 'manifest.json')))
 }

@@ -3,7 +3,7 @@ import { mkdtemp, mkdir, rm, writeFile, readFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { TABLES, manifestSchema } from '@fudoki/data-contracts'
-import { finalizeCandidate, verifyCandidate } from './manifest'
+import { finalizeCandidate, verifyCandidate, pinManifest } from './manifest'
 import { sha256 } from '../release'
 
 const directories: string[] = []
@@ -86,11 +86,6 @@ test('new global releases share every unchanged jurisdiction package and keep ye
     next.manifest.files.filter((f) => f.path.startsWith('fiscal/'))
   ).toEqual(first.manifest.files.filter((f) => f.path.startsWith('fiscal/')))
   expect(
-    next.manifest.files.find((f) => f.path === 'catalog.json')?.objectKey
-  ).not.toBe(
-    first.manifest.files.find((f) => f.path === 'catalog.json')?.objectKey
-  )
-  expect(
     next.manifest.packages.find((p) => p.jurisdictionCode === '000001')
       ?.datasetIds
   ).toHaveLength(4)
@@ -126,4 +121,27 @@ test('a file cannot point at another jurisdiction or package version', async () 
     altered.files[0]!.objectKey = key
     expect(manifestSchema.safeParse(altered).success).toBe(false)
   }
+})
+
+test('the Git manifest contains scope and references without catalog or internal verification data', async () => {
+  const { directory, manifest } = await candidate('r-' + '1'.repeat(32))
+  const target = join(directory, 'git-manifest.json')
+  await pinManifest(directory, target)
+  const publicManifest = JSON.parse(await readFile(target, 'utf8'))
+  expect(publicManifest.datasets).toHaveLength(5)
+  expect(publicManifest.packages).toEqual(manifest.packages)
+  expect(
+    publicManifest.files.every((file: any) => file.path.startsWith('fiscal/'))
+  ).toBe(true)
+  expect(publicManifest.tables).toBeUndefined()
+  expect(publicManifest.queryFingerprint).toBeUndefined()
+  expect(Bun.file(join(directory, 'catalog.json')).size).toBe(0)
+  await writeFile(
+    join(directory, 'manifest.json'),
+    JSON.stringify({ ...publicManifest, selection: 'changed' })
+  )
+  await expect(pinManifest(directory, target)).rejects.toThrow(
+    'manifest differs'
+  )
+  expect(JSON.parse(await readFile(target, 'utf8'))).toEqual(publicManifest)
 })

@@ -6,10 +6,18 @@ import { verifyCandidate } from '../fdp/manifest'
 import { LATEST } from '../paths'
 import { sha256 } from '../release'
 
+const revision = Bun.spawnSync(['git', 'rev-parse', 'HEAD'], {
+  cwd: REPO,
+  stdout: 'pipe',
+  stderr: 'inherit',
+})
+if (revision.exitCode !== 0)
+  throw new Error('Unable to resolve Git manifest URL')
+
 if (!LATEST) throw new Error('Run pipeline:build before loading local D1')
 const candidate = join(BUILD, 'releases', LATEST.releaseId)
 const manifest = await verifyCandidate(candidate)
-const manifestBytes = await readFile(join(candidate, 'manifest.json'))
+const manifestBytes = await readFile(join(candidate, 'verification.json'))
 
 const api = join(REPO, 'apps/api')
 const init = Bun.spawn(['node', 'scripts/local-bindings.mjs', 'init-d1'], {
@@ -61,9 +69,9 @@ try {
         file.contentType
       )
     db.prepare(
-      'UPDATE releases SET manifest_key=?,manifest_sha256=?,code_revision=?,input_fingerprint=? WHERE release_id=?'
+      'UPDATE releases SET manifest_url=?,verification_sha256=?,code_revision=?,input_fingerprint=? WHERE release_id=?'
     ).run(
-      `releases/${manifest.releaseId}/manifest.json`,
+      `https://raw.githubusercontent.com/wwwyo/fudoki/${revision.stdout.toString().trim()}/pipeline/publish/manifest.json`,
       sha256(manifestBytes),
       manifest.codeRevision,
       manifest.inputFingerprint,

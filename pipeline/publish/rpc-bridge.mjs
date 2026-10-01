@@ -7,9 +7,9 @@ import clientConfig from './client/cloudflare.config.ts'
 // Wrangler's proxy runs under Node; the pipeline caller retains Bun's runtime.
 let platform
 let directory
+let session
 const allowed = new Set([
   'candidate',
-  'existingManifest',
   'existingFile',
   'file',
   'chunk',
@@ -18,7 +18,6 @@ const allowed = new Set([
   'downloads',
   'download',
   'measure',
-  'report',
 ])
 const ready = (async () => {
   // The proxy library still reads JSON; derive its transient input from cf's declaration.
@@ -55,7 +54,15 @@ process.on('message', async (message) => {
   const { id, method, args } = message
   try {
     await ready
+    if (method === 'session') {
+      if (session || !Array.isArray(args) || args.length !== 1)
+        throw new Error('Invalid session initialization')
+      session = await platform.env.VERIFICATION.session(args[0])
+      process.send({ id, result: null })
+      return
+    }
     if (method === 'dispose') {
+      session?.[Symbol.dispose]()
       await platform.dispose()
       await rm(directory, { recursive: true, force: true })
       process.send({ id, result: null })
@@ -66,7 +73,7 @@ process.on('message', async (message) => {
       throw new Error('Invalid verification RPC')
     process.send({
       id,
-      result: await platform.env.VERIFICATION[method](...args),
+      result: await session[method](...args),
     })
   } catch (error) {
     process.send({
@@ -76,6 +83,7 @@ process.on('message', async (message) => {
   }
 })
 process.on('disconnect', async () => {
+  session?.[Symbol.dispose]()
   await platform?.dispose()
   if (directory) await rm(directory, { recursive: true, force: true })
 })
