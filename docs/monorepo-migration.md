@@ -94,3 +94,9 @@ Pi の別 harness レビューと再レビューを実施し、公開 docs の�
 再構築を繰り返す中で、狛江市の決算歳出 CSV に表走査順による行順差を検出した。行集合と金額は同じだったが配布ハッシュが変わるため、全77配布 CSV の書き出しを共有マクロへ移し、全列で順序を固定した。
 
 順序固定後の254項目の build と再構築が成功し、manifest・検証記録の完全一致を確認した。変更した会計フィルターを含む Bun 85 件（253アサーション）も通過した。
+
+## 2026-10-02: 遠隔のキャッシュ設定を先行適用
+
+R2 を再確認し、403/10042 と `Please enable R2 through the Cloudflare Dashboard` が継続していた。R2 の有効化待ちとは独立した Cache Rules を `fudoki.dev` へ先行適用した。サーバーでの検証と適用後の読み返しで、`fudoki_distribution_cache` が Git の定義と一致し有効であることを確認した。R2 の直接配信・原典と配布物の転送・D1/API の更新は未完了。公開後の `CF-Cache-Status` 実測も残る。
+
+Free zone の rate limit 枠には既存の `Leaked credential check` があり、配布用ルールは適用しなかった。既存ルールは変更・削除していない。
