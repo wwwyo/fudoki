@@ -50,6 +50,10 @@ flowchart LR
 
 ## Glossary
 
+共通用語は [AGENTS.mdのGlossary](../../../AGENTS.md#glossary) に従う。本機能は科目別の「予算（budget）」を扱い、「お金の向き（direction）」を歳入・歳出で区別する。取引単位の「支出（spending）」は対象に含めない。
+
+金額の段階は、当初予算（approved）、補正後の予算（流用・充用前）（adjusted-before-transfer）、補正後の予算（adjusted）、決算・執行実績（executed）を区別する。補正の増減額は補正後の予算そのものではない。これらは金額の意味を表す用語であり、公開データに `phase` 列を設ける要件ではない。
+
 - **予算の変更履歴**：当初予算を基準に、各補正とその他の変更の金額・時点・根拠を区別した記録。
 - **補正の増減額**：その号の補正で増減した額。補正前額や補正後総額とは区別し、減額は負の値として扱う。
 - **原典の報告値**：決算書等に自治体が記載した予算額。風土記が変更履歴から求めた計算値とは別に保持する。
@@ -61,11 +65,11 @@ flowchart LR
 classDiagram
     direction LR
     class BudgetItem["予算対象"] {
-        団体・年度・歳入歳出・会計
+        団体・年度・お金の向き・会計
         追跡粒度
         当初額の確認状態
     }
-    class InitialBudget["当初額"] {
+    class InitialBudget["当初予算"] {
         金額
     }
     class BudgetChange["予算変更"] {
