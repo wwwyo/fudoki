@@ -141,7 +141,7 @@ API 用の保存形式の schema・テーブル定義・契約版は `packages/d
 - `fiscal_expenditure_budget_changes` / `fiscal_revenue_budget_changes`: 補正・その他変更の増減額。
 - `fiscal_expenditure_settlement_links` / `fiscal_revenue_settlement_links`: 予算対象と決算明細の対応。
 - `cofog_codes`: 公開版に依存しない分類コード・名称・親子関係の共通マスタ。歳出の割当先はコード一つを外部キー参照する。
-- `fiscal_expenditure_sections`: 歳出の節のコード・名称・適用期間を持つ共通マスタ。自治体データ版や金額は持たず、歳入からは参照しない。参照列は `expenditure_section_id` とする。
+- `fiscal_expenditure_setsu`: 歳出の節のコード・名称・適用期間を持つ共通マスタ。自治体データ版や金額は持たず、歳入からは参照しない。参照列は `expenditure_setsu_id` とする。
 - `fiscal_package_files`: 財政データ版が参照する R2 配布ファイルのキー・サイズ・SHA-256・content type。
 
 新しい ER 図、各表の列・主キー・複合外部キーと比較時の制約は [財政データの設計](design-doc-fiscal-records.md) に集約する。
@@ -149,7 +149,7 @@ API 用の保存形式の schema・テーブル定義・契約版は `packages/d
 
 **COFOG の割当結果は歳出明細へ統合する。** 分類結果のための独立した1対1表を作らず、割り当てた粒度のコード一つと状態・根拠を保持する。上位分類はマスタの親子関係から取得する。歳入明細に COFOG 列は作らない。分類規則は Git に置き、提供用 D1・API・配布物から規則 ID を外す。
 
-**歳出の予算対象は事業×歳出の節で揃える。** 同じ団体・年度・資料・会計・科目／事業経路・追加区分の範囲で、節より下の内訳をまとめ、当初予算と変更の金額明細に `details_json` として保持する。歳出の節は経済的な性質の分類として `fiscal_expenditure_sections` を参照し、COFOG とは独立して扱う。節が不明な原典や分類・連結判断が一致しない明細は、原典行の粒度と未確認状態を保持する。この変更は設計採用済み・未実装であり、決算と歳入の明細は集約対象にしない。キーと検査条件は [財政データの設計](design-doc-fiscal-records.md) に従う。
+**歳出の予算対象は事業×歳出の節で揃える。** 同じ団体・年度・資料・会計・科目／事業経路・追加区分の範囲で、節より下の内訳をまとめ、当初予算と変更の金額明細に `details_json` として保持する。歳出の節は経済的な性質の分類として `fiscal_expenditure_setsu` を参照し、COFOG とは独立して扱う。節が不明な原典や分類・連結判断が一致しない明細は、原典行の粒度と未確認状態を保持する。この変更は設計採用済み・未実装であり、決算と歳入の明細は集約対象にしない。キーと検査条件は [財政データの設計](design-doc-fiscal-records.md) に従う。
 
 **R2 と D1 は同じ提供モデルから生成し、二つの正本にしない。** 同じ固定入力・宣言・判断から金額・分類・連結判断を一度だけ求め、対応する明細の値が一致することを検査する。R2 は配布、D1 は条件検索・集計を担当し、いずれも直接編集しない。
 
@@ -206,7 +206,7 @@ build はローカルで検査済みの公開候補を作り、publish が R2 �
 
 金額の取得は決算・当初予算・変更を区別した CSV、会計・科目での団体間比較は名称対応表を使う。COFOG のコード・状態・根拠は対応する歳出明細・変更の CSV に含め、分類だけを取得するための結合を不要にする。列の説明で原典の数字と風土記の判断を区別し、分類マスタ・規則ファイル・規則 ID は配布しない。
 
-機能分類の `cofog_code` は FDP 標準の `functional-classification:cofog:code` として宣言する。GFSM は提供しない。採用した次の提供契約では、歳出予算を事業×歳出の節に集約し、経済分類として `expenditure_section_id` と `expenditure_section_label`、下位内訳として `details_json` を同じ予算明細 CSV に含める。歳出の節には `economic-classification:generic:code` / `label` を使い、GFSM の列型は指定しない。名称と ID は共通マスタから生成し、団体別の配布物にマスタ全体を複製しない。適用期間は年度とマスタ ID から判別できるようにする。
+機能分類の `cofog_code` は FDP 標準の `functional-classification:cofog:code` として宣言する。GFSM は提供しない。採用した次の提供契約では、歳出予算を事業×歳出の節に集約し、経済分類として `expenditure_setsu_id` と `expenditure_setsu_label`、下位内訳として `details_json` を同じ予算明細 CSV に含める。歳出の節には `economic-classification:generic:code` / `label` を使い、GFSM の列型は指定しない。名称と ID は共通マスタから生成し、団体別の配布物にマスタ全体を複製しない。適用期間は年度とマスタ ID から判別できるようにする。
 
 この契約変更は未実装である。現行の歳出明細 CSV は原典行の粒度で、節・その内訳の列を除去している。移行時は歳出予算の節の参照を復元し、予算対象の `account_path_json` は事業まで、下位内訳は金額明細の `details_json` に整理する。原典の節・内訳は取り込み・内部検証に保持する。歳入の節は財源の内訳であり、この変更の対象ではない。
 

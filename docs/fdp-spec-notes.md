@@ -4,7 +4,7 @@
 
 COFOG は歳出明細・変更の CSV の `cofog_code` 列に含め、`functional-classification:cofog:code` として宣言する。分類コード・状態・根拠のための独立した配布 CSV は作らない。
 
-GFSM は提供しない。採用した次の設計では、歳出予算を事業×歳出の節で提供し、`expenditure_section_id` / `expenditure_section_label` を `economic-classification:generic:code` / `label` として宣言する。ID は適用期間を含むマスタの定義を特定し、法改正前後で同じ節番号を同じ定義とみなさない。COFOG は機能分類、歳出の節は経済的な性質の分類であり、別の軸として同じ明細に持てる。細節・細々節等と原典行の対応は `details_json` に保持する。[FDP 1.0.0 の分類定義](https://fiscal.datapackage.org/specifications/fiscal-data-package-budgets/)
+GFSM は提供しない。採用した次の設計では、歳出予算を事業×歳出の節で提供し、`expenditure_setsu_id` / `expenditure_setsu_label` を `economic-classification:generic:code` / `label` として宣言する。ID は適用期間を含むマスタの定義を特定し、法改正前後で同じ節番号を同じ定義とみなさない。COFOG は機能分類、歳出の節は経済的な性質の分類であり、別の軸として同じ明細に持てる。細節・細々節等と原典行の対応は `details_json` に保持する。[FDP 1.0.0 の分類定義](https://fiscal.datapackage.org/specifications/fiscal-data-package-budgets/)
 
 事業×歳出の節への集約、マスタ参照と JSON 内訳は未実装。現行の歳出明細 CSV は原典行の粒度を維持し、節・内訳の列を外している。原典の節は取り込み・内部検証と予算対象の原典経路に保持する。歳入の節は財源の内訳であり、歳出の節マスタとは別に扱う。設計と移行条件は [財政データの設計](design-doc-fiscal-records.md) を参照。
 

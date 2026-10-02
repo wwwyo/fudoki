@@ -73,7 +73,7 @@ classDiagram
 
 ```mermaid
 classDiagram
-    class ExpenditureSection["歳出の節"] {
+    class ExpenditureSetsu["歳出の節"] {
         節の定義ID
         法定コード
         名称
@@ -98,7 +98,7 @@ classDiagram
         下位内訳
         原典との対応
     }
-    ExpenditureBudgetItem "0..*" --> "0..1" ExpenditureSection : 経済的な性質を参照する
+    ExpenditureBudgetItem "0..*" --> "0..1" ExpenditureSetsu : 経済的な性質を参照する
     ExpenditureBudgetItem "1" --> "0..1" InitialExpenditureBudgetLine : 当初額を持つ
     ExpenditureBudgetItem "1" --> "0..*" ExpenditureBudgetChange : 増減を追跡する
 ```

@@ -57,7 +57,7 @@ _Avoid_: ログ
 **歳出明細（fiscal expenditure line）**:
 一つの財政資料に載る、支出の目的・科目・金額を表す明細。別年度・別文書の明細とは区別する。
 
-**歳出の節（fiscal expenditure section）**:
+**歳出の節（fiscal expenditure setsu）**:
 給料・旅費・委託料等、歳出の経済的な性質による区分。歳入の節や、支出の目的による COFOG 分類とは別の概念である。
 
 **歳出予算対象（fiscal expenditure budget item）**:

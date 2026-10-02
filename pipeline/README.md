@@ -25,7 +25,7 @@ bun run pipeline:build --rebuild
 
 補正・繰越等の実資料と、資料間の確認済み対応は現在未収録である。変更・対応表が空でも、変更ゼロ・予算と決算の一致を意味しない。dataset の `coverage.budgetHistory` は `unconfirmed` として提供する。収録・照合の条件は [予算変更履歴 PRD](../docs/prd/fiscal-budget-history/prd.md) に残す。
 
-採用済みの設計では、歳出の節マスタ `fiscal_expenditure_sections` を追加し、歳出予算を事業×歳出の節へ集約する。参照は `expenditure_section_id`、下位内訳と原典行への対応は金額明細の `details_json` とする。この変更は未実装であり、上記は現在の構築結果を説明している。移行の契約と検査条件は [財政データの設計](../docs/design-doc-fiscal-records.md) を参照。
+採用済みの設計では、歳出の節マスタ `fiscal_expenditure_setsu` を追加し、歳出予算を事業×歳出の節へ集約する。参照は `expenditure_setsu_id`、下位内訳と原典行への対応は金額明細の `details_json` とする。この変更は未実装であり、上記は現在の構築結果を説明している。移行の契約と検査条件は [財政データの設計](../docs/design-doc-fiscal-records.md) を参照。
 
 ## 収録範囲を Git に記録する
 
