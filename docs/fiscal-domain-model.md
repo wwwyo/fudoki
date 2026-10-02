@@ -4,12 +4,18 @@
 
 具体的な値と参照の関係は [狛江市2023年度決算のオブジェクト図](fiscal-object-example.md)、予算履歴を含む保存境界は [財政データの設計と ER 図](design-doc-fiscal-records.md) を参照。
 
+## 共通の定義と財政の記録を区別する
+
+団体マスタは団体コードと自治体の名称、COFOG分類マスタは分類コード・名称・階層、歳出の節マスタは法定区分と適用期間の定義を持つ。これらは共通の参照先であり、金額や自治体データ版は持たない。図のマスタのクラスは一覧全体ではなく、一件の団体や分類の定義を表す。
+
+予算対象は団体・年度内の追跡対象、予算・決算明細は資料に基づく金額の記録であり、マスタとは区別する。マスタの表名には `_master` を付ける採用済みの設計とし、現行 DB への改名は未適用である。
+
 ## 自治体の資料から、歳出と歳入を別々に読む
 
 ```mermaid
 classDiagram
     direction TB
-    class Jurisdiction["自治体"] {
+    class JurisdictionMaster["団体マスタ"] {
         団体コード
         名称
     }
@@ -44,18 +50,18 @@ classDiagram
         分類状態
         根拠
     }
-    class CofogCode["COFOG分類"] {
+    class CofogMaster["COFOG分類マスタ"] {
         コード
         名称
     }
-    Jurisdiction "1" --> "0..*" SettlementExpenditureDataset : 収録する
-    Jurisdiction "1" --> "0..*" SettlementRevenueDataset : 収録する
+    JurisdictionMaster "1" --> "0..*" SettlementExpenditureDataset : 団体を識別する
+    JurisdictionMaster "1" --> "0..*" SettlementRevenueDataset : 団体を識別する
     Origin "1" <-- "0..*" SettlementExpenditureDataset : 基づく
     Origin "1" <-- "0..*" SettlementRevenueDataset : 基づく
     SettlementExpenditureDataset "1" *-- "1..*" SettlementExpenditureLine : 明細を持つ
     SettlementRevenueDataset "1" *-- "1..*" SettlementRevenueLine : 明細を持つ
     SettlementExpenditureLine "1" *-- "1" CofogClassification : 分類結果を持つ
-    CofogClassification "0..*" --> "0..1" CofogCode : 割り当てる
+    CofogClassification "0..*" --> "0..1" CofogMaster : 割り当てる
 ```
 
 - 自治体は年度ごとに決算歳出／歳入データセットを持つ。財政データが未収録の自治体は、どちらも0件になる。この図は決算の提供用明細を示し、予算の管理は別にする。
@@ -73,7 +79,7 @@ classDiagram
 
 ```mermaid
 classDiagram
-    class ExpenditureSetsu["歳出の節"] {
+    class ExpenditureSetsuMaster["歳出の節マスタ"] {
         節の定義ID
         法定コード
         名称
@@ -98,7 +104,7 @@ classDiagram
         下位内訳
         原典との対応
     }
-    ExpenditureBudgetItem "0..*" --> "0..1" ExpenditureSetsu : 経済的な性質を参照する
+    ExpenditureBudgetItem "0..*" --> "0..1" ExpenditureSetsuMaster : 経済的な性質を参照する
     ExpenditureBudgetItem "1" --> "0..1" InitialExpenditureBudgetLine : 当初額を持つ
     ExpenditureBudgetItem "1" --> "0..*" ExpenditureBudgetChange : 増減を追跡する
 ```

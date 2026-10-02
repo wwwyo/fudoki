@@ -44,7 +44,7 @@ flowchart LR
 
 ```mermaid
 erDiagram
-    jurisdictions ||--o{ fiscal_jurisdiction_versions : identifies
+    jurisdiction_master ||--o{ fiscal_jurisdiction_versions : identifies
     fiscal_jurisdiction_versions ||--o{ fiscal_datasets : source_scope
     fiscal_jurisdiction_versions ||--o{ fiscal_package_files : distribution
 ```
@@ -57,13 +57,13 @@ erDiagram
 - `fiscal_expenditure_settlement_links` / `fiscal_revenue_settlement_links`: 予算対象と決算明細の対応。金額を複製せず、分割・統合や未確認を扱う。
 - `fiscal_jurisdiction_versions` / `fiscal_package_files`: 一団体の財政データ版と、R2 の配布参照。
 
-共通団体マスタ `jurisdictions`、分類マスタ `cofog_codes`、DB の識別子 `database_identity` は版から独立させる。財政の表と dbt モデルには `fiscal_` を付け、例えば `api_fiscal_settlement_expenditure_lines` と生成先の表名へ揃える。現行 SQL・dbt の置き換えは未完了である。
+共通団体マスタ `jurisdiction_master`、分類マスタ `cofog_master`、DB の識別子 `database_identity` は版から独立させる。財政の表と dbt モデルには `fiscal_` を付け、例えば `api_fiscal_settlement_expenditure_lines` と生成先の表名へ揃える。マスタの表名を明示する改名は設計採用済み・未実装であり、現行 SQL の団体表は `jurisdictions`、分類表は `cofog_codes` である。
 
 会議録等を追加するときはその領域のモデル・配布参照・版を別に定義し、財政明細へ `domain` 列を追加して混在させない。領域間では団体コードを共有する。
 
 ### 団体の内容が変わったときだけデータ版を作る
 
-`fiscal_jurisdiction_versions` は一団体の全収録年度・文書・会計をまとめた不変のデータ版である。`version_id`、団体コード、契約版、`package_id`、その版で採用した名称・OCD ID・注意点、最初の登録時刻 `registered_at`、採用した Git manifest の commit 固定 URL と SHA-256 を持つ。団体コードは `jurisdictions` を参照する。提供用の団体情報もこの版から読むため、共通マスタの更新で過去の説明を変えない。
+`fiscal_jurisdiction_versions` は一団体の全収録年度・文書・会計をまとめた不変のデータ版である。`version_id`、団体コード、契約版、`package_id`、その版で採用した名称・OCD ID・注意点、最初の登録時刻 `registered_at`、採用した Git manifest の commit 固定 URL と SHA-256 を持つ。団体コードは `jurisdiction_master` を参照する。提供用の団体情報もこの版から読むため、共通マスタの更新で過去の説明を変えない。
 
 版の内容には、団体の説明、dataset の出典・利用条件・収録範囲、財政データの提供用表、配布ファイル一覧を含める。`versionId` は団体コード・契約版と、これらを正規化した内容の SHA-256 から生成する。行順・JSON のキー順・NULL と空文字の扱い・文字列としてのコード・整数単位を契約で固定する。版 ID 自身、登録時刻、manifest の参照、構築実行の ID、コード commit、実行時刻はハッシュの対象にしない。
 
@@ -74,6 +74,10 @@ API 用の内容だけが変われば `versionId` は変わり、配布ファイ
 財政データが未収録の団体も、名称・注意点を持つデータ版として登録できる。その場合は dataset と配布ファイルがなく、`package_id` は NULL とする。未収録と金額ゼロを区別する。
 
 ### 各明細を同じ団体のデータ版に所属させる
+
+`version_id` は財政上の年度や補正の号数ではなく、API から読む自治体別の提供データ版を識別する。明細の主キーは `version_id` 単独ではなく `(version_id, fiscal_line_id)` の組合せである。同じ原典行の COFOG 判断を訂正した場合でも、訂正前と訂正後を別の提供版に保存し、指定した版の結果を取得できる。
+
+この設計は D1 から過去の提供版を指定して取得するために採用している。一団体の内容が変わると、その団体の未変更の明細も新しい版に保存するため、保存量と複合キーの管理が増える。R2 に過去の配布物を保持することだけでは、D1 に全版を残す必要はない。D1 を最新版だけの検索表にする場合は、この版別保存と複合キーを再設計する。
 
 財政の提供用表はすべて自治体データ版の `version_id` に属する。dataset は `(version_id, jurisdiction_code)` で自治体データ版を参照し、別団体の版に混入することを禁止する。決算明細・当初予算・変更は `(version_id, dataset_id)` で同じ版の原典範囲を参照する。予算対象との対応や子表にも同じ版の複合外部キーを使い、別版・別団体・歳入歳出の混入を拒否する。dataset の種類と行の保存先は build で照合する。
 

@@ -106,3 +106,7 @@ Pi の別 harness レビューと再レビューを実施し、公開 docs の�
 R2 を再確認し、403/10042 と `Please enable R2 through the Cloudflare Dashboard` が継続していた。R2 の有効化待ちとは独立した Cache Rules を `fudoki.dev` へ先行適用した。サーバーでの検証と適用後の読み返しで、`fudoki_distribution_cache` が Git の定義と一致し有効であることを確認した。R2 の直接配信・原典と配布物の転送・D1/API の更新は未完了。公開後の `CF-Cache-Status` 実測も残る。
 
 Free zone の rate limit 枠には既存の `Leaked credential check` があり、配布用ルールは適用しなかった。既存ルールは変更・削除していない。
+
+## マスタを概念と表名で明示する変更の設計
+
+団体マスタ・COFOG分類マスタ・歳出の節マスタを、年度や資料に属する予算対象・金額明細とは区別する。設計上の表名を `jurisdiction_master`、`cofog_master`、`fiscal_expenditure_setsu_master` に揃える。現行 SQL の `jurisdictions`・`cofog_codes` の改名と節マスタの追加は未実装であり、上記の移行記録にある旧名は当時の実装を表す。共通マスタは自治体の提供データ版 `version_id` に依存させない。

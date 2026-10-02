@@ -133,15 +133,15 @@ API 用の保存形式の schema・テーブル定義・契約版は `packages/d
 表の境界は以下とする。共通マスタは版から独立させ、提供用の派生データを自治体別の `version_id` で区切る。全体の公開一覧を作らず、団体ごとの版へ直接取り込む。
 
 - `fiscal_jurisdiction_versions`: 一団体の内容を固定した版。団体コード・契約版・配布物の版と、その版で採用した名称・OCD ID・注意点を持つ。
-- `jurisdictions`: 団体コードを主キーとする共通マスタ。名称・OCD ID を持ち、版 ID は持たない。Git の `packages/jurisdictions/jurisdictions.json` から生成する。
+- `jurisdiction_master`: 団体コードを主キーとする共通マスタ。名称・OCD ID を持ち、版 ID は持たない。Git の `packages/jurisdictions/jurisdictions.json` から生成する。
 - `fiscal_datasets`: 原典の収録単位。団体・年度・歳入歳出・文書種別・原典版・利用条件・範囲を持つ。
 - `fiscal_settlement_expenditure_lines` / `fiscal_settlement_revenue_lines`: 決算明細。実績の `amount` 一つを直接持ち、科目経路・追加区分・名称は各明細専用の子表に分ける。
 - `fiscal_expenditure_budget_items` / `fiscal_revenue_budget_items`: 年度内の予算対象。
 - `fiscal_initial_expenditure_budget_lines` / `fiscal_initial_revenue_budget_lines`: 当初予算の基準額。
 - `fiscal_expenditure_budget_changes` / `fiscal_revenue_budget_changes`: 補正・その他変更の増減額。
 - `fiscal_expenditure_settlement_links` / `fiscal_revenue_settlement_links`: 予算対象と決算明細の対応。
-- `cofog_codes`: 公開版に依存しない分類コード・名称・親子関係の共通マスタ。歳出の割当先はコード一つを外部キー参照する。
-- `fiscal_expenditure_setsu`: 歳出の節のコード・名称・適用期間を持つ共通マスタ。自治体データ版や金額は持たず、歳入からは参照しない。参照列は `expenditure_setsu_id` とする。
+- `cofog_master`: 公開版に依存しない分類コード・名称・親子関係の共通マスタ。歳出の割当先はコード一つを外部キー参照する。
+- `fiscal_expenditure_setsu_master`: 歳出の節のコード・名称・適用期間を持つ共通マスタ。自治体データ版や金額は持たず、歳入からは参照しない。参照列は `expenditure_setsu_id` とする。
 - `fiscal_package_files`: 財政データ版が参照する R2 配布ファイルのキー・サイズ・SHA-256・content type。
 
 新しい ER 図、各表の列・主キー・複合外部キーと比較時の制約は [財政データの設計](design-doc-fiscal-records.md) に集約する。
@@ -149,7 +149,7 @@ API 用の保存形式の schema・テーブル定義・契約版は `packages/d
 
 **COFOG の割当結果は歳出明細へ統合する。** 分類結果のための独立した1対1表を作らず、割り当てた粒度のコード一つと状態・根拠を保持する。上位分類はマスタの親子関係から取得する。歳入明細に COFOG 列は作らない。分類規則は Git に置き、提供用 D1・API・配布物から規則 ID を外す。
 
-**歳出の予算対象は事業×歳出の節で揃える。** 同じ団体・年度・資料・会計・科目／事業経路・追加区分の範囲で、節より下の内訳をまとめ、当初予算と変更の金額明細に `details_json` として保持する。歳出の節は経済的な性質の分類として `fiscal_expenditure_setsu` を参照し、COFOG とは独立して扱う。節が不明な原典や分類・連結判断が一致しない明細は、原典行の粒度と未確認状態を保持する。この変更は設計採用済み・未実装であり、決算と歳入の明細は集約対象にしない。キーと検査条件は [財政データの設計](design-doc-fiscal-records.md) に従う。
+**歳出の予算対象は事業×歳出の節で揃える。** 同じ団体・年度・資料・会計・科目／事業経路・追加区分の範囲で、節より下の内訳をまとめ、当初予算と変更の金額明細に `details_json` として保持する。歳出の節は経済的な性質の分類として `fiscal_expenditure_setsu_master` を参照し、COFOG とは独立して扱う。節が不明な原典や分類・連結判断が一致しない明細は、原典行の粒度と未確認状態を保持する。この変更は設計採用済み・未実装であり、決算と歳入の明細は集約対象にしない。キーと検査条件は [財政データの設計](design-doc-fiscal-records.md) に従う。
 
 **R2 と D1 は同じ提供モデルから生成し、二つの正本にしない。** 同じ固定入力・宣言・判断から金額・分類・連結判断を一度だけ求め、対応する明細の値が一致することを検査する。R2 は配布、D1 は条件検索・集計を担当し、いずれも直接編集しない。
 

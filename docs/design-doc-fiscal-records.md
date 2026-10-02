@@ -15,13 +15,19 @@
 
 ## System Overview
 
-図を二つに分ける。団体別の版の ER 図は [自治体データ版の設計](design-doc-jurisdiction-versions.md)、財政データの ER 図は以下を正本とする。すべての提供用レコードは自治体データ版に属し、全体構築版に複製しない。
+図を二つに分ける。団体別の版の ER 図は [自治体データ版の設計](design-doc-jurisdiction-versions.md)、財政データの ER 図は以下を正本とする。マスタを除く財政の提供用レコードは自治体データ版に属し、全体構築版に複製しない。
 
 ```mermaid
 erDiagram
     fiscal_datasets ||--o{ fiscal_settlement_expenditure_lines : expenditure_settlement
     fiscal_datasets ||--o{ fiscal_settlement_revenue_lines : revenue_settlement
-    cofog_codes o|--o{ fiscal_settlement_expenditure_lines : assigned_code
+    cofog_master {
+        text code PK
+        text label
+        text level
+        text parent_code FK
+    }
+    cofog_master o|--o{ fiscal_settlement_expenditure_lines : assigned_code
     fiscal_settlement_expenditure_lines {
         text version_id PK,FK
         text fiscal_line_id PK
@@ -37,8 +43,8 @@ erDiagram
         integer amount
     }
     fiscal_expenditure_budget_items ||--o| fiscal_initial_expenditure_budget_lines : initial_amount
-    fiscal_expenditure_setsu o|--o{ fiscal_expenditure_budget_items : expenditure_setsu
-    fiscal_expenditure_setsu {
+    fiscal_expenditure_setsu_master o|--o{ fiscal_expenditure_budget_items : expenditure_setsu
+    fiscal_expenditure_setsu_master {
         text expenditure_setsu_id PK
         text code
         text label
@@ -61,7 +67,7 @@ erDiagram
         text details_json
         text cofog_code FK
     }
-    cofog_codes o|--o{ fiscal_initial_expenditure_budget_lines : assigned_code
+    cofog_master o|--o{ fiscal_initial_expenditure_budget_lines : assigned_code
     fiscal_expenditure_budget_items ||--o{ fiscal_expenditure_budget_changes : signed_changes
     fiscal_revenue_budget_items ||--o| fiscal_initial_revenue_budget_lines : initial_amount
     fiscal_revenue_budget_items ||--o{ fiscal_revenue_budget_changes : signed_changes
@@ -75,13 +81,19 @@ erDiagram
     fiscal_settlement_revenue_lines ||--o{ fiscal_revenue_settlement_links : correspondence
 ```
 
-この図は採用した設計の主要な表を示す。歳出の節マスタは自治体データ版から独立し、金額を持たない。決算明細に属する経路・追加区分・検索用名称は後述の専用子表に展開する。原典の報告値と処理規則は提供用 D1 の表に含めない。
+この図は採用した設計の主要な表を示す。複数列の `PK` は、それぞれが単独の主キーという意味ではなく、組合せで一行を特定する複合主キーを表す。例えば決算歳出明細は `(version_id, fiscal_line_id)` が主キーである。歳出の節マスタは自治体データ版から独立し、金額を持たない。決算明細に属する経路・追加区分・検索用名称は後述の専用子表に展開する。原典の報告値と処理規則は提供用 D1 の表に含めない。
 
 ## Detailed Design
 
+### 共通の定義をマスタとして区別する
+
+団体マスタ・COFOG分類マスタ・歳出の節マスタは、金額明細が参照する共通の定義である。表名を `jurisdiction_master`、`cofog_master`、`fiscal_expenditure_setsu_master` とし、`_master` を付けて役割を明示する。主キーはそれぞれ `jurisdiction_code`、`code`、`expenditure_setsu_id` とし、自治体の提供データ版を表す `version_id` は持たせない。節の適用年度は定義の有効期間であり、提供版とは区別する。予算対象・明細・変更・資料間の対応は年度や資料に属する記録なので、マスタとは扱わない。
+
+この命名は設計に採用したもので、現行 SQL の団体表 `jurisdictions` と分類表 `cofog_codes` の改名、および歳出の節マスタの追加は未実装である。参照列や公開 manifest の `jurisdictions` フィールド、`packages/jurisdictions/` の名前は、この表名変更で改名しない。
+
 ### 歳出予算を事業と経済的な性質の組合せで提供する
 
-歳出の節マスタを `fiscal_expenditure_setsu`、参照列を `expenditure_setsu_id` と命名する。`setsu` は法定の「節」を指す。`section` を公式英訳として採用せず、既存の原典経路の `kan / kou / moku / setsu` と揃える。歳出の節は支払いの経済的な性質、COFOG は支出の目的を表す別の分類軸である。歳入の節は財源の内訳なので、このマスタを参照しない。GFSM は提供しない。
+歳出の節マスタを `fiscal_expenditure_setsu_master`、参照列を `expenditure_setsu_id` と命名する。`setsu` は法定の「節」を指す。`section` を公式英訳として採用せず、既存の原典経路の `kan / kou / moku / setsu` と揃える。歳出の節は支払いの経済的な性質、COFOG は支出の目的を表す別の分類軸である。歳入の節は財源の内訳なので、このマスタを参照しない。GFSM は提供しない。
 
 マスタの一行は、適用期間を持つ歳出の節の定義である。`expenditure_setsu_id` を主キーとし、法定の `code`、`label`、適用開始・終了年度、法令の根拠を持つ。同じ法定コードの定義の適用期間は重複させず、コードだけを全年度共通の ID として使わない。適用終了年度が未定なら NULL とする。Git の定義から D1 の共通マスタを生成し、`version_id` や金額を持たせない。原典の年度・名称・科目体系を照合して対応付け、参照する対象の年度がマスタの適用期間内であることを検査する。歳出と確認できない区分や公営企業会計の別体系を取り込まない。[法定の歳出の節区分](https://laws.e-gov.go.jp/data/MinisterialOrdinance/322M40000008029/616836_1/pict/2FH00000022813.pdf)
 
@@ -101,7 +113,7 @@ erDiagram
 
 `fiscal_settlement_expenditure_lines` と `fiscal_settlement_revenue_lines` は `(version_id, fiscal_line_id)` を主キー、`(version_id, dataset_id)` を外部キーとする。`amount` は円換算した整数で、歳出は支出済額、歳入は収入済額を表す。`source_row`、会計コード・名称、連結判断・相手会計を持つ。金額だけの表と公開用 `phase` は作らない。
 
-歳出表には `cofog_code`、`cofog_status`、分類根拠を持たせる。分類結果は概念上は明細の一部であり、独立した1対1表にしない。`assigned` のときだけ `cofog_codes` を外部キー参照し、それ以外はコードを NULL とする。歳入表に COFOG 列は作らない。
+歳出表には `cofog_code`、`cofog_status`、分類根拠を持たせる。分類結果は概念上は明細の一部であり、独立した1対1表にしない。`assigned` のときだけ `cofog_master` を外部キー参照し、それ以外はコードを NULL とする。歳入表に COFOG 列は作らない。
 
 dataset の歳入歳出・文書種別と、保存先の表の意味を取込検査と公開前の検査で照合する。単に dataset の複合外部キーが成立するだけでは、歳入資料の行を歳出表へ入れられないことを保証したとは扱わない。予算対象・変更・対応にも団体・年度・会計の検査を適用する。
 
@@ -147,7 +159,7 @@ dataset の歳入歳出・文書種別と、保存先の表の意味を取込検
 
 ### 分類の処理定義を公開データから外す
 
-分類コードのマスタ `cofog_codes` は共有する。規則は Git の `cofog_rules.csv` で適用し、提供用 D1・API・配布物には規則表・規則ファイル・規則 ID を含めない。使った規則はコード版・固定入力とパイプラインの検証記録から追跡する。当初歳出予算と歳出の変更にも、各原典明細に対して求めた COFOG コード・状態・根拠を持たせる。歳入の表へは持たせない。
+分類コードのマスタ `cofog_master` は共有する。規則は Git の `cofog_rules.csv` で適用し、提供用 D1・API・配布物には規則表・規則ファイル・規則 ID を含めない。使った規則はコード版・固定入力とパイプラインの検証記録から追跡する。当初歳出予算と歳出の変更にも、各原典明細に対して求めた COFOG コード・状態・根拠を持たせる。歳入の表へは持たせない。
 
 R2 と D1 は同じ dbt の提供モデルから生成する。対応する明細の金額・分類・連結判断が一致することを検査し、両者を独立編集する正本にしない。
 
@@ -159,7 +171,9 @@ R2 と D1 は同じ dbt の提供モデルから生成する。対応する明�
 
 ## Tasks
 
-- [ ] `fiscal_expenditure_setsu` と年度に応じた原典の節の対応を実装する。
+- [ ] 団体・COFOG の共通マスタの表名を `jurisdiction_master`・`cofog_master` に揃える。
+
+- [ ] `fiscal_expenditure_setsu_master` と年度に応じた原典の節の対応を実装する。
 - [ ] 歳出の予算対象・当初予算・変更を事業×歳出の節へ集約し、下位内訳と原典行の対応を `details_json` に保持する。
 - [ ] 内訳の金額一致・小計の重複排除・事業／追加区分の分離・節不明の保持・COFOG／連結判断の衝突・マスタの適用期間と R2/D1 の一致を検査する。
 - [ ] 移行対象の団体・年度・会計と資料の収録範囲を固定する。
