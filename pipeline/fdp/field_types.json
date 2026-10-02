@@ -401,20 +401,6 @@
         ]
       }
     },
-    "expenditure:saisetsu_code": {
-      "name": "saisetsu_code",
-      "title": "細節コード",
-      "type": "string",
-      "columnType": "economic-classification:generic:level2:code",
-      "description": "歳出の節の下の内訳。⚠️ 同じ列名でも歳入の細節は財源の分類（fin-source）で別概念"
-    },
-    "expenditure:saisetsu_label": {
-      "name": "saisetsu_label",
-      "title": "細節名",
-      "type": "string",
-      "columnType": "economic-classification:generic:level2:label",
-      "labelOf": "economic-classification:generic:level2:code"
-    },
     "fiscal_year": {
       "name": "fiscal_year",
       "title": "会計年度（西暦）",
@@ -755,14 +741,15 @@
       "name": "saisaisetsu_code",
       "title": "細々節コード",
       "type": "string",
-      "columnType": "economic-classification:generic:level2:code"
+      "columnType": "fin-source:generic:level6:code",
+      "description": "歳入の細々節"
     },
     "saisaisetsu_label": {
       "name": "saisaisetsu_label",
       "title": "細々節名",
       "type": "string",
-      "columnType": "economic-classification:generic:level2:label",
-      "labelOf": "economic-classification:generic:level2:code"
+      "columnType": "fin-source:generic:level6:label",
+      "labelOf": "fin-source:generic:level6:code"
     },
     "saisaisetsu_source": {
       "name": "saisaisetsu_source",
@@ -794,15 +781,13 @@
       "name": "setsu_code",
       "title": "節コード",
       "type": "string",
-      "description": "日本の歳出の節。GFSM の分類コードとは対応付けていないため、独自の経済分類の第1階層として扱う",
-      "columnType": "economic-classification:generic:level1:code"
+      "description": "原典の節。会計間の照合で使う科目経路の指定であり、経済分類のコードではない"
     },
     "setsu_label": {
       "name": "setsu_label",
       "title": "節名",
       "type": "string",
-      "columnType": "economic-classification:generic:level1:label",
-      "labelOf": "economic-classification:generic:level1:code"
+      "description": "原典の節名"
     },
     "setsu_source": {
       "name": "setsu_source",
@@ -983,6 +968,20 @@
       "name": "names_json",
       "type": "array",
       "description": "names"
+    },
+    "revenue:setsu_code": {
+      "name": "setsu_code",
+      "title": "節コード",
+      "type": "string",
+      "description": "歳入の節",
+      "columnType": "fin-source:generic:level4:code"
+    },
+    "revenue:setsu_label": {
+      "name": "setsu_label",
+      "title": "節名",
+      "type": "string",
+      "columnType": "fin-source:generic:level4:label",
+      "labelOf": "fin-source:generic:level4:code"
     }
   }
 }

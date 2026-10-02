@@ -1,2 +1,2 @@
 {{ fiscal_distribution_csv('131016', 'initial_expenditure_budget') }}
-select p.* exclude(phase_id,value,source_amount),p.value as amount,l.cofog_code,l.cofog_status,l.cofog_basis,l.consolidation,l.counterpart_fund from {{ ref('pkg_131016__expenditure') }} p join {{ ref('api_fiscal_initial_expenditure_budget_lines') }} l using(fiscal_line_id,dataset_id) join {{ ref('int_fiscal_datasets') }} d using(dataset_id) where d.document_kind='budget' and p.phase_id='approved'
+{{ fiscal_expenditure_distribution('131016', 'initial_expenditure_budget') }}

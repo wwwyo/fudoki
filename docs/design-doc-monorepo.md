@@ -203,7 +203,7 @@ build はローカルで検査済みの公開候補を作り、publish が R2 �
 
 金額の取得は決算・当初予算・変更を区別した CSV、会計・科目での団体間比較は名称対応表を使う。COFOG のコード・状態・根拠は対応する歳出明細・変更の CSV に含め、分類だけを取得するための結合を不要にする。列の説明で原典の数字と風土記の判断を区別し、分類マスタ・規則ファイル・規則 ID は配布しない。
 
-歳出の `cofog_code` は FDP 標準の `functional-classification:cofog:code` として宣言する。節コード・節名も同じ歳出明細に含め、日本の節を `economic-classification:generic:level1:code` / `label` として扱う。GFSM は別の分類体系なので、節番号を `economic-classification:gfsm:level3:code` と宣言しない。GFSM 分類を提供する場合は、対応規則と根拠を定めて別の列として追加する。
+歳出の分類は当面 COFOG のみを提供し、`cofog_code` は FDP 標準の `functional-classification:cofog:code` として宣言する。GFSM は提供しない。歳出明細 CSV の経済分類列（節・その内訳のコードと名称）は配布から外し、原典の節は取り込み・内部検証に残す。予算対象を識別する `account_path_json` の原典経路は保持する。歳入の節は財源の内訳であり、この変更の対象ではない。
 
 複数年度は `fiscal_year` と `dataset_id` で区別する。提供用の決算明細は実績の `amount` 一つを持ち、当初予算と各号の補正・その他の変更は別に管理する。決算原典の予算額は照合用の報告値として保存する。現行コードの `phase_id` による複数金額段階の提供は、移行前の形式である。
 

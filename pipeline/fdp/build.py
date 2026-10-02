@@ -170,9 +170,8 @@ def header_of(body: bytes) -> list[str]:
 def field_spec(path: pathlib.Path, name: str, scope: str | None = None) -> dict:
     """列の意味づけを引く。**同じ列名が direction で別の概念になることがある。**
 
-    ⚠️ 昭島市の歳出の `saisetsu`（節の下の内訳）は経済性質の分類だが、
-    歳入の `saisetsu`（細節）は財源の分類で、標準の列型が別物になる。
-    列名だけで引くと、片方が黙ってもう片方の意味で配られる。
+    歳入明細の `setsu_code` は財源の分類だが、会計間の照合表では原典の科目の指定。
+    共通の列型を与えると、照合条件を財源の分類として誤って配る。
     そこで `<direction>:<列名>` の宣言があればそちらを先に使う。
     """
     spec = TYPES["fields"].get(f"{scope}:{name}") if scope else None

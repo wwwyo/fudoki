@@ -4,7 +4,7 @@
 
 COFOG は歳出明細・変更の CSV の `cofog_code` 列に含め、`functional-classification:cofog:code` として宣言する。分類コード・状態・根拠のための独立した配布 CSV は作らない。
 
-日本の節は `setsu_code` / `setsu_label` に保持し、`economic-classification:generic:level1:code` / `label` として宣言する。この `level1` は独自の経済分類における最上位の階層であり、款・項・目・節全体の段数ではない。GFSM の `level3` は IMF の経済分類の第3階層を指すため、日本の節番号にそのまま指定できない。GFSM を提供する場合は対応規則と根拠を定め、変換したコードを別列に追加する。[FDP 1.0.0 の分類定義](https://fiscal.datapackage.org/specifications/fiscal-data-package-budgets/)、[IMF GFSM の分類表](https://www.imf.org/external/pubs/ft/gfs/manual/pdf/class.pdf)
+配布する歳出の分類は当面 COFOG のみとし、GFSM は提供しない。歳出明細 CSV から節・その内訳のコードと名称を外し、経済分類の列型を宣言しない。原典の節は取り込み・内部検証と、予算対象の原典経路に保持する。歳入の節は財源の内訳なので保持する。日本の節と GFSM は分類体系が異なるため、将来 GFSM を追加する場合は原典の事業・支払いの内容を確認して対応付ける。[FDP 1.0.0 の分類定義](https://fiscal.datapackage.org/specifications/fiscal-data-package-budgets/)
 
 ## 参照する仕様の版を選ぶ
 
