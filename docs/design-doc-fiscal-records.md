@@ -9,7 +9,7 @@
 
 これは [予算変更履歴の PRD](prd/fiscal-budget-history/prd.md) を適用した移行後の設計である。新しい DB/API/dbt と配布物の契約を実装した。決算の実績・当初予算は現在の固定入力から構築する。変更履歴と確認済み対応の実資料は未収録で、API はその範囲を未確認として提供する。
 
-実資料の最初の収録範囲、原典からchanges/linksへの変換、日付未確認の扱い、報告予算現額との照合は [補正・繰越の取り込み設計](design-doc-fiscal-budget-history-ingestion.md) に定める。狛江市2023年度一般会計の二目から始め、日付不明の充流用を架空のchangesへ変換せず、収録範囲はunconfirmedを維持する。
+実資料の最初の収録範囲、原典からchanges/linksへの変換、日付未確認の扱い、報告予算現額との照合は [補正・繰越の取り込み設計](prd/fiscal-budget-history/design-doc.md) に定める。狛江市2023年度一般会計の二目から始め、日付不明の充流用を架空のchangesへ変換せず、収録範囲はunconfirmedを維持する。
 
 ## Background
 
