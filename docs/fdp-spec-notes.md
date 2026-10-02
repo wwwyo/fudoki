@@ -1,5 +1,13 @@
 # Fiscal Data Package の版と維持状況の実測
 
+## 歳出の分類を宣言する
+
+COFOG は歳出明細・変更の CSV の `cofog_code` 列に含め、`functional-classification:cofog:code` として宣言する。分類コード・状態・根拠のための独立した配布 CSV は作らない。
+
+日本の節は `setsu_code` / `setsu_label` に保持し、`economic-classification:generic:level1:code` / `label` として宣言する。この `level1` は独自の経済分類における最上位の階層であり、款・項・目・節全体の段数ではない。GFSM の `level3` は IMF の経済分類の第3階層を指すため、日本の節番号にそのまま指定できない。GFSM を提供する場合は対応規則と根拠を定め、変換したコードを別列に追加する。[FDP 1.0.0 の分類定義](https://fiscal.datapackage.org/specifications/fiscal-data-package-budgets/)、[IMF GFSM の分類表](https://www.imf.org/external/pubs/ft/gfs/manual/pdf/class.pdf)
+
+## 参照する仕様の版を選ぶ
+
 「自分で維持する」が既定運用である根拠の実測。測った日付が効く記録なので、
 参照するときは再確認すること。
 
@@ -40,4 +48,3 @@ enum で `tabular-data-package` に固定されているので、FDP の URL を
 | Akoma Ntoso | 2022-06-02 |
 
 **したがって「止まったら自分で維持する」は保険ではなく既定の運用**として扱う（方針3）。①の粒度を直接狙った現役の代替は調査の結果存在しなかったので、FDP の採用自体は変えない — SDMX は統計集計の交換、IATI は援助フロー、OCDS は調達側からの参照、日本の統一的な基準による地方公会計は発生主義の財務書類で、いずれも予算の事業別明細を対象にしていない。
-

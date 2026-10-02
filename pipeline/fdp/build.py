@@ -130,7 +130,7 @@ JUDGMENT_RESOURCES = [
      ["fund_label"]),
     ("interfund_transfers", "会計間移転の宣言（fudoki の判断）",
      "連結消去できると判断した会計間移転の宣言そのもの。"
-     "ここにある行が cofog.csv で cofog_consolidation=eliminated になっている。"
+     "ここにある行が歳出明細で consolidation=eliminated になっている。"
      "宣言が無い繰出入は相手方会計が確定できないため retained のまま",
      ["fiscal_year", "direction", "fund_label", "kan_code", "kou_code",
       "moku_code", "setsu_code", "amount_yen"]),
@@ -360,10 +360,7 @@ def build_jurisdiction(code: str) -> None:
         constants = {"jurisdiction_code": code}
         with path.open("rb") as header_stream:
             header = header_of(header_stream.readline())
-        if name.endswith("_cofog"):
-            key = ["change_id" if "change" in name else "fiscal_line_id"]
-            description = "歳出への分類コード・状態・根拠。分類規則と規則 ID は Git と検証記録に保持する。金額は含めない。"
-        elif name.endswith("_budget_items"):
+        if name.endswith("_budget_items"):
             key = ["budget_item_id"]
             description = "年度内の予算対象。当初額の確認状態と、科目経路・追加区分・名称を保持する。"
         elif name.endswith("_budget_changes"):
@@ -379,7 +376,9 @@ def build_jurisdiction(code: str) -> None:
         else:
             key = aux_keys[name]
             description = next(description for resource_name, _, description, _ in JUDGMENT_RESOURCES if resource_name == name)
-            description = description.replace("cofog.csv", "歳出の分類リソース")
+            description = description.replace("cofog.csv", "歳出明細の分類列")
+        if "cofog_code" in header:
+            description += " COFOG の分類コード・状態・根拠は風土記の判断として同じ明細に含める。分類規則と規則 ID は Git と検証記録に保持する。"
         constants = {key: value for key, value in constants.items() if key not in header}
         seen = set()
         with path.open(newline="") as stream:

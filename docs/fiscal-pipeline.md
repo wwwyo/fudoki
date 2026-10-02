@@ -61,16 +61,13 @@ CC BY 4.0 で配ることは**できる**。だがそれは「配ってよい条
 | | 単位 | 中身 |
 |---|---|---|
 | `.cache/inputs/<snapshot>/raw/` | (団体, 年度, direction) | 取り込み済み Parquet。原典の値・単位を保つ |
-| `.build/releases/<release>/fiscal/<団体>/` | 団体ごと・**全年度** | 正本（`expenditure` / `revenue`）と判断（`cofog` / `cofog_rules` / `project_names`） |
+| `.build/builds/<内部構築ID>/fiscal/<団体>/` | 団体ごと・**全年度** | 決算・当初予算・変更の CSV と名称・対応表。COFOG は歳出明細の列に含める |
 
-**正本と判断はリソースで分ける。ファイルは混ぜない。**
-`expenditure.csv` は原典と突き合わせて検証できるが、`cofog.csv` には突き合わせる相手がいない。
-1つの表に混ぜると、市が公表した事実と fudoki の判断を利用者が列で見分けられなくなる。
-`budget_line_id` で join できるので、分けても失うものが無い。
+**原典の金額と分類の判断は列の説明で区別する。** COFOG のコード・状態・根拠は対応する歳出明細・変更と同じ CSV に含める。金額は原典との照合、分類は判断規則の検査で確かめる。分類規則・規則 ID は Git と内部検証に保持し、配布しない。
 
 ⚠️ **団体をまたぐ結合ファイルは作らない。** 以前は判断だけを `derived/` へ団体をまたいで1つに集めていたが、
 横断が派生でしか成立しないという主張自体が誤りだった。実際には団体ごとのファイルを1行の glob で読める
-（`read_csv('pipeline/.build/releases/<release>/fiscal/*/cofog.csv')`）。横断の問い合わせは API 側の仕事で、
+（`read_csv('pipeline/.build/builds/<内部構築ID>/fiscal/*/settlement_expenditure.csv')`）。横断の問い合わせは API 側の仕事で、
 配布物を1つに畳む理由にならない。むしろ結合ファイルは、
 **正本ごとに違うライセンスと出典を1つのライセンス表示に潰す**という害がある。
 判断を各団体のパッケージへ置けば、その団体の `licenses` / `sources` / `modifications` がそのまま効く。

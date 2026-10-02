@@ -196,13 +196,14 @@ build はローカルで検査済みの公開候補を作り、publish が R2 �
 | `initial_expenditure_budget.csv` / `initial_revenue_budget.csv` | 当初予算の基準額。 |
 | `expenditure_budget_changes.csv` / `revenue_budget_changes.csv` | 各補正・その他変更の増減額・適用時点・原典への対応。 |
 | `expenditure_settlement_links.csv` / `revenue_settlement_links.csv` | 予算対象と決算明細の対応。金額は複製しない。 |
-| `settlement_expenditure_cofog.csv` / `initial_expenditure_budget_cofog.csv` / `expenditure_budget_change_cofog.csv` | 各歳出リソースへの分類割当と状態・根拠。対応する明細または変更の ID で結合する。金額・規則 ID・分類マスタは含めず、歳入用の COFOG リソースは作らない。 |
 | `funds.csv` | 会計名の共通名への対応、一般会計・特別会計等の区分、比較・集計上の区分と判断理由。団体ごとに異なる会計の呼び名を揃える。 |
 | `account_names.csv` | 款・項・目の科目名と共通マスタへの対応、名称の出所。自治体ごとの科目コードをそのまま横断比較しないために使う。 |
 | `interfund_transfers.csv` | 会計間の繰出入の相手方と判断理由。全会計の合算で二重計上する金額を見分ける。 |
 | `project_names.csv` | 原典 CSV にない事業名を別資料から補った対応表。金額による対応方法や候補数も残す。現行は狛江市に存在する。 |
 
-金額の取得は決算・当初予算・変更を区別した CSV、会計・科目での団体間比較は名称対応表、COFOG 比較は分類表を結合して行う。原典の数字と風土記の判断を分け、利用者が判断だけを検討・置換できる形にする。
+金額の取得は決算・当初予算・変更を区別した CSV、会計・科目での団体間比較は名称対応表を使う。COFOG のコード・状態・根拠は対応する歳出明細・変更の CSV に含め、分類だけを取得するための結合を不要にする。列の説明で原典の数字と風土記の判断を区別し、分類マスタ・規則ファイル・規則 ID は配布しない。
+
+歳出の `cofog_code` は FDP 標準の `functional-classification:cofog:code` として宣言する。節コード・節名も同じ歳出明細に含め、日本の節を `economic-classification:generic:level1:code` / `label` として扱う。GFSM は別の分類体系なので、節番号を `economic-classification:gfsm:level3:code` と宣言しない。GFSM 分類を提供する場合は、対応規則と根拠を定めて別の列として追加する。
 
 複数年度は `fiscal_year` と `dataset_id` で区別する。提供用の決算明細は実績の `amount` 一つを持ち、当初予算と各号の補正・その他の変更は別に管理する。決算原典の予算額は照合用の報告値として保存する。現行コードの `phase_id` による複数金額段階の提供は、移行前の形式である。
 

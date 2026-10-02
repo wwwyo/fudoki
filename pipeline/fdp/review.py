@@ -6,6 +6,8 @@ import json
 import re
 from pathlib import Path
 
+CLASSIFICATION_FIELDS = ('cofog_code', 'cofog_status', 'cofog_basis', 'consolidation', 'counterpart_fund')
+
 
 def read_release(directory: Path):
     manifest = json.loads((directory / 'manifest.json').read_text())
@@ -60,7 +62,12 @@ def read_release(directory: Path):
                     line_id = row.get('fiscal_line_id', row.get('change_id'))
                     if line_id in group:
                         raise ValueError('Duplicate record identity in distribution')
-                    group[line_id] = {'amount': int(row.get('amount', row.get('amount_delta'))), 'classification': classifications.get(line_id)}
+                    classification = row if 'cofog_code' in row else classifications.get(line_id)
+                    group[line_id] = {
+                        'amount': int(row.get('amount', row.get('amount_delta'))),
+                        'classification': {key: classification[key] for key in CLASSIFICATION_FIELDS if key in classification}
+                        if classification is not None else None,
+                    }
     return {'manifest': manifest, 'scopes': scopes, 'resources': resources, 'descriptors': descriptors}
 
 

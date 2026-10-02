@@ -21,7 +21,7 @@ bun run pipeline:build --rebuild
 
 `build.ts` は復元済みの固定入力を使い、ネットワークなしで dbt・FDP descriptor・manifest・D1/API の検査を実行する。結果は `.build/builds/r-<内部構築ID>/` に入り、`complete.json` がある候補だけを publish できる。`--rebuild` は別の作業領域で再生成し、同じ入力・コードから同じ内容を生成できるか照合する。`.build/warehouse.duckdb` は検証画面用の再生成可能な DB である。
 
-配布物と D1 は決算・当初予算・変更・対応を分ける。決算明細は実績の `amount` 一つ、歳出の COFOG はコード・状態・根拠を持つ。規則ファイル・規則 ID は公開しない。原典の複数金額列は取り込み表と候補の `internal/fiscal/` に残し、公開する実績と混在させない。
+配布物と D1 は決算・当初予算・変更・対応を分ける。決算明細は実績の `amount` 一つを持ち、歳出の COFOG コード・状態・根拠は明細・変更と同じ CSV に含める。日本の節も歳出明細に含め、GFSM への対応がない段階では独自の経済分類として宣言する。規則ファイル・規則 ID は公開しない。原典の複数金額列は取り込み表と候補の `internal/fiscal/` に残し、公開する実績と混在させない。
 
 補正・繰越等の実資料と、資料間の確認済み対応は現在未収録である。変更・対応表が空でも、変更ゼロ・予算と決算の一致を意味しない。dataset の `coverage.budgetHistory` は `unconfirmed` として提供する。収録・照合の条件は [予算変更履歴 PRD](../docs/prd/fiscal-budget-history/prd.md) に残す。
 

@@ -250,7 +250,8 @@
     "cofog_code": {
       "name": "cofog_code",
       "type": "string",
-      "description": "Git で宣言した COFOG マスタへの分類コード"
+      "description": "Git で宣言した COFOG マスタへの分類コード",
+      "columnType": "functional-classification:cofog:code"
     },
     "cofog_consolidation": {
       "name": "cofog_consolidation",
@@ -793,6 +794,7 @@
       "name": "setsu_code",
       "title": "節コード",
       "type": "string",
+      "description": "日本の歳出の節。GFSM の分類コードとは対応付けていないため、独自の経済分類の第1階層として扱う",
       "columnType": "economic-classification:generic:level1:code"
     },
     "setsu_label": {

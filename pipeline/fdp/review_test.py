@@ -67,7 +67,7 @@ class ReleaseReview(unittest.TestCase):
                 'fiscal/000001/datapackage.json': json.dumps({'resources': [{
                     'path': 'settlement_expenditure.csv', 'schema': {'primaryKey': ['fiscal_line_id'], 'extraFields': [
                         {'name': 'document_kind', 'constant': 'settlement'}, {'name': 'direction', 'constant': 'expenditure'}]}}]}).encode(),
-                'fiscal/000001/settlement_expenditure.csv': b'fiscal_line_id,fiscal_year,amount,label\na,2026,123,"line one\nline two"\n',
+                'fiscal/000001/settlement_expenditure.csv': b'fiscal_line_id,fiscal_year,amount,label,cofog_code,cofog_status,cofog_basis\na,2026,123,"line one\nline two",01.1.1,assigned,purpose\n',
             }
             manifest = {'buildId': 'candidate', 'jurisdictions': [], 'datasets': [], 'files': []}
             for path, body in files.items():
@@ -80,6 +80,18 @@ class ReleaseReview(unittest.TestCase):
             self.assertEqual(release['scopes'][('000001', '2026', 'expenditure', 'settlement', 'settlement_expenditure')]['a']['amount'], 123)
             row = release['resources']['fiscal/000001/settlement_expenditure.csv'][('a',)]
             self.assertEqual(row['label'], 'line one\nline two')
+            distribution_path = 'fiscal/000001/settlement_expenditure.csv'
+            changed = files[distribution_path].replace(b'01.1.1', b'02.1.1')
+            (root / distribution_path).write_bytes(changed)
+            entry = next(entry for entry in manifest['files'] if entry['path'] == distribution_path)
+            entry.update(bytes=len(changed), sha256=hashlib.sha256(changed).hexdigest())
+            (root / 'manifest.json').write_text(json.dumps(manifest))
+            scope = compare(release, read_release(root))['scopes'][0]
+            self.assertEqual(scope['amountChanges'], [])
+            self.assertEqual(scope['classificationChanges']['rows'], 1)
+            change = scope['classificationChanges']['lines'][0]
+            self.assertEqual(change['before']['cofog_code'], '01.1.1')
+            self.assertEqual(change['after']['cofog_code'], '02.1.1')
             (root / 'fiscal/000001/settlement_expenditure.csv').write_bytes(b'corrupt')
             with self.assertRaisesRegex(ValueError, 'hash or size'):
                 read_release(root)
