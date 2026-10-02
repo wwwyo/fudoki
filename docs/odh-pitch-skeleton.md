@@ -10,7 +10,7 @@
 ハッカソンのピッチコンテスト（YC Demo Day / TechCrunch 型 / NASA Space Apps / EU Datathon / 各種 hackathon 審査記録）を横断すると、勝ちは 6 点に集約される。
 
 **① 最初の 15 秒はアーキテクチャではなく「問い」。**
-勝者は技術や構成図から入らず、個人的なストーリー・統計・挑発的な問いで始める。wiki の ParlParse 分析（[fudoki.md](../../me/wiki/fudoki/fudoki.md)）と同じ結論が独立に出ている — Public Whip が勝ったのは「議事録を機械可読に」ではなく**「あなたの選挙区の議員は、あの法案にどう投票したか」**という個人に紐づく1つの問いに翻訳したから。**fudoki のピッチにまだ無いのはこの問いだけ**（wiki 自身がそう書いている）。
+勝者は技術や構成図から入らず、個人的なストーリー・統計・挑発的な問いで始める。風土記のピッチも、利用者が知りたい具体的な問いから始める。
 
 **② デモが王様。混乱するデモの強作は、理解できるデモの平凡作に負ける。**
 審査記録の定番の教訓。「startup pitch に2分使ってデモに1分」ではなく逆。2分動画なら **30〜45 秒をデモ 1 本に集中**し、機能一覧ではなく「1つの具体例が通る」ことを見せる。
@@ -50,7 +50,7 @@ YC 型の定石: 最強の1指標を大きく。fudoki の数字は 2団体・55
 | 4 Demo 311,000円 | ○ 具体例は正しい。**ただし静止画。動画では実際に引く画面を見せる** |
 | 5 Technology 3枚組 | △ 2分では重い。「宣言を1つ書くだけ」の1メッセージに圧縮 |
 | 6 AI×MCP | ○ Why now としてそのまま効く |
-| 7 将来の展望（3層・Open States） | ○ 方向は正しい。**「誰が変わるか」の一言が無い** |
+| 7 将来の展望（予算・調達） | ○ 方向は正しい。**「誰が変わるか」の一言が無い** |
 
 **最大の欠落は2つ**: (a) 冒頭の問い、(b) ソーシャルインパクトを「人の変化」で言う1文。
 どちらも wiki に答えが既にある — (a) は ParlParse 分析の宿題、(b) は「査定の基準が前年比から類似団体比に変わる」（第3波の持論）。
@@ -95,7 +95,7 @@ YC 型の定石: 最強の1指標を大きく。fudoki の数字は 2団体・55
 （技術軸: 推論を見せる。井原=データ品質/CI、田村=出典・版管理に刺さる）
 
 **【1:45–2:00】Vision — 誰が変わるか + ロードマップ**
-**「自治体の予算査定には今、『前年比』しか物差しがありません。事業単位で他の市と並ぶと、物差しが『類似団体比』に変わる。まず東京62団体、そして予算・調達・議会の3層を同じキーで繋ぎます。正本はリポジトリにあり、私が消えてもデータは死にません。」**
+**「自治体の予算査定には今、『前年比』しか物差しがありません。事業単位で他の市と並ぶと、物差しが『類似団体比』に変わる。まず東京62団体、そして予算・調達を同じキーで繋ぎます。正本はリポジトリにあり、私が消えてもデータは死にません。」**
 （ソーシャルインパクト軸: 人の変化を1文で。サービスデザイン軸: 持続性=3つの死に方への回答。宮坂=PoC止まりにしない、高野=行政実装）
 
 **合計 約660字 ≒ 2分。** 各ビート末尾は 1〜2 秒の間を置く（動画は編集で詰められない前提で録る）。
@@ -118,4 +118,4 @@ YC 型の定石: 最強の1指標を大きく。fudoki の数字は 2団体・55
 - [Startup Istanbul: 87 YC Demo Day pitches の 8 行構造](https://newsletter.startupistanbul.com/p/the-8-line-pitch-what-i-learned-from)（What/Problem/Solution/Why Now/Proof/Vision）
 - [TAIKAI: Winning Hackathon Pitch in 5 Steps](https://taikai.network/en/blog/how-to-create-a-hackathon-pitch)（最初の15秒・問いで始める）
 - [EU Datathon winners](https://data.europa.eu/en/news-events/news/meet-winners-eu-datathon-2022)（オープンデータ系はストーリー+動画+実運用性）
-- 内部: [wiki/fudoki/fudoki.md](../../me/wiki/fudoki/fudoki.md)（ParlParse 勝ち筋の分解・第3波の持論・供給戦略）／[wiki/odhackathon/odhackathon.md](../../me/wiki/odhackathon/odhackathon.md)（審査5軸・提出制約）／[2025 審査員分析](../../me/output/scrapbox/OpenData%20Hack.md)
+- 内部: [wiki/fudoki/fudoki.md](../../me/wiki/fudoki/fudoki.md)（第3波の持論・供給戦略）／[wiki/odhackathon/odhackathon.md](../../me/wiki/odhackathon/odhackathon.md)（審査5軸・提出制約）／[2025 審査員分析](../../me/output/scrapbox/OpenData%20Hack.md)

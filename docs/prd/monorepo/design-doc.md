@@ -17,7 +17,7 @@ API の `build.ts` は、配布物から多数の JSON chunk・検索索引・�
 
 配布物の CSV・descriptor は現在 Git 管理され、ローカルの配布物ディレクトリは約 21 MiB ある。API の `dist/assets` は既に Git 管理外だが、データ更新が API の build と deploy に結び付いている。Cloudflare にファイルを移すだけでは、実行時の chunk 管理や事前生成する問い合わせの組合せは減らない。
 
-ユーザーの方針は、原典の CSV・PDF、取り込み済みの表・証跡、配布物と API の参照データを Cloudflare に置き、Git 管理しないこと。R2 と D1 の役割を分ける設計まで含める。既存の [dbt の層の決定](adr/0009-dbt-model-layers.md) と [ローカル検証画面の要件](prd/pipeline-verification-view/prd.md) は維持する。
+ユーザーの方針は、原典の CSV・PDF、取り込み済みの表・証跡、配布物と API の参照データを Cloudflare に置き、Git 管理しないこと。R2 と D1 の役割を分ける設計まで含める。既存の [dbt の層の決定](../../adr/0009-dbt-model-layers.md) と [ローカル検証画面の要件](../pipeline-verification-view/prd.md) は維持する。
 
 現在は外部の利用者がいないため、既存の API 名・列名・URL・コマンドとの互換性を要件にしない。web・API/MCP・pipeline・配布物を新しい契約にまとめて更新する。数値の正確さ、原典との対応、予算と決算の区別、FDP の仕様への適合は検証する。
 
@@ -60,11 +60,10 @@ flowchart LR
 │   ├── README.md
 │   ├── package.json / pyproject.toml
 │   ├── build.ts                     # dbt と説明ファイル生成を実行する入口
-│   ├── ingestion/                   # 予算・会議録の取得と取り込み
-│   │   ├── fiscal/                  # 予算・決算の歳入歳出
-│   │   │   ├── sources.toml         # 取得元の宣言
-│   │   │   └── sources.lock.json    # 採用した原典・表・証跡の R2 キーと個別ハッシュ
-│   │   └── transcripts/
+│   ├── ingestion/                   # 予算・決算の取得と取り込み
+│   │   └── fiscal/                  # 予算・決算の歳入歳出
+│   │       ├── sources.toml         # 取得元の宣言
+│   │       └── sources.lock.json    # 採用した原典・表・証跡の R2 キーと個別ハッシュ
 │   ├── dbt/                         # models / macros / seeds / tests
 │   │   └── models/marts/
 │   │       ├── fiscal/              # 予算・決算の配布 CSV のモデル

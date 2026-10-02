@@ -17,15 +17,12 @@
 
 この空白は日本に限らない。**SNG-WOFI（OECD/UCLG、135カ国）も Eurostat も「国 × 地方政府合計 × COFOG」止まりで、個別自治体 × 事業単位 × COFOG のデータはどこにもない。**
 
-**下流の用途を持ち出さなくても、インフラとして自立している。** ParlParse も Open States も「議事録は公開されているが機械可読でない」を解いただけで、その先の用途は他人に任せた。fudoki も同じ型を採る。
+**下流の用途を持ち出さなくても、インフラとして自立している。** 風土記は公開された予算資料を機械可読な形で配布し、その先の用途は利用者に任せる。
 
 ## 参考にする先行事例
 
 | | 借りるもの |
 |---|---|
-| [ParlParse](https://github.com/mysociety/parlparse) | UK議会のスクレイパ／パーサ。`pyscraper/` `members/` `rawdata/` の分離と、**議員マスタを独立させる**設計 |
-| [SayIt](https://www.mysociety.org/democracy/sayit/) | 議事録公開の汎用ツール。全文検索・話者フィルタ・**発言単位の permalink**・SEO という機能セット |
-| [Open States / Plural Open](https://open.pluralpolicy.com/) | 米50州の立法データを標準化して無料 API + bulk download で配布。Popolo ベースのスキーマ運用 |
 | [世界銀行 BOOST](https://www.worldbank.org/en/programs/boost-portal) | **立ち位置が一番近い**。政府の IFMIS や予算書から第三者が細粒度 DB を起こす型（90カ国超）。日本でも発生源が既に構造化して出している団体はあるが、実測では母集団62団体のうち事業単位に届いたのは3団体で、大半は第三者が起こす必要がある。⚠️ しかも事業に名称が無い団体があり、名称を補うには結局 BOOST 型（PDF から第三者が起こす）が要る |
 | [ProZorro](https://prozorro.gov.ua/en) / [bi.prozorro.org](https://bi.prozorro.org/) | 調達データを OCDS で構造化し、公開 API と分析ダッシュボードを分離して出す型 |
 | [SNG-WOFI](https://www.sng-wofi.org/)（OECD/UCLG）・[Eurostat COFOG](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Government_expenditure_by_function_%E2%80%93_COFOG) | 国 × 地方政府合計 × COFOG は既に整備済み。**個別自治体 × 事業（目）× COFOG が空白**で、そこが fudoki の位置 |
@@ -38,6 +35,6 @@
 
 1. **案件の早期発見による市場参入コストの低減** — 予算段階で案件が見えれば、公告を待たずに動ける。ウクライナ ProZorro では調達データを OCDS で開いた結果、入札に参加する国内企業が 14,000社（2014）から 140,000社（2024）へ増え、1件あたり入札者 2.38社と EU 平均を超えた
 2. **課題マッチング** — 「この市はこの領域に金を使っている／使っていない」が機械で引ければ、課題の当たりを付ける入口になる
-3. **データ自体を厚くする** — 執行額（Spending Standard Taxonomy）、調達（OCDS）、会議録（Popolo）を同じキーで足していく。海外で outcome が出た事例はいずれも join で出している（英国 ONS は取引 × COFOG × 事業所レジスタで公式統計を年度後9か月から四半期3か月以内へ、世界銀行 BOOST はグアテマラで市町村別支出 × 教育・保健アウトカムから支出効率の差を判別した）
+3. **データ自体を厚くする** — 取引単位の支出（Spending Standard Taxonomy）と調達（OCDS）を同じキーで足していく。海外で outcome が出た事例はいずれも join で出している（英国 ONS は取引 × COFOG × 事業所レジスタで公式統計を年度後9か月から四半期3か月以内へ、世界銀行 BOOST はグアテマラで市町村別支出 × 教育・保健アウトカムから支出効率の差を判別した）
 
 なお市民向けの監視は、outcome の実証が最も弱い領域である（英国が10年義務化してなお上記の状態）。将来展望としても主軸に置かない。

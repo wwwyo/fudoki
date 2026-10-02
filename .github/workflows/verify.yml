@@ -22,7 +22,7 @@ env:
   MISE_DISABLE_TOOLS: llama.cpp
 
 jobs:
-  # ①予算のパイプライン。取得（ingestion）はネットワークを叩くので回さない。
+  # 予算のパイプライン。取得（ingestion）はネットワークを叩くので回さない。
   budget:
     runs-on: ubuntu-latest
     steps:
@@ -77,18 +77,3 @@ jobs:
             echo "::error::bun run pipeline を回して差分を commit してください。"
             exit 1
           fi
-
-  # ①予算のパイプラインとは別物。**commit 済みデータが宣言と食い違っていないか**を見る。
-  # ③会議録のゲート判定は取得も変換もまだ実装が無いが、判定そのものは commit してあるので、
-  # 誰かが編集したときに壊れるのを止める必要がある。
-  data-guards:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: jdx/mise-action@v3
-        with:
-          version: 2026.8.6
-      - run: bun install --frozen-lockfile
-
-      - name: ③会議録のゲート判定（62団体）を宣言と、団体 registry とコード集合で突き合わせる
-        run: bun run validate

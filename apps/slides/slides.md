@@ -104,8 +104,8 @@ css: unocss
 <!-- 7. 将来の展望（最終スライド） -->
 
 <div class="h-full flex flex-col justify-center">
-  <h1>自治体財政の Open States になる。</h1>
-  <div class="grid grid-cols-3 gap-4 mt-8 text-sm">
+  <h1>自治体財政を、同じ形式で比べられるようにする。</h1>
+  <div class="grid grid-cols-2 gap-4 mt-8 text-sm">
     <div class="f-card">
       <div class="f-label">① 何にいくら</div>
       <p class="!mt-2">予算・決算<br><span class="f-mono">Fiscal Data Package</span></p>
@@ -114,14 +114,10 @@ css: unocss
       <div class="f-label">② いつ何が公告されたか</div>
       <p class="!mt-2">調達<br><span class="f-mono">OCDS</span></p>
     </div>
-    <div class="f-card">
-      <div class="f-label">③ どう決まったか</div>
-      <p class="!mt-2">議会の会議録<br><span class="f-mono">Popolo</span></p>
-    </div>
   </div>
   <div class="mt-8 space-y-2 text-sm">
 
-  - 3つのレイヤを既存の国際標準に載せ、同じキーで繋ぐ。東京都内から全国へ
+  - 予算・決算と調達を既存の国際標準に載せ、同じキーで繋ぐ。東京都内から全国へ
   - 個別の課題解決プロダクトは、このデータベースの上に作っていく
 
   </div>

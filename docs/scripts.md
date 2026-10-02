@@ -7,7 +7,7 @@
 
 ⚠️ **ただし置き場は「調査スクリプト置き場」ではなく、生成物と consumer の近く。**
 以前は `scripts/` に集めていたが、中身は補助スクリプトではなく
-生成物の意味を決める domain code（ゲートのスキーマ、粒度の分類規則、taxonomy の生成）だった。
+生成物の意味を決める domain code（粒度の分類規則、taxonomy の生成）だった。
 
 | script | 生むファイル | commit |
 |---|---|---|
@@ -15,15 +15,12 @@
 | （探索。エージェントが書く） | `ingestion/budget/observations/discovery/<団体コード>.json` | しない（ローカル観測） |
 | `probe:documents` | `ingestion/budget/observations/budget-document-probe.json` | しない（ローカル観測） |
 | `coverage:sources` | `ingestion/budget/observations/budget-source-coverage.json` | しない（ローカル観測） |
-| `fetch:robots` | `ingestion/transcripts/observations/robots.json` | しない（ローカル観測） |
-| `check:bulletins` | `ingestion/transcripts/bulletins.json` の `schemaCheck` 節 | ○（取得先マニフェストへの書き戻し） |
 | `fetch:fdp-taxonomy` | `fdp/budget-taxonomy.json` | ○ |
 | `fetch:account-master` | `dbt/seeds/budget/account_master.csv` | ○ |
 | `survey:budget-years` | `ingestion/budget/observations/mitaka-budget-years.json` | しない（ローカル観測） |
 | `survey:structure` | `ingestion/budget/observations/<団体コード>-budget-structure.json` | しない（ローカル観測） |
 | `extract:statements` | `data/budget/raw/jurisdiction=*/`（事項別明細書 PDF から起こした表と証跡） | ○ |
 | `eval:extraction` | `ingestion/budget/observations/<団体コード>-extraction-recall.json` | しない（ローカル観測） |
-| `validate` | （検査。`ingestion/transcripts/gates.json` を宣言と、`ingestion/shared/jurisdictions.json` とコード集合で突き合わせる） | — |
 
 ⚠️ **ネットワークを叩くスクリプトは、サンドボックスを外して回す。**
 開発環境の HTTP プロキシが応答を途中で切るため、サンドボックス内では
@@ -35,8 +32,6 @@
 
 | script | 何を測るか |
 |---|---|
-| `bun run fetch:robots` | robots.txt の原文を取得して保存 |
-| `bun run check:bulletins` | 議会だより CSV が観測プロファイルに適合するか（列構成で判定） |
 | `bun run check:budget` | 予算系オープンデータが**どの粒度まで届いているか**（列構成で判定。名前では判定しない。**母集団は団体ごとの全データセット**で、クエリ語に依存させない） |
 | `bun run probe:documents` | 探索が挙げた資料を**開いて中身で**粒度を測る（節の法定語の有無。資料名では判定しない）。アウトライン化・文字化け・WAF による拒否をそれぞれ別の出口として持つ |
 | `bun run coverage:sources` | 上の3つの観測を突き合わせて「団体ごとに取得元が決まったか」を出す。**新しい事実は持たない** — 根拠は観測の側にある |

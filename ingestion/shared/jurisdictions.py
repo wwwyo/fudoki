@@ -1,8 +1,8 @@
 """団体の同一性。**層に依存しない。** `jurisdictions.ts` の Python 版対。
 
-①予算・②調達・③会議録はすべて全国地方公共団体コードで束ねるので、名称と識別子は
-どの層からも参照される。②③は TS からこの JSON を読んでいるが、①予算は Python
-（`ingestion/budget/*`）なので、同じ事実を Python 側で再宣言せずここから引く。
+予算・調達は全国地方公共団体コードで束ねるので、名称と識別子はどの層からも参照される。
+予算の取得は Python（`ingestion/budget/*`）、報告の生成は TypeScript なので、
+同じ事実を各言語で再宣言せず、この JSON から引く。
 
 ⚠️ 以前は `ingestion/budget/sources.toml` が `jurisdiction_name` を団体×年度ごとに
 反復宣言しており（狛江市だけで6回）、`jurisdictions.json` と突き合わせる経路が無かった。
