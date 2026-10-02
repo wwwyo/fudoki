@@ -1,0 +1,12 @@
+{
+  "name": "@fudoki/local-r2",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "mise exec -- cf dev --mode development --host 127.0.0.1 --port 8788"
+  },
+  "devDependencies": {
+    "wrangler": "catalog:",
+    "@cloudflare/config": "catalog:"
+  }
+}

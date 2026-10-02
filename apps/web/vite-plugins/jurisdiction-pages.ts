@@ -1,12 +1,12 @@
-import fs from "node:fs"
-import path from "node:path"
-import type { Plugin } from "vite"
+import fs from 'node:fs'
+import path from 'node:path'
+import type { Plugin } from 'vite'
 
 /**
  * `/pipeline/<団体コード>/` と `/analysis/<団体コード>/` を62団体分ずつそろえる vite plugin。
  *
- * 124個の HTML を手で置くことはできないので、`ingestion/shared/jurisdictions.json`
- * （団体の同一性の正本。予算・調達を同じキーで束ねる）から実行時に生成する。
+ * 124個の HTML を手で置くことはできないので、`packages/jurisdictions/jurisdictions.json`
+ * （団体の同一性の正本。財政データ・調達を同じキーで束ねる）から実行時に生成する。
  * 生成物は commit しない（`.gitignore` 参照）。
  *
  * ⚠️ **プラグインは1つのまま。** 2つに分けると sitemap.xml を書くタイミングが2箇所になり、
@@ -20,20 +20,22 @@ import type { Plugin } from "vite"
  */
 export function jurisdictionPages(root: string): Plugin {
   return {
-    name: "fudoki-jurisdiction-pages",
-    config(_config, env) {
+    name: 'fudoki-jurisdiction-pages',
+    config(_config, _env) {
       const jurisdictions = loadJurisdictions(root)
       const input: Record<string, string> = {}
 
-      for (const kind of ROUTE_KINDS) {
+      for (const kind of ROUTE_KINDS.filter(
+        (kind) => kind.segment === 'analysis'
+      )) {
         // 検証画面はローカル専用（行データは dev middleware からしか出ない）。
         // build ではページ自体を作らず、sitemap にも載せない
-        if (env.command === "build" && !kind.publicSite) continue
+
         const dir = path.join(root, kind.segment)
         for (const [code, j] of Object.entries(jurisdictions)) {
           const codeDir = path.join(dir, code)
           fs.mkdirSync(codeDir, { recursive: true })
-          const file = path.join(codeDir, "index.html")
+          const file = path.join(codeDir, 'index.html')
           writeIfChanged(file, kind.renderHtml(code, j.name))
           input[`${kind.segment}-${code}`] = file
         }
@@ -49,16 +51,19 @@ export function jurisdictionPages(root: string): Plugin {
 /** 内容が変わったときだけ書き直す。生成物は vite build の入力でもあり、無条件で
  *  書き直すとファイル監視・インクリメンタルな作業が毎起動で走り直しになる */
 function writeIfChanged(file: string, content: string): void {
-  if (fs.existsSync(file) && fs.readFileSync(file, "utf-8") === content) return
+  if (fs.existsSync(file) && fs.readFileSync(file, 'utf-8') === content) return
   fs.writeFileSync(file, content)
 }
 
 type Jurisdiction = { name: string }
 
 function loadJurisdictions(root: string): Record<string, Jurisdiction> {
-  // 正本は ingestion/shared/jurisdictions.json（団体の同一性を1層のファイルに同居させない。AGENTS.md）
-  const file = path.resolve(root, "../../ingestion/shared/jurisdictions.json")
-  const parsed = JSON.parse(fs.readFileSync(file, "utf-8")) as {
+  // 正本は packages/jurisdictions/jurisdictions.json（団体の同一性を1層のファイルに同居させない。AGENTS.md）
+  const file = path.resolve(
+    root,
+    '../../packages/jurisdictions/jurisdictions.json'
+  )
+  const parsed = JSON.parse(fs.readFileSync(file, 'utf-8')) as {
     jurisdictions: Record<string, Jurisdiction>
   }
   return parsed.jurisdictions
@@ -66,7 +71,11 @@ function loadJurisdictions(root: string): Record<string, Jurisdiction> {
 
 /** HTML のテキストと属性値に入れる文字。`"` まで含めるのは属性値に埋めるため */
 function escapeHtml(s: string): string {
-  return s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c] as string)
+  return s.replace(
+    /[&<>"]/g,
+    (c) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c] as string
+  )
 }
 
 /**
@@ -78,7 +87,7 @@ function escapeHtml(s: string): string {
  * 生成する側がその前提に寄りかかる理由が無い。
  */
 function escapeJsonForScript(value: unknown): string {
-  return JSON.stringify(value).replace(/</g, "\\u003C")
+  return JSON.stringify(value).replace(/</g, '\\u003C')
 }
 
 /** 種類ごとに違うのは HTML の中身（タイトル・description・埋め込む global・entry script）だけ */
@@ -92,25 +101,7 @@ type RouteKind = {
 
 const ROUTE_KINDS: RouteKind[] = [
   {
-    segment: "pipeline",
-    publicSite: false,
-    renderHtml: (code, name) => {
-      const injected = escapeJsonForScript({ code, name })
-      const safeName = escapeHtml(name)
-      return page({
-        // ⚠️ document.title はここから団体・年度に応じて実行時に書き換わる（src/pages/pipeline.tsx）。
-        // ここに書くのは JS 実行前 / SEO 用の既定値
-        title: `${safeName} の配布物の検証 | 風土記`,
-        description: `${safeName}の予算データが原典からどう取得され、何を検査され、どこで風土記の判断（COFOG への分類）が入って配布物になるかを、行と原典の対応まで確かめる検証画面。系統は dbt の manifest から生成する。`,
-        canonical: `https://fudoki.dev/pipeline/${code}/`,
-        globalName: "__FUDOKI_PIPELINE_JURISDICTION__",
-        injected,
-        entry: "/src/main-pipeline.tsx",
-      })
-    },
-  },
-  {
-    segment: "analysis",
+    segment: 'analysis',
     publicSite: true,
     renderHtml: (code, name) => {
       const injected = escapeJsonForScript({ code, name })
@@ -120,9 +111,9 @@ const ROUTE_KINDS: RouteKind[] = [
         title: `${safeName} の支出分析 | 風土記`,
         description: `${safeName} の予算を COFOG（政府支出の機能別分類）の10区分ごとに集計した分析。風土記の budget API から取得する。`,
         canonical: `https://fudoki.dev/analysis/${code}/`,
-        globalName: "__FUDOKI_ANALYSIS_JURISDICTION__",
+        globalName: '__FUDOKI_ANALYSIS_JURISDICTION__',
         injected,
-        entry: "/src/main-analysis.tsx",
+        entry: '/src/main-analysis.tsx',
       })
     },
   },
@@ -163,12 +154,14 @@ function writeSitemap(root: string, codes: string[]): void {
   // 手書きだと URL がすぐ古びる（実際にそうなっていた）。62団体をここで同時に生成する。
   // 載るのは公開ページだけ — pipeline/（検証画面）はローカル専用なので含めない
   const urls = [
-    "https://fudoki.dev/",
-    "https://fudoki.dev/analysis/",
+    'https://fudoki.dev/',
+    'https://fudoki.dev/analysis/',
     ...codes.map((c) => `https://fudoki.dev/analysis/${c}/`),
-    "https://fudoki.dev/terms/",
+    'https://fudoki.dev/terms/',
   ]
-  const body = urls.map((u) => `  <url>\n    <loc>${u}</loc>\n  </url>`).join("\n")
+  const body = urls
+    .map((u) => `  <url>\n    <loc>${u}</loc>\n  </url>`)
+    .join('\n')
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`
-  fs.writeFileSync(path.join(root, "public", "sitemap.xml"), xml)
+  fs.writeFileSync(path.join(root, 'public', 'sitemap.xml'), xml)
 }

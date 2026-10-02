@@ -1,0 +1,47 @@
+{
+  "jurisdiction_code": "132195",
+  "fiscal_year": 2022,
+  "document_title": "令和4年度　歳出事項別明細",
+  "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,130170,c,html/130170/20231005-114612.pdf",
+  "status": 200,
+  "bytes": 2014611,
+  "sha256": "d2590ea1918f326ef0765841b6b9fd4251dcca0d8e873ff3923489f143a7d9d3",
+  "fetched_at": "2026-08-23T04:47:41+00:00",
+  "pages": [
+    1,
+    227
+  ],
+  "extractor": "ingestion/budget/extract_projects.py@3",
+  "verification": "hierarchy-totals + name-stability",
+  "verification_note": "PDF のバイト列は保存していない（再配布の判断が別のため）。無加工であることは検査できないので、階層の合計突合と、dbt 側の原典 CSV との結合率で縛る",
+  "roundtrip_verified": false,
+  "extracted": {
+    "projects": 539,
+    "projectsReconciled": 530,
+    "moku": 102,
+    "mokuHeadersFound": 102,
+    "mokuNotReconciled": 2,
+    "totalThousandYen": 35006711,
+    "notReconciled": [
+      {
+        "moku": "2-1-11",
+        "printedThousandYen": 694968,
+        "extractedThousandYen": 694709
+      },
+      {
+        "moku": "8-2-1",
+        "printedThousandYen": 7015,
+        "extractedThousandYen": 4245
+      }
+    ],
+    "nameStable": true,
+    "kan_name": 539,
+    "kou_name": 539,
+    "moku_name": 539,
+    "unstableNames": []
+  },
+  "raw_form": "extracted",
+  "redistribute": "review",
+  "redistribute_basis": "市サイトの著作権表示（https://www.city.komae.tokyo.jp/index.cfm/4,19790,10,html）。事実に著作権が及ぶかは解釈が割れるので照会中",
+  "license_id": "NOASSERTION"
+}

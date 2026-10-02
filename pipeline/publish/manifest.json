@@ -1,0 +1,1045 @@
+{
+  "schemaVersion": 3,
+  "jurisdictions": [
+    {
+      "jurisdictionCode": "131016",
+      "versionId": "v-8172bd02f191bbf224dbd85f26d0a5567196b076c34cba443f4d0f8bba132666",
+      "packageId": "p-1f529887d40017576758054bab3454775865270be024f15fed3dde9c0b594720",
+      "name": "千代田区",
+      "ocdId": "ocd-division/country:jp/prefecture:13/city:131016",
+      "caveats": [
+        {
+          "topic": "**配布物に licenses を付けていない**（原典の利用条件が未判断）",
+          "category": "sourceAndLicense",
+          "api": true,
+          "body": "区サイトのホームページ利用規約は「どなたでも…複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示しており、**再配布そのものは許諾されている**。\n\n- **原典のライセンスは NOASSERTION**（fudoki が判断していない）。昭島市の PDL1.0 と違い、区の規約は既知のライセンスとの互換をどこにも書いていない（政府標準利用規約にも CC BY にも言及が無い）。「オープンだから同じだろう」で CC BY は貼らない\n- **fudoki 自身のライセンスも貼っていない**。抽出した事実には原典のライセンスが付いてこないので、選択と構成の部分を CC BY 4.0 で配ること自体はできる。しかしそれは「配ってよい条件が決まった」という主張になり、判断が済んでいない段階では誤読を招く\n- `licenses` は仕様上も任意なので、**未確定は書かないことで表している**。原文の PDF は置いていない"
+        }
+      ]
+    },
+    {
+      "jurisdictionCode": "132047",
+      "versionId": "v-686e865aee4bce38e4ca7dc0b0826b278bd4e50d96286dbfcafb7786c5ef4e5c",
+      "packageId": "p-dd06e36e60a6881a5986675384c7defdeba321342c928aca06e82bf5ff3ad597",
+      "name": "三鷹市",
+      "ocdId": "ocd-division/country:jp/prefecture:13/city:132047",
+      "caveats": [
+        {
+          "topic": "事項を事業として扱う妥当性が未検証（Design Doc Caveats 1）",
+          "category": "classification",
+          "api": true,
+          "body": "名称を持つことは、その区分が1つの事業に対応することの証明にならない。複数の活動をまとめた事項や管理的な費目が含まれうる。\n\n自治体横断の「事業」概念として確定するのは2団体目以降とする。現状は `activity:generic:program` に置いてあるが、これは候補としての割り当てである。"
+        },
+        {
+          "topic": "識別子はコードのパスでは作れなかった",
+          "category": "other",
+          "api": true,
+          "body": "Design Doc は「`款01/項03/目01` の形で連結する」としていたが、三鷹市の細々節は**同じ節の下でコードを再利用する**（実測 710 箇所・1,615 行）。コードのパスでは 5,613 行が 4,708 通りにしかならない。\n\nそこでパスの構成要素を**セル全文（コード + 名称）**に取った。副作用として、自治体が名称を直すと識別子が変わる。コードだけなら耐えられたはずの変更なので、これは失ったものである。"
+        },
+        {
+          "topic": "款コードは法定の款番号と一致しない",
+          "category": "classification",
+          "api": true,
+          "body": "法定（地方自治法施行規則 別記）の市町村歳出の款は 1〜14 で、款11 は災害復旧費である。災害復旧費を持たない三鷹市は 11 が公債費（法定12）、12 が予備費（法定14。諸支出金も持たないため2つ詰まる）で、**以降のコードが法定から詰まってずれる**。\n\n狛江市もずれ方が違う形で同じ現象を持つため、**款コードでは団体をまたいで比較できない**。法定マスタへの対応は配布物の account_names.csv（master_kan_code / master_kou_code）にある。"
+        }
+      ]
+    },
+    {
+      "jurisdictionCode": "132071",
+      "versionId": "v-bdcfe6d84e2fd6aeedb31042dc998d6cdad457c73927e66c643942f48c1b3bcb",
+      "packageId": "p-21c4fe8ed529cbf9799059d068f3d98da96914f25455879fee2a6e1a4b7b213b",
+      "name": "昭島市",
+      "ocdId": "ocd-division/country:jp/prefecture:13/city:132071",
+      "caveats": []
+    },
+    {
+      "jurisdictionCode": "132195",
+      "versionId": "v-cf38be549b1cc856e790e9ea4c0d4fc1540e0d73514ca7f489507cb891f88d24",
+      "packageId": "p-0f7eb72a62e6e8cd7eb36dc595dbe11b6852f96f4fd42083b0f8487675e1a851",
+      "name": "狛江市",
+      "ocdId": "ocd-division/country:jp/prefecture:13/city:132195",
+      "caveats": [
+        {
+          "topic": "⚠️ 訂正: 款コードは法定の款番号と一致しない",
+          "category": "classification",
+          "api": true,
+          "body": "以前ここには「款コードが法定の款番号だという対応は実測で裏づけた」とあったが、**誤りだった**。\n\n- 地方自治法施行規則 別記（原文の PDF から起こした account_master）では、市町村歳出の法定の款は 1〜14 で款11 は災害復旧費\n- 災害復旧費を持たない狛江市・三鷹市はどちらも 11 が公債費で、**以降のコードが法定から詰まってずれる**（狛江市: 11公債費→法定12、12諸支出金→法定13、13予備費→法定14）\n- 当初の裏づけ（款数の一致・節や所属の整合）は款の中身の確認であって、番号の対応の確認ではなかった。名称の対応は正しかった\n\n**コードでは団体をまたいで比較できない**ので、法定マスタへの対応（account_names.csv の master_kan_code / master_kou_code）を配布物に含めた。COFOG の規則が款コードで当たる仕組み自体は名称の解決（決算書 PDF）で確認済みのため影響しない。"
+        },
+        {
+          "topic": "予算額は当初予算ではない",
+          "category": "phaseSemantics",
+          "api": true,
+          "body": "「予算額(円)」を当初予算と読むと間違える。\n\n- 2023年度の一般会計は 370 億円で、狛江市が公表している令和5年度当初予算（一般会計）とは一致しない\n- 全会計合計でも予算額と予算計が完全に同額（充流用等増減額が全体で相殺する）ので、予算額は補正まで反映した後の額である\n\n**したがって三鷹市の当初予算と狛江市の予算額を並べても、同じ段階どうしの比較にならない。**"
+        },
+        {
+          "topic": "公共下水道特別会計は 2020 年度から原典に現れない",
+          "category": "coverage",
+          "api": true,
+          "body": "2018〜2019 年度には公共下水道特別会計があるが、2020 年度以降は無い（公営企業会計へ移行したため）。年度をまたいで会計別に合計すると、この2年度だけ範囲が広い。\n\n三鷹市も年度で会計の範囲が変わる（令和2年度以降は5会計、平成28〜令和元年度は下水道事業特別会計を含む6会計）ので、これは団体固有ではなく年度をまたぐ比較の一般的な注意にあたる。"
+        }
+      ]
+    },
+    {
+      "jurisdictionCode": "132241",
+      "versionId": "v-f12285a329c5cc69988e1a9b950b9a6fa9f1d098ba29eea826ae74d3e15dfeb5",
+      "packageId": "p-65c687fb68ffafd0584b90b8e67e2fe8c1b66c6dc1af45398c947e206e641910",
+      "name": "多摩市",
+      "ocdId": "ocd-division/country:jp/prefecture:13/city:132241",
+      "caveats": []
+    }
+  ],
+  "datasets": [
+    {
+      "dataset_id": "131016:2026:expenditure:budget:bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
+      "jurisdiction_code": "131016",
+      "fiscal_year": 2026,
+      "direction": "expenditure",
+      "document_kind": "budget",
+      "origin_sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
+      "source_json": "{\"attribution\": \"千代田区\", \"documentKind\": \"budget\", \"documentLabel\": \"当初予算\", \"landingPage\": \"https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html\", \"licenseId\": \"NOASSERTION\", \"rawForm\": \"extracted\"}",
+      "structure_json": "{\"dimensions\":[],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"jigyo\",\"saisetsu\"],\"funds\":[{\"code\":\"\",\"label\":\"一般会計\"}]}",
+      "line_count": 810,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "initial",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "131016:2026:revenue:budget:bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
+      "jurisdiction_code": "131016",
+      "fiscal_year": 2026,
+      "direction": "revenue",
+      "document_kind": "budget",
+      "origin_sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
+      "source_json": "{\"attribution\": \"千代田区\", \"documentKind\": \"budget\", \"documentLabel\": \"当初予算\", \"landingPage\": \"https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html\", \"licenseId\": \"NOASSERTION\", \"rawForm\": \"extracted\"}",
+      "structure_json": "{\"dimensions\":[],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"jigyo\"],\"funds\":[{\"code\":\"\",\"label\":\"一般会計\"}]}",
+      "line_count": 425,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "initial",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132047:2024:expenditure:budget:f9dcbc7e871437691e4979572aeafaae2da333aba1b27beba8eee72153a5f10e",
+      "jurisdiction_code": "132047",
+      "fiscal_year": 2024,
+      "direction": "expenditure",
+      "document_kind": "budget",
+      "origin_sha256": "f9dcbc7e871437691e4979572aeafaae2da333aba1b27beba8eee72153a5f10e",
+      "source_json": "{\"attribution\": \"三鷹市「令和6年度予算データ」（東京都オープンデータカタログサイト）\", \"documentKind\": \"budget\", \"documentLabel\": \"当初予算\", \"landingPage\": \"https://www.city.mitaka.lg.jp/c_service/074/\", \"licenseId\": \"CC-BY-4.0\", \"rawForm\": \"verbatim\"}",
+      "structure_json": "{\"dimensions\":[],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"jikou\",\"setsu\",\"saisaisetsu\"],\"funds\":[{\"code\":\"01\",\"label\":\"一般会計\"},{\"code\":\"02\",\"label\":\"国民健康保険事業特別会計\"},{\"code\":\"06\",\"label\":\"介護サービス事業特別会計\"},{\"code\":\"07\",\"label\":\"介護保険事業特別会計\"},{\"code\":\"09\",\"label\":\"後期高齢者医療特別会計\"}]}",
+      "line_count": 5613,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "initial",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132047:2024:revenue:budget:9ae9636703f90430eff0bcfc50e2812fe07a1fe180b7d9d993230d5a4f717910",
+      "jurisdiction_code": "132047",
+      "fiscal_year": 2024,
+      "direction": "revenue",
+      "document_kind": "budget",
+      "origin_sha256": "9ae9636703f90430eff0bcfc50e2812fe07a1fe180b7d9d993230d5a4f717910",
+      "source_json": "{\"attribution\": \"三鷹市「令和6年度予算データ」（東京都オープンデータカタログサイト）\", \"documentKind\": \"budget\", \"documentLabel\": \"当初予算\", \"landingPage\": \"https://www.city.mitaka.lg.jp/c_service/074/\", \"licenseId\": \"CC-BY-4.0\", \"rawForm\": \"verbatim\"}",
+      "structure_json": "{\"dimensions\":[],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"setsu\",\"saisetsu\",\"saisaisetsu\"],\"funds\":[{\"code\":\"01\",\"label\":\"一般会計\"},{\"code\":\"02\",\"label\":\"国民健康保険事業特別会計\"},{\"code\":\"06\",\"label\":\"介護サービス事業特別会計\"},{\"code\":\"07\",\"label\":\"介護保険事業特別会計\"},{\"code\":\"09\",\"label\":\"後期高齢者医療特別会計\"}]}",
+      "line_count": 821,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "initial",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132071:2025:expenditure:budget:4662197051b0ec0d9c50e1690c5804d0b31e17dd7d35b972fd272e03068507f8",
+      "jurisdiction_code": "132071",
+      "fiscal_year": 2025,
+      "direction": "expenditure",
+      "document_kind": "budget",
+      "origin_sha256": "4662197051b0ec0d9c50e1690c5804d0b31e17dd7d35b972fd272e03068507f8",
+      "source_json": "{\"attribution\": \"昭島市\", \"documentKind\": \"budget\", \"documentLabel\": \"当初予算\", \"landingPage\": \"https://www.city.akishima.lg.jp/shisei/gyozaisei/1005263/1005264.html\", \"licenseId\": \"PDL-1.0\", \"rawForm\": \"extracted\"}",
+      "structure_json": "{\"dimensions\":[],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"jigyo\",\"setsu\",\"saisetsu\"],\"funds\":[{\"code\":\"\",\"label\":\"一般会計\"}]}",
+      "line_count": 3588,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "initial",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132071:2025:revenue:budget:4662197051b0ec0d9c50e1690c5804d0b31e17dd7d35b972fd272e03068507f8",
+      "jurisdiction_code": "132071",
+      "fiscal_year": 2025,
+      "direction": "revenue",
+      "document_kind": "budget",
+      "origin_sha256": "4662197051b0ec0d9c50e1690c5804d0b31e17dd7d35b972fd272e03068507f8",
+      "source_json": "{\"attribution\": \"昭島市\", \"documentKind\": \"budget\", \"documentLabel\": \"当初予算\", \"landingPage\": \"https://www.city.akishima.lg.jp/shisei/gyozaisei/1005263/1005264.html\", \"licenseId\": \"PDL-1.0\", \"rawForm\": \"extracted\"}",
+      "structure_json": "{\"dimensions\":[],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"setsu\",\"saisetsu\"],\"funds\":[{\"code\":\"\",\"label\":\"一般会計\"}]}",
+      "line_count": 423,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "initial",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132195:2018:expenditure:settlement:3e4362668b58219b0bceeb88704ecd489ce1f0bcc9372c68470c4f6f5483b85f",
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2018,
+      "direction": "expenditure",
+      "document_kind": "settlement",
+      "origin_sha256": "3e4362668b58219b0bceeb88704ecd489ce1f0bcc9372c68470c4f6f5483b85f",
+      "source_json": "{\"attribution\": \"狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）\", \"documentKind\": \"settlement\", \"documentLabel\": \"決算\", \"landingPage\": \"https://www.city.komae.tokyo.jp/index.cfm/46,0,361,2170,html\", \"licenseId\": \"CC-BY-4.0\", \"rawForm\": \"verbatim\"}",
+      "structure_json": "{\"dimensions\":[\"org\",\"fiscal_class\"],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"daijigyo\",\"chujigyo\",\"shojigyo\",\"setsu\",\"saisetsu\",\"saisaisetsu\"],\"funds\":[{\"code\":\"1\",\"label\":\"一般会計\"},{\"code\":\"11\",\"label\":\"国民健康保険特別会計\"},{\"code\":\"14\",\"label\":\"介護保険特別会計\"},{\"code\":\"21\",\"label\":\"公共下水道特別会計\"},{\"code\":\"22\",\"label\":\"駐車場事業特別会計\"},{\"code\":\"34\",\"label\":\"後期高齢者医療特別会計\"}]}",
+      "line_count": 2178,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "executed",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132195:2018:revenue:settlement:61737c1ac430d3d900f7d43ec1cd6fbaa37f1df28c459ab0b05c9202cc205c6e",
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2018,
+      "direction": "revenue",
+      "document_kind": "settlement",
+      "origin_sha256": "61737c1ac430d3d900f7d43ec1cd6fbaa37f1df28c459ab0b05c9202cc205c6e",
+      "source_json": "{\"attribution\": \"狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）\", \"documentKind\": \"settlement\", \"documentLabel\": \"決算\", \"landingPage\": \"https://www.city.komae.tokyo.jp/index.cfm/46,0,361,2170,html\", \"licenseId\": \"CC-BY-4.0\", \"rawForm\": \"verbatim\"}",
+      "structure_json": "{\"dimensions\":[\"org\",\"fiscal_class\"],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"setsu\",\"saisetsu\",\"saisaisetsu\"],\"funds\":[{\"code\":\"1\",\"label\":\"一般会計\"},{\"code\":\"11\",\"label\":\"国民健康保険特別会計\"},{\"code\":\"14\",\"label\":\"介護保険特別会計\"},{\"code\":\"21\",\"label\":\"公共下水道特別会計\"},{\"code\":\"22\",\"label\":\"駐車場事業特別会計\"},{\"code\":\"34\",\"label\":\"後期高齢者医療特別会計\"}]}",
+      "line_count": 667,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "executed",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132195:2019:expenditure:settlement:0418cd63aaa4ed040ea4f3c3c19e648a62154c96e1631fa7bc32d9fefa3b07b8",
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2019,
+      "direction": "expenditure",
+      "document_kind": "settlement",
+      "origin_sha256": "0418cd63aaa4ed040ea4f3c3c19e648a62154c96e1631fa7bc32d9fefa3b07b8",
+      "source_json": "{\"attribution\": \"狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）\", \"documentKind\": \"settlement\", \"documentLabel\": \"決算\", \"landingPage\": \"https://www.city.komae.tokyo.jp/index.cfm/46,0,361,2170,html\", \"licenseId\": \"CC-BY-4.0\", \"rawForm\": \"verbatim\"}",
+      "structure_json": "{\"dimensions\":[\"org\",\"fiscal_class\"],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"daijigyo\",\"chujigyo\",\"shojigyo\",\"setsu\",\"saisetsu\",\"saisaisetsu\"],\"funds\":[{\"code\":\"1\",\"label\":\"一般会計\"},{\"code\":\"11\",\"label\":\"国民健康保険特別会計\"},{\"code\":\"14\",\"label\":\"介護保険特別会計\"},{\"code\":\"21\",\"label\":\"公共下水道特別会計\"},{\"code\":\"22\",\"label\":\"駐車場事業特別会計\"},{\"code\":\"34\",\"label\":\"後期高齢者医療特別会計\"}]}",
+      "line_count": 2211,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "executed",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132195:2019:revenue:settlement:a27d7fa3e8723b392c33d37532553f8b37905f6f03920b47d5afb89720480dd7",
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2019,
+      "direction": "revenue",
+      "document_kind": "settlement",
+      "origin_sha256": "a27d7fa3e8723b392c33d37532553f8b37905f6f03920b47d5afb89720480dd7",
+      "source_json": "{\"attribution\": \"狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）\", \"documentKind\": \"settlement\", \"documentLabel\": \"決算\", \"landingPage\": \"https://www.city.komae.tokyo.jp/index.cfm/46,0,361,2170,html\", \"licenseId\": \"CC-BY-4.0\", \"rawForm\": \"verbatim\"}",
+      "structure_json": "{\"dimensions\":[\"org\",\"fiscal_class\"],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"setsu\",\"saisetsu\",\"saisaisetsu\"],\"funds\":[{\"code\":\"1\",\"label\":\"一般会計\"},{\"code\":\"11\",\"label\":\"国民健康保険特別会計\"},{\"code\":\"14\",\"label\":\"介護保険特別会計\"},{\"code\":\"21\",\"label\":\"公共下水道特別会計\"},{\"code\":\"22\",\"label\":\"駐車場事業特別会計\"},{\"code\":\"34\",\"label\":\"後期高齢者医療特別会計\"}]}",
+      "line_count": 697,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "executed",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132195:2020:expenditure:settlement:afa77efd530603b989dc55706ce8789dd07b0325d271717359fb99122ff93cf2",
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2020,
+      "direction": "expenditure",
+      "document_kind": "settlement",
+      "origin_sha256": "afa77efd530603b989dc55706ce8789dd07b0325d271717359fb99122ff93cf2",
+      "source_json": "{\"attribution\": \"狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）\", \"documentKind\": \"settlement\", \"documentLabel\": \"決算\", \"landingPage\": \"https://www.city.komae.tokyo.jp/index.cfm/46,0,361,2170,html\", \"licenseId\": \"CC-BY-4.0\", \"rawForm\": \"verbatim\"}",
+      "structure_json": "{\"dimensions\":[\"org\",\"fiscal_class\"],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"daijigyo\",\"chujigyo\",\"shojigyo\",\"setsu\",\"saisetsu\",\"saisaisetsu\"],\"funds\":[{\"code\":\"1\",\"label\":\"一般会計\"},{\"code\":\"11\",\"label\":\"国民健康保険特別会計\"},{\"code\":\"14\",\"label\":\"介護保険特別会計\"},{\"code\":\"22\",\"label\":\"駐車場事業特別会計\"},{\"code\":\"34\",\"label\":\"後期高齢者医療特別会計\"}]}",
+      "line_count": 2298,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "executed",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132195:2020:revenue:settlement:2639b9d6daa13b3d23090300e76d9198990f67d4fa2ff406274dd1e45a52544d",
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2020,
+      "direction": "revenue",
+      "document_kind": "settlement",
+      "origin_sha256": "2639b9d6daa13b3d23090300e76d9198990f67d4fa2ff406274dd1e45a52544d",
+      "source_json": "{\"attribution\": \"狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）\", \"documentKind\": \"settlement\", \"documentLabel\": \"決算\", \"landingPage\": \"https://www.city.komae.tokyo.jp/index.cfm/46,0,361,2170,html\", \"licenseId\": \"CC-BY-4.0\", \"rawForm\": \"verbatim\"}",
+      "structure_json": "{\"dimensions\":[\"org\",\"fiscal_class\"],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"setsu\",\"saisetsu\",\"saisaisetsu\"],\"funds\":[{\"code\":\"1\",\"label\":\"一般会計\"},{\"code\":\"11\",\"label\":\"国民健康保険特別会計\"},{\"code\":\"14\",\"label\":\"介護保険特別会計\"},{\"code\":\"22\",\"label\":\"駐車場事業特別会計\"},{\"code\":\"34\",\"label\":\"後期高齢者医療特別会計\"}]}",
+      "line_count": 700,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "executed",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132195:2021:expenditure:settlement:cf4d7de8ed8e819b25c3ac69541ef7cdb69fa32550d04f89b48e8958643f290f",
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2021,
+      "direction": "expenditure",
+      "document_kind": "settlement",
+      "origin_sha256": "cf4d7de8ed8e819b25c3ac69541ef7cdb69fa32550d04f89b48e8958643f290f",
+      "source_json": "{\"attribution\": \"狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）\", \"documentKind\": \"settlement\", \"documentLabel\": \"決算\", \"landingPage\": \"https://www.city.komae.tokyo.jp/index.cfm/46,0,361,2170,html\", \"licenseId\": \"CC-BY-4.0\", \"rawForm\": \"verbatim\"}",
+      "structure_json": "{\"dimensions\":[\"org\",\"fiscal_class\"],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"daijigyo\",\"chujigyo\",\"shojigyo\",\"setsu\",\"saisetsu\",\"saisaisetsu\"],\"funds\":[{\"code\":\"1\",\"label\":\"一般会計\"},{\"code\":\"11\",\"label\":\"国民健康保険特別会計\"},{\"code\":\"14\",\"label\":\"介護保険特別会計\"},{\"code\":\"22\",\"label\":\"駐車場事業特別会計\"},{\"code\":\"34\",\"label\":\"後期高齢者医療特別会計\"}]}",
+      "line_count": 2266,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "executed",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132195:2021:revenue:settlement:5e2772fb2d152e46ba2bdd3f76244697f1afd0de654fb2463dab74283456f320",
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2021,
+      "direction": "revenue",
+      "document_kind": "settlement",
+      "origin_sha256": "5e2772fb2d152e46ba2bdd3f76244697f1afd0de654fb2463dab74283456f320",
+      "source_json": "{\"attribution\": \"狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）\", \"documentKind\": \"settlement\", \"documentLabel\": \"決算\", \"landingPage\": \"https://www.city.komae.tokyo.jp/index.cfm/46,0,361,2170,html\", \"licenseId\": \"CC-BY-4.0\", \"rawForm\": \"verbatim\"}",
+      "structure_json": "{\"dimensions\":[\"org\",\"fiscal_class\"],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"setsu\",\"saisetsu\",\"saisaisetsu\"],\"funds\":[{\"code\":\"1\",\"label\":\"一般会計\"},{\"code\":\"11\",\"label\":\"国民健康保険特別会計\"},{\"code\":\"14\",\"label\":\"介護保険特別会計\"},{\"code\":\"22\",\"label\":\"駐車場事業特別会計\"},{\"code\":\"34\",\"label\":\"後期高齢者医療特別会計\"}]}",
+      "line_count": 698,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "executed",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132195:2022:expenditure:settlement:c3e8be28ec3241d9ed8ef2237e566c02b41027739bdf6929a11fd7c919c49ae3",
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2022,
+      "direction": "expenditure",
+      "document_kind": "settlement",
+      "origin_sha256": "c3e8be28ec3241d9ed8ef2237e566c02b41027739bdf6929a11fd7c919c49ae3",
+      "source_json": "{\"attribution\": \"狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）\", \"documentKind\": \"settlement\", \"documentLabel\": \"決算\", \"landingPage\": \"https://www.city.komae.tokyo.jp/index.cfm/46,0,361,2170,html\", \"licenseId\": \"CC-BY-4.0\", \"rawForm\": \"verbatim\"}",
+      "structure_json": "{\"dimensions\":[\"org\",\"fiscal_class\"],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"daijigyo\",\"chujigyo\",\"shojigyo\",\"setsu\",\"saisetsu\",\"saisaisetsu\"],\"funds\":[{\"code\":\"1\",\"label\":\"一般会計\"},{\"code\":\"11\",\"label\":\"国民健康保険特別会計\"},{\"code\":\"14\",\"label\":\"介護保険特別会計\"},{\"code\":\"22\",\"label\":\"駐車場事業特別会計\"},{\"code\":\"34\",\"label\":\"後期高齢者医療特別会計\"}]}",
+      "line_count": 2284,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "executed",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132195:2022:revenue:settlement:23fb6e8444d7ded7af91e6d289a42701dca1f94e1c2aace1e1fe55d899828ec8",
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2022,
+      "direction": "revenue",
+      "document_kind": "settlement",
+      "origin_sha256": "23fb6e8444d7ded7af91e6d289a42701dca1f94e1c2aace1e1fe55d899828ec8",
+      "source_json": "{\"attribution\": \"狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）\", \"documentKind\": \"settlement\", \"documentLabel\": \"決算\", \"landingPage\": \"https://www.city.komae.tokyo.jp/index.cfm/46,0,361,2170,html\", \"licenseId\": \"CC-BY-4.0\", \"rawForm\": \"verbatim\"}",
+      "structure_json": "{\"dimensions\":[\"org\",\"fiscal_class\"],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"setsu\",\"saisetsu\",\"saisaisetsu\"],\"funds\":[{\"code\":\"1\",\"label\":\"一般会計\"},{\"code\":\"11\",\"label\":\"国民健康保険特別会計\"},{\"code\":\"14\",\"label\":\"介護保険特別会計\"},{\"code\":\"22\",\"label\":\"駐車場事業特別会計\"},{\"code\":\"34\",\"label\":\"後期高齢者医療特別会計\"}]}",
+      "line_count": 715,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "executed",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132195:2023:expenditure:settlement:26c342106b395d8a459076e137129d98a97b8cb15b97adc29d35a3638143814d",
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2023,
+      "direction": "expenditure",
+      "document_kind": "settlement",
+      "origin_sha256": "26c342106b395d8a459076e137129d98a97b8cb15b97adc29d35a3638143814d",
+      "source_json": "{\"attribution\": \"狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）\", \"documentKind\": \"settlement\", \"documentLabel\": \"決算\", \"landingPage\": \"https://www.city.komae.tokyo.jp/index.cfm/46,0,361,2170,html\", \"licenseId\": \"CC-BY-4.0\", \"rawForm\": \"verbatim\"}",
+      "structure_json": "{\"dimensions\":[\"org\",\"fiscal_class\"],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"daijigyo\",\"chujigyo\",\"shojigyo\",\"setsu\",\"saisetsu\",\"saisaisetsu\"],\"funds\":[{\"code\":\"1\",\"label\":\"一般会計\"},{\"code\":\"11\",\"label\":\"国民健康保険特別会計\"},{\"code\":\"14\",\"label\":\"介護保険特別会計\"},{\"code\":\"22\",\"label\":\"駐車場事業特別会計\"},{\"code\":\"34\",\"label\":\"後期高齢者医療特別会計\"}]}",
+      "line_count": 2224,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "executed",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132195:2023:revenue:settlement:14d5d00db95a9d81de10f72c4792c9dc06f3d7ad17209b13893edbcf5012533b",
+      "jurisdiction_code": "132195",
+      "fiscal_year": 2023,
+      "direction": "revenue",
+      "document_kind": "settlement",
+      "origin_sha256": "14d5d00db95a9d81de10f72c4792c9dc06f3d7ad17209b13893edbcf5012533b",
+      "source_json": "{\"attribution\": \"狛江市「決算書歳出データ・決算書歳入データ」（東京都オープンデータカタログサイト）\", \"documentKind\": \"settlement\", \"documentLabel\": \"決算\", \"landingPage\": \"https://www.city.komae.tokyo.jp/index.cfm/46,0,361,2170,html\", \"licenseId\": \"CC-BY-4.0\", \"rawForm\": \"verbatim\"}",
+      "structure_json": "{\"dimensions\":[\"org\",\"fiscal_class\"],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"setsu\",\"saisetsu\",\"saisaisetsu\"],\"funds\":[{\"code\":\"1\",\"label\":\"一般会計\"},{\"code\":\"11\",\"label\":\"国民健康保険特別会計\"},{\"code\":\"14\",\"label\":\"介護保険特別会計\"},{\"code\":\"22\",\"label\":\"駐車場事業特別会計\"},{\"code\":\"34\",\"label\":\"後期高齢者医療特別会計\"}]}",
+      "line_count": 742,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "executed",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132241:2021:expenditure:budget:d1f90d5c0dcc607ddd4582b14b9c96681e5089dfee2664bca05a95ba075d1cf0",
+      "jurisdiction_code": "132241",
+      "fiscal_year": 2021,
+      "direction": "expenditure",
+      "document_kind": "budget",
+      "origin_sha256": "d1f90d5c0dcc607ddd4582b14b9c96681e5089dfee2664bca05a95ba075d1cf0",
+      "source_json": "{\"attribution\": \"多摩市「令和3年度一般会計歳出・歳入（当初予算）」（東京都オープンデータカタログサイト）\", \"documentKind\": \"budget\", \"documentLabel\": \"当初予算\", \"landingPage\": \"https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html\", \"licenseId\": \"CC-BY-4.0\", \"rawForm\": \"verbatim\"}",
+      "structure_json": "{\"dimensions\":[],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"saimoku\",\"setsu\"],\"funds\":[{\"code\":\"\",\"label\":\"一般会計\"}]}",
+      "line_count": 1580,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "initial",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132241:2021:revenue:budget:a07936e490aff00641e9b65b335ed154176f0d053359602f76ec66702ea79c46",
+      "jurisdiction_code": "132241",
+      "fiscal_year": 2021,
+      "direction": "revenue",
+      "document_kind": "budget",
+      "origin_sha256": "a07936e490aff00641e9b65b335ed154176f0d053359602f76ec66702ea79c46",
+      "source_json": "{\"attribution\": \"多摩市「令和3年度一般会計歳出・歳入（当初予算）」（東京都オープンデータカタログサイト）\", \"documentKind\": \"budget\", \"documentLabel\": \"当初予算\", \"landingPage\": \"https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html\", \"licenseId\": \"CC-BY-4.0\", \"rawForm\": \"verbatim\"}",
+      "structure_json": "{\"dimensions\":[],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"setsu\",\"saisetsu\"],\"funds\":[{\"code\":\"\",\"label\":\"一般会計\"}]}",
+      "line_count": 538,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "initial",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132241:2022:expenditure:budget:e94593f2cce5bde405f4e953fe0b133133c719556e79287413eb0af8a95efd63",
+      "jurisdiction_code": "132241",
+      "fiscal_year": 2022,
+      "direction": "expenditure",
+      "document_kind": "budget",
+      "origin_sha256": "e94593f2cce5bde405f4e953fe0b133133c719556e79287413eb0af8a95efd63",
+      "source_json": "{\"attribution\": \"多摩市「令和4年度一般会計歳出・歳入（当初予算）」（東京都オープンデータカタログサイト）\", \"documentKind\": \"budget\", \"documentLabel\": \"当初予算\", \"landingPage\": \"https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html\", \"licenseId\": \"CC-BY-4.0\", \"rawForm\": \"verbatim\"}",
+      "structure_json": "{\"dimensions\":[],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"saimoku\",\"setsu\"],\"funds\":[{\"code\":\"\",\"label\":\"一般会計\"}]}",
+      "line_count": 1440,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "initial",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132241:2022:revenue:budget:0a7be92857672d8ffbf208e7b8ddc615a454f6bd8ff1f075e1a791c118014351",
+      "jurisdiction_code": "132241",
+      "fiscal_year": 2022,
+      "direction": "revenue",
+      "document_kind": "budget",
+      "origin_sha256": "0a7be92857672d8ffbf208e7b8ddc615a454f6bd8ff1f075e1a791c118014351",
+      "source_json": "{\"attribution\": \"多摩市「令和4年度一般会計歳出・歳入（当初予算）」（東京都オープンデータカタログサイト）\", \"documentKind\": \"budget\", \"documentLabel\": \"当初予算\", \"landingPage\": \"https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html\", \"licenseId\": \"CC-BY-4.0\", \"rawForm\": \"verbatim\"}",
+      "structure_json": "{\"dimensions\":[],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"setsu\",\"saisetsu\"],\"funds\":[{\"code\":\"\",\"label\":\"一般会計\"}]}",
+      "line_count": 473,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "initial",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132241:2023:expenditure:budget:a9127d06f52ca2034ed4cb607260dfe3579b5aaeddf8c642ebd5821b25313ab4",
+      "jurisdiction_code": "132241",
+      "fiscal_year": 2023,
+      "direction": "expenditure",
+      "document_kind": "budget",
+      "origin_sha256": "a9127d06f52ca2034ed4cb607260dfe3579b5aaeddf8c642ebd5821b25313ab4",
+      "source_json": "{\"attribution\": \"多摩市「令和5年度一般会計歳出・歳入（当初予算）」（多摩市「予算・決算についての資料」）\", \"documentKind\": \"budget\", \"documentLabel\": \"当初予算\", \"landingPage\": \"https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html\", \"licenseId\": \"CC-BY-4.0\", \"rawForm\": \"verbatim\"}",
+      "structure_json": "{\"dimensions\":[],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"saimoku\",\"setsu\"],\"funds\":[{\"code\":\"\",\"label\":\"一般会計\"}]}",
+      "line_count": 1425,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "initial",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132241:2023:revenue:budget:9df4468f195127ebb5f578b90e0cc1606d277ad6fad03cc5f677f806156be219",
+      "jurisdiction_code": "132241",
+      "fiscal_year": 2023,
+      "direction": "revenue",
+      "document_kind": "budget",
+      "origin_sha256": "9df4468f195127ebb5f578b90e0cc1606d277ad6fad03cc5f677f806156be219",
+      "source_json": "{\"attribution\": \"多摩市「令和5年度一般会計歳出・歳入（当初予算）」（多摩市「予算・決算についての資料」）\", \"documentKind\": \"budget\", \"documentLabel\": \"当初予算\", \"landingPage\": \"https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html\", \"licenseId\": \"CC-BY-4.0\", \"rawForm\": \"verbatim\"}",
+      "structure_json": "{\"dimensions\":[],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"setsu\",\"saisetsu\"],\"funds\":[{\"code\":\"\",\"label\":\"一般会計\"}]}",
+      "line_count": 469,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "initial",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132241:2024:expenditure:budget:085be12b1a0682d1d45bad5b97bc5390e8318f0933029b6bccd04beccccd458a",
+      "jurisdiction_code": "132241",
+      "fiscal_year": 2024,
+      "direction": "expenditure",
+      "document_kind": "budget",
+      "origin_sha256": "085be12b1a0682d1d45bad5b97bc5390e8318f0933029b6bccd04beccccd458a",
+      "source_json": "{\"attribution\": \"多摩市「令和6年度一般会計歳出・歳入（当初予算）」（多摩市「予算・決算についての資料」）\", \"documentKind\": \"budget\", \"documentLabel\": \"当初予算\", \"landingPage\": \"https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html\", \"licenseId\": \"CC-BY-4.0\", \"rawForm\": \"verbatim\"}",
+      "structure_json": "{\"dimensions\":[],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"saimoku\",\"setsu\"],\"funds\":[{\"code\":\"\",\"label\":\"一般会計\"}]}",
+      "line_count": 1579,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "initial",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132241:2024:revenue:budget:3cb0dfed19aa46a773dce5040d377c0941dfa6a0466e8f9b73656618c270a571",
+      "jurisdiction_code": "132241",
+      "fiscal_year": 2024,
+      "direction": "revenue",
+      "document_kind": "budget",
+      "origin_sha256": "3cb0dfed19aa46a773dce5040d377c0941dfa6a0466e8f9b73656618c270a571",
+      "source_json": "{\"attribution\": \"多摩市「令和6年度一般会計歳出・歳入（当初予算）」（多摩市「予算・決算についての資料」）\", \"documentKind\": \"budget\", \"documentLabel\": \"当初予算\", \"landingPage\": \"https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html\", \"licenseId\": \"CC-BY-4.0\", \"rawForm\": \"verbatim\"}",
+      "structure_json": "{\"dimensions\":[],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"setsu\",\"saisetsu\"],\"funds\":[{\"code\":\"\",\"label\":\"一般会計\"}]}",
+      "line_count": 526,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "initial",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132241:2025:expenditure:budget:d8364d50219eddbe3faea25ef2e9cff8ab86f09ba40a7e0c22a20164c632bb86",
+      "jurisdiction_code": "132241",
+      "fiscal_year": 2025,
+      "direction": "expenditure",
+      "document_kind": "budget",
+      "origin_sha256": "d8364d50219eddbe3faea25ef2e9cff8ab86f09ba40a7e0c22a20164c632bb86",
+      "source_json": "{\"attribution\": \"多摩市「令和7年度一般会計歳出・歳入（当初予算）」（多摩市「予算・決算についての資料」）\", \"documentKind\": \"budget\", \"documentLabel\": \"当初予算\", \"landingPage\": \"https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html\", \"licenseId\": \"CC-BY-4.0\", \"rawForm\": \"verbatim\"}",
+      "structure_json": "{\"dimensions\":[],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"saimoku\",\"setsu\"],\"funds\":[{\"code\":\"\",\"label\":\"一般会計\"}]}",
+      "line_count": 1610,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "initial",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    },
+    {
+      "dataset_id": "132241:2025:revenue:budget:9bf3db1296cc3862e6b9ba26542ea07b0f4b72ccc939c63a3df90fe7a0a176a1",
+      "jurisdiction_code": "132241",
+      "fiscal_year": 2025,
+      "direction": "revenue",
+      "document_kind": "budget",
+      "origin_sha256": "9bf3db1296cc3862e6b9ba26542ea07b0f4b72ccc939c63a3df90fe7a0a176a1",
+      "source_json": "{\"attribution\": \"多摩市「令和7年度一般会計歳出・歳入（当初予算）」（多摩市「予算・決算についての資料」）\", \"documentKind\": \"budget\", \"documentLabel\": \"当初予算\", \"landingPage\": \"https://www.city.tama.lg.jp/shisei/zaisei/zaisei/1004885.html\", \"licenseId\": \"CC-BY-4.0\", \"rawForm\": \"verbatim\"}",
+      "structure_json": "{\"dimensions\":[],\"hierarchy\":[\"fund\",\"kan\",\"kou\",\"moku\",\"setsu\",\"saisetsu\"],\"funds\":[{\"code\":\"\",\"label\":\"一般会計\"}]}",
+      "line_count": 552,
+      "amendment_number": null,
+      "effective_at": null,
+      "source_amount_kind": "initial",
+      "coverage_json": "{\"budgetHistory\":\"unconfirmed\"}"
+    }
+  ],
+  "packages": [
+    {
+      "jurisdictionCode": "131016",
+      "packageId": "p-1f529887d40017576758054bab3454775865270be024f15fed3dde9c0b594720",
+      "datasetIds": [
+        "131016:2026:expenditure:budget:bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
+        "131016:2026:revenue:budget:bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49"
+      ]
+    },
+    {
+      "jurisdictionCode": "132047",
+      "packageId": "p-dd06e36e60a6881a5986675384c7defdeba321342c928aca06e82bf5ff3ad597",
+      "datasetIds": [
+        "132047:2024:expenditure:budget:f9dcbc7e871437691e4979572aeafaae2da333aba1b27beba8eee72153a5f10e",
+        "132047:2024:revenue:budget:9ae9636703f90430eff0bcfc50e2812fe07a1fe180b7d9d993230d5a4f717910"
+      ]
+    },
+    {
+      "jurisdictionCode": "132071",
+      "packageId": "p-21c4fe8ed529cbf9799059d068f3d98da96914f25455879fee2a6e1a4b7b213b",
+      "datasetIds": [
+        "132071:2025:expenditure:budget:4662197051b0ec0d9c50e1690c5804d0b31e17dd7d35b972fd272e03068507f8",
+        "132071:2025:revenue:budget:4662197051b0ec0d9c50e1690c5804d0b31e17dd7d35b972fd272e03068507f8"
+      ]
+    },
+    {
+      "jurisdictionCode": "132195",
+      "packageId": "p-0f7eb72a62e6e8cd7eb36dc595dbe11b6852f96f4fd42083b0f8487675e1a851",
+      "datasetIds": [
+        "132195:2018:expenditure:settlement:3e4362668b58219b0bceeb88704ecd489ce1f0bcc9372c68470c4f6f5483b85f",
+        "132195:2018:revenue:settlement:61737c1ac430d3d900f7d43ec1cd6fbaa37f1df28c459ab0b05c9202cc205c6e",
+        "132195:2019:expenditure:settlement:0418cd63aaa4ed040ea4f3c3c19e648a62154c96e1631fa7bc32d9fefa3b07b8",
+        "132195:2019:revenue:settlement:a27d7fa3e8723b392c33d37532553f8b37905f6f03920b47d5afb89720480dd7",
+        "132195:2020:expenditure:settlement:afa77efd530603b989dc55706ce8789dd07b0325d271717359fb99122ff93cf2",
+        "132195:2020:revenue:settlement:2639b9d6daa13b3d23090300e76d9198990f67d4fa2ff406274dd1e45a52544d",
+        "132195:2021:expenditure:settlement:cf4d7de8ed8e819b25c3ac69541ef7cdb69fa32550d04f89b48e8958643f290f",
+        "132195:2021:revenue:settlement:5e2772fb2d152e46ba2bdd3f76244697f1afd0de654fb2463dab74283456f320",
+        "132195:2022:expenditure:settlement:c3e8be28ec3241d9ed8ef2237e566c02b41027739bdf6929a11fd7c919c49ae3",
+        "132195:2022:revenue:settlement:23fb6e8444d7ded7af91e6d289a42701dca1f94e1c2aace1e1fe55d899828ec8",
+        "132195:2023:expenditure:settlement:26c342106b395d8a459076e137129d98a97b8cb15b97adc29d35a3638143814d",
+        "132195:2023:revenue:settlement:14d5d00db95a9d81de10f72c4792c9dc06f3d7ad17209b13893edbcf5012533b"
+      ]
+    },
+    {
+      "jurisdictionCode": "132241",
+      "packageId": "p-65c687fb68ffafd0584b90b8e67e2fe8c1b66c6dc1af45398c947e206e641910",
+      "datasetIds": [
+        "132241:2021:expenditure:budget:d1f90d5c0dcc607ddd4582b14b9c96681e5089dfee2664bca05a95ba075d1cf0",
+        "132241:2021:revenue:budget:a07936e490aff00641e9b65b335ed154176f0d053359602f76ec66702ea79c46",
+        "132241:2022:expenditure:budget:e94593f2cce5bde405f4e953fe0b133133c719556e79287413eb0af8a95efd63",
+        "132241:2022:revenue:budget:0a7be92857672d8ffbf208e7b8ddc615a454f6bd8ff1f075e1a791c118014351",
+        "132241:2023:expenditure:budget:a9127d06f52ca2034ed4cb607260dfe3579b5aaeddf8c642ebd5821b25313ab4",
+        "132241:2023:revenue:budget:9df4468f195127ebb5f578b90e0cc1606d277ad6fad03cc5f677f806156be219",
+        "132241:2024:expenditure:budget:085be12b1a0682d1d45bad5b97bc5390e8318f0933029b6bccd04beccccd458a",
+        "132241:2024:revenue:budget:3cb0dfed19aa46a773dce5040d377c0941dfa6a0466e8f9b73656618c270a571",
+        "132241:2025:expenditure:budget:d8364d50219eddbe3faea25ef2e9cff8ab86f09ba40a7e0c22a20164c632bb86",
+        "132241:2025:revenue:budget:9bf3db1296cc3862e6b9ba26542ea07b0f4b72ccc939c63a3df90fe7a0a176a1"
+      ]
+    }
+  ],
+  "files": [
+    {
+      "path": "fiscal/131016/account_names.csv",
+      "objectKey": "fiscal/131016/p-1f529887d40017576758054bab3454775865270be024f15fed3dde9c0b594720/account_names.csv",
+      "sha256": "03e64205fbf7fad55dce86f121bccdf55590db007f00891020a1028e3d45fe72",
+      "bytes": 70852,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/131016/datapackage.json",
+      "objectKey": "fiscal/131016/p-1f529887d40017576758054bab3454775865270be024f15fed3dde9c0b594720/datapackage.json",
+      "sha256": "1ef18711c9e4a051d9d4ee8a961ad63320206d18c1ccf252c58f2aa421354a47",
+      "bytes": 63629,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "path": "fiscal/131016/expenditure_budget_changes.csv",
+      "objectKey": "fiscal/131016/p-1f529887d40017576758054bab3454775865270be024f15fed3dde9c0b594720/expenditure_budget_changes.csv",
+      "sha256": "fcc2e94b9d2a5f99c82606d0bf7a23aadd6d5a07c1ec644de172522bd755b49f",
+      "bytes": 195,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/131016/expenditure_budget_items.csv",
+      "objectKey": "fiscal/131016/p-1f529887d40017576758054bab3454775865270be024f15fed3dde9c0b594720/expenditure_budget_items.csv",
+      "sha256": "7e58dbe797e8683ff6fcc688ad3f7aeb2c6ee3f27effbf951cbb272d897f80ef",
+      "bytes": 1149328,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/131016/expenditure_settlement_links.csv",
+      "objectKey": "fiscal/131016/p-1f529887d40017576758054bab3454775865270be024f15fed3dde9c0b594720/expenditure_settlement_links.csv",
+      "sha256": "67655c0d515a1c6bfc94228283ad6706c5b5e218f61592a090ade8381fd65a01",
+      "bytes": 68,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/131016/funds.csv",
+      "objectKey": "fiscal/131016/p-1f529887d40017576758054bab3454775865270be024f15fed3dde9c0b594720/funds.csv",
+      "sha256": "f0c56c385b059c7a099f6816e7a03ebfb1685b6432d4be762b178f9e708f3d13",
+      "bytes": 175,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/131016/initial_expenditure_budget.csv",
+      "objectKey": "fiscal/131016/p-1f529887d40017576758054bab3454775865270be024f15fed3dde9c0b594720/initial_expenditure_budget.csv",
+      "sha256": "4355b3abb2fecbc3d0e47645fc3328cd9f4512e5997fd4f4f205dc5700bf13ca",
+      "bytes": 450590,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/131016/initial_revenue_budget.csv",
+      "objectKey": "fiscal/131016/p-1f529887d40017576758054bab3454775865270be024f15fed3dde9c0b594720/initial_revenue_budget.csv",
+      "sha256": "68534c7124b56cdbfa77c6b1513b56c2bea3b891209c02364d37cd8329402c7d",
+      "bytes": 178879,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/131016/revenue_budget_changes.csv",
+      "objectKey": "fiscal/131016/p-1f529887d40017576758054bab3454775865270be024f15fed3dde9c0b594720/revenue_budget_changes.csv",
+      "sha256": "4843527bf63eadef26f468ca66af6c6adf338eaffb98c3d74c4aeea0cc24cbc0",
+      "bytes": 159,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/131016/revenue_budget_items.csv",
+      "objectKey": "fiscal/131016/p-1f529887d40017576758054bab3454775865270be024f15fed3dde9c0b594720/revenue_budget_items.csv",
+      "sha256": "885da44e439bc94a5140b57d4af91535d98151920195e1add8d1e6f7a437088c",
+      "bytes": 535819,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/131016/revenue_settlement_links.csv",
+      "objectKey": "fiscal/131016/p-1f529887d40017576758054bab3454775865270be024f15fed3dde9c0b594720/revenue_settlement_links.csv",
+      "sha256": "67655c0d515a1c6bfc94228283ad6706c5b5e218f61592a090ade8381fd65a01",
+      "bytes": 68,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/131016/settlement_expenditure.csv",
+      "objectKey": "fiscal/131016/p-1f529887d40017576758054bab3454775865270be024f15fed3dde9c0b594720/settlement_expenditure.csv",
+      "sha256": "d8a535732808f3e3e6e602288f9a3215201c474008186c2a16a3e42346ad31c9",
+      "bytes": 254,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/131016/settlement_revenue.csv",
+      "objectKey": "fiscal/131016/p-1f529887d40017576758054bab3454775865270be024f15fed3dde9c0b594720/settlement_revenue.csv",
+      "sha256": "5eb56f718b14b727253d4f1e4533a22361c47935419774ac8ad459bac2ec6ca1",
+      "bytes": 187,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132047/account_names.csv",
+      "objectKey": "fiscal/132047/p-dd06e36e60a6881a5986675384c7defdeba321342c928aca06e82bf5ff3ad597/account_names.csv",
+      "sha256": "1222ec2f55c018888a0db79e9a91c41d9a276b292a3993ead078c113ea652383",
+      "bytes": 80712,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132047/datapackage.json",
+      "objectKey": "fiscal/132047/p-dd06e36e60a6881a5986675384c7defdeba321342c928aca06e82bf5ff3ad597/datapackage.json",
+      "sha256": "94a550ce0e6b1f1461c0f6166aa25dfa301b7e67722695f7e3463854cd37d573",
+      "bytes": 63669,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132047/expenditure_budget_changes.csv",
+      "objectKey": "fiscal/132047/p-dd06e36e60a6881a5986675384c7defdeba321342c928aca06e82bf5ff3ad597/expenditure_budget_changes.csv",
+      "sha256": "fcc2e94b9d2a5f99c82606d0bf7a23aadd6d5a07c1ec644de172522bd755b49f",
+      "bytes": 195,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132047/expenditure_budget_items.csv",
+      "objectKey": "fiscal/132047/p-dd06e36e60a6881a5986675384c7defdeba321342c928aca06e82bf5ff3ad597/expenditure_budget_items.csv",
+      "sha256": "68a29fc03836c12a86a75f692ee2f27ea044babc25f7f73367869373cb4bb9d3",
+      "bytes": 9337066,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132047/expenditure_settlement_links.csv",
+      "objectKey": "fiscal/132047/p-dd06e36e60a6881a5986675384c7defdeba321342c928aca06e82bf5ff3ad597/expenditure_settlement_links.csv",
+      "sha256": "67655c0d515a1c6bfc94228283ad6706c5b5e218f61592a090ade8381fd65a01",
+      "bytes": 68,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132047/funds.csv",
+      "objectKey": "fiscal/132047/p-dd06e36e60a6881a5986675384c7defdeba321342c928aca06e82bf5ff3ad597/funds.csv",
+      "sha256": "774b3a0c51341f789cb5f972330316221a8132399fb507b5d1afda6520c609f7",
+      "bytes": 1226,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132047/initial_expenditure_budget.csv",
+      "objectKey": "fiscal/132047/p-dd06e36e60a6881a5986675384c7defdeba321342c928aca06e82bf5ff3ad597/initial_expenditure_budget.csv",
+      "sha256": "bb22ecf9a418466cbe509a2178bd0642380261efce0dd3d1e3f389288e0ecbd3",
+      "bytes": 2850760,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132047/initial_revenue_budget.csv",
+      "objectKey": "fiscal/132047/p-dd06e36e60a6881a5986675384c7defdeba321342c928aca06e82bf5ff3ad597/initial_revenue_budget.csv",
+      "sha256": "e65ece6eb3031793508eb1bf0a26732330dace41ebf00556e640ff28fc368384",
+      "bytes": 371744,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132047/revenue_budget_changes.csv",
+      "objectKey": "fiscal/132047/p-dd06e36e60a6881a5986675384c7defdeba321342c928aca06e82bf5ff3ad597/revenue_budget_changes.csv",
+      "sha256": "4843527bf63eadef26f468ca66af6c6adf338eaffb98c3d74c4aeea0cc24cbc0",
+      "bytes": 159,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132047/revenue_budget_items.csv",
+      "objectKey": "fiscal/132047/p-dd06e36e60a6881a5986675384c7defdeba321342c928aca06e82bf5ff3ad597/revenue_budget_items.csv",
+      "sha256": "eb85179b5020fa02f4581019512e04a22afe78219e97500ebb8129cad5709dec",
+      "bytes": 1394200,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132047/revenue_settlement_links.csv",
+      "objectKey": "fiscal/132047/p-dd06e36e60a6881a5986675384c7defdeba321342c928aca06e82bf5ff3ad597/revenue_settlement_links.csv",
+      "sha256": "67655c0d515a1c6bfc94228283ad6706c5b5e218f61592a090ade8381fd65a01",
+      "bytes": 68,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132047/settlement_expenditure.csv",
+      "objectKey": "fiscal/132047/p-dd06e36e60a6881a5986675384c7defdeba321342c928aca06e82bf5ff3ad597/settlement_expenditure.csv",
+      "sha256": "5e84df62329580832099460d8e47b9e096bb18b38bae1e8fd3db873183381e00",
+      "bytes": 254,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132047/settlement_revenue.csv",
+      "objectKey": "fiscal/132047/p-dd06e36e60a6881a5986675384c7defdeba321342c928aca06e82bf5ff3ad597/settlement_revenue.csv",
+      "sha256": "1ae2650df7282b4aed512295e36e26a4f72af410ef3f7fc90805e809dbc8c51a",
+      "bytes": 251,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132071/account_names.csv",
+      "objectKey": "fiscal/132071/p-21c4fe8ed529cbf9799059d068f3d98da96914f25455879fee2a6e1a4b7b213b/account_names.csv",
+      "sha256": "d7b3c067cd59ee4d961d5311cd9bddc8d520df2ed7f22978c6d0fe8315afb0fc",
+      "bytes": 48594,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132071/datapackage.json",
+      "objectKey": "fiscal/132071/p-21c4fe8ed529cbf9799059d068f3d98da96914f25455879fee2a6e1a4b7b213b/datapackage.json",
+      "sha256": "470afc42f10b5596c6e15778c1944ecfa2494ec7f70339096a4e9851b4ecdfcd",
+      "bytes": 64318,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132071/expenditure_budget_changes.csv",
+      "objectKey": "fiscal/132071/p-21c4fe8ed529cbf9799059d068f3d98da96914f25455879fee2a6e1a4b7b213b/expenditure_budget_changes.csv",
+      "sha256": "fcc2e94b9d2a5f99c82606d0bf7a23aadd6d5a07c1ec644de172522bd755b49f",
+      "bytes": 195,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132071/expenditure_budget_items.csv",
+      "objectKey": "fiscal/132071/p-21c4fe8ed529cbf9799059d068f3d98da96914f25455879fee2a6e1a4b7b213b/expenditure_budget_items.csv",
+      "sha256": "160e51fb6bb1379e9f730880fb6686214cad62a81abb22646c50f9e4c5093e92",
+      "bytes": 6037184,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132071/expenditure_settlement_links.csv",
+      "objectKey": "fiscal/132071/p-21c4fe8ed529cbf9799059d068f3d98da96914f25455879fee2a6e1a4b7b213b/expenditure_settlement_links.csv",
+      "sha256": "67655c0d515a1c6bfc94228283ad6706c5b5e218f61592a090ade8381fd65a01",
+      "bytes": 68,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132071/funds.csv",
+      "objectKey": "fiscal/132071/p-21c4fe8ed529cbf9799059d068f3d98da96914f25455879fee2a6e1a4b7b213b/funds.csv",
+      "sha256": "f0c56c385b059c7a099f6816e7a03ebfb1685b6432d4be762b178f9e708f3d13",
+      "bytes": 175,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132071/initial_expenditure_budget.csv",
+      "objectKey": "fiscal/132071/p-21c4fe8ed529cbf9799059d068f3d98da96914f25455879fee2a6e1a4b7b213b/initial_expenditure_budget.csv",
+      "sha256": "32fa186cc463723692bdfbc942bf3607bec0a1b7e8023357fa0ec8ce3af7465d",
+      "bytes": 1930570,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132071/initial_revenue_budget.csv",
+      "objectKey": "fiscal/132071/p-21c4fe8ed529cbf9799059d068f3d98da96914f25455879fee2a6e1a4b7b213b/initial_revenue_budget.csv",
+      "sha256": "d18bbed6109eecbe3e6aa6426eb856856dacd95c98a79eb0312587d3a2cffe65",
+      "bytes": 192452,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132071/revenue_budget_changes.csv",
+      "objectKey": "fiscal/132071/p-21c4fe8ed529cbf9799059d068f3d98da96914f25455879fee2a6e1a4b7b213b/revenue_budget_changes.csv",
+      "sha256": "4843527bf63eadef26f468ca66af6c6adf338eaffb98c3d74c4aeea0cc24cbc0",
+      "bytes": 159,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132071/revenue_budget_items.csv",
+      "objectKey": "fiscal/132071/p-21c4fe8ed529cbf9799059d068f3d98da96914f25455879fee2a6e1a4b7b213b/revenue_budget_items.csv",
+      "sha256": "260d167aa2100e91d5a8f3a630ad831902080eb9b5c587e1c08332c2607bd27c",
+      "bytes": 640026,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132071/revenue_settlement_links.csv",
+      "objectKey": "fiscal/132071/p-21c4fe8ed529cbf9799059d068f3d98da96914f25455879fee2a6e1a4b7b213b/revenue_settlement_links.csv",
+      "sha256": "67655c0d515a1c6bfc94228283ad6706c5b5e218f61592a090ade8381fd65a01",
+      "bytes": 68,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132071/settlement_expenditure.csv",
+      "objectKey": "fiscal/132071/p-21c4fe8ed529cbf9799059d068f3d98da96914f25455879fee2a6e1a4b7b213b/settlement_expenditure.csv",
+      "sha256": "d8a535732808f3e3e6e602288f9a3215201c474008186c2a16a3e42346ad31c9",
+      "bytes": 254,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132071/settlement_revenue.csv",
+      "objectKey": "fiscal/132071/p-21c4fe8ed529cbf9799059d068f3d98da96914f25455879fee2a6e1a4b7b213b/settlement_revenue.csv",
+      "sha256": "f4d21b97597c529dea594a46d1a58e60324db9544769e95f7d11ef2f0d189da5",
+      "bytes": 216,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132195/account_names.csv",
+      "objectKey": "fiscal/132195/p-0f7eb72a62e6e8cd7eb36dc595dbe11b6852f96f4fd42083b0f8487675e1a851/account_names.csv",
+      "sha256": "29cf7c04b92f14da8e211edde6dfac6eca488a0189981199eafd821ce157f8c7",
+      "bytes": 464544,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132195/datapackage.json",
+      "objectKey": "fiscal/132195/p-0f7eb72a62e6e8cd7eb36dc595dbe11b6852f96f4fd42083b0f8487675e1a851/datapackage.json",
+      "sha256": "bdaad324a7819a9ea02c99f5581d75b4b420b52fd4d636f8e805165b0536a227",
+      "bytes": 101643,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132195/expenditure_budget_changes.csv",
+      "objectKey": "fiscal/132195/p-0f7eb72a62e6e8cd7eb36dc595dbe11b6852f96f4fd42083b0f8487675e1a851/expenditure_budget_changes.csv",
+      "sha256": "fcc2e94b9d2a5f99c82606d0bf7a23aadd6d5a07c1ec644de172522bd755b49f",
+      "bytes": 195,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132195/expenditure_budget_items.csv",
+      "objectKey": "fiscal/132195/p-0f7eb72a62e6e8cd7eb36dc595dbe11b6852f96f4fd42083b0f8487675e1a851/expenditure_budget_items.csv",
+      "sha256": "6d2b94ef9b9901aaf6bba8de599937250b1717e3cc000c169b299b194bac2b44",
+      "bytes": 125,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132195/expenditure_settlement_links.csv",
+      "objectKey": "fiscal/132195/p-0f7eb72a62e6e8cd7eb36dc595dbe11b6852f96f4fd42083b0f8487675e1a851/expenditure_settlement_links.csv",
+      "sha256": "67655c0d515a1c6bfc94228283ad6706c5b5e218f61592a090ade8381fd65a01",
+      "bytes": 68,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132195/funds.csv",
+      "objectKey": "fiscal/132195/p-0f7eb72a62e6e8cd7eb36dc595dbe11b6852f96f4fd42083b0f8487675e1a851/funds.csv",
+      "sha256": "3c183483fe5bbbd542af382d9a806e129f46117c40c888f583ba7c217a5241c6",
+      "bytes": 1435,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132195/initial_expenditure_budget.csv",
+      "objectKey": "fiscal/132195/p-0f7eb72a62e6e8cd7eb36dc595dbe11b6852f96f4fd42083b0f8487675e1a851/initial_expenditure_budget.csv",
+      "sha256": "6567a5e6dd1b972c3b20eed667fc7f3d0e2af1abf2fcac3c789f90a1cf16640e",
+      "bytes": 386,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132195/initial_revenue_budget.csv",
+      "objectKey": "fiscal/132195/p-0f7eb72a62e6e8cd7eb36dc595dbe11b6852f96f4fd42083b0f8487675e1a851/initial_revenue_budget.csv",
+      "sha256": "34a7dec7ff5366fde533f3846fd24a647ce6bd3f4fcb0f1d5cfd98a5e649be8b",
+      "bytes": 319,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132195/interfund_transfers.csv",
+      "objectKey": "fiscal/132195/p-0f7eb72a62e6e8cd7eb36dc595dbe11b6852f96f4fd42083b0f8487675e1a851/interfund_transfers.csv",
+      "sha256": "d4629a0dc441bcaedfa93be11d2e682d54823a7e9ce21547c7de09d9b2c7818c",
+      "bytes": 12420,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132195/project_names.csv",
+      "objectKey": "fiscal/132195/p-0f7eb72a62e6e8cd7eb36dc595dbe11b6852f96f4fd42083b0f8487675e1a851/project_names.csv",
+      "sha256": "cd8589d1275a329480afb9cc7f5f3894de7f3bd99fc3c4d0ec5f5d4ad5b5999d",
+      "bytes": 123586,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132195/revenue_budget_changes.csv",
+      "objectKey": "fiscal/132195/p-0f7eb72a62e6e8cd7eb36dc595dbe11b6852f96f4fd42083b0f8487675e1a851/revenue_budget_changes.csv",
+      "sha256": "4843527bf63eadef26f468ca66af6c6adf338eaffb98c3d74c4aeea0cc24cbc0",
+      "bytes": 159,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132195/revenue_budget_items.csv",
+      "objectKey": "fiscal/132195/p-0f7eb72a62e6e8cd7eb36dc595dbe11b6852f96f4fd42083b0f8487675e1a851/revenue_budget_items.csv",
+      "sha256": "6d2b94ef9b9901aaf6bba8de599937250b1717e3cc000c169b299b194bac2b44",
+      "bytes": 125,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132195/revenue_settlement_links.csv",
+      "objectKey": "fiscal/132195/p-0f7eb72a62e6e8cd7eb36dc595dbe11b6852f96f4fd42083b0f8487675e1a851/revenue_settlement_links.csv",
+      "sha256": "67655c0d515a1c6bfc94228283ad6706c5b5e218f61592a090ade8381fd65a01",
+      "bytes": 68,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132195/settlement_expenditure.csv",
+      "objectKey": "fiscal/132195/p-0f7eb72a62e6e8cd7eb36dc595dbe11b6852f96f4fd42083b0f8487675e1a851/settlement_expenditure.csv",
+      "sha256": "9d3b1fb68908083f83afff1aaa597eb1bae27ea5ec4523b1ea829611d53c4405",
+      "bytes": 8246705,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132195/settlement_revenue.csv",
+      "objectKey": "fiscal/132195/p-0f7eb72a62e6e8cd7eb36dc595dbe11b6852f96f4fd42083b0f8487675e1a851/settlement_revenue.csv",
+      "sha256": "8efc33300749fd223c3b105b3eb1d64679aff99524b24f8ee9a050da40bd3b71",
+      "bytes": 1711251,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132241/account_names.csv",
+      "objectKey": "fiscal/132241/p-65c687fb68ffafd0584b90b8e67e2fe8c1b66c6dc1af45398c947e206e641910/account_names.csv",
+      "sha256": "322ad1832f1f05bdf1b808a855cf6140b8976bd5f1527f048aef801c8b561e57",
+      "bytes": 230256,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132241/datapackage.json",
+      "objectKey": "fiscal/132241/p-65c687fb68ffafd0584b90b8e67e2fe8c1b66c6dc1af45398c947e206e641910/datapackage.json",
+      "sha256": "2e4c6d95441a646e4cf60fe1c95006bd736a31a26af0e1bdd99afd5c2e832711",
+      "bytes": 76004,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132241/expenditure_budget_changes.csv",
+      "objectKey": "fiscal/132241/p-65c687fb68ffafd0584b90b8e67e2fe8c1b66c6dc1af45398c947e206e641910/expenditure_budget_changes.csv",
+      "sha256": "fcc2e94b9d2a5f99c82606d0bf7a23aadd6d5a07c1ec644de172522bd755b49f",
+      "bytes": 195,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132241/expenditure_budget_items.csv",
+      "objectKey": "fiscal/132241/p-65c687fb68ffafd0584b90b8e67e2fe8c1b66c6dc1af45398c947e206e641910/expenditure_budget_items.csv",
+      "sha256": "a6863e6f1ff259e77f32e8b6b84410cba3d7b98016a6023c613f49c3fbdea5ea",
+      "bytes": 10732919,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132241/expenditure_settlement_links.csv",
+      "objectKey": "fiscal/132241/p-65c687fb68ffafd0584b90b8e67e2fe8c1b66c6dc1af45398c947e206e641910/expenditure_settlement_links.csv",
+      "sha256": "67655c0d515a1c6bfc94228283ad6706c5b5e218f61592a090ade8381fd65a01",
+      "bytes": 68,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132241/funds.csv",
+      "objectKey": "fiscal/132241/p-65c687fb68ffafd0584b90b8e67e2fe8c1b66c6dc1af45398c947e206e641910/funds.csv",
+      "sha256": "f0c56c385b059c7a099f6816e7a03ebfb1685b6432d4be762b178f9e708f3d13",
+      "bytes": 175,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132241/initial_expenditure_budget.csv",
+      "objectKey": "fiscal/132241/p-65c687fb68ffafd0584b90b8e67e2fe8c1b66c6dc1af45398c947e206e641910/initial_expenditure_budget.csv",
+      "sha256": "66f5de2fbb8eea8219bdc45d673c1f15d39be1b012b0eeba47252f52cb6b8496",
+      "bytes": 3954294,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132241/initial_revenue_budget.csv",
+      "objectKey": "fiscal/132241/p-65c687fb68ffafd0584b90b8e67e2fe8c1b66c6dc1af45398c947e206e641910/initial_revenue_budget.csv",
+      "sha256": "b1a534f41d33718526dcfad5a232072da9f59ee1e354f5b176e5e5cf818da361",
+      "bytes": 1101581,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132241/revenue_budget_changes.csv",
+      "objectKey": "fiscal/132241/p-65c687fb68ffafd0584b90b8e67e2fe8c1b66c6dc1af45398c947e206e641910/revenue_budget_changes.csv",
+      "sha256": "4843527bf63eadef26f468ca66af6c6adf338eaffb98c3d74c4aeea0cc24cbc0",
+      "bytes": 159,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132241/revenue_budget_items.csv",
+      "objectKey": "fiscal/132241/p-65c687fb68ffafd0584b90b8e67e2fe8c1b66c6dc1af45398c947e206e641910/revenue_budget_items.csv",
+      "sha256": "7220cbb7e5ae08131b1e45270eaefe8038c4c39f7e12c4dc992ef86120688efc",
+      "bytes": 3746563,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132241/revenue_settlement_links.csv",
+      "objectKey": "fiscal/132241/p-65c687fb68ffafd0584b90b8e67e2fe8c1b66c6dc1af45398c947e206e641910/revenue_settlement_links.csv",
+      "sha256": "67655c0d515a1c6bfc94228283ad6706c5b5e218f61592a090ade8381fd65a01",
+      "bytes": 68,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132241/settlement_expenditure.csv",
+      "objectKey": "fiscal/132241/p-65c687fb68ffafd0584b90b8e67e2fe8c1b66c6dc1af45398c947e206e641910/settlement_expenditure.csv",
+      "sha256": "4a5620025f72ec6c9ae5a386e815f1809355d72b4f509e980f765ee9114a028a",
+      "bytes": 258,
+      "contentType": "text/csv; charset=utf-8"
+    },
+    {
+      "path": "fiscal/132241/settlement_revenue.csv",
+      "objectKey": "fiscal/132241/p-65c687fb68ffafd0584b90b8e67e2fe8c1b66c6dc1af45398c947e206e641910/settlement_revenue.csv",
+      "sha256": "f4d21b97597c529dea594a46d1a58e60324db9544769e95f7d11ef2f0d189da5",
+      "bytes": 216,
+      "contentType": "text/csv; charset=utf-8"
+    }
+  ],
+  "amountUnit": "JPY",
+  "selection": "Select one dataset per jurisdiction, year and direction. Imported rows are visible while ingestion is in progress."
+}

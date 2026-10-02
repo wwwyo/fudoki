@@ -8,7 +8,9 @@
     "noUncheckedIndexedAccess": true,
     "resolveJsonModule": true,
     "noEmit": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": true
   },
-  "include": ["ingestion", "fdp", "report"]
+  "include": ["pipeline", "packages"],
+  "exclude": ["pipeline/verify/view"]
 }

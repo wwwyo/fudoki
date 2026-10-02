@@ -11,8 +11,7 @@
  * （lib/apiKey.ts）を使う。ハッシュの作り方が発行側・検証側・失効側で
  * 食い違うと、正しいキーを渡しても KV 上のエントリを引けなくなる。
  *
- * ⚠️ `bunx wrangler` は使わない。issue-key.ts と同じ理由（高権限操作での
- * 意図しないパッケージ取得を避ける）で、ピン留めされた wrangler を直接呼ぶ。
+ * Cloudflare 操作は mise で固定した cf を使う。
  *
  * ⚠️ `--local` / `--remote` の指定を必須にする（既定を持たない）。
  * issue は既定 local でよい（開発中に何度も試すだけなので、代償の非対称性
@@ -27,37 +26,63 @@
  * まだ古い active を読み、失効前のキーを一時的に通すことがある（即時には止まらない）。
  *
  * 実行:
- *   bun run keys:revoke -- <生のキー> --local   # wrangler dev 用
+ *   bun run keys:revoke -- <生のキー> --local   # cf dev 用
  *   bun run keys:revoke -- <生のキー> --remote  # 本番
  */
 import { spawnSync } from 'node:child_process'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { apiKeyEntrySchema, sha256Hex } from '../src/lib/apiKey'
+import { API_KEYS_NAMESPACE_ID } from '../resources'
 
 const args = process.argv.slice(2)
 const remote = args.includes('--remote')
 const local = args.includes('--local')
 const [rawKey] = args.filter((a) => a !== '--remote' && a !== '--local')
 
-if (rawKey === undefined || rawKey.length === 0 || (!remote && !local) || (remote && local)) {
+if (
+  rawKey === undefined ||
+  rawKey.length === 0 ||
+  (!remote && !local) ||
+  (remote && local)
+) {
   console.error('usage: bun run keys:revoke -- <raw key> (--local | --remote)')
-  console.error('  --local and --remote are both explicit; there is no default.')
+  console.error(
+    '  --local and --remote are both explicit; there is no default.'
+  )
   process.exit(1)
 }
 
 const hash = await sha256Hex(rawKey)
 const cwd = join(dirname(fileURLToPath(import.meta.url)), '..')
-const wrangler = join(cwd, 'node_modules/.bin/wrangler')
-const target = remote ? '--remote' : '--local'
 const targetLabel = remote ? 'REMOTE (production)' : 'local'
 
-const got = spawnSync(wrangler, ['kv', 'key', 'get', '--binding=API_KEYS', target, hash], {
-  cwd,
-  encoding: 'utf8',
-})
+const got = spawnSync(
+  remote ? 'mise' : 'node',
+  remote
+    ? [
+        'exec',
+        '--',
+        'cf',
+        'kv',
+        'keys',
+        'get',
+        hash,
+        '--namespace-id',
+        API_KEYS_NAMESPACE_ID,
+        '--text',
+        '--quiet',
+      ]
+    : ['scripts/local-bindings.mjs', 'kv-get', hash],
+  {
+    cwd,
+    encoding: 'utf8',
+  }
+)
 if (got.status !== 0 || got.stdout.trim().length === 0) {
-  console.error(`no such key in ${targetLabel} KV (already revoked/deleted, or never issued there)`)
+  console.error(
+    `no such key in ${targetLabel} KV (already revoked/deleted, or never issued there)`
+  )
   process.exit(1)
 }
 
@@ -69,13 +94,30 @@ if (entry.status === 'revoked') {
 entry.status = 'revoked'
 
 const put = spawnSync(
-  wrangler,
-  ['kv', 'key', 'put', '--binding=API_KEYS', target, hash, JSON.stringify(entry)],
-  { cwd, stdio: 'inherit' },
+  remote ? 'mise' : 'node',
+  remote
+    ? [
+        'exec',
+        '--',
+        'cf',
+        'kv',
+        'keys',
+        'put',
+        hash,
+        '--namespace-id',
+        API_KEYS_NAMESPACE_ID,
+        '--body',
+        JSON.stringify(entry),
+        '--quiet',
+      ]
+    : ['scripts/local-bindings.mjs', 'kv-put', hash, JSON.stringify(entry)],
+  { cwd, stdio: 'inherit' }
 )
 if (put.status !== 0) {
   console.error(`failed to write the revocation to ${targetLabel} KV`)
   process.exit(put.status ?? 1)
 }
 
-console.error(`revoked in ${targetLabel} KV: key issued for "${entry.label}" (propagation takes up to 60s)`)
+console.error(
+  `revoked in ${targetLabel} KV: key issued for "${entry.label}" (propagation takes up to 60s)`
+)

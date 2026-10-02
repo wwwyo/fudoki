@@ -20,5 +20,9 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["vite.config.ts"]
+  "include": [
+    "vite.config.ts",
+    "deploy/cloudflare.config.ts",
+    "deploy/wrangler.config.ts"
+  ]
 }

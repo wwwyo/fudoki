@@ -1,21 +1,16 @@
-/**
- * Worker のエントリ。Hono は CORS・パススルー・リダイレクトだけを持ち、
- * API 本体は同じ router を3つの口で公開する。
- * - `/v0/*`: OpenAPIHandler。外部利用者向けの REST（OpenAPI ドキュメントつき）
- * - `/rpc/*`: RPCHandler。自前のフロント向け（contract を import した
- *   型付きクライアントで叩く。OpenAPI には載せない）
- * - `/mcp`: MCP（remote）。tool は apps/api/src/mcp/ が router をそのまま
- *   呼ぶだけで、集計も判断も持たない
- * `run_worker_first` なので、ここを通らずにアセットが露出することはない。
- */
+import { CONTRACT_VERSION } from '@fudoki/data-contracts'
 import { OpenAPIHandler } from '@orpc/openapi/fetch'
 import { OpenAPIReferencePlugin } from '@orpc/openapi/plugins'
 import { RPCHandler } from '@orpc/server/fetch'
-import { createMcpHandler, isLegacyRequest, WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/server'
+import {
+  createMcpHandler,
+  isLegacyRequest,
+  WebStandardStreamableHTTPServerTransport,
+} from '@modelcontextprotocol/server'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { accessControl } from './access-control'
-import { type Env, type FilesFile, paths, readAsset, readJsonAsset } from './assets'
+import type { Env } from './env'
 import { createApiClient } from './mcp/client'
 import { createMcpServer } from './mcp/server'
 import { router } from './router'
@@ -48,7 +43,7 @@ const app = new Hono<{ Bindings: Env }>()
 
 /**
  * CORS は口ごとに分ける。
- * - /v0/* とパススルー: 全データ public なので origin は全開のまま。
+ * - /v0/*: 全データ public なので origin は全開のまま。
  *   API キーは任意（ベータのアクセス制御。access-control.ts）なので、
  *   キー無しでも外部開発者のブラウザベースのツールから叩けることを維持する。
  * - /mcp: Origin の allowlist（spec.ts の MCP_ALLOWED_ORIGINS）に絞る。
@@ -68,10 +63,14 @@ const app = new Hono<{ Bindings: Env }>()
  * mcp-protocol-version が使われる）。DELETE は MCP のセッション終了リクエストで使う。
  * mcp-method / mcp-name は modern era（2026-07-28、SEP-2243）が全リクエストに
  * 要求するヘッダで、ブラウザの modern client はこれらを送る（無いと preflight で弾かれる）。
- * exposeHeaders はパススルーの revision・429 の Retry-After・MCP のセッションIDを
+ * exposeHeaders は429 の Retry-After・MCP のセッションIDを
  * ブラウザから読むために要る。
  */
-const RPC_ALLOWED_ORIGINS = new Set(['https://fudoki.dev', 'http://localhost:5173'])
+const RPC_ALLOWED_ORIGINS = new Set([
+  'https://fudoki.dev',
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+])
 
 app.use(
   '*',
@@ -86,9 +85,22 @@ app.use(
       return '*'
     },
     allowMethods: ['GET', 'HEAD', 'POST', 'DELETE', 'OPTIONS'],
-    allowHeaders: ['Content-Type', 'Authorization', 'mcp-session-id', 'mcp-protocol-version', 'mcp-method', 'mcp-name', 'Last-Event-ID'],
-    exposeHeaders: ['X-Fudoki-Revision', 'ETag', 'Retry-After', 'mcp-session-id', 'mcp-protocol-version'],
-  }),
+    allowHeaders: [
+      'Content-Type',
+      'Authorization',
+      'mcp-session-id',
+      'mcp-protocol-version',
+      'mcp-method',
+      'mcp-name',
+      'Last-Event-ID',
+    ],
+    exposeHeaders: [
+      'ETag',
+      'Retry-After',
+      'mcp-session-id',
+      'mcp-protocol-version',
+    ],
+  })
 )
 
 // ⚠️ アクセス制御は cors の直後・個別ルートより前に置く。Hono は登録順に評価し、
@@ -97,8 +109,22 @@ app.use(
 // （detail は access-control.ts 冒頭のコメント）。
 app.use('*', accessControl())
 
+app.get(`${V0_PREFIX}/contract`, async (c) => {
+  const row = await c.env.DB.prepare(
+    'SELECT identity FROM database_identity WHERE singleton=1'
+  ).first<{ identity: string }>()
+  if (!row) return c.json({ error: 'UNAVAILABLE' }, 503)
+  return c.json({
+    contractVersion: CONTRACT_VERSION,
+    queryFingerprint: c.env.QUERY_FINGERPRINT,
+    databaseIdentity: row.identity,
+  })
+})
+
 app.get(ROOT_PATH, (c) => c.redirect(`${V0_PREFIX}${V0_DOCS_PATH}`, 302))
-app.get(ROOT_SPEC_REDIRECT_PATH, (c) => c.redirect(`${V0_PREFIX}${V0_SPEC_PATH}`, 302))
+app.get(ROOT_SPEC_REDIRECT_PATH, (c) =>
+  c.redirect(`${V0_PREFIX}${V0_SPEC_PATH}`, 302)
+)
 
 /**
  * MCP（remote）。仕様版が legacy（〜2025-11-25）と modern（2026-07-28）の2 era に
@@ -131,47 +157,25 @@ app.get(ROOT_SPEC_REDIRECT_PATH, (c) => c.redirect(`${V0_PREFIX}${V0_SPEC_PATH}`
 app.all(MCP_PATH, async (c) => {
   const origin = c.req.header('origin')
   if (origin !== undefined && !MCP_ALLOWED_ORIGINS.has(origin)) {
-    return c.json({ error: 'FORBIDDEN', message: `origin not allowed: ${origin}` }, 403)
+    return c.json(
+      { error: 'FORBIDDEN', message: `origin not allowed: ${origin}` },
+      403
+    )
   }
   const client = createApiClient(c.env)
   if (await isLegacyRequest(c.req.raw)) {
-    const transport = new WebStandardStreamableHTTPServerTransport({ enableJsonResponse: true })
+    const transport = new WebStandardStreamableHTTPServerTransport({
+      enableJsonResponse: true,
+    })
     const server = createMcpServer(client)
     await server.connect(transport)
     return transport.handleRequest(c.req.raw)
   }
-  const handler = createMcpHandler(() => createMcpServer(client), { legacy: 'reject', responseMode: 'json' })
-  return handler.fetch(c.req.raw)
-})
-
-// meta/files.json はデプロイに焼き込まれた不変データなので isolate 内で1回だけ読む
-let filesMetaCache: FilesFile | null = null
-async function readFilesMeta(env: Env): Promise<FilesFile> {
-  if (filesMetaCache !== null) return filesMetaCache
-  const filesMeta = await readJsonAsset<FilesFile>(env, paths.files)
-  if (filesMeta === null) throw new Error('meta/files.json is missing from assets')
-  filesMetaCache = filesMeta
-  return filesMeta
-}
-
-app.on(['GET', 'HEAD'], `${V0_PREFIX}/datapackages/:jurisdiction/:file`, async (c) => {
-  const { jurisdiction, file } = c.req.param()
-  const filesMeta = await readFilesMeta(c.env)
-  // リクエスト入力をアセットのパスへ直接連結しない。宣言済みのファイルだけを返す
-  const entry = filesMeta.files[jurisdiction]?.[file]
-  if (entry === undefined) {
-    return c.json({ error: 'NOT_FOUND', message: `no such distribution file: ${jurisdiction}/${file}` }, 404)
-  }
-  const asset = await readAsset(c.env, paths.passthrough(jurisdiction, file))
-  if (asset.status !== 200) throw new Error(`declared distribution file is missing from assets: ${jurisdiction}/${file}`)
-  const headers = new Headers({
-    'Content-Type': entry.contentType,
-    'Content-Length': String(entry.size),
-    'ETag': `"${entry.sha256}"`,
-    'X-Fudoki-Revision': filesMeta.revision,
-    'Cache-Control': 'public, max-age=3600',
+  const handler = createMcpHandler(() => createMcpServer(client), {
+    legacy: 'reject',
+    responseMode: 'json',
   })
-  return new Response(c.req.method === 'HEAD' ? null : asset.body, { status: 200, headers })
+  return handler.fetch(c.req.raw)
 })
 
 app.all(`${V0_PREFIX}/*`, async (c) => {
@@ -192,6 +196,11 @@ app.all('/rpc/*', async (c) => {
   return c.json({ error: 'NOT_FOUND', message: 'no such procedure' }, 404)
 })
 
-app.notFound((c) => c.json({ error: 'NOT_FOUND', message: 'no such endpoint. See /v0/openapi.json' }, 404))
+app.notFound((c) =>
+  c.json(
+    { error: 'NOT_FOUND', message: 'no such endpoint. See /v0/openapi.json' },
+    404
+  )
+)
 
 export default app

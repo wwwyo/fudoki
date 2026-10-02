@@ -1,0 +1,9 @@
+# DuckDB は固定入力一覧から復元した Parquet を変換する作業用ファイル。
+# .gitignore 済み。
+fudoki:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ../.build/warehouse.duckdb
+      threads: 4

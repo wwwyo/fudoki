@@ -66,7 +66,7 @@ Core actions:
       自治体の歳出科目で、目の内訳を経済的な性質で分ける区分。歳入の節は収入の種類・根拠を分ける区分で、歳出の節とは意味が異なる。
 
     - **GFSM の経済分類（gfsm）**:
-      政府財政統計マニュアル（GFSM）に基づく経済分類。節マスタとの対応表で割り当てられる範囲があるが、節だけでは一意に決まらず、支出内容や相手先などが必要になる区分もある。
+      政府財政統計マニュアル（GFSM）に基づく経済分類。節だけでは一意に決まらず、支出内容や相手先などが必要になる。現在の配布物には含めない。
 
 - **支出（spending）**:
   個々の支払いを取引単位で記録したデータ。科目別に集計された決算・執行額とは粒度が異なる。
@@ -75,7 +75,7 @@ Core actions:
     誰が、誰に、いつ、いくら支払ったかを表す個々の記録。
 
 - **配布物（Fiscal Data Package / package）**:
-  団体ごとに風土記が配る、財政データとその意味・出典を記述したメタデータのまとまり。Fiscal Data Package の仕様に沿って作る原典からの派生物であり、正本はリポジトリにある。
+  団体ごとに風土記が配る、財政データとその意味・出典を記述したメタデータのまとまり。原典と Git の宣言・判断から生成し、版を固定して R2 から配る。
   _Avoid_: 成果物、出力
 
 - **パイプライン（pipeline）**:
@@ -96,19 +96,67 @@ Core actions:
     利用者向けのデータを作るための準備。風土記では団体間の構造・金額単位の統一、共通科目への対応、COFOG 分類を行う。
 
   - **提供用データ（marts）**:
-    利用者が使う列・粒度を確定した最終データモデル。風土記では団体別の CSV として書き出し、原典由来の金額と分類などの判断は別リソースにする。
+    利用者が使う列・粒度を確定した最終データモデル。風土記では団体別の CSV として書き出し、原典由来の金額と分類などの判断は列の説明で区別し、COFOG は歳出明細と同じ CSV に含める。
+
+**正規化**:
+列・型・単位・表記などを共通の形に揃える処理。特定の dbt 層の別名ではない。
+
+**判断**:
+原典にない対応・分類・推定を風土記が定めること。層名ではなく処理やデータの性質を表す。
+
+**証跡（provenance）**:
+原典をいつ・どこから・どの版の手順で取り込み、どう確かめたかの記録。採用した証跡は入力一覧とともに Git 管理する。
+_Avoid_: ログ
+
+**財政明細（fiscal line）**:
+歳出明細と歳入明細の総称。両者を同じ種類の明細とは扱わない。
+
+**歳出明細（fiscal expenditure line）**:
+一つの財政資料に載る、支出の目的・科目・金額を表す明細。別年度・別文書の明細とは区別する。
+
+**団体マスタ（jurisdiction master）**:
+団体コードと自治体の名称を対応付ける共通の定義。年度ごとの予算・決算や提供データの版とは区別する。
+
+**COFOG分類マスタ（COFOG master）**:
+政府支出の目的別分類のコード・名称・階層の共通定義。明細に対する分類結果や金額とは区別する。
+
+**歳出の節マスタ（fiscal expenditure setsu master）**:
+給料・旅費・委託料等の法定区分と、その適用期間の共通定義。個々の予算対象や金額とは区別する。
+
+**歳出の節（fiscal expenditure setsu）**:
+給料・旅費・委託料等、歳出の経済的な性質による区分。歳入の節や、支出の目的による COFOG 分類とは別の概念である。
+
+**歳出予算対象（fiscal expenditure budget item）**:
+団体・年度・会計・科目／事業経路・追加区分と歳出の節で区別し、予算の基準額と変更を追跡する対象。節の対応が不明な場合は、原典で確認できる粒度を保持する。
+
+**歳入明細（fiscal revenue line）**:
+一つの財政資料に載る、収入の種類・科目・金額を表す明細。歳出明細とは別の概念であり、COFOG の分類対象ではない。
+
+**決算歳出明細（settlement expenditure line）**:
+決算の実際の支出を表す明細。金額は支出済額一つであり、予算の基準額・変更履歴とは別に扱う。
+
+**決算歳入明細（settlement revenue line）**:
+決算の実際の収入を表す明細。金額は収入済額一つであり、予算の基準額・変更履歴とは別に扱う。
+
+**財政明細の階層経路（fiscal line hierarchy）**:
+一明細が属する会計・款・項・目・事業等を、団体の科目体系の順序で並べたもの。
+
+**財政明細の追加区分（fiscal line dimension）**:
+階層経路に加えて明細を識別する、所属や予算区分などの原典の区分。
+
+**自治体データ版（jurisdiction version）**:
+一団体の財政資料の収録範囲・提供用データ・説明・配布参照を固定した内容の版。配布ファイルだけの版とは区別する。
+
 
 ## ディレクトリ構造
 
 ```
 .
-├── ingestion/        # 原典の取得と取得元の宣言（sources.toml）。団体固有の実測は budget/jurisdictions/
-├── dbt/              # staging → intermediate → marts の変換と検査
-├── fdp/              # Fiscal Data Package の生成
-├── report/           # 報告データ（pipeline.json）の生成
-├── apps/             # web（fudoki.dev。派生物）、api、slides
-├── data/             # 原典・証跡・配布物（正本。commit する）
-├── docs/             # プロジェクトの設計・調査文書（共有・tracked）
+├── pipeline/         # ingestion/fiscal、dbt、fdp、publish、verify/report と verify/view
+├── packages/         # fiscal の純粋な型・名称、data-contracts、jurisdictions
+├── apps/             # 公開 web、D1 を読む api、docs
+├── slides/           # 発表資料
+├── docs/             # 設計・調査文書
 └── .agent/           # 個人メモ・試作（gitignore）
 ```
 
@@ -121,8 +169,9 @@ mise install
 bun install
 uv sync
 
-bun run pipeline    # 取得（CSV と PDF）→ dbt → 配布物 → 報告
-bun run dev         # 報告を作り直してダッシュボードを上げる
+bun run pipeline:inputs  # sources.lock.json の固定入力を R2 から復元
+bun run pipeline:build   # オフラインで dbt・FDP・manifest を生成
+bun run dev              # ローカル専用の検証画面（5174）
 ```
 
 **Python の版は 3.13 に固定してある。** dbt-duckdb 1.11.0 が classifiers で 3.14 を宣言していないため（`requires-python` は `>=3.10` なので入りはするが、テストされていない組み合わせになる）。
@@ -135,11 +184,12 @@ uv add --exclude-newer $(date -v-7d +%Y-%m-%d) <package>
 
 ## 技術スタック
 
-- **取得（ingestion）**: Python。原典を Parquet で `data/raw/` へ落とす。「無加工」は主張ではなく検査（復号の可逆性・原文の復元）
-- **変換**: dbt（dbt-core + dbt-duckdb）。DuckDB は実行時に組む一時ファイルで、正は Parquet 側
-- **配布パッケージの生成**: Python（`fdp/`）
-- **報告の生成と画面**: Bun + TypeScript。報告の出力を `ReportData` 型に固定し、**生成側と画面側の食い違いをコンパイラに捕まえさせる**
-- 配布: 原典・正本・判断をリポジトリに commit。予算・決算は Fiscal Data Package、調達は OCDS
+- **取得**: Python。原典 CSV/PDF のバイト列と取り込み Parquet を非公開 R2 に保存する。採用した入力の証跡は ingestion 配下の `provenance/`、入力一覧は `sources.lock.json` として Git 管理し、個別ハッシュを照合する。
+- **変換・検査**: dbt-duckdb。marts が配布 CSV と D1 用の表を生成し、相互の行・金額・分類を検査する。
+- **説明ファイル**: Python/TypeScript の `pipeline/fdp/`。FDP descriptor と収録範囲・出典・配布先をまとめた Git manifest を生成する。
+- **検索・配布**: API は D1 の SQL を実行し、API は公開中の Git manifest URL を返し、R2 は custom domain から団体別配布物を直接配信する。API に R2 やデータ ASSETS を bind しない。
+- **検証**: Bun/TypeScript の `pipeline/verify/report/` とループバック専用の view。公開 web と UI は共有しない。
+- **保存**: Git はコード・宣言・判断・入力一覧・採用した入力の証跡・最新 manifest、R2 は原典・取り込み・配布物、D1 は全収録年度を含む最新版だけの検索用派生表。`.cache/` と `.build/` は再生成可能なローカル作業領域。
 
 **系統（lineage）は dbt の `manifest.json` から取る。** 手で書かない。
 段とノードを手作りすると、パイプラインを変えても図が変わらない状態を作る（実際に作った）。
@@ -148,10 +198,12 @@ uv add --exclude-newer $(date -v-7d +%Y-%m-%d) <package>
 
 構造・判断・手順の詳細は各文書へ逃がしてある。この文書には書かない。
 
-- 設計方針・対象・パイプライン・パーサ原則 → `docs/design-principles.md`。①予算の実装と手順 → `docs/budget-pipeline.md`。決定の記録 → `docs/adr/`
+- 設計方針・対象・パイプライン・パーサ原則 → `docs/design-principles.md`。①予算の実装と手順 → `docs/fiscal-pipeline.md`。決定の記録 → `docs/adr/`
 - スクリプト一覧と観測の置き場 → `docs/scripts.md`
-- 団体固有の実測・原典の癖 → `ingestion/budget/jurisdictions/<団体コード>.md`
+- 団体固有の実測・原典の癖 → `pipeline/ingestion/fiscal/jurisdictions/<団体コード>.md`
 - パイプライン（取得・PDF抽出・dbt）のハマりどころ → `.agents/skills/pipeline/`
 - 存在価値・先行事例・将来展望 → `docs/product-context.md`
 - データ源の実測 → `docs/budget-availability.md` / `docs/kkj-api-notes.md` / `docs/fdp-spec-notes.md` / `docs/tokyo-survey.md`
 - 設計の記録 → `docs/prd/<topic>/prd.md`（要件）・`docs/prd/<topic>/design-doc.md`（設計書。同じ topic に併置）・`docs/adr/`（決定）。判断の記録はコードと同じ寿命を持ち、git 管理する
+
+歳出・歳入のドメインモデルとクラス図 → `docs/fiscal-domain-model.md`。予算・決算の保存境界と ER 図 → `docs/prd/fiscal-records/design-doc.md`。全体設計 → `docs/prd/monorepo/design-doc.md`。自治体別のデータ版・直接取り込み・保持条件の再設計 → `docs/prd/jurisdiction-versions/design-doc.md`（実装未完了）。現行の実行手順 → `pipeline/README.md`。移行の検証記録と未完了項目 → `docs/monorepo-migration.md`。

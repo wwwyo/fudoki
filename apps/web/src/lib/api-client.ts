@@ -11,22 +11,22 @@
  * ランタイムの分岐が消えて本番バンドルには本番 URL だけが残る。`.env` を増やさずに済む
  * （切替の軸が「開発中か本番ビルドか」の1つしか無いため、環境変数にする理由が無い）。
  * - 本番（`vite build` の成果物 = fudoki.dev で配信）: `https://api.fudoki.dev/rpc`
- * - 開発（`vite dev`）: `http://localhost:8787/rpc`（`wrangler dev` の既定ポート。
+ * - 開発（`vite dev`）: `http://127.0.0.1:8787/rpc`（`cf dev` の既定ポート。
  *   `bun run --cwd apps/api dev` で起動する）
  *
  * ⚠️ **dev サーバは 5173 番ポートで動かすこと。** apps/api の CORS は `/rpc` を
- * `https://fudoki.dev` と `http://localhost:5173` にしか許していない
+ * `https://fudoki.dev`、`http://localhost:5173`、`http://127.0.0.1:5173` に許可している
  * （apps/api/src/index.ts の `RPC_ALLOWED_ORIGINS`）。他のポートで vite を上げると
  * preflight で弾かれる。
  */
-import { createORPCClient } from "@orpc/client"
-import { RPCLink } from "@orpc/client/fetch"
-import type { RouterClient } from "@orpc/server"
-import type { Router } from "@fudoki/api/router"
+import { createORPCClient } from '@orpc/client'
+import { RPCLink } from '@orpc/client/fetch'
+import type { RouterClient } from '@orpc/server'
+import type { Router } from '@fudoki/api/router'
 
 const API_RPC_URL = import.meta.env.DEV
-  ? "http://localhost:8787/rpc"
-  : "https://api.fudoki.dev/rpc"
+  ? (import.meta.env.VITE_API_RPC_URL ?? 'http://127.0.0.1:8787/rpc')
+  : 'https://api.fudoki.dev/rpc'
 
 const link = new RPCLink({ url: API_RPC_URL })
 

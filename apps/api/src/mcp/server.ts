@@ -1,24 +1,31 @@
-/**
- * fudoki の予算 tool を登録した McpServer を組み立てる、唯一の場所。
- * 呼び出し元は remote（Workers の `/mcp`）だけ。
- * tool の定義を2箇所に持たない（AGENTS.md「同じ事実を2箇所で宣言しない」）。
- * サーバは集計も判断も持たない ── tool は `ApiClient`（apps/api の router を
- * プロセス内でそのまま呼ぶクライアント）を right-through で呼ぶだけ。
- */
 import { McpServer } from '@modelcontextprotocol/server'
+import { contract } from '../contract'
 import type { ApiClient } from './client'
-import { registerAggregateBudgets } from './tools/aggregate'
-import { registerGetBudgetLines } from './tools/budgetLines'
-import { registerListBudgets } from './tools/budgets'
-import { registerListJurisdictions } from './tools/jurisdictions'
-import { registerSearchBudgetLines } from './tools/search'
+import { runTool } from './result'
 
 export function createMcpServer(client: ApiClient): McpServer {
-  const server = new McpServer({ name: 'fudoki-mcp', version: '0.0.1' })
-  registerListJurisdictions(server, client)
-  registerListBudgets(server, client)
-  registerGetBudgetLines(server, client)
-  registerAggregateBudgets(server, client)
-  registerSearchBudgetLines(server, client)
+  const server = new McpServer({ name: 'fudoki-mcp', version: '0.2.0' })
+  for (const name of Object.keys(contract) as (keyof typeof contract)[]) {
+    const procedure = contract[name]
+    server.registerTool(
+      name.replace(/[A-Z]/g, (c) => '_' + c.toLowerCase()),
+      {
+        title: name,
+        description:
+          name === 'aggregateFiscalDatasets'
+            ? '明示した datasetIds の金額を集計する。同じ団体・年度・歳出歳入から複数の文書や版を選ばない。決算の実績と当初予算は別々に集計する。'
+            : '風土記の公開版を参照する。最初に listJurisdictions と listFiscalDatasets で収録範囲・原典・注意点を確認する。D1 は全収録年度を含む最新版だけを提供する。versions は現在の内容との一致確認で、古い値は再取得を求める。取り込み途中の明細も公開する。',
+        inputSchema: procedure['~orpc'].inputSchema!,
+        outputSchema: procedure['~orpc'].outputSchema!,
+        annotations: { readOnlyHint: true, openWorldHint: false },
+      },
+      async (input: unknown) =>
+        runTool(() =>
+          (
+            client[name] as (value: unknown) => Promise<Record<string, unknown>>
+          )(input)
+        )
+    )
+  }
   return server
 }

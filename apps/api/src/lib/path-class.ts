@@ -12,14 +12,21 @@
  * （ステータスコードの偶然の一致次第では）通り続けてしまうので、
  * 除外が黙って壊れる（AGENTS.md「同じ事実を2箇所で宣言しない」）。
  */
-import { MCP_PATH, ROOT_PATH, ROOT_SPEC_REDIRECT_PATH, V0_DOCS_PATH, V0_PREFIX, V0_SPEC_PATH } from '../spec'
+import {
+  MCP_PATH,
+  ROOT_PATH,
+  ROOT_SPEC_REDIRECT_PATH,
+  V0_DOCS_PATH,
+  V0_PREFIX,
+  V0_SPEC_PATH,
+} from '../spec'
 
 export type PathClass =
   /** ドキュメント UI・spec・ルートリダイレクト。キーもレート制限も掛けない */
   | 'excluded'
   /** 自前フロント専用の口。API キーを埋め込めない設計なので IP だけで制限する */
   | 'rpc'
-  /** それ以外（`/v0/*` のクエリ API・配布物パススルー・`/mcp`）。キー任意・レート制限あり */
+  /** それ以外（`/v0/*` のクエリ API・`/mcp`）。キー任意・レート制限あり */
   | 'keyed'
 
 const EXCLUDED_PATHS = new Set([

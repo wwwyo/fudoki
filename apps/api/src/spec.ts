@@ -48,7 +48,11 @@ export const MCP_PATH = '/mcp'
  * RPC の allowlist（index.ts の RPC_ALLOWED_ORIGINS）とは目的が違うので値は揃えているが
  * 宣言は分ける ── こちらはブラウザから直接 `/mcp` を叩く fudoki 自身のオリジンを許す口。
  */
-export const MCP_ALLOWED_ORIGINS = new Set(['https://fudoki.dev', 'http://localhost:5173'])
+export const MCP_ALLOWED_ORIGINS = new Set([
+  'https://fudoki.dev',
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+])
 
 /**
  * 実行時（/v0/openapi.json）とビルド時（generate-spec.ts）の両方が使う converter 構成。
@@ -57,70 +61,7 @@ export const MCP_ALLOWED_ORIGINS = new Set(['https://fudoki.dev', 'http://localh
 export const specSchemaConverters = [new ZodToJsonSchemaConverter()]
 
 const V0_NOTICE =
-  '**実験版（v0）**。URL と応答スキーマには破壊的変更があり得る。' +
-  'ただしデータの識別子（budget_line_id、団体コード）は配布物側の契約であり、API の版とは独立。' +
-  '安定するのは同一原典・同一の導出規則の範囲で、自治体が原典の科目名称を改めると変わりうる（詳細は jurisdiction の caveats）。' +
-  '正本はリポジトリ（https://github.com/wwwyo/fudoki）の配布物で、この API はその派生物。' +
-  'すべてのデータ応答は、由来する配布物の revision（git commit）を持つ。'
-
-/** パススルー（配布物をそのまま返す）の spec。procedure ではないのでここで宣言する */
-const passthroughPath = {
-  '/datapackages/{jurisdiction}/{file}': {
-    get: {
-      operationId: 'getDatapackageFile',
-      summary: 'Get a distribution file as-is',
-      description:
-        '配布物（datapackage.json と各リソース CSV）をバイト同一で返す。' +
-        '応答ヘッダ X-Fudoki-Revision が由来する配布物の revision、' +
-        'ETag がファイルの SHA-256。HEAD も受ける。',
-      tags: ['datapackages'],
-      parameters: [
-        { name: 'jurisdiction', in: 'path', required: true, schema: { type: 'string' } },
-        {
-          name: 'file',
-          in: 'path',
-          required: true,
-          schema: { type: 'string' },
-          description: 'datapackage.json または resources のファイル名（一覧は listJurisdictions の resources）',
-        },
-      ],
-      responses: {
-        '200': {
-          description: '配布物のファイル。リポジトリの該当 revision のファイルとバイト同一',
-          headers: {
-            'X-Fudoki-Revision': { schema: { type: 'string' }, description: '配布物の revision（git commit）' },
-            'ETag': { schema: { type: 'string' }, description: 'ファイル内容の SHA-256' },
-          },
-          content: {
-            'application/json': {},
-            'text/csv': {},
-          },
-        },
-        '404': { description: '未収録の団体、または契約外のファイル名' },
-      },
-    },
-    head: {
-      operationId: 'headDatapackageFile',
-      summary: 'Get distribution file headers without the body',
-      description: '本文なしで ETag（SHA-256）と X-Fudoki-Revision を返す。巨大 CSV の同一性確認用。',
-      tags: ['datapackages'],
-      parameters: [
-        { name: 'jurisdiction', in: 'path', required: true, schema: { type: 'string' } },
-        { name: 'file', in: 'path', required: true, schema: { type: 'string' } },
-      ],
-      responses: {
-        '200': {
-          description: 'ヘッダのみ（本文なし）',
-          headers: {
-            'X-Fudoki-Revision': { schema: { type: 'string' }, description: '配布物の revision（git commit）' },
-            'ETag': { schema: { type: 'string' }, description: 'ファイル内容の SHA-256' },
-          },
-        },
-        '404': { description: '未収録の団体、または契約外のファイル名' },
-      },
-    },
-  },
-} as const
+  '原典の文書種別・版を区別する fiscal API。データ応答の releaseId は R2 の公開版と D1 の参照版を対応づける。金額は円単位の整数。集計は datasetIds を明示して行う。配布ファイルは独立した download Worker から取得する。'
 
 export const specGenerateOptions: OpenAPIGeneratorGenerateOptions = {
   info: {
@@ -143,5 +84,4 @@ export const specGenerateOptions: OpenAPIGeneratorGenerateOptions = {
   // `{}` を含む配列は「キー無しでも呼べる」ことを表す OpenAPI 3 の慣用表現。
   // 必須にしないこと（キーは任意なので、これを外すと「必須」という嘘になる）
   security: [{ apiKey: [] }, {}],
-  paths: structuredClone(passthroughPath) as never,
 }

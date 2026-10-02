@@ -7,14 +7,13 @@
     "./router": "./src/router.ts"
   },
   "scripts": {
-    "build": "bun run build.ts --allow-dirty",
-    "build:release": "bun run build.ts",
-    "deploy": "bun run build:release && wrangler deploy",
-    "dev": "bun run build && wrangler dev",
+    "build": "bun run build.ts",
+    "deploy": "bun run build.ts --deploy",
+    "dev": "node dev.ts",
     "spec": "bun run generate-spec.ts",
     "keys:issue": "bun run scripts/issue-key.ts",
     "keys:revoke": "bun run scripts/revoke-key.ts",
-    "test": "bun run build && bun test",
+    "test": "bun test",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -24,13 +23,16 @@
     "@orpc/server": "1.15.0",
     "@orpc/zod": "1.15.0",
     "hono": "4.13.7",
-    "zod": "catalog:"
+    "zod": "catalog:",
+    "@fudoki/data-contracts": "workspace:*"
   },
   "devDependencies": {
-    "@fudoki/report": "workspace:*",
     "@orpc/client": "1.15.0",
     "@types/bun": "catalog:",
     "typescript": "catalog:",
-    "wrangler": "catalog:"
+    "wrangler": "catalog:",
+    "@fudoki/fiscal": "workspace:*",
+    "@fudoki/jurisdictions": "workspace:*",
+    "@cloudflare/config": "catalog:"
   }
 }

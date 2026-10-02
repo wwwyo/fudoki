@@ -1,0 +1,238 @@
+/**
+ * ダッシュボードが読むデータの入口。
+ *
+ * **型の正本は `report/schema.ts`。** 生成側（`report/build.ts`）と画面が同じ型を見るので、
+ * 食い違いはコンパイラが捕まえる。型を2箇所で宣言すると、
+ * 生成側のキーを変えた瞬間に画面が黙って壊れる（実際にその状態を作った）。
+ */
+import { DOCUMENT_KINDS } from '@fudoki/report/fiscal/schema'
+import type {
+  AmountDecl,
+  CanonicalFetch,
+  Check,
+  CheckAttribution,
+  CofogCode,
+  ColDoc,
+  DocumentKind,
+  Edge,
+  Node,
+  ProjectNamesExtract,
+  Provenance,
+  ReportData,
+  RevenueAccountsExtract,
+  Stage,
+  StatementExtract,
+  Topology,
+} from '@fudoki/report/fiscal/schema'
+import type { Direction } from '@fudoki/fiscal/detail'
+
+export type {
+  AmountDecl,
+  CanonicalFetch,
+  Check,
+  CheckAttribution,
+  CofogCode,
+  ColDoc,
+  Direction,
+  DocumentKind,
+  Edge,
+  Node,
+  ProjectNamesExtract,
+  Provenance,
+  ReportData,
+  RevenueAccountsExtract,
+  Stage,
+  StatementExtract,
+  Topology,
+}
+export {
+  DOCUMENT_KINDS,
+  extractedKindOf,
+  isCanonicalFetch,
+  nodeRows,
+} from '@fudoki/report/fiscal/schema'
+
+/**
+ * ⚠️ **複数団体を運ぶ。**
+ * 単一団体の形（`{code, report}`）だった頃は、2団体目を足すと画面が黙って
+ * 先頭だけを出す状態になりえた。並びは生成側が団体コード順に固定する。
+ */
+export type PipelineData = {
+  jurisdictions: { code: string; report: ReportData }[]
+}
+
+/** 団体で変わらない部分。**団体の数だけ運ばない**ので、生成側が1つに畳んである */
+type Shared = Pick<
+  ReportData,
+  'topology' | 'checks' | 'portability' | 'customColumnTypes' | 'columnDocs'
+>
+
+/** ファイル上の形。読み込み時に `PipelineData` へ組み直す */
+type PipelineFile = {
+  shared: Shared
+  jurisdictions: { code: string; report: Omit<ReportData, keyof Shared> }[]
+}
+
+/**
+ * 生成物を取りに行く。キャッシュされた古い数字を掴まないようにする。
+ * 直したのに古い値が出たままだと、直ったかどうかの判断そのものができない。
+ */
+export async function loadPipeline(): Promise<PipelineData> {
+  const res = await fetch(`${import.meta.env.BASE_URL}pipeline.json`, {
+    cache: 'no-store',
+  })
+  if (!res.ok) {
+    throw new Error(
+      `pipeline.json を読めません（HTTP ${res.status}）。` +
+        `bun run pipeline を回してください`
+    )
+  }
+  const file = (await res.json()) as PipelineFile
+  assertShape(file)
+  // 団体で変わらない部分を各団体へ戻す。**下流は完全な ReportData だけを見る**ので、
+  // 運び方（畳んであるか)を画面のあちこちが知らずに済む。
+  return {
+    jurisdictions: file.jurisdictions.map(({ code, report }) => ({
+      code,
+      report: { ...report, ...file.shared } as ReportData,
+    })),
+  }
+}
+
+/**
+ * 読み込んだ JSON が宣言どおりかを**実行時に**確かめる。
+ *
+ * 型は生成側と画面側の両方に効くが、**間に挟まる JSON には効かない。**
+ * 古い pipeline.json を掴むと、型が「ある」と言っている列が実際には無い状態になり、
+ * 画面が黙って空になる（実際に一度そうなった）。
+ * 型を信じるのではなく、境界で確かめて、ずれていたら理由を出して止める。
+ */
+function assertShape(d: PipelineFile): void {
+  const problems: string[] = []
+  if (!d.shared)
+    problems.push('shared が無い（団体ごとに複製していた古い形かもしれません）')
+  else {
+    for (const k of [
+      'topology',
+      'checks',
+      'portability',
+      'customColumnTypes',
+      'columnDocs',
+    ] as const) {
+      if (d.shared[k] === undefined) problems.push(`shared.${k} が無い`)
+    }
+  }
+  if (!Array.isArray(d.jurisdictions))
+    problems.push('jurisdictions が無い（1団体だけの古い形かもしれません）')
+  else if (d.jurisdictions.length === 0) problems.push('jurisdictions が空')
+  for (const j of d.jurisdictions ?? []) {
+    if (j.code === undefined) problems.push('jurisdictions[].code が無い')
+    if (!j.report) {
+      problems.push(`${j.code}: report が無い`)
+      continue
+    }
+    for (const k of [
+      'meta',
+      'summary',
+      'ingestion',
+      'detailLevels',
+      'levels',
+      'coverage',
+      'transform',
+    ] as const) {
+      if (j.report[k] === undefined)
+        problems.push(`${j.code}: report.${k} が無い`)
+    }
+    // 文書種別は語彙（DOCUMENT_KINDS）の中の1つとして画面が出す — 語彙外の id は
+    // 選択肢の中に置けない（語彙を増やしたなら report/common.ts と pipeline.json の両方を直す）
+    if (
+      j.report.meta?.documentKind?.id !== undefined &&
+      !DOCUMENT_KINDS.some((p) => p.id === j.report.meta.documentKind.id)
+    ) {
+      problems.push(
+        `${j.code}: meta.documentKind.id「${j.report.meta.documentKind.id}」が文書種別の語彙に無い`
+      )
+    }
+    // ⚠️ **transform の中まで見る。** COFOG の集計は生成側が持っていて画面は表示だけなので、
+    // 古い pipeline.json を掴むと**型が「ある」と言っている節が実際には無い**まま画面が落ちる。
+    // 到達粒度を足したときに実際にこの穴が開いた（transform があるかしか見ていなかった）。
+    for (const k of [
+      'byDivision',
+      'byCode',
+      'cofogReach',
+      'assigned',
+      'total',
+    ] as const) {
+      if (j.report?.transform?.[k] === undefined)
+        problems.push(`${j.code}: report.transform.${k} が無い`)
+    }
+  }
+  if (problems.length > 0) {
+    throw new Error(
+      `pipeline.json が宣言と食い違っています。bun run pipeline を回し直してください。\n` +
+        problems.map((p) => `  - ${p}`).join('\n')
+    )
+  }
+}
+
+export const yen = (v: number | string) => Number(v).toLocaleString('ja-JP')
+
+/** 歳出・歳入の表示名。画面で2箇所以上から参照されるのでここが正本 */
+export const DIR_JA: Record<Direction, string> = {
+  expenditure: '歳出',
+  revenue: '歳入',
+}
+
+/**
+ * 件数の桁区切り。`yen` と実装は同じだが、**金額でないものに `yen` を使わない**
+ * （読んだ者が単位を取り違える。実際に件数へ `yen` を当てていた箇所があった）。
+ */
+export const count = (v: number | string) => Number(v).toLocaleString('ja-JP')
+
+/**
+ * 千円表示。合計カードと COFOG ツリーで使う（明細は桁の小さい行があるため円のまま
+ * — cofog-statement.tsx 参照）。呼び出し側で必ず「千円」を明示すること（円と混在する画面なので、
+ * 単位を数字に付けずに置くと読み違える）。
+ *
+ * ⚠️ 円が1000で割り切れない値がある（狛江市の歳出は決算書 PDF から起こした真の円単位で、
+ * 千円未満の端数を持つ）。表示専用の丸めなので四捨五入する
+ * （切り捨てだと構造的に実額より小さく見せることになり、合計が明細より系統的にずれる）。
+ * 正確な値は常に明細（円）に残るので、丸めによる情報の欠落は起きない。
+ */
+export const senYen = (v: number | string) =>
+  Math.round(Number(v) / 1000).toLocaleString('ja-JP')
+
+/** 割合（0〜1）の書式。**割り算は生成側が済ませてある** — ここでは桁の揃え方だけを1箇所で決める */
+export const pct = (v: number) => `${(v * 100).toFixed(1)}%`
+
+/** 円は桁が多い。俯瞰する場所では丸め、厳密な値は必ず併記する */
+export function yenShort(v: number | string): string {
+  const x = Number(v)
+  if (Math.abs(x) >= 1e8) return `${(x / 1e8).toFixed(x >= 1e10 ? 0 : 1)}億円`
+  if (Math.abs(x) >= 1e4)
+    return `${Math.round(x / 1e4).toLocaleString('ja-JP')}万円`
+  return `${yen(x)}円`
+}
+
+/** COFOG 1999 の大分類。色は識別の補助で、コードは必ず文字でも出す */
+export const DIVISION_COLOR: Record<string, string> = {
+  '01': 'oklch(62% 0.06 260)',
+  '02': 'oklch(58% 0.06 300)',
+  '03': 'oklch(58% 0.07 40)',
+  '04': 'oklch(69% 0.10 80)',
+  '05': 'oklch(64% 0.08 145)',
+  '06': 'oklch(60% 0.06 65)',
+  '07': 'oklch(63% 0.09 20)',
+  '08': 'oklch(63% 0.07 295)',
+  '09': 'oklch(60% 0.06 230)',
+  '10': 'oklch(64% 0.05 355)',
+}
+
+export const STATUS_JA: Record<string, string> = {
+  assigned: '割当済み',
+  unclassifiable: '分類不能',
+  'out-of-scope': '対象外',
+  // 歳入。COFOG は支出の機能別分類なので分類の軸そのものが無い。
+  // 「分類できなかった」と混ぜないために別の状態にしてある。
+  'not-applicable': '分類の軸なし',
+}

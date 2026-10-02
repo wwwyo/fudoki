@@ -1,0 +1,24 @@
+[project]
+name = "fudoki-pipeline"
+version = "0.1.0"
+description = "風土記の取得層。原典を非公開 R2 に保存し、取り込み表を Parquet として固定する"
+# dbt-duckdb 1.11.0 は classifiers が 3.13 止まりで 3.14 を宣言していないため上限を切る
+requires-python = ">=3.13,<3.14"
+# exact ピン留め（supply chain リスクを避けるため範囲指定は使わない）
+# 更新は uv add --exclude-newer <7日前> で cooldown を明示する
+dependencies = [
+    "certifi==2026.7.22",
+    "dbt-core==1.12.3",
+    "dbt-duckdb==1.11.0",
+    "duckdb==1.5.5",
+    "openpyxl==3.1.5",
+    "xlrd==2.0.2",
+]
+
+[build-system]
+requires = ["uv_build==0.12.5"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = ["ingestion", "fdp"]
+module-root = ""

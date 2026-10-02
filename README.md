@@ -15,56 +15,55 @@
 
 東京都の全区市町村（62団体）を最初の網羅範囲とし、**収録できた団体から順に** [Fiscal Data Package](https://fiscal.datapackage.org/) 1.0.0 として配布している。
 
-| | 置き場 | 中身 |
-|---|---|---|
-| 原典 | [`data/budget/raw/`](./data/budget/raw/) | Parquet。取得の単位ごとに partition |
-| 配布物 | [`data/budget/datapackages/`](./data/budget/datapackages/) | 団体ごと。正本（歳出・歳入）と判断（COFOG・その規則表・事業名）を別リソースで |
-| 証跡 | 原典の隣の `provenance.json` | URL・status・SHA-256・取得時刻 |
-| API | [docs.fudoki.dev](https://docs.fudoki.dev/) | 配布物から生成した読み取り専用の REST |
-| 報告 | [fudoki.dev](https://fudoki.dev/) | 収録した団体と、その検査の結果 |
+| 内容 | 保存先・入口 |
+|---|---|
+| 原典の CSV・PDF、取り込み済み Parquet | 非公開 R2。採用する個別ハッシュとキーは `pipeline/ingestion/fiscal/sources.lock.json` |
+| 採用した入力の証跡 | Git 管理する `pipeline/ingestion/fiscal/provenance/`。lock が相対パス・ハッシュ・サイズを固定 |
+| 最新の収録範囲・出典・配布先 | Git の [`manifest.json`](pipeline/publish/manifest.json)。過去の一覧は Git 履歴 |
+| 団体別の CSV・Fiscal Data Package | 内容で版を決めた団体別 R2。Git manifest から参照し、R2 の custom domain から直接配信する設計。遠隔適用は移行記録を参照 |
+| 検索・集計用の表、公開メタデータ | D1。公開 API と MCP が同じ問い合わせを使う |
+| 系統・検査結果・原典との行対応 | ローカル専用 `pipeline/verify/view/` |
 
-⚠️ **どの団体をどこまで収録したかはここに書かない。** 増えるたびに文書だけが古くなるので、
-[配布物](./data/budget/datapackages/)そのものと[画面](https://fudoki.dev/)を見てほしい。
-取得元の宣言は [`ingestion/budget/sources.toml`](./ingestion/budget/sources.toml)、
-団体ごとの実測と癖は [`ingestion/budget/jurisdictions/`](./ingestion/budget/jurisdictions/) にある。
+取得元の宣言は [`sources.toml`](pipeline/ingestion/fiscal/sources.toml)、団体別の実測は [`jurisdictions/`](pipeline/ingestion/fiscal/jurisdictions/) にある。公開 API の `listFiscalDatasets` が収録した文書・年度・原典版・資料の収録状態を返し、`listFiles` が版を固定した配布 URL を返す。
 
-**公開されているデータの粒度と、そこから問いに答えられるかは別**というのが2団体目の一番大きな発見だった。
-事業まで届いているのに名称を持たない団体があり、CSV だけでは何の事業か分からない。
-成立範囲・判断の内容・確からしさは [AGENTS.md](./AGENTS.md) とパイプライン報告の Caveats にある。
+**移行中**: 新構造のローカル build と検証を実装している。R2 の有効化・全量転送と遠隔での確認が完了するまで、既存の `data/` は保管する。新しい download/API の公開済み状態をこの文書から推定しない。進捗と採用条件は [移行記録](docs/monorepo-migration.md) に記載する。
 
-## 5分で動かす
+## 開発
 
-前提: [mise](https://mise.jdx.dev/)
+前提: [mise](https://mise.jdx.dev/) と、全量入力を復元する場合は非公開 R2 の読取権限。
 
 ```bash
 mise install
-bun install
+bun install --frozen-lockfile
+uv sync --frozen
 
-bun run pipeline       # 取得 → dbt → 配布物 → 報告（検査が落ちたら下流を作らない）
-bun run dev            # ダッシュボードを開く（http://localhost:5173）
+bun run pipeline:inputs       # Git の入力一覧から R2 の固定入力を復元・照合
+bun run pipeline:build        # ネットワークを使わず dbt・FDP・manifest を生成
+bun run dev                   # 報告を生成し、ローカル検証画面を 127.0.0.1:5174 で起動
 ```
 
-`pipeline` はネットワークを叩くので CI では回さない。原典が既にあれば取得は skip する。
-生成済みの成果物はリポジトリに commit してあるので、動かさずに中身だけ見ることもできる。
+`pipeline:build` の結果は `pipeline/.build/builds/r-<内部構築ID>/` に入り、`pipeline:publish publish --build-id r-<内部構築ID>` が団体別の配布物と D1 の表を反映する。取り込み途中の明細も公開し、全体の公開切替は行わない。publish は build を再実行しない。API や web の deploy はコードだけを扱う。
+
+```bash
+bun run dev:api               # 公開 API のローカル Worker
+bun run dev:download          # 検証側のローカル専用 R2 配信
+bun run dev:web               # 公開 UI、5173。検証画面とは別のアプリ
+bun run test
+bun run typecheck:all
+```
+
+全量入力へアクセスできない環境では、Git にある架空団体の fixture で保存形式・問い合わせ・途中の公開・再試行を検査する。fixture の成功は自治体データの全量 build 成功を意味しない。セットアップ・取得・移行・保持・バックアップの手順は [pipeline/README.md](pipeline/README.md) にある。
 
 ## 用語
 
-このプロジェクトはデータを3段階に分ける。
-**段の切れ目は「fudoki の判断が入るかどうか」で引いている。**
+原典は自治体が公開した CSV・PDF そのもの、取り込みは原典の値と単位を保った表である。dbt の staging で列名・型を整え、intermediate で共通単位・科目・分類を揃え、marts で提供する列と粒度を確定する。詳細は [用語](AGENTS.md#glossary) と [設計](docs/prd/monorepo/design-doc.md) を参照。
 
-| 日本語 | コード上の識別子 | 意味 |
-|---|---|---|
-| **原典** | `source` | 自治体が公開したファイルそのまま。`data/budget/raw/` に Parquet で置く |
-| **正本** | `canonical` | 原典を取り込んで検証しただけのもの。**fudoki の判断を含まない**ので、原文と突き合わせて検証できる |
-| **判断** | `judgment` | 正本に COFOG や事業名を割り当てたもの。**ここから fudoki の判断が入る** |
+COFOG は歳出明細と同じ CSV に含め、原典由来の金額と分類などの判断を列の説明で区別する。名称の対応は `account_names.csv`・`project_names.csv` で配る。判断の根拠は Git にある規則表に残す。DuckDB と D1 は、その入力と宣言から生成する実行用の表である。
 
-正本と判断を混ぜると、市が公表した事実と fudoki の判断を利用者が区別できなくなる。
-だから同じ団体のパッケージの中で、別のファイルとして配る。
-
-予算の科目は **款 > 項 > 目 > 節** の階層で、款が最も粗い（地方自治法にもとづく区分）。
+歳出の款・項・目は目的・科目の階層で、款が最も粗い。節は目の内訳を経済的な性質で分ける法定区分である。
 「事業単位まで」というのは目とその下の事業階層に届くという意味で、既存のダッシュボードは款と項で止まっている。
 事業階層の名前は団体ごとに違う（三鷹市は「事項」、狛江市は「大事業・中事業・小事業」）。
-**揃えることは fudoki の判断**なので、正本は団体ごとの形のままにしてあり、揃えた側（COFOG）を別リソースに置いている。
+**COFOG への対応は風土記の判断**であり、原典の階層経路を保った歳出明細に分類列として加える。
 
 科目の名称が原典に無い団体（狛江市）は、市が公開している決算書 PDF の見出しから名称を解決している。これも判断なので、出所は規則の根拠に書いてある。
 
@@ -80,17 +79,17 @@ bun run dev            # ダッシュボードを開く（http://localhost:5173�
 | ① 何にいくら（予算） | [Fiscal Data Package](https://fiscal.datapackage.org/) | 収録できた団体から配布中 |
 | ② いつ何が公告されたか（調達） | [OCDS](https://standard.open-contracting.org/) | 未着手 |
 
-- 生成データはオープンデータとして本リポジトリで公開
+- 配布データは原典の利用条件に従って R2 の custom domain から公開
 - コードは MIT。データは原典のライセンスに従う（下記）
 - MCP サーバとしても配布し、AI エージェントが直接読める形にする
 
 ## もっと読む
 
-- [AGENTS.md](./AGENTS.md): 設計方針、実測にもとづく判断、パーサ設計の原則
-- [data/budget/datapackages/README.md](./data/budget/datapackages/README.md): 配布物の読み方
-- [apps/web/README.md](./apps/web/README.md): ダッシュボードの構成
-- [dbt/models/](./dbt/models/): staging（原典別の整形）→ intermediate（統合・分類）→ marts（提供用データ）。配布処理は `fdp/` に分け、原典の保存と判断の整合性はテストで縛っている
-- [ingestion/budget/sources.toml](./ingestion/budget/sources.toml): 取得元の定義。団体を足すときはここから
+- [AGENTS.md](AGENTS.md): 設計方針、実測にもとづく判断、パーサ設計の原則
+- [pipeline/README.md](pipeline/README.md): 配布物の読み方
+- [apps/web/README.md](apps/web/README.md): ダッシュボードの構成
+- [pipeline/dbt/models/](pipeline/dbt/models/): staging（原典別の整形）→ intermediate（統合・分類）→ marts（提供用データ）。配布処理は `pipeline/fdp/` に分け、原典の保存と判断の整合性はテストで縛っている
+- [pipeline/ingestion/fiscal/sources.toml](pipeline/ingestion/fiscal/sources.toml): 取得元の定義。団体を足すときはここから
 
 名前は『風土記』から。
 713年の官命により、諸国へ地名の由来や産物を**同じ様式で報告させて集めた**地誌で、各自治体から同じ形式でデータを集めるという本 PJ の構造がそのまま重なる。
@@ -101,12 +100,12 @@ bun run dev            # ダッシュボードを開く（http://localhost:5173�
 
 | 層 | 誰のものか | ライセンス |
 |---|---|---|
-| コード（`ingestion/` `dbt/` `fdp/` `report/` `apps/web/`） | fudoki | [MIT](./LICENSE) |
-| fudoki の判断（`datapackages/<団体コード>/cofog*.csv` `project_names.csv`） | fudoki | CC BY 4.0 |
-| 原典と正本（`data/budget/raw/` `datapackages/<団体コード>/expenditure.csv` `revenue.csv`） | **各自治体** | 原典のライセンス（現在はすべて CC BY 4.0） |
+| コード（`pipeline/` `packages/` `apps/`） | fudoki | [MIT](LICENSE) |
+| 風土記の判断（COFOG 分類列・科目や事業名の対応） | 風土記 | descriptor の列・リソースごとの宣言（現在は CC BY 4.0） |
+| 原典・取り込み表・配布明細の原典由来の列 | **各自治体** | 各原典の利用条件 |
 
 ⚠️ **原典のライセンスは fudoki が選んだものではない。**
 著作権を持たないものにライセンスは与えられないので、正本の表示は原典に付いてくる条件を
 そのまま素通ししている。fudoki は原典を改変しているので、その旨も表示している（CC BY 4.0 §3(a)(1)(B)）。
 
-詳細は [data/LICENSE](./data/LICENSE)、正確な表示は各 `datapackage.json`（`licenses` / `sources` / `contributors` / `description`）。
+詳細は [データの利用条件](docs/data-license.md)、正確な表示は各 `datapackage.json`（`licenses` / `sources` / `contributors` / `description`）。
