@@ -427,7 +427,7 @@ const PROJECT_NAME_YEARS: Map<string, Set<number>> = (() => {
  * 団体の名称。**`sources.toml` には持たせない**（`ingestion/budget/sources.py` が
  * 明示的に禁止している — 以前は団体×年度ごとに反復宣言しており、狛江市だけで6回、
  * 誤記があっても検知されなかった）。正本は `ingestion/shared/jurisdictions.json`
- * （①②③のどの層からも参照される、層に依存しない団体の同一性）。
+ * （予算・調達から参照される、層に依存しない団体の同一性）。
  *
  * ⚠️ **読む口を自分で作らない。** 既に `ingestion/shared/jurisdictions.ts` の
  * `loadJurisdictions()` が zod で検証して読んでいる。ここで `readFileSync` + 型アサーションを

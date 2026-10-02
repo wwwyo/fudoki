@@ -19,7 +19,7 @@
 
 ## Background
 
-前提となる PRD は [prd.md](./prd/mcp-server/prd.md) にある。
+前提となる PRD は [prd.md](./prd.md) にある。
 
 ### 現状の API は集計する口を持たない（本書を書いた時点）
 

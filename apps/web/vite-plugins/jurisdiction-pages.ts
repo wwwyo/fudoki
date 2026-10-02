@@ -6,7 +6,7 @@ import type { Plugin } from "vite"
  * `/pipeline/<団体コード>/` と `/analysis/<団体コード>/` を62団体分ずつそろえる vite plugin。
  *
  * 124個の HTML を手で置くことはできないので、`ingestion/shared/jurisdictions.json`
- * （団体の同一性の正本。①②③すべてが同じキーで束ねる）から実行時に生成する。
+ * （団体の同一性の正本。予算・調達を同じキーで束ねる）から実行時に生成する。
  * 生成物は commit しない（`.gitignore` 参照）。
  *
  * ⚠️ **プラグインは1つのまま。** 2つに分けると sitemap.xml を書くタイミングが2箇所になり、
