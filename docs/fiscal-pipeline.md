@@ -67,7 +67,7 @@ CC BY 4.0 で配ることは**できる**。だがそれは「配ってよい条
 
 ⚠️ **団体をまたぐ結合ファイルは作らない。** 以前は判断だけを `derived/` へ団体をまたいで1つに集めていたが、
 横断が派生でしか成立しないという主張自体が誤りだった。実際には団体ごとのファイルを1行の glob で読める
-（`read_csv('pipeline/.build/builds/<内部構築ID>/fiscal/*/settlement_expenditure.csv')`）。横断の問い合わせは API 側の仕事で、
+（`read_csv('pipeline/.build/builds/<内部構築ID>/fiscal/*/settlement_expenditure.csv', union_by_name=true)`）。横断の問い合わせは API 側の仕事で、
 配布物を1つに畳む理由にならない。むしろ結合ファイルは、
 **正本ごとに違うライセンスと出典を1つのライセンス表示に潰す**という害がある。
 判断を各団体のパッケージへ置けば、その団体の `licenses` / `sources` / `modifications` がそのまま効く。
