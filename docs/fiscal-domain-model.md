@@ -67,6 +67,44 @@ classDiagram
 
 黒い菱形は、明細が所属するデータセットの一部であることや、分類結果が明細の一部であることを表す。普通の矢印は参照を表す。例えば同じ COFOG 分類を、複数の歳出明細の分類結果が参照できる。
 
+## 歳出予算の対象を事業と歳出の節で区別する
+
+以下は追加で採用した設計であり、現行実装への適用は未完了である。歳出の節を経済的な性質の共通マスタとして独立させ、歳出予算対象が参照する。予算の明細は一金額と下位内訳を持ち、節マスタには金額を置かない。
+
+```mermaid
+classDiagram
+    class ExpenditureSection["歳出の節"] {
+        節の定義ID
+        法定コード
+        名称
+        適用期間
+    }
+    class ExpenditureBudgetItem["歳出予算対象"] {
+        団体と年度
+        会計
+        科目と事業の経路
+        追加区分
+        確認した粒度
+    }
+    class InitialExpenditureBudgetLine["当初歳出予算明細"] {
+        amount_円
+        下位内訳
+        COFOG分類結果
+        原典との対応
+    }
+    class ExpenditureBudgetChange["歳出予算変更"] {
+        amount_delta_円
+        適用時点
+        下位内訳
+        原典との対応
+    }
+    ExpenditureBudgetItem "0..*" --> "0..1" ExpenditureSection : 経済的な性質を参照する
+    ExpenditureBudgetItem "1" --> "0..1" InitialExpenditureBudgetLine : 当初額を持つ
+    ExpenditureBudgetItem "1" --> "0..*" ExpenditureBudgetChange : 増減を追跡する
+```
+
+確認済みの予算対象は事業×歳出の節で区別する。細節・細々節等は明細の JSON 内訳に保存する。節不明や集約時の分類・連結判断が未確認の場合は、原典で確認できる粒度を保持する。歳入の節をこの共通マスタへ入れず、COFOG と歳出の節を独立した分類軸として扱う。GFSM は提供しない。概念の定義は [PRD の Domain Model](prd/fiscal-budget-history/prd.md#domain-model)、表と列の名前は [財政データの設計](design-doc-fiscal-records.md) に従う。
+
 ## 明細に含まれる値の意味を分ける
 
 科目経路と追加区分は、別々に検索・照合できる明細の値である。歳出／歳入の両方で同じ値の構造を使えても、科目の意味や同一性を両者で共有しない。

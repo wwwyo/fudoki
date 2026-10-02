@@ -2,14 +2,16 @@
 
 ## Objectives
 
-- **Goal**: 歳出と歳入、予算と決算の表を分け、決算明細に実績の `amount` 一つを持たせる。当初予算・各変更・決算の対応を検査し、指定時点の予算と実績を比較できるようにする。
+- **Goal**: 歳出と歳入、予算と決算の表を分け、決算明細に実績の `amount` 一つを持たせる。歳出の予算対象は事業×歳出の節とし、下位内訳を JSON に保持する。当初予算・各変更・決算の対応を検査し、指定時点の予算と実績を比較できるようにする。
 - **Not goal**: 資料が欠けた変更のゼロ補完、根拠のない配賦、予算からの実績推定、公営企業会計の収録。
 
-これは [予算変更履歴の PRD](prd/fiscal-budget-history/prd.md) を適用した移行後の設計である。新しい DB/API/dbt と配布物の契約を実装した。決算の実績・当初予算は現在の固定入力から構築する。変更履歴と確認済み対応の実資料は未収録で、API はその範囲を未確認として提供する。
+これは [予算変更履歴の PRD](prd/fiscal-budget-history/prd.md) を適用した設計である。予算と決算の分離・実績一金額の DB/API/dbt と配布物の契約は実装済み。歳出の節マスタ、事業×節への予算明細の集約、下位内訳の JSON 化は今回採用した未実装の変更である。変更履歴と確認済み対応の実資料は未収録で、API はその範囲を未確認として提供する。
 
 ## Background
 
-現行の共有明細と金額段階の表では、決算の支出済額と原典に載る予算現額を同じ明細の別金額として提供する。予算の増減を辿る情報は別資料にあり、実績を取得するために金額段階を選ばせる構造を維持する理由はない。原典の照合に必要な値を保存しつつ、利用者が取得する予算と実績を分ける。
+移行前の共有明細と金額段階の表では、決算の支出済額と原典に載る予算現額を同じ明細の別金額として提供していた。予算の増減を辿る情報は別資料にあり、原典の照合に必要な値を保存しつつ、利用者が取得する予算と実績を分けた。
+
+現行の予算明細は原典行の粒度であり、団体によって節・細節・細々節等の深さが異なる。公開する歳出予算の粒度を事業×歳出の節に揃え、自治体独自の下位内訳は JSON に保持する。事業や節の対応を確認できない行は、原典の粒度を残す。
 
 ## System Overview
 
@@ -35,6 +37,31 @@ erDiagram
         integer amount
     }
     fiscal_expenditure_budget_items ||--o| fiscal_initial_expenditure_budget_lines : initial_amount
+    fiscal_expenditure_sections o|--o{ fiscal_expenditure_budget_items : expenditure_section
+    fiscal_expenditure_sections {
+        text expenditure_section_id PK
+        text code
+        text label
+        integer valid_from_fiscal_year
+        integer valid_to_fiscal_year
+        text legal_basis
+    }
+    fiscal_expenditure_budget_items {
+        text version_id PK,FK
+        text budget_item_id PK
+        text expenditure_section_id FK
+        text line_granularity
+    }
+    fiscal_initial_expenditure_budget_lines {
+        text version_id PK,FK
+        text fiscal_line_id PK
+        text dataset_id FK
+        text budget_item_id FK
+        integer amount
+        text details_json
+        text cofog_code FK
+    }
+    cofog_codes o|--o{ fiscal_initial_expenditure_budget_lines : assigned_code
     fiscal_expenditure_budget_items ||--o{ fiscal_expenditure_budget_changes : signed_changes
     fiscal_revenue_budget_items ||--o| fiscal_initial_revenue_budget_lines : initial_amount
     fiscal_revenue_budget_items ||--o{ fiscal_revenue_budget_changes : signed_changes
@@ -48,9 +75,27 @@ erDiagram
     fiscal_settlement_revenue_lines ||--o{ fiscal_revenue_settlement_links : correspondence
 ```
 
-この図は財政上の主要な表を示す。決算明細に属する経路・追加区分・検索用名称は後述の専用子表に展開する。原典の報告値と処理規則は提供用 D1 の表に含めない。
+この図は採用した設計の主要な表を示す。歳出の節マスタは自治体データ版から独立し、金額を持たない。決算明細に属する経路・追加区分・検索用名称は後述の専用子表に展開する。原典の報告値と処理規則は提供用 D1 の表に含めない。
 
 ## Detailed Design
+
+### 歳出予算を事業と経済的な性質の組合せで提供する
+
+歳出の節マスタを `fiscal_expenditure_sections`、参照列を `expenditure_section_id` と命名する。歳出の節は支払いの経済的な性質、COFOG は支出の目的を表す別の分類軸である。歳入の節は財源の内訳なので、このマスタを参照しない。GFSM は提供しない。
+
+マスタの一行は、適用期間を持つ歳出の節の定義である。`expenditure_section_id` を主キーとし、法定の `code`、`label`、適用開始・終了年度、法令の根拠を持つ。同じ法定コードの定義の適用期間は重複させず、コードだけを全年度共通の ID として使わない。適用終了年度が未定なら NULL とする。Git の定義から D1 の共通マスタを生成し、`version_id` や金額を持たせない。原典の年度・名称・科目体系を照合して対応付け、参照する対象の年度がマスタの適用期間内であることを検査する。歳出と確認できない区分や公営企業会計の別体系を取り込まない。[法定の歳出の節区分](https://laws.e-gov.go.jp/data/MinisterialOrdinance/322M40000008029/616836_1/pict/2FH00000022813.pdf)
+
+公開済みの `expenditure_section_id` のコード・名称・意味・根拠は固定する。法改正で定義が変わる場合は新しい ID を追加する。旧定義の終了年度の確定は既存の参照年度を無効にしない範囲に限り、誤った既存定義の訂正は影響する自治体データ版と配布物の再生成を伴う契約移行として扱う。共有マスタの更新だけで、固定した配布物と API の説明が変わる状態を作らない。
+
+`fiscal_expenditure_budget_items` の確認済み対象は事業×歳出の節とする。同じ団体・年度・会計でも、款・項・目・事業経路、所属・予算区分等の原典の追加区分、歳出の節が違えば別対象となる。「学校修繕事業×委託料」と「学校修繕事業×工事請負費」は別であり、別事業の委託料も混ぜない。事業が原典で分解されていなければ、確認できる科目経路を使い、事業を捏造しない。
+
+当初予算の集約は同じ dataset 内で行い、別年度・別資料・訂正版の金額を足し合わせない。対応する予算明細は一つの `amount` を直接持ち、歳出の節ごとの独立した金額表を追加しない。原典の一行がそのまま提供行になるとは限らないため、集約後の `fiscal_line_id` は dataset・科目／事業経路・追加区分・歳出の節から生成する。元の行 ID は下位内訳から辿れるようにする。予算対象 ID は資料間の確認済み対応で解決し、原典版をまたいで自動的に同じ対象とみなさない。
+
+細節・細々節等は `details_json` に保持する。各要素は節より下の順序付き経路（段の名前・コード・名称）、その明細の金額（円）、原典の `fiscal_line_id` と `source_row` を持つ。当初予算では基準額、変更ではその変更の符号付き増減額を格納する。節直下の原典行では下位経路を空にし、原典行への対応は残す。親の `amount` または `amount_delta` は採用した末端明細の金額の合計と一致させ、同じ数字を印字した小計・合計行を内訳へ重ねて入れない。原典の値・単位・複数金額列は取り込み・内部検証に保持する。
+
+集約候補の COFOG と連結判断が異なる場合は、一つの分類や消去判断を全内訳へ押し付けない。対応を確認するまでは原典行の粒度を保持し、`line_granularity = origin_line` とする。事業×歳出の節で提供できる対象は `line_granularity = expenditure_section` とする。原典の節が不明な場合は `expenditure_section_id = NULL` とし、NULL の節をまとめて集約しない。千代田区の事業内訳と節の対応は未確認であり、この例外に含める。節が不明なことを金額ゼロやデータ欠落とは扱わない。
+
+この集約は歳出の予算対象・当初予算・変更に適用する。決算明細は引き続き原典で確認できる粒度の実績を持ち、予算との粒度差は対応表で扱う。歳入の節や明細へ歳出の集約規則を適用しない。
 
 ### 決算明細に実績の金額を直接持たせる
 
@@ -66,13 +111,13 @@ dataset の歳入歳出・文書種別と、保存先の表の意味を取込検
 
 `fiscal_expenditure_budget_items` と `fiscal_revenue_budget_items` は、その年度に予算を追跡する科目・事業の対象を表す。共通科目マスタではなく、資料間の対応を確かめて作る団体・年度内の対象である。主キーは `(version_id, budget_item_id)`、`(version_id, jurisdiction_code)` は自治体データ版への外部キーとする。団体コード・年度・会計・科目経路・追加区分・検索用名称と、当初額の確認状態 `recorded / verified-zero / unknown` を持つ。
 
-当初予算は `fiscal_initial_expenditure_budget_lines` と `fiscal_initial_revenue_budget_lines` に保存する。各行は一つの `amount` と、原典の `dataset_id / fiscal_line_id / source_row`、対応する `budget_item_id` を持つ。主キーは `(version_id, fiscal_line_id)`、`(version_id, budget_item_id)` は UNIQUE とし、確認した対象ごとに当初額を一つだけ採用する。資料が訂正された場合も複数版を重ねて計上しない。
+当初予算は `fiscal_initial_expenditure_budget_lines` と `fiscal_initial_revenue_budget_lines` に保存する。各行は一つの `amount`、`dataset_id / fiscal_line_id`、対応する `budget_item_id` を持つ。歳出の原典行への対応と下位内訳は `details_json` に置き、歳入の原典行は `source_row` で参照する。主キーは `(version_id, fiscal_line_id)`、`(version_id, budget_item_id)` は UNIQUE とし、確認した対象ごとに当初額を一つだけ採用する。資料が訂正された場合も複数版を重ねて計上しない。
 
 補正等で新設された対象も予算対象表に持てるため、当初予算の明細が存在しない場合がある。新設の証拠があり当初額ゼロと確認できたときだけ `verified-zero` とする。入力が欠けた `unknown` をゼロとして計算しない。原典の一行が複数対象にまたがり分解できない場合は、原典で確認できる粒度の対象として保持し、細かい事業へ配賦しない。
 
 ### 補正・繰越・その他の変更を増減額として持つ
 
-`fiscal_expenditure_budget_changes` と `fiscal_revenue_budget_changes` は `(version_id, change_id)` を主キーとし、原典の dataset と予算対象を同じ `version_id` 内の複合外部キーで参照する。各行は `amount_delta`、変更種別、適用日・適用順序、原典の行を持つ。減額は負の値。補正の号数と原典の金額の意味は dataset の説明に置く。
+`fiscal_expenditure_budget_changes` と `fiscal_revenue_budget_changes` は `(version_id, change_id)` を主キーとし、原典の dataset と予算対象を同じ `version_id` 内の複合外部キーで参照する。各行は `amount_delta`、変更種別、適用日・適用順序、原典の行への対応を持つ。歳出では同一の変更種別・適用時点・順序・原資等の条件が一致する場合に限り対象単位へ集約し、内訳と原典行は `details_json` に保持する。減額は負の値。補正の号数と原典の金額の意味は dataset の説明に置く。
 
 支出・収入で必要な変更種別を区別し、歳出の予備費充用・流用を歳入へ一律に適用しない。繰越は繰越元年度・繰越先年度と会計を明示する。予備費充用・流用では、対象と原資の対応が必要な場合は相手予算対象を記録する。議決上の限度額を実際の変更額として採用しない。
 
@@ -94,7 +139,7 @@ dataset の歳入歳出・文書種別と、保存先の表の意味を取込検
 - `fiscal_settlement_expenditure_line_dimensions` / `fiscal_settlement_revenue_line_dimensions`: 主キーに `dimension` を加え、原典にある所属・予算区分等を保持する。
 - `fiscal_settlement_expenditure_line_names` / `fiscal_settlement_revenue_line_names`: 主キーに `name_kind / level` を加え、検索用名称とその出所を保持する。
 
-予算対象にも科目経路・追加区分を保持する。検索対象として展開する際も、決算の子表へ混在させず予算対象専用にする。必要な索引と展開の粒度は実資料と問い合わせで検証する。
+予算対象にも科目・事業経路と追加区分を保持する。事業×歳出の節へ集約した予算対象では、経路を事業までとし、歳出の節を `expenditure_section_id` で独立して参照する。節より下の内訳は金額明細の `details_json` に置く。未確認の原典行を保持する対象では原典経路を残す。検索対象として展開する際も、決算の子表へ混在させず予算対象専用にする。必要な索引と展開の粒度は実資料と問い合わせで検証する。
 
 節等の原典科目と共通科目への対応は区別する。歳入と歳出の共通科目定義は別で、原典のコードだけを全団体・全年度共通の外部キーにしない。経路の名称は原典の値と出所を保持し、年度の適用範囲を確かめたマスタから解決した名称と区別する。
 
@@ -112,10 +157,13 @@ R2 と D1 は同じ dbt の提供モデルから生成する。対応する明�
 
 ## Tasks
 
+- [ ] `fiscal_expenditure_sections` と年度に応じた原典の節の対応を実装する。
+- [ ] 歳出の予算対象・当初予算・変更を事業×歳出の節へ集約し、下位内訳と原典行の対応を `details_json` に保持する。
+- [ ] 内訳の金額一致・小計の重複排除・事業／追加区分の分離・節不明の保持・COFOG／連結判断の衝突・マスタの適用期間と R2/D1 の一致を検査する。
 - [ ] 移行対象の団体・年度・会計と資料の収録範囲を固定する。
 - [ ] 当初額、変更額、文書間の対応、原典の報告値との照合を実資料で確認する。
-- [x] 型・dbt・D1・API・FDP を新しい明細と予算履歴の契約に揃える。
+- [x] 型・dbt・D1・API・FDP を予算と決算の分離・実績一金額の契約に揃える。
 - [ ] 新 schema の同一版参照・歳入歳出の混入拒否・多対多の比較・資料欠落・訂正・円換算・R2/D1 一致を検証する。
 - [x] 団体別の取り込み・再実行は自治体データ版の設計に従って検証する。
 
-提供契約は適用済み。Bun fixture では同一版・歳入歳出の分離・多対多の重複排除・資料欠落・負の変更額と指定時点を検査した。現在の実資料は 5 団体・28 dataset で、決算実績と当初予算を生成する。補正・繰越等の取得と照合は PRD の未完了条件として残り、空の変更表から完全な予算額を返さない。
+予算と決算を分ける契約は適用済み。Bun fixture では同一版・歳入歳出の分離・多対多の重複排除・資料欠落・負の変更額と指定時点を検査した。現在の実資料は 5 団体・28 dataset で、決算実績と当初予算を生成する。事業×歳出の節への集約と JSON 内訳は未実装で、現行の予算明細は原典行の粒度である。補正・繰越等の取得と照合は PRD の未完了条件として残り、空の変更表から完全な予算額を返さない。
