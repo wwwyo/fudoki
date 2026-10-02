@@ -150,7 +150,7 @@ export function schemaStatements(sql: string): string[] {
 export async function initializeSchema(db: D1Database) {
   const old = await db
     .prepare(
-      "SELECT name FROM sqlite_master WHERE type='table' AND name IN ('releases','active_release','fiscal_lines','amounts','publications','publish_control')"
+      "SELECT name FROM sqlite_master WHERE type='table' AND name IN ('fiscal_jurisdiction_versions','releases','active_release','fiscal_lines','amounts','publications','publish_control')"
     )
     .all<{ name: string }>()
   if (old.results.length)

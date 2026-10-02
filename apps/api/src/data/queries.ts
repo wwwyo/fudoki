@@ -35,27 +35,21 @@ export async function resolveVersions(
 ): Promise<VersionRef[]> {
   if (new Set(explicit.map((v) => v.jurisdictionCode)).size !== explicit.length)
     throw new QueryError('BAD_REQUEST', 'Choose one version per jurisdiction')
-  const json = JSON.stringify(explicit)
-  if (explicit.length) {
-    const found = await rows(
-      db,
-      `SELECT v.version_id FROM fiscal_jurisdiction_versions v JOIN json_each(?) e ON v.version_id=json_extract(e.value,'$.versionId') AND v.jurisdiction_code=json_extract(e.value,'$.jurisdictionCode') WHERE v.contract_version=${CONTRACT_VERSION}`,
-      [json]
-    )
-    if (found.length !== explicit.length)
-      throw new QueryError(
-        'VERSION_EXPIRED',
-        'A requested jurisdiction version does not exist'
-      )
-  }
-  return rows<VersionRef>(
+  const current = await rows<VersionRef>(
     db,
-    `SELECT v.jurisdiction_code AS jurisdictionCode,v.version_id AS versionId FROM fiscal_jurisdiction_versions v WHERE v.contract_version=${CONTRACT_VERSION} AND (
-    EXISTS(SELECT 1 FROM json_each(?) e WHERE v.version_id=json_extract(e.value,'$.versionId') AND v.jurisdiction_code=json_extract(e.value,'$.jurisdictionCode')) OR (
-    NOT EXISTS(SELECT 1 FROM json_each(?) e WHERE v.jurisdiction_code=json_extract(e.value,'$.jurisdictionCode')) AND
-    NOT EXISTS(SELECT 1 FROM fiscal_jurisdiction_versions newer WHERE newer.contract_version=${CONTRACT_VERSION} AND newer.jurisdiction_code=v.jurisdiction_code AND (newer.registered_at>v.registered_at OR (newer.registered_at=v.registered_at AND newer.version_id>v.version_id))))) ORDER BY v.jurisdiction_code`,
-    [json, json]
+    `SELECT jurisdiction_code AS jurisdictionCode,version_id AS versionId FROM fiscal_jurisdiction_data WHERE contract_version=${CONTRACT_VERSION} ORDER BY jurisdiction_code`
   )
+  const byJurisdiction = new Map(
+    current.map((v) => [v.jurisdictionCode, v.versionId])
+  )
+  if (
+    explicit.some((v) => byJurisdiction.get(v.jurisdictionCode) !== v.versionId)
+  )
+    throw new QueryError(
+      'VERSION_EXPIRED',
+      'The jurisdiction data changed; restart the request'
+    )
+  return current
 }
 function dataset(row: Record<string, unknown>): Dataset {
   return {
@@ -98,7 +92,7 @@ export async function listDatasets(
     ['documentKind', 'document_kind'],
   ] as const) {
     if (input[field] !== undefined) {
-      clauses.push(column + '=?')
+      clauses.push('d.' + column + '=?')
       args.push(input[field])
     }
   }
@@ -106,13 +100,15 @@ export async function listDatasets(
     clauses.push('dataset_id IN (SELECT value FROM json_each(?))')
     args.push(JSON.stringify(input.datasetIds))
   }
-  return (
+  const found = (
     await rows<Record<string, unknown>>(
       db,
-      `SELECT * FROM fiscal_datasets WHERE ${clauses.join(' AND ')} ORDER BY jurisdiction_code,fiscal_year,direction,document_kind,dataset_id`,
+      `SELECT d.*,v.version_id FROM fiscal_datasets d JOIN fiscal_jurisdiction_data v USING(jurisdiction_code) WHERE ${clauses.join(' AND ')} ORDER BY d.jurisdiction_code,fiscal_year,direction,document_kind,dataset_id`,
       args
     )
   ).map(dataset)
+  await resolveVersions(db, versions)
+  return found
 }
 export async function selectDatasets(
   db: D1Database,
@@ -180,7 +176,7 @@ function relationalJson(
             'name_kind,level',
             "'kind',c.name_kind,'level',c.level,'value',c.value,'nameSource',c.name_source,'basis',c.basis",
           ]
-  return `(SELECT json_group_array(json_object(${object})) FROM (SELECT * FROM ${table} WHERE version_id=l.version_id AND fiscal_line_id=l.fiscal_line_id ORDER BY ${order}) c)`
+  return `(SELECT json_group_array(json_object(${object})) FROM (SELECT * FROM ${table} WHERE fiscal_line_id=l.fiscal_line_id ORDER BY ${order}) c)`
 }
 function fiscalRows() {
   const selects = []
@@ -190,16 +186,16 @@ function fiscalRows() {
         ? 'l.cofog_code,l.cofog_status,l.cofog_basis'
         : 'NULL AS cofog_code,NULL AS cofog_status,NULL AS cofog_basis'
     selects.push(
-      `SELECT l.version_id,l.fiscal_line_id,l.dataset_id,l.source_row,l.fund_code,l.fund_label,l.amount,l.consolidation,l.counterpart_fund,${classification},${relationalJson(direction, 'hierarchy')} AS hierarchy,${relationalJson(direction, 'dimensions')} AS dimensions,${relationalJson(direction, 'names')} AS names FROM fiscal_settlement_${direction}_lines l`
+      `SELECT l.fiscal_line_id,l.dataset_id,l.source_row,l.fund_code,l.fund_label,l.amount,l.consolidation,l.counterpart_fund,${classification},${relationalJson(direction, 'hierarchy')} AS hierarchy,${relationalJson(direction, 'dimensions')} AS dimensions,${relationalJson(direction, 'names')} AS names FROM fiscal_settlement_${direction}_lines l`
     )
     selects.push(
-      `SELECT l.version_id,l.fiscal_line_id,l.dataset_id,l.source_row,b.fund_code,b.fund_label,l.amount,l.consolidation,l.counterpart_fund,${classification},b.account_path_json AS hierarchy,b.dimensions_json AS dimensions,b.names_json AS names FROM fiscal_initial_${direction}_budget_lines l JOIN fiscal_${direction}_budget_items b USING(version_id,budget_item_id)`
+      `SELECT l.fiscal_line_id,l.dataset_id,l.source_row,b.fund_code,b.fund_label,l.amount,l.consolidation,l.counterpart_fund,${classification},b.account_path_json AS hierarchy,b.dimensions_json AS dimensions,b.names_json AS names FROM fiscal_initial_${direction}_budget_lines l JOIN fiscal_${direction}_budget_items b USING(budget_item_id)`
     )
   }
   return 'WITH fiscal_rows AS (' + selects.join(' UNION ALL ') + ') '
 }
 const joined =
-  'FROM fiscal_rows l JOIN fiscal_datasets d ON d.version_id=l.version_id AND d.dataset_id=l.dataset_id'
+  'FROM fiscal_rows l JOIN fiscal_datasets d USING(dataset_id) JOIN fiscal_jurisdiction_data v ON v.jurisdiction_code=d.jurisdiction_code'
 function conditions(
   datasets: Dataset[],
   input: Pick<
@@ -208,7 +204,7 @@ function conditions(
   >
 ) {
   const where = [
-      'l.version_id IN (SELECT value FROM json_each(?))',
+      'v.version_id IN (SELECT value FROM json_each(?))',
       'l.dataset_id IN (SELECT value FROM json_each(?))',
     ],
     args: unknown[] = [
@@ -264,7 +260,7 @@ export async function queryLines(
   const scope = conditions(datasets, input)
   const result = await rows<Record<string, unknown>>(
     db,
-    `${fiscalRows()}SELECT l.*,d.direction,d.document_kind ${joined} WHERE ${scope.where} AND (l.version_id>? OR (l.version_id=? AND l.fiscal_line_id>?)) ORDER BY l.version_id,l.fiscal_line_id LIMIT ?`,
+    `${fiscalRows()}SELECT l.*,v.version_id,d.direction,d.document_kind ${joined} WHERE ${scope.where} AND (v.version_id>? OR (v.version_id=? AND l.fiscal_line_id>?)) ORDER BY v.version_id,l.fiscal_line_id LIMIT ?`,
     [...scope.args, after[0], after[0], after[1], input.pageSize + 1]
   )
   return result.map((r) => {
@@ -330,12 +326,13 @@ export async function pageLines(
   const all = await queryLines(db, datasets, input, after),
     lines = all.slice(0, pageSize),
     versions = versionRefs(datasets)
+  await resolveVersions(db, versions)
   const last = lines.at(-1)
   const nextCursor =
     all.length > pageSize && last
       ? await encodeCursor(
           {
-            v: 2,
+            v: 3,
             versions,
             fingerprint: queryHash,
             after: [last.versionId, last.id],
@@ -426,6 +423,7 @@ export async function aggregate(db: D1Database, input: AggregateQuery) {
       'BAD_REQUEST',
       'Aggregate exceeds the exact integer range'
     )
+  await resolveVersions(db, versionRefs(datasets))
   const total =
     totals.length === 1
       ? { amount: totals[0]!.amount, lineCount: totals[0]!.lineCount }
@@ -452,9 +450,10 @@ export async function jurisdictions(
     caveats_json: string
   }>(
     db,
-    'SELECT * FROM fiscal_jurisdiction_versions WHERE version_id IN (SELECT value FROM json_each(?)) ORDER BY jurisdiction_code',
+    'SELECT * FROM fiscal_jurisdiction_data WHERE version_id IN (SELECT value FROM json_each(?)) ORDER BY jurisdiction_code',
     [JSON.stringify(versions.map((v) => v.versionId))]
   )
+  await resolveVersions(db, versions)
   return {
     versions,
     jurisdictions: found.map((r) => ({
@@ -484,7 +483,7 @@ export async function files(
     content_type: string
   }>(
     db,
-    'SELECT * FROM fiscal_package_files WHERE version_id IN (SELECT value FROM json_each(?)) ORDER BY jurisdiction_code,path',
+    'SELECT f.* FROM fiscal_package_files f JOIN fiscal_jurisdiction_data v USING(jurisdiction_code) WHERE v.version_id IN (SELECT value FROM json_each(?)) ORDER BY jurisdiction_code,path',
     [ids]
   )
   const manifests = await rows<{
@@ -493,9 +492,10 @@ export async function files(
     url: string
   }>(
     db,
-    'SELECT jurisdiction_code AS jurisdictionCode,version_id AS versionId,manifest_url AS url FROM fiscal_jurisdiction_versions WHERE version_id IN (SELECT value FROM json_each(?)) ORDER BY jurisdiction_code',
+    'SELECT jurisdiction_code AS jurisdictionCode,version_id AS versionId,manifest_url AS url FROM fiscal_jurisdiction_data WHERE version_id IN (SELECT value FROM json_each(?)) ORDER BY jurisdiction_code',
     [ids]
   )
+  await resolveVersions(db, versions)
   return {
     versions,
     manifests,
@@ -524,12 +524,12 @@ export async function budgetHistory(
       'NOT_FOUND',
       'Jurisdiction does not have a fiscal version'
     )
-  const args: (string | number)[] = [version.versionId, input.jurisdictionCode, input.fiscalYear]
+  const args: (string | number)[] = [input.jurisdictionCode, input.fiscalYear]
   if (input.fundCode !== undefined) args.push(input.fundCode)
   const direction = input.direction
   const items = await rows<Record<string, unknown>>(
     db,
-    `SELECT * FROM fiscal_${direction}_budget_items WHERE version_id=? AND jurisdiction_code=? AND fiscal_year=?${input.fundCode !== undefined ? " AND fund_code=?" : ""} ORDER BY budget_item_id LIMIT 10001`,
+    `SELECT * FROM fiscal_${direction}_budget_items WHERE jurisdiction_code=? AND fiscal_year=?${input.fundCode !== undefined ? ' AND fund_code=?' : ''} ORDER BY budget_item_id LIMIT 10001`,
     args
   )
   if (items.length > 10000)
@@ -538,21 +538,21 @@ export async function budgetHistory(
       'Too many budget items; select a smaller scope'
     )
   const ids = JSON.stringify(items.map((row) => row.budget_item_id))
-  const scoped = `version_id=? AND budget_item_id IN (SELECT value FROM json_each(?))`
+  const scoped = `budget_item_id IN (SELECT value FROM json_each(?))`
   const initial = await rows<Record<string, unknown>>(
     db,
     `SELECT * FROM fiscal_initial_${direction}_budget_lines WHERE ${scoped} ORDER BY fiscal_line_id`,
-    [version.versionId, ids]
+    [ids]
   )
   const changes = await rows<Record<string, unknown>>(
     db,
     `SELECT * FROM fiscal_${direction}_budget_changes WHERE ${scoped} AND substr(effective_at,1,10)<=? ORDER BY effective_at,sequence,change_id LIMIT 10001`,
-    [version.versionId, ids, input.asOf]
+    [ids, input.asOf]
   )
   const links = await rows<Record<string, unknown>>(
     db,
     `SELECT * FROM fiscal_${direction}_settlement_links WHERE ${scoped} ORDER BY match_group_id,budget_item_id,settlement_line_id LIMIT 10001`,
-    [version.versionId, ids]
+    [ids]
   )
   if (changes.length > 10000 || links.length > 10000)
     throw new QueryError(
@@ -561,14 +561,10 @@ export async function budgetHistory(
     )
   const actuals = await rows<Record<string, unknown>>(
     db,
-    `SELECT * FROM fiscal_settlement_${direction}_lines WHERE version_id=? AND fiscal_line_id IN (SELECT value FROM json_each(?)) ORDER BY fiscal_line_id`,
-    [
-      version.versionId,
-      JSON.stringify([
-        ...new Set(links.map((link) => link.settlement_line_id)),
-      ]),
-    ]
+    `SELECT * FROM fiscal_settlement_${direction}_lines WHERE fiscal_line_id IN (SELECT value FROM json_each(?)) ORDER BY fiscal_line_id`,
+    [JSON.stringify([...new Set(links.map((link) => link.settlement_line_id))])]
   )
+  await resolveVersions(db, [version])
   const initialByItem = new Map(
     initial.map((row) => [row.budget_item_id, Number(row.amount)])
   )

@@ -23,7 +23,13 @@ export const versionRefSchema = z
   })
   .strict()
 const versionInput = {
-  versions: z.array(versionRefSchema).max(100).default([]),
+  versions: z
+    .array(versionRefSchema)
+    .max(100)
+    .default([])
+    .describe(
+      'Expected current content per jurisdiction; stale values require restarting the request.'
+    ),
 }
 const envelope = { versions: z.array(versionRefSchema) }
 const jurisdictionSchema = z.object({

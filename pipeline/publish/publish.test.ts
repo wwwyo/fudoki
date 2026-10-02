@@ -87,7 +87,7 @@ test('new versions are visible during import, and interruption resumes without d
       .get()
   ).toEqual({ n: 3 })
   expect(
-    sqlite.query('SELECT registered_at FROM fiscal_jurisdiction_versions').get()
+    sqlite.query('SELECT registered_at FROM fiscal_jurisdiction_data').get()
   ).toEqual({ registered_at: '2026-01-01T00:00:00.000Z' })
   expect(puts).toBe(2)
   const result = await aggregate(
@@ -100,7 +100,7 @@ test('new versions are visible during import, and interruption resumes without d
   expect(result.total).toEqual({ amount: 300, lineCount: 3 })
   expect(result.cells).toEqual([{ keys: ['09'], amount: 300, lineCount: 3 }])
 })
-test('each municipality updates independently; old versions and cursor selections remain readable', async () => {
+test('each municipality updates independently; only current rows remain and stale cursors require a restart', async () => {
   const a = await fixture(join(root, 'a'), 'r-' + '1'.repeat(32), 100, 3)
   const other = await fixture(
     join(root, 'other'),
@@ -121,7 +121,7 @@ test('each municipality updates independently; old versions and cursor selection
     pageSize: 1,
   })
   const first = await pageLines(db, secret, input)
-  const b = await fixture(join(root, 'b'), 'r-' + '3'.repeat(32), 200, 3)
+  const b = await fixture(join(root, 'b'), 'r-' + '3'.repeat(32), 200, 2)
   await publish(join(root, 'b'), db, store, url, undefined, {
     registeredAt: '2026-02-01T00:00:00.000Z',
   })
@@ -129,32 +129,52 @@ test('each municipality updates independently; old versions and cursor selection
     { jurisdictionCode: '000001', versionId: b.versions[0]!.versionId },
     { jurisdictionCode: '000002', versionId: other.versions[0]!.versionId },
   ])
-  const second = await pageLines(db, secret, {
-    ...input,
-    cursor: first.nextCursor,
-  })
-  expect(second.lines[0]!.amount).toBe(100)
-  expect(second.lines[0]!.versionId).toBe(a.versions[0]!.versionId)
+  await expect(
+    pageLines(db, secret, { ...input, cursor: first.nextCursor })
+  ).rejects.toMatchObject({ code: 'VERSION_EXPIRED' })
+  expect(
+    sqlite
+      .query('SELECT count(*) n FROM fiscal_settlement_expenditure_lines')
+      .get()
+  ).toEqual({ n: 4 })
+  expect(
+    sqlite.query('SELECT count(*) n FROM fiscal_jurisdiction_data').get()
+  ).toEqual({ n: 2 })
+  expect(
+    sqlite
+      .query(
+        "SELECT count(*) n FROM fiscal_settlement_expenditure_line_hierarchy WHERE fiscal_line_id='000001:000002'"
+      )
+      .get()
+  ).toEqual({ n: 0 })
+  expect(objects.size).toBe(6)
   expect((await pageLines(db, secret, input)).lines[0]!.amount).toBe(200)
   expect(
     (await listDatasets(db)).find((d) => d.jurisdictionCode === '000002')!
       .versionId
   ).toBe(other.versions[0]!.versionId)
-  await publish(join(root, 'a'), db, store, url, undefined, {
+  await publish(join(root, 'b'), db, store, url, undefined, {
     registeredAt: '2026-03-01T00:00:00.000Z',
   })
   expect((await resolveVersions(db))[0]!.versionId).toBe(
     b.versions[0]!.versionId
   )
+  await expect(
+    files(db, 'https://download.example.org', {
+      versions: [
+        { jurisdictionCode: '000001', versionId: a.versions[0]!.versionId },
+      ],
+    })
+  ).rejects.toMatchObject({ code: 'VERSION_EXPIRED' })
   const download = await files(db, 'https://download.example.org', {
-    versions: [
-      { jurisdictionCode: '000001', versionId: a.versions[0]!.versionId },
-    ],
     jurisdictionCode: '000001',
   })
   expect(download.files[0]!.url).toContain(
-    `/fiscal/000001/${a.versions[0]!.packageId}/`
+    `/fiscal/000001/${b.versions[0]!.packageId}/`
   )
+  expect(
+    [...objects.keys()].some((key) => key.includes(a.versions[0]!.packageId!))
+  ).toBe(true)
   expect(download.manifests[0]!.url).toBe(url)
 })
 test('retry rejects different contents at a previously registered row or immutable object', async () => {
@@ -179,7 +199,7 @@ test('wrong document direction and unknown COFOG foreign keys are rejected', asy
   ).toThrow()
   expect(() =>
     sqlite.run(
-      'INSERT INTO fiscal_settlement_revenue_lines SELECT version_id,fiscal_line_id,dataset_id,source_row,fund_code,fund_label,amount,consolidation,counterpart_fund FROM fiscal_settlement_expenditure_lines'
+      'INSERT INTO fiscal_settlement_revenue_lines SELECT fiscal_line_id,dataset_id,source_row,fund_code,fund_label,amount,consolidation,counterpart_fund FROM fiscal_settlement_expenditure_lines'
     )
   ).toThrow('direction or document')
 })

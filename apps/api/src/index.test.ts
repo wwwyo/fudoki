@@ -67,7 +67,7 @@ afterEach(async () => {
 test('HTTP contract, datasets and files expose municipality versions without an assets or R2 binding', async () => {
   const response = await app.request('/v0/contract', {}, env)
   expect(await response.json()).toMatchObject({
-    contractVersion: 2,
+    contractVersion: 3,
     queryFingerprint: 'e'.repeat(64),
     databaseIdentity: expect.any(String),
   })

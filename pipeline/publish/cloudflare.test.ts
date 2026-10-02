@@ -25,17 +25,21 @@ test('fresh initialization installs all typed tables and complete triggers, and 
     sqlite.close()
   }
 })
-test('legacy storage is not silently discarded or reinterpreted', async () => {
-  const sqlite = new Database(':memory:')
-  try {
-    sqlite.exec(
-      "CREATE TABLE releases(release_id TEXT); INSERT INTO releases VALUES('old')"
-    )
-    await expect(initializeSchema(sqliteD1(sqlite))).rejects.toThrow('fresh D1')
-    expect(sqlite.query('SELECT * FROM releases').all()).toEqual([
-      { release_id: 'old' },
-    ])
-  } finally {
-    sqlite.close()
+test('legacy and snapshot storage are not silently discarded or reinterpreted', async () => {
+  for (const table of ['releases', 'fiscal_jurisdiction_versions']) {
+    const sqlite = new Database(':memory:')
+    try {
+      sqlite.exec(
+        `CREATE TABLE ${table}(version_id TEXT); INSERT INTO ${table} VALUES('old')`
+      )
+      await expect(initializeSchema(sqliteD1(sqlite))).rejects.toThrow(
+        'fresh D1'
+      )
+      expect(sqlite.query(`SELECT * FROM ${table}`).all()).toEqual([
+        { version_id: 'old' },
+      ])
+    } finally {
+      sqlite.close()
+    }
   }
 })

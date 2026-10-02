@@ -79,7 +79,10 @@ test('keyset pagination rejects altered filters and cursors, and name search bin
     pageSize: 1,
   })
   const first = await pageLines(db, secret, input),
-    second = await pageLines(db, secret, { ...input, cursor: first.nextCursor })
+    second = await pageLines(db, secret, {
+      ...input,
+      cursor: first.nextCursor,
+    })
   expect(first.lines[0]!.id).not.toBe(second.lines[0]!.id)
   await expect(
     pageLines(db, secret, { ...input, fund: '02', cursor: first.nextCursor })
@@ -137,20 +140,18 @@ test('hierarchy grouping keeps repeated child codes in different parent branches
     'UPDATE fiscal_settlement_expenditure_line_hierarchy SET ordinal=1'
   )
   const parent = sqlite.query(
-    'INSERT INTO fiscal_settlement_expenditure_line_hierarchy VALUES(?,?,0,?,?,?,?)'
+    'INSERT INTO fiscal_settlement_expenditure_line_hierarchy VALUES(?,0,?,?,?,?)'
   )
   const lines = sqlite
     .query(
-      'SELECT version_id,fiscal_line_id,source_row FROM fiscal_settlement_expenditure_lines'
+      'SELECT fiscal_line_id,source_row FROM fiscal_settlement_expenditure_lines'
     )
     .all() as {
-    version_id: string
     fiscal_line_id: string
     source_row: number
   }[]
   for (const line of lines)
     parent.run(
-      line.version_id,
       line.fiscal_line_id,
       'kan',
       String(line.source_row),
@@ -170,7 +171,7 @@ test('hierarchy grouping keeps repeated child codes in different parent branches
 
 test('verified many-to-many correspondence counts actuals once, applies signed changes by date, and keeps unknown initial amounts unknown', async () => {
   const { version_id: version } = sqlite
-    .query('SELECT version_id FROM fiscal_jurisdiction_versions')
+    .query('SELECT version_id FROM fiscal_jurisdiction_data')
     .get() as { version_id: string }
   const original = sqlite
     .query('SELECT * FROM fiscal_datasets')
@@ -202,41 +203,17 @@ test('verified many-to-many correspondence counts actuals once, applies signed c
     ['item-b', 400],
   ] as const) {
     sqlite.run(
-      'INSERT INTO fiscal_expenditure_budget_items VALUES(?,?,?,?,?,?,?,?,?,?)',
-      [
-        version,
-        id,
-        '000001',
-        2026,
-        '01',
-        '一般会計',
-        '[]',
-        '[]',
-        '[]',
-        'recorded',
-      ]
+      'INSERT INTO fiscal_expenditure_budget_items VALUES(?,?,?,?,?,?,?,?,?)',
+      [id, '000001', 2026, '01', '一般会計', '[]', '[]', '[]', 'recorded']
     )
     sqlite.run(
-      'INSERT INTO fiscal_initial_expenditure_budget_lines VALUES(?,?,?,?,?,?,?,?,?,?,?)',
-      [
-        version,
-        id,
-        'initial',
-        id,
-        1,
-        initial,
-        'retained',
-        '',
-        '09',
-        'assigned',
-        '根拠',
-      ]
+      'INSERT INTO fiscal_initial_expenditure_budget_lines VALUES(?,?,?,?,?,?,?,?,?,?)',
+      [id, 'initial', id, 1, initial, 'retained', '', '09', 'assigned', '根拠']
     )
     for (let index = 0; index < 3; index++)
       sqlite.run(
-        'INSERT INTO fiscal_expenditure_settlement_links VALUES(?,?,?,?,?,?)',
+        'INSERT INTO fiscal_expenditure_settlement_links VALUES(?,?,?,?,?)',
         [
-          version,
           id,
           `000001:${String(index).padStart(6, '0')}`,
           'verified',
@@ -250,9 +227,8 @@ test('verified many-to-many correspondence counts actuals once, applies signed c
     ['change-b', 30, '2026-10-01'],
   ] as const) {
     sqlite.run(
-      'INSERT INTO fiscal_expenditure_budget_changes VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+      'INSERT INTO fiscal_expenditure_budget_changes VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
       [
-        version,
         id,
         'amendment',
         'item-a',
@@ -287,20 +263,44 @@ test('verified many-to-many correspondence counts actuals once, applies signed c
     status: 'complete',
   })
   expect(result.changes).toHaveLength(1)
-  expect((await budgetHistory(db, { ...input, fundCode: 'missing' })).items).toHaveLength(0)
-  expect((await budgetHistory(db, budgetHistoryQuerySchema.parse({ ...input, fundCode: '' }))).items).toHaveLength(0)
-  for (const table of ['fiscal_expenditure_budget_items', 'fiscal_expenditure_budget_changes']) {
+  expect(
+    (await budgetHistory(db, { ...input, fundCode: 'missing' })).items
+  ).toHaveLength(0)
+  expect(
+    (
+      await budgetHistory(
+        db,
+        budgetHistoryQuerySchema.parse({ ...input, fundCode: '' })
+      )
+    ).items
+  ).toHaveLength(0)
+  for (const table of [
+    'fiscal_expenditure_budget_items',
+    'fiscal_expenditure_budget_changes',
+  ]) {
     const rows = sqlite.query(`SELECT * FROM ${table}`).all()
-    await writeFile(join(directory, 'api', table + '.jsonl'), rows.map((r) => JSON.stringify(r)).join('\n') + '\n')
+    await writeFile(
+      join(directory, 'api', table + '.jsonl'),
+      rows.map((r) => JSON.stringify(r)).join('\n') + '\n'
+    )
   }
-  const { verifyBudgetChanges } = await import('../../../../pipeline/verify/budget-changes')
+  const { verifyBudgetChanges } =
+    await import('../../../../pipeline/verify/budget-changes')
   const versions = [{ jurisdictionCode: '000001', versionId: version }]
-  expect((await verifyBudgetChanges(directory, versions, (q) => budgetHistory(db, q)))[0]!.rows).toBe(2)
-  await expect(verifyBudgetChanges(directory, versions, async (q) => {
-    const response = await budgetHistory(db, q)
-    response.changes[0]!.amountDelta += 1
-    return response
-  })).rejects.toThrow('differs from built changes')
+  expect(
+    (
+      await verifyBudgetChanges(directory, versions, (q) =>
+        budgetHistory(db, q)
+      )
+    )[0]!.rows
+  ).toBe(2)
+  await expect(
+    verifyBudgetChanges(directory, versions, async (q) => {
+      const response = await budgetHistory(db, q)
+      response.changes[0]!.amountDelta += 1
+      return response
+    })
+  ).rejects.toThrow('differs from built changes')
 
   sqlite.run(
     "UPDATE fiscal_datasets SET coverage_json='{}' WHERE dataset_id='amendment'"
@@ -311,30 +311,12 @@ test('verified many-to-many correspondence counts actuals once, applies signed c
     status: 'unconfirmed',
   })
   sqlite.run(
-    'INSERT INTO fiscal_expenditure_budget_items VALUES(?,?,?,?,?,?,?,?,?,?)',
-    [
-      version,
-      'new-item',
-      '000001',
-      2026,
-      '01',
-      '一般会計',
-      '[]',
-      '[]',
-      '[]',
-      'unknown',
-    ]
+    'INSERT INTO fiscal_expenditure_budget_items VALUES(?,?,?,?,?,?,?,?,?)',
+    ['new-item', '000001', 2026, '01', '一般会計', '[]', '[]', '[]', 'unknown']
   )
   sqlite.run(
-    'INSERT INTO fiscal_expenditure_settlement_links VALUES(?,?,?,?,?,?)',
-    [
-      version,
-      'new-item',
-      '000001:000000',
-      'verified',
-      'group-a',
-      '初期入力欠落',
-    ]
+    'INSERT INTO fiscal_expenditure_settlement_links VALUES(?,?,?,?,?)',
+    ['new-item', '000001:000000', 'verified', 'group-a', '初期入力欠落']
   )
   expect(
     (await budgetHistory(db, input)).comparisons[0]!.budgetAmount
@@ -345,36 +327,37 @@ test('a version registered during budget history lookup cannot mix the response 
   const { budgetHistory } = await import('./queries')
   const { budgetHistoryQuerySchema } = await import('../contract')
   const old = sqlite
-    .query('SELECT version_id FROM fiscal_jurisdiction_versions')
+    .query('SELECT version_id FROM fiscal_jurisdiction_data')
     .get() as { version_id: string }
   let registered = false
   const racingDB = {
     ...db,
     prepare(sql: string) {
-      if (!registered && sql.startsWith('SELECT * FROM fiscal_datasets')) {
+      if (
+        !registered &&
+        sql.startsWith('SELECT d.*,v.version_id FROM fiscal_datasets')
+      ) {
         registered = true
         sqlite.run(
-          `INSERT INTO fiscal_jurisdiction_versions SELECT ?,jurisdiction_code,contract_version,package_id,name_snapshot,ocd_id_snapshot,caveats_json,?,manifest_url,manifest_sha256 FROM fiscal_jurisdiction_versions WHERE version_id=?`,
+          `UPDATE fiscal_jurisdiction_data SET version_id=?,registered_at=? WHERE version_id=?`,
           ['v-' + 'b'.repeat(64), '2099-01-01T00:00:00.000Z', old.version_id]
         )
       }
       return db.prepare(sql)
     },
   }
-  const result = await budgetHistory(
-    racingDB,
-    budgetHistoryQuerySchema.parse({
-      jurisdictionCode: '000001',
-      fiscalYear: 2026,
-      direction: 'expenditure',
-      asOf: '2026-06-01',
-    })
-  )
+  await expect(
+    budgetHistory(
+      racingDB,
+      budgetHistoryQuerySchema.parse({
+        jurisdictionCode: '000001',
+        fiscalYear: 2026,
+        direction: 'expenditure',
+        asOf: '2026-06-01',
+      })
+    )
+  ).rejects.toMatchObject({ code: 'VERSION_EXPIRED' })
   expect(registered).toBe(true)
-  expect(result.versions[0]?.versionId).toBe(old.version_id)
-  expect(result.datasets.every((d) => d.versionId === old.version_id)).toBe(
-    true
-  )
   expect(() =>
     budgetHistoryQuerySchema.parse({
       jurisdictionCode: '000001',

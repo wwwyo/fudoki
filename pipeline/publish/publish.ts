@@ -32,21 +32,15 @@ const BATCH_SIZE = 500
 async function appendRows(
   db: D1Database,
   table: keyof typeof TABLE_COLUMNS,
-  rows: Record<string, unknown>[],
-  versionId?: string
+  rows: Record<string, unknown>[]
 ) {
-  const columns = [
-    ...(versionId ? ['version_id'] : []),
-    ...TABLE_COLUMNS[table],
-  ]
-  const keys = [...(versionId ? ['version_id'] : []), ...TABLE_KEYS[table]]
+  const columns = TABLE_COLUMNS[table]
+  const keys = TABLE_KEYS[table]
   const joinKeys = keys
     .map((key) => `stored."${key}" IS json_extract(incoming.value,'$.${key}')`)
     .join(' AND ')
   for (let offset = 0; offset < rows.length; offset += BATCH_SIZE) {
-    const batch = rows
-      .slice(offset, offset + BATCH_SIZE)
-      .map((row) => (versionId ? { version_id: versionId, ...row } : row))
+    const batch = rows.slice(offset, offset + BATCH_SIZE)
     const existing = await db
       .prepare(
         `SELECT stored.* FROM "${table}" stored JOIN json_each(?) incoming ON ${joinKeys}`
@@ -70,9 +64,28 @@ async function appendRows(
   }
 }
 
+/** Follow dataset and budget ownership to include obsolete as well as expected rows. */
+function jurisdictionScope(table: (typeof TABLES)[number]): string {
+  if (table === 'fiscal_datasets' || table.endsWith('_budget_items'))
+    return 'jurisdiction_code=?'
+  if (table.endsWith('_settlement_links')) {
+    const direction = table.includes('_expenditure_')
+      ? 'expenditure'
+      : 'revenue'
+    return `budget_item_id IN (SELECT budget_item_id FROM fiscal_${direction}_budget_items WHERE jurisdiction_code=?)`
+  }
+  if (table.includes('_line_')) {
+    const direction = table.includes('_expenditure_')
+      ? 'expenditure'
+      : 'revenue'
+    return `fiscal_line_id IN (SELECT fiscal_line_id FROM fiscal_settlement_${direction}_lines WHERE dataset_id IN (SELECT dataset_id FROM fiscal_datasets WHERE jurisdiction_code=?))`
+  }
+  return 'dataset_id IN (SELECT dataset_id FROM fiscal_datasets WHERE jurisdiction_code=?)'
+}
+
 async function verifyTables(
   db: D1Database,
-  versionId: string,
+  jurisdictionCode: string,
   data: Awaited<ReturnType<typeof candidateRows>>
 ) {
   for (const table of TABLES) {
@@ -86,9 +99,9 @@ async function verifyTables(
         : ''
       const page = await db
         .prepare(
-          `SELECT ${TABLE_COLUMNS[table].join(',')} FROM ${table} WHERE version_id=?${cursor} ORDER BY ${keys.join(',')} LIMIT 500`
+          `SELECT ${TABLE_COLUMNS[table].join(',')} FROM ${table} WHERE ${jurisdictionScope(table)}${cursor} ORDER BY ${keys.join(',')} LIMIT 500`
         )
-        .bind(versionId, ...(after ?? []))
+        .bind(jurisdictionCode, ...(after ?? []))
         .all<Record<string, unknown>>()
       for (const row of page.results) hash.update(canonicalRow(table, row))
       count += page.results.length
@@ -136,7 +149,7 @@ export async function publish(
   const masters = jurisdictionMasterSchema
     .array()
     .parse(await jsonLines(join(directory, 'api/jurisdictions.jsonl')))
-  // Names in retained versions are snapshots, so current master names may change.
+
   for (const master of masters.filter((row) =>
     wanted.has(row.jurisdiction_code)
   )) {
@@ -197,10 +210,12 @@ export async function publish(
       caveats_json: JSON.stringify(version.caveats),
     }
     const existing = await db
-      .prepare('SELECT * FROM fiscal_jurisdiction_versions WHERE version_id=?')
-      .bind(version.versionId)
+      .prepare(
+        'SELECT * FROM fiscal_jurisdiction_data WHERE jurisdiction_code=?'
+      )
+      .bind(version.jurisdictionCode)
       .first<Record<string, unknown>>()
-    if (existing) {
+    if (existing?.version_id === version.versionId) {
       for (const [key, value] of Object.entries(values))
         if (existing[key] !== value)
           throw new Error('Existing version metadata differs')
@@ -211,16 +226,40 @@ export async function publish(
         manifest_url: manifestUrl,
         manifest_sha256: verification.manifestSha256,
       }
-      await db
-        .prepare(
-          `INSERT INTO fiscal_jurisdiction_versions (${Object.keys(row).join(',')}) VALUES (${Object.keys(
-            row
+      await db.batch([
+        db
+          .prepare('DELETE FROM fiscal_datasets WHERE jurisdiction_code=?')
+          .bind(version.jurisdictionCode),
+        db
+          .prepare(
+            'DELETE FROM fiscal_expenditure_budget_items WHERE jurisdiction_code=?'
           )
-            .map(() => '?')
-            .join(',')})`
-        )
-        .bind(...Object.values(row))
-        .run()
+          .bind(version.jurisdictionCode),
+        db
+          .prepare(
+            'DELETE FROM fiscal_revenue_budget_items WHERE jurisdiction_code=?'
+          )
+          .bind(version.jurisdictionCode),
+        db
+          .prepare('DELETE FROM fiscal_package_files WHERE jurisdiction_code=?')
+          .bind(version.jurisdictionCode),
+        db
+          .prepare(
+            `INSERT INTO fiscal_jurisdiction_data (${Object.keys(row).join(',')}) VALUES (${Object.keys(
+              row
+            )
+              .map(() => '?')
+              .join(
+                ','
+              )}) ON CONFLICT(jurisdiction_code) DO UPDATE SET ${Object.keys(
+              row
+            )
+              .filter((key) => key !== 'jurisdiction_code')
+              .map((key) => `${key}=excluded.${key}`)
+              .join(',')}`
+          )
+          .bind(...Object.values(row)),
+      ])
     }
     progress({
       stage: 'registered',
@@ -229,7 +268,7 @@ export async function publish(
     })
     const scoped = partitionRows(data, version.jurisdictionCode, partitions)
     for (const table of TABLES) {
-      await appendRows(db, table, scoped[table], version.versionId)
+      await appendRows(db, table, scoped[table])
       progress({
         stage: 'table',
         jurisdictionCode: version.jurisdictionCode,
@@ -240,7 +279,6 @@ export async function publish(
     }
     for (const file of files) {
       const row = {
-        version_id: version.versionId,
         path: file.path,
         jurisdiction_code: version.jurisdictionCode,
         object_key: file.objectKey,
@@ -249,10 +287,8 @@ export async function publish(
         content_type: file.contentType,
       }
       const old = await db
-        .prepare(
-          'SELECT * FROM fiscal_package_files WHERE version_id=? AND path=?'
-        )
-        .bind(version.versionId, file.path)
+        .prepare('SELECT * FROM fiscal_package_files WHERE path=?')
+        .bind(file.path)
         .first<Record<string, unknown>>()
       if (old && canonicalJson(old) !== canonicalJson(row))
         throw new Error('Existing file metadata differs')
@@ -266,7 +302,7 @@ export async function publish(
           .bind(...Object.values(row))
           .run()
     }
-    await verifyTables(db, version.versionId, scoped)
+    await verifyTables(db, version.jurisdictionCode, scoped)
     versions.push({
       jurisdictionCode: version.jurisdictionCode,
       versionId: version.versionId,

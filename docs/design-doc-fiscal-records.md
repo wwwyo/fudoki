@@ -15,7 +15,7 @@
 
 ## System Overview
 
-図を二つに分ける。団体別の版の ER 図は [自治体データ版の設計](design-doc-jurisdiction-versions.md)、財政データの ER 図は以下を正本とする。マスタを除く財政の提供用レコードは自治体データ版に属し、全体構築版に複製しない。
+図を二つに分ける。団体別の版の ER 図は [自治体データ版の設計](design-doc-jurisdiction-versions.md)、財政データの ER 図は以下を正本とする。D1 は団体ごとの最新版だけを保持し、明細に内容版のキーを持たせない。全収録年度と予算変更はそのまま保持する。
 
 ```mermaid
 erDiagram
@@ -29,7 +29,6 @@ erDiagram
     }
     cofog_master o|--o{ fiscal_settlement_expenditure_lines : assigned_code
     fiscal_settlement_expenditure_lines {
-        text version_id PK,FK
         text fiscal_line_id PK
         text dataset_id FK
         integer amount
@@ -37,7 +36,6 @@ erDiagram
         text cofog_status
     }
     fiscal_settlement_revenue_lines {
-        text version_id PK,FK
         text fiscal_line_id PK
         text dataset_id FK
         integer amount
@@ -53,13 +51,11 @@ erDiagram
         text legal_basis
     }
     fiscal_expenditure_budget_items {
-        text version_id PK,FK
         text budget_item_id PK
         text expenditure_setsu_id FK
         text line_granularity
     }
     fiscal_initial_expenditure_budget_lines {
-        text version_id PK,FK
         text fiscal_line_id PK
         text dataset_id FK
         text budget_item_id FK
@@ -81,7 +77,7 @@ erDiagram
     fiscal_settlement_revenue_lines ||--o{ fiscal_revenue_settlement_links : correspondence
 ```
 
-この図は採用した設計の主要な表を示す。複数列の `PK` は、それぞれが単独の主キーという意味ではなく、組合せで一行を特定する複合主キーを表す。例えば決算歳出明細は `(version_id, fiscal_line_id)` が主キーである。歳出の節マスタは自治体データ版から独立し、金額を持たない。決算明細に属する経路・追加区分・検索用名称は後述の専用子表に展開する。原典の報告値と処理規則は提供用 D1 の表に含めない。
+この図は採用した設計の主要な表を示す。複数列の `PK` は、それぞれが単独の主キーという意味ではなく、組合せで一行を特定する複合主キーを表す。決算歳出明細の主キーは `fiscal_line_id` 一つである。歳出の節マスタは自治体データ版から独立し、金額を持たない。決算明細に属する経路・追加区分・検索用名称は後述の専用子表に展開する。原典の報告値と処理規則は提供用 D1 の表に含めない。
 
 ## Detailed Design
 
@@ -111,7 +107,7 @@ erDiagram
 
 ### 決算明細に実績の金額を直接持たせる
 
-`fiscal_settlement_expenditure_lines` と `fiscal_settlement_revenue_lines` は `(version_id, fiscal_line_id)` を主キー、`(version_id, dataset_id)` を外部キーとする。`amount` は円換算した整数で、歳出は支出済額、歳入は収入済額を表す。`source_row`、会計コード・名称、連結判断・相手会計を持つ。金額だけの表と公開用 `phase` は作らない。
+`fiscal_settlement_expenditure_lines` と `fiscal_settlement_revenue_lines` は `fiscal_line_id` を主キー、`dataset_id` を外部キーとする。`amount` は円換算した整数で、歳出は支出済額、歳入は収入済額を表す。`source_row`、会計コード・名称、連結判断・相手会計を持つ。金額だけの表と公開用 `phase` は作らない。
 
 歳出表には `cofog_code`、`cofog_status`、分類根拠を持たせる。分類結果は概念上は明細の一部であり、独立した1対1表にしない。`assigned` のときだけ `cofog_master` を外部キー参照し、それ以外はコードを NULL とする。歳入表に COFOG 列は作らない。
 
@@ -121,17 +117,17 @@ dataset の歳入歳出・文書種別と、保存先の表の意味を取込検
 
 ### 予算の対象と、資料に載る額を分ける
 
-`fiscal_expenditure_budget_items` と `fiscal_revenue_budget_items` は、その年度に予算を追跡する科目・事業の対象を表す。共通科目マスタではなく、資料間の対応を確かめて作る団体・年度内の対象である。主キーは `(version_id, budget_item_id)`、`(version_id, jurisdiction_code)` は自治体データ版への外部キーとする。団体コード・年度・会計・科目経路・追加区分・検索用名称と、当初額の確認状態 `recorded / verified-zero / unknown` を持つ。
+`fiscal_expenditure_budget_items` と `fiscal_revenue_budget_items` は、その年度に予算を追跡する科目・事業の対象を表す。共通科目マスタではなく、資料間の対応を確かめて作る団体・年度内の対象である。主キーは `budget_item_id`、`jurisdiction_code` は団体ごとの現在の収録情報への外部キーとする。団体コード・年度・会計・科目経路・追加区分・検索用名称と、当初額の確認状態 `recorded / verified-zero / unknown` を持つ。
 
 予算明細は予定する支出・収入の金額、決算明細は実際の支出・収入を表す。`expenditure` は歳出という方向を表し、予算・決算の区別は `initial_budget` と `settlement` で明示する。例えば同じ学校修繕事業×委託料に、当初予算100万円、補正＋20万円、支出済額110万円がある場合、予算対象を介して当初予算明細・予算変更・決算明細を対応付ける。`budget_item` はこの追跡対象を指し、節マスタの定義や法定の「目」の英訳ではない。
 
-当初予算は `fiscal_initial_expenditure_budget_lines` と `fiscal_initial_revenue_budget_lines` に保存する。各行は一つの `amount`、`dataset_id / fiscal_line_id`、対応する `budget_item_id` を持つ。歳出の原典行への対応と下位内訳は `details_json` に置き、歳入の原典行は `source_row` で参照する。主キーは `(version_id, fiscal_line_id)`、`(version_id, budget_item_id)` は UNIQUE とし、確認した対象ごとに当初額を一つだけ採用する。資料が訂正された場合も複数版を重ねて計上しない。
+当初予算は `fiscal_initial_expenditure_budget_lines` と `fiscal_initial_revenue_budget_lines` に保存する。各行は一つの `amount`、`dataset_id / fiscal_line_id`、対応する `budget_item_id` を持つ。歳出の原典行への対応と下位内訳は `details_json` に置き、歳入の原典行は `source_row` で参照する。主キーは `fiscal_line_id`、`budget_item_id` は UNIQUE とし、確認した対象ごとに当初額を一つだけ採用する。資料が訂正された場合も複数版を重ねて計上しない。
 
 補正等で新設された対象も予算対象表に持てるため、当初予算の明細が存在しない場合がある。新設の証拠があり当初額ゼロと確認できたときだけ `verified-zero` とする。入力が欠けた `unknown` をゼロとして計算しない。原典の一行が複数対象にまたがり分解できない場合は、原典で確認できる粒度の対象として保持し、細かい事業へ配賦しない。
 
 ### 補正・繰越・その他の変更を増減額として持つ
 
-`fiscal_expenditure_budget_changes` と `fiscal_revenue_budget_changes` は `(version_id, change_id)` を主キーとし、原典の dataset と予算対象を同じ `version_id` 内の複合外部キーで参照する。各行は `amount_delta`、変更種別、適用日・適用順序、原典の行への対応を持つ。歳出では同一の変更種別・適用時点・順序・原資等の条件が一致する場合に限り対象単位へ集約し、内訳と原典行は `details_json` に保持する。減額は負の値。補正の号数と原典の金額の意味は dataset の説明に置く。
+`fiscal_expenditure_budget_changes` と `fiscal_revenue_budget_changes` は `change_id` を主キーとし、原典の dataset と予算対象をそれぞれの ID で外部キー参照する。各行は `amount_delta`、変更種別、適用日・適用順序、原典の行への対応を持つ。歳出では同一の変更種別・適用時点・順序・原資等の条件が一致する場合に限り対象単位へ集約し、内訳と原典行は `details_json` に保持する。減額は負の値。補正の号数と原典の金額の意味は dataset の説明に置く。
 
 支出・収入で必要な変更種別を区別し、歳出の予備費充用・流用を歳入へ一律に適用しない。繰越は繰越元年度・繰越先年度と会計を明示する。予備費充用・流用では、対象と原資の対応が必要な場合は相手予算対象を記録する。議決上の限度額を実際の変更額として採用しない。
 
@@ -141,13 +137,13 @@ dataset の歳入歳出・文書種別と、保存先の表の意味を取込検
 
 ### 予算と決算の対応を、金額の複製にしない
 
-`fiscal_expenditure_settlement_links` と `fiscal_revenue_settlement_links` は `(version_id, budget_item_id, settlement_line_id)` を主キーとする。予算対象と決算明細を同じ版内の複合外部キーで参照し、対応状態・根拠・対応グループを持つ。歳出と歳入の対応表は分ける。
+`fiscal_expenditure_settlement_links` と `fiscal_revenue_settlement_links` は `(budget_item_id, settlement_line_id)` を主キーとする。予算対象と決算明細をそれぞれの ID で外部キー参照し、対応状態・根拠・対応グループを持つ。歳出と歳入の対応表は分ける。
 
 一対一だけでなく科目の分割・統合を表せるようにする。多対多のリンクで金額を単純に JOIN して合算しない。確認済みの対応グループについて予算と決算をそれぞれ一度ずつ集計して比較する。対応が不明な明細も保存し、リンクのない行をデータ欠落や金額ゼロと扱わない。団体・年度・会計・歳入歳出の一致と、グループをまたいだ二重計上がないことを build で検査する。
 
 ### 歳出・歳入の経路と検索用名称を混ぜない
 
-決算明細の子表を以下に分ける。それぞれ親の `(version_id, fiscal_line_id)` を外部キー参照する。
+決算明細の子表を以下に分ける。それぞれ親の `fiscal_line_id` を外部キー参照する。
 
 - `fiscal_settlement_expenditure_line_hierarchy` / `fiscal_settlement_revenue_line_hierarchy`: 主キーに `ordinal` を加え、会計・款・項・目・事業・節等の経路を一段ずつ保持する。
 - `fiscal_settlement_expenditure_line_dimensions` / `fiscal_settlement_revenue_line_dimensions`: 主キーに `dimension` を加え、原典にある所属・予算区分等を保持する。

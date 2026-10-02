@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const CONTRACT_VERSION = 2
+export const CONTRACT_VERSION = 3
 export const sha256Schema = z.string().regex(/^[a-f0-9]{64}$/)
 export const buildIdSchema = z.string().regex(/^r-[a-f0-9]{32}$/)
 export const versionIdSchema = z.string().regex(/^v-[a-f0-9]{64}$/)

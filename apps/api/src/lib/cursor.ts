@@ -5,7 +5,7 @@ import { versionRefSchema } from '../contract'
 
 const payloadSchema = z
   .object({
-    v: z.literal(2),
+    v: z.literal(3),
     versions: z.array(versionRefSchema).max(100),
     expiresAt: z.number().int(),
     fingerprint: sha256Schema,

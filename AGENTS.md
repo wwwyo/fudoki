@@ -132,7 +132,7 @@ uv add --exclude-newer $(date -v-7d +%Y-%m-%d) <package>
 - **説明ファイル**: Python/TypeScript の `pipeline/fdp/`。FDP descriptor と収録範囲・出典・配布先をまとめた Git manifest を生成する。
 - **検索・配布**: API は D1 の SQL を実行し、API は公開中の Git manifest URL を返し、R2 は custom domain から団体別配布物を直接配信する。API に R2 やデータ ASSETS を bind しない。
 - **検証**: Bun/TypeScript の `pipeline/verify/report/` とループバック専用の view。公開 web と UI は共有しない。
-- **保存**: Git はコード・宣言・判断・入力一覧・採用した入力の証跡・最新 manifest、R2 は原典・取り込み・配布物、D1 は検索用の派生表。`.cache/` と `.build/` は再生成可能なローカル作業領域。
+- **保存**: Git はコード・宣言・判断・入力一覧・採用した入力の証跡・最新 manifest、R2 は原典・取り込み・配布物、D1 は全収録年度を含む最新版だけの検索用派生表。`.cache/` と `.build/` は再生成可能なローカル作業領域。
 
 **系統（lineage）は dbt の `manifest.json` から取る。** 手で書かない。
 段とノードを手作りすると、パイプラインを変えても図が変わらない状態を作る（実際に作った）。

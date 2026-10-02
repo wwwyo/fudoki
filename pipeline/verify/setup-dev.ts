@@ -48,7 +48,7 @@ const db = new Database(target)
 try {
   const versions = db
     .query(
-      'SELECT version_id FROM fiscal_jurisdiction_versions ORDER BY jurisdiction_code'
+      'SELECT version_id FROM fiscal_jurisdiction_data ORDER BY jurisdiction_code'
     )
     .all() as { version_id: string }[]
   if (
@@ -57,7 +57,7 @@ try {
   )
     throw new Error('Local database belongs to another candidate')
   db.prepare(
-    'UPDATE fiscal_jurisdiction_versions SET manifest_url=?,manifest_sha256=?'
+    'UPDATE fiscal_jurisdiction_data SET manifest_url=?,manifest_sha256=?'
   ).run(
     `https://raw.githubusercontent.com/wwwyo/fudoki/${revision.stdout.toString().trim()}/pipeline/publish/manifest.json`,
     manifest.manifestSha256
