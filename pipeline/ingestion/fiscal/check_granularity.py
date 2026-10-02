@@ -69,7 +69,7 @@ MAX_SHEETS = 30
 
 
 def load_jurisdictions() -> dict[str, dict]:
-    """母集団。**③会議録のゲート判定は読まない** — 根拠が違ううえ、③が落ちたら①も動かなくなる。"""
+    """共有の団体 registry から調査の母集団を引く。"""
     return json.loads(JURISDICTIONS.read_text())["jurisdictions"]
 
 

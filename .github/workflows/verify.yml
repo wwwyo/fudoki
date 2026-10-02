@@ -22,7 +22,6 @@ jobs:
       - run: bun run typecheck:all
       - run: bun run test
       - run: uv run python -m unittest discover -s pipeline -p '*_test.py'
-      - run: bun run validate
       - run: bun run build:web
       - run: bun run build:api
       - run: bun run build:docs

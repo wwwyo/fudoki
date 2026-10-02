@@ -190,7 +190,7 @@ CC BY が求める帰属と改変の明示には標準のプロパティが無�
 10. `bun run survey:structure <団体コード>` で観測を残す（主張の出所になる）。
     団体固有の癖・実測・注意は `pipeline/ingestion/fiscal/jurisdictions/<団体コード>.md` に書く
     （**この文書には書かない**）
-11. `bun run pipeline` / `bun run typecheck`（root と web）/ `bun run validate` を通し、
+11. `bun run pipeline` / `bun run typecheck`（root と web）を通し、
     `.build/` の生成物を検査する。Git には宣言・証跡・入力一覧を保存し、配布物は R2 に置く
 
 足し忘れは**エラーで止まる**ようにしてある。黙って欠ける事故は起きない。

@@ -15,4 +15,4 @@ status: accepted
 - API の内容ハッシュ指定は現在との一致確認に使う。古い指定・カーソルは `VERSION_EXPIRED` とし、再取得を求める。
 - 原典・取り込み・過去の R2 配布物と Git の採用履歴は保持する。D1 の過去検索と、更新を跨ぐページ継続は提供しない。
 
-新しい契約版3の DB と API を合わせて移行する。旧 DB は自動削除せず、固定入力から新しい DB を構築する。保存と再実行の詳細は [設計書](../design-doc-jurisdiction-versions.md) に従う。
+新しい契約版3の DB と API を合わせて移行する。旧 DB は自動削除せず、固定入力から新しい DB を構築する。保存と再実行の詳細は [設計書](../prd/jurisdiction-versions/design-doc.md) に従う。

@@ -207,8 +207,7 @@ def probe(doc: dict) -> dict:
     except urllib.error.HTTPError as e:
         # ⚠️ **403 は「取れない」であって「無い」ではない。** 東村山市は CloudFront の
         # WAF がブラウザ以外の User-Agent を全部弾く（robots.txt 自体も 403 を返す）。
-        # **UA を偽装して回避しない** — ③会議録で DiscussNetPremium を規模が最大でも
-        # 対象から外したのと同じ判断で、拒否の宣言を迂回する経路は採らない。照会に回す。
+        # 拒否を宣言した取得元は照会に回し、UA を偽装して迂回しない。
         return {**base, "reaches": "blocked", "basis": f"HTTP {e.code}（取得を拒否されている。照会が要る）"}
     except Exception as e:  # noqa: BLE001  取得元の異常は観測として残す。止めない
         return {**base, "reaches": "unknown", "basis": f"{type(e).__name__}: {e}"}

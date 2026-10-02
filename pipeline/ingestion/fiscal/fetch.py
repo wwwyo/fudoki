@@ -26,7 +26,7 @@ from ingestion.lib.ckan import datasets_of_organization
 from ingestion.lib.http import Fetched, http_get
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
-# 層ごとに名前空間を切る。②調達は OCDS、③会議録は Popolo と、
+# 層ごとに名前空間を切る。予算は FDP、調達は OCDS と、
 # 標準も descriptor も別なので、同じ datapackages/ には収まらない。
 LAYER = "budget"
 from ingestion.paths import RAW

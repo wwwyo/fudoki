@@ -18,4 +18,4 @@ build は固定入力から生成して検査するローカル処理、publish 
 
 外部利用者がいないため旧 API 名・列・URL の互換 adapter は設けない。原典由来の金額・分類判断・出典と利用条件は変えず検証する。遠隔保管と再構築を確認するまで旧データは保管し、履歴の書き換えは別作業とする。
 
-詳細: [全体設計](../design-doc-monorepo.md)、[実行手順](../../pipeline/README.md)、[移行記録](../monorepo-migration.md)。
+詳細: [全体設計](../prd/monorepo/design-doc.md)、[実行手順](../../pipeline/README.md)、[移行記録](../monorepo-migration.md)。

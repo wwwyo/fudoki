@@ -8,7 +8,7 @@
 自治体の予算は PDF か、自治体ごとに違う形の CSV で出ている。
 だから「この市はこの事業にいくら使っているか」を機械で引けないし、市をまたぐ比較も年をまたぐ比較も事実上できない。
 
-fudoki は日本の地方自治体の**支出を事業単位まで**構造化し、標準形式で配布する。
+風土記は日本の地方自治体の**歳出の予算・決算額を事業単位まで**構造化し、AI ready なデータとして配布する。
 デジタル庁のダッシュボードが目的別と性質別まで出している以上、欠けているのは**粒度**と**横断性**の2つだけで、そこだけを埋める。
 
 ## 配布しているもの
@@ -56,14 +56,14 @@ bun run typecheck:all
 
 ## 用語
 
-原典は自治体が公開した CSV・PDF そのもの、取り込みは原典の値と単位を保った表である。dbt の staging で列名・型を整え、intermediate で共通単位・科目・分類を揃え、marts で提供する列と粒度を確定する。詳細は [用語](AGENTS.md#glossary) と [設計](docs/design-doc-monorepo.md) を参照。
+原典は自治体が公開した CSV・PDF そのもの、取り込みは原典の値と単位を保った表である。dbt の staging で列名・型を整え、intermediate で共通単位・科目・分類を揃え、marts で提供する列と粒度を確定する。詳細は [用語](AGENTS.md#glossary) と [設計](docs/prd/monorepo/design-doc.md) を参照。
 
-原典由来の金額と、風土記が定めた COFOG・名称などの判断は、同じパッケージの別リソースとして配る。判断の根拠は Git にある規則表に残す。DuckDB と D1 は、その入力と宣言から生成する実行用の表である。
+COFOG は歳出明細と同じ CSV に含め、原典由来の金額と分類などの判断を列の説明で区別する。名称の対応は `account_names.csv`・`project_names.csv` で配る。判断の根拠は Git にある規則表に残す。DuckDB と D1 は、その入力と宣言から生成する実行用の表である。
 
-予算の科目は **款 > 項 > 目 > 節** の階層で、款が最も粗い（地方自治法にもとづく区分）。
+歳出の款・項・目は目的・科目の階層で、款が最も粗い。節は目の内訳を経済的な性質で分ける法定区分である。
 「事業単位まで」というのは目とその下の事業階層に届くという意味で、既存のダッシュボードは款と項で止まっている。
 事業階層の名前は団体ごとに違う（三鷹市は「事項」、狛江市は「大事業・中事業・小事業」）。
-**揃えることは fudoki の判断**なので、正本は団体ごとの形のままにしてあり、揃えた側（COFOG）を別リソースに置いている。
+**COFOG への対応は風土記の判断**であり、原典の階層経路を保った歳出明細に分類列として加える。
 
 科目の名称が原典に無い団体（狛江市）は、市が公開している決算書 PDF の見出しから名称を解決している。これも判断なので、出所は規則の根拠に書いてある。
 
@@ -72,13 +72,12 @@ bun run typecheck:all
 
 ## 将来展望
 
-3つのレイヤを、それぞれ既存の標準に載せて繋ぐ。
+予算・決算と調達を、それぞれ既存の標準に載せて繋ぐ。
 
 | レイヤ | 標準 | 状態 |
 |---|---|---|
 | ① 何にいくら（予算） | [Fiscal Data Package](https://fiscal.datapackage.org/) | 収録できた団体から配布中 |
 | ② いつ何が公告されたか（調達） | [OCDS](https://standard.open-contracting.org/) | 未着手 |
-| ③ どう決まったか（会議録） | [Popolo](https://www.popoloproject.com/) | 権利判定のみ（再配布可の団体は0） |
 
 - 配布データは原典の利用条件に従って R2 の custom domain から公開
 - コードは MIT。データは原典のライセンスに従う（下記）
@@ -86,11 +85,11 @@ bun run typecheck:all
 
 ## もっと読む
 
-- [AGENTS.md](./AGENTS.md): 設計方針、実測にもとづく判断、パーサ設計の原則
+- [AGENTS.md](AGENTS.md): 設計方針、実測にもとづく判断、パーサ設計の原則
 - [pipeline/README.md](pipeline/README.md): 配布物の読み方
-- [apps/web/README.md](./apps/web/README.md): ダッシュボードの構成
+- [apps/web/README.md](apps/web/README.md): ダッシュボードの構成
 - [pipeline/dbt/models/](pipeline/dbt/models/): staging（原典別の整形）→ intermediate（統合・分類）→ marts（提供用データ）。配布処理は `pipeline/fdp/` に分け、原典の保存と判断の整合性はテストで縛っている
-- [pipeline/ingestion/fiscal/sources.toml](./pipeline/ingestion/fiscal/sources.toml): 取得元の定義。団体を足すときはここから
+- [pipeline/ingestion/fiscal/sources.toml](pipeline/ingestion/fiscal/sources.toml): 取得元の定義。団体を足すときはここから
 
 名前は『風土記』から。
 713年の官命により、諸国へ地名の由来や産物を**同じ様式で報告させて集めた**地誌で、各自治体から同じ形式でデータを集めるという本 PJ の構造がそのまま重なる。
@@ -101,9 +100,9 @@ bun run typecheck:all
 
 | 層 | 誰のものか | ライセンス |
 |---|---|---|
-| コード（`pipeline/` `packages/` `apps/`） | fudoki | [MIT](./LICENSE) |
-| fudoki の判断（`datapackages/<団体コード>/cofog*.csv` `project_names.csv`） | fudoki | CC BY 4.0 |
-| 原典と正本（非公開 R2 の取り込み `datapackages/<団体コード>/expenditure.csv` `revenue.csv`） | **各自治体** | 各原典の利用条件 |
+| コード（`pipeline/` `packages/` `apps/`） | fudoki | [MIT](LICENSE) |
+| 風土記の判断（COFOG 分類列・科目や事業名の対応） | 風土記 | descriptor の列・リソースごとの宣言（現在は CC BY 4.0） |
+| 原典・取り込み表・配布明細の原典由来の列 | **各自治体** | 各原典の利用条件 |
 
 ⚠️ **原典のライセンスは fudoki が選んだものではない。**
 著作権を持たないものにライセンスは与えられないので、正本の表示は原典に付いてくる条件を

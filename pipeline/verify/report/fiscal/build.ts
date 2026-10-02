@@ -593,9 +593,9 @@ const PROJECT_NAME_YEARS: Map<string, Set<number>> = (() => {
  * 団体の名称。**`sources.toml` には持たせない**（`pipeline/ingestion/fiscal/sources.py` が
  * 明示的に禁止している — 以前は団体×年度ごとに反復宣言しており、狛江市だけで6回、
  * 誤記があっても検知されなかった）。正本は `packages/jurisdictions/jurisdictions.json`
- * （①②③のどの層からも参照される、層に依存しない団体の同一性）。
+ * （財政データ・調達から参照される、層に依存しない団体の同一性）。
  *
- * ⚠️ **読む口を自分で作らない。** 既に `ingestion/shared/jurisdictions.ts` の
+ * ⚠️ **読む口を自分で作らない。** 既に `packages/jurisdictions/jurisdictions.ts` の
  * `loadJurisdictions()` が zod で検証して読んでいる。ここで `readFileSync` + 型アサーションを
  * 書き直すと、同じ JSON を読む口が2つになるうえ、実行時の検証が効かない場所を自分で作ることになる。
  * `loadJurisdictions()` は非同期だが、Bun の ESM は top-level await を扱えるので、

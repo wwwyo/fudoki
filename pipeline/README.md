@@ -2,7 +2,7 @@
 
 原典・取り込み済み Parquet は非公開 R2、コード・宣言・判断・入力一覧・証跡は Git に置く。dbt が提供モデルを確定し、団体別の配布物を公開 R2、検索用の派生表を D1 へ反映する。公開 web とローカル検証画面の UI は共有しない。
 
-全体設計は [monorepo の設計](../docs/design-doc-monorepo.md)、D1 の版と再実行は [自治体データ版の設計](../docs/design-doc-jurisdiction-versions.md)、金額・対応は [財政明細の設計](../docs/design-doc-fiscal-records.md) にある。
+全体設計は [monorepo の設計](../docs/prd/monorepo/design-doc.md)、D1 の版と再実行は [自治体データ版の設計](../docs/prd/jurisdiction-versions/design-doc.md)、金額・対応は [財政明細の設計](../docs/prd/fiscal-records/design-doc.md) にある。
 
 ## 固定入力から構築する
 
@@ -25,7 +25,7 @@ bun run pipeline:build --rebuild
 
 補正・繰越等の実資料と、資料間の確認済み対応は現在未収録である。変更・対応表が空でも、変更ゼロ・予算と決算の一致を意味しない。dataset の `coverage.budgetHistory` は `unconfirmed` として提供する。収録・照合の条件は [予算変更履歴 PRD](../docs/prd/fiscal-budget-history/prd.md) に残す。
 
-採用済みの設計では、歳出の節マスタ `fiscal_expenditure_setsu_master` を追加し、歳出予算を事業×歳出の節へ集約する。参照は `expenditure_setsu_id`、下位内訳と原典行への対応は金額明細の `details_json` とする。この変更は未実装であり、上記は現在の構築結果を説明している。移行の契約と検査条件は [財政データの設計](../docs/design-doc-fiscal-records.md) を参照。
+採用済みの設計では、歳出の節マスタ `fiscal_expenditure_setsu_master` を追加し、歳出予算を事業×歳出の節へ集約する。参照は `expenditure_setsu_id`、下位内訳と原典行への対応は金額明細の `details_json` とする。この変更は未実装であり、上記は現在の構築結果を説明している。移行の契約と検査条件は [財政データの設計](../docs/prd/fiscal-records/design-doc.md) を参照。
 
 ## 収録範囲を Git に記録する
 

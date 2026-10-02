@@ -27,7 +27,6 @@
     "build:brand": "uv run --no-project --with fonttools python apps/web/brand/build.py",
     "build:docs": "bun run --cwd apps/docs build",
     "build:web": "bun run --cwd apps/web build",
-    "check:bulletins": "bun run pipeline/ingestion/transcripts/check-bulletins.ts",
     "check:fiscal": "uv run python -m ingestion.fiscal.check_granularity",
     "coverage:sources": "uv run python -m ingestion.fiscal.source_coverage",
     "deploy:api": "bun run --cwd apps/api deploy",
@@ -45,7 +44,6 @@
     "fetch:account-master": "uv run python -m ingestion.fiscal.fetch_account_master",
     "fetch:boundaries": "uv run python apps/web/map/build.py",
     "fetch:fdp-taxonomy": "bun run pipeline/fdp/fetch-taxonomy.ts",
-    "fetch:robots": "bun run pipeline/ingestion/transcripts/fetch-robots.ts",
     "pdf:layer": "uv run python -m ingestion.fiscal.pdf_layer",
     "pipeline": "uv run python -m ingestion.acquire && bun run pipeline:build && bun run pipeline:report",
     "pipeline:build": "bun run pipeline/build.ts",
@@ -60,7 +58,6 @@
     "test:api": "bun run --cwd apps/api test",
     "typecheck": "tsc --noEmit",
     "typecheck:all": "bun run typecheck && bun run --cwd apps/api typecheck && bun run --cwd apps/web typecheck && bun run --cwd pipeline/verify/view typecheck && bun run --cwd apps/docs typecheck",
-    "validate": "bun run pipeline/ingestion/transcripts/validate.ts",
     "report": "bun run pipeline:report",
     "dev:setup:download": "bun run pipeline/verify/setup-download.ts"
   },

@@ -67,7 +67,7 @@ flowchart LR
 - **未確認の明細**は、節への対応や集約時の分類・連結判断が確認できるまで、原典の粒度で保持する。節不明の明細をまとめたり、金額ゼロと推定したりしない。
 - **決算明細**は原典に報告された実績を持ち、予算対象との対応で比較する。予算と決算の粒度を無条件に同一視しない。
 
-事業×歳出の節への集約は採用した設計であり、現行実装には未適用である。保存形式・命名・移行条件は [財政データの設計](../../design-doc-fiscal-records.md) に定める。
+事業×歳出の節への集約は採用した設計であり、現行実装には未適用である。保存形式・命名・移行条件は [財政データの設計](../fiscal-records/design-doc.md) に定める。
 
 ## 必要な原典と収録範囲
 
@@ -121,7 +121,7 @@ flowchart LR
 
 ## 関連文書
 
-- [全体設計](../../design-doc-monorepo.md)：dataset・決算実績と予算履歴・保存先の役割分担。
+- [全体設計](../monorepo/design-doc.md)：dataset・決算実績と予算履歴・保存先の役割分担。
 - [パイプラインの実行手順](../../../pipeline/README.md)：現行の取得対象と構築手順。
 - [狛江市令和6年度一般会計決算書](https://www.city.komae.tokyo.jp/index.cfm/50%2C138924%2Cc%2Chtml/138924/20250707-101211.pdf)：予算額の内訳を照合する原典例。
 - [富士見市の予算・繰越計算書](https://www.city.fujimi.saitama.jp/shisei/04zaisei/01yosan/yosansho/reiwa6nenndohoseiyos.html)、[大子町の年度途中の財政状況](https://www.town.daigo.ibaraki.jp/data/doc/1761635636_doc_15_0.pdf)：追加の入力を調査する資料例。

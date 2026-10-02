@@ -2,7 +2,7 @@
  * ①予算の報告の型。**層に依存しない部分は `../common` にある。**
  *
  * ここにあるのは会計年度・COFOG・FDP の ColumnType など、予算固有のもの。
- * ②調達（OCDS）③会議録（Popolo）は別の schema を持つので、
+ * 調達（OCDS）とは schema を分け、
  * 巨大な optional の塊にしない。
  */
 import type { Provenance, ReportEnvelope } from '../common'

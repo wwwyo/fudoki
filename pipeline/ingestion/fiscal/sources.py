@@ -92,7 +92,7 @@ class Source:
     jurisdiction_code: str
     # ⚠️ **sources.toml には書かない。** `jurisdiction_code` から
     # `packages/jurisdictions/jurisdictions.json` を引いて load_sources が埋める。
-    # 団体の名称と識別子はそこが正本（①②③で同じキーを使う）。
+    # 団体の名称と識別子はそこが正本（財政データ・調達で同じキーを使う）。
     jurisdiction_name: str
     fiscal_year: int
     # ⚠️ **カタログ経由のときだけ読まれる。** 年度表記がリソース名に含まれることを
@@ -188,8 +188,6 @@ class Source:
         止まるのは原文の複製だけである。
 
         根拠は `redistribute_basis`（①予算はカタログのライセンス）。
-        ③会議録の gate（`pipeline/ingestion/transcripts/gates.json`）とは根拠が違うので繋がない —
-        三鷹市は会議録が review だが予算は CC BY で、繋ぐと予算が止まる。
         「公開されている」ことは「再配布してよい」ことを意味しない。
         """
         return self.redistribute == "allow"
