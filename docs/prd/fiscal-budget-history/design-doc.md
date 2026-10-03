@@ -1,285 +1,143 @@
-# 補正・繰越の実資料を予算履歴へ取り込む
+# 補正・繰越の原典からmartを作る
 
 ## Objectives
 
-- **Goal**: 狛江市（132195）2023年度一般会計の当初予算と補正各号を取り込み、原典行の粒度を保持した暫定予算対象と既収録の決算明細を対応づける。原典の報告予算現額との照合と、未確認の変更を残す検査を既存の `pipeline/` に組み込む。
-- **Not goal**: 全事業・全年度の履歴完成、日付の推測、粗い総額の事業への配賦、Cloudflare の有効化や本番反映。事故繰越計算書の抽出を実測済みとして実装すること。
+- **Goal**: 狛江市2023年度一般会計・歳出の原典を取り込み、当初額・変更・決算との対応・照合結果のmartを作る。
+- **Not goal**: 利用者向け機能、配布・保存先、公開運用の設計。全国への一括展開や、資料不足を推定で埋めること。
 
-本書は実装前の設計である。[PRD](prd.md) の why/what に対し、入力の採用・変換・照合・検査の how を定める。基準はPR39取り込み後のmain（`67f3e640394eb178e0ab03fbdf8b8f30431f7349`）と [財政明細の設計](../fiscal-records/design-doc.md)、[自治体データ版の設計](../jurisdiction-versions/design-doc.md)、[全体設計](../monorepo/design-doc.md) である。以下のコードパスはこのmainのrepo rootからの相対パスであり、「新規案」と記すものはまだ存在しない。実装済みのD1契約版3と、設計採用済み・未実装の節集約を区別する。実装・遠隔未適用の状況は [移行記録](../../monorepo-migration.md) を参照する。
+[PRD](prd.md) に対し、原典の採用からmart生成までの処理を定める。これは実装前の設計である。
 
 ## Background
 
-PR39には当初予算、符号付き変更、予算対象と決算のM:N対応、自治体別versionの保存・配布契約がある。一方、実資料から生成する変更・対応は空で、`api_fiscal_*_budget_changes.sql` と `api_fiscal_*_settlement_links.sql` は `where false`、datasetの履歴は `unconfirmed` である。既存5団体・28datasetの実績・当初予算があることは、補正履歴の完成を意味しない。
+既存の当初予算・決算のモデルを再利用し、空になっている予算変更と対応のモデルへ実資料を接続する。最初に狛江市を選ぶのは、2023年度決算CSVが既収録で、正式な当初・第1〜7号の補正予算書と、目単位の報告予算現額を確認できたためである。
 
-狛江市を選ぶ理由は、2023年度決算CSVが既収録で、当初と第1〜7号の正式予算書をすべて取得でき、決算書に目単位の予算内訳があるためである。三鷹市の既収録年度や多摩市の当初予算だけを起点にすると、最初に決算側を追加する必要がある。狛江市では既存決算CSVの原典hashを維持して対応と変更を追加できる。ただし、繰越計算書と充流用の実施日は未確認なので、年度全体のcompleteを初回の達成条件にしない。
-
-設計の根拠となる原典URL・年度・ページ・観測値は本書の [確認した原典](#確認した原典) に記す。設計の例は「実測」「採用規約」「架空の検査例」を区別する。原典の調査取得だけを行い、入力lockへの採用・R2転送・D1投入は行っていない。
+初回は13-1-1予備費と7-1-2商工業振興費の二目に限る。当初2行、補正3行、既存の決算10明細との集合対応を作る。日付や事業×歳出の節の対応が不足するため、履歴全体はunconfirmedとする。[原典参照](#確認した原典) に調査済みの値と未確認事項を記す。
 
 ## System Overview
 
 ```mermaid
 flowchart LR
-    official[自治体の原典と議決結果] --> raw[原典と1対1の取り込み表]
-    lock[採用入力一覧と証跡] --> raw
-    raw --> staging[文書別の列と型]
-    decisions[Gitの採用判断と明細対応] --> middle[円換算と変更の導出]
-    staging --> middle
-    middle --> history[予算対象・当初額・変更・対応]
-    staging --> reported[内部の報告予算現額]
-    history --> check[同粒度の照合と収録範囲の判定]
+    origin[当初・補正・決算・繰越等の原典] --> raw[取り込み表]
+    raw --> staging[原典別の列・型を整える]
+    staging --> middle[円換算・増減額・対象対応]
+    middle --> marts[当初額・変更・対応のmart]
+    staging --> reported[報告予算現額と未採用の観測]
+    marts --> check[同粒度の照合]
     reported --> check
-    history --> marts[既存marts]
-    check --> marts
-    marts --> csv[公開R2の不変CSV]
-    marts --> d1[D1の団体別の現在内容]
-    d1 --> api[budgetHistory]
+    check --> result[照合結果・不足のmart]
 ```
 
-取得・変換・配布・検証は `pipeline/` の責務を保つ。Gitはコード・宣言・判断・`pipeline/ingestion/fiscal/sources.lock.json`・採用証跡・最新の `pipeline/publish/manifest.json`、非公開R2は原典と取り込みParquetを保持する。公開R2は `fiscal/<団体コード>/p-<配布内容hash>/` の不変CSVとFDP descriptorをcustom domainから直接配信する。D1は全収録年度を含む団体ごとの最新版だけの派生検索表である。再利用する入力・抽出キャッシュは `pipeline/.cache/`、構築生成物は `pipeline/.build/` に置く。本設計の調査試作だけはGit管理外の `.cache/fiscal-history/` に残す。原典の報告予算現額は内部に保存し、決算の公開 `amount` は実績一つを維持する。
-
-公開中の全体release、active切替、非公開候補の一括反映を追加しない。団体の途中の明細公開と、同じ内容の再試行での反映済み行の維持は既存契約に従い、未変更自治体を再利用する。本設計の照合失敗は金額を確定しない条件であり、新しい公開状態やguardではない。
+取り込みとstagingは原典の論理行との1対1を保つ。円換算、採用行の選択、増減額の導出、資料間の対応はintermediateで行う。martsで最終的な列と粒度を確定する。
 
 ## Detailed Design
 
-D1の現在内容と節集約との接続条件を確認し、入力の採用と文書別の取り込みを定めた後、増減・時点・対象対応を決め、繰越・充流用・内部照合・coverageを既存の提供契約へ接続する。
+### 1. 取得する資料と採用版を宣言する
 
-### D1の最新版契約へ履歴を接続する
+`sources.toml` の既存の決算宣言 `132195:2023` は維持する。当初と各号は別宣言にし、団体・年度・歳入歳出・会計・文書種別・号数・表・原典の単位を持たせる。PDFは表紙・本文から年度と会計を確認する。必要資料一覧には全7号と、繰越・充用・流用の確認状況を含める。
 
-D1契約版3では `fiscal_jurisdiction_data` の主キーは団体コードで、一団体につき一行に現在の `version_id` を保持する。明細・dataset・予算対象・変更・対応のPK/FKに `version_id` を加えない。主キーはそれぞれ `fiscal_line_id`、`dataset_id`、`budget_item_id`、`change_id`、対応の `(budget_item_id, settlement_line_id)` とし、年度・歳入歳出・会計・文書種別は既存scope triggerとbuild検査で照合する。内部の照合記録が内容版を持つことと、公開明細のキーは区別する。
+同じ号・表の採用原典は一版だけにする。同じhashの再取得は同じ入力として扱う。訂正は訂正根拠、旧版との関係、採用理由を記録して置換し、旧額を追加の補正として足さない。根拠のない異版は採用未確定とする。採用入力のhashと証跡を `sources.lock.json` に固定する。未取得資料は必要資料一覧に残し、取得済みdatasetを捏造しない。
 
-訂正を採用した内容が現在と異なれば、既存publishがその団体の旧dataset・予算対象・配布参照を初期化し、cascadeで旧明細を除いて新しい内容を依存順に取り込む。同じ内容の再試行では初期化せず、同じID・同じ値を再利用し、同じIDの異なる値を拒否する。全収録年度を含む候補を作り、補正を追加した年度以外も保持する。他団体は更新しない。取り込み途中の空・部分データと件数変化を許容し、guard・lease・全体releaseを追加しない。
+議決日・適用日・公開日・取得日を別に持つ。別の適用日指定がなければ、原案可決を確認した議決日を本設計の適用規約として採り、根拠を記録する。第5号の12月14日提出を12月22日可決と混同しない。専決処分は専決の効力の日を原典で確認する。実施日不明の充用・流用を年度末の日付へ置換しない。
 
-APIの `versions` は現在の内容ハッシュとの一致確認であり、過去のD1版を選ばない。旧指定は `VERSION_EXPIRED` / HTTP 410となる。cursorも内容更新で410となり、同じ内容ハッシュの取り込み中は行の追加を許容する。過去の原典・取り込みは非公開R2、配布物は不変R2 URL、採用入力・証跡・manifestはGit履歴で辿る。新しい変更の検証でも過去版をD1へ併存させない。
+### 2. 原典の列を保持して取り込む
 
-### 事業×歳出の節の設計と原典の粒度を接続する
+CSVは既存の文字列取り込みと復元検査を維持する。PDFは文書別のlayoutで、目・節・末端内訳・合計・説明行を区別して抽出する。元の金額文字列・単位・表・物理ページ・bbox・原典hashを保持する。画像の決算PDFを暫定的に転記する場合も、原典行と確認手順を証跡に残す。
 
-確認済みの歳出予算対象は事業×歳出の節とし、団体・年度・会計・科目／事業経路・追加区分・`expenditure_setsu_id` を照合する。歳出の節マスタ `fiscal_expenditure_setsu_master` は法定コード・名称・適用期間を持ち、対象年度に有効な定義を参照する。COFOGは目的の分類であり節とは別である。歳入へこのマスタや集約規則を適用せず、GFSMは追加しない。
+PDFの `source_row` は抽出表の固定した行番号であり、PDFページ番号ではない。stagingは原典行と1対1で列名・型を整え、目総額と節内訳をここで合算しない。当初書の「前年度予算額」「比較増△減」は前年との比較なので、当初額には「本年度予算額」だけを採る。
 
-事業×節へ集約する変更は、同一の採用dataset・予算対象・変更種別・適用日・順序・原資／相手・繰越元／先が一致する末端行だけをまとめる。COFOG・連結判断が衝突する行を一つの分類へ押し込まない。当初の `amount` と変更の `amount_delta` はそれぞれ採用した末端行の円額合計とし、細節・細々節等の経路・符号付き額・原典行ID・source_rowを `details_json` に保持する。親の目総額・節小計・説明欄は内部照合に使い、同じ額を加算しない。
+既存 `raw_132195` の全文書globへ別列構造のPDFを混ぜない。決算CSV用sourceを決算入力に限定し、当初・補正等は新規 `raw_132195_history` と `stg_132195__budget_history.sql` に分ける。採用datasetはorigin hashと表IDを含めて一意にし、同一号・別表・別版の行を混ぜない。同じPDFの別表を区別するため、必要な新入力に `resource=<表ID>/` を追加する。
 
-本調査で確認した二目の当初・補正総額と10決算行の集合は、事業×節の対応を証明しない。初回の目行は原典行一件を起点とする例外対象 `line_granularity=origin_line / expenditure_setsu_id=NULL` として保持できる。NULL節の複数行をまとめず、事業や節へ配賦しない。目単位の集合対応をverifiedにできても、その中の事業×節の対応と履歴の完全性はunconfirmedである。集合自体を確認できない場合はリンクもunconfirmedとし、現行APIのverified比較集合へ入れない。
+`int_fiscal_datasets.sql` の宣言とのJOINは、現状の団体・年度・歳入歳出・文書種別だけでは複数号が衝突するため、採用dataset IDで行う。変更0行の号も採用資料の一覧に残す。構造・粒度は資料別に保持し、決算CSVの事業・節の経路を目粒度へ上書きしない。
 
-後続で当初・各号・決算の事業×節の対応を確認した範囲だけ `line_granularity=expenditure_setsu` へ移す。暫定の目対象を置換し、目対象と節対象を同じ加算集合へ重ねない。目単位の照合は新しい節対象の重複しない集合を集計して続ける。節単位では正負がある同一目内の流用も、目合計0という理由で消さない。
+### 3. 金額を円と符号付き増減額へ揃える
 
-節マスタ・集約・`details_json` と団体／COFOGマスタ改名の実装は別セッション fiscal-setsu-masters の担当である。本セッションの接続対象はhistory入力からその集約契約へ渡す値・原典参照・対応判断・検査である。現行mainは `jurisdictions` / `cofog_codes`、採用設計名は `jurisdiction_master` / `cofog_master` と区別し、マスタをここで重複実装しない。`details_json`・節ID・粒度のAPI/CSV契約変更は担当実装と合わせて読み返す。
+千円は1000倍して整数の円に換算する。補正のbefore・delta・afterをすべて保持し、変更に採る額は一つだけにする。
 
-### 最初の範囲を二つの目に限定する
-
-最初の実装は `jurisdiction=132195 / fiscalYear=2023 / direction=expenditure / fundCode="1"` の13-1-1予備費と7-1-2商工業振興費を対象とする。目より細かい当初額は配賦しない。前節のorigin_line例外として目の当初額を1行採用し、決算側は既存の葉明細をそのまま参照する。予備費1明細、商工業振興費9明細との1:N対応を作る。決算CSVの `source_row` はそれぞれ83、1222〜1230であり、番号はヘッダを1として数える。
-
-当初予算書のPDF 211・320頁、第1〜7号すべての表と議決結果を採用候補とする。補正の公開変更は、対象の目に載る第1号+1,980,000円、第3号+148,300,000円、第6号-115,000,000円の3行から始める。その他の号で対象の目が変わらないことは、全ページの該当科目と第1表・説明書の検査記録で示す。PDFを取得しただけで「変更なし」の確認済みにしない。
-
-決算書の充用先・流用額・繰越内訳は内部照合入力として収録する。日付と取引単位を確認できていないので、初回は公開changesへ追加しない。変更として未採用でも、原典・収録範囲・不足理由からその存在を辿れるようにする。未収録範囲は他の目、歳入の変更、特別会計、狛江市の繰越計算書本体、確認済みの新設・分割・統合・訂正実例である。富士見市は計算書の列構造を確認する補助例だけで、入力lockへ加える自治体ではない。
-
-### 同一号・再公表・訂正を一つの採用入力にする
-
-`sources.toml` の既存キー `"132195:2023"` は決算の宣言である。これを補正用に上書きしない。新しい宣言キーは、たとえば `"132195:2023:general:supplementary:3"` とし、団体・年度・会計・文書種別・号数で区別する。キーは人間用の識別子であり、取得コードがキーのコロン数から属性を推定しない。
-
-`sources.py` の `Source` / `Resource` と宣言の出力へ、次の属性を追加する（新規案）。
-
-- `document_kind`、`amendment_number`、`fund_code`、`resource_id`（原典内の表の識別子）、`record_layout`、`scope_grain`、`source_amount_kind`。
-- `decided_at`、`effective_at`、`effective_at_basis` と根拠資料の参照。`published_at` は自治体が明示する場合だけ持ち、取得時刻 `fetched_at` と区別する。
-- 文書内の表・PDFページ・歳入歳出・原典の単位、収録対象の目。直URLの場合は既存の `url_basis` と、表紙・本文による年度・会計・号数の確認を必須にする。
-
-補正PDFは三つの額を同じ行に持つ。datasetの `sourceAmountKind="delta"` はchanges導出に使う主列を表し、before/after列は取り込み表にも内部検査にも残す。PDFの権利条件が未確認なら既存決算CSVのlicenseIdを引き継がず、権利情報と確認状態を文書ごとに記録する。単位の規約はdbtの宣言で解決し、PDFの列見出し「千円」と照合する。別宣言との一致だけで単位を確認したことにしない。当初予算書の「前年度予算額」「比較増△減」は前年との比較であり、補正のbefore/deltaではない。当初は「本年度予算額」だけをinitialに採り、この列構造の違いをlayoutで検査する。
-
-採用判断はGitの新規 `pipeline/ingestion/fiscal/budget-history/adoptions.json` に置く。論理文書キー（団体・対象年度・歳入歳出・会計・種別・号数・表）ごとに採用するorigin hashを一つ指定する。再公表が同じバイト列なら同じ入力を再利用する。別hashでも「同じ号の訂正」なら `supersedes`、自治体の訂正根拠URL、訂正範囲、採用理由を記録し、以前の版は証跡に保持する。根拠のない二つの異版は自動で最新版を採らず、採用を未確定にする。
-
-`source_row` の位置が変わる訂正では、旧行から新行への対応を採用判断に残す。`change_id` は団体・採用dataset・表・予算対象・変更種別・適用日・順序・原資等の集約条件と、採用原典行ID集合から導くD1全体で一意の内容IDとする。初回origin_lineは集合が一行になる。訂正後の現在内容には一つの採用版の行だけを入れ、旧額の取消行と新額を同時に足すことはしない。法的に別の変更として可決された追加号と、同一号の誤記訂正は別である。
-
-固定入力lockの既存形式schemaVersion 2は、原典hash、取り込みParquetのhash・object、Git証跡のhash・path、論理パスの整合を維持する。`inputs.py/read_lock` の許可リストは現状 `budget/supplementary/settlement` だけなので、繰越・充用・流用を入れる段階で既存公開契約の文書種別を許可する。lockには採用版だけを列挙し、採用対象から外した旧版は過去lock・証跡から追えるようにする。
-
-現在の論理パスは `jurisdiction=<code>/year=<year>/document_kind=<kind>/edition=<origin hash>/direction=<direction>/data.parquet`。一つのPDFに同じ種別・歳入歳出の異なる表がある場合は、`resource=<resource_id>/` を追加したパスを新入力にだけ使う。既存パスの読取を維持し、`inputs.py` の検査・`paths.py`・dbtのsource列挙を同時に対応させる。dataset IDにも新入力だけ表の識別子を加え、同一PDFの表を衝突させない。歳入・歳出で同じPDFを使う場合、原典objectは一つを共有しParquetと証跡は分ける。
-
-### 異なる文書の列構造を取得とstagingで振り分ける
-
-既存 `fetch.py` はCSVの全セルを文字列で保持して復元検査を行う。その経路を維持する。PDF用には新規 `extract_budget_history.py` と狛江市2023年度のlayout宣言を置き、原典の目の行・合計行・節行・説明行を `row_role` で区別した抽出表を生成する。各抽出レコードへ表・物理ページ・bbox・印刷科目・元金額文字列・単位を付ける。本文で反復する同じ数字を別の変更にしない。
-
-取り込みは「抽出した原典の論理行」と1対1、stagingもその行と1対1にする。目・節・説明・合計の全行を金額の加算対象にはしない。初回の目行をorigin_lineとして採る判断と、後続の事業×節への末端行の合算はintermediateで行う。PDFの復元一致は主張せず、before+delta=after、節合計=目の補正額、目合計=款項合計の印字値を突き合わせる。負号 `△`、括弧での内数、ページをまたぐ行をlayoutの検査例に含める。最初の狛江市決算PDFは画像なので、自動文字抽出を前提にしない。対象ページを人手確認した構造化転記を暫定取り込みに使う場合も、行・bbox・原典hash・確認者・手順版を証跡に残す。
-
-`models/staging/fiscal/_sources.yml` の現行 `raw_132195` は `document_kind=*` のglobで同じ列構造を読む。PDF由来の別列を同じglobに加えると既存CSVの列参照が壊れる。決算CSV用sourceを `document_kind=settlement` の採用入力に限定し、新規 `raw_132195_history` へPDF由来表を分ける。新規 `stg_132195__budget_history.sql` はtyped列を持つ。初回の経路は会計・款・項・目までで、科目コードは印字値を保持する。history datasetの `structure_json` は入力ごとの経路・粒度から生成し、既存CSV用の `fiscal_levels`（事業・節を含む）を団体全体で目粒度へ上書きしない。異種表をNULL列で結合して既存の金額マクロへ流さない。
-
-`int_fiscal_datasets.sql` は現状、staging行からdatasetを作り、宣言を `(jurisdiction_code,fiscal_year,direction,document_kind)` でJOINする。複数号ではこのキーが重複するため、採用入力の一意なdataset IDまたはorigin hashと表IDでJOINする。文書の一覧・coverageは採用宣言から作り、公開変更が0行の資料も一覧に残す。`line_count` はそのdatasetの採用取り込みからstagingへ保持した論理行数（非加算の説明・合計行も含む）として固定し、元PDFの全行数や出力changes数と混同しない。議決結果など根拠だけの資料は独立した予算datasetにせずsourceの補助参照に含める。
-
-証跡の参照もsourceの分離に合わせる。現行 `pipeline/verify/report/common.ts` の `provenanceForSource` は団体とdirectionでcanonical証跡を選ぶため、historyの表名がexpenditureなら決算CSVの証跡も混ざり、別名なら参照を解決できない。新しいsourceノードごとの採用入力参照一覧を宣言から生成し、団体・対象年度・歳入歳出・文書種別・origin hash・resource IDでlockのentryと証跡を特定する。原典内の表が違えば同じhashでも別の取り込み表として解決する。既存CSVのsourceノードも同じ一覧へ登録し、決算だけの採用entry集合を渡す。
-
-共有resolverはその一覧を受け取るよう変更し、`pipeline/verify/report/lineage.ts` と `pipeline/verify/view/vite-plugins/local-data.ts` の呼び出しを合わせる。系統はdbt manifestのsourceノードを起点に生成し、手書きの図用対応は作らない。参照一覧の採用hashがlockに無い、sourceの採用entryが0件、表と証跡が違う場合は参照の生成を検査失敗にする。抽出表の行詳細ではdataset/resource/source_rowを指定して原典ページ・bboxを引き、他の号や決算CSVへフォールバックしない。
-
-新しいhistory stagingを `int_fiscal_amounts` の旧phase展開へ無条件にUNIONしない。既存の決算実績・当初葉データは従来モデルに残し、新規history intermediateから予算対象・当初額・変更・対応へ直接接続する。内部のbefore/after/報告現額にphase相当の列があっても、公開phase/ruleId/分類規則を復活させない。
-
-### 増減額・補正前額・補正後額から同じ変更を導く
-
-原典の同粒度・同会計・同単位の行に対し、公開する `amount_delta` は一つだけ求める。
-
-| 原典で確認できる額 | 導出 | 必要な検査 |
+| 原典の列 | 採る増減額 | 確認条件 |
 |---|---|---|
-| delta、before、after | deltaを採用 | before + delta = after |
-| beforeとafter | after - before | 両行の対象と粒度が一致 |
-| deltaのみ | deltaを採用 | 符号・単位・対象・適用日 |
-| afterのみ | 確認済み直前額との差 | 直前額の全変更と対応が確定 |
-| beforeのみ | 変更を導出しない | after/delta不足を未確認にする |
+| before・delta・after | delta | before + delta = after |
+| before・after | after - before | 対象・粒度・単位が同じ |
+| deltaのみ | delta | 符号・単位・対象を確認 |
+| afterのみ | 確認済み直前額との差 | 直前までの変更がすべて確定 |
+| beforeのみ | 採用しない | 増減を未確認にする |
 
-同じ目のbeforeが直前の当初+補正と一致しなくても、差額を新しい補正に自動変換しない。beforeが充流用を含むか、繰越分を含むか、資料の対象範囲が変わったかを確認する。差額の説明がつくまで当該after-only導出は未採用にする。deltaが原典に明示される場合はその変更を保持し、差異を別途未確認として残せる。
+減額の `△` は負の値とする。beforeと直前の計算値が違っても、差額を新しい変更にしない。充流用・繰越・比較範囲の違いを調べ、説明できないafter-onlyの導出は保留する。原典にdeltaが明示される場合はその変更を保持し、照合差を別に残す。
 
-実測の商工業振興費では当初34,553千円、第3号+148,300千円、第6号-115,000千円なので、補正分までの額は67,853,000円。182,853千円と67,853千円を累積加算しない。第3号の目・節・説明欄を全部足すと同じ額を反復計上するため、初回の提供対象は目の一行とする。
+**実測の変換例**：第3号PDF20頁の商工業振興費はbefore=34,553、delta=148,300、after=182,853千円。この一行から `amount_delta=148300000 / effective_at=2023-08-31 / change_kind=supplementary` を作り、採用datasetと予算対象、原典行を参照する。第6号は同じ対象へ-115,000,000円となる。補正後総額182,853,000円と67,853,000円を累積加算しない。
 
-複数号は年度内の号数で識別するが、適用日は別に保持する。`effective_at` は日付、同日内の `sequence` は原典の適用順（不明なら安定した処理順を記録し、実時刻と主張しない）。APIの `asOf` は日本の暦日の終わりまでの変更を含む。号数の大小だけで効力の順序を決めず、適用日の逆転・重複号・同一号の未採用異版を検査する。当初予算は年度開始前のasOfでは返さない。現行queryは当初額の日付を絞らないので、API契約で当該年度の4月1日以後にasOfを制限する最小変更が必要である。年度終了後の照合日は許可する。
+適用日と同日内の順序を保持し、指定日の終わりまでの変更を集計する。号数だけで適用順を決めない。日付不明の額は観測として残し、時点別の変更小計へ混ぜない。年度開始前には当初額を計上しない。
 
-提出日、議決日、適用日、公開日、取得日を分ける。別の適用日指定が無ければ、原案可決を確認した議決日を本設計の適用規約として採用し、datasetの出典にその根拠を残す。第5号の提出日は12月14日、議決日は12月22日であり、前者を使うと12月14〜21日の履歴が誤る。専決処分の効力の日は後日の承認日とは区別し、専決の原典を確認する。実施日がない充用・流用や報告日しかない繰越を3月31日・4月1日に代入しない。
+### 4. 予算対象と決算明細の集合を対応づける
 
-日付不明の額は初回では内部の `observed_period_end` と元の金額として保存する。既存changesの `effective_at NOT NULL` を満たすための架空日付は作らず、公開changesには未採用、coverageには不足を明示する。日付区間での検索を提供する拡張は別タスクとし、本書では必要性を記録するだけとする。
+予算対象は団体・年度・歳入歳出・会計・科目／事業経路・追加区分で区別する。確認済みの歳出対象は事業×歳出の節とする。初回の二目は当初の原典行を起点に `line_granularity=origin_line / expenditure_setsu_id=NULL` として保持する。NULL節の複数行をまとめず、目総額を事業や節へ配賦しない。
 
-### 実測の一行を提供レコードと対応へ変換する
+事業×節に対応できる場合は、当初額と変更の末端行を同じ対象へ集約する。変更は採用dataset・種別・適用日・順序・原資／相手・繰越元／先が一致する行だけをまとめる。細節等の経路・円額・原典行は各金額記録の `details_json` に保持し、小計を重ねない。節の適用年度、COFOGと連結判断の一致を確認できない範囲は原典行の粒度を残す。この集約処理は [別担当の設計](../fiscal-records/design-doc.md#歳出予算を事業と経済的な性質の組合せで提供する) に接続する。
 
-第3号PDF20頁の目行は、原典hash `e322f20a…`、表「歳出・7款1項」、目2、before=`34,553`、delta=`148,300`、after=`182,853`、単位=`千円` という取り込みレコードになる。PDF物理ページは `source_row` そのものではない。抽出表のヘッダを1として固定した整数行番号をsource_rowへ使い、ページ・表・bboxとの対応を証跡で解決する。
+初回は予備費の決算CSV行83、商工業振興費の行1222〜1230を参照する。目単位の集合対応を確認できても、事業×節の対応まで確認済みとはしない。網羅性・追加区分を確認できない場合はリンク自体もunconfirmedとする。
 
-このレコードから、一つの歳出changeへ `budget_item_id=商工業振興費の当初目から導いたID`、採用dataset、`amount_delta=148300000`、`change_kind=supplementary`、`effective_at=2023-08-31`、`sequence=3`、原典行を持たせる。datasetは `amendmentNumber=3 / sourceAmountKind=delta`。日付は確認済み議決日を適用規約で採ったものであり、議決根拠と規約をsourceに残す。sequenceの3は同日内の安定順にも使える号数で、法的な時刻ではない。counterpartとcarryover年度はnullにする。第6号では同じ予算対象へ-115000000円を一度だけ生成する。
+改称は同じ対象と確認できればIDを維持し、新設の当初額は新設の証拠と直前の網羅的な一覧でゼロを確認できた場合だけ `verified-zero` とする。資料不足は `unknown`。分割・統合は対応グループに両側の集合を残し、原典が合計しか示さない場合は配賦しない。後で節対象へ移す場合、元の目対象と内訳を同じ加算集合に重ねない。
 
-同じ目の当初はPDF211頁の本年度34,553千円から一つのinitial=34553000円を生成する。既収録決算CSVのsource_row1222〜1230の各 `fiscal_line_id` は変更せず、同じbudget itemから9リンクを一グループに生成する。対応根拠は会計1・款7項1目2と決算PDF87〜88頁の一致、決算CSVの大事業・節の内訳集合であり、名称だけでは確定しない。原典hashやdataset/rowから実際のIDを解決し、文書中の表示名をIDとして保存しない。初回の目単位の集合対応はverifiedにできるが、各事業×節への対応は未確認であり、coverageに粒度不足を残す。グループの予算復元はその不足と日付不足のためunconfirmedとする。集合の網羅性や追加区分が確認できなければリンク自体をunconfirmedにする。
+M:Nでも双方のID集合を重複排除して集計する。架空の例で予算A=60,000、B=40,000円、決算x=30,000、y=70,000円が4リンクで対応すると、双方100,000円であり200,000円ではない。Bの訂正額35,000円を採れば予算は95,000円。旧Bを足さない。確認済みの各メンバーは一つの確認済みグループにだけ所属させる。
 
-### 予算対象の追加・改称・分割・統合を対応判断として残す
+### 5. 繰越・充用・流用を採用できる観測と分ける
 
-予算対象は団体・年度・歳入歳出・会計・追跡粒度の中で識別する。新規 `budget-history/item-correspondences.csv`（案）は、採用当初行または新設を示す最初の採用行、各変更行、決算明細の参照、対応グループ、根拠を持つ。根拠には原典ページと科目・所属・予算区分の確認を記す。名称一致や金額一致だけでverifiedにしない。
+繰越は議決限度額と実繰越額、元／先年度・会計、財源内訳を別に保持する。実額・受入先の予算対象・適用日が確認できた場合だけ繰越先年度の変更へ加える。元年度の翌年度繰越や不用額は元年度の予算現額から引かない。継続費の総額・年割額・実繰越額も別である。計算書が事業総額しか持たなければ、節へ配賦しない。
 
-同一対象の改称はIDを維持し、原典ごとの名称をsourceへ残す。別対象へのコードの再利用は同一IDにしない。新設は、原典の新設表記と前の網羅的な対象一覧によって当初ゼロを確認できた場合だけ `verified-zero`、資料不足は `unknown`。当初資料が無いことはゼロの根拠にならない。
+予備費の当初額は基準額、補正は補正変更、実充用は原資の予備費への負額と充用先への正額に分ける。流用も原資負額・相手正額の両側を持たせ、同じ実施単位・日付・会計で合計0を検査する。同一目の合計が0でも、異なる事業×節への動きは両側を残す。年度累計しか分からない資料から一取引や実施日を推定しない。
 
-分割・統合は対象ごとの増減を原典が示す場合だけそれぞれのchangesにする。原典が合計しか示さない場合は、確認できる集約対象で追跡し、架空の配賦をしない。旧対象と新対象の金額を同時に加算することがないよう、追跡対象の集合は重ならない区画にする。目とその内訳の両方を保持する資料では、採用した粒度以外は非加算の内部照合に留める。節を確認できた対象は事業×節を加算集合とし、暫定origin_lineの目総額を重ねない。
+初回の充用・流用と受入繰越は、日付や対象対応が不足するため観測に留める。限度額・未採用額・不足理由を消さず、変更へ採用できる条件が揃ってから接続する。
 
-初回の `budget_item_id` は採用当初の目行を起点に導出し、macro `fiscal_budget_items` の既存葉ごとのIDと重複させない。事業×節へ移行するIDと元原典行への対応は別担当の集約契約に合わせる。狛江市2023年度は既収録の当初行が無いため暫定対象を追加できる。訂正や粒度移行でID集合が変わる場合はD1の現在内容を置換し、旧IDの記録は過去のR2配布物・Git履歴へ残す。
+### 6. 当初額・変更・対応・照合結果をmartにする
 
-`settlement_links` は `match_group_id` ごとに両側の集合を確定する。予算対象と決算明細の一つのメンバーはverifiedグループ一つにだけ所属する。額はリンク行へ複製しない。グループ内で予算対象IDの集合と決算明細IDの集合をそれぞれ重複排除して集計する。未確認リンクは別保存し、verifiedの比較へ混ぜない。
+初回に作るmartは次のとおり。決算実績の既存モデルはそのまま参照する。
 
-架空のM:N検査例: 予算対象A=60,000円、B=40,000円、決算x=30,000円、y=70,000円が一グループで対応し、4リンクを持つ。予算100,000円・実績100,000円であり、JOIN行を足した200,000円ではない。訂正でB=35,000円を採用した新versionなら95,000円で、旧B=40,000円を足さない。所属・会計の違うxを同名だけで同グループに入れる検査は失敗させる。この例は実資料の対応を確認したという意味ではない。
+- **予算対象**：二目の対象・当初額の確認状態・粒度。
+- **当初額**：予備費30,000,000円、商工業振興費34,553,000円の2行。
+- **変更**：第1号の予備費+1,980,000円、第3号の商工業振興費+148,300,000円、第6号の-115,000,000円の3行。号数・適用日・原典行・対象を持つ。
+- **決算との対応**：予備費1明細、商工業振興費9明細への計10リンク。集合の確認状態と根拠を持つ。
+- **照合結果・収録範囲（新規案）**：対象集合・比較日・粒度・当初額・採用変更小計・報告現額・差額・不足理由・確認状態を持つ。必要資料の有無と採用版も参照する。
+- **繰越等の観測（新規案）**：限度・実額・年度／会計・日付／対象の確認状態を持つ。未採用の充用・流用の累計も別種別の観測として残す。
 
-### 繰越元の額と繰越先の加算を別に扱う
+商工業振興費の当初＋採用補正は67,853,000円。報告現額68,814,000円との差961,000円は日付未確認の充用で説明できる。予備費は31,980,000円と報告現額23,761,662円との差-8,218,338円を充用の観測として残す。差を説明できても、架空の変更として小計へ加えない。
 
-繰越は「翌年度へ使用できる限度」「確定した実繰越」「前年度から受け入れた額」「翌年度繰越の財源内訳」を別の観測として保持する。新規 `int_fiscal_carryover_observations`（案）は繰越種別、繰越元/先の年度と会計、原典事業、限度額、実繰越額、財源別額、対象対応、適用日の状態を持つ。限度額はchangesへ変換しない。
+商工業振興費の採用済み小計は、2023-08-30で34,553,000円、8月31日で182,853,000円、2024-02-01で67,853,000円。充流用の日時と節対応が不足するため、完全な指定時点額は未確定である。決算実績66,261,365円は9決算行を一度ずつ合算し、予算の復元式へ入れない。
 
-実繰越の公開changesを作るのは、繰越先年度・歳入歳出・会計・予算対象・実額・適用日を確認した場合だけである。`budget_item_id` とdatasetの `fiscal_year` は加算される繰越先年度、`carryover_from_year/to_year` は元/先を表す。原典の年度（通常は元年度）はsourceに別保存する。同じPDFを元年度の報告datasetとしても加算用datasetとしても二重に足さない。歳入では計算書の未収入特定財源・繰越財源の対応を確認し、歳出の事業額を一律に歳入の繰越金へ加算しない。
+照合は同じ対象集合・粒度・円単位で行う。CSVの `予算計(円)` と決算書の「予算現額・計」を報告値に使い、`予算額(円)` を当初とみなさない。原典の丸めは規則を確認し、理由不明の差を許容差で吸収しない。
 
-元年度は、当初＋補正＋当年度に受け入れた繰越＋充流用による「予算現額」を保つ。翌年度へ繰り越す額や不用額をマイナスchangesにすると決算書の予算現額と意味が変わるため、元年度の履歴から控除しない。元年度の執行権の終了と、翌年度への加算は別である。本APIは残存執行可能額や失効額を計算しない。
-
-実測の道路新設改良費は236,329,000 + 16,483,745 = 252,812,745円で、翌年度繰越10,000,000円をもう一度足さない。狛江市の計算書・日付が未確認なので、16,483,745円は内部の報告値として保持し、現時点で公開changeとはしない。
-
-富士見市の実例では、スポーツ施設の限度18,509,000円と実繰越18,508,300円は違う。継続費の公園事業は総額11,105,000円、2024年度の計5,862,400円、2025年度への実繰越1,537,200円を区別する。継続費の年割額や過年度逓次繰越を再び加算しない。事故繰越は事故繰越計算書の支出負担行為・事故理由・実繰越額を確認してから同じ観測契約に接続する。計算書が欠けた種別は未確認とする。
-
-現行schemaには年度はあるが、繰越元/先の会計を独立して持つ列がない。初回は同一会計のみに限定し、元/先会計をsourceに明記する。将来、異なる会計を原典が明示する場合に限り、changes/契約/CSVへ `carryover_from_fund_code` と `carryover_to_fund_code` を追加する最小案とする。未確認を空文字に変換しない（空文字は有効な会計コード）。
-
-### 予備費の残額と実充用、流用の両側を確認する
-
-予備費当初額はinitial、補正はsupplementary、実充用はreserve-allocationである。確認済みの実充用一件は原資の予備費に負額、充用先に正額を持たせ、相手budget itemを相互に参照する。`counterpart_budget_item_id` は同じ歳入歳出の同一会計内でだけ使い、当年度予備費と翌年度予算を結びつけない。
-
-一件の流用も原資負額・相手正額の二行にする。新規の内部 `movement_id`（案）でその両側をまとめ、同一scope・同一適用日・符号逆・絶対額一致・合計0を検査する。これは処理上の対応判断であり公開ruleIdではない。親の目に加えて節にも同じ動きを公開すると二重計上になるため、公開の追跡粒度一つに合わせる。同じ目内の流用は暫定の目粒度では正味0として内部観測に残す。事業×節を確認した後は、異なる節間の原資負額・相手正額をそれぞれのchangesへ採用し、目合計0だけで両側を除去しない。
-
-決算PDFにある流用の反対符号は年度累計の可能性があり、相手や実施日を証明しない。CSVの充流用等増減額は両種別を混ぜた累計なので、充用先のPDFからも同じ額を採ったうえでCSVをchangesに足さない。日付未確認の動きは内部観測に留める。原資や相手の粒度が足りない場合は粗い動きを細かい事業へ割り振らず、資料の範囲と不足理由を残す。
-
-歳出の変更のCOFOGは各対象の原典経路から既存判断で分類し、予備費は機能未確定として扱う。充用先と原資のCOFOGを機械的に同一にしない。歳入へCOFOGや歳出の充流用をコピーしない。
-
-### 報告予算現額との一致と履歴の完全性を別々に検査する
-
-新規 `int_fiscal_budget_reconciliation`（案）は、自治体版・年度・歳入歳出・会計・比較グループ・比較粒度・原典行集合・単位・比較日をキーに、当初額、採用変更小計、日付不明観測、内部の報告予算現額、差額、差異理由、各根拠を保持する。名称だけで比較対象を結びつけない。決算実績は別の比較列であり、予算現額の復元式に入れない。
-
-照合は同じ対象集合について円に換算して行う。決算CSVは `予算計(円)`、PDFは「予算現額・計」を報告値にする。`予算額(円)` は補正後額であり、当初ではない。節の予算計と目の現額が別途一致することも検査する。千円単位で丸められた説明書と円のCSVには、原典の丸め規則・粒度の違いを記録し、単なる1000円の許容差で吸収しない。初回の二目は円の決算書とCSVで厳密一致を求める。
-
-実測の年度末照合は次のとおりである。
-
-| 対象 | 当初＋採用補正（円） | 日付未確認の報告増減（円） | 報告現額（円） | 未確認額まで含む照合差 |
-|---|---:|---:|---:|---:|
-| 商工業振興費 | 34,553,000 + 148,300,000 - 115,000,000 = 67,853,000 | +961,000 | 68,814,000 | 0 |
-| 予備費 | 30,000,000 + 1,980,000 = 31,980,000 | -8,218,338 | 23,761,662 | 0 |
-
-この差額0は内訳の算術検査であり、日付の確認、事業×節の対応、履歴の完全性を証明しない。初回APIは、商工業振興費について `asOf=2023-08-30` の採用変更小計0、`2023-08-31` は148,300,000、`2024-02-01` は33,300,000円を返す。基準額を含む採用済み計算小計はそれぞれ34,553,000、182,853,000、67,853,000円だが、充流用の日時と事業×節の対応が不足するため `budgetAmount=null / status=unconfirmed` のままとする。実績66,261,365円は9決算行の集合を一度ずつ合算し、asOf時点の実績と表示しない。
-
-一般会計全体の補助照合は31,620,000,000 + 4,329,300,000 + 1,053,740,895 = 37,003,040,895円。翌年度繰越419,746,877円、実績34,489,739,816円、不用2,093,554,202円は別の検算（実績＋翌年度繰越＋不用＝現額）に使う。全体合計が一致しても、別の目への誤配分が相殺されるため二目の対応確認を省かない。
-
-`complete` を付けるのは次の全条件を満たすscopeと基準日だけである。
-
-1. 当初額がrecordedまたは根拠つきverified-zero。追跡対象集合と原典の収録範囲が確定している。
-2. 必要資料の一覧（全補正号、当年度受入繰越の各種、充用・流用、訂正）について、基準日までの有無と採用版を確認した。「必要な資料が0件」も確認済み根拠を持つ。
-3. 対象・粒度（事業×歳出の節と決算との対応を含む）・符号・単位・適用日・相手・M:N集合の対応が確定し、未採用の変更や日付不明の観測がその時点に影響しない。
-4. 比較可能な原典の報告値と同粒度で一致する。中間時点では直後資料のbefore等の照合根拠を持つ。年度末の差額0だけから以前の全時点をcompleteにしない。
-5. 二重計上・整数範囲・D1/API/配布物の検査が対象行を実際に検査している。
-
-欠号、資料未取得、unknown当初、適用日不足、粗い総額しか無い、節不明、集約時の分類・連結判断の衝突、対応未確定、理由不明の差異は `unconfirmed`。抽出や計算の誤りは検査失敗として直す。原典の丸めや比較範囲の違いを説明できても、完全な同粒度額が求まらなければunconfirmedを維持する。
-
-現行 `budgetHistory` は非決算datasetすべての `coverage.budgetHistory` と `verifiedThrough` を確認するが、欠けたdatasetの存在をSQLからは発見できない。新規 `budget-history/coverage.json`（案）の必要資料一覧からscope全体の結果を生成し、非決算datasetのcoverageへ同じ保守的な判定を設定する。原典が欠けた項目も一覧に残すが、架空のorigin hashや空の取得済みdatasetは作らない。二目だけ収録した初回は一般会計全体をcompleteにしない。
-
-将来、同じdatasetに完全な会計と未確認の会計が混在する場合は、`coverage_json` に歳入歳出・会計・粒度・対象集合・確認期間のscopesを加え、queryが要求scopeの全体を覆うか確認する最小変更とする。空会計コード `""` は一つの会計、`fundCode=undefined` は全会計で、前者をtruthy判定で落とさない。初回は既存queryの保守的なunconfirmedを使えるので、この拡張を先行必須にしない。
-
-内部報告値は非公開R2の採用取り込みParquetに保持する。build時に `pipeline/.build/builds/<内部構築ID>/internal/fiscal/132195/` へ、報告値・照合表・不足一覧をJSON/CSVで生成し、既存ローカル検証画面の行参照から原典hash・表・source_rowへ辿れるようにする。公開datasetのsourceには自治体の原典URLとページ、coverageには不足理由・確認粒度を載せる。非公開R2キーや内部の自由なpathを一般利用者へダウンロードURLとして返さない。内部報告値を公開決算のamountや通常のchangesに代用しない。
-
-### 出典を型付きAPIから辿れるようにする
-
-現行 `apps/api/src/contract/index.ts` の `datasetSchema.source` はdocumentLabel・landingPage・licenseId・attribution・rawFormだけを受け取る。`source_json` に任意のキーを足すだけでは型付きAPIから原典ページや適用日根拠を参照できない。初回必須の最小拡張としてsourceへ次の任意項目を加え、既存datasetでは欠省できる契約にする。
-
-- `references`: 文書参照の配列。各要素はrole（origin / decision）、HTTPSのurl、documentLabel、原典内のtable名、1始まりのPDF物理pagesの配列を持つ。CSVではpagesを省略し、公開明細のsourceRowで参照する。番号を原典の印刷頁と混ぜない。
-- `documentFiscalYear`: 原典に印字された年度。datasetのfiscalYearと異なる繰越原典を区別する。初回は2023。
-- `effectiveAtBasis`: kind（explicit-date / decision-date-policy / fiscal-year-start）、根拠を示すreferences配列のindex、議決日がある場合のdecidedAt。references内の該当ページと照合する。当初の4月1日はfiscal-year-startの規約であり、提出日・議決日への置換ではない。
-- `publishedAt`: 原典が公表日を明示する場合だけ日付を持つ。未確認は省略し、URL中の日時やfetchedAtから埋めない。
-
-第3号ではorigin参照が補正PDF20頁の目の表、decision参照が議案28の結果PDF1頁、effectiveAtBasisはdecision-date-policy・decidedAt=2023-08-31となる。一つのdatasetに複数の対象ページがあればreferencesに全対象を列挙し、sourceRowから個別のpage/bboxを解く情報は内部証跡に保持する。
-
-宣言出力、`source_json`生成、APIのZod型、queryの出力、公開CSVのdataset記述とFDP sources、HTTP応答のparseと読返し検査を同時に対応させる。D1は既存source_jsonで保存でき、列追加は不要。非公開objectキー・ローカルpath・内部判断の自由記述は公開参照へ出さない。
-
-### 実装で変更するファイルとモデルを接続する
-
-以下は変更予定であり、本セッションでコードを変更した一覧ではない。
-
-- **宣言・固定入力**: `pipeline/ingestion/fiscal/sources.toml`、`sources.py`、`fetch.py`、`pipeline/ingestion/inputs.py`、`pipeline/ingestion/paths.py`。新規の `extract_budget_history.py`、`budget-history/adoptions.json`・`item-correspondences.csv`・`coverage.json`、採用した `provenance/` と `sources.lock.json`。`pipeline/ingestion/fiscal/metadata.ts` と `pipeline/ingestion/fiscal/jurisdictions/132195.md` に実収録範囲を反映する。
-- **原典別の整形**: `pipeline/dbt/models/staging/fiscal/_sources.yml`・`_models.yml`、新規 `stg_132195__budget_history.sql`。既存 `stg_132195__expenditure.sql` / `__revenue.sql` は決算CSVに限定し、既存CSVのsource_rowとIDを維持する。
-- **中間処理**: `pipeline/dbt/models/intermediate/fiscal/api/int_fiscal_datasets.sql` の一意な入力JOINとメタデータ生成。新規 `int_fiscal_budget_items`、`int_fiscal_initial_budget`、`int_fiscal_budget_changes`、`int_fiscal_settlement_correspondences`、`int_fiscal_budget_reconciliation`、`int_fiscal_carryover_observations`。`pipeline/dbt/dbt_project.yml` に入力layout・金額意味・単位の宣言を加える。
-- **提供用データ**: `pipeline/dbt/macros/api.sql` の当初葉のみのitems生成を、新規history対象と重複しない生成へ変更。`models/marts/api/api_fiscal_{expenditure,revenue}_budget_items.sql`、`api_fiscal_initial_{expenditure,revenue}_budget_lines.sql`、changes/settlement_linksの4つの空モデル、`api_fiscal_datasets.sql` を接続する。初回歳入changes/linksは空を維持し、歳出用の変更を入れない。
-- **証跡と行参照**: `pipeline/verify/report/common.ts`、`pipeline/verify/report/lineage.ts`、`pipeline/verify/view/vite-plugins/local-data.ts`。sourceノードの採用入力参照一覧でCSV/PDFの証跡を分離する。
-- **配布・検証**: `pipeline/dbt/models/marts/distribution/distribution_132195_initial_expenditure_budget.sql`、`distribution_132195_expenditure_budget_{items,changes}.sql` と `distribution_132195_expenditure_settlement_links.sql`、`pipeline/fdp/build.py`・`manifest.ts`・`validate_d1.py`、`pipeline/build.ts`、`pipeline/verify/api.ts`・`pipeline/verify/budget-changes.ts`・`pipeline/verify/report/fiscal/build.ts`・`pipeline/verify/report/fiscal/schema.ts`。dataset・出典・coverage・CSV資源の行数とhashを更新し、照合結果をinternalに生成する。
-- **別担当の集約契約との接続**: fiscal-setsu-masters が変更する `expenditure_setsu_id`・`line_granularity`・`details_json`・共通マスタ名に合わせ、history intermediate、source行参照、items/changes/links、API/CSV/FDPの読返しへ接続する。origin_line例外も同じ契約で扱い、独自の節マスタや独立金額表を追加しない。
-- **契約の最小修正候補**: `packages/data-contracts/index.ts`・`schema.sql` と `apps/api/src/contract/index.ts`・`data/queries.ts`。初回に必要なのは年度開始前asOfの拒否、必要資料由来のcoverage、上記sourceの型付き出典拡張。日付不明changesを許容するschema変更や会計別coverage・繰越元/先会計列は後続の提案であり、今回コードは変更しない。
+`complete` は、基準日までの必要資料・採用版・当初額・変更の対象／符号／単位／適用日・事業×節と決算の集合対応・同粒度の報告値との一致・二重計上防止を確認した範囲だけに付ける。欠号、日付不明、節不明、粒度不足、理由不明の差は `unconfirmed`。原典の報告値は計算値で上書きしない。初回は二目も一般会計全体もcompleteにしない。
 
 ## Tasks
 
-実装はmainのD1契約版3と採用済みの節集約設計に従い、以下の順で進める。R2アカウントの403/10042解消は原典調査・ローカル抽出・変換設計の前提にしない。
+1. 二目の当初・全7号と決算、繰越等の必要資料一覧と採用版を宣言する。
+2. PDF用の取り込み・source・stagingを追加し、原典行との1対1と印字値を検査する。
+3. 円換算・予算対象・3変更・10リンクと未採用の観測をintermediateで作る。
+4. martへ接続し、時点別の小計・報告値との差額・unconfirmedの理由を検査する。
 
-1. 採用候補の原典hash・正式文書・議決結果・ページ範囲・再配布条件を確認し、当初の二目と全7号の必要資料一覧をGitで宣言する。原典は非公開領域に保持し、再配布する抽出表の権利条件を確認する。
-2. 二目の当初・3変更行・内部決算観測を取り込み、source分離とstagingの1対1検査を通す。固定入力の正式採用・転送は別の実装セッションで既存手順に従う。
-3. 二目のitems・initial・changes・10決算明細へのリンクを生成し、年度末内部照合とasOf別小計を確認する。日付と事業×節の未確認はunconfirmedの理由として保持する。
-4. 既存distribution/FDPとAPI用JSONLを生成し、ローカルSQLite/D1 fixture・通常HTTPのbudgetHistory・ローカルR2のCSV読返しを比較する。取得・本番反映を混ぜず、遠隔確認は別の実装作業として報告する。
-5. 繰越計算書・充流用実施日を追加確認し、原典が足りるscopeから公開changesを増やす。足りないscopeはunconfirmedのまま完了可能とする。全7号の取得だけを履歴全体の完了としない。
+## 検査
 
-## Acceptance / 検査の接続
+以下は実装時の検査であり、今回の文書修正で実行済みという意味ではない。
 
-ここに列挙する検査は実装時の受入条件であり、この文書作成で実行済みではない。実測値を使う検査と架空fixtureの検査は別に報告する。
-
-- **原典と取り込み**: CSVの復号・復元検査、PDFの反復印字額の一致、staging1対1。目・節・合計の重複、△負号、千円から円への1000倍、丸め、改行・見開き行の観測を確認する。`staging_is_one_to_one.sql`・`amount_units_match_source.sql`・`source_year_matches_partition.sql`・`declarations_cover_raw.sql` を文書/layout/resource別の採用入力一覧へ接続する。現行の全種別glob・団体単位集計だけを維持すると、CSVとhistoryで行数や列が混ざるため、同じ対応で両側を列挙する。PDF年度は表紙・本文の抽出値と対象年度の宣言を照合し、繰越の原典年度と受入対象年度が異なる場合は元/先の宣言で確認する。各検査の対象がゼロで通らないことも検査する。
-- **証跡と公開出典**: 一般会計決算CSV、当初PDF、第1/3/6号PDF、同hashの別resourceについて、それぞれのsourceノードと行参照が指定した採用証跡だけへ解決する。別号・CSVの混入、未採用hash、0件解決を検査失敗にする。通常HTTPのdatasetSchemaでreferences・documentFiscalYear・effectiveAtBasisが保持されること、FDP/CSV側の参照・ページ・日付根拠と一致することを確認する。
-- **採用と訂正**: 同一号の同hash再取得は同じ3変更行。別hashの訂正版は旧版を除外し、一つの基準額・一つのイベントだけを採用する。架空fixtureで+100を+80へ訂正した結果は+80で、+180でも-20を別号として追加した結果でもない。adoptionsとlockが違うhashを指す場合は失敗する。
-- **時点と符号**: 実測の第3号と第6号の前日/当日、第5号の提出日/議決日、同日sequence、asOfの年度開始前、無効日付を確認する。商工業振興費の採用変更小計は0→148,300,000→33,300,000円。日付不明の充用はこの小計に混ぜず、unconfirmedとする。
-- **対象と対応**: 新設verified-zeroとunknown、改称、コード再利用、分割・統合、M:N、同一メンバーの複数verifiedグループ、歳入歳出/年度/会計を越えるリンクをfixtureで検査する。二目の実測リンクは目単位の1:Nであり、事業×節への対応は未確認。M:N実例を収録済みとは報告しない。`api_relations.sql` とD1の既存scope triggerへ接続する。
-- **繰越・充流用**: 実測の限度と実繰越の異額、元/先年度、会計、財源内訳、継続費総額と当年度額の区別を検査する。限度だけからchangeを作らない。原資/相手の二行は合計0で、同一目の流用は目合計0でも、確認済みの異なる節間では負額・正額の両側を保持する。日付・相手の未確認は未採用として残す。事故繰越の形だけをfixtureで扱う場合、実資料検査とは区別する。
-- **欠落と完全性**: 必要資料一覧から一号だけ外す、当初だけある、充用日不明、繰越額だけ会計総額、理由不明の差額を与える。どれもbudgetAmountはnull、statusはunconfirmed。全変更・対応・適用日・同粒度報告値が揃う架空fixtureでは、当初100,000、2023-06-01に+20,000、2023-09-01に-5,000、報告115,000円に対し各日100,000/120,000/115,000円をcompleteで返す。未来の確認値だけで過去時点をcompleteにしない。
-- **空会計コード**: `fundCode=""` の要求は空コードの会計だけ、undefinedは全会計。別会計の変更やcoverageが混ざらない。全会計の額と各会計の集合が一致する。
-- **金額と公開契約**: 決算amountは実績、initialは当初、changesはdelta。before/afterや内部報告額を公開実績に混ぜない。歳出だけCOFOGとmaster FKを検査し、公開phase/ruleIdを追加しない。`fiscal_distribution_matches_api.sql`・`api_matches_fiscal.sql`・`api_classification_matches_packages.sql` に新しい非空changes/linksを含める。
-- **読返し**: `verify/budget-changes.ts` は現状、変更があるscopeの最後のasOfだけを検査する。変更0行・欠落・複数asOfも明示した必要scope一覧で検査し、items、initial、changes、links、comparisons、dataset coverageを比較する。現在と一致するversionsを指定し、CSV→円の計算結果、同じmartsのJSONL、ローカルD1、通常HTTPのAPI、ローカルR2のhash/bytesが一致する。遠隔反映後の既存公開読返しでは同じ検査を行うが、途中公開・部分失敗時は一時的不一致を検査結果として報告し、行を削除しない。
-- **節集約との接続**: 原典行粒度から事業×節への移行、別事業の同じ節、同一事業の異なる節、追加区分の違い、適用期間外の節定義、節NULL二行、COFOG／連結判断の衝突を検査する。親額とdetails_json末端合計が一致し、小計の重複や訂正前後の内訳混入を拒否する。原典行ID・source_row・ページ・bboxが採用入力へ解決し、粒度不足はcoverageとリンクの根拠に残る。
-- **D1契約版3**: schemaとmartsの明細PK/FKにversion_idが無いこと、複数年度を含む団体候補、訂正・粒度移行で旧行がcascade除去されること、同一内容再試行の行／登録時刻維持、他団体不変を既存 `pipeline/publish/cloudflare.test.ts`・`pipeline/publish/publish.test.ts`・`apps/api/src/data/queries.test.ts` のfixtureへ接続する。古いversions/cursorと応答途中の内容変更は410、同じハッシュでの追加行・件数変化は許容する。過去の不変R2 URLは取得でき、Git履歴で旧採用入力へ辿れることを別に検査する。
-- **回帰と独立版**: `bun run pipeline:build --rebuild` の固定入力・内容再現、既存5団体の決算実績の不変、狛江市以外の未変更version/packageの再利用を確認する。入力復元が不可能な環境で成功扱い・当日URLへの代替取得をしない。
-
-## Alternatives Considered
-
-| 観点 | 二目から履歴を追加（採用） | 全科目を先に取り込む | 報告値・年度累計で補完 |
-|---|---|---|---|
-| 最初に検証する量 | 当初2行・補正3行・リンク10行 | 全科目と異粒度の対応 | 少ないが変更根拠が欠ける |
-| 指定日時点の正確さ | 不明日付はunconfirmed | 日付が不足すればunconfirmed | 架空日付や隠れた欠落が残る |
-| 原典への参照 | 採用行・報告値・不足を分ける | 同じ区別が必要 | 報告値と復元の意味が混ざる |
-| 代償 | 全体のcompleteは後続 | 画像・対応確認の範囲が広い | 途中時点の正確さを保証できない |
-
-二目のorigin_line例外で増減・予備費・実績・1:Nの変換と検査を通してから、対応を確認した事業×節へ広げる。必要資料一覧には全7号を含め、狭い範囲を一般会計全体のcompleteと表示しない。決算報告現額は内部照合に使い、欠けた変更の補完には使わない。日付不明の年度累計を3月31日のイベントにすると実施日を偽るため、内部観測に留める。
-
-## Caveats
-
-残る調査は二目の当初・補正・決算の事業×歳出の節の対応、狛江市の繰越計算書本体、充用・流用の実施日と取引単位、訂正・新設・分割・統合の実例、原典の公開日・再配布条件である。補助例の富士見市計算書は提出日と元年度を確認したが、受入の効力の日や狛江市の対応を証明しない。これらは後続のcomplete条件を制限するが、初回のorigin_lineによる3変更行・内部照合・unconfirmedの実装を妨げない。節集約契約のコード適用状況と、例外行のAPI/CSV内訳表現は別担当の実装時に照合する。
-
-原典の確認は調査取得と対象箇所の読取りまでであり、実装・固定入力の本番採用・R2/D1/APIの本番一致検査は未実施である。
+- **取り込み**：原典行とstagingの1対1、PDFの反復印字額、before＋delta＝after、節・目の合計、△負号、1000倍、ページ跨ぎを検査する。
+- **採用と時点**：同hash再取得、同一号の訂正置換、複数号、提出日と適用日の区別、各適用日の前日／当日の小計、日付不明の観測除外を検査する。
+- **対象と粒度**：新設ゼロと当初不明、改称・分割・統合・M:N、異会計／年度の混入、空会計コード、節NULLの非集約、適用期間、detailsの末端合計、小計重複を検査する。
+- **繰越等と照合**：限度と実額、元／先年度、予備費当初と実充用、原資／相手の合計0、同一目内の節間移動、報告現額との厳密一致、欠号や粒度不足でのunconfirmedを検査する。
+- **再現と回帰**：同じ採用入力・判断から同じmart行を作り、既収録の決算実績を変えない。検査対象0件で成功させず、実資料と架空fixtureの結果を分ける。
 
 ## Appendix
+
+### 変更するファイルとモデル
+
+パスはrepo rootからの相対パス。新規案は未実装である。
+
+- **取得・採用**：`pipeline/ingestion/fiscal/sources.toml`・`sources.py`・`fetch.py`、`pipeline/ingestion/inputs.py`・`paths.py`。新規 `extract_budget_history.py`、`budget-history/adoptions.json`・`item-correspondences.csv`・`coverage.json`。採用証跡と `sources.lock.json` を更新する。
+- **staging**：`pipeline/dbt/models/staging/fiscal/_sources.yml`・`_models.yml`、新規 `stg_132195__budget_history.sql`。既存 `stg_132195__expenditure.sql` は決算CSVの行IDを維持する。
+- **intermediate**：`pipeline/dbt/models/intermediate/fiscal/api/int_fiscal_datasets.sql` の採用dataset JOIN。新規 `int_fiscal_budget_items`・`int_fiscal_initial_budget`・`int_fiscal_budget_changes`・`int_fiscal_settlement_correspondences`・`int_fiscal_budget_reconciliation`・`int_fiscal_budget_change_observations`。`pipeline/dbt/dbt_project.yml` にlayout・単位を宣言する。
+- **marts**：`pipeline/dbt/models/marts/api/api_fiscal_expenditure_budget_items.sql`・`api_fiscal_initial_expenditure_budget_lines.sql`・`api_fiscal_expenditure_budget_changes.sql`・`api_fiscal_expenditure_settlement_links.sql`・`api_fiscal_datasets.sql` と `pipeline/dbt/macros/api.sql` へ接続する。照合・範囲・観測は新規 `pipeline/dbt/models/marts/fiscal/fiscal_budget_reconciliation.sql`・`fiscal_budget_history_coverage.sql`・`fiscal_budget_change_observations.sql`（案）にする。既存名の `api_` はモデルの識別に用いており、本書はmartの生成までを扱う。
+- **検査**：`pipeline/dbt/tests/staging_is_one_to_one.sql`・`amount_units_match_source.sql`・`source_year_matches_partition.sql`・`declarations_cover_raw.sql` の対象を文書／表別に揃える。`api_relations.sql` に非空の変更・対応を含め、採用版・原典行参照・金額導出・時点・照合・観測の検査を追加する。
+
+### 残る確認
+
+二目の事業×歳出の節の対応、狛江市の繰越計算書本体、充用・流用の実施日と実施単位、訂正・新設・分割・統合の実例が未確認である。原典の公開日・再利用条件も確認を残す。日付・粒度不足は初回martへ不足理由として残し、金額や日付を補完しない。
 
 ### 確認した原典
 
