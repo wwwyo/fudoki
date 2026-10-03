@@ -35,7 +35,7 @@ select
     {{ key_parts | join(" || chr(31) || ") }} as group_path_key,
     {{ sidx }} as setsu_ordinal,
     {{ setsu_present }} as setsu_present,
-    case when {{ setsu_present }} then m.expenditure_setsu_id else null end as expenditure_setsu_id,
+    case when {{ setsu_present }} then ms.expenditure_setsu_id else null end as expenditure_setsu_id,
     case when {{ setsu_present }} then s.setsu_label else null end as setsu_label,
 {%- if below %}
     '[' || coalesce(concat_ws(',',
@@ -64,6 +64,12 @@ join {{ ref('int_fiscal_amounts') }} as a
 {%- if sidx >= 0 %}
 left join {{ ref('expenditure_setsu_map') }} as m
   on m.jurisdiction_code = d.jurisdiction_code and m.setsu_label = s.setsu_label
+left join {{ ref('api_fiscal_expenditure_setsu_master') }} as mdef
+  on mdef.expenditure_setsu_id = m.expenditure_setsu_id
+left join {{ ref('api_fiscal_expenditure_setsu_master') }} as ms
+  on ms.label = mdef.label
+ and d.fiscal_year >= coalesce(ms.valid_from_fiscal_year, -9999)
+ and d.fiscal_year <= coalesce(ms.valid_to_fiscal_year, 9999)
 {%- endif %}
 where d.document_kind = 'budget'
 {% if not loop.last %}union all

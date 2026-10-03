@@ -27,6 +27,11 @@ WHEN EXISTS(SELECT 1 FROM fiscal_expenditure_setsu_master m WHERE m.code=NEW.cod
   AND coalesce(m.valid_from_fiscal_year,-9223372036854775808)<=coalesce(NEW.valid_to_fiscal_year,9223372036854775807)
   AND coalesce(NEW.valid_from_fiscal_year,-9223372036854775808)<=coalesce(m.valid_to_fiscal_year,9223372036854775807))
 BEGIN SELECT RAISE(ABORT,'Setsu definitions overlap'); END;
+CREATE TRIGGER IF NOT EXISTS fiscal_expenditure_setsu_master_no_overlap_update BEFORE UPDATE ON fiscal_expenditure_setsu_master
+WHEN EXISTS(SELECT 1 FROM fiscal_expenditure_setsu_master m WHERE m.code=NEW.code AND m.expenditure_setsu_id<>NEW.expenditure_setsu_id
+  AND coalesce(m.valid_from_fiscal_year,-9223372036854775808)<=coalesce(NEW.valid_to_fiscal_year,9223372036854775807)
+  AND coalesce(NEW.valid_from_fiscal_year,-9223372036854775808)<=coalesce(m.valid_to_fiscal_year,9223372036854775807))
+BEGIN SELECT RAISE(ABORT,'Setsu definitions overlap'); END;
 CREATE TABLE IF NOT EXISTS fiscal_jurisdiction_data (
   version_id TEXT NOT NULL UNIQUE,
   jurisdiction_code TEXT PRIMARY KEY REFERENCES jurisdiction_master(jurisdiction_code),
@@ -98,6 +103,12 @@ WHEN NEW.expenditure_setsu_id IS NOT NULL AND NOT EXISTS(
   SELECT 1 FROM fiscal_expenditure_setsu_master m WHERE m.expenditure_setsu_id=NEW.expenditure_setsu_id
     AND (m.valid_from_fiscal_year IS NULL OR NEW.fiscal_year>=m.valid_from_fiscal_year)
     AND (m.valid_to_fiscal_year IS NULL OR NEW.fiscal_year<=m.valid_to_fiscal_year))
+BEGIN SELECT RAISE(ABORT,'Setsu definition does not cover the fiscal year'); END;
+CREATE TRIGGER IF NOT EXISTS fiscal_expenditure_budget_items_setsu_period_update BEFORE UPDATE ON fiscal_expenditure_budget_items
+WHEN NEW.expenditure_setsu_id IS NOT NULL AND NOT EXISTS(
+  SELECT 1 FROM fiscal_expenditure_setsu_master m WHERE m.expenditure_setsu_id=NEW.expenditure_setsu_id
+  AND (m.valid_from_fiscal_year IS NULL OR NEW.fiscal_year >= m.valid_from_fiscal_year)
+  AND (m.valid_to_fiscal_year IS NULL OR NEW.fiscal_year <= m.valid_to_fiscal_year))
 BEGIN SELECT RAISE(ABORT,'Setsu definition does not cover the fiscal year'); END;
 CREATE TABLE IF NOT EXISTS fiscal_initial_expenditure_budget_lines (
   fiscal_line_id TEXT NOT NULL,dataset_id TEXT NOT NULL,
