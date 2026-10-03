@@ -215,3 +215,19 @@ seeds:
         kan_label: varchar
         klass: varchar
         note: varchar
+
+  - name: expenditure_setsu_map
+    meta:
+      role: judgment-rule
+    description: |
+      原典が印字する歳出の節名称と法定区分（fiscal_expenditure_setsu_master）の対応。
+      **fudoki の判断。** 原典の節コードは団体ごとの振り直しがありうる
+      （多摩市は予備費を29と印字する）ため、対応のキーは団体コードと
+      原典の節名称とする。対応を確かめられない節はここに書かず、
+      expenditure_setsu_id が NULL の原典行粒度として残る。
+    config:
+      column_types:
+        jurisdiction_code: varchar
+        setsu_label: varchar
+        expenditure_setsu_id: varchar
+        basis: varchar

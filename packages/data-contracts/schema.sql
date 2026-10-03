@@ -3,21 +3,34 @@ CREATE TABLE IF NOT EXISTS database_identity (
   singleton INTEGER PRIMARY KEY CHECK(singleton=1), identity TEXT NOT NULL
 );
 INSERT OR IGNORE INTO database_identity VALUES(1,lower(hex(randomblob(16))));
-CREATE TABLE IF NOT EXISTS jurisdictions (
+CREATE TABLE IF NOT EXISTS jurisdiction_master (
   jurisdiction_code TEXT PRIMARY KEY, name TEXT NOT NULL, ocd_id TEXT NOT NULL
 );
-CREATE TABLE IF NOT EXISTS cofog_codes (
+CREATE TABLE IF NOT EXISTS cofog_master (
   code TEXT PRIMARY KEY, label TEXT NOT NULL,
   level TEXT NOT NULL CHECK(level IN ('division','group','class')),
-  parent_code TEXT REFERENCES cofog_codes(code),
+  parent_code TEXT REFERENCES cofog_master(code),
   CHECK((level='division' AND length(code)=2 AND parent_code IS NULL)
     OR (level='group' AND length(code)=4 AND parent_code=substr(code,1,2))
     OR (level='class' AND length(code)=6 AND parent_code=substr(code,1,4)))
 );
+CREATE TABLE IF NOT EXISTS fiscal_expenditure_setsu_master (
+  expenditure_setsu_id TEXT PRIMARY KEY,
+  code TEXT NOT NULL, label TEXT NOT NULL,
+  valid_from_fiscal_year INTEGER, valid_to_fiscal_year INTEGER,
+  legal_basis TEXT NOT NULL,
+  CHECK(valid_from_fiscal_year IS NULL OR valid_to_fiscal_year IS NULL
+    OR valid_from_fiscal_year<=valid_to_fiscal_year)
+);
+CREATE TRIGGER IF NOT EXISTS fiscal_expenditure_setsu_master_no_overlap BEFORE INSERT ON fiscal_expenditure_setsu_master
+WHEN EXISTS(SELECT 1 FROM fiscal_expenditure_setsu_master m WHERE m.code=NEW.code AND m.expenditure_setsu_id<>NEW.expenditure_setsu_id
+  AND coalesce(m.valid_from_fiscal_year,-9223372036854775808)<=coalesce(NEW.valid_to_fiscal_year,9223372036854775807)
+  AND coalesce(NEW.valid_from_fiscal_year,-9223372036854775808)<=coalesce(m.valid_to_fiscal_year,9223372036854775807))
+BEGIN SELECT RAISE(ABORT,'Setsu definitions overlap'); END;
 CREATE TABLE IF NOT EXISTS fiscal_jurisdiction_data (
   version_id TEXT NOT NULL UNIQUE,
-  jurisdiction_code TEXT PRIMARY KEY REFERENCES jurisdictions(jurisdiction_code),
-  contract_version INTEGER NOT NULL CHECK(contract_version=3),
+  jurisdiction_code TEXT PRIMARY KEY REFERENCES jurisdiction_master(jurisdiction_code),
+  contract_version INTEGER NOT NULL CHECK(contract_version=4),
   package_id TEXT,
   name_snapshot TEXT NOT NULL, ocd_id_snapshot TEXT NOT NULL, caveats_json TEXT NOT NULL,
   registered_at TEXT NOT NULL,
@@ -47,7 +60,7 @@ CREATE TABLE IF NOT EXISTS fiscal_settlement_expenditure_lines (
   amount INTEGER NOT NULL CHECK(typeof(amount)='integer' AND abs(amount)<=9007199254740991),
   consolidation TEXT NOT NULL CHECK(consolidation IN ('retained','eliminated')),
   counterpart_fund TEXT NOT NULL,
-  cofog_code TEXT REFERENCES cofog_codes(code),
+  cofog_code TEXT REFERENCES cofog_master(code),
   cofog_status TEXT NOT NULL CHECK(cofog_status IN ('assigned','unclassifiable','out-of-scope')),
   cofog_basis TEXT NOT NULL,
   CHECK((cofog_status='assigned' AND cofog_code IS NOT NULL) OR (cofog_status!='assigned' AND cofog_code IS NULL)),
@@ -73,17 +86,26 @@ CREATE TABLE IF NOT EXISTS fiscal_settlement_expenditure_line_names (
 CREATE TABLE IF NOT EXISTS fiscal_expenditure_budget_items (
   budget_item_id TEXT NOT NULL,jurisdiction_code TEXT NOT NULL,
   fiscal_year INTEGER NOT NULL,fund_code TEXT NOT NULL,fund_label TEXT NOT NULL,
+  expenditure_setsu_id TEXT REFERENCES fiscal_expenditure_setsu_master(expenditure_setsu_id),
+  line_granularity TEXT NOT NULL CHECK(line_granularity IN ('expenditure_setsu','origin_line')),
   account_path_json TEXT NOT NULL,dimensions_json TEXT NOT NULL,names_json TEXT NOT NULL,
   initial_state TEXT NOT NULL CHECK(initial_state IN ('recorded','verified-zero','unknown')),
   PRIMARY KEY(budget_item_id),
   FOREIGN KEY(jurisdiction_code) REFERENCES fiscal_jurisdiction_data(jurisdiction_code)
 );
+CREATE TRIGGER IF NOT EXISTS fiscal_expenditure_budget_items_setsu_period BEFORE INSERT ON fiscal_expenditure_budget_items
+WHEN NEW.expenditure_setsu_id IS NOT NULL AND NOT EXISTS(
+  SELECT 1 FROM fiscal_expenditure_setsu_master m WHERE m.expenditure_setsu_id=NEW.expenditure_setsu_id
+    AND (m.valid_from_fiscal_year IS NULL OR NEW.fiscal_year>=m.valid_from_fiscal_year)
+    AND (m.valid_to_fiscal_year IS NULL OR NEW.fiscal_year<=m.valid_to_fiscal_year))
+BEGIN SELECT RAISE(ABORT,'Setsu definition does not cover the fiscal year'); END;
 CREATE TABLE IF NOT EXISTS fiscal_initial_expenditure_budget_lines (
   fiscal_line_id TEXT NOT NULL,dataset_id TEXT NOT NULL,
   budget_item_id TEXT NOT NULL,source_row INTEGER NOT NULL,amount INTEGER NOT NULL CHECK(typeof(amount)='integer' AND abs(amount)<=9007199254740991),
+  details_json TEXT NOT NULL,
   consolidation TEXT NOT NULL CHECK(consolidation IN ('retained','eliminated')),
   counterpart_fund TEXT NOT NULL,
-  cofog_code TEXT REFERENCES cofog_codes(code),
+  cofog_code TEXT REFERENCES cofog_master(code),
   cofog_status TEXT NOT NULL CHECK(cofog_status IN ('assigned','unclassifiable','out-of-scope')),
   cofog_basis TEXT NOT NULL,
   CHECK((cofog_status='assigned' AND cofog_code IS NOT NULL) OR (cofog_status!='assigned' AND cofog_code IS NULL)),
@@ -94,10 +116,11 @@ CREATE TABLE IF NOT EXISTS fiscal_initial_expenditure_budget_lines (
 CREATE TABLE IF NOT EXISTS fiscal_expenditure_budget_changes (
   change_id TEXT NOT NULL,dataset_id TEXT NOT NULL,budget_item_id TEXT NOT NULL,
   amount_delta INTEGER NOT NULL CHECK(typeof(amount_delta)='integer' AND abs(amount_delta)<=9007199254740991),
+  details_json TEXT NOT NULL,
   change_kind TEXT NOT NULL CHECK(change_kind IN ('supplementary','carryover','reserve-allocation','transfer')),
   effective_at TEXT NOT NULL,sequence INTEGER NOT NULL,source_row INTEGER NOT NULL,
   counterpart_budget_item_id TEXT,carryover_from_year INTEGER,carryover_to_year INTEGER,
-  cofog_code TEXT REFERENCES cofog_codes(code),
+  cofog_code TEXT REFERENCES cofog_master(code),
   cofog_status TEXT NOT NULL CHECK(cofog_status IN ('assigned','unclassifiable','out-of-scope')),
   cofog_basis TEXT NOT NULL,
   CHECK((cofog_status='assigned' AND cofog_code IS NOT NULL) OR (cofog_status!='assigned' AND cofog_code IS NULL)),

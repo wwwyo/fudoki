@@ -203,12 +203,36 @@ test('verified many-to-many correspondence counts actuals once, applies signed c
     ['item-b', 400],
   ] as const) {
     sqlite.run(
-      'INSERT INTO fiscal_expenditure_budget_items VALUES(?,?,?,?,?,?,?,?,?)',
-      [id, '000001', 2026, '01', '一般会計', '[]', '[]', '[]', 'recorded']
+      'INSERT INTO fiscal_expenditure_budget_items VALUES(?,?,?,?,?,?,?,?,?,?,?)',
+      [
+        id,
+        '000001',
+        2026,
+        '01',
+        '一般会計',
+        null,
+        'origin_line',
+        '[]',
+        '[]',
+        '[]',
+        'recorded',
+      ]
     )
     sqlite.run(
-      'INSERT INTO fiscal_initial_expenditure_budget_lines VALUES(?,?,?,?,?,?,?,?,?,?)',
-      [id, 'initial', id, 1, initial, 'retained', '', '09', 'assigned', '根拠']
+      'INSERT INTO fiscal_initial_expenditure_budget_lines VALUES(?,?,?,?,?,?,?,?,?,?,?)',
+      [
+        id,
+        'initial',
+        id,
+        1,
+        initial,
+        `[{"path":[],"amount":${initial},"fiscalLineId":"${id}","sourceRow":1}]`,
+        'retained',
+        '',
+        '09',
+        'assigned',
+        '根拠',
+      ]
     )
     for (let index = 0; index < 3; index++)
       sqlite.run(
@@ -227,12 +251,13 @@ test('verified many-to-many correspondence counts actuals once, applies signed c
     ['change-b', 30, '2026-10-01'],
   ] as const) {
     sqlite.run(
-      'INSERT INTO fiscal_expenditure_budget_changes VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+      'INSERT INTO fiscal_expenditure_budget_changes VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
       [
         id,
         'amendment',
         'item-a',
         delta,
+        `[{"path":[],"amount":${delta},"fiscalLineId":"${id}","sourceRow":1}]`,
         'supplementary',
         date,
         1,
@@ -255,6 +280,9 @@ test('verified many-to-many correspondence counts actuals once, applies signed c
     direction: 'expenditure',
     asOf: '2026-06-01',
   })
+  sqlite.run(
+    `UPDATE fiscal_datasets SET coverage_json='{"budgetHistory":"complete","verifiedThrough":"2026-12-31"}' WHERE dataset_id IN ('000001:budget','000001:supplementary')`
+  )
   const result = budgetHistorySchema.parse(await budgetHistory(db, input))
   expect(result.comparisons[0]).toMatchObject({
     budgetAmount: 580,
@@ -262,7 +290,8 @@ test('verified many-to-many correspondence counts actuals once, applies signed c
     actualAmount: 300,
     status: 'complete',
   })
-  expect(result.changes).toHaveLength(1)
+  // fixture の補正（c-increase, 2026-06-01 発効）も同じスコープへ含まれる
+  expect(result.changes).toHaveLength(2)
   expect(
     (await budgetHistory(db, { ...input, fundCode: 'missing' })).items
   ).toHaveLength(0)
@@ -293,7 +322,7 @@ test('verified many-to-many correspondence counts actuals once, applies signed c
         budgetHistory(db, q)
       )
     )[0]!.rows
-  ).toBe(2)
+  ).toBe(4)
   await expect(
     verifyBudgetChanges(directory, versions, async (q) => {
       const response = await budgetHistory(db, q)
@@ -311,8 +340,20 @@ test('verified many-to-many correspondence counts actuals once, applies signed c
     status: 'unconfirmed',
   })
   sqlite.run(
-    'INSERT INTO fiscal_expenditure_budget_items VALUES(?,?,?,?,?,?,?,?,?)',
-    ['new-item', '000001', 2026, '01', '一般会計', '[]', '[]', '[]', 'unknown']
+    'INSERT INTO fiscal_expenditure_budget_items VALUES(?,?,?,?,?,?,?,?,?,?,?)',
+    [
+      'new-item',
+      '000001',
+      2026,
+      '01',
+      '一般会計',
+      null,
+      'origin_line',
+      '[]',
+      '[]',
+      '[]',
+      'unknown',
+    ]
   )
   sqlite.run(
     'INSERT INTO fiscal_expenditure_settlement_links VALUES(?,?,?,?,?)',

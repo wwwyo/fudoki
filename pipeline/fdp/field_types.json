@@ -162,6 +162,21 @@
         "name": "fudoki:master:basis",
         "dataType": "string",
         "description": "法定マスタへの対応の根拠"
+      },
+      {
+        "name": "fudoki:setsu:id",
+        "dataType": "string",
+        "description": "歳出の節マスタの識別子。地方自治法施行規則 別記「歳出予算に係る節の区分」の適用期間つき定義を指す"
+      },
+      {
+        "name": "fudoki:line:granularity",
+        "dataType": "string",
+        "description": "明細の粒度（expenditure_setsu / origin_line）"
+      },
+      {
+        "name": "fudoki:line:details",
+        "dataType": "string",
+        "description": "節より下の下位経路と原典行の対応を持つ JSON"
       }
     ]
   ],
@@ -982,6 +997,24 @@
       "type": "string",
       "columnType": "fin-source:generic:level4:label",
       "labelOf": "fin-source:generic:level4:code"
+    },
+    "expenditure_setsu_id": {
+      "name": "expenditure_setsu_id",
+      "type": "string",
+      "description": "歳出の節マスタの識別子。地方自治法施行規則 別記「歳出予算に係る節の区分」の適用期間つき定義を指す。対応を確かめられない行は空",
+      "columnType": "fudoki:setsu:id"
+    },
+    "line_granularity": {
+      "name": "line_granularity",
+      "type": "string",
+      "description": "明細の粒度。expenditure_setsu は事業と節の組合せへ集約した行、origin_line は対応を確かめられず原典行の粒度で残した行",
+      "columnType": "fudoki:line:granularity"
+    },
+    "details_json": {
+      "name": "details_json",
+      "type": "string",
+      "description": "節より下の下位経路と原典行の対応（JSON）。各要素は順序付き下位経路 path・金額（円）amount・原典の fiscalLineId と sourceRow を持つ",
+      "columnType": "fudoki:line:details"
     }
   }
 }

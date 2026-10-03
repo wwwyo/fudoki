@@ -21,11 +21,11 @@ bun run pipeline:build --rebuild
 
 `build.ts` は復元済みの固定入力を使い、ネットワークなしで dbt・FDP descriptor・manifest・D1/API の検査を実行する。結果は `.build/builds/r-<内部構築ID>/` に入り、`complete.json` がある候補だけを publish できる。`--rebuild` は別の作業領域で再生成し、同じ入力・コードから同じ内容を生成できるか照合する。`.build/warehouse.duckdb` は検証画面用の再生成可能な DB である。
 
-配布物と D1 は決算・当初予算・変更・対応を分ける。決算明細は実績の `amount` 一つを持ち、歳出の COFOG コード・状態・根拠は明細・変更と同じ CSV に含める。歳出の分類は当面 COFOG のみとし、GFSM は提供しない。歳出明細 CSV の節・その内訳のコードと名称は配布から外す。原典の節は取り込み・内部検証と予算対象の原典経路に残し、歳入の節は財源の内訳として保持する。規則ファイル・規則 ID は公開しない。原典の複数金額列は取り込み表と候補の `internal/fiscal/` に残し、公開する実績と混在させない。
+配布物と D1 は決算・当初予算・変更・対応を分ける。決算明細は実績の `amount` 一つを持ち、歳出の COFOG コード・状態・根拠は明細・変更と同じ CSV に含める。歳出の分類は当面 COFOG のみとし、GFSM は提供しない。歳出の当初予算は確認できた対象を事業×歳出の節へ集約し、節の参照は `expenditure_setsu_id`（`fiscal_expenditure_setsu_master`）、節より下の内訳と原典行の対応は `details_json` に保持する。対応を確認できない行は原典行の粒度（`line_granularity = origin_line`、`expenditure_setsu_id = NULL`）で残す。原典の節コード・名称は取り込み・内部検証と `details_json` の内訳経路に残し、歳入の節は財源の内訳として保持する。規則ファイル・規則 ID は公開しない。原典の複数金額列は取り込み表と候補の `internal/fiscal/` に残し、公開する実績と混在させない。
 
 補正・繰越等の実資料と、資料間の確認済み対応は現在未収録である。変更・対応表が空でも、変更ゼロ・予算と決算の一致を意味しない。dataset の `coverage.budgetHistory` は `unconfirmed` として提供する。収録・照合の条件は [予算変更履歴 PRD](../docs/prd/fiscal-budget-history/prd.md) に残す。
 
-採用済みの設計では、歳出の節マスタ `fiscal_expenditure_setsu_master` を追加し、歳出予算を事業×歳出の節へ集約する。参照は `expenditure_setsu_id`、下位内訳と原典行への対応は金額明細の `details_json` とする。この変更は未実装であり、上記は現在の構築結果を説明している。移行の契約と検査条件は [財政データの設計](../docs/prd/fiscal-records/design-doc.md) を参照。
+歳出の節マスタ `fiscal_expenditure_setsu_master` と事業×歳出の節への集約は実装済みである。節マスタは `packages/fiscal/setsu-master.ts` の Git 定義（地方自治法施行規則 別記の現行28区分と改正前の旧体系・適用期間つき）から生成し、原典の節名称との対応は `pipeline/dbt/seeds/fiscal/expenditure_setsu_map.csv` に宣言する。集約の規則は `int_expenditure_setsu_lines`・`int_expenditure_setsu_groups` が正本であり、同じ経路・追加区分・節で分類（COFOG・連結判断）を共有する末端行だけをまとめる。契約と検査条件は [財政データの設計](../docs/prd/fiscal-records/design-doc.md) を参照。
 
 ## 収録範囲を Git に記録する
 
@@ -50,7 +50,7 @@ bun run pipeline:publish publish --build-id r-<32桁のhash> --jurisdiction 1321
 
 publish は再構築せず、完成した候補の R2 ファイルと D1 の表を反映する。clean な commit、正規の遠隔検証済み入力一覧、現在のコードと候補の一致、commit した Git manifest を要求する。コード・固定入力を commit → build → manifest を commit → publish の順に実行する。
 
-D1 は新しい22表の保存契約を使う。旧 schema は自動削除せず、新しい D1 を初期化して API の binding と合わせる。公開 API の契約・問い合わせ定義・接続先 DB を通常の HTTP 経路で確認してから取り込む。
+D1 は新しい23表の保存契約（contract version 4）を使う。旧 schema は自動削除せず、新しい D1 を初期化して API の binding と合わせる。公開 API の契約・問い合わせ定義・接続先 DB を通常の HTTP 経路で確認してから取り込む。
 
 団体の配布物を転送・照合し、D1 の現在内容を更新して表を順に追加する。D1 は全収録年度を含む最新版だけを持ち、内容が変われば選んだ団体の古い行を除去する。同じ内容の再試行は既存行と登録時刻を保持する。**取り込み途中の明細も API から取得できる。** 全体 release、公開状態、guard、lease、公開切替は設けない。古い内容を指定した API 問い合わせとページ送りは再取得を求め、過去の配布物は R2 と Git manifest の履歴から辿る。
 

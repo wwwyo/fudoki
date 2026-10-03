@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const CONTRACT_VERSION = 3
+export const CONTRACT_VERSION = 4
 export const sha256Schema = z.string().regex(/^[a-f0-9]{64}$/)
 export const buildIdSchema = z.string().regex(/^r-[a-f0-9]{32}$/)
 export const versionIdSchema = z.string().regex(/^v-[a-f0-9]{64}$/)
@@ -33,6 +33,28 @@ export const jurisdictionMasterSchema = z
     ocd_id: z.string().min(1),
   })
   .strict()
+export const lineGranularitySchema = z.enum([
+  'expenditure_setsu',
+  'origin_line',
+])
+export const expenditureSetsuMasterSchema = z
+  .object({
+    expenditure_setsu_id: z.string().min(1),
+    code: z.string().min(1),
+    label: z.string().min(1),
+    valid_from_fiscal_year: z.number().int().nullable(),
+    valid_to_fiscal_year: z.number().int().nullable(),
+    legal_basis: z.string().min(1),
+  })
+  .strict()
+  .superRefine((row, ctx) => {
+    if (
+      row.valid_from_fiscal_year !== null &&
+      row.valid_to_fiscal_year !== null &&
+      row.valid_from_fiscal_year > row.valid_to_fiscal_year
+    )
+      ctx.addIssue({ code: 'custom', message: 'Setsu period is empty' })
+  })
 export const cofogMasterSchema = z
   .object({
     code: z.string().regex(/^\d{2}(?:\.\d){0,2}$/),
@@ -206,6 +228,8 @@ export const TABLE_COLUMNS = {
     'fiscal_year',
     'fund_code',
     'fund_label',
+    'expenditure_setsu_id',
+    'line_granularity',
     'account_path_json',
     'dimensions_json',
     'names_json',
@@ -263,6 +287,7 @@ export const TABLE_COLUMNS = {
     'budget_item_id',
     'source_row',
     'amount',
+    'details_json',
     'consolidation',
     'counterpart_fund',
     'cofog_code',
@@ -274,6 +299,7 @@ export const TABLE_COLUMNS = {
     'dataset_id',
     'budget_item_id',
     'amount_delta',
+    'details_json',
     'change_kind',
     'effective_at',
     'sequence',
@@ -353,8 +379,16 @@ export const TABLE_COLUMNS = {
     'match_group_id',
     'basis',
   ],
-  jurisdictions: ['jurisdiction_code', 'name', 'ocd_id'],
-  cofog_codes: ['code', 'label', 'level', 'parent_code'],
+  jurisdiction_master: ['jurisdiction_code', 'name', 'ocd_id'],
+  cofog_master: ['code', 'label', 'level', 'parent_code'],
+  fiscal_expenditure_setsu_master: [
+    'expenditure_setsu_id',
+    'code',
+    'label',
+    'valid_from_fiscal_year',
+    'valid_to_fiscal_year',
+    'legal_basis',
+  ],
   jurisdiction_metadata: [
     'jurisdiction_code',
     'name_snapshot',
@@ -391,8 +425,9 @@ export const TABLE_KEYS = {
   fiscal_initial_revenue_budget_lines: ['fiscal_line_id'],
   fiscal_revenue_budget_changes: ['change_id'],
   fiscal_revenue_settlement_links: ['budget_item_id', 'settlement_line_id'],
-  jurisdictions: ['jurisdiction_code'],
-  cofog_codes: ['code'],
+  jurisdiction_master: ['jurisdiction_code'],
+  cofog_master: ['code'],
+  fiscal_expenditure_setsu_master: ['expenditure_setsu_id'],
   jurisdiction_metadata: ['jurisdiction_code'],
 } as const
 export const candidateManifestSchema = z
@@ -406,6 +441,7 @@ export const candidateManifestSchema = z
     manifestSha256: sha256Schema,
     jurisdictionMasterSha256: sha256Schema,
     cofogMasterSha256: sha256Schema,
+    expenditureSetsuMasterSha256: sha256Schema,
     tables: z.record(z.enum(TABLES), tableDigestSchema),
     versions: z.array(
       jurisdictionVersionSchema.extend({

@@ -186,10 +186,14 @@ function fiscalRows() {
         ? 'l.cofog_code,l.cofog_status,l.cofog_basis'
         : 'NULL AS cofog_code,NULL AS cofog_status,NULL AS cofog_basis'
     selects.push(
-      `SELECT l.fiscal_line_id,l.dataset_id,l.source_row,l.fund_code,l.fund_label,l.amount,l.consolidation,l.counterpart_fund,${classification},${relationalJson(direction, 'hierarchy')} AS hierarchy,${relationalJson(direction, 'dimensions')} AS dimensions,${relationalJson(direction, 'names')} AS names FROM fiscal_settlement_${direction}_lines l`
+      `SELECT l.fiscal_line_id,l.dataset_id,l.source_row,l.fund_code,l.fund_label,l.amount,l.consolidation,l.counterpart_fund,${classification},${relationalJson(direction, 'hierarchy')} AS hierarchy,${relationalJson(direction, 'dimensions')} AS dimensions,${relationalJson(direction, 'names')} AS names,NULL AS expenditure_setsu_id,NULL AS line_granularity,NULL AS details_json FROM fiscal_settlement_${direction}_lines l`
     )
+    const setsu =
+      direction === 'expenditure'
+        ? 'b.expenditure_setsu_id,b.line_granularity,l.details_json'
+        : 'NULL AS expenditure_setsu_id,NULL AS line_granularity,NULL AS details_json'
     selects.push(
-      `SELECT l.fiscal_line_id,l.dataset_id,l.source_row,b.fund_code,b.fund_label,l.amount,l.consolidation,l.counterpart_fund,${classification},b.account_path_json AS hierarchy,b.dimensions_json AS dimensions,b.names_json AS names FROM fiscal_initial_${direction}_budget_lines l JOIN fiscal_${direction}_budget_items b USING(budget_item_id)`
+      `SELECT l.fiscal_line_id,l.dataset_id,l.source_row,b.fund_code,b.fund_label,l.amount,l.consolidation,l.counterpart_fund,${classification},b.account_path_json AS hierarchy,b.dimensions_json AS dimensions,b.names_json AS names,${setsu} FROM fiscal_initial_${direction}_budget_lines l JOIN fiscal_${direction}_budget_items b USING(budget_item_id)`
     )
   }
   return 'WITH fiscal_rows AS (' + selects.join(' UNION ALL ') + ') '
@@ -280,6 +284,17 @@ export async function queryLines(
       hierarchy: JSON.parse(String(r.hierarchy)),
       dimensions: JSON.parse(String(r.dimensions)),
       names: JSON.parse(String(r.names)),
+      ...(r.direction === 'expenditure' && r.document_kind === 'budget'
+        ? {
+            expenditureSetsuId: r.expenditure_setsu_id as string | null,
+            lineGranularity: r.line_granularity as
+              | 'expenditure_setsu'
+              | 'origin_line',
+            details: r.details_json
+              ? JSON.parse(String(r.details_json))
+              : undefined,
+          }
+        : {}),
       ...(r.direction === 'expenditure'
         ? {
             cofog: {
@@ -366,11 +381,21 @@ export async function aggregate(db: D1Database, input: AggregateQuery) {
     input.groupBy.some((k) => k.startsWith('cofog.'))
   )
     throw new QueryError('BAD_REQUEST', 'COFOG applies only to expenditure')
+  if (
+    datasets.some((d) => d.direction === 'revenue') &&
+    input.groupBy.includes('expenditureSetsu')
+  )
+    throw new QueryError(
+      'BAD_REQUEST',
+      'Expenditure setsu applies only to expenditure'
+    )
   const scope = conditions(datasets, input)
   const expressions = input.groupBy.map((key) => {
     if (key === 'jurisdiction') return 'd.jurisdiction_code'
     if (key === 'year') return 'CAST(d.fiscal_year AS TEXT)'
     if (key === 'fund') return 'l.fund_code'
+    if (key === 'expenditureSetsu')
+      return "coalesce(l.expenditure_setsu_id,'unset')" 
     if (key.startsWith('cofog.')) {
       const n = { division: 2, group: 4, class: 6 }[
         key.slice(6) as 'division' | 'group' | 'class'
@@ -381,7 +406,8 @@ export async function aggregate(db: D1Database, input: AggregateQuery) {
   })
   for (const key of input.groupBy.filter(
     (k) =>
-      !['jurisdiction', 'year', 'fund'].includes(k) && !k.startsWith('cofog.')
+      !['jurisdiction', 'year', 'fund', 'expenditureSetsu'].includes(k) &&
+      !k.startsWith('cofog.')
   )) {
     const missing = await rows(
       db,
@@ -658,6 +684,14 @@ export async function budgetHistory(
       fundLabel: String(row.fund_label),
       initialState: row.initial_state as
         'recorded' | 'verified-zero' | 'unknown',
+      expenditureSetsuId:
+        direction === 'expenditure'
+          ? (row.expenditure_setsu_id as string | null)
+          : undefined,
+      lineGranularity:
+        direction === 'expenditure'
+          ? (row.line_granularity as 'expenditure_setsu' | 'origin_line')
+          : undefined,
       hierarchy: JSON.parse(String(row.account_path_json)),
       dimensions: JSON.parse(String(row.dimensions_json)),
       names: JSON.parse(String(row.names_json)),
@@ -668,6 +702,9 @@ export async function budgetHistory(
       datasetId: String(row.dataset_id),
       sourceRow: Number(row.source_row),
       amount: Number(row.amount),
+      details: row.details_json
+        ? JSON.parse(String(row.details_json))
+        : undefined,
     })),
     changes: changes.map((row) => ({
       id: String(row.change_id),

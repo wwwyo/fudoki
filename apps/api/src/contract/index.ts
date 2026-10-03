@@ -8,6 +8,7 @@ import {
   sha256Schema,
   cofogStatusSchema,
   nameSourceSchema,
+  lineGranularitySchema,
 } from '@fudoki/data-contracts'
 
 const base = oc.errors({
@@ -107,6 +108,7 @@ const groupingSchema = z.enum([
   'chujigyo',
   'shojigyo',
   'setsu',
+  'expenditureSetsu',
 ])
 export const lineSchema = z
   .object({
@@ -141,6 +143,24 @@ export const lineSchema = z
         basis: z.string(),
       })
     ),
+    expenditureSetsuId: z.string().nullable().optional(),
+    lineGranularity: lineGranularitySchema.optional(),
+    details: z
+      .array(
+        z.object({
+          path: z.array(
+            z.object({
+              level: z.string(),
+              code: z.string(),
+              label: z.string(),
+            })
+          ),
+          amount: z.number().int().safe(),
+          fiscalLineId: z.string(),
+          sourceRow: z.number().int(),
+        })
+      )
+      .optional(),
     cofog: z
       .object({
         status: cofogStatusSchema,
@@ -206,6 +226,8 @@ const budgetItemSchema = z.object({
   fiscalYear: z.number().int(),
   fundCode: z.string(),
   fundLabel: z.string(),
+  expenditureSetsuId: z.string().nullable().optional(),
+  lineGranularity: lineGranularitySchema.optional(),
   initialState: z.enum(['recorded', 'verified-zero', 'unknown']),
   hierarchy: lineSchema.shape.hierarchy,
   dimensions: lineSchema.shape.dimensions,
@@ -242,6 +264,7 @@ export const budgetHistorySchema = z.object({
       datasetId: z.string(),
       sourceRow: z.number().int(),
       amount: z.number().int().safe(),
+      details: lineSchema.shape.details,
     })
   ),
   changes: z.array(budgetChangeSchema),
