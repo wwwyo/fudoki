@@ -45,11 +45,6 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.FUDOKI_INPUTS_READ_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
-      - name: 比較対象の公開版を固定
-        run: bun run pipeline/verify/summary.ts --prepare-baseline
-        env:
-          FUDOKI_REVIEW_BASELINE_URL: ${{ vars.FUDOKI_REVIEW_BASELINE_URL }}
-          FUDOKI_REVIEW_INITIAL_RELEASE: ${{ vars.FUDOKI_REVIEW_INITIAL_RELEASE }}
       - name: オフライン全量 build と報告
         run: |
           sudo unshare --net -- env PATH="$PATH" HOME="$HOME" MISE_TRUSTED_CONFIG_PATHS="$GITHUB_WORKSPACE" MISE_YES=1 MISE_DISABLE_TOOLS="$MISE_DISABLE_TOOLS" sh -ec '
@@ -57,14 +52,10 @@ jobs:
             bun run pipeline:build --rebuild
             bun run pipeline:report
           '
-      - name: 公開版からの件数・金額・識別子・分類・出典の変更を記録
-        run: bun run pipeline/verify/summary.ts
       - uses: actions/upload-artifact@v4
         with:
-          name: fiscal-release-validation
+          name: fiscal-pipeline-validation
           include-hidden-files: true
           path: |
-            pipeline/.build/review-summary.json
-            pipeline/.build/review-summary.md
-            pipeline/publish/manifest.json
+            pipeline/.build/dbt/run_results.json
             pipeline/.build/builds/*/verification.json

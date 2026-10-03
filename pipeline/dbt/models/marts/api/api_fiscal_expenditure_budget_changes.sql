@@ -1,2 +1,0 @@
-{{ api_model('fiscal_expenditure_budget_changes') }}
-select null::varchar as change_id, null::varchar as dataset_id, null::varchar as budget_item_id, null::bigint as amount_delta, null::varchar as change_kind, null::varchar as effective_at, null::bigint as sequence, null::bigint as source_row, null::varchar as counterpart_budget_item_id, null::bigint as carryover_from_year, null::bigint as carryover_to_year, null::varchar as cofog_code, null::varchar as cofog_status, null::varchar as cofog_basis where false

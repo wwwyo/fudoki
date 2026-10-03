@@ -1,5 +1,7 @@
 # budget-api: 配布物を Cloudflare Worker + oRPC で API として公開する
 
+> API・MCP の設計と公開は後段の検討対象。現在は ingestion〜marts の完成を優先する。以下は既存の要件・実装の記録である。
+
 ## Objectives
 
 - **Goal**: 予算の配布物（現在2団体）をフィルタ付きで取得できる読み取り専用 API を `api.fudoki.dev` で公開する。
@@ -7,7 +9,6 @@
   API の形（リソース名、フィルタ、ページング）は Google の API 設計規約 AIP に倣う。
   OpenAPI ドキュメントは contract から生成して同じ Worker で配る。
 - **Not goal**: 集計エンドポイント、認証、rate limit、比較 UI、MCP サーバは作らない（[PRD](./prd.md) の Non-Goals）。
-  D1 等のデータベースは導入しない（理由は Alternatives Considered）。
   contract の `packages/` への切り出しはしない（consumer が現れた時点で行う。[decision.log の決定12](./decision.log)）。
 
 ## Background
@@ -315,19 +316,6 @@ CORS は `Access-Control-Allow-Origin: *`、許可メソッドは GET / HEAD / O
 8. OpenAPI 参照 UI の表示確認と、v0 実験版であることと識別子の安定性の明記（spec の description）
 
 ## Alternatives Considered
-
-データの持たせ方:
-
-| 観点 | パーティション JSON + assets（採用） | Cloudflare D1 | R2 |
-|---|---|---|---|
-| 運用する状態 | なし（deploy に含まれる） | DB という状態が増える | バケットという状態が増える |
-| リポジトリとの同期 | 構造的にずれない | 投入ジョブ次第でずれる | 同期ジョブ次第でずれる |
-| クエリの柔軟性 | パーティションに合う形のみ | SQL で自由 | なし（取得のみ） |
-| 62団体への拡張 | 静的アセットの上限内なら持つ | 持つ | 持つ |
-
-採用理由: v0 のクエリは「フィルタ付き明細取得」に限定されており（PRD）、SQL の柔軟性を使う要件が無い。
-状態を持たないことは設計方針3（止まってもリポジトリが正本）と「手元で組んで投げる」運用に直接効く。
-D1 は集計 API や自由な絞り込みが要件に入った時点（v1 以降）で再検討する。
 
 API の公開 URL:
 

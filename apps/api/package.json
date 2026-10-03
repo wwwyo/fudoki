@@ -1,38 +1,17 @@
 {
   "name": "@fudoki/api",
   "private": true,
-  "version": "0.0.1",
   "type": "module",
-  "exports": {
-    "./router": "./src/router.ts"
-  },
   "scripts": {
     "build": "bun run build.ts",
     "deploy": "bun run build.ts --deploy",
-    "dev": "node dev.ts",
-    "spec": "bun run generate-spec.ts",
-    "keys:issue": "bun run scripts/issue-key.ts",
-    "keys:revoke": "bun run scripts/revoke-key.ts",
-    "test": "bun test",
+    "dev": "mise exec -- cf dev --host 127.0.0.1 --port 8787",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
-    "@modelcontextprotocol/server": "2.0.0",
-    "@orpc/contract": "1.15.0",
-    "@orpc/openapi": "1.15.0",
-    "@orpc/server": "1.15.0",
-    "@orpc/zod": "1.15.0",
-    "hono": "4.13.7",
-    "zod": "catalog:",
-    "@fudoki/data-contracts": "workspace:*"
-  },
   "devDependencies": {
-    "@orpc/client": "1.15.0",
     "@types/bun": "catalog:",
     "typescript": "catalog:",
     "wrangler": "catalog:",
-    "@fudoki/fiscal": "workspace:*",
-    "@fudoki/jurisdictions": "workspace:*",
     "@cloudflare/config": "catalog:"
   }
 }

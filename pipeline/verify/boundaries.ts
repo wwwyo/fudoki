@@ -61,36 +61,20 @@ for (const root of ['apps', 'packages'])
         )
     }
   }
-const apiConfig = await readFile(
-  join(REPO, 'apps/api/cloudflare.config.ts'),
-  'utf8'
-)
-if (/\b(?:assets\s*:|bindings\.(?:r2|assets)\s*\()/.test(apiConfig))
-  throw new Error(
-    'API must query D1 and return download URLs without a data assets or R2 binding'
+for (const name of ['api', 'docs', 'web/deploy']) {
+  const config = await readFile(
+    join(REPO, 'apps', name, 'cloudflare.config.ts'),
+    'utf8'
   )
-async function publishedFiles(directory: string): Promise<string[]> {
-  const out: string[] = []
-  for (const item of await readdir(directory, { withFileTypes: true })) {
-    const path = join(directory, item.name)
-    if (item.isDirectory()) out.push(...(await publishedFiles(path)))
-    else out.push(path)
-  }
-  return out
-}
-for (const path of await publishedFiles(join(REPO, 'apps/web/dist'))) {
-  const name = relative(join(REPO, 'apps/web/dist'), path)
-  if (
-    /(?:^|\/)(?:pipeline|preview|ocr|provenance)(?:\.|\/|$)|\.(?:pdf|parquet|csv|duckdb|jsonl)$/.test(
-      name
+  if (/\b(?:bindings|assets)\s*[:.]/.test(config))
+    throw new Error(
+      `Unavailable public app must not bind data or assets: ${name}`
     )
-  )
-    throw new Error(`Private pipeline output in public web: ${name}`)
 }
 console.log(
   JSON.stringify({
     publicAppsIndependent: true,
     sharedPackagesIndependent: true,
-    publicWebContainsNoPipelineOutputs: true,
+    publicAppsHaveNoDataBindings: true,
   })
 )

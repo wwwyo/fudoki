@@ -346,17 +346,14 @@ const repositoryGuide = [
       '行や金額の保存、集計の一致、対応表の整合性などを確かめる SQL。',
   },
   {
-    purpose: '配布データや画面の数字を辿る',
+    purpose: '提供用データや検証画面の数字を辿る',
     paths: [
-      'pipeline/dbt/models/marts/fiscal/',
-      'pipeline/fdp/',
-      'pipeline/publish/',
+      'pipeline/dbt/models/marts/',
       'pipeline/verify/report/fiscal/',
       'pipeline/verify/view/',
-      'apps/api/',
     ],
     description:
-      '配布 CSV と API 参照表の生成、公開時の検査、ローカルの検証報告と画面。',
+      '提供用データの表・CSV の生成と検査、ローカルの検証報告と画面。',
   },
 ]
 
@@ -561,8 +558,8 @@ export function PipelineOverview({
             </h2>
             <p className="text-sm leading-relaxed text-muted-foreground">
               コード・取得元・固定入力の一覧・採用した入力の証跡・分類の判断はリポジトリで管理します。
-              原典・取り込み済みの表・配布物は R2、公開 API の参照表は D1
-              に保存します。DuckDB は build の作業用で、報告と閲覧用の PDF
+              原典・取り込み済みの表は非公開 R2 に保管します。
+              まず ingestion〜marts の構築と検査を完成させます。DuckDB は build の作業用で、報告と閲覧用の PDF
               レイヤは ローカルで生成します。以下のリンクは GitHub の main
               ブランチを開きます。
             </p>

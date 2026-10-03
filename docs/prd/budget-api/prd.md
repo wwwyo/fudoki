@@ -1,5 +1,7 @@
 # PRD: budget-api
 
+> API・MCP の設計と公開は後段の検討対象。現在は ingestion〜marts の完成を優先する。以下は既存の要件・実装の記録である。
+
 fudoki の**配布物**（パイプラインが生成する、団体ごとの Fiscal Data Package。① 予算）を HTTP API として公開する。
 
 ## Problem

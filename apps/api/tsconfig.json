@@ -1,23 +1,11 @@
 {
-  "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "lib": ["ESNext"],
-    "types": ["@types/bun"],
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "noEmit": true,
-    "skipLibCheck": true,
-    "isolatedModules": true,
-    "verbatimModuleSyntax": true,
-    "allowImportingTsExtensions": true
-  },
+  "extends": "../../tsconfig.json",
   "include": [
-    "src",
-    "build.ts",
-    "generate-spec.ts",
+    "worker.ts",
     "cloudflare.config.ts",
-    "wrangler.config.ts"
-  ]
+    "wrangler.config.ts",
+    "build.ts",
+    "deploy/*.ts"
+  ],
+  "exclude": []
 }

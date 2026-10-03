@@ -1,19 +1,15 @@
 {
   "name": "@fudoki/docs",
   "private": true,
-  "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "generate": "bun run --cwd ../api spec ../docs/openapi.json",
-    "dev": "bun run generate && blume dev",
-    "build": "bun run generate && blume build && mise exec -- cf deploy --dry-run",
-    "deploy": "bun run build && mise exec -- cf deploy",
+    "build": "mise exec -- cf deploy --dry-run",
+    "deploy": "mise exec -- cf deploy",
+    "dev": "mise exec -- cf dev --host 127.0.0.1 --port 5175",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
-    "blume": "1.5.3"
-  },
   "devDependencies": {
+    "@types/bun": "catalog:",
     "typescript": "catalog:",
     "wrangler": "catalog:",
     "@cloudflare/config": "catalog:"

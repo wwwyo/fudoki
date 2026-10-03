@@ -1,6 +1,6 @@
 """dbt の出力を Fiscal Data Package として配れる形にする。
 
-（配布物そのものは data/budget/datapackages/ にある。ここはそれを組み立てる側）
+（CSV は pipeline/.build/builds/<構築ID>/fiscal/ にある）
 
 **データは dbt が既に書いている**（`materialized: external`）。
 ここが足すのは datapackage.json だけ、つまり**列の意味づけと出所**である。
@@ -336,7 +336,7 @@ def build_jurisdiction(code: str) -> None:
     """dbt が確定したリソースに列定義・原典・利用条件を付ける。"""
     directory = PACKAGES / code
     sources = [source for source in all_sources().values() if source.jurisdiction_code == code]
-    pkg = base(f"fudoki-{code}", f"風土記 {code} の財政データ", "決算の実績と当初予算・変更履歴を別リソースとして提供する。取り込み途中も API から取得できる。", latest_fetch(f"jurisdiction={code}/**/provenance.json"))
+    pkg = base(f"fudoki-{code}", f"風土記 {code} の財政データ", "決算の実績と当初予算・変更履歴を別リソースとして提供する。", latest_fetch(f"jurisdiction={code}/**/provenance.json"))
     licenses = licenses_of(sources)
     if licenses:
         pkg["licenses"] = licenses
@@ -394,7 +394,7 @@ def build_jurisdiction(code: str) -> None:
                     raise RuntimeError(f"{path.name}: duplicate primary key")
                 seen.add(identity)
                 if any(column in row and abs(int(row[column])) > 2**53-1 for column in ("amount", "amount_delta")):
-                    raise RuntimeError(f"{path.name}: amount is not an exact API integer")
+                    raise RuntimeError(f"{path.name}: amount is not an exact integer")
         kind = "settlement" if name.startswith("settlement_") else "budget" if name.startswith("initial_") else None
         origins = [{"title": f"{entry['fiscal_year']}年度／{entry.get('resource_name') or entry.get('document_title')}", "path": entry["request_url"]} for entry in provenance if (direction is None or entry["direction"] == direction) and (kind is None or entry.get("document_kind", next(source.document_kind for source in sources if source.fiscal_year == entry["fiscal_year"])) == kind)]
         if name == "project_names":
