@@ -2,7 +2,7 @@
 
 ## Objectives
 
-- **Goal**: 狛江市2023年度一般会計・歳出の原典を取り込み、当初額・補正増減額・決算との対応・照合結果のmartを作る。
+- **Goal**: 狛江市2023年度一般会計・歳出の原典を取り込み、当初額・補正増減額・決算との対応のmartを作る。決算実績の既存martと合わせ、決算がまだの年度の予算額を当初額＋基準日までの補正増減額で求められるようにする。
 - **Not goal**: 繰越・予備費充用・流用の取り込みとmart化。利用者向け機能、配布・保存先、公開運用の設計。全国への一括展開や、資料不足を推定で埋めること。
 
 [PRD](prd.md) に対し、原典の採用からmart生成までの処理を定める。これは実装前の設計である。
@@ -24,7 +24,7 @@ flowchart LR
     staging --> reported[報告予算現額]
     marts --> check[同粒度の照合]
     reported --> check
-    check --> result[照合結果・不足のmart]
+    check --> result[パイプラインの検証報告]
 ```
 
 取り込みとstagingは原典の論理行との1対1を保つ。円換算、採用行の選択、増減額の導出、当初・補正・決算の明細の対応づけはintermediateで行う。martsで最終的な列と粒度を確定する。
@@ -79,7 +79,7 @@ PDFの `source_row` は抽出表の固定した行番号であり、PDFページ
 
 M:Nでも双方のID集合を重複排除して集計する。架空の例で予算A=60,000、B=40,000円、決算x=30,000、y=70,000円が4リンクで対応すると、双方100,000円であり200,000円ではない。Bの訂正額35,000円を採れば予算は95,000円。旧Bを足さない。確認済みの各メンバーは一つの確認済みの対応集合にだけ所属させる。
 
-### 5. 当初額・補正増減額・対応・照合結果をmartにする
+### 5. 決算実績と時点別予算額のためのmartを作る
 
 初回に作るmartは次のとおり。決算実績の既存モデルはそのまま参照する。
 
@@ -87,24 +87,29 @@ M:Nでも双方のID集合を重複排除して集計する。架空の例で予
 - **当初額**：予備費30,000,000円、商工業振興費34,553,000円の2行。
 - **補正増減額**：第1号の予備費+1,980,000円、第3号の商工業振興費+148,300,000円、第6号の-115,000,000円の3行。号数・適用日・原典行・対象を持ち、既存モデルの `change_kind` は今回すべて `supplementary` とする。
 - **決算との対応**：予備費1明細、商工業振興費9明細への計10リンク。集合の確認状態と根拠を持つ。
-- **照合結果・収録範囲（新規案）**：対象集合・比較日・粒度・当初額・採用補正小計・報告現額・差額・不足理由・確認状態を持つ。必要資料の有無と採用版も参照する。
-
-商工業振興費の当初＋採用補正は67,853,000円。報告現額68,814,000円との差は961,000円。予備費は31,980,000円と報告現額23,761,662円との差が-8,218,338円となる。決算書の充用欄で両差額を説明できるが、充用は今回の取り込み対象外であり、補正増減額として小計へ加えない。照合結果には差額と「補正以外の増減を含む報告値」と記録する。
-
 商工業振興費の当初額＋採用補正の小計は、2023-08-30で34,553,000円、8月31日で182,853,000円、2024-02-01で67,853,000円。この値は補正だけを反映した小計であり、補正以外の増減を含む指定時点の予算額ではない。決算実績66,261,365円は9決算行を一度ずつ合算し、予算の復元式へ入れない。
 
-照合は同じ対象集合・粒度・円単位で行う。CSVの `予算計(円)` と決算書の「予算現額・計」を報告値に使い、`予算額(円)` を当初とみなさない。原典の丸めは規則を確認し、理由不明の差を許容差で吸収しない。
+martには当初額と各号の補正増減額を別に保持する。基準日以前の増減額を重複なく合計し、当初額に加える。補正後総額に同じ補正を再加算しない。決算実績は予算額と別の金額として扱い、決算がまだない年度の実績をゼロで埋めない。
 
-新規案のmartの確認状態は `supplementary_coverage_status`（補正の収録範囲）と `reconciliation_status`（照合結果）に分ける。補正の収録範囲は、宣言した対象・粒度・基準日までの当初と必要な各号について、採用版・対象・符号・単位・適用日・二重計上防止を確認した場合だけ `complete` とする。欠号や日付・対象が未確認なら `unconfirmed`。初回の目単位を確認しても事業×節の収録済みとはしない。
+### 6. 最終的な予算現額との差をパイプラインで検証する
 
-照合結果は同粒度の報告値との一致なら `matched`、比較可能で差があれば `difference`、粒度や集合対応を確認できなければ `unconfirmed` とする。初回の二目は目単位で `difference` であり、事業×節の照合は `unconfirmed`。収録範囲のcompleteや報告値との一致から、対象外の増減も含む予算履歴全体の完全性は導かない。原典の報告値は計算値で上書きしない。
+年度末を基準日とした当初額＋補正増減額の小計を、決算書の報告予算現額と同じ対象集合・粒度・円単位で比較する。年度末の報告値を年度途中の小計と比較しない。CSVの `予算計(円)` と決算書の「予算現額・計」を報告値に使い、`予算額(円)` を当初とみなさない。原典の丸めは規則を確認し、差額を任意の許容差で吸収しない。
+
+比較は既存のローカル検証報告の生成処理に追加し、`pipeline/.build/report/pipeline.json` の新規項目 `budgetReconciliation` に残す。各結果は対象集合・比較日・粒度・当初額・補正増減額の合計・報告現額・差額・比較状態を持つ。差額は報告現額−（当初額＋補正増減額の合計）。差額の原因や、その説明用の根拠は持たない。照合結果や収録範囲の新規martは作らない。
+
+商工業振興費は小計67,853,000円、報告現額68,814,000円、差額+961,000円。予備費は小計31,980,000円、報告現額23,761,662円、差額-8,218,338円となる。差額は検証報告にだけ残し、予算額や補正増減額へ加えない。
+
+収録範囲の確認も検証報告に持たせる。宣言した対象・粒度・基準日までの当初と必要な各号について、採用版・対象・符号・単位・適用日・二重計上防止を確認した場合だけ `supplementary_coverage_status=complete` とする。欠号や日付・対象が未確認なら `unconfirmed`。初回の目単位を確認しても事業×節の収録済みとはしない。
+
+比較状態は一致なら `matched`（差額0）、比較可能で差があれば `difference`（符号付き差額）、粒度や集合対応を確認できなければ `unconfirmed`（差額NULL）とする。初回の二目は目単位で `difference`、事業×節では `unconfirmed`。収録範囲のcompleteや報告値との一致から、対象外の増減も含む予算履歴全体の完全性は導かない。差があるだけでパイプラインを失敗させず、取り込み値の不一致や二重計上は既存・追加のdbt検査で失敗させる。検証報告は同じ採用入力から再生成できる生成物とする。
 
 ## Tasks
 
 1. 二目の当初・全7号と照合用の決算の必要資料一覧と採用版を宣言する。
 2. PDF用の取り込み・source・stagingを追加し、原典行との1対1と印字値を検査する。
 3. 円換算・予算対象・3件の補正増減額・10リンクをintermediateで作る。
-4. martへ接続し、時点別の小計・報告値との差額・unconfirmedの理由を検査する。
+4. martへ接続し、時点別の当初額＋補正増減額と決算実績の分離を検査する。
+5. 年度末の報告予算現額との比較をローカル検証報告へ追加する。
 
 ## 検査
 
@@ -124,13 +129,14 @@ M:Nでも双方のID集合を重複排除して集計する。架空の例で予
 
 - **取得・採用**：`pipeline/ingestion/fiscal/sources.toml`・`sources.py`・`fetch.py`、`pipeline/ingestion/inputs.py`・`paths.py`。新規 `extract_budget_history.py`、`budget-history/adoptions.json`・`item-correspondences.csv`・`coverage.json`。採用証跡と `sources.lock.json` を更新する。
 - **staging**：`pipeline/dbt/models/staging/fiscal/_sources.yml`・`_models.yml`、新規 `stg_132195__budget_history.sql`。既存 `stg_132195__expenditure.sql` は決算CSVの行IDを維持する。
-- **intermediate**：`pipeline/dbt/models/intermediate/fiscal/api/int_fiscal_datasets.sql` の採用dataset JOIN。新規 `int_fiscal_budget_items`・`int_fiscal_initial_budget`・`int_fiscal_budget_changes`・`int_fiscal_settlement_correspondences`・`int_fiscal_budget_reconciliation`。`pipeline/dbt/dbt_project.yml` にlayout・単位を宣言する。
-- **marts**：`pipeline/dbt/models/marts/api/api_fiscal_expenditure_budget_items.sql`・`api_fiscal_initial_expenditure_budget_lines.sql`・`api_fiscal_expenditure_budget_changes.sql`・`api_fiscal_expenditure_settlement_links.sql`・`api_fiscal_datasets.sql` と `pipeline/dbt/macros/api.sql` へ接続する。照合・範囲は新規 `pipeline/dbt/models/marts/fiscal/fiscal_budget_reconciliation.sql`・`fiscal_budget_history_coverage.sql`（案）にする。既存名の `api_` はモデルの識別に用いており、本書はmartの生成までを扱う。
+- **intermediate**：`pipeline/dbt/models/intermediate/fiscal/api/int_fiscal_datasets.sql` の採用dataset JOIN。新規 `int_fiscal_budget_items`・`int_fiscal_initial_budget`・`int_fiscal_budget_changes`・`int_fiscal_settlement_correspondences`。`pipeline/dbt/dbt_project.yml` にlayout・単位を宣言する。
+- **marts**：`pipeline/dbt/models/marts/api/api_fiscal_expenditure_budget_items.sql`・`api_fiscal_initial_expenditure_budget_lines.sql`・`api_fiscal_expenditure_budget_changes.sql`・`api_fiscal_expenditure_settlement_links.sql`・`api_fiscal_datasets.sql` と `pipeline/dbt/macros/api.sql` へ接続する。照合差・内部報告値・収録範囲のための新規martは作らない。既存名の `api_` はモデルの識別に用いており、本書はmartの生成までを扱う。
+- **検証報告**：`pipeline/verify/report/fiscal/build.ts`・`schema.ts` に `budgetReconciliation` の生成と型を追加する。新規 `pipeline/verify/report/fiscal/budget-reconciliation.test.ts`（案）で差額の符号、比較不可のNULL、対象・年度・粒度、年度末基準、生成結果の再現を検査する。
 - **検査**：`pipeline/dbt/tests/staging_is_one_to_one.sql`・`amount_units_match_source.sql`・`source_year_matches_partition.sql`・`declarations_cover_raw.sql` の対象を文書／表別に揃える。`api_relations.sql` に非空の補正増減額・対応を含め、採用版・原典行参照・金額導出・時点・照合の検査を追加する。
 
 ### 残る確認
 
-二目の事業×歳出の節の対応、訂正・新設・分割・統合の実例が未確認である。原典の公開日・再利用条件も確認を残す。日付・粒度不足は初回martへ不足理由として残し、金額や日付を補完しない。
+二目の事業×歳出の節の対応、訂正・新設・分割・統合の実例が未確認である。原典の公開日・再利用条件も確認を残す。日付・粒度不足は内部の収録範囲と検証報告へ確認状態として残し、金額や日付を補完しない。
 
 ### 確認した原典
 
@@ -152,5 +158,5 @@ M:Nでも双方のID集合を重複排除して集計する。架空の例で予
 初回の二目と内部照合の根拠は次の箇所にある。
 
 - **当初・補正の目明細**: 上記当初PDF211頁（印刷205頁）の7-1-2商工業振興費34,553千円、320頁（印刷314頁）の13-1-1予備費30,000千円。第1号10頁は予備費30,000→+1,980→31,980千円。第3号20頁は商工業振興費34,553→+148,300→182,853千円、第6号9頁は182,853→-115,000→67,853千円。目・節・説明欄に同じ額が反復する。
-- **決算の報告値と照合差**: [狛江市2023年度決算書](https://www.city.komae.tokyo.jp/index.cfm/46,133351,c,html/133351/20241011-132915.pdf) 87〜88頁（印刷81〜82頁）の商工業振興費は現額68,814,000円、実績66,261,365円。114〜115頁（印刷108〜109頁）の予備費は現額23,761,662円、実績0円。当初額＋補正額との差は、各ページの充用欄961,000円・-8,218,338円と一致する。この欄は照合差の説明にだけ参照し、充用の取り込みは設計しない。
+- **決算の報告値と照合差**: [狛江市2023年度決算書](https://www.city.komae.tokyo.jp/index.cfm/46,133351,c,html/133351/20241011-132915.pdf) 87〜88頁（印刷81〜82頁）の商工業振興費は現額68,814,000円、実績66,261,365円。114〜115頁（印刷108〜109頁）の予備費は現額23,761,662円、実績0円。
 - **既収録決算明細との対応**: [狛江市2023年度決算歳出CSV](https://www.opendata.metro.tokyo.lg.jp/komae/R05/132195_kessan2023saisyutu.csv) は2,224行・CP932、PR39の採用hashと一致した。会計コード1のsource_row83が予備費、1222〜1230が商工業振興費の9明細で、上記決算書の現額・実績と合計が一致する。予算額列は当初ではなく補正後額。対象年月202406を補正の適用日に使わない。
