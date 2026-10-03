@@ -9,6 +9,7 @@ import {
   canonicalJson,
   jurisdictionMasterSchema,
   cofogMasterSchema,
+  expenditureSetsuMasterSchema,
   distributionManifestSchema,
   type D1Database,
 } from '@fudoki/data-contracts'
@@ -148,22 +149,35 @@ export async function publish(
   const partitions = partitionAllRows(data)
   const masters = jurisdictionMasterSchema
     .array()
-    .parse(await jsonLines(join(directory, 'api/jurisdictions.jsonl')))
+    .parse(await jsonLines(join(directory, 'api/jurisdiction_master.jsonl')))
 
   for (const master of masters.filter((row) =>
     wanted.has(row.jurisdiction_code)
   )) {
     await db
       .prepare(
-        'INSERT INTO jurisdictions VALUES(?,?,?) ON CONFLICT(jurisdiction_code) DO UPDATE SET name=excluded.name,ocd_id=excluded.ocd_id'
+        'INSERT INTO jurisdiction_master VALUES(?,?,?) ON CONFLICT(jurisdiction_code) DO UPDATE SET name=excluded.name,ocd_id=excluded.ocd_id'
       )
       .bind(master.jurisdiction_code, master.name, master.ocd_id)
       .run()
   }
   const cofog = cofogMasterSchema
     .array()
-    .parse(await jsonLines(join(directory, 'api/cofog_codes.jsonl')))
-  await appendRows(db, 'cofog_codes', cofog)
+    .parse(await jsonLines(join(directory, 'api/cofog_master.jsonl')))
+  await appendRows(db, 'cofog_master', cofog)
+  for (const row of expenditureSetsuMasterSchema
+    .array()
+    .parse(
+      await jsonLines(
+        join(directory, 'api/fiscal_expenditure_setsu_master.jsonl')
+      )
+    ))
+    await db
+      .prepare(
+        'INSERT INTO fiscal_expenditure_setsu_master VALUES(?,?,?,?,?,?) ON CONFLICT(expenditure_setsu_id) DO UPDATE SET code=excluded.code,label=excluded.label,valid_from_fiscal_year=excluded.valid_from_fiscal_year,valid_to_fiscal_year=excluded.valid_to_fiscal_year,legal_basis=excluded.legal_basis'
+      )
+      .bind(...(Object.values(row) as unknown[]))
+      .run()
   const versions = []
   for (const version of verification.versions.filter((v) =>
     wanted.has(v.jurisdictionCode)

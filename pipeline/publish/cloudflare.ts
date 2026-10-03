@@ -158,7 +158,7 @@ export async function initializeSchema(db: D1Database) {
       'Use a fresh D1 database for the new fiscal contract; legacy storage is not deleted automatically'
     )
   const columns = await db
-    .prepare('PRAGMA table_info(jurisdictions)')
+    .prepare('PRAGMA table_info(jurisdiction_master)')
     .all<{ name: string }>()
   if (columns.results.some((column) => column.name === 'release_id'))
     throw new Error('Use a fresh D1 database for the new fiscal contract')

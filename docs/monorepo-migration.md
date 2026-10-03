@@ -109,7 +109,7 @@ Free zone の rate limit 枠には既存の `Leaked credential check` があり�
 
 ## マスタを概念と表名で明示する変更の設計
 
-団体マスタ・COFOG分類マスタ・歳出の節マスタを、年度や資料に属する予算対象・金額明細とは区別する。設計上の表名を `jurisdiction_master`、`cofog_master`、`fiscal_expenditure_setsu_master` に揃える。現行 SQL の `jurisdictions`・`cofog_codes` の改名と節マスタの追加は未実装であり、上記の移行記録にある旧名は当時の実装を表す。共通マスタは自治体の提供データ版 `version_id` に依存させない。
+団体マスタ・COFOG分類マスタ・歳出の節マスタを、年度や資料に属する予算対象・金額明細とは区別する。表名は `jurisdiction_master`、`cofog_master`、`fiscal_expenditure_setsu_master` に揃えて実装済み（保存契約 version 4）。節マスタは `packages/fiscal/setsu-master.ts` の Git 定義から生成し、歳出の当初予算は事業×節へ集約して `details_json` に下位内訳と原典行の対応を保持する。上記の移行記録にある旧名は当時の実装を表す。共通マスタは自治体の提供データ版 `version_id` に依存させない。
 
 ## D1 を最新版だけの検索表へ変更する（2026-10-02）
 

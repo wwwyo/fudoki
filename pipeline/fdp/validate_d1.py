@@ -21,7 +21,7 @@ def load_tables(directory: Path, database: Path) -> dict:
     verification = json.loads((candidate / 'verification.json').read_text())
     manifest = json.loads((candidate / 'manifest.json').read_text())
     masters = {}
-    for name in ['jurisdictions', 'cofog_codes']:
+    for name in ['jurisdiction_master', 'cofog_master', 'fiscal_expenditure_setsu_master']:
         path = directory / f'{name}.jsonl'
         rows = read_rows(path)
         columns = [r[1] for r in con.execute(f'PRAGMA table_info({name})')]
@@ -33,7 +33,7 @@ def load_tables(directory: Path, database: Path) -> dict:
     versions = {v['jurisdictionCode']: v['versionId'] for v in manifest['jurisdictions']}
     for version in manifest['jurisdictions']:
         con.execute('INSERT INTO fiscal_jurisdiction_data VALUES(?,?,?,?,?,?,?,?,?,?)', (
-            version['versionId'], version['jurisdictionCode'], 3, version['packageId'],
+            version['versionId'], version['jurisdictionCode'], 4, version['packageId'],
             version['name'], version['ocdId'], json.dumps(version['caveats'], ensure_ascii=False, separators=(',', ':')),
             '1970-01-01T00:00:00.000Z', 'https://example.invalid/manifest.json', verification['manifestSha256']))
     data = {name: read_rows(directory / f'{name}.jsonl') for name in verification['tables']}

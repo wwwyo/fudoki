@@ -257,10 +257,15 @@ export async function prepareCandidate(
     queryFingerprint: identity.queryFingerprint,
     manifestSha256: sha256(distributionText),
     jurisdictionMasterSha256: sha256(
-      await readFile(join(directory, 'api/jurisdictions.jsonl'))
+      await readFile(join(directory, 'api/jurisdiction_master.jsonl'))
     ),
     cofogMasterSha256: sha256(
-      await readFile(join(directory, 'api/cofog_codes.jsonl'))
+      await readFile(join(directory, 'api/cofog_master.jsonl'))
+    ),
+    expenditureSetsuMasterSha256: sha256(
+      await readFile(
+        join(directory, 'api/fiscal_expenditure_setsu_master.jsonl')
+      )
     ),
     tables,
     versions,
@@ -361,8 +366,9 @@ export async function verifyCandidate(
       throw new Error('Jurisdiction version identity differs')
   }
   for (const [file, key] of [
-    ['jurisdictions', 'jurisdictionMasterSha256'],
-    ['cofog_codes', 'cofogMasterSha256'],
+    ['jurisdiction_master', 'jurisdictionMasterSha256'],
+    ['cofog_master', 'cofogMasterSha256'],
+    ['fiscal_expenditure_setsu_master', 'expenditureSetsuMasterSha256'],
   ] as const)
     if (
       sha256(await readFile(join(directory, 'api', file + '.jsonl'))) !==

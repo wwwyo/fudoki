@@ -203,3 +203,18 @@ test('wrong document direction and unknown COFOG foreign keys are rejected', asy
     )
   ).toThrow('direction or document')
 })
+test('setsu references outside the valid period and overlapping definitions are rejected', async () => {
+  const path = join(root, 'a')
+  await fixture(path, 'r-' + '1'.repeat(32), 100, 3)
+  await publish(path, db, store, url)
+  expect(() =>
+    sqlite.run(
+      "INSERT INTO fiscal_expenditure_setsu_master VALUES('setsu-xx','12','別委託料',2018,2025,'https://laws.e-gov.go.jp/law/322M40000008029')"
+    )
+  ).toThrow('Setsu definitions overlap')
+  expect(() =>
+    sqlite.run(
+      "INSERT INTO fiscal_expenditure_budget_items VALUES('b-expired','000001',2026,'01','一般会計','setsu-07-2019','origin_line','[]','[]','[]','unknown')"
+    )
+  ).toThrow('Setsu definition does not cover the fiscal year')
+})

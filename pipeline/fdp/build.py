@@ -361,13 +361,20 @@ def build_jurisdiction(code: str) -> None:
             header = header_of(header_stream.readline())
         if name.endswith("_budget_items"):
             key = ["budget_item_id"]
-            description = "年度内の予算対象。当初額の確認状態と、科目経路・追加区分・名称を保持する。"
+            description = "年度内の予算対象。当初額の確認状態と、科目・事業経路・追加区分・名称を保持する。歳出は expenditure_setsu_id と粒度（line_granularity）を持つ。"
         elif name.endswith("_budget_changes"):
             key = ["change_id"]
             description = "各補正・繰越・予備費充用・流用の増減額。空の場合は変更がゼロと確定した意味ではない。"
         elif name.endswith("_settlement_links"):
             key = ["budget_item_id", "settlement_line_id"]
             description = "予算対象と決算明細の対応。対応未確認を区別し、金額を複製しない。"
+        elif name == "initial_expenditure_budget":
+            key = ["fiscal_line_id"]
+            constants.update(direction=direction, document_kind="budget", currency="JPY")
+            description = ("一明細・一金額。当初予算の基準額。対応を確かめた明細は事業と歳出の節の組合せへ集約し（line_granularity=expenditure_setsu）、"
+                           "節より下の内訳と原典行の対応は details_json に保持する。節が確かめられない行は原典行の粒度（origin_line）。"
+                           "expenditure_setsu_id は fiscal_expenditure_setsu_master（Git の定義）を指し、原典の節コードとは別物。"
+                           "原典の報告値と単位は取り込み表とローカル検証記録に残す。予算履歴の復元・照合は未確認。")
         elif name.startswith("settlement_") or name.startswith("initial_"):
             key = ["fiscal_line_id"]
             constants.update(direction=direction, document_kind="settlement" if name.startswith("settlement_") else "budget", currency="JPY")

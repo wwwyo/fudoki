@@ -31,6 +31,7 @@ seeds:
         consolidation: varchar
         decided_at_level: varchar
         counterpart_fund: varchar
+        expenditure_setsu_id: varchar
         basis: varchar
     columns:
       - name: rule_id
@@ -68,6 +69,7 @@ seeds:
         moku_code: integer
         moku_name: varchar
         is_personnel_moku: boolean
+        expenditure_setsu_id: varchar
         basis: varchar
 
   - name: account_map
@@ -112,6 +114,7 @@ seeds:
         kind: varchar
         master_kan_code: integer
         master_kou_code: integer
+        expenditure_setsu_id: varchar
         basis: varchar
 
   - name: fund_directory
@@ -135,6 +138,7 @@ seeds:
         canonical_fund: varchar
         account_class: varchar
         sector: varchar
+        expenditure_setsu_id: varchar
         basis: varchar
 
   - name: special_account_master
@@ -163,6 +167,7 @@ seeds:
         kan_name: varchar
         kou_code: integer
         kou_name: varchar
+        expenditure_setsu_id: varchar
         basis: varchar
 
   - name: interfund_transfers
@@ -193,6 +198,7 @@ seeds:
         setsu_code: varchar
         amount_yen: varchar
         counterpart_fund: varchar
+        expenditure_setsu_id: varchar
         basis: varchar
 
   - name: soumu_expected_diffs
@@ -215,3 +221,19 @@ seeds:
         kan_label: varchar
         klass: varchar
         note: varchar
+
+  - name: expenditure_setsu_map
+    meta:
+      role: judgment-rule
+    description: |
+      原典が印字する歳出の節名称と法定区分（fiscal_expenditure_setsu_master）の対応。
+      **fudoki の判断。** 原典の節コードは団体ごとの振り直しがありうる
+      （多摩市は予備費を29と印字する）ため、対応のキーは団体コードと
+      原典の節名称とする。対応を確かめられない節はここに書かず、
+      expenditure_setsu_id が NULL の原典行粒度として残る。
+    config:
+      column_types:
+        jurisdiction_code: varchar
+        setsu_label: varchar
+        expenditure_setsu_id: varchar
+        basis: varchar

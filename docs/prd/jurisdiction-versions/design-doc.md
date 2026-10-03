@@ -57,7 +57,7 @@ erDiagram
 - `fiscal_expenditure_settlement_links` / `fiscal_revenue_settlement_links`: 予算対象と決算明細の対応。金額を複製せず、分割・統合や未確認を扱う。
 - `fiscal_jurisdiction_data` / `fiscal_package_files`: 一団体の最新内容の説明と、現在の R2 配布参照。
 
-共通団体マスタ `jurisdiction_master`、分類マスタ `cofog_master`、DB の識別子 `database_identity` は版から独立させる。財政の表と dbt モデルには `fiscal_` を付け、例えば `api_fiscal_settlement_expenditure_lines` と生成先の表名へ揃える。マスタの表名を明示する改名は設計採用済み・未実装であり、現行 SQL の団体表は `jurisdictions`、分類表は `cofog_codes` である。
+共通団体マスタ `jurisdiction_master`、分類マスタ `cofog_master`、DB の識別子 `database_identity` は版から独立させる。財政の表と dbt モデルには `fiscal_` を付け、例えば `api_fiscal_settlement_expenditure_lines` と生成先の表名へ揃える。マスタの表名を明示する改名は実装済みであり、現行 SQL の団体表は `jurisdiction_master`、分類表は `cofog_master`、歳出の節マスタは `fiscal_expenditure_setsu_master` である。
 
 調達等を追加するときはその領域のモデル・配布参照・版を別に定義し、財政明細へ `domain` 列を追加して混在させない。領域間では団体コードを共有する。
 
