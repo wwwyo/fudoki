@@ -17,7 +17,7 @@ test('fresh initialization installs all typed tables and complete triggers, and 
       sqlite
         .query("SELECT count(*) AS n FROM sqlite_master WHERE type='trigger'")
         .get()
-    ).toEqual({ n: 28 })
+    ).toEqual({ n: 29 })
     expect(
       sqlite.query('SELECT identity FROM database_identity').get()
     ).toBeTruthy()

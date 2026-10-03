@@ -32,6 +32,12 @@ WHEN EXISTS(SELECT 1 FROM fiscal_expenditure_setsu_master m WHERE m.code=NEW.cod
   AND coalesce(m.valid_from_fiscal_year,-9223372036854775808)<=coalesce(NEW.valid_to_fiscal_year,9223372036854775807)
   AND coalesce(NEW.valid_from_fiscal_year,-9223372036854775808)<=coalesce(m.valid_to_fiscal_year,9223372036854775807))
 BEGIN SELECT RAISE(ABORT,'Setsu definitions overlap'); END;
+CREATE TRIGGER IF NOT EXISTS fiscal_expenditure_setsu_master_no_stranded BEFORE UPDATE ON fiscal_expenditure_setsu_master
+WHEN EXISTS(
+  SELECT 1 FROM fiscal_expenditure_budget_items i WHERE i.expenditure_setsu_id=NEW.expenditure_setsu_id
+    AND ((NEW.valid_from_fiscal_year IS NOT NULL AND i.fiscal_year<NEW.valid_from_fiscal_year)
+      OR (NEW.valid_to_fiscal_year IS NOT NULL AND i.fiscal_year>NEW.valid_to_fiscal_year)))
+BEGIN SELECT RAISE(ABORT,'Setsu period change strands existing budget items'); END;
 CREATE TABLE IF NOT EXISTS fiscal_jurisdiction_data (
   version_id TEXT NOT NULL UNIQUE,
   jurisdiction_code TEXT PRIMARY KEY REFERENCES jurisdiction_master(jurisdiction_code),
