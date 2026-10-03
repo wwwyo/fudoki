@@ -71,7 +71,7 @@ PDFの `source_row` は抽出表の固定した行番号であり、PDFページ
 
 予算対象は団体・年度・歳入歳出・会計・科目／事業経路・追加区分で区別する。確認済みの歳出対象は事業×歳出の節とする。初回の二目は当初の原典行を起点に `line_granularity=origin_line / expenditure_setsu_id=NULL` として保持する。NULL節の複数行をまとめず、目総額を事業や節へ配賦しない。
 
-事業×節に対応できる場合は、当初額と補正の末端行を同じ対象へ集約する。補正は採用dataset・号数・適用日・順序が一致する行だけをまとめる。細節等の経路・円額・原典行は各金額記録の `details_json` に保持し、小計を重ねない。節の適用年度、COFOGと連結判断の一致を確認できない範囲は原典行の粒度を残す。この集約処理は [別担当の設計](../fiscal-records/design-doc.md#歳出予算を事業と経済的な性質の組合せで提供する) に接続する。
+事業×節に対応できる場合は、当初額と補正の末端行を同じ対象へ集約する。補正は採用dataset・号数・適用日・順序が一致する行だけをまとめる。細節等の経路・円額・原典行は各金額記録の `details_json` に保持し、小計を重ねない。節の適用年度、COFOGと連結判断の一致を確認できない範囲は原典行の粒度を残す。この集約処理は [実装済みの当初予算の集約設計](../fiscal-records/design-doc.md#歳出予算を事業と経済的な性質の組合せで提供する) に接続する。
 
 初回は予備費の決算CSV行83、商工業振興費の行1222〜1230を参照する。目単位の集合対応を確認できても、事業×節の対応まで確認済みとはしない。網羅性・追加区分を確認できない場合はリンク自体もunconfirmedとする。
 
@@ -129,7 +129,7 @@ martには当初額と各号の補正増減額を別に保持する。基準日�
 
 - **取得・採用**：`pipeline/ingestion/fiscal/sources.toml`・`sources.py`・`fetch.py`、`pipeline/ingestion/inputs.py`・`paths.py`。新規 `extract_budget_history.py`、`budget-history/adoptions.json`・`item-correspondences.csv`・`coverage.json`。採用証跡と `sources.lock.json` を更新する。
 - **staging**：`pipeline/dbt/models/staging/fiscal/_sources.yml`・`_models.yml`、新規 `stg_132195__budget_history.sql`。既存 `stg_132195__expenditure.sql` は決算CSVの行IDを維持する。
-- **intermediate**：`pipeline/dbt/models/intermediate/fiscal/api/int_fiscal_datasets.sql` の採用dataset JOIN。新規 `int_fiscal_budget_items`・`int_fiscal_initial_budget`・`int_fiscal_budget_changes`・`int_fiscal_settlement_correspondences`。`pipeline/dbt/dbt_project.yml` にlayout・単位を宣言する。
+- **intermediate**：`pipeline/dbt/models/intermediate/fiscal/api/int_fiscal_datasets.sql` の採用dataset JOIN。新規 `int_fiscal_budget_items`・`int_fiscal_initial_budget`・`int_fiscal_budget_changes`・`int_fiscal_settlement_correspondences`。`pipeline/dbt/dbt_project.yml` にlayout・単位を宣言する。 当初予算では既存 `int_expenditure_setsu_lines`・`int_expenditure_setsu_groups` を再利用し、今回の別構造のPDF入力と補正増減額を対応づける。既存処理は当初の `approved` 額に限定されるため、補正のdeltaを当初額として混ぜない。
 - **marts**：`pipeline/dbt/models/marts/api/api_fiscal_expenditure_budget_items.sql`・`api_fiscal_initial_expenditure_budget_lines.sql`・`api_fiscal_expenditure_budget_changes.sql`・`api_fiscal_expenditure_settlement_links.sql`・`api_fiscal_datasets.sql` と `pipeline/dbt/macros/api.sql` へ接続する。照合差・内部報告値・収録範囲のための新規martは作らない。既存名の `api_` はモデルの識別に用いており、本書はmartの生成までを扱う。
 - **検証報告**：`pipeline/verify/report/fiscal/build.ts`・`schema.ts` に `budgetReconciliation` の生成と型を追加する。新規 `pipeline/verify/report/fiscal/budget-reconciliation.test.ts`（案）で差額の符号、比較不可のNULL、対象・年度・粒度、年度末基準、生成結果の再現を検査する。
 - **検査**：`pipeline/dbt/tests/staging_is_one_to_one.sql`・`amount_units_match_source.sql`・`source_year_matches_partition.sql`・`declarations_cover_raw.sql` の対象を文書／表別に揃える。`api_relations.sql` に非空の補正増減額・対応を含め、採用版・原典行参照・金額導出・時点・照合の検査を追加する。
