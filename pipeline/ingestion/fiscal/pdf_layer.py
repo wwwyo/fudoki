@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import struct
 import pathlib
 import re
 import subprocess
@@ -34,7 +35,7 @@ DPI = 110
 
 # 行→頁対応の作り方の版。照合ロジックを変えたら上げる（頁画像・語層は原典だけに
 # 依存するので作り直さず、hits.json だけを再計算する）
-HITS_VERSION = 5
+HITS_VERSION = 6
 GENERATOR_KEY = hashlib.sha256(
     pathlib.Path(__file__).read_bytes() + (ROOT.parent / 'uv.lock').read_bytes()
     + f'{DPI}:{HITS_VERSION}'.encode()
@@ -51,6 +52,8 @@ def _source_id(prov: dict, prov_path: pathlib.Path) -> str | None:
     parts = prov_path.relative_to(RAW).parts
     code = prov["jurisdiction_code"]
     if parts[0].startswith("jurisdiction="):
+        if prov.get('table_id'):
+            return f"source.fudoki.raw_{code}_history.data"
         direction = next(p.split("=", 1)[1] for p in parts if p.startswith("direction="))
         return f"source.fudoki.raw_{code}.{direction}"
     if parts[0] == "project-names":
@@ -116,6 +119,9 @@ def _hits(prov: dict, prov_path: pathlib.Path, pages_lines: dict[int, list[Line]
     金額は語単位で照合する — `262` が `1,262` の部分文字列として当たる誤検出を避ける。
     名称は行に折り返されうるので、金額の行の前後 WRAP 行を連結した文字列で照合する。
     """
+    if prov.get('table_id'):
+        rows = duckdb.query(f"select source_row, page_number, bbox_json from read_parquet('{prov_path.parent / 'data.parquet'}')").fetchall()
+        return {f"{prov['sha256']}|{prov['table_id']}|{row}": {"page": page, "box": json.loads(box)} for row, page, box in rows if len(json.loads(box)) == 4}
     kind = "statement" if "extract_statement" in (prov.get("extractor") or "") \
         else "project-names" if "extract_projects" in (prov.get("extractor") or "") else None
     if kind is None or not prov.get("pages"):   # revenue-accounts は OCR のみ — 語の層が無い
@@ -167,6 +173,20 @@ def _hits(prov: dict, prov_path: pathlib.Path, pages_lines: dict[int, list[Line]
                    max(l[0][2] for l in ls), max(l[0][3] for l in ls)]
             out[str(rowkey)] = {"page": pno, "box": [round(v, 2) for v in box]}
     return out
+
+
+def page_dimensions(width: float, height: float, png: pathlib.Path) -> tuple[float, float]:
+    """描画画像と同じ向きの頁寸法を返す。回転PDFの文字座標は表示方向に従う。"""
+    with png.open('rb') as stream:
+        header = stream.read(24)
+    if header[:8] != b'\x89PNG\r\n\x1a\n':
+        raise ValueError('Page render is not PNG')
+    pixels_w, pixels_h = struct.unpack('>II', header[16:24])
+    if (width > height) != (pixels_w > pixels_h):
+        width, height = height, width
+    if abs(width / height - pixels_w / pixels_h) > 0.01:
+        raise ValueError('Page render and text dimensions disagree')
+    return width, height
 
 
 def main() -> None:
@@ -280,6 +300,12 @@ def main() -> None:
                     img.rename(doc_dir / f"p{int(img.stem.split('-')[-1])}.png")
             (doc_dir / ".rendered").write_text(f"{sha} {first}-{last}\n")
 
+        # Popplerの文字層は回転前のMediaBox寸法を返す場合があり、PNGは表示方向になる。
+        for pno, (w, h, ws) in list(words_by_page.items()):
+            w, h = page_dimensions(w, h, doc_dir / f"p{pno}.png")
+            words_by_page[pno] = (w, h, ws)
+            (doc_dir / f"p{pno}.json").write_text(json.dumps(
+                {"w": round(w, 1), "h": round(h, 1), "words": ws}, ensure_ascii=False))
         pages_lines = {pno: _lines(ws) for pno, (_, _, ws) in words_by_page.items()}
         hits: dict[str, dict] = {}
         sources: list[str] = []
@@ -288,7 +314,7 @@ def main() -> None:
             if src is None:
                 continue
             sources.append(src)
-            hits[src] = _hits(prov, path, pages_lines)
+            hits.setdefault(src, {}).update(_hits(prov, path, pages_lines))
         (doc_dir / "hits.json").write_text(json.dumps(hits, ensure_ascii=False))
         (doc_dir / ".hits").write_text(stamp + "\n")
 

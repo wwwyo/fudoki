@@ -242,6 +242,8 @@ export type Provenance = {
   fiscal_year: number
   /** ⚠️ **抽出物は名乗らないことがある**（`extract_projects.py` は direction を持たない） */
   direction?: string
+  document_kind?: string
+  table_id?: string
   /** ⚠️ **正本の取り込みだけが持つ。** 抽出物は `document_title` を名乗る */
   resource_name?: string
   /** 資料（文書）の名。PDF の取得元はリソース名でなく文書名を持つ */
@@ -341,6 +343,7 @@ function isCanonicalFetchOf(
   direction: string
 ): p is CanonicalFetch {
   if (p.direction !== direction) return false
+  if (p.table_id) return false
   if (isCanonicalFetch(p)) return true
   // 捨てる前に、正本らしいのに行数だけ無いものを止める。黙って落とすと
   // 取得元の行数が実際より小さくなり、しかもそれが画面から分からない。
@@ -383,6 +386,10 @@ export function provenanceForSource(
   const code = /\.raw_(\d{6})/.exec(id)?.[1]
   if (!code) return null
   const mine = provenance.filter((p) => p.jurisdiction_code === code)
+  if (/\.raw_\d{6}_history\./.test(id)) {
+    const ps = mine.filter((p) => p.table_id !== undefined)
+    return ps.length ? { ps, kind: 'canonical' } : null
+  }
   const canonical = mine.filter((p) => isCanonicalFetchOf(p, direction))
   if (canonical.length > 0) return { ps: canonical, kind: 'canonical' }
   const kind = extractedSourceKind(id)

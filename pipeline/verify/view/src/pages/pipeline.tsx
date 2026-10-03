@@ -26,7 +26,7 @@ import { IoPanel } from '@/components/pipeline/io-panel'
 import { PipelineOverview } from '@/components/pipeline/overview'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { withBase } from '@/lib/utils'
-import { type PipelineData, loadPipeline } from '@/lib/pipeline'
+import { type PipelineData, loadPipeline, yen } from '@/lib/pipeline'
 import '@/lib/verify.css'
 import { isRes, type Pair } from '@/lib/verify'
 
@@ -444,6 +444,23 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
             pdfPage={pdfNav.page}
             onPdfNavigate={onPdfNavigate}
           />
+          {report.budgetReconciliation.length > 0 && y === 2023 && (
+            <details className="fold budget-reconciliation">
+              <summary>当初・補正と決算の照合 {report.budgetReconciliation.length} 件</summary>
+              <p>一般会計・目単位。補正は第1〜7号を確認。歳出の節は未確認。金額は円。</p>
+              <table className="t">
+                <thead><tr><th>款・項・目</th><th>当初額</th><th>補正増減額</th><th>当初＋補正</th><th>報告予算現額</th><th>差額</th><th>決算実績</th><th>照合状態</th></tr></thead>
+                <tbody>{report.budgetReconciliation.map((r) => (
+                  <tr key={r.target}>
+                    <td>{r.target}</td>
+                    {[r.initialAmount, r.supplementaryAmount, r.budgetAmount, r.reportedBudgetAmount, r.difference, r.settlementAmount].map((amount, i) => <td key={i}>{amount === null ? '未確認' : yen(amount)}</td>)}
+                    <td>{r.reconciliationStatus === 'difference' ? '差額あり' : r.reconciliationStatus === 'matched' ? '一致' : '未確認'}</td>
+                  </tr>
+                ))}</tbody>
+              </table>
+              <p>差額は報告予算現額−当初・補正小計。流用・充用・繰越を含む予算全体の復元を示さない。</p>
+            </details>
+          )}
           {/* 注意点は組の行検査の後・ペインの末尾 — 見出しの上に置くと読み始めの
               行のすぐ上を塞ぐので、確認を終えた読み終わりに来る位置に置く */}
           <details className="fold caveats">

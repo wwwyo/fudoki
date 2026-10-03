@@ -88,6 +88,8 @@ export function edgeDir(from: string, to: string): Direction | null {
   const s = `${from} ${to}`
   if (s.includes('expenditure')) return 'expenditure'
   if (s.includes('revenue')) return 'revenue'
+  // 履歴の初回入力は歳出専用。PDF hit と方向を持つ表の鍵を一致させる。
+  if (s.includes('_history.') || s.includes('__budget_history') || s.includes('int_fiscal_budget_history')) return 'expenditure'
   return null
 }
 
@@ -281,18 +283,24 @@ function rowKeySet(
   dir?: Direction | 'row'
 ): Set<string> | null {
   const { sp, acct, yi } = colInfo(t)
-  const d = dir === 'row' ? rowDir(t, row) : dir
-  const y = yi >= 0 ? rowYear(t, row) : null
+  const dataset = String(row[t.columns.indexOf('dataset_id')] ?? '').split(':')
+  const d = dir === 'row' ? rowDir(t, row) ?? (dataset.length >= 5 ? dataset[2] : null) : dir
+  const y = (yi >= 0 ? rowYear(t, row) : null) ?? (dataset.length >= 5 ? Number(dataset[1]) : null)
   // 修飾は鍵空間ごとに要否が違う:
   // - sr/ord … 行番号は年度・向きで振り直されるので両方修飾する
   // - acct   … 科目複合は年度を持つ表同士で一致させたいので年度だけ
   // - bli/rule … bli は値自体が年度・向きを含み、rule id は共通名 — 修飾すると
   //   年度・向きを持たない表（規則表・COFOG 割当）と永遠に一致しないので付けない
+  const value = (name: string) => row[t.columns.indexOf(name)]
+  const table = value('table_id') ?? value('resource') ?? (dataset.length === 6 ? dataset[5] : null)
+  const edition = value('origin_sha256') ?? value('edition') ?? (table ? dataset[4] : null)
+  const scope = table && edition ? `${edition}|${table}` : null
   const q = (space: string, v: unknown) =>
     [
       space,
       space === 'bli' || space === 'rule' ? null : y,
       space === 'sr' || space === 'ord' ? d : null,
+      space === 'sr' ? scope : null,
       String(v),
     ]
       .filter((x) => x !== null && x !== undefined)
@@ -306,7 +314,7 @@ function rowKeySet(
     if (space === 'sr') hasSr = true
   }
   // 科目複合: kan+moku が揃っていないと行の識別子にならない（fund/kou は欠けてよい）
-  if (acct && row[acct[1]!] != null && row[acct[3]!] != null)
+  if (!scope && acct && row[acct[1]!] != null && row[acct[3]!] != null)
     (out ??= new Set()).add(q('acct', acct.map((i) => row[i] ?? '').join(':')))
   // 原典 CSV の行には source_row 列が無い — 物理行番号（ヘッダ=1行目、データは2行目から）を
   // sr 空間の鍵として持つ（stg 側の source_row はこの番号）。provs を持つのは原典だけ。

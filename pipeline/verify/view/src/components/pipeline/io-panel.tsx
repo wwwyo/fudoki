@@ -135,7 +135,7 @@ function attributionNote(c: Check, code: string): string | null {
 }
 
 /** 側ごとの検査一覧（詳細トグルの中身） */
-function CheckList({ checks, code }: { checks: Check[]; code: string }) {
+export function CheckList({ checks, code }: { checks: Check[]; code: string }) {
   if (!checks.length) return null
   return (
     <>
@@ -196,8 +196,22 @@ function CheckList({ checks, code }: { checks: Check[]; code: string }) {
   )
 }
 
+function historyVerificationText(p: Provenance): string {
+  if (p.table_id === 'reported-budget')
+    return '決算書の頁を目視確認して転記。決算CSVの目別総額と照合（dbt）'
+  if (p.table_id?.startsWith('approval-'))
+    return '議案番号・号数・原案可決・議決日を確認'
+  if (p.document_kind === 'supplementary')
+    return '補正前額＋増減額＝補正後額を確認。節・説明欄の重複を除外'
+  return '当初予算の款・項・目・本年度予算額と頁を確認'
+}
+
 /** 証跡1件の「取り込みの検証」の文言。PDF 抽出は復元が成立しないので内部突合を出す */
 function verificationLines(p: Provenance): { ok: boolean; text: string }[] {
+  if (p.table_id && p.raw_form === 'extracted') {
+    const text = historyVerificationText(p)
+    return [{ ok: true, text }, { ok: true, text: 'PDF抽出は不可逆。CSVの復元検査とは別の検証' }]
+  }
   const ex = p.extracted
   // ⚠️ ディスク上の証跡は extracted.kind を持たない — 判別は抽出器のパスから引く
   const kind = extractedKindOf(p)
@@ -299,7 +313,8 @@ function SideDetail({
   const prov = provsShown[0] ?? provs[0] ?? null
 
   // 金額の単位の宣言（向きが決まる組だけ。年度が効く団体は年度で絞る）
-  const amounts = dir ? (report.amounts[dir] ?? []) : []
+  const historyNode = node.id.includes('_history.') || node.id.includes('__budget_history') || Boolean(prov?.table_id)
+  const amounts = dir && !historyNode ? (report.amounts[dir] ?? []) : []
   const amountsShown = amounts.filter(
     (a) => a.years === null || a.years.includes(year)
   )

@@ -525,7 +525,7 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
     // 詳細（title が正式名）と description に残る。
     // 名は正本の取り込みがリソース名、抽出物が文書名を持つ（resource_name を持たないため）。
     const base = (
-      ps[0]!.resource_name ??
+      (ps[0]!.table_id ? ps[0]!.document_title : ps[0]!.resource_name) ??
       ps[0]!.document_title ??
       members[0]!.src.label
     )

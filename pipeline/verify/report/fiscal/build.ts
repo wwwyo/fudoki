@@ -34,6 +34,7 @@ import {
 } from '../lineage'
 import { BY_JURISDICTION } from '../../../ingestion/fiscal/metadata'
 import { SHARED } from '../metadata'
+import { reconcileBudget, type BudgetEvidence } from './budget-reconciliation'
 import { buildColumnDocs } from '../columns'
 import {
   cofogGranularity,
@@ -647,10 +648,12 @@ for (const { path: p, prov } of ALL_PROVENANCE) {
     /raw\/(?:jurisdiction=(\d{6})|(?:project-names|revenue-accounts)\/jurisdiction=(\d{6}))/.exec(
       p
     )
-  if (m?.[1])
+  if (m?.[1] && !prov.table_id)
     CANONICAL_PROV.set(m[1], [...(CANONICAL_PROV.get(m[1]) ?? []), prov])
-  else if (m?.[2])
-    SUPPLEMENT_PROV.set(m[2], [...(SUPPLEMENT_PROV.get(m[2]) ?? []), prov])
+  else if (m?.[2] || (m?.[1] && prov.table_id)) {
+    const code = m![2] ?? m![1]!
+    SUPPLEMENT_PROV.set(code, [...(SUPPLEMENT_PROV.get(code) ?? []), prov])
+  }
 }
 
 /**
@@ -684,6 +687,7 @@ function build(code: string, topology: Topology, checks: Check[]): ReportData {
   const cofogState = cofogStateRows(code)
 
   return {
+    budgetReconciliation: budgetReconciliation(code),
     meta: {
       jurisdictionCode: code,
       jurisdictionName: jurisdictionNameOf(code),
@@ -784,6 +788,54 @@ const COLUMN_DOCS = buildColumnDocs(
   }>(join(ROOT, 'fdp/field_types.json')).fields,
   columnsByTable
 )
+
+function budgetReconciliation(code: string): ReportData['budgetReconciliation'] {
+  if (code !== '132195') return []
+  const issues = q<BudgetEvidence['adoptedIssues'][number]>(`
+    select d.amendment_number as number, d.effective_at as effectiveAt,
+      (d.amendment_number=0 or exists (
+        select 1 from stg_132195__budget_history a
+        where a.record_kind='approval' and a.table_id='approval-' || d.amendment_number)) as approvalVerified
+    from read_json_auto('${BUILD}/declarations/history.json') d order by d.amendment_number
+  `)
+  return q<{ target: string; reportedBudgetAmount: number; executedAmount: number }>(`
+    select kan_code || '-' || kou_code || '-' || moku_code as target,
+           reported_amount as reportedBudgetAmount, executed_amount as executedAmount
+    from stg_132195__budget_history where record_kind='reported' order by target
+  `).map((reported) => {
+    const ids = q<BudgetEvidence['initial'][number]>(`
+      select budget_item_id as budgetItemId, initial_yen as amount
+      from int_fiscal_budget_history where record_kind='initial' and target_key='${reported.target}'
+    `)
+    const changes = q<BudgetEvidence['changes'][number]>(`
+      select c.change_id as changeId, c.amount_delta as amountDelta, c.effective_at as effectiveAt
+      from fiscal_expenditure_budget_changes c join int_fiscal_budget_history h
+        on h.fiscal_line_id=c.dataset_id || ':' || c.source_row
+      where h.target_key='${reported.target}' order by c.change_id
+    `)
+    const settlement = q<BudgetEvidence['settlement'][number]>(`
+      select distinct s.fiscal_line_id as settlementLineId, s.amount
+      from fiscal_expenditure_settlement_links l
+      join fiscal_settlement_expenditure_lines s on s.fiscal_line_id=l.settlement_line_id
+      join int_fiscal_budget_history h on h.budget_item_id=l.budget_item_id and h.record_kind='initial'
+      where h.target_key='${reported.target}' and l.match_status='confirmed'
+    `)
+    const csvReported = q<{ amount: number }>(`
+      select sum(a.value)::bigint as amount from int_fiscal_amounts a
+      where a.phase='adjusted' and a.fiscal_line_id in (
+        select l.settlement_line_id from fiscal_expenditure_settlement_links l
+        join int_fiscal_budget_history h on h.budget_item_id=l.budget_item_id
+        where h.record_kind='initial' and h.target_key='${reported.target}')
+    `)[0]?.amount
+    return reconcileBudget({
+      jurisdictionCode: code, fiscalYear: 2023, fundCode: '1', target: reported.target, asOf: '2024-03-31', initial: ids, changes, settlement,
+      reportedBudgetAmount: reported.reportedBudgetAmount, adoptedIssues: issues,
+      correspondenceConfirmed: ids.length === 1 && settlement.length > 0 &&
+        csvReported === reported.reportedBudgetAmount &&
+        settlement.reduce((sum, row) => sum + row.amount, 0) === reported.executedAmount,
+    })
+  })
+}
 
 const reports = CODES.map((code) => ({
   code,
