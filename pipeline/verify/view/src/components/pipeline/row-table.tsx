@@ -90,6 +90,8 @@ export const RowTable = forwardRef<RowTableHandle, Props>(function RowTable(
       const top = i * ROW_H
       if (top < el.scrollTop || top + ROW_H > el.scrollTop + el.clientHeight) {
         el.scrollTop = Math.max(0, top - el.clientHeight / 2)
+        // バックグラウンドの頁では scroll イベントが遅れるため、仮想行の更新をイベントだけに任せない。
+        setScrollTop(el.scrollTop)
       }
     },
   }))
