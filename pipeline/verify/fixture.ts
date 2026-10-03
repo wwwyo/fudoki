@@ -5,6 +5,7 @@ import {
   TABLE_KEYS,
   type CandidateManifest,
 } from '@fudoki/data-contracts'
+import { EXPENDITURE_SETSU_LEGAL_BASIS } from '@fudoki/fiscal/setsu-master'
 import { finalizeCandidate } from '../fdp/manifest'
 import { sha256 } from '../release'
 
@@ -330,7 +331,7 @@ export async function fixture(
       label: '委託料',
       valid_from_fiscal_year: 2020,
       valid_to_fiscal_year: null,
-      legal_basis: 'https://laws.e-gov.go.jp/law/322M40000008029',
+      legal_basis: EXPENDITURE_SETSU_LEGAL_BASIS,
     },
     {
       expenditure_setsu_id: 'setsu-07-2019',
@@ -338,7 +339,7 @@ export async function fixture(
       label: '賃金',
       valid_from_fiscal_year: null,
       valid_to_fiscal_year: 2019,
-      legal_basis: 'https://laws.e-gov.go.jp/law/322M40000008029',
+      legal_basis: EXPENDITURE_SETSU_LEGAL_BASIS,
     },
   ])
   await writeRows('jurisdiction_metadata', [

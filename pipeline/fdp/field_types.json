@@ -224,7 +224,7 @@
       "name": "fiscal_line_id",
       "title": "予算行の識別子",
       "type": "string",
-      "description": "dataset 識別子と、原典の階層・追加の同一性のセル全文から導いた明細識別子。release 内で dataset をまたいでも一意",
+      "description": "dataset 識別子と、明細の同一性を表す要素から導いた識別子。原典行の粒度では原典の階層・追加の同一性のセル全文、事業×節の集約行では経路・追加区分・歳出の節を材料にする。release 内で dataset をまたいでも一意",
       "columnType": "budget-line-id"
     },
     "candidate_count": {

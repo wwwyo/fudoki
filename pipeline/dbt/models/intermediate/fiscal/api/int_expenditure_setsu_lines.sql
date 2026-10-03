@@ -20,6 +20,7 @@
 {%- set absent = var('fiscal_absent_level_markers').get(code, []) -%}
 {%- set absent_list = absent | map('replace', "'", "''") | join("', '") -%}
 {%- set sidx = levels.index('setsu') if 'setsu' in levels else -1 -%}
+{%- set setsu_present = "s.setsu_source is not null and s.setsu_source != ''" ~ (" and s.setsu_source not in ('" ~ absent_list ~ "')" if absent else "") -%}
 select
     s.fiscal_line_id, s.dataset_id, s.source_row, s.fund_code, s.fund_label,
     d.jurisdiction_code, d.fiscal_year,
@@ -33,12 +34,9 @@ select
     {%- for dm in dims %}{% do key_parts.append('s.' ~ dm ~ '_source') %}{% endfor -%}
     {{ key_parts | join(" || chr(31) || ") }} as group_path_key,
     {{ sidx }} as setsu_ordinal,
-    case when s.setsu_source is not null and s.setsu_source != ''
-      {%- if absent %} and s.setsu_source not in ('{{ absent_list }}'){% endif %}
-      then m.expenditure_setsu_id else null end as expenditure_setsu_id,
-    case when s.setsu_source is not null and s.setsu_source != ''
-      {%- if absent %} and s.setsu_source not in ('{{ absent_list }}'){% endif %}
-      then s.setsu_label else null end as setsu_label,
+    {{ setsu_present }} as setsu_present,
+    case when {{ setsu_present }} then m.expenditure_setsu_id else null end as expenditure_setsu_id,
+    case when {{ setsu_present }} then s.setsu_label else null end as setsu_label,
 {%- if below %}
     '[' || coalesce(concat_ws(',',
       {%- for lv in below %}
@@ -53,6 +51,7 @@ select
 {%- else %}
     s.fiscal_line_id as group_path_key,
     {{ levels | length }} as setsu_ordinal,
+    false as setsu_present,
     null::varchar as expenditure_setsu_id,
     null::varchar as setsu_label,
     '[]' as sub_path_json,

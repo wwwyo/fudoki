@@ -14,20 +14,18 @@
 #}
 with l as (
   select *,
-    count(distinct coalesce(cofog_code,'') || '|' || cofog_status || '|' || cofog_basis
-      || '|' || consolidation || '|' || counterpart_fund)
-      over (partition by dataset_id, group_path_key, expenditure_setsu_id) as classifications,
-    min(source_row) over (partition by dataset_id, group_path_key, expenditure_setsu_id) as first_source_row
+    count(distinct coalesce(cofog_code,'') || chr(31) || coalesce(cofog_status,'')
+      || chr(31) || coalesce(cofog_basis,'') || chr(31) || coalesce(consolidation,'')
+      || chr(31) || coalesce(counterpart_fund,''))
+      over (partition by dataset_id, group_path_key, expenditure_setsu_id) as classifications
   from {{ ref('int_expenditure_setsu_lines') }}
 )
 select *,
   case when expenditure_setsu_id is not null and classifications = 1
        then 'expenditure_setsu' else 'origin_line' end as line_granularity,
   case when expenditure_setsu_id is not null and classifications = 1
-       then 'b-' || sha256('expenditure_setsu' || chr(31) || jurisdiction_code || chr(31)
-             || fiscal_year || chr(31) || fund_code || chr(31) || group_path_key
-             || chr(31) || expenditure_setsu_id)
-       else 'b-' || sha256(fiscal_line_id) end as budget_item_id,
+       then {{ fiscal_budget_item_id("'expenditure_setsu' || chr(31) || jurisdiction_code || chr(31) || fiscal_year || chr(31) || fund_code || chr(31) || group_path_key || chr(31) || expenditure_setsu_id") }}
+       else {{ fiscal_budget_item_id('fiscal_line_id') }} end as budget_item_id,
   dataset_id || ':' || substr(sha256(
       'expenditure_setsu' || chr(31) || dataset_id || chr(31) || group_path_key
       || chr(31) || coalesce(expenditure_setsu_id, fiscal_line_id)), 1, 16) as group_line_id

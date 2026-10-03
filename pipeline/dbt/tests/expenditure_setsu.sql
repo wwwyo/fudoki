@@ -7,10 +7,11 @@
 --   原典行は内訳へちょうど一度だけ現れる（小計・合計の二重計上が無い）。
 -- - 節の確かめられない行は `expenditure_setsu_id = NULL`・`origin_line` で残す。
 
+{% set details_schema = '[{"path":"JSON","amount":"BIGINT","fiscalLineId":"VARCHAR","sourceRow":"BIGINT"}]' %}
 with problems(problem, id) as (
-  select 'setsu_label_without_map', fiscal_line_id
+  select 'setsu_without_map', fiscal_line_id
   from {{ ref('int_expenditure_setsu_lines') }}
-  where setsu_label is not null and expenditure_setsu_id is null
+  where setsu_present and expenditure_setsu_id is null
 
   union all
   select 'budget_item_setsu_unresolved', b.budget_item_id
@@ -41,7 +42,7 @@ with problems(problem, id) as (
   left join lateral (
     select sum(x.amount) as s
     from unnest(from_json(l.details_json,
-      '[{"path":"JSON","amount":"BIGINT","fiscalLineId":"VARCHAR","sourceRow":"BIGINT"}]')) t(x)
+      '{{ details_schema }}')) t(x)
   ) d on true
   where l.amount is distinct from d.s
 
@@ -50,7 +51,7 @@ with problems(problem, id) as (
   select 'origin_line_reused', x.fiscalLineId
   from {{ ref('api_fiscal_initial_expenditure_budget_lines') }} l,
        unnest(from_json(l.details_json,
-         '[{"path":"JSON","amount":"BIGINT","fiscalLineId":"VARCHAR","sourceRow":"BIGINT"}]')) t(x)
+         '{{ details_schema }}')) t(x)
   group by x.fiscalLineId having count(*) > 1
 
   union all
@@ -61,7 +62,7 @@ with problems(problem, id) as (
     select 1
     from {{ ref('api_fiscal_initial_expenditure_budget_lines') }} l,
          unnest(from_json(l.details_json,
-           '[{"path":"JSON","amount":"BIGINT","fiscalLineId":"VARCHAR","sourceRow":"BIGINT"}]')) t(x)
+           '{{ details_schema }}')) t(x)
     where x.fiscalLineId = o.fiscal_line_id)
 
   union all

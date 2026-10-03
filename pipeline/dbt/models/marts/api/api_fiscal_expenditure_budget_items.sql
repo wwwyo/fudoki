@@ -2,7 +2,7 @@
 with g as (
   select * from {{ ref('int_expenditure_setsu_groups') }}
 ), rep as (
-  select budget_item_id, fiscal_line_id as rep_line_id, setsu_ordinal,
+  select budget_item_id, fiscal_line_id as rep_line_id, setsu_ordinal, setsu_label,
          row_number() over (partition by budget_item_id order by dataset_id, fiscal_line_id) as rn
   from g where line_granularity = 'expenditure_setsu'
 ), setsu_items as (
@@ -17,7 +17,7 @@ with g as (
          'recorded' as initial_state
   from (
     select distinct budget_item_id, jurisdiction_code, fiscal_year, fund_code, fund_label,
-           expenditure_setsu_id, setsu_label
+           expenditure_setsu_id
     from g where line_granularity = 'expenditure_setsu'
   ) i
   join rep r on r.budget_item_id = i.budget_item_id and r.rn = 1
@@ -32,12 +32,10 @@ with g as (
                    or n.level in (select level from {{ ref('int_fiscal_line_hierarchy') }} h
                                   where h.fiscal_line_id = r.rep_line_id and h.ordinal < r.setsu_ordinal))
             union all
-            select 2 as ord, struct_pack(kind:='hierarchy', level:='setsu', value:=i.setsu_label, nameSource:='canonical', basis:='')
+            select 2 as ord, struct_pack(kind:='hierarchy', level:='setsu', value:=r.setsu_label, nameSource:='canonical', basis:='')
             from (select 1) x
           ) t) as names_json
-  from rep r join (
-    select distinct budget_item_id, setsu_label from g where line_granularity = 'expenditure_setsu'
-  ) i using (budget_item_id)
+  from rep r
   where r.rn = 1
 ), origin_items as (
   select g.budget_item_id, g.jurisdiction_code, g.fiscal_year, g.fund_code, g.fund_label,
