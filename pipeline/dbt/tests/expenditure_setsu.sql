@@ -15,8 +15,8 @@ with problems(problem, id) as (
 
   union all
   select 'budget_item_setsu_unresolved', b.budget_item_id
-  from {{ ref('api_fiscal_expenditure_budget_items') }} b
-  left join {{ ref('api_fiscal_expenditure_setsu_master') }} m
+  from {{ ref('fiscal_expenditure_budget_items') }} b
+  left join {{ ref('fiscal_expenditure_setsu_master') }} m
     on m.expenditure_setsu_id = b.expenditure_setsu_id
   where b.expenditure_setsu_id is not null
     and (m.expenditure_setsu_id is null
@@ -25,20 +25,20 @@ with problems(problem, id) as (
 
   union all
   select 'aggregated_item_without_setsu', b.budget_item_id
-  from {{ ref('api_fiscal_expenditure_budget_items') }} b
+  from {{ ref('fiscal_expenditure_budget_items') }} b
   where b.line_granularity = 'expenditure_setsu' and b.expenditure_setsu_id is null
 
   union all
   select 'map_without_master', m.expenditure_setsu_id
   from {{ ref('expenditure_setsu_map') }} m
-  left join {{ ref('api_fiscal_expenditure_setsu_master') }} s
+  left join {{ ref('fiscal_expenditure_setsu_master') }} s
     on s.expenditure_setsu_id = m.expenditure_setsu_id
   where s.expenditure_setsu_id is null
 
   union all
   -- 内訳合計と親金額の不一致（小計行を二重に足した、または末端を落とした形跡）
   select 'details_amount_mismatch', l.fiscal_line_id
-  from {{ ref('api_fiscal_initial_expenditure_budget_lines') }} l
+  from {{ ref('fiscal_initial_expenditure_budget_lines') }} l
   left join lateral (
     select sum(x.amount) as s
     from unnest(from_json(l.details_json,
@@ -49,7 +49,7 @@ with problems(problem, id) as (
   union all
   -- 原典行が複数の内訳へ重複して現れた
   select 'origin_line_reused', x.fiscalLineId
-  from {{ ref('api_fiscal_initial_expenditure_budget_lines') }} l,
+  from {{ ref('fiscal_initial_expenditure_budget_lines') }} l,
        unnest(from_json(l.details_json,
          '{{ details_schema }}')) t(x)
   group by x.fiscalLineId having count(*) > 1
@@ -60,7 +60,7 @@ with problems(problem, id) as (
   from {{ ref('int_expenditure_setsu_lines') }} o
   where not exists (
     select 1
-    from {{ ref('api_fiscal_initial_expenditure_budget_lines') }} l,
+    from {{ ref('fiscal_initial_expenditure_budget_lines') }} l,
          unnest(from_json(l.details_json,
            '{{ details_schema }}')) t(x)
     where x.fiscalLineId = o.fiscal_line_id)
@@ -70,7 +70,7 @@ with problems(problem, id) as (
   select 'dataset_total_differs', coalesce(a.dataset_id, o.dataset_id)
   from (
     select dataset_id, sum(amount) as total
-    from {{ ref('api_fiscal_initial_expenditure_budget_lines') }} group by dataset_id
+    from {{ ref('fiscal_initial_expenditure_budget_lines') }} group by dataset_id
   ) a
   full outer join (
     select dataset_id, sum(amount) as total

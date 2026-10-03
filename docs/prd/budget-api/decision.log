@@ -120,12 +120,6 @@ PRD からは数値を削除し、分類率は「歳出明細を分母に、割�
 **不採用: 最初から packages/contract**。理由:
 - 切り出しは consumer が現れた時点の機械的な移動で済み、先行して払うコストに見合う利得が無い
 
-## 13. データの持たせ方は D1 ではなく事前分割 JSON + assets
-
-比較の本体は design-doc.md の Alternatives Considered。ここには経緯だけ残す。
-ユーザーは推奨案（事前分割 JSON + assets）を選択した。
-D1 は「集計 API や自由な絞り込みが要件に入った時点で再検討」という再訪条件つきで棄却した。
-
 ## 14. 技術レビュー（codex）10件の反映と、API の形を Google AIP に倣う決定
 
 技術レビューは Blocker 3件を含む10件を指摘し、全件反映した（応答スキーマへの dimensions と source 系列の追加、budgetLine の Get メソッド追加、pageToken へのフィルタハッシュ封入、パススルーの revision をヘッダで返す、注意事項と分類率の型固定、cofog.group フィルタの削除、run_worker_first によるアセット非公開、CPU 計測手順、oRPC の事実訂正、異常系の応答表と Observability の追加）。

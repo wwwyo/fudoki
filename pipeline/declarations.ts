@@ -38,7 +38,7 @@ export async function writeDeclarations() {
         name: jurisdiction.name,
         ocd_id: jurisdiction.ocdId,
         caveats_json: JSON.stringify(
-          metadata?.caveats.filter((caveat) => caveat.api === true) ?? []
+          metadata?.caveats.filter((caveat) => caveat.userFacing === true) ?? []
         ),
       }
     })

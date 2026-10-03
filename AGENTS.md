@@ -75,7 +75,7 @@ Core actions:
     誰が、誰に、いつ、いくら支払ったかを表す個々の記録。
 
 - **配布物（Fiscal Data Package / package）**:
-  団体ごとに風土記が配る、財政データとその意味・出典を記述したメタデータのまとまり。原典と Git の宣言・判断から生成し、版を固定して R2 から配る。
+  団体ごとに風土記が配る、財政データとその意味・出典を記述したメタデータのまとまり。原典と宣言・判断から生成する。
   _Avoid_: 成果物、出力
 
 - **パイプライン（pipeline）**:
@@ -144,17 +144,13 @@ _Avoid_: ログ
 **財政明細の追加区分（fiscal line dimension）**:
 階層経路に加えて明細を識別する、所属や予算区分などの原典の区分。
 
-**自治体データ版（jurisdiction version）**:
-一団体の財政資料の収録範囲・提供用データ・説明・配布参照を固定した内容の版。配布ファイルだけの版とは区別する。
-
-
 ## ディレクトリ構造
 
 ```
 .
-├── pipeline/         # ingestion/fiscal、dbt、fdp、publish、verify/report と verify/view
-├── packages/         # fiscal の純粋な型・名称、data-contracts、jurisdictions
-├── apps/             # 公開 web、D1 を読む api、docs
+├── pipeline/         # ingestion/fiscal、dbt、任意の FDP 整形、verify/report と verify/view
+├── packages/         # fiscal の純粋な型・名称、jurisdictions
+├── apps/             # web、api、docs の一時的な 500 応答
 ├── slides/           # 発表資料
 ├── docs/             # 設計・調査文書
 └── .agent/           # 個人メモ・試作（gitignore）
@@ -170,7 +166,7 @@ bun install
 uv sync
 
 bun run pipeline:inputs  # sources.lock.json の固定入力を R2 から復元
-bun run pipeline:build   # オフラインで dbt・FDP・manifest を生成
+bun run pipeline:build   # オフラインで dbt・marts の CSV を生成
 bun run dev              # ローカル専用の検証画面（5174）
 ```
 
@@ -182,14 +178,18 @@ bun run dev              # ローカル専用の検証画面（5174）
 uv add --exclude-newer $(date -v-7d +%Y-%m-%d) <package>
 ```
 
+## 現在の優先範囲
+
+**ingestion → staging → intermediate → marts を先に完成させる。** 原典との対応、金額・単位・粒度・分類・収録範囲を検査し、固定入力から再構築できる状態を目指す。配布・検索のインフラ、版管理、公開・反映の方式はパイプライン完成後に検討する。
+
 ## 技術スタック
 
 - **取得**: Python。原典 CSV/PDF のバイト列と取り込み Parquet を非公開 R2 に保存する。採用した入力の証跡は ingestion 配下の `provenance/`、入力一覧は `sources.lock.json` として Git 管理し、個別ハッシュを照合する。
-- **変換・検査**: dbt-duckdb。marts が配布 CSV と D1 用の表を生成し、相互の行・金額・分類を検査する。
-- **説明ファイル**: Python/TypeScript の `pipeline/fdp/`。FDP descriptor と収録範囲・出典・配布先をまとめた Git manifest を生成する。
-- **検索・配布**: API は D1 の SQL を実行し、API は公開中の Git manifest URL を返し、R2 は custom domain から団体別配布物を直接配信する。API に R2 やデータ ASSETS を bind しない。
-- **検証**: Bun/TypeScript の `pipeline/verify/report/` とループバック専用の view。公開 web と UI は共有しない。
-- **保存**: Git はコード・宣言・判断・入力一覧・採用した入力の証跡・最新 manifest、R2 は原典・取り込み・配布物、D1 は全収録年度を含む最新版だけの検索用派生表。`.cache/` と `.build/` は再生成可能なローカル作業領域。
+- **変換・検査**: dbt-duckdb。staging は原典の行と1対1、intermediate は構造・単位・科目・分類の統一、marts は提供する列と粒度を確定する。
+- **検証**: Bun/TypeScript の `pipeline/verify/report/` とループバック専用の view。系統・検査結果・原典との対応を確認する。
+- **保存**: Git はコード・宣言・判断・入力一覧・採用した入力の証跡、非公開 R2 は原典・取り込み表。`.cache/` と `.build/` は再生成可能なローカル作業領域。
+
+`pipeline:build` は固定入力から dbt・marts の CSV を生成し、同じ構築 ID の再実行では CSV のハッシュを照合する。公開 web・API・MCP・docs は一時的に HTTP 500 を返す。実行手順は `pipeline/README.md` を参照する。
 
 **系統（lineage）は dbt の `manifest.json` から取る。** 手で書かない。
 段とノードを手作りすると、パイプラインを変えても図が変わらない状態を作る（実際に作った）。
@@ -206,4 +206,4 @@ uv add --exclude-newer $(date -v-7d +%Y-%m-%d) <package>
 - データ源の実測 → `docs/budget-availability.md` / `docs/kkj-api-notes.md` / `docs/fdp-spec-notes.md` / `docs/tokyo-survey.md`
 - 設計の記録 → `docs/prd/<topic>/prd.md`（要件）・`docs/prd/<topic>/design-doc.md`（設計書。同じ topic に併置）・`docs/adr/`（決定）。判断の記録はコードと同じ寿命を持ち、git 管理する
 
-歳出・歳入のドメインモデルとクラス図 → `docs/fiscal-domain-model.md`。予算・決算の保存境界と ER 図 → `docs/prd/fiscal-records/design-doc.md`。全体設計 → `docs/prd/monorepo/design-doc.md`。自治体別のデータ版・直接取り込み・保持条件の再設計 → `docs/prd/jurisdiction-versions/design-doc.md`（実装未完了）。現行の実行手順 → `pipeline/README.md`。移行の検証記録と未完了項目 → `docs/monorepo-migration.md`。
+歳出・歳入のドメインモデルとクラス図 → `docs/fiscal-domain-model.md`。予算・決算の保存境界と ER 図 → `docs/prd/fiscal-records/design-doc.md`。全体設計 → `docs/prd/monorepo/design-doc.md`。現行の実行手順 → `pipeline/README.md`。移行の検証記録と未完了項目 → `docs/monorepo-migration.md`。

@@ -54,10 +54,9 @@ CC BY が求める帰属を下流が落とす。層ごとの宣言は `docs/data
 そちらは再配布の可否が未確定である。配るのは抽出した事実で、事実に原典のライセンスは付いてこないが、
 `sources` と `fudoki.factsFrom` に**出典としては書く** — 利用者が列の出所を辿れる必要がある。
 
-**入力と判断から、配布用と API 用の表を生成する。** Git はコード・取得元・判断・入力一覧・採用した証跡・最新 manifest を保持し、R2 は原典・取り込み・配布物、D1 は全収録年度を含む自治体ごとの最新版の検索用表を保持する。配布物は R2 の custom domain から直接取得でき、API の稼働に依存しない。入力一覧・個別ハッシュ・Git manifest で版を追い、原典と不変の配布物を保持する。移行と運用の詳細は [全体設計](prd/monorepo/design-doc.md) と [pipeline の手順](../pipeline/README.md)。
+**入力と判断から、提供用データを生成する。** Git はコード・取得元・判断・入力一覧・採用した証跡を保持し、原典と取り込み表は非公開 R2 に保管する。まず ingestion〜marts の金額・粒度・分類・出典と再構築を検査する。配布・検索のインフラと公開方式はその後に検討する。詳細は [全体設計](prd/monorepo/design-doc.md) と [pipeline の手順](../pipeline/README.md)。
 
 **ダッシュボードは `https://fudoki.dev/` で配信する。** これは派生物であって正本ではない。
-画面と API が停止しても配布物は R2 の custom domain から取得できる。
 公開 web の絶対 URL（`canonical` / `og:image` / `sitemap.xml`）はこのドメインを指す。
 ⚠️ **ルートパス（`https://fudoki.dev/`）で配信する前提**なので、`vite.config.ts` の `base` は `/` のままでよい。
 `base` に効くのは**パス**であって DNS 名ではない。`www.fudoki.dev` のようなサブドメインへ移しても `/` のまま。
@@ -83,7 +82,7 @@ bun run deploy:web    # vite build → cf deploy
 `apps/api`（Cloudflare Workers + oRPC）のデプロイ・運用のハマりどころは
 `.agents/skills/cloudflare-api-ops/`（session-retro が維持）を参照。
 
-**原典 CSV/PDF と取り込み済み Parquet は別のものとして保管する。** 原典・表は非公開 R2 の内容ハッシュ別オブジェクト、採用した証跡は Git、配布物は団体別の内容ハッシュで固定した公開 R2 オブジェクト。Git の `pipeline/ingestion/fiscal/sources.lock.json` が採用した個別キーとハッシュを固定する。新規の取得は原典を保存してから表を作る。固定入力からの build で原典の再取得をしない。
+**原典 CSV/PDF と取り込み済み Parquet は別のものとして保管する。** 原典・表は非公開 R2 の内容ハッシュ別オブジェクト、採用した証跡は Git。Git の `pipeline/ingestion/fiscal/sources.lock.json` が採用した個別キーとハッシュを固定する。新規の取得は原典を保存してから表を作る。固定入力からの build で原典の再取得をしない。
 
 再配布の可否は原典ごとに判断する。公開する配布物と非公開の原典保管は別に扱う。権利の整理は [データの利用条件](data-license.md)、個別条件は取得元の宣言と descriptor に残す。
 
@@ -147,13 +146,10 @@ PDF の抽出は1本あたり数十秒かかるので、**抽出を走らせる�
 | 原典 CSV/PDF、取り込み Parquet | 非公開 R2、個別の内容ハッシュ | 入力一覧だけ |
 | 採用した入力の証跡 | pipeline/ingestion/fiscal/provenance/ | 管理する |
 | 取得元・階層・金額段階の宣言、分類・名称の判断 | pipeline/ingestion と dbt seeds | 管理する |
-| 配布 CSV/FDP | 団体別の内容ハッシュで固定した R2 | 管理しない |
-| 最新 manifest（収録範囲・出典・配布先） | pipeline/publish/manifest.json | 管理する |
-| D1 の検索用表・公開メタデータ | D1 | schema と生成コードだけ |
 | 復元済み入力・PDF/OCR キャッシュ | pipeline/.cache/ | 管理しない |
 | DuckDB・dbt manifest・検査結果・ローカル報告 | pipeline/.build/ | 管理しない |
 
-原典と証跡を公開 Worker へ bind しない。公開済み配布物 の再構築に必要な入力を保持し、配布物の cleanup に連動させない。既存 data/ は遠隔保管・復元を確認してから tracking を外す。
+再構築に必要な原典・取り込み表・証跡を保持する。既存 data/ は遠隔保管・復元を確認してから tracking を外す。
 
 **団体の同一性（名称・ocdId）は `packages/jurisdictions/jurisdictions.json`。**
 財政データ・調達を同じキーで束ねるので、どれか1層のファイルに同居させない。

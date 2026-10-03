@@ -4,9 +4,7 @@ export default defineConfig({
   worker: {
     name: 'fudoki-docs',
     compatibilityDate: '2026-08-23',
-    assets: {
-      notFoundHandling: '404-page',
-    },
+    entrypoint: 'worker.ts',
     domains: ['docs.fudoki.dev'],
   },
 })

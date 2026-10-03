@@ -5,6 +5,8 @@ import {
   writeFile,
   access,
   mkdtemp,
+  rename,
+  cp,
 } from 'node:fs/promises'
 import { join } from 'node:path'
 import {
@@ -16,62 +18,54 @@ import {
   WAREHOUSE,
 } from './paths'
 import { writeDeclarations } from './declarations'
-import { releaseIdentity, sha256 } from './release'
-import {
-  prepareCandidate,
-  finalizeCandidate,
-  verifyCandidate,
-  pinManifest,
-} from './fdp/manifest'
+import { buildIdentity } from './identity'
+import { artifactHashes, verifyArtifacts } from './artifacts'
 
-const identity = await releaseIdentity()
-const candidate = join(BUILD, 'builds', identity.releaseId)
-let working = candidate
+if (process.argv.slice(2).some((arg) => arg !== '--rebuild'))
+  throw new Error('Expected only --rebuild')
+const identity = await buildIdentity()
+const candidate = join(BUILD, 'builds', identity.buildId)
 const declarations = await writeDeclarations()
+await mkdir(join(BUILD, 'builds'), { recursive: true })
+let expected: Record<string, string> | null = null
+try {
+  expected = JSON.parse(
+    await readFile(join(candidate, 'verification.json'), 'utf8')
+  ).files
+  if (!expected) throw new Error('Build verification record lacks file hashes')
+  await verifyArtifacts(candidate, expected)
+} catch (error) {
+  if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error
+  // A partial build must not become the baseline for a determinism check.
+  try {
+    await access(candidate)
+    throw new Error('Existing build lacks its verification record')
+  } catch (missing) {
+    if ((missing as NodeJS.ErrnoException).code !== 'ENOENT') throw missing
+  }
+}
+const working = join(BUILD, 'workspace')
 async function run(command: string[], cwd = PIPELINE) {
-  const process = Bun.spawn(command, {
+  const child = Bun.spawn(command, {
     cwd,
     env: {
       ...Bun.env,
       FUDOKI_INPUT_LOCK: INPUT_LOCK,
       FUDOKI_INPUT_DIR: INPUTS,
       FUDOKI_PACKAGE_DIR: join(working, 'fiscal'),
-      FUDOKI_API_DIR: join(working, 'api'),
       FUDOKI_INTERNAL_PACKAGE_DIR: join(working, 'internal/fiscal'),
       FUDOKI_DECLARATIONS_DIR: declarations,
-      FUDOKI_RELEASE_ID: identity.releaseId,
     },
     stdout: 'inherit',
     stderr: 'inherit',
   })
-  if ((await process.exited) !== 0)
+  if ((await child.exited) !== 0)
     throw new Error(`Failed: ${command.join(' ')}`)
 }
-await mkdir(BUILD, { recursive: true })
-let complete = false
+await rm(join(BUILD, 'warehouse.json'), { force: true })
 try {
-  await access(join(candidate, 'complete.json'))
-  complete = true
-} catch {}
-if (process.argv.slice(2).some((arg) => arg !== '--rebuild'))
-  throw new Error('Expected only --rebuild')
-let workspaceMatches = false
-try {
-  const marker = JSON.parse(
-    await readFile(join(BUILD, 'warehouse.json'), 'utf8')
-  )
-  workspaceMatches = marker.releaseId === identity.releaseId
-  await access(WAREHOUSE)
-  await access(join(DBT_TARGET, 'manifest.json'))
-} catch {
-  workspaceMatches = false
-}
-if (complete) await verifyCandidate(candidate)
-const rebuild =
-  !complete || !workspaceMatches || process.argv.includes('--rebuild')
-if (rebuild) {
-  if (complete) working = await mkdtemp(join(BUILD, 'rebuild-'))
-  await rm(join(BUILD, 'warehouse.json'), { force: true })
+  await rm(working, { recursive: true, force: true })
+  await mkdir(working, { recursive: true })
   await run([
     'uv',
     'run',
@@ -82,14 +76,11 @@ if (rebuild) {
     '--lock',
     INPUT_LOCK,
   ])
-  const packages = join(working, 'fiscal')
-  await mkdir(packages, { recursive: true })
-  await mkdir(join(working, 'api'), { recursive: true })
   const sources = JSON.parse(
     await readFile(join(declarations, 'sources.json'), 'utf8')
   ) as { jurisdiction_code: string }[]
   for (const code of new Set(sources.map((s) => s.jurisdiction_code))) {
-    await mkdir(join(packages, code), { recursive: true })
+    await mkdir(join(working, 'fiscal', code), { recursive: true })
     await mkdir(join(working, 'internal/fiscal', code), { recursive: true })
   }
   await rm(WAREHOUSE, { force: true })
@@ -98,48 +89,45 @@ if (rebuild) {
     ['uv', 'run', 'dbt', 'build', '--profiles-dir', '.', '--no-partial-parse'],
     join(PIPELINE, 'dbt')
   )
-  await run(['uv', 'run', 'python', '-m', 'fdp.build'])
-  await prepareCandidate(working, identity)
-  await run(['uv', 'run', 'python', '-m', 'fdp.validate_d1'])
-  await run(['bun', 'run', 'verify/api.ts'])
-  const validation = JSON.parse(
-    await readFile(join(BUILD, 'd1-validation.json'), 'utf8')
-  )
-  await finalizeCandidate(working, identity, validation)
-  await verifyCandidate(working)
-  if (complete) {
-    for (const name of ['manifest.json', 'verification.json'])
-      if (
-        sha256(await readFile(join(working, name))) !==
-        sha256(await readFile(join(candidate, name)))
-      )
-        throw new Error(
-          'The same code and fixed inputs produced a different candidate'
-        )
+  const files = await artifactHashes(working)
+  if (expected && JSON.stringify(files) !== JSON.stringify(expected)) {
+    const changed = Object.keys({ ...expected, ...files }).filter(
+      (file) => expected[file] !== files[file]
+    )
+    throw new Error(
+      `The same code and fixed inputs produced different CSV files: ${changed.join(', ')}`
+    )
   }
   await writeFile(
-    join(BUILD, 'warehouse.json'),
-    JSON.stringify({
-      releaseId: identity.releaseId,
-      artifactDirectory: working,
-    }) + '\n'
+    join(working, 'verification.json'),
+    JSON.stringify({ ...identity, files }) + '\n'
   )
+  if (!expected) {
+    const staged = await mkdtemp(join(BUILD, 'builds', 'build-'))
+    try {
+      await cp(working, staged, { recursive: true })
+      await rename(staged, candidate)
+    } catch (error) {
+      await rm(staged, { recursive: true, force: true })
+      throw error
+    }
+  }
+  await writeFile(
+    join(BUILD, 'latest.json'),
+    JSON.stringify({ ...identity, inputLock: INPUT_LOCK }) + '\n'
+  )
+  await writeFile(
+    join(BUILD, 'warehouse.json'),
+    JSON.stringify({ buildId: identity.buildId }) + '\n'
+  )
+  console.log(
+    JSON.stringify({
+      buildId: identity.buildId,
+      path: candidate,
+      determinismChecked: expected !== null,
+    })
+  )
+} catch (error) {
+  await rm(working, { recursive: true, force: true })
+  throw error
 }
-await writeFile(
-  join(BUILD, 'latest.json'),
-  JSON.stringify({
-    releaseId: identity.releaseId,
-    inputLock: INPUT_LOCK,
-    inputFingerprint: identity.inputFingerprint,
-  }) + '\n'
-)
-await pinManifest(candidate)
-console.log(
-  JSON.stringify({
-    releaseId: identity.releaseId,
-    path: candidate,
-    reused: complete,
-    reconstructed: rebuild,
-    determinismChecked: complete && rebuild,
-  })
-)

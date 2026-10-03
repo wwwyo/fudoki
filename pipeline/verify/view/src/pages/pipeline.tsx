@@ -8,7 +8,6 @@
  * 集計はしない。行数・検査・証跡はすべて報告（pipeline.json）と
  * `/local/rows`・`/local/pdf/*` が返す値をそのまま出す。
  */
-import { ArrowUpRight } from 'lucide-react'
 import {
   useCallback,
   useEffect,
@@ -408,20 +407,6 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
             className="w-32"
             size="sm"
           />
-          <a
-            href={`http://127.0.0.1:5173/analysis/${current.code}/`}
-            className="text-xs"
-            style={{
-              color: 'var(--primary)',
-              marginLeft: 'auto',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 3,
-            }}
-          >
-            この団体の支出分析を見る
-            <ArrowUpRight size={12} aria-hidden />
-          </a>
         </div>
         <div
           className="graphwrap-outer"

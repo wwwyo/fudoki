@@ -159,22 +159,21 @@ export type ReportData = ReportEnvelope & {
   /** 2団体目で壊れうる箇所と、次に何を実測すれば確かめられるか */
   portability: { element: string; kind: string; verifyNext: string }[]
   /**
-   * 列名 → 意味。**正本は配布物の descriptor（datapackage.json）と dbt の列記述**。
-   * `resources` はリソース名でスコープする — 同じ列名でも歳出と歳入で意味が違う
+   * 列名 → 意味。**正本は dbt の列記述**。
+   * `resources` は dbt モデル名でスコープする — 同じ列名でも歳出と歳入で意味が違う
    * （`saisetsu_code`）ので、配布物側はリソース単位でしか引けない。
-   * `canonical` は dbt manifest の列記述に、配布物語彙のうち全リソースで意味が
-   * 一意なものを併せたもの。正規化・判断の表は配布物と同じ列語彙を使うので、
+   * `canonical` は dbt manifest の列記述と、モデル間で意味が共通する列の宣言から生成する。
    * こちらで引くと `kan_code` 等の意味が途中段でも出る。
    */
   columnDocs: {
-    /** 配布物のリソース名 → 列名 → 説明 */
+    /** dbt モデル名 → 列名 → 説明 */
     resources: Record<string, Record<string, ColDoc>>
     /** リソースに属さない表（取り込み・正規化・判断）での列名 → 説明 */
     canonical: Record<string, ColDoc>
   }
   /**
-   * `api` は budget-api の jurisdiction 応答に載せるものだけ true にする。
-   * 基準: データ（enum・数値・構造）から見えず、API 利用者の解釈を変えるもの。
+   * `userFacing` は提供用データの説明に含める注意事項だけ true にする。
+   * 基準: データ（enum・数値・構造）から見えず、データ利用者の解釈を変えるもの。
    * 構造が既に語っている事実、fudoki 側で吸収済みの経緯、repo の再現性の話は載せない
    * （報告=ダッシュボードには全量を出す）。
    *
@@ -185,7 +184,7 @@ export type ReportData = ReportEnvelope & {
     topic: string
     body: string
     category: CaveatCategory
-    api?: boolean
+    userFacing?: boolean
   }[]
   /**
    * 原典の金額列と単位の宣言（direction ごと）。
@@ -202,7 +201,7 @@ export type ReportData = ReportEnvelope & {
 }
 
 /**
- * 注意事項の分類。budget-api が団体ごとに必須4カテゴリ
+ * 注意事項の分類。団体ごとに必須4カテゴリ
  * （coverage / phaseSemantics / classification / sourceAndLicense）の存在を検査する。
  * どれにも属さない注意事項は `other`。
  */

@@ -25,8 +25,6 @@ tmp/
 .agent/
 
 # Generated routes; the hand-written index pages remain tracked.
-apps/web/analysis/*/
-apps/web/public/sitemap.xml
 pipeline/verify/view/pipeline/*/
 pipeline/dbt/.user.yml
 pipeline/dbt/logs/
@@ -35,5 +33,5 @@ pipeline/dbt/target/
 pipeline/ingestion/**/observations/
 
 # Existing tracked data is retained until remote transfer and restore are verified.
-# New originals, tables and release outputs belong in R2/D1; selected provenance stays in ingestion.
+# Originals and ingestion tables use private input storage; selected provenance stays in ingestion.
 /data/

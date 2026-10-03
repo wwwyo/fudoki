@@ -1,7 +1,7 @@
 /**
  * 検証画面（`/pipeline/<団体コード>/`）のローカル・データ口の読み側。
  *
- * 報告（pipeline.json）は公開配信物だが、行そのもの・PDF の頁画像・語の文字層・
+ * 報告（pipeline.json）も行そのもの・PDF の頁画像・語の文字層・
  * 行と頁の対応は dev server の middleware（`vite-plugins/local-data.ts`）だけが
  * 返す — ビルド成果物には載らない。ここで読むエンドポイントはすべて `/local/*`。
  */
@@ -65,7 +65,7 @@ export function nodeLabel(n: Node): string {
 
 /**
  * そのノードの表で引ける列の意味（`列名 → 説明`）。
- * 配布物ノードはリソース名でスコープした語彙を使う — 同じ列名でも歳出と歳入で
+ * marts ノードはモデル名でスコープした語彙を使う — 同じ列名でも歳出と歳入で
  * 意味が違う列（`saisetsu_code`）があり、canonical 語彙で一義に説明すると嘘になる。
  * 原典ノードは原典自身の見出しが列名なので語彙は引かない（説明は原典側の責任）。
  */
@@ -74,7 +74,7 @@ export function colDocsOf(
   docs: ReportData['columnDocs']
 ): Record<string, ColDoc> {
   if (n.stage === 'marts') {
-    const res = n.id.split('__').at(-1)
+    const res = n.label
     return (res && docs.resources[res]) || {}
   }
   return n.kind === 'origin' ? {} : docs.canonical

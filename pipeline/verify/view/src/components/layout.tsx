@@ -15,7 +15,6 @@ import { withBase } from '@/lib/utils'
  */
 const NAV = [
   { href: 'https://fudoki.dev/', label: '公開サイト' },
-  { href: 'https://docs.fudoki.dev/', label: 'API docs' },
 ] as const
 
 type LayoutProps = {

@@ -7,12 +7,10 @@
       "apps/*",
       "packages/*",
       "pipeline",
-      "pipeline/publish",
       "pipeline/verify/report",
       "pipeline/verify/view",
       "slides",
-      "apps/web/deploy",
-      "pipeline/verify/r2"
+      "apps/web/deploy"
     ],
     "catalog": {
       "@types/bun": "1.3.14",
@@ -34,8 +32,6 @@
     "deploy:web": "bun run --cwd apps/web deploy",
     "dev": "bun run pipeline:report && bun run --cwd pipeline/verify/view dev",
     "dev:api": "bun run --cwd apps/api dev",
-    "dev:download": "cd pipeline/verify/r2 && mise exec -- cf dev --mode development --host 127.0.0.1 --port 8788",
-    "dev:setup": "bun run pipeline/verify/setup-dev.ts",
     "dev:web": "bun run --cwd apps/web dev",
     "eval:extraction": "uv run python -m ingestion.fiscal.eval_extraction",
     "extract:projects": "uv run python -m ingestion.fiscal.extract_projects",
@@ -49,17 +45,15 @@
     "pipeline:build": "bun run pipeline/build.ts",
     "pipeline:inputs": "uv run python -m ingestion.inputs restore --remote",
     "pipeline:migrate": "uv run python -m ingestion.inputs migrate",
-    "pipeline:publish": "bun run pipeline/publish/cli.ts",
     "pipeline:report": "bun run pipeline/verify/report/fiscal/build.ts",
     "probe:documents": "uv run python -m ingestion.fiscal.probe_documents",
     "survey:fiscal-years": "uv run python -m ingestion.fiscal.survey_years",
     "survey:structure": "uv run python -m ingestion.fiscal.survey_structure",
-    "test": "bun test packages pipeline/release.test.ts pipeline/fdp pipeline/publish pipeline/verify/report apps/api/src pipeline/verify/r2 apps/web/src pipeline/verify/view/src",
-    "test:api": "bun run --cwd apps/api test",
+    "test": "bun test packages pipeline/artifacts.test.ts pipeline/verify/report apps/availability.test.ts pipeline/verify/view/src",
     "typecheck": "tsc --noEmit",
     "typecheck:all": "bun run typecheck && bun run --cwd apps/api typecheck && bun run --cwd apps/web typecheck && bun run --cwd pipeline/verify/view typecheck && bun run --cwd apps/docs typecheck",
     "report": "bun run pipeline:report",
-    "dev:setup:download": "bun run pipeline/verify/setup-download.ts"
+    "pipeline:fdp": "uv run python -m fdp.build"
   },
   "dependencies": {
     "zod": "catalog:"

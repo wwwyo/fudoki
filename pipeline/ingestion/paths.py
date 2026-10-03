@@ -14,5 +14,5 @@ canonical_lock = PIPELINE / 'ingestion/fiscal/sources.lock.json'
 INPUT_LOCK = Path(os.environ.get('FUDOKI_INPUT_LOCK', canonical_lock if canonical_lock.exists() else (LATEST or {}).get('inputLock', canonical_lock))).resolve()
 SNAPSHOT = hashlib.sha256(INPUT_LOCK.read_bytes()).hexdigest() if INPUT_LOCK.exists() else None
 RAW = Path(os.environ.get('FUDOKI_INPUT_DIR', CACHE / 'inputs' / SNAPSHOT / 'raw' if SNAPSHOT else CACHE / 'acquisition' / 'raw'))
-PACKAGES = Path(os.environ.get('FUDOKI_PACKAGE_DIR', BUILD / 'builds' / (LATEST['releaseId'] if LATEST else 'candidate') / 'fiscal'))
+PACKAGES = Path(os.environ.get('FUDOKI_PACKAGE_DIR', BUILD / 'builds' / ((LATEST or {}).get('buildId') or 'candidate') / 'fiscal'))
 WAREHOUSE = BUILD / 'warehouse.duckdb'

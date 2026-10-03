@@ -1,7 +1,7 @@
 # ① 予算・決算パイプライン
 
 
-保存先・.build/publish の現行手順は [pipeline/README.md](../pipeline/README.md) を参照。原典 CSV/PDF は非公開 R2、入力一覧は ingestion の sources.lock.json、ローカル生成物は .cache/ と .build/ に置く。
+固定入力・.build の現行手順は [pipeline/README.md](../pipeline/README.md) を参照。原典 CSV/PDF は非公開 R2、入力一覧は ingestion の sources.lock.json、ローカル生成物は .cache/ と .build/ に置く。
 
 ⚠️ **この文書に個別の団体の話を書かない。** 団体固有の実測・原典の癖・注意は
 `pipeline/ingestion/fiscal/jurisdictions/<団体コード>.md` に書く（取得元の宣言の隣）。
@@ -90,7 +90,7 @@ CC BY が求める帰属と改変の明示には標準のプロパティが無�
 **パッケージ直下の `columnTypes` とリソースの `schema.fields[].columnType` は重複ではない。**
 前者は仕様が定める _ColumnType_ definition package の置き場（宣言）で、後者は個々の列がそこを指す参照である。
 
-**公開画面の集計は API の D1 SQL が行う。** ローカル報告は dbt の出力を読み、build 時に dataset・金額段階ごとの API 集計と dbt の件数・金額を照合する。
+**ローカル報告は dbt の出力を読む。** dataset ごとの件数・金額・分類を原典と照合し、ingestion〜marts の検査結果を確認する。
 
 ⚠️ **型が効かない場所は、実装を変えた瞬間に壊れる場所である。**
 明細を `Record<string, string>` で運んでいたため、配布物から `*_source` 列を落としたとき
@@ -191,7 +191,7 @@ CC BY が求める帰属と改変の明示には標準のプロパティが無�
     団体固有の癖・実測・注意は `pipeline/ingestion/fiscal/jurisdictions/<団体コード>.md` に書く
     （**この文書には書かない**）
 11. `bun run pipeline` / `bun run typecheck`（root と web）を通し、
-    `.build/` の生成物を検査する。Git には宣言・証跡・入力一覧を保存し、配布物は R2 に置く
+    `.build/` の生成物を検査する。Git には宣言・証跡・入力一覧を保存する
 
 足し忘れは**エラーで止まる**ようにしてある。黙って欠ける事故は起きない。
 

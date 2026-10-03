@@ -28,7 +28,7 @@ type DeclaredMetadata = {
       | 'classification'
       | 'sourceAndLicense'
       | 'other'
-    api?: boolean
+    userFacing?: boolean
   }[]
 }
 
@@ -65,7 +65,7 @@ export const BY_JURISDICTION: Record<string, PerJurisdiction> = {
       {
         topic: '**配布物に licenses を付けていない**（原典の利用条件が未判断）',
         category: 'sourceAndLicense',
-        api: true,
+        userFacing: true,
         body:
           '区サイトのホームページ利用規約は「どなたでも…複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示しており、**再配布そのものは許諾されている**。\n\n' +
           '- **原典のライセンスは NOASSERTION**（fudoki が判断していない）。昭島市の PDL1.0 と違い、区の規約は既知のライセンスとの互換をどこにも書いていない（政府標準利用規約にも CC BY にも言及が無い）。「オープンだから同じだろう」で CC BY は貼らない\n' +
@@ -168,7 +168,7 @@ export const BY_JURISDICTION: Record<string, PerJurisdiction> = {
           '移行の正しさは、1行ずつの突合で示した。\n\n' +
           '- 識別子：歳出 5,613 行・歳入 821 行すべて一致\n' +
           '- COFOG の割当：status / division / consolidation / 決まった単位 / 規則 ID がすべて一致\n\n' +
-          '証明そのものは git 履歴に残る（識別子は 944866c、COFOG は 83bd132）。現在の明細 ID は dataset（団体・年度・歳入歳出・文書種別・原典版）を含む。同じ固定入力での識別子対応と配布 CSV/API marts の一致を検査し、変更は release manifest と行内容の比較で確認する。',
+          '証明そのものは git 履歴に残る（識別子は 944866c、COFOG は 83bd132）。現在の明細 ID は dataset（団体・年度・歳入歳出・文書種別・原典版）を含む。同じ固定入力での識別子対応と marts の表・CSV の一致を検査し、再構築した CSV のハッシュを照合する。',
       },
       {
         topic: '配布形式は CSV のまま。全量では作り直しになりうる',
@@ -182,7 +182,7 @@ export const BY_JURISDICTION: Record<string, PerJurisdiction> = {
       {
         topic: '事項を事業として扱う妥当性が未検証（Design Doc Caveats 1）',
         category: 'classification',
-        api: true,
+        userFacing: true,
         body:
           '名称を持つことは、その区分が1つの事業に対応することの証明にならない。複数の活動をまとめた事項や管理的な費目が含まれうる。\n\n' +
           '自治体横断の「事業」概念として確定するのは2団体目以降とする。現状は `activity:generic:program` に置いてあるが、これは候補としての割り当てである。',
@@ -219,7 +219,7 @@ export const BY_JURISDICTION: Record<string, PerJurisdiction> = {
       {
         topic: '識別子はコードのパスでは作れなかった',
         category: 'other',
-        api: true,
+        userFacing: true,
         body:
           'Design Doc は「`款01/項03/目01` の形で連結する」としていたが、三鷹市の細々節は**同じ節の下でコードを再利用する**（実測 710 箇所・1,615 行）。コードのパスでは 5,613 行が 4,708 通りにしかならない。\n\n' +
           'そこでパスの構成要素を**セル全文（コード + 名称）**に取った。副作用として、自治体が名称を直すと識別子が変わる。コードだけなら耐えられたはずの変更なので、これは失ったものである。',
@@ -257,7 +257,7 @@ export const BY_JURISDICTION: Record<string, PerJurisdiction> = {
       {
         topic: '款コードは法定の款番号と一致しない',
         category: 'classification',
-        api: true,
+        userFacing: true,
         body:
           '法定（地方自治法施行規則 別記）の市町村歳出の款は 1〜14 で、款11 は災害復旧費である。災害復旧費を持たない三鷹市は 11 が公債費（法定12）、12 が予備費（法定14。諸支出金も持たないため2つ詰まる）で、**以降のコードが法定から詰まってずれる**。\n\n' +
           '狛江市もずれ方が違う形で同じ現象を持つため、**款コードでは団体をまたいで比較できない**。法定マスタへの対応は配布物の account_names.csv（master_kan_code / master_kou_code）にある。',
@@ -331,7 +331,7 @@ export const BY_JURISDICTION: Record<string, PerJurisdiction> = {
       {
         topic: '⚠️ 訂正: 款コードは法定の款番号と一致しない',
         category: 'classification',
-        api: true,
+        userFacing: true,
         body:
           '以前ここには「款コードが法定の款番号だという対応は実測で裏づけた」とあったが、**誤りだった**。\n\n' +
           '- 地方自治法施行規則 別記（原文の PDF から起こした account_master）では、市町村歳出の法定の款は 1〜14 で款11 は災害復旧費\n' +
@@ -376,7 +376,7 @@ export const BY_JURISDICTION: Record<string, PerJurisdiction> = {
       {
         topic: '予算額は当初予算ではない',
         category: 'phaseSemantics',
-        api: true,
+        userFacing: true,
         body:
           '「予算額(円)」を当初予算と読むと間違える。\n\n' +
           '- 2023年度の一般会計は 370 億円で、狛江市が公表している令和5年度当初予算（一般会計）とは一致しない\n' +
@@ -401,7 +401,7 @@ export const BY_JURISDICTION: Record<string, PerJurisdiction> = {
       {
         topic: '公共下水道特別会計は 2020 年度から原典に現れない',
         category: 'coverage',
-        api: true,
+        userFacing: true,
         body:
           '2018〜2019 年度には公共下水道特別会計があるが、2020 年度以降は無い（公営企業会計へ移行したため）。年度をまたいで会計別に合計すると、この2年度だけ範囲が広い。\n\n' +
           '三鷹市も年度で会計の範囲が変わる（令和2年度以降は5会計、平成28〜令和元年度は下水道事業特別会計を含む6会計）ので、これは団体固有ではなく年度をまたぐ比較の一般的な注意にあたる。',
@@ -482,7 +482,7 @@ export const BY_JURISDICTION: Record<string, PerJurisdiction> = {
         body:
           '市サイトの運用方針（https://www.city.akishima.lg.jp/about/1006647.html）が「権利表記の記載がない限り『公共データ利用規約（第1.0版）』（PDL1.0）が適用されています」と明示しており、当該 PDF に別の権利表記は無い。\n\n' +
           'PDL1.0 の原文はデジタル庁が公開しており、「本利用ルールは、クリエイティブ・コモンズ・ライセンスの表示4.0 国際ライセンスに規定される著作権利用許諾条件（以下「CC BY」といいます。）と互換性があります。…利用者がCC BYに従って利用することを許諾します。」とある（2026-08-30 実測）。\n\n' +
-          '原典 PDF は内容ハッシュを固定して非公開 R2 に保管する。公開するのは抽出した表と判断であり、PDF 本体は配布用 Worker に渡さない。',
+          '原典 PDF は内容ハッシュを固定して非公開 R2 に保管する。原典 PDF と取り込み表の対応を入力一覧と証跡から辿れる。',
       },
     ],
   },

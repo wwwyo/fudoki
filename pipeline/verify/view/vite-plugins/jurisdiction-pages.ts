@@ -2,22 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import type { Plugin } from 'vite'
 
-/**
- * `/pipeline/<団体コード>/` と `/analysis/<団体コード>/` を62団体分ずつそろえる vite plugin。
- *
- * 124個の HTML を手で置くことはできないので、`packages/jurisdictions/jurisdictions.json`
- * （団体の同一性の正本。財政データ・調達を同じキーで束ねる）から実行時に生成する。
- * 生成物は commit しない（`.gitignore` 参照）。
- *
- * ⚠️ **プラグインは1つのまま。** 2つに分けると sitemap.xml を書くタイミングが2箇所になり、
- * 後から書いた側が先に書いた側を上書きして片方の URL 群が消える（実際にその形になりかけた）。
- * 62団体 × 2種類をまとめて1回の `config` フックで生成し、sitemap もここで1回だけ書く。
- *
- * ⚠️ **`config` フックで書く。** `buildStart` は Rollup が `rollupOptions.input` を
- * 読んだ後に発火するため、そこで書いても新しいページはバンドル対象に間に合わない。
- * `config` フックは vite dev / vite build のどちらでも最初に呼ばれるので、
- * dev サーバでも生成物が揃った状態でリクエストを受けられる。
- */
+/** 団体マスタからローカル検証ページを生成する Vite plugin。 */
 export function jurisdictionPages(root: string): Plugin {
   return {
     name: 'fudoki-jurisdiction-pages',
@@ -25,20 +10,13 @@ export function jurisdictionPages(root: string): Plugin {
       const jurisdictions = loadJurisdictions(root)
       const input: Record<string, string> = {}
 
-      for (const kind of ROUTE_KINDS.filter(
-        (kind) => kind.segment === 'pipeline'
-      )) {
-        // 検証画面はローカル専用（行データは dev middleware からしか出ない）。
-        // build ではページ自体を作らず、sitemap にも載せない
-
-        const dir = path.join(root, kind.segment)
-        for (const [code, j] of Object.entries(jurisdictions)) {
-          const codeDir = path.join(dir, code)
-          fs.mkdirSync(codeDir, { recursive: true })
-          const file = path.join(codeDir, 'index.html')
-          writeIfChanged(file, kind.renderHtml(code, j.name))
-          input[`${kind.segment}-${code}`] = file
-        }
+      const dir = path.join(root, 'pipeline')
+      for (const [code, jurisdiction] of Object.entries(jurisdictions)) {
+        const codeDir = path.join(dir, code)
+        fs.mkdirSync(codeDir, { recursive: true })
+        const file = path.join(codeDir, 'index.html')
+        writeIfChanged(file, renderHtml(code, jurisdiction.name))
+        input[`pipeline-${code}`] = file
       }
 
       return { build: { rollupOptions: { input } } }
@@ -88,57 +66,20 @@ function escapeJsonForScript(value: unknown): string {
   return JSON.stringify(value).replace(/</g, '\\u003C')
 }
 
-/** 種類ごとに違うのは HTML の中身（タイトル・description・埋め込む global・entry script）だけ */
-type RouteKind = {
-  /** URL のセグメント。`pipeline` / `analysis` */
-  segment: string
-  /** 公開サイト（fudoki.dev）に載る画面か。検証画面はローカル専用なので false */
-  publicSite: boolean
-  renderHtml: (code: string, name: string) => string
+function renderHtml(code: string, name: string): string {
+  const safeName = escapeHtml(name)
+  return page({
+    title: `${safeName} の提供用データの検証 | 風土記`,
+    description: `${safeName}の原典・取り込み表・提供用データの対応と検査結果を確認する。系統は dbt の manifest から生成する。`,
+    globalName: '__FUDOKI_PIPELINE_JURISDICTION__',
+    injected: escapeJsonForScript({ code, name }),
+    entry: '/src/main-pipeline.tsx',
+  })
 }
-
-const ROUTE_KINDS: RouteKind[] = [
-  {
-    segment: 'pipeline',
-    publicSite: false,
-    renderHtml: (code, name) => {
-      const injected = escapeJsonForScript({ code, name })
-      const safeName = escapeHtml(name)
-      return page({
-        // ⚠️ document.title はここから団体・年度に応じて実行時に書き換わる（src/pages/pipeline.tsx）。
-        // ここに書くのは JS 実行前 / SEO 用の既定値
-        title: `${safeName} の配布物の検証 | 風土記`,
-        description: `${safeName}の予算データが原典からどう取得され、何を検査され、どこで風土記の判断（COFOG への分類）が入って配布物になるかを、行と原典の対応まで確かめる検証画面。系統は dbt の manifest から生成する。`,
-        canonical: `https://fudoki.dev/pipeline/${code}/`,
-        globalName: '__FUDOKI_PIPELINE_JURISDICTION__',
-        injected,
-        entry: '/src/main-pipeline.tsx',
-      })
-    },
-  },
-  {
-    segment: 'analysis',
-    publicSite: true,
-    renderHtml: (code, name) => {
-      const injected = escapeJsonForScript({ code, name })
-      const safeName = escapeHtml(name)
-      return page({
-        // ⚠️ document.title はここから団体・年度に応じて実行時に書き換わる（src/pages/analysis.tsx）。
-        title: `${safeName} の支出分析 | 風土記`,
-        description: `${safeName} の予算を COFOG（政府支出の機能別分類）の10区分ごとに集計した分析。風土記の budget API から取得する。`,
-        canonical: `https://fudoki.dev/analysis/${code}/`,
-        globalName: '__FUDOKI_ANALYSIS_JURISDICTION__',
-        injected,
-        entry: '/src/main-analysis.tsx',
-      })
-    },
-  },
-]
 
 function page(opts: {
   title: string
   description: string
-  canonical: string
   globalName: string
   injected: string
   entry: string
@@ -151,7 +92,6 @@ function page(opts: {
 
     <title>${opts.title}</title>
     <meta name="description" content="${opts.description}" />
-    <link rel="canonical" href="${opts.canonical}" />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4f1e6" />

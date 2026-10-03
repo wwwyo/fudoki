@@ -11,22 +11,13 @@
 風土記は日本の地方自治体の**歳出の予算・決算額を事業単位まで**構造化し、AI ready なデータとして配布する。
 デジタル庁のダッシュボードが目的別と性質別まで出している以上、欠けているのは**粒度**と**横断性**の2つだけで、そこだけを埋める。
 
-## 配布しているもの
+## 現在の優先範囲
 
-東京都の全区市町村（62団体）を最初の網羅範囲とし、**収録できた団体から順に** [Fiscal Data Package](https://fiscal.datapackage.org/) 1.0.0 として配布している。
+東京都の全区市町村（62団体）を最初の網羅範囲とし、収録できた団体から原典の取り込みと変換を進める。まず **ingestion → staging → intermediate → marts** を完成させる。
 
-| 内容 | 保存先・入口 |
-|---|---|
-| 原典の CSV・PDF、取り込み済み Parquet | 非公開 R2。採用する個別ハッシュとキーは `pipeline/ingestion/fiscal/sources.lock.json` |
-| 採用した入力の証跡 | Git 管理する `pipeline/ingestion/fiscal/provenance/`。lock が相対パス・ハッシュ・サイズを固定 |
-| 最新の収録範囲・出典・配布先 | Git の [`manifest.json`](pipeline/publish/manifest.json)。過去の一覧は Git 履歴 |
-| 団体別の CSV・Fiscal Data Package | 内容で版を決めた団体別 R2。Git manifest から参照し、R2 の custom domain から直接配信する設計。遠隔適用は移行記録を参照 |
-| 検索・集計用の表、公開メタデータ | D1。公開 API と MCP が同じ問い合わせを使う |
-| 系統・検査結果・原典との行対応 | ローカル専用 `pipeline/verify/view/` |
+原典の値・単位・階層を保ち、団体間で列・金額単位・分類を揃え、提供用データの金額・粒度・出典を検査する。配布・検索の保存先や公開方式は、パイプライン完成後に検討する。
 
-取得元の宣言は [`sources.toml`](pipeline/ingestion/fiscal/sources.toml)、団体別の実測は [`jurisdictions/`](pipeline/ingestion/fiscal/jurisdictions/) にある。公開 API の `listFiscalDatasets` が収録した文書・年度・原典版・資料の収録状態を返し、`listFiles` が版を固定した配布 URL を返す。
-
-**移行中**: 新構造のローカル build と検証を実装している。R2 の有効化・全量転送と遠隔での確認が完了するまで、既存の `data/` は保管する。新しい download/API の公開済み状態をこの文書から推定しない。進捗と採用条件は [移行記録](docs/monorepo-migration.md) に記載する。
+取得元の宣言は [`sources.toml`](pipeline/ingestion/fiscal/sources.toml)、入力一覧は `pipeline/ingestion/fiscal/sources.lock.json`（正規 lock の採用は未完了）、採用した証跡は [`provenance/`](pipeline/ingestion/fiscal/provenance/)、団体別の実測は [`jurisdictions/`](pipeline/ingestion/fiscal/jurisdictions/) にある。原典と取り込み済み Parquet の保管用 R2 は、固定入力の復元に使う。
 
 ## 開発
 
@@ -38,27 +29,19 @@ bun install --frozen-lockfile
 uv sync --frozen
 
 bun run pipeline:inputs       # Git の入力一覧から R2 の固定入力を復元・照合
-bun run pipeline:build        # ネットワークを使わず dbt・FDP・manifest を生成
+bun run pipeline:build        # 現行 build を実行（dbt に加え後段処理も含む）
 bun run dev                   # 報告を生成し、ローカル検証画面を 127.0.0.1:5174 で起動
 ```
 
-`pipeline:build` の結果は `pipeline/.build/builds/r-<内部構築ID>/` に入り、`pipeline:publish publish --build-id r-<内部構築ID>` が団体別の配布物と D1 の表を反映する。取り込み途中の明細も公開し、全体の公開切替は行わない。publish は build を再実行しない。API や web の deploy はコードだけを扱う。
+`pipeline:build` は dbt の変換・検査と marts の CSV 生成までを実行する。結果は `pipeline/.build/builds/b-<内部構築ID>/` に入り、同じ構築 ID の再実行では CSV のハッシュを照合する。公開 web・API・MCP・docs は一時的に HTTP 500 を返す。
 
-```bash
-bun run dev:api               # 公開 API のローカル Worker
-bun run dev:download          # 検証側のローカル専用 R2 配信
-bun run dev:web               # 公開 UI、5173。検証画面とは別のアプリ
-bun run test
-bun run typecheck:all
-```
-
-全量入力へアクセスできない環境では、Git にある架空団体の fixture で保存形式・問い合わせ・途中の公開・再試行を検査する。fixture の成功は自治体データの全量 build 成功を意味しない。セットアップ・取得・移行・保持・バックアップの手順は [pipeline/README.md](pipeline/README.md) にある。
+固定入力の復元・検証画面・現在の実装上の制約は [pipeline/README.md](pipeline/README.md) を参照。
 
 ## 用語
 
 原典は自治体が公開した CSV・PDF そのもの、取り込みは原典の値と単位を保った表である。dbt の staging で列名・型を整え、intermediate で共通単位・科目・分類を揃え、marts で提供する列と粒度を確定する。詳細は [用語](AGENTS.md#glossary) と [設計](docs/prd/monorepo/design-doc.md) を参照。
 
-COFOG は歳出明細と同じ CSV に含め、原典由来の金額と分類などの判断を列の説明で区別する。名称の対応は `account_names.csv`・`project_names.csv` で配る。判断の根拠は Git にある規則表に残す。DuckDB と D1 は、その入力と宣言から生成する実行用の表である。
+COFOG は歳出明細と同じ CSV に含め、原典由来の金額と分類などの判断を列の説明で区別する。名称の対応は `account_names.csv`・`project_names.csv` で配る。判断の根拠は Git にある規則表に残す。DuckDB は、その入力と宣言から生成する実行用の表である。
 
 歳出の款・項・目は目的・科目の階層で、款が最も粗い。節は目の内訳を経済的な性質で分ける法定区分である。
 「事業単位まで」というのは目とその下の事業階層に届くという意味で、既存のダッシュボードは款と項で止まっている。
@@ -76,17 +59,16 @@ COFOG は歳出明細と同じ CSV に含め、原典由来の金額と分類な
 
 | レイヤ | 標準 | 状態 |
 |---|---|---|
-| ① 何にいくら（予算） | [Fiscal Data Package](https://fiscal.datapackage.org/) | 収録できた団体から配布中 |
+| ① 何にいくら（予算） | [Fiscal Data Package](https://fiscal.datapackage.org/) | ingestion〜marts を優先して整備中 |
 | ② いつ何が公告されたか（調達） | [OCDS](https://standard.open-contracting.org/) | 未着手 |
 
-- 配布データは原典の利用条件に従って R2 の custom domain から公開
 - コードは MIT。データは原典のライセンスに従う（下記）
 - MCP サーバとしても配布し、AI エージェントが直接読める形にする
 
 ## もっと読む
 
 - [AGENTS.md](AGENTS.md): 設計方針、実測にもとづく判断、パーサ設計の原則
-- [pipeline/README.md](pipeline/README.md): 配布物の読み方
+- [pipeline/README.md](pipeline/README.md): 固定入力からの構築と検査
 - [apps/web/README.md](apps/web/README.md): ダッシュボードの構成
 - [pipeline/dbt/models/](pipeline/dbt/models/): staging（原典別の整形）→ intermediate（統合・分類）→ marts（提供用データ）。配布処理は `pipeline/fdp/` に分け、原典の保存と判断の整合性はテストで縛っている
 - [pipeline/ingestion/fiscal/sources.toml](pipeline/ingestion/fiscal/sources.toml): 取得元の定義。団体を足すときはここから

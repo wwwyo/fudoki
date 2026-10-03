@@ -1,2 +1,0 @@
-{{ api_model('fiscal_settlement_expenditure_lines') }}
-select l.fiscal_line_id,l.dataset_id,l.source_row,l.fund_code,l.fund_label,a.value as amount,l.consolidation,l.counterpart_fund,l.cofog_code,l.cofog_status,l.cofog_basis from {{ ref('int_fiscal_lines') }} l join {{ ref('int_fiscal_datasets') }} d using(dataset_id) join {{ ref('int_fiscal_amounts') }} a using(fiscal_line_id) where d.direction='expenditure' and d.document_kind='settlement' and a.phase='executed' order by fiscal_line_id
