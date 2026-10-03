@@ -26,7 +26,7 @@ import { IoPanel } from '@/components/pipeline/io-panel'
 import { PipelineOverview } from '@/components/pipeline/overview'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { withBase } from '@/lib/utils'
-import { type PipelineData, loadPipeline } from '@/lib/pipeline'
+import { type PipelineData, loadPipeline, yen } from '@/lib/pipeline'
 import '@/lib/verify.css'
 import { isRes, type Pair } from '@/lib/verify'
 
@@ -453,7 +453,7 @@ export function PipelinePage({ urlCode = null, jurisdictionName }: Props = {}) {
                 <tbody>{report.budgetReconciliation.map((r) => (
                   <tr key={r.target}>
                     <td>{r.target}</td>
-                    {[r.initialAmount, r.supplementaryAmount, r.budgetAmount, r.reportedBudgetAmount, r.difference, r.settlementAmount].map((amount, i) => <td key={i}>{amount === null ? '未確認' : amount.toLocaleString('ja-JP')}</td>)}
+                    {[r.initialAmount, r.supplementaryAmount, r.budgetAmount, r.reportedBudgetAmount, r.difference, r.settlementAmount].map((amount, i) => <td key={i}>{amount === null ? '未確認' : yen(amount)}</td>)}
                     <td>{r.reconciliationStatus === 'difference' ? '差額あり' : r.reconciliationStatus === 'matched' ? '一致' : '未確認'}</td>
                   </tr>
                 ))}</tbody>

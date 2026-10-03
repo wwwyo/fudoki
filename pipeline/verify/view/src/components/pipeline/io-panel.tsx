@@ -196,13 +196,20 @@ export function CheckList({ checks, code }: { checks: Check[]; code: string }) {
   )
 }
 
+function historyVerificationText(p: Provenance): string {
+  if (p.table_id === 'reported-budget')
+    return '決算書の頁を目視確認して転記。決算CSVの目別総額と照合（dbt）'
+  if (p.table_id?.startsWith('approval-'))
+    return '議案番号・号数・原案可決・議決日を確認'
+  if (p.document_kind === 'supplementary')
+    return '補正前額＋増減額＝補正後額を確認。節・説明欄の重複を除外'
+  return '当初予算の款・項・目・本年度予算額と頁を確認'
+}
+
 /** 証跡1件の「取り込みの検証」の文言。PDF 抽出は復元が成立しないので内部突合を出す */
 function verificationLines(p: Provenance): { ok: boolean; text: string }[] {
   if (p.table_id && p.raw_form === 'extracted') {
-    const text = p.table_id === 'reported-budget' ? '決算書の頁を目視確認して転記。決算CSVの目別総額と照合（dbt）'
-      : p.table_id.startsWith('approval-') ? '議案番号・号数・原案可決・議決日を確認'
-      : p.document_kind === 'supplementary' ? '補正前額＋増減額＝補正後額を確認。節・説明欄の重複を除外'
-      : '当初予算の款・項・目・本年度予算額と頁を確認'
+    const text = historyVerificationText(p)
     return [{ ok: true, text }, { ok: true, text: 'PDF抽出は不可逆。CSVの復元検査とは別の検証' }]
   }
   const ex = p.extracted

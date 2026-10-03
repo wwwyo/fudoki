@@ -177,7 +177,8 @@ def _hits(prov: dict, prov_path: pathlib.Path, pages_lines: dict[int, list[Line]
 
 def page_dimensions(width: float, height: float, png: pathlib.Path) -> tuple[float, float]:
     """描画画像と同じ向きの頁寸法を返す。回転PDFの文字座標は表示方向に従う。"""
-    header = png.read_bytes()[:24]
+    with png.open('rb') as stream:
+        header = stream.read(24)
     if header[:8] != b'\x89PNG\r\n\x1a\n':
         raise ValueError('Page render is not PNG')
     pixels_w, pixels_h = struct.unpack('>II', header[16:24])

@@ -180,16 +180,33 @@ def _save(code, year, kind, table, got, rows, spec, document, approval_evidence=
         directory = directory.with_name(f'resource=approval-{document["amendment_number"]}')
         table = f'approval-{document["amendment_number"]}'
     write_table(directory / 'data.parquet', rows)
+    if table == 'reported-budget':
+        document_title = '歳入歳出決算書'
+    elif kind == 'budget':
+        document_title = '当初予算書'
+    elif table == spec['table_id']:
+        document_title = f'補正予算書 第{document["amendment_number"]}号'
+    else:
+        document_title = '議案審査結果'
+
+    if table == 'reported-budget':
+        verification = 'manual-page-review; dbt compares settlement CSV totals'
+    elif kind != 'budget' and table == spec['table_id']:
+        verification = 'before-plus-delta-equals-after; all-moku-deltas-equal-first-article'
+    elif table.startswith('approval-'):
+        verification = 'bill-number-date-and-approved-text'
+    else:
+        verification = 'declared-target-and-printed-amount'
     prov = dict(jurisdiction_code=code, fiscal_year=int(year), direction='expenditure',
         document_kind=kind, amendment_number=document['amendment_number'], table_id=table,
         effective_at=document['effective_at'], effective_basis='議案の原案可決日。別適用日の指定なし' if document['amendment_number'] else document['effective_basis'],
         approval_evidence=approval_evidence, approval_url=document.get('approval_url'), approval_sha256=document.get('approval_sha256'),
         request_url=got.url, status=got.status, bytes=len(got.body), sha256=got.sha256,
-        fetched_at=got.fetched_at, document_title='令和5年度狛江市一般会計 ' + ('歳入歳出決算書' if table == 'reported-budget' else '当初予算書' if kind == 'budget' else f'補正予算書 第{document["amendment_number"]}号' if table == spec['table_id'] else '議案審査結果'),
+        fetched_at=got.fetched_at, document_title='令和5年度狛江市一般会計 ' + document_title,
         dataset_title=None, resource_name=table, landing_page=spec['landing_page'], rows=len(rows),
         pages=[min(r['page_number'] for r in rows), max(r['page_number'] for r in rows)],
         header=list(COLUMNS), raw_form='extracted', roundtrip_verified=False,
-        verification='manual-page-review; dbt compares settlement CSV totals' if table == 'reported-budget' else 'before-plus-delta-equals-after; all-moku-deltas-equal-first-article' if kind != 'budget' and table == spec['table_id'] else 'bill-number-date-and-approved-text' if table.startswith('approval-') else 'declared-target-and-printed-amount',
+        verification=verification,
         source_amount_unit=spec['source_amount_unit'], extractor=f'pipeline/ingestion/fiscal/extract_budget_history.py@{VERSION}',
         normalization=['NFKCと空白除去。桁区切りと△符号は保持'],
         **{k:spec[k] for k in ['redistribute','redistribute_basis','license_id','attribution']})
