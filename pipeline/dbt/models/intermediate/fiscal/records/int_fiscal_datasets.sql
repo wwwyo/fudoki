@@ -29,5 +29,10 @@ join phases as p using (dataset_id)
 join structure as s using (dataset_id)
 join funds as f using (dataset_id)
 join read_json_auto('{{ env_var("FUDOKI_DECLARATIONS_DIR") }}/sources.json') as d
-using (jurisdiction_code, fiscal_year, direction, document_kind)
+using (dataset_id)
+union all
+select h.dataset_id, h.jurisdiction_code, h.fiscal_year, h.direction, h.document_kind, h.origin_sha256,
+       case when h.document_kind='budget' then '["approved"]' else '["adjusted"]' end as phases_json,
+       h.source_json, h.structure_json, h.line_count
+from read_json_auto('{{ env_var("FUDOKI_DECLARATIONS_DIR") }}/history.json') h
 order by dataset_id

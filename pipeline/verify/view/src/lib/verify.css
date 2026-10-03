@@ -2,7 +2,7 @@
  * 検証画面（/pipeline/<団体コード>/）のスタイル。
  * 全部 `.pv` の中に畳む — 他の画面（分析・トップ）と同じトークンを使うが、
  * 表の行強調・PDF の語の層などこの画面固有の部品は別のルール空間に閉じる。
- * 見た目の正本は docs/prd/pipeline-verification-view/prototype/index.html。
+ * 現行の画面に合わせてこのファイルで検証用の表示を定義する。
  */
 
 .pv .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 500; line-height: 16px; border: 1px solid var(--border); background: var(--card); white-space: nowrap; }

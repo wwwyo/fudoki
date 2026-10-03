@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { nodeRows, type Node } from './common'
+import { nodeRows, provenanceForSource, type Node } from './common'
 
 const node = (over: Partial<Node>): Node => ({
   id: 'model.fudoki.x',
@@ -70,4 +70,10 @@ describe('nodeRows', () => {
     })
     expect(nodeRows(n, '132241', null).rows).toBe(0)
   })
+})
+
+test('補正PDFの証跡は同年度の決算CSVソースへ混ぜない', () => {
+  const base = { jurisdiction_code:'132195', fiscal_year:2023, direction:'expenditure', request_url:'https://example.test/budget.pdf', fetched_at:'2026-10-03', status:200, bytes:1, sha256:'a', rows:1, raw_form:'extracted', roundtrip_verified:false, table_id:'expenditure-detail' } as import('./common').Provenance
+  expect(provenanceForSource('source.fudoki.raw_132195.expenditure','expenditure',[base])).toBeNull()
+  expect(provenanceForSource('source.fudoki.raw_132195_history.data','data',[base])?.ps).toEqual([base])
 })

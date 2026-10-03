@@ -86,7 +86,7 @@ def remote_object(ref: dict, operation: str) -> None:
                 verify_object(ref, stream.read())
                 return
             error = existing.stderr.decode(errors='replace')
-            if not re.search(r'(?:HTTP(?: status)?[ :]+404|"status"\s*:\s*404|NoSuchKey)', error, re.IGNORECASE):
+            if not re.search(r'(?:HTTP(?: status)?[ :]+404|404 Not Found|"status"\s*:\s*404|NoSuchKey)', error, re.IGNORECASE):
                 raise RuntimeError('Cannot establish whether the immutable R2 input already exists')
         subprocess.run(command + ['--file', str(path)], check=True, stdout=sys.stderr)
     elif operation == 'get':

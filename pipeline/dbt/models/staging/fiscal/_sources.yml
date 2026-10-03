@@ -35,7 +35,7 @@ sources:
   - name: raw_132195
     description: 狛江市。原典の Parquet を直接読む（決算書。2018〜2023 の6年度）
     meta:
-      external_location: "read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/jurisdiction=132195/year=*/document_kind=*/edition=*/direction={name}/data.parquet', hive_partitioning=true)"
+      external_location: "read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/jurisdiction=132195/year=*/document_kind=settlement/edition=*/direction={name}/data.parquet', hive_partitioning=true)"
     tables:
       - name: expenditure
       - name: revenue
@@ -71,5 +71,12 @@ sources:
       調定額が原典 CSV と一致した科目だけを下流が名称に使う。
     meta:
       external_location: "read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/revenue-accounts/jurisdiction=132195/year=*/data.parquet', hive_partitioning=true)"
+    tables:
+      - name: data
+
+  - name: raw_132195_history
+    description: 狛江市2023年度当初・補正の目明細と議決日根拠。CSV決算とは別列構造。
+    meta:
+      external_location: "read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/jurisdiction=132195/year=*/document_kind=*/edition=*/direction=expenditure/resource=*/data.parquet', hive_partitioning=true)"
     tables:
       - name: data

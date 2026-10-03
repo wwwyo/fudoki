@@ -10,7 +10,7 @@ from ingestion.inputs import migrate
 def main() -> None:
     raw = CACHE / 'acquisition' / str(uuid.uuid4()) / 'raw'
     environment = {**os.environ, 'FUDOKI_INPUT_DIR': str(raw), 'FUDOKI_STORE_ORIGIN_REMOTE': '1', 'FUDOKI_REFRESH_ORIGINS': '1'}
-    for module in ['fetch', 'extract_projects', 'extract_revenue_accounts', 'extract_statement']:
+    for module in ['fetch', 'extract_projects', 'extract_revenue_accounts', 'extract_statement', 'extract_budget_history']:
         subprocess.run([sys.executable, '-m', f'ingestion.fiscal.{module}'], cwd=PIPELINE, env=environment, check=True)
     migrate(raw, remote=True)
 

@@ -34,6 +34,7 @@
     "dev:api": "bun run --cwd apps/api dev",
     "dev:web": "bun run --cwd apps/web dev",
     "eval:extraction": "uv run python -m ingestion.fiscal.eval_extraction",
+    "extract:budget-history": "uv run python -m ingestion.fiscal.extract_budget_history",
     "extract:projects": "uv run python -m ingestion.fiscal.extract_projects",
     "extract:revenue-accounts": "uv run python -m ingestion.fiscal.extract_revenue_accounts",
     "extract:statements": "uv run python -m ingestion.fiscal.extract_statement",

@@ -201,6 +201,7 @@ def load_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
     raw.pop("project_names", None)
     raw.pop("revenue_accounts", None)
     raw.pop("statement", None)
+    raw.pop("budget_history", None)
 
     sources: dict[str, Source] = {}
     for key, spec in raw.items():
@@ -305,7 +306,34 @@ def all_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
     ⚠️ 取得器ごとの集合（`load_sources` / `statement_sources`）を母集団にすると、
     経路を増やすたびに「その経路だけ誰も見ていない」団体が生まれる。
     """
-    return {**load_sources(path), **statement_sources(path)}
+    return {**load_sources(path), **statement_sources(path), **budget_history_sources(path)}
+
+
+def load_budget_history(path: Path = SOURCES_TOML) -> dict[str, dict]:
+    """当初・補正のPDF資料宣言を読む。"""
+    return _pdf_sources("budget_history", path)
+
+
+def budget_history_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
+    """履歴資料を説明用の取得元へ変換する。CSV取得器へは渡さない。"""
+    out = {}
+    for key, spec in load_budget_history(path).items():
+        code, year = key.split(":")
+        for document in spec['documents']:
+            number = document['amendment_number']
+            label = '当初予算書' if number == 0 else f'補正予算書 第{number}号'
+            identifier = f'budget-history:{key}:{number}'
+            out[identifier] = Source(
+                key=identifier, catalog=None, jurisdiction_code=code,
+                jurisdiction_name=_jurisdiction_name(code), fiscal_year=int(year),
+                fiscal_year_label=None, document_kind='budget' if number == 0 else 'supplementary',
+                document_label='当初予算書' if number == 0 else '補正予算書',
+                dataset_title=None, encoding='', redistribute=spec['redistribute'],
+                redistribute_basis=spec['redistribute_basis'], license_id=spec['license_id'],
+                attribution=spec['attribution'], landing_page=spec['landing_page'], raw_form='extracted',
+                resources=(Resource(direction='expenditure', resource_name=label,
+                                    url=document['url'], url_basis='年度の予算ページにある正式予算書'),))
+    return out
 
 
 def load_catalogs(path: Path = SOURCES_TOML) -> dict[str, Catalog]:

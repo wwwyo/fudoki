@@ -19,4 +19,14 @@ using (jurisdiction_code, fiscal_year, direction, fund_code, fund_label, kan_cod
 {% endif %}
 {% endfor %}
 {% endfor %}
-order by fiscal_line_id, ordinal
+
+
+union all
+select h.fiscal_line_id, 0 as ordinal, 'kan' as level, h.kan_code as code, '' as label, '' as name_source
+from {{ ref('stg_132195__budget_history') }} h where h.record_kind in ('initial','change')
+union all
+select h.fiscal_line_id, 1, 'kou', h.kou_code, '', ''
+from {{ ref('stg_132195__budget_history') }} h where h.record_kind in ('initial','change')
+union all
+select h.fiscal_line_id, 2, 'moku', h.moku_code, h.moku_label, 'canonical'
+from {{ ref('stg_132195__budget_history') }} h where h.record_kind in ('initial','change')

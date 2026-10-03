@@ -128,7 +128,28 @@ export type AmountDecl = {
 /** 列の意味。`title` は短い表題（款コード など）、`description` は読み方の注意を含む説明 */
 export type ColDoc = { title?: string; description?: string }
 
+export type BudgetReconciliation = {
+  jurisdictionCode: string
+  fiscalYear: number
+  fundCode: string
+  target: string
+  asOf: string
+  granularity: 'moku'
+  expenditureSetsuStatus: 'unconfirmed'
+  budgetItemIds: string[]
+  settlementLineIds: string[]
+  initialAmount: number | null
+  supplementaryAmount: number | null
+  budgetAmount: number | null
+  reportedBudgetAmount: number | null
+  settlementAmount: number | null
+  difference: number | null
+  supplementaryCoverageStatus: 'complete' | 'unconfirmed'
+  reconciliationStatus: 'matched' | 'difference' | 'unconfirmed'
+}
+
 export type ReportData = ReportEnvelope & {
+  budgetReconciliation: BudgetReconciliation[]
   meta: ReportEnvelope['meta'] & { fiscalYears: number[] }
   /**
    * 明細の階層。**正本は dbt_project.yml の `fiscal_levels`** で、生成側が読んで載せる。

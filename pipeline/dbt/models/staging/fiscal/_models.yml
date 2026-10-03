@@ -61,3 +61,23 @@ models:
   - name: stg_132241__revenue
     description: 多摩市 歳入（当初予算）。原典と1対1。判断を含まない
     columns: *staging_columns
+
+  - name: stg_132195__budget_history
+    description: 狛江市2023年度一般会計の当初・補正・議決結果・決算書確認値。取り込みと1対1、円換算前
+    columns:
+      - name: fiscal_line_id
+        description: 団体・年度・方向・文書種別・原典hash・表ID・抽出行番号の組合せ
+      - name: source_row
+        description: 一採用資料の一抽出表で振った行番号。CSV物理行・PDFページとは別
+      - name: initial_text
+        description: 当初予算書の本年度予算額の印字文字列。千円
+      - name: delta_text
+        description: 各号の目の補正増減額の印字文字列。千円、△は減額
+      - name: reported_amount_text
+        description: 決算書の目の予算現額を目視確認した文字列。円
+      - name: executed_amount_text
+        description: 決算書の目の支出済額を目視確認した文字列。円
+      - name: page_number
+        description: 原典PDFの1始まりの物理ページ
+      - name: bbox_json
+        description: PDFの行の文字座標。未確認の手動転記・議決行では空配列

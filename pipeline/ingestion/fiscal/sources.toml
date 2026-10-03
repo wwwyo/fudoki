@@ -760,3 +760,103 @@ levels = { project = 530 }
 tolerance = 2
 amount_suffix = "千円"
 numbered = true
+
+# 狛江市2023年度一般会計。補正は全7号の目明細を検査し、二目を提供する。
+[budget_history."132195:2023"]
+fund_code = "1"
+fund_label = "一般会計"
+table_id = "expenditure-detail"
+source_amount_unit = "千円"
+landing_page = "https://www.city.komae.tokyo.jp/index.cfm/46,126778,361,2169,html"
+redistribute = "review"
+redistribute_basis = "自治体公開資料。原典の再配布条件は未確認。非公開入力として保管する"
+license_id = "NOASSERTION"
+attribution = "狛江市 令和5年度一般会計予算書・補正予算書"
+[[budget_history."132195:2023".documents]]
+amendment_number = 0
+url = "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20230327-165935.pdf"
+expected_sha256 = "21fc642dc4ca89acab6ea18632d6ee8539949272ecba65c78231a37a71ba6ee9"
+effective_at = "2023-04-01"
+bill_number = 3
+target_pages = [211, 320]
+effective_basis = "年度開始2023-04-01。当初予算書の議案第3号と2023-03-27原案可決を表紙で確認"
+[[budget_history."132195:2023".documents]]
+amendment_number = 1
+url = "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20230601-112553.pdf"
+expected_sha256 = "8f1d6ec3eab531cb8a55a96445f4d03f98c650fcef20665e4cd9cbd93a9d305b"
+effective_at = "2023-05-16"
+bill_number = 23
+approval_url = "https://www.city.komae.tokyo.jp/index.cfm/49,145713,c,html/145713/R5rinji_result.pdf"
+approval_sha256 = "97e625a9c5ffe9d286d50e5a2dbb82a5e6f554146d9746d70ce15f7357ca2620"
+[[budget_history."132195:2023".documents]]
+amendment_number = 2
+url = "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20230608-095441.pdf"
+expected_sha256 = "9ebd2323ac32d09336c600108d4f1beb5a06e11034835fe49da07c0e4a356220"
+effective_at = "2023-06-08"
+bill_number = 25
+approval_url = "https://www.city.komae.tokyo.jp/index.cfm/49,145713,c,html/145713/02-2_ListOfResult1.pdf"
+approval_sha256 = "bc91e705e6eb5e43348c1f9431719df43fe3b7df72a9e2f816070d058a3d5fd9"
+[[budget_history."132195:2023".documents]]
+amendment_number = 3
+url = "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20230831-133307.pdf"
+expected_sha256 = "e322f20a1bfc32099a3271dad9fa38d23c7c45d9f0ce1b7cc45eb8f258a6817f"
+effective_at = "2023-08-31"
+bill_number = 28
+approval_url = "https://www.city.komae.tokyo.jp/index.cfm/49,145713,c,html/145713/02-2_result1.pdf"
+approval_sha256 = "1a8b620fe55eda0abbb359554cd45812f4d882c3df91fa25b854df49e7f00928"
+[[budget_history."132195:2023".documents]]
+amendment_number = 4
+url = "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20231124-133108.pdf"
+expected_sha256 = "5850015796bf44244793732b0a7b68bb5b32676fee5fa6e09c3959e9596fbbb7"
+effective_at = "2023-11-24"
+bill_number = 40
+approval_url = "https://www.city.komae.tokyo.jp/index.cfm/49,145713,c,html/145713/20260817-165819.pdf"
+approval_sha256 = "08fc6959acbf44e146dd1ee948820d900df0a8b3b8f6b0d5e2a704ffb3b4ff49"
+[[budget_history."132195:2023".documents]]
+amendment_number = 5
+url = "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20231222-094555.pdf"
+expected_sha256 = "adae6ca2a7fd1f6c3c8409d5fe33558f44e431fda13fcc4b9d31578f119c390b"
+effective_at = "2023-12-22"
+bill_number = 56
+approval_url = "https://www.city.komae.tokyo.jp/index.cfm/49,145713,c,html/145713/20260817-165819.pdf"
+approval_sha256 = "08fc6959acbf44e146dd1ee948820d900df0a8b3b8f6b0d5e2a704ffb3b4ff49"
+[[budget_history."132195:2023".documents]]
+amendment_number = 6
+url = "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20240201-104448.pdf"
+expected_sha256 = "e6e0c7a21600af089ed195406886186802e12dda8a2b1147aeab44fff1096f6f"
+effective_at = "2024-02-01"
+bill_number = 1
+approval_url = "https://www.city.komae.tokyo.jp/index.cfm/49,145713,c,html/145713/20260824-135102.pdf"
+approval_sha256 = "2652fb2b077fc357a1bba9e55897ab4dcf64a0b5e657a175d0a0b46ee533501d"
+[[budget_history."132195:2023".documents]]
+amendment_number = 7
+url = "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20240222-154057.pdf"
+expected_sha256 = "1e5280f21bec67f98cc91d3b21a2522d5f4df8f4dddff5aeeff209225d22dc91"
+effective_at = "2024-02-22"
+bill_number = 2
+approval_url = "https://www.city.komae.tokyo.jp/index.cfm/49,145713,c,html/145713/20260817-154035.pdf"
+approval_sha256 = "fcb000dee52740b6293ed49bc8eb5141cc011299d6a2b9756f96ae89ff44cd8a"
+
+[budget_history."132195:2023".reported]
+url = "https://www.city.komae.tokyo.jp/index.cfm/46,133351,c,html/133351/20241011-132915.pdf"
+expected_sha256 = "ce231f9efe46850e20db1d6d6fd67f8793ceebf52d11f2984a5faaf9bd66bbbe"
+source_amount_unit = "円"
+method = "画像の目総額を転記し、原典画像と既存決算CSVの集合合計で確認"
+[[budget_history."132195:2023".reported.rows]]
+kan_code = "7"
+kou_code = "1"
+moku_code = "2"
+moku_label = "商工業振興費"
+page_number = 87
+reported_amount_text = "68,814,000"
+executed_amount_text = "66,261,365"
+bbox_json = "[]"
+[[budget_history."132195:2023".reported.rows]]
+kan_code = "13"
+kou_code = "1"
+moku_code = "1"
+moku_label = "予備費"
+page_number = 114
+reported_amount_text = "23,761,662"
+executed_amount_text = "0"
+bbox_json = "[]"

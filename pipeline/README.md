@@ -25,7 +25,7 @@ bun run pipeline:build --rebuild
 
 提供モデルは決算・当初予算・変更・対応を分ける。決算明細は実績の `amount` 一つを持ち、歳出の COFOG コード・状態・根拠は明細・変更と同じ CSV に含める。歳出の分類は当面 COFOG のみとし、GFSM は提供しない。歳出の当初予算は確認できた対象を事業×歳出の節へ集約し、節の参照は `expenditure_setsu_id`（`fiscal_expenditure_setsu_master`）、節より下の内訳と原典行の対応は `details_json` に保持する。対応を確認できない行は原典行の粒度（`line_granularity = origin_line`、`expenditure_setsu_id = NULL`）で残す。原典の節コード・名称は取り込み・内部検証と `details_json` の内訳経路に残し、歳入の節は財源の内訳として保持する。規則ファイル・規則 ID は公開しない。原典の複数金額列は取り込み表と候補の `internal/fiscal/` に残し、公開する実績と混在させない。
 
-補正・繰越等の実資料と、資料間の確認済み対応は現在未収録である。変更・対応表が空でも、変更ゼロ・予算と決算の一致を意味しない。dataset の `coverage.budgetHistory` は `unconfirmed` として提供する。収録・照合の条件は [予算変更履歴 PRD](../docs/prd/fiscal-budget-history/prd.md) に残す。
+狛江市2023年度一般会計の商工業振興費・予備費は、当初2件・補正3件・決算との集合対応10件を収録している。第1〜7号の採用版と適用日を保持し、当初＋補正の小計と決算書の報告予算現額の差を内部検証報告に残す。目単位であり歳出の節への対応は未確認。繰越・充用・流用と他対象の変更は未収録なので、datasetの `coverage_json.budgetHistory` は `unconfirmed` とする。詳細は [補正予算の設計](../docs/prd/fiscal-budget-history/design-doc.md) を参照。
 
 歳出の節マスタ `fiscal_expenditure_setsu_master` と事業×歳出の節への集約は実装済みである。節マスタは `packages/fiscal/setsu-master.ts` の Git 定義（地方自治法施行規則 別記の現行28区分と改正前の旧体系・適用期間つき）から生成し、原典の節名称との対応は `pipeline/dbt/seeds/fiscal/expenditure_setsu_map.csv` に宣言する。集約の規則は `int_expenditure_setsu_lines`・`int_expenditure_setsu_groups` が正本であり、同じ経路・追加区分・節で分類（COFOG・連結判断）を共有する末端行だけをまとめる。契約と検査条件は [財政データの設計](../docs/prd/fiscal-records/design-doc.md) を参照。
 
@@ -47,4 +47,4 @@ uv run python -m unittest discover -s pipeline -p '*_test.py'
 
 まず staging の1対1・原典の値と単位の保持、intermediate の単位換算・分類・連結判断、marts の件数・金額・識別子と上流の対応を確認する。小さな fixture の成功と固定原典を使った全量 build の成功を区別する。
 
-CI の全量 job は `FUDOKI_FIXED_INPUTS_READY=true` と非公開入力の読取権限がある場合だけ動く。固定入力からの build・再構築・報告を検査する。過去の検証と未完了項目は [移行記録](../docs/monorepo-migration.md) を参照する。
+CI の全量 job は `FUDOKI_FIXED_INPUTS_READY=true` と非公開入力の読取権限がある場合だけ動く。固定入力からの build・再構築・報告を検査する。現在の検証結果と収録範囲は [検証記録](../docs/monorepo-migration.md) を参照する。
