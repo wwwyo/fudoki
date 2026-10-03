@@ -23,12 +23,12 @@ CREATE TABLE IF NOT EXISTS fiscal_expenditure_setsu_master (
     OR valid_from_fiscal_year<=valid_to_fiscal_year)
 );
 CREATE TRIGGER IF NOT EXISTS fiscal_expenditure_setsu_master_no_overlap BEFORE INSERT ON fiscal_expenditure_setsu_master
-WHEN EXISTS(SELECT 1 FROM fiscal_expenditure_setsu_master m WHERE m.code=NEW.code AND m.expenditure_setsu_id<>NEW.expenditure_setsu_id
+WHEN EXISTS(SELECT 1 FROM fiscal_expenditure_setsu_master m WHERE (m.code=NEW.code OR m.label=NEW.label) AND m.expenditure_setsu_id<>NEW.expenditure_setsu_id
   AND coalesce(m.valid_from_fiscal_year,-9223372036854775808)<=coalesce(NEW.valid_to_fiscal_year,9223372036854775807)
   AND coalesce(NEW.valid_from_fiscal_year,-9223372036854775808)<=coalesce(m.valid_to_fiscal_year,9223372036854775807))
 BEGIN SELECT RAISE(ABORT,'Setsu definitions overlap'); END;
 CREATE TRIGGER IF NOT EXISTS fiscal_expenditure_setsu_master_no_overlap_update BEFORE UPDATE ON fiscal_expenditure_setsu_master
-WHEN EXISTS(SELECT 1 FROM fiscal_expenditure_setsu_master m WHERE m.code=NEW.code AND m.expenditure_setsu_id<>NEW.expenditure_setsu_id
+WHEN EXISTS(SELECT 1 FROM fiscal_expenditure_setsu_master m WHERE (m.code=NEW.code OR m.label=NEW.label) AND m.expenditure_setsu_id<>NEW.expenditure_setsu_id
   AND coalesce(m.valid_from_fiscal_year,-9223372036854775808)<=coalesce(NEW.valid_to_fiscal_year,9223372036854775807)
   AND coalesce(NEW.valid_from_fiscal_year,-9223372036854775808)<=coalesce(m.valid_to_fiscal_year,9223372036854775807))
 BEGIN SELECT RAISE(ABORT,'Setsu definitions overlap'); END;
