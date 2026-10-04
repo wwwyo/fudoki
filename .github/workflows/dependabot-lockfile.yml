@@ -23,6 +23,8 @@ jobs:
       # PR の manifest 由来の lifecycle script は実行しない
       - run: bun install --ignore-scripts
       - name: bun.lock が変わったときだけ push する
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
         run: |
           if git diff --quiet bun.lock; then
             echo 'bun.lock is already in sync'
@@ -32,4 +34,4 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add bun.lock
           git commit -m 'build(deps): regenerate bun.lock for workspace bump'
-          git push origin "HEAD:refs/heads/${{ github.event.pull_request.head.ref }}"
+          git push origin "HEAD:refs/heads/$HEAD_REF"
