@@ -30,7 +30,6 @@ MARK_X, MARK_Y = CONFIG["markOffsetX"], CONFIG["markOffsetY"]
 TEXT_X = MARK_X + MARK_RIGHT * MARK_SCALE + CONFIG["gap"]
 # 全角の advance は「土」の左右に空きすぎるため、見える字面間で指定する。
 PAIR_GAPS = CONFIG["pairGaps"]
-STAMP = "<!-- Hallmark · pre-emit critique: P4 H4 E4 S4 R5 V5 -->"
 
 
 @lru_cache
@@ -94,7 +93,7 @@ def svg(width: float, height: float, content: str, ink: str, themed: bool = Fals
     )
     fill = 'fill="currentColor"' if themed else f'fill="{ink}"'
     return (
-        f'{STAMP}\n<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width:.4f} {height:g}" '
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width:.4f} {height:g}" '
         f'role="img" aria-label="{NAME}">\n  <title>{NAME}</title>{theme}\n'
         f'  <g {fill}>{content}</g>\n</svg>\n'
     )
@@ -125,7 +124,7 @@ og_height = 112
 og_width = TEXT_X + text_width(TEXT_SIZE) + 2
 scale = og_height / H
 og = (
-    f'{STAMP}\n<svg xmlns="http://www.w3.org/2000/svg" width="{OW}" height="{OH}" viewBox="0 0 {OW} {OH}">\n'
+    f'<svg xmlns="http://www.w3.org/2000/svg" width="{OW}" height="{OH}" viewBox="0 0 {OW} {OH}">\n'
     f'<rect width="{OW}" height="{OH}" fill="{PAPER}"/>\n'
     f'<g fill="{INK}" transform="translate({(OW - og_width * scale) / 2:.4f} {(OH - og_height) / 2:g}) scale({scale:g})">'
     f'{mark(MARK_SCALE, MARK_X, MARK_Y)}{wordmark(TEXT_SIZE, TEXT_X, TEXT_CENTER_Y)}</g>\n</svg>\n'
