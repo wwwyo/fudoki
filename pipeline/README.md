@@ -45,6 +45,9 @@ bun run typecheck:all
 uv run python -m unittest discover -s pipeline -p '*_test.py'
 ```
 
+検証画面の E2E はローカル専用の `bun run test:e2e` に統一し、CI では実行しない。
+固定入力と PDF レイヤの準備・検査範囲は [E2E の手順](../tests/README.md) を参照する。
+
 まず staging の1対1・原典の値と単位の保持、intermediate の単位換算・分類・連結判断、marts の件数・金額・識別子と上流の対応を確認する。小さな fixture の成功と固定原典を使った全量 build の成功を区別する。
 
 CI の全量 job は `FUDOKI_FIXED_INPUTS_READY=true` と非公開入力の読取権限がある場合だけ動く。固定入力からの build・再構築・報告を検査する。現在の検証結果と収録範囲は [検証記録](../docs/monorepo-migration.md) を参照する。
