@@ -78,9 +78,11 @@ def mark(scale: float = 1, x: float = 0, y: float = 0, ink: str = INK, dark: boo
         for sx, sy, w, h, radius in RECTS[:-1]
     )
     rule_ink = "var(--logo-rule-ink)" if themed else rule_color(ink, dark)
+    # var() は fill= のような presentation attribute では解決されず、style の CSS プロパティ経由でだけ効く
+    rule_fill = f'style="fill:{rule_ink}"' if themed else f'fill="{rule_ink}"'
     sx, sy, w, h, _ = RECTS[-1]
     radius = CONFIG["ruleRadius"]
-    baseline = f'<rect x="{sx:.8f}" y="{sy:.8f}" width="{w:.8f}" height="{h:.8f}" rx="{radius:.8f}" fill="{rule_ink}"/>'
+    baseline = f'<rect x="{sx:.8f}" y="{sy:.8f}" width="{w:.8f}" height="{h:.8f}" rx="{radius:.8f}" {rule_fill}/>'
     return f'<g transform="translate({x} {y}) scale({scale})">{strips}{baseline}</g>'
 
 

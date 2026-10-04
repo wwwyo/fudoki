@@ -14,9 +14,9 @@ from ingestion.fiscal.sources import load_budget_history
 from ingestion.inputs import encode
 from ingestion.lib.http import http_get
 from ingestion.lib.pdf import chars_of, rows_of
-from ingestion.paths import CACHE
+from ingestion.paths import CACHE, PIPELINE
 
-RAW = Path(os.environ.get("FUDOKI_INPUT_DIR", CACHE / "acquisition/budget-history/raw"))
+RAW = (PIPELINE / Path(os.environ.get("FUDOKI_INPUT_DIR", CACHE / "acquisition/budget-history/raw"))).resolve()
 
 VERSION = 2
 TARGETS = {(7, 1, 2): '商工業振興費', (13, 1, 1): '予備費'}
