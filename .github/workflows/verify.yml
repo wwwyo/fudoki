@@ -13,7 +13,7 @@ jobs:
     name: Synthetic fixture and code (not full fiscal build)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: jdx/mise-action@v3
         with:
           version: 2026.8.6
@@ -34,7 +34,7 @@ jobs:
     if: vars.FUDOKI_FIXED_INPUTS_READY == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: jdx/mise-action@v3
         with:
           version: 2026.8.6
