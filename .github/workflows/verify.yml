@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: jdx/mise-action@v3
+      - uses: jdx/mise-action@v4
         with:
           version: 2026.8.6
       - run: bun install --frozen-lockfile
@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: jdx/mise-action@v3
+      - uses: jdx/mise-action@v4
         with:
           version: 2026.8.6
       - run: bun install --frozen-lockfile
