@@ -52,7 +52,7 @@ jobs:
             bun run pipeline:build --rebuild
             bun run pipeline:report
           '
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: fiscal-pipeline-validation
           include-hidden-files: true
