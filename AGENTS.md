@@ -178,6 +178,8 @@ bun run dev              # ローカル専用の検証画面（5174）
 uv add --exclude-newer $(date -v-7d +%Y-%m-%d) <package>
 ```
 
+Dependabot の PR は `package.json` だけを更新し `bun.lock` を更新しない。そのままでは `--frozen-lockfile` の CI が必ず落ちるので、対応するときは `bun install` で lockfile を再生成してから `--frozen-lockfile` で検証して push する。react 系の bump では `react` と `react-dom` が lockfile 上で同じ版に揃っているかも確認する（片方だけ上がると `Incompatible React versions` で import 時に落ちる）。
+
 ## 現在の優先範囲
 
 **ingestion → staging → intermediate → marts を先に完成させる。** 原典との対応、金額・単位・粒度・分類・収録範囲を検査し、固定入力から再構築できる状態を目指す。配布・検索のインフラ、版管理、公開・反映の方式はパイプライン完成後に検討する。

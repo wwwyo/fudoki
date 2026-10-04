@@ -1,3 +1,5 @@
+// パイプラインの入出力を作業ディレクトリに依存せず解決する。
+// pipeline/ingestion/paths.py と同じ解決規則の twin 実装。片方を変えたらもう片方も同期する。
 import { resolve, join } from 'node:path'
 import { readFileSync, existsSync } from 'node:fs'
 import { createHash } from 'node:crypto'
