@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import tempfile
 import urllib.request
 from pathlib import Path
 
@@ -24,7 +25,14 @@ def font_paths(key: str) -> list[Path]:
     cache.mkdir(parents=True, exist_ok=True)
     path = cache / f"{key}.ttf"
     if not path.exists():
-        path.write_bytes(urllib.request.urlopen(source["url"], timeout=45).read())
+        with urllib.request.urlopen(source["url"], timeout=45) as response:
+            data = response.read()
+        if hashlib.sha256(data).hexdigest() != source["sha256"]:
+            raise ValueError(f"フォントのハッシュが一致しません: {key}")
+        with tempfile.TemporaryDirectory(dir=cache, prefix=f".{key}-") as directory:
+            temporary = Path(directory) / path.name
+            temporary.write_bytes(data)
+            temporary.replace(path)
     if hashlib.sha256(path.read_bytes()).hexdigest() != source["sha256"]:
         raise ValueError(f"フォントのハッシュが一致しません: {key}")
     return [path]

@@ -5,21 +5,20 @@ from fontTools.ttLib import TTFont
 from fontTools.pens.svgPathPen import SVGPathPen
 from fontTools.pens.boundsPen import BoundsPen
 from geometry import geometries
+from fonts import font_paths
 
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[2]
 OUT=ROOT/'docs/brand/logo-type-options'
-CONFIG=json.loads((HERE/'config.json').read_text())
+CONFIG=json.loads((HERE/'type-config.json').read_text())
 NAME='風土記'
 CHOICES=[('a','Noto Sans JP',None),('b','BIZ UDPゴシック','biz'),('c','M PLUS 1','mplus'),('d','Zen角ゴシック New','zen')]
 SOURCES=json.loads((HERE/'type-fonts.json').read_text())
 CACHE=ROOT/'.cache/logo-fonts'
 CACHE.mkdir(parents=True,exist_ok=True)
 for source in SOURCES:
-    font=CACHE/f'{source["id"]}.ttf'
     license_file=CACHE/f'{source["id"]}-OFL.txt'
-    if not font.exists():font.write_bytes(urllib.request.urlopen(source['url'],timeout=45).read())
-    if hashlib.sha256(font.read_bytes()).hexdigest()!=source['sha256']:raise ValueError('フォントのハッシュが一致しません')
+    font_paths(source['id'])
     if not license_file.exists():license_file.write_bytes(urllib.request.urlopen(source['url'].rsplit('/',1)[0]+'/OFL.txt',timeout=45).read())
 FONT_DIR=ROOT/'pipeline/verify/view/node_modules/@fontsource-variable/noto-sans-jp/files'
 
@@ -79,7 +78,7 @@ def svg(gs,size,kind,dark,radius):
             x+=(g['bounds'][2]-g['bounds'][0])*scale
             if i<2:x+=CONFIG['pairGaps'][i]
         width=x+2
-    return f'<!-- Hallmark · pre-emit critique: P4 H4 E5 S5 R5 V4 -->\n<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width:.6f} {height}" role="img" aria-label="風土記"><title>風土記</title><g fill="{ink}">{"".join(content)}</g></svg>\n'
+    return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width:.6f} {height}" role="img" aria-label="風土記"><title>風土記</title><g fill="{ink}">{"".join(content)}</g></svg>\n'
 
 
 OUT.mkdir(exist_ok=True)

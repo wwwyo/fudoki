@@ -65,7 +65,7 @@ OPTIONS=[
  dict(id='e-original',letter='E',name='元の短冊・単色',tag='気に入っていた形を残す',why='五本の短冊と基準線の形・角丸・間隔は元のアイコンのまま。赤い基準線も緑に揃え、ゴシックの「風土記」と組む。',trade='元の印象を保ちながら色数を減らせる。基準線は細いままなので、小サイズでは線の見え方を確認する。',mark=original,type=type_paths(700,(3,4))),
 ]
 def svg(content,w,h,color):
-    return f'<!-- Hallmark · pre-emit critique: P4 H4 E4 S4 R5 V5 -->\n<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w:.4f} {h}" role="img" aria-label="風土記"><title>風土記</title><g fill="{color}" color="{color}">{content}</g></svg>\n'
+    return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w:.4f} {h}" role="img" aria-label="風土記"><title>風土記</title><g fill="{color}" color="{color}">{content}</g></svg>\n'
 metadata=[]
 for o in OPTIONS:
     target=OUT/o['id'];target.mkdir(parents=True,exist_ok=True)

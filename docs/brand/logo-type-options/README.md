@@ -20,3 +20,6 @@ SVGは輪郭で保存し、OSの代替書体には依存しない。フォント
 - [BIZ UDPゴシック](https://github.com/google/fonts/tree/9710da1eacb3be272583c3224dcb70f9da6eadbb/ofl/bizudpgothic)
 - [M PLUS 1](https://github.com/google/fonts/tree/9710da1eacb3be272583c3224dcb70f9da6eadbb/ofl/mplus1)
 - [Zen角ゴシック New](https://github.com/google/fonts/tree/9710da1eacb3be272583c3224dcb70f9da6eadbb/ofl/zenkakugothicnew)
+
+再生成には `apps/web/brand/build-type-options.py` を使う。比較条件は `apps/web/brand/type-config.json` に固定し、採用済みの `config.json` から独立させる。短めのマーク、Noto Sans JPの32.5を基準とした字面高さ、文字位置、字間、色は候補作成時の値を保持する。
+実画面プレビュー内では、ロゴと元のオレンジの強調色を組み合わせて比較する。これは採用済みの画面トークンを変更する操作ではない。
