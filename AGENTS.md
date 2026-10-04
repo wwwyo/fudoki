@@ -178,7 +178,7 @@ bun run dev              # ローカル専用の検証画面（5174）
 uv add --exclude-newer $(date -v-7d +%Y-%m-%d) <package>
 ```
 
-Dependabot の PR が `package.json` を更新して `bun.lock` を更新しないことがある（bun workspace 配下の bump で観測）。そのままでは `--frozen-lockfile` の CI が落ちるので、`bun install` で lockfile を再生成してから `--frozen-lockfile` で検証して push する。react 系の bump では `react` と `react-dom` が lockfile 上で同じ版に揃っているかも確認する（片方だけ上がると `Incompatible React versions` で import 時に落ちる）。
+Dependabot が workspace 配下の `package.json` だけを更新して `bun.lock` を追従させない PR（security update で観測）は、`.github/workflows/dependabot-lockfile.yml` が `bun install` して lockfile を push する。react 系の bump では `react` と `react-dom` が lockfile 上で同じ版に揃っているかも確認する（片方だけ上がると `Incompatible React versions` で import 時に落ちる）。
 
 ## 現在の優先範囲
 
