@@ -116,8 +116,6 @@ for suffix, ink in (("", INK), ("-dark", INK_DARK)):
 for target in (ROOT / "pipeline/verify/view/public", ROOT / "apps/docs/public"):
     for name in ("mark.svg", "mark-dark.svg", "wordmark.svg", "wordmark-dark.svg", "logo.svg", "logo-dark.svg", "favicon.svg"):
         shutil.copyfile(PUBLIC / name, target / name)
-for name in ("logo.svg", "mark.svg", "wordmark.svg"):
-    shutil.copyfile(PUBLIC / name, ROOT / "slides/public" / name)
 
 # OS の設定を追うファビコンと、画面の .dark で選ぶ SVG は分ける。
 # 画像内部の prefers-color-scheme は画面側のクラスを参照できない。
