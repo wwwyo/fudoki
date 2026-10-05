@@ -151,7 +151,6 @@ _Avoid_: ログ
 ├── pipeline/         # ingestion/fiscal、dbt、任意の FDP 整形、verify/report と verify/view
 ├── packages/         # fiscal の純粋な型・名称、jurisdictions
 ├── apps/             # web、api、docs の一時的な 500 応答
-├── slides/           # 発表資料
 ├── docs/             # 設計・調査文書
 └── .agent/           # 個人メモ・試作（gitignore）
 ```
