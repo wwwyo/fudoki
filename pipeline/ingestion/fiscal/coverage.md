@@ -104,7 +104,9 @@ PY
 
 現在の構築ID、コード・入力の識別、CSV集合と全CSVハッシュを確認してから、実際の `fiscal/<団体>/` CSVを読む。当初は `initial_expenditure_budget.csv` のapprovedに当たる内訳、補正は `expenditure_budget_changes.csv` の原典増減額、決算は `settlement_expenditure.csv` と `settlement_expenditure_setsu.csv` のexecutedに当たる内訳を、datasetごとに照合する。予算対象への参照は `expenditure_budget_items.csv` と照合する。要求される金額段階に全原典行が一度ずつ含まれ、原典行ID・行番号・金額・会計、内訳合計、出力行IDが一致する必要がある。決算の原典行表と集約表は別々に同じ原典行集合を確認し、両表の金額を足さない。proposedだけの当初やexecutedのない決算、対象の二目だけを採用した入力、中間の `int_fiscal_datasets` 登録だけでは完了しない。
 
-`unresolved` の各文字列は残件の識別子としてそのまま残す。任意の `unresolved_resolutions[]` は一件の完全一致する `item` に対して、解消理由 `basis`、今回の `origin_sha256` と現行 `lock_sha256`、この資料の全対象版を検査した `dataset_ids`、解消を裏付ける `evidence_indices` を記録する。粒度・会計・版・方向・実出力など他の条件が一つでも未確認、ハッシュや対象datasetが不一致、原典証拠の索引が無効なら、その残件は解消しない。任意証跡は根拠を人が確認した記録であり、文字列の存在だけで内容の真実を証明するものではない。残件の全削除、martsの状態ラベル、lock採用だけを一括の免除に使わない。年度・段階別の `jurisdictions[].gaps` は別途保持し、本文未確認・探索未完了の状態をこの解消記録で免除しない。
+`unresolved` の各文字列は残件の識別子としてそのまま残す。任意の `unresolved_resolutions[]` は一件の完全一致する `item` に対して、解消理由 `basis`、今回の `origin_sha256` と固定入力の `input_fingerprint`、この資料の全対象版を検査した `dataset_ids`、解消を裏付ける `evidence_indices` を記録する。粒度・会計・版・方向・実出力など他の条件が一つでも未確認、ハッシュや対象datasetが不一致、原典証拠の索引が無効なら、その残件は解消しない。任意証跡は根拠を人が確認した記録であり、文字列の存在だけで内容の真実を証明するものではない。残件の全削除、martsの状態ラベル、lock採用だけを一括の免除に使わない。年度・段階別の `jurisdictions[].gaps` は別途保持し、本文未確認・探索未完了の状態をこの解消記録で免除しない。
+
+`unresolved_resolutions[]` と `published_grain_exception` の `input_fingerprint` は、現行入力一覧から公式URL・原典SHA・団体が一致する全固定入力を選び、path順で固定する。同じ原典の別会計や観測表も含め、原典・表のSHAとバイト数、年度・方向・文書種別、承認・金額段階・単位などの宣言を照合する。台帳自体を参照する `definition_files` と `source_manifest_sha256` は循環を避けるためこのfingerprintから除く。コードと入力一覧の整合性、現行build、実CSVの全行・金額・粒度は従来どおり別途検査する。新fieldがある記録はfingerprintの不一致を旧hashで免除しない。新fieldのない旧記録だけは従来の全入力一覧 `lock_sha256` を照合し、旧記録を自動更新しない。`lock_reconciliation.lock_sha256` は調査時点の履歴参照として保持する。
 
 照合結果の `boundary_gaps` / `population_gaps` は探索と段階別母集団、`source_gaps` は資料の内容・採用・提供、`dataset_output_gaps` は実出力の欠落・重複・金額/原典対応を示す。これらと現行固定入力の未対応が全てなく、現行全量buildの証明がある場合だけ完了とする。構造が正しい証跡と現在のCSVの一致を検査するものであり、公式ページを再探索したりPDFを読み直したりする代わりにはならない。
 

@@ -1047,12 +1047,15 @@
               "setsu_columns"
             ]
           }
+        },
+        "input_fingerprint": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
         }
       },
       "required": [
         "schema_version",
         "origin_sha256",
-        "lock_sha256",
         "fiscal_year",
         "account_label",
         "document_phase",
@@ -1076,6 +1079,18 @@
               "approval"
             ]
           }
+        }
+      ],
+      "anyOf": [
+        {
+          "required": [
+            "input_fingerprint"
+          ]
+        },
+        {
+          "required": [
+            "lock_sha256"
+          ]
         }
       ]
     },
@@ -1263,15 +1278,30 @@
             "type": "integer",
             "minimum": 0
           }
+        },
+        "input_fingerprint": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
         }
       },
       "required": [
         "item",
         "basis",
         "origin_sha256",
-        "lock_sha256",
         "dataset_ids",
         "evidence_indices"
+      ],
+      "anyOf": [
+        {
+          "required": [
+            "input_fingerprint"
+          ]
+        },
+        {
+          "required": [
+            "lock_sha256"
+          ]
+        }
       ]
     },
     "profile": {

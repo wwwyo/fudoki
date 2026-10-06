@@ -120,6 +120,11 @@ def load_registry(path: Path = INVENTORY) -> dict:
             if ingestion["section"] in ("initial_detail", "recovered_initial_detail"):
                 options = ingestion["options"]
                 recovered = ingestion["section"] == "recovered_initial_detail"
+                if not recovered:
+                    pages = [options.get("first_page"), options.get("last_page")]
+                    if (any(type(page) is not int or page < 1 for page in pages)
+                        or pages[0] > pages[1]):
+                        raise ValueError(f"{where}: initial detail pages must be an ordered inclusive range")
                 if (source["jurisdiction"] != ingestion["key"].split(":")[0]
                     or source["fiscal_year"] != options.get("fiscal_year")
                     or source["document_phase"] != "initial"

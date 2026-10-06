@@ -18,7 +18,7 @@ import duckdb
 import jsonschema
 import yaml
 
-from ingestion.inputs import LOCK, OBJECTS, digest, read_lock, safe_relative, verify_object
+from ingestion.inputs import LOCK, OBJECTS, digest, encode, read_lock, safe_relative, verify_object
 from ingestion.paths import PIPELINE, REPO
 
 HERE = Path(__file__).resolve().parent
@@ -1020,6 +1020,20 @@ def grain_reasons(source: dict, matching: list[dict], account_label: str) -> lis
     return reasons
 
 
+def source_input_fingerprint(entries: list[dict]) -> str:
+    """同一原典の全固定入力と意味の宣言を、循環するコード参照を除いて固定する。"""
+    inputs = [{**entry, 'source': {key: value for key, value in entry['source'].items()
+                                  if key not in {'definition_files', 'source_manifest_sha256'}}}
+              for entry in sorted(entries, key=lambda entry: entry['path'])]
+    return digest(encode({'schema_version': 1, 'source_inputs': inputs}))
+
+
+def proof_binding_matches(proof: dict, entries: list[dict], lock_sha: str) -> bool:
+    if 'input_fingerprint' in proof:
+        return bool(entries) and proof['input_fingerprint'] == source_input_fingerprint(entries)
+    return proof.get('lock_sha256') == lock_sha
+
+
 def published_grain_reasons(source: dict, edition: dict, matching: list[dict],
                             entries: list[dict], provenance: dict, lock_path: Path,
                             lock_sha: str, styles: dict) -> list[str]:
@@ -1045,7 +1059,7 @@ def published_grain_reasons(source: dict, edition: dict, matching: list[dict],
 
     reasons = []
     if (proof['origin_sha256'] != source['content_inspection'].get('sha256')
-            or proof['lock_sha256'] != lock_sha
+            or not proof_binding_matches(proof, entries, lock_sha)
             or any(proof[k] != edition[k] for k in
                    ['fiscal_year', 'account_label', 'document_phase', 'amendment_number'])
             or source['content_grain']['status'] != 'observed'
@@ -1232,8 +1246,9 @@ def published_grain_reasons(source: dict, edition: dict, matching: list[dict],
     return reasons
 
 
-def unresolved_reasons(source: dict, reasons: list[str], verified: list[str], lock_sha: str) -> list[str]:
-    """各残件の解決証跡が現行の原典・lock・全版出力に当たる場合だけ除く。"""
+def unresolved_reasons(source: dict, reasons: list[str], verified: list[str], lock_sha: str,
+                       entries: list[dict]) -> list[str]:
+    """各残件の解決証跡が現行の原典・全固定入力・全版出力に当たる場合だけ除く。"""
     remaining = []
     proofs = source.get('unresolved_resolutions', [])
     for item in source['unresolved']:
@@ -1243,7 +1258,7 @@ def unresolved_reasons(source: dict, reasons: list[str], verified: list[str], lo
             proof = matching[0]
             resolved = (bool(proof['basis'].strip())
                         and proof['origin_sha256'] == source['content_inspection'].get('sha256')
-                        and proof['lock_sha256'] == lock_sha
+                        and proof_binding_matches(proof, entries, lock_sha)
                         and set(proof['dataset_ids']) == set(verified)
                         and bool(proof['evidence_indices'])
                         and all(i < len(source['content_inspection']['evidence'])
@@ -1363,7 +1378,8 @@ def audit(inventory_path: Path, schema_path: Path, lock_path: Path, warehouse: P
         if code not in codes:
             raise ValueError(f'Unmanaged jurisdiction in source: {source["id"]}')
         inspection = source['content_inspection']
-        source_entries = by_url.get(source['download_url'], [])
+        source_entries = [e for e in by_url.get(source['download_url'], [])
+                          if e['jurisdiction'] == code]
         if inspection.get('sha256'):
             source_entries = [e for e in source_entries if e['originEdition'] == inspection['sha256']]
         matched_paths.update(e['path'] for e in source_entries)
@@ -1482,7 +1498,7 @@ def audit(inventory_path: Path, schema_path: Path, lock_path: Path, warehouse: P
                 candidate_editions.add(scope_key(edition))
         if source['document_phase'] == 'supplementary' and not source['amendment_numbers']:
             reasons.append('amendment_number_not_confirmed')
-        reasons.extend(unresolved_reasons(source, reasons, verified, lock_sha))
+        reasons.extend(unresolved_reasons(source, reasons, verified, lock_sha, source_entries))
         if not reasons and verified:
             tally['verified_statements'] += 1
             verified_editions[source['id']] = candidate_editions
