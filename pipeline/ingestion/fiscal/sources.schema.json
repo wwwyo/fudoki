@@ -1879,8 +1879,7 @@
                           "additionalProperties": false,
                           "required": [
                             "sha256",
-                            "bytes",
-                            "pages"
+                            "bytes"
                           ],
                           "properties": {
                             "sha256": {
@@ -1899,8 +1898,41 @@
                                 "type": "integer",
                                 "minimum": 1
                               }
+                            },
+                            "format": {
+                              "enum": [
+                                "pdf",
+                                "html"
+                              ]
                             }
-                          }
+                          },
+                          "oneOf": [
+                            {
+                              "required": [
+                                "pages"
+                              ],
+                              "properties": {
+                                "format": {
+                                  "const": "pdf"
+                                }
+                              }
+                            },
+                            {
+                              "required": [
+                                "format"
+                              ],
+                              "properties": {
+                                "format": {
+                                  "const": "html"
+                                }
+                              },
+                              "not": {
+                                "required": [
+                                  "pages"
+                                ]
+                              }
+                            }
+                          ]
                         }
                       },
                       "kind": {

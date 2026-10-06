@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 
 from ingestion.inputs import OBJECTS, digest, read_lock, safe_relative, source_metadata_bytes
+from ingestion.fiscal.canonical_sources import require_inspected_scopes
 from ingestion.fiscal.chiyoda_budget_changes import COLUMNS, NAMESPACE, input_path
 from ingestion.fiscal.native_settlement_coverage import records
 from ingestion.fiscal.settlement2019_coverage import schema_of, typed_csv
@@ -23,7 +24,9 @@ ITEMS = 'fiscal_131016_supplementary_native_items'
 
 def output_coverage(connection, candidate: Path, hashes: dict, lock_path: Path,
                     datasets: list[dict]) -> None:
-    entries = [e for e in read_lock(lock_path)['entries'] if e['path'].startswith(NAMESPACE + '/')]
+    lock = read_lock(lock_path)
+    require_inspected_scopes(lock)
+    entries = [e for e in lock['entries'] if e['path'].startswith(NAMESPACE + '/')]
     registered = _indexed(records(connection, "select * from int_fiscal_datasets where "
         "json_extract_string(source_json,'$.namespace')=?", [NAMESPACE]), 'dataset_id')
     if not entries and not registered:

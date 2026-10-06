@@ -280,6 +280,18 @@ def report(inventory: dict, lock: dict) -> dict:
     )
 
 
+def require_inspected_scopes(lock: dict, *, jurisdiction: str = '131016') -> None:
+    """Check the census before consulting enabled extraction declarations."""
+    from ingestion.fiscal.source_registry import INVENTORY, load_registry
+    missing = [group['source_key'] for group in report(load_registry(INVENTORY), lock)['groups']
+               if group['jurisdiction'] == jurisdiction and group['document_phase'] == 'supplementary'
+               and group['adoption_status'] in (
+                   'no_candidate_has_adopted_inputs', 'account_adoption_unconfirmed')]
+    if missing:
+        raise ValueError('Inspected supplementary targets lack account-bound inputs: '
+                         + ', '.join(missing))
+
+
 def markdown(output: dict) -> str:
     names = {j['code']: j['name'] for j in output['jurisdictions']}
     phases = {'initial': '当初', 'supplementary': '補正', 'settlement': '決算'}

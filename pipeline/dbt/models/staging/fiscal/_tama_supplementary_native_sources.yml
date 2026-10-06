@@ -1,0 +1,8 @@
+version: 2
+sources:
+  - name: raw_132241_supplementary_native
+    description: Printed account amendments, with independent controls and project-by-setsu leaves.
+    tables:
+      - name: rows
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/year=([^/]+)', 1) as _partition_fiscal_year, regexp_extract(filename, '/edition=([^/]+)', 1) as _partition_origin_sha256, regexp_extract(filename, '/table=([^/]+)', 1) as table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/tama-supplementary-native/jurisdiction=132241/year=*/document_kind=supplementary/edition=*/direction=expenditure/table=*/data.parquet', hive_partitioning=false, filename=true))"

@@ -124,6 +124,8 @@ def declarations():
     rows, history = register_native_initial(rows, history, entries, INPUT_LOCK)
     from ingestion.fiscal.chiyoda_budget_changes import register_declarations as register_chiyoda_supplementary
     rows, history = register_chiyoda_supplementary(rows, history, entries, INPUT_LOCK)
+    from ingestion.fiscal.tama_supplementary_registry import register_declarations as register_tama_supplementary
+    rows, history = register_tama_supplementary(rows, history, entries, INPUT_LOCK)
     return rows, history
 
 

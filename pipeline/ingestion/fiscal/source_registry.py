@@ -71,7 +71,7 @@ def load_registry(path: Path = INVENTORY) -> dict:
                 if type(index) is not int or not 0 <= index < len(source['editions']):
                     raise ValueError(f'{where}: unknown native supplementary edition')
                 edition = source['editions'][index]
-                if (source['jurisdiction'] != '131016' or source['fiscal_year'] < 2019
+                if (source['jurisdiction'] not in ('131016', '132241') or source['fiscal_year'] < 2019
                     or source['document_phase'] != 'supplementary' or source['format'] != 'pdf'
                     or 'expenditure' not in source.get('directions', [])
                     or edition['fiscal_year'] != source['fiscal_year']
@@ -82,6 +82,8 @@ def load_registry(path: Path = INVENTORY) -> dict:
                     or (len(source['editions']) != 1 and 'edition_index' not in ingestion.get('profile', {}))
                     or ingestion['key'] != (source['id'] if len(source['editions']) == 1 else f'{source["id"]}:{index}')):
                     raise ValueError(f'{where}: native supplementary declaration differs from its inspected parent')
+                if source['jurisdiction'] == '132241' and 'physical_pages' not in ingestion.get('profile', {}):
+                    raise ValueError(f'{where}: native Tama supplementary pages must identify the inspected account')
             if ingestion['section'] == 'native_initial_detail':
                 accounts = ingestion['options']['accounts']
                 labels = [a['account_label'] for a in accounts]

@@ -37,6 +37,8 @@ def registered_specs() -> list[dict]:
     """Read enabled original and approval declarations from the single registry."""
     result = []
     for source in load_registry(INVENTORY)['sources']:
+        if source['jurisdiction'] != '131016':
+            continue
         for ingestion in source.get('ingestions', []):
             if ingestion['section'] != 'native_supplementary_detail' or not ingestion['enabled']:
                 continue
@@ -94,11 +96,11 @@ def input_path(source: dict, namespace: str = NAMESPACE, *, edition: dict | None
             f'direction=expenditure/table={table_id(source, edition)}')
 
 
-def approval_evidence_objects(entries):
+def approval_evidence_objects(entries, *, namespace=NAMESPACE):
     """Derive council object references from the fixed input declarations."""
     refs = {}
     for entry in entries:
-        if not entry['path'].startswith(NAMESPACE + '/'):
+        if not entry['path'].startswith(namespace + '/'):
             continue
         approval = entry['source'].get('approval_proof')
         for evidence in (approval['evidence'].values() if approval else []):
@@ -113,10 +115,10 @@ def approval_evidence_objects(entries):
     return list(refs.values())
 
 
-def restore_approval_evidence(entries, objects_dir: Path, *, remote=False):
+def restore_approval_evidence(entries, objects_dir: Path, *, remote=False, namespace=NAMESPACE):
     """Restore the council originals pinned by adopted approval declarations."""
     from ingestion.inputs import remote_object, verify_object
-    for ref in approval_evidence_objects(entries):
+    for ref in approval_evidence_objects(entries, namespace=namespace):
         path = objects_dir / ref['key']
         if not path.exists() and remote:
             remote_object(ref, 'get', objects_dir=objects_dir)
@@ -452,6 +454,7 @@ def main(argv=None, *, raw_root=None):
         definition_paths += [INVENTORY, REPO/'pipeline/ingestion/fiscal/sources.py',
             REPO/'pipeline/ingestion/declarations.py', REPO/'pipeline/ingestion/acquire.py',
             REPO/'pipeline/ingestion/fiscal/chiyoda_supplementary_native_coverage.py',
+            REPO/'pipeline/ingestion/fiscal/canonical_sources.py',
             REPO/'pipeline/ingestion/fiscal/coverage_audit.py',
             REPO/'pipeline/ingestion/fiscal/tama_initial_native_coverage.py',
             REPO/'pipeline/ingestion/fiscal/native_settlement_coverage.py',

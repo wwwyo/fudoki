@@ -16,6 +16,8 @@ def main() -> None:
                    cwd=PIPELINE, env=environment, check=True)
     subprocess.run([sys.executable, '-m', 'ingestion.fiscal.chiyoda_budget_changes', '--acquire-registered'],
                    cwd=PIPELINE, env=environment, check=True)
+    subprocess.run([sys.executable, '-m', 'ingestion.fiscal.tama_supplementary_registry', '--acquire-registered'],
+                   cwd=PIPELINE, env=environment, check=True)
     migrate(raw, remote=True)
 
 

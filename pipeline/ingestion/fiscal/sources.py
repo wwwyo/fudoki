@@ -370,6 +370,11 @@ def all_sources(path: Path = SOURCES_JSON) -> dict[str, Source]:
     if set(existing) & set(chiyoda_supplementary):
         raise ValueError('Chiyoda supplementary source key overlaps an existing provider')
     existing.update(chiyoda_supplementary)
+    from ingestion.fiscal.tama_supplementary_registry import registered_sources as tama_supplementary_sources
+    tama_supplementary = tama_supplementary_sources() if path.resolve() == SOURCES_JSON.resolve() else {}
+    if set(existing) & set(tama_supplementary):
+        raise ValueError('Tama supplementary source key overlaps an existing provider')
+    existing.update(tama_supplementary)
     return existing
 
 
