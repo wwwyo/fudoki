@@ -2,7 +2,7 @@
 
 原典一覧の確認日: 2026-10-04。既存の原典一覧と現在の固定入力の宣言を、取得・OCRなしで照合した結果。
 
-対象は掲載 1050 レコード、採用 658 入力。全公開資料の探索完了ではない。
+対象は掲載 1074 レコード、採用 658 入力。全公開資料の探索完了ではない。
 
 ## 選択ルール
 
@@ -16,13 +16,13 @@
 |---|---:|---:|---:|---:|
 | 千代田区 | 22 | 0 | 29 | 21 |
 | 三鷹市 | 177 | 5 | 6 | 17 |
-| 昭島市 | 22 | 4 | 23 | 39 |
+| 昭島市 | 22 | 4 | 23 | 45 |
 | 狛江市 | 22 | 48 | 19 | 69 |
-| 多摩市 | 85 | 8 | 38 | 38 |
+| 多摩市 | 85 | 8 | 38 | 46 |
 
 件数は自治体×年度×会計×段階／補正号の対象数。一つのPDFに複数対象がある。旧451資料レコードとは分母が異なり、差分を処理済み件数にしない。
 
-資料の採用入力はあるが会計への対応が不明な対象は 5 件。上の未採用へ加算せず、詳細はJSONの `account_adoption_unconfirmed` を参照する。CSVの全原文取り込みと観測済み会計集合が対応する場合だけ、会計ごとの入力存在へ反映する。
+資料の採用入力はあるが会計への対応が不明な対象は 6 件。上の未採用へ加算せず、詳細はJSONの `account_adoption_unconfirmed` を参照する。CSVの全原文取り込みと観測済み会計集合が対応する場合だけ、会計ごとの入力存在へ反映する。
 
 採用入力ありは、一部の表・観測・別版の宣言が存在することまでであり、全明細・最新版・提供データの確認完了ではない。表紙・目次だけの資料を採用済み明細へ数えず、目次だけに基づく粒度の観測も未確認へ分ける。
 
@@ -365,6 +365,12 @@
 | 多摩市 | 2026 | 後期高齢者医療特別会計 | 当初 | [第9号議案から第12号議案まで（令和8年度 各特別会計予算・下水道事業会計予算） （PDF 5.2 MB）](https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/019/604/R8-1teirei_sicyo9-12.pdf) | 未確認 |
 | 多摩市 | 2026 | 後期高齢者医療特別会計 | 補正第1号 | [第75号議案から第78号議案まで（令和8年度一般会計・3特別会計補正予算） （PDF 2.6 MB）](https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/021/205/R8-3teirei_sicyo75-78.pdf) | 候補1件（最新版の網羅確認なし） |
 
+## 相補分冊の選択が未確定の対象
+
+前半・後半など、併せて読む必要がある原典。優先候補の片方だけを対象全体のcanonicalにはしない。
+
+- 昭島市 2019年度 一般会計 決算: `132071-2019-settlement-R01kessannsyosaisyutu1` / `132071-2019-settlement-R01kessannsyosaisyutu2`
+
 ## 対象識別の確認待ち資料
 
 これらは対象に分類できず、上の未採用対象には加算していない。同じ資料が分類済み対象にも含まれる場合がある。
@@ -677,3 +683,17 @@
 | 多摩市 | 2022・一般会計・決算 | [(2)事業別歳出決算額一覧表（一般会計）](https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/014/433/4-1.pdf) | moku_or_project_detail_not_observed |
 | 多摩市 | 2018・多摩市国民健康保険特別会計・決算 | [平成30年度多摩市国民健康保険特別会計決算一覧表 歳出（資料3）](https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/006/473/3saisyutu.pdf) | moku_or_project_detail_not_observed |
 | 多摩市 | 2019・多摩市国民健康保険特別会計・決算 | [令和元年度多摩市国民健康保険特別会計決算一覧表 歳出（資料3-2）](https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/006/464/3-2.pdf) | moku_or_project_detail_not_observed |
+| 昭島市 | 2019・一般会計・決算 | [令和元年度昭島市歳入歳出決算書及び決算附属書類（分割9部） / R01kessannsyosaisyutu1.pdf](https://www.city.akishima.lg.jp/s102/R01kessannsyosaisyutu1.pdf) | moku_or_project_detail_not_observed |
+| 昭島市 | 2019・国民健康保険特別会計・決算 | [令和元年度昭島市歳入歳出決算書及び決算附属書類（分割9部） / R01kessannsyokokuho.pdf](https://www.city.akishima.lg.jp/s102/R01kessannsyokokuho.pdf) | moku_or_project_detail_not_observed |
+| 昭島市 | 2019・介護保険特別会計・決算 | [令和元年度昭島市歳入歳出決算書及び決算附属書類（分割9部） / R01kessannsyokaigo.pdf](https://www.city.akishima.lg.jp/s102/R01kessannsyokaigo.pdf) | moku_or_project_detail_not_observed |
+| 昭島市 | 2019・後期高齢者医療特別会計・決算 | [令和元年度昭島市歳入歳出決算書及び決算附属書類（分割9部） / R01kessannsyokouki.pdf](https://www.city.akishima.lg.jp/s102/R01kessannsyokouki.pdf) | moku_or_project_detail_not_observed |
+| 昭島市 | 2019・中神土地区画整理事業特別会計・決算 | [令和元年度昭島市歳入歳出決算書及び決算附属書類（分割9部） / R01kessannsyokukaku.pdf](https://www.city.akishima.lg.jp/s102/R01kessannsyokukaku.pdf) | moku_or_project_detail_not_observed |
+| 昭島市 | 2019・下水道事業特別会計・決算 | [令和元年度昭島市歳入歳出決算書及び決算附属書類（分割9部） / R01kessannsyogesui.pdf](https://www.city.akishima.lg.jp/s102/R01kessannsyogesui.pdf) | moku_or_project_detail_not_observed |
+| 多摩市 | 2019・一般会計・決算 | [事業別歳出決算額一覧表（一般会計）](https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/933/4-1.pdf) | moku_or_project_detail_not_observed |
+| 多摩市 | 2019・国民健康保険特別会計・決算 | [事業別歳出決算額一覧表（国民健康保険特別会計）](https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/933/7-1.pdf) | moku_or_project_detail_not_observed |
+| 多摩市 | 2019・介護保険特別会計・決算 | [事業別歳出決算額一覧表（介護保険特別会計）](https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/933/13-1.pdf) | moku_or_project_detail_not_observed |
+| 多摩市 | 2019・後期高齢者医療特別会計・決算 | [事業別歳出決算額一覧表（後期高齢者医療特別会計）](https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/933/16-1.pdf) | moku_or_project_detail_not_observed |
+| 多摩市 | 2020・一般会計・決算 | [事業別歳出決算額一覧表（一般会計）](https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/932/4-1.pdf) | moku_or_project_detail_not_observed |
+| 多摩市 | 2020・国民健康保険特別会計・決算 | [事業別歳出決算額一覧表（国民健康保険特別会計）](https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/932/7-1.pdf) | moku_or_project_detail_not_observed |
+| 多摩市 | 2020・介護保険特別会計・決算 | [事業別歳出決算額一覧表（介護保険特別会計）](https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/932/13-1.pdf) | moku_or_project_detail_not_observed |
+| 多摩市 | 2020・後期高齢者医療特別会計・決算 | [事業別歳出決算額一覧表（後期高齢者医療特別会計）](https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/932/16-1.pdf) | moku_or_project_detail_not_observed |
