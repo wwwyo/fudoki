@@ -663,6 +663,16 @@
             "items": {
               "$ref": "#/$defs/publication_link"
             }
+          },
+          "complementary_source_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true,
+            "description": "Other originals required alongside this split volume; reciprocal references within the same fiscal scope. A single part cannot be selected as the complete canonical statement."
           }
         },
         "required": [

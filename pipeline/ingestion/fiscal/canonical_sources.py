@@ -42,7 +42,17 @@ def load_inventory(path: Path) -> dict:
     inventory = json.loads(path.read_text(encoding='utf-8'))
     if inventory['schema_version'] != 1:
         raise ValueError('Unsupported source inventory version')
+    sources = {s['id']: s for s in inventory['sources']}
     for source in inventory['sources']:
+        companions = source.get('complementary_source_ids', [])
+        if not isinstance(companions, list) or any(not isinstance(sid, str) for sid in companions):
+            raise ValueError(f'Complementary originals must be origin identifiers: {source["id"]}')
+        for sid in companions:
+            other = sources.get(sid)
+            if (other is None or sid == source['id']
+                or any(other[k] != source[k] for k in ('jurisdiction', 'fiscal_year', 'document_phase', 'account_labels', 'directions'))
+                or source['id'] not in other.get('complementary_source_ids', [])):
+                raise ValueError(f'Complementary originals must reciprocally identify the same scope: {source["id"]}')
         revision = source.get('publisher_revision')
         if 'publisher_revision' in source and not isinstance(revision, dict):
             raise ValueError(f'Publisher revision must be an object: {source["id"]}')
@@ -196,6 +206,7 @@ def report(inventory: dict, lock: dict) -> dict:
                 document_level_adopted_input_paths=sorted(set(document_entries)),
                 inspection_status=source['content_inspection']['status'],
                 scope_confirmation=source['account_scope_status'],
+                complementary_source_ids=source.get('complementary_source_ids', []),
             )
         source_summary = dict(source_id=sid, jurisdiction=source['jurisdiction'],
                 fiscal_year=source['fiscal_year'], document_phase=source['document_phase'],
@@ -225,6 +236,9 @@ def report(inventory: dict, lock: dict) -> dict:
     for key, sources in sorted(groups.items(), key=lambda item: str(item[0])):
         candidates = sorted(sources.values(), key=lambda c: c['source_id'])
         preferred, status = choose(candidates)
+        # A split volume cannot stand for the complete account statement.
+        if preferred['complementary_source_ids']:
+            status = 'complementary_parts_unconfirmed'
         any_adopted = any(c['adopted_input_paths'] for c in candidates)
         if preferred['adopted_input_paths']:
             adoption = 'preferred_has_adopted_inputs'
@@ -240,7 +254,8 @@ def report(inventory: dict, lock: dict) -> dict:
         result.append(dict(
             source_key=':'.join(str(v) for v in key), jurisdiction=key[0], fiscal_year=key[1],
             account_label=key[2], document_phase=key[3], amendment_number=key[4], direction='expenditure',
-            canonical_source_id=preferred['source_id'] if status != 'revision_order_unconfirmed' else None,
+            canonical_source_id=preferred['source_id'] if status not in (
+                'revision_order_unconfirmed', 'complementary_parts_unconfirmed') else None,
             preferred_source_id=preferred['source_id'], selection_status=status,
             adoption_status=adoption, candidates=candidates,
             other_scope_adopted_input_paths=sorted(set(entries_by_scope.get(key, []))),
@@ -253,6 +268,7 @@ def report(inventory: dict, lock: dict) -> dict:
         inventory_source_records=len(inventory['sources']), adopted_input_count=len(lock['entries']),
         counts=dict(logical_scopes=len(result), **counts,
             revision_order_unconfirmed=sum(g['selection_status'] == 'revision_order_unconfirmed' for g in result),
+            complementary_parts_unconfirmed=sum(g['selection_status'] == 'complementary_parts_unconfirmed' for g in result),
             unclassified_source_records=len(unclassified), reference_source_records=len(references),
             content_unconfirmed_source_records=len(content_unconfirmed),
             excluded_source_records=len(excluded)),
@@ -299,9 +315,19 @@ def markdown(output: dict) -> str:
             'selected_only_candidate': '候補1件（最新版の網羅確認なし）',
             'selected_same_declared_revision': '同じ版の宣言あり',
             'selected_latest_declared': '改訂日の根拠あり',
+            'complementary_parts_unconfirmed': '相補分冊の全体選択が未確認',
         }[group['selection_status']]
         title = preferred['title'].replace('|', '\\|').replace('\n', ' ')
         lines.append(f"| {names[group['jurisdiction']]} | {group['fiscal_year']} | {group['account_label']} | {phase} | [{title}]({preferred['url']}) | {state} |")
+    lines += ['', '## 相補分冊の選択が未確定の対象', '',
+        '前半・後半など、併せて読む必要がある原典。優先候補の片方だけを対象全体のcanonicalにはしない。', '']
+    for group in output['groups']:
+        if group['selection_status'] != 'complementary_parts_unconfirmed':
+            continue
+        preferred = next(c for c in group['candidates'] if c['source_id'] == group['preferred_source_id'])
+        parts = sorted({preferred['source_id'], *preferred['complementary_source_ids']})
+        lines.append(f"- {names[group['jurisdiction']]} {group['fiscal_year']}年度 {group['account_label']} {phases[group['document_phase']]}: "
+            + ' / '.join(f'`{sid}`' for sid in parts))
     lines += ['', '## 対象識別の確認待ち資料', '',
         'これらは対象に分類できず、上の未採用対象には加算していない。同じ資料が分類済み対象にも含まれる場合がある。', '',
         '| 自治体 | 掲載年度 | 掲載資料 | 未確定項目 |', '|---|---|---|---|']
@@ -336,7 +362,8 @@ def main() -> None:
     if args.describe:
         print(json.dumps(dict(schema_version=1, scope=SELECTION_POLICY['scope'],
             priority=SELECTION_PRIORITY,
-            readability=list(READABILITY), canonical_null_when='revision_order_unconfirmed',
+            readability=list(READABILITY), canonical_null_when=[
+                'revision_order_unconfirmed', 'complementary_parts_unconfirmed'],
             adoption_is='input_declaration_presence_only_not_full_scope_or_marts_verification',
             missing_filter='no_candidate_has_adopted_inputs', network_requests=0,
             original_hashes_computed=0), ensure_ascii=False, indent=2))
