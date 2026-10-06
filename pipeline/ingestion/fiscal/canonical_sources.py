@@ -47,6 +47,8 @@ def load_inventory(path: Path) -> dict:
         companions = source.get('complementary_source_ids', [])
         if not isinstance(companions, list) or any(not isinstance(sid, str) for sid in companions):
             raise ValueError(f'Complementary originals must be origin identifiers: {source["id"]}')
+        if len(companions) != len(set(companions)):
+            raise ValueError(f'Complementary original identifiers must be unique: {source["id"]}')
         for sid in companions:
             other = sources.get(sid)
             if (other is None or sid == source['id']
