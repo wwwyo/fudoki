@@ -326,6 +326,24 @@
               "decision"
             ]
           },
+          "publisher_revision": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Optional publisher revision evidence; page-update dates, inspection dates and filenames are not revision dates.",
+            "properties": {
+              "revision_id": {"type": "string", "minLength": 1},
+              "revision_at": {"type": "string", "format": "date"},
+              "basis": {"type": "string", "minLength": 1},
+              "evidence_urls": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {"type": "string", "pattern": "^https://"}
+              }
+            },
+            "required": ["basis", "evidence_urls"],
+            "anyOf": [{"required": ["revision_id"]}, {"required": ["revision_at"]}]
+          },
           "format": {
             "enum": [
               "csv",
@@ -348,6 +366,10 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
+              "primary_fiscal_page": {
+                "type": "boolean",
+                "description": "Whether this publisher listing is the primary fiscal page for equivalent editions; omission retains the existing heading-based preference."
+              },
               "label": {
                 "type": "string"
               },
