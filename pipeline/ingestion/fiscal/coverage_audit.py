@@ -1423,7 +1423,8 @@ def audit(inventory_path: Path, schema_path: Path, lock_path: Path, warehouse: P
                            for i in confirmation[key])):
                 reasons.append('edition_content_confirmation_missing_or_stale')
             matching = [d for d in datasets
-                        if d['jurisdiction_code'] == code
+                        if d.get('direction', 'expenditure') == 'expenditure'
+                        and d['jurisdiction_code'] == code
                         and d['fiscal_year'] == edition['fiscal_year']
                         and d['document_kind'] == PHASE_KIND.get(edition['document_phase'])
                         and any(e['originEdition'] == d['origin_sha256']

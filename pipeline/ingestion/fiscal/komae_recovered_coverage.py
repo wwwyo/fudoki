@@ -16,6 +16,7 @@ empty string). complete=True only after every check incl. the shared CSV gate.
 """
 from __future__ import annotations
 from ingestion.inputs import source_metadata_bytes
+from ingestion.paths import PIPELINE
 import hashlib, json
 from pathlib import Path
 
@@ -47,13 +48,12 @@ def _both(connection, a: str, b: str) -> tuple[int, int]:
 
 def output_coverage(connection, candidate: Path, hashes: dict, lock_path: Path,
                     datasets: list[dict]) -> None:
-    pipeline_dir = Path(lock_path).parents[2]
     lock_bytes = Path(lock_path).read_bytes()
     entries = [e for e in json.loads(lock_bytes)['entries']
                if e['path'].startswith('initial-detail-recovered/')]
     if not entries:
         return
-    raw_root = _snapshot_dir(pipeline_dir, lock_bytes)
+    raw_root = _snapshot_dir(PIPELINE, lock_bytes)
     csv_path = candidate / CSV_REL
     if CSV_REL not in hashes:
         raise ValueError('CSV not in verified artifacts')
@@ -112,7 +112,7 @@ def output_coverage(connection, candidate: Path, hashes: dict, lock_path: Path,
                 raise ValueError('amount-kind NULL guard failed')
             if sj.get('additive') is not False or prov.get('additive') is not False:
                 raise ValueError('additive guard failed')
-            origin = pipeline_dir/'.cache/objects'/e['origin']['object']['key']
+            origin = PIPELINE/'.cache/objects'/e['origin']['object']['key']
             if hashlib.sha256(origin.read_bytes()).hexdigest() != e['origin']['object']['sha256']:
                 raise ValueError('origin bytes differ')
             pq = raw_root/e['path']/'data.parquet'
