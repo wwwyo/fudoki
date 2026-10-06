@@ -219,9 +219,14 @@ describe('狛江市2023年度二目の補正予算', { tags: ['fiscal-history'] 
     async ({ app, browser }) => {
       const { settle, edge, selectRow, selection } = session(browser)
 
+      const inputRows = await rows(app.baseUrl!, supplementary)
+      const position = inputRows.findIndex((r) =>
+        r.origin_sha256 === issue3 && r.source_row === 48
+      )
+      expect(position).toBeGreaterThanOrEqual(0)
       await edge(supplementary, changes)
       await settle(`document.querySelectorAll('.io .rows tr.rowhit').length>=8`)
-      await selectRow(0, `${issue3}|supplementary-expenditure-project-setsu|48`, 47)
+      await selectRow(0, `${issue3}|supplementary-expenditure-project-setsu|48`, position)
       await settle(
         `document.querySelectorAll('.io .rows tr.rowsel').length===2`
       )
