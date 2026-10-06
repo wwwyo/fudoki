@@ -39,4 +39,6 @@ union all
 select * from {{ ref('fiscal_132195_initial_detail_lines') }}
 union all
 select * from {{ ref('fiscal_132071_initial445_lines') }}
+union all
+select * from {{ ref('fiscal_132241_initial_native_lines') }}
 order by fiscal_line_id

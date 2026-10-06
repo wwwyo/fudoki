@@ -21,7 +21,7 @@ SCHEMA = HERE / "sources.schema.json"
 PDF_SECTIONS = (
     "statement", "budget_history", "supplementary_detail", "settlement_pdf",
     "project_names", "revenue_accounts",
-    "initial_detail", "recovered_initial_detail",
+    "initial_detail", "recovered_initial_detail", "native_initial_detail",
 )
 SECTIONS = ("csv", *PDF_SECTIONS)
 URL_FIELDS = {"url", "landing_page", "download_url", "landing_url", "approval_url"}
@@ -66,6 +66,24 @@ def load_registry(path: Path = INVENTORY) -> dict:
             if not isinstance(ingestion.get("options"), dict):
                 raise ValueError(f"{where}: options must be an object")
             _without_urls(ingestion["options"], where + ".options")
+            if ingestion['section'] == 'native_initial_detail':
+                accounts = ingestion['options']['accounts']
+                labels = [a['account_label'] for a in accounts]
+                included = {e['account_label'] for e in source['editions']
+                            if e['in_scope']['status'] == 'included'
+                            and e['document_phase'] == 'initial'}
+                if (ingestion['key'] != f"{source['jurisdiction']}:{source['fiscal_year']}"
+                    or source['jurisdiction'] != '132241' or source['fiscal_year'] != 2026
+                    or source['document_phase'] != 'initial' or source['format'] != 'pdf'
+                    or 'expenditure' not in source.get('directions', [])
+                    or len(labels) != len(set(labels)) or set(labels) != included):
+                    raise ValueError(f'{where}: native initial accounts must match the included parent editions')
+                ranges = [a['pages'] for a in accounts]
+                if any(first > last or (last-first+1) % 2 for first,last in ranges):
+                    raise ValueError(f'{where}: native pages must contain complete facing-page pairs')
+                ordered = sorted(ranges)
+                if any(left[1] >= right[0] for left,right in zip(ordered,ordered[1:])):
+                    raise ValueError(f'{where}: native account pages overlap')
             profile = ingestion.get("profile", {})
             if not isinstance(profile, dict):
                 raise ValueError(f"{where}: profile must be an object")
@@ -122,6 +140,10 @@ def load_registry(path: Path = INVENTORY) -> dict:
 
 def _scope(source: dict, ingestion: dict) -> dict:
     profile = ingestion.get("profile", {})
+    if ingestion['section'] == 'native_initial_detail':
+        return dict(jurisdiction=source['jurisdiction'], fiscal_year=source['fiscal_year'],
+                    document_phase=source['document_phase'], direction='expenditure',
+                    accounts=deepcopy(ingestion['options']['accounts']))
     if ingestion["section"] == "initial_detail":
         return {"jurisdiction": source["jurisdiction"],
                 "fiscal_year": ingestion["options"]["fiscal_year"],

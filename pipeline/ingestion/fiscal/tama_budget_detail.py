@@ -1,7 +1,8 @@
 """Read native facing-page budget tables, retaining printed controls and leaves.
 
-The registry supplies the original identity. This cache-only candidate reader
-does not select an original, assign an approval phase, or change adopted inputs.
+The registry supplies original identity, account ranges and approval evidence.
+The default cache-only reader writes unapproved candidates. Explicit registered
+mode uses the declaration; neither mode replaces the adopted input list.
 """
 from __future__ import annotations
 
@@ -18,6 +19,109 @@ from ingestion.fiscal.source_registry import INVENTORY, load_registry
 from ingestion.inputs import digest, record_input, save_object
 from ingestion.lib.pdf import pages_of, rows_of
 from ingestion.paths import REPO
+
+NAMESPACE = 'tama-initial-native'
+PROVIDER = 'ingestion.fiscal.tama_budget_detail'
+
+
+def registered_specs() -> list[dict]:
+    """Derive the expected table set from the single origin registry."""
+    result = []
+    for source in load_registry(INVENTORY)['sources']:
+        for ingestion in source.get('ingestions', []):
+            if ingestion['section'] != 'native_initial_detail' or not ingestion['enabled']:
+                continue
+            options = ingestion['options']
+            tables = []
+            for account in options['accounts']:
+                first,last = account['pages']
+                for role in ('observations','expenditure'):
+                    tables.append(dict(table_id=f'initial-{source["fiscal_year"]}-pages-{first}-{last}-{role}',
+                                       account=account['account_label'],pages=[first,last],
+                                       bill=account['bill'],observation_role=role))
+            result.append(dict(source=source,approval=options['approval'],tables=tables))
+    return result
+
+
+def registered_sources():
+    from ingestion.fiscal.sources import Source, Resource
+    from ingestion.shared.jurisdictions import jurisdiction_name
+    return {s['id']: Source(key=s['id'],catalog=None,jurisdiction_code=s['jurisdiction'],
+        jurisdiction_name=jurisdiction_name(s['jurisdiction']),fiscal_year=s['fiscal_year'],
+        fiscal_year_label=None,document_kind='budget',document_label=s['document_title'],
+        dataset_title=None,encoding='',redistribute='review',
+        redistribute_basis='正式PDFの再配布条件は未確認。別年度CSVのCC BY表示を適用しない。',
+        license_id='NOASSERTION',attribution='多摩市',landing_page=s['landing_url'],raw_form='extracted',
+        resources=tuple(Resource(direction='expenditure',resource_name=s['document_title']+' '+t['account']+' '+t['observation_role'],
+            url=s['download_url'],url_basis='自治体の財政課が正式予算書PDFを直接掲載。',table_id=t['table_id'])
+            for t in spec['tables'])) for spec in registered_specs() for s in [spec['source']]}
+
+
+def input_path(source: dict, table: dict) -> str:
+    return (f'{NAMESPACE}/jurisdiction={source["jurisdiction"]}/year={source["fiscal_year"]}/'
+            f'document_kind=budget/edition={source["content_inspection"]["sha256"]}/'
+            f'direction=expenditure/table={table["table_id"]}')
+
+
+def register_declarations(rows, history, entries, lock_path):
+    """Register only adopted tables bound to their current origin declaration."""
+    from ingestion.inputs import source_metadata
+    specs = {spec['source']['id']:spec for spec in registered_specs()}
+    seen = set()
+    for entry in entries:
+        if not entry['path'].startswith(NAMESPACE+'/'):
+            continue
+        metadata = source_metadata(lock_path,entry)
+        spec = specs[metadata['source_key']]
+        source = spec['source']
+        table = next(t for t in spec['tables'] if t['table_id'] == metadata['table_id'])
+        financial = table['observation_role'] == 'expenditure'
+        for relative_path, ref in metadata['definition_files'].items():
+            content = (REPO/relative_path).read_bytes()
+            if ref['sha256'] != digest(content) or ref['bytes'] != len(content):
+                raise ValueError('Native initial definition differs: '+relative_path)
+        sha = source['content_inspection']['sha256']
+        phase = 'approved' if financial else None
+        if (entry['path'] != input_path(source,table) or entry['path'] in seen
+            or entry['originEdition'] != sha or entry['jurisdiction'] != source['jurisdiction']
+            or entry['fiscalYear'] != source['fiscal_year'] or entry['documentKind'] != 'budget'
+            or entry['direction'] != 'expenditure'
+            or entry['origin']['object']['bytes'] != source['content_inspection']['bytes']
+            or metadata['request_url'] != source['download_url']
+            or metadata.get('namespace') != NAMESPACE
+            or metadata['pages'] != table['pages'] or metadata['fund_label'] != table['account']
+            or metadata['observation_role'] != table['observation_role']
+            or metadata.get('financial_phase') != phase
+            or metadata.get('phases') != (['approved'] if financial else [])
+            or metadata.get('canonical_initial') is not financial
+            or metadata.get('nonadditive') is not (not financial)
+            or metadata.get('approval_proof') != spec['approval']
+            or metadata['source_amount_unit'] != '千円' or metadata['unit_multiplier'] != 1000):
+            raise ValueError('Native initial adopted scope/phase differs from the origin registry')
+        seen.add(entry['path'])
+        structure = dict(hierarchy=['kan','kou','moku','project'],dimensions=['department'],
+            funds=[dict(code='',label=table['account'])],scope=dict(
+                granularity=metadata['grain'],nonadditive=not financial,
+                sourceAmountUnit='千円',unitMultiplier=1000,
+                expenditureSetsuStatus='same-moku-printed-left-code-name-and-active-year-master; blank-reserve-unconfirmed'))
+        declaration = dict(namespace=NAMESPACE,provider=PROVIDER,sourceKey=source['id'],
+            documentKind='budget',documentLabel=source['document_title'],landingPage=source['landing_url'],
+            url=source['download_url'],sha256=sha,licenseId='NOASSERTION',attribution='多摩市',
+            redistributionStatus='unconfirmed',rawForm='extracted',tableId=table['table_id'],
+            fundLabel=table['account'],pages=table['pages'],rawRowCount=metadata['rows'],
+            rawTableSha256=entry['table']['sha256'],rawTableBytes=entry['table']['bytes'],
+            rawSchema=metadata['raw_schema'],sourceAmountUnit='千円',unitMultiplier=1000,
+            financialPhase=phase,canonicalInitial=financial,nonadditive=not financial,
+            observationRole=table['observation_role'],approvalProof=spec['approval'],
+            approvalDate=spec['approval']['date'],grain=metadata['grain'],structure=structure)
+        rows.append(dict(dataset_id=f'{source["jurisdiction"]}:{source["fiscal_year"]}:expenditure:budget:{sha}:{table["table_id"]}',
+            jurisdiction_code=source['jurisdiction'],fiscal_year=source['fiscal_year'],
+            direction='expenditure',document_kind='budget',
+            source_json=json.dumps(declaration,ensure_ascii=False,sort_keys=True)))
+    expected = {input_path(spec['source'],table) for spec in specs.values() for table in spec['tables']}
+    if seen and seen != expected:
+        raise ValueError('Native initial adopted tables do not cover the registered account ranges')
+    return rows,history
 
 
 def normalize(text: str) -> str:
@@ -341,30 +445,51 @@ def write_table(directory: Path, records: list[dict], *, financial: bool):
         connection.execute('copy candidate to ? (format parquet,compression zstd)', [str(directory/'data.parquet')])
 
 
-def main():
-    parser=argparse.ArgumentParser(description=__doc__, epilog='Exit 0: candidate written; 1: invalid original or failed reconciliation. No adoption or approval phase assignment.')
-    parser.add_argument('--source-id',required=True)
-    parser.add_argument('--pdf',required=True,type=Path)
-    parser.add_argument('--account',required=True)
-    parser.add_argument('--first-page',required=True,type=int)
-    parser.add_argument('--last-page',required=True,type=int)
-    parser.add_argument('--output',required=True,type=Path)
-    args=parser.parse_args()
+def main(argv=None, *, raw_root=None):
+    parser=argparse.ArgumentParser(description=__doc__, epilog='Exit 0: candidate written; 1: invalid original or failed reconciliation. Fixed inputs are never replaced by this command.')
+    parser.add_argument('--source-id',required=False)
+    parser.add_argument('--pdf',required=False,type=Path)
+    parser.add_argument('--account',required=False)
+    parser.add_argument('--first-page',required=False,type=int)
+    parser.add_argument('--last-page',required=False,type=int)
+    parser.add_argument('--output',required=False,type=Path)
+    parser.add_argument('--registered',action='store_true',help='Use the approved declaration for exactly the registered account and pages.')
+    parser.add_argument('--acquire-registered',action='store_true',help='Acquire enabled native-initial declarations into FUDOKI_INPUT_DIR.')
+    args=parser.parse_args(argv)
+    manual = ('source_id','pdf','account','first_page','last_page','output')
+    if args.acquire_registered:
+        if args.registered or any(getattr(args,key) is not None for key in manual):
+            parser.error('--acquire-registered cannot be combined with candidate arguments')
+        return acquire_registered()
+    if any(getattr(args,key) is None for key in manual):
+        parser.error('candidate mode requires --source-id, --pdf, --account, --first-page, --last-page and --output')
     source=next((s for s in load_registry(INVENTORY)['sources'] if s['id']==args.source_id),None)
     if source is None or source['jurisdiction'] != '132241' or args.account not in source['account_labels']:
         raise ValueError('Unknown original/account in the registry')
     if not any(e['account_label']==args.account and e['in_scope']['status']=='included' for e in source['editions']):
         raise ValueError('Account is not an included original edition')
+    registered = None
+    if args.registered:
+        registered = next((spec for spec in registered_specs() if spec['source']['id']==source['id']),None)
+        if registered is None or not any(t['account']==args.account and t['pages']==[args.first_page,args.last_page]
+                                         for t in registered['tables']):
+            raise ValueError('Requested registered candidate differs from its declared account/pages')
+        if 'この予算書(案)' in normalize(page_text(args.pdf,2,2)):
+            raise ValueError('Registered approved original still prints the proposal note')
     body=args.pdf.read_bytes()
     if (digest(body)!=source['content_inspection']['sha256']
         or len(body)!=source['content_inspection']['bytes']):
         raise ValueError('Original differs from inspected registry bytes')
     scope,pages=inspect_scope(args.pdf,source,args.account,args.first_page,args.last_page)
+    if registered is not None:
+        table = next(t for t in registered['tables'] if t['account']==args.account)
+        if f'第{table["bill"]}号議案' not in normalize(page_text(args.pdf,scope['article_page'],scope['article_page'])):
+            raise ValueError('Printed bill differs from the registered approval scope')
     records,problems=extract(args.pdf,args.first_page,args.last_page,pages=pages)
     leaves,checks=reconcile(records,problems)
     checks['account_difference']=dict(printed=scope['printed_total'],extracted=checks['amount']) if scope['printed_total'] != checks['amount'] else None
     checks['complete_observed_grain'] &= checks['account_difference'] is None
-    result=dict(source_id=source['id'],account=args.account,rows=len(records),scope=scope,checks=checks,adopted=False,approval_phase_assigned=False)
+    result=dict(source_id=source['id'],account=args.account,rows=len(records),scope=scope,checks=checks,adopted=False,approval_phase_assigned=registered is not None)
     if not checks['complete_observed_grain']:
         print(json.dumps(result,ensure_ascii=False))
         return 1
@@ -376,14 +501,25 @@ def main():
                         'pipeline/ingestion/fiscal/source_registry.py',
                         INVENTORY.relative_to(REPO).as_posix(),
                         'pipeline/ingestion/fiscal/sources.schema.json', 'uv.lock']
+    if registered is not None:
+        definition_paths += ['pipeline/ingestion/fiscal/sources.py','pipeline/ingestion/declarations.py',
+            'pipeline/ingestion/acquire.py','pipeline/ingestion/fiscal/tama_initial_native_coverage.py',
+            'pipeline/dbt/models/staging/fiscal/_tama_initial_native_sources.yml',
+            'pipeline/dbt/models/staging/fiscal/stg_132241__initial_native.sql',
+            'pipeline/dbt/models/intermediate/fiscal/records/int_132241__initial_native.sql',
+            'pipeline/dbt/models/intermediate/fiscal/records/int_132241__initial_native_datasets.sql',
+            'pipeline/dbt/models/marts/records/fiscal_132241_initial_native_lines.sql',
+            'pipeline/dbt/models/marts/records/fiscal_132241_initial_native_items.sql',
+            'pipeline/dbt/models/marts/records/fiscal_132241_initial_native_observations.sql',
+            'pipeline/dbt/models/marts/csv/csv_132241_initial_native_observations.sql']
+        definition_paths.append('pipeline/dbt/tests/expenditure_setsu.sql')
+        definition_paths.append('pipeline/dbt/models/marts/records/fiscal_datasets.sql')
     definitions = {}
     for relative_path in definition_paths:
         content=(REPO/relative_path).read_bytes()
         definitions[relative_path]=dict(sha256=digest(content),bytes=len(content))
     entries=[]
     for role,rows in [('observations',records),('expenditure',leaves)]:
-        directory=args.output/role
-        write_table(directory,rows,financial=role=='expenditure')
         metadata=dict(jurisdiction_code=source['jurisdiction'],fiscal_year=source['fiscal_year'],
                       document_kind='budget',direction='expenditure',raw_form='extracted',origin_sha256=origin['sha256'],
                       source_key=source['id'],request_url=source['download_url'],
@@ -396,13 +532,43 @@ def main():
                       recognition_basis='Printed project/code/detail positions; legal correspondence and phase not assigned by reader',
                       definition_files=definitions,
                       extractor='ingestion.fiscal.tama_budget_detail',source_position_method='native-pdftotext-bbox-layout')
-        logical=(f'tama-initial-native/jurisdiction={source["jurisdiction"]}/year={source["fiscal_year"]}/'
-                 f'document_kind=budget/edition={origin["sha256"]}/direction=expenditure/table={metadata["table_id"]}')
+        logical=input_path(source,metadata)
+        if registered is not None:
+            financial = role == 'expenditure'
+            metadata.update(namespace=NAMESPACE,financial_phase='approved' if financial else None,
+                phases=['approved'] if financial else [],canonical_initial=financial,
+                approval_proof=registered['approval'],approval_date=registered['approval']['date'],
+                recognition_status='registered-approved-initial' if financial else 'nonadditive-observations',
+                recognition_basis='正式原典の本年度歳出欄のみ。節の対応は同じ目の左節表と年度マスタで検査する。')
+        directory = raw_root/logical if raw_root is not None else args.output/role
+        write_table(directory,rows,financial=role=='expenditure')
         entry=record_input(directory,metadata,logical_path=logical)
         entries.append(dict(role=role,path=entry['path'],rows=len(rows),table=entry['table']))
     result['candidate_inputs']=entries
     (args.output/'inspection.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
     print(json.dumps(result,ensure_ascii=False))
+    return 0
+
+
+def acquire_registered():
+    """Use the shared HTTP cache and write declared candidates for acquisition."""
+    from ingestion.lib.http import http_get
+    from ingestion.inputs import OBJECTS
+    from ingestion.paths import RAW
+    for spec in registered_specs():
+        source = spec['source']
+        fetched = http_get(source['download_url'])
+        original = save_object('origin',fetched.body)
+        pdf = OBJECTS/original['key']
+        for table in spec['tables']:
+            if table['observation_role'] != 'expenditure':
+                continue
+            first,last = table['pages']
+            status = main(['--source-id',source['id'],'--pdf',str(pdf),'--account',table['account'],
+                '--first-page',str(first),'--last-page',str(last),'--output',str(RAW.parent/'reports'/table['table_id']),
+                '--registered'],raw_root=RAW)
+            if status:
+                return status
     return 0
 
 

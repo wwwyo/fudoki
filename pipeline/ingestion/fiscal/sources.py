@@ -360,6 +360,11 @@ def all_sources(path: Path = SOURCES_JSON) -> dict[str, Source]:
     if set(existing) & set(supplementary1):
         raise ValueError('komae source key overlaps an existing/joint provider')
     existing.update(supplementary1)
+    from ingestion.fiscal.tama_budget_detail import registered_sources
+    native_initial = registered_sources() if path.resolve() == SOURCES_JSON.resolve() else {}
+    if set(existing) & set(native_initial):
+        raise ValueError('native initial source key overlaps an existing provider')
+    existing.update(native_initial)
     return existing
 
 

@@ -157292,7 +157292,8 @@
       "inspected_at": "2026-10-04",
       "listing_evidence": {
         "label": "令和8年度 特別会計・下水道事業会計予算書 （PDF 5.2 MB）",
-        "heading": "予算書 / 令和8年度 予算書"
+        "heading": "予算書 / 令和8年度 予算書",
+        "primary_fiscal_page": true
       },
       "content_inspection": {
         "status": "text_probed",
@@ -157431,7 +157432,50 @@
         "evidence_urls": [
           "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/897/08tokubetu-1.pdf"
         ]
-      }
+      },
+      "ingestions": [
+        {
+          "section": "native_initial_detail",
+          "key": "132241:2026",
+          "enabled": true,
+          "options": {
+            "accounts": [
+              {
+                "account_label": "国民健康保険特別会計",
+                "pages": [
+                  40,
+                  61
+                ],
+                "bill": 9
+              },
+              {
+                "account_label": "介護保険特別会計",
+                "pages": [
+                  104,
+                  125
+                ],
+                "bill": 10
+              },
+              {
+                "account_label": "後期高齢者医療特別会計",
+                "pages": [
+                  156,
+                  163
+                ],
+                "bill": 11
+              }
+            ],
+            "phase": "approved",
+            "approval": {
+              "date": "2026-03-30",
+              "evidence_urls": [
+                "https://www.city.tama.lg.jp/shigikai/kaigi/kekka/1019561/1019818.html"
+              ],
+              "basis": "財政課の正式予算書掲載、議案9・10・11の原案可決、正式版で可決後本予算書となる注記が削除されたことを併せた判断。本年度の歳出欄に限定。議案版との対象52頁の抽出文字は一致するが、原典のバイト列・全位置の同一性は主張しない。"
+            }
+          }
+        }
+      ]
     },
     {
       "id": "132241-75ab17ed2fd3",

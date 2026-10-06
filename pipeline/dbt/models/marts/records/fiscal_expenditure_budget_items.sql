@@ -93,4 +93,6 @@ where not exists (select 1 from g where g.budget_item_id=h.budget_item_id)
   and not exists (select 1 from {{ ref('int_supplementary_expenditure_changes') }} s where s.budget_item_id=h.budget_item_id)
   and not exists (select 1 from {{ ref('fiscal_132195_council_expenditure_budget_items') }} c where c.budget_item_id=h.budget_item_id)
   and not exists (select 1 from {{ ref('fiscal_132195_native_council_expenditure_budget_items') }} n where n.budget_item_id=h.budget_item_id)
+union all
+select * from {{ ref('fiscal_132241_initial_native_items') }}
 order by budget_item_id

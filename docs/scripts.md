@@ -44,3 +44,9 @@
 | `bun run pipeline` | 取得 → dbt・marts の CSV → 報告。**検査が1つでも落ちたら下流を作らない** |
 | `bun run dev` | 報告を作り直してダッシュボードを上げる（`pipeline/verify/view/`、5174） |
 | `bun run fetch:fdp-taxonomy` | FDP の ColumnType 一覧を仕様の原文から起こして取り込む（正準 URL が 404 のため） |
+
+## 多摩市の文字層による当初予算取り込み
+
+`ingestion.fiscal.tama_budget_detail` は会計・頁・原典IDを指定すると未承認の候補を生成する。`--registered` は同じ会計・頁の台帳宣言を使う。`--acquire-registered` は台帳で有効な宣言を共通HTTP取得経路から取り込み、通常の `ingestion.acquire` もこの入口を呼ぶ。いずれも単独では固定入力一覧を置き換えない。
+
+対象範囲は `sources.json`、固定した原典・表と宣言は `sources.lock.json` を参照する。検算用の観測表は非加算で金額段階なし、金額明細は原典で確認した粒度を保持する。

@@ -103,6 +103,8 @@ def output_coverage(connection, candidate: Path, hashes: dict, datasets: list[di
         dataset['_phase_lines'] = {}
         try:
             metadata = json.loads(dataset['source_json'])
+            if metadata.get('namespace') == 'tama-initial-native':
+                continue
             if metadata.get('independentBreakdown') and metadata.get('observationRole') in SETTLEMENT_ROLES:
                 # 独立決算表は採用Parquetを直接照合する。共通財政明細へ混ぜない。
                 continue
@@ -940,6 +942,8 @@ def checked_datasets(lock_path: Path, warehouse: Path) -> tuple[list[dict], str]
         native_settlement_output_coverage(connection, candidate, expected, lock_path, datasets)
         from ingestion.fiscal.initial445_coverage import output_coverage as initial445_output_coverage
         initial445_output_coverage(connection, candidate, expected, lock_path, datasets)
+        from ingestion.fiscal.tama_initial_native_coverage import output_coverage as tama_initial_native_output_coverage
+        tama_initial_native_output_coverage(connection, candidate, expected, lock_path, datasets)
         from ingestion.fiscal.held5_coverage import output_coverage as held5_output_coverage
         held5_output_coverage(connection, candidate, expected, lock_path, datasets)
         from ingestion.fiscal.settlement2024_coverage import output_coverage as settlement2024_output_coverage

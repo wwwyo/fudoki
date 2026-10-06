@@ -115,4 +115,6 @@ select h.dataset_id,h.jurisdiction_code,h.fiscal_year,h.direction,h.document_kin
 from read_json_auto('{{ env_var("FUDOKI_DECLARATIONS_DIR") }}/history.json') h
 where json_extract_string(h.source_json,'$.provider')='ingestion.fiscal.komae_supplementary_2020_1_provider'
 
+union all
+select * from {{ ref('int_132241__initial_native_datasets') }}
 order by dataset_id

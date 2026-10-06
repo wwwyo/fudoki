@@ -20,6 +20,9 @@ with canonical_original as (
   union all
   select fiscal_line_id, dataset_id, initial_yen as amount
   from {{ ref('int_132071_initial445') }}
+  union all
+  select fiscal_line_id, dataset_id, initial_yen as amount
+  from {{ ref('int_132241__initial_native') }}
 ), problems(problem, id) as (
   select 'setsu_without_map', fiscal_line_id
   from {{ ref('int_expenditure_setsu_lines') }}
