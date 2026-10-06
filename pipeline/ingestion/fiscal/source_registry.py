@@ -19,6 +19,7 @@ SCHEMA = HERE / "sources.schema.json"
 PDF_SECTIONS = (
     "statement", "budget_history", "supplementary_detail", "settlement_pdf",
     "project_names", "revenue_accounts",
+    "initial_detail",
 )
 SECTIONS = ("csv", *PDF_SECTIONS)
 URL_FIELDS = {"url", "landing_page", "download_url", "landing_url", "approval_url"}
@@ -78,6 +79,15 @@ def load_registry(path: Path = INVENTORY) -> dict:
             resource = ingestion["options"].get("resource", {})
             if direction is not None and resource.get("direction", direction) != direction:
                 raise ValueError(f"{where}: profile and resource directions disagree")
+            if ingestion["section"] == "initial_detail":
+                options = ingestion["options"]
+                if (source["jurisdiction"] != ingestion["key"].split(":")[0]
+                    or source["fiscal_year"] != options.get("fiscal_year")
+                    or source["document_phase"] != "initial"
+                    or options.get("fund_label") not in source["account_labels"]
+                    or direction != "expenditure"
+                    or "expenditure" not in source.get("directions", [])):
+                    raise ValueError(f"{where}: initial detail must match its parent jurisdiction, year, account and direction")
             target = profile.get("target", {})
             if not isinstance(target, dict):
                 raise ValueError(f"{where}: target must be an object")
@@ -100,6 +110,14 @@ def load_registry(path: Path = INVENTORY) -> dict:
 
 def _scope(source: dict, ingestion: dict) -> dict:
     profile = ingestion.get("profile", {})
+    if ingestion["section"] == "initial_detail":
+        return {"jurisdiction": source["jurisdiction"],
+                "fiscal_year": ingestion["options"]["fiscal_year"],
+                "account_label": ingestion["options"]["fund_label"],
+                "document_phase": source["document_phase"],
+                "direction": "expenditure",
+                "physical_pages": [ingestion["options"]["first_page"],
+                                   ingestion["options"]["last_page"]]}
     if "target" in profile:
         return profile["target"]
     if "edition_index" in profile:
@@ -204,6 +222,10 @@ def project_sources(inventory: dict) -> dict:
                 raise ValueError(f"{key}: duplicate resource registration")
             block["resources"].append(resource)
         else:
+            if section == "initial_detail":
+                if "coverage_source_id" in spec:
+                    raise ValueError(f"{section}.{key}: the containing origin supplies coverage_source_id")
+                spec["coverage_source_id"] = source["id"]
             if section != "budget_history":
                 spec["url"] = source["download_url"]
                 if section not in ("project_names", "revenue_accounts"):

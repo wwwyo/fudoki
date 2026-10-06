@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from ingestion.shared.jurisdictions import jurisdiction_name as _jurisdiction_name
-from ingestion.fiscal.source_registry import load_registry, project_sources
+from ingestion.fiscal.source_registry import PDF_SECTIONS, load_registry, project_sources
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 SOURCES_JSON = Path(__file__).resolve().parent / "sources.json"
@@ -98,7 +98,7 @@ class Source:
     # 「全リソースが直 URL なら catalog を書いてはいけない」を強制する。
     catalog: Catalog | None
     jurisdiction_code: str
-    # ⚠️ **sources.toml には書かない。** `jurisdiction_code` から
+    # ⚠️ **原典別の取り込み宣言には書かない。** `jurisdiction_code` から
     # `packages/jurisdictions/jurisdictions.json` を引いて load_sources が埋める。
     # 団体の名称と識別子はそこが正本（財政データ・調達で同じキーを使う）。
     jurisdiction_name: str
@@ -206,12 +206,8 @@ def load_sources(path: Path = SOURCES_JSON) -> dict[str, Source]:
     catalogs = {name: Catalog(**spec) for name, spec in raw.pop("catalog", {}).items()}
     # 事業名・歳入科目名の取得元は別の形（PDF とページ範囲）なので Source として読まない。
     # 正本は同じ原典台帳に置く — 取得元の宣言が2ファイルに割れるほうが見落とす。
-    raw.pop("project_names", None)
-    raw.pop("revenue_accounts", None)
-    raw.pop("statement", None)
-    raw.pop("budget_history", None)
-    raw.pop("supplementary_detail", None)
-    raw.pop("settlement_pdf", None)
+    for section in PDF_SECTIONS:
+        raw.pop(section, None)
 
     sources: dict[str, Source] = {}
     for key, spec in raw.items():
@@ -251,11 +247,11 @@ def load_sources(path: Path = SOURCES_JSON) -> dict[str, Source]:
                 )
         if catalog_name is not None and catalog_name not in catalogs:
             raise ValueError(f"{key}: カタログ「{catalog_name}」が未定義")
-        # ⚠️ **TOML に書かれていたら止める。** 既定値で上書きすると、
+        # ⚠️ **取り込み宣言に書かれていたら止める。** 既定値で上書きすると、
         # 誤記を黙って直したのか宣言が効いていないのかを読み手が区別できない。
         if "jurisdiction_name" in spec:
             raise ValueError(
-                f"{key}: jurisdiction_name は sources.toml に書かない。"
+                f"{key}: jurisdiction_name は原典別の取り込み宣言に書かない。"
                 f"団体の名称は packages/jurisdictions/jurisdictions.json が正本で、"
                 f"jurisdiction_code から引く"
             )
