@@ -16,7 +16,7 @@
 |---|---:|---:|---:|---:|
 | 千代田区 | 22 | 0 | 29 | 21 |
 | 三鷹市 | 177 | 5 | 6 | 17 |
-| 昭島市 | 22 | 4 | 23 | 45 |
+| 昭島市 | 0 | 26 | 23 | 45 |
 | 狛江市 | 22 | 48 | 19 | 69 |
 | 多摩市 | 85 | 8 | 38 | 46 |
 
@@ -235,28 +235,6 @@
 | 三鷹市 | 2025 | 後期高齢者医療特別会計 | 補正第1号 | [令和7年度三鷹市後期高齢者医療特別会計補正予算（第1号）及び同説明書（PDF 436KB）](https://www.city.mitaka.lg.jp/c_service/119/attached/attach_119565_3.pdf) | 候補1件（最新版の網羅確認なし） |
 | 三鷹市 | 2026 | 一般会計 | 補正第1号 | [令和8年度三鷹市一般会計補正予算（第1号）及び同説明書（PDF 447KB）](https://www.city.mitaka.lg.jp/c_service/003/attached/attach_3871_2.pdf) | 候補1件（最新版の網羅確認なし） |
 | 三鷹市 | 2026 | 一般会計 | 補正第2号 | [令和8年度三鷹市一般会計補正予算（第2号）及び同説明書（PDF 860KB）](https://www.city.mitaka.lg.jp/c_service/003/attached/attach_3871_4.pdf) | 候補1件（最新版の網羅確認なし） |
-| 昭島市 | 2020 | 一般会計 | 決算 | [令和2年度決算書（一般会計歳出事項別明細書） （PDF 779.7 KB）](https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/261/r02kessannsyosaisyutu.pdf) | 候補1件（最新版の網羅確認なし） |
-| 昭島市 | 2020 | 介護保険特別会計 | 決算 | [令和2年度決算書（介護保険特別会計） （PDF 328.9 KB）](https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/261/r02kessannsyokaigo.pdf) | 候補1件（最新版の網羅確認なし） |
-| 昭島市 | 2020 | 国民健康保険特別会計 | 決算 | [令和2年度決算書（国民健康保険特別会計） （PDF 329.2 KB）](https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/261/r02kessannsyokokuho.pdf) | 候補1件（最新版の網羅確認なし） |
-| 昭島市 | 2020 | 後期高齢者医療特別会計 | 決算 | [令和2年度決算書（後期高齢者医療特別会計） （PDF 272.2 KB）](https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/261/r02kessannsyokouki.pdf) | 候補1件（最新版の網羅確認なし） |
-| 昭島市 | 2021 | 一般会計 | 決算 | [令和3年度決算書（一般会計歳出事項別明細書） （PDF 785.3 KB）](https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/260/r3kessan3.pdf) | 候補1件（最新版の網羅確認なし） |
-| 昭島市 | 2021 | 介護保険特別会計 | 決算 | [令和3年度決算書（介護保険特別会計） （PDF 327.7 KB）](https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/260/r3kessan5.pdf) | 候補1件（最新版の網羅確認なし） |
-| 昭島市 | 2021 | 国民健康保険特別会計 | 決算 | [令和3年度決算書（国民健康保険特別会計） （PDF 336.4 KB）](https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/260/r3kessan4.pdf) | 候補1件（最新版の網羅確認なし） |
-| 昭島市 | 2021 | 後期高齢者医療特別会計 | 決算 | [令和3年度決算書（後期高齢者医療特別会計） （PDF 266.2 KB）](https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/260/r3kessan6.pdf) | 候補1件（最新版の網羅確認なし） |
-| 昭島市 | 2022 | 一般会計 | 決算 | [令和4年度決算書（一般会計歳出事項別明細書） （PDF 771.9 KB）](https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/259/r4kessan3.pdf) | 候補1件（最新版の網羅確認なし） |
-| 昭島市 | 2022 | 介護保険特別会計 | 決算 | [令和4年度決算書（介護保険特別会計） （PDF 327.9 KB）](https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/259/r4kessan5.pdf) | 候補1件（最新版の網羅確認なし） |
-| 昭島市 | 2022 | 国民健康保険特別会計 | 決算 | [令和4年度決算書（国民健康保険特別会計） （PDF 335.4 KB）](https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/259/r4kessan4.pdf) | 候補1件（最新版の網羅確認なし） |
-| 昭島市 | 2022 | 後期高齢者医療特別会計 | 決算 | [令和4年度決算書（後期高齢者医療特別会計） （PDF 264.6 KB）](https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/259/r4kessan6.pdf) | 候補1件（最新版の網羅確認なし） |
-| 昭島市 | 2023 | 一般会計 | 決算 | [令和5年度決算書（一般会計歳出事項別明細書） （PDF 718.1 KB）](https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/258/r5kessan3.pdf) | 候補1件（最新版の網羅確認なし） |
-| 昭島市 | 2023 | 中神土地区画整理事業特別会計 | 決算 | [令和5年度決算書（中神土地区画整理事業特別会計） （PDF 252.6 KB）](https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/258/r5kessan7.pdf) | 候補1件（最新版の網羅確認なし） |
-| 昭島市 | 2023 | 介護保険特別会計 | 決算 | [令和5年度決算書（介護保険特別会計） （PDF 312.3 KB）](https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/258/r5kessan5.pdf) | 候補1件（最新版の網羅確認なし） |
-| 昭島市 | 2023 | 国民健康保険特別会計 | 決算 | [令和5年度決算書（国民健康保険特別会計） （PDF 318.9 KB）](https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/258/r5kessan4.pdf) | 候補1件（最新版の網羅確認なし） |
-| 昭島市 | 2023 | 後期高齢者医療特別会計 | 決算 | [令和5年度決算書（後期高齢者医療特別会計） （PDF 254.0 KB）](https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/258/r5kessan6.pdf) | 候補1件（最新版の網羅確認なし） |
-| 昭島市 | 2024 | 一般会計 | 決算 | [令和6年度決算書（一般会計）（PDF:1,577KB） （PDF 1.6 MB）](https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/009/130/r6kessan2.pdf) | 候補1件（最新版の網羅確認なし） |
-| 昭島市 | 2024 | 中神土地区画整理事業特別会計 | 決算 | [令和6年度決算書（中神土地区画整理事業特別会計） （PDF 316.7 KB）](https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/009/130/r6kessan6.pdf) | 候補1件（最新版の網羅確認なし） |
-| 昭島市 | 2024 | 介護保険特別会計 | 決算 | [令和6年度決算書（介護保険特別会計） （PDF 395.1 KB）](https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/009/130/r6kessan4.pdf) | 候補1件（最新版の網羅確認なし） |
-| 昭島市 | 2024 | 国民健康保険特別会計 | 決算 | [令和6年度決算書（国民健康保険特別会計） （PDF 348.4 KB）](https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/009/130/r6kessan3.pdf) | 候補1件（最新版の網羅確認なし） |
-| 昭島市 | 2024 | 後期高齢者医療特別会計 | 決算 | [令和6年度決算書（後期高齢者医療特別会計）（PDF314KB） （PDF 329.2 KB）](https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/009/130/r6kessan5.pdf) | 候補1件（最新版の網羅確認なし） |
 | 狛江市 | 2020 | 一般会計 | 補正第2号 | [令和２年度補正予算案について.pdf [1076KB pdfファイル]](https://www.city.komae.tokyo.jp/index.cfm/50,107429,c,html/107429/20200615-174305.pdf) | 候補1件（最新版の網羅確認なし） |
 | 狛江市 | 2020 | 一般会計 | 補正第4号 | [令和２年度補正予算案について.pdf [534KB pdfファイル]](https://www.city.komae.tokyo.jp/index.cfm/50,109056,c,html/109056/20200828-163735.pdf) | 候補1件（最新版の網羅確認なし） |
 | 狛江市 | 2020 | 一般会計 | 補正第5号 | [令和２年度補正予算案について.pdf [1289KB pdfファイル]](https://www.city.komae.tokyo.jp/index.cfm/50,109569,c,html/109569/20200923-190144.pdf) | 候補1件（最新版の網羅確認なし） |
