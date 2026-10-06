@@ -6,6 +6,8 @@
 
 ## 記録の単位
 
+原典の選択と取り込みの計画では、掲載URL単位の一覧を `bun run sources:canonical --json` で団体・年度・会計・文書種別・補正号の対象へまとめる。最新版の中で構造化データ、文字PDF、画像PDFの順に優先する。規則と版の根拠は `source-selection.json`、詳細は [設計書](../../../docs/prd/fiscal-coverage/design-doc.md) にある。以下の `sources[]` は掲載の履歴を保持するための一覧であり、各リンクを別々に取り込む指示ではない。
+
 `sources[]` の1件は、団体・発見したダウンロードURL・掲載年度の組合せである。分冊、概要と予算書、同一内容の別URL、カタログの旧版・新版を別候補として保持する。この件数は自治体の会計数、補正号数、独立した金額表の数ではない。`id` はこの組合せを基に固定した識別子で、採用・検査状態や文書段階の訂正で変更しない。合集は `fiscal_year: null`、`document_phase: mixed` とし、読めた各版を `editions[]` で識別する。
 
 URLの同一性とバイト列の版は分ける。`download_url` は掲載された正確なURL、`content_inspection.final_url` は取得後のURL、`content_inspection.sha256` は今回取得した原典の版である。`landing_url` と `listing_evidence` に掲載ページ・ラベル・周辺見出しを保存し、リンク名が空なら空文字をそのまま残す。`document_title` はラベル又は確認できた表紙の名称である。`inspected_at` はISO日付で、この census の確認日を表す。

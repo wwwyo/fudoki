@@ -27,6 +27,7 @@
     "check:fiscal": "uv run python -m ingestion.fiscal.check_granularity",
     "coverage:sources": "uv run python -m ingestion.fiscal.source_coverage",
     "coverage:fiscal": "uv run python -m ingestion.fiscal.coverage_audit",
+    "sources:canonical": "uv run python -m ingestion.fiscal.canonical_sources",
     "deploy:api": "bun run --cwd apps/api deploy",
     "deploy:docs": "bun run --cwd apps/docs deploy",
     "deploy:web": "bun run --cwd apps/web deploy",

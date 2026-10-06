@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "selection": {
+    "scope": ["jurisdiction", "fiscal_year", "account_label", "document_phase", "amendment_number", "direction"],
+    "priority": ["latest_publisher_revision", "machine_readability", "official_fiscal_page"],
+    "machine_readability": ["structured", "text_pdf", "image_pdf", "unknown"],
+    "unknown_revision_order": "retain_preferred_candidate_without_certifying_latest",
+    "page_updated_at_is_revision": false,
+    "download_all_candidates_for_hash_deduplication": false
+  },
+  "sources": {
+    "131016-a4720da69c51": {
+      "role": "reference",
+      "basis": "FY2020 front matter and settlement summary/bookkeeping tables. Detailed expenditure sections listed in its table of contents belong to separate PDF parts; table-of-contents vocabulary is not evidence of expenditure detail in this part.",
+      "evidence_urls": ["https://www.city.chiyoda.lg.jp/documents/15979/r2kessansho-1.pdf"]
+    },
+    "131016-aeba7388dec1": {
+      "role": "reference",
+      "basis": "FY2021 front matter and settlement summary/bookkeeping tables. Detailed expenditure sections listed in its table of contents belong to separate PDF parts; table-of-contents vocabulary is not evidence of expenditure detail in this part.",
+      "evidence_urls": ["https://www.city.chiyoda.lg.jp/documents/15979/r3kessansho-1.pdf"]
+    },
+    "132195-696dfc33d98d": {
+      "revision_id": "komae-2024-special-initial-approved-2024-03-25",
+      "basis": "Both publisher copies are the FY2024 special-account budget booklet, with the March 25 original approval printed on the cover. Publication in the sales catalog does not establish a newer fiscal revision.",
+      "evidence_urls": ["https://www.city.komae.tokyo.jp/index.cfm/46,128130,c,html/128130/20240416-153807.pdf", "https://www.city.komae.tokyo.jp/index.cfm/46,132059,c,html/132059/20240327-140217.pdf"],
+      "publisher_priority": 1
+    },
+    "132195-8b8ba560a3f2": {
+      "revision_id": "komae-2024-special-initial-approved-2024-03-25",
+      "basis": "Same publisher budget edition as the sales-catalog copy; use the fiscal budget page as the primary acquisition entry.",
+      "evidence_urls": ["https://www.city.komae.tokyo.jp/index.cfm/46,132059,361,2169,html"],
+      "publisher_priority": 2
+    },
+    "132195-4903fa5037f8": {
+      "revision_id": "komae-2025-special-initial-approved-2025-03-26",
+      "basis": "Both publisher copies are the FY2025 special-account budget booklet, with the March 26 original approval printed on the cover. Publication in the sales catalog does not establish a newer fiscal revision.",
+      "evidence_urls": ["https://www.city.komae.tokyo.jp/index.cfm/46,133351,c,html/133351/20250408-163915.pdf", "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20250325-175517.pdf"],
+      "publisher_priority": 1
+    },
+    "132195-8c605f0be6b9": {
+      "revision_id": "komae-2025-special-initial-approved-2025-03-26",
+      "basis": "Same publisher budget edition as the sales-catalog copy; use the fiscal budget page as the primary acquisition entry.",
+      "evidence_urls": ["https://www.city.komae.tokyo.jp/index.cfm/46,136999,361,2169,html"],
+      "publisher_priority": 2
+    }
+  }
+}

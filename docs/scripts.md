@@ -15,6 +15,7 @@
 | （探索。エージェントが書く） | `pipeline/ingestion/fiscal/observations/discovery/<団体コード>.json` | しない（ローカル観測） |
 | `probe:documents` | `pipeline/ingestion/fiscal/observations/budget-document-probe.json` | しない（ローカル観測） |
 | `coverage:sources` | `pipeline/ingestion/fiscal/observations/budget-source-coverage.json` | しない（ローカル観測） |
+| `sources:canonical --markdown` | `docs/prd/fiscal-coverage/unadopted-sources-2026-10-06.md` | Git（既存宣言から再生成できる対象別の採用対応一覧） |
 | `fetch:fdp-taxonomy` | `pipeline/fdp/fiscal-taxonomy.json` | Git（宣言・判断のみ） |
 | `fetch:account-master` | `pipeline/dbt/seeds/fiscal/account_master.csv` | Git（宣言・判断のみ） |
 | `survey:fiscal-years` | `pipeline/ingestion/fiscal/observations/mitaka-budget-years.json` | しない（ローカル観測） |
