@@ -20,6 +20,7 @@ import yaml
 
 from ingestion.inputs import LOCK, OBJECTS, digest, encode, read_lock, safe_relative, verify_object
 from ingestion.paths import PIPELINE, REPO
+from ingestion.fiscal import canonical_sources
 
 HERE = Path(__file__).resolve().parent
 PHASE_KIND = {'initial': 'budget', 'supplementary': 'supplementary', 'settlement': 'settlement'}
@@ -1271,9 +1272,57 @@ def unresolved_reasons(source: dict, reasons: list[str], verified: list[str], lo
     return remaining
 
 
-def search_coverage(inventory: dict, verified_editions: dict[str, set[tuple]]) -> tuple[list, list, list]:
+def target_key(scope: dict, source: dict | None = None) -> tuple:
+    account = canonical_sources.account_label(scope['account_label'], scope['jurisdiction'],
+                                               csv=bool(source and source['format'] == 'csv'))
+    return (scope['jurisdiction'], scope['fiscal_year'], account,
+            scope['document_phase'], scope['amendment_number'], 'expenditure')
+
+
+def target_coverage(selection: dict, edition_results: dict) -> tuple[list, list]:
+    verified, gaps = [], []
+    pending: dict[tuple, set[str]] = {}
+    for source in selection['content_unconfirmed_sources']:
+        for scope in source['identified_scopes']:
+            key = target_key({**scope, 'jurisdiction': source['jurisdiction']})
+            pending.setdefault(key, set()).add(source['source_id'])
+    for group in selection['groups']:
+        result = {key: group[key] for key in (
+            'source_key', 'jurisdiction', 'fiscal_year', 'account_label', 'document_phase',
+            'amendment_number', 'direction', 'canonical_source_id', 'selection_status')}
+        sid = group['canonical_source_id']
+        key = target_key(group)
+        if sid is None:
+            reasons = [group['selection_status']]
+            result['candidate_source_ids'] = [c['source_id'] for c in group['candidates']]
+        else:
+            editions = edition_results.get((sid, key), [])
+            if len(editions) != 1:
+                reasons = ['canonical_edition_missing_or_ambiguous']
+            else:
+                result['verified_datasets'] = editions[0]['verified_datasets']
+                reasons = editions[0]['reasons']
+        if key in pending:
+            result['pending_candidate_source_ids'] = sorted(pending[key])
+            reasons = [*reasons, 'alternative_content_not_confirmed']
+        if reasons:
+            gaps.append({**result, 'reasons': sorted(set(reasons))})
+        else:
+            verified.append(result)
+    return verified, gaps
+
+
+def search_coverage(inventory: dict, selection: dict, verified_targets: list[dict]) -> tuple[list, list, list]:
     boundaries, gaps, population = [], [], []
     sources = {s['id']: s for s in inventory['sources']}
+    source_targets: dict[str, set[tuple]] = {}
+    for group in selection['groups']:
+        key = target_key(group)
+        for candidate in group['candidates']:
+            source_targets.setdefault(candidate['source_id'], set()).add(key)
+    verified_keys = {target_key(t) for t in verified_targets}
+    unidentified = {s['source_id'] for kind in ('unclassified_sources', 'content_unconfirmed_sources')
+                    for s in selection[kind]}
     for jurisdiction in inventory['jurisdictions']:
         code = jurisdiction['code']
         unavailable = set()
@@ -1301,7 +1350,10 @@ def search_coverage(inventory: dict, verified_editions: dict[str, set[tuple]]) -
                 chosen = proof['source_ids']
                 if any(i not in sources or sources[i]['jurisdiction'] != code for i in chosen):
                     reasons.append('boundary_source_population_mismatch')
-                available = set().union(*(verified_editions.get(i, set()) for i in chosen))
+                # Alternative URLs witness discovery; only the selected target
+                # needs verified outputs. Unknown identity/selection still blocks.
+                discovered = set().union(*(source_targets.get(i, set()) for i in chosen))
+                available = {key[1:5] for key in discovered & verified_keys if key[0] == code}
                 for scope in proof['scopes']:
                     if not evidence_backed(scope):
                         reasons.append('search_scope_without_evidence')
@@ -1322,12 +1374,14 @@ def search_coverage(inventory: dict, verified_editions: dict[str, set[tuple]]) -
                         reasons.append('boundary_scope_not_in_verified_phase_outputs:' + json.dumps(scope, ensure_ascii=False, sort_keys=True))
                     else:
                         boundary_scopes.add(key)
-                # 探索で列挙した歳出資料の未検証をscopesから外して隠さない。
+                # 探索で列挙した対象の未検証をscopesから外して隠さない。
                 if any(sources.get(i, {}).get('role') == 'statement'
                        and sources[i]['in_scope']['status'] != 'excluded'
                        and sources[i]['directions'] != ['revenue']
-                       and not verified_editions.get(i) for i in chosen if i in sources):
-                    reasons.append('boundary_contains_unverified_statement')
+                       and (i in unidentified or not source_targets.get(i)
+                            or not source_targets[i] <= verified_keys)
+                       for i in chosen if i in sources):
+                    reasons.append('boundary_contains_unverified_target')
             if reasons:
                 boundaries.append({'jurisdiction': code, 'url': boundary['url'], 'reasons': sorted(set(reasons))})
             else:
@@ -1340,7 +1394,7 @@ def search_coverage(inventory: dict, verified_editions: dict[str, set[tuple]]) -
 
 
 def audit(inventory_path: Path, schema_path: Path, lock_path: Path, warehouse: Path) -> dict:
-    inventory = json.loads(inventory_path.read_text())
+    inventory = canonical_sources.load_inventory(inventory_path)
     schema = json.loads(schema_path.read_text())
     jsonschema.validators.validator_for(schema).check_schema(schema)
     jsonschema.validate(inventory, schema, format_checker=jsonschema.FormatChecker())
@@ -1353,6 +1407,7 @@ def audit(inventory_path: Path, schema_path: Path, lock_path: Path, warehouse: P
     styles = yaml.safe_load((PIPELINE / 'dbt/dbt_project.yml').read_text())['vars']['fiscal_code_style']
     lock = read_lock(lock_path)
     entries = lock['entries']
+    selection = canonical_sources.report(inventory, lock)
     by_url: dict[str, list[dict]] = {}
     provenance_by_path = {}
     for entry in entries:
@@ -1368,10 +1423,10 @@ def audit(inventory_path: Path, schema_path: Path, lock_path: Path, warehouse: P
                 by_url.setdefault(original_url, []).append(entry)
     datasets, build_state = checked_datasets(lock_path, warehouse)
     gaps = []
-    verified_editions: dict[str, set[tuple]] = {}
     lock_sha = digest(lock_path.read_bytes())
     tally: Counter = Counter()
     published_exceptions = []
+    edition_results: dict[tuple, list[dict]] = {}
     matched_paths: set[str] = set()
     for source in inventory['sources']:
         code = source['jurisdiction']
@@ -1420,13 +1475,15 @@ def audit(inventory_path: Path, schema_path: Path, lock_path: Path, warehouse: P
             reasons.append('listed_amendments_not_all_identified_in_editions')
         verified = []
         source_exceptions = []
-        candidate_editions = set()
+        source_reasons = list(reasons)
+        inspected_editions = []
         for edition in editions:
+            edition_reasons = list(source_reasons)
             account_identity = edition_account_identity(edition, account_identities)
             if edition['in_scope']['status'] == 'excluded' and evidence_backed(edition['in_scope']):
                 continue
             if edition['in_scope']['status'] != 'included' or not evidence_backed(edition['in_scope']):
-                reasons.append('edition_account_regime_not_confirmed')
+                edition_reasons.append('edition_account_regime_not_confirmed')
             if (edition['fiscal_year'] is None
                     or account_identity is None
                     or (source['document_phase'] != 'mixed'
@@ -1437,7 +1494,7 @@ def audit(inventory_path: Path, schema_path: Path, lock_path: Path, warehouse: P
                              or edition['amendment_number'] not in source['amendment_numbers']))
                     or (edition['document_phase'] != 'supplementary'
                         and edition['amendment_number'] is not None)):
-                reasons.append('edition_identity_not_confirmed')
+                edition_reasons.append('edition_identity_not_confirmed')
             confirmation = edition.get('content_confirmation')
             if (not confirmation
                     or confirmation['direction'] != 'expenditure'
@@ -1445,7 +1502,7 @@ def audit(inventory_path: Path, schema_path: Path, lock_path: Path, warehouse: P
                     or any(i >= len(inspection['evidence'])
                            for key in ['account_evidence_indices', 'edition_evidence_indices', 'direction_evidence_indices']
                            for i in confirmation[key])):
-                reasons.append('edition_content_confirmation_missing_or_stale')
+                edition_reasons.append('edition_content_confirmation_missing_or_stale')
             matching = [d for d in datasets
                         if d.get('direction', 'expenditure') == 'expenditure'
                         and d['jurisdiction_code'] == code
@@ -1471,17 +1528,17 @@ def audit(inventory_path: Path, schema_path: Path, lock_path: Path, warehouse: P
                         and (edition['document_phase'] != 'supplementary'
                              or edition['amendment_number'] in d['output_coverage']['accounts'][label(edition['account_label'])]['amendment_numbers'])]
             if not matching:
-                reasons.append('edition_not_in_verified_marts:' + json.dumps(edition, ensure_ascii=False, sort_keys=True))
+                edition_reasons.append('edition_not_in_verified_marts:' + json.dumps(edition, ensure_ascii=False, sort_keys=True))
             grain_source = {**source, 'content_grain': edition.get('content_grain', source['content_grain'])}
             grain_gaps = grain_reasons(grain_source, matching, edition['account_label'])
             if edition.get('published_grain_exception'):
                 exception_gaps = published_grain_reasons(grain_source, edition, matching, source_entries,
                                                          provenance_by_path, lock_path, lock_sha, styles)
-                reasons.extend(exception_gaps)
+                edition_reasons.extend(exception_gaps)
                 if exception_gaps:
-                    reasons.extend(grain_gaps)
+                    edition_reasons.extend(grain_gaps)
                 else:
-                    reasons.extend(r for r in grain_gaps if r in
+                    edition_reasons.extend(r for r in grain_gaps if r in
                                    ['content_grain_not_observed', 'moku_grain_not_observed'])
                     source_exceptions.append({'source_id': source['id'], 'edition': scope_key(edition),
                                               'dataset_ids': sorted(d['dataset_id'] for d in matching),
@@ -1492,32 +1549,55 @@ def audit(inventory_path: Path, schema_path: Path, lock_path: Path, warehouse: P
                                                                  for e in p.get('row_exceptions', [])],
                                               'project_setsu_confirmed': False})
             else:
-                reasons.extend(grain_gaps)
+                edition_reasons.extend(grain_gaps)
             verified.extend(d['dataset_id'] for d in matching)
-            if matching:
-                candidate_editions.add(scope_key(edition))
+            result = {'reasons': sorted(set(edition_reasons)),
+                      'verified_datasets': sorted(d['dataset_id'] for d in matching)}
+            key = target_key({**edition, 'jurisdiction': code}, source)
+            edition_results.setdefault((source['id'], key), []).append(result)
+            inspected_editions.append(result)
+            reasons.extend(edition_reasons)
         if source['document_phase'] == 'supplementary' and not source['amendment_numbers']:
             reasons.append('amendment_number_not_confirmed')
-        reasons.extend(unresolved_reasons(source, reasons, verified, lock_sha, source_entries))
+        unresolved = unresolved_reasons(source, reasons, verified, lock_sha, source_entries)
+        reasons.extend(unresolved)
+        for result in inspected_editions:
+            result['reasons'] = sorted(set(result['reasons'] + unresolved))
         if not reasons and verified:
             tally['verified_statements'] += 1
-            verified_editions[source['id']] = candidate_editions
             published_exceptions.extend(source_exceptions)
         else:
             gaps.append({'source_id': source['id'], 'jurisdiction': code,
                          'fiscal_year': source['fiscal_year'], 'phase': source['document_phase'],
                          'reasons': sorted(set(reasons)), 'verified_datasets': sorted(set(verified))})
-    boundary_gaps, search_gaps, population_gaps = search_coverage(inventory, verified_editions)
+    verified_targets, target_gaps = target_coverage(selection, edition_results)
+    inventory_gaps = [{'source_id': item['source_id'], 'jurisdiction': item['jurisdiction'],
+                       'kind': kind, 'reasons': item['reasons']}
+                      for kind in ('unclassified_sources', 'content_unconfirmed_sources')
+                      for item in selection[kind]]
+    for source in inventory['sources']:
+        if source['role'] != 'statement':
+            continue
+        if any(scope.get('in_scope', {}).get('status') == 'excluded'
+               and not evidence_backed(scope['in_scope']) for scope in [source, *source['editions']]):
+            inventory_gaps.append({'source_id': source['id'], 'jurisdiction': source['jurisdiction'],
+                                   'kind': 'exclusion_unconfirmed', 'reasons': ['exclusion_without_evidence']})
+    boundary_gaps, search_gaps, population_gaps = search_coverage(inventory, selection, verified_targets)
     unmatched = sorted(e['path'] for e in entries if e['path'] not in matched_paths)
     unmatched_expenditure = sorted(e['path'] for e in entries
                                    if e['path'] not in matched_paths and e['direction'] == 'expenditure')
-    complete = (bool(tally['statements']) and not gaps and not search_gaps
+    complete = (bool(selection['groups']) and not target_gaps and not inventory_gaps and not search_gaps
                 and not boundary_gaps and not population_gaps
                 and not unmatched_expenditure and build_state == 'verified_current_build'
                 and all(d['output_coverage']['complete'] for d in datasets))
     return {'schema_version': 1, 'complete': complete, 'build_state': build_state,
             'inventory_lock_changed': inventory['lock_reconciliation']['lock_sha256'] != digest(lock_path.read_bytes()),
             'counts': dict(sorted(tally.items())), 'source_gap_count': len(gaps),
+            'completion_unit': 'canonical_expenditure_target',
+            'target_count': len(selection['groups']), 'verified_target_count': len(verified_targets),
+            'target_gap_count': len(target_gaps), 'target_gaps': target_gaps,
+            'verified_targets': verified_targets,
+            'inventory_gap_count': len(inventory_gaps), 'inventory_gaps': inventory_gaps,
             'search_gap_count': len(search_gaps), 'source_gaps': gaps, 'search_gaps': search_gaps,
             'boundary_gap_count': len(boundary_gaps), 'boundary_gaps': boundary_gaps,
             'population_gap_count': len(population_gaps), 'population_gaps': population_gaps,
@@ -1573,7 +1653,7 @@ def main() -> int:
     parser.add_argument('--warehouse', type=Path, default=PIPELINE / '.build/warehouse.duckdb')
     parser.add_argument('--describe', action='store_true', help='Print the inventory schema and exit')
     parser.add_argument('--json', action='store_true', help='Print a machine-readable audit')
-    parser.add_argument('--limit', type=int, default=25, help='Limit displayed source gaps (default 25)')
+    parser.add_argument('--limit', type=int, default=25, help='Limit displayed source and target gaps (default 25)')
     parser.add_argument('--require-complete', action='store_true', help='Exit 2 if the full scope is incomplete')
     args = parser.parse_args()
     if args.limit < 0:
@@ -1585,12 +1665,15 @@ def main() -> int:
         report = audit(args.inventory, args.schema, args.lock, args.warehouse)
         report['source_gaps'] = report['source_gaps'][:args.limit]
         report['source_gaps_truncated'] = report['source_gap_count'] > args.limit
+        report['target_gaps'] = report['target_gaps'][:args.limit]
+        report['target_gaps_truncated'] = report['target_gap_count'] > args.limit
         if args.json or not sys.stdout.isatty():
             print(json.dumps(report, ensure_ascii=False, sort_keys=True))
         else:
             print(f'complete={report["complete"]} build={report["build_state"]}')
             print(json.dumps(report['counts'], ensure_ascii=False))
-            print(f'source gaps={report["source_gap_count"]}; search gaps={report["search_gap_count"]}; '
+            print(f'target gaps={report["target_gap_count"]}; inventory gaps={report["inventory_gap_count"]}; '
+                  f'candidate source gaps={report["source_gap_count"]}; search gaps={report["search_gap_count"]}; '
                   f'boundary gaps={report["boundary_gap_count"]}; population gaps={report["population_gap_count"]}')
         return 2 if args.require_complete and not report['complete'] else 0
     except (OSError, ValueError, KeyError, TypeError, yaml.YAMLError, jsonschema.exceptions.ValidationError,
