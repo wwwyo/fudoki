@@ -1542,8 +1542,8 @@ def audit(inventory_path: Path, schema_path: Path, lock_path: Path, warehouse: P
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--inventory', type=Path, default=HERE / 'coverage.json')
-    parser.add_argument('--schema', type=Path, default=HERE / 'coverage.schema.json')
+    parser.add_argument('--inventory', type=Path, default=HERE / 'sources.json')
+    parser.add_argument('--schema', type=Path, default=HERE / 'sources.schema.json')
     parser.add_argument('--lock', type=Path, default=LOCK)
     parser.add_argument('--warehouse', type=Path, default=PIPELINE / '.build/warehouse.duckdb')
     parser.add_argument('--describe', action='store_true', help='Print the inventory schema and exit')

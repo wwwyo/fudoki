@@ -1,6 +1,6 @@
 # 原典の収録候補一覧（census v1）
 
-`coverage.json` は、対象5団体について公式サイト・公式カタログで発見した財政資料と未確認事項を Git に保存する一覧である。JSON の構造は [coverage.schema.json](coverage.schema.json) に定義する。これは取得宣言でも固定入力一覧でもない。採用は `sources.toml` と `sources.lock.json`、提供用データの検査は現在の構築結果で判定する。
+`sources.json` は、対象5団体について公式サイト・公式カタログで発見した財政資料と未確認事項を Git に保存する一覧である。JSON の構造は [sources.schema.json](sources.schema.json) に定義する。これは取得宣言でも固定入力一覧でもない。採用は `sources.toml` と `sources.lock.json`、提供用データの検査は現在の構築結果で判定する。
 
 2026-10-04 に確認した有限の探索結果を収録した。公開された全資料を網羅したとは宣言しない。現在の予算ページに古い年度がない場合も、有償刊行物・庁議・記者会見・議会議案・東京都カタログを探し、探索できていない範囲を `jurisdictions[].gaps` に残す。リンクが見つからない、404、画像で読めない、といった事情を「公開なし」やゼロに置き換えない。
 
@@ -71,8 +71,8 @@ import json
 from pathlib import Path
 from jsonschema import Draft202012Validator, FormatChecker
 root = Path('ingestion/fiscal')
-schema = json.loads((root / 'coverage.schema.json').read_text())
-inventory = json.loads((root / 'coverage.json').read_text())
+schema = json.loads((root / 'sources.schema.json').read_text())
+inventory = json.loads((root / 'sources.json').read_text())
 Draft202012Validator.check_schema(schema)
 Draft202012Validator(schema, format_checker=FormatChecker()).validate(inventory)
 print('coverage schema: PASS')

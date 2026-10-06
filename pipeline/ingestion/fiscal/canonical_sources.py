@@ -325,7 +325,7 @@ def markdown(output: dict) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--inventory', type=Path, default=HERE / 'coverage.json')
+    parser.add_argument('--inventory', type=Path, default=HERE / 'sources.json')
     parser.add_argument('--lock', type=Path, default=HERE / 'sources.lock.json')
     formats = parser.add_mutually_exclusive_group()
     formats.add_argument('--json', action='store_true')
