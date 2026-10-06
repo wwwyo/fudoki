@@ -245,7 +245,7 @@ def report(inventory: dict, lock: dict) -> dict:
         ))
     counts = Counter(g['adoption_status'] for g in result)
     return dict(
-        schema_version=1, generated_at=date.today().isoformat(), inventory_inspected_at=inventory['inspected_at'],
+        schema_version=1, inventory_inspected_at=inventory['inspected_at'],
         policy=SELECTION_POLICY, network_requests=0, original_hashes_computed=0,
         whole_public_scope_complete=False, provided_data_verified=False,
         inventory_source_records=len(inventory['sources']), adopted_input_count=len(lock['entries']),
@@ -265,7 +265,7 @@ def markdown(output: dict) -> str:
     phases = {'initial': '当初', 'supplementary': '補正', 'settlement': '決算'}
     missing = [g for g in output['groups'] if g['adoption_status'] == 'no_candidate_has_adopted_inputs']
     lines = ['# 原典対象ごとの採用対応がない範囲', '',
-        f"{output['generated_at']}。既存の原典一覧と現在の固定入力の宣言を、取得・OCRなしで照合した結果。", '',
+        f"原典一覧の確認日: {output['inventory_inspected_at']}。既存の原典一覧と現在の固定入力の宣言を、取得・OCRなしで照合した結果。", '',
         f"対象は掲載 {output['inventory_source_records']} レコード、採用 {output['adopted_input_count']} 入力。全公開資料の探索完了ではない。", '',
         '## 選択ルール', '',
         '自治体・年度・会計・当初／補正号／決算ごとに、正式な最新版の中からCSV、文字PDF、画像PDFの順に選ぶ。同じ版・形式なら公式財政ページを優先する。', '',
