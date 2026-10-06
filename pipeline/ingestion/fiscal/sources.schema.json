@@ -1328,7 +1328,8 @@
             "revenue_accounts",
             "initial_detail",
             "recovered_initial_detail",
-            "native_initial_detail"
+            "native_initial_detail",
+            "native_supplementary_detail"
           ]
         },
         "key": {
@@ -1825,6 +1826,82 @@
                       "basis": {
                         "type": "string",
                         "minLength": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "section": {
+                "const": "native_supplementary_detail"
+              }
+            },
+            "required": [
+              "section"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "approval": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "date",
+                      "basis",
+                      "evidence"
+                    ],
+                    "properties": {
+                      "date": {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      "basis": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "minProperties": 1,
+                        "propertyNames": {
+                          "format": "uri"
+                        },
+                        "additionalProperties": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "sha256",
+                            "bytes",
+                            "pages"
+                          ],
+                          "properties": {
+                            "sha256": {
+                              "type": "string",
+                              "pattern": "^[a-f0-9]{64}$"
+                            },
+                            "bytes": {
+                              "type": "integer",
+                              "minimum": 1
+                            },
+                            "pages": {
+                              "type": "array",
+                              "minItems": 2,
+                              "maxItems": 2,
+                              "items": {
+                                "type": "integer",
+                                "minimum": 1
+                              }
+                            }
+                          }
+                        }
                       }
                     }
                   }

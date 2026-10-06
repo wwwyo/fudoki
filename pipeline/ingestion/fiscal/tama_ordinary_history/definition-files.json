@@ -76,6 +76,14 @@
       "bytes": 1767,
       "sha256": "da1e91ab6a6bd89b21bb03a21e1a2aa1f02326e2b9c93536345b22db3fed3d05"
     },
+    "pipeline/dbt/models/intermediate/fiscal/records/int_131016__supplementary_native.sql": {
+      "bytes": 3382,
+      "sha256": "a5f4dc920b3df03ea7512900e9922d5ff9c84c2d7be915c16c1ad1224636cc75"
+    },
+    "pipeline/dbt/models/intermediate/fiscal/records/int_131016__supplementary_native_datasets.sql": {
+      "bytes": 700,
+      "sha256": "976a3ccd24a3dfd3df62cefd09651399cedf7984c2d9dde5322e64ffa8162d00"
+    },
     "pipeline/dbt/models/intermediate/fiscal/records/int_132047__mitaka_initial2026_datasets.sql": {
       "bytes": 3141,
       "sha256": "387c3d708a495f03e72471be0c91c69761bb299e595a1a92c82d5bf86cf95c63"
@@ -265,12 +273,16 @@
       "sha256": "52e31365881f5780e2a847281a387f62b9ce47cb6ec8896cf773e01bbf65d768"
     },
     "pipeline/dbt/models/intermediate/fiscal/records/int_fiscal_datasets.sql": {
-      "bytes": 7093,
-      "sha256": "fa191652aed0df4339e5f147447053f4b18a1829e464d7c63de514c296803931"
+      "bytes": 7333,
+      "sha256": "afc546efa583726601c12d726d43b0cc6bfb044d54f85b61ddb1b93f6e134036"
     },
     "pipeline/dbt/models/intermediate/fiscal/records/int_mitaka_initial2026.sql": {
       "bytes": 156,
       "sha256": "a11c528f6f535f1410bb17282b934648a7604230abd7256f356e096285b71f02"
+    },
+    "pipeline/dbt/models/marts/csv/csv_131016_supplementary_native_observations.sql": {
+      "bytes": 139,
+      "sha256": "4ef746c1aad402e3cfe2817f2bb45b0a777f3a57bfe36531dd70e37a19edc3d6"
     },
     "pipeline/dbt/models/marts/csv/csv_132047_mitaka_initial2026_observation.sql": {
       "bytes": 112,
@@ -303,6 +315,18 @@
     "pipeline/dbt/models/marts/csv/csv_132241_tama_ordinary_history_project_rows.sql": {
       "bytes": 141,
       "sha256": "9a8d041f428f9bbfd87296d46b18d8281e7812942baff8cc6e931699747cb870"
+    },
+    "pipeline/dbt/models/marts/records/fiscal_131016_supplementary_native_changes.sql": {
+      "bytes": 2218,
+      "sha256": "31e6953d7dac1fe51fbcadc4c0c4dde6aef72efac5c6abb02add0d70004be800"
+    },
+    "pipeline/dbt/models/marts/records/fiscal_131016_supplementary_native_items.sql": {
+      "bytes": 701,
+      "sha256": "695feaf0eb9ed25d1a3f42b1b40d3f723ca523de9055fc73359ab26f4f90ef29"
+    },
+    "pipeline/dbt/models/marts/records/fiscal_131016_supplementary_native_observations.sql": {
+      "bytes": 152,
+      "sha256": "afd04b3354be5f66edf9b24c5f5c10e097a4e381ce76a92ff29874ccefb067a8"
     },
     "pipeline/dbt/models/marts/records/fiscal_132195_supplementary_2020_1_expenditure_lines.sql": {
       "bytes": 71,
@@ -341,8 +365,8 @@
       "sha256": "ff2cc6dfdb1e6ff6a396f32be19fe16cdffd06caba92e8b340547a4585c53c0a"
     },
     "pipeline/dbt/models/marts/records/fiscal_datasets.sql": {
-      "bytes": 2538,
-      "sha256": "1a87aeeb11294c8468c37a4a5af5322dde4bc04e4f6d668d3fbd447e7c69fe9e"
+      "bytes": 2685,
+      "sha256": "ffd62a2a3ba1dcb4a40832abac20596cbf1dbd05b526ae3fe98fc4bc5277c3f6"
     },
     "pipeline/dbt/models/marts/records/mart_mitaka_initial2026.sql": {
       "bytes": 382,
@@ -428,6 +452,10 @@
       "bytes": 1252,
       "sha256": "7cf76add3aba90a7d987990efebbc49293e64f60e91a12e8738d90b508a2d317"
     },
+    "pipeline/dbt/models/staging/fiscal/_chiyoda_supplementary_native_sources.yml": {
+      "bytes": 700,
+      "sha256": "e5ac2dcc5254fe9f85097fba9640cec3b5ad057aa6a5ce2bcf97edbf0385268e"
+    },
     "pipeline/dbt/models/staging/fiscal/_komae_initial_detail_sources.yml": {
       "bytes": 632,
       "sha256": "42cfcb10f7b6fcdedb7606a086ed214a615f70b295801c6355380aabd0c2971c"
@@ -467,6 +495,10 @@
     "pipeline/dbt/models/staging/fiscal/native_council_approved_sources.yml": {
       "bytes": 599,
       "sha256": "c6fcee4ae819c0e2821dfb0ef2efc53a1ba2bf84631bf7f69d0c7dcafe33bad1"
+    },
+    "pipeline/dbt/models/staging/fiscal/stg_131016__supplementary_native.sql": {
+      "bytes": 507,
+      "sha256": "ae0790a3622c595186accf5c228a25ad61de50228d592236eac816dfc5f3501c"
     },
     "pipeline/dbt/models/staging/fiscal/stg_132195__supplementary_2020_1_expenditure.sql": {
       "bytes": 802,
@@ -637,8 +669,8 @@
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     "pipeline/ingestion/declarations.py": {
-      "bytes": 10149,
-      "sha256": "40a88de5311963f0091e9ae24742cb9f0a8ccc7d441ab674f857a228f800ae44"
+      "bytes": 10348,
+      "sha256": "f2d96532f84d52294898c9e828540a5035f884dac801330bf70645b5f246de11"
     },
     "pipeline/ingestion/fiscal/__init__.py": {
       "bytes": 0,
@@ -796,13 +828,21 @@
       "bytes": 11350,
       "sha256": "e6373a0ebf8685ac3838955cbba32a1023365d6829fd90bef638cfd64a284f97"
     },
+    "pipeline/ingestion/fiscal/chiyoda_budget_changes.py": {
+      "bytes": 26410,
+      "sha256": "ca7fff8174bd413070122c18905de4593dd6e6ac97d4f24e425625ab0bcc9e9f"
+    },
+    "pipeline/ingestion/fiscal/chiyoda_supplementary_native_coverage.py": {
+      "bytes": 17824,
+      "sha256": "e0ca4bac9c18510697d32300bd48c73289955980d16532970bd9f7e68593a154"
+    },
     "pipeline/ingestion/fiscal/council_approved_provider.py": {
       "bytes": 9034,
       "sha256": "3c8152b40fee53013690cd02b2643325063f302f00f68e1362050d473d80ca52"
     },
     "pipeline/ingestion/fiscal/coverage_audit.py": {
-      "bytes": 113451,
-      "sha256": "ae69b586cb278b84637ec684064c7b0bba7e3a052fc043c172e24769a55920e0"
+      "bytes": 113731,
+      "sha256": "b13dc8f73937aeccc833611bf44d4ebb87846cc8461b594fe5c52a75420621ea"
     },
     "pipeline/ingestion/fiscal/decode_komae_held5_observations.py": {
       "bytes": 13273,
@@ -866,7 +906,7 @@
     },
     "pipeline/ingestion/fiscal/held5-runtime-manifest.json": {
       "bytes": 2917,
-      "sha256": "3a063dad4897130bc90a69d0023be15a7b41a06798f804d9d77d36e40b405e99"
+      "sha256": "a895e035a7c377fbd12c478eb123fafede7d8af9ca5402fcede57b9682726df7"
     },
     "pipeline/ingestion/fiscal/held5-whole-attachment-proof.json": {
       "bytes": 101574,
@@ -993,8 +1033,8 @@
       "sha256": "62f076901a0d94d6dd0f3a38789802859af2f025f861b75f9904b30e2b8f6f1d"
     },
     "pipeline/ingestion/fiscal/source_registry.py": {
-      "bytes": 17958,
-      "sha256": "e068467ae7adfc53b2e348cd65ad55abd725418451a442afb0a18839b08ec947"
+      "bytes": 18691,
+      "sha256": "8fa9146c25c092668b73429b82fb50f857c866774ec1000ac7de1e85cb94ae9f"
     },
     "pipeline/ingestion/fiscal/sources-akishima-initial445.json": {
       "bytes": 449786,
@@ -1041,16 +1081,16 @@
       "sha256": "7ce07441832a7b57e1970756a0a550c9ee112474022503750d9f071ebbd31d3e"
     },
     "pipeline/ingestion/fiscal/sources.json": {
-      "bytes": 10050859,
-      "sha256": "24f44b7b7ed6455dbdc5084c36695b2ef2917917e5656931eea0ccacbe3beb64"
+      "bytes": 10052715,
+      "sha256": "b05321883dcefb67b4b80f877004896bc8e326f608595fda40a038c9d89dd204"
     },
     "pipeline/ingestion/fiscal/sources.py": {
-      "bytes": 34137,
-      "sha256": "17e1492488795cabca0b7f3ff93618ef5b9cb596d644e7dcbb5e63a9df0a3094"
+      "bytes": 34542,
+      "sha256": "237a0fcdf6ecae0ca6b76fbfa9720d6b022a3d0f916ff2c2a9f8a409db0ad510"
     },
     "pipeline/ingestion/fiscal/sources.schema.json": {
-      "bytes": 53276,
-      "sha256": "bf8d2712ba13a49c9f567c4835d9adebf09ae44a79e3e6f1b079f94fea6a56d0"
+      "bytes": 55852,
+      "sha256": "913c515bae7f42db1d88c6ff4dd54c8cc66281e769beaf56e06579e0adb841ea"
     },
     "pipeline/ingestion/fiscal/sources.toml": {
       "bytes": 529044,
@@ -1165,8 +1205,8 @@
       "sha256": "be1a1891b2d5fd6beb4cdaa56495faf164c0885e525813db952837dfd6bbffab"
     },
     "pipeline/ingestion/inputs.py": {
-      "bytes": 27088,
-      "sha256": "236d08cb8ed0dc96cdccd003c026ca5781b84a21cf0a547492ddec18aff47a13"
+      "bytes": 27762,
+      "sha256": "d6a19b16efd8383df368ddfed388d367c99929af73f3f48465ae194db8c1c8e1"
     },
     "pipeline/ingestion/lib/__init__.py": {
       "bytes": 0,
@@ -1227,6 +1267,8 @@
     "pipeline/dbt/macros/trim_cell.sql",
     "pipeline/dbt/models/intermediate/chiyoda2021_settlement_native/int_native_settle__datasets.sql",
     "pipeline/dbt/models/intermediate/chiyoda2025_native/int_native__datasets.sql",
+    "pipeline/dbt/models/intermediate/fiscal/records/int_131016__supplementary_native.sql",
+    "pipeline/dbt/models/intermediate/fiscal/records/int_131016__supplementary_native_datasets.sql",
     "pipeline/dbt/models/intermediate/fiscal/records/int_132047__mitaka_initial2026_datasets.sql",
     "pipeline/dbt/models/intermediate/fiscal/records/int_132071_initial445_datasets.sql",
     "pipeline/dbt/models/intermediate/fiscal/records/int_132071_settlement2019_datasets.sql",
@@ -1276,6 +1318,7 @@
     "pipeline/dbt/models/intermediate/fiscal/records/int_fiscal_amounts.sql",
     "pipeline/dbt/models/intermediate/fiscal/records/int_fiscal_datasets.sql",
     "pipeline/dbt/models/intermediate/fiscal/records/int_mitaka_initial2026.sql",
+    "pipeline/dbt/models/marts/csv/csv_131016_supplementary_native_observations.sql",
     "pipeline/dbt/models/marts/csv/csv_132047_mitaka_initial2026_observation.sql",
     "pipeline/dbt/models/marts/csv/csv_132195_supplementary_2020_1_expenditure.sql",
     "pipeline/dbt/models/marts/csv/csv_132195_supplementary_2020_1_revenue.sql",
@@ -1284,6 +1327,9 @@
     "pipeline/dbt/models/marts/csv/csv_132241_tama_ordinary_history_pdf_page_observations.sql",
     "pipeline/dbt/models/marts/csv/csv_132241_tama_ordinary_history_pdf_word_observations.sql",
     "pipeline/dbt/models/marts/csv/csv_132241_tama_ordinary_history_project_rows.sql",
+    "pipeline/dbt/models/marts/records/fiscal_131016_supplementary_native_changes.sql",
+    "pipeline/dbt/models/marts/records/fiscal_131016_supplementary_native_items.sql",
+    "pipeline/dbt/models/marts/records/fiscal_131016_supplementary_native_observations.sql",
     "pipeline/dbt/models/marts/records/fiscal_132195_supplementary_2020_1_expenditure_lines.sql",
     "pipeline/dbt/models/marts/records/fiscal_132195_supplementary_2020_1_revenue_lines.sql",
     "pipeline/dbt/models/marts/records/fiscal_132241_initial_native_items.sql",
@@ -1315,6 +1361,7 @@
     "pipeline/dbt/models/staging/fiscal/_akishima_supplementary_fy2025_01_sources.yml",
     "pipeline/dbt/models/staging/fiscal/_chiyoda2021_settlement_native_sources.yml",
     "pipeline/dbt/models/staging/fiscal/_chiyoda2025_native_sources.yml",
+    "pipeline/dbt/models/staging/fiscal/_chiyoda_supplementary_native_sources.yml",
     "pipeline/dbt/models/staging/fiscal/_komae_initial_detail_sources.yml",
     "pipeline/dbt/models/staging/fiscal/_komae_recovered_sources.yml",
     "pipeline/dbt/models/staging/fiscal/_komae_supplementary_2020_1_sources.yml",
@@ -1325,6 +1372,7 @@
     "pipeline/dbt/models/staging/fiscal/council_approved_sources.yml",
     "pipeline/dbt/models/staging/fiscal/held5_council_approved_sources.yml",
     "pipeline/dbt/models/staging/fiscal/native_council_approved_sources.yml",
+    "pipeline/dbt/models/staging/fiscal/stg_131016__supplementary_native.sql",
     "pipeline/dbt/models/staging/fiscal/stg_132195__supplementary_2020_1_expenditure.sql",
     "pipeline/dbt/models/staging/fiscal/stg_132195__supplementary_2020_1_revenue.sql",
     "pipeline/dbt/models/staging/fiscal/stg_132241__initial_native.sql",
@@ -1407,6 +1455,8 @@
     "pipeline/ingestion/fiscal/chiyoda2025_native/registration.py",
     "pipeline/ingestion/fiscal/chiyoda2025_native/sources-spec.json",
     "pipeline/ingestion/fiscal/chiyoda2025_native_coverage.py",
+    "pipeline/ingestion/fiscal/chiyoda_budget_changes.py",
+    "pipeline/ingestion/fiscal/chiyoda_supplementary_native_coverage.py",
     "pipeline/ingestion/fiscal/council_approved_provider.py",
     "pipeline/ingestion/fiscal/coverage_audit.py",
     "pipeline/ingestion/fiscal/decode_komae_held5_observations.py",

@@ -21,7 +21,7 @@ SCHEMA = HERE / "sources.schema.json"
 PDF_SECTIONS = (
     "statement", "budget_history", "supplementary_detail", "settlement_pdf",
     "project_names", "revenue_accounts",
-    "initial_detail", "recovered_initial_detail", "native_initial_detail",
+    "initial_detail", "recovered_initial_detail", "native_initial_detail", "native_supplementary_detail",
 )
 SECTIONS = ("csv", *PDF_SECTIONS)
 URL_FIELDS = {"url", "landing_page", "download_url", "landing_url", "approval_url"}
@@ -66,6 +66,15 @@ def load_registry(path: Path = INVENTORY) -> dict:
             if not isinstance(ingestion.get("options"), dict):
                 raise ValueError(f"{where}: options must be an object")
             _without_urls(ingestion["options"], where + ".options")
+            if ingestion['section'] == 'native_supplementary_detail':
+                if (source['jurisdiction'] != '131016' or source['fiscal_year'] != 2026
+                    or source['document_phase'] != 'supplementary' or source['format'] != 'pdf'
+                    or source['account_labels'] != ['一般会計']
+                    or 'expenditure' not in source.get('directions', [])
+                    or len(source['amendment_numbers']) != 1
+                    or source['amendment_numbers'][0] not in (1, 2, 3)
+                    or ingestion['key'] != source['id']):
+                    raise ValueError(f'{where}: native supplementary declaration differs from its inspected parent')
             if ingestion['section'] == 'native_initial_detail':
                 accounts = ingestion['options']['accounts']
                 labels = [a['account_label'] for a in accounts]

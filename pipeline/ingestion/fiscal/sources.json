@@ -11444,7 +11444,15 @@
         "evidence_urls": [
           "https://www.city.chiyoda.lg.jp/documents/583/r8yosansho-3.pdf"
         ]
-      }
+      },
+      "ingestions": [
+        {
+          "section": "native_supplementary_detail",
+          "key": "131016-160673f0463f",
+          "enabled": true,
+          "options": {}
+        }
+      ]
     },
     {
       "id": "131016-a9eb88c6b249",
@@ -11562,7 +11570,30 @@
         "evidence_urls": [
           "https://www.city.chiyoda.lg.jp/documents/583/r8yosansho-1.pdf"
         ]
-      }
+      },
+      "ingestions": [
+        {
+          "section": "native_supplementary_detail",
+          "key": "131016-a9eb88c6b249",
+          "enabled": true,
+          "options": {
+            "approval": {
+              "date": "2026-04-23",
+              "basis": "令和8年第1回臨時会の議決結果に「令和8年度千代田区一般会計補正予算第1号」、可決、議決日4月23日を確認。",
+              "evidence": {
+                "https://gikai-chiyoda-tokyo.jp/kaigi/kekka/files/20261rinkekka.pdf": {
+                  "sha256": "7f6832d9f706fbfff86355800a781143557b4de7e8121208599250bf08927a68",
+                  "bytes": 109141,
+                  "pages": [
+                    1,
+                    1
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     {
       "id": "131016-c22030a318c3",
@@ -11680,7 +11711,30 @@
         "evidence_urls": [
           "https://www.city.chiyoda.lg.jp/documents/583/r8yosansho-2.pdf"
         ]
-      }
+      },
+      "ingestions": [
+        {
+          "section": "native_supplementary_detail",
+          "key": "131016-c22030a318c3",
+          "enabled": true,
+          "options": {
+            "approval": {
+              "date": "2026-07-10",
+              "basis": "令和8年第2回定例会の議決結果に「令和8年度千代田区一般会計補正予算第2号」、可決、議決日7月10日を確認。",
+              "evidence": {
+                "https://gikai-chiyoda-tokyo.jp/kaigi/kekka/files/20262teikekka.pdf": {
+                  "sha256": "ccfdff25e97a50c9ffba57dc84c3523146ced5a0be5b11a399152622a26ba65e",
+                  "bytes": 162715,
+                  "pages": [
+                    1,
+                    1
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     {
       "id": "132047-1fd087f5df5f",

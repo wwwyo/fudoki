@@ -365,6 +365,11 @@ def all_sources(path: Path = SOURCES_JSON) -> dict[str, Source]:
     if set(existing) & set(native_initial):
         raise ValueError('native initial source key overlaps an existing provider')
     existing.update(native_initial)
+    from ingestion.fiscal.chiyoda_budget_changes import registered_sources as chiyoda_supplementary_sources
+    chiyoda_supplementary = chiyoda_supplementary_sources() if path.resolve() == SOURCES_JSON.resolve() else {}
+    if set(existing) & set(chiyoda_supplementary):
+        raise ValueError('Chiyoda supplementary source key overlaps an existing provider')
+    existing.update(chiyoda_supplementary)
     return existing
 
 

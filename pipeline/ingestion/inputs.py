@@ -260,6 +260,9 @@ def restore(path: Path = LOCK, *, remote: bool = False) -> Path:
     extra = set(out.rglob('*.parquet'))
     if extra - expected_paths:
         raise ValueError('Unexpected files in fixed input snapshot')
+    if any(e['path'].startswith('chiyoda-supplementary-native/') for e in lock['entries']):
+        from ingestion.fiscal.chiyoda_budget_changes import restore_approval_evidence
+        restore_approval_evidence(lock['entries'], OBJECTS, remote=remote)
     if any(e['path'].startswith('tama-native-settlement/') for e in lock['entries']):
         from ingestion.fiscal.tama_native_settlement.registration import restore_evidence
         restore_evidence(OBJECTS, remote=remote)
@@ -308,6 +311,12 @@ def origin_path(sha: str) -> Path:
 
 def locked_objects(lock: dict) -> dict:
     refs = {ref['key']: ref for entry in lock['entries'] for ref in [entry['table'], entry['origin']['object']]}
+    if any(e['path'].startswith('chiyoda-supplementary-native/') for e in lock['entries']):
+        from ingestion.fiscal.chiyoda_budget_changes import approval_evidence_objects
+        for ref in approval_evidence_objects(lock['entries']):
+            if ref['key'] in refs and refs[ref['key']] != ref:
+                raise ValueError('Conflicting Chiyoda council original identity')
+            refs[ref['key']] = ref
     if any(e['path'].startswith('tama-native-settlement/') for e in lock['entries']):
         from ingestion.fiscal.tama_native_settlement.registration import evidence_objects
         for ref in evidence_objects():
