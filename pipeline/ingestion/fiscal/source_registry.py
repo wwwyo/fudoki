@@ -67,13 +67,20 @@ def load_registry(path: Path = INVENTORY) -> dict:
                 raise ValueError(f"{where}: options must be an object")
             _without_urls(ingestion["options"], where + ".options")
             if ingestion['section'] == 'native_supplementary_detail':
-                if (source['jurisdiction'] != '131016' or source['fiscal_year'] != 2026
+                index = ingestion.get('profile', {}).get('edition_index', 0)
+                if type(index) is not int or not 0 <= index < len(source['editions']):
+                    raise ValueError(f'{where}: unknown native supplementary edition')
+                edition = source['editions'][index]
+                if (source['jurisdiction'] != '131016' or source['fiscal_year'] < 2019
                     or source['document_phase'] != 'supplementary' or source['format'] != 'pdf'
-                    or source['account_labels'] != ['一般会計']
                     or 'expenditure' not in source.get('directions', [])
-                    or len(source['amendment_numbers']) != 1
-                    or source['amendment_numbers'][0] not in (1, 2, 3)
-                    or ingestion['key'] != source['id']):
+                    or edition['fiscal_year'] != source['fiscal_year']
+                    or edition['document_phase'] != 'supplementary'
+                    or edition['in_scope']['status'] != 'included'
+                    or edition['account_label'] not in source['account_labels']
+                    or edition['amendment_number'] not in source['amendment_numbers']
+                    or (len(source['editions']) != 1 and 'edition_index' not in ingestion.get('profile', {}))
+                    or ingestion['key'] != (source['id'] if len(source['editions']) == 1 else f'{source["id"]}:{index}')):
                     raise ValueError(f'{where}: native supplementary declaration differs from its inspected parent')
             if ingestion['section'] == 'native_initial_detail':
                 accounts = ingestion['options']['accounts']

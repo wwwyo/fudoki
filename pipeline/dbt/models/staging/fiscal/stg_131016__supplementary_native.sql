@@ -1,6 +1,6 @@
 with identified as (
 select r.*,
-       '131016:2026:expenditure:supplementary:' || _partition_origin_sha256 || ':' || _partition_table_id as dataset_id,
+       '131016:' || _partition_fiscal_year || ':expenditure:supplementary:' || _partition_origin_sha256 || ':' || _partition_table_id as dataset_id,
        dataset_id || ':' || source_row as fiscal_line_id
 from {{ source('raw_131016_supplementary_native', 'rows') }} r
 )

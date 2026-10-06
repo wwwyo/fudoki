@@ -5,5 +5,5 @@ select d.dataset_id, d.jurisdiction_code, d.fiscal_year, d.direction, d.document
        json_extract(d.source_json, '$.rawRowCount')::bigint as line_count
 from read_json_auto('{{ env_var("FUDOKI_DECLARATIONS_DIR") }}/sources.json') d
 where json_extract_string(d.source_json, '$.namespace') = 'chiyoda-supplementary-native'
-  and d.jurisdiction_code = '131016' and d.fiscal_year = 2026
+  and d.jurisdiction_code = '131016'
   and d.direction = 'expenditure' and d.document_kind = 'supplementary'

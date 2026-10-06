@@ -1,4 +1,4 @@
-"""Read the separate printed decompositions in Chiyoda FY2026 amendments.
+"""Read the separate printed decompositions in Chiyoda amendments.
 
 Candidates retain moku triples, left-page setsu deltas and explanation deltas.
 Equal amounts do not establish project/setsu correspondence or approval.
@@ -35,32 +35,63 @@ COLUMNS = {
 
 def registered_specs() -> list[dict]:
     """Read enabled original and approval declarations from the single registry."""
-    return [dict(source=source, approval=ingestion['options'].get('approval'),
-                 table=dict(table_id=TABLE_ID))
-            for source in load_registry(INVENTORY)['sources']
-            for ingestion in source.get('ingestions', [])
-            if ingestion['section'] == 'native_supplementary_detail' and ingestion['enabled']]
+    result = []
+    for source in load_registry(INVENTORY)['sources']:
+        for ingestion in source.get('ingestions', []):
+            if ingestion['section'] != 'native_supplementary_detail' or not ingestion['enabled']:
+                continue
+            index = ingestion.get('profile', {}).get('edition_index')
+            edition = source['editions'][index] if index is not None else edition_of(source)
+            result.append(dict(source=source, edition=edition,
+                approval=ingestion['options'].get('approval'),
+                table=dict(table_id=table_id(source, edition))))
+    return result
 
 
 def registered_sources():
     from ingestion.fiscal.sources import Source, Resource
     from ingestion.shared.jurisdictions import jurisdiction_name
+    grouped = defaultdict(list)
+    for spec in registered_specs():
+        grouped[spec['source']['id']].append(spec)
     return {s['id']: Source(key=s['id'], catalog=None, jurisdiction_code=s['jurisdiction'],
         jurisdiction_name=jurisdiction_name(s['jurisdiction']), fiscal_year=s['fiscal_year'],
         fiscal_year_label=None, document_kind='supplementary', document_label=s['document_title'],
         dataset_title=None, encoding='', redistribute='review',
         redistribute_basis='当該PDFの再配布条件は未確認。別の資料の条件を適用しない。',
         license_id='NOASSERTION', attribution='千代田区', landing_page=s['landing_url'],
-        raw_form='extracted', resources=(Resource(direction='expenditure',
-            resource_name=s['document_title'], url=s['download_url'],
-            url_basis='区の公式予算ページが補正号付きPDFを掲載。', table_id=TABLE_ID),))
-        for spec in registered_specs() for s in [spec['source']]}
+        raw_form='extracted', resources=tuple(Resource(direction='expenditure',
+            resource_name=s['document_title']+' '+spec['edition']['account_label'], url=s['download_url'],
+            url_basis='区の公式予算ページが補正号付きPDFを掲載。', table_id=spec['table']['table_id'])
+            for spec in specs))
+        for specs in grouped.values() for s in [specs[0]['source']]}
 
 
-def input_path(source: dict, namespace: str = NAMESPACE) -> str:
+def edition_of(source: dict, account_label: str | None = None) -> dict:
+    editions = [e for e in source['editions']
+                if e['document_phase'] == 'supplementary'
+                and e['in_scope']['status'] == 'included'
+                and (account_label is None or e['account_label'] == account_label)]
+    if len(editions) != 1:
+        raise ValueError('Select one declared account edition from this original')
+    edition = editions[0]
+    if (edition['fiscal_year'] != source['fiscal_year']
+        or edition['account_label'] not in source['account_labels']
+        or edition['amendment_number'] not in source['amendment_numbers']):
+        raise ValueError('Account edition differs from its containing original')
+    return edition
+
+
+def table_id(source: dict, edition: dict) -> str:
+    return TABLE_ID if edition['account_label'] == '一般会計' else (
+        TABLE_ID + '-edition-' + str(source['editions'].index(edition)))
+
+
+def input_path(source: dict, namespace: str = NAMESPACE, *, edition: dict | None = None) -> str:
+    edition = edition or edition_of(source)
     return (f'{namespace}/jurisdiction={source["jurisdiction"]}/year={source["fiscal_year"]}/'
             f'document_kind=supplementary/edition={source["content_inspection"]["sha256"]}/'
-            f'direction=expenditure/table={TABLE_ID}')
+            f'direction=expenditure/table={table_id(source, edition)}')
 
 
 def approval_evidence_objects(entries):
@@ -96,30 +127,31 @@ def register_declarations(rows, history, entries, lock_path):
     """Bind adopted mixed observations and financial changes to the current registry."""
     from ingestion.inputs import source_metadata
     restore_approval_evidence(entries, OBJECTS)
-    specs = {spec['source']['id']: spec for spec in registered_specs()}
+    specs = {(spec['source']['id'], spec['table']['table_id']): spec for spec in registered_specs()}
     seen = set()
     for entry in entries:
         if not entry['path'].startswith(NAMESPACE + '/'):
             continue
         metadata = source_metadata(lock_path, entry)
-        spec = specs[metadata['source_key']]
-        source, approval = spec['source'], spec['approval']
+        spec = specs[(metadata['source_key'], metadata['table_id'])]
+        source, approval, edition = spec['source'], spec['approval'], spec['edition']
+        table = spec['table']['table_id']
         approved = approval is not None
         sha = source['content_inspection']['sha256']
         for relative, ref in metadata['definition_files'].items():
             content = (REPO / relative).read_bytes()
             if ref != dict(sha256=digest(content), bytes=len(content)):
                 raise ValueError('Chiyoda supplementary definition differs: ' + relative)
-        if (entry['path'] != input_path(source) or entry['path'] in seen
+        if (entry['path'] != input_path(source, edition=edition) or entry['path'] in seen
             or entry['originEdition'] != sha or entry['jurisdiction'] != source['jurisdiction']
             or entry['fiscalYear'] != source['fiscal_year'] or entry['documentKind'] != 'supplementary'
             or entry['direction'] != 'expenditure'
             or entry['origin']['object']['bytes'] != source['content_inspection']['bytes']
-            or metadata['namespace'] != NAMESPACE or metadata['table_id'] != TABLE_ID
+            or metadata['namespace'] != NAMESPACE or metadata['table_id'] != table
             or metadata['request_url'] != source['download_url']
             or metadata['pages'] != [1, source['content_inspection']['pages']]
-            or metadata['fund_label'] != source['account_labels'][0]
-            or metadata['amendment_number'] != source['amendment_numbers'][0]
+            or metadata['fund_label'] != edition['account_label']
+            or metadata['amendment_number'] != edition['amendment_number']
             or metadata['approval_status'] != ('approved' if approved else 'unconfirmed')
             or metadata['approval_date'] != (approval['date'] if approved else None)
             or metadata['approval_proof'] != approval
@@ -139,7 +171,7 @@ def register_declarations(rows, history, entries, lock_path):
             documentKind='supplementary', documentLabel=source['document_title'],
             landingPage=source['landing_url'], url=source['download_url'], sha256=sha,
             licenseId='NOASSERTION', attribution='千代田区', redistributionStatus='unconfirmed',
-            rawForm='extracted', tableId=TABLE_ID, fundLabel=metadata['fund_label'],
+            rawForm='extracted', tableId=table, fundLabel=metadata['fund_label'],
             pages=metadata['pages'], rawRowCount=metadata['rows'], rawSchema=metadata['raw_schema'],
             rawTableSha256=entry['table']['sha256'], rawTableBytes=entry['table']['bytes'],
             sourceAmountUnit='千円', unitMultiplier=1000, nonadditive=True,
@@ -149,20 +181,21 @@ def register_declarations(rows, history, entries, lock_path):
             projectSetsuLinkage='unconfirmed', phaseSemantics=metadata['phase_semantics'],
             grain=metadata['grain'], structure=structure)
         row = dict(dataset_id=':'.join([source['jurisdiction'], str(source['fiscal_year']),
-            'expenditure', 'supplementary', sha, TABLE_ID]), jurisdiction_code=source['jurisdiction'],
+            'expenditure', 'supplementary', sha, table]), jurisdiction_code=source['jurisdiction'],
             fiscal_year=source['fiscal_year'], direction='expenditure', document_kind='supplementary',
             source_json=json.dumps(declaration, ensure_ascii=False, sort_keys=True))
         rows.append(row)
-        history.append(dict(**row, origin_sha256=sha, effective_at=metadata['approval_date'],
+        effective_at = metadata['approval_date'] if approval and approval.get('kind', 'budget_bill') == 'budget_bill' else None
+        history.append(dict(**row, origin_sha256=sha, effective_at=effective_at,
             amendment_number=metadata['amendment_number'], fund_label=metadata['fund_label'],
             line_count=metadata['rows'], structure_json=json.dumps(structure, ensure_ascii=False)))
-    expected = {input_path(spec['source']) for spec in specs.values()}
+    expected = {input_path(spec['source'], edition=spec['edition']) for spec in specs.values()}
     if seen and seen != expected:
         raise ValueError('Chiyoda adopted table set differs from its enabled declarations')
     return rows, history
 
 
-def extract(pdf: Path, source: dict) -> tuple[list[dict], dict]:
+def extract(pdf: Path, source: dict, *, account_label: str | None = None) -> tuple[list[dict], dict]:
     """Require the observed edition and reconcile each decomposition separately."""
     inspected = source['content_inspection']
     if digest(pdf.read_bytes()) != inspected['sha256']:
@@ -176,20 +209,38 @@ def extract(pdf: Path, source: dict) -> tuple[list[dict], dict]:
         texts.pop()
     if len(texts) != len(pages):
         raise ValueError('Text and positioned PDF page counts differ')
-    issue = source['amendment_numbers'][0]
-    if f'令和8年度一般会計補正予算第{issue}号千代田区' not in normalize(texts[0]):
+    normalized_pages = [normalize(text) for text in texts]
+    normalized_lines = [[normalize(line) for line in text.splitlines()] for text in texts]
+    edition = edition_of(source, account_label)
+    issue, account = edition['amendment_number'], edition['account_label']
+    year = f'令和{edition["fiscal_year"] - 2018}年度'
+    title = f'{account}補正予算第{issue}号'
+    if year not in normalized_pages[0] or title not in normalized_pages[0]:
         raise ValueError('Cover year, account or amendment number differs')
-    article = normalize(''.join(texts[:4]))
-    delta = re.search(r'歳入歳出それぞれ([\d,]+)千円を(追加|減額)', article)
+    articles = [text for text in normalized_pages
+                if year + '千代田区' + title in text and '第1条' in text]
+    if len(articles) != 1:
+        raise ValueError('Account has no unique first-article page')
+    delta = re.search(r'歳入歳出それぞれ([\d,]+)千円を(追加|減額)', articles[0])
     if not delta:
         raise ValueError('First-article signed delta absent')
     total_delta = number(delta[1]) * (-1 if delta[2] == '減額' else 1)
+    covers = [(pno, e) for pno, lines in enumerate(normalized_lines, 1)
+              for e in source['editions']
+              if f'{e["account_label"]}補正予算第{e["amendment_number"]}号説明書' in lines]
+    selected = [pno for pno, e in covers if e == edition]
+    if len(selected) != 1:
+        raise ValueError('Account has no unique explanation cover')
+    first = selected[0]
+    last = min((pno - 1 for pno, _ in covers if pno > first), default=len(pages))
     records = []
     kan = kou = moku = project = setsu = None
     active = False
     money_edges = None
     moku_name_x = None
     moku_ids = set()
+    left_page = None
+    left_blocks = []
 
     def emit(kind, code, label, row, words, before=None, change=None, after=None):
         loc = location(row, words)
@@ -205,22 +256,36 @@ def extract(pdf: Path, source: dict) -> tuple[list[dict], dict]:
         return record
 
     for pno, page in enumerate(pages, 1):
-        normalized = normalize(texts[pno-1])
-        if '3歳出' in normalized:
+        if not first < pno <= last:
+            continue
+        normalized = normalized_pages[pno-1]
+        if '3歳出' in normalized_lines[pno-1]:
             active = True
         if active and ('第2債務負担' in normalized or '給与費明細書' in normalized):
             active = False
         if not active:
             continue
         explanation = '説明' in normalize(''.join(w[4] for w in page[2] if w[1] < 120))
+        if explanation:
+            if left_page != pno - 1 or not left_blocks:
+                raise ValueError('Explanation has no adjacent expenditure table')
+        else:
+            left_page, left_blocks = pno, []
+            if moku is not None:
+                left_blocks.append((0, dict(kan=kan, kou=kou, moku=moku)))
         for row in positioned_rows(page, pno):
             words = row['words']
             whole = normalize(row['text'])
             if row['y'] > 770:
                 continue
             if explanation:
-                if moku is None:
-                    raise ValueError('Explanation has no preceding moku')
+                preceding = [context for y, context in left_blocks if y <= row['y'] + 1]
+                if not preceding:
+                    continue
+                context = preceding[-1]
+                if moku is not context['moku']:
+                    project = None
+                kan, kou, moku = context['kan'], context['kou'], context['moku']
                 if not words or normalize(words[-1][4]) != '千円':
                     continue
                 monetary = [w for w in words[:-1] if number(w[4]) is not None]
@@ -278,6 +343,7 @@ def extract(pdf: Path, source: dict) -> tuple[list[dict], dict]:
                         raise ValueError('Repeated moku triple needs an explicit continuation rule')
                     moku_ids.add(identity)
                     moku = dict(code=head[1], label=head[2], row=len(records)+1)
+                    left_blocks.append((row['y'], dict(kan=kan, kou=kou, moku=moku)))
                     project = setsu = None
                     moku_name_x = names[1][0] if len(names) > 1 else None
                     emit('moku_control', head[1], head[2], row, words,
@@ -347,6 +413,7 @@ def extract(pdf: Path, source: dict) -> tuple[list[dict], dict]:
 def main(argv=None, *, raw_root=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--source-id')
+    parser.add_argument('--account-label')
     parser.add_argument('--output-dir', type=Path)
     parser.add_argument('--registered', action='store_true')
     parser.add_argument('--acquire-registered', action='store_true')
@@ -356,18 +423,19 @@ def main(argv=None, *, raw_root=None):
     if not args.source_id or args.output_dir is None:
         parser.error('--source-id and --output-dir are required')
     source = next((s for s in load_registry(INVENTORY)['sources'] if s['id']==args.source_id), None)
-    if (not source or source['jurisdiction']!='131016' or source['fiscal_year']!=2026
-        or source['document_phase']!='supplementary' or source['account_labels']!=['一般会計']
-        or source['format']!='pdf' or len(source['amendment_numbers'])!=1
-        or source['amendment_numbers'][0] not in (1,2,3)):
-        parser.error('This reader supports registered Chiyoda FY2026 general-account amendments only')
+    if (not source or source['jurisdiction']!='131016'
+        or source['document_phase']!='supplementary' or source['format']!='pdf'):
+        parser.error('This reader requires an inspected Chiyoda supplementary PDF')
+    edition = edition_of(source, args.account_label)
+    selected_table = table_id(source, edition)
     original = OBJECTS / f'inputs/origin/sha256/{source["content_inspection"]["sha256"]}'
-    records, report = extract(original, source)
-    spec = next((s for s in registered_specs() if s['source']['id'] == source['id']), None)
+    records, report = extract(original, source, account_label=edition['account_label'])
+    spec = next((s for s in registered_specs()
+                 if s['source']['id'] == source['id'] and s['edition'] == edition), None)
     if args.registered and spec is None:
         parser.error('Original has no enabled native supplementary declaration')
     namespace = NAMESPACE if args.registered else CANDIDATE_NAMESPACE
-    out = raw_root / input_path(source, namespace) if raw_root is not None else args.output_dir
+    out = raw_root / input_path(source, namespace, edition=edition) if raw_root is not None else args.output_dir
     out.mkdir(parents=True, exist_ok=True)
     with duckdb.connect() as con:
         con.execute('create table candidate ('+', '.join(f'{k} {v}' for k,v in COLUMNS.items())+')')
@@ -402,8 +470,8 @@ def main(argv=None, *, raw_root=None):
             REPO/'pipeline/dbt/models/marts/records/fiscal_expenditure_budget_changes.sql', REPO/'uv.lock']
     metadata = dict(source_key=source['id'], namespace=namespace, request_url=source['download_url'],
         jurisdiction_code=source['jurisdiction'], fiscal_year=source['fiscal_year'], direction='expenditure',
-        document_kind='supplementary', table_id=TABLE_ID,
-        fund_label='一般会計', amendment_number=source['amendment_numbers'][0],
+        document_kind='supplementary', table_id=selected_table,
+        fund_label=edition['account_label'], amendment_number=edition['amendment_number'],
         sha256=source['content_inspection']['sha256'], raw_form='extracted',
         source_amount_unit='千円', unit_multiplier=1000, project_setsu_linkage='unconfirmed',
         approval_status='unconfirmed', approval_date=None, approval_proof=None,
@@ -420,7 +488,7 @@ def main(argv=None, *, raw_root=None):
             phases=['adjusted'] if approved else [], canonical_changes=approved)
         report.update(approval_status=metadata['approval_status'],
                       approval_assigned_from_registry=True, phases=metadata['phases'])
-    record_input(out, metadata, logical_path=input_path(source, namespace))
+    record_input(out, metadata, logical_path=input_path(source, namespace, edition=edition))
     # Inspection output is regenerated alongside the candidates, outside the registry.
     (out/'inspection.json').write_bytes(encode(report))
     print(json.dumps(report, ensure_ascii=False))
@@ -431,16 +499,24 @@ def acquire_registered():
     from ingestion.lib.http import http_get
     from ingestion.inputs import save_object
     from ingestion.paths import RAW
+    fetched = set()
     for spec in registered_specs():
         source = spec['source']
-        save_object('origin', http_get(source['download_url']).body)
+        if source['id'] not in fetched:
+            body = http_get(source['download_url']).body
+            inspected = source['content_inspection']
+            if digest(body) != inspected['sha256'] or len(body) != inspected['bytes']:
+                raise ValueError('Budget original differs from the inspected edition')
+            save_object('origin', body)
+            fetched.add(source['id'])
         if spec['approval']:
             for url, evidence in spec['approval']['evidence'].items():
                 body = http_get(url).body
                 if digest(body) != evidence['sha256'] or len(body) != evidence['bytes']:
                     raise ValueError('Council original differs from the declared approval evidence')
                 save_object('origin', body)
-        main(['--source-id', source['id'], '--output-dir', str(RAW.parent/'reports'/source['id']),
+        main(['--source-id', source['id'], '--account-label', spec['edition']['account_label'],
+              '--output-dir', str(RAW.parent/'reports'/source['id']),
               '--registered'], raw_root=RAW)
 
 

@@ -19,7 +19,7 @@ with decoded as (
   from {{ ref('stg_131016__supplementary_native') }} s
 ), observed as (
   select s.*, d.jurisdiction_code, d.fiscal_year,
-         null::varchar as fund_code, '一般会計'::varchar as fund_label,
+         null::varchar as fund_code, json_extract_string(d.source_json, '$.fundLabel') as fund_label,
          null::varchar as expenditure_setsu_id, 'origin_line'::varchar as line_granularity,
          json_extract_string(d.source_json, '$.canonicalChanges') = 'true' as canonical_changes,
          d.phases_json, json_extract_string(d.source_json, '$.approvalStatus') as approval_status,

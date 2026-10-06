@@ -43,7 +43,7 @@ def output_coverage(connection, candidate: Path, hashes: dict, lock_path: Path,
         selected.append(dataset)
     try:
         from ingestion.fiscal.chiyoda_budget_changes import registered_specs
-        specs = {s['source']['id']: s for s in registered_specs()}
+        specs = {(s['source']['id'], s['table']['table_id']): s for s in registered_specs()}
         fields = ','.join(COLUMNS)
         schemas = {model: schema_of(connection, model)
                    for model in (STAGING, INTERMEDIATE, OBSERVATIONS)}
@@ -53,8 +53,8 @@ def output_coverage(connection, candidate: Path, hashes: dict, lock_path: Path,
         raw_by_id, metadata, expected_changes, intermediate_rows = {}, {}, {}, {}
         for entry in entries:
             original = json.loads(source_metadata_bytes(lock_path, entry))
-            spec = specs[original['source_key']]
-            source, approval = spec['source'], spec['approval']
+            spec = specs[(original['source_key'], original['table_id'])]
+            source, approval, edition = spec['source'], spec['approval'], spec['edition']
             table = spec['table']['table_id']
             identity = ':'.join([entry['jurisdiction'], str(entry['fiscalYear']),
                 entry['direction'], entry['documentKind'], entry['originEdition'], table])
@@ -64,14 +64,14 @@ def output_coverage(connection, candidate: Path, hashes: dict, lock_path: Path,
             declaration = json.loads(dataset['source_json'])
             approved = approval is not None
             phase = ['adjusted'] if approved else []
-            number = source['amendment_numbers'][0]
-            expected_path = input_path(source)
+            number = edition['amendment_number']
+            expected_path = input_path(source, edition=edition)
             if (entry['path'] != expected_path or entry['jurisdiction'] != source['jurisdiction'] or
                 entry['fiscalYear'] != source['fiscal_year'] or entry['direction'] != 'expenditure' or
                 entry['documentKind'] != 'supplementary' or
                 entry['originEdition'] != source['content_inspection']['sha256'] or
                 original['table_id'] != table or original['request_url'] != source['download_url'] or
-                original['amendment_number'] != number or original['fund_label'] != '一般会計' or
+                original['amendment_number'] != number or original['fund_label'] != edition['account_label'] or
                 original['source_amount_unit'] != '千円' or original['unit_multiplier'] != 1000 or
                 original['pages'] != [1, source['content_inspection']['pages']] or
                 original['approval_status'] != ('approved' if approved else 'unconfirmed') or
@@ -91,7 +91,7 @@ def output_coverage(connection, candidate: Path, hashes: dict, lock_path: Path,
             if any(declaration.get(k) != v for k, v in binds.items()):
                 raise ValueError('Native supplementary declaration differs from fixed input')
             if (json.loads(dataset['phases_json']) != phase or dataset['line_count'] != original['rows'] or
-                dataset['jurisdiction_code'] != '131016' or dataset['fiscal_year'] != 2026 or
+                dataset['jurisdiction_code'] != source['jurisdiction'] or dataset['fiscal_year'] != edition['fiscal_year'] or
                 dataset['direction'] != 'expenditure' or dataset['document_kind'] != 'supplementary' or
                 dataset['origin_sha256'] != entry['originEdition']):
                 raise ValueError('Native supplementary dataset phase/scope differs')
@@ -140,8 +140,10 @@ def output_coverage(connection, candidate: Path, hashes: dict, lock_path: Path,
             dataset['output_coverage'].update(original_rows=len(raw), files=[entry['path']+'/data.parquet'],
                 independent_printed_controls=dict(moku_delta=sum(moku.values()),
                     setsu_delta=sum(setsu.values()), project_delta=sum(projects.values())))
-        if set(raw_by_id) != set(registered) or len(raw_by_id) != 3 or sum(map(len, raw_by_id.values())) != 17:
-            raise ValueError('Native supplementary expected three datasets/17 observations differ')
+        expected_paths = {input_path(s['source'], edition=s['edition']) for s in specs.values()}
+        if set(raw_by_id) != set(registered) or {e['path'] for e in entries} != expected_paths:
+            raise ValueError('Native supplementary datasets differ from all enabled account editions')
+        observation_count = sum(map(len, raw_by_id.values()))
         for model in (STAGING, INTERMEDIATE, OBSERVATIONS):
             actual = records(connection, f'select distinct dataset_id from {model}')
             if {r['dataset_id'] for r in actual} != set(registered):
@@ -156,14 +158,14 @@ def output_coverage(connection, candidate: Path, hashes: dict, lock_path: Path,
             csvs[relative] = typed_csv(connection, candidate, relative, relation, hashes)
             _equal_rows(csvs[relative], records(connection, 'select * from '+relation), relative)
         observed_csv = csvs['fiscal/131016/supplementary_native_observations.csv']
-        if len(observed_csv) != 17 or any(r['nonadditive'] is not True for r in observed_csv):
+        if len(observed_csv) != observation_count or any(r['nonadditive'] is not True for r in observed_csv):
             raise ValueError('Native supplementary observation CSV count/nonadditive differs')
         for identity, raw in raw_by_id.items():
             observed = [{f:r[f] for f in COLUMNS} for r in observed_csv if r['dataset_id']==identity]
             _equal_rows(observed, raw, 'Native supplementary actual observation CSV')
         changes = records(connection, 'select * from '+CHANGES)
         actual_changes = {(r['dataset_id'],r['source_row']):r for r in changes}
-        if len(actual_changes) != len(changes) or set(actual_changes) != set(expected_changes) or len(changes) != 2:
+        if len(actual_changes) != len(changes) or set(actual_changes) != set(expected_changes):
             raise ValueError('Native supplementary finite approved project changes differ; unknown must be excluded')
         items = _indexed(records(connection, 'select * from '+ITEMS), 'budget_item_id')
         if set(items) != {r['budget_item_id'] for r in changes}:
@@ -175,9 +177,12 @@ def output_coverage(connection, candidate: Path, hashes: dict, lock_path: Path,
         for key, change in actual_changes.items():
             raw, original = expected_changes[key], metadata[key[0]]
             item = items[change['budget_item_id']]
+            approval = original['approval_proof']
+            effective_at = original['approval_date'] if approval.get('kind', 'budget_bill') == 'budget_bill' else None
+            actual_effective_at = str(change['effective_at']) if change['effective_at'] is not None else None
             if (change['amount_delta'] != raw['amount_delta']*1000 or
                 change['sequence'] != original['amendment_number'] or
-                str(change['effective_at']) != original['approval_date'] or
+                actual_effective_at != effective_at or
                 item['initial_state'] != 'unconfirmed' or item['line_granularity'] != 'origin_line' or
                 item['expenditure_setsu_id'] is not None):
                 raise ValueError('Native supplementary change value/approval or unconfirmed item differs')
@@ -219,13 +224,13 @@ def output_coverage(connection, candidate: Path, hashes: dict, lock_path: Path,
             if detail[0]['printedDetailRows'] != expected_children:
                 raise ValueError('Native supplementary nested printed detail rows differ')
             dataset = next(d for d in selected if d['dataset_id']==key[0])
-            dataset['_phase_lines'][key[1]] = dict(amount=str(change['amount_delta']),fund='一般会計',
+            dataset['_phase_lines'][key[1]] = dict(amount=str(change['amount_delta']),fund=original['fund_label'],
                 levels=['kan','kou','moku','project'],expenditure_setsu_id=None)
         for dataset in selected:
             identity = dataset['dataset_id']
             count = sum(k[0] == identity for k in expected_changes)
             dataset['output_coverage'].update(complete=True, all_original_fields_preserved=True,
-                accounts={'一般会計':dict(original_rows=len(raw_by_id[identity]), financial_change_rows=count,
+                accounts={metadata[identity]['fund_label']:dict(original_rows=len(raw_by_id[identity]), financial_change_rows=count,
                     amendment_numbers=[metadata[identity]['amendment_number']],
                     explicit_moku_setsu=False, explicit_project_setsu=False,
                     target_relation_confirmed=False, project_setsu_linkage='unconfirmed',

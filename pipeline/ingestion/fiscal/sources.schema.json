@@ -1902,6 +1902,13 @@
                             }
                           }
                         }
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "budget_bill",
+                          "ratification"
+                        ]
                       }
                     }
                   }
