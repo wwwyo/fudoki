@@ -7,9 +7,11 @@ from __future__ import annotations
 
 import argparse
 from copy import deepcopy
+from datetime import datetime
 import json
 from pathlib import Path
 import sys
+from urllib.parse import urlsplit, urlunsplit
 
 import jsonschema
 
@@ -19,7 +21,7 @@ SCHEMA = HERE / "sources.schema.json"
 PDF_SECTIONS = (
     "statement", "budget_history", "supplementary_detail", "settlement_pdf",
     "project_names", "revenue_accounts",
-    "initial_detail",
+    "initial_detail", "recovered_initial_detail",
 )
 SECTIONS = ("csv", *PDF_SECTIONS)
 URL_FIELDS = {"url", "landing_page", "download_url", "landing_url", "approval_url"}
@@ -79,15 +81,25 @@ def load_registry(path: Path = INVENTORY) -> dict:
             resource = ingestion["options"].get("resource", {})
             if direction is not None and resource.get("direction", direction) != direction:
                 raise ValueError(f"{where}: profile and resource directions disagree")
-            if ingestion["section"] == "initial_detail":
+            if ingestion["section"] in ("initial_detail", "recovered_initial_detail"):
                 options = ingestion["options"]
+                recovered = ingestion["section"] == "recovered_initial_detail"
                 if (source["jurisdiction"] != ingestion["key"].split(":")[0]
                     or source["fiscal_year"] != options.get("fiscal_year")
                     or source["document_phase"] != "initial"
                     or options.get("fund_label") not in source["account_labels"]
-                    or direction != "expenditure"
-                    or "expenditure" not in source.get("directions", [])):
+                    or direction not in ("revenue", "expenditure")
+                    or (not recovered and direction != "expenditure")
+                    or direction not in source.get("directions", [])):
                     raise ValueError(f"{where}: initial detail must match its parent jurisdiction, year, account and direction")
+                if recovered:
+                    if any(k in options for k in ("original_url", "wayback_url", "wayback_capture")):
+                        raise ValueError(f"{where}: the containing origin supplies archive addresses and capture")
+                    if (options.get("direction") != direction
+                        or source.get("acquisition", {}).get("method") != "wayback"
+                        or source["content_inspection"].get("sha256") != options.get("expected_sha256")
+                        or source["content_inspection"].get("final_url") != _download(source)):
+                        raise ValueError(f"{where}: recovered chapter must match its observed archived edition")
             target = profile.get("target", {})
             if not isinstance(target, dict):
                 raise ValueError(f"{where}: target must be an object")
@@ -118,6 +130,12 @@ def _scope(source: dict, ingestion: dict) -> dict:
                 "direction": "expenditure",
                 "physical_pages": [ingestion["options"]["first_page"],
                                    ingestion["options"]["last_page"]]}
+    if ingestion["section"] == "recovered_initial_detail":
+        return {"jurisdiction": source["jurisdiction"],
+                "fiscal_year": source["fiscal_year"],
+                "account_label": ingestion["options"]["fund_label"],
+                "document_phase": source["document_phase"],
+                "direction": profile["direction"]}
     if "target" in profile:
         return profile["target"]
     if "edition_index" in profile:
@@ -130,6 +148,17 @@ def _scope(source: dict, ingestion: dict) -> dict:
 def _landing(source: dict, ingestion: dict) -> str:
     index = ingestion.get("profile", {}).get("publication_index")
     return source["landing_url"] if index is None else source["publication_links"][index]["url"]
+
+
+def _download(source: dict) -> str:
+    acquisition = source.get("acquisition", {"method": "direct"})
+    if acquisition["method"] != "wayback":
+        return source["download_url"]
+    capture = acquisition["capture"]
+    datetime.strptime(capture, "%Y%m%d%H%M%S")
+    url = urlsplit(source["download_url"])
+    original = urlunsplit(url._replace(scheme=acquisition["original_scheme"]))
+    return f"https://web.archive.org/web/{capture}id_/{original}"
 
 
 def _referenced_source(source_id: object, sources: dict[str, dict], where: str) -> dict:
@@ -208,8 +237,8 @@ def project_sources(inventory: dict) -> dict:
             resource = spec.pop("resource")
             spec["landing_page"] = _landing(source, ingestion)
             acquisition = source.get("acquisition", {"method": "direct"})
-            if acquisition["method"] == "direct":
-                resource["url"] = source["download_url"]
+            if acquisition["method"] in ("direct", "wayback"):
+                resource["url"] = _download(source)
             elif acquisition["method"] == "ckan":
                 if acquisition["catalog"] not in projected["catalog"]:
                     raise ValueError(f"{source['id']}: unknown acquisition catalog")
@@ -226,8 +255,13 @@ def project_sources(inventory: dict) -> dict:
                 if "coverage_source_id" in spec:
                     raise ValueError(f"{section}.{key}: the containing origin supplies coverage_source_id")
                 spec["coverage_source_id"] = source["id"]
-            if section != "budget_history":
-                spec["url"] = source["download_url"]
+            if section == "recovered_initial_detail":
+                spec["original_url"] = source["download_url"]
+                spec["wayback_url"] = _download(source)
+                spec["wayback_capture"] = source["acquisition"]["capture"]
+                spec["landing_page"] = _landing(source, ingestion)
+            elif section != "budget_history":
+                spec["url"] = _download(source)
                 if section not in ("project_names", "revenue_accounts"):
                     spec["landing_page"] = _landing(source, ingestion)
             else:
@@ -248,7 +282,7 @@ def acquisition_plan(inventory: dict) -> dict:
             source_id=source["id"], section=ingestion["section"], key=ingestion["key"],
             referenced_source_ids=_reference_ids(ingestion["options"]),
             acquisition=deepcopy(source.get("acquisition", {"method": "direct"})),
-            download_url=source["download_url"], landing_url=_landing(source, ingestion),
+            download_url=_download(source), landing_url=_landing(source, ingestion),
             profile=deepcopy(ingestion.get("profile", {})),
             scope=deepcopy(_scope(source, ingestion)),
         ))

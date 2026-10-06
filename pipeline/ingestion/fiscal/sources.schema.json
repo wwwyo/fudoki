@@ -1316,7 +1316,8 @@
             "settlement_pdf",
             "project_names",
             "revenue_accounts",
-            "initial_detail"
+            "initial_detail",
+            "recovered_initial_detail"
           ]
         },
         "key": {
@@ -1686,6 +1687,49 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "section": {
+                "const": "recovered_initial_detail"
+              }
+            },
+            "required": [
+              "section"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "required": [
+                  "fiscal_year",
+                  "direction",
+                  "fund_label",
+                  "document_title",
+                  "expected_sha256",
+                  "expected_table_sha256",
+                  "expected_rows",
+                  "table_id",
+                  "raw_form",
+                  "source_amount_unit",
+                  "redistribute",
+                  "redistribute_basis",
+                  "license_id",
+                  "attribution",
+                  "url_basis"
+                ]
+              },
+              "profile": {
+                "required": [
+                  "direction"
+                ]
+              }
+            },
+            "required": [
+              "profile"
+            ]
+          }
         }
       ]
     },
@@ -1744,6 +1788,30 @@
             "basis": {
               "type": "string",
               "minLength": 1
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "method",
+            "capture",
+            "original_scheme"
+          ],
+          "properties": {
+            "method": {
+              "const": "wayback"
+            },
+            "capture": {
+              "type": "string",
+              "pattern": "^[0-9]{14}$"
+            },
+            "original_scheme": {
+              "enum": [
+                "http",
+                "https"
+              ]
             }
           }
         }

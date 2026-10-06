@@ -8,13 +8,15 @@ rows keep printed-parent evidence, no project mapping.
 from pathlib import Path
 import json
 import tomllib
+from ingestion.fiscal.source_registry import INVENTORY, load_registry, project_sources
 
-CONFIG = Path(__file__).with_name('sources-recovered-initial-detail.toml')
+CONFIG = INVENTORY
 PROVIDER_VERSION = 1
 
 def load_recovered(path: Path = CONFIG):
-    raw = tomllib.loads(path.read_text(encoding='utf-8'))
-    return raw['recovered']
+    if path.suffix == '.toml':
+        return tomllib.loads(path.read_text(encoding='utf-8'))['recovered']
+    return project_sources(load_registry(path))['recovered_initial_detail']
 
 def komae_recovered_sources(path: Path = CONFIG):
     from ingestion.fiscal.sources import Source, Resource

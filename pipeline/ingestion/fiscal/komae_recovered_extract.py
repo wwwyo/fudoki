@@ -33,9 +33,8 @@ def bbox(row):
     xs=[x for x,_ in row];return [min(xs),0,max(xs)+6,12] if xs else None
 
 def load_manifest():
-    import tomllib
-    spec=Path(__file__).with_name('sources-recovered-initial-detail.toml')
-    raw=tomllib.loads(spec.read_text())['recovered']
+    from ingestion.fiscal.komae_recovered_provider import load_recovered
+    raw=load_recovered()
     docs=[]
     for s in raw.values():
         docs.append(dict(fiscal_year=s['fiscal_year'],direction=s['direction'],
