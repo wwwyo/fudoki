@@ -9,7 +9,6 @@
       "pipeline",
       "pipeline/verify/report",
       "pipeline/verify/view",
-      "slides",
       "apps/web/deploy"
     ],
     "catalog": {
@@ -52,6 +51,8 @@
     "survey:fiscal-years": "uv run python -m ingestion.fiscal.survey_years",
     "survey:structure": "uv run python -m ingestion.fiscal.survey_structure",
     "test": "bun test packages pipeline/artifacts.test.ts pipeline/verify/report apps/availability.test.ts pipeline/verify/view/src",
+    "test:e2e": "bun run typecheck:e2e && E2E_TELEMETRY_DISABLED=1 mise x -- bun run e2e run",
+    "typecheck:e2e": "tsc --noEmit -p tsconfig.e2e.json",
     "typecheck": "tsc --noEmit",
     "typecheck:all": "bun run typecheck && bun run --cwd apps/api typecheck && bun run --cwd apps/web typecheck && bun run --cwd pipeline/verify/view typecheck && bun run --cwd apps/docs typecheck",
     "report": "bun run pipeline:report",
@@ -61,7 +62,12 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@ai-sdk/openai-compatible": "3.0.62",
+    "@e2e-dev/web": "0.11.2",
     "@types/bun": "catalog:",
+    "ai": "7.0.127",
+    "e2e": "0.16.0",
+    "playwright": "1.63.0",
     "typescript": "catalog:"
   }
 }
