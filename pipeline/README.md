@@ -55,7 +55,7 @@ PDF 閲覧レイヤは `.cache/pdf/`、報告は `.build/report/` に置く。�
 
 ## 検査する
 
-`bun run sources:plan --json` で原典台帳に登録した有効な取り込み宣言を確認する。取得計画・報告画面は `ingestion/fiscal/sources.json` を読み、原典の観測、選択の根拠、取得設定を同じ原典レコードで管理する。通常取得器の切替は採用済みの支持定義の再検証待ちで、旧 `sources.toml` の読取りが残る。個別取り込み器の設定もまだ移行していない。現在の境界は [移行記録](../docs/prd/fiscal-coverage/source-registry-migration.md) を参照する。
+`bun run sources:plan --json` で原典台帳に登録した有効な取り込み宣言を確認する。共通取得器・取得計画・報告画面は `ingestion/fiscal/sources.json` を読み、原典の観測、選択の根拠、取得設定を同じ原典レコードで管理する。旧 `sources.toml` は採用時の支持定義として保持し、明示指定した場合だけ再現用に読む。個別取り込み器の設定はまだ移行していない。現在の境界は [移行記録](../docs/prd/fiscal-coverage/source-registry-migration.md) を参照する。
 
 取り込み前に `bun run sources:canonical --json` で、同じ原典対象の最新版・機械判読性に基づく優先候補と採用入力の有無を確認する。`--missing-only` は採用入力が見つからない対象を抽出する。版の順序、対象の識別、本文の検証は別の確認状態として残る。版と優先掲載先の根拠は既存の `ingestion/fiscal/sources.json` の原典レコードに記録する。原典の追加取得・OCR・ハッシュ計算・全量構築は実行しない。採用入力ありは全明細収録や提供完了を意味しない。
 

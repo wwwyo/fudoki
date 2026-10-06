@@ -656,57 +656,12 @@
             }
           },
           "acquisition": {
-            "oneOf": [
-              {
-                "type": "object",
-                "additionalProperties": false,
-                "required": [
-                  "method"
-                ],
-                "properties": {
-                  "method": {
-                    "const": "direct"
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "additionalProperties": false,
-                "required": [
-                  "method",
-                  "catalog"
-                ],
-                "properties": {
-                  "method": {
-                    "const": "ckan"
-                  },
-                  "catalog": {
-                    "type": "string",
-                    "minLength": 1
-                  }
-                }
-              }
-            ]
+            "$ref": "#/$defs/acquisition"
           },
           "publication_links": {
             "type": "array",
             "items": {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "url",
-                "basis"
-              ],
-              "properties": {
-                "url": {
-                  "type": "string",
-                  "pattern": "^https://"
-                },
-                "basis": {
-                  "type": "string",
-                  "minLength": 1
-                }
-              }
+              "$ref": "#/$defs/publication_link"
             }
           }
         },
@@ -776,22 +731,7 @@
     "acquisition_catalogs": {
       "type": "object",
       "additionalProperties": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "endpoint",
-          "org_prefix"
-        ],
-        "properties": {
-          "endpoint": {
-            "type": "string",
-            "pattern": "^https://"
-          },
-          "org_prefix": {
-            "type": "string",
-            "minLength": 1
-          }
-        }
+        "$ref": "#/$defs/acquisition_catalog"
       }
     }
   },
@@ -1418,7 +1358,6 @@
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
-                  "catalog": {},
                   "dataset_title": {},
                   "fiscal_year_label": {},
                   "document_kind": {},
@@ -1763,7 +1702,8 @@
           "pattern": "^https://[^\\s]+$"
         },
         "org_prefix": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         }
       }
     },
@@ -1812,7 +1752,8 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "url"
+        "url",
+        "basis"
       ],
       "properties": {
         "url": {

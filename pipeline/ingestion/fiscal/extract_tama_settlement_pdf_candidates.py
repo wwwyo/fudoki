@@ -374,13 +374,15 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--mode',choices=['funding','books','canonical'],required=True)
     parser.add_argument('--manifest',type=Path)
-    parser.add_argument('--sources-toml',type=Path,default=Path(__file__).with_name('sources.toml'))
+    parser.add_argument('--sources', '--sources-toml', dest='sources', type=Path,
+                        default=Path(__file__).with_name('sources.json'),
+                        help='Source registry; an explicit TOML path replays a legacy declaration')
     parser.add_argument('--origin-dir',type=Path)
     parser.add_argument('--output',type=Path,required=True)
     args=parser.parse_args();args.output.mkdir(parents=True,exist_ok=True)
     if args.mode=='canonical':
         if args.origin_dir is None: parser.error('--origin-dir is required for canonical mode')
-        result=canonical(args.sources_toml,args.origin_dir,args.output)
+        result=canonical(args.sources,args.origin_dir,args.output)
     else:
         if args.manifest is None: parser.error('--manifest is required for candidate modes')
         spec=json.loads(args.manifest.read_text())

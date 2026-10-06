@@ -1,7 +1,6 @@
-"""取得元の定義を `sources.toml` から読む。
+"""原典台帳 `sources.json` の取り込み宣言を、取得器の型へ変換する。
 
-TOML を正にしているのは、Python（tomllib）と Bun の両方が依存なしで読めるため。
-定義を2言語で二重持ちすると、片方だけ直して気づかない状態を作る。
+明示的な旧TOML入力は固定時の宣言を読み直す用途に限る。通常取得は台帳を使う。
 """
 
 from __future__ import annotations
@@ -12,9 +11,16 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from ingestion.shared.jurisdictions import jurisdiction_name as _jurisdiction_name
+from ingestion.fiscal.source_registry import load_registry, project_sources
 
 ROOT = Path(__file__).resolve().parent.parent.parent
-SOURCES_TOML = Path(__file__).resolve().parent / "sources.toml"
+SOURCES_JSON = Path(__file__).resolve().parent / "sources.json"
+
+
+def _declarations(path: Path) -> dict:
+    if path.suffix == ".toml":
+        return tomllib.loads(path.read_text(encoding="utf-8"))
+    return project_sources(load_registry(path))
 
 
 @dataclass(frozen=True)
@@ -195,11 +201,11 @@ class Source:
         return self.redistribute == "allow"
 
 
-def load_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
-    raw = tomllib.loads(path.read_text(encoding="utf-8"))
+def load_sources(path: Path = SOURCES_JSON) -> dict[str, Source]:
+    raw = _declarations(path)
     catalogs = {name: Catalog(**spec) for name, spec in raw.pop("catalog", {}).items()}
     # 事業名・歳入科目名の取得元は別の形（PDF とページ範囲）なので Source として読まない。
-    # 正本は同じ TOML に置く — 取得元の宣言が2ファイルに割れるほうが見落とす。
+    # 正本は同じ原典台帳に置く — 取得元の宣言が2ファイルに割れるほうが見落とす。
     raw.pop("project_names", None)
     raw.pop("revenue_accounts", None)
     raw.pop("statement", None)
@@ -263,7 +269,7 @@ def load_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
     return sources
 
 
-def statement_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
+def statement_sources(path: Path = SOURCES_JSON) -> dict[str, Source]:
     """事項別明細書の取得元を `Source` の語彙へ畳む。**配布物の側が使う。**
 
     ⚠️ **`load_sources()` には混ぜない。** そちらは CSV の取得器（`fetch.py`）が回す集合で、
@@ -307,46 +313,46 @@ def statement_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
     return out
 
 
-def all_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
+def all_sources(path: Path = SOURCES_JSON) -> dict[str, Source]:
     """収録済みの取得元すべて。**配布物と検査の母集団はこちら。**
 
     ⚠️ 取得器ごとの集合（`load_sources` / `statement_sources`）を母集団にすると、
     経路を増やすたびに「その経路だけ誰も見ていない」団体が生まれる。
     """
     from ingestion.fiscal.initial_detail_provider import initial_detail_sources
-    initial = initial_detail_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    initial = initial_detail_sources() if path.resolve() == SOURCES_JSON.resolve() else {}
     from ingestion.fiscal.council_approved_provider import council_approved_sources
-    council = council_approved_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    council = council_approved_sources() if path.resolve() == SOURCES_JSON.resolve() else {}
     from ingestion.fiscal.native_council_provider import native_council_sources
-    native = native_council_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    native = native_council_sources() if path.resolve() == SOURCES_JSON.resolve() else {}
     from ingestion.fiscal.tama_native_settlement.registration import native_settlement_sources
-    native_settlement = native_settlement_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    native_settlement = native_settlement_sources() if path.resolve() == SOURCES_JSON.resolve() else {}
     from ingestion.fiscal.akishima_initial445_registry import initial445_sources
-    initial445 = initial445_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    initial445 = initial445_sources() if path.resolve() == SOURCES_JSON.resolve() else {}
     from ingestion.fiscal.held5_council_provider import held5_council_sources
-    held5 = held5_council_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    held5 = held5_council_sources() if path.resolve() == SOURCES_JSON.resolve() else {}
     from ingestion.fiscal.akishima_settlement2024_registry import settlement2024_sources
-    settlement2024 = settlement2024_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    settlement2024 = settlement2024_sources() if path.resolve() == SOURCES_JSON.resolve() else {}
     from ingestion.fiscal.chiyoda2025_native.registration import native_budget_sources
-    chiyoda2025 = native_budget_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    chiyoda2025 = native_budget_sources() if path.resolve() == SOURCES_JSON.resolve() else {}
     from ingestion.fiscal.chiyoda2021_settlement_native.registration import native_settlement_sources
-    chiyoda2021settle = native_settlement_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    chiyoda2021settle = native_settlement_sources() if path.resolve() == SOURCES_JSON.resolve() else {}
     from ingestion.fiscal.akishima_settlement2020_2023_registry import settlement2020_2023_sources
-    settlement2020_2023 = settlement2020_2023_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    settlement2020_2023 = settlement2020_2023_sources() if path.resolve() == SOURCES_JSON.resolve() else {}
     from ingestion.fiscal.tama_pre2020.registration import pre2020_sources
-    pre2020 = pre2020_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    pre2020 = pre2020_sources() if path.resolve() == SOURCES_JSON.resolve() else {}
     from ingestion.fiscal.komae_recovered_provider import komae_recovered_sources
-    komae_recovered = komae_recovered_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    komae_recovered = komae_recovered_sources() if path.resolve() == SOURCES_JSON.resolve() else {}
     from ingestion.fiscal.akishima_settlement2019_registry import settlement2019_sources
-    settlement2019 = settlement2019_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    settlement2019 = settlement2019_sources() if path.resolve() == SOURCES_JSON.resolve() else {}
     from ingestion.fiscal.akishima_supplementary_fy2025_01_registry import supplementary_fy2025_01_sources
-    supplementary_fy2025_01 = supplementary_fy2025_01_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    supplementary_fy2025_01 = supplementary_fy2025_01_sources() if path.resolve() == SOURCES_JSON.resolve() else {}
     from ingestion.fiscal.mitaka_initial2026 import get_sources as mitaka_sources
-    mitaka = mitaka_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    mitaka = mitaka_sources() if path.resolve() == SOURCES_JSON.resolve() else {}
     from ingestion.fiscal.tama_ordinary_history.registration import ordinary_history_sources
-    ordinary=ordinary_history_sources() if path.resolve()==SOURCES_TOML.resolve() else {}
+    ordinary=ordinary_history_sources() if path.resolve()==SOURCES_JSON.resolve() else {}
     from ingestion.fiscal.komae_supplementary_2020_1_provider import komae_supplementary_2020_1_sources
-    supplementary1 = komae_supplementary_2020_1_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    supplementary1 = komae_supplementary_2020_1_sources() if path.resolve() == SOURCES_JSON.resolve() else {}
     existing = {**settlement2019, **supplementary_fy2025_01, **komae_recovered,**chiyoda2025, **chiyoda2021settle, **pre2020, **settlement2020_2023, **settlement2024, **held5, **initial445, **native_settlement, **native, **council, **initial, **load_sources(path), **statement_sources(path), **budget_history_sources(path),
             **supplementary_detail_sources(path), **settlement_pdf_sources(path)}
     if set(existing) & set(mitaka):
@@ -361,7 +367,7 @@ def all_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
     return existing
 
 
-def load_settlement_pdf(path: Path = SOURCES_TOML) -> dict[str, dict]:
+def load_settlement_pdf(path: Path = SOURCES_JSON) -> dict[str, dict]:
     """Fixed settlement originals with independently observed table partitions."""
     section = _pdf_sources('settlement_pdf', path)
     for key, spec in section.items():
@@ -377,7 +383,7 @@ def load_settlement_pdf(path: Path = SOURCES_TOML) -> dict[str, dict]:
     return section
 
 
-def settlement_pdf_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
+def settlement_pdf_sources(path: Path = SOURCES_JSON) -> dict[str, Source]:
     out = {}
     for key, spec in load_settlement_pdf(path).items():
         code, year, *_ = key.split(':')
@@ -394,12 +400,12 @@ def settlement_pdf_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
     return out
 
 
-def load_supplementary_detail(path: Path = SOURCES_TOML) -> dict[str, dict]:
+def load_supplementary_detail(path: Path = SOURCES_JSON) -> dict[str, dict]:
     """Adopted printed project×setsu changes, separate from the frozen moku pilot."""
     return _pdf_sources('supplementary_detail', path)
 
 
-def supplementary_detail_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
+def supplementary_detail_sources(path: Path = SOURCES_JSON) -> dict[str, Source]:
     out = {}
     for key, spec in load_supplementary_detail(path).items():
         code, year, *_ = key.split(':')
@@ -416,12 +422,12 @@ def supplementary_detail_sources(path: Path = SOURCES_TOML) -> dict[str, Source]
     return out
 
 
-def load_budget_history(path: Path = SOURCES_TOML) -> dict[str, dict]:
+def load_budget_history(path: Path = SOURCES_JSON) -> dict[str, dict]:
     """当初・補正のPDF資料宣言を読む。"""
     return _pdf_sources("budget_history", path)
 
 
-def budget_history_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
+def budget_history_sources(path: Path = SOURCES_JSON) -> dict[str, Source]:
     """履歴資料を説明用の取得元へ変換する。CSV取得器へは渡さない。"""
     out = {}
     for key, spec in load_budget_history(path).items():
@@ -443,14 +449,14 @@ def budget_history_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
     return out
 
 
-def load_catalogs(path: Path = SOURCES_TOML) -> dict[str, Catalog]:
+def load_catalogs(path: Path = SOURCES_JSON) -> dict[str, Catalog]:
     """カタログの宣言だけを引く。**取得元を1つも読まずに宛先を知りたいときのため。**
 
     ⚠️ 粒度の調査（`check_granularity.py`）が CKAN の宛先と団体コードの解決規則を
     自前のリテラルで持っていた。同じ事実が2箇所にあると、カタログを足したり
     宛先が変わったりしたときに調査だけが古いカタログを見続ける。
     """
-    raw = tomllib.loads(path.read_text(encoding="utf-8"))
+    raw = _declarations(path)
     return {name: Catalog(**spec) for name, spec in raw.get("catalog", {}).items()}
 
 
@@ -462,27 +468,27 @@ def resolve(key: str) -> Source:
     return sources[key]
 
 
-def load_project_names(path: Path = SOURCES_TOML) -> dict[str, dict]:
-    """事業名の取得元（PDF）。`sources.toml` の `[project_names]` 節。
+def load_project_names(path: Path = SOURCES_JSON) -> dict[str, dict]:
+    """事業名の取得元（PDF）。`sources.json` の `project_names` 取り込み宣言。
 
     ⚠️ **`Source` には乗らない。** PDF とページ範囲と列の x 範囲という別の形なので、
     CKAN の取得元と同じデータクラスにすると片方に無い項目が任意だらけになる。
     ただし権利の語彙（`raw_form` / `redistribute` / `license_id`）は揃えてあり、
     証跡にも同じキーで記録している。
 
-    ⚠️ **同じ toml を3箇所で開いていた**（抽出器・記述子の生成・この module）。
+    ⚠️ **旧TOMLを3箇所で開いていた**（抽出器・記述子の生成・この module）。
     取得元の宣言を読む入口は1つにする。
     """
     return _pdf_sources("project_names", path)
 
 
-def load_revenue_accounts(path: Path = SOURCES_TOML) -> dict[str, dict]:
+def load_revenue_accounts(path: Path = SOURCES_JSON) -> dict[str, dict]:
     """歳入の科目名称の取得元（決算資料の歳入事項別明細）。`[revenue_accounts]` 節"""
     return _pdf_sources("revenue_accounts", path)
 
 
-def load_statements(path: Path = SOURCES_TOML) -> dict[str, dict]:
-    """事項別明細書（PDF）を原典とする取得元。`sources.toml` の `[statement]` 節。
+def load_statements(path: Path = SOURCES_JSON) -> dict[str, dict]:
+    """事項別明細書（PDF）を原典とする取得元。`sources.json` の `statement` 取り込み宣言。
 
     ⚠️ **`Source` には乗らない。** CKAN の取得元は (団体, 年度) に対して
     direction ごとの**別ファイル**を持つが、事項別明細書は1本の PDF の中で
@@ -530,7 +536,7 @@ def _pdf_sources(section: str, path: Path) -> dict[str, dict]:
     `data/budget/raw/**/jurisdiction=132159/` のような未知の団体の区画へ書けてしまう。
     名称を引く経路が無い分、CKAN 側より検知が遅れる。
     """
-    section_raw = tomllib.loads(path.read_text(encoding="utf-8")).get(section, {})
+    section_raw = _declarations(path).get(section, {})
     for key in section_raw:
         code = key.split(":")[0]
         _jurisdiction_name(code)      # 未登録なら KeyError

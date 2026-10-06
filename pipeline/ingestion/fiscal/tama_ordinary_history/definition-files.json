@@ -768,17 +768,9 @@
       "bytes": 9034,
       "sha256": "3c8152b40fee53013690cd02b2643325063f302f00f68e1362050d473d80ca52"
     },
-    "pipeline/ingestion/fiscal/coverage.json": {
-      "bytes": 9011005,
-      "sha256": "1c9b3bd2394297b3cf3f9970ce914acafb89d01b2bac3e3e67ab152b7cb781d9"
-    },
-    "pipeline/ingestion/fiscal/coverage.schema.json": {
-      "bytes": 32452,
-      "sha256": "231fb5cb2dec9b1b9c1c9543436b2f230fcc2ad2fcb9ae076f01c403f060bff0"
-    },
     "pipeline/ingestion/fiscal/coverage_audit.py": {
-      "bytes": 113063,
-      "sha256": "a52106f254eff3eed94f8fec374e1aaaaa03e0f8d6806eb0f4b608bedff196ad"
+      "sha256": "d9be8119dbcd1d3d477fd91ceec4863c899d9e4fdc635fb5070cfd5e49a684b1",
+      "bytes": 113061
     },
     "pipeline/ingestion/fiscal/decode_komae_held5_observations.py": {
       "bytes": 13273,
@@ -841,8 +833,8 @@
       "sha256": "066a2e7c0aa1ffd52ab19fb6f44997582d650aae82c1def0e381e77ede2c8491"
     },
     "pipeline/ingestion/fiscal/held5-runtime-manifest.json": {
-      "bytes": 2523,
-      "sha256": "d909de2e41b8b5e046f1077594f09f39395dd5d1e77ae0d3f2dec2e0c7c8d6cb"
+      "sha256": "a52f049493c9fd69d1a300a79659fd61d46117778422fc5348e137f9145e95f8",
+      "bytes": 2916
     },
     "pipeline/ingestion/fiscal/held5-whole-attachment-proof.json": {
       "bytes": 101574,
@@ -877,8 +869,8 @@
       "sha256": "6322c16d9551eb546ecc602730ea65af20c1ace8c31aac26aeb8bc4baccbc9c8"
     },
     "pipeline/ingestion/fiscal/komae_supplementary_2020_1_contracts.py": {
-      "bytes": 12332,
-      "sha256": "3d0c4fcde2d45c22a335d128a15b043faf0ee42ea4ac29afa258fa5b7c13ee63"
+      "sha256": "8b7a075239020d52fe7e8e01f7db9c2d1aa1878fb388933e4950ca755b7f6848",
+      "bytes": 12471
     },
     "pipeline/ingestion/fiscal/komae_supplementary_2020_1_coverage.py": {
       "bytes": 15835,
@@ -921,12 +913,12 @@
       "sha256": "da34b23815d9618ff29e728916d9afd9d94b7c36dec2f5bd7137c4999b41dc33"
     },
     "pipeline/ingestion/fiscal/mitaka_initial2026/registration.py": {
-      "bytes": 13889,
-      "sha256": "936eb81f20b9859ee5481b78e49546ac5f2b90cc38efdd558ff26dd5c264d81e"
+      "sha256": "6d21b53d5d869db59b9b40dde96c8d3441d9b0c72d2feaae39c09491abd1c2a9",
+      "bytes": 14028
     },
     "pipeline/ingestion/fiscal/mitaka_initial2026/runtime-manifest.json": {
-      "bytes": 1999,
-      "sha256": "e164e15871b57c04858db36e5f54c8dc2fc7a9099a8685c3a89c7b74bbaba10c"
+      "sha256": "fab561d1cf94a8e7ab2b31b4ad454d094a0d66296d30ae4ff1e23d520ff663ee",
+      "bytes": 1999
     },
     "pipeline/ingestion/fiscal/mitaka_initial2026/runtime.py": {
       "bytes": 665,
@@ -1013,8 +1005,8 @@
       "sha256": "7ce07441832a7b57e1970756a0a550c9ee112474022503750d9f071ebbd31d3e"
     },
     "pipeline/ingestion/fiscal/sources.py": {
-      "bytes": 33757,
-      "sha256": "49df846100376a43496f67431f2f10981ef28548e7c2b9c8ef8b1fbd68386c69"
+      "sha256": "87aafe78de2c27dc13a276e93047b6d587b64eceaca4e2e6b4d86ed0bc464852",
+      "bytes": 33902
     },
     "pipeline/ingestion/fiscal/sources.toml": {
       "bytes": 529044,
@@ -1159,6 +1151,18 @@
     "uv.lock": {
       "bytes": 97982,
       "sha256": "669b2914b1b4d6c1b36b31a35d915eff84fdf54a5a7713cddca7c9df27d0a197"
+    },
+    "pipeline/ingestion/fiscal/source_registry.py": {
+      "sha256": "b422e6785132add64fdc3dbd21ab73d4c42ff8604daf239979d7db498ef524d9",
+      "bytes": 12689
+    },
+    "pipeline/ingestion/fiscal/sources.json": {
+      "sha256": "392b1605fcd15b03b298cae4f2c4313c579877c30e6cbd7d5fe50460a377fa10",
+      "bytes": 9901460
+    },
+    "pipeline/ingestion/fiscal/sources.schema.json": {
+      "sha256": "6b1fef847e7e5bf9202b7e19fd46380e587596d613509f547f34fd1d866acc09",
+      "bytes": 48169
     }
   },
   "metadata_contract": "inline-source-v3",
@@ -1356,8 +1360,6 @@
     "pipeline/ingestion/fiscal/chiyoda2025_native/sources-spec.json",
     "pipeline/ingestion/fiscal/chiyoda2025_native_coverage.py",
     "pipeline/ingestion/fiscal/council_approved_provider.py",
-    "pipeline/ingestion/fiscal/coverage.json",
-    "pipeline/ingestion/fiscal/coverage.schema.json",
     "pipeline/ingestion/fiscal/coverage_audit.py",
     "pipeline/ingestion/fiscal/decode_komae_held5_observations.py",
     "pipeline/ingestion/fiscal/decode_komae_native_observations.py",
@@ -1406,6 +1408,7 @@
     "pipeline/ingestion/fiscal/settlement2019_coverage.py",
     "pipeline/ingestion/fiscal/settlement2020_2023_coverage.py",
     "pipeline/ingestion/fiscal/settlement2024_coverage.py",
+    "pipeline/ingestion/fiscal/source_registry.py",
     "pipeline/ingestion/fiscal/sources-akishima-initial445.json",
     "pipeline/ingestion/fiscal/sources-akishima-settlement2019.json",
     "pipeline/ingestion/fiscal/sources-akishima-settlement2020-2023.json",
@@ -1417,7 +1420,9 @@
     "pipeline/ingestion/fiscal/sources-native-council-approved.json",
     "pipeline/ingestion/fiscal/sources-recovered-initial-detail.toml",
     "pipeline/ingestion/fiscal/sources-supplementary-2020-1.toml",
+    "pipeline/ingestion/fiscal/sources.json",
     "pipeline/ingestion/fiscal/sources.py",
+    "pipeline/ingestion/fiscal/sources.schema.json",
     "pipeline/ingestion/fiscal/sources.toml",
     "pipeline/ingestion/fiscal/supplementary_fy2025_01_coverage.py",
     "pipeline/ingestion/fiscal/tama_native_settlement/__init__.py",

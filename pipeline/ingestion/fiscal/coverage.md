@@ -10,7 +10,7 @@
 
 本文で観測した年度・会計と、取り込み対象の宣言は区別する。`profile.target` は処理対象であり、原典本文の確認結果を上書きしない。`options` は既存の抽出器が使う頁範囲・列位置・権利・単位などの設定、`order` は処理とリソースの順序を保持する。
 
-移行時点では共通取得器が使っていた `sources.toml` の41ブロックを台帳へ移した。旧TOMLは採用時の固定証跡が参照するため保持する。新しい取得設定は台帳へ記録するが、通常取得器の切替は採用済み支持定義の移行・再検証待ちである。個別取り込み器のTOML/JSONもまだ移行していない。現在の境界と次の手順は [移行記録](../../../docs/prd/fiscal-coverage/source-registry-migration.md) を参照する。設定の一致だけでは全公開範囲や提供データの検証を完了扱いにしない。
+共通取得器が使っていた `sources.toml` の41ブロックを台帳へ移し、通常の読取り先も台帳へ切り替えた。旧TOMLは採用時の固定証跡が参照するため保持し、明示指定した場合だけ再現用に読む。支持定義の変更は、原典・取り込み表・宣言の意味が変わらないことを再抽出と構築結果で確認して固定入力へ反映した。個別取り込み器のTOML/JSONはまだ移行していない。確認範囲と次の手順は [移行記録](../../../docs/prd/fiscal-coverage/source-registry-migration.md) を参照する。設定の一致だけでは全公開範囲や提供データの検証を完了扱いにしない。
 
 2026-10-04 に確認した有限の探索結果を収録した。公開された全資料を網羅したとは宣言しない。現在の予算ページに古い年度がない場合も、有償刊行物・庁議・記者会見・議会議案・東京都カタログを探し、探索できていない範囲を `jurisdictions[].gaps` に残す。リンクが見つからない、404、画像で読めない、といった事情を「公開なし」やゼロに置き換えない。
 
@@ -85,7 +85,7 @@ schema = json.loads((root / 'sources.schema.json').read_text())
 inventory = json.loads((root / 'sources.json').read_text())
 Draft202012Validator.check_schema(schema)
 Draft202012Validator(schema, format_checker=FormatChecker()).validate(inventory)
-print('coverage schema: PASS')
+print('sources schema: PASS')
 PY
 ```
 
