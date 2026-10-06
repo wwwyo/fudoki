@@ -126,6 +126,8 @@ def declarations():
     rows, history = register_chiyoda_supplementary(rows, history, entries, INPUT_LOCK)
     from ingestion.fiscal.tama_supplementary_registry import register_declarations as register_tama_supplementary
     rows, history = register_tama_supplementary(rows, history, entries, INPUT_LOCK)
+    from ingestion.fiscal.mitaka_supplementary_registry import register_declarations as register_mitaka_supplementary
+    rows, history = register_mitaka_supplementary(rows, history, entries, INPUT_LOCK)
     return rows, history
 
 

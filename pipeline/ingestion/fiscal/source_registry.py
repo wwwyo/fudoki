@@ -22,6 +22,7 @@ PDF_SECTIONS = (
     "statement", "budget_history", "supplementary_detail", "settlement_pdf",
     "project_names", "revenue_accounts",
     "initial_detail", "recovered_initial_detail", "native_initial_detail", "native_supplementary_detail",
+    "native_supplementary_amendment",
 )
 SECTIONS = ("csv", *PDF_SECTIONS)
 URL_FIELDS = {"url", "landing_page", "download_url", "landing_url", "approval_url"}
@@ -39,6 +40,53 @@ def _without_urls(value: object, location: str) -> None:
             _without_urls(child, f"{location}[{index}]")
 
 
+def _validate_supplementary_composition(source: dict, ingestion: dict,
+                                       sources: dict[str, dict], where: str) -> None:
+    """Bind a partial formal amendment to one original account edition."""
+    options = ingestion['options']
+    if ingestion['section'] == 'native_supplementary_detail':
+        if 'composition' not in options:
+            return
+        base = source
+        base_index = ingestion['profile'].get('edition_index', 0)
+        motion = _referenced_source(options['composition']['source_id'], sources, where)
+        matches = [i for i in motion.get('ingestions', [])
+                   if i['section'] == 'native_supplementary_amendment' and i['enabled']]
+        if len(matches) != 1:
+            raise ValueError(f'{where}: composition requires one registered formal amendment')
+        motion_ingestion = matches[0]
+    else:
+        motion, motion_ingestion = source, ingestion
+        reference = options['replaces']
+        base = _referenced_source(reference['source_id'], sources, where)
+        base_index = reference['options']['edition_index']
+        matches = [i for i in base.get('ingestions', [])
+                   if i['section'] == 'native_supplementary_detail' and i['enabled']
+                   and i.get('profile', {}).get('edition_index', 0) == base_index]
+        if len(matches) != 1 or matches[0]['options'].get('composition') != {'source_id': motion['id']}:
+            raise ValueError(f'{where}: formal amendment requires a reciprocal account registration')
+    if not 0 <= base_index < len(base['editions']):
+        raise ValueError(f'{where}: formal amendment replaces an unknown edition')
+    reference = motion_ingestion['options']['replaces']
+    if reference != {'source_id': base['id'], 'options': {'edition_index': base_index}}:
+        raise ValueError(f'{where}: formal amendment replaces a different edition')
+    motion_index = motion_ingestion['profile']['edition_index']
+    if not 0 <= motion_index < len(motion['editions']):
+        raise ValueError(f'{where}: formal amendment edition is unknown')
+    original_edition, motion_edition = base['editions'][base_index], motion['editions'][motion_index]
+    scope_fields = ('fiscal_year', 'account_label', 'document_phase', 'amendment_number')
+    pages = motion_ingestion['profile']['physical_pages']
+    if (motion['jurisdiction'] != base['jurisdiction'] or motion['jurisdiction'] != '132241'
+        or motion['fiscal_year'] != base['fiscal_year'] or motion['document_phase'] != 'supplementary'
+        or motion['role'] != 'decision' or motion['format'] != 'pdf'
+        or 'expenditure' not in motion['directions']
+        or any(motion_edition[k] != original_edition[k] for k in scope_fields)
+        or original_edition['document_phase'] != 'supplementary'
+        or motion_edition['in_scope']['status'] != 'included'
+        or pages[1] > motion['content_inspection']['pages']):
+        raise ValueError(f'{where}: formal amendment scope or physical pages differ from the original account')
+
+
 def load_registry(path: Path = INVENTORY) -> dict:
     inventory = json.loads(path.read_text(encoding="utf-8"))
     schema = json.loads(SCHEMA.read_text(encoding="utf-8"))
@@ -52,6 +100,7 @@ def load_registry(path: Path = INVENTORY) -> dict:
     ids = [source["id"] for source in sources]
     if len(ids) != len(set(ids)):
         raise ValueError("Duplicate origin identifiers")
+    sources_by_id = {source['id']: source for source in sources}
     for source in sources:
         for ingestion in source.get("ingestions", []):
             where = f"{source['id']}.ingestions"
@@ -66,12 +115,14 @@ def load_registry(path: Path = INVENTORY) -> dict:
             if not isinstance(ingestion.get("options"), dict):
                 raise ValueError(f"{where}: options must be an object")
             _without_urls(ingestion["options"], where + ".options")
+            if ingestion['enabled'] and ingestion['section'] in ('native_supplementary_detail', 'native_supplementary_amendment'):
+                _validate_supplementary_composition(source, ingestion, sources_by_id, where)
             if ingestion['section'] == 'native_supplementary_detail':
                 index = ingestion.get('profile', {}).get('edition_index', 0)
                 if type(index) is not int or not 0 <= index < len(source['editions']):
                     raise ValueError(f'{where}: unknown native supplementary edition')
                 edition = source['editions'][index]
-                if (source['jurisdiction'] not in ('131016', '132241') or source['fiscal_year'] < 2019
+                if (source['jurisdiction'] not in ('131016', '132047', '132241') or source['fiscal_year'] < 2019
                     or source['document_phase'] != 'supplementary' or source['format'] != 'pdf'
                     or 'expenditure' not in source.get('directions', [])
                     or edition['fiscal_year'] != source['fiscal_year']
@@ -82,8 +133,8 @@ def load_registry(path: Path = INVENTORY) -> dict:
                     or (len(source['editions']) != 1 and 'edition_index' not in ingestion.get('profile', {}))
                     or ingestion['key'] != (source['id'] if len(source['editions']) == 1 else f'{source["id"]}:{index}')):
                     raise ValueError(f'{where}: native supplementary declaration differs from its inspected parent')
-                if source['jurisdiction'] == '132241' and 'physical_pages' not in ingestion.get('profile', {}):
-                    raise ValueError(f'{where}: native Tama supplementary pages must identify the inspected account')
+                if source['jurisdiction'] in ('132047', '132241') and 'physical_pages' not in ingestion.get('profile', {}):
+                    raise ValueError(f'{where}: native supplementary pages must identify the inspected account')
             if ingestion['section'] == 'native_initial_detail':
                 accounts = ingestion['options']['accounts']
                 labels = [a['account_label'] for a in accounts]

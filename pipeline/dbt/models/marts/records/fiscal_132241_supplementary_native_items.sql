@@ -10,5 +10,6 @@ select distinct budget_item_id, jurisdiction_code, fiscal_year, fund_code, fund_
        ] end)::varchar as names_json,
        'unconfirmed'::varchar as initial_state
 from {{ ref('int_132241__supplementary_native') }}
-where observation_role = 'expenditure' and canonical_changes and phases_json = '["adjusted"]'
+where observation_role = 'expenditure' and canonical_changes
+  and (phases_json = '["adjusted"]' or (composed_canonical_changes and phases_json = '[]'))
 order by budget_item_id

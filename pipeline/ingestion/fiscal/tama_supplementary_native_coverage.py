@@ -19,7 +19,7 @@ ITEMS = 'fiscal_132241_supplementary_native_items'
 
 def output_coverage(connection, candidate: Path, hashes: dict, lock_path: Path,
                     datasets: list[dict]) -> None:
-    from ingestion.fiscal.tama_supplementary_registry import registered_specs, input_path
+    from ingestion.fiscal.tama_supplementary_registry import registered_specs, input_path, _registered_fields
     from ingestion.fiscal.canonical_sources import require_inspected_scopes
     lock = read_lock(lock_path)
     require_inspected_scopes(lock, jurisdiction='132241')
@@ -56,7 +56,8 @@ def output_coverage(connection, candidate: Path, hashes: dict, lock_path: Path,
             spec, table = expected[key]
             source, edition, approval = spec['source'], spec['edition'], spec['approval']
             financial = table['observation_role'] == 'expenditure'
-            approved = financial and approval is not None
+            expected_fields = _registered_fields(spec, table, original['definition_files'])
+            approved = expected_fields['canonical_changes']
             identity = ':'.join([entry['jurisdiction'], str(entry['fiscalYear']), 'expenditure',
                                  'supplementary', entry['originEdition'], table['table_id']])
             if (entry['path'] != input_path(source, table) or identity not in registered or identity in raw
@@ -68,7 +69,9 @@ def output_coverage(connection, candidate: Path, hashes: dict, lock_path: Path,
                 or original['request_url'] != source['download_url'] or original['namespace'] != NAMESPACE
                 or original['approval_proof'] != approval or original['canonical_changes'] is not approved
                 or original['nonadditive'] is not (not financial)
-                or original['phases'] != (['adjusted'] if approved else [])
+                or original['phases'] != expected_fields['phases']
+                or original.get('composition') != expected_fields.get('composition')
+                or original.get('composed_canonical_changes') != expected_fields.get('composed_canonical_changes')
                 or original['source_amount_unit'] != '千円' or original['unit_multiplier'] != 1000):
                 raise ValueError('Tama supplementary fixed scope/approval differs from registry')
             declaration = json.loads(registered[identity]['source_json'])
@@ -81,7 +84,7 @@ def output_coverage(connection, candidate: Path, hashes: dict, lock_path: Path,
                 amendmentNumber=edition['amendment_number'])
             if any(declaration.get(k) != v for k, v in binds.items()):
                 raise ValueError('Tama supplementary declaration differs from fixed raw input')
-            if json.loads(registered[identity]['phases_json']) != (['adjusted'] if approved else []):
+            if json.loads(registered[identity]['phases_json']) != expected_fields['phases']:
                 raise ValueError('Unapproved Tama supplementary acquired an approved phase')
             table_path = OBJECTS / safe_relative(entry['table']['key'])
             if digest(table_path.read_bytes()) != entry['table']['sha256']:
@@ -122,6 +125,8 @@ def _verify_outputs(connection, candidate, hashes, selected, raw, metadata):
     for identity, original in metadata.items():
         if original['observation_role'] != 'observations':
             continue
+        if original['extractor'] == 'ingestion.fiscal.tama_budget_amendment':
+            continue
         observations = [dict(r, **json.loads(r['context_json']), location=dict(
             page=r['physical_page'], bbox=json.loads(r['bbox_json']))) for r in raw[identity]]
         leaves, checks = reconcile(observations, [])
@@ -142,6 +147,7 @@ def _verify_outputs(connection, candidate, hashes, selected, raw, metadata):
             raise ValueError('Tama supplementary leaves differ from reconciled observations')
         controls[financial_id] = checks
     master = records(connection, 'select * from fiscal_expenditure_setsu_master')
+    replacements = _composition_replacements(raw, metadata)
     intermediate = records(connection, 'select * from '+INTERMEDIATE+' order by dataset_id, source_row')
     provided = _indexed(records(connection, 'select * from fiscal_datasets'), 'dataset_id')
     for identity, original in metadata.items():
@@ -154,13 +160,25 @@ def _verify_outputs(connection, candidate, hashes, selected, raw, metadata):
         original = metadata[identity]
         value = raw[identity][leaf['source_row']-1]
         financial = original['observation_role'] == 'expenditure'
-        approved = financial and original['approval_proof'] is not None
-        expected_delta = value['amount']*1000 if value['amount'] is not None else None
+        approved = financial and original['canonical_changes']
+        replacement = replacements.get((identity, leaf['source_row']))
+        effective = replacement[1] if replacement else value
+        expected_delta = effective['amount']*1000 if effective['amount'] is not None else None
         if json.loads(leaf['raw_original_json']) != value or leaf['delta_yen'] != expected_delta:
             raise ValueError('Tama supplementary rawOriginal or signed unit conversion differs')
+        if replacement:
+            if (leaf['replacement_dataset_id'] != replacement[0]
+                or leaf['replacement_source_row'] != effective['source_row']
+                or json.loads(leaf['replacement_raw_json']) != effective
+                or json.loads(leaf['effective_context_json']) != json.loads(effective['context_json'])
+                or leaf['effective_physical_page'] != effective['physical_page']
+                or leaf['effective_bbox_json'] != effective['bbox_json']):
+                raise ValueError('Tama supplementary explicit replacement lost motion raw/position')
+        elif leaf['replacement_dataset_id'] is not None:
+            raise ValueError('Tama supplementary replaced an undeclared target')
         if not financial:
             continue
-        context = json.loads(value['context_json'])
+        context = json.loads(effective['context_json'])
         hierarchy = [dict(level=k, code=context[k][0], label=context[k][1], nameSource='origin') for k in ('kan','kou')]
         hierarchy += [dict(level=k, code=context[k]['code'], label=context[k]['label'], nameSource='origin') for k in ('moku','project')]
         dimensions = [dict(dimension='department', code=None, label=context['department'])]
@@ -175,6 +193,11 @@ def _verify_outputs(connection, candidate, hashes, selected, raw, metadata):
         expected_setsu = matches[0]['expenditure_setsu_id'] if len(matches) == 1 else None
         expected_left_code = int(value['printed_setsu_code']) if len(labels) == 1 else None
         expected_left_label = next(iter(labels)) if len(labels) == 1 else None
+        if replacement and context['setsu'] is not None and (
+            context['setsu']['code'] != value['printed_setsu_code']
+            or context['setsu']['label'].replace('、','').replace('・','') !=
+               (expected_left_label or '').replace('、','').replace('・','')):
+            raise ValueError('Tama replacement printed setsu differs from original legal correspondence')
         if (leaf['expenditure_setsu_id'] != expected_setsu or leaf['left_setsu_code'] != expected_left_code
             or leaf['left_setsu_label'] != expected_left_label
             or leaf['line_granularity'] != ('expenditure_setsu' if expected_setsu is not None else 'origin_line')):
@@ -186,7 +209,8 @@ def _verify_outputs(connection, candidate, hashes, selected, raw, metadata):
             raise ValueError('Tama supplementary target identity differs')
         if approved:
             approval = original['approval_proof']
-            effective = approval['date'] if approval.get('kind','budget_bill') == 'budget_bill' else None
+            effective = (approval['date'] if not original.get('composed_canonical_changes')
+                         and approval.get('kind','budget_bill') == 'budget_bill' else None)
             if (str(leaf['effective_at']) if leaf['effective_at'] is not None else None) != effective:
                 raise ValueError('Tama supplementary approval/effective date differs')
             groups[(identity, leaf['budget_item_id'])].append(leaf)
@@ -203,11 +227,18 @@ def _verify_outputs(connection, candidate, hashes, selected, raw, metadata):
             raise ValueError('Tama supplementary detail order/multiplicity differs')
         for detail, leaf in zip(details, members, strict=True):
             if (detail['rawOriginal'] != raw[key[0]][leaf['source_row']-1]
-                or detail['amount'] != leaf['delta_yen'] or detail['physicalPage'] != leaf['physical_page']
-                or detail['bbox'] != json.loads(leaf['bbox_json'])
+                or detail['amount'] != leaf['delta_yen'] or detail['physicalPage'] != leaf['effective_physical_page']
+                or detail['bbox'] != json.loads(leaf['effective_bbox_json'])
                 or detail['targetIdentity'] != json.loads(leaf['target_identity_json'])
                 or detail['approvalProof'] != metadata[key[0]]['approval_proof']):
                 raise ValueError('Tama supplementary actual financial detail lost raw values/meaning/position')
+            replacement = replacements.get((key[0], leaf['source_row']))
+            if replacement and (detail.get('replacementDatasetId') != replacement[0]
+                or detail.get('positionDatasetId') != replacement[0]
+                or detail.get('replacementRaw') != replacement[1]
+                or detail.get('sameEventReplacement') is not True
+                or detail.get('effectiveContext') != json.loads(replacement[1]['context_json'])):
+                raise ValueError('Tama supplementary financial detail lost its same-event replacement relation')
     items = _indexed(records(connection, 'select * from '+ITEMS), 'budget_item_id')
     if set(items) != {k[1] for k in groups} or any(r['initial_state'] != 'unconfirmed' for r in items.values()):
         raise ValueError('Tama supplementary item set or unknown initial baseline differs')
@@ -248,3 +279,51 @@ def _verify_outputs(connection, candidate, hashes, selected, raw, metadata):
             dataset['output_coverage']['files'].extend(['fiscal/132241/expenditure_budget_changes.csv','fiscal/132241/expenditure_budget_items.csv'])
         else:
             dataset['output_coverage']['files'].append('fiscal/132241/supplementary_native_observations.csv')
+
+
+def _composition_replacements(raw: dict, metadata: dict) -> dict:
+    """Validate motion-to-proposal keys without rewriting either raw table."""
+    replaced = {}
+    for identity, original in metadata.items():
+        if not original.get('composed_canonical_changes'):
+            continue
+        binding = original['composition']
+        motion_id = binding['motion_dataset_id']
+        if (motion_id not in raw or metadata[motion_id].get('canonical_changes')
+            or metadata[motion_id].get('composition') != binding
+            or original['phases'] != [] or original['financial_phase'] is not None):
+            raise ValueError('Tama composed event dependencies or signed-delta phase differ')
+        motion = raw[motion_id]
+        roots = [r for r in motion if r['record_kind'] == 'motion-replacement']
+        if len(motion) != 55 or len(roots) != 2 or any(r['amount'] is not None for r in motion if r not in roots):
+            raise ValueError('Tama partial motion observation/root population differs')
+        net = 0
+        for root in roots:
+            context = json.loads(root['context_json'])
+            relation = context['composition']
+            row = relation['proposal_financial_row']
+            proposal = raw[identity][row-1]
+            old = json.loads(proposal['context_json'])
+            if ((identity, row) in replaced
+                or relation['proposal_origin_sha256'] != binding['proposal_origin_sha256']
+                or relation['proposal_table_id'] != binding['proposal_table_id']
+                or relation['proposal_source_id'] != binding['proposal_source_id']
+                or relation['proposal_observation_row'] != proposal['source_observation_row']
+                or relation['replaced_proposal']['amount'] != proposal['amount']
+                or relation['replaced_proposal']['context'] != old
+                or context['moku']['key'] != old['moku']['key']
+                or context['project']['code'] != old['project']['code']
+                or root['printed_setsu_code'] != proposal['printed_setsu_code']
+                or context['department'] is not None
+                or context['moku']['operand_words'] is not None
+                or context['moku']['amount_delta'] != old['moku']['amount_delta']+root['amount']-proposal['amount']
+                or context['moku']['amount_before']+context['moku']['amount_delta'] != context['moku']['amount_after']
+                or relation['same_event_replacement'] is not True):
+                raise ValueError('Tama motion target/unknown department/original reference differs')
+            replaced[(identity, row)] = (motion_id, root)
+            net += root['amount']-proposal['amount']
+        effective_total = sum(replaced[(identity,r['source_row'])][1]['amount']
+            if (identity,r['source_row']) in replaced else r['amount'] for r in raw[identity])
+        if net != 0 or effective_total != original['printed_total']:
+            raise ValueError('Tama same-event replacement adds another change or alters total')
+    return replaced

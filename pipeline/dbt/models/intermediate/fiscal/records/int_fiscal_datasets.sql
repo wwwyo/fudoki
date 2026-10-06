@@ -38,8 +38,9 @@ from read_json_auto('{{ env_var("FUDOKI_DECLARATIONS_DIR") }}/history.json') h
 -- Recovered chapters are registered below with their unconfirmed phase.
 where coalesce(json_extract_string(h.source_json, '$.provider'), '')
       not in ('ingestion.fiscal.komae_recovered_provider', 'ingestion.fiscal.komae_supplementary_2020_1_provider',
-              'ingestion.fiscal.chiyoda_budget_changes', 'ingestion.fiscal.tama_supplementary_registry')
-  and coalesce(json_extract_string(h.source_json, '$.namespace'), '') not in ('chiyoda-supplementary-native', 'tama-supplementary-native')
+              'ingestion.fiscal.chiyoda_budget_changes', 'ingestion.fiscal.tama_supplementary_registry',
+              'ingestion.fiscal.mitaka_supplementary_registry')
+  and coalesce(json_extract_string(h.source_json, '$.namespace'), '') not in ('chiyoda-supplementary-native', 'tama-supplementary-native', 'mitaka-supplementary-native')
 union all
 -- Independently observed Tama settlement breakdowns and nonadditive proof.
 -- Registration does not union their values into generic fiscal amounts.
@@ -123,4 +124,6 @@ union all
 select * from {{ ref('int_131016__supplementary_native_datasets') }}
 union all
 select * from {{ ref('int_132241__supplementary_native_datasets') }}
+union all
+select * from {{ ref('int_132047__supplementary_native_datasets') }}
 order by dataset_id

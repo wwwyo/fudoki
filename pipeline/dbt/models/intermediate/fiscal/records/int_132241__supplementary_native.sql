@@ -19,6 +19,8 @@ with decoded as (
            printed_setsu_code := printed_setsu_code
          ))::varchar as raw_original_json
   from {{ ref('stg_132241__supplementary_native') }} s
+), replacements as (
+  select * from decoded where record_kind = 'motion-replacement'
 ), left_names as (
   select _partition_origin_sha256, _partition_fiscal_year,
          replace(table_id, '-observations', '-expenditure') as financial_table_id,
@@ -32,12 +34,19 @@ with decoded as (
          null::varchar as fund_code, json_extract_string(d.source_json, '$.fundLabel') as fund_label,
          json_extract_string(d.source_json, '$.observationRole') as observation_role,
          json_extract_string(d.source_json, '$.canonicalChanges') = 'true' as canonical_changes,
+         coalesce(json_extract_string(d.source_json, '$.composedCanonicalChanges') = 'true', false)
+           as composed_canonical_changes,
          d.phases_json, json_extract_string(d.source_json, '$.approvalStatus') as approval_status,
          json_extract_string(d.source_json, '$.approvalDate') as approval_date,
          json_extract(d.source_json, '$.approvalProof')::varchar as approval_proof_json,
          json_extract(d.source_json, '$.unitMultiplier')::bigint as unit_multiplier,
          d.source_json, h.effective_at, h.amendment_number,
-         f.amount * unit_multiplier as delta_yen,
+         coalesce(r.amount, f.amount) * unit_multiplier as delta_yen,
+         r.dataset_id as replacement_dataset_id, r.source_row as replacement_source_row,
+         r.raw_original_json as replacement_raw_json,
+         coalesce(r.context_json, f.context_json) as effective_context_json,
+         coalesce(r.physical_page, f.physical_page) as effective_physical_page,
+         coalesce(r.bbox_json, f.bbox_json) as effective_bbox_json,
          l.setsu_code as left_setsu_code, l.left_setsu_label, master.expenditure_setsu_id,
          case when master.expenditure_setsu_id is not null then 'expenditure_setsu'
               else 'origin_line' end as line_granularity,
@@ -48,10 +57,20 @@ with decoded as (
            struct_pack(level := 'project', code := f.project_code, label := f.project_label, nameSource := 'origin')
          ])::varchar as account_path_json,
          to_json([struct_pack(dimension := 'department', code := null::varchar,
-                              label := f.department)])::varchar as dimensions_json
+                              label := case when r.dataset_id is not null then r.department
+                                            else f.department end)])::varchar as dimensions_json
   from decoded f
   join {{ ref('int_132241__supplementary_native_datasets') }} d using (dataset_id)
-  left join read_json_auto('{{ env_var("FUDOKI_DECLARATIONS_DIR") }}/history.json') h using (dataset_id)
+  left join replacements r
+    on json_extract_string(d.source_json, '$.composedCanonicalChanges') = 'true'
+    and json_extract_string(d.source_json, '$.observationRole') = 'expenditure'
+    and r.dataset_id = json_extract_string(d.source_json, '$.composition.motion_dataset_id')
+    and json_extract_string(r.context_json, '$.composition.proposal_origin_sha256') = f._partition_origin_sha256
+    and json_extract_string(r.context_json, '$.composition.proposal_table_id') = f.table_id
+    and json_extract_string(r.context_json, '$.composition.proposal_financial_row')::bigint = f.source_row
+    and r.moku_key = f.moku_key and r.project_code = f.project_code
+    and r.printed_setsu_code is not distinct from f.printed_setsu_code
+  left join read_json_auto('{{ env_var("FUDOKI_DECLARATIONS_DIR") }}/history.json') h on h.dataset_id = f.dataset_id
   left join left_names l on l._partition_origin_sha256 = f._partition_origin_sha256
     and l._partition_fiscal_year = f._partition_fiscal_year
     and l.financial_table_id = f.table_id and l.moku_key = f.moku_key

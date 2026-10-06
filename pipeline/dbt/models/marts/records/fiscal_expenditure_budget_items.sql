@@ -99,4 +99,6 @@ union all
 select * from {{ ref('fiscal_131016_supplementary_native_items') }}
 union all
 select * from {{ ref('fiscal_132241_supplementary_native_items') }}
+union all
+select * from {{ ref('fiscal_132047_supplementary_native_items') }}
 order by budget_item_id

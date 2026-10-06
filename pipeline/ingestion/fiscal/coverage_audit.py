@@ -949,6 +949,8 @@ def checked_datasets(lock_path: Path, warehouse: Path) -> tuple[list[dict], str]
         chiyoda_supplementary_native_output_coverage(connection, candidate, expected, lock_path, datasets)
         from ingestion.fiscal.tama_supplementary_native_coverage import output_coverage as tama_supplementary_native_output_coverage
         tama_supplementary_native_output_coverage(connection, candidate, expected, lock_path, datasets)
+        from ingestion.fiscal.mitaka_supplementary_native_coverage import output_coverage as mitaka_supplementary_native_output_coverage
+        mitaka_supplementary_native_output_coverage(connection, candidate, expected, lock_path, datasets)
         from ingestion.fiscal.held5_coverage import output_coverage as held5_output_coverage
         held5_output_coverage(connection, candidate, expected, lock_path, datasets)
         from ingestion.fiscal.settlement2024_coverage import output_coverage as settlement2024_output_coverage

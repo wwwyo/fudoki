@@ -1359,7 +1359,8 @@
             "initial_detail",
             "recovered_initial_detail",
             "native_initial_detail",
-            "native_supplementary_detail"
+            "native_supplementary_detail",
+            "native_supplementary_amendment"
           ]
         },
         "key": {
@@ -1973,8 +1974,92 @@
                         ]
                       }
                     }
+                  },
+                  "composition": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "source_id": {
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "source_id"
+                    ],
+                    "type": "object"
                   }
                 }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "section": {
+                "const": "native_supplementary_amendment"
+              }
+            },
+            "required": [
+              "section"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "additionalProperties": false,
+                "properties": {
+                  "replaces": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "options": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "edition_index": {
+                            "minimum": 0,
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "edition_index"
+                        ],
+                        "type": "object"
+                      },
+                      "source_id": {
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "source_id",
+                      "options"
+                    ],
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "replaces"
+                ],
+                "type": "object"
+              },
+              "profile": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/profile"
+                  },
+                  {
+                    "properties": {
+                      "direction": {
+                        "const": "expenditure"
+                      }
+                    },
+                    "required": [
+                      "edition_index",
+                      "physical_pages",
+                      "direction"
+                    ]
+                  }
+                ]
               }
             }
           }

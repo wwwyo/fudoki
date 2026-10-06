@@ -23,6 +23,7 @@ COLUMNS = {
 DEFINITION_PATHS = (
     'pipeline/ingestion/fiscal/tama_supplementary_registry.py',
     'pipeline/ingestion/fiscal/tama_budget_changes.py',
+    'pipeline/ingestion/fiscal/tama_budget_amendment.py',
     'pipeline/ingestion/fiscal/tama_budget_detail.py',
     'pipeline/ingestion/fiscal/chiyoda_budget_changes.py',
     'pipeline/ingestion/fiscal/canonical_sources.py',
@@ -61,10 +62,15 @@ def registered_specs() -> list[dict]:
     """Derive each account and its two tables from the origin registry."""
     result = []
     identities = set()
-    for source in load_registry(INVENTORY)['sources']:
+    sources = load_registry(INVENTORY)['sources']
+    motions = []
+    for source in sources:
         if source['jurisdiction'] != '132241':
             continue
         for ingestion in source.get('ingestions', []):
+            if ingestion['section'] == 'native_supplementary_amendment' and ingestion['enabled']:
+                motions.append((source, ingestion))
+                continue
             if ingestion['section'] != 'native_supplementary_detail' or not ingestion['enabled']:
                 continue
             profile = ingestion['profile']
@@ -84,7 +90,38 @@ def registered_specs() -> list[dict]:
                 identities.add(identity)
                 tables.append(table)
             result.append(dict(source=source, edition=edition, edition_index=index,
-                               approval=ingestion['options'].get('approval'), tables=tables))
+                               approval=ingestion['options'].get('approval'), tables=tables,
+                               composition_reference=ingestion['options'].get('composition')))
+    for source, ingestion in motions:
+        relation = ingestion['options']['replaces']
+        index = relation['options']['edition_index']
+        proposals = [s for s in result if s['source']['id'] == relation['source_id'] and s['edition_index'] == index]
+        if len(proposals) != 1:
+            raise ValueError('Motion requires one enabled proposal edition')
+        proposal = proposals[0]
+        edition = source['editions'][ingestion['profile'].get('edition_index', 0)]
+        if (proposal['composition_reference'] != {'source_id': source['id']}
+            or ingestion['profile']['physical_pages'] != [1, 3]
+            or source['content_inspection']['pages'] != 3
+            or tuple(proposal['edition'][k] for k in ('fiscal_year','account_label','amendment_number')) !=
+               tuple(edition[k] for k in ('fiscal_year','account_label','amendment_number'))
+            or proposal['approval'] is None):
+            raise ValueError('Motion/proposal reciprocal event scope or approval differs')
+        table = dict(table_id=f'supplementary-{edition["amendment_number"]}-amendment-observations',
+            account=edition['account_label'], pages=[1,3], observation_role='observations',
+            amendment_number=edition['amendment_number'])
+        binding = dict(proposal_source_id=proposal['source']['id'],
+            proposal_origin_sha256=proposal['source']['content_inspection']['sha256'],
+            proposal_table_id=proposal['tables'][1]['table_id'], motion_source_id=source['id'],
+            motion_origin_sha256=source['content_inspection']['sha256'], motion_table_id=table['table_id'],
+            motion_dataset_id=':'.join([source['jurisdiction'], str(source['fiscal_year']),
+                'expenditure', 'supplementary', source['content_inspection']['sha256'], table['table_id']]))
+        proposal['composition'] = binding
+        result.append(dict(source=source, edition=edition, edition_index=0,
+            approval=proposal['approval'], tables=[table], motion=True,
+            proposal=proposal, composition=binding))
+    if any(s.get('composition_reference') and not s.get('composition') for s in result):
+        raise ValueError('Enabled composition has no reciprocal motion ingestion')
     return result
 
 
@@ -117,9 +154,10 @@ def _registered_fields(spec: dict, table: dict, definitions: dict) -> dict:
     source, approval = spec['source'], spec['approval']
     financial = table['observation_role'] == 'expenditure'
     canonical = financial and approval is not None
-    effective_at = (approval['date'] if canonical and approval.get('kind', 'budget_bill') == 'budget_bill'
+    composed = financial and 'composition' in spec
+    effective_at = (approval['date'] if canonical and not composed and approval.get('kind', 'budget_bill') == 'budget_bill'
                     else None)
-    return dict(namespace=NAMESPACE, source_key=source['id'],
+    fields = dict(namespace=NAMESPACE, source_key=source['id'],
         jurisdiction_code=source['jurisdiction'], fiscal_year=source['fiscal_year'],
         document_kind='supplementary', direction='expenditure',
         origin_sha256=source['content_inspection']['sha256'],
@@ -128,9 +166,9 @@ def _registered_fields(spec: dict, table: dict, definitions: dict) -> dict:
         account=table['account'], fund_label=table['account'],
         amendment_number=table['amendment_number'], table_id=table['table_id'], pages=table['pages'],
         source_amount_unit='千円', unit_multiplier=1000, observation_role=table['observation_role'],
-        nonadditive=not financial, phases=['adjusted'] if canonical else [],
-        financial_phase='adjusted' if canonical else None, canonical_changes=canonical,
-        approval_status='approved' if approval else 'unconfirmed',
+        nonadditive=not financial, phases=['adjusted'] if canonical and not composed else [],
+        financial_phase='adjusted' if canonical and not composed else None, canonical_changes=canonical,
+        approval_status='approved_with_amendment' if 'composition' in spec else 'approved' if approval else 'unconfirmed',
         approval_date=approval['date'] if approval else None, approval_proof=approval,
         effective_at=effective_at, baseline_status='unconfirmed',
         phase_semantics='signed supplementary change; not adjusted total',
@@ -138,6 +176,14 @@ def _registered_fields(spec: dict, table: dict, definitions: dict) -> dict:
         grain=('printed-project-setsu-detail-or-unprinted-setsu-reserve' if financial
                else 'nonadditive-supplementary-printed-operands-and-explanation'),
         extractor='ingestion.fiscal.tama_budget_changes', definition_files=definitions)
+    if 'composition' in spec:
+        fields.update(composition=spec['composition'], composed_canonical_changes=composed)
+    if composed:
+        fields['source_amount_kind'] = 'supplementary'
+    if spec.get('motion'):
+        fields.update(extractor='ingestion.fiscal.tama_budget_amendment',
+            grain='nonadditive-partial-motion-native-rows-and-explicit-replacement-roots')
+    return fields
 
 
 def register_declarations(rows, history, entries, lock_path):
@@ -189,6 +235,11 @@ def register_declarations(rows, history, entries, lock_path):
             approvalDate=expected['approval_date'], approvalProof=spec['approval'],
             amendmentNumber=table['amendment_number'], phaseSemantics=metadata['phase_semantics'],
             projectSetsuLinkage=metadata['project_setsu_linkage'], grain=metadata['grain'], structure=structure)
+        if 'composition' in spec:
+            declaration.update(composition=spec['composition'],
+                composedCanonicalChanges=expected['composed_canonical_changes'])
+        if expected.get('source_amount_kind'):
+            declaration['sourceAmountKind'] = expected['source_amount_kind']
         row = dict(dataset_id=':'.join([source['jurisdiction'], str(source['fiscal_year']),
             'expenditure', 'supplementary', sha, table['table_id']]),
             jurisdiction_code=source['jurisdiction'], fiscal_year=source['fiscal_year'],
@@ -208,6 +259,8 @@ def emit_registered(output: Path, original: dict, spec: dict, *, raw_root: Path 
     """Reuse the candidate reader, assigning approval only to declared financial tables."""
     from ingestion.fiscal.chiyoda_budget_changes import restore_approval_evidence
     from ingestion.fiscal.tama_budget_changes import emit_candidates
+    if spec.get('motion'):
+        return emit_motion_registered(output, spec, raw_root=raw_root, definitions=definitions)
     if original['source'] != spec['source'] or original['sha256'] != spec['source']['content_inspection']['sha256']:
         raise ValueError('Inspected native original differs from the registered original')
     scopes = [scope for scope in original['editions'] if scope['edition'] == spec['edition']]
@@ -246,6 +299,23 @@ def emit_registered(output: Path, original: dict, spec: dict, *, raw_root: Path 
     return result
 
 
+def emit_motion_registered(output: Path, spec: dict, *, raw_root: Path | None = None,
+                           definitions: dict | None = None) -> dict:
+    from ingestion.fiscal.tama_budget_amendment import cached_original, extract_motion, write_motion
+    table = spec['tables'][0]
+    records, checks = extract_motion(cached_original(spec['source']), spec)
+    directory = output / table['observation_role'] if raw_root is None else raw_root / input_path(spec['source'], table)
+    write_motion(directory, records)
+    metadata = _registered_fields(spec, table, definitions if definitions is not None else definition_files())
+    metadata['raw_form'] = 'extracted'
+    entry = record_input(directory, metadata, logical_path=input_path(spec['source'], table))
+    result = dict(status='registered_motion_extracted', adopted=False, checks=checks,
+        candidate_inputs=[dict(role='observations', path=entry['path'], table=entry['table'], rows=len(records), phases=[])])
+    output.mkdir(parents=True, exist_ok=True)
+    (output / 'inspection.json').write_bytes(encode(result))
+    return result
+
+
 def acquire_registered():
     """Fetch each budget original once and fan out its declared account tables."""
     from ingestion.fiscal.tama_budget_changes import inspect_original
@@ -262,7 +332,8 @@ def acquire_registered():
         if digest(body) != inspected['sha256'] or len(body) != inspected['bytes']:
             raise ValueError('Native supplementary original differs from the inspected bytes')
         origin = save_object('origin', body)
-        original = inspect_original(OBJECTS / origin['key'], source)
+        original = (dict(source=source, sha256=inspected['sha256']) if specs[0].get('motion')
+                    else inspect_original(OBJECTS / origin['key'], source))
         for spec in specs:
             for url, evidence in (spec['approval']['evidence'].items() if spec['approval'] else []):
                 if url not in fetched_evidence:
