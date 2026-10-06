@@ -5,7 +5,7 @@ import { execFileSync } from 'node:child_process'
  * 数値は core への問い合わせで作る。**集計はここ1箇所だけ**で行う
  * （画面側でも集計すると、同じ数字が2通りに計算されていずれ食い違う）。
  *
- * ⚠️ **団体は `sources.toml` の登録から回す。団体コードを直書きしない。**
+ * ⚠️ **団体は `sources.json` の登録から回す。団体コードを直書きしない。**
  * 階層・金額・段階の構造は `dbt/dbt_project.yml` の vars が正本で、
  * dbt のモデルも検査もそこを見ている。ここへ写すと片方だけ直る。
  */
@@ -470,7 +470,7 @@ function cofogOfYear(
  * 代わりに出所の範囲（`inSourceScope`）を併記して、**出所が届いていない**のと
  * **届いているが当たらなかった**のを分けられるようにする。
  *
- * ⚠️ **出所がある年度は `sources.toml` の宣言で決める。** 突合できた行から逆算すると、
+ * ⚠️ **出所がある年度は `sources.json` の宣言で決める。** 突合できた行から逆算すると、
  * 「PDF が無い年度」と「PDF はあるが1件も当たらなかった年度」が同じ 0 になる。
  */
 function projectNameCoverage(
@@ -528,7 +528,7 @@ type SourceEntry = {
 }
 
 /**
- * `sources.toml` の `phase_id` を文書種別の語彙（`DOCUMENT_KINDS`）の1つに確定する。
+ * `sources.json` の `phase_id` を文書種別の語彙（`DOCUMENT_KINDS`）の1つに確定する。
  * ⚠️ 語彙の外の値を黙って通すと、画面は「この団体の文書が語彙のどれか」を
  * 選択肢の中で示せなくなり、団体固有のラベルだけが残る — ここで止める。
  */
@@ -550,21 +550,15 @@ function documentKindOf(
   return { id: hit.id, label: hit.label }
 }
 
-/**
- * 取得元の定義。**団体コードを直書きしない** — `sources.toml` が正本。
- *
- * ⚠️ TOML を正規表現で読まない。最初に一致した key を返すので、
- * 2団体目を足した時点で先頭の団体の名称・ライセンスを使ってしまう。
- */
-// 取り込みと同じ標準TOMLパーサで読む。BunのTOML→JSON変換は現行宣言で失敗する。
+/** 取得器と同じ原典台帳の取り込み宣言を読む。 */
 const sourceDefinitions = Bun.spawnSync([
   'uv', 'run', 'python', '-c',
-  'import json,sys,tomllib; print(json.dumps(tomllib.loads(open(sys.argv[1], encoding="utf-8").read()), ensure_ascii=False))',
-  join(ROOT, 'ingestion/fiscal/sources.toml'),
+  'import json,sys; from pathlib import Path; from ingestion.fiscal.source_registry import load_registry,project_sources; print(json.dumps(project_sources(load_registry(Path(sys.argv[1]))), ensure_ascii=False))',
+  join(ROOT, 'ingestion/fiscal/sources.json'),
 ], { cwd: ROOT, stdout: 'pipe', stderr: 'pipe' })
 if (sourceDefinitions.exitCode !== 0)
   throw new Error(`Source declarations: ${sourceDefinitions.stderr.toString()}`)
-const SOURCES_TOML = JSON.parse(sourceDefinitions.stdout.toString()) as Record<string, SourceEntry | Record<string, SourceEntry>> & {
+const SOURCE_DECLARATIONS = JSON.parse(sourceDefinitions.stdout.toString()) as Record<string, SourceEntry | Record<string, SourceEntry>> & {
   project_names?: Record<string, unknown>
   statement?: Record<string, SourceEntry>
   supplementary_detail?: Record<string, SourceEntry>
@@ -576,25 +570,25 @@ const SOURCES_TOML = JSON.parse(sourceDefinitions.stdout.toString()) as Record<s
  * ⚠️ **CSV の取得元だけを母集団にしない。** 59/62 団体は PDF しか持たないので、
  * トップレベルの `<団体>:<年度>` だけを見ると、それらの団体が報告から丸ごと消える
  * （実際に1団体目が黙って抜けた）。Python 側の `all_sources()` と同じ束ね方をする。
- * ⚠️ `[project_names]` `[revenue_accounts]` は束ねない — あれは既に収録済みの団体で
+ * ⚠️ `project_names` 取り込み宣言 `[revenue_accounts]` は束ねない — あれは既に収録済みの団体で
  * 欠けている名称を補う取得元で、その団体を収録している宣言ではない。
  */
 const SOURCES: Record<string, SourceEntry> = {
   ...(Object.fromEntries(
-    Object.entries(SOURCES_TOML).filter(([k]) => /^\d{6}:/.test(k))
+    Object.entries(SOURCE_DECLARATIONS).filter(([k]) => /^\d{6}:/.test(k))
   ) as Record<string, SourceEntry>),
-  ...(SOURCES_TOML.statement ?? {}),
-  ...(SOURCES_TOML.supplementary_detail ?? {}),
+  ...(SOURCE_DECLARATIONS.statement ?? {}),
+  ...(SOURCE_DECLARATIONS.supplementary_detail ?? {}),
 }
 
 /**
- * 事業名の取得元がある (団体, 年度)。**正本は `sources.toml` の `[project_names]`。**
+ * 事業名の取得元がある (団体, 年度)。**正本は `sources.json` の `project_names` 取り込み宣言。**
  * 突合できた行から逆算すると、PDF が無い年度と、PDF はあるが1件も当たらなかった年度が
  * 同じ 0 になる。**出所の有無は宣言が言う**（AGENTS.md「年度を宣言で持つ」）。
  */
 const PROJECT_NAME_YEARS: Map<string, Set<number>> = (() => {
   const m = new Map<string, Set<number>>()
-  for (const key of Object.keys(SOURCES_TOML.project_names ?? {})) {
+  for (const key of Object.keys(SOURCE_DECLARATIONS.project_names ?? {})) {
     const [code, year] = key.split(':')
     if (!code || !year) continue
     m.set(code, (m.get(code) ?? new Set()).add(Number(year)))
@@ -603,7 +597,7 @@ const PROJECT_NAME_YEARS: Map<string, Set<number>> = (() => {
 })()
 
 /**
- * 団体の名称。**`sources.toml` には持たせない**（`pipeline/ingestion/fiscal/sources.py` が
+ * 団体の名称。**`sources.json` には持たせない**（`pipeline/ingestion/fiscal/sources.py` が
  * 明示的に禁止している — 以前は団体×年度ごとに反復宣言しており、狛江市だけで6回、
  * 誤記があっても検知されなかった）。正本は `packages/jurisdictions/jurisdictions.json`
  * （財政データ・調達から参照される、層に依存しない団体の同一性）。
@@ -628,7 +622,7 @@ function jurisdictionNameOf(code: string): string {
   return j.name
 }
 
-/** `sources.toml` に登録された団体コード */
+/** `sources.json` に登録された団体コード */
 const CODES = [
   ...new Set(
     Object.keys(SOURCES)
@@ -690,7 +684,7 @@ function build(code: string, topology: Topology, checks: Check[]): ReportData {
   )
   if (entries.length === 0)
     throw new Error(
-      `取得元 ${code}:* が pipeline/ingestion/fiscal/sources.toml に無い`
+      `取得元 ${code}:* が pipeline/ingestion/fiscal/sources.json に無い`
     )
   const src = entries[0]![1]
   const pick = (k: keyof typeof src) => src[k] ?? ''

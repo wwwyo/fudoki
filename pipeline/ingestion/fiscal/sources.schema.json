@@ -331,18 +331,44 @@
             "additionalProperties": false,
             "description": "Optional publisher revision evidence; page-update dates, inspection dates and filenames are not revision dates.",
             "properties": {
-              "revision_id": {"type": "string", "minLength": 1},
-              "revision_at": {"type": "string", "format": "date"},
-              "basis": {"type": "string", "minLength": 1},
+              "revision_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "revision_at": {
+                "type": "string",
+                "format": "date"
+              },
+              "basis": {
+                "type": "string",
+                "minLength": 1
+              },
               "evidence_urls": {
                 "type": "array",
                 "minItems": 1,
                 "uniqueItems": true,
-                "items": {"type": "string", "pattern": "^https://"}
+                "items": {
+                  "type": "string",
+                  "pattern": "^https://"
+                }
               }
             },
-            "required": ["basis", "evidence_urls"],
-            "anyOf": [{"required": ["revision_id"]}, {"required": ["revision_at"]}]
+            "required": [
+              "basis",
+              "evidence_urls"
+            ],
+            "anyOf": [
+              {
+                "required": [
+                  "revision_id"
+                ]
+              },
+              {
+                "required": [
+                  "revision_at"
+                ]
+              }
+            ]
           },
           "format": {
             "enum": [
@@ -622,6 +648,66 @@
               "$ref": "#/$defs/unresolved_resolution"
             },
             "description": "One explicit resolution per exact unresolved item, with current lock/origin/output identities; never a blanket waiver."
+          },
+          "ingestions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/ingestion"
+            }
+          },
+          "acquisition": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "method"
+                ],
+                "properties": {
+                  "method": {
+                    "const": "direct"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "method",
+                  "catalog"
+                ],
+                "properties": {
+                  "method": {
+                    "const": "ckan"
+                  },
+                  "catalog": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            ]
+          },
+          "publication_links": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "url",
+                "basis"
+              ],
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "pattern": "^https://"
+                },
+                "basis": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
           }
         },
         "required": [
@@ -686,6 +772,27 @@
         "matched_paths",
         "unmatched_paths"
       ]
+    },
+    "acquisition_catalogs": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "endpoint",
+          "org_prefix"
+        ],
+        "properties": {
+          "endpoint": {
+            "type": "string",
+            "pattern": "^https://"
+          },
+          "org_prefix": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
     }
   },
   "required": [
@@ -1216,6 +1323,508 @@
         "dataset_ids",
         "evidence_indices"
       ]
+    },
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "target": {
+          "type": "object",
+          "description": "Declared processing target, independent of observed source identity."
+        },
+        "edition_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "direction": {
+          "enum": [
+            "revenue",
+            "expenditure"
+          ]
+        },
+        "physical_pages": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "publication_index": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "ingestion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "section",
+        "key",
+        "enabled",
+        "options"
+      ],
+      "properties": {
+        "section": {
+          "enum": [
+            "csv",
+            "statement",
+            "budget_history",
+            "supplementary_detail",
+            "settlement_pdf",
+            "project_names",
+            "revenue_accounts"
+          ]
+        },
+        "key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "source_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "profile": {
+          "$ref": "#/$defs/profile"
+        },
+        "options": {
+          "type": "object"
+        },
+        "order": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "section": {
+                "const": "csv"
+              }
+            },
+            "required": [
+              "section"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "catalog": {},
+                  "dataset_title": {},
+                  "fiscal_year_label": {},
+                  "document_kind": {},
+                  "document_label": {},
+                  "encoding": {},
+                  "redistribute": {},
+                  "redistribute_basis": {},
+                  "license_id": {},
+                  "attribution": {},
+                  "resource_url_contains": {},
+                  "raw_form": {},
+                  "jurisdiction_code": {},
+                  "fiscal_year": {},
+                  "resource": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "direction",
+                      "resource_name"
+                    ],
+                    "properties": {
+                      "direction": {
+                        "enum": [
+                          "expenditure",
+                          "revenue",
+                          null
+                        ]
+                      },
+                      "resource_name": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "dataset_title": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "url_basis": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "table_id": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "resource"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "section": {
+                "const": "statement"
+              }
+            },
+            "required": [
+              "section"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "attribution": {},
+                  "character_map": {},
+                  "columns": {},
+                  "document_kind": {},
+                  "document_label": {},
+                  "document_title": {},
+                  "duplicate_word_offsets": {},
+                  "expected_sha256": {},
+                  "explanation": {},
+                  "fund_basis": {},
+                  "fund_label": {},
+                  "heading_style": {},
+                  "layout": {},
+                  "left_page_columns": {},
+                  "license_id": {},
+                  "observed_moku_setsu_table_id": {},
+                  "page_overrides": {},
+                  "pages": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "revenue": {
+                        "type": "array",
+                        "items": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "minItems": 2,
+                        "maxItems": 2
+                      },
+                      "expenditure": {
+                        "type": "array",
+                        "items": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "minItems": 2,
+                        "maxItems": 2
+                      }
+                    }
+                  },
+                  "raw_form": {},
+                  "redistribute": {},
+                  "redistribute_basis": {},
+                  "source_amount_unit": {},
+                  "table_id": {},
+                  "url_basis": {}
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "section": {
+                "const": "budget_history"
+              }
+            },
+            "required": [
+              "section"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "attribution": {},
+                  "documents": {},
+                  "fund_code": {},
+                  "fund_label": {},
+                  "license_id": {},
+                  "redistribute": {},
+                  "redistribute_basis": {},
+                  "reported": {},
+                  "source_amount_unit": {},
+                  "table_id": {}
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "section": {
+                "const": "supplementary_detail"
+              }
+            },
+            "required": [
+              "section"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "amendment_number": {},
+                  "approval_status": {},
+                  "attribution": {},
+                  "coverage_source_id": {},
+                  "document_title": {},
+                  "effective_at": {},
+                  "expected_sha256": {},
+                  "fetched_at": {},
+                  "first_page": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "fund_label": {},
+                  "last_page": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "license_id": {},
+                  "raw_form": {},
+                  "redistribute": {},
+                  "redistribute_basis": {},
+                  "source_amount_unit": {},
+                  "submitted_at": {},
+                  "table_id": {},
+                  "url_basis": {}
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "section": {
+                "const": "settlement_pdf"
+              }
+            },
+            "required": [
+              "section"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "attribution": {},
+                  "document_kind": {},
+                  "document_label": {},
+                  "document_title": {},
+                  "fetched_at": {},
+                  "fund_basis": {},
+                  "layout": {},
+                  "license_id": {},
+                  "origin_bytes": {},
+                  "origin_sha256": {},
+                  "physical_pages": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "raw_form": {},
+                  "recognition_basis": {},
+                  "recognition_status": {},
+                  "redistribute": {},
+                  "redistribute_basis": {},
+                  "source_amount_unit": {},
+                  "tables": {},
+                  "unit_multiplier": {},
+                  "url_basis": {},
+                  "year_basis": {}
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "section": {
+                "const": "project_names"
+              }
+            },
+            "required": [
+              "section"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "columns": {},
+                  "document_title": {},
+                  "first_page": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "last_page": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "license_id": {},
+                  "raw_form": {},
+                  "redistribute": {},
+                  "redistribute_basis": {}
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "section": {
+                "const": "revenue_accounts"
+              }
+            },
+            "required": [
+              "section"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "amount": {},
+                  "bands": {},
+                  "document_title": {},
+                  "first_page": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "last_page": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "license_id": {},
+                  "name_end": {},
+                  "raw_form": {},
+                  "redistribute": {},
+                  "redistribute_basis": {}
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "acquisition_catalog": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "endpoint",
+        "org_prefix"
+      ],
+      "properties": {
+        "endpoint": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://[^\\s]+$"
+        },
+        "org_prefix": {
+          "type": "string"
+        }
+      }
+    },
+    "acquisition": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "method"
+          ],
+          "properties": {
+            "method": {
+              "const": "direct"
+            },
+            "basis": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "method",
+            "catalog"
+          ],
+          "properties": {
+            "method": {
+              "const": "ckan"
+            },
+            "catalog": {
+              "type": "string",
+              "minLength": 1
+            },
+            "basis": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    },
+    "publication_link": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "url"
+      ],
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://[^\\s]+$"
+        },
+        "basis": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
     }
   }
 }

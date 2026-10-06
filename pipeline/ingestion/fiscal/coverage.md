@@ -1,6 +1,16 @@
-# 原典の収録候補一覧（census v1）
+# 原典台帳（sources v1）
 
-`sources.json` は、対象5団体について公式サイト・公式カタログで発見した財政資料と未確認事項を Git に保存する一覧である。JSON の構造は [sources.schema.json](sources.schema.json) に定義する。これは取得宣言でも固定入力一覧でもない。採用は `sources.toml` と `sources.lock.json`、提供用データの検査は現在の構築結果で判定する。
+`sources.json` は、対象5団体について発見した原典、確認した内容、版の根拠、取り込み宣言を Git に保存する原典台帳である。JSON の構造は [sources.schema.json](sources.schema.json) に定義する。採用済みの原典・表は `sources.lock.json`、提供用データの検査は現在の構築結果で判定する。
+
+## 取り込み宣言
+
+原典ごとの `ingestions[]` に処理の種類・キー・`enabled`・設定を登録する。候補を発見したことや優先候補に選ばれたことだけでは取得を有効にしない。`bun run sources:plan --json` は有効な登録だけを取得計画へ変換する。取得・抽出・固定入力の変更は実行しない。
+
+原典URLは `download_url`、掲載先は `landing_url` から読み取る。取得器が別の公式掲載先を使う場合は `publication_links[]` と `profile.publication_index` で指定する。履歴の処理が複数原典や議決結果を使う場合は `source_id` / `approval_source_id` で参照する。設定の中にURLを重複して書かない。CKAN経由の取得方式とカタログは `acquisition` / `acquisition_catalogs` に宣言し、直URL経由と混同しない。
+
+本文で観測した年度・会計と、取り込み対象の宣言は区別する。`profile.target` は処理対象であり、原典本文の確認結果を上書きしない。`options` は既存の抽出器が使う頁範囲・列位置・権利・単位などの設定、`order` は処理とリソースの順序を保持する。
+
+移行時点では共通取得器が使っていた `sources.toml` の41ブロックを台帳へ移した。旧TOMLは採用時の固定証跡が参照するため保持する。新しい取得設定は台帳へ記録するが、通常取得器の切替は採用済み支持定義の移行・再検証待ちである。個別取り込み器のTOML/JSONもまだ移行していない。現在の境界と次の手順は [移行記録](../../../docs/prd/fiscal-coverage/source-registry-migration.md) を参照する。設定の一致だけでは全公開範囲や提供データの検証を完了扱いにしない。
 
 2026-10-04 に確認した有限の探索結果を収録した。公開された全資料を網羅したとは宣言しない。現在の予算ページに古い年度がない場合も、有償刊行物・庁議・記者会見・議会議案・東京都カタログを探し、探索できていない範囲を `jurisdictions[].gaps` に残す。リンクが見つからない、404、画像で読めない、といった事情を「公開なし」やゼロに置き換えない。
 
