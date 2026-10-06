@@ -238,6 +238,9 @@ def _verify_outputs(connection, candidate, hashes, selected, raw, metadata):
         financial = metadata[identity]['observation_role'] == 'expenditure'
         dataset['output_coverage']['accounts'][metadata[identity]['fund_label']] = dict(
             original_rows=len(raw[identity]), explicit_moku_setsu=False, explicit_project_setsu=financial,
+            amendment_numbers=[metadata[identity]['amendment_number']]
+                if financial and metadata[identity]['canonical_changes'] else [],
+            financial_change_rows=sum(key[0] == identity for key in groups),
             printed_code_correspondence_verified=financial, initial_baseline_status='unconfirmed',
             approval_status=metadata[identity]['approval_status'])
         if financial:
