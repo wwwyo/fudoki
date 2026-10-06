@@ -201,9 +201,14 @@ def page_dimensions(width: float, height: float, png: pathlib.Path) -> tuple[flo
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--jurisdiction', help='Render only this six-digit jurisdiction; preserve current generator cache entries for others')
-    selected = parser.parse_args().jurisdiction
+    parser.add_argument('--origin-sha', help='Render only this fixed original SHA-256; preserve other current generator cache entries')
+    args = parser.parse_args()
+    selected = args.jurisdiction
+    selected_sha = args.origin_sha
     if selected and not re.fullmatch(r'\d{6}', selected):
         parser.error('--jurisdiction requires six digits')
+    if selected_sha and not re.fullmatch(r'[0-9a-f]{64}', selected_sha):
+        parser.error('--origin-sha requires a lowercase SHA-256')
     from ingestion.inputs import describe_inputs
     from ingestion.paths import INPUT_LOCK
     input_descriptions = describe_inputs(INPUT_LOCK, RAW)
@@ -212,6 +217,8 @@ def main() -> None:
         path = RAW / item['path'] / 'data.parquet'
         prov = item['source']
         if selected and prov['jurisdiction_code'] != selected:
+            continue
+        if selected_sha and prov['sha256'] != selected_sha:
             continue
         if not prov.get("extractor") or not prov["request_url"].endswith(".pdf"):
             continue
@@ -249,9 +256,13 @@ def main() -> None:
 
     index: dict[str, dict] = {}
     index_path = OUT / 'index.json'
-    if selected and index_path.exists():
+    if selected_sha and not docs:
+        parser.error('--origin-sha did not match a fixed PDF input in the selected jurisdiction')
+    if (selected or selected_sha) and index_path.exists():
         previous = json.loads(index_path.read_text()).get('docs', {})
-        index = {key: value for key, value in previous.items() if f'-{GENERATOR_KEY}-' in key and value['code'] != selected}
+        index = {key: value for key, value in previous.items()
+                 if f'-{GENERATOR_KEY}-' in key
+                 and (value['sha256'] != selected_sha if selected_sha else value['code'] != selected)}
     for sha, doc in sorted(docs.items()):
         doc_id = f"{doc['code']}-{GENERATOR_KEY}-{sha[:12]}"
         doc_dir = OUT / doc_id

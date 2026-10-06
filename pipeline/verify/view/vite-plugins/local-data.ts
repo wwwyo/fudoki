@@ -265,12 +265,18 @@ export function localData(_root: string): Plugin {
     ) {
       const c = cols.includes('fiscal_year') ? 'fiscal_year' : 'year'
       where.push(`cast("${c}" as bigint) = ${year}`)
+    } else if (year !== null && cols.includes('dataset_id')) {
+      where.push(`try_cast(split_part(dataset_id, ':', 2) as bigint) = ${year}`)
     }
     if (dir !== null && cols.includes('direction'))
       where.push(`direction = '${dir}'`)
+    else if (dir !== null && cols.includes('dataset_id'))
+      where.push(`split_part(dataset_id, ':', 3) = '${dir}'`)
     // ⚠️ core 系は全団体を1表に持つ。団体コードで切らないと、別の団体の行を見せることになる
     if (code !== null && cols.includes('jurisdiction_code'))
       where.push(`jurisdiction_code = '${code}'`)
+    else if (code !== null && cols.includes('dataset_id'))
+      where.push(`split_part(dataset_id, ':', 1) = '${code}'`)
     // source_row → ordinal → pdf_ordinal の順に、行を相互に辿れる鍵を探す
     const keyColumn =
       ['source_row', 'ordinal', 'pdf_ordinal'].find((c) => cols.includes(c)) ??
