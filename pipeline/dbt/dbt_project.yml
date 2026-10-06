@@ -67,7 +67,7 @@ vars:
       expenditure: ["会計", "款", "項", "目", "大事業", "中事業", "小事業", "節", "細節", "細々節"]
       revenue: ["会計", "款", "項", "目", "節", "細節", "細々節"]
     "132241":
-      # ⚠️ **会計にコードの列が無い**（`会計名称` だけで、値は `一般会計` の1種類）。
+      # ⚠️ **会計にコードの列が無い**（`会計名称` だけで、一般・特別会計とも名称だけ）。
       # 原典が持たないので fund の code には名称がそのまま入る。捏造しないための帰結。
       expenditure: ["会計名称", "款", "項", "目", "細目", "節"]
       revenue: ["会計名称", "款", "項", "目", "節", "細節"]
@@ -103,6 +103,17 @@ vars:
   # 狛江市も `0`（中事業・小事業・細節・細々節は全行これ）。
   # ⚠️ **TypeScript 版にはこの宣言があったが、dbt へ移すときに落としていた。**
   # 宣言が無いと「先頭2桁がコード」の検査がこのセルで落ちる。
+  # Four FY2017 settlement rows print continuation text in the final column, without a code.
+  # Preserve the original cells; no repair or inferred hierarchy is performed.
+  fiscal_uncoded_cells:
+    "132047":
+      revenue:
+        saisaisetsu:
+          - {year: 2017, document_kind: settlement, source_row: 581, source: "供給業務一部負担金収入"}
+          - {year: 2017, document_kind: settlement, source_row: 584, source: "費精算返還金"}
+          - {year: 2017, document_kind: settlement, source_row: 585, source: "担金精算返還金"}
+          - {year: 2017, document_kind: settlement, source_row: 586, source: "負担金精算返還金"}
+
   fiscal_absent_level_markers:
     "132047": ["0"]
     "131016": []
@@ -188,8 +199,8 @@ vars:
       expenditure: [{column: "年度", notation: western}]
       revenue: [{column: "年度", notation: western}]
     "132241":
-      # ⚠️ 令和7年度（2025）の歳出には年度の列が無い。
-      expenditure: [{column: "年度", notation: reiwa-abbrev, years: [2021, 2022, 2023, 2024]}]
+      # 令和7年度は一般会計の歳出だけ年度列が無い。特別会計には残っている。
+      expenditure: [{column: "年度", notation: reiwa-abbrev, absent: [{year: 2025, column: "会計名称", value: "一般会計"}]}]
       revenue: [{column: "年度", notation: reiwa-abbrev}]
 
   # **歳出と歳入の合計が一致するという検算を、どの団体で有効にするか。**
@@ -201,6 +212,7 @@ vars:
     "132047":
       # 当初予算どうしなので丸めが無く、1円でも違えば落とす
       tolerance_yen: 1
+      document_kinds: [budget]
     "131016":
       # 当初予算どうしで、抽出結果の歳出・歳入がともに 91,610,567 千円で一致する
       # （実測 2026-08-30）
@@ -268,10 +280,14 @@ vars:
     "132047":
       expenditure:
         - {name: source_amount, source: "08予算額", unit: 千円, multiplier: 1000,
-           phase: approved, phase_label: 当初予算, primary: true}
+           phase: approved, phase_label: 当初予算, primary: true, document_kinds: [budget]}
+        - {name: source_amount, source: "08決算額", unit: 円, multiplier: 1,
+           phase: executed, phase_label: 決算額, primary: true, document_kinds: [settlement]}
       revenue:
         - {name: source_amount, source: "08予算額", unit: 千円, multiplier: 1000,
-           phase: approved, phase_label: 当初予算, primary: true}
+           phase: approved, phase_label: 当初予算, primary: true, document_kinds: [budget]}
+        - {name: source_amount, source: "08決算額", unit: 円, multiplier: 1,
+           phase: executed, phase_label: 決算額, primary: true, document_kinds: [settlement]}
     "131016":
       # 欄の見出しが単位を名乗っている（`千円`）。説明欄の金額にも `千円` が付く
       expenditure:

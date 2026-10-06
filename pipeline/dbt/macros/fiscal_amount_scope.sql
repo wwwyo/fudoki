@@ -1,5 +1,8 @@
 {#
-  **年度で割れる宣言を解決する。**
+  **年度・文書種類で割れる宣言を解決する。**
+
+  `document_kinds` は任意で、省略時は全文書へ効く。同年度の予算・決算は
+  原典の異なる金額列・単位・段階を持つため、CASEと検査の述語を文書種類でも絞る。
 
   `fiscal_amounts` は長く (団体, direction) の粒度で、その団体のその方向では
   列名も単位も年度によらず同じ、という前提だった。多摩市の令和7年度で前提が崩れた —
@@ -44,13 +47,13 @@
   その年度に効く金額の宣言の一覧。上の解決の規則そのもの。
   `year` に none を渡すと「`years` を持たない宣言だけ」＝どの宣言にも書かれていない年度になる。
 -#}
-{% macro fiscal_amounts_at(code, direction, year) %}
+{% macro fiscal_amounts_at(code, direction, year, document_kind=none) %}
   {%- set resolved = [] -%}
   {%- for name in fiscal_amount_names(code, direction) -%}
     {%- set variants = fiscal_amount_variants(code, direction, name) -%}
     {%- set scoped = [] -%}
     {%- set unscoped = [] -%}
-    {%- for a in variants -%}
+    {%- for a in variants if a.get('document_kinds') is none or document_kind in a['document_kinds'] -%}
       {%- if a.get('years') is none %}{% do unscoped.append(a) %}
       {%- elif year is not none and year in a['years'] %}{% do scoped.append(a) %}{% endif -%}
     {%- endfor -%}
@@ -99,10 +102,14 @@
   （package_preserves_source の多重集合が倍になる）。
 -#}
 {% macro fiscal_amount_year_filter(a, year_col='fiscal_year') %}
-  {%- if a.get('years') is none -%}
-    {{ return('') }}
+  {%- set predicates = [] -%}
+  {%- if a.get('years') is not none -%}
+    {%- do predicates.append(year_col ~ ' in (' ~ a['years'] | join(', ') ~ ')') -%}
   {%- endif -%}
-  {{ return(year_col ~ ' in (' ~ a['years'] | join(', ') ~ ')') }}
+  {%- if a.get('document_kinds') is not none -%}
+    {%- do predicates.append("document_kind in ('" ~ a['document_kinds'] | join("', '") ~ "')") -%}
+  {%- endif -%}
+  {{ return(predicates | join(' and ')) }}
 {% endmacro %}
 
 
@@ -120,7 +127,7 @@
   覆えているかは tests/amount_declarations_cover_years.sql が原典の側から見る。
 -#}
 {% macro fiscal_amount_case_sql(variants, values, year_col) %}
-  {%- if variants | length == 1 and variants[0].get('years') is none -%}
+  {%- if variants | length == 1 and variants[0].get('years') is none and variants[0].get('document_kinds') is none -%}
     {{ return(values[0]) }}
   {%- endif -%}
   {%- set branches = [] -%}
@@ -222,37 +229,55 @@
 #}
 {% macro check_fiscal_amount_scopes() %}
 {%- for code, direction in fiscal_units() -%}
-  {%- for name in fiscal_amount_names(code, direction) -%}
-    {%- set variants = fiscal_amount_variants(code, direction, name) -%}
-    {%- set unscoped = variants | rejectattr('years', 'defined') | list -%}
-    {%- if unscoped | length > 1 -%}
-      {{ exceptions.raise_compiler_error(
-          code ~ '/' ~ direction ~ '/' ~ name ~ ': years を持たない宣言が '
-          ~ unscoped | length ~ ' 件ある。全年度に効く宣言は1つだけ') }}
+  {%- set kinds = [none] -%}
+  {%- for a in var('fiscal_amounts')[code][direction] -%}
+    {%- if a.get('document_kinds') is not none and not a['document_kinds'] -%}
+      {{ exceptions.raise_compiler_error(code ~ ': document_kinds must not be empty') }}
     {%- endif -%}
-    {%- set seen = [] -%}
-    {%- for a in variants -%}
-      {%- for y in a.get('years') or [] -%}
-        {%- if y in seen -%}
-          {{ exceptions.raise_compiler_error(
-              code ~ '/' ~ direction ~ '/' ~ name ~ ': ' ~ y ~ ' 年度が複数の宣言に現れる') }}
-        {%- endif -%}
-        {%- do seen.append(y) -%}
-      {%- endfor -%}
+    {%- for kind in a.get('document_kinds', []) -%}
+      {%- if kind not in ['budget', 'supplementary', 'settlement'] -%}
+        {{ exceptions.raise_compiler_error(code ~ ': invalid document_kind ' ~ kind) }}
+      {%- endif -%}
+      {%- if kind not in kinds %}{% do kinds.append(kind) %}{% endif -%}
     {%- endfor -%}
   {%- endfor -%}
-
-  {#- 年度ごとの解決。宣言が言及する年度と、どこにも書かれていない年度（none）を見る -#}
-  {%- set buckets = fiscal_amount_declared_years(code, direction) -%}
-  {%- set has_unscoped = var('fiscal_amounts')[code][direction]
-                         | rejectattr('years', 'defined') | list | length > 0 -%}
-  {%- for year in buckets + ([none] if has_unscoped else []) -%}
-    {%- set resolved = fiscal_amounts_at(code, direction, year) -%}
-    {%- set primary = resolved | selectattr('primary') | list -%}
-    {%- if primary | length != 1 -%}
-      {{ exceptions.raise_compiler_error(
-          code ~ '/' ~ direction ~ '/' ~ (year or '既定') ~ ': primary が ' ~ primary | length
-          ~ ' 件。集計に使う段階は年度ごとに1つでなければならない') }}
+  {%- for kind in kinds -%}
+    {%- set active = [] -%}
+    {%- for a in var('fiscal_amounts')[code][direction] if a.get('document_kinds') is none or kind in a['document_kinds'] -%}
+      {%- do active.append(a) -%}
+    {%- endfor -%}
+    {%- if active -%}
+      {%- for name in fiscal_amount_names(code, direction) -%}
+        {%- set variants = active | selectattr('name', 'equalto', name) | list -%}
+        {%- if variants | rejectattr('years', 'defined') | list | length > 1 -%}
+          {{ exceptions.raise_compiler_error(code ~ '/' ~ direction ~ '/' ~ kind ~ '/' ~ name ~ ': multiple defaults') }}
+        {%- endif -%}
+        {%- set seen = [] -%}
+        {%- for a in variants -%}
+          {%- if a.get('years') is not none and not a['years'] -%}
+            {{ exceptions.raise_compiler_error(code ~ ': years must not be empty') }}
+          {%- endif -%}
+          {%- for year in a.get('years', []) -%}
+            {%- if year in seen -%}
+              {{ exceptions.raise_compiler_error(code ~ '/' ~ direction ~ '/' ~ kind ~ '/' ~ name ~ ': overlapping year ' ~ year) }}
+            {%- endif -%}
+            {%- do seen.append(year) -%}
+          {%- endfor -%}
+        {%- endfor -%}
+      {%- endfor -%}
+      {%- set years = [] -%}
+      {%- for a in active -%}
+        {%- for year in a.get('years', []) -%}
+          {%- if year not in years %}{% do years.append(year) %}{% endif -%}
+        {%- endfor -%}
+      {%- endfor -%}
+      {%- if active | rejectattr('years', 'defined') | list %}{% do years.append(none) %}{% endif -%}
+      {%- for year in years -%}
+        {%- set primary = fiscal_amounts_at(code, direction, year, kind) | selectattr('primary') | list -%}
+        {%- if primary | length != 1 -%}
+          {{ exceptions.raise_compiler_error(code ~ '/' ~ direction ~ '/' ~ kind ~ '/' ~ year ~ ': primary must resolve exactly once') }}
+        {%- endif -%}
+      {%- endfor -%}
     {%- endif -%}
   {%- endfor -%}
 {%- endfor -%}

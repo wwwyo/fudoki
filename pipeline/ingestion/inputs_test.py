@@ -16,17 +16,16 @@ class FixedInputs(unittest.TestCase):
         for item in self.patches:
             item.start()
         origin = inputs.save_object('origin', b'unchanged synthetic original\n')
-        provenance = {'jurisdiction_code': '000001', 'fiscal_year': 2026, 'sha256': origin['sha256']}
         self.lock = self.root / 'sources.lock.json'
         self.entry = {'jurisdiction': '000001', 'fiscalYear': 2026, 'documentKind': 'settlement', 'direction': 'expenditure', 'originEdition': origin['sha256'],
                       'path': f'jurisdiction=000001/year=2026/document_kind=settlement/edition={origin["sha256"]}/direction=expenditure',
                       'origin': {'availability': 'stored', 'sha256': origin['sha256'], 'object': origin},
                       'table': inputs.save_object('table', b'synthetic table bytes\n')}
-        self.entry['provenance'] = inputs.save_provenance(self.lock, self.entry['path'], inputs.encode(provenance))
+        self.entry['source'] = {'request_url': 'https://example.test/original.csv', 'raw_form': 'verbatim'}
         self.write_lock(self.entry)
 
     def write_lock(self, entry):
-        self.lock.write_bytes(inputs.encode({'schemaVersion': 2, 'entries': [entry]}))
+        self.lock.write_bytes(inputs.encode({'schemaVersion': 3, 'entries': [entry]}))
 
     def tearDown(self):
         for item in reversed(self.patches):
@@ -37,37 +36,32 @@ class FixedInputs(unittest.TestCase):
         with patch.object(inputs, 'remote_object', side_effect=AssertionError('network requested')):
             target = inputs.restore(self.lock)
         self.assertEqual((target / self.entry['path'] / 'data.parquet').read_bytes(), b'synthetic table bytes\n')
-        self.assertEqual((target / self.entry['path'] / 'provenance.json').read_bytes(), (self.lock.parent / self.entry['provenance']['path']).read_bytes())
+        self.assertEqual(list(target.rglob('provenance.json')), [])
 
-    def test_changed_git_provenance_is_rejected_before_any_remote_request(self):
-        (self.lock.parent / self.entry['provenance']['path']).write_bytes(b'{}\n')
-        with patch.object(inputs, 'remote_object', side_effect=AssertionError('network requested')):
-            with self.assertRaisesRegex(ValueError, 'hash or size'):
-                inputs.restore(self.lock, remote=True)
+    def test_source_cannot_contain_execution_results_or_another_scope(self):
+        for field in ['extracted', 'rows', 'fiscal_year', 'roundtrip_verified']:
+            entry = copy.deepcopy(self.entry)
+            entry['source'][field] = 1
+            self.write_lock(entry)
+            with self.assertRaisesRegex(ValueError, 'execution results'):
+                inputs.read_lock(self.lock)
 
-    def test_missing_git_provenance_does_not_fall_back_to_r2(self):
-        (self.lock.parent / self.entry['provenance']['path']).unlink()
-        with patch.object(inputs, 'remote_object', side_effect=AssertionError('network requested')):
-            with self.assertRaises(FileNotFoundError):
-                inputs.restore(self.lock, remote=True)
-
-    def test_pinning_uploads_only_originals_and_tables_and_keeps_provenance_in_git(self):
+    def test_pinning_uploads_only_originals_and_tables_without_sidecars(self):
         raw = inputs.restore(self.lock)
+        (raw / self.entry['path'] / 'inputs.lock.json').write_bytes(self.lock.read_bytes())
         canonical = self.root / 'ingestion/fiscal/sources.lock.json'
-        obsolete = canonical.parent / 'provenance/obsolete/provenance.json'
-        obsolete.parent.mkdir(parents=True)
-        obsolete.write_text('{}')
-        with patch.object(inputs, 'LOCK', canonical), patch.object(inputs, 'remote_object') as remote, patch('ingestion.fiscal.sources.all_sources', return_value={}):
+        with patch.object(inputs, 'LOCK', canonical), patch.object(inputs, 'remote_object') as remote:
             result = inputs.migrate(raw, remote=True)
         self.assertEqual(result, canonical)
-        self.assertFalse(obsolete.exists())
         self.assertCountEqual([(args[0]['key'], args[1]) for args, _ in remote.call_args_list],
                               [(ref['key'], operation) for ref in [self.entry['table'], self.entry['origin']['object']] for operation in ['put', 'get']])
         restored = inputs.restore(canonical)
-        self.assertEqual((restored / self.entry['path'] / 'provenance.json').read_bytes(), (canonical.parent / self.entry['provenance']['path']).read_bytes())
+        self.assertEqual(list(restored.rglob('provenance.json')), [])
+        self.assertEqual(inputs.read_lock(canonical)['entries'][0]['source'], self.entry['source'])
 
     def test_failed_remote_transfer_does_not_replace_git_snapshot(self):
         raw = inputs.restore(self.lock)
+        (raw / self.entry['path'] / 'inputs.lock.json').write_bytes(self.lock.read_bytes())
         before = self.lock.read_bytes()
         with patch.object(inputs, 'LOCK', self.lock), patch.object(inputs, 'remote_object', side_effect=RuntimeError('transfer failed')), patch('ingestion.fiscal.sources.all_sources', return_value={}):
             with self.assertRaisesRegex(RuntimeError, 'transfer failed'):
@@ -101,13 +95,6 @@ class FixedInputs(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     inputs.read_lock(self.lock)
 
-    def test_valid_provenance_hash_cannot_refer_to_another_scope(self):
-        entry = copy.deepcopy(self.entry)
-        entry['provenance'] = inputs.save_provenance(self.lock, entry['path'], inputs.encode({'jurisdiction_code': '000002', 'fiscal_year': 2026, 'sha256': entry['originEdition']}))
-        self.write_lock(entry)
-        with self.assertRaisesRegex(ValueError, 'scope or edition'):
-            inputs.restore(self.lock)
-
     def test_path_traversal_and_noncanonical_aliases_are_rejected(self):
         for path in ['../outside', '/absolute', '.', 'a//b', 'a/./b', 'a\\b', 'a\n']:
             with self.subTest(path=path), self.assertRaises(ValueError):
@@ -116,6 +103,9 @@ class FixedInputs(unittest.TestCase):
     def test_backup_restores_an_empty_cache_without_requesting_the_origin(self):
         archive = self.root / 'backup.zip'
         inputs.backup(self.lock, archive)
+        import zipfile
+        with zipfile.ZipFile(archive) as stored:
+            self.assertFalse(any('provenance' in name for name in stored.namelist()))
         empty = self.root / 'empty'
         with patch.object(inputs, 'CACHE', empty), patch.object(inputs, 'OBJECTS', empty / 'objects'), patch.object(inputs, 'remote_object', side_effect=AssertionError('network requested')):
             restored = inputs.restore_backup(self.lock, archive)

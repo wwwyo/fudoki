@@ -39,7 +39,8 @@ import pathlib
 
 import yaml
 
-from ingestion.paths import PACKAGES, RAW
+from ingestion.paths import PACKAGES, RAW, INPUT_LOCK
+from ingestion.inputs import describe_inputs
 from ingestion.fiscal.sources import all_sources, load_project_names, load_revenue_accounts
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -111,6 +112,8 @@ def licenses_of(srcs: list) -> list[dict]:
 # 改変の明示は CC BY が求めているものなので、嘘を書くと表示そのものの信用が落ちる。
 # 団体で改変が変わるなら、そのときリストを団体ごとに分けること。
 JUDGMENT_RESOURCES = [
+    ("tama_settlement_pdf_datasets", "多摩決算PDFの独立観測表", "採用した43独立観測表の識別子・原典・粒度・単位・行数。統制値と原典語は非加算であり財政明細ではない。", ["dataset_id"]),
+    ("tama_settlement_pdf_account_names", "多摩決算書の印字科目名", "目×法定節表の印字科目名。原典区画・年度ごとの名称であり法定科目への分類は未確認。財源事業への名前による関係付けはしない。", ["dataset_id", "fund_label", "kan_code", "kou_code", "moku_code"]),
     ("account_names", "科目の名称と法定マスタへの対応（fudoki の判断を含む）",
      "款・項・目の名称のカタログと、法定マスタへの対応。"
      "**対応先は会計で違う**: 一般会計は地方自治法施行規則 別記の区分、"
@@ -120,7 +123,7 @@ JUDGMENT_RESOURCES = [
      "**款のコードは団体ごとに法定とずれる**（災害復旧費を持たない市では以降が詰まる）ので、"
      "団体をまたぐ比較は canonical_fund と master_kan_code / master_kou_code で行う。"
      "名称の出所（原典 CSV か、事項別明細書 PDF からの抽出か、決算書 PDF から fudoki が解決したか）は name_source が言う",
-     ["fiscal_year", "direction", "fund_code", "kan_code", "kou_code", "moku_code"]),
+     ["dataset_id", "fund_code", "fund_label", "kan_code", "kou_code", "moku_code"]),
     ("funds", "会計の名寄せと帳簿上の区分（fudoki の判断）",
      "同じ制度を担う会計の呼び名は団体で違う（「国民健康保険事業特別会計」"
      "「国民健康保険特別会計」）ので、比較は fund_label ではなく canonical_fund で行う。"
@@ -142,11 +145,24 @@ JUDGMENT_RESOURCES = [
 ]
 
 
-HOMEPAGE = "https://github.com/wwwyo/fudoki"
-PROVENANCE_NOTE = (
-    "取得の証跡（取得 URL・HTTP status・SHA-256・取得時刻・ヘッダ・行数）は、"
-    "Git 管理する `pipeline/ingestion/fiscal/provenance/` にある。採用した版・証跡の相対パス・個別ハッシュは `pipeline/ingestion/fiscal/sources.lock.json` が記録する。"
+TAMA_SETTLEMENT_PDF_RESOURCES = {
+    'settlement_expenditure_pdf_legal_setsu': '多摩決算書の目×法定節。原典1行に1行、支出済額は円。下位事業と節の関係は未確認。原典の全観測・位置と反復印字統制値をsource_observation_jsonに保持する。',
+    'settlement_expenditure_pdf_project_funding': '多摩令和4年度の細目×財源の独立内訳。支出済額は千円を原単位として保持し、amountは円換算。財源は法定節ではなく目×節との配分・関連づけは未確認。二つの内訳を足さない。',
+    'settlement_expenditure_pdf_moku_controls': '非加算の印字目別統制値806行。15予備費目の支出済額0円・節なしを保持する。予算欄は原典観測であり段階を推定しない。明細と合算しない。',
+    'settlement_expenditure_pdf_account_controls': '非加算の印字会計総額20行。目×法定節と同じ支出の統制値であり明細と合算しない。',
+    'settlement_expenditure_pdf_project_controls': '非加算の印字事業総額404行。細目×財源と同じ支出の統制値であり明細と合算しない。',
+}
 
+KOMAE_INITIAL_REFERENCE_RESOURCES = {
+    'initial_moku_reference': (["fiscal_line_id"], '旧当初2目の非加算参照。元の原典行・対象ID・千円印字値と円換算額・原典位置をsource_observation_jsonに保持する。authoritativeな全19版7409行のinitial_expenditure_budgetへ足し合わせない。'),
+    'initial_target_equivalence': (["budget_item_id"], '非加算の初期対象対応証跡496件。538実補正行と初期行は同年度・同会計・印字経路/事業/担当課/節/sourceGrainのexact一致のみ。両namespaceと原文階層・原典位置を保持し、既存補正対象IDを変更しない。amount_initialは円で表す原典初期額の参照であり初期予算CSVへ重ねて加算しない。141対象/152補正行は対応未確認。'),
+}
+
+HOMEPAGE = "https://github.com/wwwyo/fudoki"
+INPUT_NOTE = (
+    "採用した原典・Parquetのハッシュと保存先、出典・意味の宣言は、"
+    "Git管理する `pipeline/ingestion/fiscal/sources.lock.json` にある。"
+    "検査結果は固定入力から再生成する検証レポートで確認する。"
 )
 
 TYPES = json.loads((pathlib.Path(__file__).parent / "field_types.json").read_text())
@@ -253,18 +269,6 @@ def resource(path: pathlib.Path, name: str, title: str, description: str, primar
     return r
 
 
-def latest_fetch(pattern: str = "**/provenance.json") -> str:
-    """収録した原典のうち最も新しい取得時刻。パッケージの版がいつ時点かを表す。
-
-    ⚠️ **団体ごとのパッケージでは、その団体の証跡だけを見る。**
-    全体の最大を入れると、別の団体を取り直しただけで無関係なパッケージの
-    `created` が動き、中身が同じなのに差分が出る（実際に三鷹市でそうなった）。
-    """
-    stamps = [json.loads(p.read_text())["fetched_at"] for p in RAW.glob(pattern)]
-    if not stamps:
-        raise RuntimeError(f"証跡が1つも無い（{pattern}）。先に ingestion を回すこと")
-    return max(stamps)
-
 
 def described(body: str, credits: list[str], modifications: list[str], notes: list[str]) -> str:
     """`description` を組み立てる。**CC BY の義務をここへ集める。**
@@ -308,8 +312,7 @@ def described(body: str, credits: list[str], modifications: list[str], notes: li
     return "\n\n".join(parts)
 
 
-def base(name: str, title: str, description: str, created: str) -> dict:
-    # ⚠️ **`created` を呼ぶ側から渡す。** 団体ごとのパッケージはその団体の証跡だけを見る。
+def base(name: str, title: str, description: str) -> dict:
     return {
         # ⚠️ **1.0.0 の profile JSON は存在しない**（AGENTS.md に実測を記録）。
         # ここに書けるのは下層の Tabular Data Package v1 だけである。
@@ -322,7 +325,6 @@ def base(name: str, title: str, description: str, created: str) -> dict:
         # 生成した時刻ではなく**原典を取得した時刻**を入れる。
         # 実行した瞬間を入れると、中身が同じでも回すたびに差分が出る。
         # 意味としても「いつ時点の原典から作られたか」のほうが利用者に要る。
-        "created": created,
         "countryCode": "JP",
         # 仕様の「_ColumnType_ definition package」。**パッケージ直下が仕様どおりの置き場**で、
         # リソース側の `schema.fields[].columnType`（単数）が個々の列をここへ結び付ける。
@@ -332,11 +334,12 @@ def base(name: str, title: str, description: str, created: str) -> dict:
     }
 
 
-def build_jurisdiction(code: str) -> None:
+def build_jurisdiction(code: str, inputs: list[dict] | None = None) -> None:
     """dbt が確定したリソースに列定義・原典・利用条件を付ける。"""
     directory = PACKAGES / code
-    sources = [source for source in all_sources().values() if source.jurisdiction_code == code]
-    pkg = base(f"fudoki-{code}", f"風土記 {code} の財政データ", "決算の実績と当初予算・変更履歴を別リソースとして提供する。", latest_fetch(f"jurisdiction={code}/**/provenance.json"))
+    registered_sources = all_sources()
+    sources = [source for source in registered_sources.values() if source.jurisdiction_code == code]
+    pkg = base(f"fudoki-{code}", f"風土記 {code} の財政データ", "決算の実績と当初予算・変更履歴を別リソースとして提供する。")
     licenses = licenses_of(sources)
     if licenses:
         pkg["licenses"] = licenses
@@ -344,14 +347,24 @@ def build_jurisdiction(code: str) -> None:
     credits = list(dict.fromkeys(source.attribution for source in sources))
     pkg["sources"] = [{"title": source.attribution, "path": source.landing_page} for source in sources] + [{"title": entry["document_title"], "path": entry["url"]} for entry in pdfs]
     pkg["contributors"] = [{"title": "風土記", "path": HOMEPAGE, "role": "wrangler"}]
-    pkg["description"] = described(pkg["description"], credits, ["列名・コード・名称を整理した", "金額を円へ正規化し、決算の実績と当初予算を別リソースに分けた", "分類・会計・科目・事業の対応を風土記の判断として付け加えた"], [PROVENANCE_NOTE])
+    pkg["description"] = described(pkg["description"], credits, ["列名・コード・名称を整理した", "金額を円へ正規化し、決算の実績と当初予算を別リソースに分けた", "分類・会計・科目・事業の対応を風土記の判断として付け加えた"], [INPUT_NOTE])
     pkg["resources"] = []
-    provenance = [json.loads(path.read_text()) for path in sorted(RAW.glob(f"jurisdiction={code}/**/provenance.json"))]
-    for entry in provenance:
-        if entry.get("raw_form") == "verbatim" and not entry.get("roundtrip_verified"):
-            raise RuntimeError("Unverified original table")
-        if entry.get("raw_form") == "extracted" and (entry.get("roundtrip_verified") or not entry.get("verification")):
-            raise RuntimeError("Extraction requires its own verification evidence")
+    provenance = inputs if inputs is not None else [item['source'] for item in describe_inputs(INPUT_LOCK) if item['source']['jurisdiction_code'] == code]
+    for index, entry in enumerate(provenance):
+        if entry.get("namespace") != "held5-council-approved-detail":
+            continue
+        source = registered_sources[entry["source_key"]]
+        matches = [item for item in source.resources if item.table_id == entry["table_id"]
+                   and item.url == entry["request_url"] and item.direction == "expenditure"]
+        if (len(matches) != 1 or source.fiscal_year != entry["fiscal_year"]
+                or source.jurisdiction_code != entry["jurisdiction_code"]
+                or source.document_kind != "supplementary"):
+            raise RuntimeError("保留補正の証跡と登録原典の範囲が一致しない")
+        # The immutable provenance uses its own format; descriptor context comes
+        # from the exact registered original, without rewriting that evidence.
+        provenance[index] = {**entry, "direction": matches[0].direction,
+                             "document_kind": source.document_kind,
+                             "document_title": source.document_label}
     aux_keys = {name: key for name, _, _, key in JUDGMENT_RESOURCES}
     for path in sorted(directory.glob("*.csv")):
         name = path.stem
@@ -359,7 +372,26 @@ def build_jurisdiction(code: str) -> None:
         constants = {"jurisdiction_code": code}
         with path.open("rb") as header_stream:
             header = header_of(header_stream.readline())
-        if name.endswith("_budget_items"):
+        if code == "132195" and name in KOMAE_INITIAL_REFERENCE_RESOURCES:
+            key, description = KOMAE_INITIAL_REFERENCE_RESOURCES[name]
+            direction = "expenditure"
+            constants.update(direction=direction, document_kind="budget", currency="JPY")
+        elif code == "132195" and name == "supplementary_moku_reference_observations":
+            key = ["fiscal_line_id"]
+            direction = "expenditure"
+            constants.update(direction=direction, document_kind="supplementary", currency="JPY")
+            description = ("旧補正102目の非加算参照。印字文字列・原単位の整数・原典行ID・頁・位置と採用判断を保持する。"
+                           "amount_deltaのみ円換算。正準の事業×節の補正へ重ねて加算しない。"
+                           "superseded_by_detailは同年度・会計・補正号の明細を採用した状態を表す。")
+        elif code == "132195" and name == "held5_raw_detail":
+            key = ["fiscal_line_id"]
+            direction = "expenditure"
+            constants.update(direction=direction, document_kind="supplementary", currency="JPY")
+            description = ("承認済み補正5版241行の原典観測52列を保持する非加算参照。"
+                           "amount_deltaとproject_printed_deltaは原典の千円単位で、円へ換算していない。"
+                           "変更額の円換算値はexpenditure_budget_changes.csvにあり、この参照を加算しない。"
+                           "提出日・議決日・効力発生日を区別し、未確認値はNULL。")
+        elif name.endswith("_budget_items"):
             key = ["budget_item_id"]
             description = "年度内の予算対象。当初額の確認状態と、科目・事業経路・追加区分・名称を保持する。歳出は expenditure_setsu_id と粒度（line_granularity）を持つ。"
         elif name.endswith("_budget_changes"):
@@ -375,6 +407,12 @@ def build_jurisdiction(code: str) -> None:
                            "節より下の内訳と原典行の対応は details_json に保持する。節が確かめられない行は原典行の粒度（origin_line）。"
                            "expenditure_setsu_id は fiscal_expenditure_setsu_master（Git の定義）を指し、原典の節コードとは別物。"
                            "原典の報告値と単位は取り込み表とローカル検証記録に残す。予算履歴の復元・照合は未確認。")
+            if code == "132195":
+                description += " 狛江市FY2023〜2026の承認済み当初19会計版は全7409原典行で、7393法定節と16空白コードreserveを保持する。旧2目は非加算参照。496補正対象のexact初期対応は別証跡で、未確認141対象へゼロを作らない。"
+        elif code == "132241" and name in TAMA_SETTLEMENT_PDF_RESOURCES:
+            key = ["fiscal_line_id"]
+            constants.update(direction="expenditure", document_kind="settlement", currency="JPY")
+            description = TAMA_SETTLEMENT_PDF_RESOURCES[name]
         elif name.startswith("settlement_") or name.startswith("initial_"):
             key = ["fiscal_line_id"]
             constants.update(direction=direction, document_kind="settlement" if name.startswith("settlement_") else "budget", currency="JPY")
@@ -397,11 +435,24 @@ def build_jurisdiction(code: str) -> None:
                     raise RuntimeError(f"{path.name}: amount is not an exact integer")
         kind = "settlement" if name.startswith("settlement_") else "budget" if name.startswith("initial_") else None
         origins = [{"title": f"{entry['fiscal_year']}年度／{entry.get('resource_name') or entry.get('document_title')}", "path": entry["request_url"]} for entry in provenance if (direction is None or entry["direction"] == direction) and (kind is None or entry.get("document_kind", next(source.document_kind for source in sources if source.fiscal_year == entry["fiscal_year"])) == kind)]
+        if code == "132195" and name in ("initial_expenditure_budget", "initial_target_equivalence"):
+            origins = [{"title": entry["document_title"], "path": entry["request_url"]}
+                       for entry in provenance if entry.get("observation_role") == "authoritative-initial-detail"]
+        elif code == "132195" and name == "initial_moku_reference":
+            origins = [{"title": f"{entry['fiscal_year']}年度 当初2目の非加算原典参照", "path": entry["request_url"]}
+                       for entry in provenance if entry.get("table_id") == "expenditure-detail" and entry.get("document_kind") == "budget"]
+        elif code == "132195" and name == "supplementary_moku_reference_observations":
+            origins = [{"title": f"{entry['fiscal_year']}年度 補正目の非加算原典参照", "path": entry["request_url"]}
+                       for entry in provenance if entry.get("table_id") == "expenditure-detail" and entry.get("document_kind") == "supplementary"]
+        elif code == "132195" and name == "held5_raw_detail":
+            origins = [{"title": entry["document_title"], "path": entry["request_url"]}
+                       for entry in provenance if entry.get("namespace") == "held5-council-approved-detail"]
         if name == "project_names":
             origins.extend({"title": entry["document_title"], "path": entry["url"]} for entry in pdfs)
         if direction and any(entry.get("raw_form") == "extracted" for entry in provenance if entry["direction"] == direction):
-            description += " 原典 PDF の抽出は不可逆であり、組版内の合計などによる検査の証跡を入力一覧から辿れる。"
-        pkg["resources"].append(resource(path, name, name, description, key, origins, constants, direction))
+            description += " 原典 PDF の抽出は不可逆であり、組版内の合計などによる検査は再生成する検証レポートで確認する。"
+        field_scope = "held5-raw" if code == "132195" and name == "held5_raw_detail" else direction
+        pkg["resources"].append(resource(path, name, name, description, key, origins, constants, field_scope))
     (directory / "datapackage.json").write_text(json.dumps(pkg, ensure_ascii=False, indent=2) + "\n")
     print(f"ok {code} {len(pkg['resources'])} resources")
 
@@ -410,5 +461,6 @@ if __name__ == "__main__":
     registered = {source.jurisdiction_code for source in all_sources().values()}
     if registered != set(DBT_VARS["fiscal_levels"]):
         raise SystemExit("Ingestion jurisdictions differ from dbt declarations")
+    inputs = describe_inputs(INPUT_LOCK)
     for code in sorted(registered):
-        build_jurisdiction(code)
+        build_jurisdiction(code, [item['source'] for item in inputs if item['source']['jurisdiction_code'] == code])

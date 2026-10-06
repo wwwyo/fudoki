@@ -76,6 +76,10 @@ select
     cast(year as integer)         as fiscal_year,
     direction,
     source_row,
+{% if code in ['131016', '132071'] %}
+    source_page, source_bbox, source_table_id, source_amount_unit,
+    source_fiscal_year as declared_source_fiscal_year,
+{% endif %}
 {%- for lv in levels %}
     {{ trim_cell('"' ~ columns[loop.index0] ~ '"') }} as {{ lv }}_source,
 {%- endfor %}
@@ -114,12 +118,15 @@ select
     -- 決算書は1行に複数の段階の金額を持つので、そちらは marts で展開する。
     document_kind,
     edition as origin_sha256,
-    jurisdiction_code || ':' || fiscal_year || ':' || direction || ':' || document_kind || ':' || edition as dataset_id,
+    jurisdiction_code || ':' || fiscal_year || ':' || direction || ':' || document_kind || ':' || edition
+    {% if code in ['131016', '132071'] %}|| case when "table" is null then '' else ':' || "table" end{% endif %} as dataset_id,
     -- 識別子。**公開 API の一部**なので導出を変えると permalink が全滅する。
+    -- 新PDF tableでは同じ科目・説明名の独立した印字行をsource_rowで区別する。legacy無table式は保つ。
     dataset_id || ':'
         || substr(sha256(
             jurisdiction_code || chr(31) || fiscal_year || chr(31) || direction || chr(31) || document_kind || chr(31) || edition
             || chr(31) || {{ key_cells | join(" || chr(31) || ") }}
+            {% if code in ['131016', '132071'] %}|| case when "table" is null then '' else chr(31) || "table" || chr(31) || source_row end{% endif %}
         ), 1, 16) as fiscal_line_id
 {#-
   金額。**列名は年度で割れうる**ので、宣言の解決（fiscal_amount_scope）に任せる。

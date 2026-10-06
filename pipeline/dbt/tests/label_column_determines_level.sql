@@ -34,7 +34,7 @@
 {%- set parent = [] -%}
 {%- for p in levels[:levels.index(lv)] %}{% do parent.append(p ~ '_source') %}{% endfor -%}
 select '{{ code }}' as jurisdiction, '{{ direction }}' as direction, '{{ lv }}' as level,
-       fiscal_year,
+       dataset_id,
        {% if parent %}{{ parent | join(" || '/' || ") }}{% else %}''{% endif %} as parent,
        {{ lv }}_code as code, count(distinct {{ lv }}_label) as 名称の異なり数
 from {{ ref('stg_' ~ code ~ '__' ~ direction) }}

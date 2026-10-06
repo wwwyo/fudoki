@@ -238,18 +238,25 @@ def evaluate_statement(code: str) -> dict:
     使えるのは、様式が同じ数字を階層ごとに重複して印字しているという性質だけで、
     **同じ誤りが両側に入れば通る**ぶん外の正解より弱い。強さの違いを観測に書く。
 
-    ⚠️ **取得の判定をここで作り直さない。** 抽出時の突合は
-    `extract_statement.reconcile` が既に計算して証跡へ書いているので、それを読む。
-    ここが足すのは、証跡が持たない**名称の欠け**（配布物の使い勝手に直結し、
-    金額の突合では動かないので合計突合では検出できない）と、年度をまたいだ集約である。
+    採用した原典と宣言から同じ抽出器の突合を再計算する。
+    名称の欠けもParquetから測り、年度をまたいで集約する。
     """
     con = _con()
     years: list[dict] = []
-    for path in sorted(RAW.glob(f"jurisdiction={code}/**/provenance.json")):
-        prov = json.loads(path.read_text())
+    from ingestion.inputs import describe_inputs, origin_path
+    from ingestion.paths import INPUT_LOCK
+    from ingestion.fiscal.extract_statement import read_pages, extract, reconcile
+    for item in describe_inputs(INPUT_LOCK, RAW):
+        prov = item['source']
+        if prov['jurisdiction_code'] != code:
+            continue
+        path = RAW / item['path'] / 'data.parquet'
         if "extract_statement" not in prov.get("extractor", ""):
             continue
-        e = prov["extracted"]
+        spec = load_statements()[prov['source_key'].removeprefix('statement:')]
+        pages = read_pages(origin_path(prov['sha256']), spec, prov['direction'])
+        extracted, totals, aux = extract(pages, spec, prov['direction'])
+        e = reconcile(extracted, totals, aux)
         parquet = path.parent / "data.parquet"
         blank = con.execute(
             f"select count(*) filter (where 款名称 = '') , count(*) filter (where 項名称 = ''), "

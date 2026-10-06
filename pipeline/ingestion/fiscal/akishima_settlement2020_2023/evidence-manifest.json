@@ -1,0 +1,154 @@
+{
+ "schema_version": 1,
+ "namespace": "akishima-settlement2020-2023",
+ "native_command": [
+  "pdftotext",
+  "-bbox-layout",
+  "-enc",
+  "UTF-8",
+  "ORIGINAL",
+  "OUTPUT"
+ ],
+ "origin_sha256": {
+  "2020": "fb59889adbcfca20993a394e0f7b5238644854c2dd4e006f6344a11c60e40d5d",
+  "2021": "7a0c44d3dd45e5d4b502567f5a497adabcdcb046a87f9541963f4480055e4413",
+  "2022": "19b9f62e009d35d220c39e7c780f9d6200b6ad26ba9bcffccdc3853089ec07bf",
+  "2023": "1cd32bcc99312c05be3755a40a03bb6c99efea5358cdc7861ab67f8ec2dc3277"
+ },
+ "objects": [
+  {
+   "sha256": "b871f51e2ac60a8000b50c954e3677210684f32934e4e8ef6f22b8cd68ced476",
+   "bytes": 10715,
+   "roles": [
+    "config"
+   ],
+   "type": "application/json",
+   "ownership": "private candidate declaration",
+   "cache_key": "objects/sha256/b871f51e2ac60a8000b50c954e3677210684f32934e4e8ef6f22b8cd68ced476"
+  },
+  {
+   "sha256": "1cd32bcc99312c05be3755a40a03bb6c99efea5358cdc7861ab67f8ec2dc3277",
+   "bytes": 2708495,
+   "roles": [
+    "original_pdf"
+   ],
+   "type": "application/pdf",
+   "ownership": "private candidate input",
+   "cache_key": "objects/sha256/1cd32bcc99312c05be3755a40a03bb6c99efea5358cdc7861ab67f8ec2dc3277"
+  },
+  {
+   "sha256": "e3accb3d66f9a243bb4dcefb041be6a29a9e75d98fa1453e29898c89f349d44a",
+   "bytes": 16436602,
+   "roles": [
+    "native_bbox"
+   ],
+   "type": "text/xml",
+   "ownership": "private candidate input",
+   "cache_key": "objects/sha256/e3accb3d66f9a243bb4dcefb041be6a29a9e75d98fa1453e29898c89f349d44a"
+  },
+  {
+   "sha256": "19b9f62e009d35d220c39e7c780f9d6200b6ad26ba9bcffccdc3853089ec07bf",
+   "bytes": 2458754,
+   "roles": [
+    "original_pdf"
+   ],
+   "type": "application/pdf",
+   "ownership": "private candidate input",
+   "cache_key": "objects/sha256/19b9f62e009d35d220c39e7c780f9d6200b6ad26ba9bcffccdc3853089ec07bf"
+  },
+  {
+   "sha256": "6432f04dbfd3e82ab6df1b0674f771f7ce3a2837ce691f4c365610244de69287",
+   "bytes": 15922179,
+   "roles": [
+    "native_bbox"
+   ],
+   "type": "text/xml",
+   "ownership": "private candidate input",
+   "cache_key": "objects/sha256/6432f04dbfd3e82ab6df1b0674f771f7ce3a2837ce691f4c365610244de69287"
+  },
+  {
+   "sha256": "7a0c44d3dd45e5d4b502567f5a497adabcdcb046a87f9541963f4480055e4413",
+   "bytes": 6123105,
+   "roles": [
+    "original_pdf"
+   ],
+   "type": "application/pdf",
+   "ownership": "private candidate input",
+   "cache_key": "objects/sha256/7a0c44d3dd45e5d4b502567f5a497adabcdcb046a87f9541963f4480055e4413"
+  },
+  {
+   "sha256": "f5cb267c4d7ea13650245328324200b1a8d7e3603629363d90930f2aac0d2551",
+   "bytes": 16226303,
+   "roles": [
+    "native_bbox"
+   ],
+   "type": "text/xml",
+   "ownership": "private candidate input",
+   "cache_key": "objects/sha256/f5cb267c4d7ea13650245328324200b1a8d7e3603629363d90930f2aac0d2551"
+  },
+  {
+   "sha256": "fb59889adbcfca20993a394e0f7b5238644854c2dd4e006f6344a11c60e40d5d",
+   "bytes": 6131435,
+   "roles": [
+    "original_pdf"
+   ],
+   "type": "application/pdf",
+   "ownership": "private candidate input",
+   "cache_key": "objects/sha256/fb59889adbcfca20993a394e0f7b5238644854c2dd4e006f6344a11c60e40d5d"
+  },
+  {
+   "sha256": "3bd83a4dccddf6cb817cd1327409f0c10a81cc5e4d500e9e419f0b75b450f32e",
+   "bytes": 16255874,
+   "roles": [
+    "native_bbox"
+   ],
+   "type": "text/xml",
+   "ownership": "private candidate input",
+   "cache_key": "objects/sha256/3bd83a4dccddf6cb817cd1327409f0c10a81cc5e4d500e9e419f0b75b450f32e"
+  },
+  {
+   "sha256": "62c0e530f5bb03ee702c0d21e3fb536ecd3cd800a2d461f155a7fd0ba59ae512",
+   "bytes": 58559,
+   "roles": [
+    "recognition_html"
+   ],
+   "type": "text/html",
+   "ownership": "private candidate input",
+   "cache_key": "objects/sha256/62c0e530f5bb03ee702c0d21e3fb536ecd3cd800a2d461f155a7fd0ba59ae512"
+  },
+  {
+   "sha256": "24f941c24776cdc3bf513101bb53492d626be9e57e26dac5d1ae1949a45a26c4",
+   "bytes": 58550,
+   "roles": [
+    "recognition_html"
+   ],
+   "type": "text/html",
+   "ownership": "private candidate input",
+   "cache_key": "objects/sha256/24f941c24776cdc3bf513101bb53492d626be9e57e26dac5d1ae1949a45a26c4"
+  },
+  {
+   "sha256": "88d46e222dc590d8f2faa895901d78c55c0585438bc31bbffb304e132233c76a",
+   "bytes": 57666,
+   "roles": [
+    "recognition_html"
+   ],
+   "type": "text/html",
+   "ownership": "private candidate input",
+   "cache_key": "objects/sha256/88d46e222dc590d8f2faa895901d78c55c0585438bc31bbffb304e132233c76a"
+  }
+ ],
+ "bindings": {
+  "config/config.json": "b871f51e2ac60a8000b50c954e3677210684f32934e4e8ef6f22b8cd68ced476",
+  "origin/2023.pdf": "1cd32bcc99312c05be3755a40a03bb6c99efea5358cdc7861ab67f8ec2dc3277",
+  "native/2023.xhtml": "e3accb3d66f9a243bb4dcefb041be6a29a9e75d98fa1453e29898c89f349d44a",
+  "origin/2022.pdf": "19b9f62e009d35d220c39e7c780f9d6200b6ad26ba9bcffccdc3853089ec07bf",
+  "native/2022.xhtml": "6432f04dbfd3e82ab6df1b0674f771f7ce3a2837ce691f4c365610244de69287",
+  "origin/2021.pdf": "7a0c44d3dd45e5d4b502567f5a497adabcdcb046a87f9541963f4480055e4413",
+  "native/2021.xhtml": "f5cb267c4d7ea13650245328324200b1a8d7e3603629363d90930f2aac0d2551",
+  "origin/2020.pdf": "fb59889adbcfca20993a394e0f7b5238644854c2dd4e006f6344a11c60e40d5d",
+  "native/2020.xhtml": "3bd83a4dccddf6cb817cd1327409f0c10a81cc5e4d500e9e419f0b75b450f32e",
+  "recognition/2021.html": "62c0e530f5bb03ee702c0d21e3fb536ecd3cd800a2d461f155a7fd0ba59ae512",
+  "recognition/2022.html": "24f941c24776cdc3bf513101bb53492d626be9e57e26dac5d1ae1949a45a26c4",
+  "recognition/2023.html": "88d46e222dc590d8f2faa895901d78c55c0585438bc31bbffb304e132233c76a"
+ }
+}

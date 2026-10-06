@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process'
 /**
  * ①予算の報告を組み立てる。**系統の読み取りは `../lineage` にある**（層に依存しない）。
  *
@@ -10,7 +11,7 @@
  */
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { INPUTS, REPORT, BUILD, LATEST } from '../../../paths'
+import { INPUTS, INPUT_LOCK, REPORT, BUILD, LATEST, REPO } from '../../../paths'
 import { mkdirSync } from 'node:fs'
 import { loadJurisdictions } from '@fudoki/jurisdictions'
 import { DOCUMENT_KINDS, isCanonicalFetch } from './schema'
@@ -18,7 +19,7 @@ import type {
   Check,
   CofogCode,
   DocumentKind,
-  Provenance,
+  SourceInput,
   ReportData,
   Topology,
 } from './schema'
@@ -146,13 +147,15 @@ const CUSTOM_COLUMN_TYPES: ReportData['customColumnTypes'] = (
 const amountsOf = (code: string, direction: Direction) =>
   DBT_VARS.vars.fiscal_amounts[code]![direction]
 
-/**
- * そのリソースに現れる予算段階。**行を段階ごとに展開したかはこれで決まる。**
- * ⚠️ **宣言の件数で決めない。** 多摩市は同じ approved の宣言が年度で2件に割れているが、
- * 原典1行は1行のままである（件数で見ると配布物の行数が2倍だと思い込む）。
- */
-const phaseIdsOf = (code: string, direction: Direction) =>
-  new Set(amountsOf(code, direction).map((a) => a.phase))
+/** Document/year scopes can carry different phases. Count the actual resolved amounts. */
+const resolvedAmountRows = new Map(
+  q<{ code: string; direction: string; rows: number }>(`
+    select d.jurisdiction_code code, d.direction, count(*) as "rows"
+    from int_fiscal_lines l join int_fiscal_amounts a using (fiscal_line_id)
+    join int_fiscal_datasets d using (dataset_id)
+    group by 1, 2
+  `, ['rows']).map((r) => [`${r.code}:${r.direction}`, r.rows])
+)
 
 /** 年度つきの状態行。**年度を落とすかどうかは受け取る側が決める** */
 type YearStateRow = StateRow & { fy: number }
@@ -405,7 +408,8 @@ function coverageRows(
       from ${lines} l
       left join core_fiscal_accounts a
         on  a.jurisdiction_code = l.jurisdiction_code and a.fiscal_year = l.fiscal_year
-        and a.direction = l.direction and a.fund_code = l.fund_code
+        and a.direction = l.direction and a.dataset_id = l.dataset_id
+        and a.fund_code = l.fund_code and a.fund_label = l.fund_label
         and a.kan_code = l.kan_code and a.kou_code = l.kou_code and a.moku_code = l.moku_code
       where l.jurisdiction_code = '${code}'
       group by 1 order by 1`,
@@ -552,11 +556,18 @@ function documentKindOf(
  * ⚠️ TOML を正規表現で読まない。最初に一致した key を返すので、
  * 2団体目を足した時点で先頭の団体の名称・ライセンスを使ってしまう。
  */
-const SOURCES_TOML = Bun.TOML.parse(
-  readFileSync(join(ROOT, 'ingestion/fiscal/sources.toml'), 'utf8')
-) as Record<string, SourceEntry | Record<string, SourceEntry>> & {
+// 取り込みと同じ標準TOMLパーサで読む。BunのTOML→JSON変換は現行宣言で失敗する。
+const sourceDefinitions = Bun.spawnSync([
+  'uv', 'run', 'python', '-c',
+  'import json,sys,tomllib; print(json.dumps(tomllib.loads(open(sys.argv[1], encoding="utf-8").read()), ensure_ascii=False))',
+  join(ROOT, 'ingestion/fiscal/sources.toml'),
+], { cwd: ROOT, stdout: 'pipe', stderr: 'pipe' })
+if (sourceDefinitions.exitCode !== 0)
+  throw new Error(`Source declarations: ${sourceDefinitions.stderr.toString()}`)
+const SOURCES_TOML = JSON.parse(sourceDefinitions.stdout.toString()) as Record<string, SourceEntry | Record<string, SourceEntry>> & {
   project_names?: Record<string, unknown>
   statement?: Record<string, SourceEntry>
+  supplementary_detail?: Record<string, SourceEntry>
 }
 
 /**
@@ -573,6 +584,7 @@ const SOURCES: Record<string, SourceEntry> = {
     Object.entries(SOURCES_TOML).filter(([k]) => /^\d{6}:/.test(k))
   ) as Record<string, SourceEntry>),
   ...(SOURCES_TOML.statement ?? {}),
+  ...(SOURCES_TOML.supplementary_detail ?? {}),
 }
 
 /**
@@ -632,23 +644,23 @@ const CODES = [
  * （`raw/<project-names|revenue-accounts>/jurisdiction=<code>/`）の両方を団体別に分けて持つ
  * — 団体ごとに同じファイルを glob し直すと62団体で O(N²) になる。
  */
-const ALL_PROVENANCE = [
-  ...new Bun.Glob('**/provenance.json').scanSync({
-    cwd: INPUTS,
-    absolute: true,
-  }),
-]
-  .sort()
-  .map((f) => ({ path: f, prov: readJson<Provenance>(f) }))
+const ALL_PROVENANCE = (JSON.parse(execFileSync(
+  'uv', ['run', 'python', '-m', 'ingestion.inputs', 'describe', '--lock', INPUT_LOCK],
+  { cwd: REPO, maxBuffer: 64 * 1024 * 1024, encoding: 'utf8' }
+)) as { path: string; source: SourceInput }[]).map(({ path, source }) => ({
+  path: join(INPUTS, path), prov: source,
+}))
+mkdirSync(REPORT, { recursive: true })
+writeFileSync(join(REPORT, 'inputs.json'), JSON.stringify(ALL_PROVENANCE.map(({ prov }) => prov)))
 
-const CANONICAL_PROV = new Map<string, Provenance[]>()
-const SUPPLEMENT_PROV = new Map<string, Provenance[]>()
+const CANONICAL_PROV = new Map<string, SourceInput[]>()
+const SUPPLEMENT_PROV = new Map<string, SourceInput[]>()
 for (const { path: p, prov } of ALL_PROVENANCE) {
   const m =
-    /raw\/(?:jurisdiction=(\d{6})|(?:project-names|revenue-accounts)\/jurisdiction=(\d{6}))/.exec(
+    /raw\/(?:jurisdiction=(\d{6})|(?:project-names|revenue-accounts|statement-moku-setsu)\/jurisdiction=(\d{6}))/.exec(
       p
     )
-  if (m?.[1] && !prov.table_id)
+  if (m?.[1] && (!prov.table_id || prov.extractor?.includes('extract_statement')))
     CANONICAL_PROV.set(m[1], [...(CANONICAL_PROV.get(m[1]) ?? []), prov])
   else if (m?.[2] || (m?.[1] && prov.table_id)) {
     const code = m![2] ?? m![1]!
@@ -719,8 +731,7 @@ function build(code: string, topology: Topology, checks: Check[]): ReportData {
         const rows = (name: string) =>
           topology.nodes.find((n) => n.id.endsWith(`.${name}`))?.rows
         return (
-          rows(`stg_${code}__${d}`)! * phaseIdsOf(code, d).size ===
-          rows(`pkg_${code}__${d}`)
+          resolvedAmountRows.get(`${code}:${d}`) === rows(`pkg_${code}__${d}`)
         )
       }),
     },
@@ -796,7 +807,10 @@ function budgetReconciliation(code: string): ReportData['budgetReconciliation'] 
       (d.amendment_number=0 or exists (
         select 1 from stg_132195__budget_history a
         where a.record_kind='approval' and a.table_id='approval-' || d.amendment_number)) as approvalVerified
-    from read_json_auto('${BUILD}/declarations/history.json') d order by d.amendment_number
+    from read_json_auto('${BUILD}/declarations/history.json') d
+    where d.jurisdiction_code='132195' and d.fiscal_year=2023
+      and json_extract_string(d.source_json,'$.tableId')='expenditure-detail'
+    order by d.amendment_number
   `)
   return q<{ target: string; reportedBudgetAmount: number; executedAmount: number }>(`
     select kan_code || '-' || kou_code || '-' || moku_code as target,
@@ -809,9 +823,11 @@ function budgetReconciliation(code: string): ReportData['budgetReconciliation'] 
     `)
     const changes = q<BudgetEvidence['changes'][number]>(`
       select c.change_id as changeId, c.amount_delta as amountDelta, c.effective_at as effectiveAt
-      from fiscal_expenditure_budget_changes c join int_fiscal_budget_history h
+      from fiscal_expenditure_budget_changes c join int_supplementary_expenditure_changes h
         on h.fiscal_line_id=c.dataset_id || ':' || c.source_row
-      where h.target_key='${reported.target}' order by c.change_id
+      where h.jurisdiction_code='132195' and h.fiscal_year=2023 and h.fund_label='一般会計'
+        and h.kan_code || '-' || h.kou_code || '-' || h.moku_code='${reported.target}'
+      order by c.change_id
     `)
     const settlement = q<BudgetEvidence['settlement'][number]>(`
       select distinct s.fiscal_line_id as settlementLineId, s.amount

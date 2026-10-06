@@ -937,7 +937,7 @@
     "initial_state": {
       "name": "initial_state",
       "type": "string",
-      "description": "recorded / verified-zero / unknown。当初額が未確認の場合はゼロではない"
+      "description": "recorded / unconfirmed。当初額の未確認はゼロを意味しない。既存入力のunknown / verified-zeroという明示状態も別に保持し、未掲載をゼロへ補完しない"
     },
     "match_status": {
       "name": "match_status",
@@ -1015,6 +1015,579 @@
       "type": "string",
       "description": "節より下の下位経路と原典行の対応（JSON）。各要素は順序付き下位経路 path・金額（円）amount・原典の fiscalLineId と sourceRow を持つ",
       "columnType": "fudoki:line:details"
+    },
+    "phase": {
+      "name": "phase",
+      "type": "string",
+      "description": "多摩決算PDFの原典観測列 phase"
+    },
+    "source_key": {
+      "name": "source_key",
+      "type": "string",
+      "description": "多摩決算PDFの原典観測列 source_key"
+    },
+    "origin_url": {
+      "name": "origin_url",
+      "type": "string",
+      "description": "多摩決算PDFの原典観測列 origin_url"
+    },
+    "table_id": {
+      "name": "table_id",
+      "type": "string",
+      "description": "同じ固定原典の独立観測表・会計区画を識別する。"
+    },
+    "account": {
+      "name": "account",
+      "type": "string",
+      "description": "多摩決算PDFの原典観測列 account"
+    },
+    "grain": {
+      "name": "grain",
+      "type": "string",
+      "description": "原典の観測粒度。非加算の目・会計・事業統制値は明細とは別の観測。"
+    },
+    "observation_role": {
+      "name": "observation_role",
+      "type": "string",
+      "description": "legal-setsu又はproject-funding、及び非加算の印字統制値。"
+    },
+    "source_amount_printed": {
+      "name": "source_amount_printed",
+      "type": "string",
+      "description": "原典の印字金額文字列。カンマと△等の符号を保持する。"
+    },
+    "unit_multiplier": {
+      "name": "unit_multiplier",
+      "type": "integer",
+      "description": "多摩決算PDFの原典観測列 unit_multiplier"
+    },
+    "source_physical_page": {
+      "name": "source_physical_page",
+      "type": "integer",
+      "description": "PDFの1始まり物理頁。印字頁番号とは異なる。"
+    },
+    "source_printed_page": {
+      "name": "source_printed_page",
+      "type": "integer",
+      "description": "原典の印字頁番号。印字のない頁は空。"
+    },
+    "source_bbox_json": {
+      "name": "source_bbox_json",
+      "type": "string",
+      "description": "物理頁上の原典金額セル又は語の位置。PDF座標の[x0,y0,x1,y1]。"
+    },
+    "kan": {
+      "name": "kan",
+      "type": "string",
+      "description": "多摩決算PDFの原典観測列 kan"
+    },
+    "kou": {
+      "name": "kou",
+      "type": "string",
+      "description": "多摩決算PDFの原典観測列 kou"
+    },
+    "moku": {
+      "name": "moku",
+      "type": "string",
+      "description": "多摩決算PDFの原典観測列 moku"
+    },
+    "project_code": {
+      "name": "project_code",
+      "type": "string",
+      "description": "多摩決算PDFの原典観測列 project_code"
+    },
+    "project_label": {
+      "name": "project_label",
+      "type": "string",
+      "description": "多摩決算PDFの原典観測列 project_label"
+    },
+    "funding_code": {
+      "name": "funding_code",
+      "type": "string",
+      "description": "事業別財源充当表に印字された財源コード。歳出の法定節コードではない。"
+    },
+    "funding_label": {
+      "name": "funding_label",
+      "type": "string",
+      "description": "事業別財源充当表に印字された財源の名称。"
+    },
+    "source_observation_json": {
+      "name": "source_observation_json",
+      "type": "string",
+      "description": "原典の一観測全体。印字値・単位・符号・目別予算欄・繰越／不用額／備考の位置付き語・反復する統制値を保持するJSON。金額段階や他の独立内訳との関係を推定しない。"
+    },
+    "source_json": {
+      "name": "source_json",
+      "type": "string",
+      "description": "多摩決算PDFの原典観測列 source_json"
+    },
+    "project_setsu_linkage": {
+      "name": "project_setsu_linkage",
+      "type": "string",
+      "description": "下位事業と法定節の直接関係の確認状態。多摩決算PDFの二つの独立内訳ではunconfirmed。"
+    },
+    "additive_within_own_grain": {
+      "name": "additive_within_own_grain",
+      "type": "boolean",
+      "description": "同じ独立内訳内での加算可能性。統制値はfalse。trueであっても法定節と財源内訳を相互に足してはならない。"
+    },
+    "setsu_mapping_status": {
+      "name": "setsu_mapping_status",
+      "type": "string",
+      "description": "原典の節コード・原典名称の承認済み対応・法定マスタの適用年度がそろった場合のみmapped。"
+    },
+    "observation_count": {
+      "name": "observation_count",
+      "type": "integer",
+      "description": "独立した原典観測表の行数。非加算の統制値及び原典語を財政明細数に含めない。"
+    },
+    "account_mapping_status": {
+      "name": "account_mapping_status",
+      "type": "string",
+      "description": "原典の款項目と法定科目の分類対応の確認状態。"
+    },
+    "superseded_by_full_initial_detail": {
+      "name": "superseded_by_full_initial_detail",
+      "type": "boolean",
+      "description": "同年度会計の承認済み全当初明細へ採用済みで、旧目参照をcanonical初期額に加算しない状態"
+    },
+    "initial_namespace_budget_item_id": {
+      "name": "initial_namespace_budget_item_id",
+      "type": "string",
+      "description": "印字款項名を含む独立initial-printed-target namespace ID。既存補正IDとの同一化は別のexact対応証跡による"
+    },
+    "initial_fiscal_line_id": {
+      "name": "initial_fiscal_line_id",
+      "title": "予算行の識別子",
+      "type": "string",
+      "description": "exact対応する全当初原典行ID。会計別resource/SHA/source_rowを含む",
+      "columnType": "budget-line-id"
+    },
+    "initial_dataset_id": {
+      "name": "initial_dataset_id",
+      "type": "string",
+      "description": "exact対応する採用済み当初19会計表のdataset ID"
+    },
+    "initial_source_row": {
+      "name": "initial_source_row",
+      "title": "原典の物理行番号",
+      "type": "integer",
+      "description": "exact対応する当初表内の原典行番号",
+      "columnType": "fudoki:source:row"
+    },
+    "amount_initial": {
+      "name": "amount_initial",
+      "title": "金額（JPY）",
+      "type": "number",
+      "description": "原典当初額の円換算値。対応証跡での参照額は初期予算CSVと重ねて加算しない",
+      "columnType": "value"
+    },
+    "initial_target_identity_json": {
+      "name": "initial_target_identity_json",
+      "type": "string",
+      "description": "原文の款項目/事業/担当課/印字節/sourceGrainを持つinitial-printed-target identity JSON"
+    },
+    "supplementary_compatibility_identity_json": {
+      "name": "supplementary_compatibility_identity_json",
+      "type": "string",
+      "description": "既存補正namespaceのexact compatibility JSON。historically空の款項labelの投影のみを明示し、原文階層は別列で保持"
+    },
+    "observed_account_path_json": {
+      "name": "observed_account_path_json",
+      "type": "array",
+      "description": "原典に印字された款項目と事業のfull経路。補正互換projectionから独立して保持"
+    },
+    "source_grain": {
+      "name": "source_grain",
+      "type": "string",
+      "description": "原典で実際に確認できる粒度。project×setsuと空白法定節reserve explanationを区別"
+    },
+    "namespace_equivalence_status": {
+      "name": "namespace_equivalence_status",
+      "type": "string",
+      "description": "sourceGrainを含むexact印字identityの明示対応状態。名前類似・金額・配分によらない"
+    },
+    "supplementary_source_rows": {
+      "name": "supplementary_source_rows",
+      "title": "exact対応する補正原典行数",
+      "type": "integer",
+      "description": "この対象へexact対応する実補正原典行数。初期額の複製行数ではない"
+    },
+    "supplementary_source_evidence_json": {
+      "name": "supplementary_source_evidence_json",
+      "type": "string",
+      "description": "対応する実補正行/変更ID・dataset/source_row・原典SHA/頁/word位置・担当課の非加算証跡JSON"
+    },
+    "initial_source_evidence_json": {
+      "name": "initial_source_evidence_json",
+      "type": "string",
+      "description": "初期原典行・元hierarchy・両namespaceの投影根拠・SHA/URL/頁/word位置/印字額/単位の非加算証跡JSON"
+    },
+    "record_kind": {
+      "name": "record_kind",
+      "type": "string",
+      "description": "原典の観測種別。旧補正参照ではchange。正準変更への採用を表すものではない。"
+    },
+    "initial_text": {
+      "name": "initial_text",
+      "type": "string",
+      "description": "当初額の印字文字列。原典の単位と欠落を保持する。"
+    },
+    "before_text": {
+      "name": "before_text",
+      "type": "string",
+      "description": "変更前額の印字文字列。原典の単位と欠落を保持する。"
+    },
+    "delta_text": {
+      "name": "delta_text",
+      "type": "string",
+      "description": "増減額の印字文字列。カンマ・△等の符号と原単位を保持する。"
+    },
+    "after_text": {
+      "name": "after_text",
+      "type": "string",
+      "description": "変更後額の印字文字列。原典の単位と欠落を保持する。"
+    },
+    "reported_amount_text": {
+      "name": "reported_amount_text",
+      "type": "string",
+      "description": "原典の報告額の印字文字列。金額段階・単位は採用証跡の宣言に従う。"
+    },
+    "executed_amount_text": {
+      "name": "executed_amount_text",
+      "type": "string",
+      "description": "実績額の印字文字列。原典の単位と欠落を保持する。"
+    },
+    "initial_amount": {
+      "name": "initial_amount",
+      "type": "integer",
+      "description": "initial_textを整数化した原単位の当初額。非加算の原典観測。"
+    },
+    "before_amount": {
+      "name": "before_amount",
+      "type": "integer",
+      "description": "before_textを整数化した原単位の変更前額。非加算の原典観測。"
+    },
+    "delta_amount": {
+      "name": "delta_amount",
+      "type": "integer",
+      "description": "delta_textを符号付き整数化した原単位の増減額。amount_deltaの円換算額と区別する。"
+    },
+    "after_amount": {
+      "name": "after_amount",
+      "type": "integer",
+      "description": "after_textを整数化した原単位の変更後額。増減額へ加算しない。"
+    },
+    "page_number": {
+      "name": "page_number",
+      "type": "integer",
+      "description": "原典全体の物理PDF頁番号。冊子の印字頁とは区別する。"
+    },
+    "bbox_json": {
+      "name": "bbox_json",
+      "type": "string",
+      "description": "原典の観測領域を表す位置座標のJSON。座標系は採用抽出手順に従う。"
+    },
+    "printed_text": {
+      "name": "printed_text",
+      "type": "string",
+      "description": "原典の観測領域に印字された文字列。"
+    },
+    "reported_amount": {
+      "name": "reported_amount",
+      "type": "integer",
+      "description": "reported_amount_textを整数化した原単位の報告額。段階と単位を推定しない。"
+    },
+    "executed_amount": {
+      "name": "executed_amount",
+      "type": "integer",
+      "description": "executed_amount_textを整数化した原単位の実績額。"
+    },
+    "amendment_number": {
+      "name": "amendment_number",
+      "type": "integer",
+      "description": "年度・会計内の原典の補正号。原典の版や対象IDとは別の識別情報。"
+    },
+    "superseded_by_detail": {
+      "name": "superseded_by_detail",
+      "type": "boolean",
+      "description": "同年度・会計・補正号の正準明細が採用され、旧目観測を変更へ重ねて加算しない状態。"
+    },
+    "held5-raw:source_row": {
+      "name": "source_row",
+      "title": "原典説明欄の観測行番号",
+      "type": "integer",
+      "description": "当該原典版の説明欄で採番した観測行。CSVの物理行番号ではない。",
+      "columnType": "fudoki:source:row"
+    },
+    "held5-raw:jurisdiction_code": {
+      "name": "jurisdiction_code",
+      "title": "全国地方公共団体コード",
+      "type": "string",
+      "columnType": "fudoki:jurisdiction:code"
+    },
+    "held5-raw:fiscal_year": {
+      "name": "fiscal_year",
+      "title": "会計年度（西暦）",
+      "type": "integer",
+      "description": "承認対象原典の印字年度（西暦）。",
+      "columnType": "date:fiscal-year"
+    },
+    "held5-raw:fund_label": {
+      "name": "fund_label",
+      "title": "会計名",
+      "type": "string",
+      "columnType": "fund:label",
+      "labelOf": "fund:code"
+    },
+    "held5-raw:amendment_number": {
+      "name": "amendment_number",
+      "type": "integer",
+      "description": "年度・会計内の原典の補正号。原典の版や対象IDとは別の識別情報。"
+    },
+    "held5-raw:source_url": {
+      "name": "source_url",
+      "type": "string",
+      "description": "番号付き議会承認対象の原典URL。"
+    },
+    "held5-raw:origin_sha256": {
+      "name": "origin_sha256",
+      "type": "string",
+      "description": "この行の原典の SHA-256"
+    },
+    "held5-raw:origin_fetched_at": {
+      "name": "origin_fetched_at",
+      "type": "string",
+      "description": "原典バイト列の取得時刻。議決日とは別。"
+    },
+    "held5-raw:submitted_date": {
+      "name": "submitted_date",
+      "type": "string",
+      "description": "原典に印字された提出日。議決日や効力発生日へ読み替えない。"
+    },
+    "held5-raw:approval_status": {
+      "name": "approval_status",
+      "type": "string",
+      "description": "番号付き原典と議会記録を照合した承認状態。"
+    },
+    "held5-raw:edition_status": {
+      "name": "edition_status",
+      "type": "string",
+      "description": "原典版の採用状態。"
+    },
+    "held5-raw:approval_date": {
+      "name": "approval_date",
+      "type": "string",
+      "description": "議会記録の議決日。効力発生日とは別。"
+    },
+    "held5-raw:approval_evidence_json": {
+      "name": "approval_evidence_json",
+      "type": "string",
+      "description": "議会記録と原典版の対応証拠のJSON。"
+    },
+    "held5-raw:kan_code": {
+      "name": "kan_code",
+      "title": "款コード",
+      "type": "string",
+      "columnType": "functional-classification:generic:level1:code"
+    },
+    "held5-raw:kou_code": {
+      "name": "kou_code",
+      "title": "項コード",
+      "type": "string",
+      "columnType": "functional-classification:generic:level2:code"
+    },
+    "held5-raw:moku_code": {
+      "name": "moku_code",
+      "title": "目コード",
+      "type": "string",
+      "columnType": "functional-classification:generic:level3:code"
+    },
+    "held5-raw:moku_label": {
+      "name": "moku_label",
+      "title": "目名",
+      "type": "string",
+      "columnType": "functional-classification:generic:level3:label",
+      "labelOf": "functional-classification:generic:level3:code"
+    },
+    "held5-raw:control_moku_source_row": {
+      "name": "control_moku_source_row",
+      "type": "integer",
+      "description": "独立した目統制値の観測行番号。"
+    },
+    "held5-raw:control_moku_key": {
+      "name": "control_moku_key",
+      "type": "string",
+      "description": "同一原典版内の目統制値の識別子。"
+    },
+    "held5-raw:control_moku_json": {
+      "name": "control_moku_json",
+      "type": "string",
+      "description": "印字された目の補正前・増減・補正後と原典位置。非加算統制値のJSON。"
+    },
+    "held5-raw:project_source_row": {
+      "name": "project_source_row",
+      "type": "integer",
+      "description": "原典の事業統制値の観測行番号。"
+    },
+    "held5-raw:project_code": {
+      "name": "project_code",
+      "type": "string",
+      "description": "原典の目内の事業番号。年度間で安定した事業IDではない。"
+    },
+    "held5-raw:project_label": {
+      "name": "project_label",
+      "type": "string",
+      "description": "原典の事業名。"
+    },
+    "held5-raw:project_printed_delta": {
+      "name": "project_printed_delta",
+      "type": "integer",
+      "description": "原典に印字された事業増減額。原単位は千円、独立した非加算統制値。"
+    },
+    "held5-raw:project_evidence_json": {
+      "name": "project_evidence_json",
+      "type": "string",
+      "description": "事業の印字統制値と原典位置のJSON。"
+    },
+    "held5-raw:department_text": {
+      "name": "department_text",
+      "type": "string",
+      "description": "原典に印字された担当課。対象同一性の一部として保持する。"
+    },
+    "held5-raw:setsu_code": {
+      "name": "setsu_code",
+      "title": "節コード",
+      "type": "string",
+      "description": "右説明欄に印字された節番号。左法定節との対応検査は別に保持し、空欄はNULL。"
+    },
+    "held5-raw:setsu_label": {
+      "name": "setsu_label",
+      "title": "節名",
+      "type": "string",
+      "description": "右説明欄に印字された節名称。"
+    },
+    "held5-raw:amount_delta": {
+      "name": "amount_delta",
+      "type": "integer",
+      "description": "原典の増減額。原単位は千円、減額は負数。円換算した変更額とは別。"
+    },
+    "held5-raw:printed_amount_text": {
+      "name": "printed_amount_text",
+      "type": "string",
+      "description": "原典に印字された金額文字列。"
+    },
+    "held5-raw:source_amount_unit": {
+      "name": "source_amount_unit",
+      "title": "原典の金額の単位",
+      "type": "string",
+      "columnType": "fudoki:source:amount-unit",
+      "description": "原典の金額の単位。円へ直す倍率は取得元ごとに違うので、この配布物の値は description が示す"
+    },
+    "held5-raw:page_number": {
+      "name": "page_number",
+      "type": "integer",
+      "description": "原典全体の物理PDF頁番号。冊子の印字頁とは区別する。"
+    },
+    "held5-raw:bbox_json": {
+      "name": "bbox_json",
+      "type": "string",
+      "description": "原典の観測領域を表す位置座標のJSON。座標系は採用抽出手順に従う。"
+    },
+    "held5-raw:printed_text": {
+      "name": "printed_text",
+      "type": "string",
+      "description": "原典の観測領域に印字された文字列。"
+    },
+    "held5-raw:source_locations_json": {
+      "name": "source_locations_json",
+      "type": "string",
+      "description": "観測した原典の物理頁・位置・文字列のJSON。"
+    },
+    "held5-raw:left_setsu_evidence_json": {
+      "name": "left_setsu_evidence_json",
+      "type": "string",
+      "description": "独立した左法定節の印字と右説明欄の対応証拠のJSON。"
+    },
+    "held5-raw:unit_evidence_json": {
+      "name": "unit_evidence_json",
+      "type": "string",
+      "description": "原典の千円単位の印字証拠のJSON。"
+    },
+    "held5-raw:validation_status": {
+      "name": "validation_status",
+      "type": "string",
+      "description": "原典の印字統制値との検査状態。全公開範囲の完成を意味しない。"
+    },
+    "held5-raw:validation_reasons_json": {
+      "name": "validation_reasons_json",
+      "type": "string",
+      "description": "原典の検査判断と理由のJSON。"
+    },
+    "held5-raw:source_grain": {
+      "name": "source_grain",
+      "type": "string",
+      "description": "原典で実際に確認できる粒度。project×setsuと空白法定節reserve explanationを区別"
+    },
+    "held5-raw:observed_grain_validation_status": {
+      "name": "observed_grain_validation_status",
+      "type": "string",
+      "description": "観測粒度についての検査状態。"
+    },
+    "held5-raw:setsu_correspondence_status": {
+      "name": "setsu_correspondence_status",
+      "type": "string",
+      "description": "原典の右節と左法定節の対応状態。空白予備費の対応は未確認。"
+    },
+    "held5-raw:council_resolution_date": {
+      "name": "council_resolution_date",
+      "type": "string",
+      "description": "番号付き議案の議会議決日。効力発生日ではない。"
+    },
+    "held5-raw:printed_submission_date": {
+      "name": "printed_submission_date",
+      "type": "string",
+      "description": "原典に印字された提出日。"
+    },
+    "held5-raw:executive_disposition_date": {
+      "name": "executive_disposition_date",
+      "type": "string",
+      "description": "専決日。原典で確認できない場合はNULL。"
+    },
+    "held5-raw:effective_date": {
+      "name": "effective_date",
+      "type": "string",
+      "description": "効力発生日。未確認の場合はNULL、議決日を代入しない。"
+    },
+    "held5-raw:effective_date_basis": {
+      "name": "effective_date_basis",
+      "type": "string",
+      "description": "効力発生日の原典上の根拠又は未確認の理由。"
+    },
+    "held5-raw:approval_url": {
+      "name": "approval_url",
+      "type": "string",
+      "description": "番号付き議案の議決結果を記録した自治体のURL。"
+    },
+    "held5-raw:resolution_id": {
+      "name": "resolution_id",
+      "type": "string",
+      "description": "議会記録の議案識別子。"
+    },
+    "held5-raw:original_cover_approval_status": {
+      "name": "original_cover_approval_status",
+      "type": "string",
+      "description": "原典表紙と承認対象版の対応状態。"
+    },
+    "held5-raw:approval_proof_json": {
+      "name": "approval_proof_json",
+      "type": "string",
+      "description": "議会記録・議案番号・原典版の承認対応証拠のJSON。"
+    },
+    "held5-raw:setsu_name_match_basis": {
+      "name": "setsu_name_match_basis",
+      "type": "string",
+      "description": "印字節番号・全法定名称・適用年度による対応判断の根拠。"
     }
   }
 }

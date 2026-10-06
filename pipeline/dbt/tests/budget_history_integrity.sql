@@ -1,6 +1,6 @@
 with h as (select * from {{ ref('int_fiscal_budget_history') }}),
-     c as (select * from {{ ref('fiscal_expenditure_budget_changes') }}),
-     i as (select * from {{ ref('fiscal_initial_expenditure_budget_lines') }}),
+     c as (select * from {{ ref('fiscal_supplementary_moku_reference_observations') }} where budget_item_id is not null),
+     i as (select *, amount_initial as amount from {{ ref('fiscal_132195_initial_moku_reference') }}),
      l as (select * from {{ ref('fiscal_expenditure_settlement_links') }}),
      s as (select * from {{ ref('stg_132195__budget_history') }}),
      expected(target_key, initial_amount, delta_amount, reported_amount, executed_amount, links) as (
@@ -13,7 +13,7 @@ where t.initial_amount is distinct from e.initial_amount or t.delta_amount is di
 union all
 select 'unexpected_target', target_key from h where target_key not in (select target_key from expected)
 union all
-select 'adopted_issue_count', '132195:2023' from (select count(*) n, count(distinct amendment_number) issues from {{ ref('fiscal_datasets') }} where jurisdiction_code='132195' and fiscal_year=2023 and document_kind in ('budget','supplementary')) where n!=8 or issues!=8
+select 'adopted_issue_count', '132195:2023:pilot' from (select count(*) n, count(distinct amendment_number) issues from {{ ref('fiscal_datasets') }} where jurisdiction_code='132195' and fiscal_year=2023 and document_kind in ('budget','supplementary') and json_extract_string(source_json,'$.tableId')='expenditure-detail') where n!=8 or issues!=8
 union all
 select 'history_cardinality', '132195:2023' where (select count(*) from h)!=5 or (select count(*) from c)!=3 or (select count(*) from l)!=10
 union all
@@ -23,10 +23,10 @@ select 'duplicate_source', fiscal_line_id from s group by fiscal_line_id having 
 union all
 select 'missing_original_position', fiscal_line_id from h where page_number is null or json_array_length(bbox_json)!=4
 union all
-select 'incorrect_change', c.change_id from c left join h on h.fiscal_line_id=c.dataset_id||':'||c.source_row
+select 'incorrect_pilot_reference', c.change_id from c left join h on h.fiscal_line_id=c.dataset_id||':'||c.source_row
 where h.fiscal_line_id is null or h.record_kind!='change' or c.amount_delta is distinct from h.delta_yen
    or h.before_yen+h.delta_yen is distinct from h.after_yen or c.effective_at is distinct from h.effective_at
-   or c.change_kind!='supplementary' or json_array_length(c.details_json)!=1
+   or c.observation_role!='nonadditive-moku-reference' or not c.superseded_by_detail
 union all
 select 'initial_not_in_mart', h.fiscal_line_id from h left join i using(fiscal_line_id)
 where h.record_kind='initial' and (i.amount is distinct from h.initial_yen or i.budget_item_id is distinct from h.budget_item_id)
@@ -49,7 +49,9 @@ full outer join expected e on e.target_key=s.kan_code||'-'||s.kou_code||'-'||s.m
 where s.fiscal_line_id is null or e.target_key is null or s.reported_amount is distinct from e.reported_amount or s.executed_amount is distinct from e.executed_amount or s.page_number is null
 union all
 select 'approval_missing', d.dataset_id from {{ ref('fiscal_datasets') }} d
-where d.document_kind='supplementary' and (d.effective_at is null or not exists(select 1 from s where record_kind='approval' and table_id='approval-'||d.amendment_number))
+where d.jurisdiction_code='132195' and d.fiscal_year=2023 and d.document_kind='supplementary'
+  and json_extract_string(d.source_json,'$.tableId')='expenditure-detail'
+  and (d.effective_at is null or not exists(select 1 from s where record_kind='approval' and table_id='approval-'||d.amendment_number))
 union all
 select 'duplicate_link', budget_item_id||':'||settlement_line_id from l group by budget_item_id,settlement_line_id having count(*)!=1
 

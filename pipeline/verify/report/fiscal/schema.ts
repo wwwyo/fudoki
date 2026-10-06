@@ -5,7 +5,7 @@
  * 調達（OCDS）とは schema を分け、
  * 巨大な optional の塊にしない。
  */
-import type { Provenance, ReportEnvelope } from '../common'
+import type { SourceInput, ReportEnvelope } from '../common'
 import type { Direction, Level } from '@fudoki/fiscal/detail'
 
 export type { DocumentKind } from '../common'
@@ -18,7 +18,7 @@ export type {
   Edge,
   Node,
   ProjectNamesExtract,
-  Provenance,
+  SourceInput,
   RevenueAccountsExtract,
   Stage,
   StatementExtract,
@@ -218,7 +218,7 @@ export type ReportData = ReportEnvelope & {
    * **団体の `raw/jurisdiction=<code>/` の外に置かれる**ので `ingestion` には来ない。
    * 抽出物の原典ノードの詳細を出すために運ぶ。
    */
-  supplements: Provenance[]
+  supplements: SourceInput[]
 }
 
 /**

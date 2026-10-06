@@ -25,10 +25,11 @@
 #}
 with in_raw as (
     select distinct
-        cast(jurisdiction as varchar) as jurisdiction,
-        direction
-    from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/jurisdiction=*/year=*/document_kind=*/edition=*/direction=*/data.parquet',
-                      hive_partitioning=true)
+        regexp_extract(filename, '/jurisdiction=([^/]+)', 1) as jurisdiction,
+        regexp_extract(filename, '/direction=([^/]+)', 1) as direction
+    from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/jurisdiction=*/year=*/document_kind=*/edition=*/direction=*/**/data.parquet',
+                      hive_partitioning=false, union_by_name=true, filename=true)
+    where not contains(filename, '/resource=') -- history inputs have their own staging/declarations
 ),
 
 declared as (

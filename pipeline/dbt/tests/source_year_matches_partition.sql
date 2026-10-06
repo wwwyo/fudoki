@@ -36,7 +36,7 @@ from {{ source('raw_' ~ code, direction) }}
 -- ⚠️ **列が存在するのは一部の年度だけ**ということがある（多摩市の歳出は令和7年度で
 -- 年度の列が消えた）。宣言の `years` で絞る。**絞った外側を誰も見ていない状態にしない**ため、
 -- そこで本当に列が無いことは source_year_column_scope_is_real が確かめる。
-{% if spec.get('years') %}where year in ({{ spec['years'] | join(', ') }}) and{% else %}where{% endif %}
+where ({{ fiscal_source_year_filter(spec) }}) and
       cast("{{ spec['column'] }}" as varchar) is distinct from {{ expected }}
 group by 1, 2, 3, 4
 {% if not loop.last %}union all{% endif %}

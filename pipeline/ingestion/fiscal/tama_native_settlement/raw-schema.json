@@ -1,0 +1,994 @@
+{
+  "legal-observations": [
+    {
+      "name": "jurisdiction_code",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "financial_year",
+      "type": "BIGINT"
+    },
+    {
+      "name": "phase",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "origin_sha256",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "origin_url",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "part",
+      "type": "BIGINT"
+    },
+    {
+      "name": "physical_page",
+      "type": "BIGINT"
+    },
+    {
+      "name": "printed_page",
+      "type": "BIGINT"
+    },
+    {
+      "name": "amount_unit",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "amount_multiplier",
+      "type": "BIGINT"
+    },
+    {
+      "name": "page_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "observed_id",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "account",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "source_grain",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "printed_setsu_code",
+      "type": "BIGINT"
+    },
+    {
+      "name": "printed_setsu_label_observed",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "path_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "anchor_bbox_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "anchor_observations_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "right_y",
+      "type": "DOUBLE"
+    },
+    {
+      "name": "mapping_status",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "kan_code",
+      "type": "BIGINT"
+    },
+    {
+      "name": "kan_label_observed",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "kan_label_visually_read",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "kou_code",
+      "type": "BIGINT"
+    },
+    {
+      "name": "kou_label_observed",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "kou_label_visually_read",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "moku_code",
+      "type": "BIGINT"
+    },
+    {
+      "name": "moku_label_observed",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "moku_label_visually_read",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "budget_current",
+      "type": "BIGINT"
+    },
+    {
+      "name": "budget_current_status",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "budget_current_observations_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "executed",
+      "type": "BIGINT"
+    },
+    {
+      "name": "executed_status",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "executed_observations_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "carryover",
+      "type": "BIGINT"
+    },
+    {
+      "name": "carryover_status",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "carryover_observations_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "unused",
+      "type": "BIGINT"
+    },
+    {
+      "name": "unused_status",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "unused_observations_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "printed_setsu_code_ocr_observed",
+      "type": "BIGINT"
+    },
+    {
+      "name": "printed_setsu_label_visually_read",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "label_visual_observation_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "source_row",
+      "type": "BIGINT"
+    },
+    {
+      "name": "table_id",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "direction",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "recognition_status",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "page_width_points",
+      "type": "BIGINT"
+    },
+    {
+      "name": "page_height_points",
+      "type": "BIGINT"
+    },
+    {
+      "name": "bbox_coordinate_system",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "anchor_bbox_pdf_points_top_left_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "budget_current_bbox_pdf_points_top_left_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "executed_bbox_pdf_points_top_left_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "carryover_bbox_pdf_points_top_left_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "unused_bbox_pdf_points_top_left_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "unit_evidence_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "source_amount",
+      "type": "BIGINT"
+    },
+    {
+      "name": "amount_printed_observed",
+      "type": "VARCHAR"
+    }
+  ],
+  "hierarchy-controls": [
+    {
+      "name": "jurisdiction_code",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "financial_year",
+      "type": "BIGINT"
+    },
+    {
+      "name": "phase",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "origin_sha256",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "origin_url",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "part",
+      "type": "BIGINT"
+    },
+    {
+      "name": "physical_page",
+      "type": "BIGINT"
+    },
+    {
+      "name": "printed_page",
+      "type": "BIGINT"
+    },
+    {
+      "name": "amount_unit",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "amount_multiplier",
+      "type": "BIGINT"
+    },
+    {
+      "name": "page_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "observed_id",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "account",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "control_level",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "printed_code",
+      "type": "BIGINT"
+    },
+    {
+      "name": "printed_code_ocr_observed",
+      "type": "BIGINT"
+    },
+    {
+      "name": "printed_label_visually_read",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "label_visual_observation_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "printed_label_observed",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "path_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "anchor_bbox_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "anchor_observations_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "left_y",
+      "type": "DOUBLE"
+    },
+    {
+      "name": "right_physical_page",
+      "type": "BIGINT"
+    },
+    {
+      "name": "right_origin_sha256",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "right_printed_page",
+      "type": "BIGINT"
+    },
+    {
+      "name": "initial_budget",
+      "type": "BIGINT"
+    },
+    {
+      "name": "initial_budget_status",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "initial_budget_observations_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "supplementary_delta",
+      "type": "BIGINT"
+    },
+    {
+      "name": "supplementary_delta_status",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "supplementary_delta_observations_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "carried_budget",
+      "type": "BIGINT"
+    },
+    {
+      "name": "carried_budget_status",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "carried_budget_observations_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "reserve_and_transfer_delta",
+      "type": "BIGINT"
+    },
+    {
+      "name": "reserve_and_transfer_delta_status",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "reserve_and_transfer_delta_observations_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "current_budget",
+      "type": "BIGINT"
+    },
+    {
+      "name": "current_budget_status",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "current_budget_observations_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "executed",
+      "type": "BIGINT"
+    },
+    {
+      "name": "executed_status",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "executed_observations_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "carryover",
+      "type": "BIGINT"
+    },
+    {
+      "name": "carryover_status",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "carryover_observations_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "unused",
+      "type": "BIGINT"
+    },
+    {
+      "name": "unused_status",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "unused_observations_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "source_row",
+      "type": "BIGINT"
+    },
+    {
+      "name": "table_id",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "direction",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "recognition_status",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "page_width_points",
+      "type": "BIGINT"
+    },
+    {
+      "name": "page_height_points",
+      "type": "BIGINT"
+    },
+    {
+      "name": "bbox_coordinate_system",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "anchor_bbox_pdf_points_top_left_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "initial_budget_bbox_pdf_points_top_left_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "supplementary_delta_bbox_pdf_points_top_left_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "carried_budget_bbox_pdf_points_top_left_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "reserve_and_transfer_delta_bbox_pdf_points_top_left_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "current_budget_bbox_pdf_points_top_left_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "executed_bbox_pdf_points_top_left_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "carryover_bbox_pdf_points_top_left_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "unused_bbox_pdf_points_top_left_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "unit_evidence_json",
+      "type": "VARCHAR"
+    }
+  ],
+  "native-full-page-observations": [
+    {
+      "name": "jurisdiction_code",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "financial_year",
+      "type": "BIGINT"
+    },
+    {
+      "name": "phase",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "origin_sha256",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "origin_url",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "part",
+      "type": "BIGINT"
+    },
+    {
+      "name": "physical_page",
+      "type": "BIGINT"
+    },
+    {
+      "name": "printed_page",
+      "type": "BIGINT"
+    },
+    {
+      "name": "amount_unit",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "amount_multiplier",
+      "type": "BIGINT"
+    },
+    {
+      "name": "page_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "observed_id",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "page_role",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "observed_text",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "confidence",
+      "type": "DOUBLE"
+    },
+    {
+      "name": "bbox_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "alternatives_json",
+      "type": "VARCHAR"
+    }
+  ],
+  "native-adaptive-column-observations": [
+    {
+      "name": "jurisdiction_code",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "financial_year",
+      "type": "BIGINT"
+    },
+    {
+      "name": "phase",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "origin_sha256",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "origin_url",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "part",
+      "type": "BIGINT"
+    },
+    {
+      "name": "physical_page",
+      "type": "BIGINT"
+    },
+    {
+      "name": "printed_page",
+      "type": "BIGINT"
+    },
+    {
+      "name": "amount_unit",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "amount_multiplier",
+      "type": "BIGINT"
+    },
+    {
+      "name": "page_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "observed_id",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "observed_column",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "observed_text",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "confidence",
+      "type": "DOUBLE"
+    },
+    {
+      "name": "bbox_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "alternatives_json",
+      "type": "VARCHAR"
+    }
+  ],
+  "revenue-native-observations": [
+    {
+      "name": "jurisdiction_code",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "financial_year",
+      "type": "BIGINT"
+    },
+    {
+      "name": "phase",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "origin_sha256",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "origin_url",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "part",
+      "type": "BIGINT"
+    },
+    {
+      "name": "physical_page",
+      "type": "BIGINT"
+    },
+    {
+      "name": "printed_page",
+      "type": "BIGINT"
+    },
+    {
+      "name": "amount_unit",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "amount_multiplier",
+      "type": "BIGINT"
+    },
+    {
+      "name": "page_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "observed_id",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "page_role",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "observed_text",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "confidence",
+      "type": "DOUBLE"
+    },
+    {
+      "name": "bbox_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "alternatives_json",
+      "type": "VARCHAR"
+    }
+  ],
+  "nonfinancial-and-other-native-observations": [
+    {
+      "name": "jurisdiction_code",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "financial_year",
+      "type": "BIGINT"
+    },
+    {
+      "name": "phase",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "origin_sha256",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "origin_url",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "part",
+      "type": "BIGINT"
+    },
+    {
+      "name": "physical_page",
+      "type": "BIGINT"
+    },
+    {
+      "name": "printed_page",
+      "type": "BIGINT"
+    },
+    {
+      "name": "amount_unit",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "amount_multiplier",
+      "type": "BIGINT"
+    },
+    {
+      "name": "page_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "observed_id",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "page_role",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "observed_text",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "confidence",
+      "type": "DOUBLE"
+    },
+    {
+      "name": "bbox_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "alternatives_json",
+      "type": "VARCHAR"
+    }
+  ],
+  "independent-account-controls": [
+    {
+      "name": "observed_id",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "source_row",
+      "type": "BIGINT"
+    },
+    {
+      "name": "jurisdiction_code",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "financial_year",
+      "type": "BIGINT"
+    },
+    {
+      "name": "account",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "source_grain",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "direction",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "phase",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "recognition_status",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "amount_unit",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "amount_multiplier",
+      "type": "BIGINT"
+    },
+    {
+      "name": "origin_sha256",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "origin_url",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "physical_page",
+      "type": "BIGINT"
+    },
+    {
+      "name": "printed_page",
+      "type": "BIGINT"
+    },
+    {
+      "name": "right_origin_sha256",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "right_physical_page",
+      "type": "BIGINT"
+    },
+    {
+      "name": "right_printed_page",
+      "type": "BIGINT"
+    },
+    {
+      "name": "current_budget",
+      "type": "BIGINT"
+    },
+    {
+      "name": "executed",
+      "type": "BIGINT"
+    },
+    {
+      "name": "carryover",
+      "type": "BIGINT"
+    },
+    {
+      "name": "unused",
+      "type": "BIGINT"
+    },
+    {
+      "name": "current_minus_executed_printed",
+      "type": "BIGINT"
+    },
+    {
+      "name": "control_left_observations_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "control_right_observations_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "unit_observations_json",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "method",
+      "type": "VARCHAR"
+    }
+  ],
+  "page-observations": [
+    {
+      "name": "observed_id",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "jurisdiction_code",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "financial_year",
+      "type": "BIGINT"
+    },
+    {
+      "name": "origin_sha256",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "origin_url",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "part",
+      "type": "BIGINT"
+    },
+    {
+      "name": "physical_page",
+      "type": "BIGINT"
+    },
+    {
+      "name": "printed_page",
+      "type": "BIGINT"
+    },
+    {
+      "name": "page_role",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "recognition_status",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "phase",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "amount_unit",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "amount_multiplier",
+      "type": "BIGINT"
+    },
+    {
+      "name": "page_width_points",
+      "type": "DOUBLE"
+    },
+    {
+      "name": "page_height_points",
+      "type": "DOUBLE"
+    },
+    {
+      "name": "native_observation_count",
+      "type": "BIGINT"
+    },
+    {
+      "name": "page_observation_sha256",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "page_render_sha256",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "original_object_key",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "page_observation_object_key",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "page_render_object_key",
+      "type": "VARCHAR"
+    },
+    {
+      "name": "native_page_observations_json",
+      "type": "VARCHAR"
+    }
+  ]
+}

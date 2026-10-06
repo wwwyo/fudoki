@@ -1,0 +1,155 @@
+{
+  "native_scan": {
+    "131016:2025:r7kaikeiyosan": {
+      "jurisdiction_code": "131016",
+      "financial_year": 2025,
+      "document_kind": "budget",
+      "document_label": "当初予算",
+      "document_title": "令和7年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）",
+      "url": "https://www.city.chiyoda.lg.jp/documents/583/r7kaikeiyosan.pdf",
+      "url_basis": "区サイト「予算」ページのリンクテキスト「令和7年度各会計予算」",
+      "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
+      "origin_sha256": "d8783bb65906f6780918a03286b6f0375c06562a8528f10784e682123a2f8235",
+      "origin_bytes": 756684,
+      "raw_form": "extracted",
+      "recognition_status": "unconfirmed",
+      "redistribute": "allow",
+      "license_id": "NOASSERTION",
+      "attribution": "千代田区",
+      "redistribute_basis": "区サイトのホームページ利用規約が複製・公衆送信・翻案を許諾（商用可）。CC BY/政府標準への言及なし",
+      "approval_status": "unconfirmed",
+      "phase_note": "phase NULL: 公式議決リリース(2025-03-27 全4会計可決・総額一致)は証跡として保持するが、採用版と本PDFの版同一性は未証明",
+      "tables": [
+        {
+          "table_id": "native-pages",
+          "role": "native-page-observations",
+          "rows": 500,
+          "grain": "physical-page",
+          "candidate_table_sha256": "d2768c23d9a88ed3de61e9b2324c9441bb3eed909dd2df95ff7903303843c9a2",
+          "candidate_table_bytes": 2855399,
+          "direction": null,
+          "phase": null,
+          "source_amount_unit": null,
+          "unit_multiplier": null,
+          "legal_correspondence_status": "unconfirmed",
+          "additive_within_own_grain": false,
+          "pages": [
+            1,
+            500
+          ]
+        },
+        {
+          "table_id": "native-focused_observations",
+          "role": "native-focused-observations",
+          "rows": 5197,
+          "grain": "native-columned-observation",
+          "candidate_table_sha256": "2f9d0c796313374f7fdccbfa531a54348a96e304d4654cdfae8f53a7e20ddb80",
+          "candidate_table_bytes": 381094,
+          "direction": null,
+          "phase": null,
+          "source_amount_unit": null,
+          "unit_multiplier": null,
+          "legal_correspondence_status": "unconfirmed",
+          "additive_within_own_grain": false,
+          "pages": [
+            148,
+            489
+          ]
+        },
+        {
+          "table_id": "native-observations",
+          "role": "native-observations",
+          "rows": 38738,
+          "grain": "native-text-observation",
+          "candidate_table_sha256": "94b238e5c902b63350a402c55833c453cbc8e84f2fd5e7fc3eaad1dd3b218632",
+          "candidate_table_bytes": 4253350,
+          "direction": null,
+          "phase": null,
+          "source_amount_unit": null,
+          "unit_multiplier": null,
+          "legal_correspondence_status": "unconfirmed",
+          "additive_within_own_grain": false,
+          "pages": [
+            1,
+            500
+          ]
+        },
+        {
+          "table_id": "native-moku_controls",
+          "role": "native-moku-controls",
+          "rows": 217,
+          "grain": "document-fund-moku-row",
+          "candidate_table_sha256": "73bbc6be1621afc089942f6d249a04ae30343070d4f9f7439981d2711e4967d5",
+          "candidate_table_bytes": 71437,
+          "direction": "expenditure",
+          "phase": null,
+          "source_amount_unit": "千円",
+          "unit_multiplier": 1000,
+          "legal_correspondence_status": "unconfirmed",
+          "additive_within_own_grain": false,
+          "pages": null
+        },
+        {
+          "table_id": "native-legal_amounts",
+          "role": "native-legal-setsu-amounts",
+          "rows": 693,
+          "grain": "document-fund-moku-printed-setsu-cluster",
+          "candidate_table_sha256": "98353d1c627fb2822f3677fc0e4dfe3f19a28cd00dd12d155c406b3d97c40afb",
+          "candidate_table_bytes": 198590,
+          "direction": "expenditure",
+          "phase": null,
+          "source_amount_unit": "千円",
+          "unit_multiplier": 1000,
+          "legal_correspondence_status": "unconfirmed",
+          "additive_within_own_grain": true,
+          "pages": null
+        },
+        {
+          "table_id": "native-explanation_amounts",
+          "role": "native-explanation-amounts",
+          "rows": 1079,
+          "grain": "document-fund-explanation-amount",
+          "candidate_table_sha256": "a8df698efe316d023cbacd1a35ad418556a12945f56e5945aa99e0a1ef5d3a27",
+          "candidate_table_bytes": 326560,
+          "direction": "expenditure",
+          "phase": null,
+          "source_amount_unit": "千円",
+          "unit_multiplier": 1000,
+          "legal_correspondence_status": "unconfirmed",
+          "additive_within_own_grain": false,
+          "pages": null
+        },
+        {
+          "table_id": "native-unresolved_cells",
+          "role": "native-unresolved-cells",
+          "rows": 1,
+          "grain": "unresolved-printed-cell",
+          "candidate_table_sha256": "1d9d5f35ccbebc2b392c64a5956d1ae238f336350bc775cdab4fd0243a19257c",
+          "candidate_table_bytes": 6505,
+          "direction": "expenditure",
+          "phase": null,
+          "source_amount_unit": "千円",
+          "unit_multiplier": 1000,
+          "legal_correspondence_status": "unconfirmed",
+          "additive_within_own_grain": false,
+          "pages": null
+        },
+        {
+          "table_id": "native-financial_cells",
+          "role": "native-financial-cells",
+          "rows": 2221,
+          "grain": "printed-cell",
+          "candidate_table_sha256": "01727c09fdc83aec0e0082f4c71a7e2a031099a6119bc08de613e8a8854bebab",
+          "candidate_table_bytes": 212335,
+          "direction": "expenditure",
+          "phase": null,
+          "source_amount_unit": "千円",
+          "unit_multiplier": 1000,
+          "legal_correspondence_status": "unconfirmed",
+          "additive_within_own_grain": false,
+          "pages": null
+        }
+      ]
+    }
+  }
+}

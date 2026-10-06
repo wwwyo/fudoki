@@ -145,3 +145,4 @@ priority,rule_id,applies_to,match_fund,match_kan,match_kou,match_kan_code,match_
 144,chiyoda-kurikoshi-kokuho,131016,一般会計,,他会計繰出金,,国民健康保険事業会計繰出金|後期高齢者医療特別会計繰出金,eq,,assigned,07,retained,目,,千代田区 款9 項1 のうち医療保険への繰出。COFOG 07 保健。⚠️ 繰出先の会計は本パッケージに収録していないので二重計上にはならない
 145,chiyoda-kurikoshi-kaigo,131016,一般会計,,他会計繰出金,,介護保険特別会計繰出金,eq,,assigned,10.2,retained,目,,千代田区 款9 項1 のうち介護保険への繰出。COFOG 10.2 高齢
 146,chiyoda-tsumitate,131016,一般会計,,財産積立金,,,eq,,out-of-scope,,retained,項,,千代田区 款9 項2。基金への積立は支出の機能を表さないので範囲外（既収録団体の節「積立金」と同じ扱い。⚠️ 千代田区は節を行に持たないので節の規則が当たらず、項で宣言する）
+147,transfer-mitaka-sewer,132047,一般会計,,,,下水道事業特別会計繰出金,eq,繰出金,assigned,05.2,eliminated,目,下水道事業特別会計,2014〜2019年度の原典に会計間繰出と受け側の一般会計繰入を確認。各年度の当初予算・決算を分けて同額を検算する。

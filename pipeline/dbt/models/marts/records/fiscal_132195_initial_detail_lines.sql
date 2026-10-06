@@ -1,0 +1,25 @@
+{{ config(materialized='table') }}
+select h.fiscal_line_id,h.dataset_id,h.budget_item_id,h.source_row,h.initial_yen as amount,
+       '[' || json_object('path',h.account_path_json::json,'amount',h.initial_yen,
+         'fiscalLineId',h.fiscal_line_id,'sourceRow',h.source_row,
+         'originalPrintedHierarchy',h.observed_account_path_json::json,
+         'dimensions',h.dimensions_json::json,'observedSourceGrain',h.source_grain,
+         'expenditureSetsuId',h.expenditure_setsu_id,'expenditureSetsuStatus',h.expenditure_setsu_status,
+         'printedSetsuCode',h.setsu_code,'printedSetsuLabel',h.setsu_label,
+         'printedDepartment',h.department_text,'projectSourceRow',h.project_source_row,
+         'printedProjectInitial',h.project_printed_initial,'projectEvidence',h.project_evidence_json::json,
+         'originalMokuControl',h.control_moku_json::json,'printedValue',h.printed_amount_text,
+         'sourceAmountUnit',h.source_amount_unit,'page',h.page_number,'bbox',h.bbox_json::json,
+         'sourceLocations',h.source_locations_json::json,'printedText',h.printed_text,
+         'leftSetsuEvidence',h.left_setsu_evidence_json::json,'unitEvidence',h.unit_evidence_json::json,
+         'approvalDate',h.approval_date,'approvalEvidence',h.approval_evidence_json::json,
+         'observedGrainValidationStatus',h.observed_grain_validation_status,
+         'setsuCorrespondenceStatus',h.setsu_correspondence_status,
+         'initialNamespaceIdentity',h.initial_target_identity_json::json,
+         'supplementaryCompatibilityIdentity',h.supplementary_compatibility_identity_json::json,
+         'namespaceEquivalenceStatus',h.namespace_equivalence_status) || ']' as details_json,
+       null::varchar as consolidation,null::varchar as counterpart_fund,
+       null::varchar as cofog_code,'unclassified'::varchar as cofog_status,
+       '原典の事業×節×担当課を保持。法定節の確認とCOFOG判断は別でCOFOG未分類'::varchar as cofog_basis
+from {{ ref('int_132195_initial_detail') }} h
+order by fiscal_line_id

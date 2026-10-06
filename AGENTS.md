@@ -105,7 +105,7 @@ Core actions:
 原典にない対応・分類・推定を風土記が定めること。層名ではなく処理やデータの性質を表す。
 
 **証跡（provenance）**:
-原典をいつ・どこから・どの版の手順で取り込み、どう確かめたかの記録。採用した証跡は入力一覧とともに Git 管理する。
+原典との対応や確認の根拠。独立したprovenanceファイルは生成・保存しない。出典・意味は入力一覧と原典宣言、訂正はコードから参照する宣言、検査結果は再生成するレポートで扱う。
 _Avoid_: ログ
 
 **財政明細（fiscal line）**:
@@ -184,10 +184,12 @@ uv add --exclude-newer $(date -v-7d +%Y-%m-%d) <package>
 
 ## 技術スタック
 
-- **取得**: Python。原典 CSV/PDF のバイト列と取り込み Parquet を非公開 R2 に保存する。採用した入力の証跡は ingestion 配下の `provenance/`、入力一覧は `sources.lock.json` として Git 管理し、個別ハッシュを照合する。
+- **取得**: Python。原典 CSV/PDF のバイト列と取り込み Parquet を非公開 R2 に保存する。入力一覧 `sources.lock.json`（schemaVersion 3）で原典・表のハッシュとsource宣言をGit管理する。独立したprovenanceは出力しない。
+- **OCR**: 共通実装は `pipeline/ingestion/lib/ocr.py` の llama.cpp + GLM-OCR を使い、重みは `ocr-model.toml` の URL・SHA-256 で固定する。Apple Vision など別エンジンを選ぶ場合は、共通実装を使わない理由・比較評価の有無・エンジンの版と設定を原典別の宣言・コードに記録する。比較未実施なら精度の優位性を主張しない。文字層の抽出・文字対応表の復元を先に検討し、OCR は必要な頁・領域に限定してメモリ使用量を見ながら実行する。詳細は `.agents/skills/pipeline/references/budget-extraction.md` を参照する。
 - **変換・検査**: dbt-duckdb。staging は原典の行と1対1、intermediate は構造・単位・科目・分類の統一、marts は提供する列と粒度を確定する。
 - **検証**: Bun/TypeScript の `pipeline/verify/report/` とループバック専用の view。系統・検査結果・原典との対応を確認する。
-- **保存**: Git はコード・宣言・判断・入力一覧・採用した入力の証跡、非公開 R2 は原典・取り込み表。`.cache/` と `.build/` は再生成可能なローカル作業領域。
+- **保存**: Git はコード・宣言・判断・入力一覧、非公開 R2 は原典・取り込み表。`.cache/` と `.build/` は再生成可能なローカル作業領域。
+- **一時検証の保存**: `.agent/` へ runtime・依存物・原典群・キャッシュ・全量 warehouse を検証ごとに複製しない。ハッシュ固定した既存原典を読み取り参照し、変更コードのスナップショット・ハッシュ一覧・対象範囲の再抽出と検査結果を保存する。全件走査・全ファイルのハッシュ計算は対象を絞る。採用後の再生成可能な一時DB・重複CSVは整理するが、未採用の原典・取り込み表・支持コード・証跡は保持する。
 
 `pipeline:build` は固定入力から dbt・marts の CSV を生成し、同じ構築 ID の再実行では CSV のハッシュを照合する。公開 web・API・MCP・docs は一時的に HTTP 500 を返す。実行手順は `pipeline/README.md` を参照する。
 

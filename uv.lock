@@ -317,6 +317,7 @@ dependencies = [
     { name = "dbt-core" },
     { name = "dbt-duckdb" },
     { name = "duckdb" },
+    { name = "jsonschema" },
     { name = "openpyxl" },
     { name = "xlrd" },
 ]
@@ -327,6 +328,7 @@ requires-dist = [
     { name = "dbt-core", specifier = "==1.12.3" },
     { name = "dbt-duckdb", specifier = "==1.11.0" },
     { name = "duckdb", specifier = "==1.5.5" },
+    { name = "jsonschema", specifier = "==4.26.0" },
     { name = "openpyxl", specifier = "==3.1.5" },
     { name = "xlrd", specifier = "==2.0.2" },
 ]

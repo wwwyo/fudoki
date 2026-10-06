@@ -11,6 +11,7 @@
 from __future__ import annotations
 
 import pathlib
+import html
 import re
 import subprocess
 import tempfile
@@ -18,6 +19,34 @@ import tempfile
 Char = tuple[float, float, str]     # (x, y, 1文字)
 Word = tuple[float, float, float, float, str]   # (x0, y0, x1, y1, 語)
 PageWords = tuple[float, float, list[Word]]     # (幅, 高さ, 語のリスト)
+
+
+class PositionedRow(list):
+    """A visual row retaining the original word baselines for cell provenance."""
+
+    def __init__(self, ys: list[float]) -> None:
+        super().__init__()
+        self.ys = set(ys)
+
+
+def deduplicate_offset_words(words: list[Word], offset: float,
+                             tolerance: float = 0.001) -> list[Word]:
+    """Remove an explicitly declared duplicate print layer, keeping original boxes.
+
+    Akishima FY2024 has pages printed twice, with the second copy 2.8346pt
+    to the right. Exact-coordinate deduplication cannot remove that layer.
+    Require identical text, baseline, height and width; nearby unrelated text
+    is never a duplicate merely because it has the same value.
+    """
+    by_text: dict[str, list[Word]] = {}
+    for word in words:
+        by_text.setdefault(word[4], []).append(word)
+    return [w for w in words if not any(
+        abs(w[0] - other[0] - offset) <= tolerance
+        and abs(w[1] - other[1]) <= tolerance
+        and abs(w[2] - other[2] - offset) <= tolerance
+        and abs(w[3] - other[3]) <= tolerance
+        for other in by_text[w[4]])]
 
 
 def pages_of(pdf: pathlib.Path, first: int, last: int, *, redistill: bool = False) -> list[PageWords]:
@@ -44,7 +73,7 @@ def pages_of(pdf: pathlib.Path, first: int, last: int, *, redistill: bool = Fals
             r'<word xMin="([\d.]+)" yMin="([\d.]+)" xMax="([\d.]+)" yMax="([\d.]+)"[^>]*>(.*?)</word>', page
         ):
             x0, y0, x1, y1 = (float(wm[i]) for i in range(1, 5))
-            text = wm[5]
+            text = html.unescape(wm[5])
             key = (x0, y0, text)
             if key in seen:   # bbox は同じ語を2回吐くことがある
                 continue
@@ -71,7 +100,7 @@ def chars_of(pdf: pathlib.Path, first: int, last: int, *, redistill: bool = Fals
         for m in re.finditer(
             r'<word xMin="([\d.]+)" yMin="([\d.]+)" xMax="([\d.]+)"[^>]*>(.*?)</word>', page
         ):
-            x0, y, x1, text = float(m[1]), float(m[2]), float(m[3]), m[4]
+            x0, y, x1, text = float(m[1]), float(m[2]), float(m[3]), html.unescape(m[4])
             if (x0, y, text) in seen:   # bbox は同じ語を2回吐くことがある
                 continue
             seen.add((x0, y, text))
@@ -95,7 +124,7 @@ def rows_of(page: list[Char], tolerance: float = 1.0) -> list[list[tuple[float, 
             groups.append([])
         groups[-1].append(y)
     centers = {y: i for i, g in enumerate(groups) for y in g}
-    rows: list[list[tuple[float, str]]] = [[] for _ in groups]
+    rows: list[list[tuple[float, str]]] = [PositionedRow(g) for g in groups]
     for x, y, c in page:
         rows[centers[y]].append((x, c))
     return rows

@@ -17,12 +17,12 @@
 -- master_* が付かないのは、対応する様式・調査票を持たない特別会計と、
 -- **科目の名称がまだ得られていない団体 × 方向**（名称の根拠なしにコードで対応づけない）。
 select
-    fiscal_year, direction, fund_code, fund_label, canonical_fund,
+    dataset_id, document_kind, origin_sha256, fiscal_year, direction, fund_code, fund_label, canonical_fund,
     kan_code, kan_name, kou_code, kou_name, moku_code, moku_name,
     name_source,
     master_kan_code, master_kan_name, master_kou_code, master_kou_name,
     master_kind, master_basis
 from {{ ref('core_fiscal_accounts') }}
 where jurisdiction_code = '132241'
-order by fiscal_year, direction, fund_code, cast(kan_code as integer),
+order by fiscal_year, direction, document_kind, dataset_id, fund_code, fund_label, cast(kan_code as integer),
          cast(kou_code as integer), cast(moku_code as integer)

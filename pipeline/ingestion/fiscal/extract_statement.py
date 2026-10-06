@@ -5,13 +5,13 @@
 届くのは既収録の3団体だけ）。CSV を背骨にした取得器では1団体も足せない。
 
 **何を落とすか。** 説明欄の葉（目 → 事業 → 節 → 細節）を1行にした表を、
-`data/budget/raw/` の取得 partition へ Parquet で置く。**列は原典 CSV と同じ形**にしてあり、
-staging 以降（`budget_staging` マクロと既存の検査）はそのまま効く。
+`ingestion.paths.RAW` の団体・年度・文書種別・版・方向・表の partition へ Parquet で置く。
+科目・説明欄・金額に加え、原典の頁・bbox・表・単位と宣言由来の年度を保持する。
+年度や会計の追加を staging 以降へ反映するには、入力一覧と宣言も統合する必要がある。
 
-⚠️ **PDF そのものは保存しない。** 再配布 stance は allow 2 / review 46 / deny 11 で、
-原文を置ける団体が例外の側にある。落とすのは抽出した事実だけで、原典のバイト列は
-毎回取得元から取る（証跡に URL・SHA-256・取得時刻が残るので、いつ時点のどのバイト列から
-起こしたかは追える）。狛江市の `raw_form = "extracted"` と同じ扱い。
+原典 PDF のバイト列は共通 HTTP 取得器が非公開の内容ハッシュ付き object として保存する。
+この抽出器の一時 PDF は抽出後に削除する。非公開の原典保存と再配布の可否は別の判断であり、
+入力一覧にはURL・原典と表のSHA-256・抽出宣言を記録する。抽出表は `raw_form = "extracted"` である。
 
 ⚠️ **「無加工」を主張しない。** レイアウトから表を起こす操作は不可逆で、CSV の取り込みが
 やっている復元一致の検査ができない。代わりに、様式が同じ数字を階層ごとに重複して
@@ -24,9 +24,11 @@ staging 以降（`budget_staging` マクロと既存の検査）はそのまま�
 """
 
 from __future__ import annotations
+from ingestion.inputs import record_input, cached_input, digest, encode
 
 import json
 import pathlib
+import re
 import sys
 import tempfile
 from collections import defaultdict
@@ -34,13 +36,13 @@ from collections import defaultdict
 from ingestion.fiscal import statement_layout as L
 from ingestion.fiscal.sources import load_statements
 from ingestion.lib.http import http_get
-from ingestion.lib.pdf import chars_of, rows_of
+from ingestion.lib.pdf import deduplicate_offset_words, pages_of, rows_of
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 from ingestion.paths import RAW
 # 抽出器の版。**出力を変える修正をしたら上げる。**
 # (PDF の SHA-256, この版) で出力が決まる、という再現性の主張がここに乗る。
-EXTRACTOR_VERSION = "5"
+EXTRACTOR_VERSION = "7"
 
 # 説明欄の段。**入れ子の深さの名前**であって、団体ごとの語彙ではない。
 # 浅い順に並べる（`nested` は3段とも使い、`under-setsu` は最も深い1段だけを使う）。
@@ -221,6 +223,28 @@ def _level_of(right_edge: float, levels: dict[str, float], tolerance: float) -> 
     return None
 
 
+class _PageChars(list):
+    """Character positions plus the original Poppler word boxes for provenance."""
+
+    def __init__(self, words: list, character_map: dict[str, str]) -> None:
+        self.words = words
+        self.boxes_by_y = defaultdict(list)
+        for x0, y0, x1, y1, _ in words:
+            self.boxes_by_y[y0].append((x0, y0, x1, y1))
+        super().__init__((x0 + (x1 - x0) * i / len(text), y0,
+                          character_map.get(c, c))
+                         for x0, y0, x1, _, text in words if text
+                         for i, c in enumerate(text))
+
+
+def _location(page: list, number: int, line: list, span: tuple, ys: set) -> dict:
+    """Locate the words in a cell, in original PDF points (top-left origin)."""
+    boxes = [b for y in ys for b in getattr(page, "boxes_by_y", {}).get(y, [])
+             if b[2] > span[0] and b[0] < span[1]]
+    return {"page": number, "bbox": [min(b[0] for b in boxes), min(b[1] for b in boxes),
+                                      max(b[2] for b in boxes), max(b[3] for b in boxes)]} if boxes else {}
+
+
 def read_pages(pdf: pathlib.Path, spec: dict, direction: str) -> list[list]:
     """PDF の文字と座標を読む。**行のまとめ方に依存しないので、1回読めば使い回せる。**
 
@@ -229,7 +253,13 @@ def read_pages(pdf: pathlib.Path, spec: dict, direction: str) -> list[list]:
     （事項別明細書は数百頁あり、そのぶん丸ごと無駄になる）。
     """
     first, last = spec["pages"][direction]
-    return list(chars_of(pdf, first, last))
+    out = []
+    for number, (_, _, words) in enumerate(pages_of(pdf, first, last), first):
+        offset = spec.get("duplicate_word_offsets", {}).get(str(number))
+        if offset is not None:
+            words = deduplicate_offset_words(words, float(offset))
+        out.append(_PageChars(words, spec.get("character_map", {})))
+    return out
 
 
 def extract(pages: list[list], spec: dict, direction: str, tolerance: float = 1.0,
@@ -239,6 +269,8 @@ def extract(pages: list[list], spec: dict, direction: str, tolerance: float = 1.
     `pages` は `read_pages()` の結果。戻り値は (葉の行, 目の見出し金額, 突合の材料)。
     """
     first = spec["pages"][direction][0]
+    if len(pages) != spec["pages"][direction][1] - first + 1 or len(pages) % 2:
+        raise ValueError(f"{direction}: incomplete spread page range")
     columns = {k: (float(lo), float(hi)) for k, (lo, hi) in spec["columns"][direction].items()}
     # ⚠️ **どの欄が左頁にあるかは団体で違う。** 昭島市は右頁に節と説明が並ぶが、
     # 千代田区は左頁に目・財源内訳・節が入り、右頁は説明欄だけである。宣言に出す。
@@ -277,20 +309,41 @@ def extract(pages: list[list], spec: dict, direction: str, tolerance: float = 1.
     # （2つに分けると、キーがずれても気づけない）。
     moku_headers: dict[tuple, dict] = {}
     setsu_totals: dict[tuple, int] = defaultdict(int)
+    setsu_observations: list[dict] = []
+    observed_setsu: dict | None = None
     pending_name: str | None = None
     pending_start: float = 0.0
     annotations = 0
+    source_location: dict = {}
 
     def context() -> dict:
         # ⚠️ **名称は値ではなく名札（可変の dict）で渡す。**
         # 科目の名称は次の行へ折り返すので、見出し行の時点ではまだ完成していない。
         # 値をその場で写すと、**その目の最初の1行だけが折返し前の名前を持つ**
         # （実測で 64 件。`保健体育総` と `保健体育総務費` が同じ目に並んでいた）。
-        return {"kan": labels["kan"], "kou": labels["kou"], "moku": labels["moku"]}
+        return {"kan": labels["kan"], "kou": labels["kou"], "moku": labels["moku"],
+                "source_location": source_location,
+                "source_table_id": spec.get("table_id", "statement-detail"),
+                "source_amount_unit": spec["source_amount_unit"]}
 
     for i in range(0, len(pages) - 1, 2):
+        observed_setsu = None  # 次の見開きの「区分・金額」や頁番号は名称の続きではない。
+        override = spec.get("page_overrides", {}).get(str(first + i), {})
+        page_columns = {**columns, **{k: tuple(v) for k, v in override.get("columns", {}).items()}}
+        merged = {**{k: v for k, v in page_columns.items() if k in left},
+                  **L.shift_right_columns({k: v for k, v in page_columns.items() if k not in left})}
+        moku_span, setsu_span = merged["moku"], merged["setsu"]
+        setsu_code_span = merged["setsu_code"]
+        exp_left, exp_right = merged["explanation"]
+        if "explanation_levels" in override:
+            levels = {k: float(v) + L.RIGHT_PAGE_X for k, v in override["explanation_levels"].items()}
+        else:
+            levels = {k: float(v) + L.RIGHT_PAGE_X for k, v in declared["levels"].items()}
         spread = L.merge_spread(pages[i], pages[i + 1])
         for line in rows_of(spread, tolerance):
+            original_right = [(x - L.RIGHT_PAGE_X, c) for x, c in line if x >= L.RIGHT_PAGE_X]
+            source_location = _location(pages[i + 1], first + i + 1, original_right,
+                                        page_columns["explanation"], line.ys)
             if dump is not None and first + i in dump:
                 print(f"  p{first + i} {''.join(c for _, c in sorted(line))[:200]}")
             left_text = "".join(c for x, c in sorted(line) if x < L.RIGHT_PAGE_X)
@@ -303,6 +356,7 @@ def extract(pages: list[list], spec: dict, direction: str, tolerance: float = 1.
             head = L.parse_kan(left_text, style)
             if head:
                 if head[0] != kan:
+                    observed_setsu = None
                     tree.flush()
                     kou = moku = None
                     labels["kou"] = {"code": None, "name": ""}
@@ -314,6 +368,7 @@ def extract(pages: list[list], spec: dict, direction: str, tolerance: float = 1.
             head = L.parse_kou(left_text, style)
             if head:
                 if head[0] != kou:
+                    observed_setsu = None
                     tree.flush()
                     moku = None
                     labels["moku"] = {"code": None, "name": ""}
@@ -330,6 +385,7 @@ def extract(pages: list[list], spec: dict, direction: str, tolerance: float = 1.
                 code, name = L.split_code_and_name(cell)
                 if code is not None:
                     if code != moku:
+                        observed_setsu = None
                         tree.flush()
                         moku, moku_name_open = code, True
                         labels["moku"] = {"code": code, "name": name}
@@ -340,6 +396,9 @@ def extract(pages: list[list], spec: dict, direction: str, tolerance: float = 1.
                         if name:
                             labels["moku"]["name"] = name
                     if moku_amount is not None and (kan, kou, moku) not in moku_headers:
+                        source_location = _location(pages[i], first + i,
+                                                    [(x, c) for x, c in line if x < L.RIGHT_PAGE_X],
+                                                    page_columns["moku"], line.ys)
                         moku_headers[(kan, kou, moku)] = {"amount": moku_amount,
                                                           "context": context()}
                 elif name == "計":
@@ -349,8 +408,9 @@ def extract(pages: list[list], spec: dict, direction: str, tolerance: float = 1.
                     # ⚠️ **目の名称は次の行へ折り返す**（`社会福祉総` + `務費`）。
                     # 繋がないと実在しない科目名になり、規則が当たらないか別の科目に当たる。
                     labels["moku"]["name"] += name
-            elif not cell and moku_name_open and moku_amount is None:
-                moku_name_open = False
+            # A blank cell can be a row from the right-hand page between two
+            # wrapped left-page name lines. Keep the label open until an actual
+            # new heading, item or total closes it (Akishima FY2024 自転車対策費).
 
             # ── 節（区分の欄） ──────────────────────────────
             code_cell = L.normalize(_span_text(line, setsu_code_span))
@@ -361,17 +421,47 @@ def extract(pages: list[list], spec: dict, direction: str, tolerance: float = 1.
                 amount = L.read_amount(raw_setsu_amount)
                 if amount is not None and moku is not None:
                     setsu_totals[(kan, kou, moku)] += amount
+                    page_index = i if "setsu" in left else i + 1
+                    cell_line = [(x, c) for x, c in line if x < L.RIGHT_PAGE_X] \
+                        if page_index == i else original_right
+                    observed_setsu = {"code": code_cell, "name": name_cell}
+                    location = _location(pages[page_index], first + page_index, cell_line,
+                                         (min(page_columns['setsu_code'][0], page_columns['setsu'][0]),
+                                          max(page_columns['setsu_code'][1], page_columns['setsu'][1])), line.ys)
+                    setsu_observations.append({**context(), 'setsu': observed_setsu,
+                                               'source_location': location, 'project_name': '',
+                                               'detail_name': '', 'amount': amount})
                 if under_setsu:
+                    page_index = i if "setsu" in left else i + 1
+                    cell_line = [(x, c) for x, c in line if x < L.RIGHT_PAGE_X] \
+                        if page_index == i else original_right
+                    source_location = _location(pages[page_index], first + page_index,
+                                                cell_line, page_columns["setsu"], line.ys)
                     tree.open_setsu(setsu_code, setsu_name, amount, context())
-            elif setsu_name_open and name_cell and not L.is_heading(name_cell):
+            elif (setsu_name_open or (not under_setsu and observed_setsu is not None)) and name_cell and not L.is_heading(name_cell):
                 # 節の区分名も折り返す（`交通安全対策` + `特別交付金`）
                 setsu_name += name_cell
+                if observed_setsu is not None:
+                    page_index = i if 'setsu' in left else i + 1
+                    cell_line = [(x, c) for x, c in line if x < L.RIGHT_PAGE_X] \
+                        if page_index == i else original_right
+                    more = _location(pages[page_index], first + page_index, cell_line,
+                                     page_columns['setsu'], line.ys)
+                    previous = setsu_observations[-1]['source_location']
+                    if (more.get('bbox') and previous.get('bbox') and more['page'] == previous['page']
+                            and 0 <= more['bbox'][1] - previous['bbox'][1] <= 25
+                            and name_cell not in ['-', '区分金額']):
+                        observed_setsu['name'] += name_cell
+                        a, b = previous['bbox'], more['bbox']
+                        previous['bbox'] = [min(a[0], b[0]), min(a[1], b[1]), max(a[2], b[2]), max(a[3], b[3])]
                 if under_setsu:
                     tree.extend_setsu(name_cell)
             elif not name_cell:
                 setsu_name_open = False
 
             # ── 説明欄（右頁の右側） ──────────────────────────
+            source_location = _location(pages[i + 1], first + i + 1, original_right,
+                                        page_columns["explanation"], line.ys)
             raw_name, raw_amount, edge, start = _split_amount(
                 line, exp_left, exp_right, suffix)
             name = L.strip_item_number(raw_name) if numbered else L.normalize(raw_name)
@@ -425,6 +515,7 @@ def extract(pages: list[list], spec: dict, direction: str, tolerance: float = 1.
     return (rows,
             {key: h["amount"] for key, h in moku_headers.items()},
             {"setsu_column": dict(setsu_totals),
+             "setsu_observations": [_resolve(r) for r in setsu_observations],
              "mokuWithoutExplanation": bare,
              "by_level": tree.by_level,
              "annotations": annotations})
@@ -461,6 +552,9 @@ def reconcile(rows: list[dict], moku_totals: dict, aux: dict) -> dict:
         "mokuHeadersFound": len(moku_totals),
         "mokuNotReconciled": len(bad),
         "setsuColumnNotReconciled": len(setsu_bad),
+        "setsuColumnDifferences": [{"moku": "-".join(str(k) for k in key),
+                                    "printed": moku_totals.get(key),
+                                    "extracted": aux["setsu_column"][key]} for key in setsu_bad],
         "explanationLevelTotals": aux["by_level"],
         "annotationsDropped": aux["annotations"],
         "mokuWithoutExplanation": aux["mokuWithoutExplanation"],
@@ -496,7 +590,8 @@ COLUMNS: list[tuple[str, str]] = [
 AMOUNT_COLUMN = "本年度予算額"
 
 
-def _write(out_dir: pathlib.Path, direction: str, fund_label: str, rows: list[dict]) -> None:
+def _write(out_dir: pathlib.Path, direction: str, fund_label: str, rows: list[dict],
+           fiscal_year: int | None = None) -> None:
     import duckdb  # noqa: PLC0415  (抽出だけしたいときに import させない)
 
     columns = COLUMNS
@@ -504,41 +599,55 @@ def _write(out_dir: pathlib.Path, direction: str, fund_label: str, rows: list[di
     con = duckdb.connect()
     decl = ", ".join(f'"{name}" VARCHAR' for name, _ in columns)
     con.execute(f'CREATE TABLE t (source_row BIGINT, "会計名称" VARCHAR, {decl}, '
-                f'"{AMOUNT_COLUMN}" VARCHAR, reconciled BOOLEAN)')
-    placeholders = ", ".join("?" * (len(columns) + 4))
+                f'"{AMOUNT_COLUMN}" VARCHAR, reconciled BOOLEAN, source_page INTEGER, '
+                'source_bbox VARCHAR, source_table_id VARCHAR, source_amount_unit VARCHAR, '
+                'source_fiscal_year INTEGER)')
+    placeholders = ", ".join("?" * (len(columns) + 9))
     con.executemany(
         f"INSERT INTO t VALUES ({placeholders})",
         [(i + 1, fund_label, *(r[key] or "" for _, key in columns),
-          str(r["amount"]), r["moku_reconciled"]) for i, r in enumerate(rows)])
+          str(r["amount"]), r["moku_reconciled"], r.get("source_location", {}).get("page"),
+          json.dumps(r.get("source_location", {}).get("bbox")), r.get("source_table_id"),
+          r.get("source_amount_unit"), fiscal_year) for i, r in enumerate(rows)])
     con.execute(f"COPY (SELECT * FROM t ORDER BY source_row) TO '{out_dir / 'data.parquet'}' "
                 f"(FORMAT parquet, COMPRESSION zstd)")
     con.close()
 
 
-def ingest(key: str, *, force: bool = False) -> None:
-    spec = load_statements()[key]
-    code, year = key.split(":")
+def ingest(key: str, *, force: bool = False, sources_path: pathlib.Path | None = None,
+           raw_root: pathlib.Path | None = None) -> None:
+    spec = (load_statements(sources_path) if sources_path else load_statements())[key]
+    code, year, *_ = key.split(":")
+    if spec.get("table_id") and not re.fullmatch(r"[a-z0-9][a-z0-9._-]*", spec["table_id"]):
+        raise ValueError(f"{key}: table_id must be a safe lowercase ASCII identifier")
+    raw_root = raw_root or RAW
     got = http_get(spec["url"])
     if got.status != 200:
         raise RuntimeError(f"HTTP {got.status}: {spec['url']}")
+    if spec.get("expected_sha256") and spec["expected_sha256"] != got.sha256:
+        raise ValueError(f"{key}: origin hash differs from the validated page/layout declarations")
+    spec_sha256 = digest(encode(spec))
 
     out_dirs = {
-        direction: (RAW / f"jurisdiction={code}" / f"year={year}"
-                    / f"document_kind={spec['document_kind']}" / f"edition={got.sha256}" / f"direction={direction}")
+        direction: (raw_root / f"jurisdiction={code}" / f"year={year}"
+                    / f"document_kind={spec['document_kind']}" / f"edition={got.sha256}"
+                    / f"direction={direction}" / (f"table={spec['table_id']}" if spec.get("table_id") else ""))
         for direction in sorted(spec["pages"])
     }
-    # ⚠️ **冪等にする。抽出の前に決める。** 原典の SHA-256 と抽出器の版が同じなら何もしない。
-    # 事項別明細書は 469 頁あり、両 direction の抽出に数十秒かかる。走らせてから
-    # 判定すると `fetched_at` だけが動いて作業ツリーが毎回汚れ、
-    # 「再生成しても同じか」を見る CI の判定が意味を失う。
-    if not force and all((d / "provenance.json").exists() and (d / "data.parquet").exists()
-                         for d in out_dirs.values()):
-        old = [json.loads((d / "provenance.json").read_text()) for d in out_dirs.values()]
-        if all(o.get("sha256") == got.sha256
-               and o.get("extractor", "").endswith(f"@{EXTRACTOR_VERSION}") for o in old):
-            print(f"skip  {key}  同じ原典・同じ抽出器の版で既に抽出済み")
+    if not force:
+        reusable = []
+        for direction, directory in out_dirs.items():
+            if not (directory / 'inputs.lock.json').exists() or not (directory / 'data.parquet').exists():
+                break
+            entry = cached_input(directory)
+            source = entry['source']
+            reusable.append(entry['originEdition'] == got.sha256
+                            and source.get('extractor') == f'pipeline/ingestion/fiscal/extract_statement.py@{EXTRACTOR_VERSION}'
+                            and source.get('source_spec_sha256') == spec_sha256
+                            and source.get('pages') == spec['pages'][direction])
+        if len(reusable) == len(out_dirs) and all(reusable):
+            print(f'skip  {key}  原典・抽出器・宣言が一致し、候補のバイト列を照合済み')
             return
-
     with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as f:
         f.write(got.body)
         tmp = pathlib.Path(f.name)
@@ -553,9 +662,9 @@ def ingest(key: str, *, force: bool = False) -> None:
             # 金額は動かないことがあるので、合計突合だけでは検出できない。
             alt, _, _ = extract(pages, spec, direction, tolerance=2.0)
             summary = reconcile(rows, totals, aux)
+            stable_keys = [key for _, key in COLUMNS] + ["amount"]
             unstable = [a for a, b in zip(rows, alt, strict=False)
-                        if (a["project_name"], a["setsu_name"], a["detail_name"])
-                        != (b["project_name"], b["setsu_name"], b["detail_name"])]
+                        if any(a[field] != b[field] for field in stable_keys)]
             summary["nameStable"] = len(rows) == len(alt) and not unstable
             if not rows:
                 raise RuntimeError(f"{key}/{direction}: 1行も抽出できなかった")
@@ -581,9 +690,10 @@ def ingest(key: str, *, force: bool = False) -> None:
                     f"{key}/{direction}: 節の欄の合計が目の額と一致しない目が "
                     f"{summary['setsuColumnNotReconciled']} 件ある。"
                     f"葉の合計とは別経路なので、どちらかの欄の読み方が誤っている")
-            _write(out_dir, direction, spec["fund_label"], rows)
-            (out_dir / "provenance.json").write_text(json.dumps({
+            _write(out_dir, direction, spec["fund_label"], rows, int(year))
+            record_input(out_dir, {
                 "jurisdiction_code": code,
+                "source_key": f"statement:{key}",
                 "fiscal_year": int(year),
                 "direction": direction,
                 "document_title": spec["document_title"],
@@ -601,6 +711,8 @@ def ingest(key: str, *, force: bool = False) -> None:
                     "年度は取得元ページの見出しとリンクテキストを人が読んで決めており、"
                     "機械は照合していない。根拠は resource_url_basis にある",
                 "fund_basis": spec["fund_basis"],
+                "table_id": spec.get("table_id", "statement-detail"),
+                "fund_label": spec["fund_label"],
                 "request_url": got.url,
                 "status": got.status,
                 "bytes": len(got.body),
@@ -612,8 +724,8 @@ def ingest(key: str, *, force: bool = False) -> None:
                 # ⚠️ **CSV の取り込みと保証の強さが違う。** 復元一致は成立しない。
                 "verification": "hierarchy-totals + setsu-column-totals + name-stability",
                 "verification_note":
-                    "PDF のバイト列は保存していない（大半の団体で再配布の判断が付かないため、"
-                    "経路を団体で分けない）。無加工であることは検査できないので、"
+                    "原典のバイト列は共通HTTP取得器が非公開objectとして保存する。"
+                    "組版からの抽出は復元一致を検査できないので、"
                     "目の見出し金額との突合・節列との突合・行のまとめ方への非依存で縛る",
                 "roundtrip_verified": False,
                 # ⚠️ **桁区切りは落としている。** 紙に印字された `25,450` を数として持つには
@@ -623,10 +735,12 @@ def ingest(key: str, *, force: bool = False) -> None:
                                     if any(spec["explanation"][d].get("numbered")
                                            for d in spec["pages"]) else [])],
                 "source_amount_unit": spec["source_amount_unit"],
+                "source_spec_sha256": spec_sha256,
                 # 抽出した表の列と行数。**原典 CSV の証跡と同じ意味**（配ったものの形）。
                 "header": ["source_row", "会計名称",
                            *(name for name, _ in COLUMNS),
-                           AMOUNT_COLUMN, "reconciled"],
+                           AMOUNT_COLUMN, "reconciled", "source_page", "source_bbox",
+                           "source_table_id", "source_amount_unit", "source_fiscal_year"],
                 "rows": summary["leaves"],
                 "extracted": summary,
                 "raw_form": spec["raw_form"],
@@ -634,16 +748,86 @@ def ingest(key: str, *, force: bool = False) -> None:
                 "redistribute_basis": spec["redistribute_basis"],
                 "license_id": spec["license_id"],
                 "attribution": spec["attribution"],
-            }, ensure_ascii=False, indent=2) + "\n")
+            })
             print(f"ok    {key}/{direction}  {summary['leaves']} 行  "
                   f"{summary['moku']} 目（突合できず {summary['mokuNotReconciled']}）  "
                   f"合計 {summary['total']:,}  sha256={got.sha256[:16]}…")
     finally:
-        tmp.unlink(missing_ok=True)      # **PDF は残さない**
+        tmp.unlink(missing_ok=True)      # 一時PDFのみ削除。非公開origin objectは取得器が保存する。
+
+
+def ingest_moku_setsu(key: str, *, origin_sha256: str, raw_root: pathlib.Path,
+                      sources_path: pathlib.Path | None = None) -> pathlib.Path:
+    """固定原典の左頁の目×節を別入力にする。採用済み説明行を再生成・変更しない。"""
+    from ingestion.inputs import origin_path
+    from datetime import UTC, datetime
+
+    spec = (load_statements(sources_path) if sources_path else load_statements())[key]
+    table = spec['observed_moku_setsu_table_id']
+    if not re.fullmatch(r'[a-z0-9][a-z0-9._-]*', table):
+        raise ValueError('Unsafe moku-setsu table identifier')
+    if spec['explanation']['expenditure']['model'] != 'nested' or 'setsu' not in spec['left_page_columns']['expenditure']:
+        raise ValueError('Independent side input requires printed left-page setsu and separate explanation')
+    origin = origin_path(origin_sha256)
+    pages = read_pages(origin, spec, 'expenditure')
+    _, totals, aux = extract(pages, spec, 'expenditure')
+    _, _, alt = extract(pages, spec, 'expenditure', tolerance=2.0)
+    rows = aux['setsu_observations']
+    fields = ['kan_code', 'kan_name', 'kou_code', 'kou_name', 'moku_code', 'moku_name',
+              'setsu_code', 'setsu_name', 'amount']
+    if not rows or len(rows) != len(alt['setsu_observations']) or any(
+            any(r[f] != other[f] for f in fields) for r, other in zip(rows, alt['setsu_observations'])):
+        raise ValueError(f'{key}: independent moku×setsu rows are empty or unstable')
+    summary = reconcile(rows, totals, aux)
+    if summary['mokuNotReconciled'] or summary['setsuColumnNotReconciled']:
+        raise ValueError(f'{key}: printed moku×setsu does not reconcile: {summary}')
+    for r in rows:
+        if not r['setsu_name'] or not r.get('source_location', {}).get('bbox'):
+            raise ValueError(f'{key}: independent setsu name or original position missing')
+        r['source_table_id'] = table
+    code, year, *_ = key.split(':')
+    directory = (raw_root / 'statement-moku-setsu' / f'jurisdiction={code}' / f'year={year}'
+                 / f'document_kind={spec["document_kind"]}' / f'edition={origin_sha256}'
+                 / 'direction=expenditure' / f'table={table}')
+    _write(directory, 'expenditure', spec['fund_label'], rows, int(year))
+    dataset = ':'.join([code, year, 'expenditure', spec['document_kind'], origin_sha256])
+    explanation_dataset = dataset + (':' + spec['table_id'] if spec.get('table_id') else '')
+    missing = [{'moku': '-'.join(map(str, k)), 'printed_amount': v} for k, v in totals.items()
+               if k not in aux['setsu_column']]
+    provenance = {
+        'jurisdiction_code': code, 'fiscal_year': int(year), 'direction': 'expenditure',
+        'source_key': f'statement:{key}', 'sha256': origin_sha256, 'request_url': spec['url'],
+        'landing_page': spec['landing_page'], 'document_title': spec['document_title'],
+        'resource_name': spec['document_title'] + '（目×節の独立内訳）',
+        'dataset_title': None, 'table_id': table, 'fund_label': spec['fund_label'],
+        'fund_basis': spec['fund_basis'], 'resource_url_basis': spec['url_basis'],
+        'source_amount_unit': spec['source_amount_unit'], 'pages': spec['pages']['expenditure'],
+        'extracted_at': datetime.now(UTC).isoformat(), 'extractor': f'pipeline/ingestion/fiscal/extract_statement.py@{EXTRACTOR_VERSION}',
+        'observation_role': 'independent-moku-setsu', 'grain': 'document-fund-moku-printed-setsu-row',
+        'explanation_dataset_id': explanation_dataset,
+        'project_setsu_linkage': 'unconfirmed', 'rows': len(rows), 'extracted': summary,
+        'moku_without_printed_setsu': missing,
+        'verification': 'printed-moku-totals + setsu-name-stability + original-position',
+        'verification_note': '左頁の節別内訳の観測。右頁の事業別内訳とは同じ金額の別の分解なので足し合わせない。節が印字されない目を補完しない。',
+        'raw_form': 'extracted', 'redistribute': spec['redistribute'],
+        'redistribute_basis': spec['redistribute_basis'], 'license_id': spec['license_id'],
+        'attribution': spec['attribution'], 'normalization': ['桁区切りのカンマを除去', 'NFKC正規化と空白の除去'],
+    }
+    record_input(directory, provenance)
+    print(f'ok    {key}/independent-moku-setsu {len(rows)}行 合計{summary["total"]:,}千円')
+    return directory
 
 
 if __name__ == "__main__":
-    keys = [a for a in sys.argv[1:] if not a.startswith("-")] or sorted(load_statements())
+    import argparse
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("keys", nargs="*")
+    parser.add_argument("--force", action="store_true")
+    parser.add_argument("--sources", type=pathlib.Path)
+    parser.add_argument("--raw-root", type=pathlib.Path)
+    args = parser.parse_args()
+    keys = args.keys or sorted(load_statements(args.sources) if args.sources else load_statements())
     for k in keys:
         print(f"--- {k}")
-        ingest(k, force="--force" in sys.argv)
+        ingest(k, force=args.force, sources_path=args.sources, raw_root=args.raw_root)

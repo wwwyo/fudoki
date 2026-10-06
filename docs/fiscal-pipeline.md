@@ -28,8 +28,7 @@ bun run dev         # 報告を作り直してダッシュボードを上げる
 （宣言・検査・配布物の生成）はそのまま効き、経路の差が取得の1段に閉じる。
 `staging_is_one_to_one` などの原典突合は**抽出結果との一致**を見ることになり、
 検査の意味は保たれるが**保証の強さが変わる**（原文へ戻す検査は不可逆なので成立しない）。
-`pipeline/fdp/build.py` は証跡が名乗る保証（`roundtrip_verified` / `verification`）と `raw_form` が
-食い違っていないかを見て、配布物の説明文に強さの違いを載せる。
+`pipeline/fdp/build.py` は入力一覧の `raw_form` を読み、原典CSVの取り込みとPDF抽出の検査の違いを配布物の説明文に載せる。検査結果をsource宣言に保存して成功を認定しない。
 
 ⚠️ **事項別明細書は法定様式なので、列の意味は全団体で共通。組版は共通でない。**
 読み取り（款・項・目・節・説明という列が何を意味するか）は `statement_layout.py` が共有し、
@@ -105,7 +104,7 @@ CC BY が求める帰属と改変の明示には標準のプロパティが無�
 
 真ん中が要るのは、**型は生成側と画面側の両方に効くが、間に挟まる JSON には効かない**ため。
 
-**実データで判明した想定外は `.agents/skills/pipeline/references/budget-extraction.md` に書く**
+**実データで判明した注意点は `.agents/skills/pipeline/SKILL.md` から該当工程の reference を辿り、そこに書く。**
 （この文書には書かない）。団体固有の癖は `pipeline/ingestion/fiscal/jurisdictions/` へ。
 
 ### 科目マスタ（法定の款・項）
@@ -134,7 +133,10 @@ CC BY が求める帰属と改変の明示には標準のプロパティが無�
   添付 PDF の直リンクから起こしており、`fetch:fdp-taxonomy` と同じ「正準が壊れているので
   自分で維持する」型にあたる。原文の SHA-256 をスクリプトに固定してあり、改正されると止まる
 - 配布は団体ごとの `account_names.csv`（判断のリソース）。名称の出所（原典か決算書 PDF か）を
-  `name_source` で区別し、マスタへの対応を `master_*` 列で持つ
+  `name_source` で区別し、マスタへの対応を `master_*` 列で持つ。
+  同年度でも当初予算と決算で改称があるため、`dataset_id`・`document_kind`・
+  `origin_sha256` を保持し、資料ごとに科目名称を解決する。会計コードのない原典も
+  あるので、同一資料の会計識別には `fund_code` と `fund_label` の両方を使う
 
 ### 団体を足す手順
 
@@ -191,7 +193,7 @@ CC BY が求める帰属と改変の明示には標準のプロパティが無�
     団体固有の癖・実測・注意は `pipeline/ingestion/fiscal/jurisdictions/<団体コード>.md` に書く
     （**この文書には書かない**）
 11. `bun run pipeline` / `bun run typecheck`（root と web）を通し、
-    `.build/` の生成物を検査する。Git には宣言・証跡・入力一覧を保存する
+    `.build/` の生成物を検査する。Git にはコード・宣言・判断・入力一覧を保存し、provenanceは別ファイルにしない
 
 足し忘れは**エラーで止まる**ようにしてある。黙って欠ける事故は起きない。
 
@@ -211,7 +213,7 @@ CC BY が求める帰属と改変の明示には標準のプロパティが無�
 | 事業名の取得元（`[project_names]`）を消した | `dbt/tests/project_names_cover_budget.sql`（年度を宣言で持つので、消すと 0% で落ちる） |
 | package モデル（`pkg_<団体>__*`）を足し忘れた | `pipeline/fdp/build.py`（⚠️ **dbt は無いノードを警告して検査ごと無効化する** — 4本の検査が黙って消えるので、宣言を母集団にファイルの存在を見る） |
 | 事項別明細書の団体を報告に足し忘れた | `pipeline/verify/report/fiscal/build.ts`（`[statement]` も母集団に入るので `ingestion/fiscal/metadata.ts` の宣言が無ければ止まる） |
-| 証跡の名乗る保証と `raw_form` が食い違う | `pipeline/fdp/build.py`（`verbatim` なのに復元未検査／`extracted` なのに復元済みを名乗る、を停止） |
+| 固定入力のバイト列が入力一覧と食い違う | `pipeline/ingestion/inputs.py`（原典・Parquetのハッシュとサイズを照合し、不一致で停止） |
 
 **宣言どうしの矛盾は、足し忘れとは別の失敗の型である。** 足し忘れは「無い」を見れば済むが、
 矛盾は両方揃っているので、突き合わせの粒度が粗ければ通ってしまう（金額の単位で実際に通した）。

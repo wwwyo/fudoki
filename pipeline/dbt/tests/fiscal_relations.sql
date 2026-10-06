@@ -24,4 +24,8 @@ union all
 select 'duplicate_line', fiscal_line_id from {{ ref('int_fiscal_lines') }} group by fiscal_line_id having count(*) != 1
 union all
 select 'fund_code_has_multiple_labels', dataset_id || ':' || fund_code
-from {{ ref('int_fiscal_lines') }} group by dataset_id, fund_code having count(distinct fund_label) != 1
+from {{ ref('int_fiscal_lines') }}
+-- 会計名称しかない原典の空コードは、共通の会計を表すコードではない。
+-- その原典は名称で識別し、印字されたコードだけにコード→名称の一意性を要求する。
+where nullif(fund_code, '') is not null
+group by dataset_id, fund_code having count(distinct fund_label) != 1

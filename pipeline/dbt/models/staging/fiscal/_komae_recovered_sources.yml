@@ -1,0 +1,8 @@
+version: 2
+sources:
+  - name: raw_132195_recovered_detail
+    description: Recovered Komae FY2019-22 initial jikoubetsu-meisai chapters (private candidate namespace)
+    meta:
+      external_location: "(select * exclude(filename), regexp_extract(filename, '/direction=([^/]+)', 1) as direction_p, regexp_extract(filename, '/resource=([^/]+)', 1) as resource_id, regexp_extract(filename, '/year=([0-9]+)', 1) as year_p, regexp_extract(filename, '/edition=([0-9a-f]+)', 1) as edition_p from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/initial-detail-recovered/jurisdiction=132195/year=*/document_kind=budget/edition=*/direction=*/resource=*/data.parquet', hive_partitioning=false, filename=true, union_by_name=true))"
+    tables:
+      - name: data

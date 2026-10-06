@@ -14,6 +14,7 @@
 """
 
 from __future__ import annotations
+from ingestion.inputs import record_input
 
 import csv
 import io
@@ -111,22 +112,36 @@ def parse_rows(text: str) -> tuple[list[str], list[list[str]]]:
     return rows[0], rows[1:]
 
 
-def reconstruct(header: list[str], rows: list[list[str]], newline: str, trailing: str) -> str:
-    """復元。原典が引用符を使っていない前提で、使っていたらここで一致しなくなり検知できる。"""
-    return newline.join(",".join(r) for r in [header, *rows]) + trailing
+def parse_records(text: str) -> tuple[str, list[str], str]:
+    """Keep lexical CSV records so quoting and embedded newlines remain reversible."""
+    lines = io.StringIO(text, newline="").readlines()
+    reader = csv.reader(io.StringIO(text, newline=""))
+    records = []
+    cells = []
+    previous = 0
+    for row in reader:
+        records.append("".join(lines[previous:reader.line_num]))
+        cells.append(row)
+        previous = reader.line_num
+    trailing = []
+    while cells and not any(c.strip() for c in cells[-1]):
+        cells.pop()
+        trailing.insert(0, records.pop())
+    if not records:
+        raise RuntimeError("行が無い")
+    return records[0], records[1:], "".join(trailing)
 
 
-def _provenance_json(src: Source, spec: Resource, direction: str, got: Fetched,
-                     header: list[str], rows: int, fetched_at: str | None = None) -> str:
-    """取得の証跡。**`fetched_at` を差し替えられる。**
-
-    ⚠️ 中身が同じなら取得時刻も動かさない。descriptor の `created` がここから来るので、
-    回すたびに差分が出ると「変わっていない」を主張できなくなる。
-    """
+def _source_json(src: Source, spec: Resource, direction: str, got: Fetched,
+                     header: list[str], rows: int, fetched_at: str | None = None,
+                     csv_layout: dict | None = None) -> str:
+    """入力一覧へ渡す出典・意味の宣言と取り込み結果。"""
     return json.dumps({
+            "source_key": src.key,
             "jurisdiction_code": src.jurisdiction_code,
             "fiscal_year": src.fiscal_year,
             "direction": direction,
+            "document_kind": src.document_kind,
             # ⚠️ **直 URL では None。** カタログを引いていないので載せているデータセットが無い。
             # 以前はここに取得元の既定（カタログのデータセット名）が入っており、
             # **市サイトから取ったものの証跡が、引いてもいないカタログを指していた。**
@@ -139,7 +154,7 @@ def _provenance_json(src: Source, spec: Resource, direction: str, got: Fetched,
             # その組では誰も年度を照合しておらず、証跡だけが照合したと言っている状態になる。
             # 取得側が言えるのは「どう年度を決めたか」までなので、そこで止める。
             "fiscal_year_basis": (
-                f"sources.toml が宣言した URL（カタログに登録が無い）。"
+                f"sources.toml が宣言した公式ページの URL。"
                 f"リソース名「{spec.resource_name}」は取得元ページのリンクテキストを人が写したもので、"
                 f"取得時には照合していない（宣言どうしの自己参照になるため）。"
                 f"根拠は resource_url_basis にある"
@@ -162,6 +177,7 @@ def _provenance_json(src: Source, spec: Resource, direction: str, got: Fetched,
             # extracted なら抽出結果なので復元は成立しない。下流の検査がこれで分岐する。
             "raw_form": src.raw_form,
             "roundtrip_verified": True,
+            **({"csv_layout": csv_layout} if csv_layout is not None else {}),
             "license_id": src.license_id,
             "attribution": src.attribution,
         }, ensure_ascii=False, indent=2) + "\n"
@@ -203,23 +219,6 @@ def ingest(key: str) -> None:
         out_dir = (RAW / f"jurisdiction={src.jurisdiction_code}" / f"year={src.fiscal_year}"
                    / f"document_kind={src.document_kind}" / f"edition={got.sha256}" / f"direction={direction}")
         out = out_dir / "data.parquet"
-        prov_path = out_dir / "provenance.json"
-
-        if prov_path.exists() and json.loads(prov_path.read_text()).get("sha256") == got.sha256 and out.exists():
-            # ⚠️ **証跡は作り直す。** 取得物が同じでも、宣言（raw_form など）が増えたときに
-            # 古い証跡が残り続ける。実際 raw_form を足したあと、commit 済みの
-            # provenance.json には入っていないまま「証跡にも記録する」と文書が主張していた。
-            # 取得時刻だけは既存のものを引き継ぐ（中身が同じなら差分を出さない）。
-            existing = json.loads(prov_path.read_text())
-            text = _provenance_json(src, spec, direction, got, existing["header"], existing["rows"],
-                                    fetched_at=existing["fetched_at"])
-            if text != prov_path.read_text():
-                prov_path.write_text(text)
-                print(f"skip  {direction}  Parquet は同じ。証跡を宣言に合わせて書き直した")
-            else:
-                print(f"skip  {direction}  同じ SHA-256 の Parquet が既にある")
-            continue
-
         text = got.body.decode(src.encoding)
         # 復号が可逆か検査する。文字コードを取り違えると黙って別の字に化けるので、
         # 「読めた」ことを成功と見なさない。
@@ -227,7 +226,6 @@ def ingest(key: str) -> None:
             raise RuntimeError(f"{direction}: {src.encoding} での復号が可逆でない。文字コードの指定が誤っている")
         text = text.lstrip("\ufeff")
 
-        newline = "\r\n" if "\r\n" in text else "\n"
         header, rows = parse_rows(text)
 
         # ⚠️ **セル数がヘッダと揃っているか先に見る。**
@@ -240,24 +238,29 @@ def ingest(key: str) -> None:
                 f"{odd[:5]}{' ほか' if len(odd) > 5 else ''}"
             )
 
-        # 無加工の検査。復元して原文と一致しなければ書き出さない。
-        trailing = text[len(text.rstrip("\r\n")):]
-        rebuilt = reconstruct(header, rows, newline, trailing)
-        if rebuilt != text:
-            raise RuntimeError(
-                f"{direction}: Parquet から原文を復元できない（引用符や改行を含む可能性）。"
-                f"原文 {len(text)} 文字 / 復元 {len(rebuilt)} 文字"
-            )
+        # Keep original record syntax as well as decoded cells; quoting is not inferred.
+        header_record, records, trailing_records = parse_records(text)
+        if header_record + "".join(records) + trailing_records != text:
+            raise RuntimeError(f"{direction}: CSV レコードから原文を復元できない")
+        if len(records) != len(rows) or any(
+            list(csv.reader(io.StringIO(record, newline=""))) != [row]
+            for record, row in zip(records, rows, strict=True)
+        ):
+            raise RuntimeError(f"{direction}: 原文レコードとセルが一致しない")
+        csv_layout = {"header_record": header_record, "trailing_records": trailing_records,
+                      "record_column": "source_record"}
+        if "source_record" in header or "source_row" in header:
+            raise RuntimeError(f"{direction}: 原典の列名が証跡列と衝突する")
 
         import duckdb  # noqa: PLC0415  (取得だけしたいときに import させない)
 
         out_dir.mkdir(parents=True, exist_ok=True)
         con = duckdb.connect()
-        con.execute("CREATE TABLE t (source_row BIGINT, cells VARCHAR[])")
-        con.executemany("INSERT INTO t VALUES (?, ?)", [(i + 2, r) for i, r in enumerate(rows)])
+        con.execute("CREATE TABLE t (source_row BIGINT, cells VARCHAR[], source_record VARCHAR)")
+        con.executemany("INSERT INTO t VALUES (?, ?, ?)", [(i + 2, r, records[i]) for i, r in enumerate(rows)])
         # 列名は原典のヘッダそのまま。全列 VARCHAR（型推論は判断なので staging へ）。
         cols = ", ".join(f'cells[{i + 1}] AS "{h}"' for i, h in enumerate(header))
-        con.execute(f"COPY (SELECT source_row, {cols} FROM t ORDER BY source_row) TO '{out}' (FORMAT parquet, COMPRESSION zstd)")
+        con.execute(f"COPY (SELECT source_row, {cols}, source_record FROM t ORDER BY source_row) TO '{out}' (FORMAT parquet, COMPRESSION zstd)")
 
         # **書いた Parquet を読み戻して確かめる。**
         # ここまでの検査は parse 済みの行しか見ておらず、書き出しで
@@ -274,9 +277,14 @@ def ingest(key: str) -> None:
                 f"{direction}: 書き出した Parquet が原典の行と一致しない"
                 f"（最初の相違は {diff} 行目）"
             )
+        back_records = [r[0] for r in con.execute(
+            f"SELECT source_record FROM read_parquet('{out}') ORDER BY source_row"
+        ).fetchall()]
+        if back_records != records or header_record + "".join(back_records) + trailing_records != text:
+            raise RuntimeError(f"{direction}: Parquet の原文レコードが一致しない")
         con.close()
 
-        prov_path.write_text(_provenance_json(src, spec, direction, got, header, len(rows)))
+        record_input(out_dir, json.loads(_source_json(src, spec, direction, got, header, len(rows), csv_layout=csv_layout)))
         print(f"ok    {direction}  {len(rows)} 行  {len(got.body)} バイト  sha256={got.sha256[:16]}…  復元一致")
 
 

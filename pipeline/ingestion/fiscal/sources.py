@@ -27,7 +27,7 @@ class Catalog:
 
 @dataclass(frozen=True)
 class Resource:
-    direction: str
+    direction: str | None
     resource_name: str
     # データセット名。**団体によって歳出と歳入が別データセットになる**
     # （三鷹市は1データセットに2リソース、狛江市は歳出と歳入で別）。
@@ -53,6 +53,8 @@ class Resource:
     # なぜカタログを外れるのか。**URL を書くなら理由も書く**（書かないと停止する）。
     # 理由が無いと、後から読んだ者に「カタログにあるのに横着した」のと区別が付かない。
     url_basis: str | None = None
+    # 同一PDF中の会計・独立内訳を区別する。既存の無指定入力のIDは維持する。
+    table_id: str | None = None
 
     def __post_init__(self) -> None:
         if self.url is not None and not self.url_basis:
@@ -202,6 +204,8 @@ def load_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
     raw.pop("revenue_accounts", None)
     raw.pop("statement", None)
     raw.pop("budget_history", None)
+    raw.pop("supplementary_detail", None)
+    raw.pop("settlement_pdf", None)
 
     sources: dict[str, Source] = {}
     for key, spec in raw.items():
@@ -272,7 +276,7 @@ def statement_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
     """
     out: dict[str, Source] = {}
     for key, spec in load_statements(path).items():
-        code, year = key.split(":")
+        code, year, *_ = key.split(":")
         out[f"statement:{key}"] = Source(
             key=f"statement:{key}",
             catalog=None,
@@ -293,9 +297,12 @@ def statement_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
             raw_form=spec["raw_form"],
             resources=tuple(
                 Resource(direction=direction, resource_name=spec["document_title"],
-                         url=spec["url"], url_basis=spec["url_basis"])
+                         url=spec["url"], url_basis=spec["url_basis"], table_id=spec.get('table_id'))
                 for direction in sorted(spec["pages"])
-            ),
+            ) + ((Resource(direction='expenditure', resource_name=spec['document_title'] + '（目×節の独立内訳）',
+                           url=spec['url'], url_basis=spec['url_basis'],
+                           table_id=spec['observed_moku_setsu_table_id']),)
+                 if spec.get('observed_moku_setsu_table_id') else ()),
         )
     return out
 
@@ -306,7 +313,107 @@ def all_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
     ⚠️ 取得器ごとの集合（`load_sources` / `statement_sources`）を母集団にすると、
     経路を増やすたびに「その経路だけ誰も見ていない」団体が生まれる。
     """
-    return {**load_sources(path), **statement_sources(path), **budget_history_sources(path)}
+    from ingestion.fiscal.initial_detail_provider import initial_detail_sources
+    initial = initial_detail_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    from ingestion.fiscal.council_approved_provider import council_approved_sources
+    council = council_approved_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    from ingestion.fiscal.native_council_provider import native_council_sources
+    native = native_council_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    from ingestion.fiscal.tama_native_settlement.registration import native_settlement_sources
+    native_settlement = native_settlement_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    from ingestion.fiscal.akishima_initial445_registry import initial445_sources
+    initial445 = initial445_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    from ingestion.fiscal.held5_council_provider import held5_council_sources
+    held5 = held5_council_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    from ingestion.fiscal.akishima_settlement2024_registry import settlement2024_sources
+    settlement2024 = settlement2024_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    from ingestion.fiscal.chiyoda2025_native.registration import native_budget_sources
+    chiyoda2025 = native_budget_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    from ingestion.fiscal.chiyoda2021_settlement_native.registration import native_settlement_sources
+    chiyoda2021settle = native_settlement_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    from ingestion.fiscal.akishima_settlement2020_2023_registry import settlement2020_2023_sources
+    settlement2020_2023 = settlement2020_2023_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    from ingestion.fiscal.tama_pre2020.registration import pre2020_sources
+    pre2020 = pre2020_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    from ingestion.fiscal.komae_recovered_provider import komae_recovered_sources
+    komae_recovered = komae_recovered_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    from ingestion.fiscal.akishima_settlement2019_registry import settlement2019_sources
+    settlement2019 = settlement2019_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    from ingestion.fiscal.akishima_supplementary_fy2025_01_registry import supplementary_fy2025_01_sources
+    supplementary_fy2025_01 = supplementary_fy2025_01_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    from ingestion.fiscal.mitaka_initial2026 import get_sources as mitaka_sources
+    mitaka = mitaka_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    from ingestion.fiscal.tama_ordinary_history.registration import ordinary_history_sources
+    ordinary=ordinary_history_sources() if path.resolve()==SOURCES_TOML.resolve() else {}
+    from ingestion.fiscal.komae_supplementary_2020_1_provider import komae_supplementary_2020_1_sources
+    supplementary1 = komae_supplementary_2020_1_sources() if path.resolve() == SOURCES_TOML.resolve() else {}
+    existing = {**settlement2019, **supplementary_fy2025_01, **komae_recovered,**chiyoda2025, **chiyoda2021settle, **pre2020, **settlement2020_2023, **settlement2024, **held5, **initial445, **native_settlement, **native, **council, **initial, **load_sources(path), **statement_sources(path), **budget_history_sources(path),
+            **supplementary_detail_sources(path), **settlement_pdf_sources(path)}
+    if set(existing) & set(mitaka):
+        raise ValueError('mitaka source key overlaps an existing/joint provider')
+    existing.update(mitaka)
+    if set(existing) & set(ordinary):
+        raise ValueError('tama source key overlaps an existing/joint provider')
+    existing.update(ordinary)
+    if set(existing) & set(supplementary1):
+        raise ValueError('komae source key overlaps an existing/joint provider')
+    existing.update(supplementary1)
+    return existing
+
+
+def load_settlement_pdf(path: Path = SOURCES_TOML) -> dict[str, dict]:
+    """Fixed settlement originals with independently observed table partitions."""
+    section = _pdf_sources('settlement_pdf', path)
+    for key, spec in section.items():
+        if spec['raw_form'] != 'extracted' or spec['document_kind'] != 'settlement':
+            raise ValueError(f'{key}: settlement PDF declarations must be extracted settlement observations')
+        if spec['layout'] not in ('tama-settlement-book', 'tama-settlement-funding'):
+            raise ValueError(f'{key}: unsupported settlement PDF layout')
+        if (spec['source_amount_unit'], spec['unit_multiplier']) not in (('円', 1), ('千円', 1000)):
+            raise ValueError(f'{key}: unsupported observed money unit')
+        ids = [t['table_id'] for t in spec['tables']]
+        if not ids or len(ids) != len(set(ids)) or not spec['year_basis'] or not spec['fund_basis']:
+            raise ValueError(f'{key}: table identity or primary-source year/account evidence missing')
+    return section
+
+
+def settlement_pdf_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
+    out = {}
+    for key, spec in load_settlement_pdf(path).items():
+        code, year, *_ = key.split(':')
+        identifier = f'settlement-pdf:{key}'
+        out[identifier] = Source(
+            key=identifier, catalog=None, jurisdiction_code=code,
+            jurisdiction_name=_jurisdiction_name(code), fiscal_year=int(year),
+            fiscal_year_label=None, document_kind='settlement', document_label=spec['document_label'],
+            dataset_title=None, encoding='', redistribute=spec['redistribute'],
+            redistribute_basis=spec['redistribute_basis'], license_id=spec['license_id'],
+            attribution=spec['attribution'], landing_page=spec['landing_page'], raw_form='extracted',
+            resources=tuple(Resource(direction='expenditure', resource_name=spec['document_title'] + ' ' + t['table_id'],
+                url=spec['url'], url_basis=spec['url_basis'], table_id=t['table_id']) for t in spec['tables']))
+    return out
+
+
+def load_supplementary_detail(path: Path = SOURCES_TOML) -> dict[str, dict]:
+    """Adopted printed project×setsu changes, separate from the frozen moku pilot."""
+    return _pdf_sources('supplementary_detail', path)
+
+
+def supplementary_detail_sources(path: Path = SOURCES_TOML) -> dict[str, Source]:
+    out = {}
+    for key, spec in load_supplementary_detail(path).items():
+        code, year, *_ = key.split(':')
+        identifier = f'supplementary-detail:{key}'
+        out[identifier] = Source(
+            key=identifier, catalog=None, jurisdiction_code=code,
+            jurisdiction_name=_jurisdiction_name(code), fiscal_year=int(year),
+            fiscal_year_label=None, document_kind='supplementary', document_label=spec['document_title'],
+            dataset_title=None, encoding='', redistribute=spec['redistribute'],
+            redistribute_basis=spec['redistribute_basis'], license_id=spec['license_id'],
+            attribution=spec['attribution'], landing_page=spec['landing_page'], raw_form='extracted',
+            resources=(Resource(direction='expenditure', resource_name=spec['document_title'],
+                url=spec['url'], url_basis=spec['url_basis'], table_id=spec['table_id']),))
+    return out
 
 
 def load_budget_history(path: Path = SOURCES_TOML) -> dict[str, dict]:

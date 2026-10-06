@@ -251,7 +251,7 @@ if __name__ == "__main__":
                 "（パーサ設計の原則3）。列があることは、その階層が使われていることも"
                 "名称を持っていることも意味しない。",
         "generatedBy": "pipeline/ingestion/fiscal/survey_structure.py（bun run survey:structure <団体コード>）",
-        "reads": f"data/budget/raw/jurisdiction={code}/（取得の証跡は provenance.json）",
+        "reads": f"data/budget/raw/jurisdiction={code}/（原典情報は固定入力一覧のsource宣言）",
         "declarationSource": "dbt/dbt_project.yml の vars（列の構造と金額の正本）",
         "jurisdictionCode": code,
         "directions": [survey(code, d) for d in ("expenditure", "revenue")],

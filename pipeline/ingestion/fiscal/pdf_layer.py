@@ -51,8 +51,10 @@ def _source_id(prov: dict, prov_path: pathlib.Path) -> str | None:
     """
     parts = prov_path.relative_to(RAW).parts
     code = prov["jurisdiction_code"]
+    if parts[0] == 'statement-moku-setsu':
+        return f"source.fudoki.raw_{code}_moku_setsu.data"
     if parts[0].startswith("jurisdiction="):
-        if prov.get('table_id'):
+        if prov.get('table_id') and 'extract_statement' not in (prov.get('extractor') or ''):
             return f"source.fudoki.raw_{code}_history.data"
         direction = next(p.split("=", 1)[1] for p in parts if p.startswith("direction="))
         return f"source.fudoki.raw_{code}.{direction}"
@@ -120,8 +122,15 @@ def _hits(prov: dict, prov_path: pathlib.Path, pages_lines: dict[int, list[Line]
     名称は行に折り返されうるので、金額の行の前後 WRAP 行を連結した文字列で照合する。
     """
     if prov.get('table_id'):
-        rows = duckdb.query(f"select source_row, page_number, bbox_json from read_parquet('{prov_path.parent / 'data.parquet'}')").fetchall()
-        return {f"{prov['sha256']}|{prov['table_id']}|{row}": {"page": page, "box": json.loads(box)} for row, page, box in rows if len(json.loads(box)) == 4}
+        page_column, box_column = ('source_page', 'source_bbox') \
+            if 'extract_statement' in (prov.get('extractor') or '') else ('page_number', 'bbox_json')
+        rows = duckdb.query(f"select source_row, {page_column}, {box_column} from read_parquet('{prov_path.parent / 'data.parquet'}')").fetchall()
+        out = {}
+        for row, page, box in rows:
+            bounds = json.loads(box) if box else None
+            if page is not None and isinstance(bounds, list) and len(bounds) == 4:
+                out[f"{prov['sha256']}|{prov['table_id']}|{row}"] = {"page": page, "box": bounds}
+        return out
     kind = "statement" if "extract_statement" in (prov.get("extractor") or "") \
         else "project-names" if "extract_projects" in (prov.get("extractor") or "") else None
     if kind is None or not prov.get("pages"):   # revenue-accounts は OCR のみ — 語の層が無い
@@ -195,10 +204,13 @@ def main() -> None:
     selected = parser.parse_args().jurisdiction
     if selected and not re.fullmatch(r'\d{6}', selected):
         parser.error('--jurisdiction requires six digits')
-    prov_paths = sorted(RAW.glob("**/provenance.json"))
+    from ingestion.inputs import describe_inputs
+    from ingestion.paths import INPUT_LOCK
+    input_descriptions = describe_inputs(INPUT_LOCK, RAW)
     docs: dict[str, dict] = {}
-    for path in prov_paths:
-        prov = json.loads(path.read_text())
+    for item in input_descriptions:
+        path = RAW / item['path'] / 'data.parquet'
+        prov = item['source']
         if selected and prov['jurisdiction_code'] != selected:
             continue
         if not prov.get("extractor") or not prov["request_url"].endswith(".pdf"):
@@ -333,7 +345,7 @@ def main() -> None:
 
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "index.json").write_text(json.dumps(
-        {"generatedFrom": "fixed input provenance", "docs": index},
+        {"generatedFrom": "fixed input source declarations", "docs": index},
         ensure_ascii=False, indent=2) + "\n")
 
 

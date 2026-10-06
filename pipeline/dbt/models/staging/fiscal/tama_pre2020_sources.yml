@@ -1,0 +1,65 @@
+version: 2
+sources:
+  - name: raw_132241_tama_pre2020
+    description: pre-FY2020に回収した多摩市の原典観測。words/pages/lexicalは非金銭または参照証跡でNULL direction/phase/unitを保持。
+    tables:
+      - name: account_reference_controls
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/tama-pre2020/jurisdiction=132241/year=*/document_kind=*/edition=*/direction=*/table=account-reference-controls/data.parquet', hive_partitioning=false, filename=true))"
+      - name: csv_lexical_19bec615dee3a5b46ebd909a
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/tama-pre2020/jurisdiction=132241/year=*/document_kind=*/edition=*/direction=*/table=csv-lexical-19bec615dee3a5b46ebd909a/data.parquet', hive_partitioning=false, filename=true))"
+      - name: csv_lexical_25441b6f6231db8c1f25201f
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/tama-pre2020/jurisdiction=132241/year=*/document_kind=*/edition=*/direction=*/table=csv-lexical-25441b6f6231db8c1f25201f/data.parquet', hive_partitioning=false, filename=true))"
+      - name: csv_lexical_46a00db04b5869e24545c5a7
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/tama-pre2020/jurisdiction=132241/year=*/document_kind=*/edition=*/direction=*/table=csv-lexical-46a00db04b5869e24545c5a7/data.parquet', hive_partitioning=false, filename=true))"
+      - name: csv_lexical_5913afed4e963fe5cc24d97a
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/tama-pre2020/jurisdiction=132241/year=*/document_kind=*/edition=*/direction=*/table=csv-lexical-5913afed4e963fe5cc24d97a/data.parquet', hive_partitioning=false, filename=true))"
+      - name: csv_lexical_5b69ea19f017e41ec4393479
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/tama-pre2020/jurisdiction=132241/year=*/document_kind=*/edition=*/direction=*/table=csv-lexical-5b69ea19f017e41ec4393479/data.parquet', hive_partitioning=false, filename=true))"
+      - name: csv_lexical_60fc49788be4981884a79db9
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/tama-pre2020/jurisdiction=132241/year=*/document_kind=*/edition=*/direction=*/table=csv-lexical-60fc49788be4981884a79db9/data.parquet', hive_partitioning=false, filename=true))"
+      - name: csv_lexical_67cdd0c9153009df6f0e9a51
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/tama-pre2020/jurisdiction=132241/year=*/document_kind=*/edition=*/direction=*/table=csv-lexical-67cdd0c9153009df6f0e9a51/data.parquet', hive_partitioning=false, filename=true))"
+      - name: csv_lexical_881094d87494b60f7735562b
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/tama-pre2020/jurisdiction=132241/year=*/document_kind=*/edition=*/direction=*/table=csv-lexical-881094d87494b60f7735562b/data.parquet', hive_partitioning=false, filename=true))"
+      - name: csv_lexical_a77f5c67b8f19ad857804fd9
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/tama-pre2020/jurisdiction=132241/year=*/document_kind=*/edition=*/direction=*/table=csv-lexical-a77f5c67b8f19ad857804fd9/data.parquet', hive_partitioning=false, filename=true))"
+      - name: csv_lexical_acb2d4d787059d9ccc9dc021
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/tama-pre2020/jurisdiction=132241/year=*/document_kind=*/edition=*/direction=*/table=csv-lexical-acb2d4d787059d9ccc9dc021/data.parquet', hive_partitioning=false, filename=true))"
+      - name: csv_lexical_b932d220b3f122e437c3b82e
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/tama-pre2020/jurisdiction=132241/year=*/document_kind=*/edition=*/direction=*/table=csv-lexical-b932d220b3f122e437c3b82e/data.parquet', hive_partitioning=false, filename=true))"
+      - name: csv_lexical_cdfc82e18507c69faddb1234
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/tama-pre2020/jurisdiction=132241/year=*/document_kind=*/edition=*/direction=*/table=csv-lexical-cdfc82e18507c69faddb1234/data.parquet', hive_partitioning=false, filename=true))"
+      - name: csv_lexical_d6e7457d708162add52d382f
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/tama-pre2020/jurisdiction=132241/year=*/document_kind=*/edition=*/direction=*/table=csv-lexical-d6e7457d708162add52d382f/data.parquet', hive_partitioning=false, filename=true))"
+      - name: csv_lexical_d8f101e90000421349f9d0f5
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/tama-pre2020/jurisdiction=132241/year=*/document_kind=*/edition=*/direction=*/table=csv-lexical-d8f101e90000421349f9d0f5/data.parquet', hive_partitioning=false, filename=true))"
+      - name: csv_lexical_ec19115add00785366b1ed98
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/tama-pre2020/jurisdiction=132241/year=*/document_kind=*/edition=*/direction=*/table=csv-lexical-ec19115add00785366b1ed98/data.parquet', hive_partitioning=false, filename=true))"
+      - name: csv_lexical_fdc8544079ed6700ad00129e
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/tama-pre2020/jurisdiction=132241/year=*/document_kind=*/edition=*/direction=*/table=csv-lexical-fdc8544079ed6700ad00129e/data.parquet', hive_partitioning=false, filename=true))"
+      - name: health_expenditure_rows
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/tama-pre2020/jurisdiction=132241/year=*/document_kind=*/edition=*/direction=*/table=health-expenditure-rows/data.parquet', hive_partitioning=false, filename=true))"
+      - name: pdf_page_observations
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/tama-pre2020/jurisdiction=132241/year=*/document_kind=*/edition=*/direction=*/table=pdf-page-observations/data.parquet', hive_partitioning=false, filename=true))"
+      - name: pdf_word_observations
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/tama-pre2020/jurisdiction=132241/year=*/document_kind=*/edition=*/direction=*/table=pdf-word-observations/data.parquet', hive_partitioning=false, filename=true))"

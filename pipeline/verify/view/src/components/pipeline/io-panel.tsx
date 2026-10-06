@@ -13,13 +13,10 @@ import type {
   Check,
   Direction,
   Node,
-  ProjectNamesExtract,
-  Provenance,
+  SourceInput,
   ReportData,
-  RevenueAccountsExtract,
-  StatementExtract,
 } from '@/lib/pipeline'
-import { DIR_JA, extractedKindOf, isCanonicalFetch } from '@/lib/pipeline'
+import { DIR_JA, isCanonicalFetch } from '@/lib/pipeline'
 import {
   colDocsOf,
   edgeDir,
@@ -196,76 +193,13 @@ export function CheckList({ checks, code }: { checks: Check[]; code: string }) {
   )
 }
 
-function historyVerificationText(p: Provenance): string {
-  if (p.table_id === 'reported-budget')
-    return '決算書の頁を目視確認して転記。決算CSVの目別総額と照合（dbt）'
-  if (p.table_id?.startsWith('approval-'))
-    return '議案番号・号数・原案可決・議決日を確認'
-  if (p.document_kind === 'supplementary')
-    return '補正前額＋増減額＝補正後額を確認。節・説明欄の重複を除外'
-  return '当初予算の款・項・目・本年度予算額と頁を確認'
-}
 
-/** 証跡1件の「取り込みの検証」の文言。PDF 抽出は復元が成立しないので内部突合を出す */
-function verificationLines(p: Provenance): { ok: boolean; text: string }[] {
-  if (p.table_id && p.raw_form === 'extracted') {
-    const text = historyVerificationText(p)
-    return [{ ok: true, text }, { ok: true, text: 'PDF抽出は不可逆。CSVの復元検査とは別の検証' }]
-  }
-  const ex = p.extracted
-  // ⚠️ ディスク上の証跡は extracted.kind を持たない — 判別は抽出器のパスから引く
-  const kind = extractedKindOf(p)
-  if (ex && kind === 'statement') {
-    const s = ex as StatementExtract
-    return [
-      {
-        ok: (s.leavesReconciled ?? 0) === (s.leaves ?? 0),
-        text: `葉の合計と、同じ PDF 内の目の印字額が一致（${fmt(s.leavesReconciled)}/${fmt(s.leaves)} 行）`,
-      },
-      {
-        ok: (s.mokuHeadersFound ?? 0) === (s.moku ?? 0),
-        text: `抽出した目すべてに、金額つきの見出しが PDF 内にあった（${fmt(s.mokuHeadersFound)}/${fmt(s.moku)}）`,
-      },
-      ...(p.verification
-        ? [{ ok: true, text: `方式: ${p.verification}` }]
-        : []),
-    ]
-  }
-  if (ex && kind === 'project-names') {
-    const x = ex as ProjectNamesExtract
-    return [
-      {
-        ok:
-          x.projectsReconciled === undefined ||
-          x.projectsReconciled === x.projects,
-        text: `事業名と、同じ PDF 内の印字額が一致（${fmt(x.projectsReconciled)}/${fmt(x.projects)} 事業）`,
-      },
-      ...(x.moku !== undefined
-        ? [
-            {
-              ok: (x.mokuHeadersFound ?? 0) === x.moku,
-              text: `目の見出しが PDF 内にあった（${fmt(x.mokuHeadersFound)}/${fmt(x.moku)}）`,
-            },
-          ]
-        : []),
-    ]
-  }
-  if (ex && kind === 'revenue-accounts') {
-    const x = ex as RevenueAccountsExtract
-    return [
-      {
-        ok: true,
-        text: `科目名を抽出（${fmt(x.named)}/${fmt(x.moku)} 目に名称、うち金額まで取れたのは ${fmt(x.withAmount)}）`,
-      },
-    ]
-  }
-  // 正本の取り込み: 復元検査
-  return [
-    {
-      ok: p.roundtrip_verified,
-      text: `原典の CSV から同じ表を再構成できる（sha256 ${String(p.sha256 ?? '').slice(0, 12)}…）`,
-    },
-  ]
+/** 入力レポート生成時に実行したハッシュ照合。抽出精度や目視確認とは別。 */
+function verificationLines(p: SourceInput): { ok: boolean; text: string }[] {
+  return [{
+    ok: p.input_hashes_verified === true,
+    text: '採用した原典とParquetのバイト列が入力一覧のハッシュ・サイズと一致',
+  }]
 }
 
 /** 側ごとの詳細トグル。原典側は出所・取り込みの検証・証跡、それ以外は検査・金額の単位 */
@@ -303,7 +237,7 @@ function SideDetail({
     .join('・')
 
   // 原典ノードの証跡は /local/rows の応答が持ってくる（団体コードから絞り込み済み）
-  const provs: Provenance[] =
+  const provs: SourceInput[] =
     node.kind === 'origin' &&
     rows &&
     (rows.kind === 'pdf' || rows.kind === 'table')
@@ -467,7 +401,7 @@ function SideDetail({
                 {a.phaseLabel}
                 {a.years ? `・${a.years.join('・')}年度` : '・全年度'}
                 {a.source !== 'dbt_project' &&
-                  `・宣言: ${a.source === 'source_amount_unit' ? '証跡' : '注意点'}`}
+                  `・宣言: ${a.source === 'source_amount_unit' ? '入力宣言' : '注意点'}`}
               </span>
             </div>
           ))}

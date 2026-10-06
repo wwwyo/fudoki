@@ -1,6 +1,8 @@
 {{ config(materialized='table') }}
 with g as (
-  select * from {{ ref('int_expenditure_setsu_groups') }}
+  select g.* from {{ ref('int_expenditure_setsu_groups') }} g
+  where not exists (select 1 from {{ ref('fiscal_132195_initial_moku_reference') }} r
+                    where r.fiscal_line_id=g.fiscal_line_id and r.superseded_by_full_initial_detail)
 ), aggregated as (
   select g.group_line_id as fiscal_line_id, g.dataset_id, g.budget_item_id,
          min(g.source_row) as source_row, sum(g.amount) as amount,
@@ -33,4 +35,8 @@ with g as (
 select * from aggregated
 union all
 select * from origin
+union all
+select * from {{ ref('fiscal_132195_initial_detail_lines') }}
+union all
+select * from {{ ref('fiscal_132071_initial445_lines') }}
 order by fiscal_line_id
