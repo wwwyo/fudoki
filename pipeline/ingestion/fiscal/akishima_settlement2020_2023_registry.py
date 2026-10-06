@@ -59,6 +59,7 @@ def register_settlement2020_2023_declarations(rows,history,entries,config=CONFIG
    if not entry['path'].startswith(NAMESPACE+'/') or f"year={e['fiscal_year']}" not in entry['path']:continue
    if entry['path'] not in lookup or entry['path'] in seen:raise ValueError('Unknown or repeated settlement2020-2023 resource')
    seen.add(entry['path']);t=lookup[entry['path']];p=json.loads(source_metadata_bytes(lock_path,entry))
+   fund_label=next((a['name'] for a in e['accounts'] if a['id']==t['account_slug']),None)
    expected_origin=dict(key='inputs/origin/sha256/'+e['expected_sha256'],sha256=e['expected_sha256'],bytes=e['expected_bytes'])
    expected_table=dict(key='inputs/table/sha256/'+t['expected_table_sha256'],sha256=t['expected_table_sha256'],bytes=t['expected_table_bytes'])
    financial=t['raw_role']==FINANCIAL
@@ -67,13 +68,14 @@ def register_settlement2020_2023_declarations(rows,history,entries,config=CONFIG
        or entry['origin']['object']!=expected_origin or entry['table']!=expected_table
        or p['source_key']!=e['source_key'] or p['table_id']!=t['table_id'] or p['rows']!=t['expected_rows']
        or p['observation_role']!=t['raw_role'] or p['request_url']!=e['url']
+       or p.get('fund_label')!=fund_label
        or p['source_amount_unit']!=t.get('source_amount_unit') or p['unit_multiplier']!=t.get('unit_multiplier')
        or p['additive_within_own_grain']!=t['additive_within_own_grain']
        or p['recognition_status']!=e['recognition_status'] or p['definition_files']!=definitions
        or p['source_manifest_sha256']!=data_manifest(config)):raise ValueError('Approved settlement2020-2023 fixed original/table/row/recognition identity differs: '+entry['path'])
    structure=dict(
     hierarchy=['kan','kou','moku','setsu'] if financial else ['kan','kou','moku'] if t['raw_role']=='controls' else ['kan','kou','moku','project-remark'] if t['raw_role']=='projects' else [],
-    dimensions=[],funds=[dict(code='',label=next(a['name'] for a in e['accounts'] if a['id']==t['account_slug']))] if t['account_slug'] in [a['id'] for a in e['accounts']] else ([dict(code='',label='全会計合計')] if t['account_slug']=='_all' else []),
+    dimensions=[],funds=[dict(code='',label=fund_label)] if fund_label is not None else ([dict(code='',label='全会計合計')] if t['account_slug']=='_all' else []),
     scope=dict(granularity=t['grain'],observationRole=t['raw_role'],authoritativeExecuted=financial,
      financialLeaf=financial,nonadditive=not financial,sourceAmountUnit=t.get('source_amount_unit'),
      unitMultiplier=t.get('unit_multiplier'),projectSetsuLinkage='unconfirmed-independent-remark-totals',
