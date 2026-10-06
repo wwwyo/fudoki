@@ -12,7 +12,7 @@ import tempfile
 import zipfile
 from pathlib import Path, PurePosixPath
 
-from ingestion.paths import CACHE, PIPELINE, REPO
+from ingestion.paths import CACHE, PIPELINE, REPO, plain_path
 
 LOCK = PIPELINE / 'ingestion/fiscal/sources.lock.json'
 OBJECTS = CACHE / 'objects'
@@ -168,7 +168,6 @@ def cached_input(directory: Path) -> dict:
 def remote_object(ref: dict, operation: str, *, objects_dir: Path | None = None) -> None:
     path = (OBJECTS if objects_dir is None else Path(objects_dir)) / safe_relative(ref['key'])
     if objects_dir is not None:
-        from ingestion.fiscal.tama_ordinary_history.contracts import plain_path
         path=plain_path(path)  # Explicit original resource destination; parent cache-writer quiescence still required.
     path.parent.mkdir(parents=True, exist_ok=True)
     command = ['cf', 'r2', 'objects', operation, ref['key'], '--bucket-name', BUCKET, '--quiet']
