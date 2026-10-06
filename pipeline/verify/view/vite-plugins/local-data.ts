@@ -22,7 +22,7 @@ import { spawn } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 import type { Connect, Plugin } from 'vite'
-import { provenanceForSource } from '@fudoki/report/common'
+import { inputsForSource } from '@fudoki/report/common'
 
 export function localData(_root: string): Plugin {
   const repo = PIPELINE
@@ -82,37 +82,30 @@ export function localData(_root: string): Plugin {
       })
     })
 
-  // 証跡 JSON の parse を mtime で使い回す。リクエストごとの全件 parse を避けるが、
-  // ディレクトリ列挙自体は毎回やる（取り込み直しでファイルが増減しても追い付く）
-  const provCache = new Map<string, { mtimeMs: number; json: any }>()
-  const provenanceOf = (dir: string): any[] => {
-    if (!fs.existsSync(dir)) return []
-    return fs
-      .readdirSync(dir, { recursive: true })
-      .filter(
-        (f): f is string =>
-          typeof f === 'string' && f.endsWith('provenance.json')
-      )
-      .sort()
-      .map((f) => {
-        const fp = path.join(dir, f)
-        const mtimeMs = fs.statSync(fp).mtimeMs
-        const c = provCache.get(fp)
-        if (c && c.mtimeMs === mtimeMs) return c.json
-        const json = JSON.parse(fs.readFileSync(fp, 'utf8'))
-        provCache.set(fp, { mtimeMs, json })
-        return json
-      })
+  let inputsCache: { mtime: number; size: number; values: any[] } | undefined
+  const provenanceOf = (_dir: string): any[] => {
+    const file = path.join(REPORT, 'inputs.json')
+    try {
+      const stat = fs.statSync(file)
+      if (!inputsCache || inputsCache.mtime !== stat.mtimeMs || inputsCache.size !== stat.size) {
+        inputsCache = { mtime: stat.mtimeMs, size: stat.size, values: JSON.parse(fs.readFileSync(file, 'utf8')) }
+      }
+      return inputsCache.values
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error
+      inputsCache = undefined
+      return []
+    }
   }
 
   /**
    * source ノード id に対応する証跡。規則の正本は `@fudoki/report/common` の
-   * `provenanceForSource`（報告生成と同じもの — direction だけで引くと別団体や
+   * `inputsForSource`（報告生成と同じもの — direction だけで引くと別団体や
    * 抽出物の証跡が混ざるので、団体・canonical・抽出種類の区別が要る）。
    */
   const provsForSource = (srcId: string): any[] => {
     const name = srcId.split('.').at(-1)!
-    return provenanceForSource(srcId, name, provenanceOf(rawDir))?.ps ?? []
+    return inputsForSource(srcId, name, provenanceOf(rawDir))?.ps ?? []
   }
 
   /** PDF 閲覧レイヤの索引。`bun run pdf:layer` が作る（無ければ null）。mtime で使い回す */
@@ -234,12 +227,15 @@ export function localData(_root: string): Plugin {
     const src = manifest().sources[srcId]
     const loc: string | undefined = src?.meta?.external_location
     if (!loc) throw new Error(`${srcId} に external_location が無い`)
-    // `read_parquet('../data/...', hive_partitioning=true, union_by_name=true)` の
-    // 第1引数（glob）を取り出して絶対パスへ。{name} はソースの表名で埋める
-    const glob = loc.match(/'([^']+)'/)?.[1]
-    if (!glob) throw new Error(`external_location を読めない: ${loc}`)
-    const resolved = path.resolve(repo, 'dbt', glob.replace('{name}', src.name))
-    return `read_parquet('${resolved}', hive_partitioning=true, union_by_name=true)`
+    // Subqueries can contain quoted regexp patterns before the Parquet call.
+    // Preserve their scope columns and declared reader options; resolve only its path.
+    const calls = [...loc.matchAll(/\bread_parquet\s*\(\s*'((?:[^']|'')*)'/gi)]
+    if (calls.length !== 1)
+      throw new Error(`external_location に単一の read_parquet が必要: ${loc}`)
+    const call = calls[0]!
+    const glob = call[1]!.replaceAll("''", "'").replace('{name}', src.name)
+    const resolved = path.resolve(repo, 'dbt', glob).replaceAll("'", "''")
+    return loc.replace(call[0], `read_parquet('${resolved}'`)
   }
 
   type TableReply = {
@@ -269,12 +265,18 @@ export function localData(_root: string): Plugin {
     ) {
       const c = cols.includes('fiscal_year') ? 'fiscal_year' : 'year'
       where.push(`cast("${c}" as bigint) = ${year}`)
+    } else if (year !== null && cols.includes('dataset_id')) {
+      where.push(`try_cast(split_part(dataset_id, ':', 2) as bigint) = ${year}`)
     }
     if (dir !== null && cols.includes('direction'))
       where.push(`direction = '${dir}'`)
+    else if (dir !== null && cols.includes('dataset_id'))
+      where.push(`split_part(dataset_id, ':', 3) = '${dir}'`)
     // ⚠️ core 系は全団体を1表に持つ。団体コードで切らないと、別の団体の行を見せることになる
     if (code !== null && cols.includes('jurisdiction_code'))
       where.push(`jurisdiction_code = '${code}'`)
+    else if (code !== null && cols.includes('dataset_id'))
+      where.push(`split_part(dataset_id, ':', 1) = '${code}'`)
     // source_row → ordinal → pdf_ordinal の順に、行を相互に辿れる鍵を探す
     const keyColumn =
       ['source_row', 'ordinal', 'pdf_ordinal'].find((c) => cols.includes(c)) ??

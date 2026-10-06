@@ -12,7 +12,7 @@ import tempfile
 import zipfile
 from pathlib import Path, PurePosixPath
 
-from ingestion.paths import CACHE, PIPELINE, REPO
+from ingestion.paths import CACHE, PIPELINE, REPO, plain_path
 
 LOCK = PIPELINE / 'ingestion/fiscal/sources.lock.json'
 OBJECTS = CACHE / 'objects'
@@ -52,29 +52,123 @@ def verify_object(ref: dict, body: bytes) -> None:
         raise ValueError(f'Input hash or size mismatch: {ref.get("key", ref.get("path"))}')
 
 
-def save_provenance(lock_path: Path, logical_path: str, body: bytes) -> dict:
-    path = f'provenance/{safe_relative(logical_path)}/provenance.json'
-    target = lock_path.parent / path
-    target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_bytes(body)
-    return {'path': path, 'sha256': digest(body), 'bytes': len(body)}
+# Source declarations are part of the input list; extraction results are regenerated.
+SOURCE_FIELDS = frozenset("""source_key request_url final_url original_url source_url document_title resource_name
+ dataset_title landing_page fiscal_year_basis resource_url_basis resource_url_declared url_basis
+ fund_label fund_basis table_id original_source_table_id observation_role grain namespace account
+ account_partition source_amount_unit source_amount_kind unit_multiplier document_label raw_form
+ encoding csv_layout pages source_page_range configured_attachment_pages layout extractor
+ approval_status approval_date approval_proof approval_evidence approval_url approval_sha256 approval
+ recognition_status recognition_basis recognition_proof year_basis legal_correspondence_status
+ statutory_correspondence_status project_setsu_linkage phases phase phase_semantics phase_note
+ financial_phase amendment_number effective_at effective_at_basis effective_basis effective_date
+ effective_date_basis council_resolution_date printed_submission_date submitted_date executive_disposition_date
+ original_cover_approval_status original_identity_evidence visual_ledger_file frozen_native_page_refs
+ redistribute redistribute_basis license_id attribution definition_files source_manifest_sha256
+ source_spec_sha256 source_spec_bytes printed_total amount_kind nonadditive nonadditive_with
+ nonadditive_reason independent_breakdown additive additive_scope additive_within_own_grain
+ canonical_initial canonical_changes canonical_executed
+ totals date_anomaly first_article_evidence
+ source_grain source_position_method original_observation_identity original_raw_row_identity
+ immutable_raster_descriptor explanation_dataset_id explanation_statutory_correspondence
+ budget_columns_note baseline_status edition_status sign_note""".split())
 
 
-def provenance_bytes(lock_path: Path, entry: dict) -> bytes:
-    ref = entry['provenance']
-    path = safe_relative(ref['path'])
-    if path != f'provenance/{entry["path"]}/provenance.json' or 'key' in ref:
-        raise ValueError('Provenance must refer to its Git file, not an R2 object')
-    body = (lock_path.parent / path).read_bytes()
-    verify_object(ref, body)
-    provenance = json.loads(body)
-    if provenance['sha256'] != entry['originEdition'] or provenance['jurisdiction_code'] != entry['jurisdiction'] or provenance['fiscal_year'] != entry['fiscalYear']:
-        raise ValueError('Provenance differs from fixed input scope or edition')
-    return body
+def source_declaration(metadata: dict) -> dict:
+    return {key: value for key, value in metadata.items() if key in SOURCE_FIELDS}
 
 
-def remote_object(ref: dict, operation: str) -> None:
-    path = OBJECTS / safe_relative(ref['key'])
+def source_metadata(lock_path: Path, entry: dict) -> dict:
+    """Resolve an adopted declaration and inspect its immutable table, without sidecar files."""
+    import duckdb
+    source = dict(entry['source'])
+    original = OBJECTS / safe_relative(entry['origin']['object']['key'])
+    verify_object(entry['origin']['object'], original.read_bytes())
+    table = OBJECTS / safe_relative(entry['table']['key'])
+    verify_object(entry['table'], table.read_bytes())
+    with duckdb.connect() as connection:
+        schema = connection.execute('describe select * from read_parquet(?, hive_partitioning=false)', [str(table)]).fetchall()
+        names = [column[0] for column in schema]
+        aggregates = ['count(*)']
+        reserve_column = ('setsu_name' if entry['path'].startswith('akishima-initial445/') and 'setsu_name' in names
+                          else next((name for name in ('setsu_code', 'printed_setsu_code') if name in names), None))
+        amount_column = next((name for name in ('amount_executed', 'executed', 'amount') if name in names), None)
+        if entry['path'].startswith('akishima-settlement') and not source.get('canonical_executed'):
+            reserve_column = None
+            amount_column = None
+        aggregates.append(f"count(*) filter (where {reserve_column} is null or cast({reserve_column} as varchar)='')" if reserve_column else '0')
+        aggregates.append(f'count(*) filter (where {amount_column}=0)' if amount_column else '0')
+        aggregates.append('sum(amount_change)' if 'amount_change' in names else 'NULL')
+        count, reserve, zeros, delta = connection.execute(
+            'select ' + ','.join(aggregates) + ' from read_parquet(?, hive_partitioning=false)', [str(table)]
+        ).fetchone()
+        source.update(rows=count, header=[n for n in names if n not in ('source_row', 'source_record')] if source.get('raw_form') == 'verbatim' else names,
+                      raw_schema=[dict(name=c[0], type=c[1]) for c in schema], schema=[list(c) for c in schema],
+                      reserve_rows=reserve, reserve_null_rows=reserve, printed_zero_rows=zeros,
+                      extraction_evidence=dict(reserve_exception_rows=reserve))
+        if 'amount_change' in names:
+            source['delta_sum'] = delta
+    source.update(jurisdiction_code=entry['jurisdiction'], fiscal_year=entry['fiscalYear'],
+                  direction=entry['direction'], document_kind=entry['documentKind'],
+                  origin_sha256=entry['originEdition'], origin_bytes=entry['origin']['object']['bytes'],
+                  raw_table_sha256=entry['table']['sha256'], raw_table_bytes=entry['table']['bytes'],
+                  sha256=entry['originEdition'], bytes=entry['origin']['object']['bytes'], input_hashes_verified=True)
+    return source
+
+
+def source_metadata_bytes(lock_path: Path, entry: dict) -> bytes:
+    return encode(source_metadata(lock_path, entry))
+
+
+def record_input(directory: Path, metadata: dict, *, logical_path: str | None = None) -> dict:
+    """Write a candidate input list containing identities and declarations, not a run report."""
+    directory = Path(directory)
+    sha = metadata.get('sha256') or metadata['origin_sha256']
+    cached = OBJECTS / f'inputs/origin/sha256/{sha}'
+    if not cached.exists():
+        raise FileNotFoundError(f'Original not cached: {sha}')
+    else:
+        origin = save_object('origin', cached.read_bytes())
+    if origin['sha256'] != sha:
+        raise ValueError('Candidate original identity differs')
+    logical_path = logical_path or metadata.get('logical_input_path')
+    if logical_path is None:
+        parts = directory.parts
+        start = next((i for i, part in enumerate(parts) if part.startswith('jurisdiction=')), None)
+        if start is None:
+            logical_path = (f"jurisdiction={metadata['jurisdiction_code']}/year={metadata['fiscal_year']}/"
+                            f"document_kind={metadata.get('document_kind', 'budget')}/edition={sha}/"
+                            f"direction={metadata.get('direction') or 'observation'}")
+        else:
+            logical_path = '/'.join(parts[start:])
+        if metadata.get('namespace'):
+            logical_path = metadata['namespace'] + '/' + logical_path
+    partitions = dict(part.split('=', 1) for part in logical_path.split('/') if '=' in part)
+    entry = dict(path=safe_relative(logical_path), jurisdiction=metadata['jurisdiction_code'],
+                 fiscalYear=metadata['fiscal_year'], documentKind=metadata.get('document_kind') or partitions.get('document_kind', 'budget'),
+                 direction=metadata.get('direction'), originEdition=sha,
+                 origin=dict(availability='stored', sha256=sha, object=origin),
+                 table=save_object('table', (directory / 'data.parquet').read_bytes()),
+                 source=source_declaration(metadata))
+    (directory / 'inputs.lock.json').write_bytes(encode(dict(schemaVersion=3, entries=[entry])))
+    return entry
+
+
+def cached_input(directory: Path) -> dict:
+    """Validate a cached candidate before reusing its source declaration."""
+    entries = read_lock(directory / 'inputs.lock.json')['entries']
+    if len(entries) != 1:
+        raise ValueError('A candidate directory must contain exactly one input declaration')
+    entry = entries[0]
+    verify_object(entry['table'], (directory / 'data.parquet').read_bytes())
+    verify_object(entry['origin']['object'], (OBJECTS / entry['origin']['object']['key']).read_bytes())
+    return entry
+
+
+def remote_object(ref: dict, operation: str, *, objects_dir: Path | None = None) -> None:
+    path = (OBJECTS if objects_dir is None else Path(objects_dir)) / safe_relative(ref['key'])
+    if objects_dir is not None:
+        path=plain_path(path)  # Explicit original resource destination; parent cache-writer quiescence still required.
     path.parent.mkdir(parents=True, exist_ok=True)
     command = ['cf', 'r2', 'objects', operation, ref['key'], '--bucket-name', BUCKET, '--quiet']
     if operation == 'put':
@@ -102,7 +196,7 @@ def remote_object(ref: dict, operation: str) -> None:
 
 def read_lock(path: Path = LOCK) -> dict:
     lock = json.loads(path.read_text())
-    if lock['schemaVersion'] != 2 or not lock['entries']:
+    if lock['schemaVersion'] != 3 or not lock['entries']:
         raise ValueError('Unsupported or empty input snapshot')
     logical = [safe_relative(e['path']) for e in lock['entries']]
     if len(set(logical)) != len(logical):
@@ -128,10 +222,12 @@ def read_lock(path: Path = LOCK) -> dict:
             expected = f'inputs/{kind}/sha256/{ref["sha256"]}'
             if ref['key'] != expected or not re.fullmatch(r'[a-f0-9]{64}', ref['sha256']) or type(ref['bytes']) is not int or ref['bytes'] < 0:
                 raise ValueError('Input object key does not identify its hash and kind')
-        ref = e['provenance']
-        if not re.fullmatch(r'[a-f0-9]{64}', ref['sha256']) or type(ref['bytes']) is not int or ref['bytes'] < 0:
-            raise ValueError('Invalid provenance hash or size')
-        provenance_bytes(path, e)
+        if not isinstance(e.get('source'), dict) or not e['source'].get('request_url'):
+            raise ValueError('Input requires a source declaration with its original URL')
+        if set(e['source']) - SOURCE_FIELDS:
+            raise ValueError('Input source contains execution results rather than declarations')
+        if 'provenance' in e:
+            raise ValueError('Separate provenance is not part of the input format')
     return lock
 
 
@@ -142,20 +238,17 @@ def restore(path: Path = LOCK, *, remote: bool = False) -> Path:
     expected_paths = set()
     for entry in lock['entries']:
         directory = out / safe_relative(entry['path'])
-        for name, ref in [('data.parquet', entry['table']), ('provenance.json', entry['provenance'])]:
-            if name == 'provenance.json':
-                body = provenance_bytes(path, entry)
-            else:
-                cached = OBJECTS / ref['key']
-                if not cached.exists():
-                    if not remote:
-                        raise FileNotFoundError(f'Input not cached: {ref["key"]}; run pipeline:inputs restore --remote')
-                    remote_object(ref, 'get')
-                body = cached.read_bytes()
-                verify_object(ref, body)
-            directory.mkdir(parents=True, exist_ok=True)
-            (directory / name).write_bytes(body)
-            expected_paths.add(directory / name)
+        ref = entry['table']
+        cached = OBJECTS / ref['key']
+        if not cached.exists():
+            if not remote:
+                raise FileNotFoundError(f'Input not cached: {ref["key"]}; run pipeline:inputs restore --remote')
+            remote_object(ref, 'get')
+        body = cached.read_bytes()
+        verify_object(ref, body)
+        directory.mkdir(parents=True, exist_ok=True)
+        (directory / 'data.parquet').write_bytes(body)
+        expected_paths.add(directory / 'data.parquet')
         ref = entry['origin'].get('object')
         if ref:
             cached = OBJECTS / ref['key']
@@ -164,9 +257,43 @@ def restore(path: Path = LOCK, *, remote: bool = False) -> Path:
             if not cached.exists():
                 raise FileNotFoundError(f'Origin not cached: {ref["key"]}')
             verify_object(ref, cached.read_bytes())
-    extra = set(out.rglob('*.parquet')) | set(out.rglob('provenance.json'))
+    extra = set(out.rglob('*.parquet'))
     if extra - expected_paths:
         raise ValueError('Unexpected files in fixed input snapshot')
+    if any(e['path'].startswith('tama-native-settlement/') for e in lock['entries']):
+        from ingestion.fiscal.tama_native_settlement.registration import restore_evidence
+        restore_evidence(OBJECTS, remote=remote)
+    if any(e['path'].startswith('held5-council-approved-detail/') for e in lock['entries']):
+        from ingestion.fiscal.held5_council_provider import restore_evidence
+        restore_evidence(OBJECTS, remote=remote)
+    if any(e['path'].startswith('akishima-settlement2024/') for e in lock['entries']):
+        from ingestion.fiscal.extract_akishima_settlement2024 import restore as restore_settlement2024_evidence
+        restore_settlement2024_evidence(OBJECTS, remote=remote)
+    if any(e['path'].startswith('akishima-settlement2020-2023/') for e in lock['entries']):
+        from ingestion.fiscal.extract_akishima_settlement2020_2023 import restore as restore_settlement2020_2023_evidence
+        restore_settlement2020_2023_evidence(OBJECTS, remote=remote)
+    if any(e['path'].startswith('akishima-settlement2019/') for e in lock['entries']):
+        from ingestion.fiscal.extract_akishima_settlement2019 import (
+            evidence_objects as settlement2019_evidence_objects,
+            restore as restore_settlement2019_evidence,
+        )
+        for ref in settlement2019_evidence_objects():
+            cached = OBJECTS / safe_relative(ref['key'])
+            if not cached.exists():
+                if not remote:
+                    raise FileNotFoundError('Settlement2019 evidence not cached: ' + ref['key'])
+                remote_object(ref, 'get')
+            verify_object(ref, cached.read_bytes())
+        restore_settlement2019_evidence(OBJECTS)
+    if any(e['path'].startswith('akishima-supplementary2020-2025/') for e in lock['entries']):
+        from ingestion.fiscal.akishima_supplementary_fy2025_01.evidence import restore_evidence
+        restore_evidence(OBJECTS, remote=remote)
+    if any(e['path'].startswith('chiyoda2021-settlement-native/') for e in lock['entries']):
+        from ingestion.fiscal.chiyoda2021_settlement_native.registration import restore_evidence as restore_chiyoda2021_settlement_evidence
+        restore_chiyoda2021_settlement_evidence(OBJECTS, remote=remote)
+    if any(e['path'].startswith('tama-ordinary-history/') for e in lock['entries']):
+        from ingestion.fiscal.tama_ordinary_history.reconstruct import restore_evidence
+        restore_evidence(OBJECTS,remote=remote)
     return out
 
 
@@ -180,24 +307,72 @@ def origin_path(sha: str) -> Path:
 
 
 def locked_objects(lock: dict) -> dict:
-    return {ref['key']: ref for entry in lock['entries'] for ref in [entry['table'], entry['origin']['object']]}
+    refs = {ref['key']: ref for entry in lock['entries'] for ref in [entry['table'], entry['origin']['object']]}
+    if any(e['path'].startswith('tama-native-settlement/') for e in lock['entries']):
+        from ingestion.fiscal.tama_native_settlement.registration import evidence_objects
+        for ref in evidence_objects():
+            if ref['key'] in refs and refs[ref['key']] != ref:
+                raise ValueError('Conflicting native proof object identity')
+            refs[ref['key']] = ref
+    if any(e['path'].startswith('held5-council-approved-detail/') for e in lock['entries']):
+        from ingestion.fiscal.held5_council_provider import evidence_objects
+        for ref in evidence_objects():
+            if ref['key'] in refs and refs[ref['key']] != ref:
+                raise ValueError('Conflicting held5 proof object identity')
+            refs[ref['key']] = ref
+    if any(e['path'].startswith('akishima-settlement2024/') for e in lock['entries']):
+        from ingestion.fiscal.extract_akishima_settlement2024 import evidence_objects
+        for ref in evidence_objects():
+            if ref['key'] in refs and refs[ref['key']] != ref:
+                raise ValueError('Conflicting settlement2024 proof object identity')
+            refs[ref['key']] = ref
+    if any(e['path'].startswith('akishima-settlement2020-2023/') for e in lock['entries']):
+        from ingestion.fiscal.extract_akishima_settlement2020_2023 import evidence_objects
+        for ref in evidence_objects():
+            if ref['key'] in refs and refs[ref['key']] != ref:
+                raise ValueError('Conflicting settlement2020-2023 proof object identity')
+            refs[ref['key']] = ref
+    if any(e['path'].startswith('akishima-supplementary2020-2025/') for e in lock['entries']):
+        from ingestion.fiscal.akishima_supplementary_fy2025_01.evidence import evidence_objects
+        for ref in evidence_objects():
+            if ref['key'] in refs and refs[ref['key']] != ref:
+                raise ValueError('Conflicting supplementary FY2025 No.1 evidence identity')
+            refs[ref['key']] = ref
+    if any(e['path'].startswith('chiyoda2025-native/') for e in lock['entries']):
+        from ingestion.fiscal.chiyoda2025_native.registration import evidence_objects
+        for ref in evidence_objects():
+            if ref['key'] in refs and refs[ref['key']] != ref:
+                raise ValueError('Conflicting chiyoda2025 proof object identity')
+            refs[ref['key']] = ref
+    if any(e['path'].startswith('akishima-settlement2019/') for e in lock['entries']):
+        from ingestion.fiscal.extract_akishima_settlement2019 import evidence_objects
+        for ref in evidence_objects():
+            key = safe_relative(ref['key'])
+            if (key not in {f"inputs/{kind}/sha256/{ref['sha256']}" for kind in ('origin', 'proof')}
+                    or not re.fullmatch(r'[a-f0-9]{64}', ref['sha256'])
+                    or type(ref['bytes']) is not int or ref['bytes'] <= 0):
+                raise ValueError('Settlement2019 evidence key/hash/size differs')
+            if key in refs and refs[key] != ref:
+                raise ValueError('Conflicting settlement2019 proof object identity')
+            refs[key] = ref
+    if any(e['path'].startswith('chiyoda2021-settlement-native/') for e in lock['entries']):
+        from ingestion.fiscal.chiyoda2021_settlement_native.registration import evidence_objects
+        for ref in evidence_objects():
+            if ref['key'] in refs and refs[ref['key']] != ref:
+                raise ValueError('Conflicting chiyoda2021 settlement proof object identity')
+            refs[ref['key']] = ref
 
-
-def locked_provenance(lock_path: Path, lock: dict) -> dict[str, bytes]:
-    return {entry['provenance']['path']: provenance_bytes(lock_path, entry) for entry in lock['entries']}
+    if any(e['path'].startswith('tama-ordinary-history/') for e in lock['entries']):
+        from ingestion.fiscal.tama_ordinary_history.reconstruct import evidence_objects
+        from ingestion.fiscal.tama_ordinary_history.contracts import merge_evidence_refs
+        refs=merge_evidence_refs(refs,evidence_objects())
+    return refs
 
 
 def pin_snapshot(draft: Path, target: Path) -> None:
     lock = read_lock(draft)
-    for entry in lock['entries']:
-        save_provenance(target, entry['path'], provenance_bytes(draft, entry))
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_bytes(encode(lock))
-    selected = {entry['provenance']['path'] for entry in lock['entries']}
-    # 過去の採用版は Git 履歴で辿れるため、作業ツリーへ全取得履歴を蓄積しない。
-    for path in (target.parent / 'provenance').rglob('provenance.json'):
-        if str(path.relative_to(target.parent)) not in selected:
-            path.unlink()
 
 
 def backup(lock_path: Path, output: Path) -> None:
@@ -206,8 +381,6 @@ def backup(lock_path: Path, output: Path) -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(output, 'x', allowZip64=True) as archive:
         archive.writestr('sources.lock.json', lock_path.read_bytes())
-        for path, body in sorted(locked_provenance(lock_path, lock).items()):
-            archive.writestr(path, body)
         for key, ref in sorted(refs.items()):
             body = (OBJECTS / key).read_bytes()
             verify_object(ref, body)
@@ -217,16 +390,12 @@ def backup(lock_path: Path, output: Path) -> None:
 def restore_backup(lock_path: Path, archive_path: Path) -> Path:
     lock = read_lock(lock_path)
     refs = locked_objects(lock)
-    provenance = locked_provenance(lock_path, lock)
     with zipfile.ZipFile(archive_path) as archive:
         if archive.read('sources.lock.json') != lock_path.read_bytes():
             raise ValueError('Backup belongs to another fixed input snapshot')
-        expected = set(refs) | set(provenance) | {'sources.lock.json'}
+        expected = set(refs) | {'sources.lock.json'}
         if len(archive.namelist()) != len(expected) or set(archive.namelist()) != expected:
             raise ValueError('Backup objects differ from the fixed snapshot')
-        for path, body in provenance.items():
-            if archive.getinfo(path).file_size != len(body) or archive.read(path) != body:
-                raise ValueError('Backup provenance differs from its Git file')
         for key, ref in sorted(refs.items()):
             if archive.getinfo(key).file_size != ref['bytes']:
                 raise ValueError('Backup object size differs from fixed snapshot')
@@ -241,69 +410,60 @@ def restore_backup(lock_path: Path, archive_path: Path) -> Path:
     return restore(lock_path)
 
 
-def migrate(raw: Path, *, fetch_origins: bool = False, remote: bool = False) -> Path:
-    from ingestion.fiscal.sources import all_sources
-    declared = all_sources()
-    entries = []
-    origins = {}
-    missing = []
+def migrate(raw: Path, *, remote: bool = False) -> Path:
+    raw = raw.resolve()
     draft = CACHE / 'migration/sources.lock.json'
-    for provenance in sorted(raw.rglob('provenance.json')):
-        prov = json.loads(provenance.read_text())
-        sha = prov['sha256']
-        if sha not in origins:
-            candidate = OBJECTS / f'inputs/origin/sha256/{sha}'
-            if not candidate.exists() and fetch_origins:
-                from ingestion.lib.http import http_get
-                try:
-                    got = http_get(prov['request_url'], refresh=True)
-                    if got.sha256 == sha:
-                        save_object('origin', got.body)
-                    else:
-                        missing.append({'sha256': sha, 'reason': 'current origin has different hash', 'url': prov['request_url']})
-                except Exception as error:
-                    missing.append({'sha256': sha, 'reason': str(error), 'url': prov['request_url']})
-            origins[sha] = {'sha256': sha, 'availability': 'stored' if candidate.exists() else 'missing'}
-            if candidate.exists():
-                if digest(candidate.read_bytes()) != sha:
-                    raise ValueError(f'Cached origin does not match provenance: {sha}')
-                origins[sha]['object'] = save_object('origin', candidate.read_bytes())
-        relative = str(provenance.parent.relative_to(raw))
-        relative = relative.replace('phase=approved', 'document_kind=budget').replace('phase=settlement','document_kind=settlement')
-        if '/document_kind=' in relative and '/edition=' not in relative:
-            relative = relative.replace('/direction=', f'/edition={sha}/direction=')
-        entries.append({'path': relative, 'jurisdiction': prov['jurisdiction_code'], 'fiscalYear': prov['fiscal_year'],
-                        'documentKind': next((p.split('=', 1)[1] for p in Path(relative).parts if p.startswith('document_kind=')), None) or next(s.document_kind for s in declared.values() if s.jurisdiction_code == prov['jurisdiction_code'] and s.fiscal_year == prov['fiscal_year']), 'originEdition': sha,
-                        'direction': next((p.split('=', 1)[1] for p in Path(relative).parts if p.startswith('direction=')), None),
-                        'table': save_object('table', (provenance.parent / 'data.parquet').read_bytes()),
-                        'provenance': save_provenance(draft, relative, provenance.read_bytes()), 'origin': origins[sha]})
-    lock = {'schemaVersion': 2, 'entries': entries}
+    entries = []
+    # Fixed restore directories contain only tables; their declarations stay in the lock.
+    snapshots = sorted(raw.rglob('inputs.lock.json'))
+    for snapshot in snapshots:
+        for entry in read_lock(snapshot)['entries']:
+            # A per-table candidate list describes exactly its sibling Parquet.
+            table = snapshot.parent / 'data.parquet'
+            verify_object(entry['table'], table.read_bytes())
+            entries.append(dict(entry, path=str(snapshot.parent.relative_to(raw))))
+    selected = {entry['path'] for entry in entries}
+    for entry in (read_lock(LOCK)['entries'] if LOCK.exists() else []):
+        table = raw / entry['path'] / 'data.parquet'
+        if table.exists() and entry['path'] not in selected:
+            verify_object(entry['table'], table.read_bytes())
+            entries.append(entry)
+            selected.add(entry['path'])
+    unlisted = {str(p.parent.relative_to(raw)) for p in raw.rglob('data.parquet')} - selected
+    if unlisted:
+        raise ValueError('Tables without input declarations: ' + ', '.join(sorted(unlisted)))
+    lock = {'schemaVersion': 3, 'entries': sorted(entries, key=lambda e: e['path'])}
     draft.parent.mkdir(parents=True, exist_ok=True)
     draft.write_bytes(encode(lock))
-    (CACHE / 'migration/missing-origins.json').write_bytes(encode(missing))
+    read_lock(draft)
     if remote:
-        if any(e['origin']['availability'] != 'stored' for e in entries):
-            raise ValueError('Cannot pin remote inputs while original documents are missing')
-        refs = locked_objects(lock)
-        for ref in refs.values():
+        if LOCK.exists() and {e['path'] for e in read_lock(LOCK)['entries']} - selected:
+            raise ValueError('Cannot omit adopted inputs when pinning a replacement snapshot')
+        for ref in locked_objects(lock).values():
             remote_object(ref, 'put')
             remote_object(ref, 'get')
             verify_object(ref, (OBJECTS / ref['key']).read_bytes())
         pin_snapshot(draft, LOCK)
-        draft = LOCK
-    restore(draft)
+        return LOCK
     return draft
+
+
+def describe_inputs(lock_path: Path = LOCK, raw: Path | None = None) -> list[dict]:
+    entries = read_lock(lock_path)['entries']
+    return [dict(path=entry['path'], source=source_metadata(lock_path, entry))
+            for entry in entries if raw is None or (raw / entry['path'] / 'data.parquet').exists()]
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='command', required=True)
+    d = sub.add_parser('describe')
+    d.add_argument('--lock', type=Path, default=LOCK)
     r = sub.add_parser('restore')
     r.add_argument('--lock', type=Path, default=LOCK)
     r.add_argument('--remote', action='store_true')
     m = sub.add_parser('migrate')
     m.add_argument('--raw', type=Path, required=True)
-    m.add_argument('--fetch-origins', action='store_true')
     m.add_argument('--remote', action='store_true')
     b = sub.add_parser('backup')
     b.add_argument('--lock', type=Path, default=LOCK)
@@ -312,10 +472,13 @@ def main() -> None:
     b.add_argument('--lock', type=Path, default=LOCK)
     b.add_argument('--archive', type=Path, required=True)
     args = parser.parse_args()
+    if args.command == 'describe':
+        print(json.dumps(describe_inputs(args.lock), ensure_ascii=False))
+        return
     if args.command == 'restore':
         out = restore(args.lock, remote=args.remote)
     elif args.command == 'migrate':
-        out = migrate(args.raw, fetch_origins=args.fetch_origins, remote=args.remote)
+        out = migrate(args.raw, remote=args.remote)
     elif args.command == 'backup':
         backup(args.lock, args.output)
         out = args.output

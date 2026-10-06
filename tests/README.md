@@ -11,7 +11,7 @@ bun install --frozen-lockfile
 uv sync --frozen
 bun run pipeline:inputs
 bun run pipeline:build
-bun run pdf:layer --jurisdiction 132195
+bun run pdf:layer --jurisdiction 132195 --origin-sha e322f20a1bfc32099a3271dad9fa38d23c7c45d9f0ce1b7cc45eb8f258a6817f
 bun run test:e2e
 ```
 
@@ -34,7 +34,7 @@ mise + age の `OPENCODE_API_KEY` と共通設定の `OPENCODE_E2E_MODEL` を ru
 | テスト / PRD criterion | 確認する内容 |
 | --- | --- |
 | `pipeline-overview.e2e.ts` | トップから概要への遷移、見出し、目次 |
-| 財政予算履歴 AC1 | 当初2明細、符号つき補正3件、決算との対応10件、原典行・頁 |
+| 財政予算履歴 AC1 | 当初2目の非加算参照、置換した事業×節明細、符号つき補正、決算との対応10件、原典行・頁 |
 | 財政予算履歴 AC3 | 2目の年度末差額と、節・収録範囲の未確認表示 |
 | 検証画面 AC2 | 当初の取り込み行と staging 行の対応 |
 | 検証画面 AC2 | 同じ対象の補正第3号と第6号の分離 |

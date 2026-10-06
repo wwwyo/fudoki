@@ -1,5 +1,6 @@
 """狛江市の当初・補正PDFから目の金額を読み、採用資料を固定する。"""
 from __future__ import annotations
+from ingestion.inputs import record_input
 
 import json
 import os
@@ -39,8 +40,24 @@ def amount(text: str) -> int:
     return int(value)
 
 
-def extract(pdf: Path, number: int, target_pages: list[int] | None = None) -> list[dict]:
+def extract(pdf: Path, number: int, target_pages: list[int] | None = None, *,
+            all_moku: bool = False, fiscal_year: int | None = None,
+            fund_label: str = '一般会計', fund_code: str | None = None,
+            source_url: str | None = None, expected_sha256: str | None = None,
+            first_page: int = 1, last_page: int | None = None) -> list[dict]:
     """目欄の金額を抽出する。節・説明欄の反復印字を加算しない。"""
+    if all_moku:
+        from ingestion.fiscal.history_expansion import extract_document
+        if fiscal_year is None:
+            raise ValueError('all_moku requires the explicitly declared fiscal_year')
+        return extract_document(pdf, number, fiscal_year=fiscal_year,
+            fund_label=fund_label, fund_code=fund_code, source_url=source_url,
+            expected_sha256=expected_sha256, first_page=first_page, last_page=last_page)['rows']
+    if first_page != 1 or last_page is not None:
+        raise ValueError('PDF page range requires all_moku=True')
+    if fiscal_year is not None or fund_label != '一般会計' or any(
+            value is not None for value in [fund_code, source_url, expected_sha256]):
+        raise ValueError('Expansion document options require all_moku=True')
     records = []
     kan = kou = None
     expenditure = number == 0
@@ -210,9 +227,69 @@ def _save(code, year, kind, table, got, rows, spec, document, approval_evidence=
         source_amount_unit=spec['source_amount_unit'], extractor=f'pipeline/ingestion/fiscal/extract_budget_history.py@{VERSION}',
         normalization=['NFKCと空白除去。桁区切りと△符号は保持'],
         **{k:spec[k] for k in ['redistribute','redistribute_basis','license_id','attribution']})
-    (directory / 'provenance.json').write_bytes(encode(prov))
+    record_input(directory, prov)
+
+
+def main() -> None:
+    import argparse
+    import subprocess
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--mode', choices=['pilot', 'all-moku'], default='pilot',
+        help='pilot preserves frozen input IDs; all-moku writes isolated supplementary candidates')
+    parser.add_argument('--describe', action='store_true', help='Print the all-moku input/output schema as JSON')
+    parser.add_argument('--pdf', type=Path)
+    parser.add_argument('--fiscal-year', type=int)
+    parser.add_argument('--amendment-number', type=int)
+    parser.add_argument('--fund-label', default='一般会計')
+    parser.add_argument('--fund-code', help='Optional declared code; omitted codes are not invented')
+    parser.add_argument('--source-url')
+    parser.add_argument('--expected-sha256')
+    parser.add_argument('--output-dir', type=Path)
+    parser.add_argument('--first-page', type=int, default=1, help='First physical PDF page of an observed account edition')
+    parser.add_argument('--last-page', type=int, help='Last physical PDF page; preserve original PDF SHA and page numbers')
+    args = parser.parse_args()
+    if args.describe:
+        from ingestion.fiscal.history_expansion import COLUMNS, TABLE_ID
+        print(json.dumps(dict(mode='all-moku', table_id=TABLE_ID,
+            required=['pdf', 'fiscal_year', 'amendment_number', 'source_url', 'expected_sha256', 'output_dir'],
+            optional=['fund_label', 'fund_code', 'first_page', 'last_page'],
+            defaults=dict(fund_label='一般会計', fund_code=None, first_page=1, last_page=None),
+            columns=COLUMNS, grain='changed expenditure moku', source_amount_unit='千円',
+            approval='explicit cover-approved or unconfirmed; not inferred from file date'), ensure_ascii=False))
+        return
+    if args.mode == 'pilot':
+        if any(value is not None for value in [args.pdf, args.fiscal_year, args.amendment_number,
+                args.output_dir, args.source_url, args.expected_sha256, args.fund_code]) or args.fund_label != '一般会計':
+            parser.error('document options require --mode all-moku')
+        if args.first_page != 1 or args.last_page is not None:
+            parser.error('page range requires --mode all-moku')
+        for key in load_budget_history():
+            ingest(key)
+        return
+    if any(value is None for value in [args.pdf, args.fiscal_year, args.amendment_number,
+            args.output_dir, args.source_url, args.expected_sha256]):
+        parser.error('all-moku requires --pdf, --fiscal-year, --amendment-number, --source-url, --expected-sha256, --output-dir')
+    if not re.fullmatch(r'[0-9a-f]{64}', args.expected_sha256):
+        parser.error('--expected-sha256 must be a lowercase 64-character SHA256')
+    if not args.source_url.startswith('https://www.city.komae.tokyo.jp/') or any(ord(c) < 32 for c in args.source_url):
+        parser.error('--source-url must be an official Komae HTTPS URL')
+    output = args.output_dir.resolve()
+    isolated = Path(__file__).resolve().parents[3] / '.agent'
+    if not output.is_relative_to(isolated.resolve()):
+        parser.error('--output-dir must be inside the repository .agent/ candidate area')
+    from ingestion.fiscal.history_expansion import extract_document, materialize
+    try:
+        result = extract_document(args.pdf, args.amendment_number,
+            fiscal_year=args.fiscal_year, fund_label=args.fund_label, fund_code=args.fund_code,
+            source_url=args.source_url, expected_sha256=args.expected_sha256,
+            first_page=args.first_page, last_page=args.last_page)
+        evidence = materialize(output, result, request_url=args.source_url)
+    except (ValueError, OSError, subprocess.CalledProcessError, duckdb.Error) as error:
+        parser.exit(1, json.dumps(dict(status='error', error=str(error))) + '\n')
+    print(json.dumps(dict(status='candidate-materialized', output_dir=str(output),
+        rows=evidence['rows'], first_article=evidence['first_article'],
+        approval_status=evidence['approval_status']), ensure_ascii=False))
 
 
 if __name__ == '__main__':
-    for key in load_budget_history():
-        ingest(key)
+    main()

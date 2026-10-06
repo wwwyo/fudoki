@@ -28,6 +28,7 @@ p1 だけ見出しのテキストを持ち、p2 以降は表ごとアウトラ�
 """
 
 from __future__ import annotations
+from ingestion.inputs import record_input, cached_input
 
 from ingestion.paths import RAW
 
@@ -316,9 +317,10 @@ def ingest(key: str) -> None:
                 engine_missing = True
 
         out_dir = OUT / f"jurisdiction={code}" / f"year={year}"
-        prov_path = out_dir / "provenance.json"
+        prov_path = out_dir / "inputs.lock.json"
         if prov_path.exists() and (out_dir / "data.parquet").exists():
-            old = json.loads(prov_path.read_text())
+            entry = cached_input(out_dir)
+            old = {**entry['source'], 'sha256': entry['originEdition']}
             if engine_missing:
                 # 版で比較できない代わりに、原典が既存の抽出物と同じ SHA-256 なら
                 # 抽出結果も変わらないはずなので保全する。違えば再抽出が必要だが
@@ -379,7 +381,7 @@ def ingest(key: str) -> None:
     con.close()
 
     by_mode = {m: sum(1 for v in modes.values() if v == m) for m in sorted(set(modes.values()))}
-    prov_path.write_text(json.dumps({
+    record_input(out_dir, {
         "jurisdiction_code": code,
         "fiscal_year": int(year),
         "direction": "revenue",
@@ -406,7 +408,7 @@ def ingest(key: str) -> None:
         "redistribute": spec.get("redistribute", "review"),
         "redistribute_basis": spec.get("redistribute_basis", ""),
         "license_id": spec.get("license_id", "NOASSERTION"),
-    }, ensure_ascii=False, indent=2) + "\n")
+    })
     print(f"ok    {key}  {summary['moku']} 目 / {summary['kan']} 款  "
           f"名称 {summary['named']}  金額 {summary['withAmount']}  ページ {by_mode}")
 

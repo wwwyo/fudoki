@@ -9,9 +9,10 @@
 -- そちらは declarations_cover_raw.sql が原典の partition と突き合わせる。
 with raw_counts as (
     {% for code in var('fiscal_levels').keys() | list | sort %}
-    select '{{ code }}' as jurisdiction, direction, count(*) as n
-    from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/jurisdiction={{ code }}/year=*/document_kind=*/edition=*/direction=*/data.parquet',
-                      hive_partitioning=true)
+    select '{{ code }}' as jurisdiction,
+           regexp_extract(filename, '/direction=([^/]+)', 1) as direction, count(*) as n
+    from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/jurisdiction={{ code }}/year=*/document_kind=*/edition=*/direction=*/{% if code in ['131016', '132071'] %}**/{% endif %}data.parquet',
+                      hive_partitioning=false, union_by_name=true, filename=true)
     group by 1, 2
     {% if not loop.last %}union all{% endif %}
     {% endfor %}

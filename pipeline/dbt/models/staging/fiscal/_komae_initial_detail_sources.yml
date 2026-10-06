@@ -1,0 +1,8 @@
+version: 2
+sources:
+  - name: raw_132195_initial_detail
+    description: Approved Komae initial ordinary-account printed project×setsu×department rows; reserve blank codes remain NULL. Account-specific resources distinguish rows in shared PDF originals.
+    meta:
+      external_location: "(select * exclude(filename), regexp_extract(filename, '/resource=([^/]+)', 1) as resource_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/initial-detail/jurisdiction=132195/year=*/document_kind=budget/edition=*/direction=expenditure/resource=*/data.parquet', hive_partitioning=false, filename=true))"
+    tables:
+      - name: data

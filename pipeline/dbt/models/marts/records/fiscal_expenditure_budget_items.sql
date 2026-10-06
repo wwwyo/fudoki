@@ -1,6 +1,8 @@
 {{ config(materialized='table') }}
 with g as (
-  select * from {{ ref('int_expenditure_setsu_groups') }}
+  select g.* from {{ ref('int_expenditure_setsu_groups') }} g
+  where not exists (select 1 from {{ ref('fiscal_132195_initial_moku_reference') }} r
+                    where r.fiscal_line_id=g.fiscal_line_id and r.superseded_by_full_initial_detail)
 ), rep as (
   select budget_item_id, fiscal_line_id as rep_line_id, setsu_ordinal, setsu_label,
          row_number() over (partition by budget_item_id order by dataset_id, fiscal_line_id) as rn
@@ -56,4 +58,39 @@ select s.budget_item_id, s.jurisdiction_code, s.fiscal_year, s.fund_code, s.fund
 from setsu_items s join setsu_names n using (budget_item_id)
 union all
 select * from origin_items
+union all
+select * from {{ ref('int_132195_initial_budget_items') }}
+union all
+select distinct h.budget_item_id,h.jurisdiction_code,h.fiscal_year,h.fund_code,h.fund_label,
+       h.expenditure_setsu_id,
+       case when h.expenditure_setsu_id is not null then 'expenditure_setsu' else 'origin_line' end as line_granularity,
+       h.account_path_json,h.dimensions_json,
+       to_json([
+         struct_pack(kind:='hierarchy',level:='moku',value:=h.moku_label,nameSource:='origin',basis:=''),
+         struct_pack(kind:='hierarchy',level:='project',value:=h.project_label,nameSource:='origin',basis:=''),
+         struct_pack(kind:='hierarchy',level:='setsu',value:=h.setsu_label,nameSource:='origin',basis:='')
+       ])::varchar as names_json,h.initial_state
+from {{ ref('int_supplementary_expenditure_changes') }} h
+where not exists (select 1 from {{ ref('int_132195_initial_budget_items') }} i
+                  where i.budget_item_id=h.budget_item_id)
+union all
+select c.* from {{ ref('fiscal_132195_council_expenditure_budget_items') }} c
+where not exists (select 1 from g where g.budget_item_id=c.budget_item_id)
+  and not exists (select 1 from {{ ref('int_132195_initial_budget_items') }} i where i.budget_item_id=c.budget_item_id)
+  and not exists (select 1 from {{ ref('int_supplementary_expenditure_changes') }} s where s.budget_item_id=c.budget_item_id)
+union all
+select n.* from {{ ref('fiscal_132195_native_council_expenditure_budget_items') }} n
+where not exists (select 1 from g where g.budget_item_id=n.budget_item_id)
+  and not exists (select 1 from {{ ref('int_132195_initial_budget_items') }} i where i.budget_item_id=n.budget_item_id)
+  and not exists (select 1 from {{ ref('int_supplementary_expenditure_changes') }} s where s.budget_item_id=n.budget_item_id)
+  and not exists (select 1 from {{ ref('fiscal_132195_council_expenditure_budget_items') }} c where c.budget_item_id=n.budget_item_id)
+union all
+select * from {{ ref('int_132071_initial445_budget_items') }}
+union all
+select h.* from {{ ref('fiscal_132195_held5_council_expenditure_budget_items') }} h
+where not exists (select 1 from g where g.budget_item_id=h.budget_item_id)
+  and not exists (select 1 from {{ ref('int_132195_initial_budget_items') }} i where i.budget_item_id=h.budget_item_id)
+  and not exists (select 1 from {{ ref('int_supplementary_expenditure_changes') }} s where s.budget_item_id=h.budget_item_id)
+  and not exists (select 1 from {{ ref('fiscal_132195_council_expenditure_budget_items') }} c where c.budget_item_id=h.budget_item_id)
+  and not exists (select 1 from {{ ref('fiscal_132195_native_council_expenditure_budget_items') }} n where n.budget_item_id=h.budget_item_id)
 order by budget_item_id

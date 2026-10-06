@@ -1,8 +1,9 @@
 -- 科目（款・項・目）の一覧と、法定マスタへの解決。**団体をまたいで同じ形。**
 --
--- 粒度は**科目**（団体 × 年度 × 会計 × 款・項・目）である。予算の行の同一性には
+-- 粒度は**一資料の科目**（dataset × 会計 × 款・項・目）である。予算の行の同一性には
 -- 所属や予算区分も要るが、それは行のカタログではなく科目のカタログなので含めない
--- （同じ科目が複数の所属に現れても、科目としての名称と法定対応は1つ）。
+-- （同じ資料の科目が複数の所属に現れても、科目としての名称と法定対応は1つ）。
+-- 当初予算と決算で名称が変わる場合があるため、資料の識別を落とさない。
 --
 -- 名称の出所は団体で違う。三鷹市は原典 CSV の各行に名称があり、狛江市は
 -- 原典に無いので決算書 PDF の見出しから解決した（core_fiscal_account_names）。
@@ -34,7 +35,7 @@ with names as (
     -- 4団体目を足すときに同じ形をもう2つ増やすことになったので宣言へ寄せた。
     {%- for code, name_source in var('fiscal_account_name_sources').items() %}
     select
-        jurisdiction_code, fiscal_year, direction, fund_code, fund_label,
+        jurisdiction_code, fiscal_year, direction, dataset_id, document_kind, origin_sha256, fund_code, fund_label,
         kan_code, kan_label as kan_name,
         kou_code, kou_label as kou_name,
         moku_code, moku_label as moku_name,
@@ -43,7 +44,7 @@ with names as (
     where jurisdiction_code = '{{ code }}'
     union all
     select
-        jurisdiction_code, fiscal_year, direction, fund_code, fund_label,
+        jurisdiction_code, fiscal_year, direction, dataset_id, document_kind, origin_sha256, fund_code, fund_label,
         kan_code, kan_label, kou_code, kou_label, moku_code, moku_label, '{{ name_source }}'
     from {{ ref('core_revenue_lines') }}
     where jurisdiction_code = '{{ code }}'
@@ -51,7 +52,7 @@ with names as (
     {%- endfor %}
     -- 狛江市: 決算書 PDF の見出しから解決した名称（fudoki の判断）
     select
-        l.jurisdiction_code, l.fiscal_year, l.direction, l.fund_code, l.fund_label,
+        l.jurisdiction_code, l.fiscal_year, l.direction, l.dataset_id, l.document_kind, l.origin_sha256, l.fund_code, l.fund_label,
         l.kan_code, n.kan_name, l.kou_code, n.kou_name, l.moku_code, n.moku_name,
         -- ⚠️ 名称が無い行に出所を主張しない。PDF の無い年度（2018〜2019）は null のまま
         case when n.kan_name is not null then 'settlement-pdf' end
@@ -65,7 +66,7 @@ with names as (
     -- OCR は誤読が多く名称の全量には使えなかった（実測。詳細は jurisdictions/132195.md）。
     -- 名称の無い年度は null で正直に残す（款の master 対応は account_map が 2020年度以降に効かせる）。
     select
-        l.jurisdiction_code, l.fiscal_year, l.direction, l.fund_code, l.fund_label,
+        l.jurisdiction_code, l.fiscal_year, l.direction, l.dataset_id, l.document_kind, l.origin_sha256, l.fund_code, l.fund_label,
         l.kan_code, n.kan_name, l.kou_code, n.kou_name, l.moku_code, n.moku_name,
         case when n.kan_name is not null then 'settlement-pdf' end
     from {{ ref('core_revenue_lines') }} as l
@@ -81,7 +82,7 @@ with names as (
 
 distinct_accounts as (
     select distinct
-        jurisdiction_code, fiscal_year, direction, fund_code, fund_label,
+        jurisdiction_code, fiscal_year, direction, dataset_id, document_kind, origin_sha256, fund_code, fund_label,
         kan_code, kan_name, kou_code, kou_name, moku_code, moku_name, name_source
     from names
 ),
@@ -138,6 +139,9 @@ select
     a.jurisdiction_code,
     a.fiscal_year,
     a.direction,
+    a.dataset_id,
+    a.document_kind,
+    a.origin_sha256,
     a.fund_code,
     a.fund_label,
     a.canonical_fund,

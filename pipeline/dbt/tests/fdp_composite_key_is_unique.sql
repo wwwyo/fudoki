@@ -25,7 +25,13 @@ from (
         -- 区切りは U+001F（原典に現れない制御文字）。連結だけだと
         -- 隣り合う列の境目がずれた重複を取り逃がす。
         dataset_id || chr(31)
-        || {{ parts | join(" || chr(31) || ") }} as key,
+        || {{ parts | join(" || chr(31) || ") }}
+        {% if code in ['131016', '132071'] %}
+        -- 新PDF表には同じ科目・説明の別印字行がある。stagingのIDと同じく
+        -- 原典行位置まで区別し、旧無table入力の複合キーは変えない。
+        || case when source_table_id is null then ''
+                else chr(31) || source_table_id || chr(31) || source_row end
+        {% endif %} as key,
         count(*) as n
     from {{ ref('stg_' ~ code ~ '__' ~ direction) }}
     group by 1

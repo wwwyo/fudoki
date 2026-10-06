@@ -1,0 +1,27 @@
+{{ config(materialized='table') }}
+select 'c-' || sha256(h.fiscal_line_id) as change_id,h.dataset_id,h.budget_item_id,
+       h.delta_yen as amount_delta,'supplementary' as change_kind,h.effective_at,
+       h.amendment_number::bigint as sequence,h.source_row,
+       null::varchar as counterpart_budget_item_id,null::bigint as carryover_from_year,null::bigint as carryover_to_year,
+       null::varchar as cofog_code,'unclassified' as cofog_status,
+       '番号付き議会承認原典の印字事業×節。予備費の法定対応は未確認。COFOGは未分類' as cofog_basis,
+       '[' || json_object('path',h.account_path_json::json,'amount',h.delta_yen,
+         'fiscalLineId',h.fiscal_line_id,'sourceRow',h.source_row,
+         'dimensions',h.dimensions_json::json,'observedSourceGrain',h.source_grain,
+         'expenditureSetsuId',h.expenditure_setsu_id,'expenditureSetsuStatus',h.expenditure_setsu_status,
+         'printedSetsuCode',h.setsu_code,'printedSetsuLabel',h.setsu_label,
+         'printedDepartment',h.department_text,'projectSourceRow',h.project_source_row,
+         'printedProjectDelta',h.project_printed_delta,'projectEvidence',h.project_evidence_json::json,
+         'originalMokuControl',h.control_moku_json::json,'printedValue',h.printed_amount_text,
+         'sourceAmountUnit',h.source_amount_unit,'page',h.page_number,'bbox',h.bbox_json::json,
+         'sourceLocations',h.source_locations_json::json,'printedText',h.printed_text,
+         'leftSetsuEvidence',h.left_setsu_evidence_json::json,'unitEvidence',h.unit_evidence_json::json,
+         'approvalDate',h.approval_date,'approvalEvidence',h.approval_evidence_json::json,
+         'councilResolutionDate',h.council_resolution_date,'printedSubmissionDate',h.printed_submission_date,
+         'executiveDispositionDate',h.executive_disposition_date,'effectiveDate',h.effective_date,
+         'effectiveDateBasis',h.effective_date_basis,'approvalProof',h.approval_proof_json::json,
+         'observedGrainValidationStatus',h.observed_grain_validation_status,
+         'setsuCorrespondenceStatus',h.setsu_correspondence_status,
+         'rawSource',struct_pack(source_row := h.source_row,jurisdiction_code := h.jurisdiction_code,fiscal_year := h.fiscal_year,fund_label := h.fund_label,amendment_number := h.amendment_number,source_url := h.source_url,origin_sha256 := h.origin_sha256,origin_fetched_at := h.origin_fetched_at,submitted_date := h.submitted_date,approval_status := h.approval_status,edition_status := h.edition_status,approval_date := h.approval_date,approval_evidence_json := h.approval_evidence_json,kan_code := h.kan_code,kou_code := h.kou_code,moku_code := h.moku_code,moku_label := h.moku_label,control_moku_source_row := h.control_moku_source_row,control_moku_key := h.control_moku_key,control_moku_json := h.control_moku_json,project_source_row := h.project_source_row,project_code := h.project_code,project_label := h.project_label,project_printed_delta := h.project_printed_delta,project_evidence_json := h.project_evidence_json,department_text := h.department_text,setsu_code := h.setsu_code,setsu_label := h.setsu_label,amount_delta := h.amount_delta,printed_amount_text := h.printed_amount_text,source_amount_unit := h.source_amount_unit,page_number := h.page_number,bbox_json := h.bbox_json,printed_text := h.printed_text,source_locations_json := h.source_locations_json,left_setsu_evidence_json := h.left_setsu_evidence_json,unit_evidence_json := h.unit_evidence_json,validation_status := h.validation_status,validation_reasons_json := h.validation_reasons_json,source_grain := h.source_grain,observed_grain_validation_status := h.observed_grain_validation_status,setsu_correspondence_status := h.setsu_correspondence_status,council_resolution_date := h.council_resolution_date,printed_submission_date := h.printed_submission_date,executive_disposition_date := h.executive_disposition_date,effective_date := h.effective_date,effective_date_basis := h.effective_date_basis,approval_url := h.approval_url,resolution_id := h.resolution_id,original_cover_approval_status := h.original_cover_approval_status,approval_proof_json := h.approval_proof_json,setsu_name_match_basis := h.setsu_name_match_basis)) || ']' as details_json
+from {{ ref('int_132195_council_expenditure_changes') }} h
+order by change_id

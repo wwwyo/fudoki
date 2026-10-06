@@ -15,7 +15,7 @@ select s.fiscal_line_id, {{ loop.index0 }} as ordinal, '{{ level }}' as level,
 from {{ ref('stg_' ~ code ~ '__' ~ direction) }} as s
 {% if level in ['kan', 'kou', 'moku'] %}
 left join {{ ref('core_fiscal_accounts') }} as a
-using (jurisdiction_code, fiscal_year, direction, fund_code, fund_label, kan_code, kou_code, moku_code)
+using (jurisdiction_code, fiscal_year, direction, dataset_id, fund_code, fund_label, kan_code, kou_code, moku_code)
 {% endif %}
 {% endfor %}
 {% endfor %}

@@ -6,4 +6,6 @@ fudoki:
     dev:
       type: duckdb
       path: ../.build/warehouse.duckdb
-      threads: 4
+      threads: 1
+      settings:
+        memory_limit: '4GB'

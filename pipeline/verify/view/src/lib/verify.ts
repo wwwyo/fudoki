@@ -9,7 +9,7 @@ import type {
   ColDoc,
   Direction,
   Node,
-  Provenance,
+  SourceInput,
   ReportData,
   Stage,
 } from '@/lib/pipeline'
@@ -121,14 +121,14 @@ export type TableRows = {
   /** 行数の上限で打ち切られたか。見えていない行があることを画面が言うための印 */
   truncated?: boolean
   /** 原典ノードだけが持つ、その原典の証跡 */
-  provs?: Provenance[]
+  provs?: SourceInput[]
 }
 
 export type PdfRows = {
   kind: 'pdf'
   /** 原典の文書（年度ごとに別ファイルのことがある）。無い = レイヤ未生成 */
   docs: PdfDocMeta[]
-  provs: Provenance[]
+  provs: SourceInput[]
 }
 
 export type NoRows = { kind: 'none'; reason: string }
@@ -292,7 +292,7 @@ function rowKeySet(
   // - bli/rule … bli は値自体が年度・向きを含み、rule id は共通名 — 修飾すると
   //   年度・向きを持たない表（規則表・COFOG 割当）と永遠に一致しないので付けない
   const value = (name: string) => row[t.columns.indexOf(name)]
-  const table = value('table_id') ?? value('resource') ?? (dataset.length === 6 ? dataset[5] : null)
+  const table = value('table_id') ?? value('source_table_id') ?? value('table') ?? value('resource') ?? (dataset.length === 6 ? dataset[5] : null)
   const edition = value('origin_sha256') ?? value('edition') ?? (table ? dataset[4] : null)
   const scope = table && edition ? `${edition}|${table}` : null
   const q = (space: string, v: unknown) =>

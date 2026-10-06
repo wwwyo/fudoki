@@ -50,7 +50,15 @@ where true
        or {{ lv }}_label is distinct from {{ lv }}_source)
 {%- elif style == 'prefix2' %}
   and (({{ lv }}_code || {{ lv }}_label) is distinct from {{ lv }}_source
-       or not regexp_full_match({{ lv }}_code, '\d{2}'))
+       or (not regexp_full_match({{ lv }}_code, '\d{2}')
+           and not (
+             false
+             {% for cell in var('fiscal_uncoded_cells', {}).get(code, {}).get(direction, {}).get(lv, []) %}
+             or (fiscal_year = {{ cell['year'] }} and document_kind = '{{ cell['document_kind'] }}'
+                 and source_row = {{ cell['source_row'] }} and {{ lv }}_source = '{{ cell['source'] }}'
+                 and {{ lv }}_code = '' and {{ lv }}_label = {{ lv }}_source)
+             {% endfor %}
+           )))
 {%- else %}
   and ({{ lv }}_code is distinct from {{ lv }}_source
        or not regexp_full_match({{ lv }}_code, '\d+'))

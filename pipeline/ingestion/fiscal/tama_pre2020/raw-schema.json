@@ -1,0 +1,2050 @@
+{
+ "pdf-word-observations": [
+  {
+   "name": "source_url",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "origin_sha256",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "source_ordinal",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_page",
+   "type": "BIGINT"
+  },
+  {
+   "name": "printed_word",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "x_min",
+   "type": "DOUBLE"
+  },
+  {
+   "name": "y_min",
+   "type": "DOUBLE"
+  },
+  {
+   "name": "x_max",
+   "type": "DOUBLE"
+  },
+  {
+   "name": "y_max",
+   "type": "DOUBLE"
+  },
+  {
+   "name": "direction",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "phase",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "source_unit",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "observed_amount",
+   "type": "BIGINT"
+  },
+  {
+   "name": "role",
+   "type": "VARCHAR"
+  }
+ ],
+ "pdf-page-observations": [
+  {
+   "name": "source_url",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "origin_sha256",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "source_ordinal",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_page",
+   "type": "BIGINT"
+  },
+  {
+   "name": "width",
+   "type": "DOUBLE"
+  },
+  {
+   "name": "height",
+   "type": "DOUBLE"
+  },
+  {
+   "name": "word_count",
+   "type": "BIGINT"
+  },
+  {
+   "name": "printed_page_candidates_json",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "printed_year_words_json",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "unit_words_json",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_words_json",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "direction",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "phase",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "source_unit",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "observed_amount",
+   "type": "BIGINT"
+  },
+  {
+   "name": "role",
+   "type": "VARCHAR"
+  }
+ ],
+ "csv-lexical-67cdd0c9153009df6f0e9a51": [
+  {
+   "name": "source_url",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "origin_sha256",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "source_ordinal",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "raw_lexical_record",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_cells_json",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "observed_column_count",
+   "type": "BIGINT"
+  },
+  {
+   "name": "role",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "encoding",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_001",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_002",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_003",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_004",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_005",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_006",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_007",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_008",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_009",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_010",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_011",
+   "type": "VARCHAR"
+  }
+ ],
+ "csv-lexical-46a00db04b5869e24545c5a7": [
+  {
+   "name": "source_url",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "origin_sha256",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "source_ordinal",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "raw_lexical_record",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_cells_json",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "observed_column_count",
+   "type": "BIGINT"
+  },
+  {
+   "name": "role",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "encoding",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_001",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_002",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_003",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_004",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_005",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_006",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_007",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_008",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_009",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_010",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_011",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_012",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_013",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_014",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_015",
+   "type": "VARCHAR"
+  }
+ ],
+ "csv-lexical-5913afed4e963fe5cc24d97a": [
+  {
+   "name": "source_url",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "origin_sha256",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "source_ordinal",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "raw_lexical_record",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_cells_json",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "observed_column_count",
+   "type": "BIGINT"
+  },
+  {
+   "name": "role",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "encoding",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_001",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_002",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_003",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_004",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_005",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_006",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_007",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_008",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_009",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_010",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_011",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_012",
+   "type": "VARCHAR"
+  }
+ ],
+ "csv-lexical-ec19115add00785366b1ed98": [
+  {
+   "name": "source_url",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "origin_sha256",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "source_ordinal",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "raw_lexical_record",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_cells_json",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "observed_column_count",
+   "type": "BIGINT"
+  },
+  {
+   "name": "role",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "encoding",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_001",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_002",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_003",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_004",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_005",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_006",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_007",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_008",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_009",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_010",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_011",
+   "type": "VARCHAR"
+  }
+ ],
+ "account-reference-controls": [
+  {
+   "name": "source_url",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "origin_sha256",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "source_ordinal",
+   "type": "BIGINT"
+  },
+  {
+   "name": "source_column_ordinal",
+   "type": "BIGINT"
+  },
+  {
+   "name": "printed_year",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "fiscal_year",
+   "type": "BIGINT"
+  },
+  {
+   "name": "printed_account",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "printed_value",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "cell_present",
+   "type": "BOOLEAN"
+  },
+  {
+   "name": "observed_amount",
+   "type": "BIGINT"
+  },
+  {
+   "name": "declared_source_unit",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "unit_multiplier",
+   "type": "BIGINT"
+  },
+  {
+   "name": "amount_kind",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "direction",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "role",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "unit_evidence_url",
+   "type": "VARCHAR"
+  }
+ ],
+ "csv-lexical-cdfc82e18507c69faddb1234": [
+  {
+   "name": "source_url",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "origin_sha256",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "source_ordinal",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "raw_lexical_record",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_cells_json",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "observed_column_count",
+   "type": "BIGINT"
+  },
+  {
+   "name": "role",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "encoding",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_001",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_002",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_003",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_004",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_005",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_006",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_007",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_008",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_009",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_010",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_011",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_012",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_013",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_014",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_015",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_016",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_017",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_018",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_019",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_020",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_021",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_022",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_023",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_024",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_025",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_026",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_027",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_028",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_029",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_030",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_031",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_032",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_033",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_034",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_035",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_036",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_037",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_038",
+   "type": "VARCHAR"
+  }
+ ],
+ "csv-lexical-d8f101e90000421349f9d0f5": [
+  {
+   "name": "source_url",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "origin_sha256",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "source_ordinal",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "raw_lexical_record",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_cells_json",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "observed_column_count",
+   "type": "BIGINT"
+  },
+  {
+   "name": "role",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "encoding",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_001",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_002",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_003",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_004",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_005",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_006",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_007",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_008",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_009",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_010",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_011",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_012",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_013",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_014",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_015",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_016",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_017",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_018",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_019",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_020",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_021",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_022",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_023",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_024",
+   "type": "VARCHAR"
+  }
+ ],
+ "health-expenditure-rows": [
+  {
+   "name": "observed_id",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "source_url",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "origin_sha256",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "fiscal_year",
+   "type": "BIGINT"
+  },
+  {
+   "name": "printed_account",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "physical_page",
+   "type": "BIGINT"
+  },
+  {
+   "name": "printed_page",
+   "type": "BIGINT"
+  },
+  {
+   "name": "panel",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "source_ordinal",
+   "type": "BIGINT"
+  },
+  {
+   "name": "printed_row_label",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "printed_code",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "observed_grain",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_cells_json",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_words_json",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "bbox_json",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "printed_executed_yen",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "executed_yen",
+   "type": "BIGINT"
+  },
+  {
+   "name": "printed_executed_thousand_yen",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "executed_thousand_yen",
+   "type": "BIGINT"
+  },
+  {
+   "name": "printed_budget_current",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "budget_current_thousand_yen",
+   "type": "BIGINT"
+  },
+  {
+   "name": "printed_initial_budget",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "initial_budget_thousand_yen",
+   "type": "BIGINT"
+  },
+  {
+   "name": "amount_phase",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "source_unit",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "unit_multiplier",
+   "type": "BIGINT"
+  },
+  {
+   "name": "recognition_status",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "legal_setsu_id",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "project_setsu_relationship",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "printed_september_amendment",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "printed_december_amendment",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "printed_march_amendment",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "printed_transfer",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "printed_prior_year_reference",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "printed_change_percent",
+   "type": "VARCHAR"
+  }
+ ],
+ "csv-lexical-fdc8544079ed6700ad00129e": [
+  {
+   "name": "source_url",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "origin_sha256",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "source_ordinal",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "raw_lexical_record",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_cells_json",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "observed_column_count",
+   "type": "BIGINT"
+  },
+  {
+   "name": "role",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "encoding",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_001",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_002",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_003",
+   "type": "VARCHAR"
+  }
+ ],
+ "csv-lexical-5b69ea19f017e41ec4393479": [
+  {
+   "name": "source_url",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "origin_sha256",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "source_ordinal",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "raw_lexical_record",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_cells_json",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "observed_column_count",
+   "type": "BIGINT"
+  },
+  {
+   "name": "role",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "encoding",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_001",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_002",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_003",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_004",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_005",
+   "type": "VARCHAR"
+  }
+ ],
+ "csv-lexical-acb2d4d787059d9ccc9dc021": [
+  {
+   "name": "source_url",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "origin_sha256",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "source_ordinal",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "raw_lexical_record",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_cells_json",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "observed_column_count",
+   "type": "BIGINT"
+  },
+  {
+   "name": "role",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "encoding",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_001",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_002",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_003",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_004",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_005",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_006",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_007",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_008",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_009",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_010",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_011",
+   "type": "VARCHAR"
+  }
+ ],
+ "csv-lexical-25441b6f6231db8c1f25201f": [
+  {
+   "name": "source_url",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "origin_sha256",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "source_ordinal",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "raw_lexical_record",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_cells_json",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "observed_column_count",
+   "type": "BIGINT"
+  },
+  {
+   "name": "role",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "encoding",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_001",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_002",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_003",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_004",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_005",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_006",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_007",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_008",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_009",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_010",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_011",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_012",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_013",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_014",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_015",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_016",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_017",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_018",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_019",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_020",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_021",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_022",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_023",
+   "type": "VARCHAR"
+  }
+ ],
+ "csv-lexical-19bec615dee3a5b46ebd909a": [
+  {
+   "name": "source_url",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "origin_sha256",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "source_ordinal",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "raw_lexical_record",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_cells_json",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "observed_column_count",
+   "type": "BIGINT"
+  },
+  {
+   "name": "role",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "encoding",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_001",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_002",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_003",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_004",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_005",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_006",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_007",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_008",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_009",
+   "type": "VARCHAR"
+  }
+ ],
+ "csv-lexical-60fc49788be4981884a79db9": [
+  {
+   "name": "source_url",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "origin_sha256",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "source_ordinal",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "raw_lexical_record",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_cells_json",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "observed_column_count",
+   "type": "BIGINT"
+  },
+  {
+   "name": "role",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "encoding",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_001",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_002",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_003",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_004",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_005",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_006",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_007",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_008",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_009",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_010",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_011",
+   "type": "VARCHAR"
+  }
+ ],
+ "csv-lexical-b932d220b3f122e437c3b82e": [
+  {
+   "name": "source_url",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "origin_sha256",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "source_ordinal",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "raw_lexical_record",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_cells_json",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "observed_column_count",
+   "type": "BIGINT"
+  },
+  {
+   "name": "role",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "encoding",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_001",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_002",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_003",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_004",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_005",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_006",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_007",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_008",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_009",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_010",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_011",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_012",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_013",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_014",
+   "type": "VARCHAR"
+  }
+ ],
+ "csv-lexical-881094d87494b60f7735562b": [
+  {
+   "name": "source_url",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "origin_sha256",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "source_ordinal",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "raw_lexical_record",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_cells_json",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "observed_column_count",
+   "type": "BIGINT"
+  },
+  {
+   "name": "role",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "encoding",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_001",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_002",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_003",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_004",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_005",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_006",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_007",
+   "type": "VARCHAR"
+  }
+ ],
+ "csv-lexical-a77f5c67b8f19ad857804fd9": [
+  {
+   "name": "source_url",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "origin_sha256",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "source_ordinal",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "raw_lexical_record",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_cells_json",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "observed_column_count",
+   "type": "BIGINT"
+  },
+  {
+   "name": "role",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "encoding",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_001",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_002",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_003",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_004",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_005",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_006",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_007",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_008",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_009",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_010",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_011",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_012",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_013",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_014",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_015",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_016",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_017",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_018",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_019",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_020",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_021",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_022",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_023",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_024",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_025",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_026",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_027",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_028",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_029",
+   "type": "VARCHAR"
+  }
+ ],
+ "csv-lexical-d6e7457d708162add52d382f": [
+  {
+   "name": "source_url",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "origin_sha256",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "source_ordinal",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "physical_line_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_start",
+   "type": "BIGINT"
+  },
+  {
+   "name": "byte_end",
+   "type": "BIGINT"
+  },
+  {
+   "name": "raw_lexical_record",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_cells_json",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "observed_column_count",
+   "type": "BIGINT"
+  },
+  {
+   "name": "role",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "encoding",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_001",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_002",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_003",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_004",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_005",
+   "type": "VARCHAR"
+  },
+  {
+   "name": "original_column_006",
+   "type": "VARCHAR"
+  }
+ ]
+}

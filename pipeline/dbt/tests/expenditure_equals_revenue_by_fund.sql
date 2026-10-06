@@ -27,20 +27,22 @@
 
 with sums as (
     {% for code, direction, name in units %}
-    select '{{ code }}' as jurisdiction, fiscal_year, fund_label,
+    select '{{ code }}' as jurisdiction, fiscal_year, fund_label, document_kind,
            '{{ direction }}' as direction,
            sum({{ fiscal_amount_value_sql(code, direction, name) }}) as amount
-    from {{ ref('stg_' ~ code ~ '__' ~ direction) }} group by 1, 2, 3, 4
+    from {{ ref('stg_' ~ code ~ '__' ~ direction) }}
+    {% if spec[code].get('document_kinds') %}where document_kind in ('{{ spec[code]['document_kinds'] | join("', '") }}'){% endif %}
+    group by 1, 2, 3, 4, 5
     {% if not loop.last %}union all{% endif %}
     {% endfor %}
 ),
 
 paired as (
     select
-        jurisdiction, fiscal_year, fund_label,
+        jurisdiction, fiscal_year, fund_label, document_kind,
         sum(amount) filter (where direction = 'expenditure') as 歳出,
         sum(amount) filter (where direction = 'revenue')     as 歳入
-    from sums group by 1, 2, 3
+    from sums group by 1, 2, 3, 4
 )
 
 select *, 歳出 - 歳入 as 差

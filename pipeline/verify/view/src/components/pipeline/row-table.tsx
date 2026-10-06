@@ -77,8 +77,8 @@ export const RowTable = forwardRef<RowTableHandle, Props>(function RowTable(
     return m
   }, [keySets])
 
-  useImperativeHandle(ref, () => ({
-    scrollToKeys(keys: Iterable<string>) {
+  const scrollToKeys = useCallback(
+    (keys: Iterable<string>) => {
       const el = boxRef.current
       if (!el) return
       let i: number | undefined
@@ -94,7 +94,13 @@ export const RowTable = forwardRef<RowTableHandle, Props>(function RowTable(
         setScrollTop(el.scrollTop)
       }
     },
-  }))
+    [keyIndex]
+  )
+  useImperativeHandle(ref, () => ({ scrollToKeys }), [scrollToKeys])
+  // PDF の選択が先に届き、表の ref が後から準備される場合も対象行を描画する。
+  useEffect(() => {
+    if (selectedKeys) scrollToKeys(selectedKeys)
+  }, [selectedKeys, scrollToKeys])
 
   useEffect(() => {
     const el = boxRef.current

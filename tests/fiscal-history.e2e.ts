@@ -15,6 +15,7 @@ const raw = 'source.fudoki.raw_132195_history.data'
 const stage = 'model.fudoki.stg_132195__budget_history'
 const history = 'model.fudoki.int_fiscal_budget_history'
 const changes = 'model.fudoki.fiscal_expenditure_budget_changes'
+const supplementary = 'model.fudoki.int_supplementary_expenditure_changes'
 const issue3 =
   'e322f20a1bfc32099a3271dad9fa38d23c7c45d9f0ce1b7cc45eb8f258a6817f'
 const initial =
@@ -102,28 +103,30 @@ describe('狛江市2023年度二目の補正予算', { tags: ['fiscal-history'] 
       const base = app.baseUrl!
       const rowsForNode = (node: string) => rows(base, node)
 
-      const [money, budgetChanges, links, allInitialLines, items] =
+      const [money, budgetChanges, links, allInitialLines, items, references, details] =
         await Promise.all([
           rowsForNode(history),
           rowsForNode(changes),
           rowsForNode('model.fudoki.fiscal_expenditure_settlement_links'),
           rowsForNode('model.fudoki.fiscal_initial_expenditure_budget_lines'),
           rowsForNode('model.fudoki.fiscal_expenditure_budget_items'),
+          rowsForNode('model.fudoki.fiscal_132195_initial_moku_reference'),
+          rowsForNode(supplementary),
         ])
       const initialLines = allInitialLines.filter((r: any) =>
         r.dataset_id.startsWith('132195:2023:')
       )
-      expect(initialLines.map((r: any) => Number(r.amount)).sort()).toEqual([
+      expect(references.map((r: any) => Number(r.amount_initial)).sort()).toEqual([
         30000000, 34553000,
       ])
-      expect(items).toHaveLength(2)
-      expect(
-        items.every(
-          (r: any) =>
-            r.expenditure_setsu_id === null &&
-            r.line_granularity === 'origin_line'
-        )
-      ).toBe(true)
+      expect(references).toHaveLength(2)
+      expect(references.every((r) => r.superseded_by_full_initial_detail)).toBe(true)
+      expect(initialLines.length).toBeGreaterThan(2)
+      expect(initialLines.some((r) => r.dataset_id === `132195:2023:expenditure:budget:${initial}:expenditure-detail`)).toBe(false)
+      const itemIds = new Set(items.map((r) => r.budget_item_id))
+      expect(initialLines.every((r) => itemIds.has(r.budget_item_id))).toBe(true)
+      expect(initialLines.every((r) => r.dataset_id.startsWith('132195:2023:expenditure:'))).toBe(true)
+      expect(budgetChanges.every((r) => r.dataset_id.startsWith('132195:2023:expenditure:'))).toBe(true)
       expect(
         money
           .filter((r: any) => r.record_kind === 'initial')
@@ -131,10 +134,21 @@ describe('狛江市2023年度二目の補正予算', { tags: ['fiscal-history'] 
           .sort()
       ).toEqual([30000000, 34553000])
       expect(
-        budgetChanges
-          .map((r: any) => r.amount_delta)
+        money.filter((r) => r.record_kind === 'change')
+          .map((r: any) => r.delta_yen)
           .sort((a: number, b: number) => a - b)
       ).toEqual([-115000000, 1980000, 148300000])
+      // The printed project/setsu rows replace the pilot moku changes in additive marts.
+      const projectChanges = details.filter((r) =>
+        r.kan_code === '7' && r.kou_code === '1' && r.moku_code === '2'
+      )
+      expect(projectChanges.map((r) => Number(r.delta_yen)).sort((a, b) => a - b)).toEqual([-115000000, 3300000, 145000000])
+      for (const detail of projectChanges) {
+        const matching = budgetChanges.filter((r) => r.dataset_id === detail.dataset_id && r.source_row === detail.source_row)
+        expect(matching).toHaveLength(1)
+        expect(Number(matching[0]!.amount_delta)).toBe(Number(detail.delta_yen))
+      }
+      expect(budgetChanges.some((r) => r.dataset_id === `132195:2023:expenditure:supplementary:${issue3}:expenditure-detail`)).toBe(false)
       expect(links).toHaveLength(10)
       expect(new Set(links.map((r: any) => r.settlement_line_id)).size).toBe(10)
       for (const r of money) {
@@ -205,9 +219,14 @@ describe('狛江市2023年度二目の補正予算', { tags: ['fiscal-history'] 
     async ({ app, browser }) => {
       const { settle, edge, selectRow, selection } = session(browser)
 
-      await edge(history, changes)
+      const inputRows = await rows(app.baseUrl!, supplementary)
+      const position = inputRows.findIndex((r) =>
+        r.origin_sha256 === issue3 && r.source_row === 48
+      )
+      expect(position).toBeGreaterThanOrEqual(0)
+      await edge(supplementary, changes)
       await settle(`document.querySelectorAll('.io .rows tr.rowhit').length>=8`)
-      await selectRow(0, `${issue3}|expenditure-detail|18`, 4)
+      await selectRow(0, `${issue3}|supplementary-expenditure-project-setsu|48`, position)
       await settle(
         `document.querySelectorAll('.io .rows tr.rowsel').length===2`
       )

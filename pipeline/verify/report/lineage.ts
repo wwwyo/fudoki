@@ -23,15 +23,13 @@
 import { readFileSync } from 'node:fs'
 import { DBT_TARGET, WAREHOUSE } from '../../paths'
 import { join, resolve, resolve as resolvePath } from 'node:path'
-import { provenanceForSource, STAGES } from './common'
+import { inputsForSource, STAGES } from './common'
 import type {
   CanonicalFetch,
   Check,
   CheckAttribution,
   Node,
-  ProjectNamesExtract,
-  Provenance,
-  RevenueAccountsExtract,
+  SourceInput,
   Stage,
   Topology,
 } from './common'
@@ -42,8 +40,8 @@ export const TARGET = DBT_TARGET
 export type OriginMember = {
   src: Node
   code: string
-  hit: NonNullable<ReturnType<typeof provenanceForSource>>
-  p: Provenance
+  hit: NonNullable<ReturnType<typeof inputsForSource>>
+  p: SourceInput
 }
 
 /**
@@ -55,7 +53,7 @@ export type OriginMember = {
  */
 export function collectOriginGroups(
   nodes: Node[],
-  provenance: Provenance[]
+  provenance: SourceInput[]
 ): Map<string, OriginMember[]> {
   const groups = new Map<string, OriginMember[]>()
   for (const src of nodes.filter((n) => n.kind === 'source')) {
@@ -64,7 +62,7 @@ export function collectOriginGroups(
     // 狛江市の証跡が混ざる（`sourceRows` が同じ理由で団体コードを見ている）。
     const code = /\.raw_(\d{6})/.exec(src.id)?.[1]
     if (!code) continue
-    const hit = provenanceForSource(src.id, src.label, provenance)
+    const hit = inputsForSource(src.id, src.label, provenance)
     if (!hit) continue
     for (const p of hit.ps) {
       const gk = `${code}|${p.sha256}`
@@ -120,7 +118,12 @@ type DbtNode = {
   description?: string
   /** source 側にぶら下がる宣言の説明（`_sources.yml` の source レベル）。表レベルの description とは別欄 */
   source_description?: string
-  config?: { location?: string; format?: string; severity?: string }
+  config?: {
+    location?: string
+    format?: string
+    severity?: string
+    materialized?: string
+  }
   depends_on?: { nodes?: string[] }
   meta?: { role?: 'judgment-rule' | 'external-reference' }
   /** テストは定義 SQL（jinja 込み）と compile 済み SQL を持つ */
@@ -184,33 +187,22 @@ function introducesJudgment(n: DbtNode, stage: Stage['id']): boolean {
  * `expenditure` / `revenue` である。direction だけで突き合わせると、
  * 狛江市の原典ノードに三鷹市の行数が出る（実際にそうなっていた）。
  * ソースの識別子（`source.fudoki.raw_132195.expenditure`）から団体コードを取る。
- * 証跡の拾い方そのものは `common.ts` の `provenanceForSource`（検証画面の
+ * 証跡の拾い方そのものは `common.ts` の `inputsForSource`（検証画面の
  * ローカル・データ口と共有）。
  */
 
-/** 抽出器ごとに「何を数えたか」が違う。事業名は事業の数、歳入の科目名称は目の数 */
-function extractedCount(
-  p: Provenance,
-  kind: 'project-names' | 'revenue-accounts' | 'statement'
-): number {
-  if (!p.extracted) return 0
-  return kind === 'project-names'
-    ? (p.extracted as ProjectNamesExtract).projects
-    : kind === 'revenue-accounts'
-      ? (p.extracted as RevenueAccountsExtract).moku
-      : ((p.extracted as { leaves?: number }).leaves ?? 0)
+/** 抽出した表の実行数。要約や保存した成功判定から推定しない。 */
+function extractedCount(p: SourceInput, _kind: string): number {
+  return p.rows ?? 0
 }
 
 function sourceRows(
   id: string,
   name: string,
-  provenance: Provenance[]
+  provenance: SourceInput[]
 ): Counted | null {
-  const hit = provenanceForSource(id, name, provenance)
+  const hit = inputsForSource(id, name, provenance)
   if (!hit) return null
-  // ⚠️ **証跡の形が取得元で違う。** 正本の取り込み（CSV でも事項別明細書の PDF でも）は
-  // direction ごとに `rows` を持つが、既収録の団体で欠けている名称を補う抽出物は
-  // `rows` を持たず、抽出の要約しか持たない。
   if (hit.kind === 'canonical')
     return countByYear(
       (hit.ps as CanonicalFetch[]).map((p) => [p.fiscal_year, p.rows])
@@ -382,7 +374,7 @@ export function assertRowSumsConsistent(nodes: Node[]): void {
   }
 }
 
-export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
+export function buildTopology(m: Manifest, provenance: SourceInput[]): Topology {
   const all = { ...m.nodes, ...m.sources }
   const models = Object.entries(all).filter(([, n]) =>
     ['model', 'source', 'seed'].includes(n.resource_type)
@@ -402,7 +394,12 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
   // さらに行から列の有無を見る方式は、空のテーブルで「列が無い」と「列はあるが0行」を
   // 区別できない（行が1つも返らないため）。**列の有無はスキーマから判定する**
   // （`DESCRIBE` はサブクエリにできる）。この1本目のクエリは行を1つも読まない。
-  const counted = models.filter(([, n]) => n.resource_type !== 'source')
+  // ephemeral は CTE であり物理 relation を持たないが、系統には残す。
+  const counted = models.filter(
+    ([, n]) =>
+      n.resource_type !== 'source' &&
+      !(n.resource_type === 'model' && n.config?.materialized === 'ephemeral')
+  )
   const from = (n: DbtNode) => {
     const loc = n.config?.location
     // marts は外部ファイルとして書き出される。DuckDB のビューは dbt の
@@ -480,12 +477,14 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
     const count =
       n.resource_type === 'source'
         ? ownCount(sourceRows(id, n.name, provenance), jurisdictionCode!)
-        : tally(
-            countsByNode.get(nodeIdx) ?? [],
-            cols.has('fiscal_year'),
-            cols.has('jurisdiction_code'),
-            jurisdictionCode
-          )
+        : nodeIdx === -1
+          ? null
+          : tally(
+              countsByNode.get(nodeIdx) ?? [],
+              cols.has('fiscal_year'),
+              cols.has('jurisdiction_code'),
+              jurisdictionCode
+            )
     const stage = stageOf(n)
     return {
       id,
@@ -567,7 +566,7 @@ export function buildTopology(m: Manifest, provenance: Provenance[]): Topology {
       jurisdictionCode: code,
       rows: origin.total,
       rowsByJurisdiction: origin.byJurisdiction,
-      description: `${urls.join('\n')}\n取得: ${ps[0]!.fetched_at}`,
+      description: urls.join('\n'),
       introducesJudgment: false,
       containsJudgment: false,
       artifact: null,

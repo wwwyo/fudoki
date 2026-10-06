@@ -26,9 +26,10 @@
 {%- set parent = [] -%}
 {%- for p in ancestors %}{% do parent.append(p ~ '_source') %}{% endfor -%}
 select '{{ code }}' as jurisdiction, '{{ direction }}' as direction, '{{ lv }}' as level,
+       dataset_id,
        {% if parent %}{{ parent | join(" || chr(31) || ") }}{% else %}''{% endif %} as parent,
        {{ lv }}_code as code, count(distinct {{ lv }}_label) as 名称の異なり数
 from {{ ref('stg_' ~ code ~ '__' ~ direction) }}
-group by 1, 2, 3, 4, 5 having count(distinct {{ lv }}_label) > 1
+group by 1, 2, 3, 4, 5, 6 having count(distinct {{ lv }}_label) > 1
 {% if not loop.last %}union all{% endif %}
 {% endfor %}

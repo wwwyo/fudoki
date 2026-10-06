@@ -17,8 +17,8 @@
 {% endfor %}
 
 with in_core as (
-    select jurisdiction_code, fiscal_year::varchar as fiscal_year, direction,
-           coalesce(fund_code, '') as fund_code,
+    select jurisdiction_code, fiscal_year::varchar as fiscal_year, direction, dataset_id, document_kind, origin_sha256,
+           coalesce(fund_code, '') as fund_code, coalesce(fund_label, '') as fund_label,
            coalesce(canonical_fund, '') as canonical_fund,
            kan_code, coalesce(kan_name, '') as kan_name,
            kou_code, coalesce(kou_name, '') as kou_name,
@@ -31,8 +31,8 @@ with in_core as (
 
 in_package as (
     {% for code in var('fiscal_levels').keys() | list | sort %}
-    select '{{ code }}' as jurisdiction_code, fiscal_year, direction,
-           coalesce(fund_code, '') as fund_code,
+    select '{{ code }}' as jurisdiction_code, fiscal_year, direction, dataset_id, document_kind, origin_sha256,
+           coalesce(fund_code, '') as fund_code, coalesce(fund_label, '') as fund_label,
            coalesce(canonical_fund, '') as canonical_fund,
            kan_code, coalesce(kan_name, '') as kan_name,
            kou_code, coalesce(kou_name, '') as kou_name,

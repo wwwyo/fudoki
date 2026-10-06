@@ -217,16 +217,13 @@ export type RevenueAccountsExtract = {
  * ⚠️ **形（どのキーがあるか）で判定しない。** 項目が増えたときに黙って別の枝へ落ちる。
  */
 export function extractedKindOf(
-  p: Provenance
+  p: SourceInput
 ): 'project-names' | 'statement' | 'revenue-accounts' | null {
-  if (!p.extracted) return null
   if (p.extractor?.includes('extract_statement')) return 'statement'
   if (p.extractor?.includes('extract_projects')) return 'project-names'
   if (p.extractor?.includes('extract_revenue_accounts'))
     return 'revenue-accounts'
-  // ⚠️ 既定で project-names に落とさない。抽出器が増えた日に黙って別の枝へ入り、
-  // その要約に無いフィールドを読んで NaN になる（revenue-accounts で実際に起きた）。
-  throw new Error(`未知の抽出器: ${p.extractor}（extractedKindOf に足すこと）`)
+  return null
 }
 
 /**
@@ -237,13 +234,15 @@ export function extractedKindOf(
  * **型検査は通るのに実行時は `undefined`** になり、行数を足した先が黙って `NaN` になる。
  * 任意なら、読む側は `isCanonicalFetch` で絞ってからでないと足せない。
  */
-export type Provenance = {
+export type SourceInput = {
   jurisdiction_code: string
   fiscal_year: number
   /** ⚠️ **抽出物は名乗らないことがある**（`extract_projects.py` は direction を持たない） */
   direction?: string
   document_kind?: string
   table_id?: string
+  /** Same document's independent moku/setsu observation; not an additive fiscal line. */
+  observation_role?: string
   /** ⚠️ **正本の取り込みだけが持つ。** 抽出物は `document_title` を名乗る */
   resource_name?: string
   /** 資料（文書）の名。PDF の取得元はリソース名でなく文書名を持つ */
@@ -259,10 +258,10 @@ export type Provenance = {
   request_url: string
   /** 原典の公開ページ（取得 URL ではなく人が辿るページ） */
   landing_page?: string
-  status: number
+  status?: number
   bytes: number
   sha256: string
-  fetched_at: string
+  fetched_at?: string
   /** ⚠️ **PDF を原典とする取得元は持たない**（テキストの文字コードという概念が無い） */
   encoding?: string
   /** ⚠️ 表を持つ取得元だけ（CSV と事項別明細書の PDF） */
@@ -275,7 +274,8 @@ export type Provenance = {
    * 古い証跡は持たない — 無いものは verbatim と同じ扱いにする
    */
   raw_form?: 'verbatim' | 'extracted'
-  roundtrip_verified: boolean
+  input_hashes_verified?: boolean
+  roundtrip_verified?: boolean
   /** 抽出した取得元だけが持つ。`pipeline/ingestion/fiscal/extract_*.py@<版>` */
   extractor?: string
   /** PDF の収録頁範囲 `[最初, 最後]`（抽出した取得元だけ） */
@@ -308,7 +308,7 @@ export type Provenance = {
 }
 
 /** 正本の取り込みの証跡。**行数とリソース名を必ず持つ**（抽出物との違いはここ） */
-export type CanonicalFetch = Provenance & {
+export type CanonicalFetch = SourceInput & {
   rows: number
   resource_name: string
 }
@@ -324,7 +324,7 @@ export type CanonicalFetch = Provenance & {
  * ⚠️ **戻り値を `boolean` にしない。** 型述語だから、絞り込んでいない証跡から
  * 行数を足すコードがコンパイルを通らなくなる。
  */
-export function isCanonicalFetch(p: Provenance): p is CanonicalFetch {
+export function isCanonicalFetch(p: SourceInput): p is CanonicalFetch {
   return (
     typeof p.rows === 'number' &&
     Number.isFinite(p.rows) &&
@@ -339,11 +339,12 @@ export function isCanonicalFetch(p: Provenance): p is CanonicalFetch {
  * direction を名乗るので、これだけだと正本の合算に混ざる。
  */
 function isCanonicalFetchOf(
-  p: Provenance,
+  p: SourceInput,
   direction: string
 ): p is CanonicalFetch {
   if (p.direction !== direction) return false
-  if (p.table_id) return false
+  if (p.observation_role === 'independent-moku-setsu') return false
+  if (p.table_id && !p.extractor?.includes('extract_statement')) return false
   if (isCanonicalFetch(p)) return true
   // 捨てる前に、正本らしいのに行数だけ無いものを止める。黙って落とすと
   // 取得元の行数が実際より小さくなり、しかもそれが画面から分からない。
@@ -375,19 +376,23 @@ function extractedSourceKind(
  * （`apps/web/vite-plugins/local-data.ts`）が同じ規則を使う —
  * 規則を2箇所に書くと片方だけ直したとき証跡の拾い方がズレる。
  */
-export function provenanceForSource(
+export function inputsForSource(
   id: string,
   direction: string,
-  provenance: Provenance[]
+  provenance: SourceInput[]
 ): {
-  ps: Provenance[]
+  ps: SourceInput[]
   kind: 'canonical' | 'project-names' | 'revenue-accounts'
 } | null {
   const code = /\.raw_(\d{6})/.exec(id)?.[1]
   if (!code) return null
   const mine = provenance.filter((p) => p.jurisdiction_code === code)
+  if (/\.raw_\d{6}_moku_setsu\./.test(id)) {
+    const ps = mine.filter((p) => p.observation_role === 'independent-moku-setsu' && isCanonicalFetch(p))
+    return ps.length ? { ps, kind: 'canonical' } : null
+  }
   if (/\.raw_\d{6}_history\./.test(id)) {
-    const ps = mine.filter((p) => p.table_id !== undefined)
+    const ps = mine.filter((p) => p.table_id !== undefined && !p.extractor?.includes('extract_statement'))
     return ps.length ? { ps, kind: 'canonical' } : null
   }
   const canonical = mine.filter((p) => isCanonicalFetchOf(p, direction))

@@ -8,7 +8,19 @@
 -- - 節の確かめられない行は `expenditure_setsu_id = NULL`・`origin_line` で残す。
 
 {% set details_schema = '[{"path":"JSON","amount":"BIGINT","fiscalLineId":"VARCHAR","sourceRow":"BIGINT"}]' %}
-with problems(problem, id) as (
+with canonical_original as (
+  select o.fiscal_line_id, o.dataset_id, o.amount
+  from {{ ref('int_expenditure_setsu_lines') }} o
+  where not exists (
+    select 1 from {{ ref('fiscal_132195_initial_moku_reference') }} r
+    where r.fiscal_line_id=o.fiscal_line_id and r.superseded_by_full_initial_detail)
+  union all
+  select fiscal_line_id, dataset_id, initial_yen as amount
+  from {{ ref('int_132195_initial_detail') }}
+  union all
+  select fiscal_line_id, dataset_id, initial_yen as amount
+  from {{ ref('int_132071_initial445') }}
+), problems(problem, id) as (
   select 'setsu_without_map', fiscal_line_id
   from {{ ref('int_expenditure_setsu_lines') }}
   where setsu_present and expenditure_setsu_id is null
@@ -57,7 +69,7 @@ with problems(problem, id) as (
   union all
   -- 集約・原典行のどちらにも取り込まれなかった予算の原典行
   select 'origin_line_dropped', o.fiscal_line_id
-  from {{ ref('int_expenditure_setsu_lines') }} o
+  from canonical_original o
   where not exists (
     select 1
     from {{ ref('fiscal_initial_expenditure_budget_lines') }} l,
@@ -74,7 +86,7 @@ with problems(problem, id) as (
   ) a
   full outer join (
     select dataset_id, sum(amount) as total
-    from {{ ref('int_expenditure_setsu_lines') }} group by dataset_id
+    from canonical_original group by dataset_id
   ) o using (dataset_id)
   where a.total is distinct from o.total
 )

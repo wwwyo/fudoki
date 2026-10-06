@@ -12,7 +12,7 @@
 {% set scoped = [] %}
 {% for code, direction in fiscal_units() %}
   {% for spec in var('fiscal_source_year_columns').get(code, {}).get(direction, []) %}
-    {% if spec.get('years') %}
+    {% if spec.get('years') or spec.get('absent') %}
       {% do scoped.append((code, direction, spec)) %}
     {% endif %}
   {% endfor %}
@@ -27,7 +27,7 @@ select
     year                    as 宣言から外した年度,
     count(*)                as 値を持つ行
 from {{ source('raw_' ~ code, direction) }}
-where year not in ({{ spec['years'] | join(', ') }})
+where not ({{ fiscal_source_year_filter(spec) }})
   and "{{ spec['column'] }}" is not null
 group by 1, 2, 3, 4
 {% if not loop.last %}union all{% endif %}

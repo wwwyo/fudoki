@@ -4,7 +4,7 @@ status: done
 
 # 補正予算をパイプラインに収録する
 
-関連 PRD: [budget-account-structure](../budget-account-structure/prd.md)
+関連 PRD: [budget-account-structure](../budget-account-structure/prd.md)、[全公開年度の収録](../fiscal-coverage/prd.md)（対象年度・会計・事業・節の拡張）
 
 ## Problem
 

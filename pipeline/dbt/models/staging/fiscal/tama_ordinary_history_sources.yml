@@ -1,0 +1,14 @@
+version: 2
+sources:
+  - name: raw_132241_tama_ordinary_history
+    description: Wayback保存の多摩市2019/2020決算事業報告書データの原典観測。words/pagesは観測ロール、project_rowsは印字事業行。
+    tables:
+      - name: pdf_word_observations
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/tama-ordinary-history/jurisdiction=132241/year=*/document_kind=*/edition=*/direction=*/table=pdf-word-observations/data.parquet', hive_partitioning=false, filename=true))"
+      - name: pdf_page_observations
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/tama-ordinary-history/jurisdiction=132241/year=*/document_kind=*/edition=*/direction=*/table=pdf-page-observations/data.parquet', hive_partitioning=false, filename=true))"
+      - name: project_rows
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/tama-ordinary-history/jurisdiction=132241/year=*/document_kind=*/edition=*/direction=*/table=project-rows/data.parquet', hive_partitioning=false, filename=true))"

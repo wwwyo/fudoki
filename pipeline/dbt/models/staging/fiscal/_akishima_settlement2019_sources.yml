@@ -1,0 +1,24 @@
+version: 2
+sources:
+  - name: raw_132071_settlement2019
+    description: |
+      昭島市 令和元年度決算書（分割9部）のネイティブ有限復元。款項目×節の歳出明細、
+      独立した事業備考、非加算の印刷統制（含む決算書サマリ再印字）、非加算の歳入観測、
+      原典別の405物理頁の棚卸。切り詰められた全項PDFは採用しない。
+      認定・議決は未確認（議会結果ページは令和4年以降のみ公開）。
+    tables:
+      - name: financial
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/akishima-settlement2019/jurisdiction=132071/year=2019/document_kind=settlement/edition=*/direction=expenditure/table=fy2019-*-financial/data.parquet', hive_partitioning=false, filename=true))"
+      - name: controls
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/akishima-settlement2019/jurisdiction=132071/year=2019/document_kind=settlement/edition=*/direction=expenditure/table=fy2019-*-controls/data.parquet', hive_partitioning=false, filename=true))"
+      - name: projects
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/akishima-settlement2019/jurisdiction=132071/year=2019/document_kind=settlement/edition=*/direction=expenditure/table=fy2019-*-projects/data.parquet', hive_partitioning=false, filename=true))"
+      - name: revenue
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/akishima-settlement2019/jurisdiction=132071/year=2019/document_kind=settlement/edition=*/direction=revenue/table=fy2019-*-revenue/data.parquet', hive_partitioning=false, filename=true))"
+      - name: page_inventory
+        meta:
+          external_location: "(select * exclude(filename), regexp_extract(filename, '/table=([^/]+)', 1) as _partition_table_id from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/akishima-settlement2019/jurisdiction=132071/year=2019/document_kind=settlement/edition=*/direction=observation/table=fy2019-*-page_inventory/data.parquet', hive_partitioning=false, filename=true))"

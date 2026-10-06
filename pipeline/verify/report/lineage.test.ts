@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import type { Node, Provenance } from './common'
+import type { Node, SourceInput } from './common'
 import {
   assertNoNullKeyRows,
   assertRowSumsConsistent,
@@ -206,7 +206,7 @@ describe('collectOriginGroups', () => {
       jurisdictionCode: /\.raw_(\d{6})/.exec(id)?.[1] ?? null,
       stage: 'ingestion',
     })
-  const prov = (sha: string, over: Partial<Provenance> = {}): Provenance => ({
+  const prov = (sha: string, over: Partial<SourceInput> = {}): SourceInput => ({
     jurisdiction_code: '999999',
     fiscal_year: 2024,
     direction: 'expenditure',

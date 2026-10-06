@@ -23,6 +23,7 @@ CJK が等幅なのを使い、語の xMin..xMax を文字数で割って**文�
 """
 
 from __future__ import annotations
+from ingestion.inputs import record_input, cached_input
 
 from ingestion.paths import RAW
 
@@ -225,13 +226,14 @@ def ingest(key: str) -> None:
         raise RuntimeError(f"HTTP {got.status}: {spec['url']}")
 
     out_dir = OUT / f"jurisdiction={code}" / f"year={year}"
-    prov_path = out_dir / "provenance.json"
+    prov_path = out_dir / "inputs.lock.json"
     # ⚠️ **冪等にする。抽出の前に決める。** 原典の SHA-256 と抽出器の版が同じなら何もしない。
     # 書き直すと `fetched_at` だけが動いて作業ツリーが毎回汚れ、
     # 「再生成しても同じか」を見る CI の判定が意味を失う（CSV 側は既にこうしてある）。
     # 抽出は1本あたり数十秒かかるので、走らせる前に判定する。
     if prov_path.exists() and (out_dir / "data.parquet").exists():
-        old = json.loads(prov_path.read_text())
+        entry = cached_input(out_dir)
+        old = {**entry['source'], 'sha256': entry['originEdition']}
         if old.get("sha256") == got.sha256 and old.get("extractor", "").endswith(f"@{EXTRACTOR_VERSION}"):
             print(f"skip  {key}  同じ原典・同じ抽出器の版で既に抽出済み")
             return
@@ -296,7 +298,7 @@ def ingest(key: str) -> None:
                 f"(FORMAT parquet, COMPRESSION zstd)")
     con.close()
 
-    prov_path.write_text(json.dumps({
+    record_input(out_dir, {
         "jurisdiction_code": code,
         "fiscal_year": int(year),
         "document_title": spec["document_title"],
@@ -319,7 +321,7 @@ def ingest(key: str) -> None:
         "redistribute": spec.get("redistribute", "review"),
         "redistribute_basis": spec.get("redistribute_basis", ""),
         "license_id": spec.get("license_id", "NOASSERTION"),
-    }, ensure_ascii=False, indent=2) + "\n")
+    })
     print(f"ok    {key}  {summary['projects']} 事業（突合 {summary['projectsReconciled']}）  "
           f"{summary['moku']} 目（突合できず {summary['mokuNotReconciled']}）  "
           f"sha256={got.sha256[:16]}…")

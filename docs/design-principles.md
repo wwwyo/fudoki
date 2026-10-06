@@ -54,7 +54,7 @@ CC BY が求める帰属を下流が落とす。層ごとの宣言は `docs/data
 そちらは再配布の可否が未確定である。配るのは抽出した事実で、事実に原典のライセンスは付いてこないが、
 `sources` と `fudoki.factsFrom` に**出典としては書く** — 利用者が列の出所を辿れる必要がある。
 
-**入力と判断から、提供用データを生成する。** Git はコード・取得元・判断・入力一覧・採用した証跡を保持し、原典と取り込み表は非公開 R2 に保管する。まず ingestion〜marts の金額・粒度・分類・出典と再構築を検査する。配布・検索のインフラと公開方式はその後に検討する。詳細は [全体設計](prd/monorepo/design-doc.md) と [pipeline の手順](../pipeline/README.md)。
+**入力と判断から、提供用データを生成する。** Git はコード・取得元・判断・入力一覧を保持し、原典と取り込み表は非公開 R2 に保管する。まず ingestion〜marts の金額・粒度・分類・出典と再構築を検査する。配布・検索のインフラと公開方式はその後に検討する。詳細は [全体設計](prd/monorepo/design-doc.md) と [pipeline の手順](../pipeline/README.md)。
 
 **ダッシュボードは `https://fudoki.dev/` で配信する。** これは派生物であって正本ではない。
 公開 web の絶対 URL（`canonical` / `og:image` / `sitemap.xml`）はこのドメインを指す。
@@ -144,12 +144,12 @@ PDF の抽出は1本あたり数十秒かかるので、**抽出を走らせる�
 | 内容 | 保存先 | Git |
 |---|---|---|
 | 原典 CSV/PDF、取り込み Parquet | 非公開 R2、個別の内容ハッシュ | 入力一覧だけ |
-| 採用した入力の証跡 | pipeline/ingestion/fiscal/provenance/ | 管理する |
+| 原典・表の識別子、ハッシュ・保存先、source宣言 | pipeline/ingestion/fiscal/sources.lock.json（schemaVersion 3） | 管理する |
 | 取得元・階層・金額段階の宣言、分類・名称の判断 | pipeline/ingestion と dbt seeds | 管理する |
 | 復元済み入力・PDF/OCR キャッシュ | pipeline/.cache/ | 管理しない |
 | DuckDB・dbt manifest・検査結果・ローカル報告 | pipeline/.build/ | 管理しない |
 
-再構築に必要な原典・取り込み表・証跡を保持する。既存 data/ は遠隔保管・復元を確認してから tracking を外す。
+再構築に必要な原典・取り込み表・コード・宣言を保持する。独立したprovenanceファイルは生成・保存しない。既存 data/ は遠隔保管・復元を確認してから tracking を外す。
 
 **団体の同一性（名称・ocdId）は `packages/jurisdictions/jurisdictions.json`。**
 財政データ・調達を同じキーで束ねるので、どれか1層のファイルに同居させない。

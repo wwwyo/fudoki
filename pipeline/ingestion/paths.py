@@ -26,3 +26,15 @@ SNAPSHOT = hashlib.sha256(INPUT_LOCK.read_bytes()).hexdigest() if INPUT_LOCK.exi
 RAW = _anchor(os.environ.get('FUDOKI_INPUT_DIR', CACHE / 'inputs' / SNAPSHOT / 'raw' if SNAPSHOT else CACHE / 'acquisition' / 'raw'))
 PACKAGES = _anchor(os.environ.get('FUDOKI_PACKAGE_DIR', BUILD / 'builds' / ((LATEST or {}).get('buildId') or 'candidate') / 'fiscal'))
 WAREHOUSE = BUILD / 'warehouse.duckdb'
+
+def plain_path(path):
+    """Absolute path with no symlinked ancestor; symlinks are evidence, not resolved away."""
+    p = Path(path).absolute()
+    if '..' in p.parts:
+        raise ValueError('absolute traversal')
+    current = Path(p.anchor)
+    for part in p.parts[1:]:
+        current /= part
+        if current.is_symlink():
+            raise ValueError('symlink ancestor: ' + str(current))
+    return p
