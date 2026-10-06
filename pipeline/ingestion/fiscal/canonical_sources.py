@@ -39,11 +39,13 @@ def readability(source: dict) -> str:
 
 
 def load_inventory(path: Path) -> dict:
-    inventory = json.loads(path.read_text())
+    inventory = json.loads(path.read_text(encoding='utf-8'))
     if inventory['schema_version'] != 1:
         raise ValueError('Unsupported source inventory version')
     for source in inventory['sources']:
         revision = source.get('publisher_revision')
+        if 'publisher_revision' in source and not isinstance(revision, dict):
+            raise ValueError(f'Publisher revision must be an object: {source["id"]}')
         if revision is not None:
             if not (revision.get('revision_at') or revision.get('revision_id')):
                 raise ValueError(f'Publisher revision needs a date or identifier: {source["id"]}')
@@ -341,7 +343,7 @@ def main() -> None:
         return
     try:
         inventory = load_inventory(args.inventory)
-        lock = json.loads(args.lock.read_text())
+        lock = json.loads(args.lock.read_text(encoding='utf-8'))
         output = report(inventory, lock)
         if args.missing_only:
             output['groups'] = [g for g in output['groups'] if g['adoption_status'] == 'no_candidate_has_adopted_inputs']
