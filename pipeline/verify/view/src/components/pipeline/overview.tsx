@@ -594,7 +594,8 @@ export function PipelineOverview({
             </TableBody>
           </Table>
           <p className="text-sm leading-relaxed text-muted-foreground">
-            全体の設計方針は <RepositoryLink path="docs/design-principles.md" />
+            プロジェクトの方針・用語は <RepositoryLink path="AGENTS.md" />
+            、設計上の決定は <RepositoryLink path="docs/adr/" />
             、予算・決算のデータ設計と収録範囲は{' '}
             <RepositoryLink path="docs/prd/fiscal-records/design-doc.md" /> と{' '}
             <RepositoryLink path="docs/prd/fiscal-coverage/prd.md" /> にあります。

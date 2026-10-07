@@ -39,7 +39,7 @@ bun run dev                   # 報告を生成し、ローカル検証画面を
 
 ## 用語
 
-原典は自治体が公開した CSV・PDF そのもの、取り込みは原典の値と単位を保った表である。dbt の staging で列名・型を整え、intermediate で共通単位・科目・分類を揃え、marts で提供する列と粒度を確定する。詳細は [用語](AGENTS.md#glossary) と [設計](docs/design-principles.md) を参照。
+原典は自治体が公開した CSV・PDF そのもの、取り込みは原典の値と単位を保った表である。dbt の staging で列名・型を整え、intermediate で共通単位・科目・分類を揃え、marts で提供する列と粒度を確定する。詳細は [用語](AGENTS.md#glossary) と [決定の記録](docs/adr/) を参照。
 
 COFOG は歳出明細と同じ CSV に含め、原典由来の金額と分類などの判断を列の説明で区別する。名称の対応は `account_names.csv`・`project_names.csv` で配る。判断の根拠は Git にある規則表に残す。DuckDB は、その入力と宣言から生成する実行用の表である。
 
@@ -68,7 +68,7 @@ COFOG は歳出明細と同じ CSV に含め、原典由来の金額と分類な
 ## もっと読む
 
 - [AGENTS.md](AGENTS.md): プロジェクトの identity・構造・セットアップ
-- [docs/design-principles.md](docs/design-principles.md): 設計方針と対象
+- [docs/adr/](docs/adr/): 設計上の決定の記録
 - [pipeline/README.md](pipeline/README.md): 固定入力からの構築と検査
 - [apps/web/README.md](apps/web/README.md): ダッシュボードの構成
 - [pipeline/dbt/models/](pipeline/dbt/models/): staging（原典別の整形）→ intermediate（統合・分類）→ marts（提供用データ）。配布処理は `pipeline/fdp/` に分け、原典の保存と判断の整合性はテストで縛っている

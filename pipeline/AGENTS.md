@@ -24,6 +24,7 @@ script はこの package が所有する。実行は `bun run --cwd pipeline <na
 
 ## 技術スタック
 
+- **汎用層として作る**: 団体ごとの差は宣言（`ingestion/fiscal/sources.toml`・レイアウト定義）に置き、取得・変換・配布の処理を再利用できる形にする。「他自治体でも動く」をコードで示す
 - **取得**: Python。原典 CSV/PDF のバイト列と取り込み Parquet を非公開 R2 に保存する。入力一覧 `sources.lock.json`（schemaVersion 3）で原典・表のハッシュとsource宣言をGit管理する。独立したprovenanceは出力しない。
 - **OCR**: 共通実装は `ingestion/lib/ocr.py` の llama.cpp + GLM-OCR を使い、重みは `ocr-model.toml` の URL・SHA-256 で固定する。Apple Vision など別エンジンを選ぶ場合は、共通実装を使わない理由・比較評価の有無・エンジンの版と設定を原典別の宣言・コードに記録する。比較未実施なら精度の優位性を主張しない。文字層の抽出・文字対応表の復元を先に検討し、OCR は必要な頁・領域に限定してメモリ使用量を見ながら実行する。詳細は `.agents/skills/pipeline/references/budget-extraction.md` を参照する。
 - **変換・検査**: dbt-duckdb。staging は原典の行と1対1、intermediate は構造・単位・科目・分類の統一、marts は提供する列と粒度を確定する。
