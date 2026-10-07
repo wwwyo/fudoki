@@ -4,7 +4,7 @@
 
 原典・取り込み済み Parquet は非公開 R2、コード・宣言・判断・入力一覧は Git に置く。金額・対応は [財政明細の設計](../docs/prd/fiscal-records/design-doc.md) に、個別の決定は `docs/adr/` にある。
 
-管理中の5団体の全公開年度・全会計・当初／補正／決算の拡張は[全年度収録のPRD](../docs/prd/fiscal-coverage/prd.md)と[設計書](../docs/prd/fiscal-coverage/design-doc.md)で管理する。構築成功は全公開資料の収録完了を意味しない。
+管理中の5団体の全公開年度・全会計・当初／補正／決算の拡張は[全年度収録のPRD](../docs/prd/fiscal-coverage/prd.md)で管理する。構築成功は全公開資料の収録完了を意味しない。
 
 ## 固定入力から構築する
 
@@ -55,9 +55,7 @@ PDF 閲覧レイヤは `.cache/pdf/`、報告は `.build/report/` に置く。�
 
 ## 検査する
 
-`bun run --cwd pipeline sources:plan --json` で原典台帳に登録した有効な取り込み宣言を確認する。共通取得器・取得計画・報告画面は `ingestion/fiscal/sources.json` を読み、原典の観測、選択の根拠、取得設定を同じ原典レコードで管理する。旧 `sources.toml` は採用時の支持定義として保持し、明示指定した場合だけ再現用に読む。個別取り込み器の設定はまだ移行していない。現在の境界は [移行記録](../docs/prd/fiscal-coverage/source-registry-migration.md) を参照する。
-
-取り込み前に `bun run --cwd pipeline sources:canonical --json` で、同じ原典対象の最新版・機械判読性に基づく優先候補と採用入力の有無を確認する。`--missing-only` は採用入力が見つからない対象を抽出する。版の順序、対象の識別、本文の検証は別の確認状態として残る。版と優先掲載先の根拠は既存の `ingestion/fiscal/sources.json` の原典レコードに記録する。原典の追加取得・OCR・ハッシュ計算・全量構築は実行しない。採用入力ありは全明細収録や提供完了を意味しない。
+`bun run --cwd pipeline sources:plan --json` は `ingestion/fiscal/sources.json` に登録した有効な取り込み宣言を表示する。原典選定の手順は [pipeline skill](../.agents/skills/pipeline/references/source-selection.md) を参照する。
 
 公開資料の収録範囲は `bun run --cwd pipeline coverage:fiscal --json` で、原典一覧のスキーマ、現在の入力一覧と原典宣言、現行コード・入力に対応する全量buildとCSVハッシュを照合する。`--require-complete` は未収録・未検証・探索未完了があれば終了コード2を返す。`--limit` は表示件数だけを変え、完了判定の母集団は変えない。原典一覧に保存された過去の採用・marts状態だけでは完了にしない。
 
@@ -82,7 +80,7 @@ CI の全量 job は `FUDOKI_FIXED_INPUTS_READY=true` と非公開入力の読�
 
 | 保存対象 | 置き場と更新方法 |
 | --- | --- |
-| `sources.json` | Git。公式掲載情報、確認した版・粒度、判断根拠、未確認事項、共通取得器の取り込み宣言を持つ原典台帳。現在の構築結果だけでは再生成できない。`sources:plan --json` で取り込み宣言、`coverage:fiscal --json` でスキーマと現行データとの対応を検査する。記録の単位は [台帳の説明](ingestion/fiscal/coverage.md) を参照する。 |
+| `sources.json` | Git。既存の取り込み宣言と固定入力・収録監査が参照する原典情報。構造は [sources.schema.json](ingestion/fiscal/sources.schema.json) を参照する。 |
 | `sources.lock.json`、原典別の宣言・ハッシュ一覧 | Git。採用した版と取り込み表、コード・訂正の対応を固定する入力。`pipeline:inputs` はその指定を復元する処理であり、公開サイトの現在の内容から一覧を書き直す処理ではない。コードを変更した場合は、参照する宣言のハッシュも更新し、原典・表・財政値を変えていないか差分を確認する。 |
 | 転記・セル台帳の JSON | 原典の画像から確認した訂正や、採用済みの明細と原典位置を結ぶ宣言は Git。原典だけから同じ判断を自動生成できるとは扱わない。宣言が参照するPDF・画像・文字観測のバイト列は非公開 R2。 |
 | dbt、CSV、検証報告、実行時の比較結果 | 再生成する検査結果は `.build/`、試作・未採用の比較結果は `.agent/`。生成した全量DB・CSVや作業記録をGitへ追加しない。構築・再構築・`pipeline:report`・`coverage:fiscal --json` の結果と対象headをPRのQA欄で記録する。 |

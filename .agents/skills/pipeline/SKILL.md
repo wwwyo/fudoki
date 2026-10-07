@@ -1,6 +1,6 @@
 ---
 name: pipeline
-description: 風土記の原典調査、取り込み・PDF抽出、候補の検査、原典からの再抽出、固定入力の保存・採用、dbt構築、収録範囲監査を行うときに参照する。現在のA〜Gの評価フローと、各工程で実測した注意点を扱う。
+description: 風土記の原典選定（source_selection）、取り込み・PDF抽出、候補の検査、原典からの再抽出、固定入力の保存・採用、dbt構築、収録範囲監査を行うときに参照する。各工程の手順と注意点を扱う。
 user-invocable: false
 ---
 
@@ -13,7 +13,7 @@ user-invocable: false
 | やること | 読む reference |
 | --- | --- |
 | 全体の流れ・工程間の受け渡しを確認する | [references/workflow.md](references/workflow.md) |
-| A. 公式原典と探索範囲を調べ、coverageへ記録する | [references/source-discovery.md](references/source-discovery.md) |
+| A. source_selection — 原典の情報を埋め、1資料を選定・保存する。選べなければ理由を残す | [references/source-selection.md](references/source-selection.md) |
 | B. 取り込み・抽出候補と追加案を作る | [references/budget-extraction.md](references/budget-extraction.md) |
 | C. 原典の意味、実データ、登録・SQLを検査する | [references/candidate-validation.md](references/candidate-validation.md) |
 | D. 原典だけから別の場所で再抽出する | [references/reconstruction.md](references/reconstruction.md) |

@@ -1,6 +1,6 @@
 # 予算の変更と決算の実績を別々に保存・提供する
 
-関連 PRD: [財政明細の要件](prd.md)。全公開年度・全会計への収録拡張は[全年度収録のPRD](../fiscal-coverage/prd.md)と[設計書](../fiscal-coverage/design-doc.md)で管理する。
+関連 PRD: [財政明細の要件](prd.md)。全公開年度・全会計への収録拡張は[全年度収録のPRD](../fiscal-coverage/prd.md)で管理する。
 
 ## Objectives
 

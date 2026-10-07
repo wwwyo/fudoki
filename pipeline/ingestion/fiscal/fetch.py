@@ -43,9 +43,7 @@ _SEARCH_CACHE: dict[str, list[dict]] = {}
 def datasets_of(src: Source) -> list[dict]:
     """その団体のデータセット一覧。同じ団体を何度引いても取得は1回。
 
-    ⚠️ **列挙そのものは ingestion.lib.ckan が持つ。** 粒度の調査
-    （`check_granularity.py`）も同じものを必要とするので、共有層に置いてある。
-    ここが受け持つのはプロセス内のキャッシュだけ。
+    列挙は ingestion.lib.ckan が受け持ち、ここではプロセス内でキャッシュする。
     """
     if src.catalog is None:
         raise RuntimeError(f"{src.key}: カタログの宣言が無い（全リソースが直 URL のはず）")

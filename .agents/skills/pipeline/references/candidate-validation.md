@@ -28,7 +28,7 @@
 
 - 原典行の対応は `pipeline/dbt/tests/staging_is_one_to_one.sql`、年度・金額宣言は `amount_declarations_cover_years.sql`、`source_year_column_scope_is_real.sql` 等を参照する。
 - 全列・型付きCSVの照合は `pipeline/ingestion/fiscal/tama_pre2020_coverage.py` 等の専用監査を参照する。通常監査に共通処理と資料別処理はあるが、任意の追加案を同じ提出形式で検査する共通コマンドはまだない。
-- 金額段階・集約・独立した内訳の境界は [財政明細の設計](../../../../docs/prd/fiscal-records/design-doc.md) と [全年度収録の設計](../../../../docs/prd/fiscal-coverage/design-doc.md) を参照する。
+- 金額段階・集約・独立した内訳の境界は [財政明細の設計](../../../../docs/prd/fiscal-records/design-doc.md) を参照する。
 
 ## 既存の意味・宣言検査で実測した注意点
 

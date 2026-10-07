@@ -21,6 +21,7 @@ jobs:
       - run: uv sync --frozen
       - run: bun run typecheck:all
       - run: bun run test
+      - run: bun pipeline/source_selection/check.ts
       - run: bun run --cwd pipeline test:python
       - run: bun run build:web
       - run: bun run build:api
