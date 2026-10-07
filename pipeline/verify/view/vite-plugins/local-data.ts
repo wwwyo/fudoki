@@ -108,7 +108,7 @@ export function localData(_root: string): Plugin {
     return inputsForSource(srcId, name, provenanceOf(rawDir))?.ps ?? []
   }
 
-  /** PDF 閲覧レイヤの索引。`bun run pdf:layer` が作る（無ければ null）。mtime で使い回す */
+  /** PDF 閲覧レイヤの索引。`bun run --cwd pipeline pdf:layer` が作る（無ければ null）。mtime で使い回す */
   let pdfIndexCache: { mtime: number; docs: Record<string, any> } | null = null
   const pdfIndex = (): Record<string, any> | null => {
     try {

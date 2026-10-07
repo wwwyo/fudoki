@@ -158,7 +158,7 @@ export const BY_JURISDICTION: Record<string, PerJurisdiction> = {
         category: 'sourceAndLicense',
         body:
           '原典は東京都オープンデータカタログで公開されている三鷹市の予算情報 CSV で、ライセンスは CC BY 4.0。取得元 URL と取得時刻は datapackage.json の sources にある。\n\n' +
-          'この配布物を再配布するときは、原典の帰属表示（三鷹市）と、fudoki が加えた改変の明示を引き継ぐ必要がある。詳細は docs/data-license.md。',
+          'この配布物を再配布するときは、原典の帰属表示（三鷹市）と、fudoki が加えた改変の明示を引き継ぐ必要がある。詳細は docs/adr/0006-license-per-layer.md。',
       },
       {
         topic:

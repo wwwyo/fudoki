@@ -17,7 +17,7 @@
 
 原典の値・単位・階層を保ち、団体間で列・金額単位・分類を揃え、提供用データの金額・粒度・出典を検査する。配布・検索の保存先や公開方式は、パイプライン完成後に検討する。
 
-取得元の宣言は [`sources.toml`](pipeline/ingestion/fiscal/sources.toml)、入力一覧は `pipeline/ingestion/fiscal/sources.lock.json`（正規 lock の採用は未完了）、採用した証跡は [`provenance/`](pipeline/ingestion/fiscal/provenance/)、団体別の実測は [`jurisdictions/`](pipeline/ingestion/fiscal/jurisdictions/) にある。原典と取り込み済み Parquet の保管用 R2 は、固定入力の復元に使う。
+取得元の宣言は [`sources.toml`](pipeline/ingestion/fiscal/sources.toml)、入力一覧は `pipeline/ingestion/fiscal/sources.lock.json`（正規 lock の採用は未完了）、団体別の実測は [`jurisdictions/`](pipeline/ingestion/fiscal/jurisdictions/) にある。証跡は独立ファイルにせず、出典・意味は入力一覧と原典宣言が持つ。原典と取り込み済み Parquet の保管用 R2 は、固定入力の復元に使う。
 
 ## 開発
 
@@ -90,4 +90,4 @@ COFOG は歳出明細と同じ CSV に含め、原典由来の金額と分類な
 著作権を持たないものにライセンスは与えられないので、正本の表示は原典に付いてくる条件を
 そのまま素通ししている。fudoki は原典を改変しているので、その旨も表示している（CC BY 4.0 §3(a)(1)(B)）。
 
-詳細は [データの利用条件](docs/data-license.md)、正確な表示は各 `datapackage.json`（`licenses` / `sources` / `contributors` / `description`）。
+方針は [ライセンスの層別宣言](docs/adr/0006-license-per-layer.md)、正確な表示は各 `datapackage.json`（`licenses` / `sources` / `contributors` / `description`）。

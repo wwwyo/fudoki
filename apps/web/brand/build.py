@@ -1,6 +1,6 @@
 """設定値と採用書体の輪郭から風土記のロゴ一式を生成する。
 
-`bun run build:brand` で各 public ディレクトリと OG 画像を同期する。
+`bun run --cwd apps/web build:brand` で各 public ディレクトリと OG 画像を同期する。
 字母は固定バージョンの Zen角ゴシック New（OFL-1.1）を使い、
 SVG はパス化する。フォントの読み込みや端末の代替書体に依存させない。
 """

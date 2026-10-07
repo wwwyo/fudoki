@@ -12,7 +12,7 @@
  * そこで**仕様の原文（Markdown）を唯一の出所として一覧を起こし、リポジトリへ取り込む**。
  * 検証をネットワークに依存させないためでもある。
  *
- *   bun run scripts/fetch-fdp-taxonomy.ts
+ *   bun run --cwd pipeline fetch:fdp-taxonomy
  */
 import { UA, sha256 } from '../ingestion/lib/source'
 

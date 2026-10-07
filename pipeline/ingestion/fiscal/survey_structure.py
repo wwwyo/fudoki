@@ -4,7 +4,7 @@
 「階層だけでは行が一意にならない」「款コードが法定の款番号と一致する」は
 どれもこのスクリプトの出力が根拠で、要約ではなく数字を残す。
 
-⚠️ **原典（`data/budget/raw/`）を読む。ネットワークを叩かない。**
+⚠️ **原典（`pipeline/.cache/` 配下の `raw/`）を読む。ネットワークを叩かない。**
 取得は ingestion.fiscal.fetch の仕事で、そこが証跡（URL・SHA-256・取得時刻）を既に残している。
 ここを取得込みにすると、同じものを2通りの経路で取ってきて食い違う余地を作る。
 
@@ -31,7 +31,7 @@ import yaml
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 from ingestion.paths import RAW
-# ⚠️ **観測は commit しない**（原典・証跡・配布物だけを data/ へ置く方針）。
+# ⚠️ **観測は commit しない**（原典・取り込み表は非公開 R2、宣言・証跡は Git へ置く方針）。
 # スクリプトの隣に書き出し、主張に使うときは実測日を添える。
 OBSERVATIONS = pathlib.Path(__file__).resolve().parent / "observations"
 # 列の構造の正本。pipeline/fdp/build.py と pipeline/verify/report/fiscal/build.ts も同じ場所を読む。
@@ -250,8 +250,8 @@ if __name__ == "__main__":
         "note": "原典が何を持っているかの実測。**判定は列名ではなく中身で行う**"
                 "（パーサ設計の原則3）。列があることは、その階層が使われていることも"
                 "名称を持っていることも意味しない。",
-        "generatedBy": "pipeline/ingestion/fiscal/survey_structure.py（bun run survey:structure <団体コード>）",
-        "reads": f"data/budget/raw/jurisdiction={code}/（原典情報は固定入力一覧のsource宣言）",
+        "generatedBy": "pipeline/ingestion/fiscal/survey_structure.py（bun run --cwd pipeline survey:structure <団体コード>）",
+        "reads": f"pipeline/.cache/**/raw/jurisdiction={code}/（原典情報は固定入力一覧のsource宣言）",
         "declarationSource": "dbt/dbt_project.yml の vars（列の構造と金額の正本）",
         "jurisdictionCode": code,
         "directions": [survey(code, d) for d in ("expenditure", "revenue")],

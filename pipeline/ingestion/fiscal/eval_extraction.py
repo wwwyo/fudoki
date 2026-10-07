@@ -13,7 +13,7 @@
 こちらは CSV → PDF の向きを足す — **原典にあって抽出できなかったものを数える**。
 片方だけでは「1 目だけ抽出して 100% 一致」が満点に見える。
 
-⚠️ **原典（`data/budget/raw/`）を読むだけでネットワークを叩かない**
+⚠️ **原典（`pipeline/.cache/` 配下の `raw/`）を読むだけでネットワークを叩かない**
 （survey_structure と同じ約束）。取得と抽出は ingestion の仕事で、
 ここが取得を兼ねると同じものを2経路で取ってきて食い違う余地を作る。
 """
@@ -321,8 +321,8 @@ def _report_statements(codes: list[str]) -> None:
                     "原典 CSV という外の正解が無い団体（62 団体中 59）で使える唯一の測り方で、"
                     "同じ誤りが両側に入れば通るぶん evaluate() の recall より弱い。",
             "generatedBy": "pipeline/ingestion/fiscal/eval_extraction.py"
-                           "（bun run eval:extraction [団体コード...]）",
-            "reads": f"data/budget/raw/jurisdiction={code}/（抽出物と証跡）",
+                           "（bun run --cwd pipeline eval:extraction [団体コード...]）",
+            "reads": f"pipeline/.cache/**/raw/jurisdiction={code}/（抽出物と証跡）",
             **result,
         }, ensure_ascii=False, indent=2) + "\n")
         print(f"--- {code}  {out.relative_to(ROOT)}")
@@ -367,9 +367,9 @@ if __name__ == "__main__":
                     "しきい値で落とす門にしていない（60 団体で動かないものを門にすると"
                     "通らない団体を足せなくなる）。",
             "generatedBy": "pipeline/ingestion/fiscal/eval_extraction.py"
-                           "（bun run eval:extraction [団体コード...]）",
-            "reads": f"data/budget/raw/jurisdiction={code}/（原典 CSV）と "
-                     f"data/budget/raw/revenue-accounts/jurisdiction={code}/（抽出物）",
+                           "（bun run --cwd pipeline eval:extraction [団体コード...]）",
+            "reads": f"pipeline/.cache/**/raw/jurisdiction={code}/（原典 CSV）と "
+                     f"pipeline/.cache/**/raw/revenue-accounts/jurisdiction={code}/（抽出物）",
             "measurableJurisdictions": have,
             "jurisdictionsWithoutRevenueAccountSource": without,
             "notCovered": "歳出の事業名（extract_projects）は別の抽出器で、ここでは測っていない",

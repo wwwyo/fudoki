@@ -37,7 +37,7 @@ bun run pipeline:build --rebuild
 ## 既存の整形・分類で実測した注意点
 
 - **⚠️ 仕様が「正準」と宣言する taxonomy の URL は 404。**
-  仕様の原文から起こして `pipeline/fdp/budget-taxonomy.json` に持つ（`bun run fetch:fdp-taxonomy`）。
+  仕様の原文から起こして `pipeline/fdp/budget-taxonomy.json` に持つ（`bun run --cwd pipeline fetch:fdp-taxonomy`）。
   「止まったら自分で維持する」が既定の運用だという最初の実例
   - 現在の通常構築はmarts CSVを生成する。FDP descriptorの整形は任意の `pipeline:fdp` であり、taxonomy取得を全量buildの必須工程にしない。
 

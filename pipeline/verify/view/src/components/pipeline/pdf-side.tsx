@@ -105,7 +105,7 @@ export function PdfSide({
   if (!docs.length) {
     return (
       <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>
-        PDF レイヤが無い（bun run pdf:layer で生成）
+        PDF レイヤが無い（bun run --cwd pipeline pdf:layer で生成）
       </p>
     )
   }

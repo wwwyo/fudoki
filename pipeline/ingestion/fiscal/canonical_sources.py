@@ -315,7 +315,7 @@ def markdown(output: dict) -> str:
         f"資料の採用入力はあるが会計への対応が不明な対象は {output['counts'].get('account_adoption_unconfirmed', 0)} 件。上の未採用へ加算せず、詳細はJSONの `account_adoption_unconfirmed` を参照する。CSVの全原文取り込みと観測済み会計集合が対応する場合だけ、会計ごとの入力存在へ反映する。", '',
         '採用入力ありは、一部の表・観測・別版の宣言が存在することまでであり、全明細・最新版・提供データの確認完了ではない。表紙・目次だけの資料を採用済み明細へ数えず、目次だけに基づく粒度の観測も未確認へ分ける。', '',
         f"同じ対象の版順未確認は {output['counts']['revision_order_unconfirmed']} 対象。以下の未採用数と重複するため加算しない。", '',
-        '再生成: `bun run sources:canonical --markdown > docs/prd/fiscal-coverage/unadopted-sources-2026-10-06.md`。機械可読の全候補・採用path・未確定理由は `bun run sources:canonical --json`。', '',
+        '再生成: `bun run --cwd pipeline sources:canonical --markdown > docs/prd/fiscal-coverage/unadopted-sources-2026-10-06.md`。機械可読の全候補・採用path・未確定理由は `bun run --cwd pipeline sources:canonical --json`。', '',
         '## 採用対応がない対象の全一覧', '',
         '既存候補に紐づく入力も、同じ対象の会計名・年度・資料種別・補正号を明示する入力も見つからない対象。実未収録の確定には、未確定資料や一覧未登録の入力との対応確認が必要。', '',
         '| 自治体 | 年度 | 会計 | 段階／号 | 優先候補 | 版の順序 |', '|---|---:|---|---|---|---|']

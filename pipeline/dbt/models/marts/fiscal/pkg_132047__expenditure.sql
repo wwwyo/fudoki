@@ -7,7 +7,7 @@
 --
 -- 落とした列と、その理由。
 --   *_source        code と label から復元できる（不一致0件を実測）。
---                   原典そのものは data/budget/raw/ に Parquet で入っているので join できる
+--                   原典そのものは pipeline/.cache/ 配下の raw/ に Parquet で入っているので join できる
 --   hierarchy_path  コード列から導出できる
 --   団体・phase・通貨・direction  全行同じ値。datapackage.json のメタデータに属する
 select

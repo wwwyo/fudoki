@@ -3,7 +3,7 @@
 --
 -- 落とした列と、その理由。
 --   *_source        code と label から復元できる（会計だけは code が空で label が原文セル）。
---                   原典そのものは data/budget/raw/ に Parquet で入っているので join できる
+--                   原典そのものは pipeline/.cache/ 配下の raw/ に Parquet で入っているので join できる
 --   団体・phase・通貨・direction  全行同じ値。datapackage.json のメタデータに属する
 --
 -- ⚠️ **三鷹市・狛江市と列を揃えない。** 多摩市の歳入は節の下に「細節」が入り、**歳出と階層の並びが違う**。

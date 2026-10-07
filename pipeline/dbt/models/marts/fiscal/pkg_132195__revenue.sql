@@ -21,7 +21,7 @@
 --   調定累計 / 不納欠損額 / 還付未済額 / 収入未済額
 --                            収入の内訳（調定 − 収入 − 不納欠損 − 収入未済 = 0）であって
 --                            予算段階の金額ではない。段階の列へ混ぜると二重に数える
---   対象年月                  リソース全体で1つの値（証跡は data/budget/raw/ の provenance.json）
+--   対象年月                  リソース全体で1つの値（証跡は pipeline/.cache/ 配下の raw/ の provenance.json）
 with lines as (
     select * from {{ ref('stg_132195__revenue') }}
 )

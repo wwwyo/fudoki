@@ -21,7 +21,7 @@ jobs:
       - run: uv sync --frozen
       - run: bun run typecheck:all
       - run: bun run test
-      - run: uv run python -m unittest discover -s pipeline -p '*_test.py'
+      - run: bun run --cwd pipeline test:python
       - run: bun run build:web
       - run: bun run build:api
       - run: bun run build:docs

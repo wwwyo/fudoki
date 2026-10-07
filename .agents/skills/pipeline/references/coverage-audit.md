@@ -6,8 +6,8 @@
 - 次の通常監査を実行して、現行コード・入力に対応するbuild、実CSVのSHA、datasetの提供先、原典行との対応、探索・対象集合の不足を確認する。
 
 ```bash
-bun run coverage:fiscal --json
-bun run coverage:fiscal --json --require-complete
+bun run --cwd pipeline coverage:fiscal --json
+bun run --cwd pipeline coverage:fiscal --json --require-complete
 bun run pipeline:report
 ```
 

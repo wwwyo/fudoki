@@ -14,7 +14,7 @@ Storyの「数字が怪しいと思ったときに、原典と合っているか
 
 ## Overview
 
-取り込みから提供用データまでをpipelineにまとめ、共通の定義をpackagesで管理する。採用した原典・取り込み表・証跡を固定し、stagingの1対1、intermediateの正規化と判断、martsの粒度と金額を検査する。現在の実装・検証範囲は[移行記録](../../monorepo-migration.md)に記録する。
+取り込みから提供用データまでをpipelineにまとめ、共通の定義をpackagesで管理する。採用した原典・取り込み表・証跡を固定し、stagingの1対1、intermediateの正規化と判断、martsの粒度と金額を検査する。現在の実装・検証範囲は本 PRD の「実装状態」と[全年度収録のPRD](../fiscal-coverage/prd.md)で管理する。
 
 ### Goals
 

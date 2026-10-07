@@ -11,7 +11,7 @@ bun install --frozen-lockfile
 uv sync --frozen
 bun run pipeline:inputs
 bun run pipeline:build
-bun run pdf:layer --jurisdiction 132195 --origin-sha e322f20a1bfc32099a3271dad9fa38d23c7c45d9f0ce1b7cc45eb8f258a6817f
+bun run --cwd pipeline pdf:layer --jurisdiction 132195 --origin-sha e322f20a1bfc32099a3271dad9fa38d23c7c45d9f0ce1b7cc45eb8f258a6817f
 bun run test:e2e
 ```
 

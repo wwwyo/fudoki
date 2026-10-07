@@ -6,7 +6,7 @@
 出力は pipeline/.cache/pdf/ に置く。固定した原典のハッシュと生成処理・依存・設定で
 キャッシュを区切り、原典 URL から最新の資料を再取得しない。
 
-使い方: `bun run pdf:layer`（`bun run pipeline` の一部）
+使い方: `bun run --cwd pipeline pdf:layer`（`bun run pipeline` の一部）
 """
 
 from __future__ import annotations

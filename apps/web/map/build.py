@@ -1,4 +1,4 @@
-"""東京都62団体の境界データを組む。`bun run fetch:boundaries`
+"""東京都62団体の境界データを組む。`bun run --cwd apps/web fetch:boundaries`
 
 ホームページの地図（自治体クリック→その団体のパイプラインへ）に使う表示用データ。
 正本ではなく表示用の派生物なので `apps/web/public/tokyo.geojson` に置く

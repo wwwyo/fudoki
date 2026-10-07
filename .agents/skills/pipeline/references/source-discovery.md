@@ -24,8 +24,8 @@
 
 ## 既存の調査スクリプトとの関係
 
-- `bun run probe:documents --write` は探索観測にある資料の内容調査で、`observations/budget-document-probe.json` へ書く。本番抽出ではない。
-- `bun run coverage:sources --write` は団体単位の観測を `observations/budget-source-coverage.json` へまとめる。全年度・全会計のcoverage一覧や、Gの通常監査を置き換えない。
+- `bun run --cwd pipeline probe:documents --write` は探索観測にある資料の内容調査で、`observations/budget-document-probe.json` へ書く。本番抽出ではない。
+- `bun run --cwd pipeline coverage:sources --write` は団体単位の観測を `observations/budget-source-coverage.json` へまとめる。全年度・全会計のcoverage一覧や、Gの通常監査を置き換えない。
 - 現行の根拠は [全年度収録の設計書](../../../../docs/prd/fiscal-coverage/design-doc.md)、`pipeline/ingestion/fiscal/sources.json`、`probe_documents.py`、`source_coverage.py` にある。
 
 ## 既存の原典調査で実測した注意点

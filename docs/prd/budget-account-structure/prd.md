@@ -37,7 +37,7 @@ Storyの「団体をまたいで、または年をまたいで比べる」と「
 - [x] 確認した会計間移転だけが相手会計付きの連結消去対象となり、両側の金額が釣り合う。相手不明は保持する。
 - [x] 採用した外部参照値と同じ会計・年度・段階・単位で照合し、未解決の差も検査結果と注意点に残る。
 
-現在の固定入力に対する再検証と検査の証拠は [検証記録](../../monorepo-migration.md) にまとめる。提供モデルは [財政データの設計](../fiscal-records/design-doc.md)、宣言は `pipeline/dbt/seeds/fiscal/` にある。
+現在の固定入力に対する再検証と検査の証拠は PR の QA 欄にまとめる。提供モデルは [財政データの設計](../fiscal-records/design-doc.md)、宣言は `pipeline/dbt/seeds/fiscal/` にある。
 
 ## Success Metrics
 

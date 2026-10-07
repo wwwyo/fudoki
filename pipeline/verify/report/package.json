@@ -9,6 +9,7 @@
     "./fiscal/schema": "./fiscal/schema.ts"
   },
   "scripts": {
+    "build": "bun run fiscal/build.ts",
     "test": "bun test"
   },
   "dependencies": {

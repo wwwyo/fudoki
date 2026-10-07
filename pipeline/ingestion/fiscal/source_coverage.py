@@ -65,7 +65,7 @@ def main() -> None:
     probe_path = OBS / "budget-document-probe.json"
     if not probe_path.exists():
         raise SystemExit(
-            f"{probe_path} が無い。先に `bun run probe:documents --write` を回すこと"
+            f"{probe_path} が無い。先に `bun run --cwd pipeline probe:documents --write` を回すこと"
         )
     probe = json.loads(probe_path.read_text()).get("jurisdictions", {})
 

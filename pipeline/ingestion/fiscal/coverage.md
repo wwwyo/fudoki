@@ -4,7 +4,7 @@
 
 ## 取り込み宣言
 
-原典ごとの `ingestions[]` に処理の種類・キー・`enabled`・設定を登録する。候補を発見したことや優先候補に選ばれたことだけでは取得を有効にしない。`bun run sources:plan --json` は有効な登録だけを取得計画へ変換する。取得・抽出・固定入力の変更は実行しない。
+原典ごとの `ingestions[]` に処理の種類・キー・`enabled`・設定を登録する。候補を発見したことや優先候補に選ばれたことだけでは取得を有効にしない。`bun run --cwd pipeline sources:plan --json` は有効な登録だけを取得計画へ変換する。取得・抽出・固定入力の変更は実行しない。
 
 原典URLは `download_url`、掲載先は `landing_url` から読み取る。取得器が別の公式掲載先を使う場合は `publication_links[]` と `profile.publication_index` で指定する。履歴の処理が複数原典や議決結果を使う場合は `source_id` / `approval_source_id` で参照する。設定の中にURLを重複して書かない。CKAN経由の取得方式とカタログは `acquisition` / `acquisition_catalogs` に宣言し、直URL経由と混同しない。
 
@@ -16,7 +16,7 @@
 
 ## 記録の単位
 
-原典の選択と取り込みの計画では、掲載URL単位の一覧を `bun run sources:canonical --json` で団体・年度・会計・文書種別・補正号の対象へまとめる。最新版の中で構造化データ、文字PDF、画像PDFの順に優先する。版の根拠はこの一覧の各原典の `publisher_revision`、優先掲載先は `listing_evidence.primary_fiscal_page` に記録する。規則の詳細は [設計書](../../../docs/prd/fiscal-coverage/design-doc.md) にある。以下の `sources[]` は掲載の履歴を保持するための一覧であり、各リンクを別々に取り込む指示ではない。
+原典の選択と取り込みの計画では、掲載URL単位の一覧を `bun run --cwd pipeline sources:canonical --json` で団体・年度・会計・文書種別・補正号の対象へまとめる。最新版の中で構造化データ、文字PDF、画像PDFの順に優先する。版の根拠はこの一覧の各原典の `publisher_revision`、優先掲載先は `listing_evidence.primary_fiscal_page` に記録する。規則の詳細は [設計書](../../../docs/prd/fiscal-coverage/design-doc.md) にある。以下の `sources[]` は掲載の履歴を保持するための一覧であり、各リンクを別々に取り込む指示ではない。
 
 任意の `publisher_revision` は公式に確認した `revision_id` 又は `revision_at` と、必須の `basis`・`evidence_urls` を持つ。省略は版順未確認であり、取得時刻や掲載ページ更新日で補完しない。同じ版と形式の候補では `listing_evidence.primary_fiscal_page: true` を優先する。機械判読性は既存の `format` と `content_inspection.status` から読み取る。別ファイルで原典の役割・版・形式を上書きしない。
 

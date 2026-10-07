@@ -595,8 +595,9 @@ export function PipelineOverview({
           </Table>
           <p className="text-sm leading-relaxed text-muted-foreground">
             全体の設計方針は <RepositoryLink path="docs/design-principles.md" />
-            、予算の詳しい処理と追加手順は{' '}
-            <RepositoryLink path="docs/fiscal-pipeline.md" /> にあります。
+            、予算・決算のデータ設計と収録範囲は{' '}
+            <RepositoryLink path="docs/prd/fiscal-records/design-doc.md" /> と{' '}
+            <RepositoryLink path="docs/prd/fiscal-coverage/prd.md" /> にあります。
           </p>
           <p className="text-sm leading-relaxed text-muted-foreground">
             モデルの置き場は dbt の層名に揃えています。既存の SQL

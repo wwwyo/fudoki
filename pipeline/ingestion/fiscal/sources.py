@@ -129,7 +129,7 @@ class Source:
     # 指定が無いまま複数当たれば取得は止まる（fetch.resolve_resource）。
     resource_url_contains: str | None = None
 
-    # `data/budget/raw/` に何を置くか。**ここがこの宣言の正本**（文書は要約）。
+    # `pipeline/.cache/` 配下の `raw/` に何を置くか。**ここがこの宣言の正本**（文書は要約）。
     #
     #   verbatim   原文そのもの。復号の可逆性と原文の復元を検査できる。
     #              置けるのは redistribute=allow のときだけ（下の不変条件）
@@ -549,7 +549,7 @@ def _pdf_sources(section: str, path: Path) -> dict[str, dict]:
 
     ⚠️ **CKAN 側（load_sources）だけを registry に通しても足りない。** こちらは
     `"132195:2023"` のキー自体が partition の団体コードになるので、誤記のまま
-    `data/budget/raw/**/jurisdiction=132159/` のような未知の団体の区画へ書けてしまう。
+    `raw/**/jurisdiction=132159/` のような未知の団体の区画へ書けてしまう。
     名称を引く経路が無い分、CKAN 側より検知が遅れる。
     """
     section_raw = _declarations(path).get(section, {})

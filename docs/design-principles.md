@@ -26,7 +26,7 @@
 ⚠️ **採用した標準のうち FDP の更新が止まっている**ので、
 「止まったら自分で維持する」は保険ではなく既定の運用（方針3）。
 FDP 採用自体は変えない（予算の事業別明細を対象にする現役の代替が無い）。
-実測の根拠は `docs/fdp-spec-notes.md`。
+実測の根拠は `docs/survey/fdp-spec-notes.md`。
 
 **款・項・目の階層経路、経済的な区分である歳出の節、COFOG の機能分類を区別する。** COFOG 写像は後付け機能ではなく一級の要件で、自治体間比較にも将来の国際比較にも同じ写像が効く。後回しにすると両方作り直しになる。
 
@@ -45,8 +45,8 @@ division 止まりが正しく、group を埋めるには項や目まで下げ�
 先行事例は3つの死に方をした。**個人運営は消滅**（chiholog は798自治体を横断検索していたが現在 DNS ごと消えている）、**会社運営は無料枠の線引きを握られた**（Open States は Plural に買収後、非商用のみ無料・GraphQL v2 はサンセット）、**標準そのものが止まった**（Fiscal Data Package は 2024-03 を最後に更新なし）。コード・宣言・判断・採用した入力一覧を Git に残し、原典を非公開 R2 に保管する。固定入力を復元して CI で再構築できる形にする（コードは MIT）。
 
 ⚠️ **ライセンスは1つに畳めない。** コードは fudoki のものだが、原典と正本は各自治体のもので、
-**持っていない著作権にライセンスは与えられない**。root の `LICENSE`（MIT）を data/ まで及ぶと読ませると、
-CC BY が求める帰属を下流が落とす。層ごとの宣言は `docs/data-license.md` と各 `datapackage.json` にあり、
+**持っていない著作権にライセンスは与えられない**。root の `LICENSE`（MIT）がデータまで及ぶと読ませると、
+CC BY が求める帰属を下流が落とす。層ごとの宣言は各 `datapackage.json` にあり、方針は `adr/0006-license-per-layer.md` にあり、
 原典のライセンスは団体ごとに `pipeline/ingestion/fiscal/sources.toml` が持つ。
 判断のリソースを CC BY 4.0 にできるのは原典が継承を求めないからで、CC BY-SA の団体が入れば
 その選択は成り立たなくなる（`pipeline/fdp/build.py` が停止する）。
@@ -84,7 +84,7 @@ bun run deploy:web    # vite build → cf deploy
 
 **原典 CSV/PDF と取り込み済み Parquet は別のものとして保管する。** 原典・表は非公開 R2 の内容ハッシュ別オブジェクト、採用した証跡は Git。Git の `pipeline/ingestion/fiscal/sources.lock.json` が採用した個別キーとハッシュを固定する。新規の取得は原典を保存してから表を作る。固定入力からの build で原典の再取得をしない。
 
-再配布の可否は原典ごとに判断する。公開する配布物と非公開の原典保管は別に扱う。権利の整理は [データの利用条件](data-license.md)、個別条件は取得元の宣言と descriptor に残す。
+再配布の可否は原典ごとに判断する。公開する配布物と非公開の原典保管は別に扱う。権利の整理は [ライセンスの層別宣言](adr/0006-license-per-layer.md)、個別条件は取得元の宣言と descriptor に残す。
 
 **4. 取得と正規化を分離する（ELT）。**
 自治体ごとの表記揺れの吸収ルールは後から直る。原典を保持し、固定入力から変換をやり直せることを前提とする。
@@ -97,16 +97,16 @@ bun run deploy:web    # vite build → cf deploy
 
 | | 経路 | 権利 | 実測 |
 |---|---|---|---|
-| **① 予算** | 東京都カタログ CKAN / 港区 / BODIK / 渋谷区 DCAT-US。届かない団体は各自治体の予算説明書（PDF）へ | **カタログ経由は待ちなし**（確認した範囲が CC BY）。**PDF は取得元ごとに確認が要る** — 公開されていることは再配布を許すことを意味しない | 目以下に到達した団体を実測で確認（`docs/budget-availability.md`） |
-| **② 公告** | [官公需情報ポータル 検索API](https://www.kkj.go.jp/api/) | **待ちなし**（robots 制限なし） | `CityCode` が団体コード、`ProjectDescription` に公告全文。**tender 段階まで**（`docs/kkj-api-notes.md`） |
+| **① 予算** | 東京都カタログ CKAN / 港区 / BODIK / 渋谷区 DCAT-US。届かない団体は各自治体の予算説明書（PDF）へ | **カタログ経由は待ちなし**（確認した範囲が CC BY）。**PDF は取得元ごとに確認が要る** — 公開されていることは再配布を許すことを意味しない | 目以下に到達した団体を実測で確認（`docs/survey/budget-availability.md`） |
+| **② 公告** | [官公需情報ポータル 検索API](https://www.kkj.go.jp/api/) | **待ちなし**（robots 制限なし） | `CityCode` が団体コード、`ProjectDescription` に公告全文。**tender 段階まで**（`docs/survey/kkj-api-notes.md`） |
 
 **予算だけで単体の存在価値は成立する**（「なぜ作るか」）。調達は、予算と公告を結び付ける将来展望にあたる。予算の原典の再配布可否は取得元のライセンスで判断し、`pipeline/ingestion/fiscal/sources.toml` の `redistribute` がその宣言を持つ。
 
 **実測の詳細は調査文書へ分離した**（この文書に log は書かない）。
 
-- カタログ・サイト側の網羅調査 → `docs/budget-availability.md`
+- カタログ・サイト側の網羅調査 → `docs/survey/budget-availability.md`
   （62団体中53団体で目より下に届くことを実測。カタログだけでは17団体）
-- 官公需 API のフィールド実測 → `docs/kkj-api-notes.md`
+- 官公需 API のフィールド実測 → `docs/survey/kkj-api-notes.md`
   （tender 段階まで。落札者・法人番号は無い）
 
 ## パイプライン
@@ -149,7 +149,7 @@ PDF の抽出は1本あたり数十秒かかるので、**抽出を走らせる�
 | 復元済み入力・PDF/OCR キャッシュ | pipeline/.cache/ | 管理しない |
 | DuckDB・dbt manifest・検査結果・ローカル報告 | pipeline/.build/ | 管理しない |
 
-再構築に必要な原典・取り込み表・コード・宣言を保持する。独立したprovenanceファイルは生成・保存しない。既存 data/ は遠隔保管・復元を確認してから tracking を外す。
+再構築に必要な原典・取り込み表・コード・宣言を保持する。独立したprovenanceファイルは生成・保存しない。原典・取り込み表の遠隔保管と復元は確認済みで、repo 内の `data/` は廃止した。
 
 **団体の同一性（名称・ocdId）は `packages/jurisdictions/jurisdictions.json`。**
 財政データ・調達を同じキーで束ねるので、どれか1層のファイルに同居させない。

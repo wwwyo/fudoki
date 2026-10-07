@@ -28,7 +28,7 @@
 
 同じ対象の版順未確認は 108 対象。以下の未採用数と重複するため加算しない。
 
-再生成: `bun run sources:canonical --markdown > docs/prd/fiscal-coverage/unadopted-sources-2026-10-06.md`。機械可読の全候補・採用path・未確定理由は `bun run sources:canonical --json`。
+再生成: `bun run --cwd pipeline sources:canonical --markdown > docs/prd/fiscal-coverage/unadopted-sources-2026-10-06.md`。機械可読の全候補・採用path・未確定理由は `bun run --cwd pipeline sources:canonical --json`。
 
 ## 採用対応がない対象の全一覧
 

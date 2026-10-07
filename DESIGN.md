@@ -452,7 +452,7 @@ IBM Plex Sans JP / Murecho）の中で最も無個性で、字幅も最も詰ま
   ライト・ダークはそれぞれ同じ色相の濃淡。印刷用の黒一色・白抜きも許可する。背景は透過、縁取り・影・グラデーションを付けない。
 - **Assets**: 設定値の正本は `apps/web/brand/config.json`、生成手順は `apps/web/brand/build.py`、生成先は `apps/web/public/`。
   `mark.svg` / `wordmark.svg` / `logo.svg` と各 `-dark.svg`、OS テーマを追う `favicon.svg`。
-  `bun run build:brand` は検証画面・docs・スライドの public にも同期し、OG 画像を再生成する。
+  `bun run --cwd apps/web build:brand` は検証画面・docs の public にも同期し、OG 画像を再生成する。
 - **比例の比較（2026-10-04）**: 元のマークは幅28・高さ29。
   縦長の黄金比案は幅29/φ・高さ29。短め案は幅26・高さ25で、短冊幅／空き=φを保つ。
   `apps/web/brand/geometry.py` で生成し、`docs/brand/logo-proportions.html` に三案の実サイズ・実画面比較を置く。
@@ -473,7 +473,7 @@ IBM Plex Sans JP / Murecho）の中で最も無個性で、字幅も最も詰ま
   文字全体・マークの移動、サイズのハンドル、数値入力も使える。
   下線の角丸は「サイズ・太さ」の「下線の角丸」で調整する。
   設定はブラウザに保存され、実画面は必要時に開いて確認できる。書き出しUIは置かない。
-  採用時は調整値を `apps/web/brand/config.json` に同期し、`bun run build:brand` とこの節を更新する。
+  採用時は調整値を `apps/web/brand/config.json` に同期し、`bun run --cwd apps/web build:brand` とこの節を更新する。
 - **確認用**: `docs/brand/logo-review.html` に単体・横組みの実サイズ／拡大、旧版との比較、明暗の使用例を置く。
   実際の検証画面でもマーク 24px・横組み 40px を確認する。
 

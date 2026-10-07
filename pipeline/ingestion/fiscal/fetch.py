@@ -1,4 +1,4 @@
-"""原典を取得して data/budget/raw/ へ Parquet で落とす。
+"""原典を取得して `pipeline/.cache/` 配下の `raw/` へ Parquet で落とす。
 
 解釈・整形・結合はしない。列はすべて VARCHAR のまま置く（型推論は判断なので staging の仕事）。
 

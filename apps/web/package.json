@@ -4,8 +4,10 @@
   "type": "module",
   "scripts": {
     "build": "bun run --cwd deploy build",
+    "build:brand": "uv run --no-project --exclude-newer 2026-09-26 --with fonttools==4.66.0 --with brotli==1.2.0 python brand/build.py",
     "deploy": "bun run --cwd deploy deploy",
     "dev": "cd deploy && mise exec -- cf dev --host 127.0.0.1 --port 5173",
+    "fetch:boundaries": "uv run python map/build.py",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

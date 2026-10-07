@@ -7,7 +7,7 @@
 --
 -- 落とした列と、その理由。
 --   *_source は code と label から復元できる（コードを持たない階層は label が原文セルそのもの）。
---   原典そのものは data/budget/raw/ に Parquet で入っているので join できる。
+--   原典そのものは pipeline/.cache/ 配下の raw/ に Parquet で入っているので join できる。
 --   団体・phase・通貨・direction  全行同じ値。datapackage.json のメタデータに属する
 --
 -- ⚠️ **他の3団体と列を揃えない。** 昭島市の歳入は説明欄が節の内訳（1段）で、

@@ -158,6 +158,8 @@ _Avoid_: ログ
 └── .agent/           # 個人メモ・試作（gitignore）
 ```
 
+各 dir の構造・判断・手順の詳細はその dir の AGENTS.md に置く（`pipeline/`・`apps/`・`packages/`・`docs/`）。
+
 ## セットアップ
 
 ツールは mise で管理している。
@@ -172,8 +174,6 @@ bun run pipeline:build   # オフラインで dbt・marts の CSV を生成
 bun run dev              # ローカル専用の検証画面（5174）
 ```
 
-**Python の版は 3.13 に固定してある。** dbt-duckdb 1.11.0 が classifiers で 3.14 を宣言していないため（`requires-python` は `>=3.10` なので入りはするが、テストされていない組み合わせになる）。
-
 依存は exact ピン留めで、更新するときは cooldown を明示する。
 
 ```bash
@@ -186,28 +186,20 @@ uv add --exclude-newer $(date -v-7d +%Y-%m-%d) <package>
 
 ## 技術スタック
 
-- **取得**: Python。原典 CSV/PDF のバイト列と取り込み Parquet を非公開 R2 に保存する。入力一覧 `sources.lock.json`（schemaVersion 3）で原典・表のハッシュとsource宣言をGit管理する。独立したprovenanceは出力しない。
-- **OCR**: 共通実装は `pipeline/ingestion/lib/ocr.py` の llama.cpp + GLM-OCR を使い、重みは `ocr-model.toml` の URL・SHA-256 で固定する。Apple Vision など別エンジンを選ぶ場合は、共通実装を使わない理由・比較評価の有無・エンジンの版と設定を原典別の宣言・コードに記録する。比較未実施なら精度の優位性を主張しない。文字層の抽出・文字対応表の復元を先に検討し、OCR は必要な頁・領域に限定してメモリ使用量を見ながら実行する。詳細は `.agents/skills/pipeline/references/budget-extraction.md` を参照する。
-- **変換・検査**: dbt-duckdb。staging は原典の行と1対1、intermediate は構造・単位・科目・分類の統一、marts は提供する列と粒度を確定する。
-- **検証**: Bun/TypeScript の `pipeline/verify/report/` とループバック専用の view。系統・検査結果・原典との対応を確認する。
-- **保存**: Git はコード・宣言・判断・入力一覧、非公開 R2 は原典・取り込み表。`.cache/` と `.build/` は再生成可能なローカル作業領域。
-- **一時検証の保存**: `.agent/` へ runtime・依存物・原典群・キャッシュ・全量 warehouse を検証ごとに複製しない。ハッシュ固定した既存原典を読み取り参照し、変更コードのスナップショット・ハッシュ一覧・対象範囲の再抽出と検査結果を保存する。全件走査・全ファイルのハッシュ計算は対象を絞る。採用後の再生成可能な一時DB・重複CSVは整理するが、未採用の原典・取り込み表・支持コード・証跡は保持する。
-
-`pipeline:build` は固定入力から dbt・marts の CSV を生成し、同じ構築 ID の再実行では CSV のハッシュを照合する。公開 web・API・MCP・docs は一時的に HTTP 500 を返す。実行手順は `pipeline/README.md` を参照する。
-
-**系統（lineage）は dbt の `manifest.json` から取る。** 手で書かない。
-段とノードを手作りすると、パイプラインを変えても図が変わらない状態を作る（実際に作った）。
+- **パイプライン**（取得・OCR・dbt 変換・検証・保存・一時検証の規則）→ `pipeline/AGENTS.md`
+- **公開面**（web・api・docs、現在は一時的に HTTP 500）→ `apps/AGENTS.md`
+- **言語・依存**: TypeScript は Bun workspaces（共有版は `catalog:` で集約）、Python は uv workspace。exact ピン留め・cooldown 7日
+- **保存の大原則**: Git はコード・宣言・判断・入力一覧、非公開 R2 は原典・取り込み表。`.cache/`・`.build/` は再生成可能なローカル作業領域
+- **script の置き場**: package の作業はその package.json が所有し、root は `pipeline:*`・`dev:*` などの入口と orchestration だけを持つ
 
 ## Skills / 参照
 
-構造・判断・手順の詳細は各文書へ逃がしてある。この文書には書かない。
+構造・判断・手順の詳細は各 dir の AGENTS.md と文書へ逃がしてある。この文書には書かない。
 
-- 設計方針・対象・パイプライン・パーサ原則 → `docs/design-principles.md`。①予算の実装と手順 → `docs/fiscal-pipeline.md`。決定の記録 → `docs/adr/`
-- スクリプト一覧と観測の置き場 → `docs/scripts.md`
-- 団体固有の実測・原典の癖 → `pipeline/ingestion/fiscal/jurisdictions/<団体コード>.md`
+- 設計方針・対象・パイプライン・パーサ原則 → `docs/design-principles.md`。決定の記録 → `docs/adr/`
+- パイプラインの実装・script・技術スタック → `pipeline/AGENTS.md`。団体固有の実測・原典の癖 → `pipeline/ingestion/fiscal/jurisdictions/<団体コード>.md`
 - パイプライン（取得・PDF抽出・dbt）のハマりどころ → `.agents/skills/pipeline/`
-- 存在価値・先行事例・将来展望 → `docs/product-context.md`
-- データ源の実測 → `docs/budget-availability.md` / `docs/kkj-api-notes.md` / `docs/fdp-spec-notes.md` / `docs/tokyo-survey.md`
+- データ源の実測 → `docs/survey/`
 - 設計の記録 → `docs/prd/<topic>/prd.md`（要件）・`docs/prd/<topic>/design-doc.md`（設計書。同じ topic に併置）・`docs/adr/`（決定）。判断の記録はコードと同じ寿命を持ち、git 管理する
 
-歳出・歳入のドメインモデルとクラス図 → `docs/fiscal-domain-model.md`。予算・決算の保存境界と ER 図 → `docs/prd/fiscal-records/design-doc.md`。全体設計 → `docs/prd/monorepo/design-doc.md`。現行の実行手順 → `pipeline/README.md`。移行の検証記録と未完了項目 → `docs/monorepo-migration.md`。
+歳出・歳入のドメインモデルとクラス図 → `docs/prd/fiscal-records/fiscal-domain-model.md`。予算・決算の保存境界と ER 図 → `docs/prd/fiscal-records/design-doc.md`。全体設計 → `docs/prd/monorepo/design-doc.md`。現行の実行手順 → `pipeline/README.md`。収録範囲の未完了項目 → `docs/prd/fiscal-coverage/`。

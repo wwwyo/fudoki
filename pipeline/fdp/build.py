@@ -276,7 +276,7 @@ def described(body: str, credits: list[str], modifications: list[str], notes: li
     ⚠️ 帰属（§3(a)(1)(A)）と改変の明示（§3(a)(1)(B)）に FDP の標準プロパティは無い。
     以前は独自の `attribution` / `modified` / `modifications` に置いていたが、
     独自プロパティは**標準しか読まない実装からは存在しないのと同じ**なので、
-    義務の伝達をそこに預けるのは弱かった（data/LICENSE がその弱点を明記していた）。
+    義務の伝達をそこに預けるのは弱かった。
     `description` は Markdown が使える標準プロパティで、必ず人の目に触れる。
 
     機械可読なほうは標準の置き場に残してある —

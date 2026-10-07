@@ -21,7 +21,7 @@
 --   充流用等増減額           予算計 − 予算額 で戻る（全行で一致することを実測）
 --   予算残額 / 執行率        予算計 − 執行累計 と その比。導出できる
 --   調定累計 / 不納欠損額 ほか  歳入側の会計上の内訳で、予算段階の金額ではない
---   対象年月                  リソース全体で1つの値（証跡は data/budget/raw/ の provenance.json）
+--   対象年月                  リソース全体で1つの値（証跡は pipeline/.cache/ 配下の raw/ の provenance.json）
 with lines as (
     select * from {{ ref('stg_132195__expenditure') }}
 )
