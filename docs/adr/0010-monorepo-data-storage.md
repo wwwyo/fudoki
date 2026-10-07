@@ -9,4 +9,4 @@ Git はコード・宣言・判断・採用した入力一覧と個別ハッシ�
 
 先に ingestion → staging → intermediate → marts を完成させる。配布・検索の保存先と公開・反映の方式は後段で検討する。
 
-詳細は [全体設計](../prd/monorepo/design-doc.md)、[実行手順](../../pipeline/README.md)。
+詳細は [設計方針](../design-principles.md)、[実行手順](../../pipeline/README.md)。

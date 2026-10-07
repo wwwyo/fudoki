@@ -202,4 +202,4 @@ uv add --exclude-newer $(date -v-7d +%Y-%m-%d) <package>
 - データ源の実測 → `docs/survey/`
 - 設計の記録 → `docs/prd/<topic>/prd.md`（要件）・`docs/prd/<topic>/design-doc.md`（設計書。同じ topic に併置）・`docs/adr/`（決定）。判断の記録はコードと同じ寿命を持ち、git 管理する
 
-歳出・歳入のドメインモデルとクラス図 → `docs/prd/fiscal-records/fiscal-domain-model.md`。予算・決算の保存境界と ER 図 → `docs/prd/fiscal-records/design-doc.md`。全体設計 → `docs/prd/monorepo/design-doc.md`。現行の実行手順 → `pipeline/README.md`。収録範囲の未完了項目 → `docs/prd/fiscal-coverage/`。
+歳出・歳入のドメインモデルとクラス図 → `docs/prd/fiscal-records/fiscal-domain-model.md`。予算・決算の保存境界と ER 図 → `docs/prd/fiscal-records/design-doc.md`。全体設計 → `docs/design-principles.md`。現行の実行手順 → `pipeline/README.md`。収録範囲の未完了項目 → `docs/prd/fiscal-coverage/`。

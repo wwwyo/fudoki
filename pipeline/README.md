@@ -2,7 +2,7 @@
 
 現在は **ingestion → staging → intermediate → marts の完成を優先する**。配布・検索の保存先、公開方式、配布版の保持・反映手順はその後に検討する。
 
-原典・取り込み済み Parquet は非公開 R2、コード・宣言・判断・入力一覧は Git に置く。全体設計は [monorepo の設計](../docs/prd/monorepo/design-doc.md)、金額・対応は [財政明細の設計](../docs/prd/fiscal-records/design-doc.md) にある。
+原典・取り込み済み Parquet は非公開 R2、コード・宣言・判断・入力一覧は Git に置く。全体設計は [設計方針](../docs/design-principles.md)、金額・対応は [財政明細の設計](../docs/prd/fiscal-records/design-doc.md) にある。
 
 管理中の5団体の全公開年度・全会計・当初／補正／決算の拡張は[全年度収録のPRD](../docs/prd/fiscal-coverage/prd.md)と[設計書](../docs/prd/fiscal-coverage/design-doc.md)で管理する。構築成功は全公開資料の収録完了を意味しない。
 

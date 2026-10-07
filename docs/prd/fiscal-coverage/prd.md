@@ -98,5 +98,4 @@ classDiagram
 
 - [財政明細](../fiscal-records/prd.md): 予算・決算・節の保存境界。
 - [補正予算](../fiscal-budget-history/prd.md): 狛江市2023年度二目の先行取り込み。本PRDはその収録範囲を拡張する。
-- [固定入力パイプライン](../monorepo/prd.md): 再構築と各層の検査。
 - [設計書](design-doc.md): 収録範囲と追加取り込みの実装・検査。
