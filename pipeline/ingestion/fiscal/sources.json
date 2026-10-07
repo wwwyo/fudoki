@@ -25394,7 +25394,7 @@
         8
       ],
       "edition_status": "content_inspected",
-      "role": "statement",
+      "role": "overview",
       "format": "pdf",
       "landing_url": "https://www.city.mitaka.lg.jp/c_service/089/089550.html",
       "download_url": "https://www.city.mitaka.lg.jp/c_service/089/attached/attach_89550_7.pdf",
@@ -26474,7 +26474,7 @@
         7
       ],
       "edition_status": "content_inspected",
-      "role": "statement",
+      "role": "overview",
       "format": "pdf",
       "landing_url": "https://www.city.mitaka.lg.jp/c_service/089/089550.html",
       "download_url": "https://www.city.mitaka.lg.jp/c_service/089/attached/attach_89550_9.pdf",
@@ -26792,7 +26792,7 @@
         4
       ],
       "edition_status": "content_inspected",
-      "role": "statement",
+      "role": "overview",
       "format": "pdf",
       "landing_url": "https://www.city.mitaka.lg.jp/c_service/087/087484.html",
       "download_url": "https://www.city.mitaka.lg.jp/c_service/087/attached/attach_87484_3.pdf",
@@ -30749,7 +30749,7 @@
         10
       ],
       "edition_status": "content_inspected",
-      "role": "statement",
+      "role": "overview",
       "format": "pdf",
       "landing_url": "https://www.city.mitaka.lg.jp/c_service/094/094775.html",
       "download_url": "https://www.city.mitaka.lg.jp/c_service/094/attached/attach_94775_3.pdf",
@@ -32477,7 +32477,7 @@
         11
       ],
       "edition_status": "content_inspected",
-      "role": "statement",
+      "role": "overview",
       "format": "pdf",
       "landing_url": "https://www.city.mitaka.lg.jp/c_service/094/094775.html",
       "download_url": "https://www.city.mitaka.lg.jp/c_service/094/attached/attach_94775_1.pdf",
@@ -32706,7 +32706,44 @@
         "evidence_urls": [
           "https://www.city.mitaka.lg.jp/c_service/093/attached/attach_93558_12.pdf"
         ]
-      }
+      },
+      "ingestions": [
+        {
+          "enabled": true,
+          "key": "132047-72fb1bada961:0",
+          "section": "native_supplementary_detail",
+          "profile": {
+            "edition_index": 0,
+            "physical_pages": [
+              16,
+              17
+            ]
+          },
+          "options": {
+            "approval": {
+              "kind": "budget_bill",
+              "date": "2021-06-07",
+              "basis": "132047:2021:一般会計:supplementary:2 29 original_bill_approved; native final decision row and separately printed original article. Disposition effective date unassigned.",
+              "evidence": {
+                "https://www.gikai.city.mitaka.tokyo.jp/activity/pdf/2021custom2giantou_saiketu.pdf": {
+                  "format": "pdf",
+                  "sha256": "0a3f5505b9c3eac6b1f7cd03a4c7315de0a6da51502b49212eb0922c68a02244",
+                  "bytes": 154252,
+                  "pages": [
+                    1,
+                    1
+                  ]
+                },
+                "https://www.gikai.city.mitaka.tokyo.jp/activity/result/2021/custom_2021b.html": {
+                  "format": "html",
+                  "sha256": "9269ff343bece88058816481a06c74b8ab49f22f925d62663654861b05636cb6",
+                  "bytes": 22668
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     {
       "id": "132047-740d95941f36",
@@ -32810,10 +32847,12 @@
           "basis": "令和3年度一般会計補正予算(第10号",
           "page": 1,
           "in_scope": {
-            "status": "included",
-            "basis": "一般会計又は特別会計の掲載/本文の識別を保持。census の候補として対象に含むが、金額全量・方向・号数・粒度の検証完了を意味しない。",
+            "status": "excluded",
+            "basis": "表紙の提出時第10号は議決順変更後の正式第11号に対応する。同一議案の提出時の番号であり、正式な別の補正対象ではない。表紙・第1条と議会の議決結果及び番号変更注記で確認。",
             "evidence_urls": [
-              "https://www.city.mitaka.lg.jp/c_service/094/attached/attach_94775_2.pdf"
+              "https://www.city.mitaka.lg.jp/c_service/094/attached/attach_94775_2.pdf",
+              "https://www.gikai.city.mitaka.tokyo.jp/activity/result/2021/custom_2021d.html",
+              "https://www.gikai.city.mitaka.tokyo.jp/activity/pdf/2021custom4giantou_saiketu.pdf"
             ]
           }
         }
@@ -32839,7 +32878,44 @@
         "evidence_urls": [
           "https://www.city.mitaka.lg.jp/c_service/094/attached/attach_94775_2.pdf"
         ]
-      }
+      },
+      "ingestions": [
+        {
+          "enabled": true,
+          "key": "132047-740d95941f36:0",
+          "section": "native_supplementary_detail",
+          "profile": {
+            "edition_index": 0,
+            "physical_pages": [
+              26,
+              37
+            ]
+          },
+          "options": {
+            "approval": {
+              "kind": "budget_bill",
+              "date": "2021-12-21",
+              "basis": "132047:2021:一般会計:supplementary:11 63 original_bill_approved; native final decision row and separately printed original article. Disposition effective date unassigned.",
+              "evidence": {
+                "https://www.gikai.city.mitaka.tokyo.jp/activity/pdf/2021custom4giantou_saiketu.pdf": {
+                  "format": "pdf",
+                  "sha256": "7a6b75a284f909c4629b6aba98da6442235f7dbc21ee9236f115ec1749fa0d34",
+                  "bytes": 208400,
+                  "pages": [
+                    1,
+                    1
+                  ]
+                },
+                "https://www.gikai.city.mitaka.tokyo.jp/activity/result/2021/custom_2021d.html": {
+                  "format": "html",
+                  "sha256": "45fb6c3389d7cecc30ee7bd8cbe3a83448ea9c6f6c5ad71b26558ec5eebfce16",
+                  "bytes": 27969
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     {
       "id": "132047-7e32d8349e67",
@@ -33485,7 +33561,44 @@
         "evidence_urls": [
           "https://www.city.mitaka.lg.jp/c_service/091/attached/attach_91760_4.pdf"
         ]
-      }
+      },
+      "ingestions": [
+        {
+          "enabled": true,
+          "key": "132047-a27467fb6ae4",
+          "section": "native_supplementary_detail",
+          "profile": {
+            "edition_index": 0,
+            "physical_pages": [
+              20,
+              23
+            ]
+          },
+          "options": {
+            "approval": {
+              "kind": "budget_bill",
+              "date": "2021-03-29",
+              "basis": "132047:2021:一般会計:supplementary:1 22 original_bill_approved; native final decision row and separately printed original article. Disposition effective date unassigned.",
+              "evidence": {
+                "https://www.gikai.city.mitaka.tokyo.jp/activity/pdf/2021custom1giantou_saiketu.pdf": {
+                  "format": "pdf",
+                  "sha256": "7d97822581c181bfb46b872b8ac4a5df1d28b20d092f2d8994a5a280ce219535",
+                  "bytes": 215664,
+                  "pages": [
+                    2,
+                    2
+                  ]
+                },
+                "https://www.gikai.city.mitaka.tokyo.jp/activity/result/2021/custom_2021a.html": {
+                  "format": "html",
+                  "sha256": "183ac70ffc708712ca6a1d8cf220e5b60ea17a531489f0993313cfaa440d72f8",
+                  "bytes": 32757
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     {
       "id": "132047-a7e84bb2a306",
@@ -33589,10 +33702,12 @@
           "basis": "令和3年度一般会計補正予算(第11号",
           "page": 1,
           "in_scope": {
-            "status": "included",
-            "basis": "一般会計又は特別会計の掲載/本文の識別を保持。census の候補として対象に含むが、金額全量・方向・号数・粒度の検証完了を意味しない。",
+            "status": "excluded",
+            "basis": "表紙の提出時第11号は議決順変更後の正式第10号に対応する。同一議案の提出時の番号であり、正式な別の補正対象ではない。表紙・第1条と議会の議決結果及び番号変更注記で確認。",
             "evidence_urls": [
-              "https://www.city.mitaka.lg.jp/c_service/094/attached/attach_94775_4.pdf"
+              "https://www.city.mitaka.lg.jp/c_service/094/attached/attach_94775_4.pdf",
+              "https://www.gikai.city.mitaka.tokyo.jp/activity/result/2021/custom_2021d.html",
+              "https://www.gikai.city.mitaka.tokyo.jp/activity/pdf/2021custom4giantou_saiketu.pdf"
             ]
           }
         }
@@ -33618,7 +33733,44 @@
         "evidence_urls": [
           "https://www.city.mitaka.lg.jp/c_service/094/attached/attach_94775_4.pdf"
         ]
-      }
+      },
+      "ingestions": [
+        {
+          "enabled": true,
+          "key": "132047-a7e84bb2a306:0",
+          "section": "native_supplementary_detail",
+          "profile": {
+            "edition_index": 0,
+            "physical_pages": [
+              16,
+              19
+            ]
+          },
+          "options": {
+            "approval": {
+              "kind": "budget_bill",
+              "date": "2021-12-07",
+              "basis": "132047:2021:一般会計:supplementary:10 68 original_bill_approved; native final decision row and separately printed original article. Disposition effective date unassigned.",
+              "evidence": {
+                "https://www.gikai.city.mitaka.tokyo.jp/activity/pdf/2021custom4giantou_saiketu.pdf": {
+                  "format": "pdf",
+                  "sha256": "7a6b75a284f909c4629b6aba98da6442235f7dbc21ee9236f115ec1749fa0d34",
+                  "bytes": 208400,
+                  "pages": [
+                    1,
+                    1
+                  ]
+                },
+                "https://www.gikai.city.mitaka.tokyo.jp/activity/result/2021/custom_2021d.html": {
+                  "format": "html",
+                  "sha256": "45fb6c3389d7cecc30ee7bd8cbe3a83448ea9c6f6c5ad71b26558ec5eebfce16",
+                  "bytes": 27969
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     {
       "id": "132047-b680c6133c89",

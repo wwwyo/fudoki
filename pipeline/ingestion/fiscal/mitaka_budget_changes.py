@@ -169,8 +169,15 @@ def book(source,edition,allpages,texts,end):
     moku_diff=[{'moku':k,'delta':v,'project_sum':project_sums.get(k),'left_setsu_sum':setsu_controls.get(k)} for k,v in moku_controls.items() if k not in reserve_keys and (project_sums.get(k)!=v or setsu_controls.get(k)!=v)]
     detail_diff=[{'project_row':k,'root':r['amount'],'detail_sum':details.get(k)} for k,r in projects.items() if r['amount']!=details.get(k)]
     leaves=[dict(r,source_grain='project',printed_setsu_code=None) for r in projects.values() if r['amount'] is not None and r['moku'] is not None]+reserve_records
-    article=''.join(normalize(t) for t in texts[edition['page']-1:first-1]);match=re.search(r'歳入歳出それぞれ([△▲−\-\d,]+)千円を(追加|増額|減額)',article);total=number(match[1])*(-1 if match[2]=='減額' else 1) if match else None
-    checks={'reserve_moku_without_right_project_or_setsu':[{'source_row':r['source_row'],'page':r['location']['page'],'amount':r['amount'],'grain':'moku; right explanation blank; independent left-setu/project control unavailable'} for r in reserve_records],'moku_controls':len(moku_controls),'projects':len(projects),'left_setsu_amount_groups':len(setsu_controls),'moku_differences':moku_diff,'project_detail_differences':detail_diff,'parser_problems':problems,'printed_article_delta':total,'project_delta_sum':sum(r['amount'] for r in leaves),'account_delta_match':total is not None and total==sum(r['amount'] for r in leaves),'legal_project_setsu_relation':'unconfirmed-independent-decompositions'}
+    articles=[]
+    for physical_page in range(edition['page'],first):
+        article=normalize(texts[physical_page-1])
+        match=re.search(r'歳入歳出それぞれ([△▲−\-\d,]+)千円を(追加|増額|減額)',article)
+        if match and '第1条' in article:
+            articles.append((physical_page,number(match[1])*(-1 if match[2]=='減額' else 1)))
+    if len(articles)!=1:raise ValueError('No unique printed first-article page and amount in declared edition')
+    article_page,total=articles[0]
+    checks={'reserve_moku_without_right_project_or_setsu':[{'source_row':r['source_row'],'page':r['location']['page'],'amount':r['amount'],'grain':'moku; right explanation blank; independent left-setu/project control unavailable'} for r in reserve_records],'moku_controls':len(moku_controls),'projects':len(projects),'left_setsu_amount_groups':len(setsu_controls),'moku_differences':moku_diff,'project_detail_differences':detail_diff,'parser_problems':problems,'printed_article_page':article_page,'printed_article_delta':total,'project_delta_sum':sum(r['amount'] for r in leaves),'account_delta_match':total is not None and total==sum(r['amount'] for r in leaves),'legal_project_setsu_relation':'unconfirmed-independent-decompositions'}
     return obs.records,leaves,checks,[first,last]
 
 

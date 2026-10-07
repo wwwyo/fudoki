@@ -250,7 +250,7 @@ def emit_registered(output, original, spec, master_path=None, definitions=None, 
         )
         metadata = fields(spec, table, definitions)
         metadata.update(
-            first_article_evidence={'page': spec['edition']['page'], 'amount_delta': checks['printed_article_delta']},
+            first_article_evidence={'page': checks['printed_article_page'], 'amount_delta': checks['printed_article_delta']},
             printed_total=checks['printed_article_delta'],
         )
         entry = record_input(dest, metadata, logical_path=input_path(spec['source'], table))

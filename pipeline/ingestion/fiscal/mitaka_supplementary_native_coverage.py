@@ -74,6 +74,8 @@ def output_coverage(connection, candidate, hashes, lock_path, datasets):
                 'sourceAmountKind': 'supplementary',
                 'canonicalChanges': table['observation_role'] == 'project_delta',
                 'projectSetsuLinkage': 'independent_breakdowns',
+                'firstArticleEvidence': original['first_article_evidence'],
+                'printedTotal': original['printed_total'],
             }.items():
                 if decl.get(k) != v:
                     raise ValueError('Mitaka declaration/raw contract differs: ' + k)
@@ -125,6 +127,24 @@ def _outputs(c, candidate, hashes, raw, meta, selected, specs):
     csvrows = {}
     master = records(c, 'select * from fiscal_expenditure_setsu_master')
     verified_originals = set()
+    articles = {}
+    for identity, metadata in meta.items():
+        spec = specs[metadata['source_key'], metadata['table_id']][0]
+        key = (metadata['origin_sha256'], spec['edition_index'])
+        if key not in articles:
+            original = OBJECTS / f"inputs/origin/sha256/{metadata['origin_sha256']}"
+            if metadata['origin_sha256'] not in verified_originals:
+                body = original.read_bytes()
+                inspection = spec['source']['content_inspection']
+                if digest(body) != inspection['sha256'] or len(body) != inspection['bytes']:
+                    raise ValueError('Mitaka article original bytes differ')
+                verified_originals.add(metadata['origin_sha256'])
+            articles[key] = _article_evidence(original, spec)
+        if (
+            metadata.get('first_article_evidence') != articles[key]
+            or metadata.get('printed_total') != articles[key]['amount_delta']
+        ):
+            raise ValueError('Mitaka article evidence differs from independently located original on a raw role')
     for role, (model, name) in models.items():
         csvmodel = 'csv_132047_' + name
         path = 'fiscal/132047/' + name + '.csv'
@@ -270,25 +290,9 @@ def _outputs(c, candidate, hashes, raw, meta, selected, specs):
                 ):
                     raise ValueError('Mitaka independent left root/master/NULL differs')
         if role == 'project_observations':
-            original = OBJECTS / f"inputs/origin/sha256/{metadata['origin_sha256']}"
             spec = specs[metadata['source_key'], metadata['table_id']][0]
-            if metadata['origin_sha256'] not in verified_originals:
-                body = original.read_bytes()
-                inspection = spec['source']['content_inspection']
-                if digest(body) != inspection['sha256'] or len(body) != inspection['bytes']:
-                    raise ValueError('Mitaka article original bytes differ')
-                verified_originals.add(metadata['origin_sha256'])
-            article = subprocess.check_output(['pdftotext', '-f', str(metadata['first_article_evidence']['page']), '-l', str(metadata['pages'][0] - 1), '-layout', str(original), '-']).decode(
-
-            )
-            from ingestion.fiscal.tama_budget_detail import normalize, number
-            printed = re.search('歳入歳出それぞれ([△▲−\\-\\d,]+)千円を(追加|増額|減額)', normalize(article))
-            if not printed:
-                raise ValueError('Mitaka original first-article signed amount absent')
-            total = number(printed[1]) * (-1 if printed[2] == '減額' else 1)
+            total = articles[metadata['origin_sha256'], spec['edition_index']]['amount_delta']
             financial_rows = raw[identity.removesuffix('-project_observations') + '-project_delta']
-            if metadata['first_article_evidence']['page'] != spec['edition']['page']:
-                raise ValueError('Mitaka article range differs from current edition')
             if (
                 total != metadata['first_article_evidence']['amount_delta']
                 or total != metadata['printed_total']
@@ -332,3 +336,30 @@ def _outputs(c, candidate, hashes, raw, meta, selected, specs):
                 ]
             ),
         )
+
+def _article_evidence(original, spec):
+    """Locate the article independently within this edition, not a supplied page."""
+    from ingestion.fiscal.tama_budget_detail import normalize, number
+    first = spec['edition']['page']
+    last = spec['tables'][0]['pages'][0] - 1
+    if first > last:
+        raise ValueError('Mitaka article range before expenditure detail is empty')
+    pages = subprocess.check_output([
+        'pdftotext', '-f', str(first), '-l', str(last), '-layout', str(original), '-',
+    ]).decode().split('\f')
+    if not pages[-1].strip():
+        pages.pop()
+    if len(pages) != last - first + 1:
+        raise ValueError('Mitaka article range physical page count differs')
+    articles = []
+    for page, text in enumerate(pages, first):
+        text = normalize(text)
+        printed = re.search(r'歳入歳出それぞれ([△▲−\-\d,]+)千円を(追加|増額|減額)', text)
+        if printed and '第1条' in text:
+            articles.append({
+                'page': page,
+                'amount_delta': number(printed[1]) * (-1 if printed[2] == '減額' else 1),
+            })
+    if len(articles) != 1:
+        raise ValueError('Mitaka original has no unique first-article page in the declared edition')
+    return articles[0]
