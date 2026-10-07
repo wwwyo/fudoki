@@ -29,6 +29,16 @@ script はこの package が所有する。実行は `bun run --cwd pipeline <na
 - **変換・検査**: dbt-duckdb。staging は原典の行と1対1、intermediate は構造・単位・科目・分類の統一、marts は提供する列と粒度を確定する。
 - **検証**: Bun/TypeScript の `verify/report/` とループバック専用の view。系統・検査結果・原典との対応を確認する。
 - **保存**: Git はコード・宣言・判断・入力一覧、非公開 R2 は原典・取り込み表。`.cache/` と `.build/` は再生成可能なローカル作業領域。
+
+  | 内容 | 保存先 | Git |
+  |---|---|---|
+  | 原典 CSV/PDF、取り込み Parquet | 非公開 R2、個別の内容ハッシュ | 入力一覧だけ |
+  | 原典・表の識別子、ハッシュ・保存先、source宣言 | `ingestion/fiscal/sources.lock.json`（schemaVersion 3） | 管理する |
+  | 取得元・階層・金額段階の宣言、分類・名称の判断 | `ingestion/` と dbt seeds | 管理する |
+  | 復元済み入力・PDF/OCR キャッシュ | `pipeline/.cache/` | 管理しない |
+  | DuckDB・dbt manifest・検査結果・ローカル報告 | `pipeline/.build/` | 管理しない |
+
+  再構築に必要な原典・取り込み表・コード・宣言を保持する。独立したprovenanceファイルは生成・保存しない。原典・取り込み表の遠隔保管と復元は確認済みで、repo 内の `data/` は廃止した。
 - **一時検証の保存**: `.agent/` へ runtime・依存物・原典群・キャッシュ・全量 warehouse を検証ごとに複製しない。ハッシュ固定した既存原典を読み取り参照し、変更コードのスナップショット・ハッシュ一覧・対象範囲の再抽出と検査結果を保存する。全件走査・全ファイルのハッシュ計算は対象を絞る。採用後の再生成可能な一時DB・重複CSVは整理するが、未採用の原典・取り込み表・支持コード・証跡は保持する。
 
 **Python の版は 3.13 に固定してある。** dbt-duckdb 1.11.0 が classifiers で 3.14 を宣言していないため（`requires-python` は `>=3.10` なので入りはするが、テストされていない組み合わせになる）。

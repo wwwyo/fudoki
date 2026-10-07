@@ -56,32 +56,6 @@ CC BY が求める帰属を下流が落とす。層ごとの宣言は各 `datapa
 
 **入力と判断から、提供用データを生成する。** Git はコード・取得元・判断・入力一覧を保持し、原典と取り込み表は非公開 R2 に保管する。まず ingestion〜marts の金額・粒度・分類・出典と再構築を検査する。配布・検索のインフラと公開方式はその後に検討する。詳細は [pipeline の手順](../pipeline/README.md)。
 
-**ダッシュボードは `https://fudoki.dev/` で配信する。** これは派生物であって正本ではない。
-公開 web の絶対 URL（`canonical` / `og:image` / `sitemap.xml`）はこのドメインを指す。
-⚠️ **ルートパス（`https://fudoki.dev/`）で配信する前提**なので、`vite.config.ts` の `base` は `/` のままでよい。
-`base` に効くのは**パス**であって DNS 名ではない。`www.fudoki.dev` のようなサブドメインへ移しても `/` のまま。
-サブパス（`example.github.io/fudoki/` のような形）へ移すときだけ、`base` と上記3箇所を同時に変える
-（片方だけだと静的アセットが 404 になる）。
-置き場は Cloudflare。apex をそのまま向けられるのは Cloudflare が CNAME flattening をするからで、
-`CNAME` ファイルは要らない（GitHub Pages なら要る）。
-
-配信は **Cloudflare Workers の静的アセット**（`apps/web/deploy/cloudflare.config.ts`）。`entrypoint` を持たない
-アセットだけの Worker で、画面はサーバ側で何もしないのでスクリプトは置かない。
-
-公開 web は API から dataset と現在のデータ版を参照し、SQL 集計の応答を表示する。build/deploy は公開 UI のコードだけを扱い、dbt・報告・原典の全量生成は実行しない。
-
-```bash
-bun run deploy:web    # vite build → cf deploy
-```
-
-ローカル検証画面は `pipeline/verify/view/` にあり、報告は `pipeline/.build/report/`、PDF 閲覧レイヤは `pipeline/.cache/pdf/` に置く。公開 web の配信物には含めない。
-
-`apps/web` の運用ハマりどころ（デプロイ後の確認方法・`DESIGN.md` に何を書くか）は
-`.agents/skills/web-frontend-ops/`（session-retro が維持）を参照。
-
-`apps/api`（Cloudflare Workers + oRPC）のデプロイ・運用のハマりどころは
-`.agents/skills/cloudflare-api-ops/`（session-retro が維持）を参照。
-
 **原典 CSV/PDF と取り込み済み Parquet は別のものとして保管する。** 原典・表は非公開 R2 の内容ハッシュ別オブジェクト、採用した証跡は Git。Git の `pipeline/ingestion/fiscal/sources.lock.json` が採用した個別キーとハッシュを固定する。新規の取得は原典を保存してから表を作る。固定入力からの build で原典の再取得をしない。
 
 再配布の可否は原典ごとに判断する。公開する配布物と非公開の原典保管は別に扱う。権利の整理は [ライセンスの層別宣言](adr/0006-license-per-layer.md)、個別条件は取得元の宣言と descriptor に残す。
@@ -108,6 +82,10 @@ bun run deploy:web    # vite build → cf deploy
   （62団体中53団体で目より下に届くことを実測。カタログだけでは17団体）
 - 官公需 API のフィールド実測 → `docs/survey/kkj-api-notes.md`
   （tender 段階まで。落札者・法人番号は無い）
+
+⚠️ **この文書と `jurisdictions/` の実測の主張は、調査スクリプトの観測から出ている。**
+観測は commit しないので、主張には実測日を添え、
+再確認するときは該当スクリプトを回して観測を取り直す。
 
 ## パイプライン
 
@@ -138,25 +116,6 @@ intermediate で付与した分類などは原典由来の金額と列の説明�
 PDF の抽出は1本あたり数十秒かかるので、**抽出を走らせる前に**原典の SHA-256 と
 抽出器の版で冪等判定する。冪等でないと `fetched_at` だけが動いて作業ツリーが毎回汚れ、
 「再生成しても同じか」を見る CI の判定が意味を失う。**staging 以降は原典だけから何度でも再生成できる**こと。この2つが崩れると、表記ルールを直すたびに全自治体を再クロールすることになる。
-
-## 保管するものと再生成するもの
-
-| 内容 | 保存先 | Git |
-|---|---|---|
-| 原典 CSV/PDF、取り込み Parquet | 非公開 R2、個別の内容ハッシュ | 入力一覧だけ |
-| 原典・表の識別子、ハッシュ・保存先、source宣言 | pipeline/ingestion/fiscal/sources.lock.json（schemaVersion 3） | 管理する |
-| 取得元・階層・金額段階の宣言、分類・名称の判断 | pipeline/ingestion と dbt seeds | 管理する |
-| 復元済み入力・PDF/OCR キャッシュ | pipeline/.cache/ | 管理しない |
-| DuckDB・dbt manifest・検査結果・ローカル報告 | pipeline/.build/ | 管理しない |
-
-再構築に必要な原典・取り込み表・コード・宣言を保持する。独立したprovenanceファイルは生成・保存しない。原典・取り込み表の遠隔保管と復元は確認済みで、repo 内の `data/` は廃止した。
-
-**団体の同一性（名称・ocdId）は `packages/jurisdictions/jurisdictions.json`。**
-財政データ・調達を同じキーで束ねるので、どれか1層のファイルに同居させない。
-
-⚠️ **この文書と `jurisdictions/` の実測の主張は、調査スクリプトの観測から出ている。**
-観測は commit しないので、主張には実測日を添え、
-再確認するときは該当スクリプトを回して観測を取り直す。
 
 ## パーサ設計の原則
 
