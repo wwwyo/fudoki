@@ -168,7 +168,7 @@ export const sourceSelectionsSchema = z.array(sourceSelectionSchema).superRefine
           const saved = receipt.files[fileIndex]!
           const numberedPrefix = originObjectSlot(selection.target) + '-'
           const suffix = saved.key.startsWith(numberedPrefix) ? saved.key.slice(numberedPrefix.length) : ''
-          const numbered = new RegExp(`^[1-9]\\d*\\.${file.format}$`).test(suffix)
+          const numbered = /^[1-9]\d*\.(csv|pdf)$/.test(suffix) && suffix.endsWith(`.${file.format}`)
           const single = selected.files.length === 1 && saved.key === originObjectKey(selection.target, file.format)
           if ((!single && !numbered) || saved.sha256 !== file.sha256 || keys.has(saved.key)) {
             ctx.addIssue({ code: 'custom', path: [index, 'archive', 'files', fileIndex], message: 'Archive differs from the selected target or file' })

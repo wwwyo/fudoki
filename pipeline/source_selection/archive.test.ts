@@ -64,9 +64,11 @@ test('all parts are checked before the first upload and a failed part cannot pro
   expect(fake.uploads).toHaveLength(0)
   const fail = transport()
   let puts = 0
-  await expect(archiveGroup([withFiles([pdf, second])], { ...fail.api, async put() { if (++puts === 2) throw new Error('upload failed') } })).rejects.toThrow('upload failed')
+  const input = withFiles([pdf, second])
+  const before = structuredClone(input)
+  await expect(archiveGroup([input], { ...fail.api, async put() { if (++puts === 2) throw new Error('upload failed') } })).rejects.toThrow('upload failed')
   expect(fail.removed).toHaveLength(0)
-  expect(selection.archive).toBeNull()
+  expect(input).toEqual(before)
 })
 
 test('a smaller selection overwrites the current file and removes obsolete flat parts', async () => {

@@ -78,25 +78,30 @@ export async function archiveGroup(group: SourceSelection[], transport: ArchiveT
   const prefix = originObjectSlot(group[0]!.target) + '-'
   const previousKeys = await transport.list(prefix)
   if (previousKeys.some(key => !key.startsWith(prefix))) throw new Error('Object listing escaped the requested prefix')
-  const downloaded = []
-  for (const item of planned) {
-    const response = await transport.download(item.file.download_url)
-    if (digest(response.body) !== item.file.sha256) throw new Error(`Original changed; inspect and reselect before archiving: ${item.file.download_url}`)
-    if (response.body.byteLength > MAX_BYTES) throw new Error('Original exceeds the cf upload size limit')
-    downloaded.push({ ...item, ...response })
-  }
-  for (const item of downloaded) await transport.put(item.key, item.body, item.file.format === 'pdf' ? 'application/pdf' : 'text/csv')
-  const keep = new Set(planned.map(item => item.key))
-  const oldKeys = new Set([...previousKeys, originObjectKey(group[0]!.target, 'csv'), originObjectKey(group[0]!.target, 'pdf')])
-  for (const key of oldKeys) if (!keep.has(key)) await transport.remove(key)
-  const saved = new Map(downloaded.map(item => [item.file.sha256!, { key: item.key, sha256: item.file.sha256!, final_url: item.final_url }]))
-  const archived_at = new Date().toISOString()
-  const result = group.filter(selection => selection.selected_candidate_id !== null).map(selection => {
-    const candidate = selection.candidates.find(item => item.id === selection.selected_candidate_id)!
-    return { ...selection, archive: { bucket: ARCHIVE_BUCKET, candidate_id: candidate.id, files: candidate.files.map(file => saved.get(file.sha256!)!), archived_at } }
-  })
-  sourceSelectionsSchema.parse(result)
-  return result
+  const directory = await mkdtemp(join(tmpdir(), 'fudoki-origin-parts-'))
+  try {
+    const downloaded = []
+    for (const item of planned) {
+      const response = await transport.download(item.file.download_url)
+      if (digest(response.body) !== item.file.sha256) throw new Error(`Original changed; inspect and reselect before archiving: ${item.file.download_url}`)
+      if (response.body.byteLength > MAX_BYTES) throw new Error('Original exceeds the cf upload size limit')
+      const path = join(directory, String(downloaded.length))
+      await writeFile(path, response.body)
+      downloaded.push({ ...item, path, final_url: response.final_url })
+    }
+    for (const item of downloaded) await transport.put(item.key, await readFile(item.path), item.file.format === 'pdf' ? 'application/pdf' : 'text/csv')
+    const keep = new Set(planned.map(item => item.key))
+    const oldKeys = new Set([...previousKeys, originObjectKey(group[0]!.target, 'csv'), originObjectKey(group[0]!.target, 'pdf')])
+    for (const key of oldKeys) if (!keep.has(key)) await transport.remove(key)
+    const saved = new Map(downloaded.map(item => [item.file.sha256!, { key: item.key, sha256: item.file.sha256!, final_url: item.final_url }]))
+    const archived_at = new Date().toISOString()
+    const result = group.filter(selection => selection.selected_candidate_id !== null).map(selection => {
+      const candidate = selection.candidates.find(item => item.id === selection.selected_candidate_id)!
+      return { ...selection, archive: { bucket: ARCHIVE_BUCKET, candidate_id: candidate.id, files: candidate.files.map(file => saved.get(file.sha256!)!), archived_at } }
+    })
+    sourceSelectionsSchema.parse(result)
+    return result
+  } finally { await rm(directory, { recursive: true, force: true }) }
 }
 
 export function isMissingR2ObjectError(stderr: string): boolean {
