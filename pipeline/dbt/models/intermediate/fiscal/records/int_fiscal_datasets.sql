@@ -37,7 +37,28 @@ select h.dataset_id, h.jurisdiction_code, h.fiscal_year, h.direction, h.document
 from read_json_auto('{{ env_var("FUDOKI_DECLARATIONS_DIR") }}/history.json') h
 -- Recovered chapters are registered below with their unconfirmed phase.
 where coalesce(json_extract_string(h.source_json, '$.provider'), '')
-      not in ('ingestion.fiscal.komae_recovered_provider', 'ingestion.fiscal.komae_supplementary_2020_1_provider')
+      not in ('ingestion.fiscal.komae_recovered_provider', 'ingestion.fiscal.komae_supplementary_2020_1_provider',
+              'ingestion.fiscal.chiyoda_budget_changes', 'ingestion.fiscal.tama_supplementary_registry',
+              'ingestion.fiscal.mitaka_supplementary_registry')
+  and coalesce(json_extract_string(h.source_json, '$.namespace'), '') not in ('chiyoda-supplementary-native', 'tama-supplementary-native', 'mitaka-supplementary-native')
+union all
+-- The printed moku×setsu breakdown has its own dataset identity; its amounts
+-- remain separate from the explanation-page project amounts.
+select dataset_id, jurisdiction_code, fiscal_year, direction, document_kind, origin_sha256,
+       cast(to_json(list(distinct phase order by phase)) as varchar) as phases_json,
+       source_json,
+       cast(json_object(
+           'hierarchy', ['fund','kan','kou','moku','setsu'],
+           'dimensions', [],
+           'funds', list(distinct struct_pack(code := '', label := coalesce(fund_label, ''))
+               order by struct_pack(code := '', label := coalesce(fund_label, ''))),
+           'scope', json_object('granularity', line_granularity,
+               'independentBreakdown', true, 'nonadditive', true,
+               'projectSetsuLinkage', project_setsu_linkage)) as varchar) as structure_json,
+       count(*) as line_count
+from {{ ref('int_initial_expenditure_moku_setsu') }}
+group by dataset_id, jurisdiction_code, fiscal_year, direction, document_kind, origin_sha256,
+         source_json, line_granularity, project_setsu_linkage
 union all
 -- Independently observed Tama settlement breakdowns and nonadditive proof.
 -- Registration does not union their values into generic fiscal amounts.
@@ -115,4 +136,12 @@ select h.dataset_id,h.jurisdiction_code,h.fiscal_year,h.direction,h.document_kin
 from read_json_auto('{{ env_var("FUDOKI_DECLARATIONS_DIR") }}/history.json') h
 where json_extract_string(h.source_json,'$.provider')='ingestion.fiscal.komae_supplementary_2020_1_provider'
 
+union all
+select * from {{ ref('int_132241__initial_native_datasets') }}
+union all
+select * from {{ ref('int_131016__supplementary_native_datasets') }}
+union all
+select * from {{ ref('int_132241__supplementary_native_datasets') }}
+union all
+select * from {{ ref('int_132047__supplementary_native_datasets') }}
 order by dataset_id

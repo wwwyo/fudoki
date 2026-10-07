@@ -15,6 +15,8 @@
 | （探索。エージェントが書く） | `pipeline/ingestion/fiscal/observations/discovery/<団体コード>.json` | しない（ローカル観測） |
 | `probe:documents` | `pipeline/ingestion/fiscal/observations/budget-document-probe.json` | しない（ローカル観測） |
 | `coverage:sources` | `pipeline/ingestion/fiscal/observations/budget-source-coverage.json` | しない（ローカル観測） |
+| `sources:canonical --markdown` | `docs/prd/fiscal-coverage/unadopted-sources-2026-10-06.md` | Git（既存宣言から再生成できる対象別の採用対応一覧） |
+| `sources:plan --json` | 標準出力（原典台帳の有効な取り込み宣言と取得計画） | しない（取得・抽出は実行しない） |
 | `fetch:fdp-taxonomy` | `pipeline/fdp/fiscal-taxonomy.json` | Git（宣言・判断のみ） |
 | `fetch:account-master` | `pipeline/dbt/seeds/fiscal/account_master.csv` | Git（宣言・判断のみ） |
 | `survey:fiscal-years` | `pipeline/ingestion/fiscal/observations/mitaka-budget-years.json` | しない（ローカル観測） |
@@ -42,3 +44,24 @@
 | `bun run pipeline` | 取得 → dbt・marts の CSV → 報告。**検査が1つでも落ちたら下流を作らない** |
 | `bun run dev` | 報告を作り直してダッシュボードを上げる（`pipeline/verify/view/`、5174） |
 | `bun run fetch:fdp-taxonomy` | FDP の ColumnType 一覧を仕様の原文から起こして取り込む（正準 URL が 404 のため） |
+
+## 多摩市の文字層による当初予算取り込み
+
+`ingestion.fiscal.tama_budget_detail` は会計・頁・原典IDを指定すると未承認の候補を生成する。`--registered` は同じ会計・頁の台帳宣言を使う。`--acquire-registered` は台帳で有効な宣言を共通HTTP取得経路から取り込み、通常の `ingestion.acquire` もこの入口を呼ぶ。いずれも単独では固定入力一覧を置き換えない。
+
+対象範囲は `sources.json`、固定した原典・表と宣言は `sources.lock.json` を参照する。検算用の観測表は非加算で金額段階なし、金額明細は原典で確認した粒度を保持する。
+
+## 千代田区2026年度の補正予算
+
+`ingestion.fiscal.chiyoda_budget_changes` は `sources.json` の原典IDを指定し、保存済みPDFの文字層から候補表を生成する。対象は一般会計の補正1〜3号。`--registered` は台帳の議決根拠を使い、第1・2号の事業増減額だけを予算変更履歴へ接続する。第3号の承認状態は未確認。通常の取得は `--acquire-registered` を呼び、議決PDFも固定した版で保存・復元する。
+
+```bash
+PYTHONPATH=pipeline mise x -- uv run python -m ingestion.fiscal.chiyoda_budget_changes \
+  --source-id 131016-a9eb88c6b249 --output-dir /private/tmp/chiyoda-supplementary-1
+```
+
+目の補正前額・増減額・補正後額、左頁の節別増減額、右頁の事業・内訳の増減額、項の小計を別の行種別で保持する。各目の算術と、節・事業それぞれの合計を目・第1条の増減総額へ照合する。小計は款・項に帰属し、直前の目へ帰属させない。印字されたゼロは残し、印字のない節・事業をゼロで補わない。
+
+3号分は計17観測行（目4、節3、事業3、内訳3、項小計4）。原典ID・URL・固定版・頁・単語座標を保持し、表全体を非加算として宣言する。既定の候補生成では承認状態を未確認、金額段階を空にする。登録モードでは台帳の議決根拠を使う。事業×節の対応と当初予算の基準額は未確認のまま保持し、増減額を補正後の予算総額として扱わない。
+
+観測CSVは17行を原典の単位・列のまま提供する。予算変更履歴は承認済みの事業増減額だけを円に換算し、印字された内訳を非加算の詳細として残す。節のIDはNULL、粒度は `origin_line`、当初の基準額は未確認とする。候補生成・登録モードのどちらも、それだけで採用入力一覧を置き換えない。

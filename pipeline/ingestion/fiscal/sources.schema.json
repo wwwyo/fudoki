@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://fudoki.local/schemas/fiscal-coverage-v1.json",
-  "title": "Fiscal source census v1",
+  "$id": "https://fudoki.local/schemas/fiscal-sources-v1.json",
+  "title": "Fiscal source registry v1",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -326,6 +326,50 @@
               "decision"
             ]
           },
+          "publisher_revision": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Optional publisher revision evidence; page-update dates, inspection dates and filenames are not revision dates.",
+            "properties": {
+              "revision_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "revision_at": {
+                "type": "string",
+                "format": "date"
+              },
+              "basis": {
+                "type": "string",
+                "minLength": 1
+              },
+              "evidence_urls": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "pattern": "^https://"
+                }
+              }
+            },
+            "required": [
+              "basis",
+              "evidence_urls"
+            ],
+            "anyOf": [
+              {
+                "required": [
+                  "revision_id"
+                ]
+              },
+              {
+                "required": [
+                  "revision_at"
+                ]
+              }
+            ]
+          },
           "format": {
             "enum": [
               "csv",
@@ -348,6 +392,10 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
+              "primary_fiscal_page": {
+                "type": "boolean",
+                "description": "Whether this publisher listing is the primary fiscal page for equivalent editions; omission retains the existing heading-based preference."
+              },
               "label": {
                 "type": "string"
               },
@@ -600,6 +648,31 @@
               "$ref": "#/$defs/unresolved_resolution"
             },
             "description": "One explicit resolution per exact unresolved item, with current lock/origin/output identities; never a blanket waiver."
+          },
+          "ingestions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/ingestion"
+            }
+          },
+          "acquisition": {
+            "$ref": "#/$defs/acquisition"
+          },
+          "publication_links": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/publication_link"
+            }
+          },
+          "complementary_source_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true,
+            "description": "Other originals required alongside this split volume; reciprocal references within the same fiscal scope. A single part cannot be selected as the complete canonical statement."
           }
         },
         "required": [
@@ -664,6 +737,12 @@
         "matched_paths",
         "unmatched_paths"
       ]
+    },
+    "acquisition_catalogs": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/acquisition_catalog"
+      }
     }
   },
   "required": [
@@ -968,12 +1047,15 @@
               "setsu_columns"
             ]
           }
+        },
+        "input_fingerprint": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
         }
       },
       "required": [
         "schema_version",
         "origin_sha256",
-        "lock_sha256",
         "fiscal_year",
         "account_label",
         "document_phase",
@@ -997,6 +1079,18 @@
               "approval"
             ]
           }
+        }
+      ],
+      "anyOf": [
+        {
+          "required": [
+            "input_fingerprint"
+          ]
+        },
+        {
+          "required": [
+            "lock_sha256"
+          ]
         }
       ]
     },
@@ -1184,16 +1278,896 @@
             "type": "integer",
             "minimum": 0
           }
+        },
+        "input_fingerprint": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
         }
       },
       "required": [
         "item",
         "basis",
         "origin_sha256",
-        "lock_sha256",
         "dataset_ids",
         "evidence_indices"
+      ],
+      "anyOf": [
+        {
+          "required": [
+            "input_fingerprint"
+          ]
+        },
+        {
+          "required": [
+            "lock_sha256"
+          ]
+        }
       ]
+    },
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "target": {
+          "type": "object",
+          "description": "Declared processing target, independent of observed source identity."
+        },
+        "edition_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "direction": {
+          "enum": [
+            "revenue",
+            "expenditure"
+          ]
+        },
+        "physical_pages": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "publication_index": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "ingestion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "section",
+        "key",
+        "enabled",
+        "options"
+      ],
+      "properties": {
+        "section": {
+          "enum": [
+            "csv",
+            "statement",
+            "budget_history",
+            "supplementary_detail",
+            "settlement_pdf",
+            "project_names",
+            "revenue_accounts",
+            "initial_detail",
+            "recovered_initial_detail",
+            "native_initial_detail",
+            "native_supplementary_detail",
+            "native_supplementary_amendment"
+          ]
+        },
+        "key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "source_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "profile": {
+          "$ref": "#/$defs/profile"
+        },
+        "options": {
+          "type": "object"
+        },
+        "order": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "section": {
+                "const": "csv"
+              }
+            },
+            "required": [
+              "section"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "dataset_title": {},
+                  "fiscal_year_label": {},
+                  "document_kind": {},
+                  "document_label": {},
+                  "encoding": {},
+                  "redistribute": {},
+                  "redistribute_basis": {},
+                  "license_id": {},
+                  "attribution": {},
+                  "resource_url_contains": {},
+                  "raw_form": {},
+                  "jurisdiction_code": {},
+                  "fiscal_year": {},
+                  "resource": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "direction",
+                      "resource_name"
+                    ],
+                    "properties": {
+                      "direction": {
+                        "enum": [
+                          "expenditure",
+                          "revenue",
+                          null
+                        ]
+                      },
+                      "resource_name": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "dataset_title": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "url_basis": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "table_id": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "resource"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "section": {
+                "const": "statement"
+              }
+            },
+            "required": [
+              "section"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "attribution": {},
+                  "character_map": {},
+                  "columns": {},
+                  "document_kind": {},
+                  "document_label": {},
+                  "document_title": {},
+                  "duplicate_word_offsets": {},
+                  "expected_sha256": {},
+                  "explanation": {},
+                  "fund_basis": {},
+                  "fund_label": {},
+                  "heading_style": {},
+                  "layout": {},
+                  "left_page_columns": {},
+                  "license_id": {},
+                  "observed_moku_setsu_table_id": {},
+                  "page_overrides": {},
+                  "pages": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "revenue": {
+                        "type": "array",
+                        "items": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "minItems": 2,
+                        "maxItems": 2
+                      },
+                      "expenditure": {
+                        "type": "array",
+                        "items": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "minItems": 2,
+                        "maxItems": 2
+                      }
+                    }
+                  },
+                  "raw_form": {},
+                  "redistribute": {},
+                  "redistribute_basis": {},
+                  "source_amount_unit": {},
+                  "table_id": {},
+                  "url_basis": {}
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "section": {
+                "const": "budget_history"
+              }
+            },
+            "required": [
+              "section"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "attribution": {},
+                  "documents": {},
+                  "fund_code": {},
+                  "fund_label": {},
+                  "license_id": {},
+                  "redistribute": {},
+                  "redistribute_basis": {},
+                  "reported": {},
+                  "source_amount_unit": {},
+                  "table_id": {}
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "section": {
+                "const": "supplementary_detail"
+              }
+            },
+            "required": [
+              "section"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "amendment_number": {},
+                  "approval_status": {},
+                  "attribution": {},
+                  "coverage_source_id": {},
+                  "document_title": {},
+                  "effective_at": {},
+                  "expected_sha256": {},
+                  "fetched_at": {},
+                  "first_page": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "fund_label": {},
+                  "last_page": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "license_id": {},
+                  "raw_form": {},
+                  "redistribute": {},
+                  "redistribute_basis": {},
+                  "source_amount_unit": {},
+                  "submitted_at": {},
+                  "table_id": {},
+                  "url_basis": {}
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "section": {
+                "const": "settlement_pdf"
+              }
+            },
+            "required": [
+              "section"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "attribution": {},
+                  "document_kind": {},
+                  "document_label": {},
+                  "document_title": {},
+                  "fetched_at": {},
+                  "fund_basis": {},
+                  "layout": {},
+                  "license_id": {},
+                  "origin_bytes": {},
+                  "origin_sha256": {},
+                  "physical_pages": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "raw_form": {},
+                  "recognition_basis": {},
+                  "recognition_status": {},
+                  "redistribute": {},
+                  "redistribute_basis": {},
+                  "source_amount_unit": {},
+                  "tables": {},
+                  "unit_multiplier": {},
+                  "url_basis": {},
+                  "year_basis": {}
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "section": {
+                "const": "project_names"
+              }
+            },
+            "required": [
+              "section"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "columns": {},
+                  "document_title": {},
+                  "first_page": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "last_page": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "license_id": {},
+                  "raw_form": {},
+                  "redistribute": {},
+                  "redistribute_basis": {}
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "section": {
+                "const": "revenue_accounts"
+              }
+            },
+            "required": [
+              "section"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "amount": {},
+                  "bands": {},
+                  "document_title": {},
+                  "first_page": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "last_page": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "license_id": {},
+                  "name_end": {},
+                  "raw_form": {},
+                  "redistribute": {},
+                  "redistribute_basis": {}
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "section": {
+                "const": "recovered_initial_detail"
+              }
+            },
+            "required": [
+              "section"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "required": [
+                  "fiscal_year",
+                  "direction",
+                  "fund_label",
+                  "document_title",
+                  "expected_sha256",
+                  "expected_table_sha256",
+                  "expected_rows",
+                  "table_id",
+                  "raw_form",
+                  "source_amount_unit",
+                  "redistribute",
+                  "redistribute_basis",
+                  "license_id",
+                  "attribution",
+                  "url_basis"
+                ]
+              },
+              "profile": {
+                "required": [
+                  "direction"
+                ]
+              }
+            },
+            "required": [
+              "profile"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "section": {
+                "const": "native_initial_detail"
+              }
+            },
+            "required": [
+              "section"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "accounts",
+                  "phase",
+                  "approval"
+                ],
+                "properties": {
+                  "accounts": {
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "account_label",
+                        "pages",
+                        "bill"
+                      ],
+                      "properties": {
+                        "account_label": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "pages": {
+                          "type": "array",
+                          "minItems": 2,
+                          "maxItems": 2,
+                          "items": {
+                            "type": "integer",
+                            "minimum": 1
+                          }
+                        },
+                        "bill": {
+                          "type": "integer",
+                          "minimum": 1
+                        }
+                      }
+                    }
+                  },
+                  "phase": {
+                    "const": "approved"
+                  },
+                  "approval": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "date",
+                      "evidence_urls",
+                      "basis"
+                    ],
+                    "properties": {
+                      "date": {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      "evidence_urls": {
+                        "type": "array",
+                        "minItems": 1,
+                        "uniqueItems": true,
+                        "items": {
+                          "type": "string",
+                          "format": "uri"
+                        }
+                      },
+                      "basis": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "section": {
+                "const": "native_supplementary_detail"
+              }
+            },
+            "required": [
+              "section"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "approval": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "date",
+                      "basis",
+                      "evidence"
+                    ],
+                    "properties": {
+                      "date": {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      "basis": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "minProperties": 1,
+                        "propertyNames": {
+                          "format": "uri"
+                        },
+                        "additionalProperties": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "sha256",
+                            "bytes"
+                          ],
+                          "properties": {
+                            "sha256": {
+                              "type": "string",
+                              "pattern": "^[a-f0-9]{64}$"
+                            },
+                            "bytes": {
+                              "type": "integer",
+                              "minimum": 1
+                            },
+                            "pages": {
+                              "type": "array",
+                              "minItems": 2,
+                              "maxItems": 2,
+                              "items": {
+                                "type": "integer",
+                                "minimum": 1
+                              }
+                            },
+                            "format": {
+                              "enum": [
+                                "pdf",
+                                "html"
+                              ]
+                            }
+                          },
+                          "oneOf": [
+                            {
+                              "required": [
+                                "pages"
+                              ],
+                              "properties": {
+                                "format": {
+                                  "const": "pdf"
+                                }
+                              }
+                            },
+                            {
+                              "required": [
+                                "format"
+                              ],
+                              "properties": {
+                                "format": {
+                                  "const": "html"
+                                }
+                              },
+                              "not": {
+                                "required": [
+                                  "pages"
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "budget_bill",
+                          "ratification"
+                        ]
+                      }
+                    }
+                  },
+                  "composition": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "source_id": {
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "source_id"
+                    ],
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "section": {
+                "const": "native_supplementary_amendment"
+              }
+            },
+            "required": [
+              "section"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "additionalProperties": false,
+                "properties": {
+                  "replaces": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "options": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "edition_index": {
+                            "minimum": 0,
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "edition_index"
+                        ],
+                        "type": "object"
+                      },
+                      "source_id": {
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "source_id",
+                      "options"
+                    ],
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "replaces"
+                ],
+                "type": "object"
+              },
+              "profile": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/profile"
+                  },
+                  {
+                    "properties": {
+                      "direction": {
+                        "const": "expenditure"
+                      }
+                    },
+                    "required": [
+                      "edition_index",
+                      "physical_pages",
+                      "direction"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "acquisition_catalog": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "endpoint",
+        "org_prefix"
+      ],
+      "properties": {
+        "endpoint": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://[^\\s]+$"
+        },
+        "org_prefix": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "acquisition": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "method"
+          ],
+          "properties": {
+            "method": {
+              "const": "direct"
+            },
+            "basis": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "method",
+            "catalog"
+          ],
+          "properties": {
+            "method": {
+              "const": "ckan"
+            },
+            "catalog": {
+              "type": "string",
+              "minLength": 1
+            },
+            "basis": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "method",
+            "capture",
+            "original_scheme"
+          ],
+          "properties": {
+            "method": {
+              "const": "wayback"
+            },
+            "capture": {
+              "type": "string",
+              "pattern": "^[0-9]{14}$"
+            },
+            "original_scheme": {
+              "enum": [
+                "http",
+                "https"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "publication_link": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "url",
+        "basis"
+      ],
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://[^\\s]+$"
+        },
+        "basis": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
     }
   }
 }

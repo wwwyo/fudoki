@@ -1,7 +1,15 @@
 {{ config(materialized='table') }}
 select d.* exclude(phases_json), h.amendment_number, h.effective_at,
        case when json_extract_string(d.source_json,'$.provider')='mitaka-initial2026' and d.phases_json='[]' then cast(null as varchar)
+            when json_extract_string(d.source_json,'$.namespace')='mitaka-supplementary-native'
+              then case when json_extract_string(d.source_json,'$.observationRole') in ('project_delta','left_setsu_delta')
+                        then 'supplementary' else cast(null as varchar) end
             when json_extract_string(d.source_json,'$.provider')='tama-ordinary-history' and d.phases_json='[]' then cast(null as varchar)
+            when json_extract_string(d.source_json,'$.namespace')='tama-initial-native' and d.phases_json='[]' then cast(null as varchar)
+            when json_extract_string(d.source_json,'$.namespace')='chiyoda-supplementary-native' and d.phases_json='[]' then cast(null as varchar)
+            when json_extract_string(d.source_json,'$.namespace')='tama-supplementary-native'
+              and json_extract_string(d.source_json,'$.composedCanonicalChanges')='true' then 'supplementary'
+            when json_extract_string(d.source_json,'$.namespace')='tama-supplementary-native' and d.phases_json='[]' then cast(null as varchar)
             when json_extract_string(d.source_json,'$.provider')='ingestion.fiscal.komae_supplementary_2020_1_provider' and d.phases_json='[]' then cast(null as varchar)
             when json_extract_string(d.source_json,'$.namespace')='akishima-supplementary2020-2025' and d.phases_json='[]' then cast(null as varchar)
             when json_extract_string(d.source_json,'$.namespace')='akishima-initial445' and json_extract_string(d.source_json,'$.nonadditive')='true' then cast(null as varchar)

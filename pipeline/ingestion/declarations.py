@@ -120,6 +120,14 @@ def declarations():
     rows, history = register_ordinary_history_declarations(rows, history, entries, INPUT_LOCK)
     from ingestion.fiscal.komae_supplementary_2020_1_provider import register_declarations as register_supplementary1
     rows, history = register_supplementary1(rows, history, entries, INPUT_LOCK)
+    from ingestion.fiscal.tama_budget_detail import register_declarations as register_native_initial
+    rows, history = register_native_initial(rows, history, entries, INPUT_LOCK)
+    from ingestion.fiscal.chiyoda_budget_changes import register_declarations as register_chiyoda_supplementary
+    rows, history = register_chiyoda_supplementary(rows, history, entries, INPUT_LOCK)
+    from ingestion.fiscal.tama_supplementary_registry import register_declarations as register_tama_supplementary
+    rows, history = register_tama_supplementary(rows, history, entries, INPUT_LOCK)
+    from ingestion.fiscal.mitaka_supplementary_registry import register_declarations as register_mitaka_supplementary
+    rows, history = register_mitaka_supplementary(rows, history, entries, INPUT_LOCK)
     return rows, history
 
 

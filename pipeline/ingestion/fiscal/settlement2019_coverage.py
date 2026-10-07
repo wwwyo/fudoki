@@ -134,7 +134,8 @@ def output_coverage(connection, candidate: Path, hashes: dict, lock_path: Path,
             source = json.loads(row['source_json'])
             added = dict(dataset_id=row['dataset_id'], jurisdiction_code=row['jurisdiction_code'],
                          fiscal_year=row['fiscal_year'], direction=row['direction'],
-                         document_kind=row['document_kind'], source_json=row['source_json'],
+                         document_kind=row['document_kind'], origin_sha256=row['origin_sha256'],
+                         structure_json=row['structure_json'], source_json=row['source_json'],
                          phases_json=row['phases_json'], line_count=row['line_count'])
             added['output_coverage'] = dict(complete=False, files=[], accounts={}, errors=[],
                                             original_rows=0, all_original_fields_preserved=False,

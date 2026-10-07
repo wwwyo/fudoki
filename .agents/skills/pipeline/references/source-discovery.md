@@ -9,7 +9,7 @@
 
 ## 保存するもの
 
-- 調査結果の一覧は `pipeline/ingestion/fiscal/coverage.json`、構造は隣の `coverage.schema.json` にある。
+- 調査結果の一覧は `pipeline/ingestion/fiscal/sources.json`、構造は隣の `sources.schema.json` にある。
 - `jurisdictions[].search_boundaries` に探索URL・確認状況等、`jurisdictions[].gaps` に年度・会計・探索の不足を残す。
 - `sources[]` に掲載根拠、URL、年度・会計・版、内容確認の方法と頁付き根拠、観測粒度、事業×節の対応、未確認事項を残す。未実施の金額検査を実施済みにしない。
 - 団体固有の組版・実測・失敗理由は `pipeline/ingestion/fiscal/jurisdictions/<団体コード>.md` に残す。調査中の詳細は `.agent/` や `pipeline/ingestion/fiscal/observations/` にもあるため、参照先を保持する。
@@ -26,7 +26,7 @@
 
 - `bun run probe:documents --write` は探索観測にある資料の内容調査で、`observations/budget-document-probe.json` へ書く。本番抽出ではない。
 - `bun run coverage:sources --write` は団体単位の観測を `observations/budget-source-coverage.json` へまとめる。全年度・全会計のcoverage一覧や、Gの通常監査を置き換えない。
-- 現行の根拠は [全年度収録の設計書](../../../../docs/prd/fiscal-coverage/design-doc.md)、`pipeline/ingestion/fiscal/coverage.json`、`probe_documents.py`、`source_coverage.py` にある。
+- 現行の根拠は [全年度収録の設計書](../../../../docs/prd/fiscal-coverage/design-doc.md)、`pipeline/ingestion/fiscal/sources.json`、`probe_documents.py`、`source_coverage.py` にある。
 
 ## 既存の原典調査で実測した注意点
 

@@ -462,7 +462,7 @@ def materialize(directory, result, candidate):
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--describe',action='store_true',help='Machine-readable API and exact raw schema')
-    parser.add_argument('--manifest',type=Path,help='Optional finite exploratory JSON manifest; default uses Git-managed sources-initial-detail.toml and fixed original SHA cache')
+    parser.add_argument('--manifest',type=Path,help='Optional finite exploratory JSON manifest; default uses sources.json initial_detail declarations and fixed original SHA cache')
     parser.add_argument('--output-dir',type=Path,default=CANONICAL_DIR)
     parser.add_argument('--fiscal-year',type=int)
     parser.add_argument('--fund-label')

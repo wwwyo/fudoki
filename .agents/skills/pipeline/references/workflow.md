@@ -21,7 +21,7 @@
 
 ## 保存先と判定を分ける
 
-- Aの調査結果は `pipeline/ingestion/fiscal/coverage.json` へ記録する。Aだけの段階では、`sources.lock.json` を更新しない。
+- Aの調査結果は `pipeline/ingestion/fiscal/sources.json` へ記録する。Aだけの段階では、`sources.lock.json` を更新しない。
 - BではParquetと候補の `inputs.lock.json` を作る。`provenance.json` は生成しない。Fで原典・表のハッシュとsource宣言を採用入力一覧へ反映し、検査結果は再生成するレポートで確認する。
 - 原典・取り込み表は非公開R2、採用入力一覧・コード・宣言・判断はGitに置く。`.agent/` や `pipeline/.cache/` にある候補や記録を、Gitで確定した採用物とは扱わない。
 - Bの候補表・固定する取り込み表はParquetに統一し、同じ抽出表のCSVは併出しない方針とする。原典CSV、Gitで編集するdbt seed、提供用martsのCSVとは役割を分ける。既存専用処理の移行状況は [B](budget-extraction.md) を確認する。

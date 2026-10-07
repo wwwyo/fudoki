@@ -7,15 +7,17 @@ from __future__ import annotations
 import json
 from pathlib import Path
 import tomllib
+from ingestion.fiscal.source_registry import INVENTORY, load_registry, project_sources
 
-CONFIG = Path(__file__).with_name('sources-initial-detail.toml')
+CONFIG = INVENTORY
 FAMILY = 'initial-expenditure-project-setsu'
 ACCOUNT_SLUGS = {'一般会計':'general','国民健康保険特別会計':'national-health',
                  '後期高齢者医療特別会計':'elderly','介護保険特別会計':'care','駐車場事業特別会計':'parking'}
 
 
 def load_initial_detail(path: Path = CONFIG) -> dict[str, dict]:
-    specs = tomllib.loads(path.read_text())['initial_detail']
+    specs = (tomllib.loads(path.read_text()) if path.suffix == '.toml'
+             else project_sources(load_registry(path)))['initial_detail']
     for key, spec in specs.items():
         expected = f'132195:{spec["fiscal_year"]}:{ACCOUNT_SLUGS[spec["fund_label"]]}'
         if key != expected or spec['table_id'] != FAMILY+'-'+spec['account_slug']:

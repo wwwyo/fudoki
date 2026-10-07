@@ -67,7 +67,7 @@ SOURCE_FIELDS = frozenset("""source_key request_url final_url original_url sourc
  redistribute redistribute_basis license_id attribution definition_files source_manifest_sha256
  source_spec_sha256 source_spec_bytes printed_total amount_kind nonadditive nonadditive_with
  nonadditive_reason independent_breakdown additive additive_scope additive_within_own_grain
- canonical_initial canonical_changes canonical_executed
+ canonical_initial canonical_changes canonical_executed composition composed_canonical_changes
  totals date_anomaly first_article_evidence
  source_grain source_position_method original_observation_identity original_raw_row_identity
  immutable_raster_descriptor explanation_dataset_id explanation_statutory_correspondence
@@ -260,6 +260,15 @@ def restore(path: Path = LOCK, *, remote: bool = False) -> Path:
     extra = set(out.rglob('*.parquet'))
     if extra - expected_paths:
         raise ValueError('Unexpected files in fixed input snapshot')
+    if any(e['path'].startswith('chiyoda-supplementary-native/') for e in lock['entries']):
+        from ingestion.fiscal.chiyoda_budget_changes import restore_approval_evidence
+        restore_approval_evidence(lock['entries'], OBJECTS, remote=remote)
+    if any(e['path'].startswith('tama-supplementary-native/') for e in lock['entries']):
+        from ingestion.fiscal.chiyoda_budget_changes import restore_approval_evidence
+        restore_approval_evidence(lock['entries'], OBJECTS, remote=remote, namespace='tama-supplementary-native')
+    if any(e['path'].startswith('mitaka-supplementary-native/') for e in lock['entries']):
+        from ingestion.fiscal.chiyoda_budget_changes import restore_approval_evidence
+        restore_approval_evidence(lock['entries'], OBJECTS, remote=remote, namespace='mitaka-supplementary-native')
     if any(e['path'].startswith('tama-native-settlement/') for e in lock['entries']):
         from ingestion.fiscal.tama_native_settlement.registration import restore_evidence
         restore_evidence(OBJECTS, remote=remote)
@@ -308,6 +317,24 @@ def origin_path(sha: str) -> Path:
 
 def locked_objects(lock: dict) -> dict:
     refs = {ref['key']: ref for entry in lock['entries'] for ref in [entry['table'], entry['origin']['object']]}
+    if any(e['path'].startswith('chiyoda-supplementary-native/') for e in lock['entries']):
+        from ingestion.fiscal.chiyoda_budget_changes import approval_evidence_objects
+        for ref in approval_evidence_objects(lock['entries']):
+            if ref['key'] in refs and refs[ref['key']] != ref:
+                raise ValueError('Conflicting Chiyoda council original identity')
+            refs[ref['key']] = ref
+    if any(e['path'].startswith('tama-supplementary-native/') for e in lock['entries']):
+        from ingestion.fiscal.chiyoda_budget_changes import approval_evidence_objects
+        for ref in approval_evidence_objects(lock['entries'], namespace='tama-supplementary-native'):
+            if ref['key'] in refs and refs[ref['key']] != ref:
+                raise ValueError('Conflicting Tama council original identity')
+            refs[ref['key']] = ref
+    if any(e['path'].startswith('mitaka-supplementary-native/') for e in lock['entries']):
+        from ingestion.fiscal.chiyoda_budget_changes import approval_evidence_objects
+        for ref in approval_evidence_objects(lock['entries'], namespace='mitaka-supplementary-native'):
+            if ref['key'] in refs and refs[ref['key']] != ref:
+                raise ValueError('Conflicting Mitaka council original identity')
+            refs[ref['key']] = ref
     if any(e['path'].startswith('tama-native-settlement/') for e in lock['entries']):
         from ingestion.fiscal.tama_native_settlement.registration import evidence_objects
         for ref in evidence_objects():

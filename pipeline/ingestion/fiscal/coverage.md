@@ -1,10 +1,24 @@
-# 原典の収録候補一覧（census v1）
+# 原典台帳（sources v1）
 
-`coverage.json` は、対象5団体について公式サイト・公式カタログで発見した財政資料と未確認事項を Git に保存する一覧である。JSON の構造は [coverage.schema.json](coverage.schema.json) に定義する。これは取得宣言でも固定入力一覧でもない。採用は `sources.toml` と `sources.lock.json`、提供用データの検査は現在の構築結果で判定する。
+`sources.json` は、対象5団体について発見した原典、確認した内容、版の根拠、取り込み宣言を Git に保存する原典台帳である。JSON の構造は [sources.schema.json](sources.schema.json) に定義する。採用済みの原典・表は `sources.lock.json`、提供用データの検査は現在の構築結果で判定する。
+
+## 取り込み宣言
+
+原典ごとの `ingestions[]` に処理の種類・キー・`enabled`・設定を登録する。候補を発見したことや優先候補に選ばれたことだけでは取得を有効にしない。`bun run sources:plan --json` は有効な登録だけを取得計画へ変換する。取得・抽出・固定入力の変更は実行しない。
+
+原典URLは `download_url`、掲載先は `landing_url` から読み取る。取得器が別の公式掲載先を使う場合は `publication_links[]` と `profile.publication_index` で指定する。履歴の処理が複数原典や議決結果を使う場合は `source_id` / `approval_source_id` で参照する。設定の中にURLを重複して書かない。CKAN経由の取得方式とカタログは `acquisition` / `acquisition_catalogs` に宣言し、直URL経由と混同しない。
+
+本文で観測した年度・会計と、取り込み対象の宣言は区別する。`profile.target` は処理対象であり、原典本文の確認結果を上書きしない。`options` は既存の抽出器が使う頁範囲・列位置・権利・単位などの設定、`order` は処理とリソースの順序を保持する。
+
+共通取得器が使っていた `sources.toml` の41ブロックを台帳へ移し、通常の読取り先も台帳へ切り替えた。旧TOMLは採用時の固定証跡が参照するため保持し、明示指定した場合だけ再現用に読む。支持定義の変更は、原典・取り込み表・宣言の意味が変わらないことを再抽出と構築結果で確認して固定入力へ反映した。個別取り込み器のTOML/JSONはまだ移行していない。確認範囲と次の手順は [移行記録](../../../docs/prd/fiscal-coverage/source-registry-migration.md) を参照する。設定の一致だけでは全公開範囲や提供データの検証を完了扱いにしない。
 
 2026-10-04 に確認した有限の探索結果を収録した。公開された全資料を網羅したとは宣言しない。現在の予算ページに古い年度がない場合も、有償刊行物・庁議・記者会見・議会議案・東京都カタログを探し、探索できていない範囲を `jurisdictions[].gaps` に残す。リンクが見つからない、404、画像で読めない、といった事情を「公開なし」やゼロに置き換えない。
 
 ## 記録の単位
+
+原典の選択と取り込みの計画では、掲載URL単位の一覧を `bun run sources:canonical --json` で団体・年度・会計・文書種別・補正号の対象へまとめる。最新版の中で構造化データ、文字PDF、画像PDFの順に優先する。版の根拠はこの一覧の各原典の `publisher_revision`、優先掲載先は `listing_evidence.primary_fiscal_page` に記録する。規則の詳細は [設計書](../../../docs/prd/fiscal-coverage/design-doc.md) にある。以下の `sources[]` は掲載の履歴を保持するための一覧であり、各リンクを別々に取り込む指示ではない。
+
+任意の `publisher_revision` は公式に確認した `revision_id` 又は `revision_at` と、必須の `basis`・`evidence_urls` を持つ。省略は版順未確認であり、取得時刻や掲載ページ更新日で補完しない。同じ版と形式の候補では `listing_evidence.primary_fiscal_page: true` を優先する。機械判読性は既存の `format` と `content_inspection.status` から読み取る。別ファイルで原典の役割・版・形式を上書きしない。
 
 `sources[]` の1件は、団体・発見したダウンロードURL・掲載年度の組合せである。分冊、概要と予算書、同一内容の別URL、カタログの旧版・新版を別候補として保持する。この件数は自治体の会計数、補正号数、独立した金額表の数ではない。`id` はこの組合せを基に固定した識別子で、採用・検査状態や文書段階の訂正で変更しない。合集は `fiscal_year: null`、`document_phase: mixed` とし、読めた各版を `editions[]` で識別する。
 
@@ -67,11 +81,11 @@ import json
 from pathlib import Path
 from jsonschema import Draft202012Validator, FormatChecker
 root = Path('ingestion/fiscal')
-schema = json.loads((root / 'coverage.schema.json').read_text())
-inventory = json.loads((root / 'coverage.json').read_text())
+schema = json.loads((root / 'sources.schema.json').read_text())
+inventory = json.loads((root / 'sources.json').read_text())
 Draft202012Validator.check_schema(schema)
 Draft202012Validator(schema, format_checker=FormatChecker()).validate(inventory)
-print('coverage schema: PASS')
+print('sources schema: PASS')
 PY
 ```
 
@@ -90,9 +104,15 @@ PY
 
 現在の構築ID、コード・入力の識別、CSV集合と全CSVハッシュを確認してから、実際の `fiscal/<団体>/` CSVを読む。当初は `initial_expenditure_budget.csv` のapprovedに当たる内訳、補正は `expenditure_budget_changes.csv` の原典増減額、決算は `settlement_expenditure.csv` と `settlement_expenditure_setsu.csv` のexecutedに当たる内訳を、datasetごとに照合する。予算対象への参照は `expenditure_budget_items.csv` と照合する。要求される金額段階に全原典行が一度ずつ含まれ、原典行ID・行番号・金額・会計、内訳合計、出力行IDが一致する必要がある。決算の原典行表と集約表は別々に同じ原典行集合を確認し、両表の金額を足さない。proposedだけの当初やexecutedのない決算、対象の二目だけを採用した入力、中間の `int_fiscal_datasets` 登録だけでは完了しない。
 
-`unresolved` の各文字列は残件の識別子としてそのまま残す。任意の `unresolved_resolutions[]` は一件の完全一致する `item` に対して、解消理由 `basis`、今回の `origin_sha256` と現行 `lock_sha256`、この資料の全対象版を検査した `dataset_ids`、解消を裏付ける `evidence_indices` を記録する。粒度・会計・版・方向・実出力など他の条件が一つでも未確認、ハッシュや対象datasetが不一致、原典証拠の索引が無効なら、その残件は解消しない。任意証跡は根拠を人が確認した記録であり、文字列の存在だけで内容の真実を証明するものではない。残件の全削除、martsの状態ラベル、lock採用だけを一括の免除に使わない。年度・段階別の `jurisdictions[].gaps` は別途保持し、本文未確認・探索未完了の状態をこの解消記録で免除しない。
+`unresolved` の各文字列は残件の識別子としてそのまま残す。任意の `unresolved_resolutions[]` は一件の完全一致する `item` に対して、解消理由 `basis`、今回の `origin_sha256` と固定入力の `input_fingerprint`、この資料の全対象版を検査した `dataset_ids`、解消を裏付ける `evidence_indices` を記録する。粒度・会計・版・方向・実出力など他の条件が一つでも未確認、ハッシュや対象datasetが不一致、原典証拠の索引が無効なら、その残件は解消しない。任意証跡は根拠を人が確認した記録であり、文字列の存在だけで内容の真実を証明するものではない。残件の全削除、martsの状態ラベル、lock採用だけを一括の免除に使わない。年度・段階別の `jurisdictions[].gaps` は別途保持し、本文未確認・探索未完了の状態をこの解消記録で免除しない。
 
-照合結果の `boundary_gaps` / `population_gaps` は探索と段階別母集団、`source_gaps` は資料の内容・採用・提供、`dataset_output_gaps` は実出力の欠落・重複・金額/原典対応を示す。これらと現行固定入力の未対応が全てなく、現行全量buildの証明がある場合だけ完了とする。構造が正しい証跡と現在のCSVの一致を検査するものであり、公式ページを再探索したりPDFを読み直したりする代わりにはならない。
+`unresolved_resolutions[]` と `published_grain_exception` の `input_fingerprint` は、現行入力一覧から公式URL・原典SHA・団体が一致する全固定入力を選び、path順で固定する。同じ原典の別会計や観測表も含め、原典・表のSHAとバイト数、年度・方向・文書種別、承認・金額段階・単位などの宣言を照合する。台帳自体を参照する `definition_files` と `source_manifest_sha256` は循環を避けるためこのfingerprintから除く。コードと入力一覧の整合性、現行build、実CSVの全行・金額・粒度は従来どおり別途検査する。新fieldがある記録はfingerprintの不一致を旧hashで免除しない。新fieldのない旧記録だけは従来の全入力一覧 `lock_sha256` を照合し、旧記録を自動更新しない。`lock_reconciliation.lock_sha256` は調査時点の履歴参照として保持する。
+
+照合の完了単位は、団体・年度・会計・当初／補正号／決算・歳出の原典対象である。`sources:canonical` と同じ選択を使い、`target_gaps` にcanonical未確定又は選ばれた版の内容・採用・提供の不足を出す。最新版未確認や分冊の不足は、代替原典にも入力があることでは解消しない。確定した対象は選ばれた版ごとに検査し、同じPDFの別版の提供不足を混同しない。ただし資料全体に対する未解決事項と、その全固定入力・全版に結び付いた解消証拠は従来どおり照合する。
+
+`source_gaps` は各候補原典の診断であり、候補全部の取り込みを完了条件にしない。`inventory_gaps` は対象識別又は本文確認が済んでいない候補を保持するので、識別済みの対象数だけを全公開範囲の分母にしない。探索証明の `source_ids` は発見の根拠であり、その候補が指す対象のcanonicalと提供を照合する。未識別の資料、未確認の最終補正号、年度・会計・段階の母集団を省略しない。
+
+`target_gaps` / `inventory_gaps` / `boundary_gaps` / `population_gaps` / `search_gaps` と現行固定入力の未対応が全てなく、採用された全datasetの実CSV・原典行・金額・粒度の検査と現行全量buildの証明がある場合だけ完了とする。採用済みの代替原典の実出力検査も省かない。構造が正しい証拠と現在のCSVの一致を検査するものであり、公式ページを再探索したりPDFを読み直したりする代わりにはならない。
 
 
 ### 正式な階層名と独立した目×節の直接照合

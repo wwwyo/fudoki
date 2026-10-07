@@ -40,4 +40,10 @@ union all
 select * from {{ ref('fiscal_132195_native_council_expenditure_budget_changes') }}
 union all
 select * from {{ ref('fiscal_132195_held5_council_expenditure_budget_changes') }}
+union all
+select * from {{ ref('fiscal_131016_supplementary_native_changes') }}
+union all
+select * from {{ ref('fiscal_132241_supplementary_native_changes') }}
+union all
+select * from {{ ref('fiscal_132047_supplementary_native_changes') }}
 order by change_id
