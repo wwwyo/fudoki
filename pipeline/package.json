@@ -5,9 +5,7 @@
   "scripts": {
     "acquire": "uv run python -m ingestion.acquire",
     "build": "bun run build.ts",
-    "check:fiscal": "uv run python -m ingestion.fiscal.check_granularity",
     "coverage:fiscal": "uv run python -m ingestion.fiscal.coverage_audit",
-    "coverage:sources": "uv run python -m ingestion.fiscal.source_coverage",
     "eval:extraction": "uv run python -m ingestion.fiscal.eval_extraction",
     "extract:budget-history": "uv run python -m ingestion.fiscal.extract_budget_history",
     "extract:projects": "uv run python -m ingestion.fiscal.extract_projects",
@@ -19,12 +17,9 @@
     "inputs": "uv run python -m ingestion.inputs restore --remote",
     "inputs:migrate": "uv run python -m ingestion.inputs migrate",
     "pdf:layer": "uv run python -m ingestion.fiscal.pdf_layer",
-    "probe:documents": "uv run python -m ingestion.fiscal.probe_documents",
-    "sources:canonical": "uv run python -m ingestion.fiscal.canonical_sources",
     "sources:plan": "uv run python -m ingestion.fiscal.source_registry",
-    "survey:fiscal-years": "uv run python -m ingestion.fiscal.survey_years",
     "survey:structure": "uv run python -m ingestion.fiscal.survey_structure",
-    "test": "bun test artifacts.test.ts",
+    "test": "bun test artifacts.test.ts source_selection",
     "test:python": "uv run python -m unittest discover -s . -p '*_test.py'"
   },
   "dependencies": {

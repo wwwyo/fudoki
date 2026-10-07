@@ -1,12 +1,4 @@
-"""CKAN のデータセット列挙。**層に依存しない。**
-
-⚠️ **「団体の全データセット」を引く経路を2つ持たない。**
-本番の取得器（`pipeline/ingestion/fiscal/fetch.py`）と粒度の調査（`pipeline/ingestion/fiscal/check_granularity.py`）が
-それぞれ同じクエリを組んでいた。**同じ判断（`q` の全文検索ではなく `fq=organization:` で
-団体を確定させる）を2箇所に置くと、片方だけ直したときに気づけない。**
-実際、調査側だけがページングを実装し、取得側は `rows=1000` の一発で
-「返りが足りなければ rows を増やせ」と例外にしていた。
-"""
+"""CKAN の団体別データセット列挙。件数に達するまでページングする。"""
 
 from __future__ import annotations
 

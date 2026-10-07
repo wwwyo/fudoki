@@ -86,7 +86,10 @@ Core actions:
     _Avoid_: ソース、元データ、生データ
 
   - **原典対象（source）**:
-    団体・年度・会計・当初／補正号／決算・お金の向きで区別する、収録する資料の対象。同じ対象を載せる複数のURLや形式とは区別する。
+    団体・年度・当初／補正号／決算で区別する、収録する資料の対象。会計・お金の向きは原典に含まれる内容として扱う。同じ対象を載せる複数のURLや形式とは区別する。
+
+  - **原典の選定結果（selection）**:
+    一つの原典対象を代表する資料を定めた判断。分冊の場合は必要な冊を含める。取り込み表の採用や、その対象全体の収録完了とは区別する。
 
   - **取り込み（ingestion / raw）**:
     原典をそのまま表に読み込んだもの。値や単位は原典のまま。PDF の場合は組版からの抽出（抽出は復元検査が成り立たず、原典の内部で重複して印字された数字どうしの一致で確かめる）。
@@ -151,7 +154,7 @@ _Avoid_: ログ
 
 ```
 .
-├── pipeline/         # ingestion/fiscal、dbt、任意の FDP 整形、verify/report と verify/view
+├── pipeline/         # source_selection、ingestion/fiscal、dbt、任意の FDP 整形、verify/report と verify/view
 ├── packages/         # fiscal の純粋な型・名称、jurisdictions
 ├── apps/             # web、api、docs の一時的な 500 応答
 ├── docs/             # 設計・調査文書

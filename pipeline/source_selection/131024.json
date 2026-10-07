@@ -1,0 +1,80 @@
+{
+  "jurisdiction": "131024",
+  "name": "中央区",
+  "official_url": "https://www.city.chuo.lg.jp/",
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "131024",
+        "fiscal_year": 2025,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2025年度当初予算",
+          "landing_url": "https://www.city.chuo.lg.jp/a0002/kusei/zaisei/yosan/r7/r7tousyo.html",
+          "inspected_at": "2026-10-07T09:09:22.893873+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.chuo.lg.jp/documents/17087/r7_yosansho_4.pdf",
+              "sha256": "9fdee11bea11b5801a2c357099f5592641ff312c789d352508e7decc1f0c84c6",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 23
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.chuo.lg.jp/documents/17087/r7_yosansho_3.pdf",
+              "sha256": "b4e0c1d8e187c8ad6b988f916e19565e64173b9dc2dc522ff5da165d31d5993a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 76
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131024/2025/initial-1.pdf",
+            "sha256": "9fdee11bea11b5801a2c357099f5592641ff312c789d352508e7decc1f0c84c6",
+            "final_url": "https://www.city.chuo.lg.jp/documents/17087/r7_yosansho_4.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131024/2025/initial-2.pdf",
+            "sha256": "b4e0c1d8e187c8ad6b988f916e19565e64173b9dc2dc522ff5da165d31d5993a",
+            "final_url": "https://www.city.chuo.lg.jp/documents/17087/r7_yosansho_3.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:10:52.750Z"
+      },
+      "reason": "一般会計当初予算の歳出明細（款・項・目・本年度予算額・千円）は歳出第1～6款冊（r7_yosansho_3.pdf 物理1–76頁）と第7～11款冊（r7_yosansho_4.pdf 物理1–23頁）の2分冊に分かれるため、両方を一候補として選定。各頁抽出で款境界（_3はp1議会費〜p76環境土木費、_4はp1都市整備費〜p23予備費、その後給与費明細書等）を確認済み。"
+    }
+  ],
+  "unresolved_candidates": []
+}

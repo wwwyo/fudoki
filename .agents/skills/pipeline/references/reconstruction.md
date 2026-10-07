@@ -18,4 +18,3 @@
 ## 現行の参照先
 
 - 再抽出実装の例は `pipeline/ingestion/fiscal/tama_pre2020/reconstruct.py` と同ディレクトリの宣言・証拠一覧を参照する。
-- 実施範囲と照合結果は [全年度収録の設計書](../../../../docs/prd/fiscal-coverage/design-doc.md) と、そこから辿れる団体別の記録を参照する。

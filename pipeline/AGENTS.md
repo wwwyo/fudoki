@@ -9,8 +9,8 @@ script はこの package が所有する。実行は `bun run --cwd pipeline <na
 | group | scripts |
 |---|---|
 | 固定入力・構築 | `inputs` / `inputs:migrate` / `acquire` / `build` / `fdp` |
-| 観測・調査 | `check:fiscal` / `probe:documents` / `coverage:sources` / `survey:fiscal-years` / `survey:structure` / `eval:extraction` |
-| 原典対象の管理 | `sources:plan` / `sources:canonical` / `coverage:fiscal` |
+| 観測・調査 | `survey:structure` / `eval:extraction` |
+| 原典対象の管理 | `sources:plan` / `coverage:fiscal` |
 | 取り込み・生成 | `extract:*` / `fetch:*` / `pdf:layer` |
 | 検査 | `test`（bun）/ `test:python`（unittest） |
 

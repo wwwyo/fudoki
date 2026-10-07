@@ -1,0 +1,5702 @@
+{
+  "jurisdiction": "132195",
+  "name": "狛江市",
+  "official_url": "https://www.city.komae.tokyo.jp/",
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2018,
+        "document_kind": "settlement"
+      },
+      "candidates": [],
+      "selected_candidate_id": null,
+      "archive": null,
+      "reason": "平成30年度の歳入歳出決算書は市サイトにPDF公開なし。東京都オープンデータの決算CSVは款項目がコードのみで科目名称が節レベルのため目別の原典として不適。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2019,
+        "document_kind": "initial"
+      },
+      "candidates": [],
+      "selected_candidate_id": null,
+      "archive": null,
+      "reason": "令和元年度予算書は市刊行物・予算ページにPDF公開なし(候補URLは404確認)。予算議案PDFは別冊参照のみで予算書本文を含まない。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2019,
+        "document_kind": "settlement"
+      },
+      "candidates": [],
+      "selected_candidate_id": null,
+      "archive": null,
+      "reason": "令和元年度の歳入歳出決算書は市サイトにPDF公開なし。東京都オープンデータの決算CSVは款項目がコードのみで科目名称が節レベルのため目別の原典として不適。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2020,
+        "document_kind": "initial"
+      },
+      "candidates": [],
+      "selected_candidate_id": null,
+      "archive": null,
+      "reason": "令和2年度予算書は市刊行物・予算ページにPDF公開なし(候補URLは404確認)。予算議案PDFは別冊参照のみで予算書本文を含まない。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2020,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2020年度決算",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,130247,361,2170,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,130247,c,html/130247/R2-saishutsu-jikoubetsu-meisai.pdf",
+              "sha256": "4d5d3764576e4d04c3450d248a9a59cbe260f2edd31ca9b832cccf2ac76ea6e6",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 216
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,130247,c,html/130247/R2-sainyuu-jikoubetsu-meisai.pdf",
+              "sha256": "ee019afcb9bfa23c8ba50f016ed54affc8a60e34c9d2d41d6a36bbfdaac72bb8",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 19
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2020/settlement-1.pdf",
+            "sha256": "4d5d3764576e4d04c3450d248a9a59cbe260f2edd31ca9b832cccf2ac76ea6e6",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,130247,c,html/130247/R2-saishutsu-jikoubetsu-meisai.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2020/settlement-2.pdf",
+            "sha256": "ee019afcb9bfa23c8ba50f016ed54affc8a60e34c9d2d41d6a36bbfdaac72bb8",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,130247,c,html/130247/R2-sainyuu-jikoubetsu-meisai.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:38:12.121Z"
+      },
+      "reason": "令和2年度歳出事項別明細PDF(決算の概要頁)。本文確認で全体が一般会計歳出明細(先頭=款1議会費、末尾=款13予備費)。\n令和2年度歳入事項別明細PDF(19頁スキャン)。表紙で「一般会計歳入歳出(事項別)決算状況(１)歳入」を確認、末尾が歳入合計。\n未確認の会計・範囲:\n介護保険特別会計：令和2年度は歳入・歳出事項別明細PDFとも本文確認で一般会計のみ収録。介護保険特別会計の明細は公式掲載に単独資料なし。\n国民健康保険特別会計：令和2年度は歳入・歳出事項別明細PDFとも本文確認で一般会計のみ収録。国民健康保険特別会計の明細は公式掲載に単独資料なし。\n後期高齢者医療特別会計：令和2年度は歳入・歳出事項別明細PDFとも本文確認で一般会計のみ収録。後期高齢者医療特別会計の明細は公式掲載に単独資料なし。\n駐車場事業特別会計：令和2年度は歳入・歳出事項別明細PDFとも本文確認で一般会計のみ収録。駐車場事業特別会計の明細は公式掲載に単独資料なし。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2020,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2020年度補正予算第1号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/50,107421,418,3453,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,107429,c,html/107429/20200615-174305.pdf",
+              "sha256": "0411d1fb297257e65d0bf3acac8485683b799d1a42c91087909f45f3768eea6d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 21,
+                      "end": 24
+                    },
+                    {
+                      "start": 26,
+                      "end": 26
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 21,
+                      "end": 25
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,107421,c,html/107421/20200615-165452.pdf",
+              "sha256": "55b99cec58e42222cfdd93d59821ab92d25464f23f2fcead40d0e19a3f17492a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 6
+                    },
+                    {
+                      "start": 8,
+                      "end": 13
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,109569,c,html/109569/20200923-190144.pdf",
+              "sha256": "a9d73162e75734924f5ac99a040bd59514d1b6b348b54d9474a2768596e4af09",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 49,
+                      "end": 52
+                    },
+                    {
+                      "start": 54,
+                      "end": 55
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 49,
+                      "end": 53
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 40,
+                      "end": 43
+                    },
+                    {
+                      "start": 45,
+                      "end": 48
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 40,
+                      "end": 44
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2020/supplementary-1-1.pdf",
+            "sha256": "0411d1fb297257e65d0bf3acac8485683b799d1a42c91087909f45f3768eea6d",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/50,107429,c,html/107429/20200615-174305.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2020/supplementary-1-2.pdf",
+            "sha256": "55b99cec58e42222cfdd93d59821ab92d25464f23f2fcead40d0e19a3f17492a",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/50,107421,c,html/107421/20200615-165452.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2020/supplementary-1-3.pdf",
+            "sha256": "a9d73162e75734924f5ac99a040bd59514d1b6b348b54d9474a2768596e4af09",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/50,109569,c,html/109569/20200923-190144.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:38:18.609Z"
+      },
+      "reason": "令和２年度補正予算案について.pdf [461KB pdfファイル]を選定。一般会計の歳出部分は物理1-6,8-13頁に含まれることを目次・条文・明細表で確認(text)。\n令和２年度補正予算案について.pdf [1289KB pdfファイル]を選定。介護保険特別会計の歳出部分は物理49-52,54-55頁に含まれることを目次・条文・明細表で確認(text)。\n令和２年度補正予算案について.pdf [1076KB pdfファイル]を選定。国民健康保険特別会計の歳出部分は物理21-24,26-26頁に含まれることを目次・条文・明細表で確認(text)。\n未確認の会計・範囲:\n下水道事業会計：令和2年度下水道事業会計補正(第1号)の対象資料は公式掲載・既存候補とも未確認。\n下水道事業会計：令和2年度下水道事業会計補正(第1号)の資料は公式掲載・候補とも未確認。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2020,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2020年度補正予算第2号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/50,107429,418,3453,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,107429,c,html/107429/20200615-174305.pdf",
+              "sha256": "0411d1fb297257e65d0bf3acac8485683b799d1a42c91087909f45f3768eea6d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 8
+                    },
+                    {
+                      "start": 12,
+                      "end": 20
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 11
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,113391,c,html/113391/20210122-182017.pdf",
+              "sha256": "37db35ca52fc64c9f79a413900222e94ede68710bcec2e6a694a9e5c0b621a75",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 59,
+                      "end": 62
+                    },
+                    {
+                      "start": 64,
+                      "end": 64
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 59,
+                      "end": 63
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 51,
+                      "end": 54
+                    },
+                    {
+                      "start": 56,
+                      "end": 58
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 51,
+                      "end": 55
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,109569,c,html/109569/20200923-190144.pdf",
+              "sha256": "a9d73162e75734924f5ac99a040bd59514d1b6b348b54d9474a2768596e4af09",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 31,
+                      "end": 34
+                    },
+                    {
+                      "start": 36,
+                      "end": 39
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 31,
+                      "end": 35
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2020/supplementary-2-1.pdf",
+            "sha256": "0411d1fb297257e65d0bf3acac8485683b799d1a42c91087909f45f3768eea6d",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/50,107429,c,html/107429/20200615-174305.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2020/supplementary-2-2.pdf",
+            "sha256": "37db35ca52fc64c9f79a413900222e94ede68710bcec2e6a694a9e5c0b621a75",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/50,113391,c,html/113391/20210122-182017.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2020/supplementary-2-3.pdf",
+            "sha256": "a9d73162e75734924f5ac99a040bd59514d1b6b348b54d9474a2768596e4af09",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/50,109569,c,html/109569/20200923-190144.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:38:25.030Z"
+      },
+      "reason": "令和２年度補正予算案について.pdf [1076KB pdfファイル]を選定。一般会計の歳出部分は物理1-8,12-20頁に含まれることを目次・条文・明細表で確認(text)。\n令和２年度補正予算案について.pdf [ 1964 KB pdfファイル]を選定。介護保険特別会計の歳出部分は物理59-62,64-64頁に含まれることを目次・条文・明細表で確認(scan)。\n令和２年度補正予算案について.pdf [1289KB pdfファイル]を選定。国民健康保険特別会計の歳出部分は物理31-34,36-39頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2020,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2020年度補正予算第3号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/50,113391,418,3453,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,113391,c,html/113391/20210122-182017.pdf",
+              "sha256": "37db35ca52fc64c9f79a413900222e94ede68710bcec2e6a694a9e5c0b621a75",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 42,
+                      "end": 45
+                    },
+                    {
+                      "start": 47,
+                      "end": 50
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 42,
+                      "end": 46
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2020/supplementary-3.pdf",
+            "sha256": "37db35ca52fc64c9f79a413900222e94ede68710bcec2e6a694a9e5c0b621a75",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/50,113391,c,html/113391/20210122-182017.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:38:45.612Z"
+      },
+      "reason": "令和２年度補正予算案について.pdf [ 1964 KB pdfファイル]を選定。国民健康保険特別会計の歳出部分は物理42-45,47-50頁に含まれることを目次・条文・明細表で確認(scan)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2020,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2020年度補正予算第4号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/50,109056,418,3453,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,113863,c,html/113863/20210218-134132.pdf",
+              "sha256": "116bfed4068b04e69e6fcf1419dedb70acada7f74ea301f336f45ed9ac122c5d",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 26,
+                      "end": 32
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,109056,c,html/109056/20200828-163735.pdf",
+              "sha256": "144836183b0252de4f4c7d460672fbe315ebb8b1e7512d4318c7a24e1c47f00e",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 6
+                    },
+                    {
+                      "start": 8,
+                      "end": 11
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2020/supplementary-4-1.pdf",
+            "sha256": "116bfed4068b04e69e6fcf1419dedb70acada7f74ea301f336f45ed9ac122c5d",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/50,113863,c,html/113863/20210218-134132.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2020/supplementary-4-2.pdf",
+            "sha256": "144836183b0252de4f4c7d460672fbe315ebb8b1e7512d4318c7a24e1c47f00e",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/50,109056,c,html/109056/20200828-163735.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:38:30.786Z"
+      },
+      "reason": "令和２年度補正予算案について.pdf [534KB pdfファイル]を選定。一般会計の歳出部分は物理1-6,8-11頁に含まれることを目次・条文・明細表で確認(text)。\n令和2年度国保補正(第4号)はR2補正予算案PDF内p26-32。歳入のみの補正(歳出明細なし)。\n未確認の会計・範囲:\n国民健康保険特別会計：国保第4号は歳入補正のみで歳出明細・歳出補正行が資料にない。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2020,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2020年度補正予算第5号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/50,109569,418,3453,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,109569,c,html/109569/20200923-190144.pdf",
+              "sha256": "a9d73162e75734924f5ac99a040bd59514d1b6b348b54d9474a2768596e4af09",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 10
+                    },
+                    {
+                      "start": 14,
+                      "end": 30
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2020/supplementary-5.pdf",
+            "sha256": "a9d73162e75734924f5ac99a040bd59514d1b6b348b54d9474a2768596e4af09",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/50,109569,c,html/109569/20200923-190144.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:38:33.707Z"
+      },
+      "reason": "令和２年度補正予算案について.pdf [1289KB pdfファイル]を選定。一般会計の歳出部分は物理1-10,14-30頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2020,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2020年度補正予算第6号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/50,111268,418,3453,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,111268,c,html/111268/20201029-144745.pdf",
+              "sha256": "70ce673278bd7c3d30f20b536f15a692a59fa37217865ec51d1a8626f95b5c8a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 6
+                    },
+                    {
+                      "start": 8,
+                      "end": 10
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2020/supplementary-6.pdf",
+            "sha256": "70ce673278bd7c3d30f20b536f15a692a59fa37217865ec51d1a8626f95b5c8a",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/50,111268,c,html/111268/20201029-144745.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:38:36.710Z"
+      },
+      "reason": "令和２年度補正予算案について.pdf [ 782 KB pdfファイル]を選定。一般会計の歳出部分は物理1-6,8-10頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2020,
+        "document_kind": "supplementary",
+        "amendment_number": 7
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2020年度補正予算第7号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/50,113391,418,3453,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,113391,c,html/113391/20210122-182017.pdf",
+              "sha256": "37db35ca52fc64c9f79a413900222e94ede68710bcec2e6a694a9e5c0b621a75",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 8
+                    },
+                    {
+                      "start": 12,
+                      "end": 41
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 11
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2020/supplementary-7.pdf",
+            "sha256": "37db35ca52fc64c9f79a413900222e94ede68710bcec2e6a694a9e5c0b621a75",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/50,113391,c,html/113391/20210122-182017.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:38:39.824Z"
+      },
+      "reason": "令和２年度補正予算案について.pdf [ 1964 KB pdfファイル]を選定。一般会計の歳出部分は物理1-8,12-41頁に含まれることを目次・条文・明細表で確認(scan)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2020,
+        "document_kind": "supplementary",
+        "amendment_number": 8
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2020年度補正予算第8号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/50,113397,418,3453,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,113397,c,html/113397/20210129-181115.pdf",
+              "sha256": "2be4109714c66fee9cd9e0f992365f420f83c35ad3dff90d16d8c9beff655efd",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 6
+                    },
+                    {
+                      "start": 8,
+                      "end": 8
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2020/supplementary-8.pdf",
+            "sha256": "2be4109714c66fee9cd9e0f992365f420f83c35ad3dff90d16d8c9beff655efd",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/50,113397,c,html/113397/20210129-181115.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:38:42.452Z"
+      },
+      "reason": "令和２年度補正予算案について.pdf [ 235 KB pdfファイル]を選定。一般会計の歳出部分は物理1-6,8-8頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2021,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "132195-60541922eb31",
+          "title": "令和３年度当初予算案について.pdf [ 110 KB pdfファイル]",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/50,113863,418,3453,html",
+          "inspected_at": "2026-10-07T05:56:59.985Z",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,113863,c,html/113863/20210218-134035.pdf",
+              "sha256": "129160a1c54be3e5be233d8383c9061a61e892f4e66458cb00287de8b1322c8e",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": null
+            }
+          ]
+        },
+        {
+          "id": "132195-823bc57c4d9d",
+          "title": "令和３年度当初予算案について.pdf [ 184 KB pdfファイル]",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/50,113409,418,3453,html",
+          "inspected_at": "2026-10-07T05:56:59.985Z",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,113409,c,html/113409/20210218-131520.pdf",
+              "sha256": "e61cc05fa821bbeb7d68d7179c983fc02e84853cde88186c5cc54930ba56143e",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": null,
+      "archive": null,
+      "reason": "令和3年度予算書は市刊行物・予算ページにPDF公開なし(候補URLは404確認)。予算議案PDFは別冊参照のみで予算書本文を含まない。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2021,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2021年度決算",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,130245,361,2170,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,130245,c,html/130245/saisyutu.pdf",
+              "sha256": "0023f7ba5a65095b52f1d7988585a8838f412af15dc3d35b939d2b15a605eb69",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 219
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,130245,c,html/130245/20231011-101649.pdf",
+              "sha256": "7df1b95a31143171a52607365f4d2acf5e490cb555852d92ea724e0a4ddd88b7",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 19
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2021/settlement-1.pdf",
+            "sha256": "0023f7ba5a65095b52f1d7988585a8838f412af15dc3d35b939d2b15a605eb69",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,130245,c,html/130245/saisyutu.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2021/settlement-2.pdf",
+            "sha256": "7df1b95a31143171a52607365f4d2acf5e490cb555852d92ea724e0a4ddd88b7",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,130245,c,html/130245/20231011-101649.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:38:51.351Z"
+      },
+      "reason": "令和3年度歳出事項別明細PDF。全体が一般会計歳出明細(末尾=款13予備費)。\n令和3年度歳入事項別明細PDF(19頁スキャン)。一般会計歳入のみ。\n未確認の会計・範囲:\n介護保険特別会計：令和3年度は歳入・歳出事項別明細PDFとも本文確認で一般会計のみ収録。介護保険特別会計の明細は公式掲載に単独資料なし。\n国民健康保険特別会計：令和3年度は歳入・歳出事項別明細PDFとも本文確認で一般会計のみ収録。国民健康保険特別会計の明細は公式掲載に単独資料なし。\n後期高齢者医療特別会計：令和3年度は歳入・歳出事項別明細PDFとも本文確認で一般会計のみ収録。後期高齢者医療特別会計の明細は公式掲載に単独資料なし。\n駐車場事業特別会計：令和3年度は歳入・歳出事項別明細PDFとも本文確認で一般会計のみ収録。駐車場事業特別会計の明細は公式掲載に単独資料なし。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2021,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2021年度補正予算第1号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/50,114241,418,3453,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,117823,c,html/117823/20210901-093413.pdf",
+              "sha256": "8ed6b687e812ca53009a932a1b468a2674632ec4724790c9db39959dd8f05d53",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 44,
+                      "end": 47
+                    },
+                    {
+                      "start": 49,
+                      "end": 50
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 44,
+                      "end": 48
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 26,
+                      "end": 29
+                    },
+                    {
+                      "start": 31,
+                      "end": 34
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 26,
+                      "end": 30
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 35,
+                      "end": 38
+                    },
+                    {
+                      "start": 40,
+                      "end": 43
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 35,
+                      "end": 39
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,114241,c,html/114241/20210310-092334.pdf",
+              "sha256": "f2157f50a98cf5ab5f758377b967956713a14e052a740b8cca89d1a9d94610f9",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 8
+                    },
+                    {
+                      "start": 11,
+                      "end": 20
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 10
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2021/supplementary-1-1.pdf",
+            "sha256": "8ed6b687e812ca53009a932a1b468a2674632ec4724790c9db39959dd8f05d53",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/50,117823,c,html/117823/20210901-093413.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2021/supplementary-1-2.pdf",
+            "sha256": "f2157f50a98cf5ab5f758377b967956713a14e052a740b8cca89d1a9d94610f9",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/50,114241,c,html/114241/20210310-092334.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:38:57.928Z"
+      },
+      "reason": "令和３年度補正予算案について.pdf [ 824 KB pdfファイル]を選定。一般会計の歳出部分は物理1-8,11-20頁に含まれることを目次・条文・明細表で確認(text)。\n令和３年度補正予算案について.pdf [ 1990 KB pdfファイル]を選定。介護保険特別会計の歳出部分は物理44-47,49-50頁に含まれることを目次・条文・明細表で確認(text)。\n未確認の会計・範囲:\n下水道事業会計：令和3年度下水道事業会計補正(第1号)の対象資料は公式掲載・既存候補とも未確認。\n下水道事業会計：令和3年度下水道事業会計補正(第1号)の資料は公式掲載・候補とも未確認。\n駐車場事業特別会計：駐車場第1号は歳入組替のみで歳出補正行・歳出明細がない。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2021,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2021年度補正予算第2号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,377,3516,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,c,html/121266/R4-1st.pdf",
+              "sha256": "93de78d2f7c6c047ee802f785945c06acba8ef8b692e97755d35ce554d494558",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 29,
+                      "end": 37
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2021/supplementary-2.pdf",
+            "sha256": "93de78d2f7c6c047ee802f785945c06acba8ef8b692e97755d35ce554d494558",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,c,html/121266/R4-1st.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:39:23.620Z"
+      },
+      "reason": "国保補正(第2号)はR4-1st庁議資料PDF内p29-37(２．歳入p35、３．歳出p36)。別紙画像頁。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2021,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2021年度補正予算第3号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/50,115775,418,3472,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,115775,c,html/115775/20210512-092954.pdf",
+              "sha256": "553a0bea657e585361215578e1e236da9ddafc1eb702403b67ce70abf13c2891",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 6
+                    },
+                    {
+                      "start": 8,
+                      "end": 10
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2021/supplementary-3.pdf",
+            "sha256": "553a0bea657e585361215578e1e236da9ddafc1eb702403b67ce70abf13c2891",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/50,115775,c,html/115775/20210512-092954.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:39:05.937Z"
+      },
+      "reason": "令和３年度補正予算案についてを選定。一般会計の歳出部分は物理1-6,8-10頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2021,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2021年度補正予算第4号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/50,116125,418,3472,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,116125,c,html/116125/20210527-104042.pdf",
+              "sha256": "5a62255c4c03fd7abec06771083ca215c4a9b4973f9ba09e1a8316f352e85698",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 6
+                    },
+                    {
+                      "start": 9,
+                      "end": 14
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 8
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2021/supplementary-4.pdf",
+            "sha256": "5a62255c4c03fd7abec06771083ca215c4a9b4973f9ba09e1a8316f352e85698",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/50,116125,c,html/116125/20210527-104042.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:39:09.324Z"
+      },
+      "reason": "令和３年度補正予算案について.pdf [ 364 KB pdfファイル]を選定。一般会計の歳出部分は物理1-6,9-14頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2021,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2021年度補正予算第5号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/50,116673,418,3472,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,116673,c,html/116673/20210701-184106.pdf",
+              "sha256": "af0630b64411528a4207d927ac78997fa2b1988902531bd11fe656f2398851a8",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 6
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2021/supplementary-5.pdf",
+            "sha256": "af0630b64411528a4207d927ac78997fa2b1988902531bd11fe656f2398851a8",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/50,116673,c,html/116673/20210701-184106.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:39:12.516Z"
+      },
+      "reason": "令和３年度補正予算案について.pdf [ 440 KB pdfファイル]を選定。一般会計の歳出部分は物理1-6,8-9頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2021,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2021年度補正予算第6号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/50,117823,418,3472,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,117823,c,html/117823/20210901-093413.pdf",
+              "sha256": "8ed6b687e812ca53009a932a1b468a2674632ec4724790c9db39959dd8f05d53",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 8
+                    },
+                    {
+                      "start": 13,
+                      "end": 25
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 12
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2021/supplementary-6.pdf",
+            "sha256": "8ed6b687e812ca53009a932a1b468a2674632ec4724790c9db39959dd8f05d53",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/50,117823,c,html/117823/20210901-093413.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:39:15.264Z"
+      },
+      "reason": "令和３年度補正予算案について.pdf [ 1990 KB pdfファイル]を選定。一般会計の歳出部分は物理1-8,13-25頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2021,
+        "document_kind": "supplementary",
+        "amendment_number": 8
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2021年度補正予算第8号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/50,119886,418,3472,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,119886,c,html/119886/20211209-105120.pdf",
+              "sha256": "3f82093f2c4fb6ce2bec76c3a7ef62b69d89879e999141156f4134c379a24baa",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 8
+                    },
+                    {
+                      "start": 11,
+                      "end": 49
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 10
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2021/supplementary-8.pdf",
+            "sha256": "3f82093f2c4fb6ce2bec76c3a7ef62b69d89879e999141156f4134c379a24baa",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/50,119886,c,html/119886/20211209-105120.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:39:19.014Z"
+      },
+      "reason": "令和３年度補正予算案について [4959KB pdfファイル]を選定。一般会計の歳出部分は物理1-8,11-49頁に含まれることを目次・条文・明細表で確認(scan)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2021,
+        "document_kind": "supplementary",
+        "amendment_number": 11
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2021年度補正予算第11号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,377,3516,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,c,html/121266/R4-1st.pdf",
+              "sha256": "93de78d2f7c6c047ee802f785945c06acba8ef8b692e97755d35ce554d494558",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 28
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2021/supplementary-11.pdf",
+            "sha256": "93de78d2f7c6c047ee802f785945c06acba8ef8b692e97755d35ce554d494558",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,c,html/121266/R4-1st.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:39:03.091Z"
+      },
+      "reason": "一般会計補正(第11号)はR4-1st庁議資料PDF内p4-28(２．歳入p16、３．歳出p17)。別紙画像頁。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2022,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "132195-258a4d700f98",
+          "title": "令和4年度狛江市予算(案)・特徴的な事業 [1613KB pdfファイル]",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,377,3516,html",
+          "inspected_at": "2026-10-07T05:56:59.985Z",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,c,html/121266/R4yosan.pdf",
+              "sha256": "b81477b0ffac968b9d994a7515256e9d0be91fa32c94318e5a9f561823e579fc",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": null
+            }
+          ]
+        },
+        {
+          "id": "132195-50447e47dbc3",
+          "title": "令和４年度予算概要 [16392KB pdfファイル]",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,115527,371,html",
+          "inspected_at": "2026-10-07T05:56:59.985Z",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,115527,c,html/115527/20220419-150223.pdf",
+              "sha256": "0eb5c72ca5899b3b9827ea902fa2bf38b1d1dd28b0f897b2f255ece4393c1721",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": null,
+      "archive": null,
+      "reason": "令和4年度予算書は市刊行物・予算ページにPDF公開なし(候補URLは404確認)。予算議案PDFは別冊参照のみで予算書本文を含まない。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2022,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2022年度決算",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,128130,371,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,128130,c,html/128130/20241011-133200.pdf",
+              "sha256": "ef2f7dbe1c2643b5768c24da5fd5446c1260e7b7412cdbd6bcffa659df737be5",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 53,
+                      "end": 120
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 33,
+                      "end": 52
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 157,
+                      "end": 164
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 147,
+                      "end": 156
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 126,
+                      "end": 136
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 121,
+                      "end": 125
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 141,
+                      "end": 146
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 137,
+                      "end": 140
+                    }
+                  ]
+                },
+                {
+                  "account": "駐車場事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 168,
+                      "end": 169
+                    }
+                  ]
+                },
+                {
+                  "account": "駐車場事業特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 165,
+                      "end": 167
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2022/settlement.pdf",
+            "sha256": "ef2f7dbe1c2643b5768c24da5fd5446c1260e7b7412cdbd6bcffa659df737be5",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,128130,c,html/128130/20241011-133200.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:39:27.988Z"
+      },
+      "reason": "オープンデータCSV（CP932、2284行）は科目名称が節名のみで款・項・目の実名称を持たず単独では要件を満たさない。決算書PDFはスキャン（文字層なし）だが、事項別明細書の歳出（印字47-114頁、物理53-120頁）が款項目の実名称・当初予算額・補正予算額・予算現額・支出済額・翌年度繰越額・不用額を円単位で持つ。歳入は物理52頁の歳入合計で終わり、物理53頁から歳出（1議会費）が始まり、物理120頁の歳出合計で終わる。物理121頁は国民健康保険特別会計の扉。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2022,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2022年度補正予算第1号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/50,123536,418,3530,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,123536,c,html/123536/20220725-172927.pdf",
+              "sha256": "39afd07034feebfe4cb9d39228f32e296f39cea8b8a35c0b32eaa7d5c5e8c808",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 5
+                    },
+                    {
+                      "start": 8,
+                      "end": 19
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,c,html/121266/R4-3rd.pdf",
+              "sha256": "771842cf3b9ec3d0b799f2e5b3bb0ba9fb401aa55f4b4179e888195036c633f1",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 49,
+                      "end": 54
+                    },
+                    {
+                      "start": 56,
+                      "end": 57
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 31,
+                      "end": 36
+                    },
+                    {
+                      "start": 38,
+                      "end": 39
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 40,
+                      "end": 45
+                    },
+                    {
+                      "start": 47,
+                      "end": 48
+                    }
+                  ]
+                },
+                {
+                  "account": "駐車場事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 58,
+                      "end": 64
+                    },
+                    {
+                      "start": 66,
+                      "end": 67
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,c,html/121266/R4-4th.pdf",
+              "sha256": "df1a4cc5e96beb1ff43f8f892cf7d03d880e40ca7f96ca6456e10b1697e416be",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 30,
+                      "end": 47
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 30,
+                      "end": 47
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2022/supplementary-1-1.pdf",
+            "sha256": "39afd07034feebfe4cb9d39228f32e296f39cea8b8a35c0b32eaa7d5c5e8c808",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/50,123536,c,html/123536/20220725-172927.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2022/supplementary-1-2.pdf",
+            "sha256": "771842cf3b9ec3d0b799f2e5b3bb0ba9fb401aa55f4b4179e888195036c633f1",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,c,html/121266/R4-3rd.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2022/supplementary-1-3.pdf",
+            "sha256": "df1a4cc5e96beb1ff43f8f892cf7d03d880e40ca7f96ca6456e10b1697e416be",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,c,html/121266/R4-4th.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:39:36.836Z"
+      },
+      "reason": "令和４年度補正予算について [1656KB pdfファイル]を選定。一般会計の歳出部分は物理1-5,8-19頁に含まれることを目次・条文・明細表で確認(text)。\n令和4年11月 狛江市議会第3回定例会提出議案 [5604KB pdfファイル]を選定。下水道事業会計の歳出部分は物理30-47頁に含まれることを目次・条文・明細表で確認(scan)。\nR4-3rd庁議資料PDF内p49-57に介護保険特別会計補正(第1号)。別紙画像頁。歳出明細p56〜。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2022,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2022年度補正予算第2号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,377,3516,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,c,html/121266/R4-3rd.pdf",
+              "sha256": "771842cf3b9ec3d0b799f2e5b3bb0ba9fb401aa55f4b4179e888195036c633f1",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 11
+                    },
+                    {
+                      "start": 15,
+                      "end": 30
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126856,c,html/126856/R5-1gian.pdf",
+              "sha256": "df633f80a4d268727cd832738c3e318d63d287b4de214e5ba28897833179a064",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 25,
+                      "end": 30
+                    },
+                    {
+                      "start": 33,
+                      "end": 33
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 25,
+                      "end": 32
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2022/supplementary-2-1.pdf",
+            "sha256": "771842cf3b9ec3d0b799f2e5b3bb0ba9fb401aa55f4b4179e888195036c633f1",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,c,html/121266/R4-3rd.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2022/supplementary-2-2.pdf",
+            "sha256": "df633f80a4d268727cd832738c3e318d63d287b4de214e5ba28897833179a064",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126856,c,html/126856/R5-1gian.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:39:42.229Z"
+      },
+      "reason": "一般会計補正(第2号)はR4-3rd庁議資料PDF内p4-30(２．歳入p12、３．歳出p15)。別紙画像頁。\n令和5年2月 狛江市議会第1回定例会提出議案 [2109KB pdfファイル]を選定。介護保険特別会計の歳出部分は物理25-30,33-33頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2022,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2022年度補正予算第4号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,377,3516,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,c,html/121266/R4-4th.pdf",
+              "sha256": "df1a4cc5e96beb1ff43f8f892cf7d03d880e40ca7f96ca6456e10b1697e416be",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 10
+                    },
+                    {
+                      "start": 13,
+                      "end": 29
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 12
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2022/supplementary-4.pdf",
+            "sha256": "df1a4cc5e96beb1ff43f8f892cf7d03d880e40ca7f96ca6456e10b1697e416be",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,c,html/121266/R4-4th.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:39:45.455Z"
+      },
+      "reason": "令和4年11月 狛江市議会第3回定例会提出議案 [5604KB pdfファイル]を選定。一般会計の歳出部分は物理4-10,13-29頁に含まれることを目次・条文・明細表で確認(scan)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2022,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2022年度補正予算第6号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,0,377,3565,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126856,c,html/126856/R5-1gian.pdf",
+              "sha256": "df633f80a4d268727cd832738c3e318d63d287b4de214e5ba28897833179a064",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 14
+                    },
+                    {
+                      "start": 17,
+                      "end": 24
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 16
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2022/supplementary-6.pdf",
+            "sha256": "df633f80a4d268727cd832738c3e318d63d287b4de214e5ba28897833179a064",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126856,c,html/126856/R5-1gian.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:39:48.383Z"
+      },
+      "reason": "令和5年2月 狛江市議会第1回定例会提出議案 [2109KB pdfファイル]を選定。一般会計の歳出部分は物理5-14,17-24頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2023,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2023年度当初予算",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,361,2169,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20230327-165935.pdf",
+              "sha256": "21fc642dc4ca89acab6ea18632d6ee8539949272ecba65c78231a37a71ba6ee9",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 17
+                    },
+                    {
+                      "start": 42,
+                      "end": 330
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 41
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20230522-180957.pdf",
+              "sha256": "5484b7e2e38116d84e324c1f09af5006148c9d9981f7f2f6a5dc8101887a41cf",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 105,
+                      "end": 137
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 105,
+                      "end": 137
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 56,
+                      "end": 64
+                    },
+                    {
+                      "start": 73,
+                      "end": 90
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 56,
+                      "end": 72
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 11
+                    },
+                    {
+                      "start": 16,
+                      "end": 34
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 15
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 35,
+                      "end": 44
+                    },
+                    {
+                      "start": 49,
+                      "end": 55
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 35,
+                      "end": 48
+                    }
+                  ]
+                },
+                {
+                  "account": "駐車場事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 91,
+                      "end": 99
+                    },
+                    {
+                      "start": 102,
+                      "end": 104
+                    }
+                  ]
+                },
+                {
+                  "account": "駐車場事業特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 91,
+                      "end": 101
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2023/initial-1.pdf",
+            "sha256": "21fc642dc4ca89acab6ea18632d6ee8539949272ecba65c78231a37a71ba6ee9",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20230327-165935.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2023/initial-2.pdf",
+            "sha256": "5484b7e2e38116d84e324c1f09af5006148c9d9981f7f2f6a5dc8101887a41cf",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20230522-180957.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:39:55.248Z"
+      },
+      "reason": "令和5年度一般会計予算書 [3394KB pdfファイル]を選定。一般会計の歳出部分は物理1-17,42-330頁に含まれることを目次・条文・明細表で確認(text)。\n令和5年度特別会計予算書(別冊2)内の下水道事業会計節(物理105-137頁)。収益的収支構成のため節全体をscope。歳出頁域を含む。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2023,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2023年度決算",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,133351,371,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,133351,c,html/133351/20241011-132915.pdf",
+              "sha256": "ce231f9efe46850e20db1d6d6fd67f8793ceebf52d11f2984a5faaf9bd66bbbe",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 52,
+                      "end": 116
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 33,
+                      "end": 51
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 153,
+                      "end": 160
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 143,
+                      "end": 152
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 122,
+                      "end": 132
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 117,
+                      "end": 121
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 137,
+                      "end": 142
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 133,
+                      "end": 136
+                    }
+                  ]
+                },
+                {
+                  "account": "駐車場事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 164,
+                      "end": 165
+                    }
+                  ]
+                },
+                {
+                  "account": "駐車場事業特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 161,
+                      "end": 163
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2023/settlement.pdf",
+            "sha256": "ce231f9efe46850e20db1d6d6fd67f8793ceebf52d11f2984a5faaf9bd66bbbe",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,133351,c,html/133351/20241011-132915.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:40:00.484Z"
+      },
+      "reason": "CSVは款・項・目がコードのみで、科目名称は節名のため不採用。市公式の決算書PDFには必要な科目名・支出済額・節名が同じ表にそろう。目次（物理5頁）は一般会計明細を印字27頁、次の会計を111頁と示すが、歳入／歳出の境界は載らない。本文で印字45頁（物理51頁）の歳入末尾、46頁（物理52頁）の歳出先頭、110頁（物理116頁）の歳出合計を確認し、scopeを52–116頁とした。先頭の議会費は予算現額317,081,000円、支出済額310,689,127円を別列で確認。文字抽出が空で、確認した本文は全面画像のスキャン。市公式の掲載一覧内では訂正・別形式を確認できなかった。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2023年度補正予算第1号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,361,2169,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126856,c,html/126856/3-gian.pdf",
+              "sha256": "5ca61742a7bdee23b9c227a43cafbaedfc2fc3569971f222015bac0c463f6a38",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 48,
+                      "end": 53
+                    },
+                    {
+                      "start": 55,
+                      "end": 56
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 48,
+                      "end": 54
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 31,
+                      "end": 36
+                    },
+                    {
+                      "start": 38,
+                      "end": 38
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 31,
+                      "end": 37
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 39,
+                      "end": 44
+                    },
+                    {
+                      "start": 46,
+                      "end": 47
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 39,
+                      "end": 45
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20230601-112553.pdf",
+              "sha256": "8f1d6ec3eab531cb8a55a96445f4d03f98c650fcef20665e4cd9cbd93a9d305b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 5
+                    },
+                    {
+                      "start": 7,
+                      "end": 11
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 6
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126856,c,html/126856/4-gian.pdf",
+              "sha256": "9d372545c01597ae009f076c37ab3d90bcdce8635d6856171284b3ea7a0d7438",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 44,
+                      "end": 61
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 44,
+                      "end": 61
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2023/supplementary-1-1.pdf",
+            "sha256": "5ca61742a7bdee23b9c227a43cafbaedfc2fc3569971f222015bac0c463f6a38",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126856,c,html/126856/3-gian.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2023/supplementary-1-2.pdf",
+            "sha256": "8f1d6ec3eab531cb8a55a96445f4d03f98c650fcef20665e4cd9cbd93a9d305b",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20230601-112553.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2023/supplementary-1-3.pdf",
+            "sha256": "9d372545c01597ae009f076c37ab3d90bcdce8635d6856171284b3ea7a0d7438",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126856,c,html/126856/4-gian.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:40:11.285Z"
+      },
+      "reason": "令和5年度一般会計補正予算書（第1号） [599KB pdfファイル]を選定。一般会計の歳出部分は物理1-5,7-11頁に含まれることを目次・条文・明細表で確認(text)。\n令和5年11月 狛江市議会第4回定例会提出議案 [6156KB pdfファイル]を選定。下水道事業会計の歳出部分は物理44-61頁に含まれることを目次・条文・明細表で確認(text)。\n令和5年8月 狛江市議会第3回定例会提出議案 [3752KB pdfファイル]を選定。介護保険特別会計の歳出部分は物理48-53,55-56頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2023年度補正予算第2号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,361,2169,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126856,c,html/126856/4-gian.pdf",
+              "sha256": "9d372545c01597ae009f076c37ab3d90bcdce8635d6856171284b3ea7a0d7438",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 36,
+                      "end": 41
+                    },
+                    {
+                      "start": 43,
+                      "end": 43
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 36,
+                      "end": 42
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20230608-095441.pdf",
+              "sha256": "9ebd2323ac32d09336c600108d4f1beb5a06e11034835fe49da07c0e4a356220",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 5
+                    },
+                    {
+                      "start": 8,
+                      "end": 14
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20240222-154208.pdf",
+              "sha256": "fd06106317559ea9f26e8aa92990d0574de099975249a8fdeba43da191566df0",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 5
+                    },
+                    {
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 6
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2023/supplementary-2-1.pdf",
+            "sha256": "9d372545c01597ae009f076c37ab3d90bcdce8635d6856171284b3ea7a0d7438",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126856,c,html/126856/4-gian.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2023/supplementary-2-2.pdf",
+            "sha256": "9ebd2323ac32d09336c600108d4f1beb5a06e11034835fe49da07c0e4a356220",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20230608-095441.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2023/supplementary-2-3.pdf",
+            "sha256": "fd06106317559ea9f26e8aa92990d0574de099975249a8fdeba43da191566df0",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20240222-154208.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:40:19.061Z"
+      },
+      "reason": "令和5年度一般会計補正予算書（第2号） [405KB pdfファイル]を選定。一般会計の歳出部分は物理1-5,8-14頁に含まれることを目次・条文・明細表で確認(text)。\n令和5年11月 狛江市議会第4回定例会提出議案 [6156KB pdfファイル]を選定。国民健康保険特別会計の歳出部分は物理36-41,43-43頁に含まれることを目次・条文・明細表で確認(text)。\n令和5年度後期高齢者医療特別会計補正予算書（第2号） [228KB pdfファイル]を選定。後期高齢者医療特別会計の歳出部分は物理1-5,7-7頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2023年度補正予算第3号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,361,2169,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20230831-133307.pdf",
+              "sha256": "e322f20a1bfc32099a3271dad9fa38d23c7c45d9f0ce1b7cc45eb8f258a6817f",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 8
+                    },
+                    {
+                      "start": 12,
+                      "end": 26
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 11
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2023/supplementary-3.pdf",
+            "sha256": "e322f20a1bfc32099a3271dad9fa38d23c7c45d9f0ce1b7cc45eb8f258a6817f",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20230831-133307.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:40:22.028Z"
+      },
+      "reason": "令和5年度一般会計補正予算書（第3号） [725KB pdfファイル]を選定。一般会計の歳出部分は物理1-8,12-26頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2023年度補正予算第4号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,361,2169,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20231124-133108.pdf",
+              "sha256": "5850015796bf44244793732b0a7b68bb5b32676fee5fa6e09c3959e9596fbbb7",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 8
+                    },
+                    {
+                      "start": 11,
+                      "end": 31
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 10
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2023/supplementary-4.pdf",
+            "sha256": "5850015796bf44244793732b0a7b68bb5b32676fee5fa6e09c3959e9596fbbb7",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20231124-133108.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:40:24.827Z"
+      },
+      "reason": "令和5年度一般会計補正予算書（第4号） [700KB pdfファイル]を選定。一般会計の歳出部分は物理1-8,11-31頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2023年度補正予算第5号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,361,2169,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20231222-094555.pdf",
+              "sha256": "adae6ca2a7fd1f6c3c8409d5fe33558f44e431fda13fcc4b9d31578f119c390b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 5
+                    },
+                    {
+                      "start": 7,
+                      "end": 9
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 6
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2023/supplementary-5.pdf",
+            "sha256": "adae6ca2a7fd1f6c3c8409d5fe33558f44e431fda13fcc4b9d31578f119c390b",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20231222-094555.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:40:27.878Z"
+      },
+      "reason": "令和5年度一般会計補正予算書（第5号） [271KB pdfファイル]を選定。一般会計の歳出部分は物理1-5,7-9頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2023年度補正予算第6号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,361,2169,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20240201-104448.pdf",
+              "sha256": "e6e0c7a21600af089ed195406886186802e12dda8a2b1147aeab44fff1096f6f",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 6
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2023/supplementary-6.pdf",
+            "sha256": "e6e0c7a21600af089ed195406886186802e12dda8a2b1147aeab44fff1096f6f",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20240201-104448.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:40:30.983Z"
+      },
+      "reason": "令和5年度一般会計補正予算書（第6号） [282KB pdfファイル]を選定。一般会計の歳出部分は物理1-6,8-9頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 7
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2023年度補正予算第7号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,361,2169,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20240222-154057.pdf",
+              "sha256": "1e5280f21bec67f98cc91d3b21a2522d5f4df8f4dddff5aeeff209225d22dc91",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 8
+                    },
+                    {
+                      "start": 11,
+                      "end": 17
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 10
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2023/supplementary-7.pdf",
+            "sha256": "1e5280f21bec67f98cc91d3b21a2522d5f4df8f4dddff5aeeff209225d22dc91",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20240222-154057.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:40:34.585Z"
+      },
+      "reason": "令和5年度一般会計補正予算書（第7号） [475KB pdfファイル]を選定。一般会計の歳出部分は物理1-8,11-17頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2024,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2024年度当初予算",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,361,2169,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,c,html/132059/20240221-175846.pdf",
+              "sha256": "c32cbcf91420267b1fe67eede315b8021666cd47deeeba94a43da4cf4c1b207a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 18
+                    },
+                    {
+                      "start": 43,
+                      "end": 333
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 42
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,128130,c,html/128130/20240416-153807.pdf",
+              "sha256": "fbfe6ca1f51a86fe7bc87f1a1aee4eff51774fe2e424f5ecbe061618e4fa9d94",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 103,
+                      "end": 136
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 103,
+                      "end": 136
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 55,
+                      "end": 63
+                    },
+                    {
+                      "start": 72,
+                      "end": 89
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 55,
+                      "end": 71
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 11
+                    },
+                    {
+                      "start": 16,
+                      "end": 34
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 15
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 35,
+                      "end": 43
+                    },
+                    {
+                      "start": 48,
+                      "end": 54
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 35,
+                      "end": 47
+                    }
+                  ]
+                },
+                {
+                  "account": "駐車場事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 90,
+                      "end": 98
+                    },
+                    {
+                      "start": 101,
+                      "end": 102
+                    }
+                  ]
+                },
+                {
+                  "account": "駐車場事業特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 90,
+                      "end": 100
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2024/initial-1.pdf",
+            "sha256": "c32cbcf91420267b1fe67eede315b8021666cd47deeeba94a43da4cf4c1b207a",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,c,html/132059/20240221-175846.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2024/initial-2.pdf",
+            "sha256": "fbfe6ca1f51a86fe7bc87f1a1aee4eff51774fe2e424f5ecbe061618e4fa9d94",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,128130,c,html/128130/20240416-153807.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:40:42.698Z"
+      },
+      "reason": "令和6年度狛江市一般会計予算書（PDF表紙で確認）を選定。一般会計の歳出部分は物理1-18,43-333頁に含まれることを目次・条文・明細表で確認(text)。\n令和6年度特別会計予算書(別冊2)内の下水道事業会計節(物理103-136頁)。収益的収支構成のため節全体をscope。歳出頁域を含む。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2024年度決算",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,137752,371,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,137752,c,html/137752/20251006-151003.pdf",
+              "sha256": "303d7d797e346b5344d63081f4376a6fb81805b7fa07bb4e673fe67a6eb51887",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 53,
+                      "end": 118
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 33,
+                      "end": 52
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2024/settlement.pdf",
+            "sha256": "303d7d797e346b5344d63081f4376a6fb81805b7fa07bb4e673fe67a6eb51887",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,137752,c,html/137752/20251006-151003.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:40:47.266Z"
+      },
+      "reason": "公式HPの令和6年度有償刊行物一覧に掲載された「令和６年度 東京都狛江市一般会計特別会計歳入歳出決算書」1冊が対象を満たす。全頁スキャン画像（フォントなし）のためpdf_type=scan。物理5頁の目次で一般会計の事項別明細書は印字27〜112頁、物理7=印字1でoffset+6を確認。明細書内は歳入が先行し、物理52（印字46）の歳入合計が歳入末尾、物理53（印字47）で歳出が款1議会費から開始。歳出は款・項・目の実名称と節ごとの「支出済額」列を持ち単位は円。物理118（印字112）の歳出合計が末尾、物理119（印字113）は国民健康保険特別会計明細書表紙。よって一般会計歳出の取り込み範囲は物理53〜118頁。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2024年度補正予算第1号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,0,377,3618,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132125,c,html/132125/20241127-085959.pdf",
+              "sha256": "4e23f93f7ade7e69186164c08c96816bb057f39b408e894eb038d7e3ea12e76d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 55,
+                      "end": 74
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 55,
+                      "end": 74
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132125,c,html/132125/20240830-145313.pdf",
+              "sha256": "7478901e1369989b3d324867fbf4aa2136bb89eb310bf3ed03950ade9caf19dd",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 44,
+                      "end": 49
+                    },
+                    {
+                      "start": 51,
+                      "end": 52
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 44,
+                      "end": 50
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 26,
+                      "end": 31
+                    },
+                    {
+                      "start": 33,
+                      "end": 34
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 26,
+                      "end": 32
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 35,
+                      "end": 40
+                    },
+                    {
+                      "start": 42,
+                      "end": 43
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 35,
+                      "end": 41
+                    }
+                  ]
+                },
+                {
+                  "account": "駐車場事業特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 53,
+                      "end": 59
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132125,c,html/132125/R6-2gian.pdf",
+              "sha256": "a513a78666933d08d083a466d67a2775f26b72c6b23492dd6f9f92b88b40a16d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 8
+                    },
+                    {
+                      "start": 10,
+                      "end": 13
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2024/supplementary-1-1.pdf",
+            "sha256": "4e23f93f7ade7e69186164c08c96816bb057f39b408e894eb038d7e3ea12e76d",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132125,c,html/132125/20241127-085959.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2024/supplementary-1-2.pdf",
+            "sha256": "7478901e1369989b3d324867fbf4aa2136bb89eb310bf3ed03950ade9caf19dd",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132125,c,html/132125/20240830-145313.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2024/supplementary-1-3.pdf",
+            "sha256": "a513a78666933d08d083a466d67a2775f26b72c6b23492dd6f9f92b88b40a16d",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132125,c,html/132125/R6-2gian.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:40:55.705Z"
+      },
+      "reason": "令和6年 狛江市議会第2回定例会提出議案 [1550KB pdfファイル]を選定。一般会計の歳出部分は物理3-8,10-13頁に含まれることを目次・条文・明細表で確認(text)。\n令和6年_狛江市議会第4回定例会提出議案 [ 5257 KB pdfファイル]を選定。下水道事業会計の歳出部分は物理55-74頁に含まれることを目次・条文・明細表で確認(text)。\n令和6年 狛江市議会第3回定例会提出議案 [ 3166 KB pdfファイル]を選定。介護保険特別会計の歳出部分は物理44-49,51-52頁に含まれることを目次・条文・明細表で確認(text)。\n未確認の会計・範囲:\n駐車場事業特別会計：駐車場第1号は歳入補正のみで歳出補正行・歳出明細がない。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2024年度補正予算第2号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,361,2169,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,c,html/132059/20241127-152744.pdf",
+              "sha256": "a5893a0f4071f54f595dd7a3fb9bb131079eff56d6e3bdbe6c92b6d38a13971a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 5
+                    },
+                    {
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 6
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,c,html/132059/20241008-192843.pdf",
+              "sha256": "dfd86bb3e0e83c6970c31993c95b7634f26e3a20b45c6d1d65a155454d6fcbcb",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 9
+                    },
+                    {
+                      "start": 13,
+                      "end": 21
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 12
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136986,c,html/136986/20250217-094837.pdf",
+              "sha256": "e180215f6b24a7718a34ded053d465f2ee2490ed41d7b14e3ea64e320b1a3f82",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 29,
+                      "end": 34
+                    },
+                    {
+                      "start": 36,
+                      "end": 36
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 29,
+                      "end": 35
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2024/supplementary-2-1.pdf",
+            "sha256": "a5893a0f4071f54f595dd7a3fb9bb131079eff56d6e3bdbe6c92b6d38a13971a",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,c,html/132059/20241127-152744.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2024/supplementary-2-2.pdf",
+            "sha256": "dfd86bb3e0e83c6970c31993c95b7634f26e3a20b45c6d1d65a155454d6fcbcb",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,c,html/132059/20241008-192843.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2024/supplementary-2-3.pdf",
+            "sha256": "e180215f6b24a7718a34ded053d465f2ee2490ed41d7b14e3ea64e320b1a3f82",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136986,c,html/136986/20250217-094837.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:41:02.730Z"
+      },
+      "reason": "令和6年度一般会計補正予算書（第2号）.pdf [ 512 KB pdfファイル]を選定。一般会計の歳出部分は物理1-9,13-21頁に含まれることを目次・条文・明細表で確認(text)。\n令和６年度国民健康保険特別会計補正予算書（第２号）.pdf [ 250 KB pdfファイル]を選定。国民健康保険特別会計の歳出部分は物理1-5,7-7頁に含まれることを目次・条文・明細表で確認(text)。\n令和７年狛江市議会第1回定例会提出議案 [ 2624 KB pdfファイル]を選定。後期高齢者医療特別会計の歳出部分は物理29-34,36-36頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2024年度補正予算第3号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,361,2169,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,c,html/132059/20241008-193235.pdf",
+              "sha256": "975641d8ae28b06882c18eaec390ec9fd5d78aae1206ffaa06507424d0473c09",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 7
+                    },
+                    {
+                      "start": 9,
+                      "end": 12
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 8
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2024/supplementary-3.pdf",
+            "sha256": "975641d8ae28b06882c18eaec390ec9fd5d78aae1206ffaa06507424d0473c09",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,c,html/132059/20241008-193235.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:41:05.914Z"
+      },
+      "reason": "令和6年度一般会計補正予算書（第3号）.pdf [ 363 KB pdfファイル]を選定。一般会計の歳出部分は物理1-7,9-12頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2024年度補正予算第4号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,361,2169,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,c,html/132059/20241015-100944.pdf",
+              "sha256": "bf11f93d2618d53a3c6e4d118a04ee094ab9c8c5a0434892019dec3e09e8b3fe",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 5
+                    },
+                    {
+                      "start": 7,
+                      "end": 11
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 6
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2024/supplementary-4.pdf",
+            "sha256": "bf11f93d2618d53a3c6e4d118a04ee094ab9c8c5a0434892019dec3e09e8b3fe",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,c,html/132059/20241015-100944.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:41:08.604Z"
+      },
+      "reason": "令和6年度一般会計補正予算書（第4号）.pdf [ 342 KB pdfファイル]を選定。一般会計の歳出部分は物理1-5,7-11頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2024年度補正予算第5号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,361,2169,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,c,html/132059/20241127-152828.pdf",
+              "sha256": "1a46b667999c521352b28965ac783f9faa0919ddc8ceaab3fe7e72a81ac8cda2",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 30
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 11
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2024/supplementary-5.pdf",
+            "sha256": "1a46b667999c521352b28965ac783f9faa0919ddc8ceaab3fe7e72a81ac8cda2",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,c,html/132059/20241127-152828.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:41:12.042Z"
+      },
+      "reason": "令和６年度一般会計補正予算書（第５号）.pdf [ 674 KB pdfファイル]を選定。一般会計の歳出部分は物理1-9,12-30頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2024年度補正予算第6号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,361,2169,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,c,html/132059/20241226-143012.pdf",
+              "sha256": "a0ac04b40ba1dc2893ea7b22e81777b8cda22a341cfed2c186908c85239fa5ef",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 7
+                    },
+                    {
+                      "start": 9,
+                      "end": 12
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 8
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2024/supplementary-6.pdf",
+            "sha256": "a0ac04b40ba1dc2893ea7b22e81777b8cda22a341cfed2c186908c85239fa5ef",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,c,html/132059/20241226-143012.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:41:14.560Z"
+      },
+      "reason": "令和６年度一般会計補正予算書（第６号）.pdf [ 366 KB pdfファイル]を選定。一般会計の歳出部分は物理1-7,9-12頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 7
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2024年度補正予算第7号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,361,2169,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,c,html/132059/20250219-125740.pdf",
+              "sha256": "b3ac58f66cbfc8781ee3cd47dc41395e0af39f0e657b8686486ad8dc694e7406",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 10
+                    },
+                    {
+                      "start": 15,
+                      "end": 23
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 14
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2024/supplementary-7.pdf",
+            "sha256": "b3ac58f66cbfc8781ee3cd47dc41395e0af39f0e657b8686486ad8dc694e7406",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,c,html/132059/20250219-125740.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:41:17.740Z"
+      },
+      "reason": "令和６年度一般会計補正予算書（第７号）.pdf [ 594 KB pdfファイル]を選定。一般会計の歳出部分は物理1-10,15-23頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2025,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2025年度当初予算",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,0,377,3661,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136986,c,html/136986/20250217-093034.pdf",
+              "sha256": "a3826e8b2b04067e48be758b0bbee28b83fea949f14be94f31ec10efedfd4300",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 17
+                    },
+                    {
+                      "start": 41,
+                      "end": 335
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 40
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,133351,c,html/133351/20250408-163915.pdf",
+              "sha256": "d275ebf16868a05ca97ddf4cc4bce4b2853a870b1f6cb2ec7dea3d49a718839a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 91,
+                      "end": 124
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 91,
+                      "end": 124
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 48,
+                      "end": 54
+                    },
+                    {
+                      "start": 62,
+                      "end": 79
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 48,
+                      "end": 61
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 9
+                    },
+                    {
+                      "start": 14,
+                      "end": 30
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 13
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 31,
+                      "end": 37
+                    },
+                    {
+                      "start": 41,
+                      "end": 47
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 31,
+                      "end": 40
+                    }
+                  ]
+                },
+                {
+                  "account": "駐車場事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 80,
+                      "end": 86
+                    },
+                    {
+                      "start": 89,
+                      "end": 90
+                    }
+                  ]
+                },
+                {
+                  "account": "駐車場事業特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 80,
+                      "end": 88
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2025/initial-1.pdf",
+            "sha256": "a3826e8b2b04067e48be758b0bbee28b83fea949f14be94f31ec10efedfd4300",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136986,c,html/136986/20250217-093034.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2025/initial-2.pdf",
+            "sha256": "d275ebf16868a05ca97ddf4cc4bce4b2853a870b1f6cb2ec7dea3d49a718839a",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,133351,c,html/133351/20250408-163915.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:41:24.043Z"
+      },
+      "reason": "令和７年度一般会計予算書 [ 3129 KB pdfファイル]を選定。一般会計の歳出部分は物理1-17,41-335頁に含まれることを目次・条文・明細表で確認(text)。\n令和7年度特別会計予算書(別冊2)内の下水道事業会計節(物理91-124頁)。収益的収支構成のため節全体をscope。歳出頁域を含む。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "132195-0d914019cc27",
+          "title": "財政のあらまし 令和７年度決算[ 5775 KB pdfファイル]",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,143304,371,html",
+          "inspected_at": "2026-10-07T05:56:59.985Z",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,143304,c,html/143304/20260909-161035.pdf",
+              "sha256": null,
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": null
+            }
+          ]
+        },
+        {
+          "id": "132195-6cbf67b827d7",
+          "title": "令和７年度 決算附属資料.pdf [ 7921 KB pdfファイル]",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,146200,361,2170,html",
+          "inspected_at": "2026-10-07T05:56:59.985Z",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,146200,c,html/146200/20260911-134346.pdf",
+              "sha256": null,
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": null
+            }
+          ]
+        },
+        {
+          "id": "132195-7141b3f527f5",
+          "title": "令和７年度 決算特別委員会資料.pdf [ 589 KB pdfファイル]",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,146200,361,2170,html",
+          "inspected_at": "2026-10-07T05:56:59.985Z",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,146200,c,html/146200/20260924-101355.pdf",
+              "sha256": null,
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": null
+            }
+          ]
+        },
+        {
+          "id": "132195-e2dc0d3edd11",
+          "title": "令和７年度 主要な施策の成果説明書・決算資料.pdf [ 3249 KB pdfファイル]",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,146200,361,2170,html",
+          "inspected_at": "2026-10-07T05:56:59.985Z",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,146200,c,html/146200/20260911-134217.pdf",
+              "sha256": null,
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": null
+            }
+          ]
+        },
+        {
+          "id": "132195-ec6089c7c663",
+          "title": "令和７年度決算関係資料 [ 107 KB pdfファイル]",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,0,377,3726,html",
+          "inspected_at": "2026-10-07T05:56:59.985Z",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,142099,c,html/142099/20260825-141258.pdf",
+              "sha256": null,
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": null
+            }
+          ]
+        },
+        {
+          "id": "132195-f8b6f45a1ef9",
+          "title": "令和７年度決算 財政のあらまし.pdf [ 5775 KB pdfファイル]",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,146200,361,2170,html",
+          "inspected_at": "2026-10-07T05:56:59.985Z",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,146200,c,html/146200/20260911-134112.pdf",
+              "sha256": null,
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": null,
+      "archive": null,
+      "reason": "掲載資料を確認したが、必要な明細を持つ原典は未選定。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2025年度補正予算第1号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,361,2169,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20250515-134219.pdf",
+              "sha256": "2c8c377f18d96c291f74d690bada5e127b33e84da47841c1ecb5e2d0a87ce21e",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 6
+                    },
+                    {
+                      "start": 9,
+                      "end": 13
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 8
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136986,c,html/136986/20250825-113824.pdf",
+              "sha256": "3485d00c327fa1e8854cf6ea0d69411891c99177fddc31699d752fb836c00c43",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 54,
+                      "end": 59
+                    },
+                    {
+                      "start": 61,
+                      "end": 62
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 54,
+                      "end": 60
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 35,
+                      "end": 40
+                    },
+                    {
+                      "start": 42,
+                      "end": 43
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 35,
+                      "end": 41
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 44,
+                      "end": 49
+                    },
+                    {
+                      "start": 52,
+                      "end": 53
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 44,
+                      "end": 51
+                    }
+                  ]
+                },
+                {
+                  "account": "駐車場事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 63,
+                      "end": 68
+                    },
+                    {
+                      "start": 70,
+                      "end": 70
+                    }
+                  ]
+                },
+                {
+                  "account": "駐車場事業特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 63,
+                      "end": 69
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20250515-135827.pdf",
+              "sha256": "4a4f2c906add4f59bcb697eb8c03c4c4e5b1149ef25258bacd955a79e0b83d52",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 12
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 12
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2025/supplementary-1-1.pdf",
+            "sha256": "2c8c377f18d96c291f74d690bada5e127b33e84da47841c1ecb5e2d0a87ce21e",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20250515-134219.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2025/supplementary-1-2.pdf",
+            "sha256": "3485d00c327fa1e8854cf6ea0d69411891c99177fddc31699d752fb836c00c43",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136986,c,html/136986/20250825-113824.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2025/supplementary-1-3.pdf",
+            "sha256": "4a4f2c906add4f59bcb697eb8c03c4c4e5b1149ef25258bacd955a79e0b83d52",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20250515-135827.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:41:31.705Z"
+      },
+      "reason": "令和７年度一般会計補正予算書（第１号）.pdf [ 430 KB pdfファイル]を選定。一般会計の歳出部分は物理1-6,9-13頁に含まれることを目次・条文・明細表で確認(text)。\n令和７年度下水道事業会計補正予算書（第１号）.pdf [ 291 KB pdfファイル]を選定。下水道事業会計の歳出部分は物理1-12頁に含まれることを目次・条文・明細表で確認(scan)。\n令和７年狛江市議会第３回定例会提出議案 [ 6195 KB pdfファイル]を選定。介護保険特別会計の歳出部分は物理54-59,61-62頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2025年度補正予算第2号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,361,2169,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20251126-164958.pdf",
+              "sha256": "326e4253d67d5f556429d4e5185177d78dab7964e380c30963b02f8378a01b4b",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 5
+                    },
+                    {
+                      "start": 7,
+                      "end": 8
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 6
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20251126-164741.pdf",
+              "sha256": "8e26a4d9b1ad042675fcec2f0baf3183bf7a8aca15d9cab9361c7baac033a650",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 5
+                    },
+                    {
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 6
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20250611-100205.pdf",
+              "sha256": "9277189d23e764818de172b619a61804fcebb94d12fed3d286d6ae8d207f2436",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 6
+                    },
+                    {
+                      "start": 8,
+                      "end": 10
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,142099,c,html/142099/20260218-153404.pdf",
+              "sha256": "bdd29b18fd08e45dee978534e45ebf5be0aab0a03245ef28b139c987d4107689",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 47,
+                      "end": 53
+                    },
+                    {
+                      "start": 55,
+                      "end": 55
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 47,
+                      "end": 54
+                    }
+                  ]
+                },
+                {
+                  "account": "駐車場事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 60,
+                      "end": 65
+                    },
+                    {
+                      "start": 67,
+                      "end": 67
+                    }
+                  ]
+                },
+                {
+                  "account": "駐車場事業特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 60,
+                      "end": 66
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2025/supplementary-2-1.pdf",
+            "sha256": "326e4253d67d5f556429d4e5185177d78dab7964e380c30963b02f8378a01b4b",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20251126-164958.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2025/supplementary-2-2.pdf",
+            "sha256": "8e26a4d9b1ad042675fcec2f0baf3183bf7a8aca15d9cab9361c7baac033a650",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20251126-164741.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2025/supplementary-2-3.pdf",
+            "sha256": "9277189d23e764818de172b619a61804fcebb94d12fed3d286d6ae8d207f2436",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20250611-100205.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2025/supplementary-2-4.pdf",
+            "sha256": "bdd29b18fd08e45dee978534e45ebf5be0aab0a03245ef28b139c987d4107689",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,142099,c,html/142099/20260218-153404.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:41:41.183Z"
+      },
+      "reason": "令和７年度一般会計補正予算予算書（第２号）[ 314 KB pdfファイル]を選定。一般会計の歳出部分は物理1-6,8-10頁に含まれることを目次・条文・明細表で確認(scan)。\n令和７年度介護保険特別会計補正予算書（第２号）.pdf [ 275 KB pdfファイル]を選定。介護保険特別会計の歳出部分は物理1-5,7-8頁に含まれることを目次・条文・明細表で確認(scan)。\n令和７年度国民健康保険特別会計補正予算書（第２号）.pdf [ 249 KB pdfファイル]を選定。国民健康保険特別会計の歳出部分は物理1-5,7-7頁に含まれることを目次・条文・明細表で確認(scan)。\n令和８年狛江市議会第１回定例会提出議案 [ 4542 KB pdfファイル]を選定。後期高齢者医療特別会計の歳出部分は物理47-53,55-55頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2025年度補正予算第3号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,361,2169,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20250827-164335.pdf",
+              "sha256": "19aab4991605e645daecf325def3f4f0807694446a1d0331e1d886c8c8aa8fe1",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 8
+                    },
+                    {
+                      "start": 13,
+                      "end": 29
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 12
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,142099,c,html/142099/20260218-153404.pdf",
+              "sha256": "bdd29b18fd08e45dee978534e45ebf5be0aab0a03245ef28b139c987d4107689",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 56,
+                      "end": 59
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 37,
+                      "end": 43
+                    },
+                    {
+                      "start": 45,
+                      "end": 46
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 37,
+                      "end": 44
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2025/supplementary-3-1.pdf",
+            "sha256": "19aab4991605e645daecf325def3f4f0807694446a1d0331e1d886c8c8aa8fe1",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20250827-164335.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2025/supplementary-3-2.pdf",
+            "sha256": "bdd29b18fd08e45dee978534e45ebf5be0aab0a03245ef28b139c987d4107689",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,142099,c,html/142099/20260218-153404.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:41:46.982Z"
+      },
+      "reason": "令和７年度一般会計補正予算予算書（第３号）.pdf [ 787 KB pdfファイル]を選定。一般会計の歳出部分は物理1-8,13-29頁に含まれることを目次・条文・明細表で確認(text)。\n令和８年狛江市議会第１回定例会提出議案 [ 4542 KB pdfファイル]を選定。介護保険特別会計の歳出部分は物理56-59頁に含まれることを目次・条文・明細表で確認(text)。\n未確認の会計・範囲:\n介護保険特別会計：介護第3号は繰越明許費のみの補正で歳入補正行がない。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2025年度補正予算第4号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,361,2169,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20251126-164544.pdf",
+              "sha256": "842224933dff67947359ff99efafa969d187098960d72a88335bcf4973cb5367",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 7
+                    },
+                    {
+                      "start": 11,
+                      "end": 28
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 10
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2025/supplementary-4.pdf",
+            "sha256": "842224933dff67947359ff99efafa969d187098960d72a88335bcf4973cb5367",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20251126-164544.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:41:50.111Z"
+      },
+      "reason": "令和７年度一般会計補正予算書（第４号）.pdf [ 666 KB pdfファイル]を選定。一般会計の歳出部分は物理1-7,11-28頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2025年度補正予算第5号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,361,2169,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20251222-121157.pdf",
+              "sha256": "fb3410da1de0c73cbaa51391c284b423422c2a9c8ccea23848022d39cf7501b0",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 7
+                    },
+                    {
+                      "start": 9,
+                      "end": 13
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 8
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2025/supplementary-5.pdf",
+            "sha256": "fb3410da1de0c73cbaa51391c284b423422c2a9c8ccea23848022d39cf7501b0",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20251222-121157.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:41:52.989Z"
+      },
+      "reason": "令和７年度一般会計補正予算書（第５号）.pdf [ 361 KB pdfファイル]を選定。一般会計の歳出部分は物理1-7,9-13頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2025年度補正予算第6号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,361,2169,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20260120-155513.pdf",
+              "sha256": "3384a47ffb0dd7da83eef3ba5d1af43642e2d6931d16004202f57a0640374f48",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 5
+                    },
+                    {
+                      "start": 7,
+                      "end": 11
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 6
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2025/supplementary-6.pdf",
+            "sha256": "3384a47ffb0dd7da83eef3ba5d1af43642e2d6931d16004202f57a0640374f48",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20260120-155513.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:41:56.413Z"
+      },
+      "reason": "令和７年度一般会計補正予算書（第６号）.pdf [ 836 KB pdfファイル]を選定。一般会計の歳出部分は物理1-5,7-11頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 7
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2025年度補正予算第7号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,361,2169,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20260220-165505.pdf",
+              "sha256": "858e5a8464f2d043cdbe986265acbaa5bffefedb6777241dbd5022535b5bc619",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 8
+                    },
+                    {
+                      "start": 12,
+                      "end": 20
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 11
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2025/supplementary-7.pdf",
+            "sha256": "858e5a8464f2d043cdbe986265acbaa5bffefedb6777241dbd5022535b5bc619",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20260220-165505.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:41:59.243Z"
+      },
+      "reason": "令和７年度一般会計補正予算書（第７号）.pdf [ 510 KB pdfファイル]を選定。一般会計の歳出部分は物理1-8,12-20頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2026年度当初予算",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,0,377,3726,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,137752,c,html/137752/20260402-141937.pdf",
+              "sha256": "1f10fd882a8862f5744b11036df19dda322fc76d7c090e6df1a7272a72ac58e9",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 86,
+                      "end": 118
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 86,
+                      "end": 118
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 49,
+                      "end": 56
+                    },
+                    {
+                      "start": 65,
+                      "end": 85
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 49,
+                      "end": 64
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 10
+                    },
+                    {
+                      "start": 15,
+                      "end": 30
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 14
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 31,
+                      "end": 38
+                    },
+                    {
+                      "start": 42,
+                      "end": 48
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 31,
+                      "end": 41
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,142099,c,html/142099/20260218-153526.pdf",
+              "sha256": "d37c9d80cfc352455d549aac9a6249d799a004bdb182c0aa026aed2b7f33dcb0",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 17
+                    },
+                    {
+                      "start": 42,
+                      "end": 333
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 41
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2026/initial-1.pdf",
+            "sha256": "1f10fd882a8862f5744b11036df19dda322fc76d7c090e6df1a7272a72ac58e9",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,137752,c,html/137752/20260402-141937.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2026/initial-2.pdf",
+            "sha256": "d37c9d80cfc352455d549aac9a6249d799a004bdb182c0aa026aed2b7f33dcb0",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,142099,c,html/142099/20260218-153526.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:42:06.623Z"
+      },
+      "reason": "令和８年度一般会計予算書 [ 3062 KB pdfファイル]を選定。一般会計の歳出部分は物理1-17,42-333頁に含まれることを目次・条文・明細表で確認(text)。\n令和8年度特別会計予算書(別冊2)内の下水道事業会計節(物理86-118頁)。収益的収支構成のため節全体をscope。歳出頁域を含む。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2026年度補正予算第1号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,142125,361,2169,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,142125,c,html/142125/20260522-141814.pdf",
+              "sha256": "1f5a71f445dd6cb8909a60427a1997286a23c2dd14dfad2370400b74b5a6686b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 6
+                    },
+                    {
+                      "start": 9,
+                      "end": 14
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 8
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,142099,c,html/142099/20260825-132402.pdf",
+              "sha256": "29268646ad37a547c9f5dcf6fbb11b4dbb5ecc8facc681925d4f42ef019eac85",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 46,
+                      "end": 51
+                    },
+                    {
+                      "start": 54,
+                      "end": 55
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 46,
+                      "end": 53
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 25,
+                      "end": 31
+                    },
+                    {
+                      "start": 33,
+                      "end": 34
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 25,
+                      "end": 32
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 35,
+                      "end": 41
+                    },
+                    {
+                      "start": 43,
+                      "end": 45
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 35,
+                      "end": 42
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2026/supplementary-1-1.pdf",
+            "sha256": "1f5a71f445dd6cb8909a60427a1997286a23c2dd14dfad2370400b74b5a6686b",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,142125,c,html/142125/20260522-141814.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132195/2026/supplementary-1-2.pdf",
+            "sha256": "29268646ad37a547c9f5dcf6fbb11b4dbb5ecc8facc681925d4f42ef019eac85",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,142099,c,html/142099/20260825-132402.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:42:12.597Z"
+      },
+      "reason": "令和８年度一般会計補正予算書（第１号）.pdf [ 480 KB pdfファイル]を選定。一般会計の歳出部分は物理1-6,9-14頁に含まれることを目次・条文・明細表で確認(text)。\n令和８年狛江市議会第３回定例会提出議案 [ 2989 KB pdfファイル]を選定。介護保険特別会計の歳出部分は物理46-51,54-55頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2026年度補正予算第2号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,142125,361,2169,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,142125,c,html/142125/20260807-105346.pdf",
+              "sha256": "4d2503d3083758a5d1971b80e11ef7f2460cd1fac5dbb8bceac53eafdc253703",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 5
+                    },
+                    {
+                      "start": 7,
+                      "end": 9
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 6
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2026/supplementary-2.pdf",
+            "sha256": "4d2503d3083758a5d1971b80e11ef7f2460cd1fac5dbb8bceac53eafdc253703",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,142125,c,html/142125/20260807-105346.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:42:15.454Z"
+      },
+      "reason": "令和８年度一般会計補正予算書（第２号）.pdf [ 334 KB pdfファイル]を選定。一般会計の歳出部分は物理1-5,7-9頁に含まれることを目次・条文・明細表で確認(text)。"
+    },
+    {
+      "target": {
+        "jurisdiction": "132195",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2026年度補正予算第3号",
+          "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,142125,361,2169,html",
+          "inspected_at": "2026-10-07T09:37:50.571652+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,142125,c,html/142125/20260828-175148.pdf",
+              "sha256": "86852a436956203c47c392be09741c872445d80e2091c4c83d135fa605590daa",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 7
+                    },
+                    {
+                      "start": 10,
+                      "end": 20
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132195/2026/supplementary-3.pdf",
+            "sha256": "86852a436956203c47c392be09741c872445d80e2091c4c83d135fa605590daa",
+            "final_url": "https://www.city.komae.tokyo.jp/index.cfm/46,142125,c,html/142125/20260828-175148.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T09:42:18.877Z"
+      },
+      "reason": "令和８年度狛江市一般会計補正予算（第３号）.pdf [ 566 KB pdfファイル]を選定。一般会計の歳出部分は物理1-7,10-20頁に含まれることを目次・条文・明細表で確認(text)。"
+    }
+  ],
+  "unresolved_candidates": [
+    {
+      "candidate": {
+        "id": "132195-368511c6baca",
+        "title": "令和4年5月 狛江市議会第2回定例会提出議案 [2261KB pdfファイル]",
+        "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,377,3516,html",
+        "inspected_at": "2026-10-07T05:56:59.985Z",
+        "files": [
+          {
+            "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,c,html/121266/R4-2nd.pdf",
+            "sha256": "9203e1c75efb55f232f6564b9f01b4a7dab4e021b4680ced892cb87264972150",
+            "format": "pdf",
+            "pdf_type": "scan",
+            "scope": null
+          }
+        ]
+      },
+      "missing": [
+        "fiscal_year",
+        "document_kind"
+      ],
+      "reason": "原典対象の情報が不足：fiscal_year、document_kind"
+    },
+    {
+      "candidate": {
+        "id": "132195-57bf10897765",
+        "title": "令和3年2月 狛江市議会第1回定例会提出議案 [4595KB pdfファイル]",
+        "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,0,377,3459,html",
+        "inspected_at": "2026-10-07T05:56:59.985Z",
+        "files": [
+          {
+            "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,113886,c,html/113886/R3-1st.gian.pdf",
+            "sha256": "2ad3aa6f1c5207d1f51ad8450faac5e98a748e05bc82959b585dd1b568e065bc",
+            "format": "pdf",
+            "pdf_type": "scan",
+            "scope": null
+          }
+        ]
+      },
+      "missing": [
+        "fiscal_year",
+        "document_kind"
+      ],
+      "reason": "原典対象の情報が不足：fiscal_year、document_kind"
+    },
+    {
+      "candidate": {
+        "id": "132195-7e4a089537bd",
+        "title": "令和７年狛江市議会第４回定例会提出議案 [ 72 KB pdfファイル]",
+        "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,0,377,3661,html",
+        "inspected_at": "2026-10-07T05:56:59.985Z",
+        "files": [
+          {
+            "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136986,c,html/136986/20251126-132457.pdf",
+            "sha256": "27185bb9e04ef943b76458014e714fdbc80c00f86a4a4cbbe32867d63bd27b81",
+            "format": "pdf",
+            "pdf_type": "scan",
+            "scope": null
+          }
+        ]
+      },
+      "missing": [
+        "fiscal_year",
+        "document_kind"
+      ],
+      "reason": "原典対象の情報が不足：fiscal_year、document_kind"
+    },
+    {
+      "candidate": {
+        "id": "132195-a5c7dbedc625",
+        "title": "令和3年11月 狛江市議会第4回定例会提出議案 [4318KB pdfファイル]",
+        "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,0,377,3459,html",
+        "inspected_at": "2026-10-07T05:56:59.985Z",
+        "files": [
+          {
+            "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,113886,c,html/113886/R3-4th.pdf",
+            "sha256": "078f8b2b8b0aa1b481f7fcc537a5f9ef989188e7fe935e1529ed93d27ab10a7f",
+            "format": "pdf",
+            "pdf_type": "scan",
+            "scope": null
+          }
+        ]
+      },
+      "missing": [
+        "fiscal_year",
+        "document_kind"
+      ],
+      "reason": "原典対象の情報が不足：fiscal_year、document_kind"
+    },
+    {
+      "candidate": {
+        "id": "132195-c804b6852748",
+        "title": "令和２年度補正予算案について.pdf [1829KB pdfファイル]",
+        "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/50,107964,418,3453,html",
+        "inspected_at": "2026-10-07T05:56:59.985Z",
+        "files": [
+          {
+            "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,107964,c,html/107964/20200706-155155.pdf",
+            "sha256": "71e14cecee86c28c12bc5de710380ef4f7c2a27adc62778fa9c529ac9585608a",
+            "format": "pdf",
+            "pdf_type": "scan",
+            "scope": null
+          }
+        ]
+      },
+      "missing": [
+        "amendment_number"
+      ],
+      "reason": "原典対象の情報が不足：amendment_number"
+    },
+    {
+      "candidate": {
+        "id": "132195-ff45849de803",
+        "title": "令和２年度補正予算案について.pdf [ 1071 KB pdfファイル]",
+        "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/50,114057,418,3453,html",
+        "inspected_at": "2026-10-07T05:56:59.985Z",
+        "files": [
+          {
+            "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,114057,c,html/114057/20210304-092218.pdf",
+            "sha256": "269bdd402d130bbd3035a4866ceaf2edaa2d748ee1d7ae5d552ff41d34a70e77",
+            "format": "pdf",
+            "pdf_type": "scan",
+            "scope": null
+          }
+        ]
+      },
+      "missing": [
+        "amendment_number"
+      ],
+      "reason": "原典対象の情報が不足：amendment_number"
+    },
+    {
+      "candidate": {
+        "id": "132195-6e92795aa88c",
+        "title": "令和３年度補正予算案について.pdf [ 872 KB pdfファイル]",
+        "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/50,114057,418,3453,html",
+        "inspected_at": "2026-10-07T05:56:59.985Z",
+        "files": [
+          {
+            "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,114057,c,html/114057/20210304-092247.pdf",
+            "sha256": "69bda4e2ec473a47f6abe44d2ca9a68582313c150041c45fc4c7aa0fd62bdad0",
+            "format": "pdf",
+            "pdf_type": "scan",
+            "scope": null
+          }
+        ]
+      },
+      "missing": [
+        "amendment_number"
+      ],
+      "reason": "原典対象の情報が不足：amendment_number"
+    },
+    {
+      "candidate": {
+        "id": "132195-e0d5018e66d8",
+        "title": "令和３年度補正予算案について",
+        "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/50,115219,418,3472,html",
+        "inspected_at": "2026-10-07T05:56:59.985Z",
+        "files": [
+          {
+            "download_url": "https://www.city.komae.tokyo.jp/index.cfm/50,115219,c,html/115219/20210507-150226.pdf",
+            "sha256": "1aff88c22ff426643e37e85f94956233006cb190583a4cd1f0048fa1f6431e62",
+            "format": "pdf",
+            "pdf_type": "scan",
+            "scope": null
+          }
+        ]
+      },
+      "missing": [
+        "amendment_number"
+      ],
+      "reason": "原典対象の情報が不足：amendment_number"
+    },
+    {
+      "candidate": {
+        "id": "132195-8975698ce598",
+        "title": "令和６年度狛江市一般会計補正予算（7号）概要 [ 92 KB pdfファイル]",
+        "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,0,377,3661,html",
+        "inspected_at": "2026-10-07T05:56:59.985Z",
+        "files": [
+          {
+            "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136986,c,html/136986/20250217-092917.pdf",
+            "sha256": null,
+            "format": "pdf",
+            "pdf_type": "scan",
+            "scope": null
+          }
+        ]
+      },
+      "missing": [
+        "amendment_number"
+      ],
+      "reason": "原典対象の情報が不足：amendment_number"
+    },
+    {
+      "candidate": {
+        "id": "132195-555867a5780d",
+        "title": "令和７年度狛江市一般会計補正予算（１号）概要 [ 88 KB pdfファイル]",
+        "landing_url": "https://www.city.komae.tokyo.jp/index.cfm/46,0,377,3661,html",
+        "inspected_at": "2026-10-07T05:56:59.985Z",
+        "files": [
+          {
+            "download_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136986,c,html/136986/20250514-135342.pdf",
+            "sha256": null,
+            "format": "pdf",
+            "pdf_type": "scan",
+            "scope": null
+          }
+        ]
+      },
+      "missing": [
+        "amendment_number"
+      ],
+      "reason": "原典対象の情報が不足：amendment_number"
+    }
+  ]
+}
