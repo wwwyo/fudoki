@@ -150,7 +150,7 @@ def evaluate_year(year: int, source: dict[tuple, dict], rows: list[dict]) -> dic
             {"key": list(k), "rows": len(v), "names": [r["name"] for r in v]}
             for k, v in sorted(by_key.items()) if len(v) > 1
         ],
-        # ⚠️ **落としたものを見えなくしない**（原則6）。件数だけでは、どの領域が
+        # ⚠️ **落としたものを見えなくしない**。件数だけでは、どの領域が
         # 落ちているのか（＝正解の無い団体で何が起きるか）が読めない。
         "missedMoku": [
             {"key": list(k), "amountYen": v["yen"], "setsuNames": v["setsu"][:SAMPLE_SETSU]}
@@ -220,7 +220,7 @@ def evaluate(code: str) -> dict:
             "amountColumn": SOURCE_AMOUNT,
             "declaredYears": declared,
             "sourceYears": all_years,
-            # ⚠️ **測れた範囲を明示する**（原則4）。原典に年度があっても取得元の宣言が
+            # ⚠️ **測れた範囲を明示する**。原典に年度があっても取得元の宣言が
             # 無ければ測れない。狛江は市の決算ページが 2018〜2019 に存在しない。
             "yearsWithoutSource": [y for y in all_years if str(y) not in declared],
             "yearsDeclaredButNotExtracted": missing_output,

@@ -199,7 +199,7 @@ def _level_from_codes(col: int, code: int, current: dict[str, int]) -> str | Non
 def plan(pdf_path: pathlib.Path, spec: dict) -> tuple[dict[int, list[dict]], dict[int, str]]:
     """ページごとに text 経路を試し、経路を決める。**OCR エンジンを要求しない。**
 
-    判定は文字数ではなく**抽出できた表の行**で行う（原則3: 中身で判定する）。
+    判定は文字数ではなく**抽出できた表の行**で行う（中身で判定する）。
     見出しだけ拾えた状態は「取れた」に数えない。
     """
     first, last = int(spec["first_page"]), int(spec["last_page"])

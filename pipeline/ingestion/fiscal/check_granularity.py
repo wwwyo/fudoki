@@ -4,7 +4,7 @@
 本番の取得は団体ごとに pipeline を作り、届かない団体は最終的に公式サイトの PDF から取る。
 これはその前段として「どの団体がどこまで届いているか」を測るためのもの。
 
-判定は列構成で行う（資料名では判定しない。原則3）。判定規則は `granularity_profile.py` が持つ。
+判定は列構成で行う（資料名では判定しない）。判定規則は `granularity_profile.py` が持つ。
 
 ⚠️ **母集団は3度も取り違えている。**
 
@@ -266,8 +266,8 @@ def main() -> None:
     if write:
         OBSERVATIONS.mkdir(parents=True, exist_ok=True)
         OUT.write_text(json.dumps({
-            "note": "カタログに予算がどの粒度で出ているかの調査。判定は資料名ではなく列構成で行う（原則3）。"
-                    "母集団は団体registry のコードに限り、団体ごとに全データセットを列挙する（原則4）。"
+            "note": "カタログに予算がどの粒度で出ているかの調査。判定は資料名ではなく列構成で行う。"
+                    "母集団は団体registry のコードに限り、団体ごとに全データセットを列挙する。"
                     "団体ごとの最良はこの観測から導けるので焼き込まない。",
             "generatedBy": "pipeline/ingestion/fiscal/check_granularity.py",
             "population": len(registry),

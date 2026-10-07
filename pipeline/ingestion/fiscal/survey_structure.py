@@ -248,7 +248,7 @@ if __name__ == "__main__":
     out = OBSERVATIONS / f"{code}-budget-structure.json"
     out.write_text(json.dumps({
         "note": "原典が何を持っているかの実測。**判定は列名ではなく中身で行う**"
-                "（パーサ設計の原則3）。列があることは、その階層が使われていることも"
+                "。列があることは、その階層が使われていることも"
                 "名称を持っていることも意味しない。",
         "generatedBy": "pipeline/ingestion/fiscal/survey_structure.py（bun run --cwd pipeline survey:structure <団体コード>）",
         "reads": f"pipeline/.cache/**/raw/jurisdiction={code}/（原典情報は固定入力一覧のsource宣言）",

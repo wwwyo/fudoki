@@ -20,7 +20,7 @@
 ## 組版の宣言
 
 列の**意味**は法定様式が決めるので共有（`statement_layout.py`）、**座標**は団体ごとに違うので
-宣言（`sources.toml` の `[statement]`）。原則5の切り分けそのもの。
+宣言（`sources.toml` の `[statement]`）。例外をその対象に閉じる切り分けそのもの。
 """
 
 from __future__ import annotations
@@ -200,7 +200,7 @@ class _UnderSetsu:
         self._setsu = None
         if node is None or self._children or node["amount"] is None:
             return
-        # 説明欄の項目が付かなかった節。**捨てずに節そのものを葉にする**（原則6）
+        # 説明欄の項目が付かなかった節。**捨てずに節そのものを葉にする**
         self.rows.append({**node["context"], "project_name": "", "setsu": node,
                           "detail_name": "", "amount": node["amount"]})
 
@@ -674,7 +674,7 @@ def ingest(key: str, *, force: bool = False, sources_path: pathlib.Path | None =
                     f"抽出が行の境界に乗っている: "
                     f"{[u['detail_name'] for u in unstable[:5]]}")
             # ⚠️ **1つも突合できないのはレイアウトを読み違えている合図。**
-            # 一部が落ちるのは目ごとに印を付けて下流へ渡す（原則6）が、全滅なら止める。
+            # 一部が落ちるのは目ごとに印を付けて下流へ渡すが、全滅なら止める。
             if summary["leavesReconciled"] == 0:
                 raise RuntimeError(
                     f"{key}/{direction}: 目の合計と1件も突合できなかった。"

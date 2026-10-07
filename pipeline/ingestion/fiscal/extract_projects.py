@@ -80,7 +80,7 @@ def extract(pdf: pathlib.Path, first: int, last: int,
             # ⚠️ **コードの後ろに科目の名称が続く。** 以前ここは数字だけを拾って
             # 名称を捨てており、その結果「款・項・目の名称は決算書 PDF にも無い」と
             # 誤って結論していた。**抽出結果の欠落を資料の性質だと読み替えていた**
-            # （原則3「資料名ではなく中身の粒度で判定する」を自分で破っていた）。
+            # （「資料名ではなく中身の粒度で判定する」を自分で破っていた）。
             found, buf, bx = [], "", None
             for x, c in sorted(line):
                 if column_of(x, columns) != "code":
@@ -190,7 +190,7 @@ def reconcile(rows: list[dict], moku_totals: dict) -> dict:
         by_moku[(r["kan_code"], r["kou_code"], r["moku_code"])] += r["amount_thousand_yen"]
 
     # ⚠️ **突合が落ちた目からは名前を採らない。** 全体を止めるのでも黙って通すのでもなく、
-    # 目ごとに合否を付けて下流へ渡す（パーサ設計の原則6: 捨てずに状態として残す）。
+    # 目ごとに合否を付けて下流へ渡す（捨てずに状態として残す）。
     # 「名前が付く事業と付かない事業の境界に理由がある」状態にするのが目的。
     ok = 0
     for r in rows:

@@ -152,7 +152,7 @@ class _UnderSetsu:
         self._setsu = None
         if node is None or self._children or node["amount"] is None:
             return
-        # 説明欄の項目が付かなかった節。**捨てずに節そのものを葉にする**（原則6）
+        # 説明欄の項目が付かなかった節。**捨てずに節そのものを葉にする**
         self.rows.append({**node["context"], "project_name": "", "setsu": node,
                           "detail_name": "", "amount": node["amount"]})
 
