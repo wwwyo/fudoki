@@ -74,7 +74,7 @@ CC BY が求める帰属を下流が落とす。層ごとの宣言は各 `datapa
 | **① 予算** | 東京都カタログ CKAN / 港区 / BODIK / 渋谷区 DCAT-US。届かない団体は各自治体の予算説明書（PDF）へ | **カタログ経由は待ちなし**（確認した範囲が CC BY）。**PDF は取得元ごとに確認が要る** — 公開されていることは再配布を許すことを意味しない | 目以下に到達した団体を実測で確認（`docs/survey/budget-availability.md`） |
 | **② 公告** | [官公需情報ポータル 検索API](https://www.kkj.go.jp/api/) | **待ちなし**（robots 制限なし） | `CityCode` が団体コード、`ProjectDescription` に公告全文。**tender 段階まで**（`docs/survey/kkj-api-notes.md`） |
 
-**予算だけで単体の存在価値は成立する**（「なぜ作るか」）。調達は、予算と公告を結び付ける将来展望にあたる。予算の原典の再配布可否は取得元のライセンスで判断し、`pipeline/ingestion/fiscal/sources.toml` の `redistribute` がその宣言を持つ。
+**予算だけで単体の存在価値は成立する。** 調達は、予算と公告を結び付ける将来展望にあたる。予算の原典の再配布可否は取得元のライセンスで判断し、`pipeline/ingestion/fiscal/sources.toml` の `redistribute` がその宣言を持つ。
 
 **実測の詳細は調査文書へ分離した**（この文書に log は書かない）。
 

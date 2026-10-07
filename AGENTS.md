@@ -196,9 +196,9 @@ uv add --exclude-newer $(date -v-7d +%Y-%m-%d) <package>
 
 構造・判断・手順の詳細は各 dir の AGENTS.md と文書へ逃がしてある。この文書には書かない。
 
-- 設計方針・対象・パイプライン・パーサ原則 → `docs/design-principles.md`。決定の記録 → `docs/adr/`
-- パイプラインの実装・script・技術スタック → `pipeline/AGENTS.md`。団体固有の実測・原典の癖 → `pipeline/ingestion/fiscal/jurisdictions/<団体コード>.md`
-- パイプライン（取得・PDF抽出・dbt）のハマりどころ → `.agents/skills/pipeline/`
+- 設計方針・対象・パイプライン・パーサ原則 → `docs/design-principles.md`。
+- パイプラインの実装・script・技術スタック → `pipeline/AGENTS.md`。
+- パイプライン（取得・PDF抽出・dbt）の手順 → `.agents/skills/pipeline/`
 - データ源の実測 → `docs/survey/`
 - 設計の記録 → `docs/prd/<topic>/prd.md`（要件）・`docs/prd/<topic>/design-doc.md`（設計書。同じ topic に併置）・`docs/adr/`（決定）。判断の記録はコードと同じ寿命を持ち、git 管理する
 
