@@ -67,7 +67,9 @@ COFOG は歳出明細と同じ CSV に含め、原典由来の金額と分類な
 
 ## もっと読む
 
-- [AGENTS.md](AGENTS.md): 設計方針、実測にもとづく判断、パーサ設計の原則
+- [AGENTS.md](AGENTS.md): プロジェクトの identity・構造・セットアップ
+- [docs/design-principles.md](docs/design-principles.md): 設計方針と対象
+- [pipeline/AGENTS.md](pipeline/AGENTS.md): パイプラインの層とパーサ設計の原則
 - [pipeline/README.md](pipeline/README.md): 固定入力からの構築と検査
 - [apps/web/README.md](apps/web/README.md): ダッシュボードの構成
 - [pipeline/dbt/models/](pipeline/dbt/models/): staging（原典別の整形）→ intermediate（統合・分類）→ marts（提供用データ）。配布処理は `pipeline/fdp/` に分け、原典の保存と判断の整合性はテストで縛っている

@@ -196,7 +196,7 @@ uv add --exclude-newer $(date -v-7d +%Y-%m-%d) <package>
 
 構造・判断・手順の詳細は各 dir の AGENTS.md と文書へ逃がしてある。この文書には書かない。
 
-- 設計方針・対象・パイプライン・パーサ原則 → `docs/design-principles.md`。
+- 設計方針・対象 → `docs/design-principles.md`。
 - パイプラインの実装・script・技術スタック → `pipeline/AGENTS.md`。
 - パイプライン（取得・PDF抽出・dbt）の手順 → `.agents/skills/pipeline/`
 - データ源の実測 → `docs/survey/`
