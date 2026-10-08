@@ -429,6 +429,1360 @@
         ],
         "archived_at": "2026-10-07T16:44:54.757Z"
       }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2023,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度大田区予算事項別明細書（一般会計・国民健康保険事業特別会計・後期高齢者医療特別会計・介護保険特別会計）",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r05-yosan.html",
+          "inspected_at": "2026-10-08T03:58:27.467229+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r05-yosan.files/02_r5_jikoubetsu_ippan.pdf",
+              "sha256": "15b52dcae9764b8f9c461cb5ee232506e68e4e90efe1877739128502f421b523",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 60,
+                      "end": 231
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r05-yosan.files/03_r5_jikoubetsu_kokuminkenkouhoken.pdf",
+              "sha256": "c1809256c4a7f6cefa882a8a599d714f3d0498632a66dbd80e4b0fd562315109",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 14,
+                      "end": 49
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r05-yosan.files/04_r5_jikoubetsu_koukikoureisyairyou.pdf",
+              "sha256": "a355d723407b65a8df0e75f00813f016ae4673ad71d36dea07dfc68d2029cdf9",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 29
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r05-yosan.files/05_r5_jikoubetsu_kaigohoken.pdf",
+              "sha256": "90ee6e11e5b0e5c5363fd99965fc7832b322bb1c5f4b5d145738254d925cdb5c",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 14,
+                      "end": 39
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度当初予算の歳出明細。会計別4冊の予算事項別明細書PDFを選定（A4・1物理頁=1印字頁、単位千円）。明細は款・項・目が同一行で本年度予算額・前年度予算額・比較・本年度予算額の財源内訳（特定/一般財源）・対面頁に節区分（区分+金額）・説明付き。歳出明細は物理60-231（印字92-263、3歳出+款1議会費〜款12予備費+節説明。歳入は物理5-59、給与費明細書232-、債務負担行為270-、区債現在282-）、国保14-49（3歳出+款1総務費〜款6予備費、歳入6-13、給与費明細書50-、債務負担行為64-）、後期12-29（歳入6-11、30-31は空白）、介護14-39（歳入6-13、給与費明細書40-）。全会計は一般会計+特別会計3の4会計（各会計予算議案の号数・掲載一覧と一致、企業会計・他の特別会計なし）。都オープンデータカタログの予算XLSXは款別・会計別集計のみで目粒度を満たさず不採用。冊子はスキャン＋埋め込み文字層で、名称・款項目は文字として読めるが数字の抽出に間隔の乱れがある。歳入・給与費明細書・債務負担行為・区債は対象外で未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2023/initial-1.pdf",
+            "sha256": "15b52dcae9764b8f9c461cb5ee232506e68e4e90efe1877739128502f421b523",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r05-yosan.files/02_r5_jikoubetsu_ippan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131113/2023/initial-4.pdf",
+            "sha256": "c1809256c4a7f6cefa882a8a599d714f3d0498632a66dbd80e4b0fd562315109",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r05-yosan.files/03_r5_jikoubetsu_kokuminkenkouhoken.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131113/2023/initial-3.pdf",
+            "sha256": "a355d723407b65a8df0e75f00813f016ae4673ad71d36dea07dfc68d2029cdf9",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r05-yosan.files/04_r5_jikoubetsu_koukikoureisyairyou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131113/2023/initial-2.pdf",
+            "sha256": "90ee6e11e5b0e5c5363fd99965fc7832b322bb1c5f4b5d145738254d925cdb5c",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r05-yosan.files/05_r5_jikoubetsu_kaigohoken.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T04:00:00.393Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2024,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度大田区予算事項別明細書（一般会計・国民健康保険事業特別会計・後期高齢者医療特別会計・介護保険特別会計）",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r06yosan/r06-yosan.html",
+          "inspected_at": "2026-10-08T03:58:27.467229+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r06yosan/r06-yosan.files/02_r6_jikoubetsu_ippan.pdf",
+              "sha256": "54cdf433379e65642ddeed636950b63de9299eb3896b2108af4a1a9e4de6701a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 62,
+                      "end": 233
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r06yosan/r06-yosan.files/03_r6_jikoubetsu_kokuminkenkouhoken.pdf",
+              "sha256": "065239256fe32b6ede342d7092ed2f12b6e2426ba723b3d829f7123bb8cd3596",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 14,
+                      "end": 49
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r06yosan/r06-yosan.files/04_r6_jikoubetsu_koukikoureisyairyou.pdf",
+              "sha256": "fae443c16eb6460671da2c6be47d2778ac5ed1a4340a0fbd99c5ebaff89153b8",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 29
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r06yosan/r06-yosan.files/05_r6_jikoubetsu_kaigohoken.pdf",
+              "sha256": "7b5a6d80d9b651e9b64bba169f17b54de125a70c8466675c27827fac19c7b7ea",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 14,
+                      "end": 39
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度当初予算の歳出明細。会計別4冊の予算事項別明細書PDFを選定（A4・1物理頁=1印字頁、単位千円）。明細は款・項・目が同一行で本年度予算額・前年度予算額・比較・本年度予算額の財源内訳（特定/一般財源）・対面頁に節区分（区分+金額）・説明付き。歳出明細は物理62-233（印字94-265、3歳出+款1議会費〜款12予備費+節説明。歳入は物理5-61、給与費明細書234-、区債現在286-）、国保14-49（歳入6-13、給与費明細書50-、債務負担行為64-）、後期12-29（歳入6-11、30-31は空白）、介護14-39（歳入6-13、給与費明細書40-）。全会計は一般会計+特別会計3の4会計（各会計予算議案の号数・掲載一覧と一致、企業会計・他の特別会計なし）。都オープンデータカタログの予算XLSXは款別・会計別集計のみで目粒度を満たさず不採用。冊子はスキャン＋埋め込み文字層で、名称・款項目は文字として読めるが数字の抽出に間隔の乱れがある。歳入・給与費明細書・債務負担行為・区債は対象外で未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2024/initial-2.pdf",
+            "sha256": "54cdf433379e65642ddeed636950b63de9299eb3896b2108af4a1a9e4de6701a",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r06yosan/r06-yosan.files/02_r6_jikoubetsu_ippan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131113/2024/initial-1.pdf",
+            "sha256": "065239256fe32b6ede342d7092ed2f12b6e2426ba723b3d829f7123bb8cd3596",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r06yosan/r06-yosan.files/03_r6_jikoubetsu_kokuminkenkouhoken.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131113/2024/initial-4.pdf",
+            "sha256": "fae443c16eb6460671da2c6be47d2778ac5ed1a4340a0fbd99c5ebaff89153b8",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r06yosan/r06-yosan.files/04_r6_jikoubetsu_koukikoureisyairyou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131113/2024/initial-3.pdf",
+            "sha256": "7b5a6d80d9b651e9b64bba169f17b54de125a70c8466675c27827fac19c7b7ea",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r06yosan/r06-yosan.files/05_r6_jikoubetsu_kaigohoken.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T04:01:24.628Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2025,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度大田区予算事項別明細書（一般会計・国民健康保険事業特別会計・後期高齢者医療特別会計・介護保険特別会計）",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r07-yosan.html",
+          "inspected_at": "2026-10-08T03:58:27.467229+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r07-yosan.files/02_r7_jikoubetsu_ippan.pdf",
+              "sha256": "928c2074d5293f2f2b1bc7287936c86b49b03ee7850781b91e69a9bd98241df4",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 58,
+                      "end": 249
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r07-yosan.files/03_r7_jikoubetsu_kokuminkenkouhoken.pdf",
+              "sha256": "965b8f9181e94bd495f305cce03d843053ae32ddc6bcfe7d3be85fa43407b2a1",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 47
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r07-yosan.files/04_r7_jikoubetsu_koukikoureisyairyou.pdf",
+              "sha256": "229f93aa27027f677e13146e09e03d92464769d9f48ca19de1d12e4bc425e0de",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 27
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r07-yosan.files/05_r7_jikoubetsu_kaigohoken.pdf",
+              "sha256": "a4901af3d41aa48980b82024ff8473d8a11e1b61f3185994fec19aff9a19c0b6",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 39
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度当初予算の歳出明細。会計別4冊の予算事項別明細書PDFを選定（A4・1物理頁=1印字頁、単位千円）。明細は款・項・目が同一行で本年度予算額・前年度予算額・比較・本年度予算額の財源内訳（特定/一般財源）・対面頁に節区分（区分+金額）・説明付き。歳出明細は物理58-249（印字90-281、3歳出+款1議会費〜款12予備費+節説明。歳入は物理5-57、給与費明細書250-、債務負担行為〜311、区債現在〜334）、国保12-47（印字346-381、歳入6-11、給与費明細書48-、債務負担行為〜64）、後期8-27（印字406-425、歳入4-7、28は空白）、介護12-39（印字438-465、歳入6-11、給与費明細書40-）。全会計は一般会計+特別会計3の4会計（各会計予算議案の号数・掲載一覧と一致、企業会計・他の特別会計なし）。都オープンデータカタログの予算XLSXは款別・会計別集計のみで目粒度を満たさず不採用。なおR7冊子は文字層のToUnicodeがなくpdftotextでは日本語が文字化けするため、取り込み範囲は画像として読む必要がある（pdf_type=scan）。歳入・給与費明細書・債務負担行為・区債は対象外で未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2025/initial-2.pdf",
+            "sha256": "928c2074d5293f2f2b1bc7287936c86b49b03ee7850781b91e69a9bd98241df4",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r07-yosan.files/02_r7_jikoubetsu_ippan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131113/2025/initial-3.pdf",
+            "sha256": "965b8f9181e94bd495f305cce03d843053ae32ddc6bcfe7d3be85fa43407b2a1",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r07-yosan.files/03_r7_jikoubetsu_kokuminkenkouhoken.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131113/2025/initial-1.pdf",
+            "sha256": "229f93aa27027f677e13146e09e03d92464769d9f48ca19de1d12e4bc425e0de",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r07-yosan.files/04_r7_jikoubetsu_koukikoureisyairyou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131113/2025/initial-4.pdf",
+            "sha256": "a4901af3d41aa48980b82024ff8473d8a11e1b61f3185994fec19aff9a19c0b6",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r07-yosan.files/05_r7_jikoubetsu_kaigohoken.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T04:01:34.349Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2023,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度大田区各会計歳入歳出決算書・各会計歳入歳出決算事項別明細書・実質収支・財産・基金調書",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/kessan/r05_kessan.html",
+          "inspected_at": "2026-10-08T03:58:27.467229+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/kessan/r05_kessan.files/20240829.pdf",
+              "sha256": "c02efad15ee1249bfb9ee1b71855f500757bc4e57f240190e91a3db16f0cea17",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 41,
+                      "end": 79
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 89,
+                      "end": 94
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 103,
+                      "end": 105
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 115,
+                      "end": 120
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度決算の歳出明細。20240829.pdfは各会計歳入歳出決算書+歳入歳出決算事項別明細書+実質収支・財産・基金運用状況調書の合冊143物理頁（画像スキャン、1物理頁=印字2頁の見開き、歳出明細は目視確認が必要）。明細は款・項・目が同一行の階層で当初予算額・補正予算額・繰越・流用・予算現額計・翌年度繰越・支出済額・不用額・執行率・節区分（区分+金額）・備考付き、単位円。一般会計歳出=物理41-79（歳出扉印71+款1議会費〜款12予備費、印字72-147。歳入は物理17-40、80-85は給与費明細書・債務負担行為等、17-19は明細書扉・総括）。国民健康保険事業特別会計歳出=物理89-94（歳出扉印165+印字166-173、冊は物理86-95、歳入は87-88、95-96は黄扉）。後期高齢者医療特別会計歳出=物理103-105（右半頁に歳出扉印191+印字192-195、冊は物理97-105、歳入は98-102、103の歳出扉が歳入最終頁と同居）。介護保険特別会計歳出=物理115-120（歳出扉印213+印字214-221、冊は物理107-120、歳入は108-114）。冒頭の各会計歳入歳出決算書（物理7-16、第93-96号議案、款総括）は明細書に包含で対象外。実質収支調書（物理121-125）・財産調書（126-134）・基金調書（135-143）は歳出明細でない。全会計4会計は決算議案第93-96号と掲載一覧で一致。歳入範囲は対象外で未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2023/settlement.pdf",
+            "sha256": "c02efad15ee1249bfb9ee1b71855f500757bc4e57f240190e91a3db16f0cea17",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/kessan/r05_kessan.files/20240829.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T04:03:01.615Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [],
+      "reason": "令和7年度決算は2026-10-08時点で未公表。決算一覧（https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/kessan/index.html）の最新は令和6年度で、令和7年度の項目なし（令和8年度決算一覧と同一覧）。公開を確認できないだけで、非公開とは断定しない。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "r05-gaiyo-01",
+          "title": "補正予算案の概要 一般会計（第1次）／補正予算案事業概要・問合先",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r5hosei.html",
+          "inspected_at": "2026-10-08T07:48:33.412201+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r5hosei.files/r05hosei_ippan01.pdf",
+              "sha256": "db22ea6f4798e7e25c78620dfba67396ec28d6c94dbb727153a40ecca89e73cc",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "一般会計第1次（号数根拠：一覧見出し「補正予算案の概要 一般会計（第1次）」＋本文「一般会計第1次補正予算案」）。前回「事業名×3額の対応を満たさず部分選定不可」とした判断を撤回する。補正額（増減額）のみの対応で部分選定可との基準で再確認した。実物r05hosei_ippan01.pdf（11頁、文字PDF、単位千円）の物理頁4-7「４ 補正予算歳出事業概要」表は事業名×主な内容×補正額が同じ行で対応（代表行：p4「特別出張所管理運営費 1,680」「東京2020レガシー事業 17,357」、p7「1 予備費 230,000」）。金額列名は「補正額」、補正差額を補正後予算額とは読まない。不足：補正前額・補正後額なし、款・項総額のみの款別一覧（p8-）、性質別・基金集計は対象外、特別会計の掲載なし。同号の別冊r05hosei_ippan01_jigyoichiran.pdf（27頁）は事業別説明資料で各事業は単一予算額のみ（代表：区立小中学校給食費無償化「予算額18億8614万5千円」）で補正額列がなく要件を満たさないため、重複排除し本冊のみを選定する。表紙の特別会計次数表示は他号と同一文言の転記で一覧と不整合のため号数根拠に使わない。",
+      "selected_candidate_id": "r05-gaiyo-01",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r05-gaiyo-01",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2023/supplementary-1.pdf",
+            "sha256": "db22ea6f4798e7e25c78620dfba67396ec28d6c94dbb727153a40ecca89e73cc",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r5hosei.files/r05hosei_ippan01.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T07:48:41.815Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "r05-gaiyo-02",
+          "title": "補正予算案の概要 一般会計（第2次）",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r5hosei.html",
+          "inspected_at": "2026-10-08T07:48:33.412201+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r5hosei.files/r05hosei_ippan02.pdf",
+              "sha256": "0244c81751e76f822d41bb158019f2afb09f7a5675fab5893a49eca8a53bcab0",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "一般会計第2次（号数根拠：一覧見出し「補正予算案の概要 一般会計（第2次）」＋本文「一般会計第2次補正予算案」）。前回「事業名×3額の対応を満たさず部分選定不可」とした判断を撤回する。補正額のみの対応で部分選定可との基準で再確認した。実物r05hosei_ippan02.pdf（9頁、文字PDF、単位千円）の物理頁4「４ 補正予算歳出事業概要」表は事業名×主な内容×補正額が同じ行で対応（代表行：「２ 総務費 12,263」「９ 教育費 48,542」）。金額列名は「補正額」。不足：補正前額・補正後額なし、款別一覧は款×当初/1次補正後/2次補正後で目・事業明細なし、性質別集計は対象外、特別会計の掲載なし。表紙の特別会計次数表示は他号と同一文言の転記で一覧と不整合のため号数根拠に使わない。",
+      "selected_candidate_id": "r05-gaiyo-02",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r05-gaiyo-02",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2023/supplementary-2.pdf",
+            "sha256": "0244c81751e76f822d41bb158019f2afb09f7a5675fab5893a49eca8a53bcab0",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r5hosei.files/r05hosei_ippan02.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T07:48:44.977Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "r05-gaiyo-03",
+          "title": "補正予算案の概要 一般会計（第3次）・特別会計（第1次）",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r5hosei.html",
+          "inspected_at": "2026-10-08T07:48:33.412201+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r5hosei.files/r05hosei_ippan03.pdf",
+              "sha256": "5b5e7ae3b50715c8f0c62ea64d39abc1961cbe03e4bfdcc3e9a1a6f1e68a15c0",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "一般会計第3次＋国民健康保険・後期高齢者医療・介護保険各特別会計第1次（号数根拠：一覧見出し・表紙・本文の「一般会計第3次」「特別会計第1次」が一致）。前回「事業名×3額の対応を満たさず部分選定不可」とした判断を撤回する。補正額のみの対応で部分選定可との基準で再確認した。実物r05hosei_ippan03.pdf（17頁、文字PDF、単位千円）の物理頁5-7「４ 補正予算歳出事業概要」表は事業名×主な内容×補正額が同じ行で対応（代表行：p5「２ 総務費 △2,784,823」、p7「3 校舎造修（小学校費） △38,350」）。金額列名は「補正額」。不足：補正前額・補正後額なし、国保・後期・介護の3特別会計は款別一覧（款×当初/1次補正額/1次補正後）のみで目・事業明細なし、性質別・基金集計・債務負担行為補正（限度額・来年度負担額）は当年度支出明細でないため対象外。",
+      "selected_candidate_id": "r05-gaiyo-03",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r05-gaiyo-03",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2023/supplementary-3.pdf",
+            "sha256": "5b5e7ae3b50715c8f0c62ea64d39abc1961cbe03e4bfdcc3e9a1a6f1e68a15c0",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r5hosei.files/r05hosei_ippan03.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T07:48:48.528Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "r05-gaiyo-04",
+          "title": "補正予算案の概要 一般会計（第4次）",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r5hosei.html",
+          "inspected_at": "2026-10-08T07:48:33.412201+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r5hosei.files/r05hosei_ippan04.pdf",
+              "sha256": "ee0dd852cb1766c3d82b953dcd54661531552de7ec52fdd517466bfb7568aa1d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "一般会計第4次（号数根拠：一覧見出し「補正予算案の概要 一般会計（第4次）」＋本文「一般会計第4次補正予算案」）。前回「事業名×3額の対応を満たさず部分選定不可」とした判断を撤回する。補正額のみの対応で部分選定可との基準で再確認した。実物r05hosei_ippan04.pdf（7頁、文字PDF、単位千円）の物理頁4「４ 補正予算歳出事業概要」表は事業名×主な内容×補正額が同じ行で対応（代表行：「住民税非課税世帯等に対する臨時特別給付金給付事業 5,708,571」）。金額列名は「補正額」。不足：補正前額・補正後額なし、款別一覧は款×3次補正後/4次補正後で目・事業明細なし、特別会計の掲載なし。表紙の特別会計次数表示は他号と同一文言の転記で一覧と不整合のため号数根拠に使わない。",
+      "selected_candidate_id": "r05-gaiyo-04",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r05-gaiyo-04",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2023/supplementary-4.pdf",
+            "sha256": "ee0dd852cb1766c3d82b953dcd54661531552de7ec52fdd517466bfb7568aa1d",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r5hosei.files/r05hosei_ippan04.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T07:48:51.675Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "r05-gaiyo-05",
+          "title": "補正予算案の概要 一般会計（第5次）",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r5hosei.html",
+          "inspected_at": "2026-10-08T07:48:33.412201+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r5hosei.files/r05hosei_ippan05.pdf",
+              "sha256": "465750be407cc9bd193376dd4cce6463636a6d3553d0a7e10a6d68a05a4c3a17",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "一般会計第5次（号数根拠：一覧見出し「補正予算案の概要 一般会計（第5次）」＋本文「一般会計第5次補正予算案」）。前回「事業名×3額の対応を満たさず部分選定不可」とした判断を撤回する。補正額のみの対応で部分選定可との基準で再確認した。実物r05hosei_ippan05.pdf（7頁、文字PDF、単位千円）の物理頁3「４ 補正予算歳出事業概要」表は事業名×主な内容×補正額が同じ行で対応（1事業：住民税非課税世帯等臨時特別給付金 1,289,229）。金額列名は「補正額」。同一物理頁3には総括表（会計区分×当初/既定/今回補正額/補正後予算額）も載るが選定範囲は事業概要表の部分。不足：補正前額・補正後額なし、款別一覧は款×4次補正後/5次補正後で目・事業明細なし、繰越明許費は当年度支出明細でないため対象外、特別会計の掲載なし。",
+      "selected_candidate_id": "r05-gaiyo-05",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r05-gaiyo-05",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2023/supplementary-5.pdf",
+            "sha256": "465750be407cc9bd193376dd4cce6463636a6d3553d0a7e10a6d68a05a4c3a17",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r5hosei.files/r05hosei_ippan05.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T07:48:55.358Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "r05-gaiyo-06",
+          "title": "補正予算案の概要 一般会計（第6次）・特別会計（第2次）",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r5hosei.html",
+          "inspected_at": "2026-10-08T07:48:33.412201+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r5hosei.files/r05hosei_ippan06.pdf",
+              "sha256": "f217215b12c6ac853640596182eb7b6d09379f85c1ff1ba70e2f627da5cc3ce6",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 18
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "一般会計第6次＋国民健康保険・後期高齢者医療・介護保険各特別会計第2次（号数根拠：一覧見出し・表紙・本文が一致）。前回「事業名×3額の対応を満たさず部分選定不可」とした判断を撤回する。補正額のみの対応で部分選定可との基準で再確認した。実物r05hosei_ippan06.pdf（31頁、文字PDF、単位千円）の物理頁6-18「４ 補正予算歳出事業概要」12表は事業名×主な内容×補正額が同じ行で対応（代表行：p6「２ 総務費 △458,330」、p18末尾「1 財政基金積立金利子 2,058」）。金額列名は「補正額」。不足：補正前額・補正後額なし、3特別会計は款別一覧のみで目・事業明細なし、繰越明許費表（款-項-事業名-節-事業費/翌年度繰越額）は当年度支出明細でないため対象外。",
+      "selected_candidate_id": "r05-gaiyo-06",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r05-gaiyo-06",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2023/supplementary-6.pdf",
+            "sha256": "f217215b12c6ac853640596182eb7b6d09379f85c1ff1ba70e2f627da5cc3ce6",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r05yosan/r5hosei.files/r05hosei_ippan06.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T07:48:58.648Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "r06-gaiyo-01",
+          "title": "補正予算案の概要 一般会計（第1次）",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r06yosan/r6hosei.html",
+          "inspected_at": "2026-10-08T07:48:33.412201+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r06yosan/r6hosei.files/r06hosei_ippan01.pdf",
+              "sha256": "dd6d7e3bea8213f3646ef6d9f3ffff935dd13b99e380d78ffbbefd1b5ff23feb",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "一般会計第1次（号数根拠：一覧見出し「補正予算案の概要 一般会計（第1次）」＋本文「一般会計第1次補正予算案」）。前回「事業名×3額の対応を満たさず部分選定不可」とした判断を撤回する。補正額のみの対応で部分選定可との基準で再確認した。実物r06hosei_ippan01.pdf（8頁、文字PDF、単位千円）の物理頁4「４ 補正予算歳出事業概要」表は事業名×主な内容×補正額が同じ行で対応（代表行：「２ 総務費 102,823」「住民税非課税世帯等に対する臨時特別給付金給付事業 1,772,333」）。金額列名は「補正額」。不足：補正前額・補正後額なし、款別一覧は款単位の集計のみで目・事業明細なし、特別会計の掲載なし。表紙の特別会計次数表示は他号と同一文言の転記で一覧と不整合のため号数根拠に使わない。",
+      "selected_candidate_id": "r06-gaiyo-01",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r06-gaiyo-01",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2024/supplementary-1.pdf",
+            "sha256": "dd6d7e3bea8213f3646ef6d9f3ffff935dd13b99e380d78ffbbefd1b5ff23feb",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r06yosan/r6hosei.files/r06hosei_ippan01.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T07:49:01.628Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "r06-gaiyo-02",
+          "title": "補正予算案の概要 一般会計（第2次）・特別会計（第1次）",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r06yosan/r6hosei.html",
+          "inspected_at": "2026-10-08T07:48:33.412201+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r06yosan/r6hosei.files/r06hosei_ippan02.pdf",
+              "sha256": "54d6bf6d0e0bf05b8145dbf71796ac55e0b3ebaad8717c122c6bdb6b5b7adc47",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 6
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "一般会計第2次＋国民健康保険・後期高齢者医療・介護保険各特別会計第1次（号数根拠：一覧見出し・表紙・本文が一致、目次に特別会計款別一覧を明記）。前回「事業名×3額の対応を満たさず部分選定不可」とした判断を撤回する。補正額のみの対応で部分選定可との基準で再確認した。実物r06hosei_ippan02.pdf（16頁、文字PDF、単位千円）の物理頁5-6「４ 補正予算歳出事業概要」2表は事業名×主な内容×補正額が同じ行で対応（代表行：p5「２ 総務費 △44,729」、p6末尾「安方中学校改築工事（第1期）の工期延伸に伴う減 △183」「維持管理（中学校費） △2,200」）。金額列名は「補正額」。不足：補正前額・補正後額なし、3特別会計は歳入・歳出（款別）一覧のみで目・事業明細なし、繰越明許・債務負担行為補正（限度額・来年度負担額）は当年度支出明細でないため対象外。",
+      "selected_candidate_id": "r06-gaiyo-02",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r06-gaiyo-02",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2024/supplementary-2.pdf",
+            "sha256": "54d6bf6d0e0bf05b8145dbf71796ac55e0b3ebaad8717c122c6bdb6b5b7adc47",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r06yosan/r6hosei.files/r06hosei_ippan02.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T07:49:06.224Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "r06-gaiyo-03",
+          "title": "補正予算案の概要 一般会計（第3次）",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r06yosan/r6hosei.html",
+          "inspected_at": "2026-10-08T07:48:33.412201+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r06yosan/r6hosei.files/r06hosei_ippan03.pdf",
+              "sha256": "b99a99f3cc3dfd5947e4e480a8c36c3d0318d9ae0432ddeb3e4a1f59b57bde1b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "一般会計第3次（号数根拠：一覧見出し「補正予算案の概要 一般会計（第3次）」＋本文「一般会計第3次補正予算案」）。前回「事業名×3額の対応を満たさず部分選定不可」とした判断を撤回する。補正額のみの対応で部分選定可との基準で再確認した。実物r06hosei_ippan03.pdf（9頁、文字PDF、単位千円）の物理頁4「４ 補正予算歳出事業概要」表は事業名×主な内容×補正額が同じ行で対応（代表行：「２ 総務費 200,982」）。金額列名は「補正額」。不足：補正前額・補正後額なし、款別一覧は款単位の集計のみで目・事業明細なし、債務負担行為補正は対象外、特別会計の掲載なし。表紙の特別会計次数表示は他号と同一文言の転記で一覧と不整合のため号数根拠に使わない。",
+      "selected_candidate_id": "r06-gaiyo-03",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r06-gaiyo-03",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2024/supplementary-3.pdf",
+            "sha256": "b99a99f3cc3dfd5947e4e480a8c36c3d0318d9ae0432ddeb3e4a1f59b57bde1b",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r06yosan/r6hosei.files/r06hosei_ippan03.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T07:49:09.660Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "r06-gaiyo-04",
+          "title": "補正予算案の概要 一般会計（第4次）",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r06yosan/r6hosei.html",
+          "inspected_at": "2026-10-08T07:48:33.412201+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r06yosan/r6hosei.files/r06hosei_ippan04.pdf",
+              "sha256": "a63f5eb31219907c83117b97833fcf435e83a056d9f4e6f218bb1ca71195fabe",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "一般会計第4次（専決処分。号数根拠：一覧見出し「補正予算案の概要 一般会計（第4次）」＋本文の第4次・専決処分の記載）。前回「事業名×3額の対応を満たさず部分選定不可」とした判断を撤回する。補正額のみの対応で部分選定可との基準で再確認した。実物r06hosei_ippan04.pdf（7頁、文字PDF、単位千円）の物理頁3「４ 補正予算歳出事業概要」表は事業名×主な内容×補正額が同じ行で対応する。金額列名は「補正額」。同一物理頁3には総括表（会計区分×当初/既定/今回補正額/補正後予算額）も載るが選定範囲は事業概要表の部分。不足：補正前額・補正後額なし、款別一覧は款単位の集計のみで目・事業明細なし、繰越明許は当年度支出明細でないため対象外、特別会計の掲載なし。",
+      "selected_candidate_id": "r06-gaiyo-04",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r06-gaiyo-04",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2024/supplementary-4.pdf",
+            "sha256": "a63f5eb31219907c83117b97833fcf435e83a056d9f4e6f218bb1ca71195fabe",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r06yosan/r6hosei.files/r06hosei_ippan04.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T07:49:13.208Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "r06-gaiyo-05",
+          "title": "補正予算案の概要 一般会計（第5次）・特別会計（第2次）",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r06yosan/r6hosei.html",
+          "inspected_at": "2026-10-08T07:48:33.412201+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r06yosan/r6hosei.files/r06hosei_ippan05.pdf",
+              "sha256": "1b174c79be791f4a670973f9c9719da18b66e867762fa0f67c7dc8b829cf4f9d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 16
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "一般会計第5次＋国民健康保険・後期高齢者医療・介護保険各特別会計第2次（号数根拠：一覧見出し・表紙・本文が一致、目次に特別会計款別一覧を明記）。前回「事業名×3額の対応を満たさず部分選定不可」とした判断を撤回する。補正額のみの対応で部分選定可との基準で再確認した。実物r06hosei_ippan05.pdf（27頁、文字PDF、単位千円）の物理頁6-16「４ 補正予算歳出事業概要」8表は事業名×主な内容×補正額が同じ行で対応（代表行：p6「２ 総務費 772,537」、p16末尾「1 財政基金積立金利子 11,060」）。金額列名は「補正額」。不足：補正前額・補正後額なし、3特別会計は歳入・歳出（款別）一覧のみで目・事業明細なし、地方債補正・基金・繰越明許費補正・債務負担行為補正は当年度支出明細でないため対象外。",
+      "selected_candidate_id": "r06-gaiyo-05",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r06-gaiyo-05",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2024/supplementary-5.pdf",
+            "sha256": "1b174c79be791f4a670973f9c9719da18b66e867762fa0f67c7dc8b829cf4f9d",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r06yosan/r6hosei.files/r06hosei_ippan05.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T07:49:17.764Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度大田区一般会計補正予算（第1次）・第77号議案及び各会計補正予算事項別明細書",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r7hosei.html",
+          "inspected_at": "2026-10-08T03:58:27.467229+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r7hosei.files/07hosei_yosansho01.pdf",
+              "sha256": "672cc6e9a1c10c6f6a46721b34b4bbd206f2f9b965dfb4c390a4699d2e46d640",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 23
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度補正予算（r7hosei掲載頁に列挙、補正予算書・事項別明細書の合冊A4・文字PDF）。歳出明細は款・項・目が同一行で補正前の額・補正額・計・補正額の財源内訳（特定/一般財源）、対面頁に節区分（区分+金額）・説明、単位千円。歳出明細=物理18-23（３歳出 款2総務費〜款4衛生費の補正有り款項、歳入16-17、23で終了）。各号の概要PDF（r07hosei_ippan0X、款別集計のみ）は目粒度を満たさず不採用。歳入・給与費明細書・債務負担行為・繰越明許費・区債は対象外で未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2025/supplementary-1.pdf",
+            "sha256": "672cc6e9a1c10c6f6a46721b34b4bbd206f2f9b965dfb4c390a4699d2e46d640",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r7hosei.files/07hosei_yosansho01.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T04:03:05.912Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度大田区一般会計補正予算（第2次）・第90号議案及び各会計補正予算事項別明細書",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r7hosei.html",
+          "inspected_at": "2026-10-08T03:58:27.467229+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r7hosei.files/07hosei_yosansho02.pdf",
+              "sha256": "390ba65563578205020764b8d612d38b9dd136eea373d8871ecd2eabecbaea13",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 20,
+                      "end": 27
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度補正予算（r7hosei掲載頁に列挙、補正予算書・事項別明細書の合冊A4・文字PDF）。歳出明細は款・項・目が同一行で補正前の額・補正額・計・補正額の財源内訳（特定/一般財源）、対面頁に節区分（区分+金額）・説明、単位千円。歳出明細=物理20-27（３歳出 款3福祉費〜款9教育費の補正有り款項、歳入18-19、28-29繰越明許費、30-31債務負担行為補正は対象外）。各号の概要PDF（r07hosei_ippan0X、款別集計のみ）は目粒度を満たさず不採用。歳入・給与費明細書・債務負担行為・繰越明許費・区債は対象外で未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2025/supplementary-2.pdf",
+            "sha256": "390ba65563578205020764b8d612d38b9dd136eea373d8871ecd2eabecbaea13",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r7hosei.files/07hosei_yosansho02.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T04:03:11.917Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度大田区一般会計補正予算（第3次）・国民健康保険事業特別会計補正予算（第1次）・後期高齢者医療特別会計補正予算（第1次）・介護保険特別会計補正予算（第1次）・第108-111号議案及び各会計補正予算事項別明細書",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r7hosei.html",
+          "inspected_at": "2026-10-08T03:58:27.467229+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r7hosei.files/07hosei_yosansho03.pdf",
+              "sha256": "0ff11f55df4f00cd047e5cc69176e9b4684be27a3ffbc453e38c78dfb04e1760",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 34,
+                      "end": 63
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 78,
+                      "end": 83
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 92,
+                      "end": 99
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 108,
+                      "end": 113
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度補正予算（r7hosei掲載頁に列挙、補正予算書・事項別明細書の合冊A4・文字PDF）。歳出明細は款・項・目が同一行で補正前の額・補正額・計・補正額の財源内訳（特定/一般財源）、対面頁に節区分（区分+金額）・説明、単位千円。歳出明細：一般=物理34-63（３歳出 款2総務費〜款9教育費、歳入30-33、64-70は給与費明細書、71は国保扉）、国保=78-83（73-77は総括・歳入、84-85は後期扉）、後期=92-99（87-91は総括・歳入、100-101は介護扉）、介護=108-113（103-107は総括・歳入、114-115は空白）。各号の概要PDF（r07hosei_ippan0X、款別集計のみ）は目粒度を満たさず不採用。歳入・給与費明細書・債務負担行為・繰越明許費・区債は対象外で未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2025/supplementary-3.pdf",
+            "sha256": "0ff11f55df4f00cd047e5cc69176e9b4684be27a3ffbc453e38c78dfb04e1760",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r7hosei.files/07hosei_yosansho03.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T04:03:17.543Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度大田区一般会計補正予算（第4次）・第124号議案及び各会計補正予算事項別明細書",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r7hosei.html",
+          "inspected_at": "2026-10-08T03:58:27.467229+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r7hosei.files/07hosei_yosansho04.pdf",
+              "sha256": "95b96dddcb019158aee9a7eaabf9733e1669a06f71ee51629adb03a5151dd27e",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度補正予算（r7hosei掲載頁に列挙、補正予算書・事項別明細書の合冊A4・文字PDF）。歳出明細は款・項・目が同一行で補正前の額・補正額・計・補正額の財源内訳（特定/一般財源）、対面頁に節区分（区分+金額）・説明、単位千円。歳出明細=物理18-21（３歳出 款7都市整備費のみ、歳入16-17、22-23は空白）。各号の概要PDF（r07hosei_ippan0X、款別集計のみ）は目粒度を満たさず不採用。歳入・給与費明細書・債務負担行為・繰越明許費・区債は対象外で未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2025/supplementary-4.pdf",
+            "sha256": "95b96dddcb019158aee9a7eaabf9733e1669a06f71ee51629adb03a5151dd27e",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r7hosei.files/07hosei_yosansho04.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T04:03:21.832Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度大田区一般会計補正予算（第5次）・第160号議案及び各会計補正予算事項別明細書",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r7hosei.html",
+          "inspected_at": "2026-10-08T03:58:27.467229+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r7hosei.files/07hosei_yosansho05.pdf",
+              "sha256": "6e1a66415632209ac1514d1e8439f46bdb93eef7d6b87a44ccfee86ffa159624",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 20,
+                      "end": 31
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度補正予算（r7hosei掲載頁に列挙、補正予算書・事項別明細書の合冊A4・文字PDF）。歳出明細は款・項・目が同一行で補正前の額・補正額・計・補正額の財源内訳（特定/一般財源）、対面頁に節区分（区分+金額）・説明、単位千円。歳出明細=物理20-31（３歳出 款2総務費〜款9教育費の補正有り款項、歳入18-19、32-37給与費明細書、38-41繰越明許費補正は対象外）。各号の概要PDF（r07hosei_ippan0X、款別集計のみ）は目粒度を満たさず不採用。歳入・給与費明細書・債務負担行為・繰越明許費・区債は対象外で未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2025/supplementary-5.pdf",
+            "sha256": "6e1a66415632209ac1514d1e8439f46bdb93eef7d6b87a44ccfee86ffa159624",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r7hosei.files/07hosei_yosansho05.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T04:03:25.530Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度大田区一般会計補正予算（第6次）・国民健康保険事業特別会計補正予算（第2次）・後期高齢者医療特別会計補正予算（第2次）・介護保険特別会計補正予算（第2次）・第5-8号議案及び各会計補正予算事項別明細書",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r7hosei.html",
+          "inspected_at": "2026-10-08T03:58:27.467229+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r7hosei.files/07hosei_yosansho06.pdf",
+              "sha256": "78baeca765781ff951a9961cfbe0eb2cefcfbcabfb71442673f1a813119c3321",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 50,
+                      "end": 113
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 144,
+                      "end": 157
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 174,
+                      "end": 179
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 188,
+                      "end": 193
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度補正予算（r7hosei掲載頁に列挙、補正予算書・事項別明細書の合冊A4・文字PDF）。歳出明細は款・項・目が同一行で補正前の額・補正額・計・補正額の財源内訳（特定/一般財源）、対面頁に節区分（区分+金額）・説明、単位千円。歳出明細：一般=物理50-113（３歳出 款1議会費〜款11諸支出金の補正有り款項、歳入36-49、114-129給与費明細書、130-132債務負担行為補正、133-134区債高調書は対象外）、国保=144-157（137-143は総括・歳入、158-165給与費明細書、166-167は後期扉）、後期=174-179（169-173は総括・歳入、180-181は介護扉）、介護=188-193（183-187は総括・歳入、194-201給与費明細書）。各号の概要PDF（r07hosei_ippan0X、款別集計のみ）は目粒度を満たさず不採用。歳入・給与費明細書・債務負担行為・繰越明許費・区債は対象外で未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2025/supplementary-6.pdf",
+            "sha256": "78baeca765781ff951a9961cfbe0eb2cefcfbcabfb71442673f1a813119c3321",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r07yosan/r7hosei.files/07hosei_yosansho06.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T04:03:30.268Z"
+      }
     }
   ],
   "unresolved_candidates": []

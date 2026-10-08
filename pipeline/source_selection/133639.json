@@ -159,6 +159,272 @@
         ],
         "archived_at": "2026-10-08T01:16:44.842Z"
       }
+    },
+    {
+      "target": {
+        "jurisdiction": "133639",
+        "fiscal_year": 2025,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "r7-tousho-1p",
+          "title": "令和7年度当初予算（市町村交付金（社会保障財源化分）が充てられる社会保障施策等に要する経費）",
+          "landing_url": "https://www.niijima.com/gyousei/zaiseishokuin/zaiseijoukyou.html",
+          "inspected_at": "2026-10-08T04:14:36.948897+00:00",
+          "files": [
+            {
+              "download_url": "https://www.niijima.com/gyousei/zaiseishokuin/files/R7.tousho.pdf",
+              "sha256": "e7b94ae00594d82ae7981c218d07c49977dba2b14c7080430afc8492b4292f7f",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "会計未記載（社会保障施策等に要する経費）",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "部分選定。令和7年度当初予算として村公式掲載一覧（財政状況等について）の唯一の原典 R7.tousho.pdf（物理1頁・文字PDF）は「市町村交付金（社会保障財源化分）が充てられる社会保障施策等に要する経費」表で、同一明細に事業名とその年度の事業費（単位：千円、交付金充当額は別列の財源内訳）が載り、歳入行なし。社会福祉・社会保険・保健衛生の社会保障施策経費について事業粒度の歳出当初予算原典として採用する。原典に会計表記がない複数会計横断の経費表のためscopeの会計欄は原典表題を保持。不足: 一般会計・特別会計・公営企業会計の款・項・目別歳出明細と全歳入明細は今回確認した掲載先（同一覧・議会・東京都オープンデータカタログ、別年度調査で確認済みの入口と同じ）ではリンク未確認。印字頁番号111は村予算書冊子内の頁番号と推定されるが単頁切り出しのため範囲は物理1頁。",
+      "selected_candidate_id": "r7-tousho-1p",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r7-tousho-1p",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133639/2025/initial.pdf",
+            "sha256": "e7b94ae00594d82ae7981c218d07c49977dba2b14c7080430afc8492b4292f7f",
+            "final_url": "https://www.niijima.com/gyousei/zaiseishokuin/files/R7.tousho.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T04:14:57.512Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133639",
+        "fiscal_year": 2024,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "r6-tousho-1p",
+          "title": "令和6年度当初予算（市町村交付金（社会保障財源化分）が充てられる社会保障施策等に要する経費）",
+          "landing_url": "https://www.niijima.com/gyousei/zaiseishokuin/zaiseijoukyou.html",
+          "inspected_at": "2026-10-08T04:14:36.948897+00:00",
+          "files": [
+            {
+              "download_url": "https://www.niijima.com/gyousei/zaiseishokuin/files/r6toushoyosan.pdf",
+              "sha256": "5764abda0ba88daaa7a984ccb4b6930d03a2fd240ec0501474daf722f7402912",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "会計未記載（社会保障施策等に要する経費）",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "部分選定。令和6年度当初予算として村公式掲載一覧の唯一の原典 r6toushoyosan.pdf（物理1頁・文字PDF）は同様式の社会保障施策等経費表（単位：千円）で、同一明細に事業名と事業費が対応。歳出当初予算原典として採用。原典に会計表記なし。不足: 一般会計・特別会計・公営企業会計の款・項・目別歳出明細と全歳入明細は確認した掲載先ではリンク未確認（令和6年度の会計構成1一般+6特別+2公営企業はFY2024決算調査で議会資料より確認済み）。印字頁番号110。",
+      "selected_candidate_id": "r6-tousho-1p",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r6-tousho-1p",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133639/2024/initial.pdf",
+            "sha256": "5764abda0ba88daaa7a984ccb4b6930d03a2fd240ec0501474daf722f7402912",
+            "final_url": "https://www.niijima.com/gyousei/zaiseishokuin/files/r6toushoyosan.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T04:15:00.262Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133639",
+        "fiscal_year": 2023,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "r5-tousho-1p",
+          "title": "令和5年度当初予算（市町村交付金（社会保障財源化分）が充てられる社会保障施策等に要する経費）",
+          "landing_url": "https://www.niijima.com/gyousei/zaiseishokuin/zaiseijoukyou.html",
+          "inspected_at": "2026-10-08T04:14:36.948897+00:00",
+          "files": [
+            {
+              "download_url": "https://www.niijima.com/gyousei/zaiseishokuin/files/R5FstConsumptionTax.pdf",
+              "sha256": "6efff4b4e437089ac1d1181b10b2f96540a14f6d26be399d733c2bd8fcce70d1",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "会計未記載（社会保障施策等に要する経費）",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "部分選定。令和5年度当初予算として村公式掲載一覧の唯一の原典 R5FstConsumptionTax.pdf（物理1頁・文字PDF）は同様式の社会保障施策等経費表（単位：千円）で、同一明細に事業名と事業費が対応。歳出当初予算原典として採用。原典に会計表記なし。不足: 一般会計・特別会計・公営企業会計の款・項・目別歳出明細と全歳入明細は確認した掲載先ではリンク未確認。印字頁番号109。",
+      "selected_candidate_id": "r5-tousho-1p",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r5-tousho-1p",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133639/2023/initial.pdf",
+            "sha256": "6efff4b4e437089ac1d1181b10b2f96540a14f6d26be399d733c2bd8fcce70d1",
+            "final_url": "https://www.niijima.com/gyousei/zaiseishokuin/files/R5FstConsumptionTax.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T04:15:05.044Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133639",
+        "fiscal_year": 2023,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "r5-kessan-1p",
+          "title": "令和5年度決算（市町村交付金（社会保障財源分）が充てられる社会保障施策等に要する経費、及び東京都「令和5年度市町村公営企業決算状況調査の結果」新島村分）",
+          "landing_url": "https://www.niijima.com/gyousei/zaiseishokuin/zaiseijoukyou.html",
+          "inspected_at": "2026-10-08T04:14:36.948897+00:00",
+          "files": [
+            {
+              "download_url": "https://www.niijima.com/gyousei/zaiseishokuin/files/R5.kessan.pdf",
+              "sha256": "b5692f345413cb7c3bdcd1710b2692cb15b24758b0e407b48d7e72370844f33c",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "会計未記載（社会保障施策等に要する経費）",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                },
+                {
+                  "account": "会計未記載（社会保障施策等に要する経費）",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.soumu.metro.tokyo.lg.jp/documents/d/soumu/05kessanbon-shi-kouei3-pdf",
+              "sha256": "27c7843b30b85bbf3b6f040c6e9fb77dccd6d9f7c0ba83151a933f3a1d3be3d7",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "簡易水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 327,
+                      "end": 328
+                    },
+                    {
+                      "start": 330,
+                      "end": 331
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 347,
+                      "end": 347
+                    },
+                    {
+                      "start": 349,
+                      "end": 349
+                    },
+                    {
+                      "start": 353,
+                      "end": 353
+                    },
+                    {
+                      "start": 355,
+                      "end": 355
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "部分選定。村公式掲載一覧の令和5年度決算原典 R5.kessan.pdf（物理1頁・文字PDF）は「市町村交付金（社会保障財源分）が充てられる社会保障施策等に要する経費」表で、同一明細に事業名と事業費（単位：千円）が対応し、歳入は同頁の地方消費税交付金（社会保障財源分）35,327千円1行のみ。原典に会計表記がないため会計欄は原典表題を保持。追加で東京都総務局行政部市町村課「令和5年度市町村公営企業決算状況調査の結果」（物理510頁・文字PDF・公式掲載 https://www.soumu.metro.tokyo.lg.jp/05gyousei/04kusichousonindex/04kusichousonzaisei/years/05nend ）を確認。令和5年度調査では新島村の簡易水道・下水道は法非適用企業として収録（令和6年度調査の法適用とは扱いが異なる）ため、法非適用の団体別表から新島村列のみを対象とする。簡易水道事業会計: p.327-328（21表費用構成表）、p.330-331（26表歳入歳出決算に関する調。収益的収支・資本的収支・繰入基準の行が混在し、歳出でない行を含む）。下水道事業会計: p.347,349（21表費用構成表。新島村は特環・漁集・計の3列で載る頁のみ）、p.353,355（26表。資本的収支行はp.355）。p.348,350,354,356は新島村列を持たない他団体列の頁のため対象外。単位: 各表に（単位：千円）表記。費用を支出済額と同一視しないこと、収入・繰越・繰入基準行は歳出でないことはFY2024選定と同じ注意。不足: 一般会計・特別会計の款・項・目別歳出決算明細（歳入歳出決算書相当）と全会計の歳入明細は確認した掲載先ではリンク未確認。令和5年度市町村決算状況調査（05kessanbon-shi_01/02）は款・性質別集計の決算カードで目別明細なし（FY2024調査で同構造を確認）のため選定しない。",
+      "selected_candidate_id": "r5-kessan-1p",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r5-kessan-1p",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133639/2023/settlement-2.pdf",
+            "sha256": "b5692f345413cb7c3bdcd1710b2692cb15b24758b0e407b48d7e72370844f33c",
+            "final_url": "https://www.niijima.com/gyousei/zaiseishokuin/files/R5.kessan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/133639/2023/settlement-1.pdf",
+            "sha256": "27c7843b30b85bbf3b6f040c6e9fb77dccd6d9f7c0ba83151a933f3a1d3be3d7",
+            "final_url": "https://www.soumu.metro.tokyo.lg.jp/documents/d/soumu/05kessanbon-shi-kouei3-pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T04:15:11.811Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133639",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [],
+      "reason": "未選定。村公式掲載一覧（財政状況等について、2026-10-08再取得で確認）の決算リンクは令和6年度（R6kessan.pdf）までで令和7年度決算の掲載なし。令和7年度決算は令和8年第3回定例会で審査済み（FY2024調査時に議会開催概要で確認）だがHP未掲載。議会ページは議案の件名と議決結果のみで決算書本文の添付なし、東京都オープンデータカタログに財政データセットなし（前回調査で確認）。公開を確認できないのであり非公開の断定ではない。",
+      "selected_candidate_id": null,
+      "archive": null
     }
   ],
   "unresolved_candidates": []

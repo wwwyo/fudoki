@@ -233,6 +233,2045 @@
         ],
         "archived_at": "2026-10-07T14:45:50.930Z"
       }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2025,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度(2025年度)世田谷区予算・同説明書",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/23063.html",
+          "inspected_at": "2026-10-08T05:47:20+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/23063/5_r7tousyoyosan.pdf",
+              "sha256": "6a36c9cd5a7b0fec767ec83174f07bdd9ae782c66cb3105b18fd55509c9d4c72",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 88
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/23063/7_r7tousyoyosan.pdf",
+              "sha256": "28a9aba96f6373e64ffed5e42496fb231e07aeb2d1d1aa7f3fdc6963ba8f8086",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 20,
+                      "end": 36
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/23063/8_r7tousyoyosan.pdf",
+              "sha256": "8ebe2125783d287c4ed835960a4d4f996b8e9b1f89f31f7398499bcc3a2f6588",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 14,
+                      "end": 20
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/23063/9_r7tousyoyosan.pdf",
+              "sha256": "4611512a9433f50984dbedca31e519f1dc00153c23184e7169b723a4e9950011",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 26,
+                      "end": 47
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/23063/10_r7tousyoyosan.pdf",
+              "sha256": "75662fcf5ebe39d9e53750d535b575ca0e027c355777d37c298afb77c020159a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "学校給食費会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 10
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度(2025年度)当初予算。公式の当初予算掲載ページ https://www.city.setagaya.lg.jp/02022/23063.html の分冊PDF10件のうち歳出明細を持つ5冊を1候補に集約: 5.一般会計歳出予算=物理1-88頁(歳出扉印字307+明細308-481、第1款議会費〜第12款予備費)、7.国民健康保険事業会計=物理20-36頁(歳出扉588-589+明細590-621、歳入は物理5-19・総括3-4・給与費明細書37-45)、8.後期高齢者医療会計=物理14-20頁(歳出扉666-667+明細668-679、歳入5-13・給与費21-28)、9.介護保険事業会計=物理26-47頁(歳出扉744-745+明細746-787、歳入5-25・給与費48-56)、10.学校給食費会計=物理9-10頁(歳出扉822-823+明細824-825、歳入5-8)。1物理頁=A3見開き=印字2頁で、左頁に款・項・目の階層と「本年度」「前年度」「比較」「財源内訳」、右頁に節「区分/金額」と「説明」(事業名+金額)が同一明細の行で対応し、見開き右上に「（単位：千円）」(税の別記なし)。先頭の扉・第1款から末尾の第12款予備費まで、必要頁の見出し・名称・金額列・頁番号を文字抽出と描画で確認。年度ページの分冊一覧(1〜10)と当初予算書索引(https://www.city.setagaya.lg.jp/02022/6188.html)は年度別ページのみで、一般会計+特別会計4会計=全5会計を網羅し、下水道・水道・病院等の企業会計・独自会計の別掲載先・別冊なし。歳入冊・総括冊・説明書・給与費明細書・別冊・全頁版は歳出の要件外。東京都オープンデータカタログに世田谷区の財政明細データセットなし。文字PDF(pdf_type=text、数字も文字抽出可)。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2025/initial-3.pdf",
+            "sha256": "6a36c9cd5a7b0fec767ec83174f07bdd9ae782c66cb3105b18fd55509c9d4c72",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/23063/5_r7tousyoyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131121/2025/initial-1.pdf",
+            "sha256": "28a9aba96f6373e64ffed5e42496fb231e07aeb2d1d1aa7f3fdc6963ba8f8086",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/23063/7_r7tousyoyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131121/2025/initial-5.pdf",
+            "sha256": "8ebe2125783d287c4ed835960a4d4f996b8e9b1f89f31f7398499bcc3a2f6588",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/23063/8_r7tousyoyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131121/2025/initial-2.pdf",
+            "sha256": "4611512a9433f50984dbedca31e519f1dc00153c23184e7169b723a4e9950011",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/23063/9_r7tousyoyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131121/2025/initial-4.pdf",
+            "sha256": "75662fcf5ebe39d9e53750d535b575ca0e027c355777d37c298afb77c020159a",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/23063/10_r7tousyoyosan.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T05:48:40.745Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2024,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度(2024年度)世田谷区予算・同説明書",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/11019.html",
+          "inspected_at": "2026-10-08T05:47:20+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/11019/5_R6tousyoyosan.pdf",
+              "sha256": "ed4691a730e04471cbaa4a9a6d09a7ceba208056e0f7310fae6549c00f81aba9",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 85
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/11019/7_R6tousyoyosan.pdf",
+              "sha256": "6da281a9268f54cc5ba7ab56d1264560e9b77f38b7b9cd5b9dde4dbae4f5cea5",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 19,
+                      "end": 37
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/11019/8_R6tousyoyosan.pdf",
+              "sha256": "1f44e29a9783f6ce47e0341ec6d9232d6ff0462df51574ecaf96d661aef24204",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 14,
+                      "end": 20
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/11019/9_R6tousyoyosan.pdf",
+              "sha256": "e14ebe7b66616707ec794e83c40ec3be314f8d51ef5fc002bac130fc88603b25",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 26,
+                      "end": 47
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/11019/10_R6tousyoyosan.pdf",
+              "sha256": "e7a3669edbaf85aa144a95bf8ff9416c5421534c2e2828d4d87f589b7b2f1234",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "学校給食費会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 11
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度(2024年度)当初予算。公式の当初予算掲載ページ https://www.city.setagaya.lg.jp/02022/11019.html の分冊PDF10件のうち歳出明細を持つ5冊を1候補に集約: 5.一般会計歳出予算=物理1-85頁(歳出扉印字295+明細296-463、第1款議会費〜第12款予備費)、7.国民健康保険事業会計=物理19-37頁(歳出扉570-571+明細572-607、歳入は物理5-18・給与費明細書38-45)、8.後期高齢者医療会計=物理14-20頁(歳出扉648-649+明細650-661、歳入5-13・給与費21-28)、9.介護保険事業会計=物理26-47頁(歳出扉726-727+明細728-769、歳入5-25・給与費48-56)、10.学校給食費会計=物理10-11頁(歳出扉806-807+明細808-809、歳入5-9)。1物理頁=A3見開き=印字2頁で、左頁に款・項・目の階層と「本年度」「前年度」「比較」「財源内訳」、右頁に節「区分/金額」と「説明」(事業名+金額)が同一明細の行で対応し、見開き右上に「（単位：千円）」(税の別記なし)。先頭の扉・第1款から末尾の第12款予備費まで、必要頁の見出し・名称・金額列・頁番号を文字抽出と描画で確認。年度ページの分冊一覧(1〜10)と当初予算書索引(https://www.city.setagaya.lg.jp/02022/6188.html)は年度別ページのみで、一般会計+特別会計4会計=全5会計を網羅し、下水道・水道・病院等の企業会計・独自会計の別掲載先・別冊なし。歳入冊・総括冊・説明書・給与費明細書・別冊・全頁版は歳出の要件外。東京都オープンデータカタログに世田谷区の財政明細データセットなし。文字PDF(pdf_type=text、数字も文字抽出可)。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2024/initial-5.pdf",
+            "sha256": "ed4691a730e04471cbaa4a9a6d09a7ceba208056e0f7310fae6549c00f81aba9",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/11019/5_R6tousyoyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131121/2024/initial-2.pdf",
+            "sha256": "6da281a9268f54cc5ba7ab56d1264560e9b77f38b7b9cd5b9dde4dbae4f5cea5",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/11019/7_R6tousyoyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131121/2024/initial-1.pdf",
+            "sha256": "1f44e29a9783f6ce47e0341ec6d9232d6ff0462df51574ecaf96d661aef24204",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/11019/8_R6tousyoyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131121/2024/initial-3.pdf",
+            "sha256": "e14ebe7b66616707ec794e83c40ec3be314f8d51ef5fc002bac130fc88603b25",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/11019/9_R6tousyoyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131121/2024/initial-4.pdf",
+            "sha256": "e7a3669edbaf85aa144a95bf8ff9416c5421534c2e2828d4d87f589b7b2f1234",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/11019/10_R6tousyoyosan.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T05:48:53.826Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2023,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度(2023年度)世田谷区予算・同説明書",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/6189.html",
+          "inspected_at": "2026-10-08T05:47:20+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/6189/5_R5tousyoyosan.pdf",
+              "sha256": "8cb8e7ee7579bf9995bbc9d2a4ec6722a429d44f904789c7c0215da7dd4765ca",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 83
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/6189/7_R5tousyoyosan.pdf",
+              "sha256": "91d2dda878048051347436600069e961a1f3ba680989496ff39175cb0a5441bb",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 37
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/6189/8_R5tousyoyosan.pdf",
+              "sha256": "327cc297032c9447ef4d1a873fdd09c21792db78a8ebec8b84a72f5c95c2da97",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 14,
+                      "end": 20
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/6189/9_R5tousyoyosan.pdf",
+              "sha256": "285cebb2859d3e05c48fed2a7ff0f3adb7fc5a5cb24310a919294c21e84d0511",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 26,
+                      "end": 47
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/6189/10_R5tousyoyosan.pdf",
+              "sha256": "5f8a5d0641816a971802496cc46f5fcd2c11d230a6bf3ac2d574628ea1c81257",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "学校給食費会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 11
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度(2023年度)当初予算。公式の当初予算掲載ページ https://www.city.setagaya.lg.jp/02022/6189.html の分冊PDF10件のうち歳出明細を持つ5冊を1候補に集約: 5.一般会計歳出予算=物理1-83頁(歳出扉印字295+明細296-459、第1款議会費〜第12款予備費、物理84は頁番号のみの空頁のため範囲外)、7.国民健康保険事業会計=物理18-37頁(歳出扉562-563+明細564-601、歳入は物理5-17・給与費明細書38-45)、8.後期高齢者医療会計=物理14-20頁(歳出扉642-643+明細644-655、歳入5-13・給与費21-28)、9.介護保険事業会計=物理26-47頁(歳出扉720-721+明細722-763、歳入5-25・給与費48-55)、10.学校給食費会計=物理10-11頁(歳出扉796-797+明細798-799、歳入5-9、物理12は空頁)。1物理頁=A3見開き=印字2頁で、左頁に款・項・目の階層と「本年度」「前年度」「比較」「財源内訳」、右頁に節「区分/金額」と「説明」(事業名+金額)が同一明細の行で対応し、見開き右上に「（単位：千円）」(税の別記なし)。先頭の扉・第1款から末尾の第12款予備費まで、必要頁の見出し・名称・金額列・頁番号を文字抽出と描画で確認。年度ページの分冊一覧(1〜10)と当初予算書索引(https://www.city.setagaya.lg.jp/02022/6188.html)は年度別ページのみで、一般会計+特別会計4会計=全5会計を網羅し、下水道・水道・病院等の企業会計・独自会計の別掲載先・別冊なし。歳入冊・総括冊・説明書・給与費明細書・別冊・全頁版は歳出の要件外。東京都オープンデータカタログに世田谷区の財政明細データセットなし。文字PDF(pdf_type=text、数字も文字抽出可)。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2023/initial-4.pdf",
+            "sha256": "8cb8e7ee7579bf9995bbc9d2a4ec6722a429d44f904789c7c0215da7dd4765ca",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/6189/5_R5tousyoyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131121/2023/initial-5.pdf",
+            "sha256": "91d2dda878048051347436600069e961a1f3ba680989496ff39175cb0a5441bb",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/6189/7_R5tousyoyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131121/2023/initial-2.pdf",
+            "sha256": "327cc297032c9447ef4d1a873fdd09c21792db78a8ebec8b84a72f5c95c2da97",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/6189/8_R5tousyoyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131121/2023/initial-1.pdf",
+            "sha256": "285cebb2859d3e05c48fed2a7ff0f3adb7fc5a5cb24310a919294c21e84d0511",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/6189/9_R5tousyoyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131121/2023/initial-3.pdf",
+            "sha256": "5f8a5d0641816a971802496cc46f5fcd2c11d230a6bf3ac2d574628ea1c81257",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/6189/10_R5tousyoyosan.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T05:49:04.932Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2023,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度世田谷区各会計歳入歳出決算 事項別明細書及び実質収支に関する調書",
+          "landing_url": "https://www.city.setagaya.lg.jp/02003/20247.html",
+          "inspected_at": "2026-10-08T05:47:20+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/20247/004r5kessan.pdf",
+              "sha256": "a57aea1583f7e25c05fb0a1219eb31d31c04bd22362f89fae2ae04b680a09937",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 62,
+                      "end": 117
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/20247/005r5kessan.pdf",
+              "sha256": "2c03c379bc2e63f56ab426af5ae8ee0181297c2d63e6b5deb047fd8784cced4a",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 14,
+                      "end": 24
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 34,
+                      "end": 40
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 55,
+                      "end": 65
+                    }
+                  ]
+                },
+                {
+                  "account": "学校給食費会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 73,
+                      "end": 74
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度(2023年度)決算。公式の令和5年度決算書ページ https://www.city.setagaya.lg.jp/02003/20247.html (令和6年認定・掲載) に掲載の事項別明細書2冊を1候補に集約。目次(001・003、全頁版000 p36-38で文字確認)に一般会計・国民健康保険事業会計・後期高齢者医療会計・介護保険事業会計・学校給食費会計の5会計のみを記載し、企業会計・独自会計の別掲載先なし。004r5kessan.pdf(一般会計歳入歳出決算事項別明細書及び実質収支に関する調書、117頁)=物理62-117頁(歳出扉印字194-195+歳出明細196-305、第1款議会費〜第12款予備費・歳出合計304、歳入78-193と実質収支調書は範囲外)。005r5kessan.pdf(特別会計、74頁)=国民健康保険事業会計 物理14-24頁(歳出扉332-333+明細334-353、歳出合計352)、後期高齢者医療会計 物理34-40頁(扉372-373+明細374-385、合計384)、介護保険事業会計 物理55-65頁(扉414-415+明細416-435、合計434)、学校給食費会計 物理73-74頁(扉450-451+明細452-453、合計452)。各会計の歳入・実質収支調書・給与費等は範囲外。明細は款・項・目の階層で「当初予算額」「補正予算額」「繰越事業費及び流用増減」「計」(予算現額)・節「区分/金額」・「支出済額」「不用額」「翌年度繰越額(単純繰越/事故明許繰越/故障繰越)」「備考」が同一明細で対応、見開き右上「（単位：円）」(税の別記なし)。004は文字層・画像とも無く抽出不能、005は見出しは読めるが金額の数字がToUnicode未対応で制御文字に化けるため、歳出範囲は画像として読む(scan)と判定し、必要頁(扉・先頭・末尾)を描画して名称・金額列・単位・頁番号を確認。分冊境界で004 p117(印字304-305=歳出末尾)と005 p1(印字306-307=次会計表紙)は別内容で重複なし(CropBox=841x595・回転0で確認)。全頁版000r5kessannzennkou.pdf(246頁)・表紙目次001・決算総覧003も照合したが、000の事項別明細書は数字が同様に文字化けし、001/002/003/006は歳出明細の要件外のため不採用。002(各会計歳入歳出決算)は款・項の総額のみで目・事業明細を持たないため選ばない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2023/settlement-2.pdf",
+            "sha256": "a57aea1583f7e25c05fb0a1219eb31d31c04bd22362f89fae2ae04b680a09937",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/20247/004r5kessan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131121/2023/settlement-1.pdf",
+            "sha256": "2c03c379bc2e63f56ab426af5ae8ee0181297c2d63e6b5deb047fd8784cced4a",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/20247/005r5kessan.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T05:49:15.885Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度1次補正予算書（一般会計）",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/6199.html",
+          "inspected_at": "2026-10-08T08:22:40+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/6199/hoseiyosan01.pdf",
+              "sha256": "8f4a010e267c201b766bc16e9abb444ca4e1503434eef79d19e6d7650898cae9",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 36,
+                      "end": 39
+                    },
+                    {
+                      "start": 43,
+                      "end": 43
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度1次補正予算書。一般会計（第1次 36-39頁）のみ。この冊子に他会計は未収録（他会計の補正の不存在までは未確認）。各会計の歳出は款・項・目に「補正前の額」「補正額」（増減額、△は減額）「計」と財源内訳、節区分と事業・費目名の説明が同じ明細で対応（単位：千円、税注記なし）。巻末「歳出事業概要」（43-43頁、事業名×補正額・特定財源）をscopeに含む。歳出事業概要は事項別明細の説明・所管・内容の補完として併用し、概要の金額は事項別明細の金額へ加算しない（二重集計を避ける扱い）。代表明細の照合（親確認済み、2023年度・単位：千円）：物理37頁の事項別明細「臨時福祉給付金等事業費」補正額3,246,674（給付2,970,000＋事務276,674）と物理43頁の概要「住民税非課税世帯等への価格高騰重点支援給付金」3,246,674、物理39頁の「児童福祉事務運営費」841,904（給付760,750＋事務81,154）と43頁の概要「子育て世帯生活支援特別給付金」841,904は、同じ支出の親明細・内訳と概要の対応で差額0。この2明細以外の事項別明細⇔概要の突合は未実施。補正後額は「計」列。歳入の款・項・目明細、繰越明許費調書・債務負担行為補正調書・財政計画・款別総括はscope外。文字PDF（pdftotextで列・金額とも可読）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2023/supplementary-1.pdf",
+            "sha256": "8f4a010e267c201b766bc16e9abb444ca4e1503434eef79d19e6d7650898cae9",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/6199/hoseiyosan01.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:24:04.770Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度2次補正予算書（一般会計）",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/6199.html",
+          "inspected_at": "2026-10-08T08:22:40+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/6199/hoseiyosan02.pdf",
+              "sha256": "66dfe2aed4cff4c81cca0057538aaff3116d0c835480c7aaac7d32dbc61a8cbc",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 46,
+                      "end": 61
+                    },
+                    {
+                      "start": 65,
+                      "end": 67
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度2次補正予算書。一般会計（第2次 46-61頁）のみ。この冊子に他会計は未収録（他会計の補正の不存在までは未確認）。各会計の歳出は款・項・目に「補正前の額」「補正額」（増減額、△は減額）「計」と財源内訳、節区分と事業・費目名の説明が同じ明細で対応（単位：千円、税注記なし）。巻末「歳出事業概要」（65-67頁、事業名×補正額・特定財源）をscopeに含む。歳出事業概要は事項別明細の説明・所管・内容の補完として併用し、概要の金額は事項別明細の金額へ加算しない（二重集計を避ける扱い）。事項別明細と概要の全事業突合は未実施。補正後額は「計」列。歳入の款・項・目明細、繰越明許費調書・債務負担行為補正調書・財政計画・款別総括はscope外。文字PDF（pdftotextで列・金額とも可読）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2023/supplementary-2.pdf",
+            "sha256": "66dfe2aed4cff4c81cca0057538aaff3116d0c835480c7aaac7d32dbc61a8cbc",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/6199/hoseiyosan02.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:24:08.049Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度3次補正予算書（一般会計・国民健康保険事業会計・後期高齢者医療会計・介護保険事業会計・学校給食費会計）",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/6199.html",
+          "inspected_at": "2026-10-08T08:22:40+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/6199/hoseiyosan03.pdf",
+              "sha256": "30a4cc936c3f101c9c6739d0b6a0d49a4456f80db510b38c54235a8d15383187",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 70,
+                      "end": 93
+                    },
+                    {
+                      "start": 179,
+                      "end": 184
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 116,
+                      "end": 119
+                    },
+                    {
+                      "start": 185,
+                      "end": 185
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 136,
+                      "end": 141
+                    },
+                    {
+                      "start": 185,
+                      "end": 185
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 156,
+                      "end": 159
+                    },
+                    {
+                      "start": 185,
+                      "end": 185
+                    }
+                  ]
+                },
+                {
+                  "account": "学校給食費会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 174,
+                      "end": 175
+                    },
+                    {
+                      "start": 185,
+                      "end": 185
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度3次補正予算書。一般会計（第3次 70-93頁）、国民健康保険事業会計（第1次 116-119頁）、後期高齢者医療会計（第1次 136-141頁）、介護保険事業会計（第1次 156-159頁）、学校給食費会計（第1次 174-175頁）。各会計の歳出は款・項・目に「補正前の額」「補正額」（増減額、△は減額）「計」と財源内訳、節区分と事業・費目名の説明が同じ明細で対応（単位：千円、税注記なし）。巻末「各会計歳出事業概要」（179-185頁。184頁まで一般会計、185頁以降は特別会計を会計名で併記）を事業名×補正額としてscopeに含む。歳出事業概要は事項別明細の説明・所管・内容の補完として併用し、概要の金額は事項別明細の金額へ加算しない（二重集計を避ける扱い）。事項別明細と概要の全事業突合は未実施。補正後額は「計」列。歳入の款・項・目明細、繰越明許費調書・債務負担行為補正調書・財政計画・款別総括はscope外。文字PDF（pdftotextで列・金額とも可読）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2023/supplementary-3.pdf",
+            "sha256": "30a4cc936c3f101c9c6739d0b6a0d49a4456f80db510b38c54235a8d15383187",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/6199/hoseiyosan03.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:24:11.558Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度4次補正予算書（一般会計）",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/6199.html",
+          "inspected_at": "2026-10-08T08:22:40+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/6199/hoseiyosan04.pdf",
+              "sha256": "7fe5ca77d31263a3c1ff86aa783e1282d3d2337c7fbf3a88167fe76c9c5948e8",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 36,
+                      "end": 39
+                    },
+                    {
+                      "start": 47,
+                      "end": 47
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度4次補正予算書。一般会計（第4次 36-39頁）のみ。この冊子に他会計は未収録（他会計の補正の不存在までは未確認）。各会計の歳出は款・項・目に「補正前の額」「補正額」（増減額、△は減額）「計」と財源内訳、節区分と事業・費目名の説明が同じ明細で対応（単位：千円、税注記なし）。巻末「歳出事業概要」（47-47頁、事業名×補正額・特定財源）をscopeに含む。歳出事業概要は事項別明細の説明・所管・内容の補完として併用し、概要の金額は事項別明細の金額へ加算しない（二重集計を避ける扱い）。事項別明細と概要の全事業突合は未実施。補正後額は「計」列。歳入の款・項・目明細、繰越明許費調書・債務負担行為補正調書・財政計画・款別総括はscope外。文字PDF（pdftotextで列・金額とも可読）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2023/supplementary-4.pdf",
+            "sha256": "7fe5ca77d31263a3c1ff86aa783e1282d3d2337c7fbf3a88167fe76c9c5948e8",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/6199/hoseiyosan04.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:24:14.330Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度5次補正予算書（一般会計）",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/6199.html",
+          "inspected_at": "2026-10-08T08:22:40+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/6199/hoseiyosan05.pdf",
+              "sha256": "aeb2b14592ae867083f50de2b020a66e43850833a1eb3a68ff4694d2ed1540cb",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 34,
+                      "end": 35
+                    },
+                    {
+                      "start": 43,
+                      "end": 43
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度5次補正予算書。一般会計（第5次 34-35頁）のみ。この冊子に他会計は未収録（他会計の補正の不存在までは未確認）。各会計の歳出は款・項・目に「補正前の額」「補正額」（増減額、△は減額）「計」と財源内訳、節区分と事業・費目名の説明が同じ明細で対応（単位：千円、税注記なし）。巻末「歳出事業概要」（43-43頁、事業名×補正額・特定財源）をscopeに含む。歳出事業概要は事項別明細の説明・所管・内容の補完として併用し、概要の金額は事項別明細の金額へ加算しない（二重集計を避ける扱い）。事項別明細と概要の全事業突合は未実施。補正後額は「計」列。歳入の款・項・目明細、繰越明許費調書・債務負担行為補正調書・財政計画・款別総括はscope外。文字PDF（pdftotextで列・金額とも可読）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2023/supplementary-5.pdf",
+            "sha256": "aeb2b14592ae867083f50de2b020a66e43850833a1eb3a68ff4694d2ed1540cb",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/6199/hoseiyosan05.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:24:17.473Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度6次補正予算書（一般会計・国民健康保険事業会計・後期高齢者医療会計・介護保険事業会計）",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/6199.html",
+          "inspected_at": "2026-10-08T08:22:40+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/6199/hoseiyosan06.pdf",
+              "sha256": "7398cbb2b9b13a8d17091773da981135c632a3f096bbe5df6f245cb568e497b2",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 90,
+                      "end": 159
+                    },
+                    {
+                      "start": 309,
+                      "end": 317
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 194,
+                      "end": 219
+                    },
+                    {
+                      "start": 318,
+                      "end": 320
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 234,
+                      "end": 249
+                    },
+                    {
+                      "start": 318,
+                      "end": 320
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 276,
+                      "end": 305
+                    },
+                    {
+                      "start": 318,
+                      "end": 320
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度6次補正予算書。一般会計（第6次 90-159頁）、国民健康保険事業会計（第2次 194-219頁）、後期高齢者医療会計（第2次 234-249頁）、介護保険事業会計（第2次 276-305頁）。各会計の歳出は款・項・目に「補正前の額」「補正額」（増減額、△は減額）「計」と財源内訳、節区分と事業・費目名の説明が同じ明細で対応（単位：千円、税注記なし）。巻末「各会計歳出事業概要」（309-320頁。317頁まで一般会計、318頁以降は特別会計を会計名で併記）を事業名×補正額としてscopeに含む。歳出事業概要は事項別明細の説明・所管・内容の補完として併用し、概要の金額は事項別明細の金額へ加算しない（二重集計を避ける扱い）。事項別明細と概要の全事業突合は未実施。補正後額は「計」列。歳入の款・項・目明細、繰越明許費調書・債務負担行為補正調書・財政計画・款別総括はscope外。文字PDF（pdftotextで列・金額とも可読）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2023/supplementary-6.pdf",
+            "sha256": "7398cbb2b9b13a8d17091773da981135c632a3f096bbe5df6f245cb568e497b2",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/6199/hoseiyosan06.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:24:21.577Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度1次補正予算書（一般会計）",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/11350.html",
+          "inspected_at": "2026-10-08T08:22:40+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/11350/hosei01.pdf",
+              "sha256": "f834b97fae007b99b7343142eeaf4970f0fd58707057a316a7bfc960b5c28545",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 40,
+                      "end": 49
+                    },
+                    {
+                      "start": 57,
+                      "end": 59
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度1次補正予算書。一般会計（第1次 40-49頁）のみ。この冊子に他会計は未収録（他会計の補正の不存在までは未確認）。各会計の歳出は款・項・目に「補正前の額」「補正額」（増減額、△は減額）「計」と財源内訳、節区分と事業・費目名の説明が同じ明細で対応（単位：千円、税注記なし）。巻末「歳出事業概要」（57-59頁、事業名×補正額・特定財源）をscopeに含む。歳出事業概要は事項別明細の説明・所管・内容の補完として併用し、概要の金額は事項別明細の金額へ加算しない（二重集計を避ける扱い）。事項別明細と概要の全事業突合は未実施。補正後額は「計」列。歳入の款・項・目明細、繰越明許費調書・債務負担行為補正調書・財政計画・款別総括はscope外。文字PDF（pdftotextで列・金額とも可読）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2024/supplementary-1.pdf",
+            "sha256": "f834b97fae007b99b7343142eeaf4970f0fd58707057a316a7bfc960b5c28545",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/11350/hosei01.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:24:25.338Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度2次補正予算書（一般会計・国民健康保険事業会計・後期高齢者医療会計・介護保険事業会計・学校給食費会計）",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/11350.html",
+          "inspected_at": "2026-10-08T08:22:40+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/11350/r6nendo2jihosei_1.pdf",
+              "sha256": "fbcd295c9fca2b7489f1cbddc0c867799bf0cd03f6c5cf05cfc04c801a0c949c",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 66,
+                      "end": 91
+                    },
+                    {
+                      "start": 189,
+                      "end": 193
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 120,
+                      "end": 129
+                    },
+                    {
+                      "start": 194,
+                      "end": 195
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 142,
+                      "end": 145
+                    },
+                    {
+                      "start": 194,
+                      "end": 195
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 162,
+                      "end": 169
+                    },
+                    {
+                      "start": 194,
+                      "end": 195
+                    }
+                  ]
+                },
+                {
+                  "account": "学校給食費会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 184,
+                      "end": 185
+                    },
+                    {
+                      "start": 194,
+                      "end": 195
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度2次補正予算書。一般会計（第2次 66-91頁）、国民健康保険事業会計（第1次 120-129頁）、後期高齢者医療会計（第1次 142-145頁）、介護保険事業会計（第1次 162-169頁）、学校給食費会計（第1次 184-185頁）。各会計の歳出は款・項・目に「補正前の額」「補正額」（増減額、△は減額）「計」と財源内訳、節区分と事業・費目名の説明が同じ明細で対応（単位：千円、税注記なし）。巻末「各会計歳出事業概要」（189-195頁。193頁まで一般会計、194頁以降は特別会計を会計名で併記）を事業名×補正額としてscopeに含む。歳出事業概要は事項別明細の説明・所管・内容の補完として併用し、概要の金額は事項別明細の金額へ加算しない（二重集計を避ける扱い）。事項別明細と概要の全事業突合は未実施。補正後額は「計」列。歳入の款・項・目明細、繰越明許費調書・債務負担行為補正調書・財政計画・款別総括はscope外。文字PDF（pdftotextで列・金額とも可読）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2024/supplementary-2.pdf",
+            "sha256": "fbcd295c9fca2b7489f1cbddc0c867799bf0cd03f6c5cf05cfc04c801a0c949c",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/11350/r6nendo2jihosei_1.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:24:29.278Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度3次補正予算書（一般会計）",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/11350.html",
+          "inspected_at": "2026-10-08T08:22:40+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/11350/r6nendo3jihosei.pdf",
+              "sha256": "ebf1a8c2e6f3356c86b769f399ec949c577cfef34325ed0e030f3c722a1f7fa4",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 32,
+                      "end": 33
+                    },
+                    {
+                      "start": 37,
+                      "end": 38
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度3次補正予算書。一般会計（第3次 32-33頁）のみ。この冊子に他会計は未収録（他会計の補正の不存在までは未確認）。各会計の歳出は款・項・目に「補正前の額」「補正額」（増減額、△は減額）「計」と財源内訳、節区分と事業・費目名の説明が同じ明細で対応（単位：千円、税注記なし）。巻末「歳出事業概要」（37-38頁、事業名×補正額・特定財源）をscopeに含む。歳出事業概要は事項別明細の説明・所管・内容の補完として併用し、概要の金額は事項別明細の金額へ加算しない（二重集計を避ける扱い）。事項別明細と概要の全事業突合は未実施。補正後額は「計」列。歳入の款・項・目明細、繰越明許費調書・債務負担行為補正調書・財政計画・款別総括はscope外。文字PDF（pdftotextで列・金額とも可読）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2024/supplementary-3.pdf",
+            "sha256": "ebf1a8c2e6f3356c86b769f399ec949c577cfef34325ed0e030f3c722a1f7fa4",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/11350/r6nendo3jihosei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:24:32.558Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度4次補正予算書（一般会計）",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/11350.html",
+          "inspected_at": "2026-10-08T08:22:40+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/11350/r6nendo4jihosei.pdf",
+              "sha256": "e3e87edd4fe412aed37ae59d3c3ab4a34534c80d282ed66958afae246910ff1b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 38,
+                      "end": 45
+                    },
+                    {
+                      "start": 53,
+                      "end": 55
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度4次補正予算書。一般会計（第4次 38-45頁）のみ。この冊子に他会計は未収録（他会計の補正の不存在までは未確認）。各会計の歳出は款・項・目に「補正前の額」「補正額」（増減額、△は減額）「計」と財源内訳、節区分と事業・費目名の説明が同じ明細で対応（単位：千円、税注記なし）。巻末「歳出事業概要」（53-55頁、事業名×補正額・特定財源）をscopeに含む。歳出事業概要は事項別明細の説明・所管・内容の補完として併用し、概要の金額は事項別明細の金額へ加算しない（二重集計を避ける扱い）。事項別明細と概要の全事業突合は未実施。補正後額は「計」列。歳入の款・項・目明細、繰越明許費調書・債務負担行為補正調書・財政計画・款別総括はscope外。文字PDF（pdftotextで列・金額とも可読）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2024/supplementary-4.pdf",
+            "sha256": "e3e87edd4fe412aed37ae59d3c3ab4a34534c80d282ed66958afae246910ff1b",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/11350/r6nendo4jihosei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:24:36.325Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度5次補正予算書（一般会計）",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/11350.html",
+          "inspected_at": "2026-10-08T08:22:40+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/11350/r6nendo5ji.pdf",
+              "sha256": "1d786a043c82bc66ff01ee742bffff8430e4062c786a5cab8aac3809cd33b9ea",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 38,
+                      "end": 39
+                    },
+                    {
+                      "start": 47,
+                      "end": 47
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度5次補正予算書。一般会計（第5次 38-39頁）のみ。この冊子に他会計は未収録（他会計の補正の不存在までは未確認）。各会計の歳出は款・項・目に「補正前の額」「補正額」（増減額、△は減額）「計」と財源内訳、節区分と事業・費目名の説明が同じ明細で対応（単位：千円、税注記なし）。巻末「歳出事業概要」（47-47頁、事業名×補正額・特定財源）をscopeに含む。歳出事業概要は事項別明細の説明・所管・内容の補完として併用し、概要の金額は事項別明細の金額へ加算しない（二重集計を避ける扱い）。事項別明細と概要の全事業突合は未実施。補正後額は「計」列。歳入の款・項・目明細、繰越明許費調書・債務負担行為補正調書・財政計画・款別総括はscope外。文字PDF（pdftotextで列・金額とも可読）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2024/supplementary-5.pdf",
+            "sha256": "1d786a043c82bc66ff01ee742bffff8430e4062c786a5cab8aac3809cd33b9ea",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/11350/r6nendo5ji.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:24:39.921Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度6次補正予算書（一般会計）",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/11350.html",
+          "inspected_at": "2026-10-08T08:22:40+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/11350/r6nendo6jihosei.pdf",
+              "sha256": "59bca0013453ddf30a7c3b2f9ef76ba00765ee7d317a1f3867bbd4d8b02e86b7",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 36,
+                      "end": 39
+                    },
+                    {
+                      "start": 47,
+                      "end": 47
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度6次補正予算書。一般会計（第6次 36-39頁）のみ。この冊子に他会計は未収録（他会計の補正の不存在までは未確認）。各会計の歳出は款・項・目に「補正前の額」「補正額」（増減額、△は減額）「計」と財源内訳、節区分と事業・費目名の説明が同じ明細で対応（単位：千円、税注記なし）。巻末「歳出事業概要」（47-47頁、事業名×補正額・特定財源）をscopeに含む。歳出事業概要は事項別明細の説明・所管・内容の補完として併用し、概要の金額は事項別明細の金額へ加算しない（二重集計を避ける扱い）。事項別明細と概要の全事業突合は未実施。補正後額は「計」列。歳入の款・項・目明細、繰越明許費調書・債務負担行為補正調書・財政計画・款別総括はscope外。文字PDF（pdftotextで列・金額とも可読）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2024/supplementary-6.pdf",
+            "sha256": "59bca0013453ddf30a7c3b2f9ef76ba00765ee7d317a1f3867bbd4d8b02e86b7",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/11350/r6nendo6jihosei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:24:43.626Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 7
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度7次補正予算書（一般会計・国民健康保険事業会計・後期高齢者医療会計・介護保険事業会計）",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/11350.html",
+          "inspected_at": "2026-10-08T08:22:40+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/11350/r6nendo7jihosei.pdf",
+              "sha256": "e4f9722b0aa652b5134375ecc1488621ed7b1ab3c386d8744e64c5875d4547c9",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 90,
+                      "end": 159
+                    },
+                    {
+                      "start": 303,
+                      "end": 308
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 194,
+                      "end": 211
+                    },
+                    {
+                      "start": 309,
+                      "end": 312
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 226,
+                      "end": 241
+                    },
+                    {
+                      "start": 309,
+                      "end": 312
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 270,
+                      "end": 299
+                    },
+                    {
+                      "start": 309,
+                      "end": 312
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度7次補正予算書。一般会計（第7次 90-159頁）、国民健康保険事業会計（第2次 194-211頁）、後期高齢者医療会計（第2次 226-241頁）、介護保険事業会計（第2次 270-299頁）。各会計の歳出は款・項・目に「補正前の額」「補正額」（増減額、△は減額）「計」と財源内訳、節区分と事業・費目名の説明が同じ明細で対応（単位：千円、税注記なし）。巻末「各会計歳出事業概要」（303-312頁。308頁まで一般会計、309頁以降は特別会計を会計名で併記）を事業名×補正額としてscopeに含む。歳出事業概要は事項別明細の説明・所管・内容の補完として併用し、概要の金額は事項別明細の金額へ加算しない（二重集計を避ける扱い）。事項別明細と概要の全事業突合は未実施。補正後額は「計」列。歳入の款・項・目明細、繰越明許費調書・債務負担行為補正調書・財政計画・款別総括はscope外。文字PDF（pdftotextで列・金額とも可読）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2024/supplementary-7.pdf",
+            "sha256": "e4f9722b0aa652b5134375ecc1488621ed7b1ab3c386d8744e64c5875d4547c9",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/11350/r6nendo7jihosei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:24:49.562Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度1次補正予算書（一般会計）",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/25793.html",
+          "inspected_at": "2026-10-08T08:22:40+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/25793/r7nendo_1jihosei.pdf",
+              "sha256": "51727fd526cde1ffe1caede02dfb074cd692bdf613ea229d97257b15796da768",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 48,
+                      "end": 63
+                    },
+                    {
+                      "start": 71,
+                      "end": 76
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度1次補正予算書。一般会計（第1次 48-63頁）のみ。この冊子に他会計は未収録（他会計の補正の不存在までは未確認）。各会計の歳出は款・項・目に「補正前の額」「補正額」（増減額、△は減額）「計」と財源内訳、節区分と事業・費目名の説明が同じ明細で対応（単位：千円、税注記なし）。巻末「歳出事業概要」（71-76頁、事業名×補正額・特定財源）をscopeに含む。歳出事業概要は事項別明細の説明・所管・内容の補完として併用し、概要の金額は事項別明細の金額へ加算しない（二重集計を避ける扱い）。事項別明細と概要の全事業突合は未実施。補正後額は「計」列。歳入の款・項・目明細、繰越明許費調書・債務負担行為補正調書・財政計画・款別総括はscope外。文字PDF（pdftotextで列・金額とも可読）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2025/supplementary-1.pdf",
+            "sha256": "51727fd526cde1ffe1caede02dfb074cd692bdf613ea229d97257b15796da768",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/25793/r7nendo_1jihosei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:24:53.026Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度2次補正予算書（一般会計）",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/25793.html",
+          "inspected_at": "2026-10-08T08:22:40+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/25793/r7nendo_2jihosei.pdf",
+              "sha256": "1c6172d2b880f5d1118945c98c857adc2f42b88b133f1c600e102915d1cd093b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 36,
+                      "end": 37
+                    },
+                    {
+                      "start": 41,
+                      "end": 41
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度2次補正予算書。一般会計（第2次 36-37頁）のみ。この冊子に他会計は未収録（他会計の補正の不存在までは未確認）。各会計の歳出は款・項・目に「補正前の額」「補正額」（増減額、△は減額）「計」と財源内訳、節区分と事業・費目名の説明が同じ明細で対応（単位：千円、税注記なし）。巻末「歳出事業概要」（41-41頁、事業名×補正額・特定財源）をscopeに含む。歳出事業概要は事項別明細の説明・所管・内容の補完として併用し、概要の金額は事項別明細の金額へ加算しない（二重集計を避ける扱い）。事項別明細と概要の全事業突合は未実施。補正後額は「計」列。歳入の款・項・目明細、繰越明許費調書・債務負担行為補正調書・財政計画・款別総括はscope外。文字PDF（pdftotextで列・金額とも可読）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2025/supplementary-2.pdf",
+            "sha256": "1c6172d2b880f5d1118945c98c857adc2f42b88b133f1c600e102915d1cd093b",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/25793/r7nendo_2jihosei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:24:56.983Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度3次補正予算書（一般会計・国民健康保険事業会計・後期高齢者医療会計・介護保険事業会計・学校給食費会計）",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/25793.html",
+          "inspected_at": "2026-10-08T08:22:40+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/25793/r7nendo_3jihosei.pdf",
+              "sha256": "e7e21214c9902122aeaa802de56ee43bcecfc7589185be34f3c266fd699ba893",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 62,
+                      "end": 83
+                    },
+                    {
+                      "start": 169,
+                      "end": 173
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 108,
+                      "end": 115
+                    },
+                    {
+                      "start": 174,
+                      "end": 174
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 128,
+                      "end": 131
+                    },
+                    {
+                      "start": 174,
+                      "end": 174
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 146,
+                      "end": 149
+                    },
+                    {
+                      "start": 174,
+                      "end": 174
+                    }
+                  ]
+                },
+                {
+                  "account": "学校給食費会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 164,
+                      "end": 165
+                    },
+                    {
+                      "start": 174,
+                      "end": 174
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度3次補正予算書。一般会計（第3次 62-83頁）、国民健康保険事業会計（第1次 108-115頁）、後期高齢者医療会計（第1次 128-131頁）、介護保険事業会計（第1次 146-149頁）、学校給食費会計（第1次 164-165頁）。各会計の歳出は款・項・目に「補正前の額」「補正額」（増減額、△は減額）「計」と財源内訳、節区分と事業・費目名の説明が同じ明細で対応（単位：千円、税注記なし）。巻末「各会計歳出事業概要」（169-174頁。173頁まで一般会計、174頁以降は特別会計を会計名で併記）を事業名×補正額としてscopeに含む。歳出事業概要は事項別明細の説明・所管・内容の補完として併用し、概要の金額は事項別明細の金額へ加算しない（二重集計を避ける扱い）。事項別明細と概要の全事業突合は未実施。補正後額は「計」列。歳入の款・項・目明細、繰越明許費調書・債務負担行為補正調書・財政計画・款別総括はscope外。文字PDF（pdftotextで列・金額とも可読）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2025/supplementary-3.pdf",
+            "sha256": "e7e21214c9902122aeaa802de56ee43bcecfc7589185be34f3c266fd699ba893",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/25793/r7nendo_3jihosei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:25:04.153Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度4次補正予算書（一般会計）",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/25793.html",
+          "inspected_at": "2026-10-08T08:22:40+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/25793/r7nendo_4jihosei.pdf",
+              "sha256": "11bf87da58ca57cb82ec2825dc42660ab951a50ee59f78d2f1f5a958ff99ad9e",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 40,
+                      "end": 55
+                    },
+                    {
+                      "start": 67,
+                      "end": 68
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度4次補正予算書。一般会計（第4次 40-55頁）のみ。この冊子に他会計は未収録（他会計の補正の不存在までは未確認）。各会計の歳出は款・項・目に「補正前の額」「補正額」（増減額、△は減額）「計」と財源内訳、節区分と事業・費目名の説明が同じ明細で対応（単位：千円、税注記なし）。巻末「歳出事業概要」（67-68頁、事業名×補正額・特定財源）をscopeに含む。歳出事業概要は事項別明細の説明・所管・内容の補完として併用し、概要の金額は事項別明細の金額へ加算しない（二重集計を避ける扱い）。事項別明細と概要の全事業突合は未実施。補正後額は「計」列。歳入の款・項・目明細、繰越明許費調書・債務負担行為補正調書・財政計画・款別総括はscope外。文字PDF（pdftotextで列・金額とも可読）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2025/supplementary-4.pdf",
+            "sha256": "11bf87da58ca57cb82ec2825dc42660ab951a50ee59f78d2f1f5a958ff99ad9e",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/25793/r7nendo_4jihosei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:25:10.080Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度5次補正予算書（一般会計）",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/25793.html",
+          "inspected_at": "2026-10-08T08:22:40+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/25793/r7nendo_5jihosei.pdf",
+              "sha256": "f28014aec306b57eae23a56bb37b50d7817b5cd9a32167af8804e62c661b5610",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 38,
+                      "end": 43
+                    },
+                    {
+                      "start": 51,
+                      "end": 51
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度5次補正予算書。一般会計（第5次 38-43頁）のみ。この冊子に他会計は未収録（他会計の補正の不存在までは未確認）。各会計の歳出は款・項・目に「補正前の額」「補正額」（増減額、△は減額）「計」と財源内訳、節区分と事業・費目名の説明が同じ明細で対応（単位：千円、税注記なし）。巻末「歳出事業概要」（51-51頁、事業名×補正額・特定財源）をscopeに含む。歳出事業概要は事項別明細の説明・所管・内容の補完として併用し、概要の金額は事項別明細の金額へ加算しない（二重集計を避ける扱い）。事項別明細と概要の全事業突合は未実施。補正後額は「計」列。歳入の款・項・目明細、繰越明許費調書・債務負担行為補正調書・財政計画・款別総括はscope外。文字PDF（pdftotextで列・金額とも可読）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2025/supplementary-5.pdf",
+            "sha256": "f28014aec306b57eae23a56bb37b50d7817b5cd9a32167af8804e62c661b5610",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/25793/r7nendo_5jihosei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:25:15.178Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度6次補正予算書（一般会計・国民健康保険事業会計・後期高齢者医療会計・介護保険事業会計・学校給食費会計）",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/25793.html",
+          "inspected_at": "2026-10-08T08:22:40+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/25793/r7nendo_6jihosei.pdf",
+              "sha256": "9751628188173ecf53ec02f88b43e2510e0d0d00096b37f756790b4447ac7589",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 94,
+                      "end": 161
+                    },
+                    {
+                      "start": 329,
+                      "end": 338
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 196,
+                      "end": 225
+                    },
+                    {
+                      "start": 339,
+                      "end": 341
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 240,
+                      "end": 255
+                    },
+                    {
+                      "start": 339,
+                      "end": 341
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 282,
+                      "end": 311
+                    },
+                    {
+                      "start": 339,
+                      "end": 341
+                    }
+                  ]
+                },
+                {
+                  "account": "学校給食費会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 324,
+                      "end": 325
+                    },
+                    {
+                      "start": 339,
+                      "end": 341
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度6次補正予算書。一般会計（第6次 94-161頁）、国民健康保険事業会計（第2次 196-225頁）、後期高齢者医療会計（第2次 240-255頁）、介護保険事業会計（第2次 282-311頁）、学校給食費会計（第2次 324-325頁）。各会計の歳出は款・項・目に「補正前の額」「補正額」（増減額、△は減額）「計」と財源内訳、節区分と事業・費目名の説明が同じ明細で対応（単位：千円、税注記なし）。巻末「各会計歳出事業概要」（329-341頁。338頁まで一般会計、339頁以降は特別会計を会計名で併記）を事業名×補正額としてscopeに含む。歳出事業概要は事項別明細の説明・所管・内容の補完として併用し、概要の金額は事項別明細の金額へ加算しない（二重集計を避ける扱い）。事項別明細と概要の全事業突合は未実施。補正後額は「計」列。歳入の款・項・目明細、繰越明許費調書・債務負担行為補正調書・財政計画・款別総括はscope外。文字PDF（pdftotextで列・金額とも可読）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2025/supplementary-6.pdf",
+            "sha256": "9751628188173ecf53ec02f88b43e2510e0d0d00096b37f756790b4447ac7589",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/25793/r7nendo_6jihosei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:25:20.176Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度1次補正予算書（一般会計）",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/33442.html",
+          "inspected_at": "2026-10-08T08:22:40+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/33442/r8nendo_1jihosei.pdf",
+              "sha256": "af109076831804641a4c7ac465bc116abe576590d8d0b9bade316effb37060b5",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 42,
+                      "end": 51
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度1次補正予算書。一般会計（第1次 42-51頁）のみ。この冊子に他会計は未収録（他会計の補正の不存在までは未確認）。各会計の歳出は款・項・目に「補正前の額」「補正額」（増減額、△は減額）「計」と財源内訳、節区分と事業・費目名の説明が同じ明細で対応（単位：千円、税注記なし）。この号に歳出事業概要の収録なし。補正後額は「計」列。歳入の款・項・目明細、繰越明許費調書・債務負担行為補正調書・財政計画・款別総括はscope外。文字PDF（pdftotextで列・金額とも可読）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2026/supplementary-1.pdf",
+            "sha256": "af109076831804641a4c7ac465bc116abe576590d8d0b9bade316effb37060b5",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/33442/r8nendo_1jihosei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:25:23.956Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度2次補正予算書（一般会計）",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/33442.html",
+          "inspected_at": "2026-10-08T08:22:40+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/33442/r8nendo_2jihosei.pdf",
+              "sha256": "615d08ea4f0f528afc3af75e2fb5a00fde564a2bf6069cf066c77821f423218d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 36,
+                      "end": 43
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度2次補正予算書。一般会計（第2次 36-43頁）のみ。この冊子に他会計は未収録（他会計の補正の不存在までは未確認）。各会計の歳出は款・項・目に「補正前の額」「補正額」（増減額、△は減額）「計」と財源内訳、節区分と事業・費目名の説明が同じ明細で対応（単位：千円、税注記なし）。この号に歳出事業概要の収録なし。補正後額は「計」列。歳入の款・項・目明細、繰越明許費調書・債務負担行為補正調書・財政計画・款別総括はscope外。文字PDF（pdftotextで列・金額とも可読）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2026/supplementary-2.pdf",
+            "sha256": "615d08ea4f0f528afc3af75e2fb5a00fde564a2bf6069cf066c77821f423218d",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/33442/r8nendo_2jihosei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:25:30.423Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度3次補正予算書（一般会計・国民健康保険事業会計・後期高齢者医療会計・介護保険事業会計）",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/33442.html",
+          "inspected_at": "2026-10-08T08:22:40+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/33442/r8nendo_3jihosei.pdf",
+              "sha256": "f4542043798a5185ce0ace42b63c235c341bad79bb644e649540b1eb16654242",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 58,
+                      "end": 79
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 102,
+                      "end": 111
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 124,
+                      "end": 127
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 142,
+                      "end": 145
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度3次補正予算書。一般会計（第3次 58-79頁）、国民健康保険事業会計（第1次 102-111頁）、後期高齢者医療会計（第1次 124-127頁）、介護保険事業会計（第1次 142-145頁）。各会計の歳出は款・項・目に「補正前の額」「補正額」（増減額、△は減額）「計」と財源内訳、節区分と事業・費目名の説明が同じ明細で対応（単位：千円、税注記なし）。この号に歳出事業概要の収録なし。補正後額は「計」列。歳入の款・項・目明細、繰越明許費調書・債務負担行為補正調書・財政計画・款別総括はscope外。文字PDF（pdftotextで列・金額とも可読）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2026/supplementary-3.pdf",
+            "sha256": "f4542043798a5185ce0ace42b63c235c341bad79bb644e649540b1eb16654242",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/33442/r8nendo_3jihosei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:25:36.519Z"
+      }
     }
   ],
   "unresolved_candidates": []

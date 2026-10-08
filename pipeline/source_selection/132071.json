@@ -3836,10 +3836,66 @@
         "document_kind": "supplementary",
         "amendment_number": 1
       },
-      "candidates": [],
-      "reason": "公式の補正予算一覧の令和5年度ページに掲載されるのは「一般会計補正予算（第1号）概要」PDFのみ。本文を確認した（CID文字化けのため描画して目視確認）。内容は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内容内訳で、項・目の科目明細を持たない。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
-      "selected_candidate_id": null,
-      "archive": null
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度一般会計補正予算（第1号）概要",
+          "landing_url": "https://www.city.akishima.lg.jp/shisei/gyozaisei/1005275/1005278.html",
+          "inspected_at": "2026-10-08T09:39:39.253428+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/278/r5ippanhosei1.pdf",
+              "sha256": "ccf144f4fc1813516b38400d1c6b01b916f88968fdcbbf74f58c8864a929b488",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式の令和5年度補正予算一覧ページ掲載の「令和5年度一般会計補正予算（第1号）概要」PDFを部分選定。文字層のToUnicode情報がなく抽出不能のため画像読み。物理2頁の歳入款別集計（款・補正前の額・補正額・計）、物理3頁の目的別・性質別歳出集計、物理4頁の歳入予算（款・補正額・補正内容）と歳出予算（目的別内訳：款・補正額（うち一般財源）・補正内容）が同じ明細で対応し事業名と当年度の補正額（増減額、△含む）が対応する。金額列の単位は千円。物理5頁の基金と市債の状況（表示単位は百万円で他頁の千円と異なる）は当年度歳出補正額でないため範囲外。項・目の科目明細は持たず、掲載ページに一般会計以外の会計の補正資料の掲載はないため不足として残す。号数は一覧のリンク表記と本文表題（第1号）で確定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132071/2023/supplementary-1.pdf",
+            "sha256": "ccf144f4fc1813516b38400d1c6b01b916f88968fdcbbf74f58c8864a929b488",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/278/r5ippanhosei1.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:39:52.675Z"
+      }
     },
     {
       "target": {
@@ -3848,10 +3904,58 @@
         "document_kind": "supplementary",
         "amendment_number": 2
       },
-      "candidates": [],
-      "reason": "公式の補正予算一覧の令和5年度ページに掲載されるのは「一般会計補正予算（第2号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
-      "selected_candidate_id": null,
-      "archive": null
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度一般会計補正予算（第2号）概要",
+          "landing_url": "https://www.city.akishima.lg.jp/shisei/gyozaisei/1005275/1005278.html",
+          "inspected_at": "2026-10-08T09:39:39.253428+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/278/r5ippanhosei2.pdf",
+              "sha256": "c3a1467f3f6af85bbcf65d1fc4c566bc93437ab856ea1d51e44957e71e9eb8c4",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式の令和5年度補正予算一覧ページ掲載の「令和5年度一般会計補正予算（第2号）概要」PDFを部分選定。文字PDF。物理1頁に歳入予算（款・補正額・補正内容）と歳出予算（目的別内訳：款・補正額・補正内容）が同居し事業名と当年度の補正額（増減額、△含む）が対応する。金額列の単位は千円。項・目の科目明細は持たず、掲載ページに一般会計以外の会計の補正資料の掲載はないため不足として残す。号数は一覧のリンク表記と本文表題（第2号）で確定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132071/2023/supplementary-2.pdf",
+            "sha256": "c3a1467f3f6af85bbcf65d1fc4c566bc93437ab856ea1d51e44957e71e9eb8c4",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/278/r5ippanhosei2.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:39:55.801Z"
+      }
     },
     {
       "target": {
@@ -3860,10 +3964,66 @@
         "document_kind": "supplementary",
         "amendment_number": 3
       },
-      "candidates": [],
-      "reason": "公式の補正予算一覧の令和5年度ページに掲載されるのは「一般会計補正予算（第3号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
-      "selected_candidate_id": null,
-      "archive": null
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度一般会計補正予算（第3号）概要",
+          "landing_url": "https://www.city.akishima.lg.jp/shisei/gyozaisei/1005275/1005278.html",
+          "inspected_at": "2026-10-08T09:39:39.253428+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/278/r5ippanhosei3.pdf",
+              "sha256": "894ba385ae7c7c53d067191e1b060e7018e644c82898f185d089f849847745b1",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式の令和5年度補正予算一覧ページ掲載の「令和5年度一般会計補正予算（第3号）概要」PDFを部分選定。文字PDF。物理2頁の歳入款別集計（款・補正前の額・補正額・計）、物理3頁の目的別・性質別歳出集計、物理4頁の歳入予算（款・補正額・補正内容）と歳出予算（目的別内訳：款・補正額（うち一般財源）・補正内容）が同じ明細で対応し事業名と当年度の補正額（増減額、△含む）が対応する。金額列の単位は千円。p5基金と市債の状況は当年度歳出補正額でないため範囲外。項・目の科目明細は持たず、掲載ページに一般会計以外の会計の補正資料の掲載はないため不足として残す。号数は一覧のリンク表記と本文表題（第3号）で確定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132071/2023/supplementary-3.pdf",
+            "sha256": "894ba385ae7c7c53d067191e1b060e7018e644c82898f185d089f849847745b1",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/278/r5ippanhosei3.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:39:59.247Z"
+      }
     },
     {
       "target": {
@@ -3872,10 +4032,66 @@
         "document_kind": "supplementary",
         "amendment_number": 4
       },
-      "candidates": [],
-      "reason": "公式の補正予算一覧の令和5年度ページに掲載されるのは「一般会計補正予算（第4号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
-      "selected_candidate_id": null,
-      "archive": null
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度一般会計補正予算（第4号）概要",
+          "landing_url": "https://www.city.akishima.lg.jp/shisei/gyozaisei/1005275/1005278.html",
+          "inspected_at": "2026-10-08T09:39:39.253428+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/278/r5ippanhosei4.pdf",
+              "sha256": "651c13aa9522fdab2054a6d9da79920f14296ee658a7990aed3cc43930078118",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "start": 5,
+                      "end": 5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式の令和5年度補正予算一覧ページ掲載の「令和5年度一般会計補正予算（第4号）概要」PDFを部分選定。文字PDF。物理2頁の歳入款別集計（款・補正前の額・補正額・計）、物理3頁の目的別・性質別歳出集計、物理4頁の歳入予算（款・補正額・補正内容）、物理5頁の歳出予算（目的別内訳：款・補正額（うち一般財源）・補正内容）が同じ明細で対応し事業名と当年度の補正額（増減額、△含む）が対応する。金額列の単位は千円。p6債務負担行為・基金と市債の状況は当年度歳出補正額でないため範囲外。項・目の科目明細は持たず、掲載ページに一般会計以外の会計の補正資料の掲載はないため不足として残す。号数は一覧のリンク表記と本文表題（第4号）で確定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132071/2023/supplementary-4.pdf",
+            "sha256": "651c13aa9522fdab2054a6d9da79920f14296ee658a7990aed3cc43930078118",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/278/r5ippanhosei4.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:40:03.400Z"
+      }
     },
     {
       "target": {
@@ -3884,10 +4100,66 @@
         "document_kind": "supplementary",
         "amendment_number": 5
       },
-      "candidates": [],
-      "reason": "公式の補正予算一覧の令和5年度ページに掲載されるのは「一般会計補正予算（第5号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
-      "selected_candidate_id": null,
-      "archive": null
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度一般会計補正予算（第5号）概要",
+          "landing_url": "https://www.city.akishima.lg.jp/shisei/gyozaisei/1005275/1005278.html",
+          "inspected_at": "2026-10-08T09:39:39.253428+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/278/r5ippanhosei5.pdf",
+              "sha256": "3e85d11717ab0e4697520ec2512894e58e0b642b50488eb72cecb91c1ec5e5e6",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式の令和5年度補正予算一覧ページ掲載の「令和5年度一般会計補正予算（第5号）概要」PDFを部分選定。文字PDF。物理2頁の歳入款別集計（款・補正前の額・補正額・計）、物理3頁の目的別・性質別歳出集計、物理4頁の歳入予算（款・補正額・補正内容）と歳出予算（目的別内訳：款・補正額（うち一般財源）・補正内容）が同じ明細で対応し事業名と当年度の補正額（増減額、△含む）が対応する。金額列の単位は千円。p5債務負担行為・繰越明許費・基金と市債の状況は当年度歳出補正額でないため範囲外。項・目の科目明細は持たず、掲載ページに一般会計以外の会計の補正資料の掲載はないため不足として残す。号数は一覧のリンク表記と本文表題（第5号）で確定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132071/2023/supplementary-5.pdf",
+            "sha256": "3e85d11717ab0e4697520ec2512894e58e0b642b50488eb72cecb91c1ec5e5e6",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/278/r5ippanhosei5.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:40:08.935Z"
+      }
     },
     {
       "target": {
@@ -3896,10 +4168,66 @@
         "document_kind": "supplementary",
         "amendment_number": 6
       },
-      "candidates": [],
-      "reason": "公式の補正予算一覧の令和5年度ページに掲載されるのは「一般会計補正予算（第6号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
-      "selected_candidate_id": null,
-      "archive": null
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度一般会計補正予算（第6号）概要",
+          "landing_url": "https://www.city.akishima.lg.jp/shisei/gyozaisei/1005275/1005278.html",
+          "inspected_at": "2026-10-08T09:39:39.253428+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/278/r5-6ippanhosei.pdf",
+              "sha256": "c0a5b236264b85c474b6b159c62dfae45292a4071d4916850681f3113f9e3ae7",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式の令和5年度補正予算一覧ページ掲載の「令和5年度一般会計補正予算（第6号）概要」PDFを部分選定。文字PDF。物理2頁の歳入款別集計（款・補正前の額・補正額・計）、物理3頁の目的別・性質別歳出集計、物理4頁の歳入予算（款・補正額・補正内容）と歳出予算（目的別内訳：款・補正額（うち一般財源）・補正内容）が同じ明細で対応し事業名と当年度の補正額（増減額、△含む）が対応する。金額列の単位は千円。p5繰越明許費・基金と市債の状況は当年度歳出補正額でないため範囲外。項・目の科目明細は持たず、掲載ページに一般会計以外の会計の補正資料の掲載はないため不足として残す。号数は一覧のリンク表記と本文表題（第6号）で確定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132071/2023/supplementary-6.pdf",
+            "sha256": "c0a5b236264b85c474b6b159c62dfae45292a4071d4916850681f3113f9e3ae7",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/278/r5-6ippanhosei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:40:12.760Z"
+      }
     },
     {
       "target": {
@@ -3908,10 +4236,66 @@
         "document_kind": "supplementary",
         "amendment_number": 7
       },
-      "candidates": [],
-      "reason": "公式の補正予算一覧の令和5年度ページに掲載されるのは「一般会計補正予算（第7号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
-      "selected_candidate_id": null,
-      "archive": null
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度一般会計補正予算（第7号）概要",
+          "landing_url": "https://www.city.akishima.lg.jp/shisei/gyozaisei/1005275/1005278.html",
+          "inspected_at": "2026-10-08T09:39:39.253428+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/278/r5-7ippanhosei.pdf",
+              "sha256": "8a9a8a95db1df4e986fce9f70282ae46b935153d1201850951982492356e882a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "start": 5,
+                      "end": 5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式の令和5年度補正予算一覧ページ掲載の「令和5年度一般会計補正予算（第7号）概要」PDFを部分選定。文字PDF。物理2頁の歳入款別集計（款・補正前の額・補正額・計）、物理3頁の目的別・性質別歳出集計、物理4頁の歳入予算（款・補正額・補正内容）、物理5頁の歳出予算（目的別内訳：款・補正額（うち一般財源）・補正内容）が同じ明細で対応し事業名と当年度の補正額（増減額、△含む）が対応する。金額列の単位は千円。p6繰越明許費・債務負担行為、p7基金と市債の状況は当年度歳出補正額でないため範囲外。項・目の科目明細は持たず、掲載ページに一般会計以外の会計の補正資料の掲載はないため不足として残す。号数は一覧のリンク表記と本文表題（第7号）で確定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132071/2023/supplementary-7.pdf",
+            "sha256": "8a9a8a95db1df4e986fce9f70282ae46b935153d1201850951982492356e882a",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/278/r5-7ippanhosei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:40:17.746Z"
+      }
     },
     {
       "target": {
@@ -3920,10 +4304,58 @@
         "document_kind": "supplementary",
         "amendment_number": 8
       },
-      "candidates": [],
-      "reason": "公式の補正予算一覧の令和5年度ページに掲載されるのは「一般会計補正予算（第8号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
-      "selected_candidate_id": null,
-      "archive": null
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度一般会計補正予算（第8号）概要",
+          "landing_url": "https://www.city.akishima.lg.jp/shisei/gyozaisei/1005275/1005278.html",
+          "inspected_at": "2026-10-08T09:39:39.253428+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/278/r5ippanhosei8.pdf",
+              "sha256": "4f3d06959ed9f5427cf22bd009427e38d932788fbb2ea5731492aa460d0161f2",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式の令和5年度補正予算一覧ページ掲載の「令和5年度一般会計補正予算（第8号）概要」PDFを部分選定。文字PDF。物理1頁に歳入予算（款・補正額・補正内容）と歳出予算（目的別内訳：款・補正額・補正内容）が同居し事業名と当年度の補正額（増減額、△含む）が対応する。金額列の単位は千円。p1に繰越明許費(追加)が同頁混在し非加算は当年度歳出補正額でないため範囲外。項・目の科目明細は持たず、掲載ページに一般会計以外の会計の補正資料の掲載はないため不足として残す。号数は一覧のリンク表記と本文表題（第8号）で確定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132071/2023/supplementary-8.pdf",
+            "sha256": "4f3d06959ed9f5427cf22bd009427e38d932788fbb2ea5731492aa460d0161f2",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/278/r5ippanhosei8.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:40:21.704Z"
+      }
     },
     {
       "target": {
@@ -3932,10 +4364,66 @@
         "document_kind": "supplementary",
         "amendment_number": 1
       },
-      "candidates": [],
-      "reason": "公式の補正予算一覧の令和6年度ページに掲載されるのは「一般会計補正予算（第1号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
-      "selected_candidate_id": null,
-      "archive": null
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度一般会計補正予算（第1号）概要",
+          "landing_url": "https://www.city.akishima.lg.jp/shisei/gyozaisei/1005275/1005277.html",
+          "inspected_at": "2026-10-08T09:39:39.253428+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/277/r6ippanhosei1.pdf",
+              "sha256": "af28f6ae2364c28963e086626c546ec5c76eab47d9c8c521a2eb508b9d3c958d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式の令和6年度補正予算一覧ページ掲載の「令和6年度一般会計補正予算（第1号）概要」PDFを部分選定。文字PDF。物理2頁の歳入款別集計（款・補正前の額・補正額・計）、物理3頁の目的別・性質別歳出集計、物理4頁の歳入予算（款・補正額・補正内容）と歳出予算（目的別内訳：款・補正額（うち一般財源）・補正内容）が同じ明細で対応し事業名と当年度の補正額（増減額、△含む）が対応する。金額列の単位は千円。p5基金と市債の状況は当年度歳出補正額でないため範囲外。項・目の科目明細は持たず、掲載ページに一般会計以外の会計の補正資料の掲載はないため不足として残す。号数は一覧のリンク表記と本文表題（第1号）で確定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132071/2024/supplementary-1.pdf",
+            "sha256": "af28f6ae2364c28963e086626c546ec5c76eab47d9c8c521a2eb508b9d3c958d",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/277/r6ippanhosei1.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:40:26.396Z"
+      }
     },
     {
       "target": {
@@ -3944,10 +4432,58 @@
         "document_kind": "supplementary",
         "amendment_number": 2
       },
-      "candidates": [],
-      "reason": "公式の補正予算一覧の令和6年度ページに掲載されるのは「一般会計補正予算（第2号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
-      "selected_candidate_id": null,
-      "archive": null
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度一般会計補正予算（第2号）概要",
+          "landing_url": "https://www.city.akishima.lg.jp/shisei/gyozaisei/1005275/1005277.html",
+          "inspected_at": "2026-10-08T09:39:39.253428+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/277/r6ippanhosei2.pdf",
+              "sha256": "7c46c1ce6b9767cb88f291aeb65ebd30e201f7dc3e29356801a5285bafec4c18",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式の令和6年度補正予算一覧ページ掲載の「令和6年度一般会計補正予算（第2号）概要」PDFを部分選定。文字PDF。物理1頁に歳入予算（款・補正額・補正内容）と歳出予算（目的別内訳：款・補正額・補正内容）が同居し事業名と当年度の補正額（増減額、△含む）が対応する。金額列の単位は千円。項・目の科目明細は持たず、掲載ページに一般会計以外の会計の補正資料の掲載はないため不足として残す。号数は一覧のリンク表記と本文表題（第2号）で確定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132071/2024/supplementary-2.pdf",
+            "sha256": "7c46c1ce6b9767cb88f291aeb65ebd30e201f7dc3e29356801a5285bafec4c18",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/277/r6ippanhosei2.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:40:29.915Z"
+      }
     },
     {
       "target": {
@@ -3956,10 +4492,66 @@
         "document_kind": "supplementary",
         "amendment_number": 3
       },
-      "candidates": [],
-      "reason": "公式の補正予算一覧の令和6年度ページに掲載されるのは「一般会計補正予算（第3号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
-      "selected_candidate_id": null,
-      "archive": null
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度一般会計補正予算（第3号）概要",
+          "landing_url": "https://www.city.akishima.lg.jp/shisei/gyozaisei/1005275/1005277.html",
+          "inspected_at": "2026-10-08T09:39:39.253428+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/277/r6ippanhosei3.pdf",
+              "sha256": "bce5f8425e2c9d53e045d9ff8bce55d39762abb8481b6aecaf17c1513e469818",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "start": 5,
+                      "end": 5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式の令和6年度補正予算一覧ページ掲載の「令和6年度一般会計補正予算（第3号）概要」PDFを部分選定。文字PDF。物理2頁の歳入款別集計（款・補正前の額・補正額・計）、物理3頁の目的別・性質別歳出集計、物理4頁の歳入予算（款・補正額・補正内容）、物理5頁の歳出予算（目的別内訳：款・補正額（うち一般財源）・補正内容）が同じ明細で対応し事業名と当年度の補正額（増減額、△含む）が対応する。金額列の単位は千円。p6債務負担行為・基金と市債の状況は当年度歳出補正額でないため範囲外。項・目の科目明細は持たず、掲載ページに一般会計以外の会計の補正資料の掲載はないため不足として残す。号数は一覧のリンク表記と本文表題（第3号）で確定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132071/2024/supplementary-3.pdf",
+            "sha256": "bce5f8425e2c9d53e045d9ff8bce55d39762abb8481b6aecaf17c1513e469818",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/277/r6ippanhosei3.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:40:33.004Z"
+      }
     },
     {
       "target": {
@@ -3968,10 +4560,58 @@
         "document_kind": "supplementary",
         "amendment_number": 4
       },
-      "candidates": [],
-      "reason": "公式の補正予算一覧の令和6年度ページに掲載されるのは「一般会計補正予算（第4号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
-      "selected_candidate_id": null,
-      "archive": null
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度一般会計補正予算（第4号）概要",
+          "landing_url": "https://www.city.akishima.lg.jp/shisei/gyozaisei/1005275/1005277.html",
+          "inspected_at": "2026-10-08T09:39:39.253428+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/277/r6ippanhosei4.pdf",
+              "sha256": "ece2383b694ee727c2ef7a5d76a2b68eae6d16c512225bafc89c9a29424f7b4a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式の令和6年度補正予算一覧ページ掲載の「令和6年度一般会計補正予算（第4号）概要」PDFを部分選定。文字PDF。物理1頁に歳入予算（款・補正額・補正内容）と歳出予算（目的別内訳：款・補正額・補正内容）が同居し事業名と当年度の補正額（増減額、△含む）が対応する。金額列の単位は千円。項・目の科目明細は持たず、掲載ページに一般会計以外の会計の補正資料の掲載はないため不足として残す。号数は一覧のリンク表記と本文表題（第4号）で確定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132071/2024/supplementary-4.pdf",
+            "sha256": "ece2383b694ee727c2ef7a5d76a2b68eae6d16c512225bafc89c9a29424f7b4a",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/277/r6ippanhosei4.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:40:37.422Z"
+      }
     },
     {
       "target": {
@@ -3980,10 +4620,66 @@
         "document_kind": "supplementary",
         "amendment_number": 5
       },
-      "candidates": [],
-      "reason": "公式の補正予算一覧の令和6年度ページに掲載されるのは「一般会計補正予算（第5号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
-      "selected_candidate_id": null,
-      "archive": null
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度一般会計補正予算（第5号）概要",
+          "landing_url": "https://www.city.akishima.lg.jp/shisei/gyozaisei/1005275/1005277.html",
+          "inspected_at": "2026-10-08T09:39:39.253428+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/277/r6ippanhosei5.pdf",
+              "sha256": "32016517013f4200ed568648b9e2c72d984fc698db5e8f5bc35cd3fe09427c93",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式の令和6年度補正予算一覧ページ掲載の「令和6年度一般会計補正予算（第5号）概要」PDFを部分選定。文字PDF。物理2頁の歳入款別集計（款・補正前の額・補正額・計）、物理3頁の目的別・性質別歳出集計、物理4頁の歳入予算（款・補正額・補正内容）と歳出予算（目的別内訳：款・補正額（うち一般財源）・補正内容）が同じ明細で対応し事業名と当年度の補正額（増減額、△含む）が対応する。金額列の単位は千円。p5債務負担行為・基金と市債の状況は当年度歳出補正額でないため範囲外。項・目の科目明細は持たず、掲載ページに一般会計以外の会計の補正資料の掲載はないため不足として残す。号数は一覧のリンク表記と本文表題（第5号）で確定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132071/2024/supplementary-5.pdf",
+            "sha256": "32016517013f4200ed568648b9e2c72d984fc698db5e8f5bc35cd3fe09427c93",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/277/r6ippanhosei5.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:40:41.089Z"
+      }
     },
     {
       "target": {
@@ -3992,10 +4688,58 @@
         "document_kind": "supplementary",
         "amendment_number": 6
       },
-      "candidates": [],
-      "reason": "公式の補正予算一覧の令和6年度ページに掲載されるのは「一般会計補正予算（第6号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
-      "selected_candidate_id": null,
-      "archive": null
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度一般会計補正予算（第6号）概要",
+          "landing_url": "https://www.city.akishima.lg.jp/shisei/gyozaisei/1005275/1005277.html",
+          "inspected_at": "2026-10-08T09:39:39.253428+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/277/r6ippanhosei6.pdf",
+              "sha256": "5d14cd46ba466f43ac7f1c59a96e34ed6f8da81a4795e1a36ba2b6e2b2106584",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式の令和6年度補正予算一覧ページ掲載の「令和6年度一般会計補正予算（第6号）概要」PDFを部分選定。文字PDF。物理1頁に歳入予算（款・補正額・補正内容）と歳出予算（目的別内訳：款・補正額・補正内容）が同居し事業名と当年度の補正額（増減額、△含む）が対応する。金額列の単位は千円。項・目の科目明細は持たず、掲載ページに一般会計以外の会計の補正資料の掲載はないため不足として残す。号数は一覧のリンク表記と本文表題（第6号）で確定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132071/2024/supplementary-6.pdf",
+            "sha256": "5d14cd46ba466f43ac7f1c59a96e34ed6f8da81a4795e1a36ba2b6e2b2106584",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/277/r6ippanhosei6.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:40:44.644Z"
+      }
     },
     {
       "target": {
@@ -4004,10 +4748,66 @@
         "document_kind": "supplementary",
         "amendment_number": 7
       },
-      "candidates": [],
-      "reason": "公式の補正予算一覧の令和6年度ページに掲載されるのは「一般会計補正予算（第7号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
-      "selected_candidate_id": null,
-      "archive": null
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度一般会計補正予算（第7号）概要",
+          "landing_url": "https://www.city.akishima.lg.jp/shisei/gyozaisei/1005275/1005277.html",
+          "inspected_at": "2026-10-08T09:39:39.253428+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/277/r6ippanhosei7.pdf",
+              "sha256": "eddd39b5a91e8c9de00a4a0a944185279ee7a741311fdb7f6887c687cf93e6c1",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "start": 5,
+                      "end": 5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式の令和6年度補正予算一覧ページ掲載の「令和6年度一般会計補正予算（第7号）概要」PDFを部分選定。文字PDF。物理2頁の歳入款別集計（款・補正前の額・補正額・計）、物理3頁の目的別・性質別歳出集計、物理4頁の歳入予算（款・補正額・補正内容）、物理5頁の歳出予算（目的別内訳：款・補正額（うち一般財源）・補正内容）が同じ明細で対応し事業名と当年度の補正額（増減額、△含む）が対応する。金額列の単位は千円。p6繰越明許費、p7基金と市債の状況は当年度歳出補正額でないため範囲外。項・目の科目明細は持たず、掲載ページに一般会計以外の会計の補正資料の掲載はないため不足として残す。号数は一覧のリンク表記と本文表題（第7号）で確定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132071/2024/supplementary-7.pdf",
+            "sha256": "eddd39b5a91e8c9de00a4a0a944185279ee7a741311fdb7f6887c687cf93e6c1",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/277/r6ippanhosei7.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:40:48.148Z"
+      }
     },
     {
       "target": {
@@ -4016,10 +4816,66 @@
         "document_kind": "supplementary",
         "amendment_number": 1
       },
-      "candidates": [],
-      "reason": "公式の補正予算一覧の令和7年度ページに掲載されるのは「一般会計補正予算（第1号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
-      "selected_candidate_id": null,
-      "archive": null
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度一般会計補正予算（第1号）概要",
+          "landing_url": "https://www.city.akishima.lg.jp/shisei/gyozaisei/1005275/1005276.html",
+          "inspected_at": "2026-10-08T09:39:39.253428+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/276/r7ippanhosei1.pdf",
+              "sha256": "dafed3c8b026ea1c7681aee3d464cc27b0b19287287be7bbc0812f51fb461b5b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "start": 5,
+                      "end": 5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式の令和7年度補正予算一覧ページ掲載の「令和7年度一般会計補正予算（第1号）概要」PDFを部分選定。文字PDF。物理2頁の歳入款別集計（款・補正前の額・補正額・計）、物理3頁の目的別・性質別歳出集計、物理4頁の歳入予算（款・補正額・補正内容）、物理5頁の歳出予算（目的別内訳：款・補正額（うち一般財源）・補正内容）が同じ明細で対応し事業名と当年度の補正額（増減額、△含む）が対応する。金額列の単位は千円。p5歳出内訳に債務負担行為の注記行が混在し非加算、p6債務負担行為・基金と市債の状況は当年度歳出補正額でないため範囲外。項・目の科目明細は持たず、掲載ページに一般会計以外の会計の補正資料の掲載はないため不足として残す。号数は一覧のリンク表記と本文表題（第1号）で確定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132071/2025/supplementary-1.pdf",
+            "sha256": "dafed3c8b026ea1c7681aee3d464cc27b0b19287287be7bbc0812f51fb461b5b",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/276/r7ippanhosei1.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:40:51.872Z"
+      }
     },
     {
       "target": {
@@ -4028,10 +4884,58 @@
         "document_kind": "supplementary",
         "amendment_number": 2
       },
-      "candidates": [],
-      "reason": "公式の補正予算一覧の令和7年度ページに掲載されるのは「一般会計補正予算（第2号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
-      "selected_candidate_id": null,
-      "archive": null
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度一般会計補正予算（第2号）概要",
+          "landing_url": "https://www.city.akishima.lg.jp/shisei/gyozaisei/1005275/1005276.html",
+          "inspected_at": "2026-10-08T09:39:39.253428+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/276/r7ippanhosei2.pdf",
+              "sha256": "2c8742e17deebff31df3028a0fd086d0bbdb29ae4af3cf0072bee495494e7167",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式の令和7年度補正予算一覧ページ掲載の「令和7年度一般会計補正予算（第2号）概要」PDFを部分選定。文字PDF。物理1頁に歳入予算（款・補正額・補正内容）と歳出予算（目的別内訳：款・補正額・補正内容）が同居し事業名と当年度の補正額（増減額、△含む）が対応する。金額列の単位は千円。項・目の科目明細は持たず、掲載ページに一般会計以外の会計の補正資料の掲載はないため不足として残す。号数は一覧のリンク表記と本文表題（第2号）で確定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132071/2025/supplementary-2.pdf",
+            "sha256": "2c8742e17deebff31df3028a0fd086d0bbdb29ae4af3cf0072bee495494e7167",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/276/r7ippanhosei2.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:40:55.771Z"
+      }
     },
     {
       "target": {
@@ -4040,10 +4944,66 @@
         "document_kind": "supplementary",
         "amendment_number": 3
       },
-      "candidates": [],
-      "reason": "公式の補正予算一覧の令和7年度ページに掲載されるのは「一般会計補正予算（第3号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
-      "selected_candidate_id": null,
-      "archive": null
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度一般会計補正予算（第3号）概要",
+          "landing_url": "https://www.city.akishima.lg.jp/shisei/gyozaisei/1005275/1005276.html",
+          "inspected_at": "2026-10-08T09:39:39.253428+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/276/r7ippanhosei3.pdf",
+              "sha256": "de7bbf851dfa8f77d6a738ac2380e7493387d87861534b0af232947cc9f35e09",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "start": 5,
+                      "end": 5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式の令和7年度補正予算一覧ページ掲載の「令和7年度一般会計補正予算（第3号）概要」PDFを部分選定。文字PDF。物理2頁の歳入款別集計（款・補正前の額・補正額・計）、物理3頁の目的別・性質別歳出集計、物理4頁の歳入予算（款・補正額・補正内容）、物理5頁の歳出予算（目的別内訳：款・補正額（うち一般財源）・補正内容）が同じ明細で対応し事業名と当年度の補正額（増減額、△含む）が対応する。金額列の単位は千円。p6基金と市債の状況は当年度歳出補正額でないため範囲外。項・目の科目明細は持たず、掲載ページに一般会計以外の会計の補正資料の掲載はないため不足として残す。号数は一覧のリンク表記と本文表題（第3号）で確定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132071/2025/supplementary-3.pdf",
+            "sha256": "de7bbf851dfa8f77d6a738ac2380e7493387d87861534b0af232947cc9f35e09",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/276/r7ippanhosei3.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:41:00.567Z"
+      }
     },
     {
       "target": {
@@ -4052,10 +5012,58 @@
         "document_kind": "supplementary",
         "amendment_number": 4
       },
-      "candidates": [],
-      "reason": "公式の補正予算一覧の令和7年度ページに掲載されるのは「一般会計補正予算（第4号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
-      "selected_candidate_id": null,
-      "archive": null
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度一般会計補正予算（第4号）概要",
+          "landing_url": "https://www.city.akishima.lg.jp/shisei/gyozaisei/1005275/1005276.html",
+          "inspected_at": "2026-10-08T09:39:39.253428+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/276/r7ippanhosei4.pdf",
+              "sha256": "020a87991e7bb7fc61c9772ef989ea40bc0d5d9737d9d90adf26007447fd7680",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式の令和7年度補正予算一覧ページ掲載の「令和7年度一般会計補正予算（第4号）概要」PDFを部分選定。文字PDF。物理1頁に歳入予算（款・補正額・補正内容）と歳出予算（目的別内訳：款・補正額・補正内容）が同居し事業名と当年度の補正額（増減額、△含む）が対応する。金額列の単位は千円。令和7年12月19日専決は当年度歳出補正額でないため範囲外。項・目の科目明細は持たず、掲載ページに一般会計以外の会計の補正資料の掲載はないため不足として残す。号数は一覧のリンク表記と本文表題（第4号）で確定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132071/2025/supplementary-4.pdf",
+            "sha256": "020a87991e7bb7fc61c9772ef989ea40bc0d5d9737d9d90adf26007447fd7680",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/276/r7ippanhosei4.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:41:04.851Z"
+      }
     },
     {
       "target": {
@@ -4064,10 +5072,58 @@
         "document_kind": "supplementary",
         "amendment_number": 5
       },
-      "candidates": [],
-      "reason": "公式の補正予算一覧の令和7年度ページに掲載されるのは「一般会計補正予算（第5号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
-      "selected_candidate_id": null,
-      "archive": null
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度一般会計補正予算（第5号）概要",
+          "landing_url": "https://www.city.akishima.lg.jp/shisei/gyozaisei/1005275/1005276.html",
+          "inspected_at": "2026-10-08T09:39:39.253428+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/276/r7ippanhosei5.pdf",
+              "sha256": "1656663d3280e3be38a59919bbc01aef9d38fb1e15c89dabffebf1a38133c5a6",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式の令和7年度補正予算一覧ページ掲載の「令和7年度一般会計補正予算（第5号）概要」PDFを部分選定。文字PDF。物理1頁に歳入予算（款・補正額・補正内容）と歳出予算（目的別内訳：款・補正額・補正内容）が同居し事業名と当年度の補正額（増減額、△含む）が対応する。金額列の単位は千円。令和8年1月23日専決は当年度歳出補正額でないため範囲外。項・目の科目明細は持たず、掲載ページに一般会計以外の会計の補正資料の掲載はないため不足として残す。号数は一覧のリンク表記と本文表題（第5号）で確定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132071/2025/supplementary-5.pdf",
+            "sha256": "1656663d3280e3be38a59919bbc01aef9d38fb1e15c89dabffebf1a38133c5a6",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/276/r7ippanhosei5.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:41:08.527Z"
+      }
     },
     {
       "target": {
@@ -4076,10 +5132,66 @@
         "document_kind": "supplementary",
         "amendment_number": 6
       },
-      "candidates": [],
-      "reason": "公式の補正予算一覧の令和7年度ページに掲載されるのは「一般会計補正予算（第6号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
-      "selected_candidate_id": null,
-      "archive": null
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度一般会計補正予算（第6号）概要",
+          "landing_url": "https://www.city.akishima.lg.jp/shisei/gyozaisei/1005275/1005276.html",
+          "inspected_at": "2026-10-08T09:39:39.253428+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/276/r7ippanhosei6.pdf",
+              "sha256": "719845db1bc3b9171d06af9744de4dbb792497525611b5d729ea9ed68abe7fef",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "start": 5,
+                      "end": 5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式の令和7年度補正予算一覧ページ掲載の「令和7年度一般会計補正予算（第6号）概要」PDFを部分選定。文字PDF。物理2頁の歳入款別集計（款・補正前の額・補正額・計）、物理3頁の目的別・性質別歳出集計、物理4頁の歳入予算（款・補正額・補正内容）、物理5頁の歳出予算（目的別内訳：款・補正額（うち一般財源）・補正内容）が同じ明細で対応し事業名と当年度の補正額（増減額、△含む）が対応する。金額列の単位は千円。p6繰越明許費・基金と市債の状況は当年度歳出補正額でないため範囲外。項・目の科目明細は持たず、掲載ページに一般会計以外の会計の補正資料の掲載はないため不足として残す。号数は一覧のリンク表記と本文表題（第6号）で確定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132071/2025/supplementary-6.pdf",
+            "sha256": "719845db1bc3b9171d06af9744de4dbb792497525611b5d729ea9ed68abe7fef",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/276/r7ippanhosei6.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:41:12.294Z"
+      }
     },
     {
       "target": {
