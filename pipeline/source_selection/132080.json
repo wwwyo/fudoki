@@ -328,6 +328,773 @@
         ],
         "archived_at": "2026-10-07T15:34:28.699Z"
       }
+    },
+    {
+      "target": {
+        "jurisdiction": "132080",
+        "fiscal_year": 2025,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "132080-r7yosan",
+          "title": "令和7年度調布市当初予算書・予算説明書（一般会計その1/その2・国民健康保険事業特別会計・用地特別会計・介護保険事業特別会計・後期高齢者医療特別会計・下水道事業会計の会計別分冊）",
+          "landing_url": "https://www.city.chofu.lg.jp/010020/p001126.html",
+          "inspected_at": "2026-10-08T04:13:16.000+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.chofu.lg.jp/documents/14046/1.pdf",
+              "sha256": "c8a2fa0489cff8b462646352e5d36da400372990a23f8375823ddd0a4288a29a",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 92,
+                      "end": 153
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.chofu.lg.jp/documents/14046/2.pdf",
+              "sha256": "69875a979c607b09ee27288b80a4355aeca8b48deb954d7fec35a54676d79ee5",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 130
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.chofu.lg.jp/documents/14046/kokuho.pdf",
+              "sha256": "00e005ae9812904c83d7e4c1cbf578bdeddc5404d0751cde139e429be3312e7b",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 16,
+                      "end": 51
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.chofu.lg.jp/documents/14046/youchi.pdf",
+              "sha256": "12bea3585d9e8c29428d728cbcabee6c986ddd1deb4f3d0560db08822e3e8255",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "用地特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.chofu.lg.jp/documents/14046/kaigo.pdf",
+              "sha256": "fb40ffd198296c7755b03743392af8a219b8b01e16a65fc88aa15153da1f846b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 51
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.chofu.lg.jp/documents/14046/kourei.pdf",
+              "sha256": "5020fcfc2f1ef01061b44a12c795738aed526c82b85ac5610b5e714087ade3c7",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 14,
+                      "end": 29
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.chofu.lg.jp/documents/14046/gesui.pdf",
+              "sha256": "be2e77e14e10b5ff93754e0b9970e00ea906559e7e654969d229c9cc78b8e80b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 34,
+                      "end": 43
+                    },
+                    {
+                      "start": 46,
+                      "end": 49
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 32,
+                      "end": 33
+                    },
+                    {
+                      "start": 44,
+                      "end": 45
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "選定。調布市公式の令和7年度予算掲載頁(p001126)から取得した会計別分冊7冊で全会計の歳出を覆う。いずれも歳入歳出予算事項別明細書（款・項・目に本年度予算額が同一明細で対応、単位千円）を収録。一般会計は2分冊で画像スキャンPDF（歳出は印字90-281頁: その1(1.pdf,153頁)は物理92-153頁=印字90-151、物理=印字+2を物理92/153頁で確認。2.pdf(152頁)は物理1頁=印字152で歳出は物理1-130頁=印字152-281、物理131頁=印字282は給与費明細書）。国民健康保険事業特別会計(kokuho.pdf,59頁): 目次(物理3)で歳出=印字14-49を確認し物理16-51に対応（物理52=給与費明細書）。ただし印字14-49頁は文字層・画像とも無く輪郭線描画のみのため描画して内容を確認（物理16=第5款総務費・物理51=第90款予備費末尾）、pdf_typeはscan。用地特別会計(youchi.pdf,17頁、文字PDF): 歳出=印字10-13=物理12-15（物理16=債務負担行為調書）。介護保険事業特別会計(kaigo.pdf,59頁、文字PDF): 歳出=印字16-49=物理18-51（物理52=給与費明細書）。後期高齢者医療特別会計(kourei.pdf,35頁、文字PDF): 歳出=印字12-27=物理14-29（物理30=給与費明細書）。下水道事業会計(gesui.pdf,49頁、文字PDF): 公営企業会計で款項目歳出表ではなく予算実施計画内訳に収支内訳。物理=印字+2。収益的収入内訳=印字30-31=物理32-33、収益的支出(費用)内訳=印字32-41=物理34-43（款・項・目・節と本年度予定額/前年度予定額/比較が対応、消費税込・単位千円）、資本的収入内訳=印字42-43=物理44-45、資本的支出内訳=印字44-47=物理46-49。歳出範囲は支出側（収益的支出内訳+資本的支出内訳）に限定し、収入側も同様に範囲確認。R7の掲載頁には一般会計のみ下水道事業会計予算の概要(070040/p042110)へのリンクあり（概要頁のため選定外）。",
+      "selected_candidate_id": "132080-r7yosan",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132080-r7yosan",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132080/2025/initial-6.pdf",
+            "sha256": "c8a2fa0489cff8b462646352e5d36da400372990a23f8375823ddd0a4288a29a",
+            "final_url": "https://www.city.chofu.lg.jp/documents/14046/1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132080/2025/initial-4.pdf",
+            "sha256": "69875a979c607b09ee27288b80a4355aeca8b48deb954d7fec35a54676d79ee5",
+            "final_url": "https://www.city.chofu.lg.jp/documents/14046/2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132080/2025/initial-1.pdf",
+            "sha256": "00e005ae9812904c83d7e4c1cbf578bdeddc5404d0751cde139e429be3312e7b",
+            "final_url": "https://www.city.chofu.lg.jp/documents/14046/kokuho.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132080/2025/initial-2.pdf",
+            "sha256": "12bea3585d9e8c29428d728cbcabee6c986ddd1deb4f3d0560db08822e3e8255",
+            "final_url": "https://www.city.chofu.lg.jp/documents/14046/youchi.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132080/2025/initial-7.pdf",
+            "sha256": "fb40ffd198296c7755b03743392af8a219b8b01e16a65fc88aa15153da1f846b",
+            "final_url": "https://www.city.chofu.lg.jp/documents/14046/kaigo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132080/2025/initial-3.pdf",
+            "sha256": "5020fcfc2f1ef01061b44a12c795738aed526c82b85ac5610b5e714087ade3c7",
+            "final_url": "https://www.city.chofu.lg.jp/documents/14046/kourei.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132080/2025/initial-5.pdf",
+            "sha256": "be2e77e14e10b5ff93754e0b9970e00ea906559e7e654969d229c9cc78b8e80b",
+            "final_url": "https://www.city.chofu.lg.jp/documents/14046/gesui.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T04:16:23.953Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132080",
+        "fiscal_year": 2024,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "132080-r6yosan",
+          "title": "令和6年度調布市当初予算書（一般会計・国民健康保険事業特別会計・用地特別会計・介護保険事業特別会計・後期高齢者医療特別会計・下水道事業会計の会計別分冊）",
+          "landing_url": "https://www.city.chofu.lg.jp/010020/p001117.html",
+          "inspected_at": "2026-10-08T04:13:16.000+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.chofu.lg.jp/documents/11292/ippan.pdf",
+              "sha256": "c8dd297dd01a101c5658e9f9e6adc9d5d64c4220e5d8f22be4aeaddc293b5ed9",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 92,
+                      "end": 281
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.chofu.lg.jp/documents/11292/6kokuho.pdf",
+              "sha256": "642695ad218612256f556977c8ff132c856ea505b8065108c66de1f571f37c64",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 53
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.chofu.lg.jp/documents/11292/6youchi.pdf",
+              "sha256": "38b8a396cfb74e4457ce039c072635e85669628aa1130e1c2b301c461f22e693",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "用地特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 17
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.chofu.lg.jp/documents/11292/6kaigo.pdf",
+              "sha256": "398d5959020974619ee60f18ecddcca5949738c875dc444970c8460469a75687",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 51
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.chofu.lg.jp/documents/11292/6kouki.pdf",
+              "sha256": "3d76cbe63f79693e252a126d091c10ce02ec718b1b47fe01962231bed7d6145a",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 14,
+                      "end": 29
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.chofu.lg.jp/documents/11292/6gesui.pdf",
+              "sha256": "937eccd5598e5c71d26daf8bffaf87036ea2a0ad235441e9acb61deb66a7fea9",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 36,
+                      "end": 45
+                    },
+                    {
+                      "start": 48,
+                      "end": 51
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 34,
+                      "end": 35
+                    },
+                    {
+                      "start": 46,
+                      "end": 47
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "選定。調布市公式の令和6年度予算掲載頁(p001117)から取得した会計別分冊6冊で全会計の歳出を覆う。全冊画像スキャンPDF（文字層は頁番号程度）のため目次（各冊物理3頁）と境界頁を画像で確認。単位は千円、金額は当初予算額（本年度予算額）。一般会計(ippan.pdf,303頁): 歳出は印字90-279頁=物理92-281（物理92=印字90第5款議会費、物理281=印字279第90款予備費末尾、物理282=印字280給与費明細書）、物理=印字+2。国民健康保険事業特別会計(6kokuho.pdf,61頁): 歳出=印字16-51=物理18-53（物理54=印字52給与費明細書）。用地特別会計(6youchi.pdf,19頁): 歳出=印字10-15=物理12-17（物理18=印字16債務負担行為調書）。介護保険事業特別会計(6kaigo.pdf,59頁): 歳出=印字16-49=物理18-51（物理52=印字50給与費明細書）。後期高齢者医療特別会計(6kouki.pdf,35頁): 歳出=印字12-27=物理14-29（物理30=印字28給与費明細書）。下水道事業会計(6gesui.pdf,51頁): 公営企業会計、予算実施計画内訳は印字32から（R8年度版より印字+2）。収益的収入内訳=物理34-35、収益的支出(費用)内訳=物理36-45（物理36=印字34収益的支出、物理45=印字43費用末尾・第4項予備費）、資本的収入内訳=物理46-47、資本的支出内訳=物理48-51（物理48=印字46資本的支出）。消費税込・単位千円。",
+      "selected_candidate_id": "132080-r6yosan",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132080-r6yosan",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132080/2024/initial-6.pdf",
+            "sha256": "c8dd297dd01a101c5658e9f9e6adc9d5d64c4220e5d8f22be4aeaddc293b5ed9",
+            "final_url": "https://www.city.chofu.lg.jp/documents/11292/ippan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132080/2024/initial-4.pdf",
+            "sha256": "642695ad218612256f556977c8ff132c856ea505b8065108c66de1f571f37c64",
+            "final_url": "https://www.city.chofu.lg.jp/documents/11292/6kokuho.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132080/2024/initial-1.pdf",
+            "sha256": "38b8a396cfb74e4457ce039c072635e85669628aa1130e1c2b301c461f22e693",
+            "final_url": "https://www.city.chofu.lg.jp/documents/11292/6youchi.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132080/2024/initial-2.pdf",
+            "sha256": "398d5959020974619ee60f18ecddcca5949738c875dc444970c8460469a75687",
+            "final_url": "https://www.city.chofu.lg.jp/documents/11292/6kaigo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132080/2024/initial-3.pdf",
+            "sha256": "3d76cbe63f79693e252a126d091c10ce02ec718b1b47fe01962231bed7d6145a",
+            "final_url": "https://www.city.chofu.lg.jp/documents/11292/6kouki.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132080/2024/initial-5.pdf",
+            "sha256": "937eccd5598e5c71d26daf8bffaf87036ea2a0ad235441e9acb61deb66a7fea9",
+            "final_url": "https://www.city.chofu.lg.jp/documents/11292/6gesui.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T04:16:36.214Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132080",
+        "fiscal_year": 2023,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "132080-r5yosan",
+          "title": "令和5年度（R5年度）調布市当初予算書及び予算説明書（一般会計・国民健康保険事業特別会計・用地特別会計・介護保険事業特別会計・後期高齢者医療特別会計・下水道事業会計の会計別分冊）",
+          "landing_url": "https://www.city.chofu.lg.jp/010020/p001007.html",
+          "inspected_at": "2026-10-08T04:13:16.000+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.chofu.lg.jp/documents/4873/5ippan.pdf",
+              "sha256": "d0889b46b4ff1c225fd612a3d2ee5dc998f3aa7eb422c1ae01e9f377ea36fd28",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 86,
+                      "end": 275
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.chofu.lg.jp/documents/4873/5kokuho.pdf",
+              "sha256": "046f8f55c1fc3515ade4aa94e28a22aa06669150093ed0bc19efbb504aa63ff0",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 53
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.chofu.lg.jp/documents/4873/5youchi.pdf",
+              "sha256": "1056f784935244c74da81606b631a2d895c64194de817ff76663f19e7dd441cd",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "用地特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 17
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.chofu.lg.jp/documents/4873/5kaigo.pdf",
+              "sha256": "6a5287bb531d89f1c934c36982d5987b99b15f4974f371a109e558c3caad208e",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 53
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.chofu.lg.jp/documents/4873/5kouki.pdf",
+              "sha256": "649b6756b658e94e343710658921538d2366838d307e5541d642e47a23a52dc2",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 14,
+                      "end": 29
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.chofu.lg.jp/documents/4873/5gesui.pdf",
+              "sha256": "71b570606052bdba86255b0aac302306258c53b5c60ea758508bee8b1f4390ad",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 34,
+                      "end": 43
+                    },
+                    {
+                      "start": 46,
+                      "end": 49
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 32,
+                      "end": 33
+                    },
+                    {
+                      "start": 44,
+                      "end": 45
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "選定。調布市公式の令和5年度予算掲載頁(p001007)から取得した会計別分冊6冊で全会計の歳出を覆う（掲載一覧の下水道リンク名は「下水道事業特別会計予算書」だが原典表題は下水道事業会計）。一般会計(5ippan.pdf,293頁)は画像スキャンPDF: 目次(物理3頁)で歳出=印字84-273を確認し物理86-275に対応（物理86=印字84第5款議会費、物理275=印字273第90款予備費末尾、物理276=印字274給与費明細書）、物理=印字+2。特別会計・下水道は文字PDF: 国民健康保険事業特別会計(5kokuho.pdf,61頁)歳出=印字16-51=物理18-53（物理54=給与費明細書）、用地特別会計(5youchi.pdf,19頁)歳出=印字10-15=物理12-17（物理18=債務負担行為調書）、介護保険事業特別会計(5kaigo.pdf,61頁)歳出=印字16-51=物理18-53、後期高齢者医療特別会計(5kouki.pdf,35頁)歳出=印字12-27=物理14-29（物理30=給与費明細書）。いずれも款・項・目と本年度予算額が同一明細で対応、単位千円。下水道事業会計(5gesui.pdf,49頁、文字PDF): 予算実施計画内訳（印字30-）に収支内訳、物理=印字+2。収益的収入内訳=物理32-33、収益的支出(費用)内訳=物理34-43、資本的収入内訳=物理44-45、資本的支出内訳=物理46-49。消費税込・単位千円。",
+      "selected_candidate_id": "132080-r5yosan",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132080-r5yosan",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132080/2023/initial-6.pdf",
+            "sha256": "d0889b46b4ff1c225fd612a3d2ee5dc998f3aa7eb422c1ae01e9f377ea36fd28",
+            "final_url": "https://www.city.chofu.lg.jp/documents/4873/5ippan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132080/2023/initial-1.pdf",
+            "sha256": "046f8f55c1fc3515ade4aa94e28a22aa06669150093ed0bc19efbb504aa63ff0",
+            "final_url": "https://www.city.chofu.lg.jp/documents/4873/5kokuho.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132080/2023/initial-2.pdf",
+            "sha256": "1056f784935244c74da81606b631a2d895c64194de817ff76663f19e7dd441cd",
+            "final_url": "https://www.city.chofu.lg.jp/documents/4873/5youchi.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132080/2023/initial-4.pdf",
+            "sha256": "6a5287bb531d89f1c934c36982d5987b99b15f4974f371a109e558c3caad208e",
+            "final_url": "https://www.city.chofu.lg.jp/documents/4873/5kaigo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132080/2023/initial-3.pdf",
+            "sha256": "649b6756b658e94e343710658921538d2366838d307e5541d642e47a23a52dc2",
+            "final_url": "https://www.city.chofu.lg.jp/documents/4873/5kouki.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132080/2023/initial-5.pdf",
+            "sha256": "71b570606052bdba86255b0aac302306258c53b5c60ea758508bee8b1f4390ad",
+            "final_url": "https://www.city.chofu.lg.jp/documents/4873/5gesui.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T04:16:48.098Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132080",
+        "fiscal_year": 2023,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "132080-r5jikou",
+          "title": "令和5年度調布市実質収支に関する調書・歳入歳出決算事項別明細書・財産に関する調書・定額運用基金の運用状況に関する調書・下水道事業財務諸表及び事業報告書",
+          "landing_url": "https://www.city.chofu.lg.jp/010020/p001124.html",
+          "inspected_at": "2026-10-08T04:13:16.000+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.chofu.lg.jp/documents/13242/r5jikou.pdf",
+              "sha256": "945cd73f418b0f9b72ec9d5dc538f6cc9a44d18c92d3bf178cc24a23a4efd401",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 77,
+                      "end": 424
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 439,
+                      "end": 476
+                    }
+                  ]
+                },
+                {
+                  "account": "用地特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 483,
+                      "end": 488
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 503,
+                      "end": 538
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 549,
+                      "end": 564
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 651,
+                      "end": 651
+                    },
+                    {
+                      "start": 671,
+                      "end": 674
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 670,
+                      "end": 670
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "選定。調布市公式の令和5年度決算掲載頁(p001124)の決算附属書類r5jikou.pdf(680頁、600dpi画像スキャン、文字層なし)一冊に全会計の歳入歳出決算事項別明細書と下水道事業財務諸表及び事業報告書を収録。一般・特別会計の明細書は1物理頁=1印字頁で左右交互（左頁=款・項・目名と予算現額(当初予算額・補正予算額・継続費及び繰越事業費繰越額・予備費支出及び流用増減・計)と節内訳、右頁=支出済額・翌年度繰越額・不用額・備考）、決算歳出額は支出済額列、単位は全列円。物理=印字+1を各境界で確認（一般会計の間に無番号空白頁・会計別扉頁が挟まる）。歳出範囲: 一般会計 印字76-423=物理77-424（物理77=印字76第5款議会費左頁、物理424=印字423第90款予備費右頁・歳出合計支出済額107,843,915,314円、物理425空白・426国保扉）。国民健康保険事業特別会計 印字438-475=物理439-476（物理476=印字475予備費右頁・支出済額計21,569,305,618円、物理477-478空白・478国保分末）。用地特別会計 印字482-487=物理483-488（物理488=印字487繰出金右頁・歳出合計、物理489空白）。介護保険事業特別会計 印字502-537=物理503-538（物理538=印字537予備費右頁・支出済額計17,225,965,924円、物理539空白）。後期高齢者医療特別会計 印字548-563=物理549-564（物理564=印字563予備費右頁・支出済額計6,055,727,555円、物理565空白）。下水道事業会計(財務諸表及び事業報告書=印字627-、物理628=無番号扉): 歳出明細は建設改良費・固定資産購入費に係る事業の状況(印字650=物理651、事業名と令和5年度額が対応、単位円・消費税込)と収益費用明細書の費用部(印字670-673=物理671-674、款・項・目・節・細目と金額が対応、単位円・消費税抜)。収益費用明細書の収益部は印字669=物理670を歳入範囲とした。R5年度版の事業報告書(印字641-667)は経営総括・収支概要・工事概要等の説明と科目レベルの資本的収支の概要のみで、R6年度版にあった款項目対応の資本的収支の状況表は確認できなかった（物理642-668を画像で確認）→資本的支出の款項目明細は不足として残す。同頁のr5kessan.pdf(歳入歳出決算書,43頁)は款項ベースの決算書で目粒度の明細を持たず選定外。交付金活用実績等2資料(r5korona/r5bukka_1)は事業の明細書ではなく選定外。",
+      "selected_candidate_id": "132080-r5jikou",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132080-r5jikou",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132080/2023/settlement.pdf",
+            "sha256": "945cd73f418b0f9b72ec9d5dc538f6cc9a44d18c92d3bf178cc24a23a4efd401",
+            "final_url": "https://www.city.chofu.lg.jp/documents/13242/r5jikou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T04:17:06.149Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132080",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [],
+      "reason": "未選定。調布市公式の決算一覧(shiseijouhou/zaisei/kessan/index.html)を2026-10-08に確認した時点で最新は令和6年度決算状況(p001136)で、令和7年度決算の掲載はない。令和7年度決算は議会認定前または未公表と推測されるが、公開義務の有無・非公開の断定はしない。探索済み範囲: 財政>決算一覧(最新R6)、予算一覧(R8-R4)。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132080",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "132080-r8hosei2",
+          "title": "令和8年度調布市一般会計補正予算（第2号）議案（議案第59号）",
+          "landing_url": "https://www.city.chofu.lg.jp/documents/18151/gian59-2.pdf",
+          "inspected_at": "2026-10-08T07:41:25+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.chofu.lg.jp/documents/18151/gian59-2.pdf",
+              "sha256": "4082dce5bd62facc178fb48ef1d3188bd777286b4447654f7a2596aeb18f0129",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 16,
+                      "end": 39
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "選定（部分: 一般会計のみ）。前担当の引継ぎ候補URLから取得した議案PDF(43頁、文字PDF・埋込フォントで文字抽出可、pdf_type=text)。号数根拠: 表題「令和8年度調布市一般会計補正予算（第2号）」・議案第59号・令和8年9月1日提出、概要資料02-siryou2の「第1号補正後→第2号補正後」記述と対応。月名・公開順だけの推測は使っていない。歳出明細は「3 歳出」事項別明細書の物理16-39頁（印字12-35、物理=印字+4、各印字頁はA4横・回転90のMediaBoxをCropBox上下半分で2物理頁に分割表示のため両半分とも範囲に含める。MediaBox共有・CropBox分割をpdfinfo -boxで確認、重複除去なし）: 款・項・目と補正前の額/補正額/計・補正額の財源内訳（国・都支出金/地方債/その他/一般財源）・節区分金額・説明が同一明細に対応、単位は全列千円（（単位：千円）表記を先頭・末尾頁で確認）。先頭=第10款総務費（物理16=印字12を画像確認）、末尾=第90款予備費（物理38=金額側・物理39=節説明側=印字35を画像確認）。除外: 総括（物理11、款総額のみ）、歳入明細（物理12-15、同一PDF内だが歳出優先のため範囲外。歳入の存在は確認済みだがscopeに追加しない）、第1表歳入歳出予算補正・第2表債務負担行為補正（物理6-8、款項総額・債務負担のみ）、給与費明細書（物理40-41）、債務負担行為調書（物理42-43）。不足: 特別会計・下水道事業会計の令和8年度補正（第2号または他号）は既知候補になく未確認、令和8年度第1号の原典も未確認（概要の記述からの示唆のみ）。landing_urlは補正の網羅一覧頁が未発見のため取得PDFのURL自体を記録し、直接の掲載頁は未確認として残す。",
+      "selected_candidate_id": "132080-r8hosei2",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132080-r8hosei2",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132080/2026/supplementary-2.pdf",
+            "sha256": "4082dce5bd62facc178fb48ef1d3188bd777286b4447654f7a2596aeb18f0129",
+            "final_url": "https://www.city.chofu.lg.jp/documents/18151/gian59-2.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T07:41:51.453Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132080",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [],
+      "reason": "未選定。既知候補の概要PDF（https://www.city.chofu.lg.jp/documents/16811/03.pdf、1頁、SHA8a544fd6b1ab51391d5a513b3ed8a1be2672a9db77f4ebdff401be4bcab2ea0e、2026-10-08取得・全文確認）は「令和7年度調布市一般会計補正予算（第5号）の概要」の説明文のみで、事業名と補正前/補正額/補正後額が対応する明細表を持たない。本文で必要情報の不足を確認したため候補から除いた。議案本体（事項別明細書）のURLは既知候補になく、新規探索はしない。第1-4号・特別会計分の補正も既知候補なし。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132080",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [],
+      "reason": "未選定。既知候補の概要PDF（https://www.city.chofu.lg.jp/documents/13472/shiryou02.pdf、1頁、SHA2943fc395ba6428e73a2166e977df0261ffc2f4507f851c7624677978bf6c4e6、2026-10-08取得・全文確認）は「令和6年度調布市一般会計補正予算（第5号）の概要」の説明文のみで、事業名と補正前/補正額/補正後額が対応する明細表を持たない。本文で必要情報の不足を確認したため候補から除いた。議案本体（事項別明細書）のURLは既知候補になく、新規探索はしない。第1-4号・特別会計分の補正も既知候補なし。",
+      "selected_candidate_id": null,
+      "archive": null
     }
   ],
   "unresolved_candidates": []

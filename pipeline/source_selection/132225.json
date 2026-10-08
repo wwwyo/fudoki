@@ -956,6 +956,4341 @@
         ],
         "archived_at": "2026-10-08T00:59:09.349Z"
       }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2025,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度予算書（一般会計歳入歳出予算事項別明細書・各特別会計予算書・下水道事業会計予算書・説明資料）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1025978/1025981/index.html",
+          "inspected_at": "2026-10-08T06:51:20Z",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7ippan2.pdf",
+              "sha256": "2dd080c355eec186cf773de5353d566862a131da7949b57e00575ff5172e4795",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 5
+                    },
+                    {
+                      "start": 48,
+                      "end": 313
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/983/r7kokuho.pdf",
+              "sha256": "77fc7dd01d954eece3987cbe8a4c06d073337b9ca9a962cdc524edbf36886cab",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 22,
+                      "end": 43
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/984/r7kouki.pdf",
+              "sha256": "b393e7eb07c54bb34d792ec559ef5ef071e0d4242f9370115798cb9f3960ee4b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 14,
+                      "end": 23
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/985/r7kaigo.pdf",
+              "sha256": "7d9f905c0d37c29a4c0171c0a5818cf8ae532453cf801f3c065a36471c261686",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 13
+                    },
+                    {
+                      "start": 22,
+                      "end": 43
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/986/r7gesui.pdf",
+              "sha256": "c0463644e0219aeb570c6e4479875daf72b5df6acfaedb3431d83451f33ae1f8",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 7
+                    },
+                    {
+                      "start": 28,
+                      "end": 35
+                    },
+                    {
+                      "start": 38,
+                      "end": 39
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度予算書ページ（1025981、一般・国保・後期高齢・介護・下水道の5会計分冊）掲載の2025年度当初予算。令和8年度と同一の公式掲載構成・同一5会計で、他の特別会計・企業会計の掲載なし。いずれも文字PDF。一般会計の歳入歳出予算事項別明細書は歳出総括・財源内訳4-5頁、歳出明細48-313頁（1款議会費〜12款予備費。款・項・目名と本年度予算額・前年度予算額・比較・財源内訳が同一明細、単位千円、節明細は対頁）。国保・後期高齢・介護の各予算書は議案・第1表に続く事項別明細書で、歳出総括＋歳出明細の物理頁を記録（国保10-11,22-43頁／後期高齢8-9,14-23頁／介護12-13,22-43頁。款項目名・本年度予算額・財源内訳が同一明細、千円）。下水道事業会計予算書・説明資料は実施計画6-7頁（支出を含む、千円）、収益的支出明細28-35頁（款項目・節と予定額が同一明細、千円）、資本的支出明細38-39頁（建設改良費・企業債償還金等、千円）。歳入範囲は未確認のため宣言しない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2025/initial-1.pdf",
+            "sha256": "2dd080c355eec186cf773de5353d566862a131da7949b57e00575ff5172e4795",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7ippan2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2025/initial-2.pdf",
+            "sha256": "77fc7dd01d954eece3987cbe8a4c06d073337b9ca9a962cdc524edbf36886cab",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/983/r7kokuho.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2025/initial-4.pdf",
+            "sha256": "b393e7eb07c54bb34d792ec559ef5ef071e0d4242f9370115798cb9f3960ee4b",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/984/r7kouki.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2025/initial-3.pdf",
+            "sha256": "7d9f905c0d37c29a4c0171c0a5818cf8ae532453cf801f3c065a36471c261686",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/985/r7kaigo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2025/initial-5.pdf",
+            "sha256": "c0463644e0219aeb570c6e4479875daf72b5df6acfaedb3431d83451f33ae1f8",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/986/r7gesui.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T06:52:13.723Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2024,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度予算書（一般会計歳入歳出予算事項別明細書・各特別会計予算書・下水道事業会計予算書・説明資料）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1023870/1023875/index.html",
+          "inspected_at": "2026-10-08T06:51:20Z",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6ippan2.pdf",
+              "sha256": "35fe26121d61624d3de7cf294b0dbd749a1a33f58e4e3f82d92b96bfc6d7aec8",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 5
+                    },
+                    {
+                      "start": 48,
+                      "end": 309
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/877/r6kokuho.pdf",
+              "sha256": "127e734715dee08d174959f05cfc9bc15937f3bdf99fc50e29e0b684d6923a5c",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 22,
+                      "end": 43
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/878/r6kouki.pdf",
+              "sha256": "fbb4bb59fc9aa7d4edc9ffa2ab76216bb0b5704c5dc504c6c5955dec9992b69d",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 14,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/879/r6kaigo.pdf",
+              "sha256": "3010be8f42eb6dc58f89ab180e021438385a0e63536f1dcc40a5e521ed289d15",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 20,
+                      "end": 41
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/880/r6gesui.pdf",
+              "sha256": "4a2d327ecec72d3420a9d55687586d47bd5c8a82291865fe08b210e29ff5799d",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 8
+                    },
+                    {
+                      "start": 28,
+                      "end": 35
+                    },
+                    {
+                      "start": 38,
+                      "end": 39
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度予算書ページ（1023875、同5会計分冊）掲載の2024年度当初予算。他年度と同一5会計で、他の特別会計・企業会計の掲載なし。いずれも画像PDF（全頁がCCITT白黒スキャンで文字抽出は印字頁番号のみのため、必要な頁を120dpiで描画して目視確認）。一般会計の事項別明細書は歳出総括・財源内訳4-5頁（12款まで、歳出合計47,821,000千円）、歳出明細48-309頁（48頁が3歳出・1款議会費、308頁に10款教育費・11款公債費・12款予備費明細、309頁が節説明最終頁。目・本年度予算額・前年度予算額・比較・財源内訳が同一明細、単位千円）。国保は議案第19号で歳出総括10-11頁・歳出明細22-43頁（22頁が3歳出・1款総務費、42頁に8款予備費明細、43頁が節説明最終頁、千円）。後期高齢は議案第20号で歳出総括8-9頁・歳出明細14-21頁（14頁が3歳出・1款総務費、20頁に5款諸支出金・6款予備費明細、21頁が節説明最終頁、千円）。介護は議案第21号で歳出総括10-11頁・歳出明細20-41頁（20頁が3歳出・1款総務費、41頁が節説明最終頁、42頁は給与費明細で範囲外、千円）。下水道は予算実施計画7-8頁（収益的・資本的収入及び支出、支出を含む、千円）、収益的支出明細28-35頁（1下水道事業費用の款項目と本年度・前年度予定額・比較、節・備考つき、千円）、資本的支出明細38-39頁（1資本的支出の建設改良費・企業債償還金・予備費と節・備考、千円）。歳入範囲は未確認のため宣言しない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2024/initial-3.pdf",
+            "sha256": "35fe26121d61624d3de7cf294b0dbd749a1a33f58e4e3f82d92b96bfc6d7aec8",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6ippan2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2024/initial-1.pdf",
+            "sha256": "127e734715dee08d174959f05cfc9bc15937f3bdf99fc50e29e0b684d6923a5c",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/877/r6kokuho.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2024/initial-5.pdf",
+            "sha256": "fbb4bb59fc9aa7d4edc9ffa2ab76216bb0b5704c5dc504c6c5955dec9992b69d",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/878/r6kouki.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2024/initial-2.pdf",
+            "sha256": "3010be8f42eb6dc58f89ab180e021438385a0e63536f1dcc40a5e521ed289d15",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/879/r6kaigo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2024/initial-4.pdf",
+            "sha256": "4a2d327ecec72d3420a9d55687586d47bd5c8a82291865fe08b210e29ff5799d",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/880/r6gesui.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T06:52:27.861Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2023,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度予算書（一般会計歳入歳出予算事項別明細書・各特別会計予算書・下水道事業会計予算書・説明資料）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1022153/1022157/index.html",
+          "inspected_at": "2026-10-08T06:51:20Z",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5ippan2.pdf",
+              "sha256": "4c8d96b53303c969e1598bff98566b61f428e0b97b4563e83ef1c83377395eea",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 5
+                    },
+                    {
+                      "start": 46,
+                      "end": 307
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/159/r5kokuho.pdf",
+              "sha256": "42c35c06eb3c6a328da446b0e931ceeb488b76b08e03292466f8c48d39fbe4ca",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 22,
+                      "end": 43
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/160/r5kouki.pdf",
+              "sha256": "9c962a8a37477b54dd0955905aebda44221d07f65133625107b19849518bd938",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 14,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/161/r5kaigo.pdf",
+              "sha256": "936d2779ea577352157679898aa0d41c18d107f2bed14745b40ccac74d613c4d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 20,
+                      "end": 39
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/162/r5gesui.pdf",
+              "sha256": "3a3d59abab868baddeb506ad4aa9e18c3cd3306154630f3481adf3ba21102427",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 7
+                    },
+                    {
+                      "start": 27,
+                      "end": 34
+                    },
+                    {
+                      "start": 37,
+                      "end": 38
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度予算書ページ（1022157、同5会計分冊）掲載の2023年度当初予算。他年度と同一5会計で、他の特別会計・企業会計の掲載なし。いずれも文字PDF。一般会計の事項別明細書は歳出総括・財源内訳4-5頁（12款予備費まで、歳出合計45,656,000千円）、歳出明細46-307頁（46頁が3歳出・1款議会費、306頁に11款公債費・12款予備費明細、307頁が節説明最終頁。目・本年度予算額・前年度予算額・比較・財源内訳が同一明細、単位千円）。国保は歳出総括10-11頁・歳出明細22-43頁（8款予備費まで、千円）。後期高齢は歳出総括8-9頁・歳出明細14-21頁（第1表の6款予備費まで明細に含むことを確認、千円）。介護は歳出総括10-11頁・歳出明細20-39頁（38頁に5款公債費・6款諸支出金・7款予備費明細、39頁が節説明最終頁、千円）。下水道は予算実施計画6-7頁（支出を含む、千円）、収益的支出明細27-34頁（1下水道事業費用の款項目節と予定額が同一明細、千円）、資本的支出明細37-38頁（1資本的支出の建設改良費・企業債償還金・予備費と節・備考、38頁が最終頁、千円）。歳入範囲は未確認のため宣言しない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2023/initial-3.pdf",
+            "sha256": "4c8d96b53303c969e1598bff98566b61f428e0b97b4563e83ef1c83377395eea",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5ippan2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2023/initial-2.pdf",
+            "sha256": "42c35c06eb3c6a328da446b0e931ceeb488b76b08e03292466f8c48d39fbe4ca",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/159/r5kokuho.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2023/initial-5.pdf",
+            "sha256": "9c962a8a37477b54dd0955905aebda44221d07f65133625107b19849518bd938",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/160/r5kouki.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2023/initial-4.pdf",
+            "sha256": "936d2779ea577352157679898aa0d41c18d107f2bed14745b40ccac74d613c4d",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/161/r5kaigo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2023/initial-1.pdf",
+            "sha256": "3a3d59abab868baddeb506ad4aa9e18c3cd3306154630f3481adf3ba21102427",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/162/r5gesui.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T06:52:38.785Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2023,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度決算書（各会計歳出事項別明細書・下水道事業会計決算書）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021643/1021647/1024803.html",
+          "inspected_at": "2026-10-08T06:51:20Z",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/024/803/5saisyutujikoubetu.pdf",
+              "sha256": "e746dab86a61a6f908bf64afd2be4a3707e5c4250b7a3e03b528b45fe44e4063",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 158
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/024/803/5kokuhosaisyutujikoubetu.pdf",
+              "sha256": "0f21042fc8293938b44ba3029d13f35c39d0b7ee28c510dea2d230dd83e9a1d0",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/024/803/5koukisaisyutujikoubetu.pdf",
+              "sha256": "11af839c4e66e2f3e2ebc60d3d8bfd56e793018e90ce403f6ad2692d99b3147d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/024/803/5kaigosaisyutujikoubetu.pdf",
+              "sha256": "08f4c9308caa496f59100aa5caef8cfe93b3b5ac9b02ca624769087c4fef6269",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/024/803/5gesuikessannsyo.pdf",
+              "sha256": "1b797d39135caf05538fc055db3f408fce76876c242a7615247bb24f23339490",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 7
+                    },
+                    {
+                      "start": 24,
+                      "end": 27
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度決算書ページ（1024803）掲載の2023年度決算。令和6・7年度決算と同一の公式掲載先・同一5会計構成で全5会計の歳出を選定。一般会計・国保・後期高齢・介護は会計別の歳出事項別明細書（文字PDF）で全頁が歳出明細：款・項・目・節の科目名と当初予算額・補正予算額・予算現額・支出済額・翌年度繰越額・不用額が同一明細で、単位円（一般158頁：第1款議会費〜第12款予備費／国保13頁：第1款総務費〜第8款予備費／後期高齢7頁：第1款〜第6款予備費／介護13頁：第1款〜第7款予備費を先頭・末尾頁で確認）。下水道事業会計決算書（34頁、文字PDF）は6-7頁に収益的収支・資本的収支の決算報告（款・項・決算額、単位円・税込）、24-25頁に収益費用明細書（支出：営業費用等の款項目節・金額、円・税抜）、26頁に資本的収支明細書（資本的支出：建設改良費・企業債償還金等、円・税抜）、27頁に繰越分（収入・支出、円・税抜）を収録。損益計算書・貸借対照表・事業報告・CF計算書・固定資産明細書・企業債明細書は歳出明細の範囲外。歳入範囲は未確認のため宣言しない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2023/settlement-5.pdf",
+            "sha256": "e746dab86a61a6f908bf64afd2be4a3707e5c4250b7a3e03b528b45fe44e4063",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/024/803/5saisyutujikoubetu.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2023/settlement-2.pdf",
+            "sha256": "0f21042fc8293938b44ba3029d13f35c39d0b7ee28c510dea2d230dd83e9a1d0",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/024/803/5kokuhosaisyutujikoubetu.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2023/settlement-3.pdf",
+            "sha256": "11af839c4e66e2f3e2ebc60d3d8bfd56e793018e90ce403f6ad2692d99b3147d",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/024/803/5koukisaisyutujikoubetu.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2023/settlement-1.pdf",
+            "sha256": "08f4c9308caa496f59100aa5caef8cfe93b3b5ac9b02ca624769087c4fef6269",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/024/803/5kaigosaisyutujikoubetu.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2023/settlement-4.pdf",
+            "sha256": "1b797d39135caf05538fc055db3f408fce76876c242a7615247bb24f23339490",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/024/803/5gesuikessannsyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T06:52:48.783Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度補正予算（第1号）: 一般会計・国民健康保険特別会計・後期高齢者医療特別会計・介護保険特別会計・下水道事業会計",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1022153/1022157/1022158/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei1gou.pdf",
+              "sha256": "307a73ada4865071f1aa21b2ebfa05a88064446f9fd8ae673255dac213583d47",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 14,
+                      "end": 19
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/159/r5kokuhohosei1gou.pdf",
+              "sha256": "2e300977ca832865e1aa8594592507429290322b0ab4dd196a9e901e6705a9cf",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/160/r5koukihosei1gou.pdf",
+              "sha256": "1e4675ef03fd0c4590dbd0cabc1b4cb0313cd68a28b34bc045e171c94beec879",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/161/r5kaigohosei1gou.pdf",
+              "sha256": "c7927d5882041b6fa6a6d0b5d602490724dbd096e69771ba203ec8a9528d4d94",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/162/r5gesuihosei1.pdf",
+              "sha256": "963fbc0434fe615c680b0d8320c9c64d102711095e9b1ae55eb565bf9bf93de3",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "start": 5,
+                      "end": 5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和5年度補正予算（第1号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第２５号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[14, 19]、単位千円 国民健康保険特別会計は議案第６１号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 15]、単位千円 後期高齢者医療特別会計は議案第６２号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 介護保険特別会計は議案第６３号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 下水道事業会計は議案第２６号、第2条の款項別予定額表2頁と実施計画の支出目明細（既決予定額・補正予定額・計、千円）5頁 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。 下水道は予定キャッシュ・フロー計算書・給与費明細書・予定貸借対照表を範囲外とし、工事契約額・固定資産増加額を支出済額と推定しない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2023/supplementary-1-3.pdf",
+            "sha256": "307a73ada4865071f1aa21b2ebfa05a88064446f9fd8ae673255dac213583d47",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei1gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2023/supplementary-1-2.pdf",
+            "sha256": "2e300977ca832865e1aa8594592507429290322b0ab4dd196a9e901e6705a9cf",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/159/r5kokuhohosei1gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2023/supplementary-1-1.pdf",
+            "sha256": "1e4675ef03fd0c4590dbd0cabc1b4cb0313cd68a28b34bc045e171c94beec879",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/160/r5koukihosei1gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2023/supplementary-1-5.pdf",
+            "sha256": "c7927d5882041b6fa6a6d0b5d602490724dbd096e69771ba203ec8a9528d4d94",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/161/r5kaigohosei1gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2023/supplementary-1-4.pdf",
+            "sha256": "963fbc0434fe615c680b0d8320c9c64d102711095e9b1ae55eb565bf9bf93de3",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/162/r5gesuihosei1.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:31:29.481Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度補正予算（第2号）: 一般会計・国民健康保険特別会計・後期高齢者医療特別会計・介護保険特別会計",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1022153/1022157/1022158/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei2gou.pdf",
+              "sha256": "233c9398f6ad5813a9ef4c3cf3d024b0f01da51b25720d107aafda14a725b68b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    },
+                    {
+                      "start": 16,
+                      "end": 17
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/159/r5kokuhohosei2gou.pdf",
+              "sha256": "375bffd1102303f8e701a5138e1207ea7d03bc114535c79d662aca8051d082bc",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/160/r5koukihosei2gou.pdf",
+              "sha256": "838467a3558ae87584c19cc5064e5d9f0ecba029cbd19b5a898260ab8b7e20bf",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/161/r5kaigohosei2gou.pdf",
+              "sha256": "291733a7a886e2305aff7e2290a5fa1331bbc63b13936039106a8bf0682278db",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 14,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和5年度補正予算（第2号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第２９号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[8]+[12, 13]+[16, 17]、単位千円 国民健康保険特別会計は議案第７０号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 後期高齢者医療特別会計は議案第７１号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 介護保険特別会計は議案第７２号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[14, 15]、単位千円 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2023/supplementary-2-1.pdf",
+            "sha256": "233c9398f6ad5813a9ef4c3cf3d024b0f01da51b25720d107aafda14a725b68b",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei2gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2023/supplementary-2-3.pdf",
+            "sha256": "375bffd1102303f8e701a5138e1207ea7d03bc114535c79d662aca8051d082bc",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/159/r5kokuhohosei2gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2023/supplementary-2-4.pdf",
+            "sha256": "838467a3558ae87584c19cc5064e5d9f0ecba029cbd19b5a898260ab8b7e20bf",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/160/r5koukihosei2gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2023/supplementary-2-2.pdf",
+            "sha256": "291733a7a886e2305aff7e2290a5fa1331bbc63b13936039106a8bf0682278db",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/161/r5kaigohosei2gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:31:38.367Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度補正予算（第3号）: 一般会計・国民健康保険特別会計・後期高齢者医療特別会計・介護保険特別会計",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1022153/1022157/1022158/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei3gou.pdf",
+              "sha256": "7defa1da93fd8e110945699fb3fe2b645239681c79684f892b2b7e4c9629eef6",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/159/r5kokuhohosei3gou.pdf",
+              "sha256": "e40f349950254f9ae7671cb68f5a1188bc55ac7485bae8ac5d1d6f9da634445a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/160/r5koukihosei3gou.pdf",
+              "sha256": "55797ce2e67cf1fc58b425d9301c04a67179fbd2dbe064bafb7e64036d8091d1",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/161/r5kaigohosei3gou.pdf",
+              "sha256": "a09cfb73b7d7bedeae4ca29bb8af681078060b121c0198cb443382fec588f31d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 16,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和5年度補正予算（第3号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第３０号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[]+[8, 9]+[12, 13]、単位千円（第1表2頁はToUnicode欠損のため描画目視で歳出を確認） 国民健康保険特別会計は議案第９１号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円（財源更正あり、歳出合計補正額0・財源更正のみ） 後期高齢者医療特別会計は議案第８４号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 介護保険特別会計は議案第８５号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[16, 21]、単位千円 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。 親検査: 取り込み範囲の第1表等にToUnicode欠損による文字化けがあり画像として読む必要があるため、pdf_typeはschemaの読取方法の定義に従いscanとする。画像XObjectを持つ画像スキャンであることを意味しない。URL・SHA・歳出範囲は変更しない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2023/supplementary-3-2.pdf",
+            "sha256": "7defa1da93fd8e110945699fb3fe2b645239681c79684f892b2b7e4c9629eef6",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei3gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2023/supplementary-3-4.pdf",
+            "sha256": "e40f349950254f9ae7671cb68f5a1188bc55ac7485bae8ac5d1d6f9da634445a",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/159/r5kokuhohosei3gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2023/supplementary-3-1.pdf",
+            "sha256": "55797ce2e67cf1fc58b425d9301c04a67179fbd2dbe064bafb7e64036d8091d1",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/160/r5koukihosei3gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2023/supplementary-3-3.pdf",
+            "sha256": "a09cfb73b7d7bedeae4ca29bb8af681078060b121c0198cb443382fec588f31d",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/161/r5kaigohosei3gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:31:47.336Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度補正予算（第4号）: 一般会計・国民健康保険特別会計・後期高齢者医療特別会計",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1022153/1022157/1022158/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei4gou.pdf",
+              "sha256": "e63db3ad31c70230128271898163b8170b66f63498b1c1cd7fcdd569461b5ad1",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 17
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/159/r5kokuhohosei4gou.pdf",
+              "sha256": "a361762c325a637126f574451067fa796e8b986b92af120405fcc8dcc43a556f",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 14,
+                      "end": 19
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/160/r5koukihosei4gou.pdf",
+              "sha256": "0d4dc60d0ca641261a113e993a6c3ed3f6e5db7c2cf8296a51a10e2896294899",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和5年度補正予算（第4号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第４９号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[]+[]+None、単位千円（第1表・総括・歳出明細の文字層がToUnicode欠損のため描画目視で款項目・補正額対応を確認） 国民健康保険特別会計は議案第１６号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[14, 19]、単位千円（財源更正あり） 後期高齢者医療特別会計は議案第１７号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。 親検査: 取り込み範囲の第1表等にToUnicode欠損による文字化けがあり画像として読む必要があるため、pdf_typeはschemaの読取方法の定義に従いscanとする。画像XObjectを持つ画像スキャンであることを意味しない。URL・SHA・歳出範囲は変更しない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2023/supplementary-4-3.pdf",
+            "sha256": "e63db3ad31c70230128271898163b8170b66f63498b1c1cd7fcdd569461b5ad1",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei4gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2023/supplementary-4-2.pdf",
+            "sha256": "a361762c325a637126f574451067fa796e8b986b92af120405fcc8dcc43a556f",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/159/r5kokuhohosei4gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2023/supplementary-4-1.pdf",
+            "sha256": "0d4dc60d0ca641261a113e993a6c3ed3f6e5db7c2cf8296a51a10e2896294899",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/160/r5koukihosei4gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:31:54.646Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度一般会計補正予算（第5号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1022153/1022157/1022158/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei5gou.pdf",
+              "sha256": "0fe6f61f9c82a2a003a44d3b16147879616ae9a09f0d0aa04e9d759dc9066661",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和5年度補正予算（第5号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第５５号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2023/supplementary-5.pdf",
+            "sha256": "0fe6f61f9c82a2a003a44d3b16147879616ae9a09f0d0aa04e9d759dc9066661",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei5gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:31:57.900Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度一般会計補正予算（第6号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1022153/1022157/1022158/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei6gou.pdf",
+              "sha256": "de73a21e3d6d42617b7063370bf1a50e26e6f86f51a7ae80643135b9a5c66840",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 20,
+                      "end": 31
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和5年度補正予算（第6号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第６０号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[5]+[10, 11]+[20, 31]、単位千円（第2表（繰越明許費・債務負担）は範囲外、財源更正あり） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2023/supplementary-6.pdf",
+            "sha256": "de73a21e3d6d42617b7063370bf1a50e26e6f86f51a7ae80643135b9a5c66840",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei6gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:32:01.406Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 7
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度一般会計補正予算（第7号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1022153/1022157/1022158/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei7gou.pdf",
+              "sha256": "dd3fb378841986c81350fed4c671e16adecc62e9904bebabe3acad9c1c9c2dcb",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 14,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和5年度補正予算（第7号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第６９号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[10, 11]+[14, 15]、単位千円（第2表（繰越明許費・債務負担）は範囲外） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2023/supplementary-7.pdf",
+            "sha256": "dd3fb378841986c81350fed4c671e16adecc62e9904bebabe3acad9c1c9c2dcb",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei7gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:32:05.376Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 8
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度一般会計補正予算（第8号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1022153/1022157/1022158/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei8gou.pdf",
+              "sha256": "964307a4ba2df099cb35eee99ce8d60530d75c392a116a73e9475bb5d0851ed2",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和5年度補正予算（第8号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第８６号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2023/supplementary-8.pdf",
+            "sha256": "964307a4ba2df099cb35eee99ce8d60530d75c392a116a73e9475bb5d0851ed2",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei8gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:32:08.340Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 9
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度一般会計補正予算（第9号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1022153/1022157/1022158/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei9gou.pdf",
+              "sha256": "608ea960c2c9d5663535f5c477218365ab0b687d44f757e896fc689654b7d342",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 23
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和5年度補正予算（第9号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第８７号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 23]、単位千円 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2023/supplementary-9.pdf",
+            "sha256": "608ea960c2c9d5663535f5c477218365ab0b687d44f757e896fc689654b7d342",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei9gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:32:11.695Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 10
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度一般会計補正予算（第10号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1022153/1022157/1022158/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei10gou.pdf",
+              "sha256": "4d19d87fe02ff1ba4939dbcfa64895010b0e5928dea324aba1eac0b39627d32a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 5
+                    },
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 18,
+                      "end": 37
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和5年度補正予算（第10号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第９０号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4, 5]+[10, 11]+[18, 37]、単位千円（第2表（繰越明許費・債務負担）は範囲外、財源更正あり） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2023/supplementary-10.pdf",
+            "sha256": "4d19d87fe02ff1ba4939dbcfa64895010b0e5928dea324aba1eac0b39627d32a",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei10gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:32:15.122Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 11
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度一般会計補正予算（第11号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1022153/1022157/1022158/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei11gou.pdf",
+              "sha256": "30d77561882136538d5471757c1f502745e9dddabbe30f41b180ec967b5a7652",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 14,
+                      "end": 17
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和5年度補正予算（第11号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第９２号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[10, 11]+[14, 17]、単位千円（第2表（繰越明許費・債務負担）は範囲外、財源更正あり） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2023/supplementary-11.pdf",
+            "sha256": "30d77561882136538d5471757c1f502745e9dddabbe30f41b180ec967b5a7652",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei11gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:32:18.433Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 12
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度一般会計補正予算（第12号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1022153/1022157/1022158/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei12gou.pdf",
+              "sha256": "120573ed7ab2c6ea8391c48aba2be95e197afa1cc6c7450227cef1e87e18a8cf",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 14,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和5年度補正予算（第12号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第５号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[10, 11]+[14, 15]、単位千円（第2表（繰越明許費・債務負担）は範囲外） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2023/supplementary-12.pdf",
+            "sha256": "120573ed7ab2c6ea8391c48aba2be95e197afa1cc6c7450227cef1e87e18a8cf",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei12gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:32:21.501Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 13
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度一般会計補正予算（第13号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1022153/1022157/1022158/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei13gou.pdf",
+              "sha256": "54e325aa76c2467fa6f33d4bf0f6de12f4b31933c4df424b45b283b4cbcfc42e",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 6
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    },
+                    {
+                      "start": 22,
+                      "end": 49
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和5年度補正予算（第13号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第１５号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[5, 6]+[12, 13]+[22, 49]、単位千円（第2表（繰越明許費・債務負担）は範囲外、財源更正あり） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2023/supplementary-13.pdf",
+            "sha256": "54e325aa76c2467fa6f33d4bf0f6de12f4b31933c4df424b45b283b4cbcfc42e",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/022/158/r5hosei13gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:32:24.730Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度補正予算（第1号）: 一般会計・国民健康保険特別会計・後期高齢者医療特別会計・介護保険特別会計",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1023870/1023875/1023876/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei1gou.pdf",
+              "sha256": "1806f091a09bdf116a69837284e3a11238055fc1b61be0b95db188e10a95d3cb",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/877/r6kokuhohosei1gou.pdf",
+              "sha256": "881af5209250e6ac9058e2e1c53b720dd3b6c6edc9d8731021fefde2bba1fcb8",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/878/r6koukihosei1gou.pdf",
+              "sha256": "73ff8b4c0f65a0c3aeecd1653620288b09f8b290def09b03ea0ebc6789149ffb",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/879/r6kaigohosei1gou.pdf",
+              "sha256": "01855bedbb3e96969e4b411461cc4b6d6254b023eaf2cc3de0196ba96a69a7f9",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 14,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和6年度補正予算（第1号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第２４号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 15]、単位千円 国民健康保険特別会計は議案第３８号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 後期高齢者医療特別会計は議案第５７号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 介護保険特別会計は議案第４６号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[10, 11]+[14, 15]、単位千円（第2表（繰越明許費・債務負担）は範囲外、一覧リンク名は「予算」だが本文は補正予算） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-1-2.pdf",
+            "sha256": "1806f091a09bdf116a69837284e3a11238055fc1b61be0b95db188e10a95d3cb",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei1gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-1-4.pdf",
+            "sha256": "881af5209250e6ac9058e2e1c53b720dd3b6c6edc9d8731021fefde2bba1fcb8",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/877/r6kokuhohosei1gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-1-3.pdf",
+            "sha256": "73ff8b4c0f65a0c3aeecd1653620288b09f8b290def09b03ea0ebc6789149ffb",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/878/r6koukihosei1gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-1-1.pdf",
+            "sha256": "01855bedbb3e96969e4b411461cc4b6d6254b023eaf2cc3de0196ba96a69a7f9",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/879/r6kaigohosei1gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:32:33.452Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度補正予算（第2号）: 一般会計・国民健康保険特別会計・後期高齢者医療特別会計・介護保険特別会計",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1023870/1023875/1023876/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei2gou.pdf",
+              "sha256": "1f27d4bc13468108e363bf5944b097018f039fa76019313c44aae45aefed50ad",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/877/r6kokuhohosei2gou.pdf",
+              "sha256": "74540073cbac5a14b3c29697ea40002896de690657cc27f22f87df8ffdf95a74",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/878/r6koukihosei2gou.pdf",
+              "sha256": "542ac1dfe14f465bda0d4367660648e2caf0edc40a5cd286491ef3ada6b03d14",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/879/r6kaigohosei2gou.pdf",
+              "sha256": "2520351377bfd7e1414e119991ac08c0adb6206df24a1076eaf123296a694b8c",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 16,
+                      "end": 19
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和6年度補正予算（第2号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第３２号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 国民健康保険特別会計は議案第５６号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 後期高齢者医療特別会計は議案第６９号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 介護保険特別会計は議案第５８号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[16, 19]、単位千円（一覧リンク名は「予算」だが本文は補正予算） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-2-1.pdf",
+            "sha256": "1f27d4bc13468108e363bf5944b097018f039fa76019313c44aae45aefed50ad",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei2gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-2-4.pdf",
+            "sha256": "74540073cbac5a14b3c29697ea40002896de690657cc27f22f87df8ffdf95a74",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/877/r6kokuhohosei2gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-2-3.pdf",
+            "sha256": "542ac1dfe14f465bda0d4367660648e2caf0edc40a5cd286491ef3ada6b03d14",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/878/r6koukihosei2gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-2-2.pdf",
+            "sha256": "2520351377bfd7e1414e119991ac08c0adb6206df24a1076eaf123296a694b8c",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/879/r6kaigohosei2gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:32:42.301Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度補正予算（第3号）: 一般会計・国民健康保険特別会計・後期高齢者医療特別会計・介護保険特別会計",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1023870/1023875/1023876/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei3gou.pdf",
+              "sha256": "32464af84ab8f21acf45d12a173ef1505f1ff088fa71eb4c9e1e7a73510f8261",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/877/r6kokuhohosei3gou.pdf",
+              "sha256": "44cb8e5b8a974b2153282177521efd4835dcd06f02c2d80de077c87011ad093c",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/878/r6koukihosei3gou.pdf",
+              "sha256": "083b2f854bc38bfb5b709731088b682b1bc4a068931efd15e951f8c4d88e8852",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/879/r6kaigohosei3gou.pdf",
+              "sha256": "066d9dff84d60f24d045a33a70a7dc70239a2a875c5dc89a07a375fb45f5b7f6",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 14,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和6年度補正予算（第3号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第３７号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 国民健康保険特別会計は議案第６８号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 後期高齢者医療特別会計は議案第７９号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 介護保険特別会計は議案第７０号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[14, 15]、単位千円（一覧リンク名は「予算」だが本文は補正予算） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-3-3.pdf",
+            "sha256": "32464af84ab8f21acf45d12a173ef1505f1ff088fa71eb4c9e1e7a73510f8261",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei3gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-3-4.pdf",
+            "sha256": "44cb8e5b8a974b2153282177521efd4835dcd06f02c2d80de077c87011ad093c",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/877/r6kokuhohosei3gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-3-2.pdf",
+            "sha256": "083b2f854bc38bfb5b709731088b682b1bc4a068931efd15e951f8c4d88e8852",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/878/r6koukihosei3gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-3-1.pdf",
+            "sha256": "066d9dff84d60f24d045a33a70a7dc70239a2a875c5dc89a07a375fb45f5b7f6",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/879/r6kaigohosei3gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:32:54.404Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度補正予算（第4号）: 一般会計・国民健康保険特別会計・後期高齢者医療特別会計・介護保険特別会計",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1023870/1023875/1023876/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei4gou.pdf",
+              "sha256": "37656899989fa9a5178eadb938002b128153ed7d153e9bebfc7299373d1e0acd",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/877/r6kokuhohosei4gou.pdf",
+              "sha256": "6dc2ce38c88d5fec60abd268ca7d06f3d787a4648b8c89cd1fcee7727d9dfdf8",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/878/r6koukihosei4gou.pdf",
+              "sha256": "306243bd3f4421c75c5c4ca50e69fb468249880bcebf340d4183865f9d0e8023",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/879/r6kaigohosei4gou.pdf",
+              "sha256": "4bb24ff230ab06c338f309f53e5c0cc5d5dbf8e044991630636d8006f1e9793a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 14,
+                      "end": 19
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和6年度補正予算（第4号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第３９号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 国民健康保険特別会計は議案第７８号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 後期高齢者医療特別会計は議案第１７号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 介護保険特別会計は議案第８０号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[14, 19]、単位千円（一覧リンク名は「予算」だが本文は補正予算） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-4-2.pdf",
+            "sha256": "37656899989fa9a5178eadb938002b128153ed7d153e9bebfc7299373d1e0acd",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei4gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-4-4.pdf",
+            "sha256": "6dc2ce38c88d5fec60abd268ca7d06f3d787a4648b8c89cd1fcee7727d9dfdf8",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/877/r6kokuhohosei4gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-4-1.pdf",
+            "sha256": "306243bd3f4421c75c5c4ca50e69fb468249880bcebf340d4183865f9d0e8023",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/878/r6koukihosei4gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-4-3.pdf",
+            "sha256": "4bb24ff230ab06c338f309f53e5c0cc5d5dbf8e044991630636d8006f1e9793a",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/879/r6kaigohosei4gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:33:03.155Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度補正予算（第5号）: 一般会計・国民健康保険特別会計・介護保険特別会計",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1023870/1023875/1023876/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei5gou.pdf",
+              "sha256": "6dc3dc2f86d1c40f4648414b4ce5b5c0ce4484848136f29ea3951f0ec5961e81",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/877/r6kokuhohosei5gou.pdf",
+              "sha256": "37137d741f0c982bb2afdfea3c7072deba0caac64781f526619064de22d63517",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 14,
+                      "end": 17
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/879/r6kaigohosei5gou_.pdf",
+              "sha256": "d4c6bd6b0ee2889f0bbaf9f69895f464c6b7887a92a49f9c14ad26d326687502",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和6年度補正予算（第5号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第４０号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円（財源更正あり） 国民健康保険特別会計は議案第１６号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[14, 17]、単位千円（財源更正あり） 介護保険特別会計は議案第８６号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円（一覧リンク名は「予算」だが本文は補正予算） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-5-2.pdf",
+            "sha256": "6dc3dc2f86d1c40f4648414b4ce5b5c0ce4484848136f29ea3951f0ec5961e81",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei5gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-5-1.pdf",
+            "sha256": "37137d741f0c982bb2afdfea3c7072deba0caac64781f526619064de22d63517",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/877/r6kokuhohosei5gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-5-3.pdf",
+            "sha256": "d4c6bd6b0ee2889f0bbaf9f69895f464c6b7887a92a49f9c14ad26d326687502",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/879/r6kaigohosei5gou_.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:33:10.113Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度補正予算（第6号）: 一般会計・介護保険特別会計",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1023870/1023875/1023876/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei6gou.pdf",
+              "sha256": "7be5db8156e590b416ad2482dbcdf438c2f520eda9304771b22fa5d8b52a8898",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/879/r6kaigohosei6gou.pdf",
+              "sha256": "d4225647ac71eaca77a7e83acc92102b0b5482f27638dba015c1a8a293e6c315",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和6年度補正予算（第6号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第４５号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 介護保険特別会計は議案第１８号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円（一覧リンク名は「予算」だが本文は補正予算） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-6-1.pdf",
+            "sha256": "7be5db8156e590b416ad2482dbcdf438c2f520eda9304771b22fa5d8b52a8898",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei6gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-6-2.pdf",
+            "sha256": "d4225647ac71eaca77a7e83acc92102b0b5482f27638dba015c1a8a293e6c315",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/879/r6kaigohosei6gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:33:16.957Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 7
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度一般会計補正予算（第7号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1023870/1023875/1023876/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei7gou.pdf",
+              "sha256": "6d720c9b0833dcf3e0db90f89221471ac301a06ff13bf114bdd02e621e9b3cfb",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 6
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    },
+                    {
+                      "start": 20,
+                      "end": 33
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和6年度補正予算（第7号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第５５号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[5, 6]+[12, 13]+[20, 33]、単位千円（第2表（繰越明許費・債務負担）は範囲外、財源更正あり） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-7.pdf",
+            "sha256": "6d720c9b0833dcf3e0db90f89221471ac301a06ff13bf114bdd02e621e9b3cfb",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei7gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:33:20.775Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 8
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度一般会計補正予算（第8号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1023870/1023875/1023876/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei8gou.pdf",
+              "sha256": "5c90c09d8a65703ae916d4990607daa1ddcb5b0c5bc03d7f98802732c6d0d194",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    },
+                    {
+                      "start": 16,
+                      "end": 19
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和6年度補正予算（第8号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第６６号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[8]+[12, 13]+[16, 19]、単位千円 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-8.pdf",
+            "sha256": "5c90c09d8a65703ae916d4990607daa1ddcb5b0c5bc03d7f98802732c6d0d194",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei8gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:33:24.454Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 9
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度一般会計補正予算（第9号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1023870/1023875/1023876/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei9gou.pdf",
+              "sha256": "cd20f4fc9ae3b674040a51a9bf44ec14fcd2e8409558f40b77237db318138d07",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    },
+                    {
+                      "start": 16,
+                      "end": 17
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和6年度補正予算（第9号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第６７号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[8]+[12, 13]+[16, 17]、単位千円 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-9.pdf",
+            "sha256": "cd20f4fc9ae3b674040a51a9bf44ec14fcd2e8409558f40b77237db318138d07",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei9gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:33:27.946Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 10
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度一般会計補正予算（第10号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1023870/1023875/1023876/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei10gou_.pdf",
+              "sha256": "911d23a4b3e20ef4aea60cce620858909f5359be90025c5b94a8f2111a58e54a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和6年度補正予算（第10号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第８１号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-10.pdf",
+            "sha256": "911d23a4b3e20ef4aea60cce620858909f5359be90025c5b94a8f2111a58e54a",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei10gou_.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:33:31.741Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 11
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度一般会計補正予算（第11号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1023870/1023875/1023876/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei11gou_.pdf",
+              "sha256": "8e6d6e4cd2a7063d762b93052d3c3b9606508c7522f4d556c71c51836e13b347",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 5
+                    },
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 14,
+                      "end": 31
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和6年度補正予算（第11号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第８２号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4, 5]+[10, 11]+[14, 31]、単位千円 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-11.pdf",
+            "sha256": "8e6d6e4cd2a7063d762b93052d3c3b9606508c7522f4d556c71c51836e13b347",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei11gou_.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:33:35.291Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 12
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度一般会計補正予算（第12号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1023870/1023875/1023876/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei12gou_.pdf",
+              "sha256": "9d0a7d6cd0d8c22e708aff789e650edcfdbfe7287ab8974063a71b38aef67fef",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 5
+                    },
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 20,
+                      "end": 45
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和6年度補正予算（第12号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第８５号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4, 5]+[10, 11]+[20, 45]、単位千円（第2表（繰越明許費・債務負担）は範囲外、財源更正あり） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-12.pdf",
+            "sha256": "9d0a7d6cd0d8c22e708aff789e650edcfdbfe7287ab8974063a71b38aef67fef",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei12gou_.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:33:38.751Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 13
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度一般会計補正予算（第13号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1023870/1023875/1023876/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei13gou.pdf",
+              "sha256": "23369b5aafe5ffcbe3f0766dc0a15316211e6fddcdd9e6c3dc7a579f68d7eec1",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 14,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和6年度補正予算（第13号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第８７号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[10, 11]+[14, 15]、単位千円（第2表（繰越明許費・債務負担）は範囲外） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-13.pdf",
+            "sha256": "23369b5aafe5ffcbe3f0766dc0a15316211e6fddcdd9e6c3dc7a579f68d7eec1",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei13gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:33:42.390Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 14
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度一般会計補正予算（第14号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1023870/1023875/1023876/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei14gou.pdf",
+              "sha256": "a91660b725773805ca671f0f3ccdde009cabd7329df73c82eaaddb57dd3018c6",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 14,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和6年度補正予算（第14号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第１号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[10, 11]+[14, 15]、単位千円（第2表（繰越明許費・債務負担）は範囲外、財源更正あり） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-14.pdf",
+            "sha256": "a91660b725773805ca671f0f3ccdde009cabd7329df73c82eaaddb57dd3018c6",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei14gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:33:45.755Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 15
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度一般会計補正予算（第15号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1023870/1023875/1023876/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei15gou.pdf",
+              "sha256": "bf006057897f176e405be42d9de3f0707def65f332f19c958ee8b2a305241333",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 6
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    },
+                    {
+                      "start": 26,
+                      "end": 57
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和6年度補正予算（第15号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第１５号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[5, 6]+[12, 13]+[26, 57]、単位千円（第2表（繰越明許費・債務負担）は範囲外、財源更正あり） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2024/supplementary-15.pdf",
+            "sha256": "bf006057897f176e405be42d9de3f0707def65f332f19c958ee8b2a305241333",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/023/876/r6hosei15gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:33:49.456Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度補正予算（第1号）: 一般会計・国民健康保険特別会計・後期高齢者医療特別会計・介護保険特別会計・下水道事業会計",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1025978/1025981/1025982/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei1gou.pdf",
+              "sha256": "5f90c3dc5236183c2f851c0f38a83ba304c96ba44775ae38972530d66b76d2ee",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 5
+                    },
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 16,
+                      "end": 29
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/983/r7kokuhohosei1gou.pdf",
+              "sha256": "d6258921c64c22c2a4d42baac43dfd4b1ca88e0f4fa52cbcdb8bf2b9d40fa3f3",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/984/r7koukihosei1gou.pdf",
+              "sha256": "ecdbe4dc6e6e76c690385dcbc5454e5a630820ad86a83e341ff2087020fe188c",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/985/r7kaigohosei1gou.pdf",
+              "sha256": "596e097e471ae9358e9c41e8a0a11000eee8430f76ed3b6bc9fa73c446f10800",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/986/r7gesuihosei1gou.pdf",
+              "sha256": "929a2b5fd6ab1801514a086e6d3805b6fc06ab7840690e14e26a2ec7ea17e9d6",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和7年度補正予算（第1号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第２７号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4, 5]+[10, 11]+[16, 29]、単位千円（財源更正あり） 国民健康保険特別会計は議案第５２号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 後期高齢者医療特別会計は議案第３８号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 介護保険特別会計は議案第５４号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円（一覧リンク名は「予算」だが本文は補正予算） 下水道事業会計は議案第８５号、第2条の款項別予定額表2頁と実施計画の支出目明細（既決予定額・補正予定額・計、千円）4頁 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。 下水道は予定キャッシュ・フロー計算書・給与費明細書・予定貸借対照表を範囲外とし、工事契約額・固定資産増加額を支出済額と推定しない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-1-2.pdf",
+            "sha256": "5f90c3dc5236183c2f851c0f38a83ba304c96ba44775ae38972530d66b76d2ee",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei1gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-1-4.pdf",
+            "sha256": "d6258921c64c22c2a4d42baac43dfd4b1ca88e0f4fa52cbcdb8bf2b9d40fa3f3",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/983/r7kokuhohosei1gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-1-5.pdf",
+            "sha256": "ecdbe4dc6e6e76c690385dcbc5454e5a630820ad86a83e341ff2087020fe188c",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/984/r7koukihosei1gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-1-1.pdf",
+            "sha256": "596e097e471ae9358e9c41e8a0a11000eee8430f76ed3b6bc9fa73c446f10800",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/985/r7kaigohosei1gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-1-3.pdf",
+            "sha256": "929a2b5fd6ab1801514a086e6d3805b6fc06ab7840690e14e26a2ec7ea17e9d6",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/986/r7gesuihosei1gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:33:59.605Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度補正予算（第2号）: 一般会計・国民健康保険特別会計・後期高齢者医療特別会計・介護保険特別会計",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1025978/1025981/1025982/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei2gou.pdf",
+              "sha256": "a8d14eda789da51c37a6df4da227679dc1b7b6e5d39f44dd1a8924a3c35a9456",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/983/r7kokuhohosei2gou.pdf",
+              "sha256": "a96e707a9a589310b909e499d122280a976ae50198125aa43d94992cbac5ad24",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/984/r7koukihosei2gou.pdf",
+              "sha256": "d44e338c3396e5ffd4fb583f72d6f6baa85a281626d92b534759052b994ffe83",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/985/r7kaigohosei2gou.pdf",
+              "sha256": "f5c9fc7b273c141f832b023a05d2ff6cc5029036dba5af6d4dec8af4084cfcba",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 14,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和7年度補正予算（第2号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第３１号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 国民健康保険特別会計は議案第８３号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 後期高齢者医療特別会計は議案第５３号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 介護保険特別会計は議案第７９号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[14, 21]、単位千円（一覧リンク名は「予算」だが本文は補正予算） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-2-1.pdf",
+            "sha256": "a8d14eda789da51c37a6df4da227679dc1b7b6e5d39f44dd1a8924a3c35a9456",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei2gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-2-2.pdf",
+            "sha256": "a96e707a9a589310b909e499d122280a976ae50198125aa43d94992cbac5ad24",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/983/r7kokuhohosei2gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-2-3.pdf",
+            "sha256": "d44e338c3396e5ffd4fb583f72d6f6baa85a281626d92b534759052b994ffe83",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/984/r7koukihosei2gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-2-4.pdf",
+            "sha256": "f5c9fc7b273c141f832b023a05d2ff6cc5029036dba5af6d4dec8af4084cfcba",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/985/r7kaigohosei2gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:34:09.350Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度補正予算（第3号）: 一般会計・国民健康保険特別会計・後期高齢者医療特別会計・介護保険特別会計",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1025978/1025981/1025982/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei3gou.pdf",
+              "sha256": "06d3d2b1c40374a2348fbadc6c7b4a0bdd21c10580040aba1ea41528d6d18c50",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 17
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/983/r7kokuhohosei3gou.pdf",
+              "sha256": "69c4b5dffd6a1ec15a5aea2d3c247a86cc4ea16c3d8b241e498f92733b9503ab",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 14,
+                      "end": 17
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/984/r7koukihosei3gou.pdf",
+              "sha256": "fada6c0709d39c3f7e5b5a699d74736b3d260a34056f075eefc174ca6125498d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/985/r7kaigohosei3gou.pdf",
+              "sha256": "763e8fc30154610ae0a7a5f34ffa3daefc83737aa36d01f8b2aaf4235845d634",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和7年度補正予算（第3号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第３７号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 17]、単位千円（財源更正あり） 国民健康保険特別会計は議案第２２号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[14, 17]、単位千円（財源更正あり） 後期高齢者医療特別会計は議案第７８号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 介護保険特別会計は議案第８４号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円（一覧リンク名は「予算」だが本文は補正予算） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-3-1.pdf",
+            "sha256": "06d3d2b1c40374a2348fbadc6c7b4a0bdd21c10580040aba1ea41528d6d18c50",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei3gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-3-2.pdf",
+            "sha256": "69c4b5dffd6a1ec15a5aea2d3c247a86cc4ea16c3d8b241e498f92733b9503ab",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/983/r7kokuhohosei3gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-3-4.pdf",
+            "sha256": "fada6c0709d39c3f7e5b5a699d74736b3d260a34056f075eefc174ca6125498d",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/984/r7koukihosei3gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-3-3.pdf",
+            "sha256": "763e8fc30154610ae0a7a5f34ffa3daefc83737aa36d01f8b2aaf4235845d634",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/985/r7kaigohosei3gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:34:17.797Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度補正予算（第4号）: 一般会計・後期高齢者医療特別会計",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1025978/1025981/1025982/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei4gou.pdf",
+              "sha256": "13681a480b4f0e4a45bb7502e02553209cc1a86e4f91a4852ac839f3aa4d477b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/984/r7koukihosei4gou.pdf",
+              "sha256": "c11f082d6d6a652b80f721a90e99062158347545670a66b0a8ab6b503beccec4",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和7年度補正予算（第4号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第４０号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 15]、単位千円 後期高齢者医療特別会計は議案第４号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-4-1.pdf",
+            "sha256": "13681a480b4f0e4a45bb7502e02553209cc1a86e4f91a4852ac839f3aa4d477b",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei4gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-4-2.pdf",
+            "sha256": "c11f082d6d6a652b80f721a90e99062158347545670a66b0a8ab6b503beccec4",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/984/r7koukihosei4gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:34:24.031Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度補正予算（第5号）: 一般会計・後期高齢者医療特別会計",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1025978/1025981/1025982/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei5gou.pdf",
+              "sha256": "ea74015ec8835014267129a7ba040f99839a946c05cfec92a22e65d026baf81a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 6
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    },
+                    {
+                      "start": 22,
+                      "end": 35
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/984/r7koukihosei5gou.pdf",
+              "sha256": "9b2f37e6702cdf6ac3e9f47279a47a613c28395f99ed326e08abcc2f349eee2e",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和7年度補正予算（第5号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第５１号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[5, 6]+[12, 13]+[22, 35]、単位千円（第2表（繰越明許費・債務負担）は範囲外、財源更正あり） 後期高齢者医療特別会計は議案第２３号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-5-2.pdf",
+            "sha256": "ea74015ec8835014267129a7ba040f99839a946c05cfec92a22e65d026baf81a",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei5gou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-5-1.pdf",
+            "sha256": "9b2f37e6702cdf6ac3e9f47279a47a613c28395f99ed326e08abcc2f349eee2e",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/984/r7koukihosei5gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:34:29.964Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度一般会計補正予算（第6号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1025978/1025981/1025982/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei6gou.pdf",
+              "sha256": "c55c4e983561c94292e7a70f055ff937a34d0750d4f150e96204dd99574f794e",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和7年度補正予算（第6号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第６１号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 15]、単位千円 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-6.pdf",
+            "sha256": "c55c4e983561c94292e7a70f055ff937a34d0750d4f150e96204dd99574f794e",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei6gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:34:33.647Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 7
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度一般会計補正予算（第7号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1025978/1025981/1025982/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei7gou.pdf",
+              "sha256": "f49aa15f3435e1bc01c47e8338aceaa0aef83c310b38c8be991d7389c9ee1c27",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 14,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和7年度補正予算（第7号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第６６号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[10, 11]+[14, 15]、単位千円（第2表（繰越明許費・債務負担）は範囲外） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-7.pdf",
+            "sha256": "f49aa15f3435e1bc01c47e8338aceaa0aef83c310b38c8be991d7389c9ee1c27",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei7gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:34:37.142Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 8
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度一般会計補正予算（第8号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1025978/1025981/1025982/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei8gou.pdf",
+              "sha256": "c950f6cdc5680dd044e8bdb70984d892cd483439e3d244a86c2bfc2f4745259d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 5
+                    },
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 18,
+                      "end": 45
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和7年度補正予算（第8号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第７７号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4, 5]+[10, 11]+[18, 45]、単位千円（第2表（繰越明許費・債務負担）は範囲外、財源更正あり） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-8.pdf",
+            "sha256": "c950f6cdc5680dd044e8bdb70984d892cd483439e3d244a86c2bfc2f4745259d",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei8gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:34:40.414Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 9
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度一般会計補正予算（第9号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1025978/1025981/1025982/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei9gou.pdf",
+              "sha256": "1740cf9d67b510e59101bb4e8b93d63318e4f43d77f8cdddb5b548364734c1af",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和7年度補正予算（第9号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第８１号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[8, 9]+[12, 13]、単位千円 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-9.pdf",
+            "sha256": "1740cf9d67b510e59101bb4e8b93d63318e4f43d77f8cdddb5b548364734c1af",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei9gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:34:43.951Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 10
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度一般会計補正予算（第10号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1025978/1025981/1025982/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei10gou.pdf",
+              "sha256": "744571d66ca27dd714242cf993144c739e4dcf5aed328f2522f1f807fb1b4559",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 5
+                    },
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 14,
+                      "end": 29
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和7年度補正予算（第10号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第８２号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4, 5]+[10, 11]+[14, 29]、単位千円（第2表（繰越明許費・債務負担）は範囲外） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-10.pdf",
+            "sha256": "744571d66ca27dd714242cf993144c739e4dcf5aed328f2522f1f807fb1b4559",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei10gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:34:46.920Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 11
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度一般会計補正予算（第11号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1025978/1025981/1025982/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei11gou.pdf",
+              "sha256": "8705b381a94b64a6eb4057820fcca6eb888f884ba369b60918ada9c830a27339",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 14,
+                      "end": 17
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和7年度補正予算（第11号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第８６号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[10, 11]+[14, 17]、単位千円（第2表（繰越明許費・債務負担）は範囲外、財源更正あり） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-11.pdf",
+            "sha256": "8705b381a94b64a6eb4057820fcca6eb888f884ba369b60918ada9c830a27339",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei11gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:34:50.287Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 12
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度一般会計補正予算（第12号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1025978/1025981/1025982/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei12gou.pdf",
+              "sha256": "3081f42f34b57404733184bcb69959a3cc9e8e342b76d5e744cbe2889eac1820",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    },
+                    {
+                      "start": 16,
+                      "end": 19
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和7年度補正予算（第12号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第２号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[8]+[12, 13]+[16, 19]、単位千円 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-12.pdf",
+            "sha256": "3081f42f34b57404733184bcb69959a3cc9e8e342b76d5e744cbe2889eac1820",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei12gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:34:53.936Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 13
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度一般会計補正予算（第13号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1025978/1025981/1025982/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei13gou.pdf",
+              "sha256": "438513100f727ed6b129d595e027c8d175c9d6f57cb45c835843503e0e8d17de",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 14,
+                      "end": 17
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和7年度補正予算（第13号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第３号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[10, 11]+[14, 17]、単位千円（第2表（繰越明許費・債務負担）は範囲外） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-13.pdf",
+            "sha256": "438513100f727ed6b129d595e027c8d175c9d6f57cb45c835843503e0e8d17de",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei13gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:34:57.387Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 14
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度一般会計補正予算（第14号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1025978/1025981/1025982/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei14gou.pdf",
+              "sha256": "47cd3e5f837d7e483b0b91cb1f68f21ed5e15e109c44748278079f49c2614c27",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 6
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    },
+                    {
+                      "start": 24,
+                      "end": 57
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和7年度補正予算（第14号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第２１号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[5, 6]+[12, 13]+[24, 57]、単位千円（第2表（繰越明許費・債務負担）は範囲外、財源更正あり） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-14.pdf",
+            "sha256": "47cd3e5f837d7e483b0b91cb1f68f21ed5e15e109c44748278079f49c2614c27",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei14gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:35:00.402Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132225",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 15
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度一般会計補正予算（第15号）",
+          "landing_url": "https://www.city.higashikurume.lg.jp/shisei/gyousaisei/zaisei/1021641/1025978/1025981/1025982/index.html",
+          "inspected_at": "2026-10-08T09:30:38.915413+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei15gou.pdf",
+              "sha256": "6bf56ecf1264ac3dfb33c56a5d19c395954425037012690ee862cfe2d76e48e2",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 14,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計別予算書ページ掲載の令和7年度補正予算（第15号）を選定。議案・第1表歳入歳出予算補正・歳入歳出補正予算事項別明細書の構成の文字PDF。一般会計は議案第２９号、第1表歳出・歳出総括と財源内訳・歳出明細（目・補正前の額・補正額・計・財源内訳が同一明細、節説明つき）の物理頁[4]+[10, 11]+[14, 15]、単位千円（第2表（繰越明許費・債務負担）は範囲外） 給与費明細書・地方債調書等の調書頁は歳出明細の範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132225/2025/supplementary-15.pdf",
+            "sha256": "6bf56ecf1264ac3dfb33c56a5d19c395954425037012690ee862cfe2d76e48e2",
+            "final_url": "https://www.city.higashikurume.lg.jp/_res/projects/default_project/_page_/001/025/982/r7hosei15gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:35:05.062Z"
+      }
     }
   ],
   "unresolved_candidates": []
