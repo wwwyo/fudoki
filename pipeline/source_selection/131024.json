@@ -55,6 +55,7 @@
           ]
         }
       ],
+      "reason": "一般会計当初予算の歳出明細（款・項・目・本年度予算額・千円）は歳出第1～6款冊（r7_yosansho_3.pdf 物理1–76頁）と第7～11款冊（r7_yosansho_4.pdf 物理1–23頁）の2分冊に分かれるため、両方を一候補として選定。各頁抽出で款境界（_3はp1議会費〜p76環境土木費、_4はp1都市整備費〜p23予備費、その後給与費明細書等）を確認済み。確認範囲は一般会計歳出。他会計・歳入は未確認。",
       "selected_candidate_id": "representative",
       "archive": {
         "bucket": "fudoki-inputs",
@@ -72,8 +73,416 @@
           }
         ],
         "archived_at": "2026-10-07T09:10:52.750Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131024",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
       },
-      "reason": "一般会計当初予算の歳出明細（款・項・目・本年度予算額・千円）は歳出第1～6款冊（r7_yosansho_3.pdf 物理1–76頁）と第7～11款冊（r7_yosansho_4.pdf 物理1–23頁）の2分冊に分かれるため、両方を一候補として選定。各頁抽出で款境界（_3はp1議会費〜p76環境土木費、_4はp1都市整備費〜p23予備費、その後給与費明細書等）を確認済み。確認範囲は一般会計歳出。他会計・歳入は未確認。"
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度中央区各会計予算説明書（歳出予算）",
+          "landing_url": "https://www.city.chuo.lg.jp/a0002/kusei/zaisei/yosan/r8/r8_tousyo.html",
+          "inspected_at": "2026-10-07T14:25:00+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.chuo.lg.jp/documents/18093/r8_yosansyo_3.pdf",
+              "sha256": "1206591c8d18b44e9974e33cae704faacfa4567117cdb8c56fd63ea41f6f325a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 80
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.chuo.lg.jp/documents/18093/r8_yosansyo_4.pdf",
+              "sha256": "e9637a73952a691c9b91c79f15038558ee252ea0c89b9ff9f1db91efab9f5a23",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 63
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.chuo.lg.jp/documents/18093/r8_yosansyo_5.pdf",
+              "sha256": "59d651d645e077dd7ec681603462ae21d2b85ada9b8abf66d9444d206375c824",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 19,
+                      "end": 39
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.chuo.lg.jp/documents/18093/r8_yosansyo_6.pdf",
+              "sha256": "b627b605b2d0e960d6b41cf5fc889ec82fb04f9e34cecd1d45832a8f9acfe28a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 21,
+                      "end": 45
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.chuo.lg.jp/documents/18093/r8_yosansyo_7.pdf",
+              "sha256": "a8048f4a253c83ea7c07963ce6205d268ccd8e789de57950b46b1004ff3e8581",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 14,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度当初予算の歳出明細（款・項・目が同一明細行、本年度予算額・千円、節区分と事業内訳付き）。一般会計は歳出予算2分冊（_3: 第1款議会費〜第6款環境土木費 物理1-80頁、_4: 第7款都市整備費〜第11款予備費+債務負担行為調書・特別区債現在高調書 物理1-63頁）。特別会計は1冊に歳入・歳出・給与費明細書を含み歳出範囲のみ抽出: 国保 _5 印字287-307=物理19-39（第1款総務費〜第7款予備費、物理40頁〜は給与費明細書）、介護 _6 印字347-371=物理21-45（第1款〜第8款予備費、物理46頁〜給与費明細書）、後期 _7 印字404-411=物理14-21（第1款総務費〜第5款予備費、物理22頁〜給与費明細書）。全会計は一般・国民健康保険事業・介護保険事業・後期高齢者医療の4会計で掲載一覧と照合済み。歳入・給与費明細書の範囲は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131024/2026/initial-1.pdf",
+            "sha256": "1206591c8d18b44e9974e33cae704faacfa4567117cdb8c56fd63ea41f6f325a",
+            "final_url": "https://www.city.chuo.lg.jp/documents/18093/r8_yosansyo_3.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131024/2026/initial-5.pdf",
+            "sha256": "e9637a73952a691c9b91c79f15038558ee252ea0c89b9ff9f1db91efab9f5a23",
+            "final_url": "https://www.city.chuo.lg.jp/documents/18093/r8_yosansyo_4.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131024/2026/initial-2.pdf",
+            "sha256": "59d651d645e077dd7ec681603462ae21d2b85ada9b8abf66d9444d206375c824",
+            "final_url": "https://www.city.chuo.lg.jp/documents/18093/r8_yosansyo_5.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131024/2026/initial-4.pdf",
+            "sha256": "b627b605b2d0e960d6b41cf5fc889ec82fb04f9e34cecd1d45832a8f9acfe28a",
+            "final_url": "https://www.city.chuo.lg.jp/documents/18093/r8_yosansyo_6.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131024/2026/initial-3.pdf",
+            "sha256": "a8048f4a253c83ea7c07963ce6205d268ccd8e789de57950b46b1004ff3e8581",
+            "final_url": "https://www.city.chuo.lg.jp/documents/18093/r8_yosansyo_7.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:23:32.027Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131024",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度中央区各会計歳入歳出決算書（各会計歳入歳出決算事項別明細書）",
+          "landing_url": "https://www.city.chuo.lg.jp/a0047/kusei/zaisei/kessan/r7_kessansho.html",
+          "inspected_at": "2026-10-07T14:25:00+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.chuo.lg.jp/documents/18763/r7_kessansho.pdf",
+              "sha256": "3ee6181ceb5bbed03d05e1fd7bcabe2f97d12d25a944a413db14f58b4b33c7ec",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 96,
+                      "end": 163
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 178,
+                      "end": 187
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 203,
+                      "end": 214
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 225,
+                      "end": 229
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度決算（最新公表分）の歳出明細。全259頁A3横。事項別明細書は款・項・目と事業内訳・節が同一明細行、当初予算額・補正予算額・繰越・流用・予算現額計(A)・支出済額(B)・翌年度繰越額・不用額・執行率（円）。一般会計歳出 物理96-163（第1款議会費〜第11款予備費、歳入は〜物理95）、国保歳出 物理178-187（第1款総務費〜第7款予備費）、介護歳出 物理203-214（第1款〜第8款予備費）、後期歳出 物理225-229（第1款〜第5款予備費）。冒頭の会計別決算書（物理5-26）は款項目総括で明細書に包含されるため対象外。実質収支調書(230-)・財産調書(236-)・基金調書(257-)は歳出明細でない。目次頁(物理2)は文字化けするが必要範囲は本文文字で読める。歳入範囲は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131024/2025/settlement.pdf",
+            "sha256": "3ee6181ceb5bbed03d05e1fd7bcabe2f97d12d25a944a413db14f58b4b33c7ec",
+            "final_url": "https://www.city.chuo.lg.jp/documents/18763/r7_kessansho.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:23:35.590Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131024",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度中央区一般会計補正予算書・予算説明書（6月補正）",
+          "landing_url": "https://www.city.chuo.lg.jp/a0002/kusei/zaisei/yosan/r8/r8_6hosei.html",
+          "inspected_at": "2026-10-07T16:31:17.749465+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.chuo.lg.jp/documents/18350/r8_6yosansyo.pdf",
+              "sha256": "1ea1725dfe39b12078738c982c3bffa40def372ab1aebe78987305a6e9f0fdb6",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 22,
+                      "end": 39
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度一般会計補正予算（第1号・6月補正、議案第29号）の歳出明細。補正予算書・予算説明書（r8_6yosansyo.pdf、全41頁text PDF）の歳出予算説明書部分が款・項・目と補正前の額・補正額・計（千円）を同一明細行で示し、節区分と計上説明（事業内訳）を含む。歳出範囲は物理22–39頁（印字20–37、第2款企画費〜第8款教育費＋歳出合計）。物理40–41頁は債務負担行為補正（期間・限度額）で歳出明細でないため対象外。同掲載ページの補正予算計上額総括表（r8_6press.pdf）は款項総括のみのため取得していない。確認範囲は一般会計歳出のみ。歳入（物理16–19頁付近、印字16–19）は未確認、6月補正は一般会計のみの掲載で当該掲載先では特別会計の補正資料を確認できなかった。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131024/2026/supplementary-1.pdf",
+            "sha256": "1ea1725dfe39b12078738c982c3bffa40def372ab1aebe78987305a6e9f0fdb6",
+            "final_url": "https://www.city.chuo.lg.jp/documents/18350/r8_6yosansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:32:14.695Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131024",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度中央区各会計補正予算書・予算説明書（9月補正）",
+          "landing_url": "https://www.city.chuo.lg.jp/a0002/kusei/zaisei/yosan/r8/r8_9hosei03.html",
+          "inspected_at": "2026-10-07T16:31:17.749465+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.chuo.lg.jp/documents/18837/r8_9yosannsyo.pdf",
+              "sha256": "171b80361be5bb5a65c7b1486c811e8be437afca0632f070ad26fc4582d4b5db",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 30,
+                      "end": 33
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 45,
+                      "end": 47
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度9月補正。一般会計補正予算（第2号、議案第70号）と介護保険事業会計補正予算（第1号、議案第71号）を同冊に収録するため amendment_number=2 は一般会計の補正号を採用。歳出明細は款・項・目と補正前の額・補正額・計（千円）を同一明細行で示し、節区分と計上説明を含む。一般会計歳出は物理30–33頁（印字28–31、第5款福祉保健費〜第10款諸支出金＋歳出合計、物理34–35頁の債務負担行為補正・36頁の空欄は対象外）、介護保険事業会計歳出は物理45–47頁（印字43–45、第5款基金積立金〜第7款諸支出金＋歳出合計）。同掲載ページの各会計補正予算計上額総括表（r8_9soukatuhyou.pdf）は款項総括のみのため取得していない。歳入は未確認。国民健康保険事業会計・後期高齢者医療会計の9月補正は掲載一覧に存在しない（補正自体の有無は未確認）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131024/2026/supplementary-2.pdf",
+            "sha256": "171b80361be5bb5a65c7b1486c811e8be437afca0632f070ad26fc4582d4b5db",
+            "final_url": "https://www.city.chuo.lg.jp/documents/18837/r8_9yosannsyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:32:17.792Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131024",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度中央区各会計歳入歳出決算書（各会計歳入歳出決算事項別明細書及び予算執行説明書）",
+          "landing_url": "https://www.city.chuo.lg.jp/a0047/kusei/zaisei/kessan/r6_kessansho.html",
+          "inspected_at": "2026-10-08T00:48:15.558517+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.chuo.lg.jp/documents/17562/r6_kessansho.pdf",
+              "sha256": "4417470dc5e1fa3324a63fd1540330ba26f83f636814968bc7d6723398e7e334",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 95,
+                      "end": 160
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 175,
+                      "end": 184
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 200,
+                      "end": 211
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 222,
+                      "end": 226
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度（2024年度）決算の歳出明細。全256頁A3横・text PDF（1物理頁=左右見開き2印字頁）。事項別明細書は款・項・目と事業内訳・節が同一明細行で、当初予算額・補正予算額・繰越事業費繰越額・予備費支出・流用増減・予算現額計(A)・支出済額(B)・繰越明許費及び事故繰越し・不用額・執行率B/A（円）。一般会計歳出 物理95-160（第1款議会費〜第11款予備費+歳出合計、印字186-317、歳入は物理33-94）、国民健康保険事業会計歳出 物理175-184（第1款総務費〜第7款予備費+歳出合計）、介護保険事業会計歳出 物理200-211（第1款総務費〜第8款予備費+歳出合計）、後期高齢者医療会計歳出 物理222-226（第1款総務費〜第5款予備費+歳出合計）。各歳出合計は会計別決算総括の決算額と一致（一般138,657,445,301円・国保13,812,794,613円・介護9,502,220,593円・後期3,704,090,488円）。冒頭の会計別決算書（物理5-27）は款項目総括で明細書に包含されるため対象外。実質収支調書(物理227-)、財産調書(233-)、公共料金支払基金調書(254-)は歳出明細でない。2024年度の会計構成は一般・国民健康保険事業・介護保険事業・後期高齢者医療の4会計で原典目次と掲載一覧で照合済み、企業会計・他の特別会計の掲載なし。歳入範囲・予算執行説明部分は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131024/2024/settlement.pdf",
+            "sha256": "4417470dc5e1fa3324a63fd1540330ba26f83f636814968bc7d6723398e7e334",
+            "final_url": "https://www.city.chuo.lg.jp/documents/17562/r6_kessansho.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T00:48:57.340Z"
+      }
     }
   ],
   "unresolved_candidates": []

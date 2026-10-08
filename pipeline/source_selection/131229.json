@@ -2,6 +2,447 @@
   "jurisdiction": "131229",
   "name": "葛飾区",
   "official_url": "http://www.city.katsushika.lg.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "131229",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度葛飾区各会計予算及び予算説明書",
+          "landing_url": "https://www.city.katsushika.lg.jp/information/1000085/1006293/1041005.html",
+          "inspected_at": "2026-10-07T15:02:17.397190+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.katsushika.lg.jp/_res/projects/default_project/_page_/001/041/005/r8saisyutsu1.pdf",
+              "sha256": "b70dc068f9f21dabcf2cd0260bf1e239a8b7ca8e1ed1428ecc28b08a7fefaf37",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 74
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.katsushika.lg.jp/_res/projects/default_project/_page_/001/041/005/r8saisyutsu2.pdf",
+              "sha256": "7ec5057a03cf4e51169b83010859fcc860748a616fc674bc89817c45472555a8",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 84
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.katsushika.lg.jp/_res/projects/default_project/_page_/001/041/005/r8kokuhokaikei.pdf",
+              "sha256": "5c5327a2e2396d00967a4048878c97c4500455d3670235897b055734bc719f83",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 26
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.katsushika.lg.jp/_res/projects/default_project/_page_/001/041/005/r8koukikaikei.pdf",
+              "sha256": "70c4bb0a4041a4fb5a5b26412a670fa854a15915d83af849ae64a4d384e8a55c",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 11
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.katsushika.lg.jp/_res/projects/default_project/_page_/001/041/005/r8kaigokaikei.pdf",
+              "sha256": "be33b37cb1ee73e5f9daf4545ebf990fc6add3cb10a5dbebb674b959fd06193d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 20
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.katsushika.lg.jp/_res/projects/default_project/_page_/001/041/005/r8youtikaikei.pdf",
+              "sha256": "22b2b49094b60691243e88d2f1731a297be98a8c63272ee6797dfad2abbb4bd8",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "用地特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 6
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.katsushika.lg.jp/_res/projects/default_project/_page_/001/041/005/r8tyusyajokaikei.pdf",
+              "sha256": "dc309b9a9fc6c3f38429dc8a07a6aaef2e8f4a5526dda75846350ce9a7ae3547",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "駐車場事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 8
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度（2026年度、最新当初）各会計予算・予算説明書の歳出明細。分割PDF・文字抽出可（pdf_type=text）。歳入歳出予算事項別明細書は款・項・目が同一明細行に並び本年度予算額・前年度予算額・比較・財源内訳（特定財源/一般財源）を持ち、右側に節区分と金額・事業説明が対応、単位は千円。歳出範囲（物理頁、各PDFは2頁見開きで印字頁は冊子全体の通し頁）: 一般会計はr8saisyutsu1物理1-74（印字98-245、第1款議会費〜第4款福祉費生活保護費）とr8saisyutsu2物理1-84（印字246-413、第5款衛生費〜第12款予備費）に分割。国民健康保険事業特別会計物理10-26（印字482-515、第1款総務費〜第7款予備費、給与費明細書516-を除く）。後期高齢者医療事業特別会計物理7-11（印字540-549、第1款総務費〜第4款予備費）。介護保険事業特別会計物理9-20（印字578-601、第1款総務費〜第6款予備費）。用地特別会計物理6（印字624-625、第1款公債費のみ）。駐車場事業特別会計物理6-8（印字634-639、第1款駐車場事業費〜第3款諸支出金）。表紙・目次PDF（r8hyoshi）で全会計6会計（一般・国民健康保険事業・後期高齢者医療事業・介護保険事業・用地・駐車場事業）を照合済み、企業会計・他の特別会計なし。一般会計の歳出（債務負担行為に関する調書〜給与費明細）（r8saisyutsu3）・総括表・歳入・各会計予算は歳出明細でないため選定ファイルに含めない。歳入範囲は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131229/2026/initial-5.pdf",
+            "sha256": "b70dc068f9f21dabcf2cd0260bf1e239a8b7ca8e1ed1428ecc28b08a7fefaf37",
+            "final_url": "https://www.city.katsushika.lg.jp/_res/projects/default_project/_page_/001/041/005/r8saisyutsu1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131229/2026/initial-4.pdf",
+            "sha256": "7ec5057a03cf4e51169b83010859fcc860748a616fc674bc89817c45472555a8",
+            "final_url": "https://www.city.katsushika.lg.jp/_res/projects/default_project/_page_/001/041/005/r8saisyutsu2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131229/2026/initial-2.pdf",
+            "sha256": "5c5327a2e2396d00967a4048878c97c4500455d3670235897b055734bc719f83",
+            "final_url": "https://www.city.katsushika.lg.jp/_res/projects/default_project/_page_/001/041/005/r8kokuhokaikei.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131229/2026/initial-3.pdf",
+            "sha256": "70c4bb0a4041a4fb5a5b26412a670fa854a15915d83af849ae64a4d384e8a55c",
+            "final_url": "https://www.city.katsushika.lg.jp/_res/projects/default_project/_page_/001/041/005/r8koukikaikei.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131229/2026/initial-6.pdf",
+            "sha256": "be33b37cb1ee73e5f9daf4545ebf990fc6add3cb10a5dbebb674b959fd06193d",
+            "final_url": "https://www.city.katsushika.lg.jp/_res/projects/default_project/_page_/001/041/005/r8kaigokaikei.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131229/2026/initial-1.pdf",
+            "sha256": "22b2b49094b60691243e88d2f1731a297be98a8c63272ee6797dfad2abbb4bd8",
+            "final_url": "https://www.city.katsushika.lg.jp/_res/projects/default_project/_page_/001/041/005/r8youtikaikei.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131229/2026/initial-7.pdf",
+            "sha256": "dc309b9a9fc6c3f38429dc8a07a6aaef2e8f4a5526dda75846350ce9a7ae3547",
+            "final_url": "https://www.city.katsushika.lg.jp/_res/projects/default_project/_page_/001/041/005/r8tyusyajokaikei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T15:02:53.957Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131229",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度葛飾区各会計歳入歳出決算書",
+          "landing_url": "https://www.city.katsushika.lg.jp/information/1000085/1013101/1040046.html",
+          "inspected_at": "2026-10-07T15:02:17.397190+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.katsushika.lg.jp/_res/projects/default_project/_page_/001/040/046/kessansho6.pdf",
+              "sha256": "d2b8b24884196ff8408d89dc84b77f8e1d682d8abdcc50af72499f5d25d8a45b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 91,
+                      "end": 130
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 141,
+                      "end": 148
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 157,
+                      "end": 161
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 171,
+                      "end": 176
+                    }
+                  ]
+                },
+                {
+                  "account": "用地特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 184,
+                      "end": 184
+                    }
+                  ]
+                },
+                {
+                  "account": "駐車場事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 192,
+                      "end": 194
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度（2024年度、最新公表）各会計歳入歳出決算書。単一PDF247頁・文字抽出可（pdf_type=text）。事項別明細書は1物理頁=印字2頁の見開きで、左頁に款・項・目と当初予算額・補正予算額・継続費及び繰越事業費繰越額・予備費支出及び流用増減・計、右頁に節区分と金額・支出済額・翌年度繰越額・不用額・備考が同一明細行で対応、単位は円。歳出範囲（物理頁、印字頁）: 一般会計物理91-130（印字112-191、第1款議会費〜第12款予備費。直前の物理90は「歳出」扉で明細なし）、国民健康保険事業特別会計物理141-148（印字204-219、第1款総務費〜第7款予備費）、後期高齢者医療事業特別会計物理157-161（印字228-237、第1款総務費〜第5款予備費）、介護保険事業特別会計物理171-176（印字248-259、第1款総務費〜第6款予備費）、用地特別会計物理184（印字266-267、第1款公債費のみ）、駐車場事業特別会計物理192-194（印字274-279、第1款駐車場事業費〜第3款諸支出金）。冒頭の各会計歳入歳出決算書（物理14-50頁相当、款項総括）は事項別明細書に包含、実質収支に関する調書（物理196-）・財産に関する調書・基金運用状況報告は歳出明細でない。決算参考書（6sankousho.pdf）は別冊の参考資料で歳出明細を持たないため選定しない。歳入範囲は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131229/2024/settlement.pdf",
+            "sha256": "d2b8b24884196ff8408d89dc84b77f8e1d682d8abdcc50af72499f5d25d8a45b",
+            "final_url": "https://www.city.katsushika.lg.jp/_res/projects/default_project/_page_/001/040/046/kessansho6.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T15:02:58.233Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131229",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [],
+      "reason": "令和7年度（2025年度）決算は未選定。公式の決算一覧（information/1000085/1013101/index.html、2026-10-07確認）は令和6年度までの掲載で令和7年度の各会計歳入歳出決算書・決算参考書は未掲載。令和7年度決算の監査委員審査意見書（令和8年9月4日付、www2.city.katsushika.lg.jp/_res/projects/default_project/_page_/001/005/909/r07ikensho.pdf）は公表済みだが、決算書本文の掲載は確認できない。議決状況は今回確認していない。公開後に再確認が必要。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "131229",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度葛飾区各会計補正予算（第1号）及び補正予算説明書",
+          "landing_url": "https://www.city.katsushika.lg.jp/information/1000085/1006293/1042351.html",
+          "inspected_at": "2026-10-07T16:41:15.011648+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.katsushika.lg.jp/_res/projects/default_project/_page_/001/042/351/r8hosei1.pdf",
+              "sha256": "bfd80787efd408a7d58203be3b8aa24d2fce5c8c9687f1580fcb53d061740f85",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 14,
+                      "end": 28
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.katsushika.lg.jp/_res/projects/default_project/_page_/001/042/351/r8hosei2.pdf",
+              "sha256": "3d599b93951aefc22a962cd0dd4164b850cb849b2f1a2913f13d90a8474eb9be",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 59,
+                      "end": 62
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 69,
+                      "end": 70
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 77,
+                      "end": 79
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度（2026年度、最新当初予算年度）の補正第1号。一般会計補正予算（第1号）はr8hosei1.pdf（30頁、文字PDF。歳出は物理14-28=A3見開き印字14-43、款2総務費〜款8教育費）、国民健康保険事業・後期高齢者医療事業・介護保険事業の各特別会計補正（第1号）は同一のr8hosei2.pdf内に収録（歳出はそれぞれ物理59-62=印字76-83、物理69-70=印字92-95、物理77-79=印字104-109）。いずれも歳入歳出補正予算事項別明細書で款・項・目と補正前の額・補正額・計・財源内訳が同一明細行、右側に節区分と金額・説明が対応、単位は千円。用地特別会計・駐車場事業特別会計の補正は掲載ページに存在しない（号の設定なし）。歳入・総括・第1表・債務負担行為補正は歳出明細でないため範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131229/2026/supplementary-1-2.pdf",
+            "sha256": "bfd80787efd408a7d58203be3b8aa24d2fce5c8c9687f1580fcb53d061740f85",
+            "final_url": "https://www.city.katsushika.lg.jp/_res/projects/default_project/_page_/001/042/351/r8hosei1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131229/2026/supplementary-1-1.pdf",
+            "sha256": "3d599b93951aefc22a962cd0dd4164b850cb849b2f1a2913f13d90a8474eb9be",
+            "final_url": "https://www.city.katsushika.lg.jp/_res/projects/default_project/_page_/001/042/351/r8hosei2.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:41:44.372Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131229",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度葛飾区一般会計補正予算（第2号）及び補正予算説明書",
+          "landing_url": "https://www.city.katsushika.lg.jp/information/1000085/1006293/1042351.html",
+          "inspected_at": "2026-10-07T16:41:15.011648+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.katsushika.lg.jp/_res/projects/default_project/_page_/001/042/351/r8hosei2.pdf",
+              "sha256": "3d599b93951aefc22a962cd0dd4164b850cb849b2f1a2913f13d90a8474eb9be",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 33,
+                      "end": 52
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度一般会計補正予算（第2号）。第2号を出したのは一般会計のみで、特別会計の第2号は掲載ページに存在しない。実体は各会計補正予算をまとめたr8hosei2.pdf（80頁、文字PDF）内の一般会計部分で、歳出は歳入歳出補正予算事項別明細書の物理33-52（A3見開き印字28-67、款2総務費〜款11諸支出金）。款・項・目と補正前の額・補正額・計・財源内訳・節区分・説明が同一明細で対応、単位は千円。直後の物理53は債務負担行為補正で歳出明細でないため範囲外。歳入・総括は範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131229/2026/supplementary-2.pdf",
+            "sha256": "3d599b93951aefc22a962cd0dd4164b850cb849b2f1a2913f13d90a8474eb9be",
+            "final_url": "https://www.city.katsushika.lg.jp/_res/projects/default_project/_page_/001/042/351/r8hosei2.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:41:48.114Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

@@ -2,6 +2,276 @@
   "jurisdiction": "131130",
   "name": "渋谷区",
   "official_url": "https://www.city.shibuya.tokyo.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "131130",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度渋谷区各会計予算・渋谷区各会計予算説明書",
+          "landing_url": "https://www.city.shibuya.tokyo.jp/kusei/zaisei/yosan-aramashi/yosan08.html",
+          "inspected_at": "2026-10-07T14:48:34+00:00",
+          "files": [
+            {
+              "download_url": "https://files.city.shibuya.tokyo.jp/assets/12995aba8b194961be709ba879857f70/c85b01cbe55648f3b5ca9e2a24f1acdc/yosan08_yosansho08.pdf",
+              "sha256": "352d9ee92f149e49f98c221c7c8e09ca6028c2dfc8e1570141987a71c95bb27c",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 168,
+                      "end": 322
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 426,
+                      "end": 462
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 522,
+                      "end": 542
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 592,
+                      "end": 604
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度（2026年度、最新当初）予算の歳出明細。単一PDF628頁・文字抽出可。歳入歳出予算事項別明細書は款・項・目が同一明細行に並び本年度予算額・前年度予算額・比較・財源内訳（特定財源/一般財源）を持ち、節区分と事業説明（大項目=部名・中項目=事務事業名・小項目=小事務事業名）付き、単位は千円。歳出範囲（物理頁、印字頁=物理-24〜-48で会計ごとにずれ）: 一般会計168-322（印字144-298、第1款議会費〜第11款予備費、末尾298頁は空白）、国民健康保険事業会計426-462（印字390-426、第1款総務費〜第6款予備費）、介護保険事業会計522-542（印字480-500、第1款総務費〜第7款諸支出金）、後期高齢者医療事業会計592-604（印字544-556、第1款総務費〜第5款予備費）。各会計歳出の後は《２給与費明細書》で歳出明細に含めない。掲載一覧と表紙・目次は一般会計＋国民健康保険事業・介護保険事業・後期高齢者医療事業の4会計のみで、企業会計・他の特別会計なし。歳入・給与費明細書・繰越明許費/債務負担行為/特別区債調書の範囲は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131130/2026/initial.pdf",
+            "sha256": "352d9ee92f149e49f98c221c7c8e09ca6028c2dfc8e1570141987a71c95bb27c",
+            "final_url": "https://files.city.shibuya.tokyo.jp/assets/12995aba8b194961be709ba879857f70/c85b01cbe55648f3b5ca9e2a24f1acdc/yosan08_yosansho08.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:49:44.285Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131130",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度渋谷区各会計歳入歳出決算書・渋谷区各会計歳入歳出決算事項別明細書",
+          "landing_url": "https://www.city.shibuya.tokyo.jp/kusei/zaisei/kessan-aramashi/kessan06.html",
+          "inspected_at": "2026-10-07T14:48:34+00:00",
+          "files": [
+            {
+              "download_url": "https://files.city.shibuya.tokyo.jp/assets/12995aba8b194961be709ba879857f70/f872999810b9409f959ca0f30577b2a0/kessan06_kessansho06.pdf",
+              "sha256": "b90aa8553e8299db0ad7f12511b47810435d1136c5368528664d5846c2bebe00",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 152,
+                      "end": 277
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 308,
+                      "end": 339
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 378,
+                      "end": 393
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 422,
+                      "end": 433
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度（2024年度、最新公表）決算の歳出明細。単一PDF456頁。事項別明細書の本文頁は文字抽出不可（頁番号のみ出力、輪郭線描画相当）で画像確認した見開き構成: 左頁=款・項・目の科目名と当初予算額・補正予算額・繰続費及び繰越額・予備費支出及び流用増減・予算現額計・節区分（款・項・目が同一明細行）、右頁=金額（予算現額）・支出済額・翌年度繰越額・不用額・備考（議会議決・執行率）・事業内訳、単位は円。歳出範囲（物理頁、印字頁=物理-20〜-38で会計ごとにずれ）: 一般会計152-277（印字132-257、第1款議会費〜第11款予備費）、国民健康保険事業会計308-339（印字282-313、第1款総務費〜第6款予備費）、介護保険事業会計378-393（印字346-361、第1款総務費・第2款保険給付費・第4款地域支援事業費・第5款基金積立金・第6款予備費・第7款諸支出金、第3款なし）、後期高齢者医療事業会計422-433（印字384-395、第1款総務費〜第6款予備費、第4款なし）。冒頭の各会計歳入歳出決算書（物理7-43、印字3-30）は款項総括で事項別明細書に包含。実質収支に関する調書(物理435-)・財産調書・基金運用状況調書は歳出明細でない。歳入範囲は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131130/2024/settlement.pdf",
+            "sha256": "b90aa8553e8299db0ad7f12511b47810435d1136c5368528664d5846c2bebe00",
+            "final_url": "https://files.city.shibuya.tokyo.jp/assets/12995aba8b194961be709ba879857f70/f872999810b9409f959ca0f30577b2a0/kessan06_kessansho06.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:49:56.761Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131130",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [],
+      "reason": "令和7年度（2025年度）決算。公式の「決算のあらまし」一覧（https://www.city.shibuya.tokyo.jp/kusei/zaisei/kessan-aramashi/）は令和2〜6年度（kessan02-06）のみで令和7年度分は未掲載（2026-10-07確認）。監査結果ページ（kusei/kansa/kansa/kekka.html）の最新決算審査意見書も令和6年度止まり。公開後に再確認が必要。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "131130",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度渋谷区一般会計補正予算・渋谷区一般会計補正予算説明書（第1号）",
+          "landing_url": "https://www.city.shibuya.tokyo.jp/kusei/zaisei/yosan-aramashi/hoseiyosan08.html",
+          "inspected_at": "2026-10-07T16:35:00+00:00",
+          "files": [
+            {
+              "download_url": "https://files.city.shibuya.tokyo.jp/assets/12995aba8b194961be709ba879857f70/ae5415d702d943f381973573c888b268/hoseiyosan08_hoseiyosansho01.pdf",
+              "sha256": "c73041ef6ebb5e10fe2ed918b21f2991cd8be963110bd6742fc20b1f6eb945e7",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 20,
+                      "end": 23
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度（2026年度）一般会計補正予算第1号（議案第37号・令和8年6月3日提出、増額228,993千円）。単一PDF24頁。構成: 表紙・議案(物理1-5) → 第1表歳入歳出予算補正 款・項総括(物理6-8) → 説明書表紙(9-10) → 《１歳入歳出予算事項別明細書》(11-23)。事項別明細書は款・項・目が同一明細行に並び補正前予算額・補正予算額・計・補正予算額の財源内訳(特定財源/一般財源)を持ち、節区分と説明(部課名・事業名・金額)付き、単位は千円。議案・表紙は文字抽出可だが明細頁は埋込フォントがUnicode対応なしで pdftotext 不可・pdfimages 画像なし → 輪郭線描画相当としてscan、必要頁を画像確認した。歳出範囲: 物理20-23（印字12-15、第3款民生費・第8款教育費のみ補正対象、物理24は空白）。補正対象外の款は載らない構成。一般会計のみ: 掲載一覧(令和8年度補正予算の状況)は一般会計第1号・第2号のみで、国民健康保険事業会計・介護保険事業会計・後期高齢者医療事業会計の補正資料は掲載なし。歳入範囲は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131130/2026/supplementary-1.pdf",
+            "sha256": "c73041ef6ebb5e10fe2ed918b21f2991cd8be963110bd6742fc20b1f6eb945e7",
+            "final_url": "https://files.city.shibuya.tokyo.jp/assets/12995aba8b194961be709ba879857f70/ae5415d702d943f381973573c888b268/hoseiyosan08_hoseiyosansho01.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:35:02.684Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131130",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度渋谷区一般会計補正予算・渋谷区一般会計補正予算説明書（第2号）",
+          "landing_url": "https://www.city.shibuya.tokyo.jp/kusei/zaisei/yosan-aramashi/hoseiyosan08.html",
+          "inspected_at": "2026-10-07T16:35:00+00:00",
+          "files": [
+            {
+              "download_url": "https://files.city.shibuya.tokyo.jp/assets/12995aba8b194961be709ba879857f70/136b5154442446eea12a08ee392e3070/hoseiyosan08_hoseiyosansho02.pdf",
+              "sha256": "796b64512e13a863f7db590841ba67c20975c7fdb109e2db4f5350a14cbc4e8b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 22,
+                      "end": 31
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度（2026年度）一般会計補正予算第2号（議案第49号、増額8,525,787千円）。単一PDF46頁・文字抽出可。構成: 表紙・議案(物理1-5) → 第1表歳入歳出予算補正 款・項総括・第2表繰越明許費補正・第3表債務負担行為補正(物理6-8) → 説明書表紙(9-12) → 《１歳入歳出予算事項別明細書》(物理13-31、歳入13-21・歳出22-31) → 《２繰越明許費に関する調書》(物理32-35) → 《３債務負担行為に関する調書》(物理36-45、債務負担限度額・経費内訳・事項説明で歳出明細に含めない)。事項別明細書は款・項・目が同一明細行に並び補正前予算額・補正予算額・計・補正予算額の財源内訳(特定財源/一般財源)を持ち、節区分と説明(部課名・事業名・金額)付き、単位は千円。歳出範囲: 物理22-31（印字14-23、第2款総務費・第5款環境費・第7款土木費・第10款諸支出金）。一般会計のみ: 掲載一覧は一般会計第1号・第2号のみで他3会計の補正資料は掲載なし。歳入範囲は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131130/2026/supplementary-2.pdf",
+            "sha256": "796b64512e13a863f7db590841ba67c20975c7fdb109e2db4f5350a14cbc4e8b",
+            "final_url": "https://files.city.shibuya.tokyo.jp/assets/12995aba8b194961be709ba879857f70/136b5154442446eea12a08ee392e3070/hoseiyosan08_hoseiyosansho02.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:35:07.385Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

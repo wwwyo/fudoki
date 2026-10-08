@@ -2,6 +2,410 @@
   "jurisdiction": "132217",
   "name": "清瀬市",
   "official_url": "https://www.city.kiyose.lg.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "132217",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度 当初予算書（一般会計・国民健康保険事業・下水道事業・駐車場事業・介護保険）",
+          "landing_url": "https://www.city.kiyose.lg.jp/siseijouhou/zaisei/yosan/1015943/index.html",
+          "inspected_at": "2026-10-07T15:56:24.043541+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kiyose.lg.jp/_res/projects/default_project/_page_/001/015/944/r8ippannkaikeiyosannsyo2.pdf",
+              "sha256": "64ad2be7abb31614bdbbc5fac2682b5a10152bf382102ca8a2e1881a31178d07",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 23,
+                      "end": 120
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.kiyose.lg.jp/_res/projects/default_project/_page_/001/015/945/r8kokuhoyosannsyo.pdf",
+              "sha256": "b5bbced26c5221f81186a9356f1d245bf3366734c9117a9d7d2103d1baa2813e",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 12
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.kiyose.lg.jp/_res/projects/default_project/_page_/001/015/945/r8gesuidouyosannsyo.pdf",
+              "sha256": "84f8597bfc69226cfaeb1e0fe113859a57c66ca761968298cfdb63bfd71e3f7b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 29,
+                      "end": 32
+                    },
+                    {
+                      "start": 34,
+                      "end": 35
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.kiyose.lg.jp/_res/projects/default_project/_page_/001/015/945/r8tyuusyajyouyosannsyo.pdf",
+              "sha256": "bdbc124eedc7b047a71a19ba1b9bd8c3e97556473c1651fd8395b22af6a26989",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "駐車場事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.kiyose.lg.jp/_res/projects/default_project/_page_/001/015/945/r8kaigoyosannsyo.pdf",
+              "sha256": "f14e1017ad175031cb6b8656a8dc3b56a2ea9809f407cb1c266c45e60c3553c9",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 10
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "市公式の予算 令和8年度 掲載頁（一般会計当初予算・特別会計当初予算の各頁）から選定。一般会計予算書は款・項・目・節と本年度予算額（千円）を同じ明細で持つ文字PDFで、歳出は物理23–120頁（歳入は1–22頁）。国民健康保険事業・駐車場事業・介護保険の各特別会計予算書（案）は文字層なしの輪郭線PDFで、見開きで款・項・目・節と本年度額（千円）を確認（歳出は国保5–12頁・駐車場2頁・介護5–10頁）。下水道事業会計予算書は収益的収支の支出明細（物理29–32頁）と資本的支出（物理34–35頁）が款・項・目・節と本年度予定額（千円）を持つ文字PDF。不足: 掲載頁の「後期高齢者医療予算書（案）」リンクは介護保険予算書PDFと同一URLで、実物は介護保険のみを収録（印字頁–90〜–111連番）。後期高齢者医療特別会計の当初予算書はこの掲載頁では取得不能。探索URL: https://www.city.kiyose.lg.jp/siseijouhou/zaisei/yosan/1015943/1015945.html。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132217/2026/initial-1.pdf",
+            "sha256": "64ad2be7abb31614bdbbc5fac2682b5a10152bf382102ca8a2e1881a31178d07",
+            "final_url": "https://www.city.kiyose.lg.jp/_res/projects/default_project/_page_/001/015/944/r8ippannkaikeiyosannsyo2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132217/2026/initial-3.pdf",
+            "sha256": "b5bbced26c5221f81186a9356f1d245bf3366734c9117a9d7d2103d1baa2813e",
+            "final_url": "https://www.city.kiyose.lg.jp/_res/projects/default_project/_page_/001/015/945/r8kokuhoyosannsyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132217/2026/initial-2.pdf",
+            "sha256": "84f8597bfc69226cfaeb1e0fe113859a57c66ca761968298cfdb63bfd71e3f7b",
+            "final_url": "https://www.city.kiyose.lg.jp/_res/projects/default_project/_page_/001/015/945/r8gesuidouyosannsyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132217/2026/initial-4.pdf",
+            "sha256": "bdbc124eedc7b047a71a19ba1b9bd8c3e97556473c1651fd8395b22af6a26989",
+            "final_url": "https://www.city.kiyose.lg.jp/_res/projects/default_project/_page_/001/015/945/r8tyuusyajyouyosannsyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132217/2026/initial-5.pdf",
+            "sha256": "f14e1017ad175031cb6b8656a8dc3b56a2ea9809f407cb1c266c45e60c3553c9",
+            "final_url": "https://www.city.kiyose.lg.jp/_res/projects/default_project/_page_/001/015/945/r8kaigoyosannsyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T15:56:56.114Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132217",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度 決算書（一般会計・特別会計・下水道事業会計）",
+          "landing_url": "https://www.city.kiyose.lg.jp/siseijouhou/zaisei/kessan/1016775.html",
+          "inspected_at": "2026-10-07T15:56:24.043541+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kiyose.lg.jp/_res/projects/default_project/_page_/001/016/775/r7ippannkaikei.pdf",
+              "sha256": "cc8fe152102b675abdd8b6b1e1d3eb191ef789f211381164a8114d3fecca4838",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 83,
+                      "end": 332
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.kiyose.lg.jp/_res/projects/default_project/_page_/001/016/775/r7tokubetukaikei.pdf",
+              "sha256": "55219fb3c04d2cca0ecb4fea979111040beccafdedd596ec09a553317bbaeb3d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 31,
+                      "end": 46
+                    }
+                  ]
+                },
+                {
+                  "account": "駐車場事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 79,
+                      "end": 80
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 109,
+                      "end": 122
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 159,
+                      "end": 164
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.kiyose.lg.jp/_res/projects/default_project/_page_/001/016/775/r7gesuidou.pdf",
+              "sha256": "5895d36a90fcc7cff9ea3b63202e608876d114abd7f1d4cf05c7e5664665f60b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 30,
+                      "end": 32
+                    },
+                    {
+                      "start": 34,
+                      "end": 35
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "市公式の決算 令和7年度 掲載頁から全会計を選定。一般会計歳入歳出決算書は款・項・目・節と支出済額（円）を同じ明細で持つ文字PDFで、歳出事項別明細書は物理83–332頁（歳出部の扉76・決算書歳出款項15–19印字を除く明細範囲）。特別会計決算書（下水道事業除く）は国民健康保険事業・駐車場事業・介護保険・後期高齢者医療の4特別会計を収録し、各会計の歳出事項別明細書は国保31–46頁・駐車場79–80頁・介護109–122頁・後期高齢者159–164頁。下水道事業会計決算書は収益費用明細書の支出（30–32頁）と資本的収支明細書の支出（34–35頁）が款・項・目・節と金額（円・税抜）を持つ。全て文字PDF。実質収支調書・総括表・給与費明細・財産調書・注記等は歳出明細でないため範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132217/2025/settlement-3.pdf",
+            "sha256": "cc8fe152102b675abdd8b6b1e1d3eb191ef789f211381164a8114d3fecca4838",
+            "final_url": "https://www.city.kiyose.lg.jp/_res/projects/default_project/_page_/001/016/775/r7ippannkaikei.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132217/2025/settlement-1.pdf",
+            "sha256": "55219fb3c04d2cca0ecb4fea979111040beccafdedd596ec09a553317bbaeb3d",
+            "final_url": "https://www.city.kiyose.lg.jp/_res/projects/default_project/_page_/001/016/775/r7tokubetukaikei.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132217/2025/settlement-2.pdf",
+            "sha256": "5895d36a90fcc7cff9ea3b63202e608876d114abd7f1d4cf05c7e5664665f60b",
+            "final_url": "https://www.city.kiyose.lg.jp/_res/projects/default_project/_page_/001/016/775/r7gesuidou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T15:57:17.675Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132217",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度 決算書（一般会計・特別会計・下水道事業会計）",
+          "landing_url": "https://www.city.kiyose.lg.jp/siseijouhou/zaisei/kessan/1015558.html",
+          "inspected_at": "2026-10-08T00:57:30+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kiyose.lg.jp/_res/projects/default_project/_page_/001/015/558/r6kessannsyo.pdf",
+              "sha256": "156ea24bdccb118fa9c5cfb9894b15a5181c3b7ead325d7ccaae94cb50cf6efa",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 49,
+                      "end": 98
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.kiyose.lg.jp/_res/projects/default_project/_page_/001/015/558/r6tokubetukaikeikessannsyo.pdf",
+              "sha256": "8a10209708f57295a1bc8b9bf59b4f450e887958787d59eecefef34d39cc1843",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 25,
+                      "end": 30
+                    }
+                  ]
+                },
+                {
+                  "account": "駐車場事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 95,
+                      "end": 96
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 131,
+                      "end": 134
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 195,
+                      "end": 196
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.kiyose.lg.jp/_res/projects/default_project/_page_/001/015/558/r6gesuidoukessannsyo.pdf",
+              "sha256": "308a7ca0671db90a15fbbfef904d71a7285dcc41f1f0a1cee5fd5efda7db1378",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 30,
+                      "end": 32
+                    },
+                    {
+                      "start": 34,
+                      "end": 35
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "市公式の決算 令和6年度 掲載頁（令和7年度決算と同じ公式掲載系列）から全会計を選定。令和6年度の会計構成は一般会計＋国民健康保険事業・駐車場事業・介護保険・後期高齢者医療の4特別会計＋下水道事業会計で、特別会計決算書・説明書（下水道事業除く）の表紙・目次が4会計を明記する。一般会計歳入歳出決算書（r6kessannsyo.pdf, 99p）は歳入歳出決算事項別明細書の歳出が物理49–98頁（印字43–92）で、見開き形式: 奇数物理頁が款・項・目と予算現額、偶数物理頁が節・区分金額と支出済額・翌年度繰越額・不用額（円）を持ち、同一明細が左右両頁で対応する。特別会計決算書・説明書（r6tokubetukaikeikessannsyo.pdf, 222p）の歳出事項別明細書は同じ見開き形式で、国民健康保険事業25–30頁・駐車場事業95–96頁・介護保険131–134頁・後期高齢者医療195–196頁。下水道事業会計決算書（r6gesuidoukessannsyo.pdf, 44p, 横長）は収益費用明細書の支出（30–32頁）と資本的収支明細書の支出（34–35頁）が款・項・目・節と金額（円・税抜）を持つ。全て文字PDF。款別決算概要説明・実質収支調書・歳入歳出決算総括表・説明書区間（科目別決算額比較表・節の説明等）・固定資産明細書・企業債明細書・注記は歳出明細でないため範囲外。一般会計決算説明書（別冊12.9MB）・決算概要・事務報告書・わかりやすい決算書は決算書の明細で要件を満たすため選定に含めない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132217/2024/settlement-1.pdf",
+            "sha256": "156ea24bdccb118fa9c5cfb9894b15a5181c3b7ead325d7ccaae94cb50cf6efa",
+            "final_url": "https://www.city.kiyose.lg.jp/_res/projects/default_project/_page_/001/015/558/r6kessannsyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132217/2024/settlement-3.pdf",
+            "sha256": "8a10209708f57295a1bc8b9bf59b4f450e887958787d59eecefef34d39cc1843",
+            "final_url": "https://www.city.kiyose.lg.jp/_res/projects/default_project/_page_/001/015/558/r6tokubetukaikeikessannsyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132217/2024/settlement-2.pdf",
+            "sha256": "308a7ca0671db90a15fbbfef904d71a7285dcc41f1f0a1cee5fd5efda7db1378",
+            "final_url": "https://www.city.kiyose.lg.jp/_res/projects/default_project/_page_/001/015/558/r6gesuidoukessannsyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T00:57:58.046Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

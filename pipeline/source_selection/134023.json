@@ -2,6 +2,136 @@
   "jurisdiction": "134023",
   "name": "青ヶ島村",
   "official_url": "http://www.vill.aogashima.tokyo.jp/top.html",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "134023",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "koho2604",
+          "title": "広報あおがしま 令和8年4月15日発行 第429号（令和8年度当初予算）",
+          "landing_url": "https://www.vill.aogashima.tokyo.jp/press/index.html",
+          "inspected_at": "2026-10-07T16:25:32+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.aogashima.tokyo.jp/press/koho2604.pdf",
+              "sha256": "1bda57a4f871fb8190db6819262c5dcda2b5b2a70301908bcba90740c8ed8fa5",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "村公式HP全セクション・東京都オープンデータカタログ・例規集を照合したが、当初予算の公表は広報あおがしま4月号のみ。koho2604の2頁の当初予算記事は一般会計が歳出款（総務費・民生費等）と主要事業名の抜粋、特別会計（国民健康保険事業・同診療・介護保険事業・介護サービス事業・後期高齢者医療事業）と公営企業会計（簡易水道・合併処理浄化槽）は会計ごとの収支計のみで、款項目・事業粒度の明細を持たないため未選定。単位は千円。予算書本体・資料別冊の公表は確認できなかった。探索先: vill.aogashima.tokyo.jp の sitemap/news/press（php/press.php?year=2006-2026）/office/life、news download.php全年度、catalog.data.metro.tokyo.lg.jp。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "134023",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "koho2609",
+          "title": "広報あおがしま 令和8年9月15日発行 第434号（令和7年度決算議会承認一覧）",
+          "landing_url": "https://www.vill.aogashima.tokyo.jp/press/index.html",
+          "inspected_at": "2026-10-07T16:25:32+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.aogashima.tokyo.jp/press/koho2609.pdf",
+              "sha256": "c517b9fa7c682fbe6f338ec2cdb5a5c3259a3136295e910320b0dcb673da00b4",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度決算は令和8年9月議会第3回定例会で全会計（一般会計・国民健康保険事業特別会計事業勘定/直営診療施設勘定・介護保険事業特別会計保険事業勘定・介護サービス事業特別会計・後期高齢者医療事業特別会計・簡易水道事業会計・合併処理浄化槽事業会計）承認済み（koho2609の議決一覧）が、決算数値の公表は2026-10-07時点で未確認（10月号未発行）。今回確認した掲載先では決算書・決算明細書の掲載リンクを確認できなかった。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "134023",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "tokyo-r6-kouei",
+          "title": "令和6年度市町村公営企業決算状況調査の結果（全体版）",
+          "landing_url": "https://www.soumu.metro.tokyo.lg.jp/05gyousei/04kusichousonindex/04kusichousonzaisei/years/06nend",
+          "inspected_at": "2026-10-08T01:28:52.287988+00:00",
+          "files": [
+            {
+              "download_url": "https://www.soumu.metro.tokyo.lg.jp/documents/d/soumu/06koueikigyou",
+              "sha256": "5530a8abbbf7c9ab89462b8563191918de0c77c28c53f90f9f8d3d05c4d2252e",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "簡易水道事業",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 99,
+                      "end": 100
+                    },
+                    {
+                      "start": 103,
+                      "end": 104
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業（特排）",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 271,
+                      "end": 271
+                    },
+                    {
+                      "start": 277,
+                      "end": 277
+                    },
+                    {
+                      "start": 300,
+                      "end": 300
+                    },
+                    {
+                      "start": 307,
+                      "end": 307
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "部分選定: 公営企業2会計のみ。東京都総務局「令和6年度市町村公営企業決算状況調査の結果」全体版に青ヶ島村の列があり、簡易水道事業は物理99-100頁（21表費用構成表: 科目別費用・費用合計94,333千円）・103-104頁（23表資本的収支に関する調: 資本的収入計53,164千円・建設改良費34,404千円・行政投資実績内訳）、下水道事業（特排列＝村の合併処理浄化槽事業会計）は物理271・277頁（21表費用構成表: 費用合計28,677千円）・300・307頁（23表: 青ヶ島列は資本的収支・建設改良費とも0）。金額は凡例（物理11頁）により千円、物理11頁の各項目税込という定義は法非適用企業に限るので本件の法適用2企業へは適用しない。21表費用構成表全体の税区分は未確認（通勤手当のみ税抜注記）、23表資本的収支は物理8頁により税込。21表は費用（発生主義）であって現金支出とは別、23表は資本的収支の決算額。scope対象外: 対象列以外の他団体列・合計列のみの頁（物理272-276,301-306等）、22表貸借対照表（物理101-102）、翌年度繰越額行・財源内訳行を金額の主列とはしない。不足: 一般会計・国民健康保険特別会計（事業勘定・直営診療施設勘定）・介護保険事業特別会計（保険事業勘定）・介護サービス事業特別会計・後期高齢者医療事業特別会計の款項目・事業明細は確認した掲載先で原典未取得（村公式HP news 2024-2026・広報koho2510は会計計のみ・財務書類id=97は財務4表・団体別資料集038_aogashimaは款級集計、会計構成はkoho2510議決一覧で確認）。",
+      "selected_candidate_id": "tokyo-r6-kouei",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "tokyo-r6-kouei",
+        "files": [
+          {
+            "key": "fiscal/source-selection/134023/2024/settlement.pdf",
+            "sha256": "5530a8abbbf7c9ab89462b8563191918de0c77c28c53f90f9f8d3d05c4d2252e",
+            "final_url": "https://www.soumu.metro.tokyo.lg.jp/documents/d/soumu/06koueikigyou"
+          }
+        ],
+        "archived_at": "2026-10-08T01:29:07.299Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

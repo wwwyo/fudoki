@@ -2,6 +2,274 @@
   "jurisdiction": "131148",
   "name": "中野区",
   "official_url": "https://www.city.tokyo-nakano.lg.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "131148",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度中野区各会計予算説明書",
+          "landing_url": "https://www.city.tokyo-nakano.lg.jp/kusei/zaisei/yosan/R8yosan.html",
+          "inspected_at": "2026-10-07T14:47:51.626839+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.tokyo-nakano.lg.jp/kusei/zaisei/yosan/R8yosan.files/r8setsumei_tosho.pdf",
+              "sha256": "c092a396a6139d75debe8cba960b302b8386653c55a5e7163a338765daada440",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 58,
+                      "end": 117
+                    }
+                  ]
+                },
+                {
+                  "account": "用地特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 182,
+                      "end": 183
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 198,
+                      "end": 207
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 230,
+                      "end": 232
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 244,
+                      "end": 251
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度（最新）当初予算の歳出明細を含む「中野区各会計予算説明書」1冊（物理267頁・文字PDF・印字頁=物理頁-6）を選定。歳出は各会計の歳入歳出予算事項別明細書で、款・項が明細の見出し・目が行（目名+本年度予算額・前年度・比較・財源内訳+続頁に節区分と事業説明、単位千円）。歳出範囲：一般会計 印字52-111=物理58-117（第1款議会費〜第13款予備費、物理118〜給与費明細書）、用地特別会計 印字176-177=物理182-183（第1款公債費・第2款用地費、物理184〜特別区債現在高調書）、国民健康保険事業特別会計 印字192-201=物理198-207（物理208〜給与費明細書）、後期高齢者医療特別会計 印字224-226=物理230-232（物理233〜介護会計扉）、介護保険特別会計 印字238-245=物理244-251（物理252〜給与費明細書）。同日掲載の当初予算書（議案 r8gian_tosho.pdf）は第1表が款・項までで目を持たず要件外、予算説明書補助資料は款レベルの概要説明で目明細を持たず要件外。歳入・給与費明細書・債務負担行為調書等はscope外。中野区は一般会計+用地・国保事業・後期高齢者・介護の4特別会計の計5会計（掲載一覧の会計構成と一致、企業会計なし）。予算・決算のCSVは東京都オープンデータカタログ・区オープンデータ頁ともに非公開でPDFのみ。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131148/2026/initial.pdf",
+            "sha256": "c092a396a6139d75debe8cba960b302b8386653c55a5e7163a338765daada440",
+            "final_url": "https://www.city.tokyo-nakano.lg.jp/kusei/zaisei/yosan/R8yosan.files/r8setsumei_tosho.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:48:12.895Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131148",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度中野区各会計歳入歳出決算書",
+          "landing_url": "https://www.city.tokyo-nakano.lg.jp/kusei/zaisei/kessan/R7kessan.html",
+          "inspected_at": "2026-10-07T14:47:51.626839+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.tokyo-nakano.lg.jp/kusei/zaisei/kessan/R7kessan.files/R7kessansho.pdf",
+              "sha256": "cced2994de2438b24d4e446b325adba573a6fe55a458b010b85ebef2ab2b9f96",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 104,
+                      "end": 145
+                    }
+                  ]
+                },
+                {
+                  "account": "用地特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 154,
+                      "end": 157
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 176,
+                      "end": 189
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 202,
+                      "end": 209
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 232,
+                      "end": 245
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度（決算のあらまし一覧の最新、2025年度）各会計歳入歳出決算書1冊（物理274頁・文字PDF・印字頁=物理頁-6）を選定。各会計歳入歳出決算事項別明細書の歳出は見開き2頁で1明細：左頁に款・項・目・節の名称と予算現額内訳（当初予算額・補正予算額・繰越事業費及び流用・計）、右頁に支出済額・翌年度繰越額（継続費逓次繰越/繰越明許費/事故繰越し）・不用額・備考、単位円。歳出範囲：一般会計 印字98-139=物理104-145（歳出決算事項別明細総括〜第13款予備費+歳出合計、物理146-147は白紙と用地会計扉）、用地特別会計 印字148-151=物理154-157、国民健康保険事業特別会計 印字170-183=物理176-189、後期高齢者医療特別会計 印字196-203=物理202-209、介護保険特別会計 印字226-239=物理232-245（各会計の末尾白紙・次会計扉は除外）。冒頭の各会計歳入歳出決算書（印字3-27）は款項総括で事項別明細書に包含されるためscope外、歳入・実質収支調書・財産調書もscope外。同日掲載の決算説明書・主要施策の成果・決算統計Excelは款以下の科目明細を持たないため要件外。会計構成は掲載一覧と一致する5会計。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131148/2025/settlement.pdf",
+            "sha256": "cced2994de2438b24d4e446b325adba573a6fe55a458b010b85ebef2ab2b9f96",
+            "final_url": "https://www.city.tokyo-nakano.lg.jp/kusei/zaisei/kessan/R7kessan.files/R7kessansho.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:48:21.269Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131148",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度中野区各会計歳入歳出決算書",
+          "landing_url": "https://www.city.tokyo-nakano.lg.jp/kusei/zaisei/kessan/R6kessan.html",
+          "inspected_at": "2026-10-08T00:49:38.691167+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.tokyo-nakano.lg.jp/kusei/zaisei/kessan/R6kessan.files/R6kessansho.pdf",
+              "sha256": "174af72dd454a4d658af50515f24b906a8a5094fa39b48b9c30ebafd781f51ae",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 116,
+                      "end": 157
+                    }
+                  ]
+                },
+                {
+                  "account": "用地特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 172,
+                      "end": 179
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 202,
+                      "end": 215
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 232,
+                      "end": 239
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 266,
+                      "end": 279
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度（2024年度）各会計歳入歳出決算書1冊（物理313頁・文字PDF・印字頁=物理頁-6）を選定。各会計歳入歳出決算事項別明細書の歳出は見開き2頁で1明細：左頁に款・項・目・節の名称と予算現額内訳（当初予算額・補正予算額・繰越事業費及び流用・計）、右頁に支出済額・翌年度繰越額（継続費逓次繰越/繰越明許費/事故繰越し）・不用額・備考、単位円。歳出範囲：一般会計 印字110-151=物理116-157（歳出決算事項別明細総括〜第13款予備費+歳出合計、物理158は白紙・159は用地会計扉）、用地特別会計 印字166-173=物理172-179、国民健康保険事業特別会計 印字196-209=物理202-215、後期高齢者医療特別会計 印字226-233=物理232-239、介護保険特別会計 印字260-273=物理266-279（各会計の末尾白紙・次会計扉は除外）。冒頭の各会計歳入歳出決算書（印字3-）は款項総括で事項別明細書に包含されるためscope外、歳入・実質収支調書・財産調書もscope外。同日掲載の決算説明書・主要施策の成果・決算統計Excelは、本冊だけで必要な歳出明細を確認できるため追加選定しない（これらの本文の粒度は未検査）。令和6年度の会計構成は掲載一覧と目次で一致する5会計で、公営企業会計は存在しない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131148/2024/settlement.pdf",
+            "sha256": "174af72dd454a4d658af50515f24b906a8a5094fa39b48b9c30ebafd781f51ae",
+            "final_url": "https://www.city.tokyo-nakano.lg.jp/kusei/zaisei/kessan/R6kessan.files/R6kessansho.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T00:50:06.723Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

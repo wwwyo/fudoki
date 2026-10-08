@@ -2,6 +2,333 @@
   "jurisdiction": "132187",
   "name": "福生市",
   "official_url": "https://www.city.fussa.tokyo.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "132187",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度当初予算（一般会計・特別会計・下水道事業会計）",
+          "landing_url": "https://www.city.fussa.tokyo.jp/municipal/aboutfussa/finances/yosan/1020986.html",
+          "inspected_at": "2026-10-07T15:49:26+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fussa.tokyo.jp/_res/projects/default_project/_page_/001/020/986/r8yosansyo.pdf",
+              "sha256": "9ba297974064e7e62b97673c82a8f4e038c0225b12988f49ab2a50cbec53c77b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 20,
+                      "end": 20
+                    },
+                    {
+                      "start": 60,
+                      "end": 279
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fussa.tokyo.jp/_res/projects/default_project/_page_/001/020/986/r8yosansyotoku.pdf",
+              "sha256": "bdb1d8bbf08dcb89d8d8a6b75eb952e8858ebdfbef544ddfe2ada18f0024d65e",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "start": 22,
+                      "end": 59
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 84,
+                      "end": 84
+                    },
+                    {
+                      "start": 92,
+                      "end": 123
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 146,
+                      "end": 146
+                    },
+                    {
+                      "start": 152,
+                      "end": 167
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fussa.tokyo.jp/_res/projects/default_project/_page_/001/021/124/r8yosan.pdf",
+              "sha256": "21cc3df1ff96041f2a20662a3cdc606e2bb389173956ffceb62f1dcad0e0d60f",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 8
+                    },
+                    {
+                      "start": 13,
+                      "end": 14
+                    },
+                    {
+                      "start": 38,
+                      "end": 41
+                    },
+                    {
+                      "start": 44,
+                      "end": 45
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度当初予算の歳出明細を持つ5会計3冊を選定。一般会計予算及び同説明書の歳出は物理20頁（総括歳出）・物理60–279頁（事項別明細書の款項目と本年度予算額、節区分、単位：千円）。特別会計予算及び同説明書は国保（総括14・明細22–59）、介護保険（総括84・明細92–123）、後期高齢者医療（総括146・明細152–167）の各歳出範囲。下水道事業会計は別冊（下水道ページ life/city/1017110/1017152/1021124.html 掲載）で、予算条文の支出（物理7–8）、予算実施計画の収益的・資本的支出（物理13–14）、実施計画説明書の収益的支出明細（物理38–41）と資本的支出明細（物理44–45、款項目と本年度予定額、千円）。会計一覧は予算ページ内訳と特別会計目次で照合（国保・介護・後期高齢者の3特別会計＋下水道事業会計。水道は都営）。給与費明細書・調書・注記・収入頁は範囲外。印字頁=物理頁-6を目次と頁末で確認。全冊文字層あり。予算説明書（r8yosansetsumei.pdf）は事業説明資料のため不採用。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132187/2026/initial-2.pdf",
+            "sha256": "9ba297974064e7e62b97673c82a8f4e038c0225b12988f49ab2a50cbec53c77b",
+            "final_url": "https://www.city.fussa.tokyo.jp/_res/projects/default_project/_page_/001/020/986/r8yosansyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132187/2026/initial-3.pdf",
+            "sha256": "bdb1d8bbf08dcb89d8d8a6b75eb952e8858ebdfbef544ddfe2ada18f0024d65e",
+            "final_url": "https://www.city.fussa.tokyo.jp/_res/projects/default_project/_page_/001/020/986/r8yosansyotoku.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132187/2026/initial-1.pdf",
+            "sha256": "21cc3df1ff96041f2a20662a3cdc606e2bb389173956ffceb62f1dcad0e0d60f",
+            "final_url": "https://www.city.fussa.tokyo.jp/_res/projects/default_project/_page_/001/021/124/r8yosan.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T15:50:18.837Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132187",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度福生市下水道事業会計決算書",
+          "landing_url": "https://www.city.fussa.tokyo.jp/life/city/1017110/1017156/1021789.html",
+          "inspected_at": "2026-10-07T15:49:26+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fussa.tokyo.jp/_res/projects/default_project/_page_/001/021/789/kessan7-2.pdf",
+              "sha256": "cc0ccc5aff3ae1d68048b522240d0c37dc085c354ec1b04c1bf082ca6cfff6e5",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 9
+                    },
+                    {
+                      "start": 22,
+                      "end": 22
+                    },
+                    {
+                      "start": 30,
+                      "end": 31
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度決算は下水道事業会計のみ公表。歳出は物理6–9頁（決算報告書の収益的・資本的支出、款項と決算額・単位：円税込）、物理22頁（建設工事の概況）、物理30–31頁（収益費用明細書の支出、款項目節と金額・単位：円税抜）。CF・BS・注記・事業報告書他は範囲外。不足：一般会計・国民健康保険・介護保険・後期高齢者医療特別会計の令和7年度決算は決算一覧（finances/kessan/index.html）に未掲載で最新は令和6年度。これらは2024年度決算の対象として別途選定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132187/2025/settlement.pdf",
+            "sha256": "cc0ccc5aff3ae1d68048b522240d0c37dc085c354ec1b04c1bf082ca6cfff6e5",
+            "final_url": "https://www.city.fussa.tokyo.jp/_res/projects/default_project/_page_/001/021/789/kessan7-2.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T15:50:22.064Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132187",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度決算（歳入歳出決算書・下水道事業会計決算書）",
+          "landing_url": "https://www.city.fussa.tokyo.jp/municipal/aboutfussa/finances/kessan/1020596.html",
+          "inspected_at": "2026-10-07T15:49:26+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fussa.tokyo.jp/_res/projects/default_project/_page_/001/020/596/r6kessannsyo.pdf",
+              "sha256": "9bed92643b9348782a5ae9c3e94cef02b42cf2fb6c90b8224f6b7f57f5040dc6",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 28,
+                      "end": 29
+                    },
+                    {
+                      "start": 82,
+                      "end": 277
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 292,
+                      "end": 293
+                    },
+                    {
+                      "start": 302,
+                      "end": 313
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 328,
+                      "end": 329
+                    },
+                    {
+                      "start": 342,
+                      "end": 359
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 374,
+                      "end": 375
+                    },
+                    {
+                      "start": 382,
+                      "end": 387
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fussa.tokyo.jp/_res/projects/default_project/_page_/001/020/605/kessannsyo6.pdf",
+              "sha256": "4fdfdc45856f8fa78cdb9f349da3fe5bd76a441940d64ba8207862e1499a6871",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 9
+                    },
+                    {
+                      "start": 22,
+                      "end": 22
+                    },
+                    {
+                      "start": 30,
+                      "end": 31
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度決算の歳出明細を持つ5会計2冊を選定。歳入歳出決算書の歳出は事項別明細書で、一般会計は総括物理28–29頁・明細82–277頁、国保292–293・302–313、介護保険328–329・342–359、後期高齢者医療374–375・382–387（見開きの名称頁と金額頁を対で確認、列見出しの支出済額・単位：円、款項目節と同一明細で対応）。実質収支調書・財産調書・決算説明書は範囲外（決算説明書は参考資料のため不採用）。下水道事業会計は別冊（下水道ページ life/city/1017110/1017156/1020605.html 掲載）で決算報告書の支出6–9頁、建設工事概況22頁、収益費用明細書支出30–31頁。印字頁=物理頁-5を目次と頁末で確認。全冊文字層あり。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132187/2024/settlement-2.pdf",
+            "sha256": "9bed92643b9348782a5ae9c3e94cef02b42cf2fb6c90b8224f6b7f57f5040dc6",
+            "final_url": "https://www.city.fussa.tokyo.jp/_res/projects/default_project/_page_/001/020/596/r6kessannsyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132187/2024/settlement-1.pdf",
+            "sha256": "4fdfdc45856f8fa78cdb9f349da3fe5bd76a441940d64ba8207862e1499a6871",
+            "final_url": "https://www.city.fussa.tokyo.jp/_res/projects/default_project/_page_/001/020/605/kessannsyo6.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T15:50:28.276Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

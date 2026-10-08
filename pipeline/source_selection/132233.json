@@ -2,6 +2,352 @@
   "jurisdiction": "132233",
   "name": "武蔵村山市",
   "official_url": "http://www.city.musashimurayama.lg.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "132233",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度一般会計予算書（当初予算）歳出関連分冊および令和8年度下水道事業会計予算書",
+          "landing_url": "https://www.city.musashimurayama.lg.jp/shisei/zaisei/1022367/1021676/1021941.html",
+          "inspected_at": "2026-10-07T16:01:41+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.musashimurayama.lg.jp/_res/projects/default_project/_page_/001/021/941/05_1hyousaisyutu.pdf",
+              "sha256": "c5741774970ad35863a4c74c5d285a62efbbce20d0257c0007bb28fb24eb5664",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 2
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.musashimurayama.lg.jp/_res/projects/default_project/_page_/001/021/941/09_saisyutusoukatu.pdf",
+              "sha256": "ce0f6858e57d0f2f5d15096c72e7630a232ee48e9acef6a38247a2b5331c8c95",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 2
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.musashimurayama.lg.jp/_res/projects/default_project/_page_/001/021/941/saisyutumeisai0327.pdf",
+              "sha256": "7bb8b782cd35d1884d11d666e6db53a206335c2b5a2cad0e1f30b4e89e57aba8",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 426
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.musashimurayama.lg.jp/_res/projects/default_project/_page_/001/014/620/r8yosan.pdf",
+              "sha256": "abc62d0013d7acda305f01af97653446bfe7c234720f48d6626bb79573fac735",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 37,
+                      "end": 40
+                    },
+                    {
+                      "start": 43,
+                      "end": 44
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度（最新）当初予算。公式「予算・決算」一覧に掲載されるのは一般会計予算書のみで、特別会計（国民健康保険事業・介護保険・都市核地区土地区画整理事業・後期高齢者医療）の予算書は掲載なし。「各会計予算の概要」(r8gaiyou.pdf)は特別会計を科目集計のみで掲載し目・事業粒度の明細を欠くため未選定。予算説明資料(r8setumeisiryou.pdf)の特別会計部分も統計資料のみ。一般会計歳出は第1表歳出（款・項、千円）、歳出事項別明細書総括（款、千円）、歳出事項別明細書（款・項・目、同一明細で名称と本年度予算額が対応、単位千円、印字64-489=物理1-426）の3分冊を選定。下水道事業会計は上下水道ページの「予算書・決算書」に掲載される令和8年度予算書を選定。スキャンPDFで、収益的支出明細（物理37-40=印字36-39、款・項・目＋節・予定額・備考、単位千円）と資本的支出明細（物理43-44=印字42-43）を歳出範囲とした。収入側ページは歳出優先のため対象外。歳入分冊（第1表歳入・歳入明細書等）は今回の歳出優先範囲外で未取得。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132233/2026/initial-3.pdf",
+            "sha256": "c5741774970ad35863a4c74c5d285a62efbbce20d0257c0007bb28fb24eb5664",
+            "final_url": "https://www.city.musashimurayama.lg.jp/_res/projects/default_project/_page_/001/021/941/05_1hyousaisyutu.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132233/2026/initial-4.pdf",
+            "sha256": "ce0f6858e57d0f2f5d15096c72e7630a232ee48e9acef6a38247a2b5331c8c95",
+            "final_url": "https://www.city.musashimurayama.lg.jp/_res/projects/default_project/_page_/001/021/941/09_saisyutusoukatu.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132233/2026/initial-1.pdf",
+            "sha256": "7bb8b782cd35d1884d11d666e6db53a206335c2b5a2cad0e1f30b4e89e57aba8",
+            "final_url": "https://www.city.musashimurayama.lg.jp/_res/projects/default_project/_page_/001/021/941/saisyutumeisai0327.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132233/2026/initial-2.pdf",
+            "sha256": "abc62d0013d7acda305f01af97653446bfe7c234720f48d6626bb79573fac735",
+            "final_url": "https://www.city.musashimurayama.lg.jp/_res/projects/default_project/_page_/001/014/620/r8yosan.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:02:15.280Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132233",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度武蔵村山市下水道事業会計決算書、令和6年度事務報告書、令和7年度行政評価報告書",
+          "landing_url": "https://www.city.musashimurayama.lg.jp/kurashi/koutsu/water/1014620.html",
+          "inspected_at": "2026-10-08T01:16:15+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.musashimurayama.lg.jp/_res/projects/default_project/_page_/001/014/620/kessan.pdf",
+              "sha256": "64376cce5a4a70fd0badaa114a3c1ebfcacb03a011cf11628877630580e1679e",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 33,
+                      "end": 35
+                    },
+                    {
+                      "start": 37,
+                      "end": 37
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.musashimurayama.lg.jp/_res/projects/default_project/_page_/001/001/992/r6aresultreport.pdf",
+              "sha256": "df059ca8435a5cb06c30cbf97fe372664eb6a6af8fd82956ed900e91ff641771",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 66,
+                      "end": 214
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 222,
+                      "end": 223
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 227,
+                      "end": 234
+                    }
+                  ]
+                },
+                {
+                  "account": "都市核地区土地区画整理事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 240,
+                      "end": 240
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 245,
+                      "end": 245
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.musashimurayama.lg.jp/_res/projects/default_project/_page_/001/021/943/r7houkokusho.pdf",
+              "sha256": "6ba31de46bf676ad7153bd50f267b223b708fe1cfda897bd803e7f55893d99ca",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "会計未記載（令和7年度事務事業評価調書）",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 27,
+                      "end": 262
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度決算は令和7年第3回定例会（2025-09-26）で全会計（一般会計・国民健康保険事業特別会計・介護保険特別会計・都市核地区土地区画整理事業特別会計・後期高齢者医療特別会計・下水道事業会計）が認定済み。一般会計・特別会計の決算書（款項目の全網羅明細）は確認した公式掲載先では未取得だが、以下を歳出原典として選定。下水道事業会計決算書（既存選定のまま変更なし、スキャンPDF、物理=印字+4）：収益的収入及び支出明細書の支出部分（物理33-35=印字29-31、款・項・目・節と金額が同一明細で対応、単位円・税抜、支出実績額）と資本的支出明細書（物理37=印字33）。掲載先kurashi/koutsu/water/1014620。令和6年度事務報告書（自治法233条5項の主要施策成果説明、r6aresultreport.pdf 551p 文字PDF、物理=印字+1、掲載先shisei/shisaku/kikaku/1001992）：各会計の「主要な施策の成果」で事業名（款・項・目番号付き）・歳出決算額（円）・財源内訳（円）が同一明細で対応。歳出範囲＝一般会計 物理66-214（印字65-213、款1議会費〜9教育費）、国民健康保険事業特別会計 物理222-223（印字221-222）、介護保険特別会計 物理227-234（印字226-233）、都市核地区土地区画整理事業特別会計 物理240（印字239）、後期高齢者医療特別会計 物理245（印字244）。主要施策のみの掲載で、一般会計の公債費・諸支出金・予備費等と各会計の全科目網羅を欠くため部分選定。令和7年度行政評価報告書（r7houkokusho.pdf 270p 文字PDF、物理=印字+4、掲載先shisei/shisaku/gyouseihyouka/1021943）：事務事業評価調書区間（物理27-262=印字23-258、実施計画登載196事業＋外部評価対象事業）が事務事業名と令和6年度決算（事業費・人件費、単位千円）を同一明細で掲載。調書に会計名の記載がないため会計未記載として追加（主に一般会計事業と見られるが推定しない）。不足：款・項・目の全目を網羅した決算書（歳出明細書相当）は一般会計・特別4会計とも確認した公式掲載先では未取得。確認済み範囲：予算・決算一覧（決算のあらまし令和6年度まで、款別・性質別集計のみで未選定）、財政事情（執行状況）、財政状況・決算カード、財政白書令和6年度決算版（普通会計集計）、財務4表（令和6年度版、BS/CF等で支出明細に非該当）、議会の議決結果（議案名のみ、本文未添付）、議会だより234号（質問要約のみ）、国保・介護・後期高齢者各部署ページ、オープンデータ（市cgi-opd・東京都カタログとも財政資料なし）。事務報告書・行政評価とも主要施策・実施計画事業のみのため、全会計の全目網羅は不足のまま。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132233/2024/settlement-1.pdf",
+            "sha256": "64376cce5a4a70fd0badaa114a3c1ebfcacb03a011cf11628877630580e1679e",
+            "final_url": "https://www.city.musashimurayama.lg.jp/_res/projects/default_project/_page_/001/014/620/kessan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132233/2024/settlement-3.pdf",
+            "sha256": "df059ca8435a5cb06c30cbf97fe372664eb6a6af8fd82956ed900e91ff641771",
+            "final_url": "https://www.city.musashimurayama.lg.jp/_res/projects/default_project/_page_/001/001/992/r6aresultreport.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132233/2024/settlement-2.pdf",
+            "sha256": "6ba31de46bf676ad7153bd50f267b223b708fe1cfda897bd803e7f55893d99ca",
+            "final_url": "https://www.city.musashimurayama.lg.jp/_res/projects/default_project/_page_/001/021/943/r7houkokusho.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T01:17:49.148Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132233",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "gaiyou",
+          "title": "令和8年度一般会計補正予算（第1号）の概要",
+          "landing_url": "https://www.city.musashimurayama.lg.jp/shisei/zaisei/1022367/1021676/1022073.html",
+          "inspected_at": "2026-10-07T16:05:00+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.musashimurayama.lg.jp/_res/projects/default_project/_page_/001/022/073/r8-1.pdf",
+              "sha256": "20f523e751a3661ab96d3641822f2e5ed3ba1aaf9b546a03e4f15f0728effaa8",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "実物確認の結果、掲載されるのは概要資料（補正予算の規模・財源内訳・主な施策の列挙、単位千円/万円）のみで、款・項・目または事業明細と金額が同一明細で対応する補正予算書は未掲載のため未選定。特別会計・下水道事業会計の補正予算書も同掲載先になし。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132233",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "gaiyou",
+          "title": "令和8年度一般会計補正予算（第2号）の概要",
+          "landing_url": "https://www.city.musashimurayama.lg.jp/shisei/zaisei/1022367/1021676/1022073.html",
+          "inspected_at": "2026-10-07T16:05:00+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.musashimurayama.lg.jp/_res/projects/default_project/_page_/001/022/073/r8-2.pdf",
+              "sha256": "fb9f2650bbc72b958940a2da92e0f4b25407b0998cc5fbd79f8d61a9b864eace",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "実物確認の結果、掲載されるのは概要資料（補正予算の規模・財源内訳・主な施策の列挙、単位千円/万円）のみで、款・項・目または事業明細と金額が同一明細で対応する補正予算書は未掲載のため未選定。特別会計・下水道事業会計の補正予算書も同掲載先になし。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132233",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "gaiyou",
+          "title": "令和8年度一般会計補正予算（第3号）の概要",
+          "landing_url": "https://www.city.musashimurayama.lg.jp/shisei/zaisei/1022367/1021676/1022073.html",
+          "inspected_at": "2026-10-07T16:05:00+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.musashimurayama.lg.jp/_res/projects/default_project/_page_/001/022/073/r8-3.pdf",
+              "sha256": "8329da9e71f00228593249ead600a4f140d6bc34fd595b72e71efe23a2f142ae",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "実物確認の結果、掲載されるのは概要資料（補正予算の規模・財源内訳・主な施策の列挙、単位千円/万円）のみで、款・項・目または事業明細と金額が同一明細で対応する補正予算書は未掲載のため未選定。特別会計・下水道事業会計の補正予算書も同掲載先になし。",
+      "selected_candidate_id": null,
+      "archive": null
+    }
+  ],
   "unresolved_candidates": []
 }

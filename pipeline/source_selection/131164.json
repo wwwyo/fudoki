@@ -2,6 +2,165 @@
   "jurisdiction": "131164",
   "name": "豊島区",
   "official_url": "https://www.city.toshima.lg.jp/index.html",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "131164",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度 当初予算書（全体）",
+          "landing_url": "https://www.city.toshima.lg.jp/004/kuse/shisaku/yosan/1601131047.html",
+          "inspected_at": "2026-10-07T14:50:16.260275+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.toshima.lg.jp/documents/12068/20260205141545.pdf",
+              "sha256": "3bd7b32656021f795361f8174ff0b380c3174330f234b37e28627bd1ae803e82",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 107,
+                      "end": 174
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 203,
+                      "end": 222
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 246,
+                      "end": 254
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 283,
+                      "end": 301
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度当初予算書（全体）1冊に議案と全4会計の予算説明書（歳入歳出予算事項別明細）を収録。歳出は款・項・目＋節が同一明細行に名称と金額を持ち、本年度予算額・前年度予算額・比較・特定財源内訳（千円）。物理頁=印字頁を目次と頁末で確認。歳出範囲: 一般会計107-174、国民健康保険事業会計203-222、後期高齢者医療事業会計246-254、介護保険事業会計283-301（各会計の歳入歳出予算総括表は歳出側が物理35・189・233・265頁、給与費明細書・債務負担行為・特別区債現在高調は明細後続で範囲外）。歳入は同冊内にあるが今回は範囲未確認のため対象外。文字層ありのtext PDF。掲載は公式「予算書」ページ（ページID 12068、2026-07-07更新）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131164/2026/initial.pdf",
+            "sha256": "3bd7b32656021f795361f8174ff0b380c3174330f234b37e28627bd1ae803e82",
+            "final_url": "https://www.city.toshima.lg.jp/documents/12068/20260205141545.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:50:47.060Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131164",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度 各会計歳入歳出決算書（各会計歳入歳出決算事項別明細書）",
+          "landing_url": "https://www.city.toshima.lg.jp/004/kuse/shisaku/2606291935.html",
+          "inspected_at": "2026-10-07T14:50:16.260275+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.toshima.lg.jp/documents/57121/kessannsho_6.pdf",
+              "sha256": "e185ff9a9bc1f23648791beee1aaba17c2bceb89457980531a64a1001b8dbbe1",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 69,
+                      "end": 108
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 116,
+                      "end": 120
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 127,
+                      "end": 129
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 138,
+                      "end": 144
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "最新の公表済み決算は令和6年度（公式「決算」ページ、ページID 57121、2026-08-03更新時点で令和7年度決算の掲載なし）。各会計歳入歳出決算書1冊に全4会計の歳入歳出決算事項別明細書を収録。歳出は款・項・目＋節が同一明細行に名称と金額を持ち、当初予算額・補正予算額・繰越・流用・予算現額計・支出済額・翌年度繰越額・不用額（円）。物理頁=印字頁を目次と頁末で確認。歳出明細範囲: 一般会計69-108、国民健康保険事業会計116-120、後期高齢者医療事業会計127-129、介護保険事業会計138-144。冒頭の会計別歳入歳出決算書（款・項総括、物理11-34）は明細書に包含されるため対象外、実質収支調書146-・財産調書151-も範囲外。歳入明細は同冊内にあるが今回は範囲未確認のため対象外。文字層ありのtext PDF。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131164/2024/settlement.pdf",
+            "sha256": "e185ff9a9bc1f23648791beee1aaba17c2bceb89457980531a64a1001b8dbbe1",
+            "final_url": "https://www.city.toshima.lg.jp/documents/57121/kessannsho_6.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:50:51.073Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

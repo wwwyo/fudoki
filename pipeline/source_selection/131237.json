@@ -2,6 +2,197 @@
   "jurisdiction": "131237",
   "name": "江戸川区",
   "official_url": "https://www.city.edogawa.tokyo.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "131237",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "r8toshoyosan",
+          "title": "令和8年度 当初予算（各会計予算・予算説明書）",
+          "landing_url": "https://www.city.edogawa.tokyo.jp/e002/kuseijoho/zaisei/toshoyosan/r8nendo.html",
+          "inspected_at": "2026-10-07T15:33:18+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.edogawa.tokyo.jp/documents/66965/r8toshoyosan.pdf",
+              "sha256": "639759a32434ed9f7578a710d504af73ef691f1c3723841b1a187da001fbcad4",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 46,
+                      "end": 47
+                    },
+                    {
+                      "start": 149,
+                      "end": 463
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 521,
+                      "end": 521
+                    },
+                    {
+                      "start": 530,
+                      "end": 547
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 563,
+                      "end": 563
+                    },
+                    {
+                      "start": 574,
+                      "end": 587
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 605,
+                      "end": 605
+                    },
+                    {
+                      "start": 612,
+                      "end": 619
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度（最新）当初予算の歳出明細。当初予算一覧（r8nendo.html）掲載の「令和8年度当初予算」1冊（物理630頁・文字PDF）に議案4件と4会計（一般会計・国民健康保険事業特別会計・介護保険事業特別会計・後期高齢者医療特別会計）の予算説明書を収録。掲載一覧に企業会計・他の特別会計なし。歳出は歳入歳出予算事項別明細書で、款・項・目と本年度予算額・前年度予算額・比較・財源内訳（特定財源/一般財源）と節区分・金額・事業説明が同一明細の見開き対（左頁=科目・金額、右頁=財源内訳・説明）で対応し、単位は千円。各会計の歳出=総括歳出頁＋「3 歳出」明細（給与費明細書・継続費調書等は対象外）。印字頁=物理頁-16を目次と頁末で確認。範囲（物理）: 一般会計=総括46-47・明細149-463、国民健康保険事業特別会計=総括521・明細530-547、介護保険事業特別会計=総括563・明細574-587、後期高齢者医療特別会計=総括605・明細612-619。",
+      "selected_candidate_id": "r8toshoyosan",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r8toshoyosan",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131237/2026/initial.pdf",
+            "sha256": "639759a32434ed9f7578a710d504af73ef691f1c3723841b1a187da001fbcad4",
+            "final_url": "https://www.city.edogawa.tokyo.jp/documents/66965/r8toshoyosan.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T15:34:10.190Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131237",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "r06kessan",
+          "title": "令和6年度 決算書（各会計歳入歳出決算・事項別明細書・実質収支に関する調書・財産に関する調書）",
+          "landing_url": "https://www.city.edogawa.tokyo.jp/e067/kuseijoho/zaisei/kessan/r06.html",
+          "inspected_at": "2026-10-07T15:33:18+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.edogawa.tokyo.jp/documents/66534/06kessan.pdf",
+              "sha256": "5ebf56ec8b2bd5f9126dd78e2c6655bdf2a840d48766e39544aff8f0f5906e4d",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 29,
+                      "end": 36
+                    },
+                    {
+                      "start": 169,
+                      "end": 302
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 45,
+                      "end": 50
+                    },
+                    {
+                      "start": 323,
+                      "end": 342
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 59,
+                      "end": 62
+                    },
+                    {
+                      "start": 365,
+                      "end": 378
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 71,
+                      "end": 74
+                    },
+                    {
+                      "start": 395,
+                      "end": 410
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "最新の公表済み決算（決算一覧で令和6年度が最新。令和7年第三回定例会2025-10-27認定。令和7年度決算は未公表のためフォールバック）。決算ページ掲載の1冊（物理428頁）に決算書・事項別明細書・実質収支に関する調書・財産に関する調書を収録し、予算と同じ4会計を確認。企業会計・他の特別会計の掲載なし。本文頁は文字層を持たないベクタ/スキャン（頁番号のみ抽出可）のためpdf_type=scan。歳出明細は款・項・目が左頁に科目・予算現額（当初予算額・補正予算額・継続費及び繰越事業費繰越額・予備費支出及び流用増減・計）と節（区分・金額）、右頁に支出済額・翌年度繰越額（継続費逓次繰越・繰越明許費・事故繰越）・不用額・備考を持つ見開き対で、金額単位は円（物理169-171頁の見開きで列見出しを確認）。各会計の歳出=決算書歳出頁＋「歳出」明細（実質収支に関する調書以降は対象外）。印字頁は物理頁との差が部ごとに異なり（決算書部=物理-10、明細書部=物理-18、会計間に頁番号なし扉頁あり）、目次・頁末・境界頁で確認。範囲（物理）: 一般会計=決算書29-36・明細169-302、国民健康保険事業特別会計=決算書45-50・明細323-342、介護保険事業特別会計=決算書59-62・明細365-378、後期高齢者医療特別会計=決算書71-74・明細395-410（物理410は印字386の白紙頁を含む）。",
+      "selected_candidate_id": "r06kessan",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r06kessan",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131237/2024/settlement.pdf",
+            "sha256": "5ebf56ec8b2bd5f9126dd78e2c6655bdf2a840d48766e39544aff8f0f5906e4d",
+            "final_url": "https://www.city.edogawa.tokyo.jp/documents/66534/06kessan.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T15:34:29.881Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

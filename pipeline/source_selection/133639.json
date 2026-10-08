@@ -2,6 +2,164 @@
   "jurisdiction": "133639",
   "name": "新島村",
   "official_url": "https://www.niijima.com/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "133639",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "r8-tousho-1p",
+          "title": "令和8年度当初予算（市町村交付金（社会保障財源化分）が充てられる社会保障施策等に要する経費）",
+          "landing_url": "https://www.niijima.com/gyousei/zaiseishokuin/zaiseijoukyou.html",
+          "inspected_at": "2026-10-07T16:26:26.395536+00:00",
+          "files": [
+            {
+              "download_url": "https://www.niijima.com/gyousei/zaiseishokuin/files/R8tousho.pdf",
+              "sha256": "4c05298c517d193ca117619800d9d82f9a9b429d514e66ad002212e486f8f1ad",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "会計未記載（社会保障施策等に要する経費）",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "部分選定。令和8年度当初予算として公式掲載の唯一の原典 R8tousho.pdf（物理1頁・文字PDF）は「市町村交付金（社会保障財源化分）が充てられる社会保障施策等に要する経費」表で、同一明細に事業名とその年度の事業費（当初予算ベース・千円、交付金充当額は別列の財源内訳）が載るため、社会福祉・社会保険・保健衛生の社会保障施策経費について事業粒度の歳出当初予算原典として採用する。原典に会計表記がなく複数会計横断の経費表のため、scopeの会計欄は原典の表題を保持した。不足: 一般会計の款・項・目別歳出明細、6特別会計（連絡船事業・国民健康保険診療所・国民健康保険事業・後期高齢者医療事業・温泉ロッジ事業〔令和8年度よりロッジとまりぎ事業〕・介護保険事業）・2公営企業会計（簡易水道事業・下水道事業）の歳出明細、全歳入明細は今回確認した掲載先ではリンク未確認。除外候補: 事務報告 r7.pdf（37頁・文字PDF）は一般会計当初予算を款別総額・構成比、特別/公営企業会計は会計別総額までしか載せず明細なしのため選定しない。村HP全体・議会（議案一覧は件名のみ）・東京都オープンデータカタログを照合してもこれ以上の歳出明細級の当初予算書は今回確認した掲載先ではリンク未確認。",
+      "selected_candidate_id": "r8-tousho-1p",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r8-tousho-1p",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133639/2026/initial.pdf",
+            "sha256": "4c05298c517d193ca117619800d9d82f9a9b429d514e66ad002212e486f8f1ad",
+            "final_url": "https://www.niijima.com/gyousei/zaiseishokuin/files/R8tousho.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:26:39.119Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133639",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "r6-kessan-1p",
+          "title": "令和6年度決算（市町村交付金（社会保障財源分）が充てられる社会保障施策等に要する経費、及び東京都「令和6年度市町村公営企業決算状況調査の結果」新島村分）",
+          "landing_url": "https://www.niijima.com/gyousei/zaiseishokuin/zaiseijoukyou.html",
+          "inspected_at": "2026-10-08T01:16:25.891870+00:00",
+          "files": [
+            {
+              "download_url": "https://www.niijima.com/gyousei/zaiseishokuin/files/R6kessan.pdf",
+              "sha256": "bddf91070512fde00e789b876d867222fb29ba560fed5bf1d5d06c7dc5bc889b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "会計未記載（社会保障施策等に要する経費）",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                },
+                {
+                  "account": "会計未記載（社会保障施策等に要する経費）",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.soumu.metro.tokyo.lg.jp/documents/d/soumu/06koueikigyou",
+              "sha256": "5530a8abbbf7c9ab89462b8563191918de0c77c28c53f90f9f8d3d05c4d2252e",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "簡易水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 99,
+                      "end": 100
+                    },
+                    {
+                      "start": 103,
+                      "end": 104
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 271,
+                      "end": 271
+                    },
+                    {
+                      "start": 277,
+                      "end": 277
+                    },
+                    {
+                      "start": 300,
+                      "end": 300
+                    },
+                    {
+                      "start": 307,
+                      "end": 307
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "部分選定。令和6年度決算の会計構成は議会資料（令和7年第3回定例会 提出議案と審議結果）から一般会計・6特別会計（連絡船事業・国民健康保険診療所・国民健康保険事業・後期高齢者医療事業・温泉ロッジ事業・介護保険事業）・2公営企業会計（簡易水道事業・下水道事業、いずれも地方公営企業法適用）と確認した。村公式HPの唯一の決算原典 R6kessan.pdf（物理1頁・文字PDF）は「市町村交付金（社会保障財源分）が充てられる社会保障施策等に要する経費」表で、同一明細に事業名とその年度の事業費（決算ベース・千円、交付金充当額は別列の財源内訳）が載るため、社会保障施策経費について事業粒度の歳出決算原典として採用する（歳入は同頁に地方消費税交付金（社会保障財源分）37,048千円の1行のみ。原典に会計表記がないためscopeの会計欄は原典の表題を保持）。追加で東京都総務局行政部市町村課「令和6年度市町村公営企業決算状況調査の結果」（物理578頁・文字PDF・公式掲載 https://www.soumu.metro.tokyo.lg.jp/05gyousei/04kusichousonindex/04kusichousonzaisei/years/06nend ）が新島村の両公営企業会計の団体別科目内訳を含むことを実物で確認し、新島村列のみを対象として2会計の歳出原典に併せて選定する（他団体列・合計列は対象外）。ただし同冊は会計総括と科目内訳の調査資料であり、普通の企業決算書の目別明細を補完しきれたとはしない。選定範囲は費用・支出科目の内訳が載る頁に限定し、損益計算書（20表）そのものは歳出明細scopeから外した。簡易水道事業会計は物理99-100頁（21表費用構成表：職員給与費・支払利息・減価償却費・動力費・修繕費・委託料等の費用科目内訳と費用合計、表内注記に「通勤手当は税抜き」）と物理103-104頁（23表資本的収支に関する調：資本的収入の行と同一頁に資本的支出の建設改良費・補助対象事業費があり、翌頁に投資額(税込み)・繰越額の内訳。収入・繰越の行は歳出として扱わない）。下水道事業会計は新島村の列が特定環境保全公共下水道（特環）・漁業集落排水（漁排）・計の3列に分かれており合算せず区別して扱い、物理271・277頁（21表費用構成表：職員給与費・支払利息・減価償却費・委託料等。後半頁は給与費内訳・企業債利息繰入の基準額/実繰入額等の参考行を含み、繰入額・基準額は支出ではない）、物理300・307頁（23表資本的収支に関する調：建設改良費1,471,799千円・管渠費・処理場費・投資額(税込み)等。資本的収入・繰越の行は歳出として扱わない）。単位は下水道各表が（単位：千円）表記、簡易水道の21表・23表は表内に単位表示がないが、物理11頁（印字v）の凡例「第５ その他 １ 単位」に『特に表示のないものについては金額―千円』の明記を根拠に千円とする（数値規模からの推定ではない）。税の扱いは原典定義（物理8頁 集計の方法）どおり資本的収支は税込、投資額は税込み表記。21表費用構成表の税区分は原典に明示がなく未確認。費用は発生主義の費用であり現金支出と同義ではない。貸借対照表（22表）・企業債に関する調（24表）は支出明細でないため範囲外。不足: 一般会計・6特別会計の款・項・目別歳出決算明細（歳入歳出決算書相当）は、村HP財政状況頁・議会開催概要（議案一覧と質問通告のみで添付資料なし）・議会だより第114号（質疑要旨のみ）・DiscussVision（録画配信のみ）・事務報告・データにいじま2025（款別集計）・令和6年度財務書類（財務4表）・東京都の市町村決算状況調査結果個表（決算カード：款・性質別集計）まで確認したが、探索した入口では明細級の資料を確認できず未選定。全会計の歳入決算明細、公営企業会計の収益的収支の収益科目は今回の対象範囲外。",
+      "selected_candidate_id": "r6-kessan-1p",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r6-kessan-1p",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133639/2024/settlement-2.pdf",
+            "sha256": "bddf91070512fde00e789b876d867222fb29ba560fed5bf1d5d06c7dc5bc889b",
+            "final_url": "https://www.niijima.com/gyousei/zaiseishokuin/files/R6kessan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/133639/2024/settlement-1.pdf",
+            "sha256": "5530a8abbbf7c9ab89462b8563191918de0c77c28c53f90f9f8d3d05c4d2252e",
+            "final_url": "https://www.soumu.metro.tokyo.lg.jp/documents/d/soumu/06koueikigyou"
+          }
+        ],
+        "archived_at": "2026-10-08T01:16:44.842Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

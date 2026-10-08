@@ -2,6 +2,680 @@
   "jurisdiction": "131105",
   "name": "目黒区",
   "official_url": "http://www.city.meguro.tokyo.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "131105",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度（2026年度）目黒区予算、同説明書（全頁）",
+          "landing_url": "https://www.city.meguro.tokyo.jp/zaisei/kusei/yosan/r8_yosansyo.html",
+          "inspected_at": "2026-10-07T14:41:32.728188+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.meguro.tokyo.jp/documents/19674/r8_tosyososan.pdf",
+              "sha256": "6c202834a2185be92f588a653f96650e02f4173801a41415d8440b7150fb3f13",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 13
+                    },
+                    {
+                      "start": 26,
+                      "end": 157
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 14,
+                      "end": 16
+                    },
+                    {
+                      "start": 158,
+                      "end": 321
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 350,
+                      "end": 351
+                    },
+                    {
+                      "start": 360,
+                      "end": 385
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 352,
+                      "end": 353
+                    },
+                    {
+                      "start": 386,
+                      "end": 425
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 438,
+                      "end": 438
+                    },
+                    {
+                      "start": 446,
+                      "end": 463
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 439,
+                      "end": 439
+                    },
+                    {
+                      "start": 464,
+                      "end": 479
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 492,
+                      "end": 493
+                    },
+                    {
+                      "start": 502,
+                      "end": 529
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 494,
+                      "end": 495
+                    },
+                    {
+                      "start": 530,
+                      "end": 565
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "当初予算一覧(/kusei/yosan/yosan/toushoyosan/index.html)の令和8年度ページ(/zaisei/kusei/yosan/r8_yosansyo.html)に掲載の全頁PDFを選定。表紙が列挙する全会計＝一般会計・国民健康保険特別会計・後期高齢者医療特別会計・介護保険特別会計（議案第22〜25号）を1冊に収録し、企業会計・他の特別会計の別冊掲載は一覧になし。文字層PDF(text)。第1表歳入歳出予算は款・項と金額(千円)。予算説明書の歳入歳出予算事項別明細書が款・項・目ごとに本年度予算額・前年度予算額・比較・財源内訳と節区分を同一表で対応(千円)、各目の下に事業説明(【担当課】付き)を併記。目次の印字頁+6＝物理頁を確認し、歳出は各会計の第1表歳出と明細書歳出の範囲をscopeに記録(一般会計:物理14-16・158-321=印字8-10・152-315、国保:352-353・386-425、後医:439・464-479、介護:494-495・530-565)。歳入範囲も同様に確認済み。総括・給与費明細書・債務負担行為調書等はscope外。予算編成概要PDFは概要資料のため取得しない。CSV・オープンデータ掲載なし。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131105/2026/initial.pdf",
+            "sha256": "6c202834a2185be92f588a653f96650e02f4173801a41415d8440b7150fb3f13",
+            "final_url": "https://www.city.meguro.tokyo.jp/documents/19674/r8_tosyososan.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:43:24.584Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131105",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度目黒区各会計歳入歳出決算書",
+          "landing_url": "https://www.city.meguro.tokyo.jp/kaikei/kusei/yosan/kessan.html",
+          "inspected_at": "2026-10-08T00:48:31.672996+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.meguro.tokyo.jp/documents/2232/06kessansyo.pdf",
+              "sha256": "1fb0ca2f660d35412575338d9496cf10ee5d2f3707a063401adb56b0cdb0105b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 7
+                    },
+                    {
+                      "start": 12,
+                      "end": 41
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 10
+                    },
+                    {
+                      "start": 42,
+                      "end": 90
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 93,
+                      "end": 94
+                    },
+                    {
+                      "start": 98,
+                      "end": 105
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 95,
+                      "end": 96
+                    },
+                    {
+                      "start": 106,
+                      "end": 114
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 117,
+                      "end": 117
+                    },
+                    {
+                      "start": 120,
+                      "end": 125
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 118,
+                      "end": 118
+                    },
+                    {
+                      "start": 126,
+                      "end": 131
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 134,
+                      "end": 135
+                    },
+                    {
+                      "start": 139,
+                      "end": 147
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 136,
+                      "end": 137
+                    },
+                    {
+                      "start": 148,
+                      "end": 157
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "決算についてページ(/kaikei/kusei/yosan/kessan.html)掲載の令和6年度各会計歳入歳出決算書1冊を選定。表紙が列挙する全会計＝一般会計・国民健康保険特別会計・後期高齢者医療特別会計・介護保険特別会計（議案第60〜63号）を収録。企業会計・他の特別会計の別冊掲載は一覧になく、令和6年度当時の会計構成は令和7年度と同じ4会計。文字層PDF(text)、194物理頁。本文はA3見開き2印字頁/物理頁の組版で印字N→物理⌊N/2⌋+4。各会計とも歳入歳出決算書（款・項と予算現額・支出済額・翌年度繰越額・不用額、円）と歳入歳出決算事項別明細書（款・項・目と当初予算額・補正予算額・継続費等繰越・流用増減の計・節区分と支出済額・翌年度繰越額・不用額、円）を持ち、目と当該年度の支出済額が同じ明細で対応。決算書歳出と明細書歳出の範囲をscopeに記録（一般:物理8-10・42-90、国保:95-96・106-114、後医:118・126-131、介護:136-137・148-157）。歳入範囲も各会計で実物確認済み。実質収支に関する調書・財産に関する調書・基金運用状況報告書・各会計の提出文・明細書表紙・区切り頁はscope外。決算状況一覧表PDF(/documents/2229/06kessan.pdf)は款別集計のみで目明細を持たず未選定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131105/2024/settlement.pdf",
+            "sha256": "1fb0ca2f660d35412575338d9496cf10ee5d2f3707a063401adb56b0cdb0105b",
+            "final_url": "https://www.city.meguro.tokyo.jp/documents/2232/06kessansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T00:49:41.952Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131105",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度目黒区各会計歳入歳出決算書",
+          "landing_url": "https://www.city.meguro.tokyo.jp/kaikei/kusei/yosan/kessan.html",
+          "inspected_at": "2026-10-07T14:41:32.728188+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.meguro.tokyo.jp/documents/2232/7.pdf",
+              "sha256": "f519167e438c0ee25e1cfcae0d3c940e748002a02929c893cb727cb3fa8594fb",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 7
+                    },
+                    {
+                      "start": 12,
+                      "end": 41
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 10
+                    },
+                    {
+                      "start": 42,
+                      "end": 91
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 94,
+                      "end": 95
+                    },
+                    {
+                      "start": 99,
+                      "end": 106
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 96,
+                      "end": 97
+                    },
+                    {
+                      "start": 107,
+                      "end": 115
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 118,
+                      "end": 118
+                    },
+                    {
+                      "start": 121,
+                      "end": 127
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 119,
+                      "end": 119
+                    },
+                    {
+                      "start": 128,
+                      "end": 133
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 136,
+                      "end": 137
+                    },
+                    {
+                      "start": 141,
+                      "end": 149
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 138,
+                      "end": 139
+                    },
+                    {
+                      "start": 150,
+                      "end": 159
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "決算についてページ(/kaikei/kusei/yosan/kessan.html)に掲載の最新決算＝令和7年度各会計歳入歳出決算書PDFを選定。表紙が列挙する全会計＝一般会計・国民健康保険特別会計・後期高齢者医療特別会計・介護保険特別会計（議案第62〜65号）を1冊に収録し、企業会計・他の特別会計の別冊掲載は一覧になし。文字層PDF(text)。本文は1物理頁に2印字頁の見開き組版(印字N頁→物理floor(N/2)+4)。歳入歳出決算書は款・項と予算現額・調定額・収入済額または支出済額・翌年度繰越額・不用額(円)。歳入歳出決算事項別明細書は款・項・目と当初予算額・補正予算額・繰越・流用増減・計と、節区分の支出済額・繰越額・不用額(円)を同一表で対応。歳出は各会計の決算書歳出と明細書歳出の範囲をscopeに記録(一般会計:物理8-10・42-91=印字8-13・76-175、国保:96-97・107-115、後医:119・128-133、介護:138-139・150-159)。歳入範囲も同様に確認済み。実質収支調書・財産調書・基金運用状況報告書等の附属資料はscope外。CSV掲載なし。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131105/2025/settlement.pdf",
+            "sha256": "f519167e438c0ee25e1cfcae0d3c940e748002a02929c893cb727cb3fa8594fb",
+            "final_url": "https://www.city.meguro.tokyo.jp/documents/2232/7.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:43:28.915Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131105",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度（2026年度）目黒区一般会計補正予算（第1号）、同説明書（全頁）",
+          "landing_url": "https://www.city.meguro.tokyo.jp/zaisei/kusei/yosan/r8_hosei.html",
+          "inspected_at": "2026-10-07T16:38:32.631547+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.meguro.tokyo.jp/documents/20212/08-1yosansyo.pdf",
+              "sha256": "1f1e67793d82f93c5d9753815977c4b592bacab9e4127bebb17faa77451960e0",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "start": 18,
+                      "end": 21
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "start": 22,
+                      "end": 25
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧(/kusei/yosan/yosan/hoseiyosan/index.html)の令和8年度補正予算ページ(/zaisei/kusei/yosan/r8_hosei.html)に掲載の一般会計補正予算（第1号）説明書付き全頁PDFを選定。一般会計のみ（議案第38号）。文字層PDF(text)で正常に抽出可。第1表歳入歳出予算補正は款・項と補正前の額・補正額・計(千円)。説明書の歳入歳出補正予算事項別明細書は款・項・目と補正前・補正額・計・財源内訳と節区分を同一表で対応し、各目の下に事業説明(【担当課】付き)を併記。印字頁+4=物理頁。歳出:第1表歳出物理9・明細書歳出物理22-25(印字5・18-21)。歳入:物理8・18-21(印字4・14-17)。債務負担行為調書・特別区債現在高調書はscope外。特別会計は第1号の補正が一般会計第2号と同冊(08-2)に掲載されるためsupplementary-2側で選定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131105/2026/supplementary-1.pdf",
+            "sha256": "1f1e67793d82f93c5d9753815977c4b592bacab9e4127bebb17faa77451960e0",
+            "final_url": "https://www.city.meguro.tokyo.jp/documents/20212/08-1yosansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:38:48.445Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131105",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度（2026年度）目黒区一般会計補正予算（第2号）、国民健康保険特別会計・後期高齢者医療特別会計・介護保険特別会計補正予算（第1号）、同説明書（全頁）",
+          "landing_url": "https://www.city.meguro.tokyo.jp/zaisei/kusei/yosan/r8_hosei.html",
+          "inspected_at": "2026-10-07T16:38:32.631547+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.meguro.tokyo.jp/documents/20212/08-2yosansyo.pdf",
+              "sha256": "1a6d2e6e1572c908f44cdbae2a38b14945179bfb0fd94ffc059e92d8912648bd",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "start": 22,
+                      "end": 25
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 13,
+                      "end": 13
+                    },
+                    {
+                      "start": 26,
+                      "end": 127
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 140,
+                      "end": 140
+                    },
+                    {
+                      "start": 145,
+                      "end": 157
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 141,
+                      "end": 141
+                    },
+                    {
+                      "start": 158,
+                      "end": 173
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 182,
+                      "end": 182
+                    },
+                    {
+                      "start": 187,
+                      "end": 197
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 183,
+                      "end": 183
+                    },
+                    {
+                      "start": 198,
+                      "end": 207
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 216,
+                      "end": 216
+                    },
+                    {
+                      "start": 221,
+                      "end": 235
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 217,
+                      "end": 217
+                    },
+                    {
+                      "start": 236,
+                      "end": 261
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "同ページ掲載の一般会計補正予算（第2号）と3特別会計補正予算（第1号）を1冊に収録する全頁PDFを選定。一般会計第2号＝議案第58号、国民健康保険特別会計第1号＝第59号、後期高齢者医療特別会計第1号＝第60号、介護保険特別会計第1号＝第61号。企業会計・他の特別会計の別冊掲載は一覧になし。文字層はあるがToUnicode破損で対象明細の文字が読めず、画像として確認する必要があるためpdf_type=scan。画像スキャンそのものと断定したものではない。構成は第1号と同型（第1表が款・項と補正前の額・補正額・計、説明書明細書が款・項・目と補正額・財源内訳・節・事業説明を同一表対応、千円）。印字頁+8=物理頁をフッタ頁番号で確認し、各会計の第1表歳入歳出と明細書歳入歳出の先頭・末尾を実頁で確認。一般会計:歳出13・26-127、歳入12・22-25(印字5・18-119)。国保:歳出141・158-173、歳入140・145-157(印字133・150-165)。後医:歳出183・198-207、歳入182・187-197(印字175・190-199)。介護:歳出217・236-261、歳入216・221-235(印字209・228-253)。債務負担行為調書・特別区債現在高調書・奥付はscope外。目次文字は化けるため構造はフッタ頁番号と各会計表紙(議案番号)・節見出しで確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131105/2026/supplementary-2.pdf",
+            "sha256": "1a6d2e6e1572c908f44cdbae2a38b14945179bfb0fd94ffc059e92d8912648bd",
+            "final_url": "https://www.city.meguro.tokyo.jp/documents/20212/08-2yosansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:38:51.279Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

@@ -2396,7 +2396,7 @@
           ]
         }
       ],
-      "reason": "オープンデータの当年度歳出決算CSV（CP932、款・項・目・節の実名称と決算額、円）を選定。対象会計を単独で満たす。歳入は別CSVで選定済み。\n当該年度の歳入決算データCSV（CP932、01会計–07細々節の実名称と決算額・円、attach_98680_11）が対象の歳入を単独で満たす。歳出は別CSVで選定済み。",
+      "reason": "オープンデータの当年度歳出決算CSV（CP932、款・項・目・節の実名称と決算額、円）を選定。対象会計を単独で満たす。歳入は別CSVで選定済み。\n当該年度の歳入決算データCSV（CP932、01会計–07細々節の実名称と決算額・円、attach_98680_11）が対象の歳入を単独で満たす。歳出は別CSVで選定済み。\n下水道事業会計の決算別冊は歳入歳出決算書ページ（c_service/087/087972.html、年度更新で上書き）に掲載実績があるが、当該年度分の添付URLは現行掲載から取得できない（令和6年度分の添付は掲載されていたがリンク先IDが判明せず、推測したattach_87972_12以降は404。令和5年度分のみattach_87972_10が存続し当該年度選定へ追加。令和2〜4年度分は旧掲載の添付ID不明）。オープンデータ決算CSVも下水道事業会計を除くため、当該会計は未収録のまま残す。",
       "selected_candidate_id": "representative",
       "archive": {
         "bucket": "fudoki-inputs",
@@ -3587,7 +3587,7 @@
           ]
         }
       ],
-      "reason": "オープンデータの当年度歳出決算CSV（CP932、款・項・目・節の実名称と決算額、円）を選定。対象会計を単独で満たす。歳入は別CSVで選定済み。\n当該年度の歳入決算データCSV（CP932、01会計–07細々節の実名称と決算額・円、attach_98680_9）が対象の歳入を単独で満たす。歳出は別CSVで選定済み。",
+      "reason": "オープンデータの当年度歳出決算CSV（CP932、款・項・目・節の実名称と決算額、円）を選定。対象会計を単独で満たす。歳入は別CSVで選定済み。\n当該年度の歳入決算データCSV（CP932、01会計–07細々節の実名称と決算額・円、attach_98680_9）が対象の歳入を単独で満たす。歳出は別CSVで選定済み。\n下水道事業会計の決算別冊は歳入歳出決算書ページ（c_service/087/087972.html、年度更新で上書き）に掲載実績があるが、当該年度分の添付URLは現行掲載から取得できない（令和6年度分の添付は掲載されていたがリンク先IDが判明せず、推測したattach_87972_12以降は404。令和5年度分のみattach_87972_10が存続し当該年度選定へ追加。令和2〜4年度分は旧掲載の添付ID不明）。オープンデータ決算CSVも下水道事業会計を除くため、当該会計は未収録のまま残す。",
       "selected_candidate_id": "representative",
       "archive": {
         "bucket": "fudoki-inputs",
@@ -4908,7 +4908,7 @@
           ]
         }
       ],
-      "reason": "オープンデータの当年度歳出決算CSV（CP932、款・項・目・節の実名称と決算額、円）を選定。対象会計を単独で満たす。歳入は別CSVで選定済み。\n当該年度の歳入決算データCSV（CP932、01会計–07細々節の実名称と決算額・円、attach_98680_7）が対象の歳入を単独で満たす。歳出は別CSVで選定済み。",
+      "reason": "オープンデータの当年度歳出決算CSV（CP932、款・項・目・節の実名称と決算額、円）を選定。対象会計を単独で満たす。歳入は別CSVで選定済み。\n当該年度の歳入決算データCSV（CP932、01会計–07細々節の実名称と決算額・円、attach_98680_7）が対象の歳入を単独で満たす。歳出は別CSVで選定済み。\n下水道事業会計の決算別冊は歳入歳出決算書ページ（c_service/087/087972.html、年度更新で上書き）に掲載実績があるが、当該年度分の添付URLは現行掲載から取得できない（令和6年度分の添付は掲載されていたがリンク先IDが判明せず、推測したattach_87972_12以降は404。令和5年度分のみattach_87972_10が存続し当該年度選定へ追加。令和2〜4年度分は旧掲載の添付ID不明）。オープンデータ決算CSVも下水道事業会計を除くため、当該会計は未収録のまま残す。",
       "selected_candidate_id": "representative",
       "archive": {
         "bucket": "fudoki-inputs",
@@ -5769,7 +5769,7 @@
           "id": "representative",
           "title": "2023年度決算",
           "landing_url": "https://www.city.mitaka.lg.jp/c_service/090/090334.html",
-          "inspected_at": "2026-10-07T09:16:37.134768+00:00",
+          "inspected_at": "2026-10-07T13:52:32.352Z",
           "files": [
             {
               "download_url": "https://www.city.mitaka.lg.jp/c_service/098/attached/attach_98680_5.csv",
@@ -5824,11 +5824,39 @@
                   "direction": "expenditure"
                 }
               ]
+            },
+            {
+              "download_url": "https://www.city.mitaka.lg.jp/c_service/087/attached/attach_87972_10.pdf",
+              "sha256": "6f770ce6f9678745515db8c3a37eebd95cc1cd21c2da49e17771db8cd0190a0a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 15
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
       ],
-      "reason": "オープンデータの当年度歳出決算CSV（CP932、款・項・目・節の実名称と決算額、円）を選定。対象会計を単独で満たす。歳入は別CSVで選定済み。\n当該年度の歳入決算データCSV（CP932、01会計–07細々節の実名称と決算額・円、attach_98680_5）が対象の歳入を単独で満たす。歳出は別CSVで選定済み。",
+      "reason": "オープンデータの当年度歳出決算CSV（CP932、款・項・目・節の実名称と決算額、円）を選定。対象会計を単独で満たす。歳入は別CSVで選定済み。\n当該年度の歳入決算データCSV（CP932、01会計–07細々節の実名称と決算額・円、attach_98680_5）が対象の歳入を単独で満たす。歳出は別CSVで選定済み。\n下水道事業会計は歳入歳出決算書の別冊（attach_87972_10、令和5年度三鷹市下水道事業会計決算書、全15頁）に収益的収入及び支出・資本的収入及び支出の款・項・目決算額（円）が収録されこれを追加選定。文字層ありのtext PDF。",
       "selected_candidate_id": "representative",
       "archive": {
         "bucket": "fudoki-inputs",
@@ -5840,12 +5868,17 @@
             "final_url": "https://www.city.mitaka.lg.jp/c_service/098/attached/attach_98680_5.csv"
           },
           {
-            "key": "fiscal/source-selection/132047/2023/settlement-2.csv",
+            "key": "fiscal/source-selection/132047/2023/settlement-3.csv",
             "sha256": "885e5dc30b77cb9ef8acd2b05ac99248a8f40f593d2bf191c3286dbca0a6e4b2",
             "final_url": "https://www.city.mitaka.lg.jp/c_service/098/attached/attach_98680_6.csv"
+          },
+          {
+            "key": "fiscal/source-selection/132047/2023/settlement-2.pdf",
+            "sha256": "6f770ce6f9678745515db8c3a37eebd95cc1cd21c2da49e17771db8cd0190a0a",
+            "final_url": "https://www.city.mitaka.lg.jp/c_service/087/attached/attach_87972_10.pdf"
           }
         ],
-        "archived_at": "2026-10-07T09:19:24.830Z"
+        "archived_at": "2026-10-07T13:52:55.299Z"
       }
     },
     {
@@ -6514,9 +6547,63 @@
         {
           "id": "representative",
           "title": "2024年度当初予算",
-          "landing_url": "https://www.city.mitaka.lg.jp/c_service/090/090334.html",
-          "inspected_at": "2026-10-07T09:16:37.134768+00:00",
+          "landing_url": "https://catalog.data.metro.tokyo.lg.jp/dataset/t132047d0000000010",
+          "inspected_at": "2026-10-07T13:45:53.999Z",
           "files": [
+            {
+              "download_url": "https://www.city.mitaka.lg.jp/c_service/074/attached/attach_74103_7.csv",
+              "sha256": "9ae9636703f90430eff0bcfc50e2812fe07a1fe180b7d9d993230d5a4f717910",
+              "format": "csv",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue"
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "revenue"
+                },
+                {
+                  "account": "介護サービス事業特別会計",
+                  "direction": "revenue"
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "revenue"
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue"
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.mitaka.lg.jp/c_service/074/attached/attach_74103_8.csv",
+              "sha256": "f9dcbc7e871437691e4979572aeafaae2da333aba1b27beba8eee72153a5f10e",
+              "format": "csv",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure"
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure"
+                },
+                {
+                  "account": "介護サービス事業特別会計",
+                  "direction": "expenditure"
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure"
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure"
+                }
+              ]
+            },
             {
               "download_url": "https://www.city.mitaka.lg.jp/c_service/090/attached/attach_90334_4.pdf",
               "sha256": "1c3e42adb02a6152c1ca6d1738d3ddde8b4b840a706eede883913ad9a57aab17",
@@ -6542,138 +6629,35 @@
                       "end": 208
                     }
                   ]
-                },
-                {
-                  "account": "介護サービス事業特別会計",
-                  "direction": "expenditure",
-                  "pages": [
-                    {
-                      "start": 49,
-                      "end": 80
-                    }
-                  ]
-                },
-                {
-                  "account": "介護サービス事業特別会計",
-                  "direction": "revenue",
-                  "pages": [
-                    {
-                      "start": 49,
-                      "end": 80
-                    }
-                  ]
-                },
-                {
-                  "account": "介護保険事業特別会計",
-                  "direction": "expenditure",
-                  "pages": [
-                    {
-                      "start": 81,
-                      "end": 128
-                    }
-                  ]
-                },
-                {
-                  "account": "介護保険事業特別会計",
-                  "direction": "revenue",
-                  "pages": [
-                    {
-                      "start": 81,
-                      "end": 128
-                    }
-                  ]
-                },
-                {
-                  "account": "国民健康保険事業特別会計",
-                  "direction": "expenditure",
-                  "pages": [
-                    {
-                      "start": 1,
-                      "end": 48
-                    }
-                  ]
-                },
-                {
-                  "account": "国民健康保険事業特別会計",
-                  "direction": "revenue",
-                  "pages": [
-                    {
-                      "start": 1,
-                      "end": 48
-                    }
-                  ]
-                },
-                {
-                  "account": "後期高齢者医療特別会計",
-                  "direction": "expenditure",
-                  "pages": [
-                    {
-                      "start": 129,
-                      "end": 164
-                    }
-                  ]
-                },
-                {
-                  "account": "後期高齢者医療特別会計",
-                  "direction": "revenue",
-                  "pages": [
-                    {
-                      "start": 129,
-                      "end": 164
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "download_url": "https://www.city.mitaka.lg.jp/c_service/090/attached/attach_90334_3.pdf",
-              "sha256": "cfdea4f3fba7800a93830c25e5dce438b3934e556851ddfd03120922941c0f2e",
-              "format": "pdf",
-              "pdf_type": "text",
-              "scope": [
-                {
-                  "account": "一般会計",
-                  "direction": "expenditure",
-                  "pages": [
-                    {
-                      "start": 1,
-                      "end": 402
-                    }
-                  ]
-                },
-                {
-                  "account": "一般会計",
-                  "direction": "revenue",
-                  "pages": [
-                    {
-                      "start": 1,
-                      "end": 402
-                    }
-                  ]
                 }
               ]
             }
           ]
         }
       ],
-      "reason": "分冊(2)（attach_90334_3）の下水道事業会計部分（物理169–212頁）に収益的収入及び支出の款・項・目明細が収録され対象を単独で満たす。文字層ありのtext PDF。\n「一般会計・特別会計予算及び同説明書(2)」内の下水道事業会計部分（物理165–208頁）に収益的収入及び支出・資本的収入及び支出の予算実施計画と款・項・目の明細書（千円）が収録され対象を単独で満たす。文字層ありのtext PDF。",
+      "reason": "令和6年度歳出予算データCSV（CP932、01会計列=一般会計/国民健康保険/介護サービス/介護保険/後期高齢者、款・項・目・節の実名称と予算額、千円、5,613行）と歳入予算データCSV（CP932、同5会計、821行）を選定。金額単位は掲載ページ（c_service/074/074103.html）の「表示単位は千円単位」の明記で確認。下水道事業会計を除く全対象会計を単独で満たす。\n分冊(2)（attach_90334_4）の下水道事業会計部分（物理165–208頁）に収益的収入及び支出・資本的収入及び支出の予算実施計画と款・項・目の明細書（千円）が収録され、CSVに含まれない下水道事業会計を単独で満たす。文字層ありのtext PDF。",
       "selected_candidate_id": "representative",
       "archive": {
         "bucket": "fudoki-inputs",
         "candidate_id": "representative",
         "files": [
           {
+            "key": "fiscal/source-selection/132047/2024/initial-2.csv",
+            "sha256": "9ae9636703f90430eff0bcfc50e2812fe07a1fe180b7d9d993230d5a4f717910",
+            "final_url": "https://www.city.mitaka.lg.jp/c_service/074/attached/attach_74103_7.csv"
+          },
+          {
+            "key": "fiscal/source-selection/132047/2024/initial-3.csv",
+            "sha256": "f9dcbc7e871437691e4979572aeafaae2da333aba1b27beba8eee72153a5f10e",
+            "final_url": "https://www.city.mitaka.lg.jp/c_service/074/attached/attach_74103_8.csv"
+          },
+          {
             "key": "fiscal/source-selection/132047/2024/initial-1.pdf",
             "sha256": "1c3e42adb02a6152c1ca6d1738d3ddde8b4b840a706eede883913ad9a57aab17",
             "final_url": "https://www.city.mitaka.lg.jp/c_service/090/attached/attach_90334_4.pdf"
-          },
-          {
-            "key": "fiscal/source-selection/132047/2024/initial-2.pdf",
-            "sha256": "cfdea4f3fba7800a93830c25e5dce438b3934e556851ddfd03120922941c0f2e",
-            "final_url": "https://www.city.mitaka.lg.jp/c_service/090/attached/attach_90334_3.pdf"
           }
         ],
-        "archived_at": "2026-10-07T09:19:42.487Z"
+        "archived_at": "2026-10-07T13:46:28.051Z"
       }
     },
     {
@@ -6687,7 +6671,7 @@
           "id": "representative",
           "title": "2024年度決算",
           "landing_url": "https://www.city.mitaka.lg.jp/c_service/090/090334.html",
-          "inspected_at": "2026-10-07T09:16:37.134768+00:00",
+          "inspected_at": "2026-10-08T01:08:51.981605+00:00",
           "files": [
             {
               "download_url": "https://www.city.mitaka.lg.jp/c_service/098/attached/attach_98680_3.csv",
@@ -6742,11 +6726,47 @@
                   "direction": "expenditure"
                 }
               ]
+            },
+            {
+              "download_url": "https://www.city.mitaka.lg.jp/c_service/082/attached/attach_82017_2.pdf",
+              "sha256": "98a176c5043ae643a09d819598afe790793fdf1e4b0d9d16531f878072eeb526",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 128,
+                      "end": 129
+                    },
+                    {
+                      "start": 138,
+                      "end": 139
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 130,
+                      "end": 137
+                    },
+                    {
+                      "start": 140,
+                      "end": 143
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
       ],
-      "reason": "オープンデータの当年度歳出決算CSV（CP932、款・項・目・節の実名称と決算額、円）を選定。対象会計を単独で満たす。歳入は別CSVで選定済み。\n当該年度の歳入決算データCSV（CP932、01会計–07細々節の実名称と決算額・円、attach_98680_3）が対象の歳入を単独で満たす。歳出は別CSVで選定済み。",
+      "reason": "オープンデータの当年度歳出決算CSV（CP932、款・項・目・節の実名称と決算額、円）を選定。対象会計を単独で満たす。歳入は別CSVで選定済み。\n当該年度の歳入決算データCSV（CP932、01会計–07細々節の実名称と決算額・円、attach_98680_3）が対象の歳入を単独で満たす。歳出は別CSVで選定済み。\n下水道事業会計の決算別冊は歳入歳出決算書ページ（c_service/087/087972.html）に令和6年度分が掲載されていたが、同ページ・添付とも年度更新で上書きされ現行は令和7年度分（attach_87972_2.pdfはR7内容に差し替わり、R6当時も同一添付IDだった）。Wayback Machine（ページ20251009スナップショット・当該PDF未収集）、archive.today、arquivo.pt、Common Crawlいずれも当該PDFの収集なし。議会提出議案（c_service/113/113045.html、attach_113045_2.pdf）は議案本文のみで別紙決算書を含まず、オープンデータ決算CSVも下水道事業会計を除くため、当該別冊は到達不能。\n代替として令和6年度各会計予算執行実績報告書(2)（c_service/082/082017.html、attach_82017_2.pdf、令和7年8月・令和6年度決算に係る）内の下水道事業会計予算執行実績報告書部分（物理128–143頁）を選定。収益的収入及び支出（128–137頁）・資本的収入及び支出（138–143頁）に款・項・目と予算現額・決算額（円）が同一明細で収録される。文字層ありのtext PDF。下水道事業報告書（105–121頁）と給与費決算明細書（122–127頁）は範囲外。 方向別のscopeは収益的収入128–129・資本的収入138–139、収益的支出130–137・資本的支出140–143頁に分ける。同冊の費用明細は今回の款項目×決算額の代表範囲と別に扱い、費用を現金支出へ置換しない。",
       "selected_candidate_id": "representative",
       "archive": {
         "bucket": "fudoki-inputs",
@@ -6758,12 +6778,17 @@
             "final_url": "https://www.city.mitaka.lg.jp/c_service/098/attached/attach_98680_3.csv"
           },
           {
-            "key": "fiscal/source-selection/132047/2024/settlement-2.csv",
+            "key": "fiscal/source-selection/132047/2024/settlement-3.csv",
             "sha256": "9d65dcece1943882cfb15e077b5a2ca9877a1c9872b1c738bdcafa828fb7387c",
             "final_url": "https://www.city.mitaka.lg.jp/c_service/098/attached/attach_98680_4.csv"
+          },
+          {
+            "key": "fiscal/source-selection/132047/2024/settlement-2.pdf",
+            "sha256": "98a176c5043ae643a09d819598afe790793fdf1e4b0d9d16531f878072eeb526",
+            "final_url": "https://www.city.mitaka.lg.jp/c_service/082/attached/attach_82017_2.pdf"
           }
         ],
-        "archived_at": "2026-10-07T09:19:47.589Z"
+        "archived_at": "2026-10-08T01:09:18.659Z"
       }
     },
     {

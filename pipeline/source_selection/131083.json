@@ -2,6 +2,354 @@
   "jurisdiction": "131083",
   "name": "江東区",
   "official_url": "https://www.city.koto.lg.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度江東区予算説明書（一般会計・特別会計）",
+          "landing_url": "https://www.city.koto.lg.jp/011102/8nendotosyoyosangiketu.html",
+          "inspected_at": "2026-10-07T14:48:08.490487+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/8toutsyoyosansetumeisyoippankaikei.pdf",
+              "sha256": "29ebd70b44520516134211661eb8c55e9974e16eab1149bb2c9ce9acbee8d66a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 145,
+                      "end": 526
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/8toutsyoyosansetumeisyotokubetukaikei.pdf",
+              "sha256": "d1857e5aded11c978c08ef444cc6c986d0cacd7829992ba593b6f49564c3c609",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 53,
+                      "end": 94
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 145,
+                      "end": 182
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 219,
+                      "end": 236
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度当初予算説明書の歳出明細（款・項・目が同一明細行、目にコード・名称・本年度予算額・千円、節別内訳と説明（事業内容）列付き。テキスト抽出可能だが各文字が二重描画）。一般会計冊: 歳出 印字139-520=物理145-526（第1款議会費140〜第10款予備費518、物理527〜は給与費明細書）。特別会計冊（国保・介護・後期を1冊に収録、印字=物理-6）: 国保歳出 印字47-88=物理53-94、介護歳出 印字139-176=物理145-182、後期歳出 印字213-230=物理219-236（いずれも末頁は給与費明細書の手前まで）。全会計は一般・国民健康保険・介護保険・後期高齢者医療の4会計（当初予算掲載一覧と冊子目次で照合、企業会計・他の特別会計の掲載なし）。歳入・給与費明細書・債務負担行為の範囲は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2026/initial-1.pdf",
+            "sha256": "29ebd70b44520516134211661eb8c55e9974e16eab1149bb2c9ce9acbee8d66a",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/8toutsyoyosansetumeisyoippankaikei.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131083/2026/initial-2.pdf",
+            "sha256": "d1857e5aded11c978c08ef444cc6c986d0cacd7829992ba593b6f49564c3c609",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/8toutsyoyosansetumeisyotokubetukaikei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:48:24.065Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度江東区各会計歳入歳出決算書・決算事項別明細書",
+          "landing_url": "https://www.city.koto.lg.jp/510100/sainyuusaisyutukessansyo6.html",
+          "inspected_at": "2026-10-07T15:03:13.580403+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/510100/documents/20251021113431.pdf",
+              "sha256": "eb1e83d3a3d62b08c35f2541011d19a1236a6bc7d2d685fdfe10625c79f0ece2",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 16,
+                      "end": 18
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 26,
+                      "end": 27
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 34,
+                      "end": 35
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 41,
+                      "end": 41
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koto.lg.jp/510100/documents/20251021152823.pdf",
+              "sha256": "734c41222d2704fd0b570a91c8bb7de8552795e51b3444e8c5e7b3a2f130dba3",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 85,
+                      "end": 196
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koto.lg.jp/510100/documents/20260114171302.pdf",
+              "sha256": "c984d993f874af2f50f6512c0b93316b8bd918a9a62f71a6a58f9796c7744263",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "国民健康保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 31,
+                      "end": 53
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 85,
+                      "end": 107
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 133,
+                      "end": 145
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度決算（令和7年度決算は一覧ページ「現在、情報はありません」で未公表のためR6が最新）。歳出の支出済額は決算書（43頁）に款・項粒度で支出済額・翌年度繰越額・不用額・予算現額との比較つき（円）: 一般歳出 印字5-7=物理16-18、国保歳出 印字13-14=物理26-27、介護歳出 印字19-20=物理34-35、後期歳出 印字24=物理41。決算事項別明細書は款・項・目・節の明細を見開き1表で持つ（円）: 左頁（偶数印字頁）は款・項・目名称＋予算現額（当初予算額・補正予算額・継続費及び繰越事業費繰越額・予備費支出及び流用増減額・計）と節の区分・金額（予算現額の節別内訳）、右頁（奇数印字頁）は同一行の支出済額・翌年度繰越額（継続費逓次繰越・繰越明許費・事故繰越し）・不用額・備考（繰越明許費の議決情報）。目・節粒度の支出済額はこの右頁に存在する（一般 印字111・国保 251・介護 303・後期 349の右頁で列見出しと行対応を確認）。歳出末の最終見開き（印字218-219・270-271・322-323・358-359）の右頁は歳出合計行の支出済額を持ち決算書の会計別合計と一致（一般 261,954,790,490・国保 46,425,688,509・介護 39,161,165,053・後期 12,751,736,946）。明細書の歳出範囲は先頭が「(3)歳出」区切り頁: 一般 印字109-220=物理85-196（物理196は白紙）、国保 印字249-271=物理31-53、介護 印字301-323=物理85-107、後期 印字347-359=物理133-145。3冊とも文字層なし輪郭線/CID文字化けで画像読み取りが必要（scan）。全会計は4会計（掲載一覧と各冊表紙・認定で照合、企業会計・他の特別会計なし）。歳入・実質収支調書・財産調書は範囲外で未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2024/settlement-3.pdf",
+            "sha256": "eb1e83d3a3d62b08c35f2541011d19a1236a6bc7d2d685fdfe10625c79f0ece2",
+            "final_url": "https://www.city.koto.lg.jp/510100/documents/20251021113431.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131083/2024/settlement-1.pdf",
+            "sha256": "734c41222d2704fd0b570a91c8bb7de8552795e51b3444e8c5e7b3a2f130dba3",
+            "final_url": "https://www.city.koto.lg.jp/510100/documents/20251021152823.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131083/2024/settlement-2.pdf",
+            "sha256": "c984d993f874af2f50f6512c0b93316b8bd918a9a62f71a6a58f9796c7744263",
+            "final_url": "https://www.city.koto.lg.jp/510100/documents/20260114171302.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:48:33.827Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度江東区予算説明書（一般会計補正予算第1号）",
+          "landing_url": "https://www.city.koto.lg.jp/011102/8nenndohoseiyosan1gou.html",
+          "inspected_at": "2026-10-07T16:37:22.333452+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/8hosei1gouyosansetumeisyo.pdf",
+              "sha256": "4d21addb1d3bf16476747b24a09e438d8f159560cb23f2ea7eef0b227fcf7d4e",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 24,
+                      "end": 43
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度一般会計補正予算（第1号）の議決後予算説明書（令和8年6月印刷、59頁）。歳出事項別明細は款・項・目と補正前の額・補正額・計・補正額の財源内訳（特定財源/一般財源）・節（区分・金額）が同一明細行に対応し、後半に事業説明（事業名・補正後額）が続く。単位は千円（総括頁 物理8 の見出しで確認）。歳出範囲: 区切り頁「(3)歳出」印字19=物理23、明細+説明 印字20-39=物理24-43（印字40=物理44は白紙、物理45から給与費明細書）。本文は MSPMincho（ToUnicodeなし）で文字抽出が頁番号のみとなり画像読み取りが必要（scan）。表紙に介護保険会計・後期高齢者医療会計補正予算（第1号）の表記があるが、目次・本文（印字53頁まで全会計分なし）に該当区間はなく、介護・後期の第1号歳出明細は本資料に存在しない（掲載一覧にも別資料なし、介護は第2号概要に同封）。歳入・給与費明細書・債務負担行為・総括の範囲は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2026/supplementary-1.pdf",
+            "sha256": "4d21addb1d3bf16476747b24a09e438d8f159560cb23f2ea7eef0b227fcf7d4e",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/8hosei1gouyosansetumeisyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:37:37.753Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度一般会計補正予算（第2号）（案）・介護保険会計補正予算（第1号）（案）の概要",
+          "landing_url": "https://www.city.koto.lg.jp/011102/r8hosei2-1yosannannnogaiyou.html",
+          "inspected_at": "2026-10-07T16:37:22.333452+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/8hosei2gougaiyou.pdf",
+              "sha256": "884d3e6c8aef01105b10d86320b830d97e92373a10d758da56b1c56f63ba277d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "一般会計補正予算（第2号）・介護保険会計補正予算（第1号）の案段階の概要1頁（議決後の予算説明書は掲載一覧に未掲載、2026-10-07確認）。各事業名と補正額（万円、表示単位未満四捨五入）が同一明細に対応し、一部事業は一般会計・介護保険会計の内訳併記あり。会計別総額（一般会計157億5,900万円・介護保険会計10億6,900万円）は款・項・目別内訳を持たないため款項目粒度は一般会計第2号分もこの概要では確認できない（事業粒度のみ）。介護保険会計分は同資料内の第1号（一般会計第2号とは号数が異なる）として収録。国民健康保険会計・後期高齢者医療会計の補正第2号相当は掲載一覧に候補なし。歳入は記載なし。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2026/supplementary-2.pdf",
+            "sha256": "884d3e6c8aef01105b10d86320b830d97e92373a10d758da56b1c56f63ba277d",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/8hosei2gougaiyou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:37:40.972Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

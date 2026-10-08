@@ -7,6 +7,17 @@
       "target": {
         "jurisdiction": "131016",
         "fiscal_year": 2020,
+        "document_kind": "initial"
+      },
+      "candidates": [],
+      "selected_candidate_id": null,
+      "archive": null,
+      "reason": "令和2年度当初予算の事項別明細を持つ原典は公式掲載範囲に見つからず未選定。公式当初予算一覧（yosan/index.html）は令和4〜8年度のみ掲載。r2-yosan.html は404、documents/583/ 配下の r2kaikeiyosan.pdf・r2yosansho.pdf 等も404。東京都オープンデータカタログに千代田区の予算資料はなし。探索した範囲では掲載を確認できなかった。"
+    },
+    {
+      "target": {
+        "jurisdiction": "131016",
+        "fiscal_year": 2020,
         "document_kind": "settlement"
       },
       "candidates": [
@@ -204,7 +215,7 @@
           "id": "131016-dc9e14cd35a1",
           "title": "参考資料（PDF：2,778KB）",
           "landing_url": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/r4-yosan.html",
-          "inspected_at": "2026-10-07T05:56:59.985Z",
+          "inspected_at": "2026-10-07T13:44:21.290452+00:00",
           "files": [
             {
               "download_url": "https://www.city.chiyoda.lg.jp/documents/27821/r4sankoshiryo_1.pdf",
@@ -219,7 +230,7 @@
           "id": "131016-f17ff1ed3ccd",
           "title": "財政運営の状況（令和3年度財政レポート）（PDF：1,208KB）",
           "landing_url": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/r4-yosan.html",
-          "inspected_at": "2026-10-07T05:56:59.985Z",
+          "inspected_at": "2026-10-07T13:44:21.290452+00:00",
           "files": [
             {
               "download_url": "https://www.city.chiyoda.lg.jp/documents/27821/r4zaiseijokyo_1.pdf",
@@ -233,7 +244,7 @@
       ],
       "selected_candidate_id": null,
       "archive": null,
-      "reason": "掲載資料を確認したが、必要な明細を持つ原典は未選定。"
+      "reason": "令和3年度当初予算の事項別明細を持つ原典は公式掲載範囲に見つからず未選定。公式当初予算一覧（yosan/index.html）は令和4〜8年度のみ掲載で令和3年度の各会計予算書はない。令和4年度「区の仕事のあらまし」ページの参考資料・財政運営の状況は款・項・目の明細を持たず対象外。r3-yosan.html は404、documents/583/ 配下の r3kaikeiyosan.pdf 等も404。東京都オープンデータカタログに千代田区の予算資料はなし。"
     },
     {
       "target": {
@@ -2338,7 +2349,7 @@
           "id": "representative",
           "title": "2025年度当初予算",
           "landing_url": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
-          "inspected_at": "2026-10-07T08:47:04.434901+00:00",
+          "inspected_at": "2026-10-07T13:53:12.188717+00:00",
           "files": [
             {
               "download_url": "https://www.city.chiyoda.lg.jp/documents/583/r7kaikeiyosan.pdf",
@@ -2346,20 +2357,6 @@
               "format": "pdf",
               "pdf_type": "scan",
               "scope": [
-                {
-                  "account": "一般会計",
-                  "direction": "expenditure",
-                  "pages": [
-                    {
-                      "start": 41,
-                      "end": 41
-                    },
-                    {
-                      "start": 150,
-                      "end": 259
-                    }
-                  ]
-                },
                 {
                   "account": "一般会計",
                   "direction": "revenue",
@@ -2370,7 +2367,105 @@
                     },
                     {
                       "start": 42,
-                      "end": 149
+                      "end": 147
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 41,
+                      "end": 41
+                    },
+                    {
+                      "start": 148,
+                      "end": 259
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 288,
+                      "end": 288
+                    },
+                    {
+                      "start": 290,
+                      "end": 311
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 289,
+                      "end": 289
+                    },
+                    {
+                      "start": 312,
+                      "end": 347
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 364,
+                      "end": 364
+                    },
+                    {
+                      "start": 366,
+                      "end": 397
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 365,
+                      "end": 365
+                    },
+                    {
+                      "start": 398,
+                      "end": 433
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 452,
+                      "end": 452
+                    },
+                    {
+                      "start": 454,
+                      "end": 473
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 453,
+                      "end": 453
+                    },
+                    {
+                      "start": 474,
+                      "end": 489
                     }
                   ]
                 }
@@ -2392,7 +2487,18 @@
         ],
         "archived_at": "2026-10-07T08:49:08.320Z"
       },
-      "reason": "令和7年度各会計予算（4会計1冊）の一般会計歳入歳出予算事項別明細書を選定。歳出は物理41頁・物理150–259頁（総括の該当向き頁＋歳出明細）。印字頁=物理頁-2を目次と頁末で確認。文字層あり。掲載は当初予算一覧ページ。"
+      "reason": "令和7年度各会計予算（4会計1冊、500頁）の第1表 歳入歳出予算事項別明細書を選定。各会計の先頭2頁は総括（歳入・歳出）、続く見開きが明細。一般会計: 歳入=総括40・明細42-147、歳出=総括41・明細148-259。国民健康保険事業会計: 歳入=総括288・明細290-311、歳出=総括289・明細312-347。介護保険特別会計: 歳入=総括364・明細366-397、歳出=総括365・明細398-433。後期高齢者医療特別会計: 歳入=総括452・明細454-473、歳出=総括453・明細474-489。印字頁=物理頁-2。境界は目次と各会計の先頭・末尾・切替頁を原典画像で確認。文字層は文字コード対応が復元できずscan。会計間の給与費明細書等の附書類は範囲外。"
+    },
+    {
+      "target": {
+        "jurisdiction": "131016",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [],
+      "selected_candidate_id": null,
+      "archive": null,
+      "reason": "令和7年度決算書は公式決算書一覧（kessan/kessansho.html、更新日2025-10-22）に未掲載。掲載は令和6年度が最新で過去4年分（令和2〜6年度）。令和7年度分が掲載され次第選定する。"
     },
     {
       "target": {

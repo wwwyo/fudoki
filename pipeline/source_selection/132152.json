@@ -2,6 +2,468 @@
   "jurisdiction": "132152",
   "name": "国立市",
   "official_url": "https://www.city.kunitachi.tokyo.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "132152",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "2026(令和8)年度国立市各会計当初予算書",
+          "landing_url": "https://www.city.kunitachi.tokyo.jp/shisei/zaisei/2/1/13794.html",
+          "inspected_at": "2026-10-07T15:54:30+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kunitachi.tokyo.jp/material/files/group/7/R8_tousyo_ippankaikei.pdf",
+              "sha256": "3207bf4e796921e9c2e13fa8ce232559aeaca0148823f56356f8b5acbaefb981",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 29,
+                      "end": 194
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.kunitachi.tokyo.jp/material/files/group/7/R8_tousyo_kokuho.pdf",
+              "sha256": "c5d8d1b04559c5fe55057c7263ead3d8bcd354cd2d87a5818939568fb5e456d9",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 15,
+                      "end": 25
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.kunitachi.tokyo.jp/material/files/group/7/R8_tousyo_kaigo.pdf",
+              "sha256": "754c8a1e88ac7c5b32534f1e3926658d9b16e040b556ad1e43ce65053d7d8ae4",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 13,
+                      "end": 27
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.kunitachi.tokyo.jp/material/files/group/7/R8_tousyo_kouki.pdf",
+              "sha256": "2358603ba0aabcec31a49814632b37a798b0c3617ef0952e6641218cd15df644",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 18
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.kunitachi.tokyo.jp/material/files/group/7/R8_tousyo_gesui.pdf",
+              "sha256": "f0c66dce44bde42fb3f0d6665853ed752c63b9aceab2cf6a960fb2b84202af23",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "start": 11,
+                      "end": 11
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度(2026、最新当初)各会計当初予算書。公式予算書ダウンロード頁掲載の全会計(一般会計・国民健康保険特別会計・介護保険特別会計・後期高齢者医療特別会計・下水道事業会計(地方公営企業法適用の企業会計))を1候補にまとめた。一般会計・国保・介護・後期高齢者は歳入歳出予算事項別明細書で款・項・目と本年度予算額・前年度予算額・比較増減が同一明細に並び、節の区分・金額が対応(単位:千円)。一般会計歳出は物理29-194頁(第1款議会費〜第13款予備費、歳出合計で終了、続く給与費明細書195頁〜は除外)。国保15-25、介護13-27、後期12-18は同様の構成。介護・後期はToUnicodeなしで文字抽出は化けるため画像で印字頁と範囲を確認(scan)。下水道事業会計は収益的収支・資本的収支が款・項・目の表で予定額(千円)、支出は物理9頁(収益的支出:営業費用・営業外費用・予備費)と11頁(資本的支出:建設改良費・企業債償還金・基金積立金・予備費)。収入頁・CF計算書・給与費明細書・損益計算書・注記は除外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132152/2026/initial-2.pdf",
+            "sha256": "3207bf4e796921e9c2e13fa8ce232559aeaca0148823f56356f8b5acbaefb981",
+            "final_url": "https://www.city.kunitachi.tokyo.jp/material/files/group/7/R8_tousyo_ippankaikei.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132152/2026/initial-4.pdf",
+            "sha256": "c5d8d1b04559c5fe55057c7263ead3d8bcd354cd2d87a5818939568fb5e456d9",
+            "final_url": "https://www.city.kunitachi.tokyo.jp/material/files/group/7/R8_tousyo_kokuho.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132152/2026/initial-3.pdf",
+            "sha256": "754c8a1e88ac7c5b32534f1e3926658d9b16e040b556ad1e43ce65053d7d8ae4",
+            "final_url": "https://www.city.kunitachi.tokyo.jp/material/files/group/7/R8_tousyo_kaigo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132152/2026/initial-1.pdf",
+            "sha256": "2358603ba0aabcec31a49814632b37a798b0c3617ef0952e6641218cd15df644",
+            "final_url": "https://www.city.kunitachi.tokyo.jp/material/files/group/7/R8_tousyo_kouki.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132152/2026/initial-5.pdf",
+            "sha256": "f0c66dce44bde42fb3f0d6665853ed752c63b9aceab2cf6a960fb2b84202af23",
+            "final_url": "https://www.city.kunitachi.tokyo.jp/material/files/group/7/R8_tousyo_gesui.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T15:55:23.023Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132152",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度東京都国立市一般会計特別会計歳入歳出決算書(下水道事業会計決算書を含む)",
+          "landing_url": "https://www.city.kunitachi.tokyo.jp/shisei/gikai/5/r7_1/12616.html",
+          "inspected_at": "2026-10-07T16:06:35+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kunitachi.tokyo.jp/material/files/group/73/r7_3_r6kessansho.pdf",
+              "sha256": "c3082e107a8186cbca8050cab0e14820b240db01812ed61c6ea87200f93c9e9f",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 65,
+                      "end": 146
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 181,
+                      "end": 190
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 225,
+                      "end": 240
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 269,
+                      "end": 272
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 307,
+                      "end": 312
+                    },
+                    {
+                      "start": 315,
+                      "end": 316
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度(2024、最新公表決算)決算書。公式の議案掲載頁「令和7年第3回定例会 議案・請願・陳情」(認定第1-5号 令和6年度各会計決算の認定議案と併掲)に掲載された「令和6年度東京都国立市一般会計特別会計歳入歳出決算書」1冊に一般会計・国民健康保険特別会計・介護保険特別会計・後期高齢者医療特別会計と下水道事業(公営企業)会計決算書を収録(全324頁、text PDF)。一般会計・特別会計は歳入歳出決算事項別明細書(歳出)が見開きで、左頁に款・項・目と当初予算額・補正予算額・予備費支出及び流用・予算現額計・節の区分、右頁に節・金額・支出済額・翌年度繰越額・不用額・備考(単位:円)が同一明細に対応。歳出明細の物理範囲:一般会計65-146頁(印字64-145、議会費〜諸支出金・予備費)、国保181-190(印字180-189)、介護225-240(印字224-239)、後期269-272(印字268-271)。下水道事業会計は収益費用明細書の収益的支出(物理307-312、印字306-311:款項目節×金額・説明・備考、単位:円(税抜))と資本的収支明細書の資本的支出(物理315-316、印字314-315)。印字頁=物理頁-1(表紙1頁分のずれ)。歳入明細・決算報告書・損益計算書・CF計算書・固定資産明細書・企業債明細書・実質収支調書・財産調書は範囲外。決算概要頁の集計資料(市報概要・決算カード・財政状況資料集・決算概況・統一的基準財務書類)は款項目×支出済額明細を持たず候補から除外。認定第5号(下水道事業会計決算)は提出表紙のみで明細を含まない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132152/2024/settlement.pdf",
+            "sha256": "c3082e107a8186cbca8050cab0e14820b240db01812ed61c6ea87200f93c9e9f",
+            "final_url": "https://www.city.kunitachi.tokyo.jp/material/files/group/73/r7_3_r6kessansho.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:07:30.282Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132152",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度国立市 一般会計補正予算(第1号)案・介護保険特別会計補正予算(第1号)案",
+          "landing_url": "https://www.city.kunitachi.tokyo.jp/shisei/gikai/5/r8_1/13780.html",
+          "inspected_at": "2026-10-07T16:14:07+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kunitachi.tokyo.jp/material/files/group/73/08_1_gian31.pdf",
+              "sha256": "f005b02d408d4fa8526e24f0027e8f903cbcb9dac8bf1e3a4e2e98ec171bb0ca",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 15,
+                      "end": 38
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.kunitachi.tokyo.jp/material/files/group/73/08_3_gian64.pdf",
+              "sha256": "2c7a5f6e26187c6b1dea9b33609d2a5a42c10cf2bf00fd0709dc7bec198f2f15",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 14
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度(最新年度)補正第1号。一般会計第1号(令和8年第1回定例会 第31号議案)と介護保険特別会計第1号(令和8年第3回定例会 第64号議案)を会計別の第1号として1対象にまとめた。いずれも説明書内の歳入歳出予算事項別明細書(歳出)で款・項・目と(補正前額)・補正額・(補正後額)・財源内訳(国庫支出金・都支出金・地方債・その他・一般財源)、右側に節の区分・補正額・説明が同一明細に対応(単位:千円)。一般会計は物理15-38頁(議会費〜歳出合計、続く給与費明細書39頁〜を除外)、介護は物理11-14頁(介護給付費〜諸支出金、最終頁)。第1号の国保・後期・下水道の補正予算書は掲載議案一覧にない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132152/2026/supplementary-1-2.pdf",
+            "sha256": "f005b02d408d4fa8526e24f0027e8f903cbcb9dac8bf1e3a4e2e98ec171bb0ca",
+            "final_url": "https://www.city.kunitachi.tokyo.jp/material/files/group/73/08_1_gian31.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132152/2026/supplementary-1-1.pdf",
+            "sha256": "2c7a5f6e26187c6b1dea9b33609d2a5a42c10cf2bf00fd0709dc7bec198f2f15",
+            "final_url": "https://www.city.kunitachi.tokyo.jp/material/files/group/73/08_3_gian64.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:15:59.667Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132152",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度国立市一般会計補正予算(第2号)案",
+          "landing_url": "https://www.city.kunitachi.tokyo.jp/shisei/gikai/5/r8_1/14240.html",
+          "inspected_at": "2026-10-07T16:14:07+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kunitachi.tokyo.jp/material/files/group/73/08_2_gian44.pdf",
+              "sha256": "99cdc6130d9d20deab123095b6b1ad908c8d54f076d524d281d524d646f06c4c",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度一般会計補正第2号(令和8年第2回定例会 第44号議案)。説明書の歳出明細で款・項・目×節×補正額(千円)が同一明細。物理12-21頁(議会費〜諸支出金、続く給与費明細書22頁〜を除外)。第2号の他会計補正予算書は掲載議案一覧にない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132152/2026/supplementary-2.pdf",
+            "sha256": "99cdc6130d9d20deab123095b6b1ad908c8d54f076d524d281d524d646f06c4c",
+            "final_url": "https://www.city.kunitachi.tokyo.jp/material/files/group/73/08_2_gian44.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:16:03.138Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132152",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度国立市一般会計補正予算(第3号)案",
+          "landing_url": "https://www.city.kunitachi.tokyo.jp/shisei/gikai/5/r8_1/14240.html",
+          "inspected_at": "2026-10-07T16:14:07+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kunitachi.tokyo.jp/material/files/group/73/08_2_gian45.pdf",
+              "sha256": "e2ea6ad1ca2894bb41f40651467778f8cfef4dbdd8603c48c2ec9a7bce8980e8",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 15,
+                      "end": 20
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度一般会計補正第3号(令和8年第2回定例会 第45号議案)。2頁以降は輪郭線描画で文字層なし(scan相当、描画で確認)。歳出明細が款・項・目×節×補正額(千円)で物理15-20頁(民生費〜歳出合計・節明細、最終頁)。第3号の他会計補正予算書は掲載議案一覧にない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132152/2026/supplementary-3.pdf",
+            "sha256": "e2ea6ad1ca2894bb41f40651467778f8cfef4dbdd8603c48c2ec9a7bce8980e8",
+            "final_url": "https://www.city.kunitachi.tokyo.jp/material/files/group/73/08_2_gian45.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:16:07.056Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132152",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度国立市一般会計補正予算(第4号)案",
+          "landing_url": "https://www.city.kunitachi.tokyo.jp/shisei/gikai/5/r8_1/14547.html",
+          "inspected_at": "2026-10-07T16:14:07+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kunitachi.tokyo.jp/material/files/group/73/08_3_gian63.pdf",
+              "sha256": "acd7b221133b7d1b923fcdb04f8af30f1650ee655410dc64c36e1ab7cb9e1b89",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 13,
+                      "end": 23
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度一般会計補正第4号(令和8年第3回定例会 第63号議案)。説明書の歳出明細で款・項・目×節×補正額(千円)が同一明細。物理13-23頁(総務費〜諸支出金、24頁は空白)。同定例会の第64号議案は介護保険特別会計補正予算(第1号)で amendment_number=1 に収録。第4号の他会計補正予算書は掲載議案一覧にない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132152/2026/supplementary-4.pdf",
+            "sha256": "acd7b221133b7d1b923fcdb04f8af30f1650ee655410dc64c36e1ab7cb9e1b89",
+            "final_url": "https://www.city.kunitachi.tokyo.jp/material/files/group/73/08_3_gian63.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:16:11.413Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }
