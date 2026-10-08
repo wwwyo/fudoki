@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132241",
+    "fiscal_year": 2025,
+    "document_kind": "initial"
+  },
+  "direction": "expenditure",
+  "tables": [
+    {
+      "table_id": "raw-962f0d0cd7735a4a",
+      "raw_path": "jurisdiction=132241/year=2025/document_kind=budget/edition=d8364d50219eddbe3faea25ef2e9cff8ab86f09ba40a7e0c22a20164c632bb86/direction=expenditure/data.parquet",
+      "declaration": {
+        "attribution": "多摩市「令和7年度一般会計歳出・歳入（当初予算）」（多摩市「予算・決算についての資料」）",
+        "dataset_title": null,
+        "encoding": "cp932",
+        "fiscal_year_basis": "sources.toml が宣言した URL（カタログに登録が無い）。リソース名「令和7年度一般会計歳出（当初予算）」は取得元ページのリンクテキストを人が写したもので、取得時には照合していない（宣言どうしの自己参照になるため）。根拠は resource_url_basis にある",
+        "license_id": "CC-BY-4.0",
+        "raw_form": "verbatim",
+        "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r7ippannkaikeisaisyutu.csv",
+        "resource_name": "令和7年度一般会計歳出（当初予算）",
+        "resource_url_basis": "カタログのリソース登録が令和4年度で止まっており、データセット名とリソース名から解決できない。原典は市の「予算・決算についての資料」ページに置かれている（landing_page）。⚠️ **年度の裏づけはそのページの見出し（「令和7年度予算についての資料」）とリンクテキスト（`resource_name` と同じ文字列）で、これは人が読んだもの** — 直 URL では取得時のリソース名照合が自己参照になるので、機械は年度を照合していない",
+        "resource_url_declared": true
+      }
+    }
+  ]
+}

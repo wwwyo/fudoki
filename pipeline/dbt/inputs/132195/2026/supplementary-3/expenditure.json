@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132195",
+    "fiscal_year": 2026,
+    "document_kind": "supplementary",
+    "amendment_number": 3
+  },
+  "direction": "expenditure",
+  "tables": [
+    {
+      "table_id": "supplementary-detail-faa4d2cb8197a7c8",
+      "raw_path": "supplementary-detail/jurisdiction=132195/year=2026/document_kind=supplementary/edition=86852a436956203c47c392be09741c872445d80e2091c4c83d135fa605590daa/direction=expenditure/resource=supplementary-expenditure-project-setsu/data.parquet",
+      "declaration": {
+        "amendment_number": 3,
+        "approval_date": "2026-08-26",
+        "approval_evidence": {
+          "bbox_json": "[550.56, 535.07236, 727.56, 547.07236]",
+          "page_number": 1,
+          "printed_text": "令和8年8月26日原案可決"
+        },
+        "approval_status": "cover-approved",
+        "baseline_status": "unconfirmed",
+        "edition_status": "published",
+        "effective_at": "2026-08-26",
+        "extractor": "extract_supplementary_expenditure.py@1",
+        "first_article_evidence": {
+          "amount_delta": 1665070,
+          "bbox_json": "[160.56, 181.419721, 696.3626666666667, 193.419721]",
+          "page_number": 2,
+          "printed_text": "第1条歳入歳出予算の総額に、歳入歳出それぞれ1,665,070千円を追加"
+        },
+        "fund_label": "一般会計",
+        "grain": "printed project × expenditure setsu × department occurrence; explicit reserve exceptions",
+        "nonadditive_with": [
+          "expenditure-detail",
+          "expenditure-moku-changes-all"
+        ],
+        "observation_role": "authoritative-supplementary-detail",
+        "pages": [
+          1,
+          20
+        ],
+        "raw_form": "extracted",
+        "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,142125,c,html/142125/20260828-175148.pdf",
+        "source_amount_unit": "千円",
+        "source_grain": "printed project × expenditure setsu × printed department occurrence; explicit printed reserve exceptions",
+        "source_key": "supplementary-detail:132195:2026:general:3",
+        "table_id": "supplementary-expenditure-project-setsu",
+        "totals": {
+          "all_moku_sum": 1665070,
+          "explanation_setsu_sum": 1665070,
+          "first_article": 1665070,
+          "left_setsu_sum": 1658731,
+          "printed_project_sum": 1665070
+        }
+      }
+    }
+  ]
+}

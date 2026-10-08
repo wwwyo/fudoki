@@ -20,7 +20,7 @@ CSVは原典から保持できたことを機械的に確認すれば取り込�
 - `--remote` は変換と検査を実行してから表を保存し、全表の保存成功後に対象別JSONを更新する。CSVの不一致では保存へ進まない。新しい保存には保存直後の全表読み戻しを要求せず、利用時にSHA・サイズを照合する。
 - `ingestion:check` は管理情報・選定・scope・fingerprintの検査で、財政値の正しさを認定しない。`ready` も期待する表集合の状態であり、全形式の内容検査合格を表す項目ではない。
 - 原典はsource_selection、表は対象・方向別のingestion領域に保存する。保存先と原典参照は管理JSONに置き、独立したprovenanceファイルを作らない。検査結果はローカルに再生成する。
-- 後段はまだ旧 `sources.lock.json` を読む。新しい対象別JSONへの保存だけでdbtや検証報告の対象にはならない。[保存設計](../../../../docs/prd/ingestion-storage/design-doc.md) と [移行記録](../../../../docs/prd/ingestion-storage/migration.md) を確認する。
+- Fのdbt入口は保存済みParquetと対象別JSON、確定済みの宣言JSONを読む。検証報告・通常監査Gには旧 `sources.lock.json` を使う経路が残る。新しい保存状態だけで内容検査や監査の完了と扱わない。[保存設計](../../../../docs/prd/ingestion-storage/design-doc.md) と [移行記録](../../../../docs/prd/ingestion-storage/migration.md) を確認する。
 - [旧固定入力の保存](input-storage.md) の内容ハッシュkey・読み戻し手順は、移行中の旧経路だけに適用する。新しいCSVの取り込み条件に混ぜない。
 
 ## 後段で確認すること

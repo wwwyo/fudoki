@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "target": {
     "jurisdiction": "132047",
     "fiscal_year": 2022,
@@ -49,25 +49,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "raw-2ae43f999552d835",
-          "legacy_path": "jurisdiction=132047/year=2022/document_kind=settlement/edition=82e2f3b7b6c8680731aecca744b6f94bba9b0fc96d7fab8a8725dee93c0a5985/direction=revenue",
-          "declaration": {
-            "attribution": "三鷹市「2022年度決算データ」",
-            "csv_layout": {
-              "header_record": "01会計,02款,03項,04目,05節,06細節,07細々節,08決算額\r\n",
-              "record_column": "source_record",
-              "trailing_records": ""
-            },
-            "dataset_title": null,
-            "encoding": "cp932",
-            "fiscal_year_basis": "sources.toml が宣言した URL（カタログに登録が無い）。リソース名「令和4年度決算データ（歳入）※下水道事業会計除く」は取得元ページのリンクテキストを人が写したもので、取得時には照合していない（宣言どうしの自己参照になるため）。根拠は resource_url_basis にある",
-            "license_id": "CC-BY-4.0",
-            "raw_form": "verbatim",
-            "request_url": "https://www.city.mitaka.lg.jp/c_service/098/attached/attach_98680_7.csv",
-            "resource_name": "令和4年度決算データ（歳入）※下水道事業会計除く",
-            "resource_url_basis": "公式公開ページ https://www.city.mitaka.lg.jp/c_service/098/098680.html の年度付きリンクを2026-10-04確認し、実際のバイト列・列構成を検査した。現行ページと旧年度のarchiveを同じ公式入口で固定するため直URLを採用する。年度列は原典に無く、年度の根拠は公式リンクテキスト。",
-            "resource_url_declared": true
-          }
+          "table_id": "raw-2ae43f999552d835"
         }
       ]
     }
@@ -76,7 +58,7 @@
     {
       "table_id": "raw-2ae43f999552d835",
       "conversion_id": "raw-2ae43f999552d835",
-      "input_fingerprint": "ce7c529bb2133a430f4c822a1f7c8045720fbad8ec9a6f087d1a92780a01689a",
+      "input_fingerprint": "d7f71dc2d4a7468a2a6698a4e1acf4de0b2efb46753bf1a0f2dd2586f7167ca1",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132047/2022/settlement/revenue/raw-2ae43f999552d835.parquet",

@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "target": {
     "jurisdiction": "132047",
     "fiscal_year": 2019,
@@ -52,20 +52,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "raw-2ae43f999552d835",
-          "legacy_path": "jurisdiction=132047/year=2019/document_kind=settlement/edition=1192a7c293f9e7197bc0e0df37f15457d75abfe0364b7f482b71b96b862609e6/direction=revenue",
-          "declaration": {
-            "attribution": "三鷹市「2019年度決算データ」",
-            "dataset_title": null,
-            "encoding": "cp932",
-            "fiscal_year_basis": "sources.toml が宣言した URL（カタログに登録が無い）。リソース名「令和元年度決算データ（歳入）」は取得元ページのリンクテキストを人が写したもので、取得時には照合していない（宣言どうしの自己参照になるため）。根拠は resource_url_basis にある",
-            "license_id": "CC-BY-4.0",
-            "raw_form": "verbatim",
-            "request_url": "https://www.city.mitaka.lg.jp/c_service/093/attached/attach_93123_1.csv",
-            "resource_name": "令和元年度決算データ（歳入）",
-            "resource_url_basis": "公式公開ページ https://www.city.mitaka.lg.jp/c_service/093/093123.html の年度付きリンクを2026-10-04確認し、実際のバイト列・列構成を検査した。現行ページと旧年度のarchiveを同じ公式入口で固定するため直URLを採用する。年度列は原典に無く、年度の根拠は公式リンクテキスト。",
-            "resource_url_declared": true
-          }
+          "table_id": "raw-2ae43f999552d835"
         }
       ]
     }
@@ -74,7 +61,7 @@
     {
       "table_id": "raw-2ae43f999552d835",
       "conversion_id": "raw-2ae43f999552d835",
-      "input_fingerprint": "7b057aefbf0c0ff38f0d30fc6fba42a86b105aefbf7946339d16119a71913aa2",
+      "input_fingerprint": "528702d195481fb266a86cdc9d8c79cee5bc6165670a8cbcca0a7864cc6ff212",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132047/2019/settlement/revenue/raw-2ae43f999552d835.parquet",

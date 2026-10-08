@@ -25,7 +25,7 @@ script はこの package が所有する。実行は `bun run --cwd pipeline <na
 
 ## 技術スタック
 
-- **取り込み**: Bは選定済みのCSV/PDFと対象情報を受け取り、ローカルParquetへ変換する。管理JSONの型は `ingestion/fiscal/manifest.schema.json`、対象間の制約は `manifest.py`。CLIとCIで `ingestion:check` を実行する。配置と保存の手順は [README](README.md)、判断は [保存設計](../docs/prd/ingestion-storage/design-doc.md) を参照する。
+- **取り込み**: Bは選定済みのCSV/PDFと対象情報を受け取り、ローカルParquetへ変換する。管理JSONはschema_version 2で入出力と変換だけを持ち、型は `ingestion/fiscal/manifest.schema.json`、対象間の制約は `manifest.py`。CLIとCIで `ingestion:check` を実行する。配置と保存の手順は [README](README.md)、判断は [保存設計](../docs/prd/ingestion-storage/design-doc.md) を参照する。
 - **コード配置**: 共通処理は `ingestion/lib/`、書式別の共通処理は `ingestion/fiscal/layouts/`、団体固有のコードと宣言は `ingestion/fiscal/jurisdictions/<団体>/layouts/`。年度・会計だけでコードを複製しない。既存の原典登録・収録監査は `fiscal/management/`。
 - **OCR**: 新しいBは `ingestion/lib/vision_ocr.py` を使う。選定理由は [ADR 0017](../docs/adr/0017-vision-for-coordinate-preserving-ocr.md)、実行と欠落セルの再読は `.agents/skills/pipeline/references/ingestion.md` を参照する。旧GLM等の抽出器は移行済みコードとして残し、今回の配置変更を精度の再検証と解釈しない。
 - **変換・検査**: dbt-duckdb。staging は原典の行と1対1、intermediate は構造・単位・科目・分類の統一、marts は提供する列と粒度を確定する。
@@ -37,7 +37,7 @@ script はこの package が所有する。実行は `bun run --cwd pipeline <na
   | 原典 CSV/PDF | 非公開R2の `fiscal/source-selection/` | 選定・保存参照だけ |
   | 取り込みParquet | 非公開R2の `fiscal/ingestion/<対象>/<方向>/` の固定key | 対象別JSONだけ |
   | 変換設定・現在の表・ハッシュ・保存先 | `ingestion/fiscal/jurisdictions/<団体>/<年度>/<資料区分>/<方向>.json` | 管理する |
-  | 旧C/Fの固定入力 | `ingestion/fiscal/sources.lock.json`（schemaVersion 3、読み取り互換用） | 新しいBでは更新しない |
+  | 旧検査・監査の固定入力 | `ingestion/fiscal/sources.lock.json`（schemaVersion 3、読み取り互換用） | 新しいBでは更新しない |
   | 取得元・階層・金額段階の宣言、分類・名称の判断 | `ingestion/` と dbt seeds | 管理する |
   | 復元済み入力・PDF/OCR キャッシュ | `pipeline/.cache/` | 管理しない |
   | DuckDB・dbt manifest・検査結果・ローカル報告 | `pipeline/.build/` | 管理しない |
@@ -47,7 +47,7 @@ script はこの package が所有する。実行は `bun run --cwd pipeline <na
 
 **Python の版は 3.13 に固定してある。** dbt-duckdb 1.11.0 が classifiers で 3.14 を宣言していないため（`requires-python` は `>=3.10` なので入りはするが、テストされていない組み合わせになる）。
 
-`build` は固定入力から dbt・marts の CSV を生成し、同じ構築 ID の再実行では CSV のハッシュを照合する。
+`inputs` は対象別JSONから保存済みParquetを復元する。`build --declarations <DIR>` はParquetと確定済み `sources.json`・`history.json` を固定してdbt・martsのCSVを生成し、同じ構築IDの再実行ではCSVのハッシュを照合する。Cの再実行は行わない。実装は `build_inputs.py` と `build.ts`。dbt用の配置・意味は `dbt/inputs/` に分離し、`dbt_inputs.py` と `dbt:inputs:check` で検査する。後工程の宣言を取り込みfingerprintへ混ぜない。
 
 **系統（lineage）は dbt の `manifest.json` から取る。** 手で書かない。
 段とノードを手作りすると、パイプラインを変えても図が変わらない状態を作る（実際に作った）。

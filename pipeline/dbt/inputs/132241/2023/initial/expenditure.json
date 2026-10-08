@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132241",
+    "fiscal_year": 2023,
+    "document_kind": "initial"
+  },
+  "direction": "expenditure",
+  "tables": [
+    {
+      "table_id": "raw-962f0d0cd7735a4a",
+      "raw_path": "jurisdiction=132241/year=2023/document_kind=budget/edition=a9127d06f52ca2034ed4cb607260dfe3579b5aaeddf8c642ebd5821b25313ab4/direction=expenditure/data.parquet",
+      "declaration": {
+        "attribution": "多摩市「令和5年度一般会計歳出・歳入（当初予算）」（多摩市「予算・決算についての資料」）",
+        "dataset_title": null,
+        "encoding": "cp932",
+        "fiscal_year_basis": "sources.toml が宣言した URL（カタログに登録が無い）。リソース名「令和5年度一般会計歳出（当初予算）」は取得元ページのリンクテキストを人が写したもので、取得時には照合していない（宣言どうしの自己参照になるため）。根拠は resource_url_basis にある",
+        "license_id": "CC-BY-4.0",
+        "raw_form": "verbatim",
+        "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r5ippannkaikeisaisyutu.csv",
+        "resource_name": "令和5年度一般会計歳出（当初予算）",
+        "resource_url_basis": "カタログのリソース登録が令和4年度で止まっており、データセット名とリソース名から解決できない。原典は市の「予算・決算についての資料」ページに同じ書式で置かれている（landing_page）。⚠️ **年度の裏づけはそのページの見出し（「令和N年度予算についての資料」）とリンクテキスト（`resource_name` と同じ文字列）で、これは人が読んだもの** — 直 URL では取得時のリソース名照合が自己参照になるので、機械は年度を照合していない",
+        "resource_url_declared": true
+      }
+    },
+    {
+      "table_id": "raw-4fcc766d1754b23a",
+      "raw_path": "jurisdiction=132241/year=2023/document_kind=budget/edition=fe8bcf1d436cd196d7f8d860f5a6a32154a1370a4cc8961fec7d6b4296b26651/direction=expenditure/data.parquet",
+      "declaration": {
+        "attribution": "多摩市「令和5年度一般会計歳出・歳入（当初予算）」（多摩市「予算・決算についての資料」）",
+        "csv_layout": {
+          "header_record": "年度,会計名称,款,款名称,項,項名称,目,目名称,細目,細目名称,節,節名称,予算額\r\n",
+          "record_column": "source_record",
+          "trailing_records": ""
+        },
+        "dataset_title": null,
+        "encoding": "cp932",
+        "fiscal_year_basis": "sources.toml が宣言した URL（カタログに登録が無い）。リソース名「令和5年度特別会計歳出（当初予算）（下水道事業会計除く）」は取得元ページのリンクテキストを人が写したもので、取得時には照合していない（宣言どうしの自己参照になるため）。根拠は resource_url_basis にある",
+        "license_id": "CC-BY-4.0",
+        "raw_form": "verbatim",
+        "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r5tokubetukaikeisaisyutu.csv",
+        "resource_name": "令和5年度特別会計歳出（当初予算）（下水道事業会計除く）",
+        "resource_url_basis": "公式公開ページの2023年度の特別会計リンクを2026-10-04確認。一般会計と別ファイルのため実際の公開URLを固定し、原典の年度列・会計名称・金額を検査した。下水道事業会計は対象外。",
+        "resource_url_declared": true
+      }
+    }
+  ]
+}

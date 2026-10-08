@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "target": {
     "jurisdiction": "132071",
     "fiscal_year": 2025,
@@ -47,44 +47,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "akishima-initial445-b82898795c3648b6",
-          "legacy_path": "akishima-initial445/jurisdiction=132071/year=2025/document_kind=budget/edition=0cb38fc69b354c4a028c05eb08e25f761edbbba950a8ecf882fd5e0e6e682968/direction=expenditure/resource=initial445-elderly-explanation",
-          "declaration": {
-            "approval_date": "2025-03-26",
-            "approval_proof": {
-              "expected_row": [
-                "議案第11号",
-                "令和7年度昭島市後期高齢者医療特別会計予算",
-                "3月26日",
-                "原案可決"
-              ],
-              "html_sha256": "392c784487775cd2f791c519f8b1b19743bb1c877939bdad1d2824b269e9e670",
-              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006710/1006712.html"
-            },
-            "approval_status": "council-approved-original-bill",
-            "canonical_initial": true,
-            "explanation_statutory_correspondence": "unconfirmed-no-printed-explanation-code",
-            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.extract_akishima_initial445",
-            "financial_phase": "approved",
-            "fund_label": "後期高齢者医療特別会計",
-            "grain": "printed-project-setsu-explanation-detail-or-printed-moku-reserve",
-            "immutable_raster_descriptor": "sha256:original-raster-hash",
-            "namespace": "akishima-initial445",
-            "nonadditive": false,
-            "original_raw_row_identity": "source_row_id unchanged",
-            "original_source_table_id": "fund-elderly",
-            "pages": [
-              18,
-              25
-            ],
-            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/264/2-4.kouki.pdf",
-            "source_amount_unit": "千円",
-            "source_key": "akishima-initial445:132071:2025:elderly",
-            "source_manifest_sha256": "5b651a24ec0bc52b110772228fc18c169087c570000fa57571757b78b0b7ac7c",
-            "submitted_date": "2025-02-26",
-            "table_id": "initial445-elderly-explanation",
-            "unit_multiplier": 1000
-          }
+          "table_id": "akishima-initial445-b82898795c3648b6"
         }
       ]
     },
@@ -126,44 +89,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "akishima-initial445-0bb08e36e249d042",
-          "legacy_path": "akishima-initial445/jurisdiction=132071/year=2025/document_kind=budget/edition=0cb38fc69b354c4a028c05eb08e25f761edbbba950a8ecf882fd5e0e6e682968/direction=expenditure/resource=initial445-elderly-controls",
-          "declaration": {
-            "approval_date": "2025-03-26",
-            "approval_proof": {
-              "expected_row": [
-                "議案第11号",
-                "令和7年度昭島市後期高齢者医療特別会計予算",
-                "3月26日",
-                "原案可決"
-              ],
-              "html_sha256": "392c784487775cd2f791c519f8b1b19743bb1c877939bdad1d2824b269e9e670",
-              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006710/1006712.html"
-            },
-            "approval_status": "council-approved-original-bill",
-            "canonical_initial": false,
-            "explanation_statutory_correspondence": "unconfirmed-no-printed-explanation-code",
-            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.extract_akishima_initial445",
-            "financial_phase": null,
-            "fund_label": "後期高齢者医療特別会計",
-            "grain": "independent-nonadditive-printed-controls",
-            "immutable_raster_descriptor": "sha256:original-raster-hash",
-            "namespace": "akishima-initial445",
-            "nonadditive": true,
-            "original_raw_row_identity": "source_row_id unchanged",
-            "original_source_table_id": "fund-elderly",
-            "pages": [
-              18,
-              25
-            ],
-            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/264/2-4.kouki.pdf",
-            "source_amount_unit": "千円",
-            "source_key": "akishima-initial445:132071:2025:elderly",
-            "source_manifest_sha256": "5b651a24ec0bc52b110772228fc18c169087c570000fa57571757b78b0b7ac7c",
-            "submitted_date": "2025-02-26",
-            "table_id": "initial445-elderly-controls",
-            "unit_multiplier": 1000
-          }
+          "table_id": "akishima-initial445-0bb08e36e249d042"
         }
       ]
     },
@@ -205,44 +131,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "akishima-initial445-182c6fd6fed61316",
-          "legacy_path": "akishima-initial445/jurisdiction=132071/year=2025/document_kind=budget/edition=0cb38fc69b354c4a028c05eb08e25f761edbbba950a8ecf882fd5e0e6e682968/direction=expenditure/resource=initial445-elderly-left-legal",
-          "declaration": {
-            "approval_date": "2025-03-26",
-            "approval_proof": {
-              "expected_row": [
-                "議案第11号",
-                "令和7年度昭島市後期高齢者医療特別会計予算",
-                "3月26日",
-                "原案可決"
-              ],
-              "html_sha256": "392c784487775cd2f791c519f8b1b19743bb1c877939bdad1d2824b269e9e670",
-              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006710/1006712.html"
-            },
-            "approval_status": "council-approved-original-bill",
-            "canonical_initial": false,
-            "explanation_statutory_correspondence": "unconfirmed-no-printed-explanation-code",
-            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.extract_akishima_initial445",
-            "financial_phase": null,
-            "fund_label": "後期高齢者医療特別会計",
-            "grain": "independent-nonadditive-left-moku-legal-setsu",
-            "immutable_raster_descriptor": "sha256:original-raster-hash",
-            "namespace": "akishima-initial445",
-            "nonadditive": true,
-            "original_raw_row_identity": "source_row_id unchanged",
-            "original_source_table_id": "fund-elderly",
-            "pages": [
-              18,
-              25
-            ],
-            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/264/2-4.kouki.pdf",
-            "source_amount_unit": "千円",
-            "source_key": "akishima-initial445:132071:2025:elderly",
-            "source_manifest_sha256": "5b651a24ec0bc52b110772228fc18c169087c570000fa57571757b78b0b7ac7c",
-            "submitted_date": "2025-02-26",
-            "table_id": "initial445-elderly-left-legal",
-            "unit_multiplier": 1000
-          }
+          "table_id": "akishima-initial445-182c6fd6fed61316"
         }
       ]
     },
@@ -284,44 +173,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "akishima-initial445-d95f705e17744bc2",
-          "legacy_path": "akishima-initial445/jurisdiction=132071/year=2025/document_kind=budget/edition=fcaadac31db15c42641768bf4859f8d6281dcfef602d25ad0de21adaea09216f/direction=expenditure/resource=initial445-land-explanation",
-          "declaration": {
-            "approval_date": "2025-03-26",
-            "approval_proof": {
-              "expected_row": [
-                "議案第12号",
-                "令和7年度昭島市中神土地区画整理事業特別会計予算",
-                "3月26日",
-                "原案可決"
-              ],
-              "html_sha256": "392c784487775cd2f791c519f8b1b19743bb1c877939bdad1d2824b269e9e670",
-              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006710/1006712.html"
-            },
-            "approval_status": "council-approved-original-bill",
-            "canonical_initial": true,
-            "explanation_statutory_correspondence": "unconfirmed-no-printed-explanation-code",
-            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.extract_akishima_initial445",
-            "financial_phase": "approved",
-            "fund_label": "中神土地区画整理事業特別会計",
-            "grain": "printed-project-setsu-explanation-detail-or-printed-moku-reserve",
-            "immutable_raster_descriptor": "sha256:original-raster-hash",
-            "namespace": "akishima-initial445",
-            "nonadditive": false,
-            "original_raw_row_identity": "source_row_id unchanged",
-            "original_source_table_id": "fund-land-readjustment",
-            "pages": [
-              16,
-              23
-            ],
-            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/264/2-5.kukaku.pdf",
-            "source_amount_unit": "千円",
-            "source_key": "akishima-initial445:132071:2025:land",
-            "source_manifest_sha256": "5b651a24ec0bc52b110772228fc18c169087c570000fa57571757b78b0b7ac7c",
-            "submitted_date": "2025-02-26",
-            "table_id": "initial445-land-explanation",
-            "unit_multiplier": 1000
-          }
+          "table_id": "akishima-initial445-d95f705e17744bc2"
         }
       ]
     },
@@ -363,44 +215,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "akishima-initial445-887ccca9d03864df",
-          "legacy_path": "akishima-initial445/jurisdiction=132071/year=2025/document_kind=budget/edition=fcaadac31db15c42641768bf4859f8d6281dcfef602d25ad0de21adaea09216f/direction=expenditure/resource=initial445-land-controls",
-          "declaration": {
-            "approval_date": "2025-03-26",
-            "approval_proof": {
-              "expected_row": [
-                "議案第12号",
-                "令和7年度昭島市中神土地区画整理事業特別会計予算",
-                "3月26日",
-                "原案可決"
-              ],
-              "html_sha256": "392c784487775cd2f791c519f8b1b19743bb1c877939bdad1d2824b269e9e670",
-              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006710/1006712.html"
-            },
-            "approval_status": "council-approved-original-bill",
-            "canonical_initial": false,
-            "explanation_statutory_correspondence": "unconfirmed-no-printed-explanation-code",
-            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.extract_akishima_initial445",
-            "financial_phase": null,
-            "fund_label": "中神土地区画整理事業特別会計",
-            "grain": "independent-nonadditive-printed-controls",
-            "immutable_raster_descriptor": "sha256:original-raster-hash",
-            "namespace": "akishima-initial445",
-            "nonadditive": true,
-            "original_raw_row_identity": "source_row_id unchanged",
-            "original_source_table_id": "fund-land-readjustment",
-            "pages": [
-              16,
-              23
-            ],
-            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/264/2-5.kukaku.pdf",
-            "source_amount_unit": "千円",
-            "source_key": "akishima-initial445:132071:2025:land",
-            "source_manifest_sha256": "5b651a24ec0bc52b110772228fc18c169087c570000fa57571757b78b0b7ac7c",
-            "submitted_date": "2025-02-26",
-            "table_id": "initial445-land-controls",
-            "unit_multiplier": 1000
-          }
+          "table_id": "akishima-initial445-887ccca9d03864df"
         }
       ]
     },
@@ -442,44 +257,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "akishima-initial445-82527c019105020c",
-          "legacy_path": "akishima-initial445/jurisdiction=132071/year=2025/document_kind=budget/edition=fcaadac31db15c42641768bf4859f8d6281dcfef602d25ad0de21adaea09216f/direction=expenditure/resource=initial445-land-left-legal",
-          "declaration": {
-            "approval_date": "2025-03-26",
-            "approval_proof": {
-              "expected_row": [
-                "議案第12号",
-                "令和7年度昭島市中神土地区画整理事業特別会計予算",
-                "3月26日",
-                "原案可決"
-              ],
-              "html_sha256": "392c784487775cd2f791c519f8b1b19743bb1c877939bdad1d2824b269e9e670",
-              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006710/1006712.html"
-            },
-            "approval_status": "council-approved-original-bill",
-            "canonical_initial": false,
-            "explanation_statutory_correspondence": "unconfirmed-no-printed-explanation-code",
-            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.extract_akishima_initial445",
-            "financial_phase": null,
-            "fund_label": "中神土地区画整理事業特別会計",
-            "grain": "independent-nonadditive-left-moku-legal-setsu",
-            "immutable_raster_descriptor": "sha256:original-raster-hash",
-            "namespace": "akishima-initial445",
-            "nonadditive": true,
-            "original_raw_row_identity": "source_row_id unchanged",
-            "original_source_table_id": "fund-land-readjustment",
-            "pages": [
-              16,
-              23
-            ],
-            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/264/2-5.kukaku.pdf",
-            "source_amount_unit": "千円",
-            "source_key": "akishima-initial445:132071:2025:land",
-            "source_manifest_sha256": "5b651a24ec0bc52b110772228fc18c169087c570000fa57571757b78b0b7ac7c",
-            "submitted_date": "2025-02-26",
-            "table_id": "initial445-land-left-legal",
-            "unit_multiplier": 1000
-          }
+          "table_id": "akishima-initial445-82527c019105020c"
         }
       ]
     }
@@ -488,7 +266,7 @@
     {
       "table_id": "akishima-initial445-b82898795c3648b6",
       "conversion_id": "akishima-initial445-b82898795c3648b6",
-      "input_fingerprint": "70a6f112c970c8e7206b394f1d213475d85edc20fe9589a7ef92a76cee49ad29",
+      "input_fingerprint": "69ddcd0fd97bf5ef19b6df141604ceee3a0c6715560ef42f46c1e642b8fda172",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132071/2025/initial/expenditure/akishima-initial445-b82898795c3648b6.parquet",
@@ -717,7 +495,7 @@
     {
       "table_id": "akishima-initial445-0bb08e36e249d042",
       "conversion_id": "akishima-initial445-0bb08e36e249d042",
-      "input_fingerprint": "ce1b12a3411f44ec07f70cb05a6cba3e14b2c6eed0998ee76333a590aa9dd13b",
+      "input_fingerprint": "0d70934982134705555a0e3b555a5e23225fcc0511793927f1d4e9d333fda824",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132071/2025/initial/expenditure/akishima-initial445-0bb08e36e249d042.parquet",
@@ -862,7 +640,7 @@
     {
       "table_id": "akishima-initial445-182c6fd6fed61316",
       "conversion_id": "akishima-initial445-182c6fd6fed61316",
-      "input_fingerprint": "5e9ffdf959f181d9fe0a5d9a010123e5231fb4c50f0e7fc54c8a378d71e82265",
+      "input_fingerprint": "ee0529ba25e8becabc2d486b14adbaffbd1d92e1ecc164af1f631d57859b4cd5",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132071/2025/initial/expenditure/akishima-initial445-182c6fd6fed61316.parquet",
@@ -1027,7 +805,7 @@
     {
       "table_id": "akishima-initial445-d95f705e17744bc2",
       "conversion_id": "akishima-initial445-d95f705e17744bc2",
-      "input_fingerprint": "ea0c3e9db00aca2bdde8a893886ffdec5f34a5459857c0066f29a06b17618636",
+      "input_fingerprint": "257b90a6a3a5b73c44bd9a080db71ef972746cd56340dcbcb9f2f03ad34a0fdd",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132071/2025/initial/expenditure/akishima-initial445-d95f705e17744bc2.parquet",
@@ -1256,7 +1034,7 @@
     {
       "table_id": "akishima-initial445-887ccca9d03864df",
       "conversion_id": "akishima-initial445-887ccca9d03864df",
-      "input_fingerprint": "15247f50f761f26ce085192eb0d3cd7b62659ae943a2a32a834c2a15e03aead0",
+      "input_fingerprint": "c7e2411e1b6263e6c3d223032ce9e47056f9b0b57f2aab63e7bfc8cd38e57c0f",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132071/2025/initial/expenditure/akishima-initial445-887ccca9d03864df.parquet",
@@ -1401,7 +1179,7 @@
     {
       "table_id": "akishima-initial445-82527c019105020c",
       "conversion_id": "akishima-initial445-82527c019105020c",
-      "input_fingerprint": "7f2d7579ec24aa832fa8158b8a1fcfed44f7d32d1c6087b2158a8826d89033a3",
+      "input_fingerprint": "eb23a1f229ca1f34c3b1a55eb960d1fe17336c72e178921bc4a92ceefee3bd0b",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132071/2025/initial/expenditure/akishima-initial445-82527c019105020c.parquet",

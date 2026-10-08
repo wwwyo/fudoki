@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132195",
+    "fiscal_year": 2023,
+    "document_kind": "supplementary",
+    "amendment_number": 6
+  },
+  "direction": "expenditure",
+  "tables": [
+    {
+      "table_id": "raw-1e746ca9695f50fa",
+      "raw_path": "jurisdiction=132195/year=2023/document_kind=supplementary/edition=e6e0c7a21600af089ed195406886186802e12dda8a2b1147aeab44fff1096f6f/direction=expenditure/resource=expenditure-detail/data.parquet",
+      "declaration": {
+        "amendment_number": 6,
+        "approval_evidence": {
+          "bbox_json": "[]",
+          "page_number": 1,
+          "printed_text": "令和5年度狛江市一般会計補正予算議案第1号2月1日原案可決(第6号)",
+          "record_kind": "approval",
+          "source_row": 1
+        },
+        "approval_sha256": "2652fb2b077fc357a1bba9e55897ab4dcf64a0b5e657a175d0a0b46ee533501d",
+        "approval_url": "https://www.city.komae.tokyo.jp/index.cfm/49,145713,c,html/145713/20260824-135102.pdf",
+        "attribution": "狛江市 令和5年度一般会計予算書・補正予算書",
+        "dataset_title": null,
+        "document_title": "令和5年度狛江市一般会計 補正予算書 第6号",
+        "effective_at": "2024-02-01",
+        "effective_basis": "議案の原案可決日。別適用日の指定なし",
+        "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_budget_history.py@2",
+        "landing_page": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,361,2169,html",
+        "license_id": "NOASSERTION",
+        "pages": [
+          8,
+          9
+        ],
+        "raw_form": "extracted",
+        "redistribute": "review",
+        "redistribute_basis": "自治体公開資料。原典の再配布条件は未確認。非公開入力として保管する",
+        "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20240201-104448.pdf",
+        "resource_name": "expenditure-detail",
+        "source_amount_unit": "千円",
+        "table_id": "expenditure-detail"
+      }
+    },
+    {
+      "table_id": "supplementary-detail-faa4d2cb8197a7c8",
+      "raw_path": "supplementary-detail/jurisdiction=132195/year=2023/document_kind=supplementary/edition=e6e0c7a21600af089ed195406886186802e12dda8a2b1147aeab44fff1096f6f/direction=expenditure/resource=supplementary-expenditure-project-setsu/data.parquet",
+      "declaration": {
+        "amendment_number": 6,
+        "approval_date": "2024-02-01",
+        "approval_evidence": {
+          "bbox_json": "[549.36, 534.71236, 719.519743, 546.71236]",
+          "page_number": 1,
+          "printed_text": "令和6年2月1日原案可決"
+        },
+        "approval_status": "cover-approved",
+        "baseline_status": "unconfirmed",
+        "edition_status": "published",
+        "effective_at": "2024-02-01",
+        "extractor": "extract_supplementary_expenditure.py@1",
+        "first_article_evidence": {
+          "amount_delta": -43845,
+          "bbox_json": "[160.56, 178.98588, 652.4428571428571, 190.98588]",
+          "page_number": 2,
+          "printed_text": "第1条歳入歳出予算の総額から歳入歳出それぞれ43,845千円を減額"
+        },
+        "fund_label": "一般会計",
+        "grain": "printed project × expenditure setsu × department occurrence; explicit reserve exceptions",
+        "nonadditive_with": [
+          "expenditure-detail",
+          "expenditure-moku-changes-all"
+        ],
+        "observation_role": "authoritative-supplementary-detail",
+        "pages": [
+          1,
+          9
+        ],
+        "raw_form": "extracted",
+        "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20240201-104448.pdf",
+        "source_amount_unit": "千円",
+        "source_grain": "printed project × expenditure setsu × printed department occurrence; explicit printed reserve exceptions",
+        "source_key": "supplementary-detail:132195:2023:general:6",
+        "table_id": "supplementary-expenditure-project-setsu",
+        "totals": {
+          "all_moku_sum": -43845,
+          "explanation_setsu_sum": -43845,
+          "first_article": -43845,
+          "left_setsu_sum": -43845,
+          "printed_project_sum": -43845
+        }
+      }
+    }
+  ]
+}

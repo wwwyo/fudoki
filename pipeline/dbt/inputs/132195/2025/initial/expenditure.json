@@ -1,0 +1,507 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132195",
+    "fiscal_year": 2025,
+    "document_kind": "initial"
+  },
+  "direction": "expenditure",
+  "tables": [
+    {
+      "table_id": "initial-detail-89fabc7b847286e7",
+      "raw_path": "initial-detail/jurisdiction=132195/year=2025/document_kind=budget/edition=d275ebf16868a05ca97ddf4cc4bce4b2853a870b1f6cb2ec7dea3d49a718839a/direction=expenditure/resource=initial-expenditure-project-setsu-national-health/data.parquet",
+      "declaration": {
+        "approval_date": "2025-03-26",
+        "approval_evidence": [
+          {
+            "bbox": [
+              106.2,
+              81.39204,
+              495.48,
+              91.95204
+            ],
+            "page_number": 1,
+            "printed_text": "議案第４号狛江市国民健康保険特別会計予算令和７年３月26日原案可決",
+            "word_boxes": [
+              {
+                "bbox": [
+                  106.2,
+                  81.39204,
+                  158.88,
+                  91.83204
+                ],
+                "printed_text": "議案第４号"
+              },
+              {
+                "bbox": [
+                  174.72,
+                  81.39204,
+                  354.96,
+                  91.83204
+                ],
+                "printed_text": "狛江市国民健康保険特別会計予算"
+              },
+              {
+                "bbox": [
+                  368.88,
+                  81.51204,
+                  495.48,
+                  91.95204
+                ],
+                "printed_text": "令和７年３月26日原案可決"
+              }
+            ]
+          }
+        ],
+        "approval_status": "cover-approved",
+        "baseline_status": "explicit-source-preserving-namespace-equivalence; no allocation or initial zero",
+        "document_title": "2025年度 狛江市国民健康保険特別会計当初予算（印刷事業×歳出節×担当課）",
+        "edition_status": "published",
+        "effective_at": "2025-03-26",
+        "effective_at_basis": "Printed account-specific approval date; not a guessed filename publication time",
+        "extractor": "extract_initial_expenditure.py@1",
+        "first_article_evidence": {
+          "amount_initial": 7210075,
+          "locations": [
+            {
+              "bbox": [
+                133.32,
+                186.365449,
+                569.359,
+                197.34346
+              ],
+              "page_number": 4,
+              "printed_text": "第１条歳入歳出予算の総額は、歳入歳出それぞれ７，２１０，０７５千円と定める。",
+              "word_boxes": [
+                {
+                  "bbox": [
+                    133.32,
+                    186.365449,
+                    166.4,
+                    197.34346
+                  ],
+                  "printed_text": "第１条"
+                },
+                {
+                  "bbox": [
+                    177.48,
+                    186.365449,
+                    387.2,
+                    197.34346
+                  ],
+                  "printed_text": "歳入歳出予算の総額は、歳入歳出それぞれ"
+                },
+                {
+                  "bbox": [
+                    392.759,
+                    186.365449,
+                    569.359,
+                    197.34346
+                  ],
+                  "printed_text": "７，２１０，０７５千円と定める。"
+                }
+              ]
+            }
+          ],
+          "printed_text": "第1条歳入歳出予算の総額は、歳入歳出それぞれ7,210,075千円と定める",
+          "unit": "千円"
+        },
+        "fund_label": "国民健康保険特別会計",
+        "grain": "printed project × expenditure setsu × department occurrence; explicit blank-code reserve exceptions",
+        "observation_role": "authoritative-initial-detail",
+        "pages": [
+          4,
+          30
+        ],
+        "raw_form": "extracted",
+        "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20250325-175517.pdf",
+        "resource_name": "2025年度 狛江市国民健康保険特別会計当初予算（印刷事業×歳出節×担当課） 歳出事項別明細書",
+        "source_amount_unit": "千円",
+        "source_grain": "printed project × expenditure setsu × printed department occurrence; explicit printed reserve exceptions",
+        "source_key": "initial-detail:132195:2025:national-health",
+        "source_position_method": "pdftotext -bbox-layout original word boxes plus source-preserving character spans; row boxes are union of actual intersecting words",
+        "table_id": "initial-expenditure-project-setsu-national-health",
+        "totals": {
+          "all_moku_sum": 7210075,
+          "explanation_setsu_sum": 7210075,
+          "first_article": 7210075,
+          "left_setsu_sum": 7207075,
+          "printed_project_sum": 7210075
+        },
+        "unit_multiplier": 1000
+      }
+    },
+    {
+      "table_id": "initial-detail-467a65c49dfc0448",
+      "raw_path": "initial-detail/jurisdiction=132195/year=2025/document_kind=budget/edition=d275ebf16868a05ca97ddf4cc4bce4b2853a870b1f6cb2ec7dea3d49a718839a/direction=expenditure/resource=initial-expenditure-project-setsu-elderly/data.parquet",
+      "declaration": {
+        "approval_date": "2025-03-26",
+        "approval_evidence": [
+          {
+            "bbox": [
+              106.2,
+              93.03204,
+              495.48,
+              103.59204
+            ],
+            "page_number": 1,
+            "printed_text": "議案第５号狛江市後期高齢者医療特別会計予算令和７年３月26日原案可決",
+            "word_boxes": [
+              {
+                "bbox": [
+                  106.2,
+                  93.03204,
+                  158.88,
+                  103.47204
+                ],
+                "printed_text": "議案第５号"
+              },
+              {
+                "bbox": [
+                  174.72,
+                  93.03204,
+                  354.96,
+                  103.47204
+                ],
+                "printed_text": "狛江市後期高齢者医療特別会計予算"
+              },
+              {
+                "bbox": [
+                  368.88,
+                  93.15204,
+                  495.48,
+                  103.59204
+                ],
+                "printed_text": "令和７年３月26日原案可決"
+              }
+            ]
+          }
+        ],
+        "approval_status": "cover-approved",
+        "baseline_status": "explicit-source-preserving-namespace-equivalence; no allocation or initial zero",
+        "document_title": "2025年度 狛江市後期高齢者医療特別会計当初予算（印刷事業×歳出節×担当課）",
+        "edition_status": "published",
+        "effective_at": "2025-03-26",
+        "effective_at_basis": "Printed account-specific approval date; not a guessed filename publication time",
+        "extractor": "extract_initial_expenditure.py@1",
+        "first_article_evidence": {
+          "amount_initial": 2490131,
+          "locations": [
+            {
+              "bbox": [
+                133.32,
+                186.365449,
+                569.359,
+                197.34346
+              ],
+              "page_number": 32,
+              "printed_text": "第１条歳入歳出予算の総額は、歳入歳出それぞれ２，４９０，１３１千円と定める。",
+              "word_boxes": [
+                {
+                  "bbox": [
+                    133.32,
+                    186.365449,
+                    166.4,
+                    197.34346
+                  ],
+                  "printed_text": "第１条"
+                },
+                {
+                  "bbox": [
+                    177.48,
+                    186.365449,
+                    387.2,
+                    197.34346
+                  ],
+                  "printed_text": "歳入歳出予算の総額は、歳入歳出それぞれ"
+                },
+                {
+                  "bbox": [
+                    392.759,
+                    186.365449,
+                    569.359,
+                    197.34346
+                  ],
+                  "printed_text": "２，４９０，１３１千円と定める。"
+                }
+              ]
+            }
+          ],
+          "printed_text": "第1条歳入歳出予算の総額は、歳入歳出それぞれ2,490,131千円と定める",
+          "unit": "千円"
+        },
+        "fund_label": "後期高齢者医療特別会計",
+        "grain": "printed project × expenditure setsu × department occurrence; explicit blank-code reserve exceptions",
+        "observation_role": "authoritative-initial-detail",
+        "pages": [
+          32,
+          47
+        ],
+        "raw_form": "extracted",
+        "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20250325-175517.pdf",
+        "resource_name": "2025年度 狛江市後期高齢者医療特別会計当初予算（印刷事業×歳出節×担当課） 歳出事項別明細書",
+        "source_amount_unit": "千円",
+        "source_grain": "printed project × expenditure setsu × printed department occurrence; explicit printed reserve exceptions",
+        "source_key": "initial-detail:132195:2025:elderly",
+        "source_position_method": "pdftotext -bbox-layout original word boxes plus source-preserving character spans; row boxes are union of actual intersecting words",
+        "table_id": "initial-expenditure-project-setsu-elderly",
+        "totals": {
+          "all_moku_sum": 2490131,
+          "explanation_setsu_sum": 2490131,
+          "first_article": 2490131,
+          "left_setsu_sum": 2489131,
+          "printed_project_sum": 2490131
+        },
+        "unit_multiplier": 1000
+      }
+    },
+    {
+      "table_id": "initial-detail-549ec0c254062afa",
+      "raw_path": "initial-detail/jurisdiction=132195/year=2025/document_kind=budget/edition=d275ebf16868a05ca97ddf4cc4bce4b2853a870b1f6cb2ec7dea3d49a718839a/direction=expenditure/resource=initial-expenditure-project-setsu-care/data.parquet",
+      "declaration": {
+        "approval_date": "2025-03-26",
+        "approval_evidence": [
+          {
+            "bbox": [
+              106.2,
+              104.67204,
+              495.48,
+              115.23204
+            ],
+            "page_number": 1,
+            "printed_text": "議案第６号狛江市介護保険特別会計予算令和７年３月26日原案可決",
+            "word_boxes": [
+              {
+                "bbox": [
+                  106.2,
+                  104.67204,
+                  158.88,
+                  115.11204
+                ],
+                "printed_text": "議案第６号"
+              },
+              {
+                "bbox": [
+                  174.72,
+                  104.67204,
+                  354.96,
+                  115.11204
+                ],
+                "printed_text": "狛江市介護保険特別会計予算"
+              },
+              {
+                "bbox": [
+                  368.88,
+                  104.79204,
+                  495.48,
+                  115.23204
+                ],
+                "printed_text": "令和７年３月26日原案可決"
+              }
+            ]
+          }
+        ],
+        "approval_status": "cover-approved",
+        "baseline_status": "explicit-source-preserving-namespace-equivalence; no allocation or initial zero",
+        "document_title": "2025年度 狛江市介護保険特別会計当初予算（印刷事業×歳出節×担当課）",
+        "edition_status": "published",
+        "effective_at": "2025-03-26",
+        "effective_at_basis": "Printed account-specific approval date; not a guessed filename publication time",
+        "extractor": "extract_initial_expenditure.py@1",
+        "first_article_evidence": {
+          "amount_initial": 7867836,
+          "locations": [
+            {
+              "bbox": [
+                133.32,
+                186.365449,
+                569.359,
+                197.34346
+              ],
+              "page_number": 49,
+              "printed_text": "第１条歳入歳出予算の総額は、歳入歳出それぞれ７，８６７，８３６千円と定める。",
+              "word_boxes": [
+                {
+                  "bbox": [
+                    133.32,
+                    186.365449,
+                    166.4,
+                    197.34346
+                  ],
+                  "printed_text": "第１条"
+                },
+                {
+                  "bbox": [
+                    177.48,
+                    186.365449,
+                    387.2,
+                    197.34346
+                  ],
+                  "printed_text": "歳入歳出予算の総額は、歳入歳出それぞれ"
+                },
+                {
+                  "bbox": [
+                    392.759,
+                    186.365449,
+                    569.359,
+                    197.34346
+                  ],
+                  "printed_text": "７，８６７，８３６千円と定める。"
+                }
+              ]
+            }
+          ],
+          "printed_text": "第1条歳入歳出予算の総額は、歳入歳出それぞれ7,867,836千円と定める",
+          "unit": "千円"
+        },
+        "fund_label": "介護保険特別会計",
+        "grain": "printed project × expenditure setsu × department occurrence; explicit blank-code reserve exceptions",
+        "observation_role": "authoritative-initial-detail",
+        "pages": [
+          49,
+          79
+        ],
+        "raw_form": "extracted",
+        "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20250325-175517.pdf",
+        "resource_name": "2025年度 狛江市介護保険特別会計当初予算（印刷事業×歳出節×担当課） 歳出事項別明細書",
+        "source_amount_unit": "千円",
+        "source_grain": "printed project × expenditure setsu × printed department occurrence; explicit printed reserve exceptions",
+        "source_key": "initial-detail:132195:2025:care",
+        "source_position_method": "pdftotext -bbox-layout original word boxes plus source-preserving character spans; row boxes are union of actual intersecting words",
+        "table_id": "initial-expenditure-project-setsu-care",
+        "totals": {
+          "all_moku_sum": 7867836,
+          "explanation_setsu_sum": 7867836,
+          "first_article": 7867836,
+          "left_setsu_sum": 7867336,
+          "printed_project_sum": 7867836
+        },
+        "unit_multiplier": 1000
+      }
+    },
+    {
+      "table_id": "initial-detail-4533b4b83a0615e5",
+      "raw_path": "initial-detail/jurisdiction=132195/year=2025/document_kind=budget/edition=d275ebf16868a05ca97ddf4cc4bce4b2853a870b1f6cb2ec7dea3d49a718839a/direction=expenditure/resource=initial-expenditure-project-setsu-parking/data.parquet",
+      "declaration": {
+        "approval_date": "2025-03-26",
+        "approval_evidence": [
+          {
+            "bbox": [
+              106.2,
+              116.31204,
+              495.48,
+              126.87204
+            ],
+            "page_number": 1,
+            "printed_text": "議案第７号狛江市駐車場事業特別会計予算令和７年３月26日原案可決",
+            "word_boxes": [
+              {
+                "bbox": [
+                  106.2,
+                  116.31204,
+                  158.88,
+                  126.75204
+                ],
+                "printed_text": "議案第７号"
+              },
+              {
+                "bbox": [
+                  174.72,
+                  116.31204,
+                  354.96,
+                  126.75204
+                ],
+                "printed_text": "狛江市駐車場事業特別会計予算"
+              },
+              {
+                "bbox": [
+                  368.88,
+                  116.43204,
+                  495.48,
+                  126.87204
+                ],
+                "printed_text": "令和７年３月26日原案可決"
+              }
+            ]
+          }
+        ],
+        "approval_status": "cover-approved",
+        "baseline_status": "explicit-source-preserving-namespace-equivalence; no allocation or initial zero",
+        "document_title": "2025年度 狛江市駐車場事業特別会計当初予算（印刷事業×歳出節×担当課）",
+        "edition_status": "published",
+        "effective_at": "2025-03-26",
+        "effective_at_basis": "Printed account-specific approval date; not a guessed filename publication time",
+        "extractor": "extract_initial_expenditure.py@1",
+        "first_article_evidence": {
+          "amount_initial": 57838,
+          "locations": [
+            {
+              "bbox": [
+                133.32,
+                186.59664,
+                536.280929,
+                197.63664
+              ],
+              "page_number": 81,
+              "printed_text": "第１条歳入歳出予算の総額は、歳入歳出それぞれ５７，８３８千円と定める。",
+              "word_boxes": [
+                {
+                  "bbox": [
+                    133.32,
+                    186.59664,
+                    166.440262,
+                    197.63664
+                  ],
+                  "printed_text": "第１条"
+                },
+                {
+                  "bbox": [
+                    177.480063,
+                    186.59664,
+                    387.240658,
+                    197.63664
+                  ],
+                  "printed_text": "歳入歳出予算の総額は、歳入歳出それぞれ"
+                },
+                {
+                  "bbox": [
+                    392.760459,
+                    186.59664,
+                    536.280929,
+                    197.63664
+                  ],
+                  "printed_text": "５７，８３８千円と定める。"
+                }
+              ]
+            }
+          ],
+          "printed_text": "第1条歳入歳出予算の総額は、歳入歳出それぞれ57,838千円と定める",
+          "unit": "千円"
+        },
+        "fund_label": "駐車場事業特別会計",
+        "grain": "printed project × expenditure setsu × department occurrence; explicit blank-code reserve exceptions",
+        "observation_role": "authoritative-initial-detail",
+        "pages": [
+          81,
+          89
+        ],
+        "raw_form": "extracted",
+        "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20250325-175517.pdf",
+        "resource_name": "2025年度 狛江市駐車場事業特別会計当初予算（印刷事業×歳出節×担当課） 歳出事項別明細書",
+        "source_amount_unit": "千円",
+        "source_grain": "printed project × expenditure setsu × printed department occurrence; explicit printed reserve exceptions",
+        "source_key": "initial-detail:132195:2025:parking",
+        "source_position_method": "pdftotext -bbox-layout original word boxes plus source-preserving character spans; row boxes are union of actual intersecting words",
+        "table_id": "initial-expenditure-project-setsu-parking",
+        "totals": {
+          "all_moku_sum": 57838,
+          "explanation_setsu_sum": 57838,
+          "first_article": 57838,
+          "left_setsu_sum": 57838,
+          "printed_project_sum": 57838
+        },
+        "unit_multiplier": 1000
+      }
+    }
+  ]
+}

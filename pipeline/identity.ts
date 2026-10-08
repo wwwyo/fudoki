@@ -3,7 +3,7 @@ import { readFile, readdir, lstat } from 'node:fs/promises'
 import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
 import { join, relative } from 'node:path'
-import { REPO, INPUT_LOCK } from './paths'
+import { REPO } from './runtime_paths'
 
 export function sha256(body: string | Uint8Array): string {
   return createHash('sha256').update(body).digest('hex')
@@ -93,9 +93,16 @@ export async function sourceRevision(repo = REPO): Promise<string> {
   )
   return stdout.trim()
 }
-export async function buildIdentity() {
+export async function buildIdentity(inputFingerprint?: string) {
+  // Legacy coverage consumers still identify their old fixed input list.
+  // The manifest-based build supplies the validated manifest/declaration fingerprint.
+  if (inputFingerprint === undefined) {
+    const { INPUT_LOCK } = await import('./paths')
+    inputFingerprint = sha256(await readFile(INPUT_LOCK))
+  }
+  if (!/^[a-f0-9]{64}$/.test(inputFingerprint))
+    throw new Error('Expected a validated build input fingerprint')
   const codeRevision = await sourceRevision()
-  const inputFingerprint = sha256(await readFile(INPUT_LOCK))
   const codeFingerprint = await sourceFingerprint()
   const judgmentFingerprint = sha256(
     JSON.stringify({

@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "target": {
     "jurisdiction": "132241",
     "fiscal_year": 2022,
@@ -43,25 +43,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "raw-4fcc766d1754b23a",
-          "legacy_path": "jurisdiction=132241/year=2022/document_kind=budget/edition=4ccb155bd86b154b5c5ebf1e64be52660355fc7aa4e9b731d17752046e569e9b/direction=expenditure",
-          "declaration": {
-            "attribution": "多摩市「令和4年度一般会計歳出・歳入（当初予算）」（東京都オープンデータカタログサイト）",
-            "csv_layout": {
-              "header_record": "年度,会計名称,款,款名称,項,項名称,目,目名称,細目,細目名称,節,節名称,予算額\r\n",
-              "record_column": "source_record",
-              "trailing_records": ""
-            },
-            "dataset_title": null,
-            "encoding": "cp932",
-            "fiscal_year_basis": "sources.toml が宣言した URL（カタログに登録が無い）。リソース名「令和4年度特別会計歳出（当初予算）（下水道事業会計除く）」は取得元ページのリンクテキストを人が写したもので、取得時には照合していない（宣言どうしの自己参照になるため）。根拠は resource_url_basis にある",
-            "license_id": "CC-BY-4.0",
-            "raw_form": "verbatim",
-            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r4saisyututokubetukaikei.csv",
-            "resource_name": "令和4年度特別会計歳出（当初予算）（下水道事業会計除く）",
-            "resource_url_basis": "公式公開ページの2022年度の特別会計リンクを2026-10-04確認。一般会計と別ファイルのため実際の公開URLを固定し、原典の年度列・会計名称・金額を検査した。下水道事業会計は対象外。",
-            "resource_url_declared": true
-          }
+          "table_id": "raw-4fcc766d1754b23a"
         }
       ]
     },
@@ -93,20 +75,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "raw-962f0d0cd7735a4a",
-          "legacy_path": "jurisdiction=132241/year=2022/document_kind=budget/edition=e94593f2cce5bde405f4e953fe0b133133c719556e79287413eb0af8a95efd63/direction=expenditure",
-          "declaration": {
-            "attribution": "多摩市「令和4年度一般会計歳出・歳入（当初予算）」（東京都オープンデータカタログサイト）",
-            "dataset_title": "予算・決算についての資料（オープンデータ）",
-            "encoding": "cp932",
-            "fiscal_year_basis": "CKAN のリソース名「令和4年度一般会計歳出（当初予算）」の「令和4年度」から解決",
-            "license_id": "CC-BY-4.0",
-            "raw_form": "verbatim",
-            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r4saisyutuippannkaikei01.csv",
-            "resource_name": "令和4年度一般会計歳出（当初予算）",
-            "resource_url_basis": null,
-            "resource_url_declared": false
-          }
+          "table_id": "raw-962f0d0cd7735a4a"
         }
       ]
     }
@@ -115,7 +84,7 @@
     {
       "table_id": "raw-4fcc766d1754b23a",
       "conversion_id": "raw-4fcc766d1754b23a",
-      "input_fingerprint": "ea5fbac118ae16f77510279d59a22c9a6780c4ef7403bf7e5d38dc0bb1b324b4",
+      "input_fingerprint": "2b3606ab0e0a8ef0b2b555f66ef386959d766427f956c1193b97611e7c51d6ae",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2022/initial/expenditure/raw-4fcc766d1754b23a.parquet",
@@ -200,7 +169,7 @@
     {
       "table_id": "raw-962f0d0cd7735a4a",
       "conversion_id": "raw-962f0d0cd7735a4a",
-      "input_fingerprint": "5adaedcb97602cb07f9b8cdb9d585c88462b7da69d5f2c1060c8c8e6439803c4",
+      "input_fingerprint": "a9ba4688ca4f533809b1940eb411d4876326073cb71d7820a884a9798621054c",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2022/initial/expenditure/raw-962f0d0cd7735a4a.parquet",

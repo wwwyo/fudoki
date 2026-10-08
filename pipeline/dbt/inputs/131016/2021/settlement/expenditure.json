@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "131016",
+    "fiscal_year": 2021,
+    "document_kind": "settlement"
+  },
+  "direction": "expenditure",
+  "tables": [
+    {
+      "table_id": "chiyoda2021-settlement-native-e3392527aaa3d0a0",
+      "raw_path": "chiyoda2021-settlement-native/jurisdiction=131016/year=2021/document_kind=settlement/edition=8477b068a4d5a998da2614391a1e932fa7d1d5d1693cbcfed3723cb7e6f9dc6e/direction=expenditure/table=native-levels/data.parquet",
+      "declaration": {
+        "approval_status": "unconfirmed",
+        "definition_files": {
+          "evidence-manifest.json": {
+            "bytes": 3726,
+            "sha256": "a68dc157ac0ef11e77ec5eb2298877552126e936a8eecf9f8204f9309514786a"
+          },
+          "replay.py": {
+            "bytes": 2114,
+            "sha256": "52d52aa34d5dde66912613ec24eae4481f6afbb72ff5b363be2aa9377ab4b3a2"
+          },
+          "sources-spec.json": {
+            "bytes": 3787,
+            "sha256": "2e86eda570d75e9be140c94dc3e9734b9cac56ecbb66dd2b983a3fa2cfc96638"
+          }
+        },
+        "document_label": "決算(歳出明細)",
+        "document_title": "令和3年度一般会計歳入歳出決算事項別明細書",
+        "legal_correspondence_status": "unconfirmed",
+        "observation_role": "native-level-amounts",
+        "pages": [
+          56,
+          111
+        ],
+        "phase_note": "金額の段階は印字セル別に全列保持(当初/補正/繰越/予備費流用/計/支出済/翌年度繰越/不用額)。区議会議決行は native-notes の備考欄行として原文のまま保持(10行、physical_page は実際の右頁)。phases=[]",
+        "recognition_status": "unconfirmed",
+        "request_url": "https://www.city.chiyoda.lg.jp/documents/15979/r3kessansho-2.pdf",
+        "source_amount_unit": "円",
+        "source_key": "native-scan:131016:2021:r3kessansho-2",
+        "table_id": "native-levels",
+        "unit_multiplier": 1
+      }
+    },
+    {
+      "table_id": "chiyoda2021-settlement-native-973dedab1d542961",
+      "raw_path": "chiyoda2021-settlement-native/jurisdiction=131016/year=2021/document_kind=settlement/edition=8477b068a4d5a998da2614391a1e932fa7d1d5d1693cbcfed3723cb7e6f9dc6e/direction=expenditure/table=native-setsu/data.parquet",
+      "declaration": {
+        "approval_status": "unconfirmed",
+        "definition_files": {
+          "evidence-manifest.json": {
+            "bytes": 3726,
+            "sha256": "a68dc157ac0ef11e77ec5eb2298877552126e936a8eecf9f8204f9309514786a"
+          },
+          "replay.py": {
+            "bytes": 2114,
+            "sha256": "52d52aa34d5dde66912613ec24eae4481f6afbb72ff5b363be2aa9377ab4b3a2"
+          },
+          "sources-spec.json": {
+            "bytes": 3787,
+            "sha256": "2e86eda570d75e9be140c94dc3e9734b9cac56ecbb66dd2b983a3fa2cfc96638"
+          }
+        },
+        "document_label": "決算(歳出明細)",
+        "document_title": "令和3年度一般会計歳入歳出決算事項別明細書",
+        "legal_correspondence_status": "unconfirmed",
+        "observation_role": "native-setsu-amounts",
+        "pages": [
+          56,
+          111
+        ],
+        "phase_note": "金額の段階は印字セル別に全列保持(当初/補正/繰越/予備費流用/計/支出済/翌年度繰越/不用額)。区議会議決行は native-notes の備考欄行として原文のまま保持(10行、physical_page は実際の右頁)。phases=[]",
+        "recognition_status": "unconfirmed",
+        "request_url": "https://www.city.chiyoda.lg.jp/documents/15979/r3kessansho-2.pdf",
+        "source_amount_unit": "円",
+        "source_key": "native-scan:131016:2021:r3kessansho-2",
+        "table_id": "native-setsu",
+        "unit_multiplier": 1
+      }
+    }
+  ]
+}

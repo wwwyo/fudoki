@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "target": {
     "jurisdiction": "132195",
     "fiscal_year": 2024,
@@ -48,52 +48,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "supplementary-detail-faa4d2cb8197a7c8",
-          "legacy_path": "supplementary-detail/jurisdiction=132195/year=2024/document_kind=supplementary/edition=a5893a0f4071f54f595dd7a3fb9bb131079eff56d6e3bdbe6c92b6d38a13971a/direction=expenditure/resource=supplementary-expenditure-project-setsu",
-          "declaration": {
-            "amendment_number": 2,
-            "approval_date": "2024-11-25",
-            "approval_evidence": {
-              "bbox_json": "[547.2, 542.63236, 731.04, 554.63236]",
-              "page_number": 1,
-              "printed_text": "令和6年11月25日原案可決"
-            },
-            "approval_status": "cover-approved",
-            "baseline_status": "unconfirmed",
-            "edition_status": "published",
-            "effective_at": "2024-11-25",
-            "extractor": "extract_supplementary_expenditure.py@1",
-            "first_article_evidence": {
-              "amount_delta": 4000,
-              "bbox_json": "[160.56, 183.21972, 652.2029268292683, 195.21972]",
-              "page_number": 2,
-              "printed_text": "第1条歳入歳出予算の総額に、歳入歳出それぞれ4,000千円を追加"
-            },
-            "fund_label": "国民健康保険特別会計",
-            "grain": "printed project × expenditure setsu × department occurrence; explicit reserve exceptions",
-            "nonadditive_with": [
-              "expenditure-detail",
-              "expenditure-moku-changes-all"
-            ],
-            "observation_role": "authoritative-supplementary-detail",
-            "pages": [
-              1,
-              7
-            ],
-            "raw_form": "extracted",
-            "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,c,html/132059/20241127-152744.pdf",
-            "source_amount_unit": "千円",
-            "source_grain": "printed project × expenditure setsu × printed department occurrence; explicit printed reserve exceptions",
-            "source_key": "supplementary-detail:132195:2024:national-health:2",
-            "table_id": "supplementary-expenditure-project-setsu",
-            "totals": {
-              "all_moku_sum": 4000,
-              "explanation_setsu_sum": 4000,
-              "first_article": 4000,
-              "left_setsu_sum": 4000,
-              "printed_project_sum": 4000
-            }
-          }
+          "table_id": "supplementary-detail-faa4d2cb8197a7c8"
         }
       ]
     },
@@ -135,129 +90,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "council-approved-detail-4c27a432956c16c6",
-          "legacy_path": "council-approved-detail/jurisdiction=132195/year=2024/document_kind=supplementary/edition=dfd86bb3e0e83c6970c31993c95b7634f26e3a20b45c6d1d65a155454d6fcbcb/direction=expenditure/table=supplementary-expenditure-project-setsu-council-original-general-2",
-          "declaration": {
-            "amendment_number": 2,
-            "approval_date": "2024-08-28",
-            "approval_evidence": [
-              {
-                "bytes": 68399,
-                "inspected_at": "2026-10-04T09:23:04.065956+00:00",
-                "location": {
-                  "physical_pdf_page": 1,
-                  "table_row": "first resolution row below column header"
-                },
-                "object_key": "inputs/origin/sha256/7959220f5443aabe186f669fc3501a02169178bb780a5548499128813d30533c",
-                "observed_text": "            令和６年第３回定例会議案、陳情等審査結果一覧\n 事件の番号        件             名    議決月日 結         果\n            令和６年度狛江市一般会計補正予算\n議 案第 34 号                        ８ 月 28 日 原 案 可 決\n            （第２号）",
-                "sha256": "7959220f5443aabe186f669fc3501a02169178bb780a5548499128813d30533c",
-                "url": "https://www.city.komae.tokyo.jp/index.cfm/49,145713,c,html/145713/20260817-170143.pdf"
-              }
-            ],
-            "approval_proof": {
-              "account": "一般会計",
-              "amendment_number": 2,
-              "executive_disposition_date": null,
-              "fiscal_year": 2024,
-              "original_identity_evidence": [
-                {
-                  "bytes": 523512,
-                  "inspected_at": "2026-10-04T09:22:10.700345+00:00",
-                  "location": {
-                    "physical_pdf_page": 1
-                  },
-                  "object_key": "inputs/origin/sha256/dfd86bb3e0e83c6970c31993c95b7634f26e3a20b45c6d1d65a155454d6fcbcb",
-                  "observed_text": "議 案 第 ３４ 号 別 紙\n\n\n\n\n                 令   和   ６   年   度\n\n\n\n\n 狛   江   市   一   般   会   計   補   正   予   算 (第２号)",
-                  "sha256": "dfd86bb3e0e83c6970c31993c95b7634f26e3a20b45c6d1d65a155454d6fcbcb",
-                  "url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,c,html/132059/20241008-192843.pdf"
-                },
-                {
-                  "bytes": 3241300,
-                  "inspected_at": "2026-10-04T09:22:10.899225+00:00",
-                  "location": {
-                    "physical_pdf_page": 4
-                  },
-                  "object_key": "inputs/origin/sha256/7478901e1369989b3d324867fbf4aa2136bb89eb310bf3ed03950ade9caf19dd",
-                  "observed_text": "議案第 34 号\n\n\n    令和６年度狛江市一般会計補正予算（第２号）\n\n\n 上記の議案を別紙のとおり提出する。\n\n\n    令和６年８月28日\n                                  提出者   狛江市長   松原   俊雄\n\n\n\n\n提案理由\n 一般会計予算を補正する必要が生じたため。\n\n\n\n\n                            -4-",
-                  "sha256": "7478901e1369989b3d324867fbf4aa2136bb89eb310bf3ed03950ade9caf19dd",
-                  "url": "https://www.city.komae.tokyo.jp/index.cfm/46,132125,c,html/132125/20240830-145313.pdf"
-                },
-                {
-                  "bytes": 3241300,
-                  "inspected_at": "2026-10-04T09:22:10.899225+00:00",
-                  "location": {
-                    "physical_pdf_page": 5
-                  },
-                  "object_key": "inputs/origin/sha256/7478901e1369989b3d324867fbf4aa2136bb89eb310bf3ed03950ade9caf19dd",
-                  "observed_text": "議 案 第 ３４ 号 別 紙\n\n\n\n\n                 令   和   ６     年   度\n\n\n\n\n 狛   江   市   一   般   会   計     補   正   予   算 (第２号)\n\n\n\n\n                         -5-",
-                  "sha256": "7478901e1369989b3d324867fbf4aa2136bb89eb310bf3ed03950ade9caf19dd",
-                  "url": "https://www.city.komae.tokyo.jp/index.cfm/46,132125,c,html/132125/20240830-145313.pdf"
-                }
-              ],
-              "resolution_date": "2024-08-28",
-              "resolution_evidence": [
-                {
-                  "bytes": 68399,
-                  "inspected_at": "2026-10-04T09:23:04.065956+00:00",
-                  "location": {
-                    "physical_pdf_page": 1,
-                    "table_row": "first resolution row below column header"
-                  },
-                  "object_key": "inputs/origin/sha256/7959220f5443aabe186f669fc3501a02169178bb780a5548499128813d30533c",
-                  "observed_text": "            令和６年第３回定例会議案、陳情等審査結果一覧\n 事件の番号        件             名    議決月日 結         果\n            令和６年度狛江市一般会計補正予算\n議 案第 34 号                        ８ 月 28 日 原 案 可 決\n            （第２号）",
-                  "sha256": "7959220f5443aabe186f669fc3501a02169178bb780a5548499128813d30533c",
-                  "url": "https://www.city.komae.tokyo.jp/index.cfm/49,145713,c,html/145713/20260817-170143.pdf"
-                }
-              ],
-              "resolution_id": "議案第34号"
-            },
-            "baseline_status": "unconfirmed",
-            "council_resolution_date": "2024-08-28",
-            "document_title": "2024年度 狛江市一般会計補正予算第2号（番号付き議会承認原典）",
-            "effective_at": null,
-            "effective_at_basis": "unconfirmed-parent-recording-contract",
-            "effective_date": null,
-            "effective_date_basis": "unconfirmed-parent-recording-contract",
-            "executive_disposition_date": null,
-            "extractor": "extract_komae_council_approved_detail.py@2",
-            "first_article_evidence": {
-              "amount_delta": 2176394,
-              "bbox_json": "[160.56, 183.21972, 696.3626666666667, 195.21972]",
-              "page_number": 2,
-              "printed_text": "第1条歳入歳出予算の総額に、歳入歳出それぞれ2,176,394千円を追加"
-            },
-            "fund_label": "一般会計",
-            "grain": "printed project × expenditure setsu × department occurrence; explicit blank-code reserve exception",
-            "nonadditive_with": [
-              "expenditure-moku-changes-all",
-              "expenditure-detail"
-            ],
-            "observation_role": "authoritative-council-supplementary-detail",
-            "original_cover_approval_status": "unconfirmed",
-            "pages": [
-              1,
-              21
-            ],
-            "printed_submission_date": "2024-08-28",
-            "raw_form": "extracted",
-            "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,c,html/132059/20241008-192843.pdf",
-            "resource_name": "2024年度 狛江市一般会計補正予算第2号（番号付き議会承認原典）",
-            "source_amount_unit": "千円",
-            "source_key": "council-approved-detail:132195:2024:general:2",
-            "source_page_range": [
-              1,
-              21
-            ],
-            "table_id": "supplementary-expenditure-project-setsu-council-original-general-2",
-            "totals": {
-              "all_moku_sum": 2176394,
-              "explanation_setsu_sum": 2176394,
-              "first_article": 2176394,
-              "left_setsu_sum": 2176394,
-              "printed_project_sum": 2176394
-            },
-            "unit_multiplier": 1000
-          }
+          "table_id": "council-approved-detail-4c27a432956c16c6"
         }
       ]
     }
@@ -266,7 +99,7 @@
     {
       "table_id": "supplementary-detail-faa4d2cb8197a7c8",
       "conversion_id": "supplementary-detail-faa4d2cb8197a7c8",
-      "input_fingerprint": "d77af8261c988ae79e97db0a609dcd9265f7458a6e3d768266600239c644b34a",
+      "input_fingerprint": "fd1a1ef7a1545e29c917632ed538700d997ff48b1a9e48a148a42861be81b284",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132195/2024/supplementary-2/expenditure/supplementary-detail-faa4d2cb8197a7c8.parquet",
@@ -459,7 +292,7 @@
     {
       "table_id": "council-approved-detail-4c27a432956c16c6",
       "conversion_id": "council-approved-detail-4c27a432956c16c6",
-      "input_fingerprint": "3964053878a05db020e7ec6090bc640977f0fa8f766d1cbfcf54842d770219a3",
+      "input_fingerprint": "f89e375324b65b9236d72909efe1d8dc09ad3f79c7e5c5bfd0759116960f6857",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132195/2024/supplementary-2/expenditure/council-approved-detail-4c27a432956c16c6.parquet",

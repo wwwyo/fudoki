@@ -4,11 +4,9 @@
 import { resolve, join } from 'node:path'
 import { readFileSync, existsSync } from 'node:fs'
 import { createHash } from 'node:crypto'
+import { PIPELINE, CACHE, BUILD } from './runtime_paths'
+export { PIPELINE, REPO, CACHE, BUILD, WAREHOUSE, DBT_TARGET, REPORT } from './runtime_paths'
 
-export const PIPELINE = import.meta.dirname
-export const REPO = resolve(PIPELINE, '..')
-export const CACHE = join(PIPELINE, '.cache')
-export const BUILD = join(PIPELINE, '.build')
 const latestPath = join(BUILD, 'latest.json')
 export const LATEST = existsSync(latestPath)
   ? (JSON.parse(readFileSync(latestPath, 'utf8')) as {
@@ -37,6 +35,3 @@ export const PACKAGES = anchor(
   process.env.FUDOKI_PACKAGE_DIR ??
     join(BUILD, 'builds', LATEST?.buildId ?? 'candidate', 'fiscal')
 )
-export const WAREHOUSE = join(BUILD, 'warehouse.duckdb')
-export const DBT_TARGET = join(BUILD, 'dbt')
-export const REPORT = join(BUILD, 'report')

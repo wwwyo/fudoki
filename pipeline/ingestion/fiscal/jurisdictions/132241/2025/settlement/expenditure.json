@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "target": {
     "jurisdiction": "132241",
     "fiscal_year": 2025,
@@ -86,36 +86,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "tama-settlement-pdf-dd79304bdb121148",
-          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2025/document_kind=settlement/edition=054c816e2b6f528c7dfedae4958540f4910730ed650f47ca51e4aaf226d4c085/direction=expenditure/table=legal-setsu-general",
-          "declaration": {
-            "attribution": "東京都多摩市",
-            "document_title": "令和7年度多摩市各会計歳入歳出決算書（第70〜73号議案添付）",
-            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
-            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/021/205/R8-3teirei_sicyo70-73.pdf",
-            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
-            "fund_label": "一般会計",
-            "grain": "printed-moku-by-legal-setsu",
-            "landing_page": "https://www.city.tama.lg.jp/shigikai/kaigi/yotei/1019487/1021205.html",
-            "license_id": "NOASSERTION",
-            "observation_role": "legal-setsu",
-            "pages": [
-              1,
-              233
-            ],
-            "raw_form": "extracted",
-            "recognition_basis": "市議会議案添付として掲載された決算書。認定の議決結果及び認定日を確認していない。",
-            "recognition_status": "unconfirmed",
-            "redistribute": "review",
-            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
-            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/021/205/R8-3teirei_sicyo70-73.pdf",
-            "resource_name": "令和7年度多摩市各会計歳入歳出決算書（第70〜73号議案添付） legal-setsu-general",
-            "source_amount_unit": "円",
-            "source_key": "settlement-pdf:132241:2025:book",
-            "table_id": "legal-setsu-general",
-            "unit_multiplier": 1,
-            "year_basis": "固定原典物理頁1の令和７年度及び物理頁2の四会計目次。掲載資料の会計年度は2025。"
-          }
+          "table_id": "tama-settlement-pdf-dd79304bdb121148"
         }
       ]
     },
@@ -196,36 +167,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "tama-settlement-pdf-d3e3953b7edc5120",
-          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2025/document_kind=settlement/edition=054c816e2b6f528c7dfedae4958540f4910730ed650f47ca51e4aaf226d4c085/direction=expenditure/table=moku-controls-general",
-          "declaration": {
-            "attribution": "東京都多摩市",
-            "document_title": "令和7年度多摩市各会計歳入歳出決算書（第70〜73号議案添付）",
-            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
-            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/021/205/R8-3teirei_sicyo70-73.pdf",
-            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
-            "fund_label": "一般会計",
-            "grain": "nonadditive-printed-moku-control",
-            "landing_page": "https://www.city.tama.lg.jp/shigikai/kaigi/yotei/1019487/1021205.html",
-            "license_id": "NOASSERTION",
-            "observation_role": "moku-controls",
-            "pages": [
-              1,
-              233
-            ],
-            "raw_form": "extracted",
-            "recognition_basis": "市議会議案添付として掲載された決算書。認定の議決結果及び認定日を確認していない。",
-            "recognition_status": "unconfirmed",
-            "redistribute": "review",
-            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
-            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/021/205/R8-3teirei_sicyo70-73.pdf",
-            "resource_name": "令和7年度多摩市各会計歳入歳出決算書（第70〜73号議案添付） moku-controls-general",
-            "source_amount_unit": "円",
-            "source_key": "settlement-pdf:132241:2025:book",
-            "table_id": "moku-controls-general",
-            "unit_multiplier": 1,
-            "year_basis": "固定原典物理頁1の令和７年度及び物理頁2の四会計目次。掲載資料の会計年度は2025。"
-          }
+          "table_id": "tama-settlement-pdf-d3e3953b7edc5120"
         }
       ]
     },
@@ -306,36 +248,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "tama-settlement-pdf-951ffbc368fc5653",
-          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2025/document_kind=settlement/edition=054c816e2b6f528c7dfedae4958540f4910730ed650f47ca51e4aaf226d4c085/direction=expenditure/table=legal-setsu-national-health",
-          "declaration": {
-            "attribution": "東京都多摩市",
-            "document_title": "令和7年度多摩市各会計歳入歳出決算書（第70〜73号議案添付）",
-            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
-            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/021/205/R8-3teirei_sicyo70-73.pdf",
-            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
-            "fund_label": "国民健康保険特別会計",
-            "grain": "printed-moku-by-legal-setsu",
-            "landing_page": "https://www.city.tama.lg.jp/shigikai/kaigi/yotei/1019487/1021205.html",
-            "license_id": "NOASSERTION",
-            "observation_role": "legal-setsu",
-            "pages": [
-              1,
-              233
-            ],
-            "raw_form": "extracted",
-            "recognition_basis": "市議会議案添付として掲載された決算書。認定の議決結果及び認定日を確認していない。",
-            "recognition_status": "unconfirmed",
-            "redistribute": "review",
-            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
-            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/021/205/R8-3teirei_sicyo70-73.pdf",
-            "resource_name": "令和7年度多摩市各会計歳入歳出決算書（第70〜73号議案添付） legal-setsu-national-health",
-            "source_amount_unit": "円",
-            "source_key": "settlement-pdf:132241:2025:book",
-            "table_id": "legal-setsu-national-health",
-            "unit_multiplier": 1,
-            "year_basis": "固定原典物理頁1の令和７年度及び物理頁2の四会計目次。掲載資料の会計年度は2025。"
-          }
+          "table_id": "tama-settlement-pdf-951ffbc368fc5653"
         }
       ]
     },
@@ -416,36 +329,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "tama-settlement-pdf-0137d860c94ec602",
-          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2025/document_kind=settlement/edition=054c816e2b6f528c7dfedae4958540f4910730ed650f47ca51e4aaf226d4c085/direction=expenditure/table=moku-controls-national-health",
-          "declaration": {
-            "attribution": "東京都多摩市",
-            "document_title": "令和7年度多摩市各会計歳入歳出決算書（第70〜73号議案添付）",
-            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
-            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/021/205/R8-3teirei_sicyo70-73.pdf",
-            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
-            "fund_label": "国民健康保険特別会計",
-            "grain": "nonadditive-printed-moku-control",
-            "landing_page": "https://www.city.tama.lg.jp/shigikai/kaigi/yotei/1019487/1021205.html",
-            "license_id": "NOASSERTION",
-            "observation_role": "moku-controls",
-            "pages": [
-              1,
-              233
-            ],
-            "raw_form": "extracted",
-            "recognition_basis": "市議会議案添付として掲載された決算書。認定の議決結果及び認定日を確認していない。",
-            "recognition_status": "unconfirmed",
-            "redistribute": "review",
-            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
-            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/021/205/R8-3teirei_sicyo70-73.pdf",
-            "resource_name": "令和7年度多摩市各会計歳入歳出決算書（第70〜73号議案添付） moku-controls-national-health",
-            "source_amount_unit": "円",
-            "source_key": "settlement-pdf:132241:2025:book",
-            "table_id": "moku-controls-national-health",
-            "unit_multiplier": 1,
-            "year_basis": "固定原典物理頁1の令和７年度及び物理頁2の四会計目次。掲載資料の会計年度は2025。"
-          }
+          "table_id": "tama-settlement-pdf-0137d860c94ec602"
         }
       ]
     },
@@ -526,36 +410,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "tama-settlement-pdf-98c3b806ffeb6616",
-          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2025/document_kind=settlement/edition=054c816e2b6f528c7dfedae4958540f4910730ed650f47ca51e4aaf226d4c085/direction=expenditure/table=legal-setsu-care",
-          "declaration": {
-            "attribution": "東京都多摩市",
-            "document_title": "令和7年度多摩市各会計歳入歳出決算書（第70〜73号議案添付）",
-            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
-            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/021/205/R8-3teirei_sicyo70-73.pdf",
-            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
-            "fund_label": "介護保険特別会計",
-            "grain": "printed-moku-by-legal-setsu",
-            "landing_page": "https://www.city.tama.lg.jp/shigikai/kaigi/yotei/1019487/1021205.html",
-            "license_id": "NOASSERTION",
-            "observation_role": "legal-setsu",
-            "pages": [
-              1,
-              233
-            ],
-            "raw_form": "extracted",
-            "recognition_basis": "市議会議案添付として掲載された決算書。認定の議決結果及び認定日を確認していない。",
-            "recognition_status": "unconfirmed",
-            "redistribute": "review",
-            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
-            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/021/205/R8-3teirei_sicyo70-73.pdf",
-            "resource_name": "令和7年度多摩市各会計歳入歳出決算書（第70〜73号議案添付） legal-setsu-care",
-            "source_amount_unit": "円",
-            "source_key": "settlement-pdf:132241:2025:book",
-            "table_id": "legal-setsu-care",
-            "unit_multiplier": 1,
-            "year_basis": "固定原典物理頁1の令和７年度及び物理頁2の四会計目次。掲載資料の会計年度は2025。"
-          }
+          "table_id": "tama-settlement-pdf-98c3b806ffeb6616"
         }
       ]
     },
@@ -636,36 +491,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "tama-settlement-pdf-9ff080db4b07abb7",
-          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2025/document_kind=settlement/edition=054c816e2b6f528c7dfedae4958540f4910730ed650f47ca51e4aaf226d4c085/direction=expenditure/table=moku-controls-care",
-          "declaration": {
-            "attribution": "東京都多摩市",
-            "document_title": "令和7年度多摩市各会計歳入歳出決算書（第70〜73号議案添付）",
-            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
-            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/021/205/R8-3teirei_sicyo70-73.pdf",
-            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
-            "fund_label": "介護保険特別会計",
-            "grain": "nonadditive-printed-moku-control",
-            "landing_page": "https://www.city.tama.lg.jp/shigikai/kaigi/yotei/1019487/1021205.html",
-            "license_id": "NOASSERTION",
-            "observation_role": "moku-controls",
-            "pages": [
-              1,
-              233
-            ],
-            "raw_form": "extracted",
-            "recognition_basis": "市議会議案添付として掲載された決算書。認定の議決結果及び認定日を確認していない。",
-            "recognition_status": "unconfirmed",
-            "redistribute": "review",
-            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
-            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/021/205/R8-3teirei_sicyo70-73.pdf",
-            "resource_name": "令和7年度多摩市各会計歳入歳出決算書（第70〜73号議案添付） moku-controls-care",
-            "source_amount_unit": "円",
-            "source_key": "settlement-pdf:132241:2025:book",
-            "table_id": "moku-controls-care",
-            "unit_multiplier": 1,
-            "year_basis": "固定原典物理頁1の令和７年度及び物理頁2の四会計目次。掲載資料の会計年度は2025。"
-          }
+          "table_id": "tama-settlement-pdf-9ff080db4b07abb7"
         }
       ]
     },
@@ -746,36 +572,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "tama-settlement-pdf-578201c8a99c4f23",
-          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2025/document_kind=settlement/edition=054c816e2b6f528c7dfedae4958540f4910730ed650f47ca51e4aaf226d4c085/direction=expenditure/table=legal-setsu-elderly",
-          "declaration": {
-            "attribution": "東京都多摩市",
-            "document_title": "令和7年度多摩市各会計歳入歳出決算書（第70〜73号議案添付）",
-            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
-            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/021/205/R8-3teirei_sicyo70-73.pdf",
-            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
-            "fund_label": "後期高齢者医療特別会計",
-            "grain": "printed-moku-by-legal-setsu",
-            "landing_page": "https://www.city.tama.lg.jp/shigikai/kaigi/yotei/1019487/1021205.html",
-            "license_id": "NOASSERTION",
-            "observation_role": "legal-setsu",
-            "pages": [
-              1,
-              233
-            ],
-            "raw_form": "extracted",
-            "recognition_basis": "市議会議案添付として掲載された決算書。認定の議決結果及び認定日を確認していない。",
-            "recognition_status": "unconfirmed",
-            "redistribute": "review",
-            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
-            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/021/205/R8-3teirei_sicyo70-73.pdf",
-            "resource_name": "令和7年度多摩市各会計歳入歳出決算書（第70〜73号議案添付） legal-setsu-elderly",
-            "source_amount_unit": "円",
-            "source_key": "settlement-pdf:132241:2025:book",
-            "table_id": "legal-setsu-elderly",
-            "unit_multiplier": 1,
-            "year_basis": "固定原典物理頁1の令和７年度及び物理頁2の四会計目次。掲載資料の会計年度は2025。"
-          }
+          "table_id": "tama-settlement-pdf-578201c8a99c4f23"
         }
       ]
     },
@@ -856,36 +653,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "tama-settlement-pdf-e1269d27a59d86a9",
-          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2025/document_kind=settlement/edition=054c816e2b6f528c7dfedae4958540f4910730ed650f47ca51e4aaf226d4c085/direction=expenditure/table=moku-controls-elderly",
-          "declaration": {
-            "attribution": "東京都多摩市",
-            "document_title": "令和7年度多摩市各会計歳入歳出決算書（第70〜73号議案添付）",
-            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
-            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/021/205/R8-3teirei_sicyo70-73.pdf",
-            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
-            "fund_label": "後期高齢者医療特別会計",
-            "grain": "nonadditive-printed-moku-control",
-            "landing_page": "https://www.city.tama.lg.jp/shigikai/kaigi/yotei/1019487/1021205.html",
-            "license_id": "NOASSERTION",
-            "observation_role": "moku-controls",
-            "pages": [
-              1,
-              233
-            ],
-            "raw_form": "extracted",
-            "recognition_basis": "市議会議案添付として掲載された決算書。認定の議決結果及び認定日を確認していない。",
-            "recognition_status": "unconfirmed",
-            "redistribute": "review",
-            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
-            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/021/205/R8-3teirei_sicyo70-73.pdf",
-            "resource_name": "令和7年度多摩市各会計歳入歳出決算書（第70〜73号議案添付） moku-controls-elderly",
-            "source_amount_unit": "円",
-            "source_key": "settlement-pdf:132241:2025:book",
-            "table_id": "moku-controls-elderly",
-            "unit_multiplier": 1,
-            "year_basis": "固定原典物理頁1の令和７年度及び物理頁2の四会計目次。掲載資料の会計年度は2025。"
-          }
+          "table_id": "tama-settlement-pdf-e1269d27a59d86a9"
         }
       ]
     },
@@ -966,36 +734,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "tama-settlement-pdf-1ca3d13158f1fd84",
-          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2025/document_kind=settlement/edition=054c816e2b6f528c7dfedae4958540f4910730ed650f47ca51e4aaf226d4c085/direction=expenditure/table=account-controls",
-          "declaration": {
-            "attribution": "東京都多摩市",
-            "document_title": "令和7年度多摩市各会計歳入歳出決算書（第70〜73号議案添付）",
-            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
-            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/021/205/R8-3teirei_sicyo70-73.pdf",
-            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
-            "fund_label": "",
-            "grain": "nonadditive-printed-account-control",
-            "landing_page": "https://www.city.tama.lg.jp/shigikai/kaigi/yotei/1019487/1021205.html",
-            "license_id": "NOASSERTION",
-            "observation_role": "account-controls",
-            "pages": [
-              1,
-              233
-            ],
-            "raw_form": "extracted",
-            "recognition_basis": "市議会議案添付として掲載された決算書。認定の議決結果及び認定日を確認していない。",
-            "recognition_status": "unconfirmed",
-            "redistribute": "review",
-            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
-            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/021/205/R8-3teirei_sicyo70-73.pdf",
-            "resource_name": "令和7年度多摩市各会計歳入歳出決算書（第70〜73号議案添付） account-controls",
-            "source_amount_unit": "円",
-            "source_key": "settlement-pdf:132241:2025:book",
-            "table_id": "account-controls",
-            "unit_multiplier": 1,
-            "year_basis": "固定原典物理頁1の令和７年度及び物理頁2の四会計目次。掲載資料の会計年度は2025。"
-          }
+          "table_id": "tama-settlement-pdf-1ca3d13158f1fd84"
         }
       ]
     },
@@ -1076,36 +815,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "tama-settlement-pdf-9f64e7c9aeb35e1d",
-          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2025/document_kind=settlement/edition=054c816e2b6f528c7dfedae4958540f4910730ed650f47ca51e4aaf226d4c085/direction=expenditure/table=source-words",
-          "declaration": {
-            "attribution": "東京都多摩市",
-            "document_title": "令和7年度多摩市各会計歳入歳出決算書（第70〜73号議案添付）",
-            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
-            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/021/205/R8-3teirei_sicyo70-73.pdf",
-            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
-            "fund_label": "",
-            "grain": "nonadditive-positioned-source-word",
-            "landing_page": "https://www.city.tama.lg.jp/shigikai/kaigi/yotei/1019487/1021205.html",
-            "license_id": "NOASSERTION",
-            "observation_role": "source-words",
-            "pages": [
-              1,
-              233
-            ],
-            "raw_form": "extracted",
-            "recognition_basis": "市議会議案添付として掲載された決算書。認定の議決結果及び認定日を確認していない。",
-            "recognition_status": "unconfirmed",
-            "redistribute": "review",
-            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
-            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/021/205/R8-3teirei_sicyo70-73.pdf",
-            "resource_name": "令和7年度多摩市各会計歳入歳出決算書（第70〜73号議案添付） source-words",
-            "source_amount_unit": null,
-            "source_key": "settlement-pdf:132241:2025:book",
-            "table_id": "source-words",
-            "unit_multiplier": null,
-            "year_basis": "固定原典物理頁1の令和７年度及び物理頁2の四会計目次。掲載資料の会計年度は2025。"
-          }
+          "table_id": "tama-settlement-pdf-9f64e7c9aeb35e1d"
         }
       ]
     }
@@ -1114,7 +824,7 @@
     {
       "table_id": "tama-settlement-pdf-dd79304bdb121148",
       "conversion_id": "tama-settlement-pdf-dd79304bdb121148",
-      "input_fingerprint": "08ac2fa79451723ff0ed34dc0fcec9ef40f8a6b5834af9bb37c733bf1366e784",
+      "input_fingerprint": "9b329beea70f5cb4c4d2f94a208433a2208fc433fe67125afce3c7ef3583eaca",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2025/settlement/expenditure/tama-settlement-pdf-dd79304bdb121148.parquet",
@@ -1275,7 +985,7 @@
     {
       "table_id": "tama-settlement-pdf-d3e3953b7edc5120",
       "conversion_id": "tama-settlement-pdf-d3e3953b7edc5120",
-      "input_fingerprint": "97ee85678b136257b20d49eb3f35b8c34d787790bddd34489268820fd28724bd",
+      "input_fingerprint": "e3b33cda6383378173644511b60faac35b7c6daf32e2743cc5bfab623260d5df",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2025/settlement/expenditure/tama-settlement-pdf-d3e3953b7edc5120.parquet",
@@ -1436,7 +1146,7 @@
     {
       "table_id": "tama-settlement-pdf-951ffbc368fc5653",
       "conversion_id": "tama-settlement-pdf-951ffbc368fc5653",
-      "input_fingerprint": "a47644b3e1d8928a5331cf3113367b139dfa0fc4ae0626f135646127a03a1376",
+      "input_fingerprint": "a7ed93cf23dd9d2d9002036feb330bdd54ccff64290d9fb869aec3446f1dc183",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2025/settlement/expenditure/tama-settlement-pdf-951ffbc368fc5653.parquet",
@@ -1597,7 +1307,7 @@
     {
       "table_id": "tama-settlement-pdf-0137d860c94ec602",
       "conversion_id": "tama-settlement-pdf-0137d860c94ec602",
-      "input_fingerprint": "7721724ce060808db16292d2e98bb9c7157e05e998d0d6621cedcb4c7fa0431e",
+      "input_fingerprint": "6b08926e0c9685687c0ddb93222a1567c40b6818618835d7b06a950c77624b3f",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2025/settlement/expenditure/tama-settlement-pdf-0137d860c94ec602.parquet",
@@ -1758,7 +1468,7 @@
     {
       "table_id": "tama-settlement-pdf-98c3b806ffeb6616",
       "conversion_id": "tama-settlement-pdf-98c3b806ffeb6616",
-      "input_fingerprint": "29d191554ea8ec2ad4294f50c7766ec7794d73b60f3a5002c5d9686ff94d5fcc",
+      "input_fingerprint": "e5bc21b799cd5c3ef6fc2e2528f7437018de68f49c6348a728cf14b5f74b5ee0",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2025/settlement/expenditure/tama-settlement-pdf-98c3b806ffeb6616.parquet",
@@ -1919,7 +1629,7 @@
     {
       "table_id": "tama-settlement-pdf-9ff080db4b07abb7",
       "conversion_id": "tama-settlement-pdf-9ff080db4b07abb7",
-      "input_fingerprint": "5395f05d5778284820920578d68d593f18ea3e57b05f141c341c236e98ad8309",
+      "input_fingerprint": "92048acdbbb1cb69907762e4769aadd2ade437747b483fca3439eb900c688098",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2025/settlement/expenditure/tama-settlement-pdf-9ff080db4b07abb7.parquet",
@@ -2080,7 +1790,7 @@
     {
       "table_id": "tama-settlement-pdf-578201c8a99c4f23",
       "conversion_id": "tama-settlement-pdf-578201c8a99c4f23",
-      "input_fingerprint": "e2fe98d2db7983237ad069e2869557ee067ff54d6427982887121cc9590f8d9d",
+      "input_fingerprint": "dba7625e185bb27c4049f9aabb56783151cd1b41d17a7623ab16a3cdf481980b",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2025/settlement/expenditure/tama-settlement-pdf-578201c8a99c4f23.parquet",
@@ -2241,7 +1951,7 @@
     {
       "table_id": "tama-settlement-pdf-e1269d27a59d86a9",
       "conversion_id": "tama-settlement-pdf-e1269d27a59d86a9",
-      "input_fingerprint": "be706e02533dff26cf86f979137f6ed1af333d6b4673d8186aec5cd69acc4b55",
+      "input_fingerprint": "6e43f1a53f3a86f4982883eaad8ce7754e42f14f84ba4c7e157898d677035853",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2025/settlement/expenditure/tama-settlement-pdf-e1269d27a59d86a9.parquet",
@@ -2402,7 +2112,7 @@
     {
       "table_id": "tama-settlement-pdf-1ca3d13158f1fd84",
       "conversion_id": "tama-settlement-pdf-1ca3d13158f1fd84",
-      "input_fingerprint": "90f4a531d1b57f27989d98c2887df05e353b1756c7732abc077caa6acc89d6e3",
+      "input_fingerprint": "0f9a1af65690db68538252cfba22eeeb9064152094090a6fb68a443a87698f8c",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2025/settlement/expenditure/tama-settlement-pdf-1ca3d13158f1fd84.parquet",
@@ -2563,7 +2273,7 @@
     {
       "table_id": "tama-settlement-pdf-9f64e7c9aeb35e1d",
       "conversion_id": "tama-settlement-pdf-9f64e7c9aeb35e1d",
-      "input_fingerprint": "84feb42499ff434dc4c06fad17533e908ddfbedee2d139786f131ce4468509fe",
+      "input_fingerprint": "992260313b16b385c2d76bf0a0b060282f5822e87eadf4fbee4291c2befd17fd",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2025/settlement/expenditure/tama-settlement-pdf-9f64e7c9aeb35e1d.parquet",

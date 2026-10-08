@@ -1,0 +1,246 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "131016",
+    "fiscal_year": 2025,
+    "document_kind": "initial"
+  },
+  "direction": "expenditure",
+  "tables": [
+    {
+      "table_id": "chiyoda2025-native-4d1d52a63bb8e321",
+      "raw_path": "chiyoda2025-native/jurisdiction=131016/year=2025/document_kind=budget/edition=d8783bb65906f6780918a03286b6f0375c06562a8528f10784e682123a2f8235/direction=expenditure/table=native-moku_controls/data.parquet",
+      "declaration": {
+        "approval_status": "unconfirmed",
+        "attribution": "千代田区",
+        "dataset_title": null,
+        "definition_files": {
+          "correction-ledger.json": {
+            "bytes": 732,
+            "path": "pipeline/ingestion/fiscal/jurisdictions/131016/layouts/chiyoda2025_native/correction-ledger.json",
+            "sha256": "be4290ef15ab7a60852f334a0d1225ccd3cbd19814aac3d7498b7c4777c9356b"
+          },
+          "evidence-manifest.json": {
+            "bytes": 375306,
+            "path": "pipeline/ingestion/fiscal/jurisdictions/131016/layouts/chiyoda2025_native/evidence-manifest.json",
+            "sha256": "66a096d1a0d9ba00ae2ed873607ebdc65837d4b526387027b117c45ec91d3f3c"
+          },
+          "sources-spec.json": {
+            "bytes": 6237,
+            "path": "pipeline/ingestion/fiscal/jurisdictions/131016/layouts/chiyoda2025_native/sources-spec.json",
+            "sha256": "5fe0cf93f926b8cebda6cceefa14066ec91df6e1ee6a3c120a507c9e4d5395fb"
+          }
+        },
+        "document_title": "令和7年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）",
+        "extractor": "chiyoda2025-native-replay@r2 (deterministic frozen-observation replay)",
+        "fund_label": null,
+        "grain": "document-fund-moku-row",
+        "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
+        "legal_correspondence_status": "unconfirmed",
+        "license_id": "NOASSERTION",
+        "observation_role": "native-moku-controls",
+        "pages": null,
+        "phase": null,
+        "project_setsu_linkage": "unconfirmed",
+        "raw_form": "extracted",
+        "recognition_status": "unconfirmed",
+        "redistribute": "allow",
+        "redistribute_basis": "区サイトのホームページ利用規約が複製・公衆送信・翻案を許諾（商用可）。CC BY/政府標準への言及なし",
+        "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r7kaikeiyosan.pdf",
+        "resource_name": "令和7年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計） native-moku_controls",
+        "source_amount_unit": "千円",
+        "source_key": "native-scan:131016:2025:r7kaikeiyosan",
+        "table_id": "native-moku_controls",
+        "unit_multiplier": 1000
+      }
+    },
+    {
+      "table_id": "chiyoda2025-native-b735a90bfbb1d9a6",
+      "raw_path": "chiyoda2025-native/jurisdiction=131016/year=2025/document_kind=budget/edition=d8783bb65906f6780918a03286b6f0375c06562a8528f10784e682123a2f8235/direction=expenditure/table=native-legal_amounts/data.parquet",
+      "declaration": {
+        "approval_status": "unconfirmed",
+        "attribution": "千代田区",
+        "dataset_title": null,
+        "definition_files": {
+          "correction-ledger.json": {
+            "bytes": 732,
+            "path": "pipeline/ingestion/fiscal/jurisdictions/131016/layouts/chiyoda2025_native/correction-ledger.json",
+            "sha256": "be4290ef15ab7a60852f334a0d1225ccd3cbd19814aac3d7498b7c4777c9356b"
+          },
+          "evidence-manifest.json": {
+            "bytes": 375306,
+            "path": "pipeline/ingestion/fiscal/jurisdictions/131016/layouts/chiyoda2025_native/evidence-manifest.json",
+            "sha256": "66a096d1a0d9ba00ae2ed873607ebdc65837d4b526387027b117c45ec91d3f3c"
+          },
+          "sources-spec.json": {
+            "bytes": 6237,
+            "path": "pipeline/ingestion/fiscal/jurisdictions/131016/layouts/chiyoda2025_native/sources-spec.json",
+            "sha256": "5fe0cf93f926b8cebda6cceefa14066ec91df6e1ee6a3c120a507c9e4d5395fb"
+          }
+        },
+        "document_title": "令和7年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）",
+        "extractor": "chiyoda2025-native-replay@r2 (deterministic frozen-observation replay)",
+        "fund_label": null,
+        "grain": "document-fund-moku-printed-setsu-cluster",
+        "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
+        "legal_correspondence_status": "unconfirmed",
+        "license_id": "NOASSERTION",
+        "observation_role": "native-legal-setsu-amounts",
+        "pages": null,
+        "phase": null,
+        "project_setsu_linkage": "unconfirmed",
+        "raw_form": "extracted",
+        "recognition_status": "unconfirmed",
+        "redistribute": "allow",
+        "redistribute_basis": "区サイトのホームページ利用規約が複製・公衆送信・翻案を許諾（商用可）。CC BY/政府標準への言及なし",
+        "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r7kaikeiyosan.pdf",
+        "resource_name": "令和7年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計） native-legal_amounts",
+        "source_amount_unit": "千円",
+        "source_key": "native-scan:131016:2025:r7kaikeiyosan",
+        "table_id": "native-legal_amounts",
+        "unit_multiplier": 1000
+      }
+    },
+    {
+      "table_id": "chiyoda2025-native-f06e646662cb22c9",
+      "raw_path": "chiyoda2025-native/jurisdiction=131016/year=2025/document_kind=budget/edition=d8783bb65906f6780918a03286b6f0375c06562a8528f10784e682123a2f8235/direction=expenditure/table=native-explanation_amounts/data.parquet",
+      "declaration": {
+        "approval_status": "unconfirmed",
+        "attribution": "千代田区",
+        "dataset_title": null,
+        "definition_files": {
+          "correction-ledger.json": {
+            "bytes": 732,
+            "path": "pipeline/ingestion/fiscal/jurisdictions/131016/layouts/chiyoda2025_native/correction-ledger.json",
+            "sha256": "be4290ef15ab7a60852f334a0d1225ccd3cbd19814aac3d7498b7c4777c9356b"
+          },
+          "evidence-manifest.json": {
+            "bytes": 375306,
+            "path": "pipeline/ingestion/fiscal/jurisdictions/131016/layouts/chiyoda2025_native/evidence-manifest.json",
+            "sha256": "66a096d1a0d9ba00ae2ed873607ebdc65837d4b526387027b117c45ec91d3f3c"
+          },
+          "sources-spec.json": {
+            "bytes": 6237,
+            "path": "pipeline/ingestion/fiscal/jurisdictions/131016/layouts/chiyoda2025_native/sources-spec.json",
+            "sha256": "5fe0cf93f926b8cebda6cceefa14066ec91df6e1ee6a3c120a507c9e4d5395fb"
+          }
+        },
+        "document_title": "令和7年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）",
+        "extractor": "chiyoda2025-native-replay@r2 (deterministic frozen-observation replay)",
+        "fund_label": null,
+        "grain": "document-fund-explanation-amount",
+        "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
+        "legal_correspondence_status": "unconfirmed",
+        "license_id": "NOASSERTION",
+        "observation_role": "native-explanation-amounts",
+        "pages": null,
+        "phase": null,
+        "project_setsu_linkage": "unconfirmed",
+        "raw_form": "extracted",
+        "recognition_status": "unconfirmed",
+        "redistribute": "allow",
+        "redistribute_basis": "区サイトのホームページ利用規約が複製・公衆送信・翻案を許諾（商用可）。CC BY/政府標準への言及なし",
+        "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r7kaikeiyosan.pdf",
+        "resource_name": "令和7年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計） native-explanation_amounts",
+        "source_amount_unit": "千円",
+        "source_key": "native-scan:131016:2025:r7kaikeiyosan",
+        "table_id": "native-explanation_amounts",
+        "unit_multiplier": 1000
+      }
+    },
+    {
+      "table_id": "chiyoda2025-native-0743816c667293f8",
+      "raw_path": "chiyoda2025-native/jurisdiction=131016/year=2025/document_kind=budget/edition=d8783bb65906f6780918a03286b6f0375c06562a8528f10784e682123a2f8235/direction=expenditure/table=native-unresolved_cells/data.parquet",
+      "declaration": {
+        "approval_status": "unconfirmed",
+        "attribution": "千代田区",
+        "dataset_title": null,
+        "definition_files": {
+          "correction-ledger.json": {
+            "bytes": 732,
+            "path": "pipeline/ingestion/fiscal/jurisdictions/131016/layouts/chiyoda2025_native/correction-ledger.json",
+            "sha256": "be4290ef15ab7a60852f334a0d1225ccd3cbd19814aac3d7498b7c4777c9356b"
+          },
+          "evidence-manifest.json": {
+            "bytes": 375306,
+            "path": "pipeline/ingestion/fiscal/jurisdictions/131016/layouts/chiyoda2025_native/evidence-manifest.json",
+            "sha256": "66a096d1a0d9ba00ae2ed873607ebdc65837d4b526387027b117c45ec91d3f3c"
+          },
+          "sources-spec.json": {
+            "bytes": 6237,
+            "path": "pipeline/ingestion/fiscal/jurisdictions/131016/layouts/chiyoda2025_native/sources-spec.json",
+            "sha256": "5fe0cf93f926b8cebda6cceefa14066ec91df6e1ee6a3c120a507c9e4d5395fb"
+          }
+        },
+        "document_title": "令和7年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）",
+        "extractor": "chiyoda2025-native-replay@r2 (deterministic frozen-observation replay)",
+        "fund_label": null,
+        "grain": "unresolved-printed-cell",
+        "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
+        "legal_correspondence_status": "unconfirmed",
+        "license_id": "NOASSERTION",
+        "observation_role": "native-unresolved-cells",
+        "pages": null,
+        "phase": null,
+        "project_setsu_linkage": "unconfirmed",
+        "raw_form": "extracted",
+        "recognition_status": "unconfirmed",
+        "redistribute": "allow",
+        "redistribute_basis": "区サイトのホームページ利用規約が複製・公衆送信・翻案を許諾（商用可）。CC BY/政府標準への言及なし",
+        "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r7kaikeiyosan.pdf",
+        "resource_name": "令和7年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計） native-unresolved_cells",
+        "source_amount_unit": "千円",
+        "source_key": "native-scan:131016:2025:r7kaikeiyosan",
+        "table_id": "native-unresolved_cells",
+        "unit_multiplier": 1000
+      }
+    },
+    {
+      "table_id": "chiyoda2025-native-421d586bb724aa78",
+      "raw_path": "chiyoda2025-native/jurisdiction=131016/year=2025/document_kind=budget/edition=d8783bb65906f6780918a03286b6f0375c06562a8528f10784e682123a2f8235/direction=expenditure/table=native-financial_cells/data.parquet",
+      "declaration": {
+        "approval_status": "unconfirmed",
+        "attribution": "千代田区",
+        "dataset_title": null,
+        "definition_files": {
+          "correction-ledger.json": {
+            "bytes": 732,
+            "path": "pipeline/ingestion/fiscal/jurisdictions/131016/layouts/chiyoda2025_native/correction-ledger.json",
+            "sha256": "be4290ef15ab7a60852f334a0d1225ccd3cbd19814aac3d7498b7c4777c9356b"
+          },
+          "evidence-manifest.json": {
+            "bytes": 375306,
+            "path": "pipeline/ingestion/fiscal/jurisdictions/131016/layouts/chiyoda2025_native/evidence-manifest.json",
+            "sha256": "66a096d1a0d9ba00ae2ed873607ebdc65837d4b526387027b117c45ec91d3f3c"
+          },
+          "sources-spec.json": {
+            "bytes": 6237,
+            "path": "pipeline/ingestion/fiscal/jurisdictions/131016/layouts/chiyoda2025_native/sources-spec.json",
+            "sha256": "5fe0cf93f926b8cebda6cceefa14066ec91df6e1ee6a3c120a507c9e4d5395fb"
+          }
+        },
+        "document_title": "令和7年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）",
+        "extractor": "chiyoda2025-native-replay@r2 (deterministic frozen-observation replay)",
+        "fund_label": null,
+        "grain": "printed-cell",
+        "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
+        "legal_correspondence_status": "unconfirmed",
+        "license_id": "NOASSERTION",
+        "observation_role": "native-financial-cells",
+        "pages": null,
+        "phase": null,
+        "project_setsu_linkage": "unconfirmed",
+        "raw_form": "extracted",
+        "recognition_status": "unconfirmed",
+        "redistribute": "allow",
+        "redistribute_basis": "区サイトのホームページ利用規約が複製・公衆送信・翻案を許諾（商用可）。CC BY/政府標準への言及なし",
+        "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r7kaikeiyosan.pdf",
+        "resource_name": "令和7年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計） native-financial_cells",
+        "source_amount_unit": "千円",
+        "source_key": "native-scan:131016:2025:r7kaikeiyosan",
+        "table_id": "native-financial_cells",
+        "unit_multiplier": 1000
+      }
+    }
+  ]
+}

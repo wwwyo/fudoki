@@ -1,0 +1,255 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "131016",
+    "fiscal_year": 2022,
+    "document_kind": "initial"
+  },
+  "direction": "expenditure",
+  "tables": [
+    {
+      "table_id": "raw-c095865441951563",
+      "raw_path": "jurisdiction=131016/year=2022/document_kind=budget/edition=ecda3050bbcf01961ba1725f3ddaa54031163beed1eb808ee6c9285c29485d28/direction=expenditure/table=fund-care/data.parquet",
+      "declaration": {
+        "attribution": "千代田区",
+        "dataset_title": null,
+        "document_title": "2022年度 介護保険特別会計 当初予算事項別明細書",
+        "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py@7",
+        "fiscal_year_basis": "sources.toml が宣言した URL（カタログへの登録が存在しない）。年度は取得元ページの見出しとリンクテキストを人が読んで決めており、機械は照合していない。根拠は resource_url_basis にある",
+        "fund_basis": "PDFの会計表紙と事項別明細書p360/p392",
+        "fund_label": "介護保険特別会計",
+        "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
+        "layout": "spread",
+        "license_id": "NOASSERTION",
+        "pages": [
+          392,
+          427
+        ],
+        "raw_form": "extracted",
+        "redistribute": "allow",
+        "redistribute_basis": "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする",
+        "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r4yosansho.pdf",
+        "resource_name": "2022年度 介護保険特別会計 当初予算事項別明細書",
+        "resource_url_basis": "公式年度ページのリンク: 令和4年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）（PDF：2,353KB）",
+        "resource_url_declared": true,
+        "source_amount_unit": "千円",
+        "source_key": "statement:131016:2022:care",
+        "table_id": "fund-care"
+      }
+    },
+    {
+      "table_id": "raw-e3938769d17e1933",
+      "raw_path": "jurisdiction=131016/year=2022/document_kind=budget/edition=ecda3050bbcf01961ba1725f3ddaa54031163beed1eb808ee6c9285c29485d28/direction=expenditure/table=fund-elderly/data.parquet",
+      "declaration": {
+        "attribution": "千代田区",
+        "dataset_title": null,
+        "document_title": "2022年度 後期高齢者医療特別会計 当初予算事項別明細書",
+        "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py@7",
+        "fiscal_year_basis": "sources.toml が宣言した URL（カタログへの登録が存在しない）。年度は取得元ページの見出しとリンクテキストを人が読んで決めており、機械は照合していない。根拠は resource_url_basis にある",
+        "fund_basis": "PDFの会計表紙と事項別明細書p448/p468",
+        "fund_label": "後期高齢者医療特別会計",
+        "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
+        "layout": "spread",
+        "license_id": "NOASSERTION",
+        "pages": [
+          468,
+          483
+        ],
+        "raw_form": "extracted",
+        "redistribute": "allow",
+        "redistribute_basis": "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする",
+        "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r4yosansho.pdf",
+        "resource_name": "2022年度 後期高齢者医療特別会計 当初予算事項別明細書",
+        "resource_url_basis": "公式年度ページのリンク: 令和4年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）（PDF：2,353KB）",
+        "resource_url_declared": true,
+        "source_amount_unit": "千円",
+        "source_key": "statement:131016:2022:elderly",
+        "table_id": "fund-elderly"
+      }
+    },
+    {
+      "table_id": "raw-4681c147fa9556b5",
+      "raw_path": "jurisdiction=131016/year=2022/document_kind=budget/edition=ecda3050bbcf01961ba1725f3ddaa54031163beed1eb808ee6c9285c29485d28/direction=expenditure/table=fund-general/data.parquet",
+      "declaration": {
+        "attribution": "千代田区",
+        "dataset_title": null,
+        "document_title": "2022年度 一般会計 当初予算事項別明細書",
+        "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py@7",
+        "fiscal_year_basis": "sources.toml が宣言した URL（カタログへの登録が存在しない）。年度は取得元ページの見出しとリンクテキストを人が読んで決めており、機械は照合していない。根拠は resource_url_basis にある",
+        "fund_basis": "PDFの会計表紙と事項別明細書p42/p150",
+        "fund_label": "一般会計",
+        "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
+        "layout": "spread",
+        "license_id": "NOASSERTION",
+        "pages": [
+          150,
+          253
+        ],
+        "raw_form": "extracted",
+        "redistribute": "allow",
+        "redistribute_basis": "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする",
+        "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r4yosansho.pdf",
+        "resource_name": "2022年度 一般会計 当初予算事項別明細書",
+        "resource_url_basis": "公式年度ページのリンク: 令和4年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）（PDF：2,353KB）",
+        "resource_url_declared": true,
+        "source_amount_unit": "千円",
+        "source_key": "statement:131016:2022",
+        "table_id": "fund-general"
+      }
+    },
+    {
+      "table_id": "raw-a7584fa57e52a19d",
+      "raw_path": "jurisdiction=131016/year=2022/document_kind=budget/edition=ecda3050bbcf01961ba1725f3ddaa54031163beed1eb808ee6c9285c29485d28/direction=expenditure/table=fund-national-health/data.parquet",
+      "declaration": {
+        "attribution": "千代田区",
+        "dataset_title": null,
+        "document_title": "2022年度 国民健康保険事業会計 当初予算事項別明細書",
+        "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py@7",
+        "fiscal_year_basis": "sources.toml が宣言した URL（カタログへの登録が存在しない）。年度は取得元ページの見出しとリンクテキストを人が読んで決めており、機械は照合していない。根拠は resource_url_basis にある",
+        "fund_basis": "PDFの会計表紙と事項別明細書p284/p306",
+        "fund_label": "国民健康保険事業会計",
+        "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
+        "layout": "spread",
+        "license_id": "NOASSERTION",
+        "pages": [
+          306,
+          341
+        ],
+        "raw_form": "extracted",
+        "redistribute": "allow",
+        "redistribute_basis": "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする",
+        "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r4yosansho.pdf",
+        "resource_name": "2022年度 国民健康保険事業会計 当初予算事項別明細書",
+        "resource_url_basis": "公式年度ページのリンク: 令和4年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）（PDF：2,353KB）",
+        "resource_url_declared": true,
+        "source_amount_unit": "千円",
+        "source_key": "statement:131016:2022:national-health",
+        "table_id": "fund-national-health"
+      }
+    },
+    {
+      "table_id": "statement-moku-setsu-9f563c2a5cc6247a",
+      "raw_path": "statement-moku-setsu/jurisdiction=131016/year=2022/document_kind=budget/edition=ecda3050bbcf01961ba1725f3ddaa54031163beed1eb808ee6c9285c29485d28/direction=expenditure/table=moku-setsu-fund-care/data.parquet",
+      "declaration": {
+        "attribution": "千代田区",
+        "dataset_title": null,
+        "document_title": "2022年度 介護保険特別会計 当初予算事項別明細書",
+        "explanation_dataset_id": "131016:2022:expenditure:budget:ecda3050bbcf01961ba1725f3ddaa54031163beed1eb808ee6c9285c29485d28:fund-care",
+        "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py@7",
+        "fund_basis": "PDFの会計表紙と事項別明細書p360/p392",
+        "fund_label": "介護保険特別会計",
+        "grain": "document-fund-moku-printed-setsu-row",
+        "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
+        "license_id": "NOASSERTION",
+        "observation_role": "independent-moku-setsu",
+        "pages": [
+          392,
+          427
+        ],
+        "project_setsu_linkage": "unconfirmed",
+        "raw_form": "extracted",
+        "redistribute": "allow",
+        "redistribute_basis": "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする",
+        "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r4yosansho.pdf",
+        "resource_name": "2022年度 介護保険特別会計 当初予算事項別明細書（目×節の独立内訳）",
+        "resource_url_basis": "公式年度ページのリンク: 令和4年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）（PDF：2,353KB）",
+        "source_amount_unit": "千円",
+        "source_key": "statement:131016:2022:care",
+        "table_id": "moku-setsu-fund-care"
+      }
+    },
+    {
+      "table_id": "statement-moku-setsu-d1639a735856ae62",
+      "raw_path": "statement-moku-setsu/jurisdiction=131016/year=2022/document_kind=budget/edition=ecda3050bbcf01961ba1725f3ddaa54031163beed1eb808ee6c9285c29485d28/direction=expenditure/table=moku-setsu-fund-elderly/data.parquet",
+      "declaration": {
+        "attribution": "千代田区",
+        "dataset_title": null,
+        "document_title": "2022年度 後期高齢者医療特別会計 当初予算事項別明細書",
+        "explanation_dataset_id": "131016:2022:expenditure:budget:ecda3050bbcf01961ba1725f3ddaa54031163beed1eb808ee6c9285c29485d28:fund-elderly",
+        "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py@7",
+        "fund_basis": "PDFの会計表紙と事項別明細書p448/p468",
+        "fund_label": "後期高齢者医療特別会計",
+        "grain": "document-fund-moku-printed-setsu-row",
+        "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
+        "license_id": "NOASSERTION",
+        "observation_role": "independent-moku-setsu",
+        "pages": [
+          468,
+          483
+        ],
+        "project_setsu_linkage": "unconfirmed",
+        "raw_form": "extracted",
+        "redistribute": "allow",
+        "redistribute_basis": "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする",
+        "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r4yosansho.pdf",
+        "resource_name": "2022年度 後期高齢者医療特別会計 当初予算事項別明細書（目×節の独立内訳）",
+        "resource_url_basis": "公式年度ページのリンク: 令和4年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）（PDF：2,353KB）",
+        "source_amount_unit": "千円",
+        "source_key": "statement:131016:2022:elderly",
+        "table_id": "moku-setsu-fund-elderly"
+      }
+    },
+    {
+      "table_id": "statement-moku-setsu-13fed814274b13db",
+      "raw_path": "statement-moku-setsu/jurisdiction=131016/year=2022/document_kind=budget/edition=ecda3050bbcf01961ba1725f3ddaa54031163beed1eb808ee6c9285c29485d28/direction=expenditure/table=moku-setsu-fund-general/data.parquet",
+      "declaration": {
+        "attribution": "千代田区",
+        "dataset_title": null,
+        "document_title": "2022年度 一般会計 当初予算事項別明細書",
+        "explanation_dataset_id": "131016:2022:expenditure:budget:ecda3050bbcf01961ba1725f3ddaa54031163beed1eb808ee6c9285c29485d28:fund-general",
+        "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py@7",
+        "fund_basis": "PDFの会計表紙と事項別明細書p42/p150",
+        "fund_label": "一般会計",
+        "grain": "document-fund-moku-printed-setsu-row",
+        "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
+        "license_id": "NOASSERTION",
+        "observation_role": "independent-moku-setsu",
+        "pages": [
+          150,
+          253
+        ],
+        "project_setsu_linkage": "unconfirmed",
+        "raw_form": "extracted",
+        "redistribute": "allow",
+        "redistribute_basis": "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする",
+        "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r4yosansho.pdf",
+        "resource_name": "2022年度 一般会計 当初予算事項別明細書（目×節の独立内訳）",
+        "resource_url_basis": "公式年度ページのリンク: 令和4年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）（PDF：2,353KB）",
+        "source_amount_unit": "千円",
+        "source_key": "statement:131016:2022",
+        "table_id": "moku-setsu-fund-general"
+      }
+    },
+    {
+      "table_id": "statement-moku-setsu-4c33a13276569c8e",
+      "raw_path": "statement-moku-setsu/jurisdiction=131016/year=2022/document_kind=budget/edition=ecda3050bbcf01961ba1725f3ddaa54031163beed1eb808ee6c9285c29485d28/direction=expenditure/table=moku-setsu-fund-national-health/data.parquet",
+      "declaration": {
+        "attribution": "千代田区",
+        "dataset_title": null,
+        "document_title": "2022年度 国民健康保険事業会計 当初予算事項別明細書",
+        "explanation_dataset_id": "131016:2022:expenditure:budget:ecda3050bbcf01961ba1725f3ddaa54031163beed1eb808ee6c9285c29485d28:fund-national-health",
+        "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py@7",
+        "fund_basis": "PDFの会計表紙と事項別明細書p284/p306",
+        "fund_label": "国民健康保険事業会計",
+        "grain": "document-fund-moku-printed-setsu-row",
+        "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
+        "license_id": "NOASSERTION",
+        "observation_role": "independent-moku-setsu",
+        "pages": [
+          306,
+          341
+        ],
+        "project_setsu_linkage": "unconfirmed",
+        "raw_form": "extracted",
+        "redistribute": "allow",
+        "redistribute_basis": "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする",
+        "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r4yosansho.pdf",
+        "resource_name": "2022年度 国民健康保険事業会計 当初予算事項別明細書（目×節の独立内訳）",
+        "resource_url_basis": "公式年度ページのリンク: 令和4年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）（PDF：2,353KB）",
+        "source_amount_unit": "千円",
+        "source_key": "statement:131016:2022:national-health",
+        "table_id": "moku-setsu-fund-national-health"
+      }
+    }
+  ]
+}

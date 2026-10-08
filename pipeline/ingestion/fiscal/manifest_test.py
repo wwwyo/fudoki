@@ -51,13 +51,13 @@ class ManifestWorkflowTest(unittest.TestCase):
                 'dependencies': ['lib/conversion.py', 'lib/parquet.py'],
                 'inputs': [{'format': 'csv', 'sha256': sha, 'scope': [{'account': '一般会計'}]}],
                 'options': {'encoding': 'utf-8', 'table_id': ident},
-                'expected_tables': [{'table_id': ident, 'declaration': {}}]})
+                'expected_tables': [{'table_id': ident}]})
         self.selection = {'target': self.target, 'selected_candidate_id': 'chosen',
                           'candidates': [{'id': 'chosen', 'files': originals}],
                           'archive': {'bucket': 'fudoki-inputs', 'candidate_id': 'chosen', 'files': archived}}
         self.ledger = self.source / '131016.json'
         self.ledger.write_text(json.dumps({'selections': [self.selection]}))
-        self.document = {'schema_version': 1, 'target': self.target, 'direction': 'expenditure',
+        self.document = {'schema_version': 2, 'target': self.target, 'direction': 'expenditure',
                          'candidate_id': 'chosen', 'status': 'planned', 'conversions': conversions, 'tables': []}
         self.path = self.root / 'jurisdictions/131016/2024/initial/expenditure.json'
         manifest.write(self.path, self.document)
@@ -112,7 +112,8 @@ class ManifestWorkflowTest(unittest.TestCase):
         for mutate in (lambda d: d.update(extra=True),
                        lambda d: d['conversions'].append(deepcopy(d['conversions'][0])),
                        lambda d: d['conversions'][1]['expected_tables'][0].update(table_id='one'),
-                       lambda d: d['conversions'][0]['expected_tables'][0]['declaration'].update(provenance={}),
+                       lambda d: d['conversions'][0]['expected_tables'][0].update(declaration={'definition_files': {}}),
+                       lambda d: d['conversions'][0]['expected_tables'][0].update(legacy_path='dbt/path'),
                        lambda d: d['conversions'][0].update(converter='../../outside.py'),
                        lambda d: d['conversions'][0]['options'].update(typo=True)):
             document = deepcopy(self.document)
@@ -232,6 +233,114 @@ class ManifestWorkflowTest(unittest.TestCase):
             altered['conversions'][0]['options']['objects'][0]['bytes'] += 1
             with self.assertRaisesRegex(ValueError, 'differs'):
                 import_tables(altered, remote=True, origin_sizes=sizes, extend_plans=True)
+
+    def test_dbt_input_preparation_reads_saved_manifests_and_supplied_declarations_without_legacy_lock(self):
+        from build_inputs import prepare
+        result = convert(self.path, self.files, self.root/'candidate')
+        saved = json.loads(Path(result['candidate']).read_text())
+        manifest.write(self.path, saved)
+        declarations = self.root/'confirmed'
+        declarations.mkdir()
+        sources = [{'dataset_id': 'declared-one', 'jurisdiction_code': '131016',
+            'fiscal_year': 2024, 'direction': 'expenditure', 'document_kind': 'budget',
+            'source_json': json.dumps({'rawTableSha256': saved['tables'][0]['object']['sha256']})}]
+        (declarations/'sources.json').write_text(json.dumps(sources))
+        (declarations/'history.json').write_text('[]\n')
+        local = {table['object']['sha256']: self.root/'candidate'/f'{table["table_id"]}.parquet'
+                 for table in saved['tables']}
+        with patch('build_inputs.fetch', side_effect=lambda ref: local[ref['sha256']]):
+            snapshot = prepare(declarations, [self.path], cache=self.root/'snapshots')
+            repeated = prepare(declarations, [self.path], cache=self.root/'snapshots')
+        self.assertEqual(snapshot, repeated)
+        raw = Path(snapshot['inputs'])
+        files = sorted(raw.rglob('data.parquet'))
+        self.assertEqual(len(files), 2)
+        self.assertEqual({manifest.sha_file(path) for path in files}, set(local))
+        self.assertEqual((Path(snapshot['declarations'])/'sources.json').read_bytes(),
+                         (declarations/'sources.json').read_bytes())
+        with duckdb.connect() as db:
+            rows = db.execute('''select "名称", "金額", jurisdiction, year, document_kind, direction
+                from read_parquet(?, hive_partitioning=true) order by "名称"''',
+                [str(raw/'jurisdiction=*/year=*/document_kind=*/edition=*/direction=*/table=*/data.parquet')]).fetchall()
+        self.assertEqual(rows, [('事業A', '1,000', 131016, 2024, 'budget', 'expenditure'),
+                                ('事業B', '0', 131016, 2024, 'budget', 'expenditure')])
+        import dbt_inputs
+        from build_inputs import raw_path
+        bindings = {'schema_version': 1, 'target': saved['target'], 'direction': saved['direction'],
+                    'tables': [{'table_id': table['table_id'], 'raw_path': raw_path(saved, owner, table),
+                                'declaration': {'definition_files': {'pipeline/dbt/models/example.sql':
+                                    {'bytes': 1, 'sha256': 'a'*64}}}}
+                               for owner in saved['conversions'] for table in owner['expected_tables']]}
+        before = self.path.read_bytes()
+        dbt_inputs.write(bindings, saved)
+        with patch('build_inputs.fetch', side_effect=lambda ref: local[ref['sha256']]):
+            changed = prepare(declarations, [self.path], cache=self.root/'snapshots')
+        self.assertNotEqual(changed['inputFingerprint'], snapshot['inputFingerprint'])
+        self.assertEqual(self.path.read_bytes(), before)
+        manifest.require_current(manifest.read(self.path))
+        sources[0]['jurisdiction_code'] = '132047'
+        (declarations/'sources.json').write_text(json.dumps(sources))
+        with self.assertRaisesRegex(ValueError, 'scope'):
+            prepare(declarations, [self.path], cache=self.root/'snapshots')
+        (declarations/'sources.json').write_text((Path(snapshot['declarations'])/'sources.json').read_text())
+        next(Path(changed['inputs']).rglob('data.parquet')).write_bytes(b'corrupted')
+        with self.assertRaisesRegex(ValueError, 'hash/size'):
+            prepare(declarations, [self.path], cache=self.root/'snapshots')
+
+    def test_dbt_legacy_partition_is_preserved_and_wrong_scope_rejected(self):
+        from build_inputs import raw_path
+        import dbt_inputs
+        document = manifest.read(self.path)
+        conversion = document['conversions'][0]
+        expected = deepcopy(conversion['expected_tables'][0])
+        sha = conversion['inputs'][0]['sha256']
+        relative = (f'statement-moku-setsu/jurisdiction=131016/year=2024/'
+                    f'document_kind=budget/edition={sha}/direction=expenditure/table=legal-setsu')
+        bindings = {'schema_version': 1, 'target': document['target'], 'direction': document['direction'],
+                    'tables': [{'table_id': table['table_id'], 'raw_path':
+                        relative.replace('table=legal-setsu', 'table='+table['table_id']).replace(
+                            'edition='+sha, 'edition='+owner['inputs'][0]['sha256'])+'/data.parquet',
+                        'declaration': {}}
+                        for owner in document['conversions'] for table in owner['expected_tables']]}
+        entries = dbt_inputs.validate(bindings, document)
+        binding = entries[expected['table_id']]
+        self.assertEqual(raw_path(document, conversion, expected, binding), binding['raw_path'])
+        bindings['tables'][0]['raw_path'] = binding['raw_path'].replace('year=2024', 'year=2023')
+        with self.assertRaisesRegex(ValueError, 'scope'):
+            dbt_inputs.validate(bindings, document)
+
+    def test_split_metadata_preserves_receipts_and_is_idempotent(self):
+        from build_inputs import raw_path
+        import dbt_inputs
+        from ingestion.fiscal.split_metadata import migrate
+        converted = convert(self.path, self.files, self.root/'candidate')
+        legacy = json.loads(Path(converted['candidate']).read_text())
+        legacy['schema_version'] = 1
+        for conversion in legacy['conversions']:
+            for table in conversion['expected_tables']:
+                table['legacy_path'] = raw_path(legacy, conversion, table).removesuffix('/data.parquet')
+                table['declaration'] = {'definition_files': {'pipeline/dbt/models/example.sql':
+                    {'bytes': 1, 'sha256': 'a'*64}}, 'approval_status': 'unconfirmed'}
+        fingerprints = manifest.fingerprints(legacy, runtimes={table['conversion_id']: table['runtime']
+                                                               for table in legacy['tables']})
+        for table in legacy['tables']:
+            table['input_fingerprint'] = fingerprints[table['conversion_id']]
+        self.path.write_text(json.dumps(legacy))
+        original_files = {path.name: manifest.sha_file(path) for path in (self.root/'candidate').glob('*.parquet')}
+        self.assertEqual(migrate([self.path], apply=True)['tables'], 2)
+        saved = manifest.read(self.path)
+        manifest.require_current(saved)
+        bindings = dbt_inputs.read(saved)
+        for previous, current in zip(legacy['tables'], saved['tables'], strict=True):
+            self.assertEqual({k:v for k,v in previous.items() if k != 'input_fingerprint'},
+                             {k:v for k,v in current.items() if k != 'input_fingerprint'})
+        for conversion in saved['conversions']:
+            for table in conversion['expected_tables']:
+                self.assertEqual(set(table), {'table_id'})
+                self.assertIn('definition_files', bindings[table['table_id']]['declaration'])
+        self.assertEqual(migrate([self.path], apply=True)['manifests'], 0)
+        self.assertEqual(original_files, {path.name: manifest.sha_file(path)
+                            for path in (self.root/'candidate').glob('*.parquet')})
 
 
 if __name__ == '__main__':

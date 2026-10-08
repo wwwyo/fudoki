@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "target": {
     "jurisdiction": "132071",
     "fiscal_year": 2021,
@@ -79,101 +79,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "akishima-settlement2020-2023-61cd3beb59e4d90b",
-          "legacy_path": "akishima-settlement2020-2023/jurisdiction=132071/year=2021/document_kind=settlement/edition=7a0c44d3dd45e5d4b502567f5a497adabcdcb046a87f9541963f4480055e4413/direction=expenditure/table=fy2021-general-financial",
-          "declaration": {
-            "additive_within_own_grain": true,
-            "approval_status": "council-recognized-settlement",
-            "budget_columns_note": "budget_initial/supplementary/prior_carry/reserve_transfer/current are nonadditive printed references, never canonical approved baselines or deltas",
-            "canonical_executed": true,
-            "definition_files": [
-              {
-                "bytes": 60037,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/sources-akishima-settlement2020-2023.json",
-                "sha256": "1b5e93fc7cfc8df80aedad51a12e0c1aa5072f93130b19fdfdcc74450c4e55bf"
-              },
-              {
-                "bytes": 8550,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023_registry.py",
-                "sha256": "58f61a8315a4bfa6ecd3c0fc362f4c2672501773909afd84d3d3745a889602cc"
-              },
-              {
-                "bytes": 107,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__init__.py",
-                "sha256": "276f7a0ea641411daf28238db4d2ede415ea1228c73bc7decde9d5fc0a38427f"
-              },
-              {
-                "bytes": 3519,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__main__.py",
-                "sha256": "ba4de7125e1feeb54b20403bfb8a708821bbc70b852652dff5e93bb1fccae61c"
-              },
-              {
-                "bytes": 5760,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/provider.py",
-                "sha256": "4394b8e6a4393c8af559999c0629dd79da701355532ae66a71b8e6d13311d906"
-              },
-              {
-                "bytes": 21240,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/decoder.py",
-                "sha256": "37ccac10cbc1412aa83c4ea6d2244b9c162d92d3e34da1d8440efc3568719478"
-              },
-              {
-                "bytes": 4776,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/verify.py",
-                "sha256": "20b85c7d4579e695d115e960d9ca074c304e96a3aa7657b7624c9e8271e66a30"
-              },
-              {
-                "bytes": 5856,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/materialize.py",
-                "sha256": "429d8837aceecc73c82d49e547e701967697171ced4359fd697ec6273b311670"
-              },
-              {
-                "bytes": 10715,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/config.json",
-                "sha256": "b871f51e2ac60a8000b50c954e3677210684f32934e4e8ef6f22b8cd68ced476"
-              },
-              {
-                "bytes": 5452,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/evidence-manifest.json",
-                "sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3"
-              }
-            ],
-            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.akishima_settlement2020_2023",
-            "financial_phase": "executed",
-            "fund_label": "一般会計",
-            "grain": "observed moku x printed legal setsu plus actual blank-code reserve moku",
-            "namespace": "akishima-settlement2020-2023",
-            "nonadditive": false,
-            "observation_role": "financial",
-            "original_source_table_id": "akishima-fy2021-settlement-fy2021-general-financial",
-            "pages": null,
-            "phase_semantics": "executed = 支出済額 only; settlement budget columns are nonadditive controls",
-            "project_setsu_linkage": "unconfirmed",
-            "recognition_proof": {
-              "bill": "認定第1号",
-              "bytes": 58559,
-              "cells": [
-                "認定第1号",
-                "令和3年度昭島市一般会計歳入歳出決算認定について",
-                "9月30日",
-                "認定"
-              ],
-              "date_context": "令和4年第3回定例会（8月31日から9月30日まで31日間）",
-              "html_row_ordinal": 21,
-              "recognition_date": "2022-09-30",
-              "sha256": "62c0e530f5bb03ee702c0d21e3fb536ecd3cd800a2d461f155a7fd0ba59ae512",
-              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006725/1006727.html"
-            },
-            "recognition_status": "recognized-2022-09-30",
-            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/260/r3kessan0.pdf",
-            "source_amount_unit": "円",
-            "source_key": "akishima-settlement2020-2023:132071:2021",
-            "source_manifest_sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3",
-            "statutory_correspondence_status": "printed-code-name-active-year-assessed; FY2020 uses legacy printed setsu codes preserved verbatim; unmapped codes stay NULL",
-            "submitted_date": null,
-            "table_id": "fy2021-general-financial",
-            "unit_multiplier": 1
-          }
+          "table_id": "akishima-settlement2020-2023-61cd3beb59e4d90b"
         }
       ]
     },
@@ -247,101 +153,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "akishima-settlement2020-2023-f828de7f5f6d5b17",
-          "legacy_path": "akishima-settlement2020-2023/jurisdiction=132071/year=2021/document_kind=settlement/edition=7a0c44d3dd45e5d4b502567f5a497adabcdcb046a87f9541963f4480055e4413/direction=expenditure/table=fy2021-general-controls",
-          "declaration": {
-            "additive_within_own_grain": false,
-            "approval_status": "council-recognized-settlement",
-            "budget_columns_note": "budget_initial/supplementary/prior_carry/reserve_transfer/current are nonadditive printed references, never canonical approved baselines or deltas",
-            "canonical_executed": false,
-            "definition_files": [
-              {
-                "bytes": 60037,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/sources-akishima-settlement2020-2023.json",
-                "sha256": "1b5e93fc7cfc8df80aedad51a12e0c1aa5072f93130b19fdfdcc74450c4e55bf"
-              },
-              {
-                "bytes": 8550,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023_registry.py",
-                "sha256": "58f61a8315a4bfa6ecd3c0fc362f4c2672501773909afd84d3d3745a889602cc"
-              },
-              {
-                "bytes": 107,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__init__.py",
-                "sha256": "276f7a0ea641411daf28238db4d2ede415ea1228c73bc7decde9d5fc0a38427f"
-              },
-              {
-                "bytes": 3519,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__main__.py",
-                "sha256": "ba4de7125e1feeb54b20403bfb8a708821bbc70b852652dff5e93bb1fccae61c"
-              },
-              {
-                "bytes": 5760,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/provider.py",
-                "sha256": "4394b8e6a4393c8af559999c0629dd79da701355532ae66a71b8e6d13311d906"
-              },
-              {
-                "bytes": 21240,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/decoder.py",
-                "sha256": "37ccac10cbc1412aa83c4ea6d2244b9c162d92d3e34da1d8440efc3568719478"
-              },
-              {
-                "bytes": 4776,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/verify.py",
-                "sha256": "20b85c7d4579e695d115e960d9ca074c304e96a3aa7657b7624c9e8271e66a30"
-              },
-              {
-                "bytes": 5856,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/materialize.py",
-                "sha256": "429d8837aceecc73c82d49e547e701967697171ced4359fd697ec6273b311670"
-              },
-              {
-                "bytes": 10715,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/config.json",
-                "sha256": "b871f51e2ac60a8000b50c954e3677210684f32934e4e8ef6f22b8cd68ced476"
-              },
-              {
-                "bytes": 5452,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/evidence-manifest.json",
-                "sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3"
-              }
-            ],
-            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.akishima_settlement2020_2023",
-            "financial_phase": null,
-            "fund_label": "一般会計",
-            "grain": "independent nonadditive printed controls",
-            "namespace": "akishima-settlement2020-2023",
-            "nonadditive": true,
-            "observation_role": "controls",
-            "original_source_table_id": "akishima-fy2021-settlement-fy2021-general-controls",
-            "pages": null,
-            "phase_semantics": "executed = 支出済額 only; settlement budget columns are nonadditive controls",
-            "project_setsu_linkage": "unconfirmed",
-            "recognition_proof": {
-              "bill": "認定第1号",
-              "bytes": 58559,
-              "cells": [
-                "認定第1号",
-                "令和3年度昭島市一般会計歳入歳出決算認定について",
-                "9月30日",
-                "認定"
-              ],
-              "date_context": "令和4年第3回定例会（8月31日から9月30日まで31日間）",
-              "html_row_ordinal": 21,
-              "recognition_date": "2022-09-30",
-              "sha256": "62c0e530f5bb03ee702c0d21e3fb536ecd3cd800a2d461f155a7fd0ba59ae512",
-              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006725/1006727.html"
-            },
-            "recognition_status": "recognized-2022-09-30",
-            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/260/r3kessan0.pdf",
-            "source_amount_unit": "円",
-            "source_key": "akishima-settlement2020-2023:132071:2021",
-            "source_manifest_sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3",
-            "statutory_correspondence_status": "not-applicable",
-            "submitted_date": null,
-            "table_id": "fy2021-general-controls",
-            "unit_multiplier": 1
-          }
+          "table_id": "akishima-settlement2020-2023-f828de7f5f6d5b17"
         }
       ]
     },
@@ -415,101 +227,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "akishima-settlement2020-2023-c47358f74afd25bb",
-          "legacy_path": "akishima-settlement2020-2023/jurisdiction=132071/year=2021/document_kind=settlement/edition=7a0c44d3dd45e5d4b502567f5a497adabcdcb046a87f9541963f4480055e4413/direction=expenditure/table=fy2021-general-projects",
-          "declaration": {
-            "additive_within_own_grain": false,
-            "approval_status": "council-recognized-settlement",
-            "budget_columns_note": "budget_initial/supplementary/prior_carry/reserve_transfer/current are nonadditive printed references, never canonical approved baselines or deltas",
-            "canonical_executed": false,
-            "definition_files": [
-              {
-                "bytes": 60037,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/sources-akishima-settlement2020-2023.json",
-                "sha256": "1b5e93fc7cfc8df80aedad51a12e0c1aa5072f93130b19fdfdcc74450c4e55bf"
-              },
-              {
-                "bytes": 8550,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023_registry.py",
-                "sha256": "58f61a8315a4bfa6ecd3c0fc362f4c2672501773909afd84d3d3745a889602cc"
-              },
-              {
-                "bytes": 107,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__init__.py",
-                "sha256": "276f7a0ea641411daf28238db4d2ede415ea1228c73bc7decde9d5fc0a38427f"
-              },
-              {
-                "bytes": 3519,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__main__.py",
-                "sha256": "ba4de7125e1feeb54b20403bfb8a708821bbc70b852652dff5e93bb1fccae61c"
-              },
-              {
-                "bytes": 5760,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/provider.py",
-                "sha256": "4394b8e6a4393c8af559999c0629dd79da701355532ae66a71b8e6d13311d906"
-              },
-              {
-                "bytes": 21240,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/decoder.py",
-                "sha256": "37ccac10cbc1412aa83c4ea6d2244b9c162d92d3e34da1d8440efc3568719478"
-              },
-              {
-                "bytes": 4776,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/verify.py",
-                "sha256": "20b85c7d4579e695d115e960d9ca074c304e96a3aa7657b7624c9e8271e66a30"
-              },
-              {
-                "bytes": 5856,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/materialize.py",
-                "sha256": "429d8837aceecc73c82d49e547e701967697171ced4359fd697ec6273b311670"
-              },
-              {
-                "bytes": 10715,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/config.json",
-                "sha256": "b871f51e2ac60a8000b50c954e3677210684f32934e4e8ef6f22b8cd68ced476"
-              },
-              {
-                "bytes": 5452,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/evidence-manifest.json",
-                "sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3"
-              }
-            ],
-            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.akishima_settlement2020_2023",
-            "financial_phase": null,
-            "fund_label": "一般会計",
-            "grain": "independent printed project-remark totals",
-            "namespace": "akishima-settlement2020-2023",
-            "nonadditive": true,
-            "observation_role": "projects",
-            "original_source_table_id": "akishima-fy2021-settlement-fy2021-general-projects",
-            "pages": null,
-            "phase_semantics": "executed = 支出済額 only; settlement budget columns are nonadditive controls",
-            "project_setsu_linkage": "unconfirmed",
-            "recognition_proof": {
-              "bill": "認定第1号",
-              "bytes": 58559,
-              "cells": [
-                "認定第1号",
-                "令和3年度昭島市一般会計歳入歳出決算認定について",
-                "9月30日",
-                "認定"
-              ],
-              "date_context": "令和4年第3回定例会（8月31日から9月30日まで31日間）",
-              "html_row_ordinal": 21,
-              "recognition_date": "2022-09-30",
-              "sha256": "62c0e530f5bb03ee702c0d21e3fb536ecd3cd800a2d461f155a7fd0ba59ae512",
-              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006725/1006727.html"
-            },
-            "recognition_status": "recognized-2022-09-30",
-            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/260/r3kessan0.pdf",
-            "source_amount_unit": "円",
-            "source_key": "akishima-settlement2020-2023:132071:2021",
-            "source_manifest_sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3",
-            "statutory_correspondence_status": "not-applicable",
-            "submitted_date": null,
-            "table_id": "fy2021-general-projects",
-            "unit_multiplier": 1
-          }
+          "table_id": "akishima-settlement2020-2023-c47358f74afd25bb"
         }
       ]
     },
@@ -583,101 +301,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "akishima-settlement2020-2023-31cd7433144187d3",
-          "legacy_path": "akishima-settlement2020-2023/jurisdiction=132071/year=2021/document_kind=settlement/edition=7a0c44d3dd45e5d4b502567f5a497adabcdcb046a87f9541963f4480055e4413/direction=expenditure/table=fy2021-health-financial",
-          "declaration": {
-            "additive_within_own_grain": true,
-            "approval_status": "council-recognized-settlement",
-            "budget_columns_note": "budget_initial/supplementary/prior_carry/reserve_transfer/current are nonadditive printed references, never canonical approved baselines or deltas",
-            "canonical_executed": true,
-            "definition_files": [
-              {
-                "bytes": 60037,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/sources-akishima-settlement2020-2023.json",
-                "sha256": "1b5e93fc7cfc8df80aedad51a12e0c1aa5072f93130b19fdfdcc74450c4e55bf"
-              },
-              {
-                "bytes": 8550,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023_registry.py",
-                "sha256": "58f61a8315a4bfa6ecd3c0fc362f4c2672501773909afd84d3d3745a889602cc"
-              },
-              {
-                "bytes": 107,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__init__.py",
-                "sha256": "276f7a0ea641411daf28238db4d2ede415ea1228c73bc7decde9d5fc0a38427f"
-              },
-              {
-                "bytes": 3519,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__main__.py",
-                "sha256": "ba4de7125e1feeb54b20403bfb8a708821bbc70b852652dff5e93bb1fccae61c"
-              },
-              {
-                "bytes": 5760,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/provider.py",
-                "sha256": "4394b8e6a4393c8af559999c0629dd79da701355532ae66a71b8e6d13311d906"
-              },
-              {
-                "bytes": 21240,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/decoder.py",
-                "sha256": "37ccac10cbc1412aa83c4ea6d2244b9c162d92d3e34da1d8440efc3568719478"
-              },
-              {
-                "bytes": 4776,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/verify.py",
-                "sha256": "20b85c7d4579e695d115e960d9ca074c304e96a3aa7657b7624c9e8271e66a30"
-              },
-              {
-                "bytes": 5856,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/materialize.py",
-                "sha256": "429d8837aceecc73c82d49e547e701967697171ced4359fd697ec6273b311670"
-              },
-              {
-                "bytes": 10715,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/config.json",
-                "sha256": "b871f51e2ac60a8000b50c954e3677210684f32934e4e8ef6f22b8cd68ced476"
-              },
-              {
-                "bytes": 5452,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/evidence-manifest.json",
-                "sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3"
-              }
-            ],
-            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.akishima_settlement2020_2023",
-            "financial_phase": "executed",
-            "fund_label": "国民健康保険特別会計",
-            "grain": "observed moku x printed legal setsu plus actual blank-code reserve moku",
-            "namespace": "akishima-settlement2020-2023",
-            "nonadditive": false,
-            "observation_role": "financial",
-            "original_source_table_id": "akishima-fy2021-settlement-fy2021-health-financial",
-            "pages": null,
-            "phase_semantics": "executed = 支出済額 only; settlement budget columns are nonadditive controls",
-            "project_setsu_linkage": "unconfirmed",
-            "recognition_proof": {
-              "bill": "認定第2号",
-              "bytes": 58559,
-              "cells": [
-                "認定第2号",
-                "令和3年度昭島市国民健康保険特別会計歳入歳出決算認定について",
-                "9月30日",
-                "認定"
-              ],
-              "date_context": "令和4年第3回定例会（8月31日から9月30日まで31日間）",
-              "html_row_ordinal": 22,
-              "recognition_date": "2022-09-30",
-              "sha256": "62c0e530f5bb03ee702c0d21e3fb536ecd3cd800a2d461f155a7fd0ba59ae512",
-              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006725/1006727.html"
-            },
-            "recognition_status": "recognized-2022-09-30",
-            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/260/r3kessan0.pdf",
-            "source_amount_unit": "円",
-            "source_key": "akishima-settlement2020-2023:132071:2021",
-            "source_manifest_sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3",
-            "statutory_correspondence_status": "printed-code-name-active-year-assessed; FY2020 uses legacy printed setsu codes preserved verbatim; unmapped codes stay NULL",
-            "submitted_date": null,
-            "table_id": "fy2021-health-financial",
-            "unit_multiplier": 1
-          }
+          "table_id": "akishima-settlement2020-2023-31cd7433144187d3"
         }
       ]
     },
@@ -751,101 +375,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "akishima-settlement2020-2023-b0d7c454d6639c9e",
-          "legacy_path": "akishima-settlement2020-2023/jurisdiction=132071/year=2021/document_kind=settlement/edition=7a0c44d3dd45e5d4b502567f5a497adabcdcb046a87f9541963f4480055e4413/direction=expenditure/table=fy2021-health-controls",
-          "declaration": {
-            "additive_within_own_grain": false,
-            "approval_status": "council-recognized-settlement",
-            "budget_columns_note": "budget_initial/supplementary/prior_carry/reserve_transfer/current are nonadditive printed references, never canonical approved baselines or deltas",
-            "canonical_executed": false,
-            "definition_files": [
-              {
-                "bytes": 60037,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/sources-akishima-settlement2020-2023.json",
-                "sha256": "1b5e93fc7cfc8df80aedad51a12e0c1aa5072f93130b19fdfdcc74450c4e55bf"
-              },
-              {
-                "bytes": 8550,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023_registry.py",
-                "sha256": "58f61a8315a4bfa6ecd3c0fc362f4c2672501773909afd84d3d3745a889602cc"
-              },
-              {
-                "bytes": 107,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__init__.py",
-                "sha256": "276f7a0ea641411daf28238db4d2ede415ea1228c73bc7decde9d5fc0a38427f"
-              },
-              {
-                "bytes": 3519,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__main__.py",
-                "sha256": "ba4de7125e1feeb54b20403bfb8a708821bbc70b852652dff5e93bb1fccae61c"
-              },
-              {
-                "bytes": 5760,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/provider.py",
-                "sha256": "4394b8e6a4393c8af559999c0629dd79da701355532ae66a71b8e6d13311d906"
-              },
-              {
-                "bytes": 21240,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/decoder.py",
-                "sha256": "37ccac10cbc1412aa83c4ea6d2244b9c162d92d3e34da1d8440efc3568719478"
-              },
-              {
-                "bytes": 4776,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/verify.py",
-                "sha256": "20b85c7d4579e695d115e960d9ca074c304e96a3aa7657b7624c9e8271e66a30"
-              },
-              {
-                "bytes": 5856,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/materialize.py",
-                "sha256": "429d8837aceecc73c82d49e547e701967697171ced4359fd697ec6273b311670"
-              },
-              {
-                "bytes": 10715,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/config.json",
-                "sha256": "b871f51e2ac60a8000b50c954e3677210684f32934e4e8ef6f22b8cd68ced476"
-              },
-              {
-                "bytes": 5452,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/evidence-manifest.json",
-                "sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3"
-              }
-            ],
-            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.akishima_settlement2020_2023",
-            "financial_phase": null,
-            "fund_label": "国民健康保険特別会計",
-            "grain": "independent nonadditive printed controls",
-            "namespace": "akishima-settlement2020-2023",
-            "nonadditive": true,
-            "observation_role": "controls",
-            "original_source_table_id": "akishima-fy2021-settlement-fy2021-health-controls",
-            "pages": null,
-            "phase_semantics": "executed = 支出済額 only; settlement budget columns are nonadditive controls",
-            "project_setsu_linkage": "unconfirmed",
-            "recognition_proof": {
-              "bill": "認定第2号",
-              "bytes": 58559,
-              "cells": [
-                "認定第2号",
-                "令和3年度昭島市国民健康保険特別会計歳入歳出決算認定について",
-                "9月30日",
-                "認定"
-              ],
-              "date_context": "令和4年第3回定例会（8月31日から9月30日まで31日間）",
-              "html_row_ordinal": 22,
-              "recognition_date": "2022-09-30",
-              "sha256": "62c0e530f5bb03ee702c0d21e3fb536ecd3cd800a2d461f155a7fd0ba59ae512",
-              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006725/1006727.html"
-            },
-            "recognition_status": "recognized-2022-09-30",
-            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/260/r3kessan0.pdf",
-            "source_amount_unit": "円",
-            "source_key": "akishima-settlement2020-2023:132071:2021",
-            "source_manifest_sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3",
-            "statutory_correspondence_status": "not-applicable",
-            "submitted_date": null,
-            "table_id": "fy2021-health-controls",
-            "unit_multiplier": 1
-          }
+          "table_id": "akishima-settlement2020-2023-b0d7c454d6639c9e"
         }
       ]
     },
@@ -919,101 +449,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "akishima-settlement2020-2023-c3cc60aa40e1f19d",
-          "legacy_path": "akishima-settlement2020-2023/jurisdiction=132071/year=2021/document_kind=settlement/edition=7a0c44d3dd45e5d4b502567f5a497adabcdcb046a87f9541963f4480055e4413/direction=expenditure/table=fy2021-health-projects",
-          "declaration": {
-            "additive_within_own_grain": false,
-            "approval_status": "council-recognized-settlement",
-            "budget_columns_note": "budget_initial/supplementary/prior_carry/reserve_transfer/current are nonadditive printed references, never canonical approved baselines or deltas",
-            "canonical_executed": false,
-            "definition_files": [
-              {
-                "bytes": 60037,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/sources-akishima-settlement2020-2023.json",
-                "sha256": "1b5e93fc7cfc8df80aedad51a12e0c1aa5072f93130b19fdfdcc74450c4e55bf"
-              },
-              {
-                "bytes": 8550,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023_registry.py",
-                "sha256": "58f61a8315a4bfa6ecd3c0fc362f4c2672501773909afd84d3d3745a889602cc"
-              },
-              {
-                "bytes": 107,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__init__.py",
-                "sha256": "276f7a0ea641411daf28238db4d2ede415ea1228c73bc7decde9d5fc0a38427f"
-              },
-              {
-                "bytes": 3519,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__main__.py",
-                "sha256": "ba4de7125e1feeb54b20403bfb8a708821bbc70b852652dff5e93bb1fccae61c"
-              },
-              {
-                "bytes": 5760,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/provider.py",
-                "sha256": "4394b8e6a4393c8af559999c0629dd79da701355532ae66a71b8e6d13311d906"
-              },
-              {
-                "bytes": 21240,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/decoder.py",
-                "sha256": "37ccac10cbc1412aa83c4ea6d2244b9c162d92d3e34da1d8440efc3568719478"
-              },
-              {
-                "bytes": 4776,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/verify.py",
-                "sha256": "20b85c7d4579e695d115e960d9ca074c304e96a3aa7657b7624c9e8271e66a30"
-              },
-              {
-                "bytes": 5856,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/materialize.py",
-                "sha256": "429d8837aceecc73c82d49e547e701967697171ced4359fd697ec6273b311670"
-              },
-              {
-                "bytes": 10715,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/config.json",
-                "sha256": "b871f51e2ac60a8000b50c954e3677210684f32934e4e8ef6f22b8cd68ced476"
-              },
-              {
-                "bytes": 5452,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/evidence-manifest.json",
-                "sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3"
-              }
-            ],
-            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.akishima_settlement2020_2023",
-            "financial_phase": null,
-            "fund_label": "国民健康保険特別会計",
-            "grain": "independent printed project-remark totals",
-            "namespace": "akishima-settlement2020-2023",
-            "nonadditive": true,
-            "observation_role": "projects",
-            "original_source_table_id": "akishima-fy2021-settlement-fy2021-health-projects",
-            "pages": null,
-            "phase_semantics": "executed = 支出済額 only; settlement budget columns are nonadditive controls",
-            "project_setsu_linkage": "unconfirmed",
-            "recognition_proof": {
-              "bill": "認定第2号",
-              "bytes": 58559,
-              "cells": [
-                "認定第2号",
-                "令和3年度昭島市国民健康保険特別会計歳入歳出決算認定について",
-                "9月30日",
-                "認定"
-              ],
-              "date_context": "令和4年第3回定例会（8月31日から9月30日まで31日間）",
-              "html_row_ordinal": 22,
-              "recognition_date": "2022-09-30",
-              "sha256": "62c0e530f5bb03ee702c0d21e3fb536ecd3cd800a2d461f155a7fd0ba59ae512",
-              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006725/1006727.html"
-            },
-            "recognition_status": "recognized-2022-09-30",
-            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/260/r3kessan0.pdf",
-            "source_amount_unit": "円",
-            "source_key": "akishima-settlement2020-2023:132071:2021",
-            "source_manifest_sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3",
-            "statutory_correspondence_status": "not-applicable",
-            "submitted_date": null,
-            "table_id": "fy2021-health-projects",
-            "unit_multiplier": 1
-          }
+          "table_id": "akishima-settlement2020-2023-c3cc60aa40e1f19d"
         }
       ]
     },
@@ -1087,101 +523,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "akishima-settlement2020-2023-fe2671136ed358b1",
-          "legacy_path": "akishima-settlement2020-2023/jurisdiction=132071/year=2021/document_kind=settlement/edition=7a0c44d3dd45e5d4b502567f5a497adabcdcb046a87f9541963f4480055e4413/direction=expenditure/table=fy2021-care-financial",
-          "declaration": {
-            "additive_within_own_grain": true,
-            "approval_status": "council-recognized-settlement",
-            "budget_columns_note": "budget_initial/supplementary/prior_carry/reserve_transfer/current are nonadditive printed references, never canonical approved baselines or deltas",
-            "canonical_executed": true,
-            "definition_files": [
-              {
-                "bytes": 60037,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/sources-akishima-settlement2020-2023.json",
-                "sha256": "1b5e93fc7cfc8df80aedad51a12e0c1aa5072f93130b19fdfdcc74450c4e55bf"
-              },
-              {
-                "bytes": 8550,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023_registry.py",
-                "sha256": "58f61a8315a4bfa6ecd3c0fc362f4c2672501773909afd84d3d3745a889602cc"
-              },
-              {
-                "bytes": 107,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__init__.py",
-                "sha256": "276f7a0ea641411daf28238db4d2ede415ea1228c73bc7decde9d5fc0a38427f"
-              },
-              {
-                "bytes": 3519,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__main__.py",
-                "sha256": "ba4de7125e1feeb54b20403bfb8a708821bbc70b852652dff5e93bb1fccae61c"
-              },
-              {
-                "bytes": 5760,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/provider.py",
-                "sha256": "4394b8e6a4393c8af559999c0629dd79da701355532ae66a71b8e6d13311d906"
-              },
-              {
-                "bytes": 21240,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/decoder.py",
-                "sha256": "37ccac10cbc1412aa83c4ea6d2244b9c162d92d3e34da1d8440efc3568719478"
-              },
-              {
-                "bytes": 4776,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/verify.py",
-                "sha256": "20b85c7d4579e695d115e960d9ca074c304e96a3aa7657b7624c9e8271e66a30"
-              },
-              {
-                "bytes": 5856,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/materialize.py",
-                "sha256": "429d8837aceecc73c82d49e547e701967697171ced4359fd697ec6273b311670"
-              },
-              {
-                "bytes": 10715,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/config.json",
-                "sha256": "b871f51e2ac60a8000b50c954e3677210684f32934e4e8ef6f22b8cd68ced476"
-              },
-              {
-                "bytes": 5452,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/evidence-manifest.json",
-                "sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3"
-              }
-            ],
-            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.akishima_settlement2020_2023",
-            "financial_phase": "executed",
-            "fund_label": "介護保険特別会計",
-            "grain": "observed moku x printed legal setsu plus actual blank-code reserve moku",
-            "namespace": "akishima-settlement2020-2023",
-            "nonadditive": false,
-            "observation_role": "financial",
-            "original_source_table_id": "akishima-fy2021-settlement-fy2021-care-financial",
-            "pages": null,
-            "phase_semantics": "executed = 支出済額 only; settlement budget columns are nonadditive controls",
-            "project_setsu_linkage": "unconfirmed",
-            "recognition_proof": {
-              "bill": "認定第3号",
-              "bytes": 58559,
-              "cells": [
-                "認定第3号",
-                "令和3年度昭島市介護保険特別会計歳入歳出決算認定について",
-                "9月30日",
-                "認定"
-              ],
-              "date_context": "令和4年第3回定例会（8月31日から9月30日まで31日間）",
-              "html_row_ordinal": 23,
-              "recognition_date": "2022-09-30",
-              "sha256": "62c0e530f5bb03ee702c0d21e3fb536ecd3cd800a2d461f155a7fd0ba59ae512",
-              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006725/1006727.html"
-            },
-            "recognition_status": "recognized-2022-09-30",
-            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/260/r3kessan0.pdf",
-            "source_amount_unit": "円",
-            "source_key": "akishima-settlement2020-2023:132071:2021",
-            "source_manifest_sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3",
-            "statutory_correspondence_status": "printed-code-name-active-year-assessed; FY2020 uses legacy printed setsu codes preserved verbatim; unmapped codes stay NULL",
-            "submitted_date": null,
-            "table_id": "fy2021-care-financial",
-            "unit_multiplier": 1
-          }
+          "table_id": "akishima-settlement2020-2023-fe2671136ed358b1"
         }
       ]
     },
@@ -1255,101 +597,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "akishima-settlement2020-2023-50c38fc4bc46d8c5",
-          "legacy_path": "akishima-settlement2020-2023/jurisdiction=132071/year=2021/document_kind=settlement/edition=7a0c44d3dd45e5d4b502567f5a497adabcdcb046a87f9541963f4480055e4413/direction=expenditure/table=fy2021-care-controls",
-          "declaration": {
-            "additive_within_own_grain": false,
-            "approval_status": "council-recognized-settlement",
-            "budget_columns_note": "budget_initial/supplementary/prior_carry/reserve_transfer/current are nonadditive printed references, never canonical approved baselines or deltas",
-            "canonical_executed": false,
-            "definition_files": [
-              {
-                "bytes": 60037,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/sources-akishima-settlement2020-2023.json",
-                "sha256": "1b5e93fc7cfc8df80aedad51a12e0c1aa5072f93130b19fdfdcc74450c4e55bf"
-              },
-              {
-                "bytes": 8550,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023_registry.py",
-                "sha256": "58f61a8315a4bfa6ecd3c0fc362f4c2672501773909afd84d3d3745a889602cc"
-              },
-              {
-                "bytes": 107,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__init__.py",
-                "sha256": "276f7a0ea641411daf28238db4d2ede415ea1228c73bc7decde9d5fc0a38427f"
-              },
-              {
-                "bytes": 3519,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__main__.py",
-                "sha256": "ba4de7125e1feeb54b20403bfb8a708821bbc70b852652dff5e93bb1fccae61c"
-              },
-              {
-                "bytes": 5760,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/provider.py",
-                "sha256": "4394b8e6a4393c8af559999c0629dd79da701355532ae66a71b8e6d13311d906"
-              },
-              {
-                "bytes": 21240,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/decoder.py",
-                "sha256": "37ccac10cbc1412aa83c4ea6d2244b9c162d92d3e34da1d8440efc3568719478"
-              },
-              {
-                "bytes": 4776,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/verify.py",
-                "sha256": "20b85c7d4579e695d115e960d9ca074c304e96a3aa7657b7624c9e8271e66a30"
-              },
-              {
-                "bytes": 5856,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/materialize.py",
-                "sha256": "429d8837aceecc73c82d49e547e701967697171ced4359fd697ec6273b311670"
-              },
-              {
-                "bytes": 10715,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/config.json",
-                "sha256": "b871f51e2ac60a8000b50c954e3677210684f32934e4e8ef6f22b8cd68ced476"
-              },
-              {
-                "bytes": 5452,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/evidence-manifest.json",
-                "sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3"
-              }
-            ],
-            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.akishima_settlement2020_2023",
-            "financial_phase": null,
-            "fund_label": "介護保険特別会計",
-            "grain": "independent nonadditive printed controls",
-            "namespace": "akishima-settlement2020-2023",
-            "nonadditive": true,
-            "observation_role": "controls",
-            "original_source_table_id": "akishima-fy2021-settlement-fy2021-care-controls",
-            "pages": null,
-            "phase_semantics": "executed = 支出済額 only; settlement budget columns are nonadditive controls",
-            "project_setsu_linkage": "unconfirmed",
-            "recognition_proof": {
-              "bill": "認定第3号",
-              "bytes": 58559,
-              "cells": [
-                "認定第3号",
-                "令和3年度昭島市介護保険特別会計歳入歳出決算認定について",
-                "9月30日",
-                "認定"
-              ],
-              "date_context": "令和4年第3回定例会（8月31日から9月30日まで31日間）",
-              "html_row_ordinal": 23,
-              "recognition_date": "2022-09-30",
-              "sha256": "62c0e530f5bb03ee702c0d21e3fb536ecd3cd800a2d461f155a7fd0ba59ae512",
-              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006725/1006727.html"
-            },
-            "recognition_status": "recognized-2022-09-30",
-            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/260/r3kessan0.pdf",
-            "source_amount_unit": "円",
-            "source_key": "akishima-settlement2020-2023:132071:2021",
-            "source_manifest_sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3",
-            "statutory_correspondence_status": "not-applicable",
-            "submitted_date": null,
-            "table_id": "fy2021-care-controls",
-            "unit_multiplier": 1
-          }
+          "table_id": "akishima-settlement2020-2023-50c38fc4bc46d8c5"
         }
       ]
     },
@@ -1423,101 +671,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "akishima-settlement2020-2023-5cf07ddfba61de1b",
-          "legacy_path": "akishima-settlement2020-2023/jurisdiction=132071/year=2021/document_kind=settlement/edition=7a0c44d3dd45e5d4b502567f5a497adabcdcb046a87f9541963f4480055e4413/direction=expenditure/table=fy2021-care-projects",
-          "declaration": {
-            "additive_within_own_grain": false,
-            "approval_status": "council-recognized-settlement",
-            "budget_columns_note": "budget_initial/supplementary/prior_carry/reserve_transfer/current are nonadditive printed references, never canonical approved baselines or deltas",
-            "canonical_executed": false,
-            "definition_files": [
-              {
-                "bytes": 60037,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/sources-akishima-settlement2020-2023.json",
-                "sha256": "1b5e93fc7cfc8df80aedad51a12e0c1aa5072f93130b19fdfdcc74450c4e55bf"
-              },
-              {
-                "bytes": 8550,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023_registry.py",
-                "sha256": "58f61a8315a4bfa6ecd3c0fc362f4c2672501773909afd84d3d3745a889602cc"
-              },
-              {
-                "bytes": 107,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__init__.py",
-                "sha256": "276f7a0ea641411daf28238db4d2ede415ea1228c73bc7decde9d5fc0a38427f"
-              },
-              {
-                "bytes": 3519,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__main__.py",
-                "sha256": "ba4de7125e1feeb54b20403bfb8a708821bbc70b852652dff5e93bb1fccae61c"
-              },
-              {
-                "bytes": 5760,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/provider.py",
-                "sha256": "4394b8e6a4393c8af559999c0629dd79da701355532ae66a71b8e6d13311d906"
-              },
-              {
-                "bytes": 21240,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/decoder.py",
-                "sha256": "37ccac10cbc1412aa83c4ea6d2244b9c162d92d3e34da1d8440efc3568719478"
-              },
-              {
-                "bytes": 4776,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/verify.py",
-                "sha256": "20b85c7d4579e695d115e960d9ca074c304e96a3aa7657b7624c9e8271e66a30"
-              },
-              {
-                "bytes": 5856,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/materialize.py",
-                "sha256": "429d8837aceecc73c82d49e547e701967697171ced4359fd697ec6273b311670"
-              },
-              {
-                "bytes": 10715,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/config.json",
-                "sha256": "b871f51e2ac60a8000b50c954e3677210684f32934e4e8ef6f22b8cd68ced476"
-              },
-              {
-                "bytes": 5452,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/evidence-manifest.json",
-                "sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3"
-              }
-            ],
-            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.akishima_settlement2020_2023",
-            "financial_phase": null,
-            "fund_label": "介護保険特別会計",
-            "grain": "independent printed project-remark totals",
-            "namespace": "akishima-settlement2020-2023",
-            "nonadditive": true,
-            "observation_role": "projects",
-            "original_source_table_id": "akishima-fy2021-settlement-fy2021-care-projects",
-            "pages": null,
-            "phase_semantics": "executed = 支出済額 only; settlement budget columns are nonadditive controls",
-            "project_setsu_linkage": "unconfirmed",
-            "recognition_proof": {
-              "bill": "認定第3号",
-              "bytes": 58559,
-              "cells": [
-                "認定第3号",
-                "令和3年度昭島市介護保険特別会計歳入歳出決算認定について",
-                "9月30日",
-                "認定"
-              ],
-              "date_context": "令和4年第3回定例会（8月31日から9月30日まで31日間）",
-              "html_row_ordinal": 23,
-              "recognition_date": "2022-09-30",
-              "sha256": "62c0e530f5bb03ee702c0d21e3fb536ecd3cd800a2d461f155a7fd0ba59ae512",
-              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006725/1006727.html"
-            },
-            "recognition_status": "recognized-2022-09-30",
-            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/260/r3kessan0.pdf",
-            "source_amount_unit": "円",
-            "source_key": "akishima-settlement2020-2023:132071:2021",
-            "source_manifest_sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3",
-            "statutory_correspondence_status": "not-applicable",
-            "submitted_date": null,
-            "table_id": "fy2021-care-projects",
-            "unit_multiplier": 1
-          }
+          "table_id": "akishima-settlement2020-2023-5cf07ddfba61de1b"
         }
       ]
     },
@@ -1591,101 +745,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "akishima-settlement2020-2023-ea837d56b9ac990c",
-          "legacy_path": "akishima-settlement2020-2023/jurisdiction=132071/year=2021/document_kind=settlement/edition=7a0c44d3dd45e5d4b502567f5a497adabcdcb046a87f9541963f4480055e4413/direction=expenditure/table=fy2021-elderly-financial",
-          "declaration": {
-            "additive_within_own_grain": true,
-            "approval_status": "council-recognized-settlement",
-            "budget_columns_note": "budget_initial/supplementary/prior_carry/reserve_transfer/current are nonadditive printed references, never canonical approved baselines or deltas",
-            "canonical_executed": true,
-            "definition_files": [
-              {
-                "bytes": 60037,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/sources-akishima-settlement2020-2023.json",
-                "sha256": "1b5e93fc7cfc8df80aedad51a12e0c1aa5072f93130b19fdfdcc74450c4e55bf"
-              },
-              {
-                "bytes": 8550,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023_registry.py",
-                "sha256": "58f61a8315a4bfa6ecd3c0fc362f4c2672501773909afd84d3d3745a889602cc"
-              },
-              {
-                "bytes": 107,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__init__.py",
-                "sha256": "276f7a0ea641411daf28238db4d2ede415ea1228c73bc7decde9d5fc0a38427f"
-              },
-              {
-                "bytes": 3519,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__main__.py",
-                "sha256": "ba4de7125e1feeb54b20403bfb8a708821bbc70b852652dff5e93bb1fccae61c"
-              },
-              {
-                "bytes": 5760,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/provider.py",
-                "sha256": "4394b8e6a4393c8af559999c0629dd79da701355532ae66a71b8e6d13311d906"
-              },
-              {
-                "bytes": 21240,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/decoder.py",
-                "sha256": "37ccac10cbc1412aa83c4ea6d2244b9c162d92d3e34da1d8440efc3568719478"
-              },
-              {
-                "bytes": 4776,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/verify.py",
-                "sha256": "20b85c7d4579e695d115e960d9ca074c304e96a3aa7657b7624c9e8271e66a30"
-              },
-              {
-                "bytes": 5856,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/materialize.py",
-                "sha256": "429d8837aceecc73c82d49e547e701967697171ced4359fd697ec6273b311670"
-              },
-              {
-                "bytes": 10715,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/config.json",
-                "sha256": "b871f51e2ac60a8000b50c954e3677210684f32934e4e8ef6f22b8cd68ced476"
-              },
-              {
-                "bytes": 5452,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/evidence-manifest.json",
-                "sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3"
-              }
-            ],
-            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.akishima_settlement2020_2023",
-            "financial_phase": "executed",
-            "fund_label": "後期高齢者医療特別会計",
-            "grain": "observed moku x printed legal setsu plus actual blank-code reserve moku",
-            "namespace": "akishima-settlement2020-2023",
-            "nonadditive": false,
-            "observation_role": "financial",
-            "original_source_table_id": "akishima-fy2021-settlement-fy2021-elderly-financial",
-            "pages": null,
-            "phase_semantics": "executed = 支出済額 only; settlement budget columns are nonadditive controls",
-            "project_setsu_linkage": "unconfirmed",
-            "recognition_proof": {
-              "bill": "認定第4号",
-              "bytes": 58559,
-              "cells": [
-                "認定第4号",
-                "令和3年度昭島市後期高齢者医療特別会計歳入歳出決算認定について",
-                "9月30日",
-                "認定"
-              ],
-              "date_context": "令和4年第3回定例会（8月31日から9月30日まで31日間）",
-              "html_row_ordinal": 24,
-              "recognition_date": "2022-09-30",
-              "sha256": "62c0e530f5bb03ee702c0d21e3fb536ecd3cd800a2d461f155a7fd0ba59ae512",
-              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006725/1006727.html"
-            },
-            "recognition_status": "recognized-2022-09-30",
-            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/260/r3kessan0.pdf",
-            "source_amount_unit": "円",
-            "source_key": "akishima-settlement2020-2023:132071:2021",
-            "source_manifest_sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3",
-            "statutory_correspondence_status": "printed-code-name-active-year-assessed; FY2020 uses legacy printed setsu codes preserved verbatim; unmapped codes stay NULL",
-            "submitted_date": null,
-            "table_id": "fy2021-elderly-financial",
-            "unit_multiplier": 1
-          }
+          "table_id": "akishima-settlement2020-2023-ea837d56b9ac990c"
         }
       ]
     },
@@ -1759,101 +819,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "akishima-settlement2020-2023-746fd980488b6307",
-          "legacy_path": "akishima-settlement2020-2023/jurisdiction=132071/year=2021/document_kind=settlement/edition=7a0c44d3dd45e5d4b502567f5a497adabcdcb046a87f9541963f4480055e4413/direction=expenditure/table=fy2021-elderly-controls",
-          "declaration": {
-            "additive_within_own_grain": false,
-            "approval_status": "council-recognized-settlement",
-            "budget_columns_note": "budget_initial/supplementary/prior_carry/reserve_transfer/current are nonadditive printed references, never canonical approved baselines or deltas",
-            "canonical_executed": false,
-            "definition_files": [
-              {
-                "bytes": 60037,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/sources-akishima-settlement2020-2023.json",
-                "sha256": "1b5e93fc7cfc8df80aedad51a12e0c1aa5072f93130b19fdfdcc74450c4e55bf"
-              },
-              {
-                "bytes": 8550,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023_registry.py",
-                "sha256": "58f61a8315a4bfa6ecd3c0fc362f4c2672501773909afd84d3d3745a889602cc"
-              },
-              {
-                "bytes": 107,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__init__.py",
-                "sha256": "276f7a0ea641411daf28238db4d2ede415ea1228c73bc7decde9d5fc0a38427f"
-              },
-              {
-                "bytes": 3519,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__main__.py",
-                "sha256": "ba4de7125e1feeb54b20403bfb8a708821bbc70b852652dff5e93bb1fccae61c"
-              },
-              {
-                "bytes": 5760,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/provider.py",
-                "sha256": "4394b8e6a4393c8af559999c0629dd79da701355532ae66a71b8e6d13311d906"
-              },
-              {
-                "bytes": 21240,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/decoder.py",
-                "sha256": "37ccac10cbc1412aa83c4ea6d2244b9c162d92d3e34da1d8440efc3568719478"
-              },
-              {
-                "bytes": 4776,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/verify.py",
-                "sha256": "20b85c7d4579e695d115e960d9ca074c304e96a3aa7657b7624c9e8271e66a30"
-              },
-              {
-                "bytes": 5856,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/materialize.py",
-                "sha256": "429d8837aceecc73c82d49e547e701967697171ced4359fd697ec6273b311670"
-              },
-              {
-                "bytes": 10715,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/config.json",
-                "sha256": "b871f51e2ac60a8000b50c954e3677210684f32934e4e8ef6f22b8cd68ced476"
-              },
-              {
-                "bytes": 5452,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/evidence-manifest.json",
-                "sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3"
-              }
-            ],
-            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.akishima_settlement2020_2023",
-            "financial_phase": null,
-            "fund_label": "後期高齢者医療特別会計",
-            "grain": "independent nonadditive printed controls",
-            "namespace": "akishima-settlement2020-2023",
-            "nonadditive": true,
-            "observation_role": "controls",
-            "original_source_table_id": "akishima-fy2021-settlement-fy2021-elderly-controls",
-            "pages": null,
-            "phase_semantics": "executed = 支出済額 only; settlement budget columns are nonadditive controls",
-            "project_setsu_linkage": "unconfirmed",
-            "recognition_proof": {
-              "bill": "認定第4号",
-              "bytes": 58559,
-              "cells": [
-                "認定第4号",
-                "令和3年度昭島市後期高齢者医療特別会計歳入歳出決算認定について",
-                "9月30日",
-                "認定"
-              ],
-              "date_context": "令和4年第3回定例会（8月31日から9月30日まで31日間）",
-              "html_row_ordinal": 24,
-              "recognition_date": "2022-09-30",
-              "sha256": "62c0e530f5bb03ee702c0d21e3fb536ecd3cd800a2d461f155a7fd0ba59ae512",
-              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006725/1006727.html"
-            },
-            "recognition_status": "recognized-2022-09-30",
-            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/260/r3kessan0.pdf",
-            "source_amount_unit": "円",
-            "source_key": "akishima-settlement2020-2023:132071:2021",
-            "source_manifest_sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3",
-            "statutory_correspondence_status": "not-applicable",
-            "submitted_date": null,
-            "table_id": "fy2021-elderly-controls",
-            "unit_multiplier": 1
-          }
+          "table_id": "akishima-settlement2020-2023-746fd980488b6307"
         }
       ]
     },
@@ -1927,101 +893,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "akishima-settlement2020-2023-a2936b9b472691b6",
-          "legacy_path": "akishima-settlement2020-2023/jurisdiction=132071/year=2021/document_kind=settlement/edition=7a0c44d3dd45e5d4b502567f5a497adabcdcb046a87f9541963f4480055e4413/direction=expenditure/table=fy2021-elderly-projects",
-          "declaration": {
-            "additive_within_own_grain": false,
-            "approval_status": "council-recognized-settlement",
-            "budget_columns_note": "budget_initial/supplementary/prior_carry/reserve_transfer/current are nonadditive printed references, never canonical approved baselines or deltas",
-            "canonical_executed": false,
-            "definition_files": [
-              {
-                "bytes": 60037,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/sources-akishima-settlement2020-2023.json",
-                "sha256": "1b5e93fc7cfc8df80aedad51a12e0c1aa5072f93130b19fdfdcc74450c4e55bf"
-              },
-              {
-                "bytes": 8550,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023_registry.py",
-                "sha256": "58f61a8315a4bfa6ecd3c0fc362f4c2672501773909afd84d3d3745a889602cc"
-              },
-              {
-                "bytes": 107,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__init__.py",
-                "sha256": "276f7a0ea641411daf28238db4d2ede415ea1228c73bc7decde9d5fc0a38427f"
-              },
-              {
-                "bytes": 3519,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__main__.py",
-                "sha256": "ba4de7125e1feeb54b20403bfb8a708821bbc70b852652dff5e93bb1fccae61c"
-              },
-              {
-                "bytes": 5760,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/provider.py",
-                "sha256": "4394b8e6a4393c8af559999c0629dd79da701355532ae66a71b8e6d13311d906"
-              },
-              {
-                "bytes": 21240,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/decoder.py",
-                "sha256": "37ccac10cbc1412aa83c4ea6d2244b9c162d92d3e34da1d8440efc3568719478"
-              },
-              {
-                "bytes": 4776,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/verify.py",
-                "sha256": "20b85c7d4579e695d115e960d9ca074c304e96a3aa7657b7624c9e8271e66a30"
-              },
-              {
-                "bytes": 5856,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/materialize.py",
-                "sha256": "429d8837aceecc73c82d49e547e701967697171ced4359fd697ec6273b311670"
-              },
-              {
-                "bytes": 10715,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/config.json",
-                "sha256": "b871f51e2ac60a8000b50c954e3677210684f32934e4e8ef6f22b8cd68ced476"
-              },
-              {
-                "bytes": 5452,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/evidence-manifest.json",
-                "sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3"
-              }
-            ],
-            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.akishima_settlement2020_2023",
-            "financial_phase": null,
-            "fund_label": "後期高齢者医療特別会計",
-            "grain": "independent printed project-remark totals",
-            "namespace": "akishima-settlement2020-2023",
-            "nonadditive": true,
-            "observation_role": "projects",
-            "original_source_table_id": "akishima-fy2021-settlement-fy2021-elderly-projects",
-            "pages": null,
-            "phase_semantics": "executed = 支出済額 only; settlement budget columns are nonadditive controls",
-            "project_setsu_linkage": "unconfirmed",
-            "recognition_proof": {
-              "bill": "認定第4号",
-              "bytes": 58559,
-              "cells": [
-                "認定第4号",
-                "令和3年度昭島市後期高齢者医療特別会計歳入歳出決算認定について",
-                "9月30日",
-                "認定"
-              ],
-              "date_context": "令和4年第3回定例会（8月31日から9月30日まで31日間）",
-              "html_row_ordinal": 24,
-              "recognition_date": "2022-09-30",
-              "sha256": "62c0e530f5bb03ee702c0d21e3fb536ecd3cd800a2d461f155a7fd0ba59ae512",
-              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006725/1006727.html"
-            },
-            "recognition_status": "recognized-2022-09-30",
-            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/260/r3kessan0.pdf",
-            "source_amount_unit": "円",
-            "source_key": "akishima-settlement2020-2023:132071:2021",
-            "source_manifest_sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3",
-            "statutory_correspondence_status": "not-applicable",
-            "submitted_date": null,
-            "table_id": "fy2021-elderly-projects",
-            "unit_multiplier": 1
-          }
+          "table_id": "akishima-settlement2020-2023-a2936b9b472691b6"
         }
       ]
     },
@@ -2095,101 +967,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "akishima-settlement2020-2023-bbd549861f56ce1f",
-          "legacy_path": "akishima-settlement2020-2023/jurisdiction=132071/year=2021/document_kind=settlement/edition=7a0c44d3dd45e5d4b502567f5a497adabcdcb046a87f9541963f4480055e4413/direction=expenditure/table=fy2021-land-financial",
-          "declaration": {
-            "additive_within_own_grain": true,
-            "approval_status": "council-recognized-settlement",
-            "budget_columns_note": "budget_initial/supplementary/prior_carry/reserve_transfer/current are nonadditive printed references, never canonical approved baselines or deltas",
-            "canonical_executed": true,
-            "definition_files": [
-              {
-                "bytes": 60037,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/sources-akishima-settlement2020-2023.json",
-                "sha256": "1b5e93fc7cfc8df80aedad51a12e0c1aa5072f93130b19fdfdcc74450c4e55bf"
-              },
-              {
-                "bytes": 8550,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023_registry.py",
-                "sha256": "58f61a8315a4bfa6ecd3c0fc362f4c2672501773909afd84d3d3745a889602cc"
-              },
-              {
-                "bytes": 107,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__init__.py",
-                "sha256": "276f7a0ea641411daf28238db4d2ede415ea1228c73bc7decde9d5fc0a38427f"
-              },
-              {
-                "bytes": 3519,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__main__.py",
-                "sha256": "ba4de7125e1feeb54b20403bfb8a708821bbc70b852652dff5e93bb1fccae61c"
-              },
-              {
-                "bytes": 5760,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/provider.py",
-                "sha256": "4394b8e6a4393c8af559999c0629dd79da701355532ae66a71b8e6d13311d906"
-              },
-              {
-                "bytes": 21240,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/decoder.py",
-                "sha256": "37ccac10cbc1412aa83c4ea6d2244b9c162d92d3e34da1d8440efc3568719478"
-              },
-              {
-                "bytes": 4776,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/verify.py",
-                "sha256": "20b85c7d4579e695d115e960d9ca074c304e96a3aa7657b7624c9e8271e66a30"
-              },
-              {
-                "bytes": 5856,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/materialize.py",
-                "sha256": "429d8837aceecc73c82d49e547e701967697171ced4359fd697ec6273b311670"
-              },
-              {
-                "bytes": 10715,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/config.json",
-                "sha256": "b871f51e2ac60a8000b50c954e3677210684f32934e4e8ef6f22b8cd68ced476"
-              },
-              {
-                "bytes": 5452,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/evidence-manifest.json",
-                "sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3"
-              }
-            ],
-            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.akishima_settlement2020_2023",
-            "financial_phase": "executed",
-            "fund_label": "中神土地区画整理事業特別会計",
-            "grain": "observed moku x printed legal setsu plus actual blank-code reserve moku",
-            "namespace": "akishima-settlement2020-2023",
-            "nonadditive": false,
-            "observation_role": "financial",
-            "original_source_table_id": "akishima-fy2021-settlement-fy2021-land-financial",
-            "pages": null,
-            "phase_semantics": "executed = 支出済額 only; settlement budget columns are nonadditive controls",
-            "project_setsu_linkage": "unconfirmed",
-            "recognition_proof": {
-              "bill": "認定第5号",
-              "bytes": 58559,
-              "cells": [
-                "認定第5号",
-                "令和3年度昭島市中神土地区画整理事業特別会計歳入歳出決算認定について",
-                "9月30日",
-                "認定"
-              ],
-              "date_context": "令和4年第3回定例会（8月31日から9月30日まで31日間）",
-              "html_row_ordinal": 25,
-              "recognition_date": "2022-09-30",
-              "sha256": "62c0e530f5bb03ee702c0d21e3fb536ecd3cd800a2d461f155a7fd0ba59ae512",
-              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006725/1006727.html"
-            },
-            "recognition_status": "recognized-2022-09-30",
-            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/260/r3kessan0.pdf",
-            "source_amount_unit": "円",
-            "source_key": "akishima-settlement2020-2023:132071:2021",
-            "source_manifest_sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3",
-            "statutory_correspondence_status": "printed-code-name-active-year-assessed; FY2020 uses legacy printed setsu codes preserved verbatim; unmapped codes stay NULL",
-            "submitted_date": null,
-            "table_id": "fy2021-land-financial",
-            "unit_multiplier": 1
-          }
+          "table_id": "akishima-settlement2020-2023-bbd549861f56ce1f"
         }
       ]
     },
@@ -2263,101 +1041,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "akishima-settlement2020-2023-6e6c149c4940f718",
-          "legacy_path": "akishima-settlement2020-2023/jurisdiction=132071/year=2021/document_kind=settlement/edition=7a0c44d3dd45e5d4b502567f5a497adabcdcb046a87f9541963f4480055e4413/direction=expenditure/table=fy2021-land-controls",
-          "declaration": {
-            "additive_within_own_grain": false,
-            "approval_status": "council-recognized-settlement",
-            "budget_columns_note": "budget_initial/supplementary/prior_carry/reserve_transfer/current are nonadditive printed references, never canonical approved baselines or deltas",
-            "canonical_executed": false,
-            "definition_files": [
-              {
-                "bytes": 60037,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/sources-akishima-settlement2020-2023.json",
-                "sha256": "1b5e93fc7cfc8df80aedad51a12e0c1aa5072f93130b19fdfdcc74450c4e55bf"
-              },
-              {
-                "bytes": 8550,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023_registry.py",
-                "sha256": "58f61a8315a4bfa6ecd3c0fc362f4c2672501773909afd84d3d3745a889602cc"
-              },
-              {
-                "bytes": 107,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__init__.py",
-                "sha256": "276f7a0ea641411daf28238db4d2ede415ea1228c73bc7decde9d5fc0a38427f"
-              },
-              {
-                "bytes": 3519,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__main__.py",
-                "sha256": "ba4de7125e1feeb54b20403bfb8a708821bbc70b852652dff5e93bb1fccae61c"
-              },
-              {
-                "bytes": 5760,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/provider.py",
-                "sha256": "4394b8e6a4393c8af559999c0629dd79da701355532ae66a71b8e6d13311d906"
-              },
-              {
-                "bytes": 21240,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/decoder.py",
-                "sha256": "37ccac10cbc1412aa83c4ea6d2244b9c162d92d3e34da1d8440efc3568719478"
-              },
-              {
-                "bytes": 4776,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/verify.py",
-                "sha256": "20b85c7d4579e695d115e960d9ca074c304e96a3aa7657b7624c9e8271e66a30"
-              },
-              {
-                "bytes": 5856,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/materialize.py",
-                "sha256": "429d8837aceecc73c82d49e547e701967697171ced4359fd697ec6273b311670"
-              },
-              {
-                "bytes": 10715,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/config.json",
-                "sha256": "b871f51e2ac60a8000b50c954e3677210684f32934e4e8ef6f22b8cd68ced476"
-              },
-              {
-                "bytes": 5452,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/evidence-manifest.json",
-                "sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3"
-              }
-            ],
-            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.akishima_settlement2020_2023",
-            "financial_phase": null,
-            "fund_label": "中神土地区画整理事業特別会計",
-            "grain": "independent nonadditive printed controls",
-            "namespace": "akishima-settlement2020-2023",
-            "nonadditive": true,
-            "observation_role": "controls",
-            "original_source_table_id": "akishima-fy2021-settlement-fy2021-land-controls",
-            "pages": null,
-            "phase_semantics": "executed = 支出済額 only; settlement budget columns are nonadditive controls",
-            "project_setsu_linkage": "unconfirmed",
-            "recognition_proof": {
-              "bill": "認定第5号",
-              "bytes": 58559,
-              "cells": [
-                "認定第5号",
-                "令和3年度昭島市中神土地区画整理事業特別会計歳入歳出決算認定について",
-                "9月30日",
-                "認定"
-              ],
-              "date_context": "令和4年第3回定例会（8月31日から9月30日まで31日間）",
-              "html_row_ordinal": 25,
-              "recognition_date": "2022-09-30",
-              "sha256": "62c0e530f5bb03ee702c0d21e3fb536ecd3cd800a2d461f155a7fd0ba59ae512",
-              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006725/1006727.html"
-            },
-            "recognition_status": "recognized-2022-09-30",
-            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/260/r3kessan0.pdf",
-            "source_amount_unit": "円",
-            "source_key": "akishima-settlement2020-2023:132071:2021",
-            "source_manifest_sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3",
-            "statutory_correspondence_status": "not-applicable",
-            "submitted_date": null,
-            "table_id": "fy2021-land-controls",
-            "unit_multiplier": 1
-          }
+          "table_id": "akishima-settlement2020-2023-6e6c149c4940f718"
         }
       ]
     },
@@ -2431,101 +1115,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "akishima-settlement2020-2023-6fcb13c3568fb760",
-          "legacy_path": "akishima-settlement2020-2023/jurisdiction=132071/year=2021/document_kind=settlement/edition=7a0c44d3dd45e5d4b502567f5a497adabcdcb046a87f9541963f4480055e4413/direction=expenditure/table=fy2021-land-projects",
-          "declaration": {
-            "additive_within_own_grain": false,
-            "approval_status": "council-recognized-settlement",
-            "budget_columns_note": "budget_initial/supplementary/prior_carry/reserve_transfer/current are nonadditive printed references, never canonical approved baselines or deltas",
-            "canonical_executed": false,
-            "definition_files": [
-              {
-                "bytes": 60037,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/sources-akishima-settlement2020-2023.json",
-                "sha256": "1b5e93fc7cfc8df80aedad51a12e0c1aa5072f93130b19fdfdcc74450c4e55bf"
-              },
-              {
-                "bytes": 8550,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023_registry.py",
-                "sha256": "58f61a8315a4bfa6ecd3c0fc362f4c2672501773909afd84d3d3745a889602cc"
-              },
-              {
-                "bytes": 107,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__init__.py",
-                "sha256": "276f7a0ea641411daf28238db4d2ede415ea1228c73bc7decde9d5fc0a38427f"
-              },
-              {
-                "bytes": 3519,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__main__.py",
-                "sha256": "ba4de7125e1feeb54b20403bfb8a708821bbc70b852652dff5e93bb1fccae61c"
-              },
-              {
-                "bytes": 5760,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/provider.py",
-                "sha256": "4394b8e6a4393c8af559999c0629dd79da701355532ae66a71b8e6d13311d906"
-              },
-              {
-                "bytes": 21240,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/decoder.py",
-                "sha256": "37ccac10cbc1412aa83c4ea6d2244b9c162d92d3e34da1d8440efc3568719478"
-              },
-              {
-                "bytes": 4776,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/verify.py",
-                "sha256": "20b85c7d4579e695d115e960d9ca074c304e96a3aa7657b7624c9e8271e66a30"
-              },
-              {
-                "bytes": 5856,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/materialize.py",
-                "sha256": "429d8837aceecc73c82d49e547e701967697171ced4359fd697ec6273b311670"
-              },
-              {
-                "bytes": 10715,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/config.json",
-                "sha256": "b871f51e2ac60a8000b50c954e3677210684f32934e4e8ef6f22b8cd68ced476"
-              },
-              {
-                "bytes": 5452,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/evidence-manifest.json",
-                "sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3"
-              }
-            ],
-            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.akishima_settlement2020_2023",
-            "financial_phase": null,
-            "fund_label": "中神土地区画整理事業特別会計",
-            "grain": "independent printed project-remark totals",
-            "namespace": "akishima-settlement2020-2023",
-            "nonadditive": true,
-            "observation_role": "projects",
-            "original_source_table_id": "akishima-fy2021-settlement-fy2021-land-projects",
-            "pages": null,
-            "phase_semantics": "executed = 支出済額 only; settlement budget columns are nonadditive controls",
-            "project_setsu_linkage": "unconfirmed",
-            "recognition_proof": {
-              "bill": "認定第5号",
-              "bytes": 58559,
-              "cells": [
-                "認定第5号",
-                "令和3年度昭島市中神土地区画整理事業特別会計歳入歳出決算認定について",
-                "9月30日",
-                "認定"
-              ],
-              "date_context": "令和4年第3回定例会（8月31日から9月30日まで31日間）",
-              "html_row_ordinal": 25,
-              "recognition_date": "2022-09-30",
-              "sha256": "62c0e530f5bb03ee702c0d21e3fb536ecd3cd800a2d461f155a7fd0ba59ae512",
-              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006725/1006727.html"
-            },
-            "recognition_status": "recognized-2022-09-30",
-            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/260/r3kessan0.pdf",
-            "source_amount_unit": "円",
-            "source_key": "akishima-settlement2020-2023:132071:2021",
-            "source_manifest_sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3",
-            "statutory_correspondence_status": "not-applicable",
-            "submitted_date": null,
-            "table_id": "fy2021-land-projects",
-            "unit_multiplier": 1
-          }
+          "table_id": "akishima-settlement2020-2023-6fcb13c3568fb760"
         }
       ]
     },
@@ -2599,86 +1189,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "akishima-settlement2020-2023-d68d9d785511b534",
-          "legacy_path": "akishima-settlement2020-2023/jurisdiction=132071/year=2021/document_kind=settlement/edition=7a0c44d3dd45e5d4b502567f5a497adabcdcb046a87f9541963f4480055e4413/direction=expenditure/table=fy2021-all-controls",
-          "declaration": {
-            "additive_within_own_grain": false,
-            "approval_status": "council-recognized-settlement",
-            "budget_columns_note": "budget_initial/supplementary/prior_carry/reserve_transfer/current are nonadditive printed references, never canonical approved baselines or deltas",
-            "canonical_executed": false,
-            "definition_files": [
-              {
-                "bytes": 60037,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/sources-akishima-settlement2020-2023.json",
-                "sha256": "1b5e93fc7cfc8df80aedad51a12e0c1aa5072f93130b19fdfdcc74450c4e55bf"
-              },
-              {
-                "bytes": 8550,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023_registry.py",
-                "sha256": "58f61a8315a4bfa6ecd3c0fc362f4c2672501773909afd84d3d3745a889602cc"
-              },
-              {
-                "bytes": 107,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__init__.py",
-                "sha256": "276f7a0ea641411daf28238db4d2ede415ea1228c73bc7decde9d5fc0a38427f"
-              },
-              {
-                "bytes": 3519,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/__main__.py",
-                "sha256": "ba4de7125e1feeb54b20403bfb8a708821bbc70b852652dff5e93bb1fccae61c"
-              },
-              {
-                "bytes": 5760,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/provider.py",
-                "sha256": "4394b8e6a4393c8af559999c0629dd79da701355532ae66a71b8e6d13311d906"
-              },
-              {
-                "bytes": 21240,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/decoder.py",
-                "sha256": "37ccac10cbc1412aa83c4ea6d2244b9c162d92d3e34da1d8440efc3568719478"
-              },
-              {
-                "bytes": 4776,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/verify.py",
-                "sha256": "20b85c7d4579e695d115e960d9ca074c304e96a3aa7657b7624c9e8271e66a30"
-              },
-              {
-                "bytes": 5856,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/materialize.py",
-                "sha256": "429d8837aceecc73c82d49e547e701967697171ced4359fd697ec6273b311670"
-              },
-              {
-                "bytes": 10715,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/config.json",
-                "sha256": "b871f51e2ac60a8000b50c954e3677210684f32934e4e8ef6f22b8cd68ced476"
-              },
-              {
-                "bytes": 5452,
-                "path": "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/akishima_settlement2020_2023/evidence-manifest.json",
-                "sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3"
-              }
-            ],
-            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.akishima_settlement2020_2023",
-            "financial_phase": null,
-            "grain": "printed whole-account 合計 control row; nonadditive; account scope _all (not general)",
-            "namespace": "akishima-settlement2020-2023",
-            "nonadditive": true,
-            "observation_role": "controls",
-            "original_source_table_id": "akishima-fy2021-settlement-fy2021-all-controls",
-            "pages": null,
-            "phase_semantics": "executed = 支出済額 only; settlement budget columns are nonadditive controls",
-            "project_setsu_linkage": "unconfirmed",
-            "recognition_proof": null,
-            "recognition_status": "recognized-2022-09-30",
-            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/260/r3kessan0.pdf",
-            "source_amount_unit": "円",
-            "source_key": "akishima-settlement2020-2023:132071:2021",
-            "source_manifest_sha256": "51d3b59664ccac3bf9fa7b7bfeb1073cf16f3c51c0bc830b23d410816d5461e3",
-            "statutory_correspondence_status": "not-applicable",
-            "submitted_date": null,
-            "table_id": "fy2021-all-controls",
-            "unit_multiplier": 1
-          }
+          "table_id": "akishima-settlement2020-2023-d68d9d785511b534"
         }
       ]
     }
@@ -2687,7 +1198,7 @@
     {
       "table_id": "akishima-settlement2020-2023-61cd3beb59e4d90b",
       "conversion_id": "akishima-settlement2020-2023-61cd3beb59e4d90b",
-      "input_fingerprint": "52a86d3eaf5d5108f0472cd054780a4bea99aa02a065d857dec73caf50da9753",
+      "input_fingerprint": "1a66c42149124ee639f9f375076ef20cd5535e67cbb558f97054d24e25fa6747",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132071/2021/settlement/expenditure/akishima-settlement2020-2023-61cd3beb59e4d90b.parquet",
@@ -2912,7 +1423,7 @@
     {
       "table_id": "akishima-settlement2020-2023-f828de7f5f6d5b17",
       "conversion_id": "akishima-settlement2020-2023-f828de7f5f6d5b17",
-      "input_fingerprint": "b78a5f3f67b384cd2a8d797585ac8c38cb8fc10d751bbdf055d4a61ff91dc2e9",
+      "input_fingerprint": "a488f739150976b68b5f9322cde9d8b98e739eda6c315cb1ca0f16c35cbc0bf0",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132071/2021/settlement/expenditure/akishima-settlement2020-2023-f828de7f5f6d5b17.parquet",
@@ -3157,7 +1668,7 @@
     {
       "table_id": "akishima-settlement2020-2023-c47358f74afd25bb",
       "conversion_id": "akishima-settlement2020-2023-c47358f74afd25bb",
-      "input_fingerprint": "c44790ae24aa9084ab46bcf3fa1067566d8ffcd3468a43d644406c418d47e91b",
+      "input_fingerprint": "1a24cac8c8244d3721c365be4d88c8859ae1d2cafdd0c0aaa75ebabbaee9d620",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132071/2021/settlement/expenditure/akishima-settlement2020-2023-c47358f74afd25bb.parquet",
@@ -3326,7 +1837,7 @@
     {
       "table_id": "akishima-settlement2020-2023-31cd7433144187d3",
       "conversion_id": "akishima-settlement2020-2023-31cd7433144187d3",
-      "input_fingerprint": "96ee9777b46b70b528d793bdd30e3e011ef2e208058192385f35f8ae3a5cfa54",
+      "input_fingerprint": "9450e4a92aebf9806ff4a98ef81cada27cae02bdf21b464988c7788a2f61eda5",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132071/2021/settlement/expenditure/akishima-settlement2020-2023-31cd7433144187d3.parquet",
@@ -3551,7 +2062,7 @@
     {
       "table_id": "akishima-settlement2020-2023-b0d7c454d6639c9e",
       "conversion_id": "akishima-settlement2020-2023-b0d7c454d6639c9e",
-      "input_fingerprint": "12297e0ebbd65610b33e28914e84f543797b039d86b4136ed68db3f0cb7e4468",
+      "input_fingerprint": "8264af7f30e238d93cb3cbf149592a413bc8e82e5b1babfb86dca05806be6640",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132071/2021/settlement/expenditure/akishima-settlement2020-2023-b0d7c454d6639c9e.parquet",
@@ -3796,7 +2307,7 @@
     {
       "table_id": "akishima-settlement2020-2023-c3cc60aa40e1f19d",
       "conversion_id": "akishima-settlement2020-2023-c3cc60aa40e1f19d",
-      "input_fingerprint": "1a60718b5bc939bda8cd034599ed9bfa5a20e18c9aa71161da3f2013ff15198a",
+      "input_fingerprint": "dacb91f5d70dcae28028944d8b42175ac7a64da5321b2ef95801cbe39349f9bd",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132071/2021/settlement/expenditure/akishima-settlement2020-2023-c3cc60aa40e1f19d.parquet",
@@ -3965,7 +2476,7 @@
     {
       "table_id": "akishima-settlement2020-2023-fe2671136ed358b1",
       "conversion_id": "akishima-settlement2020-2023-fe2671136ed358b1",
-      "input_fingerprint": "64527260fded06c4e1b19c8f20cc46cd667f0107ef82fee0b79f98bb4f75ec35",
+      "input_fingerprint": "d22462755ccd44f7c097cda00a05cc328107a0721db8c1f5844f8aa0b65f1ab0",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132071/2021/settlement/expenditure/akishima-settlement2020-2023-fe2671136ed358b1.parquet",
@@ -4190,7 +2701,7 @@
     {
       "table_id": "akishima-settlement2020-2023-50c38fc4bc46d8c5",
       "conversion_id": "akishima-settlement2020-2023-50c38fc4bc46d8c5",
-      "input_fingerprint": "1cdeeb27ee84b694a96e276c8ca39deed19cd8461b2c5bb3b7b82bb6f4b780c4",
+      "input_fingerprint": "c0a158640e5b637544438fecdab9c89f86be423d336c5c17b44abe03acbe1431",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132071/2021/settlement/expenditure/akishima-settlement2020-2023-50c38fc4bc46d8c5.parquet",
@@ -4435,7 +2946,7 @@
     {
       "table_id": "akishima-settlement2020-2023-5cf07ddfba61de1b",
       "conversion_id": "akishima-settlement2020-2023-5cf07ddfba61de1b",
-      "input_fingerprint": "e5af839455cf571c74cf7cb542fda563f550778a5cfdc52f1d4caab20a28855b",
+      "input_fingerprint": "4a144b205901cfc6cf58696ae5660ae98fecd01e176f247108c4c73b2ab1a424",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132071/2021/settlement/expenditure/akishima-settlement2020-2023-5cf07ddfba61de1b.parquet",
@@ -4604,7 +3115,7 @@
     {
       "table_id": "akishima-settlement2020-2023-ea837d56b9ac990c",
       "conversion_id": "akishima-settlement2020-2023-ea837d56b9ac990c",
-      "input_fingerprint": "c5bfbcbda70dca3a5cccd5f5a9e513465542e041bf3b48671eed0a3bbec67909",
+      "input_fingerprint": "6f9f9e1854eb08faa0b74d892313ea69b6b4435bea0cf91191d156bf01ac71d1",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132071/2021/settlement/expenditure/akishima-settlement2020-2023-ea837d56b9ac990c.parquet",
@@ -4829,7 +3340,7 @@
     {
       "table_id": "akishima-settlement2020-2023-746fd980488b6307",
       "conversion_id": "akishima-settlement2020-2023-746fd980488b6307",
-      "input_fingerprint": "6fe2ab4a6a59a91f6395288b8b7cb0590e67ce60f4a99bfbc6b6dc4c7a8920c5",
+      "input_fingerprint": "7be44942af9e0fc0e512f8ccf5758be544193360d976aeca85190f3edbc9bb7c",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132071/2021/settlement/expenditure/akishima-settlement2020-2023-746fd980488b6307.parquet",
@@ -5074,7 +3585,7 @@
     {
       "table_id": "akishima-settlement2020-2023-a2936b9b472691b6",
       "conversion_id": "akishima-settlement2020-2023-a2936b9b472691b6",
-      "input_fingerprint": "c015650677124f2893b137670090d03bd77a072a7495c71947976a688f485c08",
+      "input_fingerprint": "4aaed9cd41c8b85924b4f93e57e2c322cd409d7f5c6f2deb4b06319b8e788c40",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132071/2021/settlement/expenditure/akishima-settlement2020-2023-a2936b9b472691b6.parquet",
@@ -5243,7 +3754,7 @@
     {
       "table_id": "akishima-settlement2020-2023-bbd549861f56ce1f",
       "conversion_id": "akishima-settlement2020-2023-bbd549861f56ce1f",
-      "input_fingerprint": "dba9c07b3ebb813d983d2a42617c2b3f34250beb705d16c8c62038084a5017af",
+      "input_fingerprint": "6e7b24a43cf901bcb15a7079f0820693c015f56239aedb9552a0ffdfc4a76e72",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132071/2021/settlement/expenditure/akishima-settlement2020-2023-bbd549861f56ce1f.parquet",
@@ -5468,7 +3979,7 @@
     {
       "table_id": "akishima-settlement2020-2023-6e6c149c4940f718",
       "conversion_id": "akishima-settlement2020-2023-6e6c149c4940f718",
-      "input_fingerprint": "4e26e6f5bf00f78fb9787ad67704082d93d2f49b1f9931eb0f16c83659c1e15c",
+      "input_fingerprint": "b76ad6931b4ba3304c1f2cac40a5c3bb92998dc41aebe0a5d54e06a9ad9ab85a",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132071/2021/settlement/expenditure/akishima-settlement2020-2023-6e6c149c4940f718.parquet",
@@ -5713,7 +4224,7 @@
     {
       "table_id": "akishima-settlement2020-2023-6fcb13c3568fb760",
       "conversion_id": "akishima-settlement2020-2023-6fcb13c3568fb760",
-      "input_fingerprint": "cc5ae4bced356c5585848556511a0c7d6d0b1887145bdaa986bc505e47cef540",
+      "input_fingerprint": "23ac9d11973bf789cb1b5939f13e89ec66d19f37faee656d8df89839eaefaf45",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132071/2021/settlement/expenditure/akishima-settlement2020-2023-6fcb13c3568fb760.parquet",
@@ -5882,7 +4393,7 @@
     {
       "table_id": "akishima-settlement2020-2023-d68d9d785511b534",
       "conversion_id": "akishima-settlement2020-2023-d68d9d785511b534",
-      "input_fingerprint": "80a1414a14cb11fd070c9eda7be17056e8bbbd3dcb25a00e91d844501f1d1517",
+      "input_fingerprint": "b227988852a8b7fffe10c084eb6503fe13cd647b1f4d5320c3e452c3c620c651",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132071/2021/settlement/expenditure/akishima-settlement2020-2023-d68d9d785511b534.parquet",

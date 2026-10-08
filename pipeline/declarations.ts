@@ -1,12 +1,12 @@
-import { mkdir, writeFile } from 'node:fs/promises'
+import { mkdir, writeFile, readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { loadJurisdictions } from '@fudoki/jurisdictions'
 import { cofogMaster } from '@fudoki/fiscal/cofog-master'
 import { expenditureSetsuMaster } from '@fudoki/fiscal/setsu-master'
 import { BY_JURISDICTION } from './ingestion/fiscal/metadata'
-import { BUILD, PIPELINE } from './paths'
+import { BUILD } from './runtime_paths'
 
-export async function writeDeclarations() {
+export async function writeDeclarations(inputDirectory: string) {
   const directory = join(BUILD, 'declarations')
   await mkdir(directory, { recursive: true })
   await writeFile(
@@ -46,22 +46,14 @@ export async function writeDeclarations() {
     join(directory, 'jurisdiction_master.json'),
     JSON.stringify(jurisdictions)
   )
-  const process = Bun.spawn(
-    ['uv', 'run', 'python', '-m', 'ingestion.declarations'],
-    { cwd: PIPELINE, stderr: 'inherit', stdout: 'pipe' }
-  )
-  const body = await new Response(process.stdout).text()
-  if ((await process.exited) !== 0)
-    throw new Error('Unable to read ingestion declarations')
-  const { sources, history } = JSON.parse(body) as {
-    sources: { jurisdiction_code: string }[]
-    history: unknown[]
-  }
+  const sourcesBody = await readFile(join(inputDirectory, 'sources.json'), 'utf8')
+  const historyBody = await readFile(join(inputDirectory, 'history.json'), 'utf8')
+  const sources = JSON.parse(sourcesBody) as { jurisdiction_code: string }[]
   for (const source of sources) {
     if (!BY_JURISDICTION[source.jurisdiction_code])
       throw new Error(`Missing public metadata: ${source.jurisdiction_code}`)
   }
-  await writeFile(join(directory, 'sources.json'), JSON.stringify(sources))
-  await writeFile(join(directory, 'history.json'), JSON.stringify(history))
+  await writeFile(join(directory, 'sources.json'), sourcesBody)
+  await writeFile(join(directory, 'history.json'), historyBody)
   return directory
 }

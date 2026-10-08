@@ -43,24 +43,36 @@ bun run ingestion:cleanup --manifest "$TARGET"
 
 CSV用と既存の見開きPDF用の入口は `fiscal/layouts/csv/` と `fiscal/layouts/statement/`。他の書式は `convert(inputs, destination, options)` と同じフォルダの `options.schema.json` を定義し、受け取った原典から表IDとローカルParquetの対応を返す。既存表の移行用 `retained` は原典から再抽出するコードではない。移動した旧抽出器のCLIはローカル候補用に残す。
 
+管理JSONは `schema_version: 2` で、`expected_tables` は表IDだけを持つ。原典・変換設定・出力表の属性を管理し、dbt用の宣言やコード参照は含めない。`declaration`・`definition_files`・`legacy_path` を戻すとschema検査で拒否する。
+
 設計と失敗時の再実行は [保存設計](../docs/prd/ingestion-storage/design-doc.md)、旧表の移行範囲は [移行記録](../docs/prd/ingestion-storage/migration.md)、CSV・text PDF・scan PDFの作業は [ingestion手順](../.agents/skills/pipeline/references/ingestion.md) を参照する。
 
-## 固定入力から構築する（旧C/Fの読み取り）
+## 保存済みParquetと確定済み宣言から構築する
 
-ツールは root の mise、依存は Bun と uv で管理する。Python は3.13。
+ツールは root の mise、依存は Bun と uv で管理する。Python は3.13。 repo rootから実行する。
+
+`DECLARATIONS` は受け取った確定済み宣言ディレクトリの絶対パスで、dbt用の `sources.json`（出典・意味）と `history.json`（予算履歴）の行配列を置く。履歴がなければ `[]` を渡す。`FUDOKI_INPUT_DECLARATIONS_DIR` でも指定できる。取り込み表の対象別JSONと、この宣言JSONは用途が異なる。 Cからこのディレクトリへの宣言出力の接続は未完了である。
 
 ```bash
 mise install
 bun install --frozen-lockfile
 uv sync --frozen
 bun run pipeline:inputs
-bun run pipeline:build
-bun run pipeline:build --rebuild
+bun run pipeline:build --declarations "$DECLARATIONS"
+bun run pipeline:build --declarations "$DECLARATIONS" --rebuild
 ```
 
-`pipeline:inputs` は ingestion の `sources.lock.json` が指定する原典・表を R2 から復元し、入力一覧が固定する原典・Parquetのハッシュを照合する。復元先は `.cache/inputs/<入力一覧のhash>/raw/`。必要な入力が欠けた場合は停止し、自治体サイトの最新版で補わない。
+`pipeline:inputs` は対象別JSONに登録された現在のParquetをprivate R2から復元し、SHA・サイズを照合する。原典・OCR・Cの検査や旧補助証拠の復元は実行しない。必要な表が欠けた場合は停止し、自治体サイトの最新版で補わない。
 
-`build.ts` は復元済みの固定入力を使い、ネットワークなしで dbt の変換・検査と marts の CSV 生成を実行する。結果は `.build/builds/b-<内部構築ID>/` に入る。毎回 `.build/workspace/` を作り直して生成し、同じ構築 ID が既にある場合は CSV のハッシュを照合する。`--rebuild` でも同じ検査を行う。`.build/warehouse.duckdb` は検証画面用の再生成可能な DB である。
+`build_inputs.py` は宣言の団体・年度・方向・資料種類と、その範囲の原典または表のSHA集合への所属を照合し、ParquetとJSONを `.cache/inputs/<入力fingerprint>/` にコピーして固定する。`raw/` はdbtへの入力、`declarations/` は渡されたJSON、`catalog.json` は管理JSON・表・原典参照との対応を保持する。補正号・会計・個別表と宣言の1対1対応をこの入口で認定するものではない。
+
+既存表のdbt用partitionと意味は `dbt/inputs/<団体>/<年度>/<資料区分>/<方向>.json` が表IDごとに保持する。型は [bindings.schema.json](dbt/inputs/bindings.schema.json)、検査は `bun run --cwd pipeline dbt:inputs:check`。取り込みJSONには戻さない。F側の宣言・コードを変えても、取り込み表のfingerprintやParquetの再生成条件は変えない。初期予算の管理値 `initial` は既存dbtの `document_kind=budget` に対応する。dbt用宣言JSONでもこの既存値を使う。
+
+対象を絞る場合は復元と構築の両方に同じ `--manifest <対象JSON>` を繰り返して渡す。ただしdbtモデルの選択は自動で絞らない。既存モデルに必要な補助表が欠けた場合は空表で補わず、入力とモデル範囲を確認する。
+
+`build.ts` は固定した入力を使い、ネットワークなしで dbt の変換・検査と marts の CSV 生成を実行する。Cの宣言生成処理は呼ばない。結果は `.build/builds/b-<内部構築ID>/` に入る。毎回 `.build/workspace/` を作り直し、同じ構築 ID があれば CSV のハッシュを照合する。`--rebuild` でも同じ検査を行う。`.build/warehouse.duckdb` は検証画面用の再生成可能な DB である。構築IDには入力JSON・表の参照と宣言JSONの内容を含める。
+
+通常監査G・検証報告は旧入力一覧を参照する経路が残る。新しいFの結果をそのまま旧Gの全量検証済みと扱わない。Cの宣言出力先と実データでの全量構築は別途確認する。
 
 財政の表は `dbt/models/marts/records/`、団体別 CSV は `dbt/models/marts/csv/` で定義する。任意の FDP descriptor 整形は `bun run pipeline:fdp` で実行できる。公開 web・API・MCP・docs は一時的に HTTP 500 を返す。
 
@@ -111,16 +123,16 @@ bun run --cwd pipeline test:python
 
 CI の全量 job は `FUDOKI_FIXED_INPUTS_READY=true` と非公開入力の読取権限がある場合だけ動く。固定入力からの build・再構築・報告を検査する。収録範囲と未完了項目は [全年度収録のPRD](../docs/prd/fiscal-coverage/prd.md) で管理する。
 
-## 旧C/Fの入力一覧の形式
+## 旧入力一覧を使う互換経路
 
-新しいBの保存情報は対象別JSONに置く。旧C/Fの固定入力はschemaVersion 3の `sources.lock.json` で原典・Parquetのハッシュ、保存先、source宣言を管理する。候補抽出は `inputs.lock.json` を生成し、provenanceの別ファイルは生成・復元しない。行数・型はParquetから読み、検査結果は再生成するレポートへ出す。`uv run python -m ingestion.inputs describe` で現在の入力宣言と表の情報を確認できる。
+新しいBの保存情報は対象別JSONに置く。旧検査・監査の固定入力はschemaVersion 3の `sources.lock.json` で原典・Parquetのハッシュ、保存先、source宣言を管理する。候補抽出は `inputs.lock.json` を生成し、provenanceの別ファイルは生成・復元しない。行数・型はParquetから読み、検査結果は再生成するレポートへ出す。`uv run python -m ingestion.inputs describe` で現在の入力宣言と表の情報を確認できる。
 
 ## 宣言と再生成する検査結果の保存
 
 | 保存対象 | 置き場と更新方法 |
 | --- | --- |
 | `sources.json` | Git。既存の取り込み宣言と固定入力・収録監査が参照する原典情報。構造は [sources.schema.json](ingestion/fiscal/management/sources.schema.json) を参照する。 |
-| `sources.lock.json`、原典別の宣言・ハッシュ一覧 | Git。採用した版と取り込み表、コード・訂正の対応を固定する入力。`pipeline:inputs` はその指定を復元する処理であり、公開サイトの現在の内容から一覧を書き直す処理ではない。コードを変更した場合は、参照する宣言のハッシュも更新し、原典・表・財政値を変えていないか差分を確認する。 |
+| `sources.lock.json`、原典別の宣言・ハッシュ一覧 | Git。採用した版と取り込み表、コード・訂正の対応を固定する入力。旧検査・監査の互換入力であり、新しいFの入力採用には使わない。コードを変更した場合は、参照する宣言のハッシュも更新し、原典・表・財政値を変えていないか差分を確認する。 |
 | 転記・セル台帳の JSON | 原典の画像から確認した訂正や、採用済みの明細と原典位置を結ぶ宣言は Git。原典だけから同じ判断を自動生成できるとは扱わない。宣言が参照するPDF・画像・文字観測のバイト列は非公開 R2。 |
 | dbt、CSV、検証報告、実行時の比較結果 | 再生成する検査結果は `.build/`、試作・未採用の比較結果は `.agent/`。生成した全量DB・CSVや作業記録をGitへ追加しない。構築・再構築・`pipeline:report`・`coverage:fiscal --json` の結果と対象headをPRのQA欄で記録する。 |
 

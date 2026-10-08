@@ -91,6 +91,7 @@ def distinct_table_id(entry: dict, scopes: list[dict], conversions: list[dict]) 
 def plan(lock: dict) -> tuple[list[dict], dict]:
     index = selected_sources()
     documents = {}
+    bindings = {}
     held = []
     for entry in lock['entries']:
         if entry['direction'] not in ('expenditure', 'revenue'):
@@ -118,7 +119,7 @@ def plan(lock: dict) -> tuple[list[dict], dict]:
             continue
         target = selection['target']
         key = tuple([json.dumps(target, sort_keys=True), entry['direction']])
-        document = documents.setdefault(key, {'schema_version': 1, 'target': target,
+        document = documents.setdefault(key, {'schema_version': 2, 'target': target,
                     'direction': entry['direction'], 'candidate_id': selection['selected_candidate_id'],
                     'status': 'planned', 'conversions': [], 'tables': []})
         ident = distinct_table_id(entry, scopes, document['conversions'])
@@ -129,8 +130,11 @@ def plan(lock: dict) -> tuple[list[dict], dict]:
             'options_schema': 'fiscal/layouts/retained/options.schema.json', 'dependencies': [],
             'inputs': [{'sha256': entry['originEdition'], 'format': file['format'], 'scope': scopes}],
             'options': {'objects': [{'table_id': ident, **entry['table']}]},
-            'expected_tables': [{'table_id': ident, 'legacy_path': entry['path'],
-                                 'declaration': relocated_declaration(entry['source'])}]})
+            'expected_tables': [{'table_id': ident}]})
+        binding = bindings.setdefault(key, {'schema_version': 1, 'target': target,
+                                           'direction': entry['direction'], 'tables': []})
+        binding['tables'].append({'table_id': ident, 'raw_path': entry['path'] + '/data.parquet',
+                                 'declaration': relocated_declaration(entry['source'])})
     result = sorted(documents.values(), key=lambda d: str(manifest.manifest_path(d['target'], d['direction'])))
     for document in result:
         manifest.validate(document)
@@ -138,7 +142,8 @@ def plan(lock: dict) -> tuple[list[dict], dict]:
             manifest.resolved_inputs(document, conversion)
     return result, {'legacy_entries': len(lock['entries']), 'manifests': len(result),
                     'planned_tables': sum(len(d['conversions']) for d in result),
-                    'held': held, 'held_by_reason': dict(Counter(item['reason'] for item in held))}
+                    'held': held, 'held_by_reason': dict(Counter(item['reason'] for item in held)),
+                    'dbt_bindings': list(bindings.values())}
 
 
 def import_tables(document: dict, *, remote: bool, origin_sizes: dict[str, int], extend_plans: bool = False) -> dict:
@@ -187,6 +192,8 @@ def main() -> None:
     args = parser.parse_args()
     lock = json.loads(args.lock.read_text())
     documents, report = plan(lock)
+    from dbt_inputs import path_for, write as write_bindings
+    bindings = {path_for(binding): binding for binding in report['dbt_bindings']}
     origin_sizes = {}
     for entry in lock['entries']:
         sha, size = entry['originEdition'], entry['origin']['object']['bytes']
@@ -198,13 +205,16 @@ def main() -> None:
     saved = 0
     for document in documents:
         path = manifest.manifest_path(document['target'], document['direction'])
+        if args.write_plans or args.remote:
+            write_bindings(bindings[path_for(document)], document, extend=args.extend_plans)
         if args.write_plans and not path.exists():
             manifest.write(path, document)
         if args.remote:
             result = import_tables(document, remote=True, origin_sizes=origin_sizes, extend_plans=args.extend_plans)
             saved += result['tables']
             print(json.dumps({'manifest': str(path.relative_to(PIPELINE)), **result}), flush=True)
-    print(json.dumps({key: value for key, value in report.items() if key != 'held'} | {'saved_tables': saved}))
+    print(json.dumps({key: value for key, value in report.items() if key not in ('held', 'dbt_bindings')}
+                     | {'saved_tables': saved, 'dbt_binding_manifests': len(bindings)}))
 
 
 if __name__ == '__main__':

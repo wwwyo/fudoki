@@ -9,23 +9,46 @@ import {
   cp,
 } from 'node:fs/promises'
 import { join } from 'node:path'
+import { parseArgs } from 'node:util'
 import {
   BUILD,
   DBT_TARGET,
-  INPUTS,
-  INPUT_LOCK,
   PIPELINE,
   WAREHOUSE,
-} from './paths'
+} from './runtime_paths'
 import { writeDeclarations } from './declarations'
 import { buildIdentity } from './identity'
 import { artifactHashes, verifyArtifacts } from './artifacts'
 
-if (process.argv.slice(2).some((arg) => arg !== '--rebuild'))
-  throw new Error('Expected only --rebuild')
-const identity = await buildIdentity()
+const { values: options } = parseArgs({
+  args: process.argv.slice(2),
+  options: {
+    rebuild: { type: 'boolean' },
+    declarations: { type: 'string' },
+    manifest: { type: 'string', multiple: true },
+  },
+})
+const declarationInput = options.declarations ?? process.env.FUDOKI_INPUT_DECLARATIONS_DIR
+if (!declarationInput)
+  throw new Error('Supply --declarations <directory> containing the confirmed sources.json and history.json')
+const preparation = Bun.spawn([
+  'uv', 'run', 'python', '-m', 'build_inputs', 'prepare', '--declarations', declarationInput,
+  ...(options.manifest ?? []).flatMap((path) => ['--manifest', path]),
+], { cwd: PIPELINE, stdout: 'pipe', stderr: 'inherit' })
+const preparedBody = await new Response(preparation.stdout).text()
+if ((await preparation.exited) !== 0)
+  throw new Error('Unable to prepare saved ingestion inputs')
+const prepared = JSON.parse(preparedBody) as {
+  inputFingerprint: string
+  catalog: string
+  inputs: string
+  declarations: string
+  tables: number
+  manifests: number
+}
+const identity = await buildIdentity(prepared.inputFingerprint)
 const candidate = join(BUILD, 'builds', identity.buildId)
-const declarations = await writeDeclarations()
+const declarations = await writeDeclarations(prepared.declarations)
 await mkdir(join(BUILD, 'builds'), { recursive: true })
 let expected: Record<string, string> | null = null
 try {
@@ -50,8 +73,8 @@ async function run(command: string[], cwd = PIPELINE) {
     cwd,
     env: {
       ...Bun.env,
-      FUDOKI_INPUT_LOCK: INPUT_LOCK,
-      FUDOKI_INPUT_DIR: INPUTS,
+      FUDOKI_INPUT_CATALOG: prepared.catalog,
+      FUDOKI_INPUT_DIR: prepared.inputs,
       FUDOKI_PACKAGE_DIR: join(working, 'fiscal'),
       FUDOKI_INTERNAL_PACKAGE_DIR: join(working, 'internal/fiscal'),
       FUDOKI_DECLARATIONS_DIR: declarations,
@@ -66,16 +89,6 @@ await rm(join(BUILD, 'warehouse.json'), { force: true })
 try {
   await rm(working, { recursive: true, force: true })
   await mkdir(working, { recursive: true })
-  await run([
-    'uv',
-    'run',
-    'python',
-    '-m',
-    'ingestion.inputs',
-    'restore',
-    '--lock',
-    INPUT_LOCK,
-  ])
   const sources = JSON.parse(
     await readFile(join(declarations, 'sources.json'), 'utf8')
   ) as { jurisdiction_code: string }[]
@@ -114,7 +127,8 @@ try {
   }
   await writeFile(
     join(BUILD, 'latest.json'),
-    JSON.stringify({ ...identity, inputLock: INPUT_LOCK }) + '\n'
+    JSON.stringify({ ...identity, inputMode: 'ingestion-manifests',
+      inputCatalog: prepared.catalog, inputDir: prepared.inputs }) + '\n'
   )
   await writeFile(
     join(BUILD, 'warehouse.json'),

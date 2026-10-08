@@ -1,0 +1,779 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132241",
+    "fiscal_year": 2026,
+    "document_kind": "initial"
+  },
+  "direction": "expenditure",
+  "tables": [
+    {
+      "table_id": "tama-initial-native-e9f0792a5b833db8",
+      "raw_path": "tama-initial-native/jurisdiction=132241/year=2026/document_kind=budget/edition=a991d897f8fb97774bbf48ce3c990d7a91057b80763a5cfdc83d3265f3661c47/direction=expenditure/table=initial-2026-pages-104-125-expenditure/data.parquet",
+      "declaration": {
+        "account": "介護保険特別会計",
+        "approval_date": "2026-03-30",
+        "approval_proof": {
+          "basis": "財政課の正式予算書掲載、議案9・10・11の原案可決、正式版で可決後本予算書となる注記が削除されたことを併せた判断。本年度の歳出欄に限定。議案版との対象52頁の抽出文字は一致するが、原典のバイト列・全位置の同一性は主張しない。",
+          "date": "2026-03-30",
+          "evidence_urls": [
+            "https://www.city.tama.lg.jp/shigikai/kaigi/kekka/1019561/1019818.html"
+          ]
+        },
+        "canonical_initial": true,
+        "definition_files": {
+          "pipeline/dbt/models/intermediate/fiscal/records/int_132241__initial_native.sql": {
+            "bytes": 3241,
+            "sha256": "527d3bfd8f541541f8f5ba49a2953940a63eefdef6b82948ac1409352fdec55a"
+          },
+          "pipeline/dbt/models/intermediate/fiscal/records/int_132241__initial_native_datasets.sql": {
+            "bytes": 827,
+            "sha256": "4729191408bdafc563cf771fd92ae71e162de83ccfecec3038a376ace2bc3b6f"
+          },
+          "pipeline/dbt/models/marts/csv/csv_132241_initial_native_observations.sql": {
+            "bytes": 127,
+            "sha256": "0416be3a8a45b0edc71882f422517a16c1f934bae5caafbb937596ae24106658"
+          },
+          "pipeline/dbt/models/marts/records/fiscal_132241_initial_native_items.sql": {
+            "bytes": 772,
+            "sha256": "8349e8e271a9ccfcbdf494df9270782849c8cfe2375a50525b9faa1ce23c19ae"
+          },
+          "pipeline/dbt/models/marts/records/fiscal_132241_initial_native_lines.sql": {
+            "bytes": 1216,
+            "sha256": "d8d0b19598a373357bc2c730cd26f47a9fc2062b8518fd7a020106c5d9393250"
+          },
+          "pipeline/dbt/models/marts/records/fiscal_132241_initial_native_observations.sql": {
+            "bytes": 187,
+            "sha256": "6812e520eb6b92407ee0f8a1b3e991a34a9785e2c03f477b8c165bb1bfe4ec73"
+          },
+          "pipeline/dbt/models/marts/records/fiscal_datasets.sql": {
+            "bytes": 3329,
+            "sha256": "eba0d96e649dda04ed1af1665ec462e396ce08770dbc279e206e35f6c250a157"
+          },
+          "pipeline/dbt/models/staging/fiscal/_tama_initial_native_sources.yml": {
+            "bytes": 596,
+            "sha256": "3279e93766a318ec90432e8f2c3582fd9d4604ae083c72c997c59016b1a1c8a1"
+          },
+          "pipeline/dbt/models/staging/fiscal/stg_132241__initial_native.sql": {
+            "bytes": 252,
+            "sha256": "d5299cdb1db3535d62fab0215e47eaa4834915c01da5e539438f407bff0e1974"
+          },
+          "pipeline/dbt/tests/expenditure_setsu.sql": {
+            "bytes": 4175,
+            "sha256": "70d887a7749082792b215e164de7baa8f01f2a89db5eaca6590f5bb659c82704"
+          },
+          "pipeline/ingestion/acquire.py": {
+            "bytes": 1444,
+            "sha256": "de34d0cdec78aa705f2eac066e4894e8414e580f21959871802357c509cd1669"
+          },
+          "pipeline/ingestion/declarations.py": {
+            "bytes": 10750,
+            "sha256": "6ac901ab81adcf28c5e02814c47df4059a7af7b227979892c3624293d81fea17"
+          },
+          "pipeline/ingestion/fiscal/management/source_registry.py": {
+            "bytes": 23339,
+            "sha256": "62a31679cfd052f89b131613c1b0c39f00eedd55dab1481aeb14c6effcbfda97"
+          },
+          "pipeline/ingestion/fiscal/management/sources.json": {
+            "bytes": 10825154,
+            "sha256": "493bd46ff6a9efd13f14ad60a7cec731b0077f356a33fea5172649362955d0b6"
+          },
+          "pipeline/ingestion/fiscal/management/sources.py": {
+            "bytes": 35340,
+            "sha256": "bdec43d75380fe6a22acb0a992b35b875dd338d541442ac6272d3738cf0250f4"
+          },
+          "pipeline/ingestion/fiscal/management/sources.schema.json": {
+            "bytes": 60444,
+            "sha256": "37be08d80b36fd636bfe9f73d867d8411c90d660668bd09804d53d48260ee5e7"
+          },
+          "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_budget_detail.py": {
+            "bytes": 35487,
+            "sha256": "318618d5073bffb68eef7b78e5c1e62b0c8a50d7c6d35dc662f79366c4e188dc"
+          },
+          "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_initial_native_coverage.py": {
+            "bytes": 21986,
+            "sha256": "c8102dff4e5c87009c301c6da60047c2619016fcbe6ea5c59f85213cc6cd9975"
+          },
+          "pipeline/ingestion/inputs.py": {
+            "bytes": 29297,
+            "sha256": "8ebb97335423301f43e1409787638a91e1fe8f1cc2b6a5fd45ce4bec27792f37"
+          },
+          "pipeline/ingestion/lib/pdf.py": {
+            "bytes": 6028,
+            "sha256": "3a2d82f5f12da4d1e88810a1d5dc8dd74afac5fe599b9c35f87b826e006b94d5"
+          },
+          "uv.lock": {
+            "bytes": 97982,
+            "sha256": "669b2914b1b4d6c1b36b31a35d915eff84fdf54a5a7713cddca7c9df27d0a197"
+          }
+        },
+        "document_title": "令和8年度 特別会計・下水道事業会計予算書 （PDF 5.2 MB）",
+        "extractor": "ingestion.fiscal.jurisdictions.132241.layouts.tama_budget_detail",
+        "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/897/08tokubetu-1.pdf",
+        "financial_phase": "approved",
+        "fund_label": "介護保険特別会計",
+        "grain": "printed-project-setsu-detail-or-unprinted-setsu-reserve",
+        "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/yosan/1004897.html",
+        "namespace": "tama-initial-native",
+        "nonadditive": false,
+        "observation_role": "expenditure",
+        "pages": [
+          104,
+          125
+        ],
+        "phases": [
+          "approved"
+        ],
+        "printed_total": 13723675,
+        "raw_form": "extracted",
+        "recognition_basis": "正式原典の本年度歳出欄のみ。節の対応は同じ目の左節表と年度マスタで検査する。",
+        "recognition_status": "registered-approved-initial",
+        "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/897/08tokubetu-1.pdf",
+        "source_amount_unit": "千円",
+        "source_key": "132241-612a9c79bb92",
+        "source_position_method": "native-pdftotext-bbox-layout",
+        "table_id": "initial-2026-pages-104-125-expenditure",
+        "unit_multiplier": 1000
+      }
+    },
+    {
+      "table_id": "tama-initial-native-943d726baf7a983b",
+      "raw_path": "tama-initial-native/jurisdiction=132241/year=2026/document_kind=budget/edition=a991d897f8fb97774bbf48ce3c990d7a91057b80763a5cfdc83d3265f3661c47/direction=expenditure/table=initial-2026-pages-104-125-observations/data.parquet",
+      "declaration": {
+        "account": "介護保険特別会計",
+        "approval_date": "2026-03-30",
+        "approval_proof": {
+          "basis": "財政課の正式予算書掲載、議案9・10・11の原案可決、正式版で可決後本予算書となる注記が削除されたことを併せた判断。本年度の歳出欄に限定。議案版との対象52頁の抽出文字は一致するが、原典のバイト列・全位置の同一性は主張しない。",
+          "date": "2026-03-30",
+          "evidence_urls": [
+            "https://www.city.tama.lg.jp/shigikai/kaigi/kekka/1019561/1019818.html"
+          ]
+        },
+        "canonical_initial": false,
+        "definition_files": {
+          "pipeline/dbt/models/intermediate/fiscal/records/int_132241__initial_native.sql": {
+            "bytes": 3241,
+            "sha256": "527d3bfd8f541541f8f5ba49a2953940a63eefdef6b82948ac1409352fdec55a"
+          },
+          "pipeline/dbt/models/intermediate/fiscal/records/int_132241__initial_native_datasets.sql": {
+            "bytes": 827,
+            "sha256": "4729191408bdafc563cf771fd92ae71e162de83ccfecec3038a376ace2bc3b6f"
+          },
+          "pipeline/dbt/models/marts/csv/csv_132241_initial_native_observations.sql": {
+            "bytes": 127,
+            "sha256": "0416be3a8a45b0edc71882f422517a16c1f934bae5caafbb937596ae24106658"
+          },
+          "pipeline/dbt/models/marts/records/fiscal_132241_initial_native_items.sql": {
+            "bytes": 772,
+            "sha256": "8349e8e271a9ccfcbdf494df9270782849c8cfe2375a50525b9faa1ce23c19ae"
+          },
+          "pipeline/dbt/models/marts/records/fiscal_132241_initial_native_lines.sql": {
+            "bytes": 1216,
+            "sha256": "d8d0b19598a373357bc2c730cd26f47a9fc2062b8518fd7a020106c5d9393250"
+          },
+          "pipeline/dbt/models/marts/records/fiscal_132241_initial_native_observations.sql": {
+            "bytes": 187,
+            "sha256": "6812e520eb6b92407ee0f8a1b3e991a34a9785e2c03f477b8c165bb1bfe4ec73"
+          },
+          "pipeline/dbt/models/marts/records/fiscal_datasets.sql": {
+            "bytes": 3329,
+            "sha256": "eba0d96e649dda04ed1af1665ec462e396ce08770dbc279e206e35f6c250a157"
+          },
+          "pipeline/dbt/models/staging/fiscal/_tama_initial_native_sources.yml": {
+            "bytes": 596,
+            "sha256": "3279e93766a318ec90432e8f2c3582fd9d4604ae083c72c997c59016b1a1c8a1"
+          },
+          "pipeline/dbt/models/staging/fiscal/stg_132241__initial_native.sql": {
+            "bytes": 252,
+            "sha256": "d5299cdb1db3535d62fab0215e47eaa4834915c01da5e539438f407bff0e1974"
+          },
+          "pipeline/dbt/tests/expenditure_setsu.sql": {
+            "bytes": 4175,
+            "sha256": "70d887a7749082792b215e164de7baa8f01f2a89db5eaca6590f5bb659c82704"
+          },
+          "pipeline/ingestion/acquire.py": {
+            "bytes": 1444,
+            "sha256": "de34d0cdec78aa705f2eac066e4894e8414e580f21959871802357c509cd1669"
+          },
+          "pipeline/ingestion/declarations.py": {
+            "bytes": 10750,
+            "sha256": "6ac901ab81adcf28c5e02814c47df4059a7af7b227979892c3624293d81fea17"
+          },
+          "pipeline/ingestion/fiscal/management/source_registry.py": {
+            "bytes": 23339,
+            "sha256": "62a31679cfd052f89b131613c1b0c39f00eedd55dab1481aeb14c6effcbfda97"
+          },
+          "pipeline/ingestion/fiscal/management/sources.json": {
+            "bytes": 10825154,
+            "sha256": "493bd46ff6a9efd13f14ad60a7cec731b0077f356a33fea5172649362955d0b6"
+          },
+          "pipeline/ingestion/fiscal/management/sources.py": {
+            "bytes": 35340,
+            "sha256": "bdec43d75380fe6a22acb0a992b35b875dd338d541442ac6272d3738cf0250f4"
+          },
+          "pipeline/ingestion/fiscal/management/sources.schema.json": {
+            "bytes": 60444,
+            "sha256": "37be08d80b36fd636bfe9f73d867d8411c90d660668bd09804d53d48260ee5e7"
+          },
+          "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_budget_detail.py": {
+            "bytes": 35487,
+            "sha256": "318618d5073bffb68eef7b78e5c1e62b0c8a50d7c6d35dc662f79366c4e188dc"
+          },
+          "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_initial_native_coverage.py": {
+            "bytes": 21986,
+            "sha256": "c8102dff4e5c87009c301c6da60047c2619016fcbe6ea5c59f85213cc6cd9975"
+          },
+          "pipeline/ingestion/inputs.py": {
+            "bytes": 29297,
+            "sha256": "8ebb97335423301f43e1409787638a91e1fe8f1cc2b6a5fd45ce4bec27792f37"
+          },
+          "pipeline/ingestion/lib/pdf.py": {
+            "bytes": 6028,
+            "sha256": "3a2d82f5f12da4d1e88810a1d5dc8dd74afac5fe599b9c35f87b826e006b94d5"
+          },
+          "uv.lock": {
+            "bytes": 97982,
+            "sha256": "669b2914b1b4d6c1b36b31a35d915eff84fdf54a5a7713cddca7c9df27d0a197"
+          }
+        },
+        "document_title": "令和8年度 特別会計・下水道事業会計予算書 （PDF 5.2 MB）",
+        "extractor": "ingestion.fiscal.jurisdictions.132241.layouts.tama_budget_detail",
+        "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/897/08tokubetu-1.pdf",
+        "financial_phase": null,
+        "fund_label": "介護保険特別会計",
+        "grain": "nonadditive-printed-control-and-explanation",
+        "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/yosan/1004897.html",
+        "namespace": "tama-initial-native",
+        "nonadditive": true,
+        "observation_role": "observations",
+        "pages": [
+          104,
+          125
+        ],
+        "phases": [],
+        "printed_total": 13723675,
+        "raw_form": "extracted",
+        "recognition_basis": "正式原典の本年度歳出欄のみ。節の対応は同じ目の左節表と年度マスタで検査する。",
+        "recognition_status": "nonadditive-observations",
+        "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/897/08tokubetu-1.pdf",
+        "source_amount_unit": "千円",
+        "source_key": "132241-612a9c79bb92",
+        "source_position_method": "native-pdftotext-bbox-layout",
+        "table_id": "initial-2026-pages-104-125-observations",
+        "unit_multiplier": 1000
+      }
+    },
+    {
+      "table_id": "tama-initial-native-8b97671fd91fbbe2",
+      "raw_path": "tama-initial-native/jurisdiction=132241/year=2026/document_kind=budget/edition=a991d897f8fb97774bbf48ce3c990d7a91057b80763a5cfdc83d3265f3661c47/direction=expenditure/table=initial-2026-pages-156-163-expenditure/data.parquet",
+      "declaration": {
+        "account": "後期高齢者医療特別会計",
+        "approval_date": "2026-03-30",
+        "approval_proof": {
+          "basis": "財政課の正式予算書掲載、議案9・10・11の原案可決、正式版で可決後本予算書となる注記が削除されたことを併せた判断。本年度の歳出欄に限定。議案版との対象52頁の抽出文字は一致するが、原典のバイト列・全位置の同一性は主張しない。",
+          "date": "2026-03-30",
+          "evidence_urls": [
+            "https://www.city.tama.lg.jp/shigikai/kaigi/kekka/1019561/1019818.html"
+          ]
+        },
+        "canonical_initial": true,
+        "definition_files": {
+          "pipeline/dbt/models/intermediate/fiscal/records/int_132241__initial_native.sql": {
+            "bytes": 3241,
+            "sha256": "527d3bfd8f541541f8f5ba49a2953940a63eefdef6b82948ac1409352fdec55a"
+          },
+          "pipeline/dbt/models/intermediate/fiscal/records/int_132241__initial_native_datasets.sql": {
+            "bytes": 827,
+            "sha256": "4729191408bdafc563cf771fd92ae71e162de83ccfecec3038a376ace2bc3b6f"
+          },
+          "pipeline/dbt/models/marts/csv/csv_132241_initial_native_observations.sql": {
+            "bytes": 127,
+            "sha256": "0416be3a8a45b0edc71882f422517a16c1f934bae5caafbb937596ae24106658"
+          },
+          "pipeline/dbt/models/marts/records/fiscal_132241_initial_native_items.sql": {
+            "bytes": 772,
+            "sha256": "8349e8e271a9ccfcbdf494df9270782849c8cfe2375a50525b9faa1ce23c19ae"
+          },
+          "pipeline/dbt/models/marts/records/fiscal_132241_initial_native_lines.sql": {
+            "bytes": 1216,
+            "sha256": "d8d0b19598a373357bc2c730cd26f47a9fc2062b8518fd7a020106c5d9393250"
+          },
+          "pipeline/dbt/models/marts/records/fiscal_132241_initial_native_observations.sql": {
+            "bytes": 187,
+            "sha256": "6812e520eb6b92407ee0f8a1b3e991a34a9785e2c03f477b8c165bb1bfe4ec73"
+          },
+          "pipeline/dbt/models/marts/records/fiscal_datasets.sql": {
+            "bytes": 3329,
+            "sha256": "eba0d96e649dda04ed1af1665ec462e396ce08770dbc279e206e35f6c250a157"
+          },
+          "pipeline/dbt/models/staging/fiscal/_tama_initial_native_sources.yml": {
+            "bytes": 596,
+            "sha256": "3279e93766a318ec90432e8f2c3582fd9d4604ae083c72c997c59016b1a1c8a1"
+          },
+          "pipeline/dbt/models/staging/fiscal/stg_132241__initial_native.sql": {
+            "bytes": 252,
+            "sha256": "d5299cdb1db3535d62fab0215e47eaa4834915c01da5e539438f407bff0e1974"
+          },
+          "pipeline/dbt/tests/expenditure_setsu.sql": {
+            "bytes": 4175,
+            "sha256": "70d887a7749082792b215e164de7baa8f01f2a89db5eaca6590f5bb659c82704"
+          },
+          "pipeline/ingestion/acquire.py": {
+            "bytes": 1444,
+            "sha256": "de34d0cdec78aa705f2eac066e4894e8414e580f21959871802357c509cd1669"
+          },
+          "pipeline/ingestion/declarations.py": {
+            "bytes": 10750,
+            "sha256": "6ac901ab81adcf28c5e02814c47df4059a7af7b227979892c3624293d81fea17"
+          },
+          "pipeline/ingestion/fiscal/management/source_registry.py": {
+            "bytes": 23339,
+            "sha256": "62a31679cfd052f89b131613c1b0c39f00eedd55dab1481aeb14c6effcbfda97"
+          },
+          "pipeline/ingestion/fiscal/management/sources.json": {
+            "bytes": 10825154,
+            "sha256": "493bd46ff6a9efd13f14ad60a7cec731b0077f356a33fea5172649362955d0b6"
+          },
+          "pipeline/ingestion/fiscal/management/sources.py": {
+            "bytes": 35340,
+            "sha256": "bdec43d75380fe6a22acb0a992b35b875dd338d541442ac6272d3738cf0250f4"
+          },
+          "pipeline/ingestion/fiscal/management/sources.schema.json": {
+            "bytes": 60444,
+            "sha256": "37be08d80b36fd636bfe9f73d867d8411c90d660668bd09804d53d48260ee5e7"
+          },
+          "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_budget_detail.py": {
+            "bytes": 35487,
+            "sha256": "318618d5073bffb68eef7b78e5c1e62b0c8a50d7c6d35dc662f79366c4e188dc"
+          },
+          "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_initial_native_coverage.py": {
+            "bytes": 21986,
+            "sha256": "c8102dff4e5c87009c301c6da60047c2619016fcbe6ea5c59f85213cc6cd9975"
+          },
+          "pipeline/ingestion/inputs.py": {
+            "bytes": 29297,
+            "sha256": "8ebb97335423301f43e1409787638a91e1fe8f1cc2b6a5fd45ce4bec27792f37"
+          },
+          "pipeline/ingestion/lib/pdf.py": {
+            "bytes": 6028,
+            "sha256": "3a2d82f5f12da4d1e88810a1d5dc8dd74afac5fe599b9c35f87b826e006b94d5"
+          },
+          "uv.lock": {
+            "bytes": 97982,
+            "sha256": "669b2914b1b4d6c1b36b31a35d915eff84fdf54a5a7713cddca7c9df27d0a197"
+          }
+        },
+        "document_title": "令和8年度 特別会計・下水道事業会計予算書 （PDF 5.2 MB）",
+        "extractor": "ingestion.fiscal.jurisdictions.132241.layouts.tama_budget_detail",
+        "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/897/08tokubetu-1.pdf",
+        "financial_phase": "approved",
+        "fund_label": "後期高齢者医療特別会計",
+        "grain": "printed-project-setsu-detail-or-unprinted-setsu-reserve",
+        "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/yosan/1004897.html",
+        "namespace": "tama-initial-native",
+        "nonadditive": false,
+        "observation_role": "expenditure",
+        "pages": [
+          156,
+          163
+        ],
+        "phases": [
+          "approved"
+        ],
+        "printed_total": 5786509,
+        "raw_form": "extracted",
+        "recognition_basis": "正式原典の本年度歳出欄のみ。節の対応は同じ目の左節表と年度マスタで検査する。",
+        "recognition_status": "registered-approved-initial",
+        "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/897/08tokubetu-1.pdf",
+        "source_amount_unit": "千円",
+        "source_key": "132241-612a9c79bb92",
+        "source_position_method": "native-pdftotext-bbox-layout",
+        "table_id": "initial-2026-pages-156-163-expenditure",
+        "unit_multiplier": 1000
+      }
+    },
+    {
+      "table_id": "tama-initial-native-6f7dd4e6f9ff460d",
+      "raw_path": "tama-initial-native/jurisdiction=132241/year=2026/document_kind=budget/edition=a991d897f8fb97774bbf48ce3c990d7a91057b80763a5cfdc83d3265f3661c47/direction=expenditure/table=initial-2026-pages-156-163-observations/data.parquet",
+      "declaration": {
+        "account": "後期高齢者医療特別会計",
+        "approval_date": "2026-03-30",
+        "approval_proof": {
+          "basis": "財政課の正式予算書掲載、議案9・10・11の原案可決、正式版で可決後本予算書となる注記が削除されたことを併せた判断。本年度の歳出欄に限定。議案版との対象52頁の抽出文字は一致するが、原典のバイト列・全位置の同一性は主張しない。",
+          "date": "2026-03-30",
+          "evidence_urls": [
+            "https://www.city.tama.lg.jp/shigikai/kaigi/kekka/1019561/1019818.html"
+          ]
+        },
+        "canonical_initial": false,
+        "definition_files": {
+          "pipeline/dbt/models/intermediate/fiscal/records/int_132241__initial_native.sql": {
+            "bytes": 3241,
+            "sha256": "527d3bfd8f541541f8f5ba49a2953940a63eefdef6b82948ac1409352fdec55a"
+          },
+          "pipeline/dbt/models/intermediate/fiscal/records/int_132241__initial_native_datasets.sql": {
+            "bytes": 827,
+            "sha256": "4729191408bdafc563cf771fd92ae71e162de83ccfecec3038a376ace2bc3b6f"
+          },
+          "pipeline/dbt/models/marts/csv/csv_132241_initial_native_observations.sql": {
+            "bytes": 127,
+            "sha256": "0416be3a8a45b0edc71882f422517a16c1f934bae5caafbb937596ae24106658"
+          },
+          "pipeline/dbt/models/marts/records/fiscal_132241_initial_native_items.sql": {
+            "bytes": 772,
+            "sha256": "8349e8e271a9ccfcbdf494df9270782849c8cfe2375a50525b9faa1ce23c19ae"
+          },
+          "pipeline/dbt/models/marts/records/fiscal_132241_initial_native_lines.sql": {
+            "bytes": 1216,
+            "sha256": "d8d0b19598a373357bc2c730cd26f47a9fc2062b8518fd7a020106c5d9393250"
+          },
+          "pipeline/dbt/models/marts/records/fiscal_132241_initial_native_observations.sql": {
+            "bytes": 187,
+            "sha256": "6812e520eb6b92407ee0f8a1b3e991a34a9785e2c03f477b8c165bb1bfe4ec73"
+          },
+          "pipeline/dbt/models/marts/records/fiscal_datasets.sql": {
+            "bytes": 3329,
+            "sha256": "eba0d96e649dda04ed1af1665ec462e396ce08770dbc279e206e35f6c250a157"
+          },
+          "pipeline/dbt/models/staging/fiscal/_tama_initial_native_sources.yml": {
+            "bytes": 596,
+            "sha256": "3279e93766a318ec90432e8f2c3582fd9d4604ae083c72c997c59016b1a1c8a1"
+          },
+          "pipeline/dbt/models/staging/fiscal/stg_132241__initial_native.sql": {
+            "bytes": 252,
+            "sha256": "d5299cdb1db3535d62fab0215e47eaa4834915c01da5e539438f407bff0e1974"
+          },
+          "pipeline/dbt/tests/expenditure_setsu.sql": {
+            "bytes": 4175,
+            "sha256": "70d887a7749082792b215e164de7baa8f01f2a89db5eaca6590f5bb659c82704"
+          },
+          "pipeline/ingestion/acquire.py": {
+            "bytes": 1444,
+            "sha256": "de34d0cdec78aa705f2eac066e4894e8414e580f21959871802357c509cd1669"
+          },
+          "pipeline/ingestion/declarations.py": {
+            "bytes": 10750,
+            "sha256": "6ac901ab81adcf28c5e02814c47df4059a7af7b227979892c3624293d81fea17"
+          },
+          "pipeline/ingestion/fiscal/management/source_registry.py": {
+            "bytes": 23339,
+            "sha256": "62a31679cfd052f89b131613c1b0c39f00eedd55dab1481aeb14c6effcbfda97"
+          },
+          "pipeline/ingestion/fiscal/management/sources.json": {
+            "bytes": 10825154,
+            "sha256": "493bd46ff6a9efd13f14ad60a7cec731b0077f356a33fea5172649362955d0b6"
+          },
+          "pipeline/ingestion/fiscal/management/sources.py": {
+            "bytes": 35340,
+            "sha256": "bdec43d75380fe6a22acb0a992b35b875dd338d541442ac6272d3738cf0250f4"
+          },
+          "pipeline/ingestion/fiscal/management/sources.schema.json": {
+            "bytes": 60444,
+            "sha256": "37be08d80b36fd636bfe9f73d867d8411c90d660668bd09804d53d48260ee5e7"
+          },
+          "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_budget_detail.py": {
+            "bytes": 35487,
+            "sha256": "318618d5073bffb68eef7b78e5c1e62b0c8a50d7c6d35dc662f79366c4e188dc"
+          },
+          "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_initial_native_coverage.py": {
+            "bytes": 21986,
+            "sha256": "c8102dff4e5c87009c301c6da60047c2619016fcbe6ea5c59f85213cc6cd9975"
+          },
+          "pipeline/ingestion/inputs.py": {
+            "bytes": 29297,
+            "sha256": "8ebb97335423301f43e1409787638a91e1fe8f1cc2b6a5fd45ce4bec27792f37"
+          },
+          "pipeline/ingestion/lib/pdf.py": {
+            "bytes": 6028,
+            "sha256": "3a2d82f5f12da4d1e88810a1d5dc8dd74afac5fe599b9c35f87b826e006b94d5"
+          },
+          "uv.lock": {
+            "bytes": 97982,
+            "sha256": "669b2914b1b4d6c1b36b31a35d915eff84fdf54a5a7713cddca7c9df27d0a197"
+          }
+        },
+        "document_title": "令和8年度 特別会計・下水道事業会計予算書 （PDF 5.2 MB）",
+        "extractor": "ingestion.fiscal.jurisdictions.132241.layouts.tama_budget_detail",
+        "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/897/08tokubetu-1.pdf",
+        "financial_phase": null,
+        "fund_label": "後期高齢者医療特別会計",
+        "grain": "nonadditive-printed-control-and-explanation",
+        "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/yosan/1004897.html",
+        "namespace": "tama-initial-native",
+        "nonadditive": true,
+        "observation_role": "observations",
+        "pages": [
+          156,
+          163
+        ],
+        "phases": [],
+        "printed_total": 5786509,
+        "raw_form": "extracted",
+        "recognition_basis": "正式原典の本年度歳出欄のみ。節の対応は同じ目の左節表と年度マスタで検査する。",
+        "recognition_status": "nonadditive-observations",
+        "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/897/08tokubetu-1.pdf",
+        "source_amount_unit": "千円",
+        "source_key": "132241-612a9c79bb92",
+        "source_position_method": "native-pdftotext-bbox-layout",
+        "table_id": "initial-2026-pages-156-163-observations",
+        "unit_multiplier": 1000
+      }
+    },
+    {
+      "table_id": "tama-initial-native-ee9b9bce651fd40a",
+      "raw_path": "tama-initial-native/jurisdiction=132241/year=2026/document_kind=budget/edition=a991d897f8fb97774bbf48ce3c990d7a91057b80763a5cfdc83d3265f3661c47/direction=expenditure/table=initial-2026-pages-40-61-expenditure/data.parquet",
+      "declaration": {
+        "account": "国民健康保険特別会計",
+        "approval_date": "2026-03-30",
+        "approval_proof": {
+          "basis": "財政課の正式予算書掲載、議案9・10・11の原案可決、正式版で可決後本予算書となる注記が削除されたことを併せた判断。本年度の歳出欄に限定。議案版との対象52頁の抽出文字は一致するが、原典のバイト列・全位置の同一性は主張しない。",
+          "date": "2026-03-30",
+          "evidence_urls": [
+            "https://www.city.tama.lg.jp/shigikai/kaigi/kekka/1019561/1019818.html"
+          ]
+        },
+        "canonical_initial": true,
+        "definition_files": {
+          "pipeline/dbt/models/intermediate/fiscal/records/int_132241__initial_native.sql": {
+            "bytes": 3241,
+            "sha256": "527d3bfd8f541541f8f5ba49a2953940a63eefdef6b82948ac1409352fdec55a"
+          },
+          "pipeline/dbt/models/intermediate/fiscal/records/int_132241__initial_native_datasets.sql": {
+            "bytes": 827,
+            "sha256": "4729191408bdafc563cf771fd92ae71e162de83ccfecec3038a376ace2bc3b6f"
+          },
+          "pipeline/dbt/models/marts/csv/csv_132241_initial_native_observations.sql": {
+            "bytes": 127,
+            "sha256": "0416be3a8a45b0edc71882f422517a16c1f934bae5caafbb937596ae24106658"
+          },
+          "pipeline/dbt/models/marts/records/fiscal_132241_initial_native_items.sql": {
+            "bytes": 772,
+            "sha256": "8349e8e271a9ccfcbdf494df9270782849c8cfe2375a50525b9faa1ce23c19ae"
+          },
+          "pipeline/dbt/models/marts/records/fiscal_132241_initial_native_lines.sql": {
+            "bytes": 1216,
+            "sha256": "d8d0b19598a373357bc2c730cd26f47a9fc2062b8518fd7a020106c5d9393250"
+          },
+          "pipeline/dbt/models/marts/records/fiscal_132241_initial_native_observations.sql": {
+            "bytes": 187,
+            "sha256": "6812e520eb6b92407ee0f8a1b3e991a34a9785e2c03f477b8c165bb1bfe4ec73"
+          },
+          "pipeline/dbt/models/marts/records/fiscal_datasets.sql": {
+            "bytes": 3329,
+            "sha256": "eba0d96e649dda04ed1af1665ec462e396ce08770dbc279e206e35f6c250a157"
+          },
+          "pipeline/dbt/models/staging/fiscal/_tama_initial_native_sources.yml": {
+            "bytes": 596,
+            "sha256": "3279e93766a318ec90432e8f2c3582fd9d4604ae083c72c997c59016b1a1c8a1"
+          },
+          "pipeline/dbt/models/staging/fiscal/stg_132241__initial_native.sql": {
+            "bytes": 252,
+            "sha256": "d5299cdb1db3535d62fab0215e47eaa4834915c01da5e539438f407bff0e1974"
+          },
+          "pipeline/dbt/tests/expenditure_setsu.sql": {
+            "bytes": 4175,
+            "sha256": "70d887a7749082792b215e164de7baa8f01f2a89db5eaca6590f5bb659c82704"
+          },
+          "pipeline/ingestion/acquire.py": {
+            "bytes": 1444,
+            "sha256": "de34d0cdec78aa705f2eac066e4894e8414e580f21959871802357c509cd1669"
+          },
+          "pipeline/ingestion/declarations.py": {
+            "bytes": 10750,
+            "sha256": "6ac901ab81adcf28c5e02814c47df4059a7af7b227979892c3624293d81fea17"
+          },
+          "pipeline/ingestion/fiscal/management/source_registry.py": {
+            "bytes": 23339,
+            "sha256": "62a31679cfd052f89b131613c1b0c39f00eedd55dab1481aeb14c6effcbfda97"
+          },
+          "pipeline/ingestion/fiscal/management/sources.json": {
+            "bytes": 10825154,
+            "sha256": "493bd46ff6a9efd13f14ad60a7cec731b0077f356a33fea5172649362955d0b6"
+          },
+          "pipeline/ingestion/fiscal/management/sources.py": {
+            "bytes": 35340,
+            "sha256": "bdec43d75380fe6a22acb0a992b35b875dd338d541442ac6272d3738cf0250f4"
+          },
+          "pipeline/ingestion/fiscal/management/sources.schema.json": {
+            "bytes": 60444,
+            "sha256": "37be08d80b36fd636bfe9f73d867d8411c90d660668bd09804d53d48260ee5e7"
+          },
+          "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_budget_detail.py": {
+            "bytes": 35487,
+            "sha256": "318618d5073bffb68eef7b78e5c1e62b0c8a50d7c6d35dc662f79366c4e188dc"
+          },
+          "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_initial_native_coverage.py": {
+            "bytes": 21986,
+            "sha256": "c8102dff4e5c87009c301c6da60047c2619016fcbe6ea5c59f85213cc6cd9975"
+          },
+          "pipeline/ingestion/inputs.py": {
+            "bytes": 29297,
+            "sha256": "8ebb97335423301f43e1409787638a91e1fe8f1cc2b6a5fd45ce4bec27792f37"
+          },
+          "pipeline/ingestion/lib/pdf.py": {
+            "bytes": 6028,
+            "sha256": "3a2d82f5f12da4d1e88810a1d5dc8dd74afac5fe599b9c35f87b826e006b94d5"
+          },
+          "uv.lock": {
+            "bytes": 97982,
+            "sha256": "669b2914b1b4d6c1b36b31a35d915eff84fdf54a5a7713cddca7c9df27d0a197"
+          }
+        },
+        "document_title": "令和8年度 特別会計・下水道事業会計予算書 （PDF 5.2 MB）",
+        "extractor": "ingestion.fiscal.jurisdictions.132241.layouts.tama_budget_detail",
+        "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/897/08tokubetu-1.pdf",
+        "financial_phase": "approved",
+        "fund_label": "国民健康保険特別会計",
+        "grain": "printed-project-setsu-detail-or-unprinted-setsu-reserve",
+        "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/yosan/1004897.html",
+        "namespace": "tama-initial-native",
+        "nonadditive": false,
+        "observation_role": "expenditure",
+        "pages": [
+          40,
+          61
+        ],
+        "phases": [
+          "approved"
+        ],
+        "printed_total": 14309596,
+        "raw_form": "extracted",
+        "recognition_basis": "正式原典の本年度歳出欄のみ。節の対応は同じ目の左節表と年度マスタで検査する。",
+        "recognition_status": "registered-approved-initial",
+        "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/897/08tokubetu-1.pdf",
+        "source_amount_unit": "千円",
+        "source_key": "132241-612a9c79bb92",
+        "source_position_method": "native-pdftotext-bbox-layout",
+        "table_id": "initial-2026-pages-40-61-expenditure",
+        "unit_multiplier": 1000
+      }
+    },
+    {
+      "table_id": "tama-initial-native-c9e048ddceceaead",
+      "raw_path": "tama-initial-native/jurisdiction=132241/year=2026/document_kind=budget/edition=a991d897f8fb97774bbf48ce3c990d7a91057b80763a5cfdc83d3265f3661c47/direction=expenditure/table=initial-2026-pages-40-61-observations/data.parquet",
+      "declaration": {
+        "account": "国民健康保険特別会計",
+        "approval_date": "2026-03-30",
+        "approval_proof": {
+          "basis": "財政課の正式予算書掲載、議案9・10・11の原案可決、正式版で可決後本予算書となる注記が削除されたことを併せた判断。本年度の歳出欄に限定。議案版との対象52頁の抽出文字は一致するが、原典のバイト列・全位置の同一性は主張しない。",
+          "date": "2026-03-30",
+          "evidence_urls": [
+            "https://www.city.tama.lg.jp/shigikai/kaigi/kekka/1019561/1019818.html"
+          ]
+        },
+        "canonical_initial": false,
+        "definition_files": {
+          "pipeline/dbt/models/intermediate/fiscal/records/int_132241__initial_native.sql": {
+            "bytes": 3241,
+            "sha256": "527d3bfd8f541541f8f5ba49a2953940a63eefdef6b82948ac1409352fdec55a"
+          },
+          "pipeline/dbt/models/intermediate/fiscal/records/int_132241__initial_native_datasets.sql": {
+            "bytes": 827,
+            "sha256": "4729191408bdafc563cf771fd92ae71e162de83ccfecec3038a376ace2bc3b6f"
+          },
+          "pipeline/dbt/models/marts/csv/csv_132241_initial_native_observations.sql": {
+            "bytes": 127,
+            "sha256": "0416be3a8a45b0edc71882f422517a16c1f934bae5caafbb937596ae24106658"
+          },
+          "pipeline/dbt/models/marts/records/fiscal_132241_initial_native_items.sql": {
+            "bytes": 772,
+            "sha256": "8349e8e271a9ccfcbdf494df9270782849c8cfe2375a50525b9faa1ce23c19ae"
+          },
+          "pipeline/dbt/models/marts/records/fiscal_132241_initial_native_lines.sql": {
+            "bytes": 1216,
+            "sha256": "d8d0b19598a373357bc2c730cd26f47a9fc2062b8518fd7a020106c5d9393250"
+          },
+          "pipeline/dbt/models/marts/records/fiscal_132241_initial_native_observations.sql": {
+            "bytes": 187,
+            "sha256": "6812e520eb6b92407ee0f8a1b3e991a34a9785e2c03f477b8c165bb1bfe4ec73"
+          },
+          "pipeline/dbt/models/marts/records/fiscal_datasets.sql": {
+            "bytes": 3329,
+            "sha256": "eba0d96e649dda04ed1af1665ec462e396ce08770dbc279e206e35f6c250a157"
+          },
+          "pipeline/dbt/models/staging/fiscal/_tama_initial_native_sources.yml": {
+            "bytes": 596,
+            "sha256": "3279e93766a318ec90432e8f2c3582fd9d4604ae083c72c997c59016b1a1c8a1"
+          },
+          "pipeline/dbt/models/staging/fiscal/stg_132241__initial_native.sql": {
+            "bytes": 252,
+            "sha256": "d5299cdb1db3535d62fab0215e47eaa4834915c01da5e539438f407bff0e1974"
+          },
+          "pipeline/dbt/tests/expenditure_setsu.sql": {
+            "bytes": 4175,
+            "sha256": "70d887a7749082792b215e164de7baa8f01f2a89db5eaca6590f5bb659c82704"
+          },
+          "pipeline/ingestion/acquire.py": {
+            "bytes": 1444,
+            "sha256": "de34d0cdec78aa705f2eac066e4894e8414e580f21959871802357c509cd1669"
+          },
+          "pipeline/ingestion/declarations.py": {
+            "bytes": 10750,
+            "sha256": "6ac901ab81adcf28c5e02814c47df4059a7af7b227979892c3624293d81fea17"
+          },
+          "pipeline/ingestion/fiscal/management/source_registry.py": {
+            "bytes": 23339,
+            "sha256": "62a31679cfd052f89b131613c1b0c39f00eedd55dab1481aeb14c6effcbfda97"
+          },
+          "pipeline/ingestion/fiscal/management/sources.json": {
+            "bytes": 10825154,
+            "sha256": "493bd46ff6a9efd13f14ad60a7cec731b0077f356a33fea5172649362955d0b6"
+          },
+          "pipeline/ingestion/fiscal/management/sources.py": {
+            "bytes": 35340,
+            "sha256": "bdec43d75380fe6a22acb0a992b35b875dd338d541442ac6272d3738cf0250f4"
+          },
+          "pipeline/ingestion/fiscal/management/sources.schema.json": {
+            "bytes": 60444,
+            "sha256": "37be08d80b36fd636bfe9f73d867d8411c90d660668bd09804d53d48260ee5e7"
+          },
+          "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_budget_detail.py": {
+            "bytes": 35487,
+            "sha256": "318618d5073bffb68eef7b78e5c1e62b0c8a50d7c6d35dc662f79366c4e188dc"
+          },
+          "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_initial_native_coverage.py": {
+            "bytes": 21986,
+            "sha256": "c8102dff4e5c87009c301c6da60047c2619016fcbe6ea5c59f85213cc6cd9975"
+          },
+          "pipeline/ingestion/inputs.py": {
+            "bytes": 29297,
+            "sha256": "8ebb97335423301f43e1409787638a91e1fe8f1cc2b6a5fd45ce4bec27792f37"
+          },
+          "pipeline/ingestion/lib/pdf.py": {
+            "bytes": 6028,
+            "sha256": "3a2d82f5f12da4d1e88810a1d5dc8dd74afac5fe599b9c35f87b826e006b94d5"
+          },
+          "uv.lock": {
+            "bytes": 97982,
+            "sha256": "669b2914b1b4d6c1b36b31a35d915eff84fdf54a5a7713cddca7c9df27d0a197"
+          }
+        },
+        "document_title": "令和8年度 特別会計・下水道事業会計予算書 （PDF 5.2 MB）",
+        "extractor": "ingestion.fiscal.jurisdictions.132241.layouts.tama_budget_detail",
+        "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/897/08tokubetu-1.pdf",
+        "financial_phase": null,
+        "fund_label": "国民健康保険特別会計",
+        "grain": "nonadditive-printed-control-and-explanation",
+        "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/yosan/1004897.html",
+        "namespace": "tama-initial-native",
+        "nonadditive": true,
+        "observation_role": "observations",
+        "pages": [
+          40,
+          61
+        ],
+        "phases": [],
+        "printed_total": 14309596,
+        "raw_form": "extracted",
+        "recognition_basis": "正式原典の本年度歳出欄のみ。節の対応は同じ目の左節表と年度マスタで検査する。",
+        "recognition_status": "nonadditive-observations",
+        "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/897/08tokubetu-1.pdf",
+        "source_amount_unit": "千円",
+        "source_key": "132241-612a9c79bb92",
+        "source_position_method": "native-pdftotext-bbox-layout",
+        "table_id": "initial-2026-pages-40-61-observations",
+        "unit_multiplier": 1000
+      }
+    }
+  ]
+}

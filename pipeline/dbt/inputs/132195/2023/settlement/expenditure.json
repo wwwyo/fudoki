@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132195",
+    "fiscal_year": 2023,
+    "document_kind": "settlement"
+  },
+  "direction": "expenditure",
+  "tables": [
+    {
+      "table_id": "raw-4e824ecd28e8eed4",
+      "raw_path": "jurisdiction=132195/year=2023/document_kind=settlement/edition=ce231f9efe46850e20db1d6d6fd67f8793ceebf52d11f2984a5faaf9bd66bbbe/direction=expenditure/resource=reported-budget/data.parquet",
+      "declaration": {
+        "amendment_number": 0,
+        "approval_evidence": null,
+        "approval_sha256": null,
+        "approval_url": null,
+        "attribution": "狛江市 令和5年度一般会計予算書・補正予算書",
+        "dataset_title": null,
+        "document_title": "令和5年度狛江市一般会計 歳入歳出決算書",
+        "effective_at": "2024-03-31",
+        "effective_basis": "年度末の報告予算現額",
+        "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_budget_history.py@2",
+        "landing_page": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,361,2169,html",
+        "license_id": "NOASSERTION",
+        "pages": [
+          87,
+          114
+        ],
+        "raw_form": "extracted",
+        "redistribute": "review",
+        "redistribute_basis": "自治体公開資料。原典の再配布条件は未確認。非公開入力として保管する",
+        "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,133351,c,html/133351/20241011-132915.pdf",
+        "resource_name": "reported-budget",
+        "source_amount_unit": "円",
+        "table_id": "reported-budget"
+      }
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "target": {
     "jurisdiction": "132047",
     "fiscal_year": 2021,
@@ -49,20 +49,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "raw-2ae43f999552d835",
-          "legacy_path": "jurisdiction=132047/year=2021/document_kind=settlement/edition=9fdd27563669cf3df51018f14b8bb5d74c7212b70ae0ef2a4aa1b9fee87d3112/direction=revenue",
-          "declaration": {
-            "attribution": "三鷹市「2021年度決算データ」",
-            "dataset_title": null,
-            "encoding": "cp932",
-            "fiscal_year_basis": "sources.toml が宣言した URL（カタログに登録が無い）。リソース名「令和3年度決算データ（歳入）※下水道事業会計除く」は取得元ページのリンクテキストを人が写したもので、取得時には照合していない（宣言どうしの自己参照になるため）。根拠は resource_url_basis にある",
-            "license_id": "CC-BY-4.0",
-            "raw_form": "verbatim",
-            "request_url": "https://www.city.mitaka.lg.jp/c_service/098/attached/attach_98680_9.csv",
-            "resource_name": "令和3年度決算データ（歳入）※下水道事業会計除く",
-            "resource_url_basis": "公式公開ページ https://www.city.mitaka.lg.jp/c_service/098/098680.html の年度付きリンクを2026-10-04確認し、実際のバイト列・列構成を検査した。現行ページと旧年度のarchiveを同じ公式入口で固定するため直URLを採用する。年度列は原典に無く、年度の根拠は公式リンクテキスト。",
-            "resource_url_declared": true
-          }
+          "table_id": "raw-2ae43f999552d835"
         }
       ]
     }
@@ -71,7 +58,7 @@
     {
       "table_id": "raw-2ae43f999552d835",
       "conversion_id": "raw-2ae43f999552d835",
-      "input_fingerprint": "c51a20193e14644e32885c02633aa445260623eee19441805a3f659f256f42dd",
+      "input_fingerprint": "51d389903e10ac82ae82a8a83f5ada8ff31de9beb12ea08e5dfcdae8fcf8ec02",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132047/2021/settlement/revenue/raw-2ae43f999552d835.parquet",

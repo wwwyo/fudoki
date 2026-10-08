@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "target": {
     "jurisdiction": "132241",
     "fiscal_year": 2022,
@@ -86,34 +86,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "tama-settlement-pdf-dd79304bdb121148",
-          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2022/document_kind=settlement/edition=141bee9285995185f4d33f2cb2a2a849c66fb4bd5fb2a46d0a05880da689c8ce/direction=expenditure/table=legal-setsu-general",
-          "declaration": {
-            "attribution": "東京都多摩市",
-            "document_title": "令和4年度多摩市各会計歳入歳出決算書",
-            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
-            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/R4kessann.pdf",
-            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
-            "fund_label": "一般会計",
-            "grain": "printed-moku-by-legal-setsu",
-            "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/kessan/1004929.html",
-            "license_id": "NOASSERTION",
-            "observation_role": "legal-setsu",
-            "pages": [
-              1,
-              233
-            ],
-            "raw_form": "extracted",
-            "redistribute": "review",
-            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
-            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/R4kessann.pdf",
-            "resource_name": "令和4年度多摩市各会計歳入歳出決算書 legal-setsu-general",
-            "source_amount_unit": "円",
-            "source_key": "settlement-pdf:132241:2022:book",
-            "table_id": "legal-setsu-general",
-            "unit_multiplier": 1,
-            "year_basis": "公式掲載年度及び原典表紙の令和年度"
-          }
+          "table_id": "tama-settlement-pdf-dd79304bdb121148"
         }
       ]
     },
@@ -194,34 +167,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "tama-settlement-pdf-d3e3953b7edc5120",
-          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2022/document_kind=settlement/edition=141bee9285995185f4d33f2cb2a2a849c66fb4bd5fb2a46d0a05880da689c8ce/direction=expenditure/table=moku-controls-general",
-          "declaration": {
-            "attribution": "東京都多摩市",
-            "document_title": "令和4年度多摩市各会計歳入歳出決算書",
-            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
-            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/R4kessann.pdf",
-            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
-            "fund_label": "一般会計",
-            "grain": "nonadditive-printed-moku-control",
-            "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/kessan/1004929.html",
-            "license_id": "NOASSERTION",
-            "observation_role": "moku-controls",
-            "pages": [
-              1,
-              233
-            ],
-            "raw_form": "extracted",
-            "redistribute": "review",
-            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
-            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/R4kessann.pdf",
-            "resource_name": "令和4年度多摩市各会計歳入歳出決算書 moku-controls-general",
-            "source_amount_unit": "円",
-            "source_key": "settlement-pdf:132241:2022:book",
-            "table_id": "moku-controls-general",
-            "unit_multiplier": 1,
-            "year_basis": "公式掲載年度及び原典表紙の令和年度"
-          }
+          "table_id": "tama-settlement-pdf-d3e3953b7edc5120"
         }
       ]
     },
@@ -302,34 +248,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "tama-settlement-pdf-951ffbc368fc5653",
-          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2022/document_kind=settlement/edition=141bee9285995185f4d33f2cb2a2a849c66fb4bd5fb2a46d0a05880da689c8ce/direction=expenditure/table=legal-setsu-national-health",
-          "declaration": {
-            "attribution": "東京都多摩市",
-            "document_title": "令和4年度多摩市各会計歳入歳出決算書",
-            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
-            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/R4kessann.pdf",
-            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
-            "fund_label": "国民健康保険特別会計",
-            "grain": "printed-moku-by-legal-setsu",
-            "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/kessan/1004929.html",
-            "license_id": "NOASSERTION",
-            "observation_role": "legal-setsu",
-            "pages": [
-              1,
-              233
-            ],
-            "raw_form": "extracted",
-            "redistribute": "review",
-            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
-            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/R4kessann.pdf",
-            "resource_name": "令和4年度多摩市各会計歳入歳出決算書 legal-setsu-national-health",
-            "source_amount_unit": "円",
-            "source_key": "settlement-pdf:132241:2022:book",
-            "table_id": "legal-setsu-national-health",
-            "unit_multiplier": 1,
-            "year_basis": "公式掲載年度及び原典表紙の令和年度"
-          }
+          "table_id": "tama-settlement-pdf-951ffbc368fc5653"
         }
       ]
     },
@@ -410,34 +329,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "tama-settlement-pdf-0137d860c94ec602",
-          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2022/document_kind=settlement/edition=141bee9285995185f4d33f2cb2a2a849c66fb4bd5fb2a46d0a05880da689c8ce/direction=expenditure/table=moku-controls-national-health",
-          "declaration": {
-            "attribution": "東京都多摩市",
-            "document_title": "令和4年度多摩市各会計歳入歳出決算書",
-            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
-            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/R4kessann.pdf",
-            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
-            "fund_label": "国民健康保険特別会計",
-            "grain": "nonadditive-printed-moku-control",
-            "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/kessan/1004929.html",
-            "license_id": "NOASSERTION",
-            "observation_role": "moku-controls",
-            "pages": [
-              1,
-              233
-            ],
-            "raw_form": "extracted",
-            "redistribute": "review",
-            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
-            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/R4kessann.pdf",
-            "resource_name": "令和4年度多摩市各会計歳入歳出決算書 moku-controls-national-health",
-            "source_amount_unit": "円",
-            "source_key": "settlement-pdf:132241:2022:book",
-            "table_id": "moku-controls-national-health",
-            "unit_multiplier": 1,
-            "year_basis": "公式掲載年度及び原典表紙の令和年度"
-          }
+          "table_id": "tama-settlement-pdf-0137d860c94ec602"
         }
       ]
     },
@@ -518,34 +410,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "tama-settlement-pdf-98c3b806ffeb6616",
-          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2022/document_kind=settlement/edition=141bee9285995185f4d33f2cb2a2a849c66fb4bd5fb2a46d0a05880da689c8ce/direction=expenditure/table=legal-setsu-care",
-          "declaration": {
-            "attribution": "東京都多摩市",
-            "document_title": "令和4年度多摩市各会計歳入歳出決算書",
-            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
-            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/R4kessann.pdf",
-            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
-            "fund_label": "介護保険特別会計",
-            "grain": "printed-moku-by-legal-setsu",
-            "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/kessan/1004929.html",
-            "license_id": "NOASSERTION",
-            "observation_role": "legal-setsu",
-            "pages": [
-              1,
-              233
-            ],
-            "raw_form": "extracted",
-            "redistribute": "review",
-            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
-            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/R4kessann.pdf",
-            "resource_name": "令和4年度多摩市各会計歳入歳出決算書 legal-setsu-care",
-            "source_amount_unit": "円",
-            "source_key": "settlement-pdf:132241:2022:book",
-            "table_id": "legal-setsu-care",
-            "unit_multiplier": 1,
-            "year_basis": "公式掲載年度及び原典表紙の令和年度"
-          }
+          "table_id": "tama-settlement-pdf-98c3b806ffeb6616"
         }
       ]
     },
@@ -626,34 +491,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "tama-settlement-pdf-9ff080db4b07abb7",
-          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2022/document_kind=settlement/edition=141bee9285995185f4d33f2cb2a2a849c66fb4bd5fb2a46d0a05880da689c8ce/direction=expenditure/table=moku-controls-care",
-          "declaration": {
-            "attribution": "東京都多摩市",
-            "document_title": "令和4年度多摩市各会計歳入歳出決算書",
-            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
-            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/R4kessann.pdf",
-            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
-            "fund_label": "介護保険特別会計",
-            "grain": "nonadditive-printed-moku-control",
-            "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/kessan/1004929.html",
-            "license_id": "NOASSERTION",
-            "observation_role": "moku-controls",
-            "pages": [
-              1,
-              233
-            ],
-            "raw_form": "extracted",
-            "redistribute": "review",
-            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
-            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/R4kessann.pdf",
-            "resource_name": "令和4年度多摩市各会計歳入歳出決算書 moku-controls-care",
-            "source_amount_unit": "円",
-            "source_key": "settlement-pdf:132241:2022:book",
-            "table_id": "moku-controls-care",
-            "unit_multiplier": 1,
-            "year_basis": "公式掲載年度及び原典表紙の令和年度"
-          }
+          "table_id": "tama-settlement-pdf-9ff080db4b07abb7"
         }
       ]
     },
@@ -734,34 +572,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "tama-settlement-pdf-578201c8a99c4f23",
-          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2022/document_kind=settlement/edition=141bee9285995185f4d33f2cb2a2a849c66fb4bd5fb2a46d0a05880da689c8ce/direction=expenditure/table=legal-setsu-elderly",
-          "declaration": {
-            "attribution": "東京都多摩市",
-            "document_title": "令和4年度多摩市各会計歳入歳出決算書",
-            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
-            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/R4kessann.pdf",
-            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
-            "fund_label": "後期高齢者医療特別会計",
-            "grain": "printed-moku-by-legal-setsu",
-            "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/kessan/1004929.html",
-            "license_id": "NOASSERTION",
-            "observation_role": "legal-setsu",
-            "pages": [
-              1,
-              233
-            ],
-            "raw_form": "extracted",
-            "redistribute": "review",
-            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
-            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/R4kessann.pdf",
-            "resource_name": "令和4年度多摩市各会計歳入歳出決算書 legal-setsu-elderly",
-            "source_amount_unit": "円",
-            "source_key": "settlement-pdf:132241:2022:book",
-            "table_id": "legal-setsu-elderly",
-            "unit_multiplier": 1,
-            "year_basis": "公式掲載年度及び原典表紙の令和年度"
-          }
+          "table_id": "tama-settlement-pdf-578201c8a99c4f23"
         }
       ]
     },
@@ -842,34 +653,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "tama-settlement-pdf-e1269d27a59d86a9",
-          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2022/document_kind=settlement/edition=141bee9285995185f4d33f2cb2a2a849c66fb4bd5fb2a46d0a05880da689c8ce/direction=expenditure/table=moku-controls-elderly",
-          "declaration": {
-            "attribution": "東京都多摩市",
-            "document_title": "令和4年度多摩市各会計歳入歳出決算書",
-            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
-            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/R4kessann.pdf",
-            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
-            "fund_label": "後期高齢者医療特別会計",
-            "grain": "nonadditive-printed-moku-control",
-            "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/kessan/1004929.html",
-            "license_id": "NOASSERTION",
-            "observation_role": "moku-controls",
-            "pages": [
-              1,
-              233
-            ],
-            "raw_form": "extracted",
-            "redistribute": "review",
-            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
-            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/R4kessann.pdf",
-            "resource_name": "令和4年度多摩市各会計歳入歳出決算書 moku-controls-elderly",
-            "source_amount_unit": "円",
-            "source_key": "settlement-pdf:132241:2022:book",
-            "table_id": "moku-controls-elderly",
-            "unit_multiplier": 1,
-            "year_basis": "公式掲載年度及び原典表紙の令和年度"
-          }
+          "table_id": "tama-settlement-pdf-e1269d27a59d86a9"
         }
       ]
     },
@@ -950,34 +734,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "tama-settlement-pdf-1ca3d13158f1fd84",
-          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2022/document_kind=settlement/edition=141bee9285995185f4d33f2cb2a2a849c66fb4bd5fb2a46d0a05880da689c8ce/direction=expenditure/table=account-controls",
-          "declaration": {
-            "attribution": "東京都多摩市",
-            "document_title": "令和4年度多摩市各会計歳入歳出決算書",
-            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
-            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/R4kessann.pdf",
-            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
-            "fund_label": "",
-            "grain": "nonadditive-printed-account-control",
-            "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/kessan/1004929.html",
-            "license_id": "NOASSERTION",
-            "observation_role": "account-controls",
-            "pages": [
-              1,
-              233
-            ],
-            "raw_form": "extracted",
-            "redistribute": "review",
-            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
-            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/R4kessann.pdf",
-            "resource_name": "令和4年度多摩市各会計歳入歳出決算書 account-controls",
-            "source_amount_unit": "円",
-            "source_key": "settlement-pdf:132241:2022:book",
-            "table_id": "account-controls",
-            "unit_multiplier": 1,
-            "year_basis": "公式掲載年度及び原典表紙の令和年度"
-          }
+          "table_id": "tama-settlement-pdf-1ca3d13158f1fd84"
         }
       ]
     },
@@ -1058,34 +815,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "tama-settlement-pdf-9f64e7c9aeb35e1d",
-          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2022/document_kind=settlement/edition=141bee9285995185f4d33f2cb2a2a849c66fb4bd5fb2a46d0a05880da689c8ce/direction=expenditure/table=source-words",
-          "declaration": {
-            "attribution": "東京都多摩市",
-            "document_title": "令和4年度多摩市各会計歳入歳出決算書",
-            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
-            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/R4kessann.pdf",
-            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
-            "fund_label": "",
-            "grain": "nonadditive-positioned-source-word",
-            "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/kessan/1004929.html",
-            "license_id": "NOASSERTION",
-            "observation_role": "source-words",
-            "pages": [
-              1,
-              233
-            ],
-            "raw_form": "extracted",
-            "redistribute": "review",
-            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
-            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/R4kessann.pdf",
-            "resource_name": "令和4年度多摩市各会計歳入歳出決算書 source-words",
-            "source_amount_unit": null,
-            "source_key": "settlement-pdf:132241:2022:book",
-            "table_id": "source-words",
-            "unit_multiplier": null,
-            "year_basis": "公式掲載年度及び原典表紙の令和年度"
-          }
+          "table_id": "tama-settlement-pdf-9f64e7c9aeb35e1d"
         }
       ]
     }
@@ -1094,7 +824,7 @@
     {
       "table_id": "tama-settlement-pdf-dd79304bdb121148",
       "conversion_id": "tama-settlement-pdf-dd79304bdb121148",
-      "input_fingerprint": "e775a6041f950c1c24dcc53b96d3f18dd078db034787f074044d2783e498d3d2",
+      "input_fingerprint": "2bd308ec6e8833dbcb659176b98d13ac4a4ccb44a305feefa6a81b3586b3319a",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2022/settlement/expenditure/tama-settlement-pdf-dd79304bdb121148.parquet",
@@ -1255,7 +985,7 @@
     {
       "table_id": "tama-settlement-pdf-d3e3953b7edc5120",
       "conversion_id": "tama-settlement-pdf-d3e3953b7edc5120",
-      "input_fingerprint": "d3d0d5387539b5ca92636cfbea585b1a65abcedef447cc076211bf32c302be3f",
+      "input_fingerprint": "f5d4f6b9efb2f95dafdad6643ec75bc6b05fba3d193cf4590c7864918094e867",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2022/settlement/expenditure/tama-settlement-pdf-d3e3953b7edc5120.parquet",
@@ -1416,7 +1146,7 @@
     {
       "table_id": "tama-settlement-pdf-951ffbc368fc5653",
       "conversion_id": "tama-settlement-pdf-951ffbc368fc5653",
-      "input_fingerprint": "330aeb10f7f9550be3242293c02c0a52221960efc7211707feadb09b9e3c0209",
+      "input_fingerprint": "7063c4ea8264f3f4f18a0a84df3f201bb41619b11804004f94163df749700296",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2022/settlement/expenditure/tama-settlement-pdf-951ffbc368fc5653.parquet",
@@ -1577,7 +1307,7 @@
     {
       "table_id": "tama-settlement-pdf-0137d860c94ec602",
       "conversion_id": "tama-settlement-pdf-0137d860c94ec602",
-      "input_fingerprint": "6ca3939c3f0108501459db13b043feeb0daa8fcce48748a7e53881231df113e5",
+      "input_fingerprint": "4c22a5e2cfb19d8fe08df0cf8e2faa1a4d30cdf55e0814e1015d38da52ade752",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2022/settlement/expenditure/tama-settlement-pdf-0137d860c94ec602.parquet",
@@ -1738,7 +1468,7 @@
     {
       "table_id": "tama-settlement-pdf-98c3b806ffeb6616",
       "conversion_id": "tama-settlement-pdf-98c3b806ffeb6616",
-      "input_fingerprint": "b3b5833490a1c96c51254771f2ad737d522dc90e1842bcc3435ef035ecff97c9",
+      "input_fingerprint": "99f299358f4901802d33a0d5b07351c7466a34c3f51cebb74e192da0fe37512a",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2022/settlement/expenditure/tama-settlement-pdf-98c3b806ffeb6616.parquet",
@@ -1899,7 +1629,7 @@
     {
       "table_id": "tama-settlement-pdf-9ff080db4b07abb7",
       "conversion_id": "tama-settlement-pdf-9ff080db4b07abb7",
-      "input_fingerprint": "d4d0ee6ba973616ca01673dbea139806b820d202320bee91a9e056b065840de1",
+      "input_fingerprint": "41d5af2d78f65e5c32baf483dfb96266e99c56e6f864ed63f09a4db5fbc25ec9",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2022/settlement/expenditure/tama-settlement-pdf-9ff080db4b07abb7.parquet",
@@ -2060,7 +1790,7 @@
     {
       "table_id": "tama-settlement-pdf-578201c8a99c4f23",
       "conversion_id": "tama-settlement-pdf-578201c8a99c4f23",
-      "input_fingerprint": "8eceb60b1384d5e7832af5345e1c27faa0a4c8bed339b73697f81b6e1310ea2b",
+      "input_fingerprint": "21fe0e6fd3346b9478c58a2547edd4e741c0f5523405bfd74767c146a8b3e3be",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2022/settlement/expenditure/tama-settlement-pdf-578201c8a99c4f23.parquet",
@@ -2221,7 +1951,7 @@
     {
       "table_id": "tama-settlement-pdf-e1269d27a59d86a9",
       "conversion_id": "tama-settlement-pdf-e1269d27a59d86a9",
-      "input_fingerprint": "5587efdadf62b806734e1124163494deaa49ea28678fa85cd1de8a2a227c7015",
+      "input_fingerprint": "6bd5a3f5a937a9478ebbd30dd5188cc16b5d8ce63976bbb7f2d2eb1175acab3a",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2022/settlement/expenditure/tama-settlement-pdf-e1269d27a59d86a9.parquet",
@@ -2382,7 +2112,7 @@
     {
       "table_id": "tama-settlement-pdf-1ca3d13158f1fd84",
       "conversion_id": "tama-settlement-pdf-1ca3d13158f1fd84",
-      "input_fingerprint": "637d28884fc517ac918a312afedde322de48ea8627ebe257708259cafccee019",
+      "input_fingerprint": "790e3c1a2a50bb90acf2a49abe7d74e84a418704cfef1de412cb71360bf865d6",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2022/settlement/expenditure/tama-settlement-pdf-1ca3d13158f1fd84.parquet",
@@ -2543,7 +2273,7 @@
     {
       "table_id": "tama-settlement-pdf-9f64e7c9aeb35e1d",
       "conversion_id": "tama-settlement-pdf-9f64e7c9aeb35e1d",
-      "input_fingerprint": "4337aefe7955f6aff342a9df127797e831e554cb01d426c9f39f479abb5abeb1",
+      "input_fingerprint": "ad04e995ef7de8210a6a33341dfec23238b505dd5cbce7195ca0e6b24cc6b5dc",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2022/settlement/expenditure/tama-settlement-pdf-9f64e7c9aeb35e1d.parquet",

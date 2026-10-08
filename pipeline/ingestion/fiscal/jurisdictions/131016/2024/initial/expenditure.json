@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "target": {
     "jurisdiction": "131016",
     "fiscal_year": 2024,
@@ -86,34 +86,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "raw-c095865441951563",
-          "legacy_path": "jurisdiction=131016/year=2024/document_kind=budget/edition=fe9b906bdac8a5ebb8d5aeae09cfa283b299ee15b538cc14373802a2d4fd85e3/direction=expenditure/table=fund-care",
-          "declaration": {
-            "attribution": "千代田区",
-            "dataset_title": null,
-            "document_title": "2024年度 介護保険特別会計 当初予算事項別明細書",
-            "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py@6",
-            "fiscal_year_basis": "sources.toml が宣言した URL（カタログへの登録が存在しない）。年度は取得元ページの見出しとリンクテキストを人が読んで決めており、機械は照合していない。根拠は resource_url_basis にある",
-            "fund_basis": "PDFの会計表紙と事項別明細書p360/p392",
-            "fund_label": "介護保険特別会計",
-            "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
-            "layout": "spread",
-            "license_id": "NOASSERTION",
-            "pages": [
-              392,
-              427
-            ],
-            "raw_form": "extracted",
-            "redistribute": "allow",
-            "redistribute_basis": "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする",
-            "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r6kaikeiyosan.pdf",
-            "resource_name": "2024年度 介護保険特別会計 当初予算事項別明細書",
-            "resource_url_basis": "公式年度ページのリンク: 令和6年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）（PDF：2,363KB）",
-            "resource_url_declared": true,
-            "source_amount_unit": "千円",
-            "source_key": "statement:131016:2024:care",
-            "table_id": "fund-care"
-          }
+          "table_id": "raw-c095865441951563"
         }
       ]
     },
@@ -194,34 +167,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "raw-e3938769d17e1933",
-          "legacy_path": "jurisdiction=131016/year=2024/document_kind=budget/edition=fe9b906bdac8a5ebb8d5aeae09cfa283b299ee15b538cc14373802a2d4fd85e3/direction=expenditure/table=fund-elderly",
-          "declaration": {
-            "attribution": "千代田区",
-            "dataset_title": null,
-            "document_title": "2024年度 後期高齢者医療特別会計 当初予算事項別明細書",
-            "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py@6",
-            "fiscal_year_basis": "sources.toml が宣言した URL（カタログへの登録が存在しない）。年度は取得元ページの見出しとリンクテキストを人が読んで決めており、機械は照合していない。根拠は resource_url_basis にある",
-            "fund_basis": "PDFの会計表紙と事項別明細書p448/p468",
-            "fund_label": "後期高齢者医療特別会計",
-            "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
-            "layout": "spread",
-            "license_id": "NOASSERTION",
-            "pages": [
-              468,
-              483
-            ],
-            "raw_form": "extracted",
-            "redistribute": "allow",
-            "redistribute_basis": "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする",
-            "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r6kaikeiyosan.pdf",
-            "resource_name": "2024年度 後期高齢者医療特別会計 当初予算事項別明細書",
-            "resource_url_basis": "公式年度ページのリンク: 令和6年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）（PDF：2,363KB）",
-            "resource_url_declared": true,
-            "source_amount_unit": "千円",
-            "source_key": "statement:131016:2024:elderly",
-            "table_id": "fund-elderly"
-          }
+          "table_id": "raw-e3938769d17e1933"
         }
       ]
     },
@@ -302,34 +248,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "raw-4681c147fa9556b5",
-          "legacy_path": "jurisdiction=131016/year=2024/document_kind=budget/edition=fe9b906bdac8a5ebb8d5aeae09cfa283b299ee15b538cc14373802a2d4fd85e3/direction=expenditure/table=fund-general",
-          "declaration": {
-            "attribution": "千代田区",
-            "dataset_title": null,
-            "document_title": "2024年度 一般会計 当初予算事項別明細書",
-            "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py@6",
-            "fiscal_year_basis": "sources.toml が宣言した URL（カタログへの登録が存在しない）。年度は取得元ページの見出しとリンクテキストを人が読んで決めており、機械は照合していない。根拠は resource_url_basis にある",
-            "fund_basis": "PDFの会計表紙と事項別明細書p42/p146",
-            "fund_label": "一般会計",
-            "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
-            "layout": "spread",
-            "license_id": "NOASSERTION",
-            "pages": [
-              146,
-              255
-            ],
-            "raw_form": "extracted",
-            "redistribute": "allow",
-            "redistribute_basis": "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする",
-            "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r6kaikeiyosan.pdf",
-            "resource_name": "2024年度 一般会計 当初予算事項別明細書",
-            "resource_url_basis": "公式年度ページのリンク: 令和6年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）（PDF：2,363KB）",
-            "resource_url_declared": true,
-            "source_amount_unit": "千円",
-            "source_key": "statement:131016:2024",
-            "table_id": "fund-general"
-          }
+          "table_id": "raw-4681c147fa9556b5"
         }
       ]
     },
@@ -410,34 +329,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "raw-a7584fa57e52a19d",
-          "legacy_path": "jurisdiction=131016/year=2024/document_kind=budget/edition=fe9b906bdac8a5ebb8d5aeae09cfa283b299ee15b538cc14373802a2d4fd85e3/direction=expenditure/table=fund-national-health",
-          "declaration": {
-            "attribution": "千代田区",
-            "dataset_title": null,
-            "document_title": "2024年度 国民健康保険事業会計 当初予算事項別明細書",
-            "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py@6",
-            "fiscal_year_basis": "sources.toml が宣言した URL（カタログへの登録が存在しない）。年度は取得元ページの見出しとリンクテキストを人が読んで決めており、機械は照合していない。根拠は resource_url_basis にある",
-            "fund_basis": "PDFの会計表紙と事項別明細書p284/p306",
-            "fund_label": "国民健康保険事業会計",
-            "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
-            "layout": "spread",
-            "license_id": "NOASSERTION",
-            "pages": [
-              306,
-              341
-            ],
-            "raw_form": "extracted",
-            "redistribute": "allow",
-            "redistribute_basis": "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする",
-            "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r6kaikeiyosan.pdf",
-            "resource_name": "2024年度 国民健康保険事業会計 当初予算事項別明細書",
-            "resource_url_basis": "公式年度ページのリンク: 令和6年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）（PDF：2,363KB）",
-            "resource_url_declared": true,
-            "source_amount_unit": "千円",
-            "source_key": "statement:131016:2024:national-health",
-            "table_id": "fund-national-health"
-          }
+          "table_id": "raw-a7584fa57e52a19d"
         }
       ]
     },
@@ -518,35 +410,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "statement-moku-setsu-9f563c2a5cc6247a",
-          "legacy_path": "statement-moku-setsu/jurisdiction=131016/year=2024/document_kind=budget/edition=fe9b906bdac8a5ebb8d5aeae09cfa283b299ee15b538cc14373802a2d4fd85e3/direction=expenditure/table=moku-setsu-fund-care",
-          "declaration": {
-            "attribution": "千代田区",
-            "dataset_title": null,
-            "document_title": "2024年度 介護保険特別会計 当初予算事項別明細書",
-            "explanation_dataset_id": "131016:2024:expenditure:budget:fe9b906bdac8a5ebb8d5aeae09cfa283b299ee15b538cc14373802a2d4fd85e3:fund-care",
-            "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py@7",
-            "fund_basis": "PDFの会計表紙と事項別明細書p360/p392",
-            "fund_label": "介護保険特別会計",
-            "grain": "document-fund-moku-printed-setsu-row",
-            "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
-            "license_id": "NOASSERTION",
-            "observation_role": "independent-moku-setsu",
-            "pages": [
-              392,
-              427
-            ],
-            "project_setsu_linkage": "unconfirmed",
-            "raw_form": "extracted",
-            "redistribute": "allow",
-            "redistribute_basis": "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする",
-            "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r6kaikeiyosan.pdf",
-            "resource_name": "2024年度 介護保険特別会計 当初予算事項別明細書（目×節の独立内訳）",
-            "resource_url_basis": "公式年度ページのリンク: 令和6年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）（PDF：2,363KB）",
-            "source_amount_unit": "千円",
-            "source_key": "statement:131016:2024:care",
-            "table_id": "moku-setsu-fund-care"
-          }
+          "table_id": "statement-moku-setsu-9f563c2a5cc6247a"
         }
       ]
     },
@@ -627,35 +491,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "statement-moku-setsu-d1639a735856ae62",
-          "legacy_path": "statement-moku-setsu/jurisdiction=131016/year=2024/document_kind=budget/edition=fe9b906bdac8a5ebb8d5aeae09cfa283b299ee15b538cc14373802a2d4fd85e3/direction=expenditure/table=moku-setsu-fund-elderly",
-          "declaration": {
-            "attribution": "千代田区",
-            "dataset_title": null,
-            "document_title": "2024年度 後期高齢者医療特別会計 当初予算事項別明細書",
-            "explanation_dataset_id": "131016:2024:expenditure:budget:fe9b906bdac8a5ebb8d5aeae09cfa283b299ee15b538cc14373802a2d4fd85e3:fund-elderly",
-            "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py@7",
-            "fund_basis": "PDFの会計表紙と事項別明細書p448/p468",
-            "fund_label": "後期高齢者医療特別会計",
-            "grain": "document-fund-moku-printed-setsu-row",
-            "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
-            "license_id": "NOASSERTION",
-            "observation_role": "independent-moku-setsu",
-            "pages": [
-              468,
-              483
-            ],
-            "project_setsu_linkage": "unconfirmed",
-            "raw_form": "extracted",
-            "redistribute": "allow",
-            "redistribute_basis": "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする",
-            "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r6kaikeiyosan.pdf",
-            "resource_name": "2024年度 後期高齢者医療特別会計 当初予算事項別明細書（目×節の独立内訳）",
-            "resource_url_basis": "公式年度ページのリンク: 令和6年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）（PDF：2,363KB）",
-            "source_amount_unit": "千円",
-            "source_key": "statement:131016:2024:elderly",
-            "table_id": "moku-setsu-fund-elderly"
-          }
+          "table_id": "statement-moku-setsu-d1639a735856ae62"
         }
       ]
     },
@@ -736,35 +572,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "statement-moku-setsu-13fed814274b13db",
-          "legacy_path": "statement-moku-setsu/jurisdiction=131016/year=2024/document_kind=budget/edition=fe9b906bdac8a5ebb8d5aeae09cfa283b299ee15b538cc14373802a2d4fd85e3/direction=expenditure/table=moku-setsu-fund-general",
-          "declaration": {
-            "attribution": "千代田区",
-            "dataset_title": null,
-            "document_title": "2024年度 一般会計 当初予算事項別明細書",
-            "explanation_dataset_id": "131016:2024:expenditure:budget:fe9b906bdac8a5ebb8d5aeae09cfa283b299ee15b538cc14373802a2d4fd85e3:fund-general",
-            "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py@7",
-            "fund_basis": "PDFの会計表紙と事項別明細書p42/p146",
-            "fund_label": "一般会計",
-            "grain": "document-fund-moku-printed-setsu-row",
-            "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
-            "license_id": "NOASSERTION",
-            "observation_role": "independent-moku-setsu",
-            "pages": [
-              146,
-              255
-            ],
-            "project_setsu_linkage": "unconfirmed",
-            "raw_form": "extracted",
-            "redistribute": "allow",
-            "redistribute_basis": "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする",
-            "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r6kaikeiyosan.pdf",
-            "resource_name": "2024年度 一般会計 当初予算事項別明細書（目×節の独立内訳）",
-            "resource_url_basis": "公式年度ページのリンク: 令和6年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）（PDF：2,363KB）",
-            "source_amount_unit": "千円",
-            "source_key": "statement:131016:2024",
-            "table_id": "moku-setsu-fund-general"
-          }
+          "table_id": "statement-moku-setsu-13fed814274b13db"
         }
       ]
     },
@@ -845,35 +653,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "statement-moku-setsu-4c33a13276569c8e",
-          "legacy_path": "statement-moku-setsu/jurisdiction=131016/year=2024/document_kind=budget/edition=fe9b906bdac8a5ebb8d5aeae09cfa283b299ee15b538cc14373802a2d4fd85e3/direction=expenditure/table=moku-setsu-fund-national-health",
-          "declaration": {
-            "attribution": "千代田区",
-            "dataset_title": null,
-            "document_title": "2024年度 国民健康保険事業会計 当初予算事項別明細書",
-            "explanation_dataset_id": "131016:2024:expenditure:budget:fe9b906bdac8a5ebb8d5aeae09cfa283b299ee15b538cc14373802a2d4fd85e3:fund-national-health",
-            "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py@7",
-            "fund_basis": "PDFの会計表紙と事項別明細書p284/p306",
-            "fund_label": "国民健康保険事業会計",
-            "grain": "document-fund-moku-printed-setsu-row",
-            "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
-            "license_id": "NOASSERTION",
-            "observation_role": "independent-moku-setsu",
-            "pages": [
-              306,
-              341
-            ],
-            "project_setsu_linkage": "unconfirmed",
-            "raw_form": "extracted",
-            "redistribute": "allow",
-            "redistribute_basis": "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする",
-            "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r6kaikeiyosan.pdf",
-            "resource_name": "2024年度 国民健康保険事業会計 当初予算事項別明細書（目×節の独立内訳）",
-            "resource_url_basis": "公式年度ページのリンク: 令和6年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）（PDF：2,363KB）",
-            "source_amount_unit": "千円",
-            "source_key": "statement:131016:2024:national-health",
-            "table_id": "moku-setsu-fund-national-health"
-          }
+          "table_id": "statement-moku-setsu-4c33a13276569c8e"
         }
       ]
     }
@@ -882,7 +662,7 @@
     {
       "table_id": "raw-c095865441951563",
       "conversion_id": "raw-c095865441951563",
-      "input_fingerprint": "583f2db54f9de81c5701f4716a0555ca26dfd482144fa3abef4ffe4a0fc8470e",
+      "input_fingerprint": "71c1ac01a3c10a105a90cab23f49c507b23ebf0ef707ddb343943dbb15ddeefe",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/131016/2024/initial/expenditure/raw-c095865441951563.parquet",
@@ -983,7 +763,7 @@
     {
       "table_id": "raw-e3938769d17e1933",
       "conversion_id": "raw-e3938769d17e1933",
-      "input_fingerprint": "1692d43168963e2bf0117d7d097928161b10d5c38bf48ee52c78011e075f5a5e",
+      "input_fingerprint": "90ed4c94d56f8b644ef9ff592236fe2556b55c6c08306748ba59368bba059911",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/131016/2024/initial/expenditure/raw-e3938769d17e1933.parquet",
@@ -1084,7 +864,7 @@
     {
       "table_id": "raw-4681c147fa9556b5",
       "conversion_id": "raw-4681c147fa9556b5",
-      "input_fingerprint": "02de41e1a2853cf7af65df1cf971ca86e50117fce8b8c7eeb9c1c2fd5bc63d4f",
+      "input_fingerprint": "e4d6924a3cf7f7d0f5b1a2ea09851af35d49e67aa67042d2867db682e40da04c",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/131016/2024/initial/expenditure/raw-4681c147fa9556b5.parquet",
@@ -1185,7 +965,7 @@
     {
       "table_id": "raw-a7584fa57e52a19d",
       "conversion_id": "raw-a7584fa57e52a19d",
-      "input_fingerprint": "725ee0d1d170464d2ad354617a496e30a29e3ee7a77e764970d292f4d9dd9472",
+      "input_fingerprint": "b63bffcae0de65033547836c6e6ecea2abbb40bdf27ed6185c1875720a2d91e7",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/131016/2024/initial/expenditure/raw-a7584fa57e52a19d.parquet",
@@ -1286,7 +1066,7 @@
     {
       "table_id": "statement-moku-setsu-9f563c2a5cc6247a",
       "conversion_id": "statement-moku-setsu-9f563c2a5cc6247a",
-      "input_fingerprint": "e40625afe2b821bebd3b2cb5034b00adbe27c02d7492284380f8bc4995b4718f",
+      "input_fingerprint": "07aa146be965637158a3c668e9c7fa0b274ec3af47d0ef369f1117be4905a38d",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/131016/2024/initial/expenditure/statement-moku-setsu-9f563c2a5cc6247a.parquet",
@@ -1387,7 +1167,7 @@
     {
       "table_id": "statement-moku-setsu-d1639a735856ae62",
       "conversion_id": "statement-moku-setsu-d1639a735856ae62",
-      "input_fingerprint": "e1a10b860962bd33e8226d5ff34b8529589e06a923cd6681aeea72dfc45917c0",
+      "input_fingerprint": "de6f5a1eb0a95faba7ca3524283d3431f3bd448a5281e12ff575d72907bcf8e2",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/131016/2024/initial/expenditure/statement-moku-setsu-d1639a735856ae62.parquet",
@@ -1488,7 +1268,7 @@
     {
       "table_id": "statement-moku-setsu-13fed814274b13db",
       "conversion_id": "statement-moku-setsu-13fed814274b13db",
-      "input_fingerprint": "db16775dbeb6f848eda73cc50526f29e0cbc37371ae5536eba319fa0fc38c7ac",
+      "input_fingerprint": "3be52173cfcd35b453db5e0bcf7ed1a916599af132b7ce198ac261ae949bb792",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/131016/2024/initial/expenditure/statement-moku-setsu-13fed814274b13db.parquet",
@@ -1589,7 +1369,7 @@
     {
       "table_id": "statement-moku-setsu-4c33a13276569c8e",
       "conversion_id": "statement-moku-setsu-4c33a13276569c8e",
-      "input_fingerprint": "0417d4b4bf5aacf632864a23299ff56c4c08ca5b723a66f8f47ccfe54b340a8e",
+      "input_fingerprint": "5b9091a69d62ed83c56a75b50a2906522bcad1fa2dfb8a1542fb7aaf8233ce0d",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/131016/2024/initial/expenditure/statement-moku-setsu-4c33a13276569c8e.parquet",

@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "target": {
     "jurisdiction": "132047",
     "fiscal_year": 2018,
@@ -52,20 +52,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "raw-2ae43f999552d835",
-          "legacy_path": "jurisdiction=132047/year=2018/document_kind=budget/edition=0063691d5e257f17391d41ce566077335f3ac7e41256ba1055ccf8dda40fc794/direction=revenue",
-          "declaration": {
-            "attribution": "三鷹市「2018年度当初予算データ」",
-            "dataset_title": null,
-            "encoding": "cp932",
-            "fiscal_year_basis": "sources.toml が宣言した URL（カタログに登録が無い）。リソース名「平成30年度予算データ（歳入）」は取得元ページのリンクテキストを人が写したもので、取得時には照合していない（宣言どうしの自己参照になるため）。根拠は resource_url_basis にある",
-            "license_id": "CC-BY-4.0",
-            "raw_form": "verbatim",
-            "request_url": "https://www.city.mitaka.lg.jp/c_service/095/attached/attach_95608_7.csv",
-            "resource_name": "平成30年度予算データ（歳入）",
-            "resource_url_basis": "公式公開ページ https://www.city.mitaka.lg.jp/c_service/095/095608.html の年度付きリンクを2026-10-04確認し、実際のバイト列・列構成を検査した。現行ページと旧年度のarchiveを同じ公式入口で固定するため直URLを採用する。年度列は原典に無く、年度の根拠は公式リンクテキスト。",
-            "resource_url_declared": true
-          }
+          "table_id": "raw-2ae43f999552d835"
         }
       ]
     }
@@ -74,7 +61,7 @@
     {
       "table_id": "raw-2ae43f999552d835",
       "conversion_id": "raw-2ae43f999552d835",
-      "input_fingerprint": "3b42a26e5a0395bf7f71637623a0c8ac2fe6e6d0d2cb0143b7af85892f52a504",
+      "input_fingerprint": "354d01fbb07477737c56c60bb95fb247211db164d135d83fe3c7c8f77f70aa88",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132047/2018/initial/revenue/raw-2ae43f999552d835.parquet",

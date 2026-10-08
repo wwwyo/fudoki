@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "target": {
     "jurisdiction": "132195",
     "fiscal_year": 2025,
@@ -48,52 +48,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "supplementary-detail-faa4d2cb8197a7c8",
-          "legacy_path": "supplementary-detail/jurisdiction=132195/year=2025/document_kind=supplementary/edition=2c8c377f18d96c291f74d690bada5e127b33e84da47841c1ecb5e2d0a87ce21e/direction=expenditure/resource=supplementary-expenditure-project-setsu",
-          "declaration": {
-            "amendment_number": 1,
-            "approval_date": "2025-05-14",
-            "approval_evidence": {
-              "bbox_json": "[550.56, 534.860097, 727.56, 546.860097]",
-              "page_number": 1,
-              "printed_text": "令和7年5月14日原案可決"
-            },
-            "approval_status": "cover-approved",
-            "baseline_status": "unconfirmed",
-            "edition_status": "published",
-            "effective_at": "2025-05-14",
-            "extractor": "extract_supplementary_expenditure.py@1",
-            "first_article_evidence": {
-              "amount_delta": 34824,
-              "bbox_json": "[160.56, 183.21972, 663.2428571428571, 195.21972]",
-              "page_number": 2,
-              "printed_text": "第1条歳入歳出予算の総額に、歳入歳出それぞれ34,824千円を追加"
-            },
-            "fund_label": "一般会計",
-            "grain": "printed project × expenditure setsu × department occurrence; explicit reserve exceptions",
-            "nonadditive_with": [
-              "expenditure-detail",
-              "expenditure-moku-changes-all"
-            ],
-            "observation_role": "authoritative-supplementary-detail",
-            "pages": [
-              1,
-              13
-            ],
-            "raw_form": "extracted",
-            "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20250515-134219.pdf",
-            "source_amount_unit": "千円",
-            "source_grain": "printed project × expenditure setsu × printed department occurrence; explicit printed reserve exceptions",
-            "source_key": "supplementary-detail:132195:2025:general:1",
-            "table_id": "supplementary-expenditure-project-setsu",
-            "totals": {
-              "all_moku_sum": 34824,
-              "explanation_setsu_sum": 34824,
-              "first_article": 34824,
-              "left_setsu_sum": 34824,
-              "printed_project_sum": 34824
-            }
-          }
+          "table_id": "supplementary-detail-faa4d2cb8197a7c8"
         }
       ]
     }
@@ -102,7 +57,7 @@
     {
       "table_id": "supplementary-detail-faa4d2cb8197a7c8",
       "conversion_id": "supplementary-detail-faa4d2cb8197a7c8",
-      "input_fingerprint": "d6b9ed7b9b2af3150fc31d4ed5955bb98e10eb792fb8eff6ac12a8b6bcb29834",
+      "input_fingerprint": "8cee3c5e39f6e403c446646d0eb527f198caf6e9f97bc96fd32fa2679b7ff0e5",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132195/2025/supplementary-1/expenditure/supplementary-detail-faa4d2cb8197a7c8.parquet",

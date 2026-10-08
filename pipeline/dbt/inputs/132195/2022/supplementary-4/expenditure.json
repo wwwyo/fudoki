@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132195",
+    "fiscal_year": 2022,
+    "document_kind": "supplementary",
+    "amendment_number": 4
+  },
+  "direction": "expenditure",
+  "tables": [
+    {
+      "table_id": "council-approved-detail-6051c730b019f4b2",
+      "raw_path": "council-approved-detail/jurisdiction=132195/year=2022/document_kind=supplementary/edition=df1a4cc5e96beb1ff43f8f892cf7d03d880e40ca7f96ca6456e10b1697e416be/direction=expenditure/table=supplementary-expenditure-project-setsu-council-original-general-4/data.parquet",
+      "declaration": {
+        "amendment_number": 4,
+        "approval_date": "2022-11-24",
+        "approval_evidence": [
+          {
+            "bytes": 577902,
+            "inspected_at": "2026-10-04T09:27:08.786143+00:00",
+            "location": {
+              "css_selector": "li.voice-block[data-voice_code=\"188\"] p.voice__text",
+              "voice_code": 188
+            },
+            "object_key": "inputs/origin/sha256/a431bbf7f808a621680809ab96b6cbcfdb14aa88dd830de83ba938feae93cff1",
+            "observed_text": "◯　副議長（鈴木　えつお議員）　挙手多数と認めます。よって議案第４３号は原案のとおり可決されました。\n　　───────────　─　────────────　─　───────────",
+            "sha256": "a431bbf7f808a621680809ab96b6cbcfdb14aa88dd830de83ba938feae93cff1",
+            "url": "https://www.city.komae.tokyo.dbsr.jp/100000?Template=document&QueryType=new&VoiceExpand1=r04-1124_019"
+          }
+        ],
+        "approval_proof": {
+          "account": "一般会計",
+          "amendment_number": 4,
+          "fiscal_year": 2022,
+          "original_identity_evidence": [
+            {
+              "bytes": 5737494,
+              "inspected_at": "2026-10-04T09:24:13.455500+00:00",
+              "location": {
+                "physical_pdf_page": 4
+              },
+              "object_key": "inputs/origin/sha256/df1a4cc5e96beb1ff43f8f892cf7d03d880e40ca7f96ca6456e10b1697e416be",
+              "observed_text": "議案第 43 号\n\n\n    令和４年度狛江市一般会計補正予算（第４号）\n\n\n 上記の議案を別紙のとおり提出する。\n\n\n    令和４年11月24日\n                            提出者   狛江市長   松原   俊雄\n\n\n\n\n提案理由\n 一般会計予算を補正する必要が生じたため。\n\n\n\n\n                     -4-",
+              "sha256": "df1a4cc5e96beb1ff43f8f892cf7d03d880e40ca7f96ca6456e10b1697e416be",
+              "url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,c,html/121266/R4-4th.pdf"
+            },
+            {
+              "bytes": 5737494,
+              "inspected_at": "2026-10-04T09:24:13.455500+00:00",
+              "location": {
+                "physical_pdf_page": 5
+              },
+              "object_key": "inputs/origin/sha256/df1a4cc5e96beb1ff43f8f892cf7d03d880e40ca7f96ca6456e10b1697e416be",
+              "observed_text": "議 案 第 ４３ 号 別 紙\n\n\n\n\n                 令   和   ４     年   度\n\n\n\n\n 狛 江 市 一 般 会 計 補 正 予 算 (第４号)\n\n\n\n\n                         -5-",
+              "sha256": "df1a4cc5e96beb1ff43f8f892cf7d03d880e40ca7f96ca6456e10b1697e416be",
+              "url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,c,html/121266/R4-4th.pdf"
+            }
+          ],
+          "resolution_date": "2022-11-24",
+          "resolution_evidence": [
+            {
+              "bytes": 577902,
+              "inspected_at": "2026-10-04T09:27:08.786143+00:00",
+              "location": {
+                "css_selector": "li.voice-block[data-voice_code=\"188\"] p.voice__text",
+                "voice_code": 188
+              },
+              "object_key": "inputs/origin/sha256/a431bbf7f808a621680809ab96b6cbcfdb14aa88dd830de83ba938feae93cff1",
+              "observed_text": "◯　副議長（鈴木　えつお議員）　挙手多数と認めます。よって議案第４３号は原案のとおり可決されました。\n　　───────────　─　────────────　─　───────────",
+              "sha256": "a431bbf7f808a621680809ab96b6cbcfdb14aa88dd830de83ba938feae93cff1",
+              "url": "https://www.city.komae.tokyo.dbsr.jp/100000?Template=document&QueryType=new&VoiceExpand1=r04-1124_019"
+            }
+          ],
+          "resolution_id": "議案第43号"
+        },
+        "baseline_status": "unconfirmed",
+        "council_resolution_date": "2022-11-24",
+        "document_title": "2022年度 狛江市一般会計補正予算第4号（番号付き議会承認原典）",
+        "effective_at": null,
+        "effective_at_basis": "unconfirmed-parent-recording-contract",
+        "effective_date": null,
+        "effective_date_basis": "unconfirmed-parent-recording-contract",
+        "executive_disposition_date": null,
+        "extractor": "extract_komae_council_approved_detail.py@2",
+        "first_article_evidence": {
+          "amount_delta": 93160,
+          "bbox_json": "[171.971244, 188.331864, 642.5082088536586, 200.331864]",
+          "page_number": 6,
+          "printed_text": "第1条歳入歳出予算の総額に歳入歳出それぞれ93,160千円を追加"
+        },
+        "fund_label": "一般会計",
+        "grain": "printed project × expenditure setsu × department occurrence; explicit blank-code reserve exception",
+        "nonadditive_with": [
+          "expenditure-moku-changes-all",
+          "expenditure-detail"
+        ],
+        "observation_role": "authoritative-council-supplementary-detail",
+        "original_cover_approval_status": "unconfirmed",
+        "pages": [
+          5,
+          29
+        ],
+        "printed_submission_date": "2022-11-24",
+        "raw_form": "extracted",
+        "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,c,html/121266/R4-4th.pdf",
+        "resource_name": "2022年度 狛江市一般会計補正予算第4号（番号付き議会承認原典）",
+        "source_amount_unit": "千円",
+        "source_key": "council-approved-detail:132195:2022:general:4",
+        "source_page_range": [
+          5,
+          29
+        ],
+        "table_id": "supplementary-expenditure-project-setsu-council-original-general-4",
+        "totals": {
+          "all_moku_sum": 93160,
+          "explanation_setsu_sum": 93160,
+          "first_article": 93160,
+          "left_setsu_sum": 93160,
+          "printed_project_sum": 93160
+        },
+        "unit_multiplier": 1000
+      }
+    }
+  ]
+}

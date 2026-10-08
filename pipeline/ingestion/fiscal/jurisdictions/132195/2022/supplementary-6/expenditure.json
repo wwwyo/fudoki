@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "target": {
     "jurisdiction": "132195",
     "fiscal_year": 2022,
@@ -48,117 +48,7 @@
       },
       "expected_tables": [
         {
-          "table_id": "council-approved-detail-e338aec4dc04b818",
-          "legacy_path": "council-approved-detail/jurisdiction=132195/year=2022/document_kind=supplementary/edition=df633f80a4d268727cd832738c3e318d63d287b4de214e5ba28897833179a064/direction=expenditure/table=supplementary-expenditure-project-setsu-council-original-general-6",
-          "declaration": {
-            "amendment_number": 6,
-            "approval_date": "2023-02-21",
-            "approval_evidence": [
-              {
-                "bytes": 405200,
-                "inspected_at": "2026-10-04T09:27:14.786874+00:00",
-                "location": {
-                  "css_selector": "li.voice-block[data-voice_code=\"97\"] p.voice__text",
-                  "voice_code": 97
-                },
-                "object_key": "inputs/origin/sha256/3b0cecb99010fb49436cbc5e6fc3050623fcfd98ecf3514ae65ee4f4e4f5be84",
-                "observed_text": "◯　議　長（谷田部　一之議員）　挙手全員と認めます。よって議案第１号は原案のとおり可決されました。\n　　───────────　─　────────────　─　───────────",
-                "sha256": "3b0cecb99010fb49436cbc5e6fc3050623fcfd98ecf3514ae65ee4f4e4f5be84",
-                "url": "https://www.city.komae.tokyo.dbsr.jp/100000?Template=document&QueryType=new&VoiceExpand1=r05-0221_038"
-              }
-            ],
-            "approval_proof": {
-              "account": "一般会計",
-              "amendment_number": 6,
-              "fiscal_year": 2022,
-              "original_identity_evidence": [
-                {
-                  "bytes": 2158998,
-                  "inspected_at": "2026-10-04T09:22:10.692348+00:00",
-                  "location": {
-                    "physical_pdf_page": 5
-                  },
-                  "object_key": "inputs/origin/sha256/df633f80a4d268727cd832738c3e318d63d287b4de214e5ba28897833179a064",
-                  "observed_text": "議案第 １ 号\n\n\n   令和４年度狛江市一般会計補正予算（第６号）\n\n\n 上記の議案を別紙のとおり提出する。\n\n\n   令和５年２月21日\n\n\n                                 提出者   狛江市長   松原   俊雄\n\n\n\n\n提案理由\n 一般会計予算を補正する必要が生じたため。\n\n\n\n\n                           -5-",
-                  "sha256": "df633f80a4d268727cd832738c3e318d63d287b4de214e5ba28897833179a064",
-                  "url": "https://www.city.komae.tokyo.jp/index.cfm/46,126856,c,html/126856/R5-1gian.pdf"
-                },
-                {
-                  "bytes": 2158998,
-                  "inspected_at": "2026-10-04T09:22:10.692348+00:00",
-                  "location": {
-                    "physical_pdf_page": 6
-                  },
-                  "object_key": "inputs/origin/sha256/df633f80a4d268727cd832738c3e318d63d287b4de214e5ba28897833179a064",
-                  "observed_text": "議 案 第 １ 号 別 紙\n\n\n\n\n                 令   和   ４     年   度\n\n\n\n\n 狛   江   市   一   般   会   計     補   正   予   算 (第６号)\n\n\n\n\n                         -6-",
-                  "sha256": "df633f80a4d268727cd832738c3e318d63d287b4de214e5ba28897833179a064",
-                  "url": "https://www.city.komae.tokyo.jp/index.cfm/46,126856,c,html/126856/R5-1gian.pdf"
-                }
-              ],
-              "resolution_date": "2023-02-21",
-              "resolution_evidence": [
-                {
-                  "bytes": 405200,
-                  "inspected_at": "2026-10-04T09:27:14.786874+00:00",
-                  "location": {
-                    "css_selector": "li.voice-block[data-voice_code=\"97\"] p.voice__text",
-                    "voice_code": 97
-                  },
-                  "object_key": "inputs/origin/sha256/3b0cecb99010fb49436cbc5e6fc3050623fcfd98ecf3514ae65ee4f4e4f5be84",
-                  "observed_text": "◯　議　長（谷田部　一之議員）　挙手全員と認めます。よって議案第１号は原案のとおり可決されました。\n　　───────────　─　────────────　─　───────────",
-                  "sha256": "3b0cecb99010fb49436cbc5e6fc3050623fcfd98ecf3514ae65ee4f4e4f5be84",
-                  "url": "https://www.city.komae.tokyo.dbsr.jp/100000?Template=document&QueryType=new&VoiceExpand1=r05-0221_038"
-                }
-              ],
-              "resolution_id": "議案第1号"
-            },
-            "baseline_status": "unconfirmed",
-            "council_resolution_date": "2023-02-21",
-            "document_title": "2022年度 狛江市一般会計補正予算第6号（番号付き議会承認原典）",
-            "effective_at": null,
-            "effective_at_basis": "unconfirmed-parent-recording-contract",
-            "effective_date": null,
-            "effective_date_basis": "unconfirmed-parent-recording-contract",
-            "executive_disposition_date": null,
-            "extractor": "extract_komae_council_approved_detail.py@2",
-            "first_article_evidence": {
-              "amount_delta": 1071792,
-              "bbox_json": "[171.96, 188.093734, 674.1031136363636, 200.093734]",
-              "page_number": 7,
-              "printed_text": "第1条歳入歳出予算の総額に歳入歳出それぞれ1,071,792千円を追加"
-            },
-            "fund_label": "一般会計",
-            "grain": "printed project × expenditure setsu × department occurrence; explicit blank-code reserve exception",
-            "nonadditive_with": [
-              "expenditure-moku-changes-all",
-              "expenditure-detail"
-            ],
-            "observation_role": "authoritative-council-supplementary-detail",
-            "original_cover_approval_status": "unconfirmed",
-            "pages": [
-              6,
-              24
-            ],
-            "printed_submission_date": "2023-02-21",
-            "raw_form": "extracted",
-            "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126856,c,html/126856/R5-1gian.pdf",
-            "resource_name": "2022年度 狛江市一般会計補正予算第6号（番号付き議会承認原典）",
-            "source_amount_unit": "千円",
-            "source_key": "council-approved-detail:132195:2022:general:6",
-            "source_page_range": [
-              6,
-              24
-            ],
-            "table_id": "supplementary-expenditure-project-setsu-council-original-general-6",
-            "totals": {
-              "all_moku_sum": 1071792,
-              "explanation_setsu_sum": 1071792,
-              "first_article": 1071792,
-              "left_setsu_sum": 1071792,
-              "printed_project_sum": 1071792
-            },
-            "unit_multiplier": 1000
-          }
+          "table_id": "council-approved-detail-e338aec4dc04b818"
         }
       ]
     }
@@ -167,7 +57,7 @@
     {
       "table_id": "council-approved-detail-e338aec4dc04b818",
       "conversion_id": "council-approved-detail-e338aec4dc04b818",
-      "input_fingerprint": "adc18523925e3904e92213e4c1ea937cf7b7d5eef46eab6c138bf7904b6ce05b",
+      "input_fingerprint": "fd4b90cca34b100ed06f8bbcc4f649e6fb48d5901dfc345ca4c33a520c151984",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132195/2022/supplementary-6/expenditure/council-approved-detail-e338aec4dc04b818.parquet",
