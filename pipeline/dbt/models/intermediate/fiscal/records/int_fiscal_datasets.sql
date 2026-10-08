@@ -37,9 +37,9 @@ select h.dataset_id, h.jurisdiction_code, h.fiscal_year, h.direction, h.document
 from read_json_auto('{{ env_var("FUDOKI_DECLARATIONS_DIR") }}/history.json') h
 -- Recovered chapters are registered below with their unconfirmed phase.
 where coalesce(json_extract_string(h.source_json, '$.provider'), '')
-      not in ('ingestion.fiscal.komae_recovered_provider', 'ingestion.fiscal.komae_supplementary_2020_1_provider',
-              'ingestion.fiscal.chiyoda_budget_changes', 'ingestion.fiscal.tama_supplementary_registry',
-              'ingestion.fiscal.mitaka_supplementary_registry')
+      not in ('ingestion.fiscal.jurisdictions.132195.layouts.komae_recovered_provider', 'ingestion.fiscal.jurisdictions.132195.layouts.komae_supplementary_2020_1_provider',
+              'ingestion.fiscal.jurisdictions.131016.layouts.chiyoda_budget_changes', 'ingestion.fiscal.jurisdictions.132241.layouts.tama_supplementary_registry',
+              'ingestion.fiscal.jurisdictions.132047.layouts.mitaka_supplementary_registry')
   and coalesce(json_extract_string(h.source_json, '$.namespace'), '') not in ('chiyoda-supplementary-native', 'tama-supplementary-native', 'mitaka-supplementary-native')
 union all
 -- The printed moku×setsu breakdown has its own dataset identity; its amounts
@@ -134,7 +134,7 @@ union all
 select h.dataset_id,h.jurisdiction_code,h.fiscal_year,h.direction,h.document_kind,h.origin_sha256,
        '[]'::varchar phases_json,h.source_json,h.structure_json,h.line_count
 from read_json_auto('{{ env_var("FUDOKI_DECLARATIONS_DIR") }}/history.json') h
-where json_extract_string(h.source_json,'$.provider')='ingestion.fiscal.komae_supplementary_2020_1_provider'
+where json_extract_string(h.source_json,'$.provider')='ingestion.fiscal.jurisdictions.132195.layouts.komae_supplementary_2020_1_provider'
 
 union all
 select * from {{ ref('int_132241__initial_native_datasets') }}

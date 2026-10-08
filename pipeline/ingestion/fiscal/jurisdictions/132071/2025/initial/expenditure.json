@@ -1,0 +1,1567 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132071",
+    "fiscal_year": 2025,
+    "document_kind": "initial"
+  },
+  "direction": "expenditure",
+  "candidate_id": "representative",
+  "status": "ready",
+  "conversions": [
+    {
+      "id": "akishima-initial445-b82898795c3648b6",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "0cb38fc69b354c4a028c05eb08e25f761edbbba950a8ecf882fd5e0e6e682968",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  10,
+                  11
+                ],
+                [
+                  18,
+                  25
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "akishima-initial445-b82898795c3648b6",
+            "bytes": 41111,
+            "key": "inputs/table/sha256/6617f108de5e6fb2f323feff8da086a7bdebeee85c500ff0ff0f11b4d7453e32",
+            "sha256": "6617f108de5e6fb2f323feff8da086a7bdebeee85c500ff0ff0f11b4d7453e32"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "akishima-initial445-b82898795c3648b6",
+          "legacy_path": "akishima-initial445/jurisdiction=132071/year=2025/document_kind=budget/edition=0cb38fc69b354c4a028c05eb08e25f761edbbba950a8ecf882fd5e0e6e682968/direction=expenditure/resource=initial445-elderly-explanation",
+          "declaration": {
+            "approval_date": "2025-03-26",
+            "approval_proof": {
+              "expected_row": [
+                "議案第11号",
+                "令和7年度昭島市後期高齢者医療特別会計予算",
+                "3月26日",
+                "原案可決"
+              ],
+              "html_sha256": "392c784487775cd2f791c519f8b1b19743bb1c877939bdad1d2824b269e9e670",
+              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006710/1006712.html"
+            },
+            "approval_status": "council-approved-original-bill",
+            "canonical_initial": true,
+            "explanation_statutory_correspondence": "unconfirmed-no-printed-explanation-code",
+            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.extract_akishima_initial445",
+            "financial_phase": "approved",
+            "fund_label": "後期高齢者医療特別会計",
+            "grain": "printed-project-setsu-explanation-detail-or-printed-moku-reserve",
+            "immutable_raster_descriptor": "sha256:original-raster-hash",
+            "namespace": "akishima-initial445",
+            "nonadditive": false,
+            "original_raw_row_identity": "source_row_id unchanged",
+            "original_source_table_id": "fund-elderly",
+            "pages": [
+              18,
+              25
+            ],
+            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/264/2-4.kouki.pdf",
+            "source_amount_unit": "千円",
+            "source_key": "akishima-initial445:132071:2025:elderly",
+            "source_manifest_sha256": "5b651a24ec0bc52b110772228fc18c169087c570000fa57571757b78b0b7ac7c",
+            "submitted_date": "2025-02-26",
+            "table_id": "initial445-elderly-explanation",
+            "unit_multiplier": 1000
+          }
+        }
+      ]
+    },
+    {
+      "id": "akishima-initial445-0bb08e36e249d042",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "0cb38fc69b354c4a028c05eb08e25f761edbbba950a8ecf882fd5e0e6e682968",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  10,
+                  11
+                ],
+                [
+                  18,
+                  25
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "akishima-initial445-0bb08e36e249d042",
+            "bytes": 84032,
+            "key": "inputs/table/sha256/5d7ac4dcac158439dc35751f7d1503152a1584c9271cf294024bbd8db7d35d81",
+            "sha256": "5d7ac4dcac158439dc35751f7d1503152a1584c9271cf294024bbd8db7d35d81"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "akishima-initial445-0bb08e36e249d042",
+          "legacy_path": "akishima-initial445/jurisdiction=132071/year=2025/document_kind=budget/edition=0cb38fc69b354c4a028c05eb08e25f761edbbba950a8ecf882fd5e0e6e682968/direction=expenditure/resource=initial445-elderly-controls",
+          "declaration": {
+            "approval_date": "2025-03-26",
+            "approval_proof": {
+              "expected_row": [
+                "議案第11号",
+                "令和7年度昭島市後期高齢者医療特別会計予算",
+                "3月26日",
+                "原案可決"
+              ],
+              "html_sha256": "392c784487775cd2f791c519f8b1b19743bb1c877939bdad1d2824b269e9e670",
+              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006710/1006712.html"
+            },
+            "approval_status": "council-approved-original-bill",
+            "canonical_initial": false,
+            "explanation_statutory_correspondence": "unconfirmed-no-printed-explanation-code",
+            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.extract_akishima_initial445",
+            "financial_phase": null,
+            "fund_label": "後期高齢者医療特別会計",
+            "grain": "independent-nonadditive-printed-controls",
+            "immutable_raster_descriptor": "sha256:original-raster-hash",
+            "namespace": "akishima-initial445",
+            "nonadditive": true,
+            "original_raw_row_identity": "source_row_id unchanged",
+            "original_source_table_id": "fund-elderly",
+            "pages": [
+              18,
+              25
+            ],
+            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/264/2-4.kouki.pdf",
+            "source_amount_unit": "千円",
+            "source_key": "akishima-initial445:132071:2025:elderly",
+            "source_manifest_sha256": "5b651a24ec0bc52b110772228fc18c169087c570000fa57571757b78b0b7ac7c",
+            "submitted_date": "2025-02-26",
+            "table_id": "initial445-elderly-controls",
+            "unit_multiplier": 1000
+          }
+        }
+      ]
+    },
+    {
+      "id": "akishima-initial445-182c6fd6fed61316",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "0cb38fc69b354c4a028c05eb08e25f761edbbba950a8ecf882fd5e0e6e682968",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  10,
+                  11
+                ],
+                [
+                  18,
+                  25
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "akishima-initial445-182c6fd6fed61316",
+            "bytes": 13995,
+            "key": "inputs/table/sha256/c9b7fef3076da9440b255bbd7c04d5c0d345ed3372f64b1839b5463be397be16",
+            "sha256": "c9b7fef3076da9440b255bbd7c04d5c0d345ed3372f64b1839b5463be397be16"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "akishima-initial445-182c6fd6fed61316",
+          "legacy_path": "akishima-initial445/jurisdiction=132071/year=2025/document_kind=budget/edition=0cb38fc69b354c4a028c05eb08e25f761edbbba950a8ecf882fd5e0e6e682968/direction=expenditure/resource=initial445-elderly-left-legal",
+          "declaration": {
+            "approval_date": "2025-03-26",
+            "approval_proof": {
+              "expected_row": [
+                "議案第11号",
+                "令和7年度昭島市後期高齢者医療特別会計予算",
+                "3月26日",
+                "原案可決"
+              ],
+              "html_sha256": "392c784487775cd2f791c519f8b1b19743bb1c877939bdad1d2824b269e9e670",
+              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006710/1006712.html"
+            },
+            "approval_status": "council-approved-original-bill",
+            "canonical_initial": false,
+            "explanation_statutory_correspondence": "unconfirmed-no-printed-explanation-code",
+            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.extract_akishima_initial445",
+            "financial_phase": null,
+            "fund_label": "後期高齢者医療特別会計",
+            "grain": "independent-nonadditive-left-moku-legal-setsu",
+            "immutable_raster_descriptor": "sha256:original-raster-hash",
+            "namespace": "akishima-initial445",
+            "nonadditive": true,
+            "original_raw_row_identity": "source_row_id unchanged",
+            "original_source_table_id": "fund-elderly",
+            "pages": [
+              18,
+              25
+            ],
+            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/264/2-4.kouki.pdf",
+            "source_amount_unit": "千円",
+            "source_key": "akishima-initial445:132071:2025:elderly",
+            "source_manifest_sha256": "5b651a24ec0bc52b110772228fc18c169087c570000fa57571757b78b0b7ac7c",
+            "submitted_date": "2025-02-26",
+            "table_id": "initial445-elderly-left-legal",
+            "unit_multiplier": 1000
+          }
+        }
+      ]
+    },
+    {
+      "id": "akishima-initial445-d95f705e17744bc2",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "fcaadac31db15c42641768bf4859f8d6281dcfef602d25ad0de21adaea09216f",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "中神土地区画整理事業特別会計",
+              "pages": [
+                [
+                  10,
+                  11
+                ],
+                [
+                  16,
+                  23
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "akishima-initial445-d95f705e17744bc2",
+            "bytes": 43574,
+            "key": "inputs/table/sha256/a6fb9928e7c91f17dd68c5be293aa7cf8b3a145ebd03285b4d7e8bc8f235d676",
+            "sha256": "a6fb9928e7c91f17dd68c5be293aa7cf8b3a145ebd03285b4d7e8bc8f235d676"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "akishima-initial445-d95f705e17744bc2",
+          "legacy_path": "akishima-initial445/jurisdiction=132071/year=2025/document_kind=budget/edition=fcaadac31db15c42641768bf4859f8d6281dcfef602d25ad0de21adaea09216f/direction=expenditure/resource=initial445-land-explanation",
+          "declaration": {
+            "approval_date": "2025-03-26",
+            "approval_proof": {
+              "expected_row": [
+                "議案第12号",
+                "令和7年度昭島市中神土地区画整理事業特別会計予算",
+                "3月26日",
+                "原案可決"
+              ],
+              "html_sha256": "392c784487775cd2f791c519f8b1b19743bb1c877939bdad1d2824b269e9e670",
+              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006710/1006712.html"
+            },
+            "approval_status": "council-approved-original-bill",
+            "canonical_initial": true,
+            "explanation_statutory_correspondence": "unconfirmed-no-printed-explanation-code",
+            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.extract_akishima_initial445",
+            "financial_phase": "approved",
+            "fund_label": "中神土地区画整理事業特別会計",
+            "grain": "printed-project-setsu-explanation-detail-or-printed-moku-reserve",
+            "immutable_raster_descriptor": "sha256:original-raster-hash",
+            "namespace": "akishima-initial445",
+            "nonadditive": false,
+            "original_raw_row_identity": "source_row_id unchanged",
+            "original_source_table_id": "fund-land-readjustment",
+            "pages": [
+              16,
+              23
+            ],
+            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/264/2-5.kukaku.pdf",
+            "source_amount_unit": "千円",
+            "source_key": "akishima-initial445:132071:2025:land",
+            "source_manifest_sha256": "5b651a24ec0bc52b110772228fc18c169087c570000fa57571757b78b0b7ac7c",
+            "submitted_date": "2025-02-26",
+            "table_id": "initial445-land-explanation",
+            "unit_multiplier": 1000
+          }
+        }
+      ]
+    },
+    {
+      "id": "akishima-initial445-887ccca9d03864df",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "fcaadac31db15c42641768bf4859f8d6281dcfef602d25ad0de21adaea09216f",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "中神土地区画整理事業特別会計",
+              "pages": [
+                [
+                  10,
+                  11
+                ],
+                [
+                  16,
+                  23
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "akishima-initial445-887ccca9d03864df",
+            "bytes": 73489,
+            "key": "inputs/table/sha256/3935368e5cbe54f1b782f0950b8a7e7d25e5a2d829ded2097a8d25ca96363b22",
+            "sha256": "3935368e5cbe54f1b782f0950b8a7e7d25e5a2d829ded2097a8d25ca96363b22"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "akishima-initial445-887ccca9d03864df",
+          "legacy_path": "akishima-initial445/jurisdiction=132071/year=2025/document_kind=budget/edition=fcaadac31db15c42641768bf4859f8d6281dcfef602d25ad0de21adaea09216f/direction=expenditure/resource=initial445-land-controls",
+          "declaration": {
+            "approval_date": "2025-03-26",
+            "approval_proof": {
+              "expected_row": [
+                "議案第12号",
+                "令和7年度昭島市中神土地区画整理事業特別会計予算",
+                "3月26日",
+                "原案可決"
+              ],
+              "html_sha256": "392c784487775cd2f791c519f8b1b19743bb1c877939bdad1d2824b269e9e670",
+              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006710/1006712.html"
+            },
+            "approval_status": "council-approved-original-bill",
+            "canonical_initial": false,
+            "explanation_statutory_correspondence": "unconfirmed-no-printed-explanation-code",
+            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.extract_akishima_initial445",
+            "financial_phase": null,
+            "fund_label": "中神土地区画整理事業特別会計",
+            "grain": "independent-nonadditive-printed-controls",
+            "immutable_raster_descriptor": "sha256:original-raster-hash",
+            "namespace": "akishima-initial445",
+            "nonadditive": true,
+            "original_raw_row_identity": "source_row_id unchanged",
+            "original_source_table_id": "fund-land-readjustment",
+            "pages": [
+              16,
+              23
+            ],
+            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/264/2-5.kukaku.pdf",
+            "source_amount_unit": "千円",
+            "source_key": "akishima-initial445:132071:2025:land",
+            "source_manifest_sha256": "5b651a24ec0bc52b110772228fc18c169087c570000fa57571757b78b0b7ac7c",
+            "submitted_date": "2025-02-26",
+            "table_id": "initial445-land-controls",
+            "unit_multiplier": 1000
+          }
+        }
+      ]
+    },
+    {
+      "id": "akishima-initial445-82527c019105020c",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "fcaadac31db15c42641768bf4859f8d6281dcfef602d25ad0de21adaea09216f",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "中神土地区画整理事業特別会計",
+              "pages": [
+                [
+                  10,
+                  11
+                ],
+                [
+                  16,
+                  23
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "akishima-initial445-82527c019105020c",
+            "bytes": 13923,
+            "key": "inputs/table/sha256/caa8d598e56fb5daf2e046d0763efe19617993c4be3874f01bc4b2fb489b07dc",
+            "sha256": "caa8d598e56fb5daf2e046d0763efe19617993c4be3874f01bc4b2fb489b07dc"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "akishima-initial445-82527c019105020c",
+          "legacy_path": "akishima-initial445/jurisdiction=132071/year=2025/document_kind=budget/edition=fcaadac31db15c42641768bf4859f8d6281dcfef602d25ad0de21adaea09216f/direction=expenditure/resource=initial445-land-left-legal",
+          "declaration": {
+            "approval_date": "2025-03-26",
+            "approval_proof": {
+              "expected_row": [
+                "議案第12号",
+                "令和7年度昭島市中神土地区画整理事業特別会計予算",
+                "3月26日",
+                "原案可決"
+              ],
+              "html_sha256": "392c784487775cd2f791c519f8b1b19743bb1c877939bdad1d2824b269e9e670",
+              "url": "https://www.city.akishima.lg.jp/gikai/honkaigi/1006709/1006710/1006712.html"
+            },
+            "approval_status": "council-approved-original-bill",
+            "canonical_initial": false,
+            "explanation_statutory_correspondence": "unconfirmed-no-printed-explanation-code",
+            "extractor": "ingestion.fiscal.jurisdictions.132071.layouts.extract_akishima_initial445",
+            "financial_phase": null,
+            "fund_label": "中神土地区画整理事業特別会計",
+            "grain": "independent-nonadditive-left-moku-legal-setsu",
+            "immutable_raster_descriptor": "sha256:original-raster-hash",
+            "namespace": "akishima-initial445",
+            "nonadditive": true,
+            "original_raw_row_identity": "source_row_id unchanged",
+            "original_source_table_id": "fund-land-readjustment",
+            "pages": [
+              16,
+              23
+            ],
+            "request_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/264/2-5.kukaku.pdf",
+            "source_amount_unit": "千円",
+            "source_key": "akishima-initial445:132071:2025:land",
+            "source_manifest_sha256": "5b651a24ec0bc52b110772228fc18c169087c570000fa57571757b78b0b7ac7c",
+            "submitted_date": "2025-02-26",
+            "table_id": "initial445-land-left-legal",
+            "unit_multiplier": 1000
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "akishima-initial445-b82898795c3648b6",
+      "conversion_id": "akishima-initial445-b82898795c3648b6",
+      "input_fingerprint": "70a6f112c970c8e7206b394f1d213475d85edc20fe9589a7ef92a76cee49ad29",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132071/2025/initial/expenditure/akishima-initial445-b82898795c3648b6.parquet",
+        "sha256": "6617f108de5e6fb2f323feff8da086a7bdebeee85c500ff0ff0f11b4d7453e32",
+        "bytes": 41111
+      },
+      "row_count": 51,
+      "schema": [
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "account_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_bytes",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "submitted_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_bill",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_result",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_row",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_row_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_bbox",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_page",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_value",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_text_raw",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_text_confirmed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "detail_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "department",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_control_node_id",
+          "type": "BIGINT"
+        },
+        {
+          "name": "project_physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "project_bbox",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_control_node_id",
+          "type": "BIGINT"
+        },
+        {
+          "name": "setsu_physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "setsu_bbox",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_setsu_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "statutory_setsu_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "statutory_mapping_state",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "visual_evidence_path",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "visual_evidence_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "numeric_moku_control_matches",
+          "type": "BOOLEAN"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "0cb38fc69b354c4a028c05eb08e25f761edbbba950a8ecf882fd5e0e6e682968",
+          "bytes": 361954
+        }
+      ]
+    },
+    {
+      "table_id": "akishima-initial445-0bb08e36e249d042",
+      "conversion_id": "akishima-initial445-0bb08e36e249d042",
+      "input_fingerprint": "ce1b12a3411f44ec07f70cb05a6cba3e14b2c6eed0998ee76333a590aa9dd13b",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132071/2025/initial/expenditure/akishima-initial445-0bb08e36e249d042.parquet",
+        "sha256": "5d7ac4dcac158439dc35751f7d1503152a1584c9271cf294024bbd8db7d35d81",
+        "bytes": 84032
+      },
+      "row_count": 97,
+      "schema": [
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "account_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_bytes",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "submitted_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_bill",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_result",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_row",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_row_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_kind",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "nonadditive",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "amount",
+          "type": "BIGINT"
+        },
+        {
+          "name": "physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_bbox",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "path_codes",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_text_raw",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "visual_evidence_path",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "visual_evidence_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "extra_evidence",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "0cb38fc69b354c4a028c05eb08e25f761edbbba950a8ecf882fd5e0e6e682968",
+          "bytes": 361954
+        }
+      ]
+    },
+    {
+      "table_id": "akishima-initial445-182c6fd6fed61316",
+      "conversion_id": "akishima-initial445-182c6fd6fed61316",
+      "input_fingerprint": "5e9ffdf959f181d9fe0a5d9a010123e5231fb4c50f0e7fc54c8a378d71e82265",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132071/2025/initial/expenditure/akishima-initial445-182c6fd6fed61316.parquet",
+        "sha256": "c9b7fef3076da9440b255bbd7c04d5c0d345ed3372f64b1839b5463be397be16",
+        "bytes": 13995
+      },
+      "row_count": 25,
+      "schema": [
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "account_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_bytes",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "submitted_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_bill",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_result",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_row",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_row_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_kind",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "nonadditive",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "amount",
+          "type": "BIGINT"
+        },
+        {
+          "name": "physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_bbox",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_name_raw",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_name_confirmed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "statutory_setsu_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "statutory_mapping_state",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "active_master_candidates",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "visual_evidence_path",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "visual_evidence_sha256",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "0cb38fc69b354c4a028c05eb08e25f761edbbba950a8ecf882fd5e0e6e682968",
+          "bytes": 361954
+        }
+      ]
+    },
+    {
+      "table_id": "akishima-initial445-d95f705e17744bc2",
+      "conversion_id": "akishima-initial445-d95f705e17744bc2",
+      "input_fingerprint": "ea0c3e9db00aca2bdde8a893886ffdec5f34a5459857c0066f29a06b17618636",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132071/2025/initial/expenditure/akishima-initial445-d95f705e17744bc2.parquet",
+        "sha256": "a6fb9928e7c91f17dd68c5be293aa7cf8b3a145ebd03285b4d7e8bc8f235d676",
+        "bytes": 43574
+      },
+      "row_count": 61,
+      "schema": [
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "account_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_bytes",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "submitted_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_bill",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_result",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_row",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_row_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_bbox",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_page",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_value",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_text_raw",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_text_confirmed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "detail_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "department",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_control_node_id",
+          "type": "BIGINT"
+        },
+        {
+          "name": "project_physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "project_bbox",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_control_node_id",
+          "type": "BIGINT"
+        },
+        {
+          "name": "setsu_physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "setsu_bbox",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_setsu_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "statutory_setsu_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "statutory_mapping_state",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "visual_evidence_path",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "visual_evidence_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "numeric_moku_control_matches",
+          "type": "BOOLEAN"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "fcaadac31db15c42641768bf4859f8d6281dcfef602d25ad0de21adaea09216f",
+          "bytes": 330066
+        }
+      ]
+    },
+    {
+      "table_id": "akishima-initial445-887ccca9d03864df",
+      "conversion_id": "akishima-initial445-887ccca9d03864df",
+      "input_fingerprint": "15247f50f761f26ce085192eb0d3cd7b62659ae943a2a32a834c2a15e03aead0",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132071/2025/initial/expenditure/akishima-initial445-887ccca9d03864df.parquet",
+        "sha256": "3935368e5cbe54f1b782f0950b8a7e7d25e5a2d829ded2097a8d25ca96363b22",
+        "bytes": 73489
+      },
+      "row_count": 77,
+      "schema": [
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "account_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_bytes",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "submitted_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_bill",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_result",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_row",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_row_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_kind",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "nonadditive",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "amount",
+          "type": "BIGINT"
+        },
+        {
+          "name": "physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_bbox",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "path_codes",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_text_raw",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "visual_evidence_path",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "visual_evidence_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "extra_evidence",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "fcaadac31db15c42641768bf4859f8d6281dcfef602d25ad0de21adaea09216f",
+          "bytes": 330066
+        }
+      ]
+    },
+    {
+      "table_id": "akishima-initial445-82527c019105020c",
+      "conversion_id": "akishima-initial445-82527c019105020c",
+      "input_fingerprint": "7f2d7579ec24aa832fa8158b8a1fcfed44f7d32d1c6087b2158a8826d89033a3",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132071/2025/initial/expenditure/akishima-initial445-82527c019105020c.parquet",
+        "sha256": "caa8d598e56fb5daf2e046d0763efe19617993c4be3874f01bc4b2fb489b07dc",
+        "bytes": 13923
+      },
+      "row_count": 19,
+      "schema": [
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "account_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_bytes",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "submitted_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_bill",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_result",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_row",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_row_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_kind",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "nonadditive",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "amount",
+          "type": "BIGINT"
+        },
+        {
+          "name": "physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_bbox",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_name_raw",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_name_confirmed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "statutory_setsu_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "statutory_mapping_state",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "active_master_candidates",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "visual_evidence_path",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "visual_evidence_sha256",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "fcaadac31db15c42641768bf4859f8d6281dcfef602d25ad0de21adaea09216f",
+          "bytes": 330066
+        }
+      ]
+    }
+  ]
+}

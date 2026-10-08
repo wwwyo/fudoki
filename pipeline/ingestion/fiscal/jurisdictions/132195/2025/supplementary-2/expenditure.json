@@ -1,0 +1,856 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132195",
+    "fiscal_year": 2025,
+    "document_kind": "supplementary",
+    "amendment_number": 2
+  },
+  "direction": "expenditure",
+  "candidate_id": "representative",
+  "status": "ready",
+  "conversions": [
+    {
+      "id": "supplementary-detail-faa4d2cb8197a7c8",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "326e4253d67d5f556429d4e5185177d78dab7964e380c30963b02f8378a01b4b",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  1,
+                  5
+                ],
+                [
+                  7,
+                  8
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "supplementary-detail-faa4d2cb8197a7c8",
+            "bytes": 14800,
+            "key": "inputs/table/sha256/d15ab7ceb2c2b2d12229f49264b3c468d242720556d7127f60d1538cfee4c87f",
+            "sha256": "d15ab7ceb2c2b2d12229f49264b3c468d242720556d7127f60d1538cfee4c87f"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "supplementary-detail-faa4d2cb8197a7c8",
+          "legacy_path": "supplementary-detail/jurisdiction=132195/year=2025/document_kind=supplementary/edition=326e4253d67d5f556429d4e5185177d78dab7964e380c30963b02f8378a01b4b/direction=expenditure/resource=supplementary-expenditure-project-setsu",
+          "declaration": {
+            "amendment_number": 2,
+            "approval_date": "2025-11-26",
+            "approval_evidence": {
+              "bbox_json": "[547.2, 542.63236, 731.04, 554.63236]",
+              "page_number": 1,
+              "printed_text": "令和7年11月26日原案可決"
+            },
+            "approval_status": "cover-approved",
+            "baseline_status": "unconfirmed",
+            "edition_status": "published",
+            "effective_at": "2025-11-26",
+            "extractor": "extract_supplementary_expenditure.py@1",
+            "first_article_evidence": {
+              "amount_delta": 6317,
+              "bbox_json": "[160.56, 183.21972, 652.2029268292683, 195.21972]",
+              "page_number": 2,
+              "printed_text": "第1条歳入歳出予算の総額に、歳入歳出それぞれ6,317千円を追加"
+            },
+            "fund_label": "介護保険特別会計",
+            "grain": "printed project × expenditure setsu × department occurrence; explicit reserve exceptions",
+            "nonadditive_with": [
+              "expenditure-detail",
+              "expenditure-moku-changes-all"
+            ],
+            "observation_role": "authoritative-supplementary-detail",
+            "pages": [
+              1,
+              8
+            ],
+            "raw_form": "extracted",
+            "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20251126-164958.pdf",
+            "source_amount_unit": "千円",
+            "source_grain": "printed project × expenditure setsu × printed department occurrence; explicit printed reserve exceptions",
+            "source_key": "supplementary-detail:132195:2025:care:2",
+            "table_id": "supplementary-expenditure-project-setsu",
+            "totals": {
+              "all_moku_sum": 6317,
+              "explanation_setsu_sum": 6317,
+              "first_article": 6317,
+              "left_setsu_sum": 5844,
+              "printed_project_sum": 6317
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "supplementary-detail-faa4d2cb8197a7c8-77bd4b62daa25a18",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "8e26a4d9b1ad042675fcec2f0baf3183bf7a8aca15d9cab9361c7baac033a650",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "国民健康保険特別会計",
+              "pages": [
+                [
+                  1,
+                  5
+                ],
+                [
+                  7,
+                  7
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "supplementary-detail-faa4d2cb8197a7c8-77bd4b62daa25a18",
+            "bytes": 14394,
+            "key": "inputs/table/sha256/17ae750eea7df58f8294118ffe14ac0ee5d48c762d3c1548dac2633b0208dc30",
+            "sha256": "17ae750eea7df58f8294118ffe14ac0ee5d48c762d3c1548dac2633b0208dc30"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "supplementary-detail-faa4d2cb8197a7c8-77bd4b62daa25a18",
+          "legacy_path": "supplementary-detail/jurisdiction=132195/year=2025/document_kind=supplementary/edition=8e26a4d9b1ad042675fcec2f0baf3183bf7a8aca15d9cab9361c7baac033a650/direction=expenditure/resource=supplementary-expenditure-project-setsu",
+          "declaration": {
+            "amendment_number": 2,
+            "approval_date": "2025-11-26",
+            "approval_evidence": {
+              "bbox_json": "[547.2, 542.63236, 731.04, 554.63236]",
+              "page_number": 1,
+              "printed_text": "令和7年11月26日原案可決"
+            },
+            "approval_status": "cover-approved",
+            "baseline_status": "unconfirmed",
+            "edition_status": "published",
+            "effective_at": "2025-11-26",
+            "extractor": "extract_supplementary_expenditure.py@1",
+            "first_article_evidence": {
+              "amount_delta": 4000,
+              "bbox_json": "[160.56, 183.21972, 652.2029268292683, 195.21972]",
+              "page_number": 2,
+              "printed_text": "第1条歳入歳出予算の総額に、歳入歳出それぞれ4,000千円を追加"
+            },
+            "fund_label": "国民健康保険特別会計",
+            "grain": "printed project × expenditure setsu × department occurrence; explicit reserve exceptions",
+            "nonadditive_with": [
+              "expenditure-detail",
+              "expenditure-moku-changes-all"
+            ],
+            "observation_role": "authoritative-supplementary-detail",
+            "pages": [
+              1,
+              7
+            ],
+            "raw_form": "extracted",
+            "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20251126-164741.pdf",
+            "source_amount_unit": "千円",
+            "source_grain": "printed project × expenditure setsu × printed department occurrence; explicit printed reserve exceptions",
+            "source_key": "supplementary-detail:132195:2025:national-health:2",
+            "table_id": "supplementary-expenditure-project-setsu",
+            "totals": {
+              "all_moku_sum": 4000,
+              "explanation_setsu_sum": 4000,
+              "first_article": 4000,
+              "left_setsu_sum": 4000,
+              "printed_project_sum": 4000
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "supplementary-detail-faa4d2cb8197a7c8-73b48db9930b012a",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "9277189d23e764818de172b619a61804fcebb94d12fed3d286d6ae8d207f2436",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  1,
+                  6
+                ],
+                [
+                  8,
+                  10
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "supplementary-detail-faa4d2cb8197a7c8-73b48db9930b012a",
+            "bytes": 16700,
+            "key": "inputs/table/sha256/bc40a24f5b827bd868e8cc3b412d7b0cac3dfc1f8f3b7794329a92db6dc22022",
+            "sha256": "bc40a24f5b827bd868e8cc3b412d7b0cac3dfc1f8f3b7794329a92db6dc22022"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "supplementary-detail-faa4d2cb8197a7c8-73b48db9930b012a",
+          "legacy_path": "supplementary-detail/jurisdiction=132195/year=2025/document_kind=supplementary/edition=9277189d23e764818de172b619a61804fcebb94d12fed3d286d6ae8d207f2436/direction=expenditure/resource=supplementary-expenditure-project-setsu",
+          "declaration": {
+            "amendment_number": 2,
+            "approval_date": "2025-06-12",
+            "approval_evidence": {
+              "bbox_json": "[550.56, 542.63236, 727.56, 554.63236]",
+              "page_number": 1,
+              "printed_text": "令和7年6月12日原案可決"
+            },
+            "approval_status": "cover-approved",
+            "baseline_status": "unconfirmed",
+            "edition_status": "published",
+            "effective_at": "2025-06-12",
+            "extractor": "extract_supplementary_expenditure.py@1",
+            "first_article_evidence": {
+              "amount_delta": 104579,
+              "bbox_json": "[160.56, 183.21972, 674.2827906976745, 195.21972]",
+              "page_number": 2,
+              "printed_text": "第1条歳入歳出予算の総額に、歳入歳出それぞれ104,579千円を追加"
+            },
+            "fund_label": "一般会計",
+            "grain": "printed project × expenditure setsu × department occurrence; explicit reserve exceptions",
+            "nonadditive_with": [
+              "expenditure-detail",
+              "expenditure-moku-changes-all"
+            ],
+            "observation_role": "authoritative-supplementary-detail",
+            "pages": [
+              1,
+              10
+            ],
+            "raw_form": "extracted",
+            "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20250611-100205.pdf",
+            "source_amount_unit": "千円",
+            "source_grain": "printed project × expenditure setsu × printed department occurrence; explicit printed reserve exceptions",
+            "source_key": "supplementary-detail:132195:2025:general:2",
+            "table_id": "supplementary-expenditure-project-setsu",
+            "totals": {
+              "all_moku_sum": 104579,
+              "explanation_setsu_sum": 104579,
+              "first_article": 104579,
+              "left_setsu_sum": 84579,
+              "printed_project_sum": 104579
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "supplementary-detail-faa4d2cb8197a7c8",
+      "conversion_id": "supplementary-detail-faa4d2cb8197a7c8",
+      "input_fingerprint": "33ebb7e2d4c1cb22d5e40b90979a33f2e60db257fea63abd64bc037b8ee3a043",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132195/2025/supplementary-2/expenditure/supplementary-detail-faa4d2cb8197a7c8.parquet",
+        "sha256": "d15ab7ceb2c2b2d12229f49264b3c468d242720556d7127f60d1538cfee4c87f",
+        "bytes": 14800
+      },
+      "row_count": 3,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "fund_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amendment_number",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_fetched_at",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "submitted_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "edition_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_moku_source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "control_moku_key",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_moku_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "project_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_printed_delta",
+          "type": "BIGINT"
+        },
+        {
+          "name": "project_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "department_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_delta",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_amount_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "page_number",
+          "type": "BIGINT"
+        },
+        {
+          "name": "bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_locations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "left_setsu_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "validation_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "validation_reasons_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observed_grain_validation_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_correspondence_status",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "326e4253d67d5f556429d4e5185177d78dab7964e380c30963b02f8378a01b4b",
+          "bytes": 281030
+        }
+      ]
+    },
+    {
+      "table_id": "supplementary-detail-faa4d2cb8197a7c8-77bd4b62daa25a18",
+      "conversion_id": "supplementary-detail-faa4d2cb8197a7c8-77bd4b62daa25a18",
+      "input_fingerprint": "3add453e13ff68cc5921aaf8129e0fa906913b2820dd43b9b664d06b174fc1b7",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132195/2025/supplementary-2/expenditure/supplementary-detail-faa4d2cb8197a7c8-77bd4b62daa25a18.parquet",
+        "sha256": "17ae750eea7df58f8294118ffe14ac0ee5d48c762d3c1548dac2633b0208dc30",
+        "bytes": 14394
+      },
+      "row_count": 1,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "fund_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amendment_number",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_fetched_at",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "submitted_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "edition_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_moku_source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "control_moku_key",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_moku_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "project_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_printed_delta",
+          "type": "BIGINT"
+        },
+        {
+          "name": "project_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "department_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_delta",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_amount_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "page_number",
+          "type": "BIGINT"
+        },
+        {
+          "name": "bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_locations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "left_setsu_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "validation_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "validation_reasons_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observed_grain_validation_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_correspondence_status",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "8e26a4d9b1ad042675fcec2f0baf3183bf7a8aca15d9cab9361c7baac033a650",
+          "bytes": 254871
+        }
+      ]
+    },
+    {
+      "table_id": "supplementary-detail-faa4d2cb8197a7c8-73b48db9930b012a",
+      "conversion_id": "supplementary-detail-faa4d2cb8197a7c8-73b48db9930b012a",
+      "input_fingerprint": "6df4907468fe0f74c9bccf4ee6b600077268ebeb5a443cb8dd07c1fd23781a6d",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132195/2025/supplementary-2/expenditure/supplementary-detail-faa4d2cb8197a7c8-73b48db9930b012a.parquet",
+        "sha256": "bc40a24f5b827bd868e8cc3b412d7b0cac3dfc1f8f3b7794329a92db6dc22022",
+        "bytes": 16700
+      },
+      "row_count": 6,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "fund_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amendment_number",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_fetched_at",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "submitted_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "edition_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_moku_source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "control_moku_key",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_moku_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "project_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_printed_delta",
+          "type": "BIGINT"
+        },
+        {
+          "name": "project_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "department_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_delta",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_amount_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "page_number",
+          "type": "BIGINT"
+        },
+        {
+          "name": "bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_locations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "left_setsu_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "validation_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "validation_reasons_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observed_grain_validation_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_correspondence_status",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "9277189d23e764818de172b619a61804fcebb94d12fed3d286d6ae8d207f2436",
+          "bytes": 320612
+        }
+      ]
+    }
+  ]
+}

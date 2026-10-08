@@ -29,7 +29,7 @@
     "dev": "bun run pipeline:report && bun run --cwd pipeline/verify/view dev",
     "dev:api": "bun run --cwd apps/api dev",
     "dev:web": "bun run --cwd apps/web dev",
-    "pipeline": "bun run --cwd pipeline acquire && bun run pipeline:build && bun run pipeline:report",
+    "pipeline": "bun run pipeline:inputs && bun run pipeline:build && bun run pipeline:report",
     "pipeline:build": "bun run --cwd pipeline build",
     "pipeline:fdp": "bun run --cwd pipeline fdp",
     "pipeline:inputs": "bun run --cwd pipeline inputs",
@@ -40,7 +40,8 @@
     "test:e2e": "bun run typecheck:e2e && E2E_TELEMETRY_DISABLED=1 mise x -- bun run e2e run",
     "typecheck": "tsc --noEmit",
     "typecheck:all": "bun run typecheck && bun run --filter '@fudoki/*' typecheck",
-    "typecheck:e2e": "tsc --noEmit -p tsconfig.e2e.json"
+    "typecheck:e2e": "tsc --noEmit -p tsconfig.e2e.json",
+    "pipeline:ingestion": "bun run --cwd pipeline ingestion:convert"
   },
   "dependencies": {
     "zod": "catalog:"

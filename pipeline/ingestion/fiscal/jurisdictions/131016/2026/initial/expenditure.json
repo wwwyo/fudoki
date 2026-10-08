@@ -1,0 +1,1668 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "131016",
+    "fiscal_year": 2026,
+    "document_kind": "initial"
+  },
+  "direction": "expenditure",
+  "candidate_id": "representative",
+  "status": "ready",
+  "conversions": [
+    {
+      "id": "raw-2ae43f999552d835",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  41,
+                  41
+                ],
+                [
+                  146,
+                  251
+                ]
+              ]
+            },
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  359,
+                  359
+                ],
+                [
+                  392,
+                  427
+                ]
+              ]
+            },
+            {
+              "account": "国民健康保険事業会計",
+              "pages": [
+                [
+                  283,
+                  283
+                ],
+                [
+                  306,
+                  341
+                ]
+              ]
+            },
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  445,
+                  445
+                ],
+                [
+                  466,
+                  481
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "raw-2ae43f999552d835",
+            "bytes": 21717,
+            "key": "inputs/table/sha256/4c004d4cbd21ef9bb9e02ccfd5a951788a9c9d73684d90f10e85ed297f1980a5",
+            "sha256": "4c004d4cbd21ef9bb9e02ccfd5a951788a9c9d73684d90f10e85ed297f1980a5"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "raw-2ae43f999552d835",
+          "legacy_path": "jurisdiction=131016/year=2026/document_kind=budget/edition=bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49/direction=expenditure",
+          "declaration": {
+            "attribution": "千代田区",
+            "dataset_title": null,
+            "document_title": "令和8年度各会計予算（うち 一般会計予算説明書 歳入歳出予算事項別明細書）",
+            "extractor": "ingestion/budget/extract_statement.py@5",
+            "fiscal_year_basis": "sources.toml が宣言した URL（カタログへの登録が存在しない）。年度は取得元ページの見出しとリンクテキストを人が読んで決めており、機械は照合していない。根拠は resource_url_basis にある",
+            "fund_basis": "「一般会計予算説明書」の中扉（p37）と、その明細書の目次（p39）。同じ PDF の p279 以降は別会計の説明書で、pages の宣言から外してある",
+            "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
+            "layout": "spread",
+            "license_id": "NOASSERTION",
+            "pages": [
+              146,
+              251
+            ],
+            "raw_form": "extracted",
+            "redistribute": "allow",
+            "redistribute_basis": "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする",
+            "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r8kaikeiyosan.pdf",
+            "resource_name": "令和8年度各会計予算（うち 一般会計予算説明書 歳入歳出予算事項別明細書）",
+            "resource_url_basis": "区サイト「予算」ページ（landing_page）のリンクテキスト「令和8年度各会計予算」から人が拾った。カタログへの登録が存在しないため名前から解決する経路が無い",
+            "resource_url_declared": true,
+            "source_amount_unit": "千円"
+          }
+        }
+      ]
+    },
+    {
+      "id": "raw-c095865441951563",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  41,
+                  41
+                ],
+                [
+                  146,
+                  251
+                ]
+              ]
+            },
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  359,
+                  359
+                ],
+                [
+                  392,
+                  427
+                ]
+              ]
+            },
+            {
+              "account": "国民健康保険事業会計",
+              "pages": [
+                [
+                  283,
+                  283
+                ],
+                [
+                  306,
+                  341
+                ]
+              ]
+            },
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  445,
+                  445
+                ],
+                [
+                  466,
+                  481
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "raw-c095865441951563",
+            "bytes": 7121,
+            "key": "inputs/table/sha256/9a3fa0a54c7472d08deeb46e4eef5a0f755e9bb55921016b86359b8204eac234",
+            "sha256": "9a3fa0a54c7472d08deeb46e4eef5a0f755e9bb55921016b86359b8204eac234"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "raw-c095865441951563",
+          "legacy_path": "jurisdiction=131016/year=2026/document_kind=budget/edition=bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49/direction=expenditure/table=fund-care",
+          "declaration": {
+            "attribution": "千代田区",
+            "dataset_title": null,
+            "document_title": "2026年度 介護保険特別会計 当初予算事項別明細書",
+            "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py@6",
+            "fiscal_year_basis": "sources.toml が宣言した URL（カタログへの登録が存在しない）。年度は取得元ページの見出しとリンクテキストを人が読んで決めており、機械は照合していない。根拠は resource_url_basis にある",
+            "fund_basis": "PDFの会計表紙と事項別明細書p360/p392",
+            "fund_label": "介護保険特別会計",
+            "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
+            "layout": "spread",
+            "license_id": "NOASSERTION",
+            "pages": [
+              392,
+              427
+            ],
+            "raw_form": "extracted",
+            "redistribute": "allow",
+            "redistribute_basis": "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする",
+            "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r8kaikeiyosan.pdf",
+            "resource_name": "2026年度 介護保険特別会計 当初予算事項別明細書",
+            "resource_url_basis": "公式年度ページのリンク: 令和8年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）（PDF：3,364KB）",
+            "resource_url_declared": true,
+            "source_amount_unit": "千円",
+            "source_key": "statement:131016:2026:care",
+            "table_id": "fund-care"
+          }
+        }
+      ]
+    },
+    {
+      "id": "raw-e3938769d17e1933",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  41,
+                  41
+                ],
+                [
+                  146,
+                  251
+                ]
+              ]
+            },
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  359,
+                  359
+                ],
+                [
+                  392,
+                  427
+                ]
+              ]
+            },
+            {
+              "account": "国民健康保険事業会計",
+              "pages": [
+                [
+                  283,
+                  283
+                ],
+                [
+                  306,
+                  341
+                ]
+              ]
+            },
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  445,
+                  445
+                ],
+                [
+                  466,
+                  481
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "raw-e3938769d17e1933",
+            "bytes": 4374,
+            "key": "inputs/table/sha256/e34b45a2d65240da79ede8c94074a393afc9805ccba3402a71902fcb26c0fad5",
+            "sha256": "e34b45a2d65240da79ede8c94074a393afc9805ccba3402a71902fcb26c0fad5"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "raw-e3938769d17e1933",
+          "legacy_path": "jurisdiction=131016/year=2026/document_kind=budget/edition=bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49/direction=expenditure/table=fund-elderly",
+          "declaration": {
+            "attribution": "千代田区",
+            "dataset_title": null,
+            "document_title": "2026年度 後期高齢者医療特別会計 当初予算事項別明細書",
+            "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py@6",
+            "fiscal_year_basis": "sources.toml が宣言した URL（カタログへの登録が存在しない）。年度は取得元ページの見出しとリンクテキストを人が読んで決めており、機械は照合していない。根拠は resource_url_basis にある",
+            "fund_basis": "PDFの会計表紙と事項別明細書p446/p466",
+            "fund_label": "後期高齢者医療特別会計",
+            "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
+            "layout": "spread",
+            "license_id": "NOASSERTION",
+            "pages": [
+              466,
+              481
+            ],
+            "raw_form": "extracted",
+            "redistribute": "allow",
+            "redistribute_basis": "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする",
+            "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r8kaikeiyosan.pdf",
+            "resource_name": "2026年度 後期高齢者医療特別会計 当初予算事項別明細書",
+            "resource_url_basis": "公式年度ページのリンク: 令和8年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）（PDF：3,364KB）",
+            "resource_url_declared": true,
+            "source_amount_unit": "千円",
+            "source_key": "statement:131016:2026:elderly",
+            "table_id": "fund-elderly"
+          }
+        }
+      ]
+    },
+    {
+      "id": "raw-a7584fa57e52a19d",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  41,
+                  41
+                ],
+                [
+                  146,
+                  251
+                ]
+              ]
+            },
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  359,
+                  359
+                ],
+                [
+                  392,
+                  427
+                ]
+              ]
+            },
+            {
+              "account": "国民健康保険事業会計",
+              "pages": [
+                [
+                  283,
+                  283
+                ],
+                [
+                  306,
+                  341
+                ]
+              ]
+            },
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  445,
+                  445
+                ],
+                [
+                  466,
+                  481
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "raw-a7584fa57e52a19d",
+            "bytes": 5886,
+            "key": "inputs/table/sha256/ef657ac4f8621d7d62f3f6eed35c3435a4edf9b24d2d939d737bc0b80ec3ef34",
+            "sha256": "ef657ac4f8621d7d62f3f6eed35c3435a4edf9b24d2d939d737bc0b80ec3ef34"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "raw-a7584fa57e52a19d",
+          "legacy_path": "jurisdiction=131016/year=2026/document_kind=budget/edition=bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49/direction=expenditure/table=fund-national-health",
+          "declaration": {
+            "attribution": "千代田区",
+            "dataset_title": null,
+            "document_title": "2026年度 国民健康保険事業会計 当初予算事項別明細書",
+            "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py@6",
+            "fiscal_year_basis": "sources.toml が宣言した URL（カタログへの登録が存在しない）。年度は取得元ページの見出しとリンクテキストを人が読んで決めており、機械は照合していない。根拠は resource_url_basis にある",
+            "fund_basis": "PDFの会計表紙と事項別明細書p284/p306",
+            "fund_label": "国民健康保険事業会計",
+            "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
+            "layout": "spread",
+            "license_id": "NOASSERTION",
+            "pages": [
+              306,
+              341
+            ],
+            "raw_form": "extracted",
+            "redistribute": "allow",
+            "redistribute_basis": "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする",
+            "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r8kaikeiyosan.pdf",
+            "resource_name": "2026年度 国民健康保険事業会計 当初予算事項別明細書",
+            "resource_url_basis": "公式年度ページのリンク: 令和8年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）（PDF：3,364KB）",
+            "resource_url_declared": true,
+            "source_amount_unit": "千円",
+            "source_key": "statement:131016:2026:national-health",
+            "table_id": "fund-national-health"
+          }
+        }
+      ]
+    },
+    {
+      "id": "statement-moku-setsu-9f563c2a5cc6247a",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  41,
+                  41
+                ],
+                [
+                  146,
+                  251
+                ]
+              ]
+            },
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  359,
+                  359
+                ],
+                [
+                  392,
+                  427
+                ]
+              ]
+            },
+            {
+              "account": "国民健康保険事業会計",
+              "pages": [
+                [
+                  283,
+                  283
+                ],
+                [
+                  306,
+                  341
+                ]
+              ]
+            },
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  445,
+                  445
+                ],
+                [
+                  466,
+                  481
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "statement-moku-setsu-9f563c2a5cc6247a",
+            "bytes": 6469,
+            "key": "inputs/table/sha256/2633cfd19686059ecf7222a3036585edb1e453a0323c7ffc594ba784cccb6d92",
+            "sha256": "2633cfd19686059ecf7222a3036585edb1e453a0323c7ffc594ba784cccb6d92"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "statement-moku-setsu-9f563c2a5cc6247a",
+          "legacy_path": "statement-moku-setsu/jurisdiction=131016/year=2026/document_kind=budget/edition=bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49/direction=expenditure/table=moku-setsu-fund-care",
+          "declaration": {
+            "attribution": "千代田区",
+            "dataset_title": null,
+            "document_title": "2026年度 介護保険特別会計 当初予算事項別明細書",
+            "explanation_dataset_id": "131016:2026:expenditure:budget:bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49:fund-care",
+            "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py@7",
+            "fund_basis": "PDFの会計表紙と事項別明細書p360/p392",
+            "fund_label": "介護保険特別会計",
+            "grain": "document-fund-moku-printed-setsu-row",
+            "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
+            "license_id": "NOASSERTION",
+            "observation_role": "independent-moku-setsu",
+            "pages": [
+              392,
+              427
+            ],
+            "project_setsu_linkage": "unconfirmed",
+            "raw_form": "extracted",
+            "redistribute": "allow",
+            "redistribute_basis": "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする",
+            "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r8kaikeiyosan.pdf",
+            "resource_name": "2026年度 介護保険特別会計 当初予算事項別明細書（目×節の独立内訳）",
+            "resource_url_basis": "公式年度ページのリンク: 令和8年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）（PDF：3,364KB）",
+            "source_amount_unit": "千円",
+            "source_key": "statement:131016:2026:care",
+            "table_id": "moku-setsu-fund-care"
+          }
+        }
+      ]
+    },
+    {
+      "id": "statement-moku-setsu-d1639a735856ae62",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  41,
+                  41
+                ],
+                [
+                  146,
+                  251
+                ]
+              ]
+            },
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  359,
+                  359
+                ],
+                [
+                  392,
+                  427
+                ]
+              ]
+            },
+            {
+              "account": "国民健康保険事業会計",
+              "pages": [
+                [
+                  283,
+                  283
+                ],
+                [
+                  306,
+                  341
+                ]
+              ]
+            },
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  445,
+                  445
+                ],
+                [
+                  466,
+                  481
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "statement-moku-setsu-d1639a735856ae62",
+            "bytes": 4520,
+            "key": "inputs/table/sha256/0d6d2af331b0afb0801103e8c59e751933f12989d72a4e850e0a946bba737e91",
+            "sha256": "0d6d2af331b0afb0801103e8c59e751933f12989d72a4e850e0a946bba737e91"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "statement-moku-setsu-d1639a735856ae62",
+          "legacy_path": "statement-moku-setsu/jurisdiction=131016/year=2026/document_kind=budget/edition=bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49/direction=expenditure/table=moku-setsu-fund-elderly",
+          "declaration": {
+            "attribution": "千代田区",
+            "dataset_title": null,
+            "document_title": "2026年度 後期高齢者医療特別会計 当初予算事項別明細書",
+            "explanation_dataset_id": "131016:2026:expenditure:budget:bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49:fund-elderly",
+            "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py@7",
+            "fund_basis": "PDFの会計表紙と事項別明細書p446/p466",
+            "fund_label": "後期高齢者医療特別会計",
+            "grain": "document-fund-moku-printed-setsu-row",
+            "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
+            "license_id": "NOASSERTION",
+            "observation_role": "independent-moku-setsu",
+            "pages": [
+              466,
+              481
+            ],
+            "project_setsu_linkage": "unconfirmed",
+            "raw_form": "extracted",
+            "redistribute": "allow",
+            "redistribute_basis": "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする",
+            "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r8kaikeiyosan.pdf",
+            "resource_name": "2026年度 後期高齢者医療特別会計 当初予算事項別明細書（目×節の独立内訳）",
+            "resource_url_basis": "公式年度ページのリンク: 令和8年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）（PDF：3,364KB）",
+            "source_amount_unit": "千円",
+            "source_key": "statement:131016:2026:elderly",
+            "table_id": "moku-setsu-fund-elderly"
+          }
+        }
+      ]
+    },
+    {
+      "id": "statement-moku-setsu-13fed814274b13db",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  41,
+                  41
+                ],
+                [
+                  146,
+                  251
+                ]
+              ]
+            },
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  359,
+                  359
+                ],
+                [
+                  392,
+                  427
+                ]
+              ]
+            },
+            {
+              "account": "国民健康保険事業会計",
+              "pages": [
+                [
+                  283,
+                  283
+                ],
+                [
+                  306,
+                  341
+                ]
+              ]
+            },
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  445,
+                  445
+                ],
+                [
+                  466,
+                  481
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "statement-moku-setsu-13fed814274b13db",
+            "bytes": 11885,
+            "key": "inputs/table/sha256/e75ff4623415ee62ba0d23d06da6c30b3fa743245c9fb526398071a5a5d3ba60",
+            "sha256": "e75ff4623415ee62ba0d23d06da6c30b3fa743245c9fb526398071a5a5d3ba60"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "statement-moku-setsu-13fed814274b13db",
+          "legacy_path": "statement-moku-setsu/jurisdiction=131016/year=2026/document_kind=budget/edition=bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49/direction=expenditure/table=moku-setsu-fund-general",
+          "declaration": {
+            "attribution": "千代田区",
+            "dataset_title": null,
+            "document_title": "令和8年度各会計予算（うち 一般会計予算説明書 歳入歳出予算事項別明細書）",
+            "explanation_dataset_id": "131016:2026:expenditure:budget:bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
+            "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py@7",
+            "fund_basis": "「一般会計予算説明書」の中扉（p37）と、その明細書の目次（p39）。同じ PDF の p279 以降は別会計の説明書で、pages の宣言から外してある",
+            "fund_label": "一般会計",
+            "grain": "document-fund-moku-printed-setsu-row",
+            "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
+            "license_id": "NOASSERTION",
+            "observation_role": "independent-moku-setsu",
+            "pages": [
+              146,
+              251
+            ],
+            "project_setsu_linkage": "unconfirmed",
+            "raw_form": "extracted",
+            "redistribute": "allow",
+            "redistribute_basis": "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする",
+            "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r8kaikeiyosan.pdf",
+            "resource_name": "令和8年度各会計予算（うち 一般会計予算説明書 歳入歳出予算事項別明細書）（目×節の独立内訳）",
+            "resource_url_basis": "区サイト「予算」ページ（landing_page）のリンクテキスト「令和8年度各会計予算」から人が拾った。カタログへの登録が存在しないため名前から解決する経路が無い",
+            "source_amount_unit": "千円",
+            "source_key": "statement:131016:2026",
+            "table_id": "moku-setsu-fund-general"
+          }
+        }
+      ]
+    },
+    {
+      "id": "statement-moku-setsu-4c33a13276569c8e",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  41,
+                  41
+                ],
+                [
+                  146,
+                  251
+                ]
+              ]
+            },
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  359,
+                  359
+                ],
+                [
+                  392,
+                  427
+                ]
+              ]
+            },
+            {
+              "account": "国民健康保険事業会計",
+              "pages": [
+                [
+                  283,
+                  283
+                ],
+                [
+                  306,
+                  341
+                ]
+              ]
+            },
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  445,
+                  445
+                ],
+                [
+                  466,
+                  481
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "statement-moku-setsu-4c33a13276569c8e",
+            "bytes": 5604,
+            "key": "inputs/table/sha256/c96866d583796bfc353df1b3fef0282fb3d4f84ce9e1a1fa0eeee071700d8c38",
+            "sha256": "c96866d583796bfc353df1b3fef0282fb3d4f84ce9e1a1fa0eeee071700d8c38"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "statement-moku-setsu-4c33a13276569c8e",
+          "legacy_path": "statement-moku-setsu/jurisdiction=131016/year=2026/document_kind=budget/edition=bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49/direction=expenditure/table=moku-setsu-fund-national-health",
+          "declaration": {
+            "attribution": "千代田区",
+            "dataset_title": null,
+            "document_title": "2026年度 国民健康保険事業会計 当初予算事項別明細書",
+            "explanation_dataset_id": "131016:2026:expenditure:budget:bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49:fund-national-health",
+            "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py@7",
+            "fund_basis": "PDFの会計表紙と事項別明細書p284/p306",
+            "fund_label": "国民健康保険事業会計",
+            "grain": "document-fund-moku-printed-setsu-row",
+            "landing_page": "https://www.city.chiyoda.lg.jp/koho/kuse/zaise/yosan/index.html",
+            "license_id": "NOASSERTION",
+            "observation_role": "independent-moku-setsu",
+            "pages": [
+              306,
+              341
+            ],
+            "project_setsu_linkage": "unconfirmed",
+            "raw_form": "extracted",
+            "redistribute": "allow",
+            "redistribute_basis": "区サイトのホームページ利用規約（https://www.city.chiyoda.lg.jp/koho/kuse/homepage/riyokiyaku/index.html、2026-08-30 実測）が「どなたでも以下の各項目に従い、複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます。商用利用も可能です。」と明示。出典の記載（2(1)）と編集・加工の明示（2(2)）を条件とする",
+            "request_url": "https://www.city.chiyoda.lg.jp/documents/583/r8kaikeiyosan.pdf",
+            "resource_name": "2026年度 国民健康保険事業会計 当初予算事項別明細書（目×節の独立内訳）",
+            "resource_url_basis": "公式年度ページのリンク: 令和8年度各会計予算（一般会計・国民健康保険事業会計・介護保険特別会計・後期高齢者医療特別会計）（PDF：3,364KB）",
+            "source_amount_unit": "千円",
+            "source_key": "statement:131016:2026:national-health",
+            "table_id": "moku-setsu-fund-national-health"
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "raw-2ae43f999552d835",
+      "conversion_id": "raw-2ae43f999552d835",
+      "input_fingerprint": "73c91f04a63c643f95abc747a6deb7f3ef49c1d89f55c7b19418d21b216c7c93",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/131016/2026/initial/expenditure/raw-2ae43f999552d835.parquet",
+        "sha256": "4c004d4cbd21ef9bb9e02ccfd5a951788a9c9d73684d90f10e85ed297f1980a5",
+        "bytes": 21717
+      },
+      "row_count": 810,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "会計名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "事業名",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "内訳名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "本年度予算額",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "reconciled",
+          "type": "BOOLEAN"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
+          "bytes": 3444027
+        }
+      ]
+    },
+    {
+      "table_id": "raw-c095865441951563",
+      "conversion_id": "raw-c095865441951563",
+      "input_fingerprint": "2feea534dafa4d29192c6955153ed5a590f4e58a98a83f7141e66775d2650831",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/131016/2026/initial/expenditure/raw-c095865441951563.parquet",
+        "sha256": "9a3fa0a54c7472d08deeb46e4eef5a0f755e9bb55921016b86359b8204eac234",
+        "bytes": 7121
+      },
+      "row_count": 69,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "会計名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "事業名",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "内訳名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "本年度予算額",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "reconciled",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "source_page",
+          "type": "INTEGER"
+        },
+        {
+          "name": "source_bbox",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_fiscal_year",
+          "type": "INTEGER"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
+          "bytes": 3444027
+        }
+      ]
+    },
+    {
+      "table_id": "raw-e3938769d17e1933",
+      "conversion_id": "raw-e3938769d17e1933",
+      "input_fingerprint": "afa068e324dc9943a758f33aa5a0bbeafd8497e2e7ccfb7789a3ff2bd67d2f42",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/131016/2026/initial/expenditure/raw-e3938769d17e1933.parquet",
+        "sha256": "e34b45a2d65240da79ede8c94074a393afc9805ccba3402a71902fcb26c0fad5",
+        "bytes": 4374
+      },
+      "row_count": 11,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "会計名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "事業名",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "内訳名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "本年度予算額",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "reconciled",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "source_page",
+          "type": "INTEGER"
+        },
+        {
+          "name": "source_bbox",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_fiscal_year",
+          "type": "INTEGER"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
+          "bytes": 3444027
+        }
+      ]
+    },
+    {
+      "table_id": "raw-a7584fa57e52a19d",
+      "conversion_id": "raw-a7584fa57e52a19d",
+      "input_fingerprint": "4af7ee53fcfcb3c43efb531ba48c5c19a1ca91dc80ca5ae5a0b9de6321dbc035",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/131016/2026/initial/expenditure/raw-a7584fa57e52a19d.parquet",
+        "sha256": "ef657ac4f8621d7d62f3f6eed35c3435a4edf9b24d2d939d737bc0b80ec3ef34",
+        "bytes": 5886
+      },
+      "row_count": 33,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "会計名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "事業名",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "内訳名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "本年度予算額",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "reconciled",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "source_page",
+          "type": "INTEGER"
+        },
+        {
+          "name": "source_bbox",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_fiscal_year",
+          "type": "INTEGER"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
+          "bytes": 3444027
+        }
+      ]
+    },
+    {
+      "table_id": "statement-moku-setsu-9f563c2a5cc6247a",
+      "conversion_id": "statement-moku-setsu-9f563c2a5cc6247a",
+      "input_fingerprint": "27777fffd21c4766ca1318d3c57a3e2518eec8480e2811213a4cbd3a7d038b78",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/131016/2026/initial/expenditure/statement-moku-setsu-9f563c2a5cc6247a.parquet",
+        "sha256": "2633cfd19686059ecf7222a3036585edb1e453a0323c7ffc594ba784cccb6d92",
+        "bytes": 6469
+      },
+      "row_count": 66,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "会計名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "事業名",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "内訳名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "本年度予算額",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "reconciled",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "source_page",
+          "type": "INTEGER"
+        },
+        {
+          "name": "source_bbox",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_fiscal_year",
+          "type": "INTEGER"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
+          "bytes": 3444027
+        }
+      ]
+    },
+    {
+      "table_id": "statement-moku-setsu-d1639a735856ae62",
+      "conversion_id": "statement-moku-setsu-d1639a735856ae62",
+      "input_fingerprint": "0fe8b6c019439af20d9ee3d274dcfd4e4ff6bcb4540b41f7f65f1c6f4e848e97",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/131016/2026/initial/expenditure/statement-moku-setsu-d1639a735856ae62.parquet",
+        "sha256": "0d6d2af331b0afb0801103e8c59e751933f12989d72a4e850e0a946bba737e91",
+        "bytes": 4520
+      },
+      "row_count": 17,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "会計名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "事業名",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "内訳名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "本年度予算額",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "reconciled",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "source_page",
+          "type": "INTEGER"
+        },
+        {
+          "name": "source_bbox",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_fiscal_year",
+          "type": "INTEGER"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
+          "bytes": 3444027
+        }
+      ]
+    },
+    {
+      "table_id": "statement-moku-setsu-13fed814274b13db",
+      "conversion_id": "statement-moku-setsu-13fed814274b13db",
+      "input_fingerprint": "ef0820ab5d9dc81eca7f3c752704979f060b32f66fad8101aa7de68d04098ce6",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/131016/2026/initial/expenditure/statement-moku-setsu-13fed814274b13db.parquet",
+        "sha256": "e75ff4623415ee62ba0d23d06da6c30b3fa743245c9fb526398071a5a5d3ba60",
+        "bytes": 11885
+      },
+      "row_count": 550,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "会計名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "事業名",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "内訳名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "本年度予算額",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "reconciled",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "source_page",
+          "type": "INTEGER"
+        },
+        {
+          "name": "source_bbox",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_fiscal_year",
+          "type": "INTEGER"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
+          "bytes": 3444027
+        }
+      ]
+    },
+    {
+      "table_id": "statement-moku-setsu-4c33a13276569c8e",
+      "conversion_id": "statement-moku-setsu-4c33a13276569c8e",
+      "input_fingerprint": "c3148d81438da3afd5d70fe309e409e4c77a67b8384d5fb496f48bbafd21385f",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/131016/2026/initial/expenditure/statement-moku-setsu-4c33a13276569c8e.parquet",
+        "sha256": "c96866d583796bfc353df1b3fef0282fb3d4f84ce9e1a1fa0eeee071700d8c38",
+        "bytes": 5604
+      },
+      "row_count": 47,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "会計名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "事業名",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "内訳名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "本年度予算額",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "reconciled",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "source_page",
+          "type": "INTEGER"
+        },
+        {
+          "name": "source_bbox",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_fiscal_year",
+          "type": "INTEGER"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
+          "bytes": 3444027
+        }
+      ]
+    }
+  ]
+}

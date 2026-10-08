@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "objects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "table_id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_-]{0,95}$"
+          },
+          "key": {
+            "type": "string",
+            "pattern": "^inputs/table/sha256/[a-f0-9]{64}$"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "table_id",
+          "key",
+          "sha256",
+          "bytes"
+        ]
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "objects"
+  ]
+}

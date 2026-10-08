@@ -1,0 +1,1264 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132241",
+    "fiscal_year": 2023,
+    "document_kind": "supplementary",
+    "amendment_number": 5
+  },
+  "direction": "expenditure",
+  "candidate_id": "representative",
+  "status": "ready",
+  "conversions": [
+    {
+      "id": "tama-supplementary-native-19ad6c83af3e0e9a",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "0ac45284cdd992364717e06c730f0da36f19a2a5cab561840ad80cde2892f87e",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  1,
+                  46
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-supplementary-native-19ad6c83af3e0e9a",
+            "bytes": 47960,
+            "key": "inputs/table/sha256/6ba4d7c173d508b134dad2c3e2b2e6a87f9c4ec417c58e65454b4e09a74d4e5b",
+            "sha256": "6ba4d7c173d508b134dad2c3e2b2e6a87f9c4ec417c58e65454b4e09a74d4e5b"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-supplementary-native-19ad6c83af3e0e9a",
+          "legacy_path": "tama-supplementary-native/jurisdiction=132241/year=2023/document_kind=supplementary/edition=0ac45284cdd992364717e06c730f0da36f19a2a5cab561840ad80cde2892f87e/direction=expenditure/table=supplementary-5-pages-18-43-observations",
+          "declaration": {
+            "account": "一般会計",
+            "amendment_number": 5,
+            "approval_date": "2023-09-08",
+            "approval_proof": {
+              "basis": "公式議決結果の第71号議案『令和5年度多摩市一般会計補正予算（第5号）』の議決月日と原案可決を確認。提出日・会期末日・議会だより発行日からは推定しない。",
+              "date": "2023-09-08",
+              "evidence": {
+                "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/013/438/239.pdf": {
+                  "bytes": 2701944,
+                  "pages": [
+                    16,
+                    16
+                  ],
+                  "sha256": "57339d4accb1767bfa72101026a6b7ae74ff1f9001d4bd17bd7161ae22edfd2e"
+                },
+                "https://www.city.tama.lg.jp/shigikai/kaigi/kekka/r5/1013218.html": {
+                  "bytes": 42846,
+                  "format": "html",
+                  "sha256": "63e67a7f916a2dce491fe1bf840d4badd767dc9c0f6c09ec2c84dcdfb277f9fd"
+                }
+              },
+              "kind": "budget_bill"
+            },
+            "approval_status": "approved",
+            "baseline_status": "unconfirmed",
+            "canonical_changes": false,
+            "definition_files": {
+              "pipeline/dbt/models/intermediate/fiscal/records/int_132241__supplementary_native.sql": {
+                "bytes": 6422,
+                "sha256": "87b518793d3d220a0a94b8c647eabd6476a0f45b3d3904f7f3585aac8c851a0b"
+              },
+              "pipeline/dbt/models/intermediate/fiscal/records/int_132241__supplementary_native_datasets.sql": {
+                "bytes": 831,
+                "sha256": "29aca78fda3e5f3bdaa13484eb4f819f046a06ede4f34a9ee614bf9f1454581c"
+              },
+              "pipeline/dbt/models/intermediate/fiscal/records/int_fiscal_datasets.sql": {
+                "bytes": 8773,
+                "sha256": "cb17a69d4c8e8cb2d091e73862b77094fec55b63889654fed6e5dbf22f322993"
+              },
+              "pipeline/dbt/models/marts/csv/csv_132241_supplementary_native_observations.sql": {
+                "bytes": 139,
+                "sha256": "f1480614a3978382c673d195ddefa65b780bd66ea08b37a9cfa0eec1e3977157"
+              },
+              "pipeline/dbt/models/marts/records/fiscal_132241_supplementary_native_changes.sql": {
+                "bytes": 3363,
+                "sha256": "f23fe4f9927f986785e3f7854280f6aed3d4e8484c5b1a373de6fcf4279ada26"
+              },
+              "pipeline/dbt/models/marts/records/fiscal_132241_supplementary_native_items.sql": {
+                "bytes": 1068,
+                "sha256": "8bdfa83caf20a703155e913a6162c7777cae2122887ce5936529c6b009c778fd"
+              },
+              "pipeline/dbt/models/marts/records/fiscal_132241_supplementary_native_observations.sql": {
+                "bytes": 195,
+                "sha256": "80505896febe83255a4e2ed4f86e7747e11fb56cad7842ea1a943c15256811d4"
+              },
+              "pipeline/dbt/models/marts/records/fiscal_datasets.sql": {
+                "bytes": 3329,
+                "sha256": "eba0d96e649dda04ed1af1665ec462e396ce08770dbc279e206e35f6c250a157"
+              },
+              "pipeline/dbt/models/marts/records/fiscal_expenditure_budget_changes.sql": {
+                "bytes": 3426,
+                "sha256": "7e50b2d310b1b84134cbe687373eef96b1dfdf5f9dc5e61dbe512e96d76d2a26"
+              },
+              "pipeline/dbt/models/marts/records/fiscal_expenditure_budget_items.sql": {
+                "bytes": 7078,
+                "sha256": "bab28c575a27677a536ecad7bf2704b6953b2d6871a5edd7203f2e6d9e0956c1"
+              },
+              "pipeline/dbt/models/staging/fiscal/_tama_supplementary_native_sources.yml": {
+                "bytes": 704,
+                "sha256": "708b8752d8fb5be7adbfb4dc629816d0c2a39e9aaf55ba15e2d2e00c3595e097"
+              },
+              "pipeline/dbt/models/staging/fiscal/stg_132241__supplementary_native.sql": {
+                "bytes": 277,
+                "sha256": "e2c5a087f438944fe2d6e0483b2be8b83f8a81f4d4c64ff926f3ecbf811d8f9b"
+              },
+              "pipeline/dbt/tests/expenditure_setsu.sql": {
+                "bytes": 4175,
+                "sha256": "70d887a7749082792b215e164de7baa8f01f2a89db5eaca6590f5bb659c82704"
+              },
+              "pipeline/ingestion/acquire.py": {
+                "bytes": 1444,
+                "sha256": "de34d0cdec78aa705f2eac066e4894e8414e580f21959871802357c509cd1669"
+              },
+              "pipeline/ingestion/declarations.py": {
+                "bytes": 10750,
+                "sha256": "6ac901ab81adcf28c5e02814c47df4059a7af7b227979892c3624293d81fea17"
+              },
+              "pipeline/ingestion/fiscal/management/canonical_sources.py": {
+                "bytes": 26471,
+                "sha256": "350a4a11a30f5bdd25a2aaa9552133278052ed20849cb9e12a20f7670eb02458"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/131016/layouts/chiyoda_budget_changes.py": {
+                "bytes": 30684,
+                "sha256": "5a519b239d421bbc96926ed22dc6adcd959b72a084b53647df9a6de9df70c92b"
+              },
+              "pipeline/ingestion/fiscal/management/coverage_audit.py": {
+                "bytes": 120226,
+                "sha256": "9200c3622c8ba710fb8bb97eff658058f5a0590149be32ccbb7b117ee95972f4"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/native_settlement_coverage.py": {
+                "bytes": 16580,
+                "sha256": "d43d26213ac2000f31aadef570be07d00df7b7d21e26350f71fbfe46e3abc42e"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/settlement2019_coverage.py": {
+                "bytes": 26399,
+                "sha256": "dcc49000d9739102a6141b23ed2bd24226633935eb60b72985ac1a6bcb9979e3"
+              },
+              "pipeline/ingestion/fiscal/management/source_registry.py": {
+                "bytes": 23339,
+                "sha256": "62a31679cfd052f89b131613c1b0c39f00eedd55dab1481aeb14c6effcbfda97"
+              },
+              "pipeline/ingestion/fiscal/management/sources.json": {
+                "bytes": 10825154,
+                "sha256": "493bd46ff6a9efd13f14ad60a7cec731b0077f356a33fea5172649362955d0b6"
+              },
+              "pipeline/ingestion/fiscal/management/sources.py": {
+                "bytes": 35340,
+                "sha256": "bdec43d75380fe6a22acb0a992b35b875dd338d541442ac6272d3738cf0250f4"
+              },
+              "pipeline/ingestion/fiscal/management/sources.schema.json": {
+                "bytes": 60444,
+                "sha256": "37be08d80b36fd636bfe9f73d867d8411c90d660668bd09804d53d48260ee5e7"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_budget_amendment.py": {
+                "bytes": 8050,
+                "sha256": "0d9bded85e03d7f2e3d6d2f63eff3b8b5830309845677b23b238eafa67f456f2"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_budget_changes.py": {
+                "bytes": 27970,
+                "sha256": "a368afbb240d19975650b5b3f892f17d23230a2b0f0c8d8d740a919bcb47b891"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_budget_detail.py": {
+                "bytes": 35487,
+                "sha256": "318618d5073bffb68eef7b78e5c1e62b0c8a50d7c6d35dc662f79366c4e188dc"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_initial_native_coverage.py": {
+                "bytes": 21986,
+                "sha256": "c8102dff4e5c87009c301c6da60047c2619016fcbe6ea5c59f85213cc6cd9975"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_supplementary_native_coverage.py": {
+                "bytes": 23737,
+                "sha256": "0d5e10595e33956b9e25a0f7bdeedc80e890280ec76c0b3c95b7fc401afe7ce2"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_supplementary_registry.py": {
+                "bytes": 22674,
+                "sha256": "55601b94a1fd4c445631d6e1524b92c17488e37f9a3902515b06539321afb187"
+              },
+              "pipeline/ingestion/inputs.py": {
+                "bytes": 29297,
+                "sha256": "8ebb97335423301f43e1409787638a91e1fe8f1cc2b6a5fd45ce4bec27792f37"
+              },
+              "pipeline/ingestion/lib/pdf.py": {
+                "bytes": 6028,
+                "sha256": "3a2d82f5f12da4d1e88810a1d5dc8dd74afac5fe599b9c35f87b826e006b94d5"
+              },
+              "pipeline/ingestion/paths.py": {
+                "bytes": 1692,
+                "sha256": "cf3c864230e0c7c59bc393713fee13e808156fd6513b5e9b9f9e3e615abc2651"
+              },
+              "uv.lock": {
+                "bytes": 97982,
+                "sha256": "669b2914b1b4d6c1b36b31a35d915eff84fdf54a5a7713cddca7c9df27d0a197"
+              }
+            },
+            "document_title": "第71号議案から第74号議案まで（令和5年度一般会計・各特別会計補正予算） （PDF 547.4 KB）",
+            "effective_at": null,
+            "extractor": "ingestion.fiscal.jurisdictions.132241.layouts.tama_budget_changes",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/012/871/0503teirei_sicho71-74.pdf",
+            "financial_phase": null,
+            "fund_label": "一般会計",
+            "grain": "nonadditive-supplementary-printed-operands-and-explanation",
+            "landing_page": "https://www.city.tama.lg.jp/shigikai/kaigi/yotei/1010508/1012871.html",
+            "namespace": "tama-supplementary-native",
+            "nonadditive": true,
+            "observation_role": "observations",
+            "pages": [
+              18,
+              43
+            ],
+            "phase_semantics": "signed supplementary change; not adjusted total",
+            "phases": [],
+            "printed_total": 2493847,
+            "project_setsu_linkage": "printed-right-code; legal correspondence unassigned",
+            "raw_form": "extracted",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/012/871/0503teirei_sicho71-74.pdf",
+            "source_amount_unit": "千円",
+            "source_key": "132241-26405bd1e2ef",
+            "table_id": "supplementary-5-pages-18-43-observations",
+            "unit_multiplier": 1000
+          }
+        }
+      ]
+    },
+    {
+      "id": "tama-supplementary-native-59c39495467e7cfa",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "0ac45284cdd992364717e06c730f0da36f19a2a5cab561840ad80cde2892f87e",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  1,
+                  46
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-supplementary-native-59c39495467e7cfa",
+            "bytes": 22554,
+            "key": "inputs/table/sha256/a32ee3ef4122a0c72854e24814fc8053c3a42ff0e25fc1f40361b581babfbb64",
+            "sha256": "a32ee3ef4122a0c72854e24814fc8053c3a42ff0e25fc1f40361b581babfbb64"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-supplementary-native-59c39495467e7cfa",
+          "legacy_path": "tama-supplementary-native/jurisdiction=132241/year=2023/document_kind=supplementary/edition=0ac45284cdd992364717e06c730f0da36f19a2a5cab561840ad80cde2892f87e/direction=expenditure/table=supplementary-5-pages-18-43-expenditure",
+          "declaration": {
+            "account": "一般会計",
+            "amendment_number": 5,
+            "approval_date": "2023-09-08",
+            "approval_proof": {
+              "basis": "公式議決結果の第71号議案『令和5年度多摩市一般会計補正予算（第5号）』の議決月日と原案可決を確認。提出日・会期末日・議会だより発行日からは推定しない。",
+              "date": "2023-09-08",
+              "evidence": {
+                "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/013/438/239.pdf": {
+                  "bytes": 2701944,
+                  "pages": [
+                    16,
+                    16
+                  ],
+                  "sha256": "57339d4accb1767bfa72101026a6b7ae74ff1f9001d4bd17bd7161ae22edfd2e"
+                },
+                "https://www.city.tama.lg.jp/shigikai/kaigi/kekka/r5/1013218.html": {
+                  "bytes": 42846,
+                  "format": "html",
+                  "sha256": "63e67a7f916a2dce491fe1bf840d4badd767dc9c0f6c09ec2c84dcdfb277f9fd"
+                }
+              },
+              "kind": "budget_bill"
+            },
+            "approval_status": "approved",
+            "baseline_status": "unconfirmed",
+            "canonical_changes": true,
+            "definition_files": {
+              "pipeline/dbt/models/intermediate/fiscal/records/int_132241__supplementary_native.sql": {
+                "bytes": 6422,
+                "sha256": "87b518793d3d220a0a94b8c647eabd6476a0f45b3d3904f7f3585aac8c851a0b"
+              },
+              "pipeline/dbt/models/intermediate/fiscal/records/int_132241__supplementary_native_datasets.sql": {
+                "bytes": 831,
+                "sha256": "29aca78fda3e5f3bdaa13484eb4f819f046a06ede4f34a9ee614bf9f1454581c"
+              },
+              "pipeline/dbt/models/intermediate/fiscal/records/int_fiscal_datasets.sql": {
+                "bytes": 8773,
+                "sha256": "cb17a69d4c8e8cb2d091e73862b77094fec55b63889654fed6e5dbf22f322993"
+              },
+              "pipeline/dbt/models/marts/csv/csv_132241_supplementary_native_observations.sql": {
+                "bytes": 139,
+                "sha256": "f1480614a3978382c673d195ddefa65b780bd66ea08b37a9cfa0eec1e3977157"
+              },
+              "pipeline/dbt/models/marts/records/fiscal_132241_supplementary_native_changes.sql": {
+                "bytes": 3363,
+                "sha256": "f23fe4f9927f986785e3f7854280f6aed3d4e8484c5b1a373de6fcf4279ada26"
+              },
+              "pipeline/dbt/models/marts/records/fiscal_132241_supplementary_native_items.sql": {
+                "bytes": 1068,
+                "sha256": "8bdfa83caf20a703155e913a6162c7777cae2122887ce5936529c6b009c778fd"
+              },
+              "pipeline/dbt/models/marts/records/fiscal_132241_supplementary_native_observations.sql": {
+                "bytes": 195,
+                "sha256": "80505896febe83255a4e2ed4f86e7747e11fb56cad7842ea1a943c15256811d4"
+              },
+              "pipeline/dbt/models/marts/records/fiscal_datasets.sql": {
+                "bytes": 3329,
+                "sha256": "eba0d96e649dda04ed1af1665ec462e396ce08770dbc279e206e35f6c250a157"
+              },
+              "pipeline/dbt/models/marts/records/fiscal_expenditure_budget_changes.sql": {
+                "bytes": 3426,
+                "sha256": "7e50b2d310b1b84134cbe687373eef96b1dfdf5f9dc5e61dbe512e96d76d2a26"
+              },
+              "pipeline/dbt/models/marts/records/fiscal_expenditure_budget_items.sql": {
+                "bytes": 7078,
+                "sha256": "bab28c575a27677a536ecad7bf2704b6953b2d6871a5edd7203f2e6d9e0956c1"
+              },
+              "pipeline/dbt/models/staging/fiscal/_tama_supplementary_native_sources.yml": {
+                "bytes": 704,
+                "sha256": "708b8752d8fb5be7adbfb4dc629816d0c2a39e9aaf55ba15e2d2e00c3595e097"
+              },
+              "pipeline/dbt/models/staging/fiscal/stg_132241__supplementary_native.sql": {
+                "bytes": 277,
+                "sha256": "e2c5a087f438944fe2d6e0483b2be8b83f8a81f4d4c64ff926f3ecbf811d8f9b"
+              },
+              "pipeline/dbt/tests/expenditure_setsu.sql": {
+                "bytes": 4175,
+                "sha256": "70d887a7749082792b215e164de7baa8f01f2a89db5eaca6590f5bb659c82704"
+              },
+              "pipeline/ingestion/acquire.py": {
+                "bytes": 1444,
+                "sha256": "de34d0cdec78aa705f2eac066e4894e8414e580f21959871802357c509cd1669"
+              },
+              "pipeline/ingestion/declarations.py": {
+                "bytes": 10750,
+                "sha256": "6ac901ab81adcf28c5e02814c47df4059a7af7b227979892c3624293d81fea17"
+              },
+              "pipeline/ingestion/fiscal/management/canonical_sources.py": {
+                "bytes": 26471,
+                "sha256": "350a4a11a30f5bdd25a2aaa9552133278052ed20849cb9e12a20f7670eb02458"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/131016/layouts/chiyoda_budget_changes.py": {
+                "bytes": 30684,
+                "sha256": "5a519b239d421bbc96926ed22dc6adcd959b72a084b53647df9a6de9df70c92b"
+              },
+              "pipeline/ingestion/fiscal/management/coverage_audit.py": {
+                "bytes": 120226,
+                "sha256": "9200c3622c8ba710fb8bb97eff658058f5a0590149be32ccbb7b117ee95972f4"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/native_settlement_coverage.py": {
+                "bytes": 16580,
+                "sha256": "d43d26213ac2000f31aadef570be07d00df7b7d21e26350f71fbfe46e3abc42e"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/settlement2019_coverage.py": {
+                "bytes": 26399,
+                "sha256": "dcc49000d9739102a6141b23ed2bd24226633935eb60b72985ac1a6bcb9979e3"
+              },
+              "pipeline/ingestion/fiscal/management/source_registry.py": {
+                "bytes": 23339,
+                "sha256": "62a31679cfd052f89b131613c1b0c39f00eedd55dab1481aeb14c6effcbfda97"
+              },
+              "pipeline/ingestion/fiscal/management/sources.json": {
+                "bytes": 10825154,
+                "sha256": "493bd46ff6a9efd13f14ad60a7cec731b0077f356a33fea5172649362955d0b6"
+              },
+              "pipeline/ingestion/fiscal/management/sources.py": {
+                "bytes": 35340,
+                "sha256": "bdec43d75380fe6a22acb0a992b35b875dd338d541442ac6272d3738cf0250f4"
+              },
+              "pipeline/ingestion/fiscal/management/sources.schema.json": {
+                "bytes": 60444,
+                "sha256": "37be08d80b36fd636bfe9f73d867d8411c90d660668bd09804d53d48260ee5e7"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_budget_amendment.py": {
+                "bytes": 8050,
+                "sha256": "0d9bded85e03d7f2e3d6d2f63eff3b8b5830309845677b23b238eafa67f456f2"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_budget_changes.py": {
+                "bytes": 27970,
+                "sha256": "a368afbb240d19975650b5b3f892f17d23230a2b0f0c8d8d740a919bcb47b891"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_budget_detail.py": {
+                "bytes": 35487,
+                "sha256": "318618d5073bffb68eef7b78e5c1e62b0c8a50d7c6d35dc662f79366c4e188dc"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_initial_native_coverage.py": {
+                "bytes": 21986,
+                "sha256": "c8102dff4e5c87009c301c6da60047c2619016fcbe6ea5c59f85213cc6cd9975"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_supplementary_native_coverage.py": {
+                "bytes": 23737,
+                "sha256": "0d5e10595e33956b9e25a0f7bdeedc80e890280ec76c0b3c95b7fc401afe7ce2"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_supplementary_registry.py": {
+                "bytes": 22674,
+                "sha256": "55601b94a1fd4c445631d6e1524b92c17488e37f9a3902515b06539321afb187"
+              },
+              "pipeline/ingestion/inputs.py": {
+                "bytes": 29297,
+                "sha256": "8ebb97335423301f43e1409787638a91e1fe8f1cc2b6a5fd45ce4bec27792f37"
+              },
+              "pipeline/ingestion/lib/pdf.py": {
+                "bytes": 6028,
+                "sha256": "3a2d82f5f12da4d1e88810a1d5dc8dd74afac5fe599b9c35f87b826e006b94d5"
+              },
+              "pipeline/ingestion/paths.py": {
+                "bytes": 1692,
+                "sha256": "cf3c864230e0c7c59bc393713fee13e808156fd6513b5e9b9f9e3e615abc2651"
+              },
+              "uv.lock": {
+                "bytes": 97982,
+                "sha256": "669b2914b1b4d6c1b36b31a35d915eff84fdf54a5a7713cddca7c9df27d0a197"
+              }
+            },
+            "document_title": "第71号議案から第74号議案まで（令和5年度一般会計・各特別会計補正予算） （PDF 547.4 KB）",
+            "effective_at": "2023-09-08",
+            "extractor": "ingestion.fiscal.jurisdictions.132241.layouts.tama_budget_changes",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/012/871/0503teirei_sicho71-74.pdf",
+            "financial_phase": "adjusted",
+            "fund_label": "一般会計",
+            "grain": "printed-project-setsu-detail-or-unprinted-setsu-reserve",
+            "landing_page": "https://www.city.tama.lg.jp/shigikai/kaigi/yotei/1010508/1012871.html",
+            "namespace": "tama-supplementary-native",
+            "nonadditive": false,
+            "observation_role": "expenditure",
+            "pages": [
+              18,
+              43
+            ],
+            "phase_semantics": "signed supplementary change; not adjusted total",
+            "phases": [
+              "adjusted"
+            ],
+            "printed_total": 2493847,
+            "project_setsu_linkage": "printed-right-code; legal correspondence unassigned",
+            "raw_form": "extracted",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/012/871/0503teirei_sicho71-74.pdf",
+            "source_amount_unit": "千円",
+            "source_key": "132241-26405bd1e2ef",
+            "table_id": "supplementary-5-pages-18-43-expenditure",
+            "unit_multiplier": 1000
+          }
+        }
+      ]
+    },
+    {
+      "id": "tama-supplementary-native-c7ef942efe79bd91",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "305801ed076b907a76804a9d85c06fba1b163429f6e836e169de0bd01585b1eb",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  201,
+                  234
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-supplementary-native-c7ef942efe79bd91",
+            "bytes": 22237,
+            "key": "inputs/table/sha256/551fdb4a016e138b34b7c668f3e5e66fc7cedef2f9e9a45d7584f3f75adc3437",
+            "sha256": "551fdb4a016e138b34b7c668f3e5e66fc7cedef2f9e9a45d7584f3f75adc3437"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-supplementary-native-c7ef942efe79bd91",
+          "legacy_path": "tama-supplementary-native/jurisdiction=132241/year=2023/document_kind=supplementary/edition=305801ed076b907a76804a9d85c06fba1b163429f6e836e169de0bd01585b1eb/direction=expenditure/table=supplementary-5-pages-220-231-observations",
+          "declaration": {
+            "account": "介護保険特別会計",
+            "amendment_number": 5,
+            "approval_date": "2024-03-05",
+            "approval_proof": {
+              "basis": "公式議決結果の第5号議案『令和5年度多摩市介護保険特別会計補正予算（第5号）』の議決月日と原案可決を確認。提出日・会期末日・議会だより発行日からは推定しない。",
+              "date": "2024-03-05",
+              "evidence": {
+                "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/014/769/241.pdf": {
+                  "bytes": 2419097,
+                  "pages": [
+                    16,
+                    16
+                  ],
+                  "sha256": "cf1fb1b9c59a874950292ecd1ad590f2ef156debc7210c293bf722e304b54315"
+                },
+                "https://www.city.tama.lg.jp/shigikai/kaigi/kekka/1014777/1014782.html": {
+                  "bytes": 47838,
+                  "format": "html",
+                  "sha256": "112cf73d3ab0a2ff2cc5940394273db510735a7afd8fd6fb343c570467b76c14"
+                }
+              },
+              "kind": "budget_bill"
+            },
+            "approval_status": "approved",
+            "baseline_status": "unconfirmed",
+            "canonical_changes": false,
+            "definition_files": {
+              "pipeline/dbt/models/intermediate/fiscal/records/int_132241__supplementary_native.sql": {
+                "bytes": 6422,
+                "sha256": "87b518793d3d220a0a94b8c647eabd6476a0f45b3d3904f7f3585aac8c851a0b"
+              },
+              "pipeline/dbt/models/intermediate/fiscal/records/int_132241__supplementary_native_datasets.sql": {
+                "bytes": 831,
+                "sha256": "29aca78fda3e5f3bdaa13484eb4f819f046a06ede4f34a9ee614bf9f1454581c"
+              },
+              "pipeline/dbt/models/intermediate/fiscal/records/int_fiscal_datasets.sql": {
+                "bytes": 8773,
+                "sha256": "cb17a69d4c8e8cb2d091e73862b77094fec55b63889654fed6e5dbf22f322993"
+              },
+              "pipeline/dbt/models/marts/csv/csv_132241_supplementary_native_observations.sql": {
+                "bytes": 139,
+                "sha256": "f1480614a3978382c673d195ddefa65b780bd66ea08b37a9cfa0eec1e3977157"
+              },
+              "pipeline/dbt/models/marts/records/fiscal_132241_supplementary_native_changes.sql": {
+                "bytes": 3363,
+                "sha256": "f23fe4f9927f986785e3f7854280f6aed3d4e8484c5b1a373de6fcf4279ada26"
+              },
+              "pipeline/dbt/models/marts/records/fiscal_132241_supplementary_native_items.sql": {
+                "bytes": 1068,
+                "sha256": "8bdfa83caf20a703155e913a6162c7777cae2122887ce5936529c6b009c778fd"
+              },
+              "pipeline/dbt/models/marts/records/fiscal_132241_supplementary_native_observations.sql": {
+                "bytes": 195,
+                "sha256": "80505896febe83255a4e2ed4f86e7747e11fb56cad7842ea1a943c15256811d4"
+              },
+              "pipeline/dbt/models/marts/records/fiscal_datasets.sql": {
+                "bytes": 3329,
+                "sha256": "eba0d96e649dda04ed1af1665ec462e396ce08770dbc279e206e35f6c250a157"
+              },
+              "pipeline/dbt/models/marts/records/fiscal_expenditure_budget_changes.sql": {
+                "bytes": 3426,
+                "sha256": "7e50b2d310b1b84134cbe687373eef96b1dfdf5f9dc5e61dbe512e96d76d2a26"
+              },
+              "pipeline/dbt/models/marts/records/fiscal_expenditure_budget_items.sql": {
+                "bytes": 7078,
+                "sha256": "bab28c575a27677a536ecad7bf2704b6953b2d6871a5edd7203f2e6d9e0956c1"
+              },
+              "pipeline/dbt/models/staging/fiscal/_tama_supplementary_native_sources.yml": {
+                "bytes": 704,
+                "sha256": "708b8752d8fb5be7adbfb4dc629816d0c2a39e9aaf55ba15e2d2e00c3595e097"
+              },
+              "pipeline/dbt/models/staging/fiscal/stg_132241__supplementary_native.sql": {
+                "bytes": 277,
+                "sha256": "e2c5a087f438944fe2d6e0483b2be8b83f8a81f4d4c64ff926f3ecbf811d8f9b"
+              },
+              "pipeline/dbt/tests/expenditure_setsu.sql": {
+                "bytes": 4175,
+                "sha256": "70d887a7749082792b215e164de7baa8f01f2a89db5eaca6590f5bb659c82704"
+              },
+              "pipeline/ingestion/acquire.py": {
+                "bytes": 1444,
+                "sha256": "de34d0cdec78aa705f2eac066e4894e8414e580f21959871802357c509cd1669"
+              },
+              "pipeline/ingestion/declarations.py": {
+                "bytes": 10750,
+                "sha256": "6ac901ab81adcf28c5e02814c47df4059a7af7b227979892c3624293d81fea17"
+              },
+              "pipeline/ingestion/fiscal/management/canonical_sources.py": {
+                "bytes": 26471,
+                "sha256": "350a4a11a30f5bdd25a2aaa9552133278052ed20849cb9e12a20f7670eb02458"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/131016/layouts/chiyoda_budget_changes.py": {
+                "bytes": 30684,
+                "sha256": "5a519b239d421bbc96926ed22dc6adcd959b72a084b53647df9a6de9df70c92b"
+              },
+              "pipeline/ingestion/fiscal/management/coverage_audit.py": {
+                "bytes": 120226,
+                "sha256": "9200c3622c8ba710fb8bb97eff658058f5a0590149be32ccbb7b117ee95972f4"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/native_settlement_coverage.py": {
+                "bytes": 16580,
+                "sha256": "d43d26213ac2000f31aadef570be07d00df7b7d21e26350f71fbfe46e3abc42e"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/settlement2019_coverage.py": {
+                "bytes": 26399,
+                "sha256": "dcc49000d9739102a6141b23ed2bd24226633935eb60b72985ac1a6bcb9979e3"
+              },
+              "pipeline/ingestion/fiscal/management/source_registry.py": {
+                "bytes": 23339,
+                "sha256": "62a31679cfd052f89b131613c1b0c39f00eedd55dab1481aeb14c6effcbfda97"
+              },
+              "pipeline/ingestion/fiscal/management/sources.json": {
+                "bytes": 10825154,
+                "sha256": "493bd46ff6a9efd13f14ad60a7cec731b0077f356a33fea5172649362955d0b6"
+              },
+              "pipeline/ingestion/fiscal/management/sources.py": {
+                "bytes": 35340,
+                "sha256": "bdec43d75380fe6a22acb0a992b35b875dd338d541442ac6272d3738cf0250f4"
+              },
+              "pipeline/ingestion/fiscal/management/sources.schema.json": {
+                "bytes": 60444,
+                "sha256": "37be08d80b36fd636bfe9f73d867d8411c90d660668bd09804d53d48260ee5e7"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_budget_amendment.py": {
+                "bytes": 8050,
+                "sha256": "0d9bded85e03d7f2e3d6d2f63eff3b8b5830309845677b23b238eafa67f456f2"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_budget_changes.py": {
+                "bytes": 27970,
+                "sha256": "a368afbb240d19975650b5b3f892f17d23230a2b0f0c8d8d740a919bcb47b891"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_budget_detail.py": {
+                "bytes": 35487,
+                "sha256": "318618d5073bffb68eef7b78e5c1e62b0c8a50d7c6d35dc662f79366c4e188dc"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_initial_native_coverage.py": {
+                "bytes": 21986,
+                "sha256": "c8102dff4e5c87009c301c6da60047c2619016fcbe6ea5c59f85213cc6cd9975"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_supplementary_native_coverage.py": {
+                "bytes": 23737,
+                "sha256": "0d5e10595e33956b9e25a0f7bdeedc80e890280ec76c0b3c95b7fc401afe7ce2"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_supplementary_registry.py": {
+                "bytes": 22674,
+                "sha256": "55601b94a1fd4c445631d6e1524b92c17488e37f9a3902515b06539321afb187"
+              },
+              "pipeline/ingestion/inputs.py": {
+                "bytes": 29297,
+                "sha256": "8ebb97335423301f43e1409787638a91e1fe8f1cc2b6a5fd45ce4bec27792f37"
+              },
+              "pipeline/ingestion/lib/pdf.py": {
+                "bytes": 6028,
+                "sha256": "3a2d82f5f12da4d1e88810a1d5dc8dd74afac5fe599b9c35f87b826e006b94d5"
+              },
+              "pipeline/ingestion/paths.py": {
+                "bytes": 1692,
+                "sha256": "cf3c864230e0c7c59bc393713fee13e808156fd6513b5e9b9f9e3e615abc2651"
+              },
+              "uv.lock": {
+                "bytes": 97982,
+                "sha256": "669b2914b1b4d6c1b36b31a35d915eff84fdf54a5a7713cddca7c9df27d0a197"
+              }
+            },
+            "document_title": "第3号議案から第7号議案まで（令和5年度一般会計補正予算第10号・各特別会計補正予算・下水道事業会計補正予算） （PDF 1.9 MB）",
+            "effective_at": null,
+            "extractor": "ingestion.fiscal.jurisdictions.132241.layouts.tama_budget_changes",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/014/321/0601teirei_sicyo3-7.pdf",
+            "financial_phase": null,
+            "fund_label": "介護保険特別会計",
+            "grain": "nonadditive-supplementary-printed-operands-and-explanation",
+            "landing_page": "https://www.city.tama.lg.jp/shigikai/kaigi/yotei/1014316/1014321.html",
+            "namespace": "tama-supplementary-native",
+            "nonadditive": true,
+            "observation_role": "observations",
+            "pages": [
+              220,
+              231
+            ],
+            "phase_semantics": "signed supplementary change; not adjusted total",
+            "phases": [],
+            "printed_total": 44312,
+            "project_setsu_linkage": "printed-right-code; legal correspondence unassigned",
+            "raw_form": "extracted",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/014/321/0601teirei_sicyo3-7.pdf",
+            "source_amount_unit": "千円",
+            "source_key": "132241-ca5c365f2459",
+            "table_id": "supplementary-5-pages-220-231-observations",
+            "unit_multiplier": 1000
+          }
+        }
+      ]
+    },
+    {
+      "id": "tama-supplementary-native-268274e972630686",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "305801ed076b907a76804a9d85c06fba1b163429f6e836e169de0bd01585b1eb",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  201,
+                  234
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-supplementary-native-268274e972630686",
+            "bytes": 12126,
+            "key": "inputs/table/sha256/d16365259149bbd776ababde855fff7720d13e9116e97267256b115553bef2f8",
+            "sha256": "d16365259149bbd776ababde855fff7720d13e9116e97267256b115553bef2f8"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-supplementary-native-268274e972630686",
+          "legacy_path": "tama-supplementary-native/jurisdiction=132241/year=2023/document_kind=supplementary/edition=305801ed076b907a76804a9d85c06fba1b163429f6e836e169de0bd01585b1eb/direction=expenditure/table=supplementary-5-pages-220-231-expenditure",
+          "declaration": {
+            "account": "介護保険特別会計",
+            "amendment_number": 5,
+            "approval_date": "2024-03-05",
+            "approval_proof": {
+              "basis": "公式議決結果の第5号議案『令和5年度多摩市介護保険特別会計補正予算（第5号）』の議決月日と原案可決を確認。提出日・会期末日・議会だより発行日からは推定しない。",
+              "date": "2024-03-05",
+              "evidence": {
+                "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/014/769/241.pdf": {
+                  "bytes": 2419097,
+                  "pages": [
+                    16,
+                    16
+                  ],
+                  "sha256": "cf1fb1b9c59a874950292ecd1ad590f2ef156debc7210c293bf722e304b54315"
+                },
+                "https://www.city.tama.lg.jp/shigikai/kaigi/kekka/1014777/1014782.html": {
+                  "bytes": 47838,
+                  "format": "html",
+                  "sha256": "112cf73d3ab0a2ff2cc5940394273db510735a7afd8fd6fb343c570467b76c14"
+                }
+              },
+              "kind": "budget_bill"
+            },
+            "approval_status": "approved",
+            "baseline_status": "unconfirmed",
+            "canonical_changes": true,
+            "definition_files": {
+              "pipeline/dbt/models/intermediate/fiscal/records/int_132241__supplementary_native.sql": {
+                "bytes": 6422,
+                "sha256": "87b518793d3d220a0a94b8c647eabd6476a0f45b3d3904f7f3585aac8c851a0b"
+              },
+              "pipeline/dbt/models/intermediate/fiscal/records/int_132241__supplementary_native_datasets.sql": {
+                "bytes": 831,
+                "sha256": "29aca78fda3e5f3bdaa13484eb4f819f046a06ede4f34a9ee614bf9f1454581c"
+              },
+              "pipeline/dbt/models/intermediate/fiscal/records/int_fiscal_datasets.sql": {
+                "bytes": 8773,
+                "sha256": "cb17a69d4c8e8cb2d091e73862b77094fec55b63889654fed6e5dbf22f322993"
+              },
+              "pipeline/dbt/models/marts/csv/csv_132241_supplementary_native_observations.sql": {
+                "bytes": 139,
+                "sha256": "f1480614a3978382c673d195ddefa65b780bd66ea08b37a9cfa0eec1e3977157"
+              },
+              "pipeline/dbt/models/marts/records/fiscal_132241_supplementary_native_changes.sql": {
+                "bytes": 3363,
+                "sha256": "f23fe4f9927f986785e3f7854280f6aed3d4e8484c5b1a373de6fcf4279ada26"
+              },
+              "pipeline/dbt/models/marts/records/fiscal_132241_supplementary_native_items.sql": {
+                "bytes": 1068,
+                "sha256": "8bdfa83caf20a703155e913a6162c7777cae2122887ce5936529c6b009c778fd"
+              },
+              "pipeline/dbt/models/marts/records/fiscal_132241_supplementary_native_observations.sql": {
+                "bytes": 195,
+                "sha256": "80505896febe83255a4e2ed4f86e7747e11fb56cad7842ea1a943c15256811d4"
+              },
+              "pipeline/dbt/models/marts/records/fiscal_datasets.sql": {
+                "bytes": 3329,
+                "sha256": "eba0d96e649dda04ed1af1665ec462e396ce08770dbc279e206e35f6c250a157"
+              },
+              "pipeline/dbt/models/marts/records/fiscal_expenditure_budget_changes.sql": {
+                "bytes": 3426,
+                "sha256": "7e50b2d310b1b84134cbe687373eef96b1dfdf5f9dc5e61dbe512e96d76d2a26"
+              },
+              "pipeline/dbt/models/marts/records/fiscal_expenditure_budget_items.sql": {
+                "bytes": 7078,
+                "sha256": "bab28c575a27677a536ecad7bf2704b6953b2d6871a5edd7203f2e6d9e0956c1"
+              },
+              "pipeline/dbt/models/staging/fiscal/_tama_supplementary_native_sources.yml": {
+                "bytes": 704,
+                "sha256": "708b8752d8fb5be7adbfb4dc629816d0c2a39e9aaf55ba15e2d2e00c3595e097"
+              },
+              "pipeline/dbt/models/staging/fiscal/stg_132241__supplementary_native.sql": {
+                "bytes": 277,
+                "sha256": "e2c5a087f438944fe2d6e0483b2be8b83f8a81f4d4c64ff926f3ecbf811d8f9b"
+              },
+              "pipeline/dbt/tests/expenditure_setsu.sql": {
+                "bytes": 4175,
+                "sha256": "70d887a7749082792b215e164de7baa8f01f2a89db5eaca6590f5bb659c82704"
+              },
+              "pipeline/ingestion/acquire.py": {
+                "bytes": 1444,
+                "sha256": "de34d0cdec78aa705f2eac066e4894e8414e580f21959871802357c509cd1669"
+              },
+              "pipeline/ingestion/declarations.py": {
+                "bytes": 10750,
+                "sha256": "6ac901ab81adcf28c5e02814c47df4059a7af7b227979892c3624293d81fea17"
+              },
+              "pipeline/ingestion/fiscal/management/canonical_sources.py": {
+                "bytes": 26471,
+                "sha256": "350a4a11a30f5bdd25a2aaa9552133278052ed20849cb9e12a20f7670eb02458"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/131016/layouts/chiyoda_budget_changes.py": {
+                "bytes": 30684,
+                "sha256": "5a519b239d421bbc96926ed22dc6adcd959b72a084b53647df9a6de9df70c92b"
+              },
+              "pipeline/ingestion/fiscal/management/coverage_audit.py": {
+                "bytes": 120226,
+                "sha256": "9200c3622c8ba710fb8bb97eff658058f5a0590149be32ccbb7b117ee95972f4"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/native_settlement_coverage.py": {
+                "bytes": 16580,
+                "sha256": "d43d26213ac2000f31aadef570be07d00df7b7d21e26350f71fbfe46e3abc42e"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132071/layouts/settlement2019_coverage.py": {
+                "bytes": 26399,
+                "sha256": "dcc49000d9739102a6141b23ed2bd24226633935eb60b72985ac1a6bcb9979e3"
+              },
+              "pipeline/ingestion/fiscal/management/source_registry.py": {
+                "bytes": 23339,
+                "sha256": "62a31679cfd052f89b131613c1b0c39f00eedd55dab1481aeb14c6effcbfda97"
+              },
+              "pipeline/ingestion/fiscal/management/sources.json": {
+                "bytes": 10825154,
+                "sha256": "493bd46ff6a9efd13f14ad60a7cec731b0077f356a33fea5172649362955d0b6"
+              },
+              "pipeline/ingestion/fiscal/management/sources.py": {
+                "bytes": 35340,
+                "sha256": "bdec43d75380fe6a22acb0a992b35b875dd338d541442ac6272d3738cf0250f4"
+              },
+              "pipeline/ingestion/fiscal/management/sources.schema.json": {
+                "bytes": 60444,
+                "sha256": "37be08d80b36fd636bfe9f73d867d8411c90d660668bd09804d53d48260ee5e7"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_budget_amendment.py": {
+                "bytes": 8050,
+                "sha256": "0d9bded85e03d7f2e3d6d2f63eff3b8b5830309845677b23b238eafa67f456f2"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_budget_changes.py": {
+                "bytes": 27970,
+                "sha256": "a368afbb240d19975650b5b3f892f17d23230a2b0f0c8d8d740a919bcb47b891"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_budget_detail.py": {
+                "bytes": 35487,
+                "sha256": "318618d5073bffb68eef7b78e5c1e62b0c8a50d7c6d35dc662f79366c4e188dc"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_initial_native_coverage.py": {
+                "bytes": 21986,
+                "sha256": "c8102dff4e5c87009c301c6da60047c2619016fcbe6ea5c59f85213cc6cd9975"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_supplementary_native_coverage.py": {
+                "bytes": 23737,
+                "sha256": "0d5e10595e33956b9e25a0f7bdeedc80e890280ec76c0b3c95b7fc401afe7ce2"
+              },
+              "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_supplementary_registry.py": {
+                "bytes": 22674,
+                "sha256": "55601b94a1fd4c445631d6e1524b92c17488e37f9a3902515b06539321afb187"
+              },
+              "pipeline/ingestion/inputs.py": {
+                "bytes": 29297,
+                "sha256": "8ebb97335423301f43e1409787638a91e1fe8f1cc2b6a5fd45ce4bec27792f37"
+              },
+              "pipeline/ingestion/lib/pdf.py": {
+                "bytes": 6028,
+                "sha256": "3a2d82f5f12da4d1e88810a1d5dc8dd74afac5fe599b9c35f87b826e006b94d5"
+              },
+              "pipeline/ingestion/paths.py": {
+                "bytes": 1692,
+                "sha256": "cf3c864230e0c7c59bc393713fee13e808156fd6513b5e9b9f9e3e615abc2651"
+              },
+              "uv.lock": {
+                "bytes": 97982,
+                "sha256": "669b2914b1b4d6c1b36b31a35d915eff84fdf54a5a7713cddca7c9df27d0a197"
+              }
+            },
+            "document_title": "第3号議案から第7号議案まで（令和5年度一般会計補正予算第10号・各特別会計補正予算・下水道事業会計補正予算） （PDF 1.9 MB）",
+            "effective_at": "2024-03-05",
+            "extractor": "ingestion.fiscal.jurisdictions.132241.layouts.tama_budget_changes",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/014/321/0601teirei_sicyo3-7.pdf",
+            "financial_phase": "adjusted",
+            "fund_label": "介護保険特別会計",
+            "grain": "printed-project-setsu-detail-or-unprinted-setsu-reserve",
+            "landing_page": "https://www.city.tama.lg.jp/shigikai/kaigi/yotei/1014316/1014321.html",
+            "namespace": "tama-supplementary-native",
+            "nonadditive": false,
+            "observation_role": "expenditure",
+            "pages": [
+              220,
+              231
+            ],
+            "phase_semantics": "signed supplementary change; not adjusted total",
+            "phases": [
+              "adjusted"
+            ],
+            "printed_total": 44312,
+            "project_setsu_linkage": "printed-right-code; legal correspondence unassigned",
+            "raw_form": "extracted",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/014/321/0601teirei_sicyo3-7.pdf",
+            "source_amount_unit": "千円",
+            "source_key": "132241-ca5c365f2459",
+            "table_id": "supplementary-5-pages-220-231-expenditure",
+            "unit_multiplier": 1000
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "tama-supplementary-native-19ad6c83af3e0e9a",
+      "conversion_id": "tama-supplementary-native-19ad6c83af3e0e9a",
+      "input_fingerprint": "ed274c221a03b2989cf532f83bf8918e161c69fba9098d43ea3c354c0abf7abf",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2023/supplementary-5/expenditure/tama-supplementary-native-19ad6c83af3e0e9a.parquet",
+        "sha256": "6ba4d7c173d508b134dad2c3e2b2e6a87f9c4ec417c58e65454b4e09a74d4e5b",
+        "bytes": 47960
+      },
+      "row_count": 481,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_observation_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "record_kind",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount",
+          "type": "BIGINT"
+        },
+        {
+          "name": "amount_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "physical_page",
+          "type": "INTEGER"
+        },
+        {
+          "name": "bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "words_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "context_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_setsu_code",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "0ac45284cdd992364717e06c730f0da36f19a2a5cab561840ad80cde2892f87e",
+          "bytes": 560522
+        }
+      ]
+    },
+    {
+      "table_id": "tama-supplementary-native-59c39495467e7cfa",
+      "conversion_id": "tama-supplementary-native-59c39495467e7cfa",
+      "input_fingerprint": "2118c47f60d3a15b3c71ac9f90fb1b79dd1b84a3cad09ebc74fda406dc284178",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2023/supplementary-5/expenditure/tama-supplementary-native-59c39495467e7cfa.parquet",
+        "sha256": "a32ee3ef4122a0c72854e24814fc8053c3a42ff0e25fc1f40361b581babfbb64",
+        "bytes": 22554
+      },
+      "row_count": 137,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_observation_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "record_kind",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount",
+          "type": "BIGINT"
+        },
+        {
+          "name": "amount_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "physical_page",
+          "type": "INTEGER"
+        },
+        {
+          "name": "bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "words_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "context_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_setsu_code",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "0ac45284cdd992364717e06c730f0da36f19a2a5cab561840ad80cde2892f87e",
+          "bytes": 560522
+        }
+      ]
+    },
+    {
+      "table_id": "tama-supplementary-native-c7ef942efe79bd91",
+      "conversion_id": "tama-supplementary-native-c7ef942efe79bd91",
+      "input_fingerprint": "edf84b25e5ac6b2e21b2498b90e6cc7c9498064182fcf30b1cf0bcbc5346a5f9",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2023/supplementary-5/expenditure/tama-supplementary-native-c7ef942efe79bd91.parquet",
+        "sha256": "551fdb4a016e138b34b7c668f3e5e66fc7cedef2f9e9a45d7584f3f75adc3437",
+        "bytes": 22237
+      },
+      "row_count": 181,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_observation_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "record_kind",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount",
+          "type": "BIGINT"
+        },
+        {
+          "name": "amount_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "physical_page",
+          "type": "INTEGER"
+        },
+        {
+          "name": "bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "words_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "context_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_setsu_code",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "305801ed076b907a76804a9d85c06fba1b163429f6e836e169de0bd01585b1eb",
+          "bytes": 2034363
+        }
+      ]
+    },
+    {
+      "table_id": "tama-supplementary-native-268274e972630686",
+      "conversion_id": "tama-supplementary-native-268274e972630686",
+      "input_fingerprint": "789d735ad36820200e986739e8d4f453d5c7fa9e3fdc7525ee2cd7b6bb7212e2",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2023/supplementary-5/expenditure/tama-supplementary-native-268274e972630686.parquet",
+        "sha256": "d16365259149bbd776ababde855fff7720d13e9116e97267256b115553bef2f8",
+        "bytes": 12126
+      },
+      "row_count": 42,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_observation_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "record_kind",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount",
+          "type": "BIGINT"
+        },
+        {
+          "name": "amount_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "physical_page",
+          "type": "INTEGER"
+        },
+        {
+          "name": "bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "words_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "context_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_setsu_code",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "305801ed076b907a76804a9d85c06fba1b163429f6e836e169de0bd01585b1eb",
+          "bytes": 2034363
+        }
+      ]
+    }
+  ]
+}

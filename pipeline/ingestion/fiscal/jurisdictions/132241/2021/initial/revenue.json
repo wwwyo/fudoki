@@ -1,0 +1,282 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132241",
+    "fiscal_year": 2021,
+    "document_kind": "initial"
+  },
+  "direction": "revenue",
+  "candidate_id": "representative",
+  "status": "ready",
+  "conversions": [
+    {
+      "id": "raw-962f0d0cd7735a4a",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "a07936e490aff00641e9b65b335ed154176f0d053359602f76ec66702ea79c46",
+          "format": "csv",
+          "scope": [
+            {
+              "account": "一般会計"
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "raw-962f0d0cd7735a4a",
+            "bytes": 19553,
+            "key": "inputs/table/sha256/0e4b1f16611dee6372966f7a92b6159d2ad4d0333456b05476b139c8ded47747",
+            "sha256": "0e4b1f16611dee6372966f7a92b6159d2ad4d0333456b05476b139c8ded47747"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "raw-962f0d0cd7735a4a",
+          "legacy_path": "jurisdiction=132241/year=2021/document_kind=budget/edition=a07936e490aff00641e9b65b335ed154176f0d053359602f76ec66702ea79c46/direction=revenue",
+          "declaration": {
+            "attribution": "多摩市「令和3年度一般会計歳出・歳入（当初予算）」（東京都オープンデータカタログサイト）",
+            "dataset_title": "予算・決算についての資料（オープンデータ）",
+            "encoding": "cp932",
+            "fiscal_year_basis": "CKAN のリソース名「令和3年度一般会計歳入（当初予算）」の「令和3年度」から解決",
+            "license_id": "CC-BY-4.0",
+            "raw_form": "verbatim",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r3sainyuuippannkaikei.csv",
+            "resource_name": "令和3年度一般会計歳入（当初予算）",
+            "resource_url_basis": null,
+            "resource_url_declared": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "raw-4fcc766d1754b23a",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "c85c8f17bdb67f5715a3a98bf3d997621bfd867501bfee15684ccfd4052f27d1",
+          "format": "csv",
+          "scope": [
+            {
+              "account": "介護保険特別会計"
+            },
+            {
+              "account": "国民健康保険特別会計"
+            },
+            {
+              "account": "後期高齢者医療特別会計"
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "raw-4fcc766d1754b23a",
+            "bytes": 11063,
+            "key": "inputs/table/sha256/a85372d7a4b36c02607ce1eddf4b0e1b9e48f6a28b765a4a38324a1d737cd3f6",
+            "sha256": "a85372d7a4b36c02607ce1eddf4b0e1b9e48f6a28b765a4a38324a1d737cd3f6"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "raw-4fcc766d1754b23a",
+          "legacy_path": "jurisdiction=132241/year=2021/document_kind=budget/edition=c85c8f17bdb67f5715a3a98bf3d997621bfd867501bfee15684ccfd4052f27d1/direction=revenue",
+          "declaration": {
+            "attribution": "多摩市「令和3年度一般会計歳出・歳入（当初予算）」（東京都オープンデータカタログサイト）",
+            "csv_layout": {
+              "header_record": "年度,会計名称,款,款名称,項,項名称,目,目名称,節,節名称,細節,細節名称,予算額\r\n",
+              "record_column": "source_record",
+              "trailing_records": ""
+            },
+            "dataset_title": null,
+            "encoding": "cp932",
+            "fiscal_year_basis": "sources.toml が宣言した URL（カタログに登録が無い）。リソース名「令和3年度特別会計歳入（当初予算）（下水道事業会計除く）」は取得元ページのリンクテキストを人が写したもので、取得時には照合していない（宣言どうしの自己参照になるため）。根拠は resource_url_basis にある",
+            "license_id": "CC-BY-4.0",
+            "raw_form": "verbatim",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r3sainyuutokubetukaikei.csv",
+            "resource_name": "令和3年度特別会計歳入（当初予算）（下水道事業会計除く）",
+            "resource_url_basis": "公式公開ページの2021年度の特別会計リンクを2026-10-04確認。一般会計と別ファイルのため実際の公開URLを固定し、原典の年度列・会計名称・金額を検査した。下水道事業会計は対象外。",
+            "resource_url_declared": true
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "raw-962f0d0cd7735a4a",
+      "conversion_id": "raw-962f0d0cd7735a4a",
+      "input_fingerprint": "51aad022dcd4ea75a2f5c7023b6a5faa66ea3c0686f5a239e0a0379f9004c7fd",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2021/initial/revenue/raw-962f0d0cd7735a4a.parquet",
+        "sha256": "0e4b1f16611dee6372966f7a92b6159d2ad4d0333456b05476b139c8ded47747",
+        "bytes": 19553
+      },
+      "row_count": 538,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "年度",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "会計名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "細節",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "細節名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "予算額",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "a07936e490aff00641e9b65b335ed154176f0d053359602f76ec66702ea79c46",
+          "bytes": 58978
+        }
+      ]
+    },
+    {
+      "table_id": "raw-4fcc766d1754b23a",
+      "conversion_id": "raw-4fcc766d1754b23a",
+      "input_fingerprint": "9bdc7ad73b6261943e500ea98a66b0b5b3733f67f93e128ff0a456f1aab182bb",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2021/initial/revenue/raw-4fcc766d1754b23a.parquet",
+        "sha256": "a85372d7a4b36c02607ce1eddf4b0e1b9e48f6a28b765a4a38324a1d737cd3f6",
+        "bytes": 11063
+      },
+      "row_count": 99,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "年度",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "会計名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "細節",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "細節名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "予算額",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_record",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "c85c8f17bdb67f5715a3a98bf3d997621bfd867501bfee15684ccfd4052f27d1",
+          "bytes": 12309
+        }
+      ]
+    }
+  ]
+}

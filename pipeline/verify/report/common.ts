@@ -276,7 +276,7 @@ export type SourceInput = {
   raw_form?: 'verbatim' | 'extracted'
   input_hashes_verified?: boolean
   roundtrip_verified?: boolean
-  /** 抽出した取得元だけが持つ。`pipeline/ingestion/fiscal/extract_*.py@<版>` */
+  /** 抽出した取得元だけが持つ。`pipeline/ingestion/fiscal/layouts/fiscal_general/extract_*.py@<版>` */
   extractor?: string
   /** PDF の収録頁範囲 `[最初, 最後]`（抽出した取得元だけ） */
   pages?: [number, number]

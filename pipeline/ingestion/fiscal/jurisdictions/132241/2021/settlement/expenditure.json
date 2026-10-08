@@ -1,0 +1,2705 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132241",
+    "fiscal_year": 2021,
+    "document_kind": "settlement"
+  },
+  "direction": "expenditure",
+  "candidate_id": "representative",
+  "status": "ready",
+  "conversions": [
+    {
+      "id": "tama-settlement-pdf-dd79304bdb121148",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  8,
+                  19
+                ],
+                [
+                  51,
+                  127
+                ]
+              ]
+            },
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  158,
+                  163
+                ],
+                [
+                  173,
+                  187
+                ]
+              ]
+            },
+            {
+              "account": "国民健康保険特別会計",
+              "pages": [
+                [
+                  128,
+                  133
+                ],
+                [
+                  143,
+                  157
+                ]
+              ]
+            },
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  188,
+                  193
+                ],
+                [
+                  201,
+                  205
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-settlement-pdf-dd79304bdb121148",
+            "bytes": 380408,
+            "key": "inputs/table/sha256/a8fae1d038243c3cfacb42247ef5934ac1e4a8942ce619182e130ca98dced0c5",
+            "sha256": "a8fae1d038243c3cfacb42247ef5934ac1e4a8942ce619182e130ca98dced0c5"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-settlement-pdf-dd79304bdb121148",
+          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2021/document_kind=settlement/edition=5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6/direction=expenditure/table=legal-setsu-general",
+          "declaration": {
+            "attribution": "東京都多摩市",
+            "document_title": "令和3年度多摩市各会計歳入歳出決算書",
+            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/r3.pdf",
+            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
+            "fund_label": "一般会計",
+            "grain": "printed-moku-by-legal-setsu",
+            "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/kessan/1004929.html",
+            "license_id": "NOASSERTION",
+            "observation_role": "legal-setsu",
+            "pages": [
+              1,
+              235
+            ],
+            "raw_form": "extracted",
+            "redistribute": "review",
+            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/r3.pdf",
+            "resource_name": "令和3年度多摩市各会計歳入歳出決算書 legal-setsu-general",
+            "source_amount_unit": "円",
+            "source_key": "settlement-pdf:132241:2021:book",
+            "table_id": "legal-setsu-general",
+            "unit_multiplier": 1,
+            "year_basis": "公式掲載年度及び原典表紙の令和年度"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tama-settlement-pdf-d3e3953b7edc5120",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  8,
+                  19
+                ],
+                [
+                  51,
+                  127
+                ]
+              ]
+            },
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  158,
+                  163
+                ],
+                [
+                  173,
+                  187
+                ]
+              ]
+            },
+            {
+              "account": "国民健康保険特別会計",
+              "pages": [
+                [
+                  128,
+                  133
+                ],
+                [
+                  143,
+                  157
+                ]
+              ]
+            },
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  188,
+                  193
+                ],
+                [
+                  201,
+                  205
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-settlement-pdf-d3e3953b7edc5120",
+            "bytes": 53607,
+            "key": "inputs/table/sha256/25eef6412c94b3fd9f8d576c1e939ca736d801a8052dc3ed8433a0ae82ea55ea",
+            "sha256": "25eef6412c94b3fd9f8d576c1e939ca736d801a8052dc3ed8433a0ae82ea55ea"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-settlement-pdf-d3e3953b7edc5120",
+          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2021/document_kind=settlement/edition=5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6/direction=expenditure/table=moku-controls-general",
+          "declaration": {
+            "attribution": "東京都多摩市",
+            "document_title": "令和3年度多摩市各会計歳入歳出決算書",
+            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/r3.pdf",
+            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
+            "fund_label": "一般会計",
+            "grain": "nonadditive-printed-moku-control",
+            "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/kessan/1004929.html",
+            "license_id": "NOASSERTION",
+            "observation_role": "moku-controls",
+            "pages": [
+              1,
+              235
+            ],
+            "raw_form": "extracted",
+            "redistribute": "review",
+            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/r3.pdf",
+            "resource_name": "令和3年度多摩市各会計歳入歳出決算書 moku-controls-general",
+            "source_amount_unit": "円",
+            "source_key": "settlement-pdf:132241:2021:book",
+            "table_id": "moku-controls-general",
+            "unit_multiplier": 1,
+            "year_basis": "公式掲載年度及び原典表紙の令和年度"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tama-settlement-pdf-951ffbc368fc5653",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  8,
+                  19
+                ],
+                [
+                  51,
+                  127
+                ]
+              ]
+            },
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  158,
+                  163
+                ],
+                [
+                  173,
+                  187
+                ]
+              ]
+            },
+            {
+              "account": "国民健康保険特別会計",
+              "pages": [
+                [
+                  128,
+                  133
+                ],
+                [
+                  143,
+                  157
+                ]
+              ]
+            },
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  188,
+                  193
+                ],
+                [
+                  201,
+                  205
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-settlement-pdf-951ffbc368fc5653",
+            "bytes": 46780,
+            "key": "inputs/table/sha256/f966a9e272777f3139af4383b0c179152ae6f38b6f7b8c3e37a8affbe967c3c8",
+            "sha256": "f966a9e272777f3139af4383b0c179152ae6f38b6f7b8c3e37a8affbe967c3c8"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-settlement-pdf-951ffbc368fc5653",
+          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2021/document_kind=settlement/edition=5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6/direction=expenditure/table=legal-setsu-national-health",
+          "declaration": {
+            "attribution": "東京都多摩市",
+            "document_title": "令和3年度多摩市各会計歳入歳出決算書",
+            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/r3.pdf",
+            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
+            "fund_label": "国民健康保険特別会計",
+            "grain": "printed-moku-by-legal-setsu",
+            "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/kessan/1004929.html",
+            "license_id": "NOASSERTION",
+            "observation_role": "legal-setsu",
+            "pages": [
+              1,
+              235
+            ],
+            "raw_form": "extracted",
+            "redistribute": "review",
+            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/r3.pdf",
+            "resource_name": "令和3年度多摩市各会計歳入歳出決算書 legal-setsu-national-health",
+            "source_amount_unit": "円",
+            "source_key": "settlement-pdf:132241:2021:book",
+            "table_id": "legal-setsu-national-health",
+            "unit_multiplier": 1,
+            "year_basis": "公式掲載年度及び原典表紙の令和年度"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tama-settlement-pdf-0137d860c94ec602",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  8,
+                  19
+                ],
+                [
+                  51,
+                  127
+                ]
+              ]
+            },
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  158,
+                  163
+                ],
+                [
+                  173,
+                  187
+                ]
+              ]
+            },
+            {
+              "account": "国民健康保険特別会計",
+              "pages": [
+                [
+                  128,
+                  133
+                ],
+                [
+                  143,
+                  157
+                ]
+              ]
+            },
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  188,
+                  193
+                ],
+                [
+                  201,
+                  205
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-settlement-pdf-0137d860c94ec602",
+            "bytes": 23489,
+            "key": "inputs/table/sha256/1ccda2b1b8f4e12b8c35d8f2c7e442ae38a476f13cc0fe236947188997dd5a92",
+            "sha256": "1ccda2b1b8f4e12b8c35d8f2c7e442ae38a476f13cc0fe236947188997dd5a92"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-settlement-pdf-0137d860c94ec602",
+          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2021/document_kind=settlement/edition=5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6/direction=expenditure/table=moku-controls-national-health",
+          "declaration": {
+            "attribution": "東京都多摩市",
+            "document_title": "令和3年度多摩市各会計歳入歳出決算書",
+            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/r3.pdf",
+            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
+            "fund_label": "国民健康保険特別会計",
+            "grain": "nonadditive-printed-moku-control",
+            "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/kessan/1004929.html",
+            "license_id": "NOASSERTION",
+            "observation_role": "moku-controls",
+            "pages": [
+              1,
+              235
+            ],
+            "raw_form": "extracted",
+            "redistribute": "review",
+            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/r3.pdf",
+            "resource_name": "令和3年度多摩市各会計歳入歳出決算書 moku-controls-national-health",
+            "source_amount_unit": "円",
+            "source_key": "settlement-pdf:132241:2021:book",
+            "table_id": "moku-controls-national-health",
+            "unit_multiplier": 1,
+            "year_basis": "公式掲載年度及び原典表紙の令和年度"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tama-settlement-pdf-98c3b806ffeb6616",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  8,
+                  19
+                ],
+                [
+                  51,
+                  127
+                ]
+              ]
+            },
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  158,
+                  163
+                ],
+                [
+                  173,
+                  187
+                ]
+              ]
+            },
+            {
+              "account": "国民健康保険特別会計",
+              "pages": [
+                [
+                  128,
+                  133
+                ],
+                [
+                  143,
+                  157
+                ]
+              ]
+            },
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  188,
+                  193
+                ],
+                [
+                  201,
+                  205
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-settlement-pdf-98c3b806ffeb6616",
+            "bytes": 46648,
+            "key": "inputs/table/sha256/41f9942232f94ab16bd9c6a93d1d907c4165e8a984b20d5e4b4e0db0d6d87ec0",
+            "sha256": "41f9942232f94ab16bd9c6a93d1d907c4165e8a984b20d5e4b4e0db0d6d87ec0"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-settlement-pdf-98c3b806ffeb6616",
+          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2021/document_kind=settlement/edition=5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6/direction=expenditure/table=legal-setsu-care",
+          "declaration": {
+            "attribution": "東京都多摩市",
+            "document_title": "令和3年度多摩市各会計歳入歳出決算書",
+            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/r3.pdf",
+            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
+            "fund_label": "介護保険特別会計",
+            "grain": "printed-moku-by-legal-setsu",
+            "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/kessan/1004929.html",
+            "license_id": "NOASSERTION",
+            "observation_role": "legal-setsu",
+            "pages": [
+              1,
+              235
+            ],
+            "raw_form": "extracted",
+            "redistribute": "review",
+            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/r3.pdf",
+            "resource_name": "令和3年度多摩市各会計歳入歳出決算書 legal-setsu-care",
+            "source_amount_unit": "円",
+            "source_key": "settlement-pdf:132241:2021:book",
+            "table_id": "legal-setsu-care",
+            "unit_multiplier": 1,
+            "year_basis": "公式掲載年度及び原典表紙の令和年度"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tama-settlement-pdf-9ff080db4b07abb7",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  8,
+                  19
+                ],
+                [
+                  51,
+                  127
+                ]
+              ]
+            },
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  158,
+                  163
+                ],
+                [
+                  173,
+                  187
+                ]
+              ]
+            },
+            {
+              "account": "国民健康保険特別会計",
+              "pages": [
+                [
+                  128,
+                  133
+                ],
+                [
+                  143,
+                  157
+                ]
+              ]
+            },
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  188,
+                  193
+                ],
+                [
+                  201,
+                  205
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-settlement-pdf-9ff080db4b07abb7",
+            "bytes": 19647,
+            "key": "inputs/table/sha256/3691237016a2cfe8a5c0e645fffde0c231188c6090d447901e9594e5f166fc5a",
+            "sha256": "3691237016a2cfe8a5c0e645fffde0c231188c6090d447901e9594e5f166fc5a"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-settlement-pdf-9ff080db4b07abb7",
+          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2021/document_kind=settlement/edition=5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6/direction=expenditure/table=moku-controls-care",
+          "declaration": {
+            "attribution": "東京都多摩市",
+            "document_title": "令和3年度多摩市各会計歳入歳出決算書",
+            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/r3.pdf",
+            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
+            "fund_label": "介護保険特別会計",
+            "grain": "nonadditive-printed-moku-control",
+            "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/kessan/1004929.html",
+            "license_id": "NOASSERTION",
+            "observation_role": "moku-controls",
+            "pages": [
+              1,
+              235
+            ],
+            "raw_form": "extracted",
+            "redistribute": "review",
+            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/r3.pdf",
+            "resource_name": "令和3年度多摩市各会計歳入歳出決算書 moku-controls-care",
+            "source_amount_unit": "円",
+            "source_key": "settlement-pdf:132241:2021:book",
+            "table_id": "moku-controls-care",
+            "unit_multiplier": 1,
+            "year_basis": "公式掲載年度及び原典表紙の令和年度"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tama-settlement-pdf-578201c8a99c4f23",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  8,
+                  19
+                ],
+                [
+                  51,
+                  127
+                ]
+              ]
+            },
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  158,
+                  163
+                ],
+                [
+                  173,
+                  187
+                ]
+              ]
+            },
+            {
+              "account": "国民健康保険特別会計",
+              "pages": [
+                [
+                  128,
+                  133
+                ],
+                [
+                  143,
+                  157
+                ]
+              ]
+            },
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  188,
+                  193
+                ],
+                [
+                  201,
+                  205
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-settlement-pdf-578201c8a99c4f23",
+            "bytes": 24292,
+            "key": "inputs/table/sha256/066ba0c852bf154f15b2ccbac8dd17187bc8d3b406a6a19adb9b1ffe98c57847",
+            "sha256": "066ba0c852bf154f15b2ccbac8dd17187bc8d3b406a6a19adb9b1ffe98c57847"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-settlement-pdf-578201c8a99c4f23",
+          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2021/document_kind=settlement/edition=5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6/direction=expenditure/table=legal-setsu-elderly",
+          "declaration": {
+            "attribution": "東京都多摩市",
+            "document_title": "令和3年度多摩市各会計歳入歳出決算書",
+            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/r3.pdf",
+            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
+            "fund_label": "後期高齢者医療特別会計",
+            "grain": "printed-moku-by-legal-setsu",
+            "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/kessan/1004929.html",
+            "license_id": "NOASSERTION",
+            "observation_role": "legal-setsu",
+            "pages": [
+              1,
+              235
+            ],
+            "raw_form": "extracted",
+            "redistribute": "review",
+            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/r3.pdf",
+            "resource_name": "令和3年度多摩市各会計歳入歳出決算書 legal-setsu-elderly",
+            "source_amount_unit": "円",
+            "source_key": "settlement-pdf:132241:2021:book",
+            "table_id": "legal-setsu-elderly",
+            "unit_multiplier": 1,
+            "year_basis": "公式掲載年度及び原典表紙の令和年度"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tama-settlement-pdf-e1269d27a59d86a9",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  8,
+                  19
+                ],
+                [
+                  51,
+                  127
+                ]
+              ]
+            },
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  158,
+                  163
+                ],
+                [
+                  173,
+                  187
+                ]
+              ]
+            },
+            {
+              "account": "国民健康保険特別会計",
+              "pages": [
+                [
+                  128,
+                  133
+                ],
+                [
+                  143,
+                  157
+                ]
+              ]
+            },
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  188,
+                  193
+                ],
+                [
+                  201,
+                  205
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-settlement-pdf-e1269d27a59d86a9",
+            "bytes": 12884,
+            "key": "inputs/table/sha256/9f84eb49b3ccbbef96d664ca5f2004e7a464760ed211209b34237d2f9325b7af",
+            "sha256": "9f84eb49b3ccbbef96d664ca5f2004e7a464760ed211209b34237d2f9325b7af"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-settlement-pdf-e1269d27a59d86a9",
+          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2021/document_kind=settlement/edition=5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6/direction=expenditure/table=moku-controls-elderly",
+          "declaration": {
+            "attribution": "東京都多摩市",
+            "document_title": "令和3年度多摩市各会計歳入歳出決算書",
+            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/r3.pdf",
+            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
+            "fund_label": "後期高齢者医療特別会計",
+            "grain": "nonadditive-printed-moku-control",
+            "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/kessan/1004929.html",
+            "license_id": "NOASSERTION",
+            "observation_role": "moku-controls",
+            "pages": [
+              1,
+              235
+            ],
+            "raw_form": "extracted",
+            "redistribute": "review",
+            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/r3.pdf",
+            "resource_name": "令和3年度多摩市各会計歳入歳出決算書 moku-controls-elderly",
+            "source_amount_unit": "円",
+            "source_key": "settlement-pdf:132241:2021:book",
+            "table_id": "moku-controls-elderly",
+            "unit_multiplier": 1,
+            "year_basis": "公式掲載年度及び原典表紙の令和年度"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tama-settlement-pdf-1ca3d13158f1fd84",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  8,
+                  19
+                ],
+                [
+                  51,
+                  127
+                ]
+              ]
+            },
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  158,
+                  163
+                ],
+                [
+                  173,
+                  187
+                ]
+              ]
+            },
+            {
+              "account": "国民健康保険特別会計",
+              "pages": [
+                [
+                  128,
+                  133
+                ],
+                [
+                  143,
+                  157
+                ]
+              ]
+            },
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  188,
+                  193
+                ],
+                [
+                  201,
+                  205
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-settlement-pdf-1ca3d13158f1fd84",
+            "bytes": 7371,
+            "key": "inputs/table/sha256/998d1d3be4f1297d653f6f34cee63c946a7c2c1350bedb99c8a9b913d0498ee3",
+            "sha256": "998d1d3be4f1297d653f6f34cee63c946a7c2c1350bedb99c8a9b913d0498ee3"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-settlement-pdf-1ca3d13158f1fd84",
+          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2021/document_kind=settlement/edition=5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6/direction=expenditure/table=account-controls",
+          "declaration": {
+            "attribution": "東京都多摩市",
+            "document_title": "令和3年度多摩市各会計歳入歳出決算書",
+            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/r3.pdf",
+            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
+            "fund_label": "",
+            "grain": "nonadditive-printed-account-control",
+            "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/kessan/1004929.html",
+            "license_id": "NOASSERTION",
+            "observation_role": "account-controls",
+            "pages": [
+              1,
+              235
+            ],
+            "raw_form": "extracted",
+            "redistribute": "review",
+            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/r3.pdf",
+            "resource_name": "令和3年度多摩市各会計歳入歳出決算書 account-controls",
+            "source_amount_unit": "円",
+            "source_key": "settlement-pdf:132241:2021:book",
+            "table_id": "account-controls",
+            "unit_multiplier": 1,
+            "year_basis": "公式掲載年度及び原典表紙の令和年度"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tama-settlement-pdf-9f64e7c9aeb35e1d",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  8,
+                  19
+                ],
+                [
+                  51,
+                  127
+                ]
+              ]
+            },
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  158,
+                  163
+                ],
+                [
+                  173,
+                  187
+                ]
+              ]
+            },
+            {
+              "account": "国民健康保険特別会計",
+              "pages": [
+                [
+                  128,
+                  133
+                ],
+                [
+                  143,
+                  157
+                ]
+              ]
+            },
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  188,
+                  193
+                ],
+                [
+                  201,
+                  205
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-settlement-pdf-9f64e7c9aeb35e1d",
+            "bytes": 1458156,
+            "key": "inputs/table/sha256/21ddba49d2b2820625fc5f33317c09d44a6e1bb6e7c26a3a084876e231db9191",
+            "sha256": "21ddba49d2b2820625fc5f33317c09d44a6e1bb6e7c26a3a084876e231db9191"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-settlement-pdf-9f64e7c9aeb35e1d",
+          "legacy_path": "tama-settlement-pdf/jurisdiction=132241/year=2021/document_kind=settlement/edition=5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6/direction=expenditure/table=source-words",
+          "declaration": {
+            "attribution": "東京都多摩市",
+            "document_title": "令和3年度多摩市各会計歳入歳出決算書",
+            "extractor": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/extract_tama_settlement_pdf_candidates.py",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/r3.pdf",
+            "fund_basis": "原典目次及び各会計見出しを確認。会計区画は印字順及び連続ページで識別。",
+            "fund_label": "",
+            "grain": "nonadditive-positioned-source-word",
+            "landing_page": "https://www.city.tama.lg.jp/shisei/zaisei/kessan/1004929.html",
+            "license_id": "NOASSERTION",
+            "observation_role": "source-words",
+            "pages": [
+              1,
+              235
+            ],
+            "raw_form": "extracted",
+            "redistribute": "review",
+            "redistribute_basis": "自治体公開PDFから抽出した事実。原文の再配布許諾は未確定。",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/r3.pdf",
+            "resource_name": "令和3年度多摩市各会計歳入歳出決算書 source-words",
+            "source_amount_unit": null,
+            "source_key": "settlement-pdf:132241:2021:book",
+            "table_id": "source-words",
+            "unit_multiplier": null,
+            "year_basis": "公式掲載年度及び原典表紙の令和年度"
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "tama-settlement-pdf-dd79304bdb121148",
+      "conversion_id": "tama-settlement-pdf-dd79304bdb121148",
+      "input_fingerprint": "b3375e5e8177537fa50aa8cf71a18882e152fed741050d69bd016e672776c3f3",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2021/settlement/expenditure/tama-settlement-pdf-dd79304bdb121148.parquet",
+        "sha256": "a8fae1d038243c3cfacb42247ef5934ac1e4a8942ce619182e130ca98dced0c5",
+        "bytes": 380408
+      },
+      "row_count": 741,
+      "schema": [
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "document_kind",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_key",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "account",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fund_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observation_role",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_amount",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_amount_printed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_multiplier",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_printed_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_code",
+          "type": "JSON"
+        },
+        {
+          "name": "project_label",
+          "type": "JSON"
+        },
+        {
+          "name": "funding_code",
+          "type": "JSON"
+        },
+        {
+          "name": "funding_label",
+          "type": "JSON"
+        },
+        {
+          "name": "source_observation_json",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6",
+          "bytes": 3527750
+        }
+      ]
+    },
+    {
+      "table_id": "tama-settlement-pdf-d3e3953b7edc5120",
+      "conversion_id": "tama-settlement-pdf-d3e3953b7edc5120",
+      "input_fingerprint": "f488613dbcd56b66af55e3a4751b1ea3373f3f4cd1e7cf391a8aa1a26a50d1d3",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2021/settlement/expenditure/tama-settlement-pdf-d3e3953b7edc5120.parquet",
+        "sha256": "25eef6412c94b3fd9f8d576c1e939ca736d801a8052dc3ed8433a0ae82ea55ea",
+        "bytes": 53607
+      },
+      "row_count": 98,
+      "schema": [
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "document_kind",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_key",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "account",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fund_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observation_role",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_amount",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_amount_printed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_multiplier",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_printed_page",
+          "type": "JSON"
+        },
+        {
+          "name": "source_bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_label",
+          "type": "JSON"
+        },
+        {
+          "name": "kou_label",
+          "type": "JSON"
+        },
+        {
+          "name": "moku_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_code",
+          "type": "JSON"
+        },
+        {
+          "name": "setsu_label",
+          "type": "JSON"
+        },
+        {
+          "name": "project_code",
+          "type": "JSON"
+        },
+        {
+          "name": "project_label",
+          "type": "JSON"
+        },
+        {
+          "name": "funding_code",
+          "type": "JSON"
+        },
+        {
+          "name": "funding_label",
+          "type": "JSON"
+        },
+        {
+          "name": "source_observation_json",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6",
+          "bytes": 3527750
+        }
+      ]
+    },
+    {
+      "table_id": "tama-settlement-pdf-951ffbc368fc5653",
+      "conversion_id": "tama-settlement-pdf-951ffbc368fc5653",
+      "input_fingerprint": "90080f716df87a2d19768c4db157e83322c9e548ac0eda365e449cdb08923aa9",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2021/settlement/expenditure/tama-settlement-pdf-951ffbc368fc5653.parquet",
+        "sha256": "f966a9e272777f3139af4383b0c179152ae6f38b6f7b8c3e37a8affbe967c3c8",
+        "bytes": 46780
+      },
+      "row_count": 61,
+      "schema": [
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "document_kind",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_key",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "account",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fund_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observation_role",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_amount",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_amount_printed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_multiplier",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_printed_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_code",
+          "type": "JSON"
+        },
+        {
+          "name": "project_label",
+          "type": "JSON"
+        },
+        {
+          "name": "funding_code",
+          "type": "JSON"
+        },
+        {
+          "name": "funding_label",
+          "type": "JSON"
+        },
+        {
+          "name": "source_observation_json",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6",
+          "bytes": 3527750
+        }
+      ]
+    },
+    {
+      "table_id": "tama-settlement-pdf-0137d860c94ec602",
+      "conversion_id": "tama-settlement-pdf-0137d860c94ec602",
+      "input_fingerprint": "b8baf09b70179ef1043f3c1e47bd0adc8bfe20020092b73c49a1a4f4c5068088",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2021/settlement/expenditure/tama-settlement-pdf-0137d860c94ec602.parquet",
+        "sha256": "1ccda2b1b8f4e12b8c35d8f2c7e442ae38a476f13cc0fe236947188997dd5a92",
+        "bytes": 23489
+      },
+      "row_count": 33,
+      "schema": [
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "document_kind",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_key",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "account",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fund_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observation_role",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_amount",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_amount_printed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_multiplier",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_printed_page",
+          "type": "JSON"
+        },
+        {
+          "name": "source_bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_label",
+          "type": "JSON"
+        },
+        {
+          "name": "kou_label",
+          "type": "JSON"
+        },
+        {
+          "name": "moku_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_code",
+          "type": "JSON"
+        },
+        {
+          "name": "setsu_label",
+          "type": "JSON"
+        },
+        {
+          "name": "project_code",
+          "type": "JSON"
+        },
+        {
+          "name": "project_label",
+          "type": "JSON"
+        },
+        {
+          "name": "funding_code",
+          "type": "JSON"
+        },
+        {
+          "name": "funding_label",
+          "type": "JSON"
+        },
+        {
+          "name": "source_observation_json",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6",
+          "bytes": 3527750
+        }
+      ]
+    },
+    {
+      "table_id": "tama-settlement-pdf-98c3b806ffeb6616",
+      "conversion_id": "tama-settlement-pdf-98c3b806ffeb6616",
+      "input_fingerprint": "489c01c0b61f62e5414ef7d8c97447cd77e4fd0f3a9b31a2ac64ef1ddbb25ca7",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2021/settlement/expenditure/tama-settlement-pdf-98c3b806ffeb6616.parquet",
+        "sha256": "41f9942232f94ab16bd9c6a93d1d907c4165e8a984b20d5e4b4e0db0d6d87ec0",
+        "bytes": 46648
+      },
+      "row_count": 62,
+      "schema": [
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "document_kind",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_key",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "account",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fund_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observation_role",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_amount",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_amount_printed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_multiplier",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_printed_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_code",
+          "type": "JSON"
+        },
+        {
+          "name": "project_label",
+          "type": "JSON"
+        },
+        {
+          "name": "funding_code",
+          "type": "JSON"
+        },
+        {
+          "name": "funding_label",
+          "type": "JSON"
+        },
+        {
+          "name": "source_observation_json",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6",
+          "bytes": 3527750
+        }
+      ]
+    },
+    {
+      "table_id": "tama-settlement-pdf-9ff080db4b07abb7",
+      "conversion_id": "tama-settlement-pdf-9ff080db4b07abb7",
+      "input_fingerprint": "e318f48bc5adb2660cea3037a8e579871ba43fdd2cd34b82a2b0163ccbb65d5b",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2021/settlement/expenditure/tama-settlement-pdf-9ff080db4b07abb7.parquet",
+        "sha256": "3691237016a2cfe8a5c0e645fffde0c231188c6090d447901e9594e5f166fc5a",
+        "bytes": 19647
+      },
+      "row_count": 23,
+      "schema": [
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "document_kind",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_key",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "account",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fund_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observation_role",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_amount",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_amount_printed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_multiplier",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_printed_page",
+          "type": "JSON"
+        },
+        {
+          "name": "source_bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_label",
+          "type": "JSON"
+        },
+        {
+          "name": "kou_label",
+          "type": "JSON"
+        },
+        {
+          "name": "moku_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_code",
+          "type": "JSON"
+        },
+        {
+          "name": "setsu_label",
+          "type": "JSON"
+        },
+        {
+          "name": "project_code",
+          "type": "JSON"
+        },
+        {
+          "name": "project_label",
+          "type": "JSON"
+        },
+        {
+          "name": "funding_code",
+          "type": "JSON"
+        },
+        {
+          "name": "funding_label",
+          "type": "JSON"
+        },
+        {
+          "name": "source_observation_json",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6",
+          "bytes": 3527750
+        }
+      ]
+    },
+    {
+      "table_id": "tama-settlement-pdf-578201c8a99c4f23",
+      "conversion_id": "tama-settlement-pdf-578201c8a99c4f23",
+      "input_fingerprint": "df7026ae045eaa35cd21b66547ad97e8f378f19a40f6b7f0fe387398e534f6bd",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2021/settlement/expenditure/tama-settlement-pdf-578201c8a99c4f23.parquet",
+        "sha256": "066ba0c852bf154f15b2ccbac8dd17187bc8d3b406a6a19adb9b1ffe98c57847",
+        "bytes": 24292
+      },
+      "row_count": 26,
+      "schema": [
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "document_kind",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_key",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "account",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fund_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observation_role",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_amount",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_amount_printed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_multiplier",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_printed_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_code",
+          "type": "JSON"
+        },
+        {
+          "name": "project_label",
+          "type": "JSON"
+        },
+        {
+          "name": "funding_code",
+          "type": "JSON"
+        },
+        {
+          "name": "funding_label",
+          "type": "JSON"
+        },
+        {
+          "name": "source_observation_json",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6",
+          "bytes": 3527750
+        }
+      ]
+    },
+    {
+      "table_id": "tama-settlement-pdf-e1269d27a59d86a9",
+      "conversion_id": "tama-settlement-pdf-e1269d27a59d86a9",
+      "input_fingerprint": "fbb17ed389c1d946ac9abe0831a7c321fba592a5d108c4e8128c4bf3bacb9db2",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2021/settlement/expenditure/tama-settlement-pdf-e1269d27a59d86a9.parquet",
+        "sha256": "9f84eb49b3ccbbef96d664ca5f2004e7a464760ed211209b34237d2f9325b7af",
+        "bytes": 12884
+      },
+      "row_count": 9,
+      "schema": [
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "document_kind",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_key",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "account",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fund_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observation_role",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_amount",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_amount_printed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_multiplier",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_printed_page",
+          "type": "JSON"
+        },
+        {
+          "name": "source_bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_label",
+          "type": "JSON"
+        },
+        {
+          "name": "kou_label",
+          "type": "JSON"
+        },
+        {
+          "name": "moku_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_code",
+          "type": "JSON"
+        },
+        {
+          "name": "setsu_label",
+          "type": "JSON"
+        },
+        {
+          "name": "project_code",
+          "type": "JSON"
+        },
+        {
+          "name": "project_label",
+          "type": "JSON"
+        },
+        {
+          "name": "funding_code",
+          "type": "JSON"
+        },
+        {
+          "name": "funding_label",
+          "type": "JSON"
+        },
+        {
+          "name": "source_observation_json",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6",
+          "bytes": 3527750
+        }
+      ]
+    },
+    {
+      "table_id": "tama-settlement-pdf-1ca3d13158f1fd84",
+      "conversion_id": "tama-settlement-pdf-1ca3d13158f1fd84",
+      "input_fingerprint": "a7ef34aa6cbdecab5df6b30ef29982296651adac534780bf552af5742ff5a7b4",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2021/settlement/expenditure/tama-settlement-pdf-1ca3d13158f1fd84.parquet",
+        "sha256": "998d1d3be4f1297d653f6f34cee63c946a7c2c1350bedb99c8a9b913d0498ee3",
+        "bytes": 7371
+      },
+      "row_count": 4,
+      "schema": [
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "document_kind",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_key",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "account",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fund_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observation_role",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_amount",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_amount_printed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_multiplier",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_printed_page",
+          "type": "JSON"
+        },
+        {
+          "name": "source_bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan",
+          "type": "JSON"
+        },
+        {
+          "name": "kou",
+          "type": "JSON"
+        },
+        {
+          "name": "moku",
+          "type": "JSON"
+        },
+        {
+          "name": "kan_label",
+          "type": "JSON"
+        },
+        {
+          "name": "kou_label",
+          "type": "JSON"
+        },
+        {
+          "name": "moku_label",
+          "type": "JSON"
+        },
+        {
+          "name": "setsu_code",
+          "type": "JSON"
+        },
+        {
+          "name": "setsu_label",
+          "type": "JSON"
+        },
+        {
+          "name": "project_code",
+          "type": "JSON"
+        },
+        {
+          "name": "project_label",
+          "type": "JSON"
+        },
+        {
+          "name": "funding_code",
+          "type": "JSON"
+        },
+        {
+          "name": "funding_label",
+          "type": "JSON"
+        },
+        {
+          "name": "source_observation_json",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6",
+          "bytes": 3527750
+        }
+      ]
+    },
+    {
+      "table_id": "tama-settlement-pdf-9f64e7c9aeb35e1d",
+      "conversion_id": "tama-settlement-pdf-9f64e7c9aeb35e1d",
+      "input_fingerprint": "6165c673a4aca7be21278a982c1023d2c9254d867bd3e86a8d45aa2f4e3758e8",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2021/settlement/expenditure/tama-settlement-pdf-9f64e7c9aeb35e1d.parquet",
+        "sha256": "21ddba49d2b2820625fc5f33317c09d44a6e1bb6e7c26a3a084876e231db9191",
+        "bytes": 1458156
+      },
+      "row_count": 21689,
+      "schema": [
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "document_kind",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_key",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "account",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fund_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observation_role",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_amount",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_amount_printed",
+          "type": "JSON"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "JSON"
+        },
+        {
+          "name": "unit_multiplier",
+          "type": "JSON"
+        },
+        {
+          "name": "source_physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_printed_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan",
+          "type": "JSON"
+        },
+        {
+          "name": "kou",
+          "type": "JSON"
+        },
+        {
+          "name": "moku",
+          "type": "JSON"
+        },
+        {
+          "name": "kan_label",
+          "type": "JSON"
+        },
+        {
+          "name": "kou_label",
+          "type": "JSON"
+        },
+        {
+          "name": "moku_label",
+          "type": "JSON"
+        },
+        {
+          "name": "setsu_code",
+          "type": "JSON"
+        },
+        {
+          "name": "setsu_label",
+          "type": "JSON"
+        },
+        {
+          "name": "project_code",
+          "type": "JSON"
+        },
+        {
+          "name": "project_label",
+          "type": "JSON"
+        },
+        {
+          "name": "funding_code",
+          "type": "JSON"
+        },
+        {
+          "name": "funding_label",
+          "type": "JSON"
+        },
+        {
+          "name": "source_observation_json",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "5589e08e517fc38dc867f434597f4a04ac652c8368f5fc2dfda26c997e8d86b6",
+          "bytes": 3527750
+        }
+      ]
+    }
+  ]
+}

@@ -6,7 +6,46 @@
 
 管理中の5団体の全公開年度・全会計・当初／補正／決算の拡張は[全年度収録のPRD](../docs/prd/fiscal-coverage/prd.md)で管理する。構築成功は全公開資料の収録完了を意味しない。
 
-## 固定入力から構築する
+## 選定済み原典から取り込みParquetを作る
+
+Bの入口は対象別JSONと `ingestion:convert` である。まず構造と上流の選定との対応を確認する。
+
+```bash
+bun run --cwd pipeline ingestion:check
+```
+
+対象JSONは `ingestion/fiscal/jurisdictions/<団体>/<年度>/<initial|settlement|supplementary-号>/<方向>.json` に置く。型は [manifest.schema.json](ingestion/fiscal/manifest.schema.json)、配置・表の所有者等の制約は [manifest.py](ingestion/fiscal/manifest.py) が正本である。
+
+以下の `TARGET` はpipelineからの相対パス。`LOCAL_INPUTS` は原典SHAとローカルパスの対応を持つJSON、`OUT` は新しい候補ディレクトリを指定する。すべて `pipeline/` から実行する。
+
+```bash
+bun run ingestion:originals --manifest "$TARGET" --output "$LOCAL_INPUTS" --remote
+bun run ingestion:convert --manifest "$TARGET" --inputs "$LOCAL_INPUTS" --output "$OUT"
+```
+
+ローカルに原典がある場合は、SHAからファイルパスへの対応JSONを渡して `originals` を省略できる。原典の選定やURLの探索は行わない。出力は候補Parquetと候補 `manifest.json` で、Gitの管理JSONは更新しない。
+
+ヘッダー付きCSVは変換時に原典を読み直し、原典列の名前・順序・型、全セル値、行順、空文字、重複行、物理行範囲がParquetに保持されたかを自動検査する。原典SHAは変換前後に照合する。不一致は保存前に停止し、検査で拒否した新規Parquetを除去する。成否と原典・表のSHA、成功時の行数は候補dirの `<表ID>.checks.json` に出す。原典自体の合計一致や別工程の再抽出をCSVの取り込み条件にしない。年度・会計・単位・金額段階の解釈とdbtの検査は後段で行う。PDFの共通の内容検査・合否条件は未確定である。
+
+保存時は新しい `OUT` を指定して変換コマンドに `--remote` を付ける。全表のアップロード成功後に管理JSONを更新し、同じ対象・方向の不要表を削除する。`--conversion <ID>` で局所再処理できるが、変更しない表も現在の条件と一致し、全表が揃っている必要がある。同じ対象を並行更新しない。
+
+保存済み表を復元する場合は次を実行する。
+
+```bash
+bun run ingestion:restore --manifest "$TARGET" --remote
+```
+
+保存後の掃除だけ失敗した場合は次を実行する。
+
+```bash
+bun run ingestion:cleanup --manifest "$TARGET"
+```
+
+CSV用と既存の見開きPDF用の入口は `fiscal/layouts/csv/` と `fiscal/layouts/statement/`。他の書式は `convert(inputs, destination, options)` と同じフォルダの `options.schema.json` を定義し、受け取った原典から表IDとローカルParquetの対応を返す。既存表の移行用 `retained` は原典から再抽出するコードではない。移動した旧抽出器のCLIはローカル候補用に残す。
+
+設計と失敗時の再実行は [保存設計](../docs/prd/ingestion-storage/design-doc.md)、旧表の移行範囲は [移行記録](../docs/prd/ingestion-storage/migration.md)、CSV・text PDF・scan PDFの作業は [ingestion手順](../.agents/skills/pipeline/references/ingestion.md) を参照する。
+
+## 固定入力から構築する（旧C/Fの読み取り）
 
 ツールは root の mise、依存は Bun と uv で管理する。Python は3.13。
 
@@ -55,7 +94,7 @@ PDF 閲覧レイヤは `.cache/pdf/`、報告は `.build/report/` に置く。�
 
 ## 検査する
 
-`bun run --cwd pipeline sources:plan --json` は `ingestion/fiscal/sources.json` に登録した有効な取り込み宣言を表示する。原典選定の手順は [pipeline skill](../.agents/skills/pipeline/references/source-selection.md) を参照する。
+`bun run --cwd pipeline sources:plan --json` は `ingestion/fiscal/management/sources.json` に登録した有効な取り込み宣言を表示する。原典選定の手順は [pipeline skill](../.agents/skills/pipeline/references/source-selection.md) を参照する。
 
 公開資料の収録範囲は `bun run --cwd pipeline coverage:fiscal --json` で、原典一覧のスキーマ、現在の入力一覧と原典宣言、現行コード・入力に対応する全量buildとCSVハッシュを照合する。`--require-complete` は未収録・未検証・探索未完了があれば終了コード2を返す。`--limit` は表示件数だけを変え、完了判定の母集団は変えない。原典一覧に保存された過去の採用・marts状態だけでは完了にしない。
 
@@ -72,15 +111,15 @@ bun run --cwd pipeline test:python
 
 CI の全量 job は `FUDOKI_FIXED_INPUTS_READY=true` と非公開入力の読取権限がある場合だけ動く。固定入力からの build・再構築・報告を検査する。収録範囲と未完了項目は [全年度収録のPRD](../docs/prd/fiscal-coverage/prd.md) で管理する。
 
-## 入力一覧の形式
+## 旧C/Fの入力一覧の形式
 
-固定入力はschemaVersion 3の `sources.lock.json` で原典・Parquetのハッシュ、保存先、source宣言を管理する。候補抽出は `inputs.lock.json` を生成し、provenanceの別ファイルは生成・復元しない。行数・型はParquetから読み、検査結果は再生成するレポートへ出す。`uv run python -m ingestion.inputs describe` で現在の入力宣言と表の情報を確認できる。
+新しいBの保存情報は対象別JSONに置く。旧C/Fの固定入力はschemaVersion 3の `sources.lock.json` で原典・Parquetのハッシュ、保存先、source宣言を管理する。候補抽出は `inputs.lock.json` を生成し、provenanceの別ファイルは生成・復元しない。行数・型はParquetから読み、検査結果は再生成するレポートへ出す。`uv run python -m ingestion.inputs describe` で現在の入力宣言と表の情報を確認できる。
 
 ## 宣言と再生成する検査結果の保存
 
 | 保存対象 | 置き場と更新方法 |
 | --- | --- |
-| `sources.json` | Git。既存の取り込み宣言と固定入力・収録監査が参照する原典情報。構造は [sources.schema.json](ingestion/fiscal/sources.schema.json) を参照する。 |
+| `sources.json` | Git。既存の取り込み宣言と固定入力・収録監査が参照する原典情報。構造は [sources.schema.json](ingestion/fiscal/management/sources.schema.json) を参照する。 |
 | `sources.lock.json`、原典別の宣言・ハッシュ一覧 | Git。採用した版と取り込み表、コード・訂正の対応を固定する入力。`pipeline:inputs` はその指定を復元する処理であり、公開サイトの現在の内容から一覧を書き直す処理ではない。コードを変更した場合は、参照する宣言のハッシュも更新し、原典・表・財政値を変えていないか差分を確認する。 |
 | 転記・セル台帳の JSON | 原典の画像から確認した訂正や、採用済みの明細と原典位置を結ぶ宣言は Git。原典だけから同じ判断を自動生成できるとは扱わない。宣言が参照するPDF・画像・文字観測のバイト列は非公開 R2。 |
 | dbt、CSV、検証報告、実行時の比較結果 | 再生成する検査結果は `.build/`、試作・未採用の比較結果は `.agent/`。生成した全量DB・CSVや作業記録をGitへ追加しない。構築・再構築・`pipeline:report`・`coverage:fiscal --json` の結果と対象headをPRのQA欄で記録する。 |

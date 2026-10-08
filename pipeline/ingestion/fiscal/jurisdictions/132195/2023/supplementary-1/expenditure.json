@@ -1,0 +1,463 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132195",
+    "fiscal_year": 2023,
+    "document_kind": "supplementary",
+    "amendment_number": 1
+  },
+  "direction": "expenditure",
+  "candidate_id": "representative",
+  "status": "ready",
+  "conversions": [
+    {
+      "id": "raw-1e746ca9695f50fa",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "8f1d6ec3eab531cb8a55a96445f4d03f98c650fcef20665e4cd9cbd93a9d305b",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  1,
+                  5
+                ],
+                [
+                  7,
+                  11
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "raw-1e746ca9695f50fa",
+            "bytes": 3516,
+            "key": "inputs/table/sha256/e9c70da1d7740390dcec59d6cc395e0ee6bd8435e3420b6135da0cf75c1c240e",
+            "sha256": "e9c70da1d7740390dcec59d6cc395e0ee6bd8435e3420b6135da0cf75c1c240e"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "raw-1e746ca9695f50fa",
+          "legacy_path": "jurisdiction=132195/year=2023/document_kind=supplementary/edition=8f1d6ec3eab531cb8a55a96445f4d03f98c650fcef20665e4cd9cbd93a9d305b/direction=expenditure/resource=expenditure-detail",
+          "declaration": {
+            "amendment_number": 1,
+            "approval_evidence": {
+              "bbox_json": "[]",
+              "page_number": 1,
+              "printed_text": "令和5年度狛江市一般会計補正予算議案第23号5月16日原案可決(第1号)",
+              "record_kind": "approval",
+              "source_row": 1
+            },
+            "approval_sha256": "97e625a9c5ffe9d286d50e5a2dbb82a5e6f554146d9746d70ce15f7357ca2620",
+            "approval_url": "https://www.city.komae.tokyo.jp/index.cfm/49,145713,c,html/145713/R5rinji_result.pdf",
+            "attribution": "狛江市 令和5年度一般会計予算書・補正予算書",
+            "dataset_title": null,
+            "document_title": "令和5年度狛江市一般会計 補正予算書 第1号",
+            "effective_at": "2023-05-16",
+            "effective_basis": "議案の原案可決日。別適用日の指定なし",
+            "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_budget_history.py@2",
+            "landing_page": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,361,2169,html",
+            "license_id": "NOASSERTION",
+            "pages": [
+              7,
+              10
+            ],
+            "raw_form": "extracted",
+            "redistribute": "review",
+            "redistribute_basis": "自治体公開資料。原典の再配布条件は未確認。非公開入力として保管する",
+            "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20230601-112553.pdf",
+            "resource_name": "expenditure-detail",
+            "source_amount_unit": "千円",
+            "table_id": "expenditure-detail"
+          }
+        }
+      ]
+    },
+    {
+      "id": "supplementary-detail-faa4d2cb8197a7c8",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "8f1d6ec3eab531cb8a55a96445f4d03f98c650fcef20665e4cd9cbd93a9d305b",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  1,
+                  5
+                ],
+                [
+                  7,
+                  11
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "supplementary-detail-faa4d2cb8197a7c8",
+            "bytes": 19338,
+            "key": "inputs/table/sha256/1d8bd6b7aea7325210506a6c0d672e1226298a744330f4f86bfa724c99d67324",
+            "sha256": "1d8bd6b7aea7325210506a6c0d672e1226298a744330f4f86bfa724c99d67324"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "supplementary-detail-faa4d2cb8197a7c8",
+          "legacy_path": "supplementary-detail/jurisdiction=132195/year=2023/document_kind=supplementary/edition=8f1d6ec3eab531cb8a55a96445f4d03f98c650fcef20665e4cd9cbd93a9d305b/direction=expenditure/resource=supplementary-expenditure-project-setsu",
+          "declaration": {
+            "amendment_number": 1,
+            "approval_date": "2023-05-16",
+            "approval_evidence": {
+              "bbox_json": "[551.4, 533.876904, 728.4, 545.876904]",
+              "page_number": 1,
+              "printed_text": "令和5年5月16日原案可決"
+            },
+            "approval_status": "cover-approved",
+            "baseline_status": "unconfirmed",
+            "edition_status": "published",
+            "effective_at": "2023-05-16",
+            "extractor": "extract_supplementary_expenditure.py@1",
+            "first_article_evidence": {
+              "amount_delta": 289962,
+              "bbox_json": "[160.56, 183.21972, 663.2439856428571, 195.21972]",
+              "page_number": 2,
+              "printed_text": "第1条歳入歳出予算の総額に歳入歳出それぞれ289,962千円を追加"
+            },
+            "fund_label": "一般会計",
+            "grain": "printed project × expenditure setsu × department occurrence; explicit reserve exceptions",
+            "nonadditive_with": [
+              "expenditure-detail",
+              "expenditure-moku-changes-all"
+            ],
+            "observation_role": "authoritative-supplementary-detail",
+            "pages": [
+              1,
+              11
+            ],
+            "raw_form": "extracted",
+            "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20230601-112553.pdf",
+            "source_amount_unit": "千円",
+            "source_grain": "printed project × expenditure setsu × printed department occurrence; explicit printed reserve exceptions",
+            "source_key": "supplementary-detail:132195:2023:general:1",
+            "table_id": "supplementary-expenditure-project-setsu",
+            "totals": {
+              "all_moku_sum": 289962,
+              "explanation_setsu_sum": 289962,
+              "first_article": 289962,
+              "left_setsu_sum": 287982,
+              "printed_project_sum": 289962
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "raw-1e746ca9695f50fa",
+      "conversion_id": "raw-1e746ca9695f50fa",
+      "input_fingerprint": "5b7a0d5a8913fedd5a49431733813f8fa8c9c0dc4609441c50199494b22249f7",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132195/2023/supplementary-1/expenditure/raw-1e746ca9695f50fa.parquet",
+        "sha256": "e9c70da1d7740390dcec59d6cc395e0ee6bd8435e3420b6135da0cf75c1c240e",
+        "bytes": 3516
+      },
+      "row_count": 8,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "record_kind",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fund_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fund_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "initial_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "before_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "delta_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "after_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "reported_amount_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executed_amount_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "page_number",
+          "type": "BIGINT"
+        },
+        {
+          "name": "bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_text",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "8f1d6ec3eab531cb8a55a96445f4d03f98c650fcef20665e4cd9cbd93a9d305b",
+          "bytes": 613191
+        }
+      ]
+    },
+    {
+      "table_id": "supplementary-detail-faa4d2cb8197a7c8",
+      "conversion_id": "supplementary-detail-faa4d2cb8197a7c8",
+      "input_fingerprint": "d82477504ce413bacf9b251da3a4e87108597e1f752344fd28f09e8a6200fbec",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132195/2023/supplementary-1/expenditure/supplementary-detail-faa4d2cb8197a7c8.parquet",
+        "sha256": "1d8bd6b7aea7325210506a6c0d672e1226298a744330f4f86bfa724c99d67324",
+        "bytes": 19338
+      },
+      "row_count": 16,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "fund_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amendment_number",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_fetched_at",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "submitted_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "edition_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_moku_source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "control_moku_key",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_moku_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "project_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_printed_delta",
+          "type": "BIGINT"
+        },
+        {
+          "name": "project_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "department_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_delta",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_amount_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "page_number",
+          "type": "BIGINT"
+        },
+        {
+          "name": "bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_locations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "left_setsu_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "validation_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "validation_reasons_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observed_grain_validation_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_correspondence_status",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "8f1d6ec3eab531cb8a55a96445f4d03f98c650fcef20665e4cd9cbd93a9d305b",
+          "bytes": 613191
+        }
+      ]
+    }
+  ]
+}

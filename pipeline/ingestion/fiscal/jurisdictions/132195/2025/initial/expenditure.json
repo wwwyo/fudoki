@@ -1,0 +1,1647 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132195",
+    "fiscal_year": 2025,
+    "document_kind": "initial"
+  },
+  "direction": "expenditure",
+  "candidate_id": "representative",
+  "status": "ready",
+  "conversions": [
+    {
+      "id": "initial-detail-89fabc7b847286e7",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "d275ebf16868a05ca97ddf4cc4bce4b2853a870b1f6cb2ec7dea3d49a718839a",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "下水道事業会計",
+              "pages": [
+                [
+                  91,
+                  124
+                ]
+              ]
+            },
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  48,
+                  54
+                ],
+                [
+                  62,
+                  79
+                ]
+              ]
+            },
+            {
+              "account": "国民健康保険特別会計",
+              "pages": [
+                [
+                  4,
+                  9
+                ],
+                [
+                  14,
+                  30
+                ]
+              ]
+            },
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  31,
+                  37
+                ],
+                [
+                  41,
+                  47
+                ]
+              ]
+            },
+            {
+              "account": "駐車場事業特別会計",
+              "pages": [
+                [
+                  80,
+                  86
+                ],
+                [
+                  89,
+                  90
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "initial-detail-89fabc7b847286e7",
+            "bytes": 40274,
+            "key": "inputs/table/sha256/b782de6b5e46c99f2efb80daf59e3d271bd1bf119d306258a336ee9fdfa77a0b",
+            "sha256": "b782de6b5e46c99f2efb80daf59e3d271bd1bf119d306258a336ee9fdfa77a0b"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "initial-detail-89fabc7b847286e7",
+          "legacy_path": "initial-detail/jurisdiction=132195/year=2025/document_kind=budget/edition=d275ebf16868a05ca97ddf4cc4bce4b2853a870b1f6cb2ec7dea3d49a718839a/direction=expenditure/resource=initial-expenditure-project-setsu-national-health",
+          "declaration": {
+            "approval_date": "2025-03-26",
+            "approval_evidence": [
+              {
+                "bbox": [
+                  106.2,
+                  81.39204,
+                  495.48,
+                  91.95204
+                ],
+                "page_number": 1,
+                "printed_text": "議案第４号狛江市国民健康保険特別会計予算令和７年３月26日原案可決",
+                "word_boxes": [
+                  {
+                    "bbox": [
+                      106.2,
+                      81.39204,
+                      158.88,
+                      91.83204
+                    ],
+                    "printed_text": "議案第４号"
+                  },
+                  {
+                    "bbox": [
+                      174.72,
+                      81.39204,
+                      354.96,
+                      91.83204
+                    ],
+                    "printed_text": "狛江市国民健康保険特別会計予算"
+                  },
+                  {
+                    "bbox": [
+                      368.88,
+                      81.51204,
+                      495.48,
+                      91.95204
+                    ],
+                    "printed_text": "令和７年３月26日原案可決"
+                  }
+                ]
+              }
+            ],
+            "approval_status": "cover-approved",
+            "baseline_status": "explicit-source-preserving-namespace-equivalence; no allocation or initial zero",
+            "document_title": "2025年度 狛江市国民健康保険特別会計当初予算（印刷事業×歳出節×担当課）",
+            "edition_status": "published",
+            "effective_at": "2025-03-26",
+            "effective_at_basis": "Printed account-specific approval date; not a guessed filename publication time",
+            "extractor": "extract_initial_expenditure.py@1",
+            "first_article_evidence": {
+              "amount_initial": 7210075,
+              "locations": [
+                {
+                  "bbox": [
+                    133.32,
+                    186.365449,
+                    569.359,
+                    197.34346
+                  ],
+                  "page_number": 4,
+                  "printed_text": "第１条歳入歳出予算の総額は、歳入歳出それぞれ７，２１０，０７５千円と定める。",
+                  "word_boxes": [
+                    {
+                      "bbox": [
+                        133.32,
+                        186.365449,
+                        166.4,
+                        197.34346
+                      ],
+                      "printed_text": "第１条"
+                    },
+                    {
+                      "bbox": [
+                        177.48,
+                        186.365449,
+                        387.2,
+                        197.34346
+                      ],
+                      "printed_text": "歳入歳出予算の総額は、歳入歳出それぞれ"
+                    },
+                    {
+                      "bbox": [
+                        392.759,
+                        186.365449,
+                        569.359,
+                        197.34346
+                      ],
+                      "printed_text": "７，２１０，０７５千円と定める。"
+                    }
+                  ]
+                }
+              ],
+              "printed_text": "第1条歳入歳出予算の総額は、歳入歳出それぞれ7,210,075千円と定める",
+              "unit": "千円"
+            },
+            "fund_label": "国民健康保険特別会計",
+            "grain": "printed project × expenditure setsu × department occurrence; explicit blank-code reserve exceptions",
+            "observation_role": "authoritative-initial-detail",
+            "pages": [
+              4,
+              30
+            ],
+            "raw_form": "extracted",
+            "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20250325-175517.pdf",
+            "resource_name": "2025年度 狛江市国民健康保険特別会計当初予算（印刷事業×歳出節×担当課） 歳出事項別明細書",
+            "source_amount_unit": "千円",
+            "source_grain": "printed project × expenditure setsu × printed department occurrence; explicit printed reserve exceptions",
+            "source_key": "initial-detail:132195:2025:national-health",
+            "source_position_method": "pdftotext -bbox-layout original word boxes plus source-preserving character spans; row boxes are union of actual intersecting words",
+            "table_id": "initial-expenditure-project-setsu-national-health",
+            "totals": {
+              "all_moku_sum": 7210075,
+              "explanation_setsu_sum": 7210075,
+              "first_article": 7210075,
+              "left_setsu_sum": 7207075,
+              "printed_project_sum": 7210075
+            },
+            "unit_multiplier": 1000
+          }
+        }
+      ]
+    },
+    {
+      "id": "initial-detail-467a65c49dfc0448",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "d275ebf16868a05ca97ddf4cc4bce4b2853a870b1f6cb2ec7dea3d49a718839a",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "下水道事業会計",
+              "pages": [
+                [
+                  91,
+                  124
+                ]
+              ]
+            },
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  48,
+                  54
+                ],
+                [
+                  62,
+                  79
+                ]
+              ]
+            },
+            {
+              "account": "国民健康保険特別会計",
+              "pages": [
+                [
+                  4,
+                  9
+                ],
+                [
+                  14,
+                  30
+                ]
+              ]
+            },
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  31,
+                  37
+                ],
+                [
+                  41,
+                  47
+                ]
+              ]
+            },
+            {
+              "account": "駐車場事業特別会計",
+              "pages": [
+                [
+                  80,
+                  86
+                ],
+                [
+                  89,
+                  90
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "initial-detail-467a65c49dfc0448",
+            "bytes": 27169,
+            "key": "inputs/table/sha256/a5262c0fdbd54bdc6761871c7bb390cccfd35d6b72246ab22e21fc7114c35c8b",
+            "sha256": "a5262c0fdbd54bdc6761871c7bb390cccfd35d6b72246ab22e21fc7114c35c8b"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "initial-detail-467a65c49dfc0448",
+          "legacy_path": "initial-detail/jurisdiction=132195/year=2025/document_kind=budget/edition=d275ebf16868a05ca97ddf4cc4bce4b2853a870b1f6cb2ec7dea3d49a718839a/direction=expenditure/resource=initial-expenditure-project-setsu-elderly",
+          "declaration": {
+            "approval_date": "2025-03-26",
+            "approval_evidence": [
+              {
+                "bbox": [
+                  106.2,
+                  93.03204,
+                  495.48,
+                  103.59204
+                ],
+                "page_number": 1,
+                "printed_text": "議案第５号狛江市後期高齢者医療特別会計予算令和７年３月26日原案可決",
+                "word_boxes": [
+                  {
+                    "bbox": [
+                      106.2,
+                      93.03204,
+                      158.88,
+                      103.47204
+                    ],
+                    "printed_text": "議案第５号"
+                  },
+                  {
+                    "bbox": [
+                      174.72,
+                      93.03204,
+                      354.96,
+                      103.47204
+                    ],
+                    "printed_text": "狛江市後期高齢者医療特別会計予算"
+                  },
+                  {
+                    "bbox": [
+                      368.88,
+                      93.15204,
+                      495.48,
+                      103.59204
+                    ],
+                    "printed_text": "令和７年３月26日原案可決"
+                  }
+                ]
+              }
+            ],
+            "approval_status": "cover-approved",
+            "baseline_status": "explicit-source-preserving-namespace-equivalence; no allocation or initial zero",
+            "document_title": "2025年度 狛江市後期高齢者医療特別会計当初予算（印刷事業×歳出節×担当課）",
+            "edition_status": "published",
+            "effective_at": "2025-03-26",
+            "effective_at_basis": "Printed account-specific approval date; not a guessed filename publication time",
+            "extractor": "extract_initial_expenditure.py@1",
+            "first_article_evidence": {
+              "amount_initial": 2490131,
+              "locations": [
+                {
+                  "bbox": [
+                    133.32,
+                    186.365449,
+                    569.359,
+                    197.34346
+                  ],
+                  "page_number": 32,
+                  "printed_text": "第１条歳入歳出予算の総額は、歳入歳出それぞれ２，４９０，１３１千円と定める。",
+                  "word_boxes": [
+                    {
+                      "bbox": [
+                        133.32,
+                        186.365449,
+                        166.4,
+                        197.34346
+                      ],
+                      "printed_text": "第１条"
+                    },
+                    {
+                      "bbox": [
+                        177.48,
+                        186.365449,
+                        387.2,
+                        197.34346
+                      ],
+                      "printed_text": "歳入歳出予算の総額は、歳入歳出それぞれ"
+                    },
+                    {
+                      "bbox": [
+                        392.759,
+                        186.365449,
+                        569.359,
+                        197.34346
+                      ],
+                      "printed_text": "２，４９０，１３１千円と定める。"
+                    }
+                  ]
+                }
+              ],
+              "printed_text": "第1条歳入歳出予算の総額は、歳入歳出それぞれ2,490,131千円と定める",
+              "unit": "千円"
+            },
+            "fund_label": "後期高齢者医療特別会計",
+            "grain": "printed project × expenditure setsu × department occurrence; explicit blank-code reserve exceptions",
+            "observation_role": "authoritative-initial-detail",
+            "pages": [
+              32,
+              47
+            ],
+            "raw_form": "extracted",
+            "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20250325-175517.pdf",
+            "resource_name": "2025年度 狛江市後期高齢者医療特別会計当初予算（印刷事業×歳出節×担当課） 歳出事項別明細書",
+            "source_amount_unit": "千円",
+            "source_grain": "printed project × expenditure setsu × printed department occurrence; explicit printed reserve exceptions",
+            "source_key": "initial-detail:132195:2025:elderly",
+            "source_position_method": "pdftotext -bbox-layout original word boxes plus source-preserving character spans; row boxes are union of actual intersecting words",
+            "table_id": "initial-expenditure-project-setsu-elderly",
+            "totals": {
+              "all_moku_sum": 2490131,
+              "explanation_setsu_sum": 2490131,
+              "first_article": 2490131,
+              "left_setsu_sum": 2489131,
+              "printed_project_sum": 2490131
+            },
+            "unit_multiplier": 1000
+          }
+        }
+      ]
+    },
+    {
+      "id": "initial-detail-549ec0c254062afa",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "d275ebf16868a05ca97ddf4cc4bce4b2853a870b1f6cb2ec7dea3d49a718839a",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "下水道事業会計",
+              "pages": [
+                [
+                  91,
+                  124
+                ]
+              ]
+            },
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  48,
+                  54
+                ],
+                [
+                  62,
+                  79
+                ]
+              ]
+            },
+            {
+              "account": "国民健康保険特別会計",
+              "pages": [
+                [
+                  4,
+                  9
+                ],
+                [
+                  14,
+                  30
+                ]
+              ]
+            },
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  31,
+                  37
+                ],
+                [
+                  41,
+                  47
+                ]
+              ]
+            },
+            {
+              "account": "駐車場事業特別会計",
+              "pages": [
+                [
+                  80,
+                  86
+                ],
+                [
+                  89,
+                  90
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "initial-detail-549ec0c254062afa",
+            "bytes": 41101,
+            "key": "inputs/table/sha256/a28108e58f5e83555029e8e14b7f77af530eddbd3d62f31cc0ddbd82aff6e656",
+            "sha256": "a28108e58f5e83555029e8e14b7f77af530eddbd3d62f31cc0ddbd82aff6e656"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "initial-detail-549ec0c254062afa",
+          "legacy_path": "initial-detail/jurisdiction=132195/year=2025/document_kind=budget/edition=d275ebf16868a05ca97ddf4cc4bce4b2853a870b1f6cb2ec7dea3d49a718839a/direction=expenditure/resource=initial-expenditure-project-setsu-care",
+          "declaration": {
+            "approval_date": "2025-03-26",
+            "approval_evidence": [
+              {
+                "bbox": [
+                  106.2,
+                  104.67204,
+                  495.48,
+                  115.23204
+                ],
+                "page_number": 1,
+                "printed_text": "議案第６号狛江市介護保険特別会計予算令和７年３月26日原案可決",
+                "word_boxes": [
+                  {
+                    "bbox": [
+                      106.2,
+                      104.67204,
+                      158.88,
+                      115.11204
+                    ],
+                    "printed_text": "議案第６号"
+                  },
+                  {
+                    "bbox": [
+                      174.72,
+                      104.67204,
+                      354.96,
+                      115.11204
+                    ],
+                    "printed_text": "狛江市介護保険特別会計予算"
+                  },
+                  {
+                    "bbox": [
+                      368.88,
+                      104.79204,
+                      495.48,
+                      115.23204
+                    ],
+                    "printed_text": "令和７年３月26日原案可決"
+                  }
+                ]
+              }
+            ],
+            "approval_status": "cover-approved",
+            "baseline_status": "explicit-source-preserving-namespace-equivalence; no allocation or initial zero",
+            "document_title": "2025年度 狛江市介護保険特別会計当初予算（印刷事業×歳出節×担当課）",
+            "edition_status": "published",
+            "effective_at": "2025-03-26",
+            "effective_at_basis": "Printed account-specific approval date; not a guessed filename publication time",
+            "extractor": "extract_initial_expenditure.py@1",
+            "first_article_evidence": {
+              "amount_initial": 7867836,
+              "locations": [
+                {
+                  "bbox": [
+                    133.32,
+                    186.365449,
+                    569.359,
+                    197.34346
+                  ],
+                  "page_number": 49,
+                  "printed_text": "第１条歳入歳出予算の総額は、歳入歳出それぞれ７，８６７，８３６千円と定める。",
+                  "word_boxes": [
+                    {
+                      "bbox": [
+                        133.32,
+                        186.365449,
+                        166.4,
+                        197.34346
+                      ],
+                      "printed_text": "第１条"
+                    },
+                    {
+                      "bbox": [
+                        177.48,
+                        186.365449,
+                        387.2,
+                        197.34346
+                      ],
+                      "printed_text": "歳入歳出予算の総額は、歳入歳出それぞれ"
+                    },
+                    {
+                      "bbox": [
+                        392.759,
+                        186.365449,
+                        569.359,
+                        197.34346
+                      ],
+                      "printed_text": "７，８６７，８３６千円と定める。"
+                    }
+                  ]
+                }
+              ],
+              "printed_text": "第1条歳入歳出予算の総額は、歳入歳出それぞれ7,867,836千円と定める",
+              "unit": "千円"
+            },
+            "fund_label": "介護保険特別会計",
+            "grain": "printed project × expenditure setsu × department occurrence; explicit blank-code reserve exceptions",
+            "observation_role": "authoritative-initial-detail",
+            "pages": [
+              49,
+              79
+            ],
+            "raw_form": "extracted",
+            "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20250325-175517.pdf",
+            "resource_name": "2025年度 狛江市介護保険特別会計当初予算（印刷事業×歳出節×担当課） 歳出事項別明細書",
+            "source_amount_unit": "千円",
+            "source_grain": "printed project × expenditure setsu × printed department occurrence; explicit printed reserve exceptions",
+            "source_key": "initial-detail:132195:2025:care",
+            "source_position_method": "pdftotext -bbox-layout original word boxes plus source-preserving character spans; row boxes are union of actual intersecting words",
+            "table_id": "initial-expenditure-project-setsu-care",
+            "totals": {
+              "all_moku_sum": 7867836,
+              "explanation_setsu_sum": 7867836,
+              "first_article": 7867836,
+              "left_setsu_sum": 7867336,
+              "printed_project_sum": 7867836
+            },
+            "unit_multiplier": 1000
+          }
+        }
+      ]
+    },
+    {
+      "id": "initial-detail-4533b4b83a0615e5",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "d275ebf16868a05ca97ddf4cc4bce4b2853a870b1f6cb2ec7dea3d49a718839a",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "下水道事業会計",
+              "pages": [
+                [
+                  91,
+                  124
+                ]
+              ]
+            },
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  48,
+                  54
+                ],
+                [
+                  62,
+                  79
+                ]
+              ]
+            },
+            {
+              "account": "国民健康保険特別会計",
+              "pages": [
+                [
+                  4,
+                  9
+                ],
+                [
+                  14,
+                  30
+                ]
+              ]
+            },
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  31,
+                  37
+                ],
+                [
+                  41,
+                  47
+                ]
+              ]
+            },
+            {
+              "account": "駐車場事業特別会計",
+              "pages": [
+                [
+                  80,
+                  86
+                ],
+                [
+                  89,
+                  90
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "initial-detail-4533b4b83a0615e5",
+            "bytes": 20222,
+            "key": "inputs/table/sha256/73b9274de57b0af6ade250eae825c2672bb8fdc724eed328c95106317007b0aa",
+            "sha256": "73b9274de57b0af6ade250eae825c2672bb8fdc724eed328c95106317007b0aa"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "initial-detail-4533b4b83a0615e5",
+          "legacy_path": "initial-detail/jurisdiction=132195/year=2025/document_kind=budget/edition=d275ebf16868a05ca97ddf4cc4bce4b2853a870b1f6cb2ec7dea3d49a718839a/direction=expenditure/resource=initial-expenditure-project-setsu-parking",
+          "declaration": {
+            "approval_date": "2025-03-26",
+            "approval_evidence": [
+              {
+                "bbox": [
+                  106.2,
+                  116.31204,
+                  495.48,
+                  126.87204
+                ],
+                "page_number": 1,
+                "printed_text": "議案第７号狛江市駐車場事業特別会計予算令和７年３月26日原案可決",
+                "word_boxes": [
+                  {
+                    "bbox": [
+                      106.2,
+                      116.31204,
+                      158.88,
+                      126.75204
+                    ],
+                    "printed_text": "議案第７号"
+                  },
+                  {
+                    "bbox": [
+                      174.72,
+                      116.31204,
+                      354.96,
+                      126.75204
+                    ],
+                    "printed_text": "狛江市駐車場事業特別会計予算"
+                  },
+                  {
+                    "bbox": [
+                      368.88,
+                      116.43204,
+                      495.48,
+                      126.87204
+                    ],
+                    "printed_text": "令和７年３月26日原案可決"
+                  }
+                ]
+              }
+            ],
+            "approval_status": "cover-approved",
+            "baseline_status": "explicit-source-preserving-namespace-equivalence; no allocation or initial zero",
+            "document_title": "2025年度 狛江市駐車場事業特別会計当初予算（印刷事業×歳出節×担当課）",
+            "edition_status": "published",
+            "effective_at": "2025-03-26",
+            "effective_at_basis": "Printed account-specific approval date; not a guessed filename publication time",
+            "extractor": "extract_initial_expenditure.py@1",
+            "first_article_evidence": {
+              "amount_initial": 57838,
+              "locations": [
+                {
+                  "bbox": [
+                    133.32,
+                    186.59664,
+                    536.280929,
+                    197.63664
+                  ],
+                  "page_number": 81,
+                  "printed_text": "第１条歳入歳出予算の総額は、歳入歳出それぞれ５７，８３８千円と定める。",
+                  "word_boxes": [
+                    {
+                      "bbox": [
+                        133.32,
+                        186.59664,
+                        166.440262,
+                        197.63664
+                      ],
+                      "printed_text": "第１条"
+                    },
+                    {
+                      "bbox": [
+                        177.480063,
+                        186.59664,
+                        387.240658,
+                        197.63664
+                      ],
+                      "printed_text": "歳入歳出予算の総額は、歳入歳出それぞれ"
+                    },
+                    {
+                      "bbox": [
+                        392.760459,
+                        186.59664,
+                        536.280929,
+                        197.63664
+                      ],
+                      "printed_text": "５７，８３８千円と定める。"
+                    }
+                  ]
+                }
+              ],
+              "printed_text": "第1条歳入歳出予算の総額は、歳入歳出それぞれ57,838千円と定める",
+              "unit": "千円"
+            },
+            "fund_label": "駐車場事業特別会計",
+            "grain": "printed project × expenditure setsu × department occurrence; explicit blank-code reserve exceptions",
+            "observation_role": "authoritative-initial-detail",
+            "pages": [
+              81,
+              89
+            ],
+            "raw_form": "extracted",
+            "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20250325-175517.pdf",
+            "resource_name": "2025年度 狛江市駐車場事業特別会計当初予算（印刷事業×歳出節×担当課） 歳出事項別明細書",
+            "source_amount_unit": "千円",
+            "source_grain": "printed project × expenditure setsu × printed department occurrence; explicit printed reserve exceptions",
+            "source_key": "initial-detail:132195:2025:parking",
+            "source_position_method": "pdftotext -bbox-layout original word boxes plus source-preserving character spans; row boxes are union of actual intersecting words",
+            "table_id": "initial-expenditure-project-setsu-parking",
+            "totals": {
+              "all_moku_sum": 57838,
+              "explanation_setsu_sum": 57838,
+              "first_article": 57838,
+              "left_setsu_sum": 57838,
+              "printed_project_sum": 57838
+            },
+            "unit_multiplier": 1000
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "initial-detail-89fabc7b847286e7",
+      "conversion_id": "initial-detail-89fabc7b847286e7",
+      "input_fingerprint": "339eba05d2f2ab896ca142c753a6e3adf584ed61a5f531d51584af8aab92fc45",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132195/2025/initial/expenditure/initial-detail-89fabc7b847286e7.parquet",
+        "sha256": "b782de6b5e46c99f2efb80daf59e3d271bd1bf119d306258a336ee9fdfa77a0b",
+        "bytes": 40274
+      },
+      "row_count": 66,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "fund_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_fetched_at",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "submitted_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "edition_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_moku_source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "control_moku_key",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_moku_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "project_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_printed_initial",
+          "type": "BIGINT"
+        },
+        {
+          "name": "project_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "department_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_initial",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_amount_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "page_number",
+          "type": "BIGINT"
+        },
+        {
+          "name": "bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_locations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "left_setsu_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "validation_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "validation_reasons_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observed_grain_validation_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_correspondence_status",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "d275ebf16868a05ca97ddf4cc4bce4b2853a870b1f6cb2ec7dea3d49a718839a",
+          "bytes": 4942655
+        }
+      ]
+    },
+    {
+      "table_id": "initial-detail-467a65c49dfc0448",
+      "conversion_id": "initial-detail-467a65c49dfc0448",
+      "input_fingerprint": "6a70590a411e99a2d11c3b65a274f7ee6b35b1dc5d549535069ad7b762b22dfa",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132195/2025/initial/expenditure/initial-detail-467a65c49dfc0448.parquet",
+        "sha256": "a5262c0fdbd54bdc6761871c7bb390cccfd35d6b72246ab22e21fc7114c35c8b",
+        "bytes": 27169
+      },
+      "row_count": 26,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "fund_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_fetched_at",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "submitted_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "edition_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_moku_source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "control_moku_key",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_moku_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "project_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_printed_initial",
+          "type": "BIGINT"
+        },
+        {
+          "name": "project_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "department_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_initial",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_amount_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "page_number",
+          "type": "BIGINT"
+        },
+        {
+          "name": "bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_locations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "left_setsu_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "validation_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "validation_reasons_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observed_grain_validation_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_correspondence_status",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "d275ebf16868a05ca97ddf4cc4bce4b2853a870b1f6cb2ec7dea3d49a718839a",
+          "bytes": 4942655
+        }
+      ]
+    },
+    {
+      "table_id": "initial-detail-549ec0c254062afa",
+      "conversion_id": "initial-detail-549ec0c254062afa",
+      "input_fingerprint": "e67855226737d1eddb4ddf32d6125075ea0b11bc6e4bfce388937326d363cc44",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132195/2025/initial/expenditure/initial-detail-549ec0c254062afa.parquet",
+        "sha256": "a28108e58f5e83555029e8e14b7f77af530eddbd3d62f31cc0ddbd82aff6e656",
+        "bytes": 41101
+      },
+      "row_count": 81,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "fund_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_fetched_at",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "submitted_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "edition_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_moku_source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "control_moku_key",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_moku_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "project_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_printed_initial",
+          "type": "BIGINT"
+        },
+        {
+          "name": "project_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "department_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_initial",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_amount_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "page_number",
+          "type": "BIGINT"
+        },
+        {
+          "name": "bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_locations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "left_setsu_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "validation_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "validation_reasons_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observed_grain_validation_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_correspondence_status",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "d275ebf16868a05ca97ddf4cc4bce4b2853a870b1f6cb2ec7dea3d49a718839a",
+          "bytes": 4942655
+        }
+      ]
+    },
+    {
+      "table_id": "initial-detail-4533b4b83a0615e5",
+      "conversion_id": "initial-detail-4533b4b83a0615e5",
+      "input_fingerprint": "72fa74cfdf3245907d9e9ce66ea0f6c266397d90e166363de1ac43cfd0c1701c",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132195/2025/initial/expenditure/initial-detail-4533b4b83a0615e5.parquet",
+        "sha256": "73b9274de57b0af6ade250eae825c2672bb8fdc724eed328c95106317007b0aa",
+        "bytes": 20222
+      },
+      "row_count": 6,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "fund_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_fetched_at",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "submitted_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "edition_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_moku_source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "control_moku_key",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_moku_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "project_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_printed_initial",
+          "type": "BIGINT"
+        },
+        {
+          "name": "project_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "department_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_initial",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_amount_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "page_number",
+          "type": "BIGINT"
+        },
+        {
+          "name": "bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_locations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "left_setsu_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "validation_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "validation_reasons_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observed_grain_validation_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_correspondence_status",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "d275ebf16868a05ca97ddf4cc4bce4b2853a870b1f6cb2ec7dea3d49a718839a",
+          "bytes": 4942655
+        }
+      ]
+    }
+  ]
+}

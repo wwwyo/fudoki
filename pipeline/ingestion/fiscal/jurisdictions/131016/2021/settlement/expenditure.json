@@ -1,0 +1,351 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "131016",
+    "fiscal_year": 2021,
+    "document_kind": "settlement"
+  },
+  "direction": "expenditure",
+  "candidate_id": "representative",
+  "status": "ready",
+  "conversions": [
+    {
+      "id": "chiyoda2021-settlement-native-e3392527aaa3d0a0",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "8477b068a4d5a998da2614391a1e932fa7d1d5d1693cbcfed3723cb7e6f9dc6e",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  6,
+                  7
+                ],
+                [
+                  56,
+                  112
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "chiyoda2021-settlement-native-e3392527aaa3d0a0",
+            "bytes": 20069,
+            "key": "inputs/table/sha256/4fe15dd670278ae089d2ebd12a3a9140c219622bfdfa5c2d3ec7fbd735a3d103",
+            "sha256": "4fe15dd670278ae089d2ebd12a3a9140c219622bfdfa5c2d3ec7fbd735a3d103"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "chiyoda2021-settlement-native-e3392527aaa3d0a0",
+          "legacy_path": "chiyoda2021-settlement-native/jurisdiction=131016/year=2021/document_kind=settlement/edition=8477b068a4d5a998da2614391a1e932fa7d1d5d1693cbcfed3723cb7e6f9dc6e/direction=expenditure/table=native-levels",
+          "declaration": {
+            "approval_status": "unconfirmed",
+            "definition_files": {
+              "evidence-manifest.json": {
+                "bytes": 3726,
+                "sha256": "a68dc157ac0ef11e77ec5eb2298877552126e936a8eecf9f8204f9309514786a"
+              },
+              "replay.py": {
+                "bytes": 2114,
+                "sha256": "52d52aa34d5dde66912613ec24eae4481f6afbb72ff5b363be2aa9377ab4b3a2"
+              },
+              "sources-spec.json": {
+                "bytes": 3787,
+                "sha256": "2e86eda570d75e9be140c94dc3e9734b9cac56ecbb66dd2b983a3fa2cfc96638"
+              }
+            },
+            "document_label": "決算(歳出明細)",
+            "document_title": "令和3年度一般会計歳入歳出決算事項別明細書",
+            "legal_correspondence_status": "unconfirmed",
+            "observation_role": "native-level-amounts",
+            "pages": [
+              56,
+              111
+            ],
+            "phase_note": "金額の段階は印字セル別に全列保持(当初/補正/繰越/予備費流用/計/支出済/翌年度繰越/不用額)。区議会議決行は native-notes の備考欄行として原文のまま保持(10行、physical_page は実際の右頁)。phases=[]",
+            "recognition_status": "unconfirmed",
+            "request_url": "https://www.city.chiyoda.lg.jp/documents/15979/r3kessansho-2.pdf",
+            "source_amount_unit": "円",
+            "source_key": "native-scan:131016:2021:r3kessansho-2",
+            "table_id": "native-levels",
+            "unit_multiplier": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "chiyoda2021-settlement-native-973dedab1d542961",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "8477b068a4d5a998da2614391a1e932fa7d1d5d1693cbcfed3723cb7e6f9dc6e",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  6,
+                  7
+                ],
+                [
+                  56,
+                  112
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "chiyoda2021-settlement-native-973dedab1d542961",
+            "bytes": 34236,
+            "key": "inputs/table/sha256/b3646dda9b4d04c66502419424a5c400ad63b382c5c89aa6d73622be279e934f",
+            "sha256": "b3646dda9b4d04c66502419424a5c400ad63b382c5c89aa6d73622be279e934f"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "chiyoda2021-settlement-native-973dedab1d542961",
+          "legacy_path": "chiyoda2021-settlement-native/jurisdiction=131016/year=2021/document_kind=settlement/edition=8477b068a4d5a998da2614391a1e932fa7d1d5d1693cbcfed3723cb7e6f9dc6e/direction=expenditure/table=native-setsu",
+          "declaration": {
+            "approval_status": "unconfirmed",
+            "definition_files": {
+              "evidence-manifest.json": {
+                "bytes": 3726,
+                "sha256": "a68dc157ac0ef11e77ec5eb2298877552126e936a8eecf9f8204f9309514786a"
+              },
+              "replay.py": {
+                "bytes": 2114,
+                "sha256": "52d52aa34d5dde66912613ec24eae4481f6afbb72ff5b363be2aa9377ab4b3a2"
+              },
+              "sources-spec.json": {
+                "bytes": 3787,
+                "sha256": "2e86eda570d75e9be140c94dc3e9734b9cac56ecbb66dd2b983a3fa2cfc96638"
+              }
+            },
+            "document_label": "決算(歳出明細)",
+            "document_title": "令和3年度一般会計歳入歳出決算事項別明細書",
+            "legal_correspondence_status": "unconfirmed",
+            "observation_role": "native-setsu-amounts",
+            "pages": [
+              56,
+              111
+            ],
+            "phase_note": "金額の段階は印字セル別に全列保持(当初/補正/繰越/予備費流用/計/支出済/翌年度繰越/不用額)。区議会議決行は native-notes の備考欄行として原文のまま保持(10行、physical_page は実際の右頁)。phases=[]",
+            "recognition_status": "unconfirmed",
+            "request_url": "https://www.city.chiyoda.lg.jp/documents/15979/r3kessansho-2.pdf",
+            "source_amount_unit": "円",
+            "source_key": "native-scan:131016:2021:r3kessansho-2",
+            "table_id": "native-setsu",
+            "unit_multiplier": 1
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "chiyoda2021-settlement-native-e3392527aaa3d0a0",
+      "conversion_id": "chiyoda2021-settlement-native-e3392527aaa3d0a0",
+      "input_fingerprint": "e9c45820c6a9149d7ef2d94b985d860f4e60781a42a70dce34881c948db107c8",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/131016/2021/settlement/expenditure/chiyoda2021-settlement-native-e3392527aaa3d0a0.parquet",
+        "sha256": "4fe15dd670278ae089d2ebd12a3a9140c219622bfdfa5c2d3ec7fbd735a3d103",
+        "bytes": 20069
+      },
+      "row_count": 127,
+      "schema": [
+        {
+          "name": "seq",
+          "type": "INTEGER"
+        },
+        {
+          "name": "physical_page",
+          "type": "INTEGER"
+        },
+        {
+          "name": "sheet_no",
+          "type": "INTEGER"
+        },
+        {
+          "name": "kan_header",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "level",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "initial",
+          "type": "BIGINT"
+        },
+        {
+          "name": "amended",
+          "type": "BIGINT"
+        },
+        {
+          "name": "carryover",
+          "type": "BIGINT"
+        },
+        {
+          "name": "reserve",
+          "type": "BIGINT"
+        },
+        {
+          "name": "total",
+          "type": "BIGINT"
+        },
+        {
+          "name": "executed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "carryforward_next",
+          "type": "BIGINT"
+        },
+        {
+          "name": "unused",
+          "type": "BIGINT"
+        },
+        {
+          "name": "note",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "raw_left",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "raw_right",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "8477b068a4d5a998da2614391a1e932fa7d1d5d1693cbcfed3723cb7e6f9dc6e",
+          "bytes": 929613
+        }
+      ]
+    },
+    {
+      "table_id": "chiyoda2021-settlement-native-973dedab1d542961",
+      "conversion_id": "chiyoda2021-settlement-native-973dedab1d542961",
+      "input_fingerprint": "f77b63393234a3423c120cfec6a43971522a52e8f142bdb996740324c39a028d",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/131016/2021/settlement/expenditure/chiyoda2021-settlement-native-973dedab1d542961.parquet",
+        "sha256": "b3646dda9b4d04c66502419424a5c400ad63b382c5c89aa6d73622be279e934f",
+        "bytes": 34236
+      },
+      "row_count": 562,
+      "schema": [
+        {
+          "name": "seq",
+          "type": "INTEGER"
+        },
+        {
+          "name": "physical_page",
+          "type": "INTEGER"
+        },
+        {
+          "name": "kan",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_no",
+          "type": "INTEGER"
+        },
+        {
+          "name": "setsu_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "budget_amount",
+          "type": "BIGINT"
+        },
+        {
+          "name": "executed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "carryforward_next",
+          "type": "BIGINT"
+        },
+        {
+          "name": "unused",
+          "type": "BIGINT"
+        },
+        {
+          "name": "note",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "raw_left",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "raw_right",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "8477b068a4d5a998da2614391a1e932fa7d1d5d1693cbcfed3723cb7e6f9dc6e",
+          "bytes": 929613
+        }
+      ]
+    }
+  ]
+}

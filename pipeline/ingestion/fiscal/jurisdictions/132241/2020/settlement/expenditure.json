@@ -1,0 +1,4015 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132241",
+    "fiscal_year": 2020,
+    "document_kind": "settlement"
+  },
+  "direction": "expenditure",
+  "candidate_id": "representative",
+  "status": "ready",
+  "conversions": [
+    {
+      "id": "tama-native-settlement-9b7513e5a6aa53f3",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "8e7e99bee0b3c174bf1d5fb8e6f37faef74e532806675054f45f0263603ffccd",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  7,
+                  17
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-native-settlement-9b7513e5a6aa53f3",
+            "bytes": 10784,
+            "key": "inputs/table/sha256/8a54851c354e4907f4705ae14aea663c9117492f454595f7b4c8473556ae8909",
+            "sha256": "8a54851c354e4907f4705ae14aea663c9117492f454595f7b4c8473556ae8909"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-native-settlement-9b7513e5a6aa53f3",
+          "legacy_path": "tama-native-settlement/jurisdiction=132241/year=2020/document_kind=settlement/edition=8e7e99bee0b3c174bf1d5fb8e6f37faef74e532806675054f45f0263603ffccd/direction=expenditure/table=independent-account-controls-general",
+          "declaration": {
+            "account_partition": "general",
+            "additive_within_own_grain": false,
+            "definition_files": {
+              "evidence-manifest.json": {
+                "bytes": 340051,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/evidence-manifest.json",
+                "sha256": "44dc09a1a069d1b1aab471c7236f44043164bb1b0a57c52c3f68718715bab784"
+              },
+              "frozen-transcription.json": {
+                "bytes": 22902,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/frozen-transcription.json",
+                "sha256": "fa84189712a536e63fcceb6b6b166e68d3f96b196912ff9d016270f877321133"
+              },
+              "raw-schema.json": {
+                "bytes": 17665,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/raw-schema.json",
+                "sha256": "0956abeb1a3cb5ae7601819ec6a7833d81ca01a21cd04a3ffd97aa06afd1834d"
+              },
+              "sources.toml": {
+                "bytes": 29455,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/sources.toml",
+                "sha256": "55adbb8dd8b2eedb943180e9b4e2a8df6200d33616623778cfdaec0d362dab7f"
+              }
+            },
+            "extractor": "ingestion.fiscal.jurisdictions.132241.layouts.tama_native_settlement.extract_tama_settlement_2020_scans",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/0201.pdf",
+            "grain": "independently-printed-account-summary-nonadditive",
+            "independent_breakdown": true,
+            "legal_correspondence_status": "unconfirmed",
+            "observation_role": "independent-account-controls",
+            "original_observation_identity": "observed_id retained verbatim; no raw fields removed",
+            "pages": [
+              {
+                "physical_page": 16,
+                "printed_page": 16
+              }
+            ],
+            "phase": "executed",
+            "project_setsu_linkage": "unconfirmed",
+            "recognition_status": "unconfirmed",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/0201.pdf",
+            "source_amount_unit": "円",
+            "source_key": "native-scan:tama-2020-native-part01",
+            "table_id": "independent-account-controls-general",
+            "unit_multiplier": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "tama-native-settlement-ea5723cbe1fb2c1a",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "6014739dbda4fb74ca9ad3b4c888103ec6ba363c6b63cd9c376838855a9e4774",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  1,
+                  26
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-native-settlement-ea5723cbe1fb2c1a",
+            "bytes": 128618,
+            "key": "inputs/table/sha256/d478f32230fd7c950d8b383208c6c2906f4babd1444b56c9f987016854784800",
+            "sha256": "d478f32230fd7c950d8b383208c6c2906f4babd1444b56c9f987016854784800"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-native-settlement-ea5723cbe1fb2c1a",
+          "legacy_path": "tama-native-settlement/jurisdiction=132241/year=2020/document_kind=settlement/edition=6014739dbda4fb74ca9ad3b4c888103ec6ba363c6b63cd9c376838855a9e4774/direction=expenditure/table=hierarchy-controls-general",
+          "declaration": {
+            "account_partition": "general",
+            "additive_within_own_grain": false,
+            "definition_files": {
+              "evidence-manifest.json": {
+                "bytes": 340051,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/evidence-manifest.json",
+                "sha256": "44dc09a1a069d1b1aab471c7236f44043164bb1b0a57c52c3f68718715bab784"
+              },
+              "frozen-transcription.json": {
+                "bytes": 22902,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/frozen-transcription.json",
+                "sha256": "fa84189712a536e63fcceb6b6b166e68d3f96b196912ff9d016270f877321133"
+              },
+              "raw-schema.json": {
+                "bytes": 17665,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/raw-schema.json",
+                "sha256": "0956abeb1a3cb5ae7601819ec6a7833d81ca01a21cd04a3ffd97aa06afd1834d"
+              },
+              "sources.toml": {
+                "bytes": 29455,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/sources.toml",
+                "sha256": "55adbb8dd8b2eedb943180e9b4e2a8df6200d33616623778cfdaec0d362dab7f"
+              }
+            },
+            "extractor": "ingestion.fiscal.jurisdictions.132241.layouts.tama_native_settlement.extract_tama_settlement_2020_scans",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/020373.pdf",
+            "grain": "printed-kan-kou-moku-control-nonadditive",
+            "independent_breakdown": true,
+            "legal_correspondence_status": "unconfirmed",
+            "observation_role": "hierarchy-controls",
+            "original_observation_identity": "observed_id retained verbatim; no raw fields removed",
+            "pages": [
+              {
+                "physical_page": 1,
+                "printed_page": 48
+              },
+              {
+                "physical_page": 3,
+                "printed_page": 50
+              },
+              {
+                "physical_page": 5,
+                "printed_page": 52
+              },
+              {
+                "physical_page": 7,
+                "printed_page": 54
+              },
+              {
+                "physical_page": 9,
+                "printed_page": 56
+              },
+              {
+                "physical_page": 11,
+                "printed_page": 58
+              },
+              {
+                "physical_page": 13,
+                "printed_page": 60
+              },
+              {
+                "physical_page": 15,
+                "printed_page": 62
+              },
+              {
+                "physical_page": 17,
+                "printed_page": 64
+              },
+              {
+                "physical_page": 19,
+                "printed_page": 66
+              },
+              {
+                "physical_page": 21,
+                "printed_page": 68
+              },
+              {
+                "physical_page": 23,
+                "printed_page": 70
+              },
+              {
+                "physical_page": 25,
+                "printed_page": 72
+              }
+            ],
+            "phase": "executed",
+            "project_setsu_linkage": "unconfirmed",
+            "recognition_status": "unconfirmed",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/020373.pdf",
+            "source_amount_unit": "円",
+            "source_key": "native-scan:tama-2020-native-part03",
+            "table_id": "hierarchy-controls-general",
+            "unit_multiplier": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "tama-native-settlement-ed5149cfd96646ee",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "6014739dbda4fb74ca9ad3b4c888103ec6ba363c6b63cd9c376838855a9e4774",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  1,
+                  26
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-native-settlement-ed5149cfd96646ee",
+            "bytes": 293083,
+            "key": "inputs/table/sha256/0cbaef943142b174bb813e6bcc43fc33355b38633d08b8a151c1a9df882d9832",
+            "sha256": "0cbaef943142b174bb813e6bcc43fc33355b38633d08b8a151c1a9df882d9832"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-native-settlement-ed5149cfd96646ee",
+          "legacy_path": "tama-native-settlement/jurisdiction=132241/year=2020/document_kind=settlement/edition=6014739dbda4fb74ca9ad3b4c888103ec6ba363c6b63cd9c376838855a9e4774/direction=expenditure/table=legal-observations-general",
+          "declaration": {
+            "account_partition": "general",
+            "additive_within_own_grain": true,
+            "definition_files": {
+              "evidence-manifest.json": {
+                "bytes": 340051,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/evidence-manifest.json",
+                "sha256": "44dc09a1a069d1b1aab471c7236f44043164bb1b0a57c52c3f68718715bab784"
+              },
+              "frozen-transcription.json": {
+                "bytes": 22902,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/frozen-transcription.json",
+                "sha256": "fa84189712a536e63fcceb6b6b166e68d3f96b196912ff9d016270f877321133"
+              },
+              "raw-schema.json": {
+                "bytes": 17665,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/raw-schema.json",
+                "sha256": "0956abeb1a3cb5ae7601819ec6a7833d81ca01a21cd04a3ffd97aa06afd1834d"
+              },
+              "sources.toml": {
+                "bytes": 29455,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/sources.toml",
+                "sha256": "55adbb8dd8b2eedb943180e9b4e2a8df6200d33616623778cfdaec0d362dab7f"
+              }
+            },
+            "extractor": "ingestion.fiscal.jurisdictions.132241.layouts.tama_native_settlement.extract_tama_settlement_2020_scans",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/020373.pdf",
+            "grain": "printed-moku-by-printed-setsu",
+            "independent_breakdown": true,
+            "legal_correspondence_status": "unconfirmed",
+            "observation_role": "legal-observations",
+            "original_observation_identity": "observed_id retained verbatim; no raw fields removed",
+            "pages": [
+              {
+                "physical_page": 2,
+                "printed_page": 49
+              },
+              {
+                "physical_page": 4,
+                "printed_page": 51
+              },
+              {
+                "physical_page": 6,
+                "printed_page": 53
+              },
+              {
+                "physical_page": 8,
+                "printed_page": 55
+              },
+              {
+                "physical_page": 10,
+                "printed_page": 57
+              },
+              {
+                "physical_page": 12,
+                "printed_page": 59
+              },
+              {
+                "physical_page": 14,
+                "printed_page": 61
+              },
+              {
+                "physical_page": 16,
+                "printed_page": 63
+              },
+              {
+                "physical_page": 18,
+                "printed_page": 65
+              },
+              {
+                "physical_page": 20,
+                "printed_page": 67
+              },
+              {
+                "physical_page": 22,
+                "printed_page": 69
+              },
+              {
+                "physical_page": 24,
+                "printed_page": 71
+              },
+              {
+                "physical_page": 26,
+                "printed_page": 73
+              }
+            ],
+            "phase": "executed",
+            "project_setsu_linkage": "unconfirmed",
+            "recognition_status": "unconfirmed",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/020373.pdf",
+            "source_amount_unit": "円",
+            "source_key": "native-scan:tama-2020-native-part03",
+            "table_id": "legal-observations-general",
+            "unit_multiplier": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "tama-native-settlement-318e3706f86ec23e",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "994f105855c4bbe57ca6fdd07c14b1e49b2f29772a40d57974460a71afc0ca3e",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "国民健康保険特別会計",
+              "pages": [
+                [
+                  5,
+                  9
+                ],
+                [
+                  20,
+                  30
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-native-settlement-318e3706f86ec23e",
+            "bytes": 133645,
+            "key": "inputs/table/sha256/97768bdebe3be96bab4af74c71bc90b2af95b269ce3d65b853093c887f147314",
+            "sha256": "97768bdebe3be96bab4af74c71bc90b2af95b269ce3d65b853093c887f147314"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-native-settlement-318e3706f86ec23e",
+          "legacy_path": "tama-native-settlement/jurisdiction=132241/year=2020/document_kind=settlement/edition=994f105855c4bbe57ca6fdd07c14b1e49b2f29772a40d57974460a71afc0ca3e/direction=expenditure/table=hierarchy-controls-national-health-insurance",
+          "declaration": {
+            "account_partition": "national-health-insurance",
+            "additive_within_own_grain": false,
+            "definition_files": {
+              "evidence-manifest.json": {
+                "bytes": 340051,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/evidence-manifest.json",
+                "sha256": "44dc09a1a069d1b1aab471c7236f44043164bb1b0a57c52c3f68718715bab784"
+              },
+              "frozen-transcription.json": {
+                "bytes": 22902,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/frozen-transcription.json",
+                "sha256": "fa84189712a536e63fcceb6b6b166e68d3f96b196912ff9d016270f877321133"
+              },
+              "raw-schema.json": {
+                "bytes": 17665,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/raw-schema.json",
+                "sha256": "0956abeb1a3cb5ae7601819ec6a7833d81ca01a21cd04a3ffd97aa06afd1834d"
+              },
+              "sources.toml": {
+                "bytes": 29455,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/sources.toml",
+                "sha256": "55adbb8dd8b2eedb943180e9b4e2a8df6200d33616623778cfdaec0d362dab7f"
+              }
+            },
+            "extractor": "ingestion.fiscal.jurisdictions.132241.layouts.tama_native_settlement.extract_tama_settlement_2020_scans",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/0206150.pdf",
+            "grain": "printed-kan-kou-moku-control-nonadditive",
+            "independent_breakdown": true,
+            "legal_correspondence_status": "unconfirmed",
+            "observation_role": "hierarchy-controls",
+            "original_observation_identity": "observed_id retained verbatim; no raw fields removed",
+            "pages": [
+              {
+                "physical_page": 20,
+                "printed_page": 140
+              },
+              {
+                "physical_page": 22,
+                "printed_page": 142
+              },
+              {
+                "physical_page": 24,
+                "printed_page": 144
+              },
+              {
+                "physical_page": 26,
+                "printed_page": 146
+              },
+              {
+                "physical_page": 28,
+                "printed_page": 148
+              }
+            ],
+            "phase": "executed",
+            "project_setsu_linkage": "unconfirmed",
+            "recognition_status": "unconfirmed",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/0206150.pdf",
+            "source_amount_unit": "円",
+            "source_key": "native-scan:tama-2020-native-part06",
+            "table_id": "hierarchy-controls-national-health-insurance",
+            "unit_multiplier": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "tama-native-settlement-5f4a8bbfa96c10c7",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "994f105855c4bbe57ca6fdd07c14b1e49b2f29772a40d57974460a71afc0ca3e",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "国民健康保険特別会計",
+              "pages": [
+                [
+                  5,
+                  9
+                ],
+                [
+                  20,
+                  30
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-native-settlement-5f4a8bbfa96c10c7",
+            "bytes": 10774,
+            "key": "inputs/table/sha256/02788ebf0d0b1b753221a45d20f7772f8d75bdc502a9eefbc15498d55cd0c222",
+            "sha256": "02788ebf0d0b1b753221a45d20f7772f8d75bdc502a9eefbc15498d55cd0c222"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-native-settlement-5f4a8bbfa96c10c7",
+          "legacy_path": "tama-native-settlement/jurisdiction=132241/year=2020/document_kind=settlement/edition=994f105855c4bbe57ca6fdd07c14b1e49b2f29772a40d57974460a71afc0ca3e/direction=expenditure/table=independent-account-controls-national-health-insurance",
+          "declaration": {
+            "account_partition": "national-health-insurance",
+            "additive_within_own_grain": false,
+            "definition_files": {
+              "evidence-manifest.json": {
+                "bytes": 340051,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/evidence-manifest.json",
+                "sha256": "44dc09a1a069d1b1aab471c7236f44043164bb1b0a57c52c3f68718715bab784"
+              },
+              "frozen-transcription.json": {
+                "bytes": 22902,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/frozen-transcription.json",
+                "sha256": "fa84189712a536e63fcceb6b6b166e68d3f96b196912ff9d016270f877321133"
+              },
+              "raw-schema.json": {
+                "bytes": 17665,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/raw-schema.json",
+                "sha256": "0956abeb1a3cb5ae7601819ec6a7833d81ca01a21cd04a3ffd97aa06afd1834d"
+              },
+              "sources.toml": {
+                "bytes": 29455,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/sources.toml",
+                "sha256": "55adbb8dd8b2eedb943180e9b4e2a8df6200d33616623778cfdaec0d362dab7f"
+              }
+            },
+            "extractor": "ingestion.fiscal.jurisdictions.132241.layouts.tama_native_settlement.extract_tama_settlement_2020_scans",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/0206150.pdf",
+            "grain": "independently-printed-account-summary-nonadditive",
+            "independent_breakdown": true,
+            "legal_correspondence_status": "unconfirmed",
+            "observation_role": "independent-account-controls",
+            "original_observation_identity": "observed_id retained verbatim; no raw fields removed",
+            "pages": [
+              {
+                "physical_page": 8,
+                "printed_page": 128
+              }
+            ],
+            "phase": "executed",
+            "project_setsu_linkage": "unconfirmed",
+            "recognition_status": "unconfirmed",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/0206150.pdf",
+            "source_amount_unit": "円",
+            "source_key": "native-scan:tama-2020-native-part06",
+            "table_id": "independent-account-controls-national-health-insurance",
+            "unit_multiplier": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "tama-native-settlement-3f6e2e25d4f77ad6",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "994f105855c4bbe57ca6fdd07c14b1e49b2f29772a40d57974460a71afc0ca3e",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "国民健康保険特別会計",
+              "pages": [
+                [
+                  5,
+                  9
+                ],
+                [
+                  20,
+                  30
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-native-settlement-3f6e2e25d4f77ad6",
+            "bytes": 95793,
+            "key": "inputs/table/sha256/16a4f725ff12b332f884f44f5e757c98e6cfab02bac2d660f05f97230db3455d",
+            "sha256": "16a4f725ff12b332f884f44f5e757c98e6cfab02bac2d660f05f97230db3455d"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-native-settlement-3f6e2e25d4f77ad6",
+          "legacy_path": "tama-native-settlement/jurisdiction=132241/year=2020/document_kind=settlement/edition=994f105855c4bbe57ca6fdd07c14b1e49b2f29772a40d57974460a71afc0ca3e/direction=expenditure/table=legal-observations-national-health-insurance",
+          "declaration": {
+            "account_partition": "national-health-insurance",
+            "additive_within_own_grain": true,
+            "definition_files": {
+              "evidence-manifest.json": {
+                "bytes": 340051,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/evidence-manifest.json",
+                "sha256": "44dc09a1a069d1b1aab471c7236f44043164bb1b0a57c52c3f68718715bab784"
+              },
+              "frozen-transcription.json": {
+                "bytes": 22902,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/frozen-transcription.json",
+                "sha256": "fa84189712a536e63fcceb6b6b166e68d3f96b196912ff9d016270f877321133"
+              },
+              "raw-schema.json": {
+                "bytes": 17665,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/raw-schema.json",
+                "sha256": "0956abeb1a3cb5ae7601819ec6a7833d81ca01a21cd04a3ffd97aa06afd1834d"
+              },
+              "sources.toml": {
+                "bytes": 29455,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/sources.toml",
+                "sha256": "55adbb8dd8b2eedb943180e9b4e2a8df6200d33616623778cfdaec0d362dab7f"
+              }
+            },
+            "extractor": "ingestion.fiscal.jurisdictions.132241.layouts.tama_native_settlement.extract_tama_settlement_2020_scans",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/0206150.pdf",
+            "grain": "printed-moku-by-printed-setsu",
+            "independent_breakdown": true,
+            "legal_correspondence_status": "unconfirmed",
+            "observation_role": "legal-observations",
+            "original_observation_identity": "observed_id retained verbatim; no raw fields removed",
+            "pages": [
+              {
+                "physical_page": 21,
+                "printed_page": 141
+              },
+              {
+                "physical_page": 23,
+                "printed_page": 143
+              },
+              {
+                "physical_page": 25,
+                "printed_page": 145
+              },
+              {
+                "physical_page": 27,
+                "printed_page": 147
+              },
+              {
+                "physical_page": 29,
+                "printed_page": 149
+              }
+            ],
+            "phase": "executed",
+            "project_setsu_linkage": "unconfirmed",
+            "recognition_status": "unconfirmed",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/0206150.pdf",
+            "source_amount_unit": "円",
+            "source_key": "native-scan:tama-2020-native-part06",
+            "table_id": "legal-observations-national-health-insurance",
+            "unit_multiplier": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "tama-native-settlement-f0bc528d306aea48",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "2ccc7571acb6d5310ad2ed814e58e45fec8ceaa322f1e36389b74ac24ba53a1b",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  5,
+                  9
+                ],
+                [
+                  20,
+                  29
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-native-settlement-f0bc528d306aea48",
+            "bytes": 114222,
+            "key": "inputs/table/sha256/668b01163ccf17c21b2a025b2b41c00edfb44354506a142e2da15a5437710f38",
+            "sha256": "668b01163ccf17c21b2a025b2b41c00edfb44354506a142e2da15a5437710f38"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-native-settlement-f0bc528d306aea48",
+          "legacy_path": "tama-native-settlement/jurisdiction=132241/year=2020/document_kind=settlement/edition=2ccc7571acb6d5310ad2ed814e58e45fec8ceaa322f1e36389b74ac24ba53a1b/direction=expenditure/table=hierarchy-controls-nursing-care",
+          "declaration": {
+            "account_partition": "nursing-care",
+            "additive_within_own_grain": false,
+            "definition_files": {
+              "evidence-manifest.json": {
+                "bytes": 340051,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/evidence-manifest.json",
+                "sha256": "44dc09a1a069d1b1aab471c7236f44043164bb1b0a57c52c3f68718715bab784"
+              },
+              "frozen-transcription.json": {
+                "bytes": 22902,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/frozen-transcription.json",
+                "sha256": "fa84189712a536e63fcceb6b6b166e68d3f96b196912ff9d016270f877321133"
+              },
+              "raw-schema.json": {
+                "bytes": 17665,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/raw-schema.json",
+                "sha256": "0956abeb1a3cb5ae7601819ec6a7833d81ca01a21cd04a3ffd97aa06afd1834d"
+              },
+              "sources.toml": {
+                "bytes": 29455,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/sources.toml",
+                "sha256": "55adbb8dd8b2eedb943180e9b4e2a8df6200d33616623778cfdaec0d362dab7f"
+              }
+            },
+            "extractor": "ingestion.fiscal.jurisdictions.132241.layouts.tama_native_settlement.extract_tama_settlement_2020_scans",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/0207180.pdf",
+            "grain": "printed-kan-kou-moku-control-nonadditive",
+            "independent_breakdown": true,
+            "legal_correspondence_status": "unconfirmed",
+            "observation_role": "hierarchy-controls",
+            "original_observation_identity": "observed_id retained verbatim; no raw fields removed",
+            "pages": [
+              {
+                "physical_page": 20,
+                "printed_page": 170
+              },
+              {
+                "physical_page": 22,
+                "printed_page": 172
+              },
+              {
+                "physical_page": 24,
+                "printed_page": 174
+              },
+              {
+                "physical_page": 26,
+                "printed_page": 176
+              },
+              {
+                "physical_page": 28,
+                "printed_page": 178
+              }
+            ],
+            "phase": "executed",
+            "project_setsu_linkage": "unconfirmed",
+            "recognition_status": "unconfirmed",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/0207180.pdf",
+            "source_amount_unit": "円",
+            "source_key": "native-scan:tama-2020-native-part07",
+            "table_id": "hierarchy-controls-nursing-care",
+            "unit_multiplier": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "tama-native-settlement-811cf9607a7e8397",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "2ccc7571acb6d5310ad2ed814e58e45fec8ceaa322f1e36389b74ac24ba53a1b",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  5,
+                  9
+                ],
+                [
+                  20,
+                  29
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-native-settlement-811cf9607a7e8397",
+            "bytes": 10878,
+            "key": "inputs/table/sha256/2e59a64d2f2d8dd6e68c00fb447ecca35cddcd2edc03b1874d0d3b0b2bdbb7db",
+            "sha256": "2e59a64d2f2d8dd6e68c00fb447ecca35cddcd2edc03b1874d0d3b0b2bdbb7db"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-native-settlement-811cf9607a7e8397",
+          "legacy_path": "tama-native-settlement/jurisdiction=132241/year=2020/document_kind=settlement/edition=2ccc7571acb6d5310ad2ed814e58e45fec8ceaa322f1e36389b74ac24ba53a1b/direction=expenditure/table=independent-account-controls-nursing-care",
+          "declaration": {
+            "account_partition": "nursing-care",
+            "additive_within_own_grain": false,
+            "definition_files": {
+              "evidence-manifest.json": {
+                "bytes": 340051,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/evidence-manifest.json",
+                "sha256": "44dc09a1a069d1b1aab471c7236f44043164bb1b0a57c52c3f68718715bab784"
+              },
+              "frozen-transcription.json": {
+                "bytes": 22902,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/frozen-transcription.json",
+                "sha256": "fa84189712a536e63fcceb6b6b166e68d3f96b196912ff9d016270f877321133"
+              },
+              "raw-schema.json": {
+                "bytes": 17665,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/raw-schema.json",
+                "sha256": "0956abeb1a3cb5ae7601819ec6a7833d81ca01a21cd04a3ffd97aa06afd1834d"
+              },
+              "sources.toml": {
+                "bytes": 29455,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/sources.toml",
+                "sha256": "55adbb8dd8b2eedb943180e9b4e2a8df6200d33616623778cfdaec0d362dab7f"
+              }
+            },
+            "extractor": "ingestion.fiscal.jurisdictions.132241.layouts.tama_native_settlement.extract_tama_settlement_2020_scans",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/0207180.pdf",
+            "grain": "independently-printed-account-summary-nonadditive",
+            "independent_breakdown": true,
+            "legal_correspondence_status": "unconfirmed",
+            "observation_role": "independent-account-controls",
+            "original_observation_identity": "observed_id retained verbatim; no raw fields removed",
+            "pages": [
+              {
+                "physical_page": 8,
+                "printed_page": 158
+              }
+            ],
+            "phase": "executed",
+            "project_setsu_linkage": "unconfirmed",
+            "recognition_status": "unconfirmed",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/0207180.pdf",
+            "source_amount_unit": "円",
+            "source_key": "native-scan:tama-2020-native-part07",
+            "table_id": "independent-account-controls-nursing-care",
+            "unit_multiplier": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "tama-native-settlement-ed97eb0165066456",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "2ccc7571acb6d5310ad2ed814e58e45fec8ceaa322f1e36389b74ac24ba53a1b",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "介護保険特別会計",
+              "pages": [
+                [
+                  5,
+                  9
+                ],
+                [
+                  20,
+                  29
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-native-settlement-ed97eb0165066456",
+            "bytes": 98153,
+            "key": "inputs/table/sha256/c5dd6700dcc1bd0cdc87f1fe75ef2f11a327a08d059178e392d3e50eb59da596",
+            "sha256": "c5dd6700dcc1bd0cdc87f1fe75ef2f11a327a08d059178e392d3e50eb59da596"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-native-settlement-ed97eb0165066456",
+          "legacy_path": "tama-native-settlement/jurisdiction=132241/year=2020/document_kind=settlement/edition=2ccc7571acb6d5310ad2ed814e58e45fec8ceaa322f1e36389b74ac24ba53a1b/direction=expenditure/table=legal-observations-nursing-care",
+          "declaration": {
+            "account_partition": "nursing-care",
+            "additive_within_own_grain": true,
+            "definition_files": {
+              "evidence-manifest.json": {
+                "bytes": 340051,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/evidence-manifest.json",
+                "sha256": "44dc09a1a069d1b1aab471c7236f44043164bb1b0a57c52c3f68718715bab784"
+              },
+              "frozen-transcription.json": {
+                "bytes": 22902,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/frozen-transcription.json",
+                "sha256": "fa84189712a536e63fcceb6b6b166e68d3f96b196912ff9d016270f877321133"
+              },
+              "raw-schema.json": {
+                "bytes": 17665,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/raw-schema.json",
+                "sha256": "0956abeb1a3cb5ae7601819ec6a7833d81ca01a21cd04a3ffd97aa06afd1834d"
+              },
+              "sources.toml": {
+                "bytes": 29455,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/sources.toml",
+                "sha256": "55adbb8dd8b2eedb943180e9b4e2a8df6200d33616623778cfdaec0d362dab7f"
+              }
+            },
+            "extractor": "ingestion.fiscal.jurisdictions.132241.layouts.tama_native_settlement.extract_tama_settlement_2020_scans",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/0207180.pdf",
+            "grain": "printed-moku-by-printed-setsu",
+            "independent_breakdown": true,
+            "legal_correspondence_status": "unconfirmed",
+            "observation_role": "legal-observations",
+            "original_observation_identity": "observed_id retained verbatim; no raw fields removed",
+            "pages": [
+              {
+                "physical_page": 21,
+                "printed_page": 171
+              },
+              {
+                "physical_page": 23,
+                "printed_page": 173
+              },
+              {
+                "physical_page": 25,
+                "printed_page": 175
+              },
+              {
+                "physical_page": 27,
+                "printed_page": 177
+              },
+              {
+                "physical_page": 29,
+                "printed_page": 179
+              }
+            ],
+            "phase": "executed",
+            "project_setsu_linkage": "unconfirmed",
+            "recognition_status": "unconfirmed",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/0207180.pdf",
+            "source_amount_unit": "円",
+            "source_key": "native-scan:tama-2020-native-part07",
+            "table_id": "legal-observations-nursing-care",
+            "unit_multiplier": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "tama-native-settlement-1af145596b536ab6",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "d2b80d66ed9f720741a1c9bc5a9f75f0c74b47d8e8208867277403b8bbd7c98f",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  5,
+                  9
+                ],
+                [
+                  16,
+                  19
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-native-settlement-1af145596b536ab6",
+            "bytes": 72161,
+            "key": "inputs/table/sha256/332bced773a7769c75ee85e1a3fe7cc1b0c7c1fc41308347e3f08c2a2b84092e",
+            "sha256": "332bced773a7769c75ee85e1a3fe7cc1b0c7c1fc41308347e3f08c2a2b84092e"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-native-settlement-1af145596b536ab6",
+          "legacy_path": "tama-native-settlement/jurisdiction=132241/year=2020/document_kind=settlement/edition=d2b80d66ed9f720741a1c9bc5a9f75f0c74b47d8e8208867277403b8bbd7c98f/direction=expenditure/table=hierarchy-controls-elderly-healthcare",
+          "declaration": {
+            "account_partition": "elderly-healthcare",
+            "additive_within_own_grain": false,
+            "definition_files": {
+              "evidence-manifest.json": {
+                "bytes": 340051,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/evidence-manifest.json",
+                "sha256": "44dc09a1a069d1b1aab471c7236f44043164bb1b0a57c52c3f68718715bab784"
+              },
+              "frozen-transcription.json": {
+                "bytes": 22902,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/frozen-transcription.json",
+                "sha256": "fa84189712a536e63fcceb6b6b166e68d3f96b196912ff9d016270f877321133"
+              },
+              "raw-schema.json": {
+                "bytes": 17665,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/raw-schema.json",
+                "sha256": "0956abeb1a3cb5ae7601819ec6a7833d81ca01a21cd04a3ffd97aa06afd1834d"
+              },
+              "sources.toml": {
+                "bytes": 29455,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/sources.toml",
+                "sha256": "55adbb8dd8b2eedb943180e9b4e2a8df6200d33616623778cfdaec0d362dab7f"
+              }
+            },
+            "extractor": "ingestion.fiscal.jurisdictions.132241.layouts.tama_native_settlement.extract_tama_settlement_2020_scans",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/0208200.pdf",
+            "grain": "printed-kan-kou-moku-control-nonadditive",
+            "independent_breakdown": true,
+            "legal_correspondence_status": "unconfirmed",
+            "observation_role": "hierarchy-controls",
+            "original_observation_identity": "observed_id retained verbatim; no raw fields removed",
+            "pages": [
+              {
+                "physical_page": 16,
+                "printed_page": 196
+              },
+              {
+                "physical_page": 18,
+                "printed_page": 198
+              }
+            ],
+            "phase": "executed",
+            "project_setsu_linkage": "unconfirmed",
+            "recognition_status": "unconfirmed",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/0208200.pdf",
+            "source_amount_unit": "円",
+            "source_key": "native-scan:tama-2020-native-part08",
+            "table_id": "hierarchy-controls-elderly-healthcare",
+            "unit_multiplier": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "tama-native-settlement-b5d3a5a649886048",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "d2b80d66ed9f720741a1c9bc5a9f75f0c74b47d8e8208867277403b8bbd7c98f",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  5,
+                  9
+                ],
+                [
+                  16,
+                  19
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-native-settlement-b5d3a5a649886048",
+            "bytes": 10791,
+            "key": "inputs/table/sha256/9d8b54028966036b40560ddf55c3d39726dd2abc0bf787568167e74e2db6343a",
+            "sha256": "9d8b54028966036b40560ddf55c3d39726dd2abc0bf787568167e74e2db6343a"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-native-settlement-b5d3a5a649886048",
+          "legacy_path": "tama-native-settlement/jurisdiction=132241/year=2020/document_kind=settlement/edition=d2b80d66ed9f720741a1c9bc5a9f75f0c74b47d8e8208867277403b8bbd7c98f/direction=expenditure/table=independent-account-controls-elderly-healthcare",
+          "declaration": {
+            "account_partition": "elderly-healthcare",
+            "additive_within_own_grain": false,
+            "definition_files": {
+              "evidence-manifest.json": {
+                "bytes": 340051,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/evidence-manifest.json",
+                "sha256": "44dc09a1a069d1b1aab471c7236f44043164bb1b0a57c52c3f68718715bab784"
+              },
+              "frozen-transcription.json": {
+                "bytes": 22902,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/frozen-transcription.json",
+                "sha256": "fa84189712a536e63fcceb6b6b166e68d3f96b196912ff9d016270f877321133"
+              },
+              "raw-schema.json": {
+                "bytes": 17665,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/raw-schema.json",
+                "sha256": "0956abeb1a3cb5ae7601819ec6a7833d81ca01a21cd04a3ffd97aa06afd1834d"
+              },
+              "sources.toml": {
+                "bytes": 29455,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/sources.toml",
+                "sha256": "55adbb8dd8b2eedb943180e9b4e2a8df6200d33616623778cfdaec0d362dab7f"
+              }
+            },
+            "extractor": "ingestion.fiscal.jurisdictions.132241.layouts.tama_native_settlement.extract_tama_settlement_2020_scans",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/0208200.pdf",
+            "grain": "independently-printed-account-summary-nonadditive",
+            "independent_breakdown": true,
+            "legal_correspondence_status": "unconfirmed",
+            "observation_role": "independent-account-controls",
+            "original_observation_identity": "observed_id retained verbatim; no raw fields removed",
+            "pages": [
+              {
+                "physical_page": 8,
+                "printed_page": 188
+              }
+            ],
+            "phase": "executed",
+            "project_setsu_linkage": "unconfirmed",
+            "recognition_status": "unconfirmed",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/0208200.pdf",
+            "source_amount_unit": "円",
+            "source_key": "native-scan:tama-2020-native-part08",
+            "table_id": "independent-account-controls-elderly-healthcare",
+            "unit_multiplier": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "tama-native-settlement-120e19bed592925d",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "d2b80d66ed9f720741a1c9bc5a9f75f0c74b47d8e8208867277403b8bbd7c98f",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "後期高齢者医療特別会計",
+              "pages": [
+                [
+                  5,
+                  9
+                ],
+                [
+                  16,
+                  19
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-native-settlement-120e19bed592925d",
+            "bytes": 52858,
+            "key": "inputs/table/sha256/da3413d2a784fe7a941bb225beee113e20c02f56131df79b1ba147b58cc00a5b",
+            "sha256": "da3413d2a784fe7a941bb225beee113e20c02f56131df79b1ba147b58cc00a5b"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-native-settlement-120e19bed592925d",
+          "legacy_path": "tama-native-settlement/jurisdiction=132241/year=2020/document_kind=settlement/edition=d2b80d66ed9f720741a1c9bc5a9f75f0c74b47d8e8208867277403b8bbd7c98f/direction=expenditure/table=legal-observations-elderly-healthcare",
+          "declaration": {
+            "account_partition": "elderly-healthcare",
+            "additive_within_own_grain": true,
+            "definition_files": {
+              "evidence-manifest.json": {
+                "bytes": 340051,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/evidence-manifest.json",
+                "sha256": "44dc09a1a069d1b1aab471c7236f44043164bb1b0a57c52c3f68718715bab784"
+              },
+              "frozen-transcription.json": {
+                "bytes": 22902,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/frozen-transcription.json",
+                "sha256": "fa84189712a536e63fcceb6b6b166e68d3f96b196912ff9d016270f877321133"
+              },
+              "raw-schema.json": {
+                "bytes": 17665,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/raw-schema.json",
+                "sha256": "0956abeb1a3cb5ae7601819ec6a7833d81ca01a21cd04a3ffd97aa06afd1834d"
+              },
+              "sources.toml": {
+                "bytes": 29455,
+                "path": "pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_native_settlement/sources.toml",
+                "sha256": "55adbb8dd8b2eedb943180e9b4e2a8df6200d33616623778cfdaec0d362dab7f"
+              }
+            },
+            "extractor": "ingestion.fiscal.jurisdictions.132241.layouts.tama_native_settlement.extract_tama_settlement_2020_scans",
+            "final_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/0208200.pdf",
+            "grain": "printed-moku-by-printed-setsu",
+            "independent_breakdown": true,
+            "legal_correspondence_status": "unconfirmed",
+            "observation_role": "legal-observations",
+            "original_observation_identity": "observed_id retained verbatim; no raw fields removed",
+            "pages": [
+              {
+                "physical_page": 17,
+                "printed_page": 197
+              },
+              {
+                "physical_page": 19,
+                "printed_page": 199
+              }
+            ],
+            "phase": "executed",
+            "project_setsu_linkage": "unconfirmed",
+            "recognition_status": "unconfirmed",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/929/0208200.pdf",
+            "source_amount_unit": "円",
+            "source_key": "native-scan:tama-2020-native-part08",
+            "table_id": "legal-observations-elderly-healthcare",
+            "unit_multiplier": 1
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "tama-native-settlement-9b7513e5a6aa53f3",
+      "conversion_id": "tama-native-settlement-9b7513e5a6aa53f3",
+      "input_fingerprint": "d4e0fc65807a87ce38f95ba2707a9272e143732992e4116de1c807e41064cd87",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2020/settlement/expenditure/tama-native-settlement-9b7513e5a6aa53f3.parquet",
+        "sha256": "8a54851c354e4907f4705ae14aea663c9117492f454595f7b4c8473556ae8909",
+        "bytes": 10784
+      },
+      "row_count": 1,
+      "schema": [
+        {
+          "name": "observed_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "financial_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "account",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "recognition_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_multiplier",
+          "type": "BIGINT"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "right_origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "right_physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "right_printed_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "current_budget",
+          "type": "BIGINT"
+        },
+        {
+          "name": "executed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "carryover",
+          "type": "BIGINT"
+        },
+        {
+          "name": "unused",
+          "type": "BIGINT"
+        },
+        {
+          "name": "current_minus_executed_printed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "control_left_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_right_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "method",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "8e7e99bee0b3c174bf1d5fb8e6f37faef74e532806675054f45f0263603ffccd",
+          "bytes": 3595204
+        }
+      ]
+    },
+    {
+      "table_id": "tama-native-settlement-ea5723cbe1fb2c1a",
+      "conversion_id": "tama-native-settlement-ea5723cbe1fb2c1a",
+      "input_fingerprint": "e7c5cb318629ad81504f9897f9b6a4f30b2b5e5621ab3efef18c1c976f6aca74",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2020/settlement/expenditure/tama-native-settlement-ea5723cbe1fb2c1a.parquet",
+        "sha256": "d478f32230fd7c950d8b383208c6c2906f4babd1444b56c9f987016854784800",
+        "bytes": 128618
+      },
+      "row_count": 46,
+      "schema": [
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "financial_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "part",
+          "type": "BIGINT"
+        },
+        {
+          "name": "physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_multiplier",
+          "type": "BIGINT"
+        },
+        {
+          "name": "page_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observed_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "account",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_level",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_code",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_code_ocr_observed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_label_visually_read",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "label_visual_observation_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_label_observed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "path_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "anchor_bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "anchor_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "left_y",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "right_physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "right_origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "right_printed_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "initial_budget",
+          "type": "BIGINT"
+        },
+        {
+          "name": "initial_budget_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "initial_budget_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "supplementary_delta",
+          "type": "BIGINT"
+        },
+        {
+          "name": "supplementary_delta_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "supplementary_delta_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carried_budget",
+          "type": "BIGINT"
+        },
+        {
+          "name": "carried_budget_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carried_budget_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "reserve_and_transfer_delta",
+          "type": "BIGINT"
+        },
+        {
+          "name": "reserve_and_transfer_delta_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "reserve_and_transfer_delta_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "current_budget",
+          "type": "BIGINT"
+        },
+        {
+          "name": "current_budget_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "current_budget_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "executed_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executed_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carryover",
+          "type": "BIGINT"
+        },
+        {
+          "name": "carryover_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carryover_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unused",
+          "type": "BIGINT"
+        },
+        {
+          "name": "unused_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unused_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "recognition_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "page_width_points",
+          "type": "BIGINT"
+        },
+        {
+          "name": "page_height_points",
+          "type": "BIGINT"
+        },
+        {
+          "name": "bbox_coordinate_system",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "anchor_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "initial_budget_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "supplementary_delta_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carried_budget_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "reserve_and_transfer_delta_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "current_budget_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executed_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carryover_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unused_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_evidence_json",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "6014739dbda4fb74ca9ad3b4c888103ec6ba363c6b63cd9c376838855a9e4774",
+          "bytes": 3237710
+        }
+      ]
+    },
+    {
+      "table_id": "tama-native-settlement-ed5149cfd96646ee",
+      "conversion_id": "tama-native-settlement-ed5149cfd96646ee",
+      "input_fingerprint": "8e1595ca86f9d78fbe2656436ef1e314e852e22586b99efaa583c999bb5ebaa4",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2020/settlement/expenditure/tama-native-settlement-ed5149cfd96646ee.parquet",
+        "sha256": "0cbaef943142b174bb813e6bcc43fc33355b38633d08b8a151c1a9df882d9832",
+        "bytes": 293083
+      },
+      "row_count": 284,
+      "schema": [
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "financial_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "part",
+          "type": "BIGINT"
+        },
+        {
+          "name": "physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_multiplier",
+          "type": "BIGINT"
+        },
+        {
+          "name": "page_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observed_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "account",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_setsu_code",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_setsu_label_observed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "path_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "anchor_bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "anchor_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "right_y",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "mapping_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_code",
+          "type": "BIGINT"
+        },
+        {
+          "name": "kan_label_observed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_label_visually_read",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_code",
+          "type": "BIGINT"
+        },
+        {
+          "name": "kou_label_observed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_label_visually_read",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_code",
+          "type": "BIGINT"
+        },
+        {
+          "name": "moku_label_observed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_label_visually_read",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "budget_current",
+          "type": "BIGINT"
+        },
+        {
+          "name": "budget_current_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "budget_current_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "executed_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executed_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carryover",
+          "type": "BIGINT"
+        },
+        {
+          "name": "carryover_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carryover_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unused",
+          "type": "BIGINT"
+        },
+        {
+          "name": "unused_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unused_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_setsu_code_ocr_observed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_setsu_label_visually_read",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "label_visual_observation_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "recognition_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "page_width_points",
+          "type": "BIGINT"
+        },
+        {
+          "name": "page_height_points",
+          "type": "BIGINT"
+        },
+        {
+          "name": "bbox_coordinate_system",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "anchor_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "budget_current_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executed_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carryover_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unused_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount",
+          "type": "BIGINT"
+        },
+        {
+          "name": "amount_printed_observed",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "6014739dbda4fb74ca9ad3b4c888103ec6ba363c6b63cd9c376838855a9e4774",
+          "bytes": 3237710
+        }
+      ]
+    },
+    {
+      "table_id": "tama-native-settlement-318e3706f86ec23e",
+      "conversion_id": "tama-native-settlement-318e3706f86ec23e",
+      "input_fingerprint": "2a17f9da3392659d774f30d70198bc5b9f956a57d38985906468d76000355c80",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2020/settlement/expenditure/tama-native-settlement-318e3706f86ec23e.parquet",
+        "sha256": "97768bdebe3be96bab4af74c71bc90b2af95b269ce3d65b853093c887f147314",
+        "bytes": 133645
+      },
+      "row_count": 60,
+      "schema": [
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "financial_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "part",
+          "type": "BIGINT"
+        },
+        {
+          "name": "physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_multiplier",
+          "type": "BIGINT"
+        },
+        {
+          "name": "page_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observed_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "account",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_level",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_code",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_code_ocr_observed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_label_visually_read",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "label_visual_observation_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_label_observed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "path_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "anchor_bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "anchor_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "left_y",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "right_physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "right_origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "right_printed_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "initial_budget",
+          "type": "BIGINT"
+        },
+        {
+          "name": "initial_budget_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "initial_budget_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "supplementary_delta",
+          "type": "BIGINT"
+        },
+        {
+          "name": "supplementary_delta_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "supplementary_delta_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carried_budget",
+          "type": "BIGINT"
+        },
+        {
+          "name": "carried_budget_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carried_budget_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "reserve_and_transfer_delta",
+          "type": "BIGINT"
+        },
+        {
+          "name": "reserve_and_transfer_delta_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "reserve_and_transfer_delta_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "current_budget",
+          "type": "BIGINT"
+        },
+        {
+          "name": "current_budget_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "current_budget_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "executed_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executed_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carryover",
+          "type": "BIGINT"
+        },
+        {
+          "name": "carryover_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carryover_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unused",
+          "type": "BIGINT"
+        },
+        {
+          "name": "unused_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unused_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "recognition_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "page_width_points",
+          "type": "BIGINT"
+        },
+        {
+          "name": "page_height_points",
+          "type": "BIGINT"
+        },
+        {
+          "name": "bbox_coordinate_system",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "anchor_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "initial_budget_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "supplementary_delta_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carried_budget_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "reserve_and_transfer_delta_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "current_budget_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executed_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carryover_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unused_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_evidence_json",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "994f105855c4bbe57ca6fdd07c14b1e49b2f29772a40d57974460a71afc0ca3e",
+          "bytes": 3228196
+        }
+      ]
+    },
+    {
+      "table_id": "tama-native-settlement-5f4a8bbfa96c10c7",
+      "conversion_id": "tama-native-settlement-5f4a8bbfa96c10c7",
+      "input_fingerprint": "4e9f0cd4ea3badf5938033d4affc88c77c410c08f7a3356606311528cc6b2761",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2020/settlement/expenditure/tama-native-settlement-5f4a8bbfa96c10c7.parquet",
+        "sha256": "02788ebf0d0b1b753221a45d20f7772f8d75bdc502a9eefbc15498d55cd0c222",
+        "bytes": 10774
+      },
+      "row_count": 1,
+      "schema": [
+        {
+          "name": "observed_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "financial_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "account",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "recognition_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_multiplier",
+          "type": "BIGINT"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "right_origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "right_physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "right_printed_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "current_budget",
+          "type": "BIGINT"
+        },
+        {
+          "name": "executed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "carryover",
+          "type": "BIGINT"
+        },
+        {
+          "name": "unused",
+          "type": "BIGINT"
+        },
+        {
+          "name": "current_minus_executed_printed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "control_left_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_right_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "method",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "994f105855c4bbe57ca6fdd07c14b1e49b2f29772a40d57974460a71afc0ca3e",
+          "bytes": 3228196
+        }
+      ]
+    },
+    {
+      "table_id": "tama-native-settlement-3f6e2e25d4f77ad6",
+      "conversion_id": "tama-native-settlement-3f6e2e25d4f77ad6",
+      "input_fingerprint": "02d194781836dc25761d1476fe01b52f41def7cf17df4d9788ef891cbb36a3ed",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2020/settlement/expenditure/tama-native-settlement-3f6e2e25d4f77ad6.parquet",
+        "sha256": "16a4f725ff12b332f884f44f5e757c98e6cfab02bac2d660f05f97230db3455d",
+        "bytes": 95793
+      },
+      "row_count": 63,
+      "schema": [
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "financial_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "part",
+          "type": "BIGINT"
+        },
+        {
+          "name": "physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_multiplier",
+          "type": "BIGINT"
+        },
+        {
+          "name": "page_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observed_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "account",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_setsu_code",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_setsu_label_observed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "path_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "anchor_bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "anchor_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "right_y",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "mapping_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_code",
+          "type": "BIGINT"
+        },
+        {
+          "name": "kan_label_observed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_label_visually_read",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_code",
+          "type": "BIGINT"
+        },
+        {
+          "name": "kou_label_observed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_label_visually_read",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_code",
+          "type": "BIGINT"
+        },
+        {
+          "name": "moku_label_observed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_label_visually_read",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "budget_current",
+          "type": "BIGINT"
+        },
+        {
+          "name": "budget_current_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "budget_current_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "executed_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executed_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carryover",
+          "type": "BIGINT"
+        },
+        {
+          "name": "carryover_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carryover_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unused",
+          "type": "BIGINT"
+        },
+        {
+          "name": "unused_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unused_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_setsu_code_ocr_observed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_setsu_label_visually_read",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "label_visual_observation_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "recognition_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "page_width_points",
+          "type": "BIGINT"
+        },
+        {
+          "name": "page_height_points",
+          "type": "BIGINT"
+        },
+        {
+          "name": "bbox_coordinate_system",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "anchor_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "budget_current_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executed_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carryover_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unused_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount",
+          "type": "BIGINT"
+        },
+        {
+          "name": "amount_printed_observed",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "994f105855c4bbe57ca6fdd07c14b1e49b2f29772a40d57974460a71afc0ca3e",
+          "bytes": 3228196
+        }
+      ]
+    },
+    {
+      "table_id": "tama-native-settlement-f0bc528d306aea48",
+      "conversion_id": "tama-native-settlement-f0bc528d306aea48",
+      "input_fingerprint": "ead91893ee1c636a27332fc7518faf7609b8c430ecfb91fd13fcd289fa1816a8",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2020/settlement/expenditure/tama-native-settlement-f0bc528d306aea48.parquet",
+        "sha256": "668b01163ccf17c21b2a025b2b41c00edfb44354506a142e2da15a5437710f38",
+        "bytes": 114222
+      },
+      "row_count": 47,
+      "schema": [
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "financial_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "part",
+          "type": "BIGINT"
+        },
+        {
+          "name": "physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_multiplier",
+          "type": "BIGINT"
+        },
+        {
+          "name": "page_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observed_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "account",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_level",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_code",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_code_ocr_observed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_label_visually_read",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "label_visual_observation_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_label_observed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "path_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "anchor_bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "anchor_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "left_y",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "right_physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "right_origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "right_printed_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "initial_budget",
+          "type": "BIGINT"
+        },
+        {
+          "name": "initial_budget_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "initial_budget_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "supplementary_delta",
+          "type": "BIGINT"
+        },
+        {
+          "name": "supplementary_delta_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "supplementary_delta_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carried_budget",
+          "type": "BIGINT"
+        },
+        {
+          "name": "carried_budget_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carried_budget_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "reserve_and_transfer_delta",
+          "type": "BIGINT"
+        },
+        {
+          "name": "reserve_and_transfer_delta_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "reserve_and_transfer_delta_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "current_budget",
+          "type": "BIGINT"
+        },
+        {
+          "name": "current_budget_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "current_budget_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "executed_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executed_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carryover",
+          "type": "BIGINT"
+        },
+        {
+          "name": "carryover_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carryover_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unused",
+          "type": "BIGINT"
+        },
+        {
+          "name": "unused_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unused_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "recognition_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "page_width_points",
+          "type": "BIGINT"
+        },
+        {
+          "name": "page_height_points",
+          "type": "BIGINT"
+        },
+        {
+          "name": "bbox_coordinate_system",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "anchor_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "initial_budget_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "supplementary_delta_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carried_budget_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "reserve_and_transfer_delta_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "current_budget_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executed_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carryover_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unused_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_evidence_json",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "2ccc7571acb6d5310ad2ed814e58e45fec8ceaa322f1e36389b74ac24ba53a1b",
+          "bytes": 3130563
+        }
+      ]
+    },
+    {
+      "table_id": "tama-native-settlement-811cf9607a7e8397",
+      "conversion_id": "tama-native-settlement-811cf9607a7e8397",
+      "input_fingerprint": "0b3484a210da909f8bf12d0ac3b3fa3bf7e872ddb4886414def5647e324febe0",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2020/settlement/expenditure/tama-native-settlement-811cf9607a7e8397.parquet",
+        "sha256": "2e59a64d2f2d8dd6e68c00fb447ecca35cddcd2edc03b1874d0d3b0b2bdbb7db",
+        "bytes": 10878
+      },
+      "row_count": 1,
+      "schema": [
+        {
+          "name": "observed_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "financial_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "account",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "recognition_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_multiplier",
+          "type": "BIGINT"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "right_origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "right_physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "right_printed_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "current_budget",
+          "type": "BIGINT"
+        },
+        {
+          "name": "executed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "carryover",
+          "type": "BIGINT"
+        },
+        {
+          "name": "unused",
+          "type": "BIGINT"
+        },
+        {
+          "name": "current_minus_executed_printed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "control_left_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_right_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "method",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "2ccc7571acb6d5310ad2ed814e58e45fec8ceaa322f1e36389b74ac24ba53a1b",
+          "bytes": 3130563
+        }
+      ]
+    },
+    {
+      "table_id": "tama-native-settlement-ed97eb0165066456",
+      "conversion_id": "tama-native-settlement-ed97eb0165066456",
+      "input_fingerprint": "44cc3d28dc91ad3bf9b582facff1a472e2b2d9f44ee8d81430e7958ebe490939",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2020/settlement/expenditure/tama-native-settlement-ed97eb0165066456.parquet",
+        "sha256": "c5dd6700dcc1bd0cdc87f1fe75ef2f11a327a08d059178e392d3e50eb59da596",
+        "bytes": 98153
+      },
+      "row_count": 64,
+      "schema": [
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "financial_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "part",
+          "type": "BIGINT"
+        },
+        {
+          "name": "physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_multiplier",
+          "type": "BIGINT"
+        },
+        {
+          "name": "page_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observed_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "account",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_setsu_code",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_setsu_label_observed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "path_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "anchor_bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "anchor_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "right_y",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "mapping_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_code",
+          "type": "BIGINT"
+        },
+        {
+          "name": "kan_label_observed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_label_visually_read",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_code",
+          "type": "BIGINT"
+        },
+        {
+          "name": "kou_label_observed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_label_visually_read",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_code",
+          "type": "BIGINT"
+        },
+        {
+          "name": "moku_label_observed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_label_visually_read",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "budget_current",
+          "type": "BIGINT"
+        },
+        {
+          "name": "budget_current_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "budget_current_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "executed_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executed_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carryover",
+          "type": "BIGINT"
+        },
+        {
+          "name": "carryover_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carryover_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unused",
+          "type": "BIGINT"
+        },
+        {
+          "name": "unused_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unused_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_setsu_code_ocr_observed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_setsu_label_visually_read",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "label_visual_observation_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "recognition_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "page_width_points",
+          "type": "BIGINT"
+        },
+        {
+          "name": "page_height_points",
+          "type": "BIGINT"
+        },
+        {
+          "name": "bbox_coordinate_system",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "anchor_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "budget_current_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executed_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carryover_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unused_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount",
+          "type": "BIGINT"
+        },
+        {
+          "name": "amount_printed_observed",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "2ccc7571acb6d5310ad2ed814e58e45fec8ceaa322f1e36389b74ac24ba53a1b",
+          "bytes": 3130563
+        }
+      ]
+    },
+    {
+      "table_id": "tama-native-settlement-1af145596b536ab6",
+      "conversion_id": "tama-native-settlement-1af145596b536ab6",
+      "input_fingerprint": "c0fb360f6735b5f365727f2c228e55b7901262af8cc87eaef2cffb801f49feb2",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2020/settlement/expenditure/tama-native-settlement-1af145596b536ab6.parquet",
+        "sha256": "332bced773a7769c75ee85e1a3fe7cc1b0c7c1fc41308347e3f08c2a2b84092e",
+        "bytes": 72161
+      },
+      "row_count": 23,
+      "schema": [
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "financial_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "part",
+          "type": "BIGINT"
+        },
+        {
+          "name": "physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_multiplier",
+          "type": "BIGINT"
+        },
+        {
+          "name": "page_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observed_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "account",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_level",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_code",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_code_ocr_observed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_label_visually_read",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "label_visual_observation_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_label_observed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "path_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "anchor_bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "anchor_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "left_y",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "right_physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "right_origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "right_printed_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "initial_budget",
+          "type": "BIGINT"
+        },
+        {
+          "name": "initial_budget_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "initial_budget_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "supplementary_delta",
+          "type": "BIGINT"
+        },
+        {
+          "name": "supplementary_delta_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "supplementary_delta_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carried_budget",
+          "type": "BIGINT"
+        },
+        {
+          "name": "carried_budget_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carried_budget_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "reserve_and_transfer_delta",
+          "type": "BIGINT"
+        },
+        {
+          "name": "reserve_and_transfer_delta_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "reserve_and_transfer_delta_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "current_budget",
+          "type": "BIGINT"
+        },
+        {
+          "name": "current_budget_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "current_budget_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "executed_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executed_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carryover",
+          "type": "BIGINT"
+        },
+        {
+          "name": "carryover_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carryover_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unused",
+          "type": "BIGINT"
+        },
+        {
+          "name": "unused_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unused_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "recognition_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "page_width_points",
+          "type": "BIGINT"
+        },
+        {
+          "name": "page_height_points",
+          "type": "BIGINT"
+        },
+        {
+          "name": "bbox_coordinate_system",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "anchor_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "initial_budget_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "supplementary_delta_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carried_budget_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "reserve_and_transfer_delta_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "current_budget_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executed_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carryover_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unused_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_evidence_json",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "d2b80d66ed9f720741a1c9bc5a9f75f0c74b47d8e8208867277403b8bbd7c98f",
+          "bytes": 1695361
+        }
+      ]
+    },
+    {
+      "table_id": "tama-native-settlement-b5d3a5a649886048",
+      "conversion_id": "tama-native-settlement-b5d3a5a649886048",
+      "input_fingerprint": "4d86929f4f417eb4c7377e42e2b3a07a1d49219adfaeca4ab1de169527366986",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2020/settlement/expenditure/tama-native-settlement-b5d3a5a649886048.parquet",
+        "sha256": "9d8b54028966036b40560ddf55c3d39726dd2abc0bf787568167e74e2db6343a",
+        "bytes": 10791
+      },
+      "row_count": 1,
+      "schema": [
+        {
+          "name": "observed_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "financial_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "account",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "recognition_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_multiplier",
+          "type": "BIGINT"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "right_origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "right_physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "right_printed_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "current_budget",
+          "type": "BIGINT"
+        },
+        {
+          "name": "executed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "carryover",
+          "type": "BIGINT"
+        },
+        {
+          "name": "unused",
+          "type": "BIGINT"
+        },
+        {
+          "name": "current_minus_executed_printed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "control_left_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_right_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "method",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "d2b80d66ed9f720741a1c9bc5a9f75f0c74b47d8e8208867277403b8bbd7c98f",
+          "bytes": 1695361
+        }
+      ]
+    },
+    {
+      "table_id": "tama-native-settlement-120e19bed592925d",
+      "conversion_id": "tama-native-settlement-120e19bed592925d",
+      "input_fingerprint": "4e58fd5f145da3f4d01060935b8775fd5404131fccb112542230edbee59b318f",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2020/settlement/expenditure/tama-native-settlement-120e19bed592925d.parquet",
+        "sha256": "da3413d2a784fe7a941bb225beee113e20c02f56131df79b1ba147b58cc00a5b",
+        "bytes": 52858
+      },
+      "row_count": 22,
+      "schema": [
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "financial_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "phase",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "part",
+          "type": "BIGINT"
+        },
+        {
+          "name": "physical_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_page",
+          "type": "BIGINT"
+        },
+        {
+          "name": "amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_multiplier",
+          "type": "BIGINT"
+        },
+        {
+          "name": "page_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observed_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "account",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_setsu_code",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_setsu_label_observed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "path_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "anchor_bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "anchor_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "right_y",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "mapping_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_code",
+          "type": "BIGINT"
+        },
+        {
+          "name": "kan_label_observed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_label_visually_read",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_code",
+          "type": "BIGINT"
+        },
+        {
+          "name": "kou_label_observed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_label_visually_read",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_code",
+          "type": "BIGINT"
+        },
+        {
+          "name": "moku_label_observed",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_label_visually_read",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "budget_current",
+          "type": "BIGINT"
+        },
+        {
+          "name": "budget_current_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "budget_current_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "executed_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executed_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carryover",
+          "type": "BIGINT"
+        },
+        {
+          "name": "carryover_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carryover_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unused",
+          "type": "BIGINT"
+        },
+        {
+          "name": "unused_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unused_observations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_setsu_code_ocr_observed",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_setsu_label_visually_read",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "label_visual_observation_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "table_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "direction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "recognition_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "page_width_points",
+          "type": "BIGINT"
+        },
+        {
+          "name": "page_height_points",
+          "type": "BIGINT"
+        },
+        {
+          "name": "bbox_coordinate_system",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "anchor_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "budget_current_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executed_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "carryover_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unused_bbox_pdf_points_top_left_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount",
+          "type": "BIGINT"
+        },
+        {
+          "name": "amount_printed_observed",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "d2b80d66ed9f720741a1c9bc5a9f75f0c74b47d8e8208867277403b8bbd7c98f",
+          "bytes": 1695361
+        }
+      ]
+    }
+  ]
+}

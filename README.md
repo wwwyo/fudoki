@@ -17,7 +17,7 @@
 
 原典の値・単位・階層を保ち、団体間で列・金額単位・分類を揃え、提供用データの金額・粒度・出典を検査する。配布・検索の保存先や公開方式は、パイプライン完成後に検討する。
 
-取得元の宣言は [`sources.toml`](pipeline/ingestion/fiscal/sources.toml)、入力一覧は `pipeline/ingestion/fiscal/sources.lock.json`（正規 lock の採用は未完了）、団体別の実測は [`jurisdictions/`](pipeline/ingestion/fiscal/jurisdictions/) にある。証跡は独立ファイルにせず、出典・意味は入力一覧と原典宣言が持つ。原典と取り込み済み Parquet の保管用 R2 は、固定入力の復元に使う。
+取得元の宣言は [`sources.toml`](pipeline/ingestion/fiscal/management/sources.toml)、入力一覧は `pipeline/ingestion/fiscal/sources.lock.json`（正規 lock の採用は未完了）、団体別の実測は [`jurisdictions/`](pipeline/ingestion/fiscal/jurisdictions/131016/) にある。証跡は独立ファイルにせず、出典・意味は入力一覧と原典宣言が持つ。原典と取り込み済み Parquet の保管用 R2 は、固定入力の復元に使う。
 
 ## 開発
 
@@ -72,7 +72,7 @@ COFOG は歳出明細と同じ CSV に含め、原典由来の金額と分類な
 - [pipeline/README.md](pipeline/README.md): 固定入力からの構築と検査
 - [apps/web/README.md](apps/web/README.md): ダッシュボードの構成
 - [pipeline/dbt/models/](pipeline/dbt/models/): staging（原典別の整形）→ intermediate（統合・分類）→ marts（提供用データ）。配布処理は `pipeline/fdp/` に分け、原典の保存と判断の整合性はテストで縛っている
-- [pipeline/ingestion/fiscal/sources.toml](pipeline/ingestion/fiscal/sources.toml): 取得元の定義。団体を足すときはここから
+- [pipeline/ingestion/fiscal/management/sources.toml](pipeline/ingestion/fiscal/management/sources.toml): 取得元の定義。団体を足すときはここから
 
 名前は『風土記』から。
 713年の官命により、諸国へ地名の由来や産物を**同じ様式で報告させて集めた**地誌で、各自治体から同じ形式でデータを集めるという本 PJ の構造がそのまま重なる。

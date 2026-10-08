@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132241",
+    "fiscal_year": 2024,
+    "document_kind": "initial"
+  },
+  "direction": "revenue",
+  "candidate_id": "representative",
+  "status": "ready",
+  "conversions": [
+    {
+      "id": "raw-962f0d0cd7735a4a",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "3cb0dfed19aa46a773dce5040d377c0941dfa6a0466e8f9b73656618c270a571",
+          "format": "csv",
+          "scope": [
+            {
+              "account": "一般会計"
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "raw-962f0d0cd7735a4a",
+            "bytes": 19904,
+            "key": "inputs/table/sha256/10e71c09178b5c754e1a79515d30bffc7de0b4ea16560d2d19465dbbd4b7338b",
+            "sha256": "10e71c09178b5c754e1a79515d30bffc7de0b4ea16560d2d19465dbbd4b7338b"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "raw-962f0d0cd7735a4a",
+          "legacy_path": "jurisdiction=132241/year=2024/document_kind=budget/edition=3cb0dfed19aa46a773dce5040d377c0941dfa6a0466e8f9b73656618c270a571/direction=revenue",
+          "declaration": {
+            "attribution": "多摩市「令和6年度一般会計歳出・歳入（当初予算）」（多摩市「予算・決算についての資料」）",
+            "dataset_title": null,
+            "encoding": "cp932",
+            "fiscal_year_basis": "sources.toml が宣言した URL（カタログに登録が無い）。リソース名「令和6年度一般会計歳入（当初予算）」は取得元ページのリンクテキストを人が写したもので、取得時には照合していない（宣言どうしの自己参照になるため）。根拠は resource_url_basis にある",
+            "license_id": "CC-BY-4.0",
+            "raw_form": "verbatim",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r6ippannkaikeisainyuu.csv",
+            "resource_name": "令和6年度一般会計歳入（当初予算）",
+            "resource_url_basis": "カタログのリソース登録が令和4年度で止まっており、データセット名とリソース名から解決できない。原典は市の「予算・決算についての資料」ページに同じ書式で置かれている（landing_page）。⚠️ **年度の裏づけはそのページの見出し（「令和N年度予算についての資料」）とリンクテキスト（`resource_name` と同じ文字列）で、これは人が読んだもの** — 直 URL では取得時のリソース名照合が自己参照になるので、機械は年度を照合していない",
+            "resource_url_declared": true
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "raw-962f0d0cd7735a4a",
+      "conversion_id": "raw-962f0d0cd7735a4a",
+      "input_fingerprint": "0beeaffd6d27cd427fc95851b83bf95045cf2aa0eb36993c0605c0edd3bb741b",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2024/initial/revenue/raw-962f0d0cd7735a4a.parquet",
+        "sha256": "10e71c09178b5c754e1a79515d30bffc7de0b4ea16560d2d19465dbbd4b7338b",
+        "bytes": 19904
+      },
+      "row_count": 526,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "年度",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "会計名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "細節",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "細節名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "予算額",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "3cb0dfed19aa46a773dce5040d377c0941dfa6a0466e8f9b73656618c270a571",
+          "bytes": 57060
+        }
+      ]
+    }
+  ]
+}

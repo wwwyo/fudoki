@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from importlib import import_module as _ingestion_module
+
 import argparse
 import hashlib
 import json
@@ -261,31 +263,29 @@ def restore(path: Path = LOCK, *, remote: bool = False) -> Path:
     if extra - expected_paths:
         raise ValueError('Unexpected files in fixed input snapshot')
     if any(e['path'].startswith('chiyoda-supplementary-native/') for e in lock['entries']):
-        from ingestion.fiscal.chiyoda_budget_changes import restore_approval_evidence
+        restore_approval_evidence = _ingestion_module('ingestion.fiscal.jurisdictions.131016.layouts.chiyoda_budget_changes').restore_approval_evidence
         restore_approval_evidence(lock['entries'], OBJECTS, remote=remote)
     if any(e['path'].startswith('tama-supplementary-native/') for e in lock['entries']):
-        from ingestion.fiscal.chiyoda_budget_changes import restore_approval_evidence
+        restore_approval_evidence = _ingestion_module('ingestion.fiscal.jurisdictions.131016.layouts.chiyoda_budget_changes').restore_approval_evidence
         restore_approval_evidence(lock['entries'], OBJECTS, remote=remote, namespace='tama-supplementary-native')
     if any(e['path'].startswith('mitaka-supplementary-native/') for e in lock['entries']):
-        from ingestion.fiscal.chiyoda_budget_changes import restore_approval_evidence
+        restore_approval_evidence = _ingestion_module('ingestion.fiscal.jurisdictions.131016.layouts.chiyoda_budget_changes').restore_approval_evidence
         restore_approval_evidence(lock['entries'], OBJECTS, remote=remote, namespace='mitaka-supplementary-native')
     if any(e['path'].startswith('tama-native-settlement/') for e in lock['entries']):
-        from ingestion.fiscal.tama_native_settlement.registration import restore_evidence
+        restore_evidence = _ingestion_module('ingestion.fiscal.jurisdictions.132241.layouts.tama_native_settlement.registration').restore_evidence
         restore_evidence(OBJECTS, remote=remote)
     if any(e['path'].startswith('held5-council-approved-detail/') for e in lock['entries']):
-        from ingestion.fiscal.held5_council_provider import restore_evidence
+        restore_evidence = _ingestion_module('ingestion.fiscal.jurisdictions.132195.layouts.held5_council_provider').restore_evidence
         restore_evidence(OBJECTS, remote=remote)
     if any(e['path'].startswith('akishima-settlement2024/') for e in lock['entries']):
-        from ingestion.fiscal.extract_akishima_settlement2024 import restore as restore_settlement2024_evidence
+        restore_settlement2024_evidence = _ingestion_module('ingestion.fiscal.jurisdictions.132071.layouts.extract_akishima_settlement2024').restore
         restore_settlement2024_evidence(OBJECTS, remote=remote)
     if any(e['path'].startswith('akishima-settlement2020-2023/') for e in lock['entries']):
-        from ingestion.fiscal.extract_akishima_settlement2020_2023 import restore as restore_settlement2020_2023_evidence
+        restore_settlement2020_2023_evidence = _ingestion_module('ingestion.fiscal.jurisdictions.132071.layouts.extract_akishima_settlement2020_2023').restore
         restore_settlement2020_2023_evidence(OBJECTS, remote=remote)
     if any(e['path'].startswith('akishima-settlement2019/') for e in lock['entries']):
-        from ingestion.fiscal.extract_akishima_settlement2019 import (
-            evidence_objects as settlement2019_evidence_objects,
-            restore as restore_settlement2019_evidence,
-        )
+        settlement2019_evidence_objects = _ingestion_module('ingestion.fiscal.jurisdictions.132071.layouts.extract_akishima_settlement2019').evidence_objects
+        restore_settlement2019_evidence = _ingestion_module('ingestion.fiscal.jurisdictions.132071.layouts.extract_akishima_settlement2019').restore
         for ref in settlement2019_evidence_objects():
             cached = OBJECTS / safe_relative(ref['key'])
             if not cached.exists():
@@ -295,13 +295,13 @@ def restore(path: Path = LOCK, *, remote: bool = False) -> Path:
             verify_object(ref, cached.read_bytes())
         restore_settlement2019_evidence(OBJECTS)
     if any(e['path'].startswith('akishima-supplementary2020-2025/') for e in lock['entries']):
-        from ingestion.fiscal.akishima_supplementary_fy2025_01.evidence import restore_evidence
+        restore_evidence = _ingestion_module('ingestion.fiscal.jurisdictions.132071.layouts.akishima_supplementary_fy2025_01.evidence').restore_evidence
         restore_evidence(OBJECTS, remote=remote)
     if any(e['path'].startswith('chiyoda2021-settlement-native/') for e in lock['entries']):
-        from ingestion.fiscal.chiyoda2021_settlement_native.registration import restore_evidence as restore_chiyoda2021_settlement_evidence
+        restore_chiyoda2021_settlement_evidence = _ingestion_module('ingestion.fiscal.jurisdictions.131016.layouts.chiyoda2021_settlement_native.registration').restore_evidence
         restore_chiyoda2021_settlement_evidence(OBJECTS, remote=remote)
     if any(e['path'].startswith('tama-ordinary-history/') for e in lock['entries']):
-        from ingestion.fiscal.tama_ordinary_history.reconstruct import restore_evidence
+        restore_evidence = _ingestion_module('ingestion.fiscal.jurisdictions.132241.layouts.tama_ordinary_history.reconstruct').restore_evidence
         restore_evidence(OBJECTS,remote=remote)
     return out
 
@@ -318,61 +318,61 @@ def origin_path(sha: str) -> Path:
 def locked_objects(lock: dict) -> dict:
     refs = {ref['key']: ref for entry in lock['entries'] for ref in [entry['table'], entry['origin']['object']]}
     if any(e['path'].startswith('chiyoda-supplementary-native/') for e in lock['entries']):
-        from ingestion.fiscal.chiyoda_budget_changes import approval_evidence_objects
+        approval_evidence_objects = _ingestion_module('ingestion.fiscal.jurisdictions.131016.layouts.chiyoda_budget_changes').approval_evidence_objects
         for ref in approval_evidence_objects(lock['entries']):
             if ref['key'] in refs and refs[ref['key']] != ref:
                 raise ValueError('Conflicting Chiyoda council original identity')
             refs[ref['key']] = ref
     if any(e['path'].startswith('tama-supplementary-native/') for e in lock['entries']):
-        from ingestion.fiscal.chiyoda_budget_changes import approval_evidence_objects
+        approval_evidence_objects = _ingestion_module('ingestion.fiscal.jurisdictions.131016.layouts.chiyoda_budget_changes').approval_evidence_objects
         for ref in approval_evidence_objects(lock['entries'], namespace='tama-supplementary-native'):
             if ref['key'] in refs and refs[ref['key']] != ref:
                 raise ValueError('Conflicting Tama council original identity')
             refs[ref['key']] = ref
     if any(e['path'].startswith('mitaka-supplementary-native/') for e in lock['entries']):
-        from ingestion.fiscal.chiyoda_budget_changes import approval_evidence_objects
+        approval_evidence_objects = _ingestion_module('ingestion.fiscal.jurisdictions.131016.layouts.chiyoda_budget_changes').approval_evidence_objects
         for ref in approval_evidence_objects(lock['entries'], namespace='mitaka-supplementary-native'):
             if ref['key'] in refs and refs[ref['key']] != ref:
                 raise ValueError('Conflicting Mitaka council original identity')
             refs[ref['key']] = ref
     if any(e['path'].startswith('tama-native-settlement/') for e in lock['entries']):
-        from ingestion.fiscal.tama_native_settlement.registration import evidence_objects
+        evidence_objects = _ingestion_module('ingestion.fiscal.jurisdictions.132241.layouts.tama_native_settlement.registration').evidence_objects
         for ref in evidence_objects():
             if ref['key'] in refs and refs[ref['key']] != ref:
                 raise ValueError('Conflicting native proof object identity')
             refs[ref['key']] = ref
     if any(e['path'].startswith('held5-council-approved-detail/') for e in lock['entries']):
-        from ingestion.fiscal.held5_council_provider import evidence_objects
+        evidence_objects = _ingestion_module('ingestion.fiscal.jurisdictions.132195.layouts.held5_council_provider').evidence_objects
         for ref in evidence_objects():
             if ref['key'] in refs and refs[ref['key']] != ref:
                 raise ValueError('Conflicting held5 proof object identity')
             refs[ref['key']] = ref
     if any(e['path'].startswith('akishima-settlement2024/') for e in lock['entries']):
-        from ingestion.fiscal.extract_akishima_settlement2024 import evidence_objects
+        evidence_objects = _ingestion_module('ingestion.fiscal.jurisdictions.132071.layouts.extract_akishima_settlement2024').evidence_objects
         for ref in evidence_objects():
             if ref['key'] in refs and refs[ref['key']] != ref:
                 raise ValueError('Conflicting settlement2024 proof object identity')
             refs[ref['key']] = ref
     if any(e['path'].startswith('akishima-settlement2020-2023/') for e in lock['entries']):
-        from ingestion.fiscal.extract_akishima_settlement2020_2023 import evidence_objects
+        evidence_objects = _ingestion_module('ingestion.fiscal.jurisdictions.132071.layouts.extract_akishima_settlement2020_2023').evidence_objects
         for ref in evidence_objects():
             if ref['key'] in refs and refs[ref['key']] != ref:
                 raise ValueError('Conflicting settlement2020-2023 proof object identity')
             refs[ref['key']] = ref
     if any(e['path'].startswith('akishima-supplementary2020-2025/') for e in lock['entries']):
-        from ingestion.fiscal.akishima_supplementary_fy2025_01.evidence import evidence_objects
+        evidence_objects = _ingestion_module('ingestion.fiscal.jurisdictions.132071.layouts.akishima_supplementary_fy2025_01.evidence').evidence_objects
         for ref in evidence_objects():
             if ref['key'] in refs and refs[ref['key']] != ref:
                 raise ValueError('Conflicting supplementary FY2025 No.1 evidence identity')
             refs[ref['key']] = ref
     if any(e['path'].startswith('chiyoda2025-native/') for e in lock['entries']):
-        from ingestion.fiscal.chiyoda2025_native.registration import evidence_objects
+        evidence_objects = _ingestion_module('ingestion.fiscal.jurisdictions.131016.layouts.chiyoda2025_native.registration').evidence_objects
         for ref in evidence_objects():
             if ref['key'] in refs and refs[ref['key']] != ref:
                 raise ValueError('Conflicting chiyoda2025 proof object identity')
             refs[ref['key']] = ref
     if any(e['path'].startswith('akishima-settlement2019/') for e in lock['entries']):
-        from ingestion.fiscal.extract_akishima_settlement2019 import evidence_objects
+        evidence_objects = _ingestion_module('ingestion.fiscal.jurisdictions.132071.layouts.extract_akishima_settlement2019').evidence_objects
         for ref in evidence_objects():
             key = safe_relative(ref['key'])
             if (key not in {f"inputs/{kind}/sha256/{ref['sha256']}" for kind in ('origin', 'proof')}
@@ -383,15 +383,15 @@ def locked_objects(lock: dict) -> dict:
                 raise ValueError('Conflicting settlement2019 proof object identity')
             refs[key] = ref
     if any(e['path'].startswith('chiyoda2021-settlement-native/') for e in lock['entries']):
-        from ingestion.fiscal.chiyoda2021_settlement_native.registration import evidence_objects
+        evidence_objects = _ingestion_module('ingestion.fiscal.jurisdictions.131016.layouts.chiyoda2021_settlement_native.registration').evidence_objects
         for ref in evidence_objects():
             if ref['key'] in refs and refs[ref['key']] != ref:
                 raise ValueError('Conflicting chiyoda2021 settlement proof object identity')
             refs[ref['key']] = ref
 
     if any(e['path'].startswith('tama-ordinary-history/') for e in lock['entries']):
-        from ingestion.fiscal.tama_ordinary_history.reconstruct import evidence_objects
-        from ingestion.fiscal.tama_ordinary_history.contracts import merge_evidence_refs
+        evidence_objects = _ingestion_module('ingestion.fiscal.jurisdictions.132241.layouts.tama_ordinary_history.reconstruct').evidence_objects
+        merge_evidence_refs = _ingestion_module('ingestion.fiscal.jurisdictions.132241.layouts.tama_ordinary_history.contracts').merge_evidence_refs
         refs=merge_evidence_refs(refs,evidence_objects())
     return refs
 
@@ -438,6 +438,8 @@ def restore_backup(lock_path: Path, archive_path: Path) -> Path:
 
 
 def migrate(raw: Path, *, remote: bool = False) -> Path:
+    if remote:
+        raise ValueError('Legacy remote adoption is retired; use ingestion.fiscal.run with a schema-validated manifest')
     raw = raw.resolve()
     draft = CACHE / 'migration/sources.lock.json'
     entries = []
@@ -463,15 +465,6 @@ def migrate(raw: Path, *, remote: bool = False) -> Path:
     draft.parent.mkdir(parents=True, exist_ok=True)
     draft.write_bytes(encode(lock))
     read_lock(draft)
-    if remote:
-        if LOCK.exists() and {e['path'] for e in read_lock(LOCK)['entries']} - selected:
-            raise ValueError('Cannot omit adopted inputs when pinning a replacement snapshot')
-        for ref in locked_objects(lock).values():
-            remote_object(ref, 'put')
-            remote_object(ref, 'get')
-            verify_object(ref, (OBJECTS / ref['key']).read_bytes())
-        pin_snapshot(draft, LOCK)
-        return LOCK
     return draft
 
 

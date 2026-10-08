@@ -1,0 +1,413 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132195",
+    "fiscal_year": 2024,
+    "document_kind": "supplementary",
+    "amendment_number": 4
+  },
+  "direction": "expenditure",
+  "candidate_id": "representative",
+  "status": "ready",
+  "conversions": [
+    {
+      "id": "council-approved-detail-6051c730b019f4b2",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "bf11f93d2618d53a3c6e4d118a04ee094ab9c8c5a0434892019dec3e09e8b3fe",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  1,
+                  5
+                ],
+                [
+                  7,
+                  11
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "council-approved-detail-6051c730b019f4b2",
+            "bytes": 23532,
+            "key": "inputs/table/sha256/fe6153f92813cf8036d8bbb53ccf4d4ebaa783994d38f52d9db6d6799c15ef31",
+            "sha256": "fe6153f92813cf8036d8bbb53ccf4d4ebaa783994d38f52d9db6d6799c15ef31"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "council-approved-detail-6051c730b019f4b2",
+          "legacy_path": "council-approved-detail/jurisdiction=132195/year=2024/document_kind=supplementary/edition=bf11f93d2618d53a3c6e4d118a04ee094ab9c8c5a0434892019dec3e09e8b3fe/direction=expenditure/table=supplementary-expenditure-project-setsu-council-original-general-4",
+          "declaration": {
+            "amendment_number": 4,
+            "approval_date": "2024-11-25",
+            "approval_evidence": [
+              {
+                "bytes": 54789,
+                "inspected_at": "2026-10-04T09:23:03.610279+00:00",
+                "location": {
+                  "physical_pdf_page": 1,
+                  "table_row": "first resolution row below column header"
+                },
+                "object_key": "inputs/origin/sha256/75e87908b58ba522c02203215c445abbd9b5236750c3f20213527ae2b3eafc3d",
+                "observed_text": "         令和６年第４回定例会議案、陳情等審査結果一覧\n 事件の番号        件           名      議決月日 結         果\n            令和６年度狛江市一般会計補正予算\n報 告 第 ４ 号 （第４号）の専決処分の承認を求める      11 月 25 日 承    認\n            ことについて\n            令和６年度狛江市一般会計補正予算\n議 案第 46 号                        11 月 25 日 原 案 可 決",
+                "sha256": "75e87908b58ba522c02203215c445abbd9b5236750c3f20213527ae2b3eafc3d",
+                "url": "https://www.city.komae.tokyo.jp/index.cfm/49,145713,c,html/145713/20260817-154608.pdf"
+              }
+            ],
+            "approval_proof": {
+              "account": "一般会計",
+              "amendment_number": 4,
+              "executive_disposition_date": "2024-10-08",
+              "fiscal_year": 2024,
+              "original_identity_evidence": [
+                {
+                  "bytes": 349845,
+                  "inspected_at": "2026-10-04T09:22:10.894298+00:00",
+                  "location": {
+                    "physical_pdf_page": 1
+                  },
+                  "object_key": "inputs/origin/sha256/bf11f93d2618d53a3c6e4d118a04ee094ab9c8c5a0434892019dec3e09e8b3fe",
+                  "observed_text": "令 和 ６ 年 度\n\n\n\n\n狛 江 市 一 般 会 計 補 正 予 算 (第４号)",
+                  "sha256": "bf11f93d2618d53a3c6e4d118a04ee094ab9c8c5a0434892019dec3e09e8b3fe",
+                  "url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,c,html/132059/20241015-100944.pdf"
+                },
+                {
+                  "bytes": 5382317,
+                  "inspected_at": "2026-10-04T09:22:10.905987+00:00",
+                  "location": {
+                    "physical_pdf_page": 4
+                  },
+                  "object_key": "inputs/origin/sha256/4e23f93f7ade7e69186164c08c96816bb057f39b408e894eb038d7e3ea12e76d",
+                  "observed_text": "報告第 ４ 号\n\n\n   令和６年度狛江市一般会計補正予算（第４号）の専決処分の承認を求めることについて\n\n\n 地方自治法（昭和22年法律第67号）第179条第１項の規定により、令和６年10月８日に次のとおり専決処分したので、同条第３項の規\n定により、これを報告し、承認を求める。\n\n\n   令和６年11月25日\n\n\n                                                 報告者   狛江市長   松原   俊雄\n\n\n                           専   決   処     分   書\n\n\n 特に緊急を要するため議会を招集する時間的余裕がないことが明らかであると認めたので、地方自治法第179条第１項の規定により、\n令和６年度狛江市一般会計補正予算（第４号）を別紙のとおり専決処分する。\n\n\n   令和６年10月８日\n\n\n\n\n                                   -4-",
+                  "sha256": "4e23f93f7ade7e69186164c08c96816bb057f39b408e894eb038d7e3ea12e76d",
+                  "url": "https://www.city.komae.tokyo.jp/index.cfm/46,132125,c,html/132125/20241127-085959.pdf"
+                },
+                {
+                  "bytes": 5382317,
+                  "inspected_at": "2026-10-04T09:22:10.905987+00:00",
+                  "location": {
+                    "physical_pdf_page": 5
+                  },
+                  "object_key": "inputs/origin/sha256/4e23f93f7ade7e69186164c08c96816bb057f39b408e894eb038d7e3ea12e76d",
+                  "observed_text": "報 告 第 ４ 号 別 紙\n\n\n\n\n                 令   和   ６     年   度\n\n\n\n\n 狛   江   市   一   般   会   計     補   正   予   算 (第４号)\n\n\n\n\n                         -5-",
+                  "sha256": "4e23f93f7ade7e69186164c08c96816bb057f39b408e894eb038d7e3ea12e76d",
+                  "url": "https://www.city.komae.tokyo.jp/index.cfm/46,132125,c,html/132125/20241127-085959.pdf"
+                }
+              ],
+              "resolution_date": "2024-11-25",
+              "resolution_evidence": [
+                {
+                  "bytes": 54789,
+                  "inspected_at": "2026-10-04T09:23:03.610279+00:00",
+                  "location": {
+                    "physical_pdf_page": 1,
+                    "table_row": "first resolution row below column header"
+                  },
+                  "object_key": "inputs/origin/sha256/75e87908b58ba522c02203215c445abbd9b5236750c3f20213527ae2b3eafc3d",
+                  "observed_text": "         令和６年第４回定例会議案、陳情等審査結果一覧\n 事件の番号        件           名      議決月日 結         果\n            令和６年度狛江市一般会計補正予算\n報 告 第 ４ 号 （第４号）の専決処分の承認を求める      11 月 25 日 承    認\n            ことについて\n            令和６年度狛江市一般会計補正予算\n議 案第 46 号                        11 月 25 日 原 案 可 決",
+                  "sha256": "75e87908b58ba522c02203215c445abbd9b5236750c3f20213527ae2b3eafc3d",
+                  "url": "https://www.city.komae.tokyo.jp/index.cfm/49,145713,c,html/145713/20260817-154608.pdf"
+                }
+              ],
+              "resolution_id": "報告第4号"
+            },
+            "baseline_status": "unconfirmed",
+            "council_resolution_date": "2024-11-25",
+            "document_title": "2024年度 狛江市一般会計補正予算第4号（番号付き議会承認原典）",
+            "effective_at": "2024-10-08",
+            "effective_at_basis": "printed-executive-disposition-date",
+            "effective_date": "2024-10-08",
+            "effective_date_basis": "printed-executive-disposition-date",
+            "executive_disposition_date": "2024-10-08",
+            "extractor": "extract_komae_council_approved_detail.py@2",
+            "first_article_evidence": {
+              "amount_delta": 38134,
+              "bbox_json": "[160.56, 183.21972, 663.2439856428571, 195.21972]",
+              "page_number": 2,
+              "printed_text": "第1条歳入歳出予算の総額に、歳入歳出それぞれ38,134千円を追加"
+            },
+            "fund_label": "一般会計",
+            "grain": "printed project × expenditure setsu × department occurrence; explicit blank-code reserve exception",
+            "nonadditive_with": [
+              "expenditure-moku-changes-all",
+              "expenditure-detail"
+            ],
+            "observation_role": "authoritative-council-supplementary-detail",
+            "original_cover_approval_status": "unconfirmed",
+            "pages": [
+              1,
+              11
+            ],
+            "printed_submission_date": "2024-10-08",
+            "raw_form": "extracted",
+            "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,132059,c,html/132059/20241015-100944.pdf",
+            "resource_name": "2024年度 狛江市一般会計補正予算第4号（番号付き議会承認原典）",
+            "source_amount_unit": "千円",
+            "source_key": "council-approved-detail:132195:2024:general:4",
+            "source_page_range": [
+              1,
+              11
+            ],
+            "table_id": "supplementary-expenditure-project-setsu-council-original-general-4",
+            "totals": {
+              "all_moku_sum": 38134,
+              "explanation_setsu_sum": 38134,
+              "first_article": 38134,
+              "left_setsu_sum": 38134,
+              "printed_project_sum": 38134
+            },
+            "unit_multiplier": 1000
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "council-approved-detail-6051c730b019f4b2",
+      "conversion_id": "council-approved-detail-6051c730b019f4b2",
+      "input_fingerprint": "d19e2a7dce6e4c47faaa382f1f2b49eef1a45f549c554649e47ccb8625ef9844",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132195/2024/supplementary-4/expenditure/council-approved-detail-6051c730b019f4b2.parquet",
+        "sha256": "fe6153f92813cf8036d8bbb53ccf4d4ebaa783994d38f52d9db6d6799c15ef31",
+        "bytes": 23532
+      },
+      "row_count": 9,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "fund_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amendment_number",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_fetched_at",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "submitted_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "edition_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_moku_source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "control_moku_key",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_moku_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "project_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_printed_delta",
+          "type": "BIGINT"
+        },
+        {
+          "name": "project_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "department_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_delta",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_amount_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "page_number",
+          "type": "BIGINT"
+        },
+        {
+          "name": "bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_locations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "left_setsu_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "validation_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "validation_reasons_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observed_grain_validation_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_correspondence_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "council_resolution_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_submission_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executive_disposition_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "effective_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "effective_date_basis",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "resolution_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "original_cover_approval_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_proof_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_name_match_basis",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "bf11f93d2618d53a3c6e4d118a04ee094ab9c8c5a0434892019dec3e09e8b3fe",
+          "bytes": 349845
+        }
+      ]
+    }
+  ]
+}

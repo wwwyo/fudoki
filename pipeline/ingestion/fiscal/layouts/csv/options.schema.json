@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "encoding": {
+      "type": "string",
+      "minLength": 1
+    },
+    "delimiter": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1
+    },
+    "quotechar": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1
+    },
+    "table_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,95}$"
+    },
+    "line_start_column": {
+      "type": "string",
+      "minLength": 1
+    },
+    "line_end_column": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "encoding",
+    "table_id"
+  ]
+}

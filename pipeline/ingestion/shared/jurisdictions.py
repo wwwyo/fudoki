@@ -4,7 +4,7 @@
 財政データの取得は Python（`pipeline/ingestion/fiscal/*`）、報告の生成は TypeScript なので、
 同じ事実を各言語で再宣言せず、`packages/jurisdictions/jurisdictions.json` から引く。
 
-⚠️ 以前は `pipeline/ingestion/fiscal/sources.toml` が `jurisdiction_name` を団体×年度ごとに
+⚠️ 以前は `pipeline/ingestion/fiscal/management/sources.toml` が `jurisdiction_name` を団体×年度ごとに
 反復宣言しており（狛江市だけで6回）、`jurisdictions.json` と突き合わせる経路が無かった。
 sources.toml に誤記があっても検知されず、配布物の `jurisdiction_label` へそのまま出ていた。
 """

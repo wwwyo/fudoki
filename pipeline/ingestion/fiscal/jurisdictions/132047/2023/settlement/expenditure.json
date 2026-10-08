@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132047",
+    "fiscal_year": 2023,
+    "document_kind": "settlement"
+  },
+  "direction": "expenditure",
+  "candidate_id": "representative",
+  "status": "ready",
+  "conversions": [
+    {
+      "id": "raw-2ae43f999552d835",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "885e5dc30b77cb9ef8acd2b05ac99248a8f40f593d2bf191c3286dbca0a6e4b2",
+          "format": "csv",
+          "scope": [
+            {
+              "account": "一般会計"
+            },
+            {
+              "account": "介護サービス事業特別会計"
+            },
+            {
+              "account": "介護保険事業特別会計"
+            },
+            {
+              "account": "国民健康保険事業特別会計"
+            },
+            {
+              "account": "後期高齢者医療特別会計"
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "raw-2ae43f999552d835",
+            "bytes": 186574,
+            "key": "inputs/table/sha256/04c3911f705a557cbe5189c28e60c10f567478f63bd2fb0d39a4e7495838497b",
+            "sha256": "04c3911f705a557cbe5189c28e60c10f567478f63bd2fb0d39a4e7495838497b"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "raw-2ae43f999552d835",
+          "legacy_path": "jurisdiction=132047/year=2023/document_kind=settlement/edition=885e5dc30b77cb9ef8acd2b05ac99248a8f40f593d2bf191c3286dbca0a6e4b2/direction=expenditure",
+          "declaration": {
+            "attribution": "三鷹市「2023年度決算データ」",
+            "csv_layout": {
+              "header_record": "01会計,02款,03項,04目,05事項,06節,07細々節,08決算額\r\n",
+              "record_column": "source_record",
+              "trailing_records": ""
+            },
+            "dataset_title": null,
+            "encoding": "cp932",
+            "fiscal_year_basis": "sources.toml が宣言した URL（カタログに登録が無い）。リソース名「令和5年度決算データ（歳出）※下水道事業会計除く」は取得元ページのリンクテキストを人が写したもので、取得時には照合していない（宣言どうしの自己参照になるため）。根拠は resource_url_basis にある",
+            "license_id": "CC-BY-4.0",
+            "raw_form": "verbatim",
+            "request_url": "https://www.city.mitaka.lg.jp/c_service/098/attached/attach_98680_6.csv",
+            "resource_name": "令和5年度決算データ（歳出）※下水道事業会計除く",
+            "resource_url_basis": "公式公開ページ https://www.city.mitaka.lg.jp/c_service/098/098680.html の年度付きリンクを2026-10-04確認し、実際のバイト列・列構成を検査した。現行ページと旧年度のarchiveを同じ公式入口で固定するため直URLを採用する。年度列は原典に無く、年度の根拠は公式リンクテキスト。",
+            "resource_url_declared": true
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "raw-2ae43f999552d835",
+      "conversion_id": "raw-2ae43f999552d835",
+      "input_fingerprint": "95ee1e9d03509f8bbc3f6eb1d4c60c975c3e8c1ae025adea37473ca929b6c6a5",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132047/2023/settlement/expenditure/raw-2ae43f999552d835.parquet",
+        "sha256": "04c3911f705a557cbe5189c28e60c10f567478f63bd2fb0d39a4e7495838497b",
+        "bytes": 186574
+      },
+      "row_count": 5250,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "01会計",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "02款",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "03項",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "04目",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "05事項",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "06節",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "07細々節",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "08決算額",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_record",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "885e5dc30b77cb9ef8acd2b05ac99248a8f40f593d2bf191c3286dbca0a6e4b2",
+          "bytes": 584863
+        }
+      ]
+    }
+  ]
+}

@@ -6,4 +6,4 @@ select h.dataset_id, h.jurisdiction_code, cast(h.fiscal_year as integer) as fisc
        '[]'::varchar as phases_json,
        h.source_json, h.structure_json, h.line_count
 from read_json_auto('{{ env_var("FUDOKI_DECLARATIONS_DIR") }}/history.json') h
-where json_extract_string(h.source_json, '$.provider') = 'ingestion.fiscal.komae_recovered_provider'
+where json_extract_string(h.source_json, '$.provider') = 'ingestion.fiscal.jurisdictions.132195.layouts.komae_recovered_provider'

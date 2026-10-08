@@ -2,7 +2,7 @@
 
 ## 完了した移行
 
-- 原典台帳は `pipeline/ingestion/fiscal/sources.json`、構造は `sources.schema.json`。収録範囲は台帳と固定入力・現在の提供データから生成する報告で扱う。
+- 原典台帳は `pipeline/ingestion/fiscal/management/sources.json`、構造は `sources.schema.json`。収録範囲は台帳と固定入力・現在の提供データから生成する報告で扱う。
 - 旧共通TOMLの41ブロックを169原典・182取り込み宣言へ移した。CSV78、事項別明細47、補正42、決算PDF6、名称補助各4、履歴1。原典候補1,050件を自動取得対象にはしない。
 - 原典URL・掲載先は台帳から参照する。CKAN経由の既存解決条件と処理順、履歴の議決資料、抽出器の設定を保持した。
 - `sources:plan --json` と報告画面が台帳を読む。計画CLIは取得・OCR・固定入力の変更を実行しない。

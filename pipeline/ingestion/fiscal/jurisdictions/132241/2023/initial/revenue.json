@@ -1,0 +1,282 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132241",
+    "fiscal_year": 2023,
+    "document_kind": "initial"
+  },
+  "direction": "revenue",
+  "candidate_id": "representative",
+  "status": "ready",
+  "conversions": [
+    {
+      "id": "raw-4fcc766d1754b23a",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "60b60504fb0297c2b50f4b12b4b0e9bfb6d289ab0abf2724a51ec3a254c6d098",
+          "format": "csv",
+          "scope": [
+            {
+              "account": "介護保険特別会計"
+            },
+            {
+              "account": "国民健康保険特別会計"
+            },
+            {
+              "account": "後期高齢者医療特別会計"
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "raw-4fcc766d1754b23a",
+            "bytes": 11016,
+            "key": "inputs/table/sha256/8aaaeb4a08ea075c4155b820158ddf7e48656ecc92e575e5741e55742c0fe73f",
+            "sha256": "8aaaeb4a08ea075c4155b820158ddf7e48656ecc92e575e5741e55742c0fe73f"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "raw-4fcc766d1754b23a",
+          "legacy_path": "jurisdiction=132241/year=2023/document_kind=budget/edition=60b60504fb0297c2b50f4b12b4b0e9bfb6d289ab0abf2724a51ec3a254c6d098/direction=revenue",
+          "declaration": {
+            "attribution": "多摩市「令和5年度一般会計歳出・歳入（当初予算）」（多摩市「予算・決算についての資料」）",
+            "csv_layout": {
+              "header_record": "年度,会計名称,款,款名称,項,項名称,目,目名称,節,節名称,細節,細節名称,予算額\r\n",
+              "record_column": "source_record",
+              "trailing_records": ""
+            },
+            "dataset_title": null,
+            "encoding": "cp932",
+            "fiscal_year_basis": "sources.toml が宣言した URL（カタログに登録が無い）。リソース名「令和5年度特別会計歳入（当初予算）（下水道事業会計除く）」は取得元ページのリンクテキストを人が写したもので、取得時には照合していない（宣言どうしの自己参照になるため）。根拠は resource_url_basis にある",
+            "license_id": "CC-BY-4.0",
+            "raw_form": "verbatim",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r5tokubetukaikeisainyuu.csv",
+            "resource_name": "令和5年度特別会計歳入（当初予算）（下水道事業会計除く）",
+            "resource_url_basis": "公式公開ページの2023年度の特別会計リンクを2026-10-04確認。一般会計と別ファイルのため実際の公開URLを固定し、原典の年度列・会計名称・金額を検査した。下水道事業会計は対象外。",
+            "resource_url_declared": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "raw-962f0d0cd7735a4a",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "9df4468f195127ebb5f578b90e0cc1606d277ad6fad03cc5f677f806156be219",
+          "format": "csv",
+          "scope": [
+            {
+              "account": "一般会計"
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "raw-962f0d0cd7735a4a",
+            "bytes": 18244,
+            "key": "inputs/table/sha256/066a989939792918a2ea993b4b5d18ea3aadcc3964541464beec0f21d3c70404",
+            "sha256": "066a989939792918a2ea993b4b5d18ea3aadcc3964541464beec0f21d3c70404"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "raw-962f0d0cd7735a4a",
+          "legacy_path": "jurisdiction=132241/year=2023/document_kind=budget/edition=9df4468f195127ebb5f578b90e0cc1606d277ad6fad03cc5f677f806156be219/direction=revenue",
+          "declaration": {
+            "attribution": "多摩市「令和5年度一般会計歳出・歳入（当初予算）」（多摩市「予算・決算についての資料」）",
+            "dataset_title": null,
+            "encoding": "cp932",
+            "fiscal_year_basis": "sources.toml が宣言した URL（カタログに登録が無い）。リソース名「令和5年度一般会計歳入（当初予算）」は取得元ページのリンクテキストを人が写したもので、取得時には照合していない（宣言どうしの自己参照になるため）。根拠は resource_url_basis にある",
+            "license_id": "CC-BY-4.0",
+            "raw_form": "verbatim",
+            "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r5ippannkaikeisainyuu.csv",
+            "resource_name": "令和5年度一般会計歳入（当初予算）",
+            "resource_url_basis": "カタログのリソース登録が令和4年度で止まっており、データセット名とリソース名から解決できない。原典は市の「予算・決算についての資料」ページに同じ書式で置かれている（landing_page）。⚠️ **年度の裏づけはそのページの見出し（「令和N年度予算についての資料」）とリンクテキスト（`resource_name` と同じ文字列）で、これは人が読んだもの** — 直 URL では取得時のリソース名照合が自己参照になるので、機械は年度を照合していない",
+            "resource_url_declared": true
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "raw-4fcc766d1754b23a",
+      "conversion_id": "raw-4fcc766d1754b23a",
+      "input_fingerprint": "f32679622632354be451100de917e9781fc48a46d8b7b494d120182ca8bc0db0",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2023/initial/revenue/raw-4fcc766d1754b23a.parquet",
+        "sha256": "8aaaeb4a08ea075c4155b820158ddf7e48656ecc92e575e5741e55742c0fe73f",
+        "bytes": 11016
+      },
+      "row_count": 98,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "年度",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "会計名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "細節",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "細節名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "予算額",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_record",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "60b60504fb0297c2b50f4b12b4b0e9bfb6d289ab0abf2724a51ec3a254c6d098",
+          "bytes": 11676
+        }
+      ]
+    },
+    {
+      "table_id": "raw-962f0d0cd7735a4a",
+      "conversion_id": "raw-962f0d0cd7735a4a",
+      "input_fingerprint": "8bb10ed1a1d73af0b0c2ecc4da271f4ef065e32dac15c454882c48e810bcc60d",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132241/2023/initial/revenue/raw-962f0d0cd7735a4a.parquet",
+        "sha256": "066a989939792918a2ea993b4b5d18ea3aadcc3964541464beec0f21d3c70404",
+        "bytes": 18244
+      },
+      "row_count": 469,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "年度",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "会計名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "款名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "項名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "目名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "節名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "細節",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "細節名称",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "予算額",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "9df4468f195127ebb5f578b90e0cc1606d277ad6fad03cc5f677f806156be219",
+          "bytes": 50176
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,391 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132195",
+    "fiscal_year": 2021,
+    "document_kind": "supplementary",
+    "amendment_number": 11
+  },
+  "direction": "expenditure",
+  "candidate_id": "representative",
+  "status": "ready",
+  "conversions": [
+    {
+      "id": "held5-council-approved-detail-13853b845bb6b462",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "options_schema": "fiscal/layouts/retained/options.schema.json",
+      "dependencies": [],
+      "inputs": [
+        {
+          "sha256": "93de78d2f7c6c047ee802f785945c06acba8ef8b692e97755d35ce554d494558",
+          "format": "pdf",
+          "scope": [
+            {
+              "account": "一般会計",
+              "pages": [
+                [
+                  4,
+                  28
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "held5-council-approved-detail-13853b845bb6b462",
+            "bytes": 51627,
+            "key": "inputs/table/sha256/55b193f30fd201a1cf974b10519a5e95db59c94d06eef0afa9b6fa16fd0515a3",
+            "sha256": "55b193f30fd201a1cf974b10519a5e95db59c94d06eef0afa9b6fa16fd0515a3"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "held5-council-approved-detail-13853b845bb6b462",
+          "legacy_path": "held5-council-approved-detail/jurisdiction=132195/year=2021/document_kind=supplementary/edition=93de78d2f7c6c047ee802f785945c06acba8ef8b692e97755d35ce554d494558/direction=expenditure/table=supplementary-expenditure-project-setsu-held5-council-original-general-11",
+          "declaration": {
+            "amendment_number": 11,
+            "approval_date": "2022-02-24",
+            "approval_evidence": [
+              {
+                "inspected_at": "2026-10-04T09:26:47.252476+00:00",
+                "local_path": "/Users/yuito_watanabe/orca/workspaces/fudoki/pilchard/.agent/komae-approval-research/objects/ff67c9c2a209686f3f45fb75aa56e94b3e5eeba3a1d73532045ef688bcef74f9.html",
+                "location": {
+                  "css_selector": "li.voice-block[data-voice_code=\"240\"] p.voice__text",
+                  "voice_code": 240
+                },
+                "object_path": "objects/ff67c9c2a209686f3f45fb75aa56e94b3e5eeba3a1d73532045ef688bcef74f9.html",
+                "observed_text": "◯　議　長（谷田部　一之議員）　挙手全員と認めます。よって議案第１号は原案のとおり可決されました。\n　　───────────　─　────────────　─　───────────",
+                "sha256": "ff67c9c2a209686f3f45fb75aa56e94b3e5eeba3a1d73532045ef688bcef74f9",
+                "url": "https://www.city.komae.tokyo.dbsr.jp/100000?Template=document&QueryType=new&VoiceExpand1=r04-0224_036"
+              }
+            ],
+            "approval_proof": {
+              "account": "一般会計",
+              "amendment_number": 11,
+              "fiscal_year": 2021,
+              "original_identity_evidence": [
+                {
+                  "inspected_at": "2026-10-04T09:24:11.827370+00:00",
+                  "local_path": "/Users/yuito_watanabe/orca/workspaces/fudoki/pilchard/.agent/komae-approval-research/objects/93de78d2f7c6c047ee802f785945c06acba8ef8b692e97755d35ce554d494558.pdf",
+                  "location": {
+                    "physical_pdf_page": 4
+                  },
+                  "object_path": "objects/93de78d2f7c6c047ee802f785945c06acba8ef8b692e97755d35ce554d494558.pdf",
+                  "observed_text": "議案第 １ 号\n\n\n   令和３年度狛江市一般会計補正予算（第11号）\n\n\n 上記の議案を別紙のとおり提出する。\n\n\n   令和４年２月24日\n\n\n                                  提出者   狛江市長   松原   俊雄\n\n\n\n\n提案理由\n 一般会計予算を補正する必要が生じたため。\n\n\n\n\n                            -4-",
+                  "sha256": "93de78d2f7c6c047ee802f785945c06acba8ef8b692e97755d35ce554d494558",
+                  "url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,c,html/121266/R4-1st.pdf"
+                }
+              ],
+              "resolution_date": "2022-02-24",
+              "resolution_evidence": [
+                {
+                  "inspected_at": "2026-10-04T09:26:47.252476+00:00",
+                  "local_path": "/Users/yuito_watanabe/orca/workspaces/fudoki/pilchard/.agent/komae-approval-research/objects/ff67c9c2a209686f3f45fb75aa56e94b3e5eeba3a1d73532045ef688bcef74f9.html",
+                  "location": {
+                    "css_selector": "li.voice-block[data-voice_code=\"240\"] p.voice__text",
+                    "voice_code": 240
+                  },
+                  "object_path": "objects/ff67c9c2a209686f3f45fb75aa56e94b3e5eeba3a1d73532045ef688bcef74f9.html",
+                  "observed_text": "◯　議　長（谷田部　一之議員）　挙手全員と認めます。よって議案第１号は原案のとおり可決されました。\n　　───────────　─　────────────　─　───────────",
+                  "sha256": "ff67c9c2a209686f3f45fb75aa56e94b3e5eeba3a1d73532045ef688bcef74f9",
+                  "url": "https://www.city.komae.tokyo.dbsr.jp/100000?Template=document&QueryType=new&VoiceExpand1=r04-0224_036"
+                }
+              ],
+              "resolution_id": "議案第1号"
+            },
+            "baseline_status": "unconfirmed",
+            "council_resolution_date": "2022-02-24",
+            "effective_at": null,
+            "effective_date": null,
+            "effective_date_basis": "unconfirmed-parent-recording-contract",
+            "executive_disposition_date": null,
+            "extractor": "extract_komae_held5_approved_detail.py@1",
+            "first_article_evidence": {
+              "amount_delta": 1319502,
+              "native_page_observation_path": "/Users/yuito_watanabe/orca/workspaces/fudoki/pilchard/.agent/komae-held5-recovery/vision-final/93de78d2f7c6c047ee802f785945c06acba8ef8b692e97755d35ce554d494558/page-6.json",
+              "page_number": 6,
+              "printed_text": "第1条歳入歳出予算の総額に歳入歳出それぞれ1,319、502千円を追加"
+            },
+            "fund_label": "一般会計",
+            "grain": "project × printed setsu; observed reserve NULL exceptions",
+            "namespace": "held5-council-approved-detail",
+            "nonadditive_with": [
+              "expenditure-moku-changes-all",
+              "expenditure-detail"
+            ],
+            "original_cover_approval_status": "unconfirmed",
+            "pages": [
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25
+            ],
+            "printed_submission_date": "2022-02-24",
+            "raw_form": "extracted",
+            "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,c,html/121266/R4-1st.pdf",
+            "source_amount_unit": "千円",
+            "source_key": "held5-council-approved:132195:2021:general:11",
+            "source_page_range": [
+              5,
+              28
+            ],
+            "source_url": "https://www.city.komae.tokyo.jp/index.cfm/46,121266,c,html/121266/R4-1st.pdf",
+            "table_id": "supplementary-expenditure-project-setsu-held5-council-original-general-11",
+            "totals": {
+              "all_moku_sum": 1319502,
+              "explanation_setsu_sum": 1319502,
+              "first_article": 1319502,
+              "left_setsu_sum": 1319502,
+              "printed_project_sum": 1319502
+            },
+            "unit_multiplier": 1000
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "held5-council-approved-detail-13853b845bb6b462",
+      "conversion_id": "held5-council-approved-detail-13853b845bb6b462",
+      "input_fingerprint": "582ce3883ecebf004e22277b2e31da89e568af05c2680bd5c8a5cbc5b1083055",
+      "object": {
+        "bucket": "fudoki-inputs",
+        "key": "fiscal/ingestion/132195/2021/supplementary-11/expenditure/held5-council-approved-detail-13853b845bb6b462.parquet",
+        "sha256": "55b193f30fd201a1cf974b10519a5e95db59c94d06eef0afa9b6fa16fd0515a3",
+        "bytes": 51627
+      },
+      "row_count": 39,
+      "schema": [
+        {
+          "name": "source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "jurisdiction_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "fiscal_year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "fund_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amendment_number",
+          "type": "BIGINT"
+        },
+        {
+          "name": "source_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_sha256",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "origin_fetched_at",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "submitted_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "edition_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kan_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "kou_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "moku_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_moku_source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "control_moku_key",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "control_moku_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_source_row",
+          "type": "BIGINT"
+        },
+        {
+          "name": "project_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "project_printed_delta",
+          "type": "BIGINT"
+        },
+        {
+          "name": "project_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "department_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_label",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "amount_delta",
+          "type": "BIGINT"
+        },
+        {
+          "name": "printed_amount_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_amount_unit",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "page_number",
+          "type": "BIGINT"
+        },
+        {
+          "name": "bbox_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_text",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_locations_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "left_setsu_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "unit_evidence_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "validation_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "validation_reasons_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_grain",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "observed_grain_validation_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_correspondence_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "council_resolution_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "printed_submission_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "executive_disposition_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "effective_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "effective_date_basis",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_url",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "resolution_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "original_cover_approval_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "approval_proof_json",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "setsu_name_match_basis",
+          "type": "VARCHAR"
+        }
+      ],
+      "empty_confirmed": false,
+      "runtime": {
+        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
+        "duckdb": "1.5.5"
+      },
+      "origins": [
+        {
+          "sha256": "93de78d2f7c6c047ee802f785945c06acba8ef8b692e97755d35ce554d494558",
+          "bytes": 12132878
+        }
+      ]
+    }
+  ]
+}

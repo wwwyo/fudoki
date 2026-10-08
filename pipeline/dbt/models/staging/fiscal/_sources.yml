@@ -7,7 +7,7 @@ sources:
   - name: raw_131016
     description: |
       千代田区。**原典は PDF の事項別明細書**（当初予算。2022〜2024・2026年度の一般・特別会計）。
-      ⚠️ ここにあるのは `pipeline/ingestion/fiscal/extract_statement.py` が起こした表で、
+      ⚠️ ここにあるのは `pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py` が起こした表で、
       原文のバイト列ではない（`raw_form = "extracted"`）。復元一致の検査は成立しない。
     meta:
       external_location: "(select * exclude(filename), regexp_extract(filename, '/jurisdiction=([^/]+)', 1) as jurisdiction, cast(regexp_extract(filename, '/year=([^/]+)', 1) as integer) as year, regexp_extract(filename, '/document_kind=([^/]+)', 1) as document_kind, regexp_extract(filename, '/edition=([^/]+)', 1) as edition, regexp_extract(filename, '/direction=([^/]+)', 1) as direction, nullif(regexp_extract(filename, '/table=([^/]+)', 1), '') as \"table\" from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/jurisdiction=131016/year=*/document_kind=*/edition=*/direction={name}/**/data.parquet', hive_partitioning=false, union_by_name=true, filename=true))"
@@ -24,7 +24,7 @@ sources:
   - name: raw_132071
     description: |
       昭島市。**原典は PDF の事項別明細書**（当初予算。2020〜2026年度の確認済み一般・特別会計）。
-      ⚠️ ここにあるのは `pipeline/ingestion/fiscal/extract_statement.py` が起こした表で、
+      ⚠️ ここにあるのは `pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py` が起こした表で、
       原文のバイト列ではない（`raw_form = "extracted"`）。復元一致の検査は成立しない。
       保証の強さは取得物の隣の `provenance.json`（`verification`）に書いてある。
     meta:

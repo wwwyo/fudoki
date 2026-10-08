@@ -30,7 +30,7 @@ bun run pipeline:report
 
 ## 現行の参照先
 
-- 監査実装は `pipeline/ingestion/fiscal/coverage_audit.py` と資料別の `*_coverage.py`、報告生成は `pipeline/verify/report/fiscal/build.ts` を参照する。
+- 監査実装は `pipeline/ingestion/fiscal/management/coverage_audit.py` と資料別の `*_coverage.py`、報告生成は `pipeline/verify/report/fiscal/build.ts` を参照する。
 - 全対象の受入条件は [全年度収録のPRD](../../../../docs/prd/fiscal-coverage/prd.md) を参照する。
 
 ## 既存の収録範囲報告で実測した注意点
