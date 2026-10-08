@@ -58,7 +58,7 @@ def tables(items: list[dict]) -> list[dict]:
                 seen.add(relative)
                 result.append({'manifest': item['manifest'], 'target': document['target'],
                     'direction': document['direction'], 'raw_path': relative,
-                    'table': saved[expected['table_id']], 'declaration': binding['declaration'] if binding else {},
+                    'table': saved[expected['table_id']],
                     'inputs': conversion['inputs']})
     return result
 

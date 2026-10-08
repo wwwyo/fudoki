@@ -13,27 +13,9 @@
     {
       "id": "supplementary-detail-faa4d2cb8197a7c8",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "a5893a0f4071f54f595dd7a3fb9bb131079eff56d6e3bdbe6c92b6d38a13971a",
-          "format": "pdf",
-          "scope": [
-            {
-              "account": "国民健康保険特別会計",
-              "pages": [
-                [
-                  1,
-                  5
-                ],
-                [
-                  7,
-                  7
-                ]
-              ]
-            }
-          ]
+          "sha256": "a5893a0f4071f54f595dd7a3fb9bb131079eff56d6e3bdbe6c92b6d38a13971a"
         }
       ],
       "options": {
@@ -55,27 +37,9 @@
     {
       "id": "council-approved-detail-4c27a432956c16c6",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "dfd86bb3e0e83c6970c31993c95b7634f26e3a20b45c6d1d65a155454d6fcbcb",
-          "format": "pdf",
-          "scope": [
-            {
-              "account": "一般会計",
-              "pages": [
-                [
-                  1,
-                  9
-                ],
-                [
-                  13,
-                  21
-                ]
-              ]
-            }
-          ]
+          "sha256": "dfd86bb3e0e83c6970c31993c95b7634f26e3a20b45c6d1d65a155454d6fcbcb"
         }
       ],
       "options": {
@@ -99,7 +63,7 @@
     {
       "table_id": "supplementary-detail-faa4d2cb8197a7c8",
       "conversion_id": "supplementary-detail-faa4d2cb8197a7c8",
-      "input_fingerprint": "fd1a1ef7a1545e29c917632ed538700d997ff48b1a9e48a148a42861be81b284",
+      "input_fingerprint": "b9f859c3c74ca4806e3b9911d23f7dc5527d1f97328f03be0081893cde353509",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132195/2024/supplementary-2/expenditure/supplementary-detail-faa4d2cb8197a7c8.parquet",
@@ -292,7 +256,7 @@
     {
       "table_id": "council-approved-detail-4c27a432956c16c6",
       "conversion_id": "council-approved-detail-4c27a432956c16c6",
-      "input_fingerprint": "f89e375324b65b9236d72909efe1d8dc09ad3f79c7e5c5bfd0759116960f6857",
+      "input_fingerprint": "8de5aa1beea98bc628bb0dfe41a4c35751cafb4104b6ef813d1bf06d7d18754d",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132195/2024/supplementary-2/expenditure/council-approved-detail-4c27a432956c16c6.parquet",

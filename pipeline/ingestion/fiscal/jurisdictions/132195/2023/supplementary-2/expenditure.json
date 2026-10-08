@@ -13,27 +13,9 @@
     {
       "id": "raw-1e746ca9695f50fa",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "9ebd2323ac32d09336c600108d4f1beb5a06e11034835fe49da07c0e4a356220",
-          "format": "pdf",
-          "scope": [
-            {
-              "account": "一般会計",
-              "pages": [
-                [
-                  1,
-                  5
-                ],
-                [
-                  8,
-                  14
-                ]
-              ]
-            }
-          ]
+          "sha256": "9ebd2323ac32d09336c600108d4f1beb5a06e11034835fe49da07c0e4a356220"
         }
       ],
       "options": {
@@ -55,27 +37,9 @@
     {
       "id": "supplementary-detail-faa4d2cb8197a7c8",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "9ebd2323ac32d09336c600108d4f1beb5a06e11034835fe49da07c0e4a356220",
-          "format": "pdf",
-          "scope": [
-            {
-              "account": "一般会計",
-              "pages": [
-                [
-                  1,
-                  5
-                ],
-                [
-                  8,
-                  14
-                ]
-              ]
-            }
-          ]
+          "sha256": "9ebd2323ac32d09336c600108d4f1beb5a06e11034835fe49da07c0e4a356220"
         }
       ],
       "options": {
@@ -97,27 +61,9 @@
     {
       "id": "supplementary-detail-faa4d2cb8197a7c8-0114bfb23504a27b",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "fd06106317559ea9f26e8aa92990d0574de099975249a8fdeba43da191566df0",
-          "format": "pdf",
-          "scope": [
-            {
-              "account": "後期高齢者医療特別会計",
-              "pages": [
-                [
-                  1,
-                  5
-                ],
-                [
-                  7,
-                  7
-                ]
-              ]
-            }
-          ]
+          "sha256": "fd06106317559ea9f26e8aa92990d0574de099975249a8fdeba43da191566df0"
         }
       ],
       "options": {
@@ -141,7 +87,7 @@
     {
       "table_id": "raw-1e746ca9695f50fa",
       "conversion_id": "raw-1e746ca9695f50fa",
-      "input_fingerprint": "301e88a56f27fa723694be6f17005e882a78f84404554fe73ed0c5a4c88a2312",
+      "input_fingerprint": "e4e4bbd3af04aa01f44cc1b2ebfbff6db38c0ca6f4567e5808f731ceadd8879e",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132195/2023/supplementary-2/expenditure/raw-1e746ca9695f50fa.parquet",
@@ -234,7 +180,7 @@
     {
       "table_id": "supplementary-detail-faa4d2cb8197a7c8",
       "conversion_id": "supplementary-detail-faa4d2cb8197a7c8",
-      "input_fingerprint": "de76e6929fcdfb1bb6ddc1c6e8a8c01a2485b6df0e6b72c3cde17af6c1a89f4c",
+      "input_fingerprint": "db7cd4c1319602c45c751221703c1bc108b17ef6003c1090e0a8735e9751703d",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132195/2023/supplementary-2/expenditure/supplementary-detail-faa4d2cb8197a7c8.parquet",
@@ -427,7 +373,7 @@
     {
       "table_id": "supplementary-detail-faa4d2cb8197a7c8-0114bfb23504a27b",
       "conversion_id": "supplementary-detail-faa4d2cb8197a7c8-0114bfb23504a27b",
-      "input_fingerprint": "0a2437d0dff716f492542c9b642db9177e2b9a5256d656f33a3e187da5de331a",
+      "input_fingerprint": "0d1005ef3dc404a1e3faf265cbe50e171d0c6939170694765459a094740f958a",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132195/2023/supplementary-2/expenditure/supplementary-detail-faa4d2cb8197a7c8-0114bfb23504a27b.parquet",

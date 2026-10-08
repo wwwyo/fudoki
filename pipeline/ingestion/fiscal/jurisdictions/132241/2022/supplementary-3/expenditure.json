@@ -13,32 +13,9 @@
     {
       "id": "tama-supplementary-native-4e52c4978d90abdb",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "b7c983f60d4c4e83f94318d4bd8a8008e092e34dfa9e53688f373280e8d659f0",
-          "format": "pdf",
-          "scope": [
-            {
-              "account": "下水道事業会計",
-              "pages": [
-                [
-                  81,
-                  89
-                ]
-              ]
-            },
-            {
-              "account": "国民健康保険特別会計",
-              "pages": [
-                [
-                  1,
-                  26
-                ]
-              ]
-            }
-          ]
+          "sha256": "b7c983f60d4c4e83f94318d4bd8a8008e092e34dfa9e53688f373280e8d659f0"
         }
       ],
       "options": {
@@ -60,32 +37,9 @@
     {
       "id": "tama-supplementary-native-bd7082dd4a3f5a82",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "b7c983f60d4c4e83f94318d4bd8a8008e092e34dfa9e53688f373280e8d659f0",
-          "format": "pdf",
-          "scope": [
-            {
-              "account": "下水道事業会計",
-              "pages": [
-                [
-                  81,
-                  89
-                ]
-              ]
-            },
-            {
-              "account": "国民健康保険特別会計",
-              "pages": [
-                [
-                  1,
-                  26
-                ]
-              ]
-            }
-          ]
+          "sha256": "b7c983f60d4c4e83f94318d4bd8a8008e092e34dfa9e53688f373280e8d659f0"
         }
       ],
       "options": {
@@ -109,7 +63,7 @@
     {
       "table_id": "tama-supplementary-native-4e52c4978d90abdb",
       "conversion_id": "tama-supplementary-native-4e52c4978d90abdb",
-      "input_fingerprint": "bdd24c14dc78da59ab153944ae8b7af81d970d08986145104b44208e33e81c11",
+      "input_fingerprint": "346ac3b8fdd0ed6d759b00a218a84027b463b2b682694604f4043e7bbca0011b",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2022/supplementary-3/expenditure/tama-supplementary-native-4e52c4978d90abdb.parquet",
@@ -190,7 +144,7 @@
     {
       "table_id": "tama-supplementary-native-bd7082dd4a3f5a82",
       "conversion_id": "tama-supplementary-native-bd7082dd4a3f5a82",
-      "input_fingerprint": "db4d0928fb79dc8dd860ac7df816724612655c13bc29ba230e42990564b36459",
+      "input_fingerprint": "69a35c0c83f4651c8e19a0e41efda70e7b88f8f5536cd98a5c24ff7f7fe742af",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2022/supplementary-3/expenditure/tama-supplementary-native-bd7082dd4a3f5a82.parquet",

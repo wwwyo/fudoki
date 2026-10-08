@@ -13,27 +13,9 @@
     {
       "id": "chiyoda-supplementary-native-9ed82f0f95fb90ac",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "67f1f627dc3fcfb203485de59e88b06acf3f4807a7d85711ad6f745d3cc82b59",
-          "format": "pdf",
-          "scope": [
-            {
-              "account": "一般会計",
-              "pages": [
-                [
-                  11,
-                  11
-                ],
-                [
-                  34,
-                  39
-                ]
-              ]
-            }
-          ]
+          "sha256": "67f1f627dc3fcfb203485de59e88b06acf3f4807a7d85711ad6f745d3cc82b59"
         }
       ],
       "options": {
@@ -57,7 +39,7 @@
     {
       "table_id": "chiyoda-supplementary-native-9ed82f0f95fb90ac",
       "conversion_id": "chiyoda-supplementary-native-9ed82f0f95fb90ac",
-      "input_fingerprint": "40f9669780eeaca39574bfde58568b48911a5c21cd1d2281a94651bada91a4b4",
+      "input_fingerprint": "cde97a9ab3b6c102d335908d269a2a0572da7f22a56ae2cf70f24cf673907dbf",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/131016/2022/supplementary-4/expenditure/chiyoda-supplementary-native-9ed82f0f95fb90ac.parquet",

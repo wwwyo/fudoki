@@ -126,7 +126,7 @@ LLMを使う場合は、このコード・宣言の作成と修正を支援さ�
 
 ## 管理JSONを確認して変換する
 
-1. `pipeline/ingestion/fiscal/jurisdictions/<団体>/<年度>/<資料区分>/<方向>.json` に入力SHA・scope、変換コード・設定、期待する表を定義する。複数原典・複数変換・複数表は同じ対象のJSONへまとめる。
+1. `pipeline/ingestion/fiscal/jurisdictions/<団体>/<年度>/<資料区分>/<方向>.json` に入力SHA、変換コード・設定、期待する表を定義する。形式・会計・ページ範囲はselectionから解決し、自動検出できない追加依存だけ `dependencies` に指定する。複数原典・複数変換・複数表は同じ対象のJSONへまとめる。
 2. `pipeline/` から `bun run ingestion:check --manifest <対象JSON>` を実行する。型・正規配置・選定との対応・表IDの所有者が不正なら修正してから進む。
 3. 原典のSHAからローカルパスへの対応JSONを渡す。原典の復元が必要なら `bun run ingestion:originals --manifest <対象JSON> --output <入力パスJSON> --remote` を使う。
 4. `bun run ingestion:convert --manifest <対象JSON> --inputs <入力パスJSON> --output <新しい候補dir>` を実行する。件数とファイルパスだけをcontextへ返し、表・OCR・検査の詳細はファイルへ保存する。

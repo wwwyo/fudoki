@@ -12,17 +12,9 @@
     {
       "id": "raw-962f0d0cd7735a4a",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "9bf3db1296cc3862e6b9ba26542ea07b0f4b72ccc939c63a3df90fe7a0a176a1",
-          "format": "csv",
-          "scope": [
-            {
-              "account": "一般会計"
-            }
-          ]
+          "sha256": "9bf3db1296cc3862e6b9ba26542ea07b0f4b72ccc939c63a3df90fe7a0a176a1"
         }
       ],
       "options": {
@@ -46,7 +38,7 @@
     {
       "table_id": "raw-962f0d0cd7735a4a",
       "conversion_id": "raw-962f0d0cd7735a4a",
-      "input_fingerprint": "6e22aeaf23fcd54641383877ec8fd748575ca41242f47fd41644606707849a76",
+      "input_fingerprint": "f735758b5132090feaba47fdac2b6d65ea891fd70ebe921f756a019b9a07bcd4",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2025/initial/revenue/raw-962f0d0cd7735a4a.parquet",

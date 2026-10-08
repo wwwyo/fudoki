@@ -12,32 +12,9 @@
     {
       "id": "raw-2ae43f999552d835",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "26b8c3c30920f85f228e3c218a868f2d470951328dbd5f9b2360e162afff27cf",
-          "format": "csv",
-          "scope": [
-            {
-              "account": "一般会計"
-            },
-            {
-              "account": "下水道事業特別会計"
-            },
-            {
-              "account": "介護サービス事業特別会計"
-            },
-            {
-              "account": "介護保険事業特別会計"
-            },
-            {
-              "account": "国民健康保険事業特別会計"
-            },
-            {
-              "account": "後期高齢者医療特別会計"
-            }
-          ]
+          "sha256": "26b8c3c30920f85f228e3c218a868f2d470951328dbd5f9b2360e162afff27cf"
         }
       ],
       "options": {
@@ -61,7 +38,7 @@
     {
       "table_id": "raw-2ae43f999552d835",
       "conversion_id": "raw-2ae43f999552d835",
-      "input_fingerprint": "b3f8bfb9a378ea3688c2a7530fd7876a796d0f971c4c5b65f3932cb0b58181ed",
+      "input_fingerprint": "16ad5696e2d50530fe6e7520b87ea6fb76ef1b2b5cab7943e8a4f2a5233d1dcf",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132047/2014/settlement/revenue/raw-2ae43f999552d835.parquet",

@@ -47,7 +47,7 @@ script はこの package が所有する。実行は `bun run --cwd pipeline <na
 
 **Python の版は 3.13 に固定してある。** dbt-duckdb 1.11.0 が classifiers で 3.14 を宣言していないため（`requires-python` は `>=3.10` なので入りはするが、テストされていない組み合わせになる）。
 
-`inputs` は対象別JSONから保存済みParquetを復元する。`build --declarations <DIR>` はParquetと確定済み `sources.json`・`history.json` を固定してdbt・martsのCSVを生成し、同じ構築IDの再実行ではCSVのハッシュを照合する。Cの再実行は行わない。実装は `build_inputs.py` と `build.ts`。dbt用の配置・意味は `dbt/inputs/` に分離し、`dbt_inputs.py` と `dbt:inputs:check` で検査する。後工程の宣言を取り込みfingerprintへ混ぜない。
+`inputs` は対象別JSONから保存済みParquetを復元する。`build --declarations <DIR>` はParquetと確定済み `sources.json`・`history.json` を固定してdbt・martsのCSVを生成し、同じ構築IDの再実行ではCSVのハッシュを照合する。Cの再実行は行わない。実装は `build_inputs.py` と `build.ts`。dbt用の配置は `dbt/inputs/` に分離し、`dbt_inputs.py` と `dbt:inputs:check` で検査する。後工程の宣言を取り込みfingerprintへ混ぜない。
 
 **系統（lineage）は dbt の `manifest.json` から取る。** 手で書かない。
 段とノードを手作りすると、パイプラインを変えても図が変わらない状態を作る（実際に作った）。

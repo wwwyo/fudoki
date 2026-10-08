@@ -9,40 +9,11 @@
   "tables": [
     {
       "table_id": "raw-4fcc766d1754b23a",
-      "raw_path": "jurisdiction=132241/year=2021/document_kind=budget/edition=84cecb682efb1b4aabf9e6235a512f10481181faee9934414204b90224c21757/direction=expenditure/data.parquet",
-      "declaration": {
-        "attribution": "多摩市「令和3年度一般会計歳出・歳入（当初予算）」（東京都オープンデータカタログサイト）",
-        "csv_layout": {
-          "header_record": "年度,会計名称,款,款名称,項,項名称,目,目名称,細目,細目名称,節,節名称,予算額\r\n",
-          "record_column": "source_record",
-          "trailing_records": ""
-        },
-        "dataset_title": null,
-        "encoding": "cp932",
-        "fiscal_year_basis": "sources.toml が宣言した URL（カタログに登録が無い）。リソース名「令和3年度特別会計歳出（当初予算）」は取得元ページのリンクテキストを人が写したもので、取得時には照合していない（宣言どうしの自己参照になるため）。根拠は resource_url_basis にある",
-        "license_id": "CC-BY-4.0",
-        "raw_form": "verbatim",
-        "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r3saisyututokubetukaikei.csv",
-        "resource_name": "令和3年度特別会計歳出（当初予算）",
-        "resource_url_basis": "公式公開ページの2021年度の特別会計リンクを2026-10-04確認。一般会計と別ファイルのため実際の公開URLを固定し、原典の年度列・会計名称・金額を検査した。下水道事業会計は対象外。",
-        "resource_url_declared": true
-      }
+      "raw_path": "jurisdiction=132241/year=2021/document_kind=budget/edition=84cecb682efb1b4aabf9e6235a512f10481181faee9934414204b90224c21757/direction=expenditure/data.parquet"
     },
     {
       "table_id": "raw-962f0d0cd7735a4a",
-      "raw_path": "jurisdiction=132241/year=2021/document_kind=budget/edition=d1f90d5c0dcc607ddd4582b14b9c96681e5089dfee2664bca05a95ba075d1cf0/direction=expenditure/data.parquet",
-      "declaration": {
-        "attribution": "多摩市「令和3年度一般会計歳出・歳入（当初予算）」（東京都オープンデータカタログサイト）",
-        "dataset_title": "予算・決算についての資料（オープンデータ）",
-        "encoding": "cp932",
-        "fiscal_year_basis": "CKAN のリソース名「令和3年度一般会計歳出（当初予算）」の「令和3年度」から解決",
-        "license_id": "CC-BY-4.0",
-        "raw_form": "verbatim",
-        "request_url": "https://www.city.tama.lg.jp/_res/projects/default_project/_page_/001/004/885/r3saisyutuippannkaikei.csv",
-        "resource_name": "令和3年度一般会計歳出（当初予算）",
-        "resource_url_basis": null,
-        "resource_url_declared": false
-      }
+      "raw_path": "jurisdiction=132241/year=2021/document_kind=budget/edition=d1f90d5c0dcc607ddd4582b14b9c96681e5089dfee2664bca05a95ba075d1cf0/direction=expenditure/data.parquet"
     }
   ]
 }

@@ -64,9 +64,9 @@ pipeline/ingestion/
         2024/settlement/revenue.json
 ```
 
-対象別JSONは原典対象と方向の組ごとに作る。設定用 `config.toml` は必須にしない。JSONの `conversions` に使用する変換コード、入力SHAとscope、書式設定、期待する表をまとめ、`tables` に保存参照を持つ。列型などの検査結果を設定へ混ぜず、保存された表の属性として扱う。
+対象別JSONは原典対象と方向の組ごとに作る。設定用 `config.toml` は必須にしない。JSONの `conversions` に使用する変換コード、入力SHA、書式設定、期待する表をまとめ、`tables` に保存参照を持つ。列型などの検査結果を設定へ混ぜず、保存された表の属性として扱う。
 
-管理形式は `schema_version: 2`。`expected_tables` は表IDだけを持ち、後工程の `declaration`・`definition_files`・`legacy_path` はschemaで拒否する。取り込みfingerprintは原典・変換設定・取り込みコード・実行条件から作り、dbtの宣言やモデルを含めない。
+管理形式は `schema_version: 2`。`expected_tables` は表IDだけを持ち、後工程の `declaration`・`definition_files`・`legacy_path` はschemaで拒否する。`inputs` は原典SHAだけを保持する。形式・会計・ページ範囲はselectionから解決し、抽出をさらに絞る設定は変換器のoptionsに置く。取り込みfingerprintは原典・変換設定・取り込みコード・実行条件から作り、dbtの宣言やモデルを含めない。
 
 F側の入力対応は別に管理する。
 
@@ -76,15 +76,15 @@ pipeline/dbt/inputs/
   <団体>/<年度>/<資料区分>/<方向>.json
 ```
 
-このJSONは対象・方向と表IDをキーに、dbtへ渡す `raw_path` と意味の `declaration` を保持する。表の保存先・SHA・行数・列型は取り込みJSONが所有し、F側には複製しない。旧 `definition_files` は過去の検査定義としてF側の宣言へ移し、取り込みの依存条件にしない。Fのコード依存は構築IDのコードfingerprintで識別する。
+このJSONは対象・方向と表IDをキーに、dbtへ渡す `raw_path` だけを保持する（schema_version 1）。出典・意味は受け取った `sources.json`・`history.json` で扱う。表の保存先・SHA・行数・列型は取り込みJSONが所有し、F側には複製しない。使用していない旧 `declaration`・`definition_files` の複製は残さない。Fのコード依存は構築IDのコードfingerprintで識別する。
 
 書式は年度・会計ごとに増やさない。設定値の違いで対応できる場合は同じコードを使う。別団体で同じ規則を使えることを確認した書式は `fiscal/layouts/` へ置く。団体固有の処理はその団体の `layouts/` に置き、歳入・歳出で規則が異なる場合は別の書式や設定を選ぶ。
 
 ### 構造と対象間の制約を保存前に検査する
 
-管理JSONの正本は [manifest.schema.json](../../../pipeline/ingestion/fiscal/manifest.schema.json)、追加の制約は [manifest.py](../../../pipeline/ingestion/fiscal/manifest.py) である。変換器ごとに同じフォルダの `options.schema.json` で設定を検査する。skillに型の別定義を作らない。
+管理JSONの正本は [manifest.schema.json](../../../pipeline/ingestion/fiscal/manifest.schema.json)、追加の制約は [manifest.py](../../../pipeline/ingestion/fiscal/manifest.py) である。変換器ごとに同じフォルダの `options.schema.json` で設定を検査する。JSONにschemaのパスを重複指定しない。skillに型の別定義を作らない。
 
-JSON Schemaは未知の管理項目、型、識別子の文字、原典の形式を検査する。実行時にはJSONの正規配置、変換IDと表IDの重複、表の所有者、使用するコードの範囲、選定とscopeの一致、R2 key、期待する全表の存在を検査する。`ready` の管理JSONには全表が必要で、0行の表は印字上の空表を明示確認した場合に限る。現在の変換入口は0行を自動採用しない。
+JSON Schemaは未知の管理項目、型、識別子の文字を検査する。実行時にはJSONの正規配置、変換IDと表IDの重複、表の所有者、使用するコードの範囲、原典SHAの選定への所属と方向に対応するscope、R2 key、期待する全表の存在を検査する。`ready` の管理JSONには全表が必要で、0行の表は印字上の空表を明示確認した場合に限る。現在の変換入口は0行を自動採用しない。
 
 一つの変換に複数の原典を渡してよく、複数の変換が同じ原典を使ってもよい。表IDは対象と方向の中で一意にし、同じ表を二つの変換へ所属させない。会計の区別が必要な表IDは安定した会計識別子と役割を含め、列挙順や原典SHAから毎回振り直さない。
 
@@ -120,7 +120,7 @@ fudoki-inputs/
 
 ### fingerprintで入力条件の変更を検知する
 
-fingerprintは、対象・方向・選定候補、使用した原典SHAとscope、変換設定、参照するコード・設定ファイルのハッシュ、実行時のPython・DuckDB等から計算する。同じ原典でもコードや設定が変われば表を古いものと判定する。関連するローカルimportは辿り、動的に読む追加ファイルは `dependencies` で明示する。
+fingerprintは、対象・方向・選定候補、使用した原典SHAとscope、変換設定、参照するコード・設定ファイルのハッシュ、実行時のPython・DuckDB等から計算する。同じ原典でもコードや設定が変われば表を古いものと判定する。関連するローカルimportは辿り、自動検出できない動的な追加ファイルだけ `dependencies` で明示する。追加がなければ項目を省く。
 
 保存後の読み取りでは記録した実行環境でfingerprintを確認する。読み取り側のOSが違うだけでは表を無効にしない。Visionを使う変換ではOSとbuildも実行条件に含む。コードを変えて再実行するときは実際の実行条件を使う。
 

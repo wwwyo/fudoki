@@ -13,23 +13,9 @@
     {
       "id": "komae-supplementary-2020-1-af75c1f705ce75c6",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "55b99cec58e42222cfdd93d59821ab92d25464f23f2fcead40d0e19a3f17492a",
-          "format": "pdf",
-          "scope": [
-            {
-              "account": "一般会計",
-              "pages": [
-                [
-                  1,
-                  7
-                ]
-              ]
-            }
-          ]
+          "sha256": "55b99cec58e42222cfdd93d59821ab92d25464f23f2fcead40d0e19a3f17492a"
         }
       ],
       "options": {
@@ -53,7 +39,7 @@
     {
       "table_id": "komae-supplementary-2020-1-af75c1f705ce75c6",
       "conversion_id": "komae-supplementary-2020-1-af75c1f705ce75c6",
-      "input_fingerprint": "75304b594b6add1891da58d2944afae30b31039dc3f4b51a796831ee20bad765",
+      "input_fingerprint": "555dd88e66e70f1cff9d1f9bc7cbea0d53916ffe98e9b8b25045861a3bbd63c8",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132195/2020/supplementary-1/revenue/komae-supplementary-2020-1-af75c1f705ce75c6.parquet",

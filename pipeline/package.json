@@ -23,7 +23,6 @@
     "test": "bun test artifacts.test.ts source_selection ingestion/selection.test.ts",
     "test:python": "uv run python -m unittest discover -s . -p '*_test.py'",
     "ingestion:schema": "uv run python -m ingestion.fiscal.run schema",
-    "ingestion:split-metadata": "uv run python -m ingestion.fiscal.split_metadata",
     "ingestion:check": "uv run python -m ingestion.fiscal.run check",
     "ingestion:convert": "uv run python -m ingestion.fiscal.run convert",
     "ingestion:restore": "uv run python -m ingestion.fiscal.run restore",

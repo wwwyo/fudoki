@@ -10,51 +10,7 @@
   "tables": [
     {
       "table_id": "supplementary-detail-faa4d2cb8197a7c8",
-      "raw_path": "supplementary-detail/jurisdiction=132195/year=2025/document_kind=supplementary/edition=19aab4991605e645daecf325def3f4f0807694446a1d0331e1d886c8c8aa8fe1/direction=expenditure/resource=supplementary-expenditure-project-setsu/data.parquet",
-      "declaration": {
-        "amendment_number": 3,
-        "approval_date": "2025-08-27",
-        "approval_evidence": {
-          "bbox_json": "[550.56, 534.860097, 727.56, 546.860097]",
-          "page_number": 1,
-          "printed_text": "令和7年8月27日原案可決"
-        },
-        "approval_status": "cover-approved",
-        "baseline_status": "unconfirmed",
-        "edition_status": "published",
-        "effective_at": "2025-08-27",
-        "extractor": "extract_supplementary_expenditure.py@1",
-        "first_article_evidence": {
-          "amount_delta": 1592441,
-          "bbox_json": "[160.56, 182.971263, 696.3431111111112, 194.971263]",
-          "page_number": 2,
-          "printed_text": "第1条歳入歳出予算の総額に、歳入歳出それぞれ1,592,441千円を追加"
-        },
-        "fund_label": "一般会計",
-        "grain": "printed project × expenditure setsu × department occurrence; explicit reserve exceptions",
-        "nonadditive_with": [
-          "expenditure-detail",
-          "expenditure-moku-changes-all"
-        ],
-        "observation_role": "authoritative-supplementary-detail",
-        "pages": [
-          1,
-          29
-        ],
-        "raw_form": "extracted",
-        "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20250827-164335.pdf",
-        "source_amount_unit": "千円",
-        "source_grain": "printed project × expenditure setsu × printed department occurrence; explicit printed reserve exceptions",
-        "source_key": "supplementary-detail:132195:2025:general:3",
-        "table_id": "supplementary-expenditure-project-setsu",
-        "totals": {
-          "all_moku_sum": 1592441,
-          "explanation_setsu_sum": 1592441,
-          "first_article": 1592441,
-          "left_setsu_sum": 1592441,
-          "printed_project_sum": 1592441
-        }
-      }
+      "raw_path": "supplementary-detail/jurisdiction=132195/year=2025/document_kind=supplementary/edition=19aab4991605e645daecf325def3f4f0807694446a1d0331e1d886c8c8aa8fe1/direction=expenditure/resource=supplementary-expenditure-project-setsu/data.parquet"
     }
   ]
 }

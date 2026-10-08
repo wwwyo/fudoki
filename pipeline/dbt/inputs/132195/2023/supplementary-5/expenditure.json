@@ -10,86 +10,11 @@
   "tables": [
     {
       "table_id": "raw-1e746ca9695f50fa",
-      "raw_path": "jurisdiction=132195/year=2023/document_kind=supplementary/edition=adae6ca2a7fd1f6c3c8409d5fe33558f44e431fda13fcc4b9d31578f119c390b/direction=expenditure/resource=expenditure-detail/data.parquet",
-      "declaration": {
-        "amendment_number": 5,
-        "approval_evidence": {
-          "bbox_json": "[]",
-          "page_number": 2,
-          "printed_text": "令和5年度狛江市一般会計補正予算議案第56号12月22日原案可決(第5号)",
-          "record_kind": "approval",
-          "source_row": 1
-        },
-        "approval_sha256": "08fc6959acbf44e146dd1ee948820d900df0a8b3b8f6b0d5e2a704ffb3b4ff49",
-        "approval_url": "https://www.city.komae.tokyo.jp/index.cfm/49,145713,c,html/145713/20260817-165819.pdf",
-        "attribution": "狛江市 令和5年度一般会計予算書・補正予算書",
-        "dataset_title": null,
-        "document_title": "令和5年度狛江市一般会計 補正予算書 第5号",
-        "effective_at": "2023-12-22",
-        "effective_basis": "議案の原案可決日。別適用日の指定なし",
-        "extractor": "pipeline/ingestion/fiscal/layouts/fiscal_general/extract_budget_history.py@2",
-        "landing_page": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,361,2169,html",
-        "license_id": "NOASSERTION",
-        "pages": [
-          7,
-          9
-        ],
-        "raw_form": "extracted",
-        "redistribute": "review",
-        "redistribute_basis": "自治体公開資料。原典の再配布条件は未確認。非公開入力として保管する",
-        "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20231222-094555.pdf",
-        "resource_name": "expenditure-detail",
-        "source_amount_unit": "千円",
-        "table_id": "expenditure-detail"
-      }
+      "raw_path": "jurisdiction=132195/year=2023/document_kind=supplementary/edition=adae6ca2a7fd1f6c3c8409d5fe33558f44e431fda13fcc4b9d31578f119c390b/direction=expenditure/resource=expenditure-detail/data.parquet"
     },
     {
       "table_id": "supplementary-detail-faa4d2cb8197a7c8",
-      "raw_path": "supplementary-detail/jurisdiction=132195/year=2023/document_kind=supplementary/edition=adae6ca2a7fd1f6c3c8409d5fe33558f44e431fda13fcc4b9d31578f119c390b/direction=expenditure/resource=supplementary-expenditure-project-setsu/data.parquet",
-      "declaration": {
-        "amendment_number": 5,
-        "approval_date": "2023-12-22",
-        "approval_evidence": {
-          "bbox_json": "[542.52, 542.39236, 726.359737, 554.39236]",
-          "page_number": 1,
-          "printed_text": "令和5年12月22日原案可決"
-        },
-        "approval_status": "cover-approved",
-        "baseline_status": "unconfirmed",
-        "edition_status": "published",
-        "effective_at": "2023-12-22",
-        "extractor": "extract_supplementary_expenditure.py@1",
-        "first_article_evidence": {
-          "amount_delta": 105411,
-          "bbox_json": "[160.56, 181.41972, 663.2428571428571, 193.41972]",
-          "page_number": 2,
-          "printed_text": "第1条歳入歳出予算の総額に歳入歳出それぞれ105,411千円を追加"
-        },
-        "fund_label": "一般会計",
-        "grain": "printed project × expenditure setsu × department occurrence; explicit reserve exceptions",
-        "nonadditive_with": [
-          "expenditure-detail",
-          "expenditure-moku-changes-all"
-        ],
-        "observation_role": "authoritative-supplementary-detail",
-        "pages": [
-          1,
-          9
-        ],
-        "raw_form": "extracted",
-        "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,126778,c,html/126778/20231222-094555.pdf",
-        "source_amount_unit": "千円",
-        "source_grain": "printed project × expenditure setsu × printed department occurrence; explicit printed reserve exceptions",
-        "source_key": "supplementary-detail:132195:2023:general:5",
-        "table_id": "supplementary-expenditure-project-setsu",
-        "totals": {
-          "all_moku_sum": 105411,
-          "explanation_setsu_sum": 105411,
-          "first_article": 105411,
-          "left_setsu_sum": 105411,
-          "printed_project_sum": 105411
-        }
-      }
+      "raw_path": "supplementary-detail/jurisdiction=132195/year=2023/document_kind=supplementary/edition=adae6ca2a7fd1f6c3c8409d5fe33558f44e431fda13fcc4b9d31578f119c390b/direction=expenditure/resource=supplementary-expenditure-project-setsu/data.parquet"
     }
   ]
 }

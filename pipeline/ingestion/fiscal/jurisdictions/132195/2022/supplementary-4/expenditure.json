@@ -13,27 +13,9 @@
     {
       "id": "council-approved-detail-6051c730b019f4b2",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "df1a4cc5e96beb1ff43f8f892cf7d03d880e40ca7f96ca6456e10b1697e416be",
-          "format": "pdf",
-          "scope": [
-            {
-              "account": "一般会計",
-              "pages": [
-                [
-                  4,
-                  10
-                ],
-                [
-                  13,
-                  29
-                ]
-              ]
-            }
-          ]
+          "sha256": "df1a4cc5e96beb1ff43f8f892cf7d03d880e40ca7f96ca6456e10b1697e416be"
         }
       ],
       "options": {
@@ -57,7 +39,7 @@
     {
       "table_id": "council-approved-detail-6051c730b019f4b2",
       "conversion_id": "council-approved-detail-6051c730b019f4b2",
-      "input_fingerprint": "3654e807ed342e4fd27770a4b5a1f1113846d32ea64ad63a4620570c1158374d",
+      "input_fingerprint": "35bb18573aad25b67a38701b7dfe89c0e812c154fd0659c03c9f7c47ff05c8b3",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132195/2022/supplementary-4/expenditure/council-approved-detail-6051c730b019f4b2.parquet",

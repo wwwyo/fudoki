@@ -12,27 +12,9 @@
     {
       "id": "chiyoda2021-settlement-native-e3392527aaa3d0a0",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "8477b068a4d5a998da2614391a1e932fa7d1d5d1693cbcfed3723cb7e6f9dc6e",
-          "format": "pdf",
-          "scope": [
-            {
-              "account": "一般会計",
-              "pages": [
-                [
-                  6,
-                  7
-                ],
-                [
-                  56,
-                  112
-                ]
-              ]
-            }
-          ]
+          "sha256": "8477b068a4d5a998da2614391a1e932fa7d1d5d1693cbcfed3723cb7e6f9dc6e"
         }
       ],
       "options": {
@@ -54,27 +36,9 @@
     {
       "id": "chiyoda2021-settlement-native-973dedab1d542961",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "8477b068a4d5a998da2614391a1e932fa7d1d5d1693cbcfed3723cb7e6f9dc6e",
-          "format": "pdf",
-          "scope": [
-            {
-              "account": "一般会計",
-              "pages": [
-                [
-                  6,
-                  7
-                ],
-                [
-                  56,
-                  112
-                ]
-              ]
-            }
-          ]
+          "sha256": "8477b068a4d5a998da2614391a1e932fa7d1d5d1693cbcfed3723cb7e6f9dc6e"
         }
       ],
       "options": {
@@ -98,7 +62,7 @@
     {
       "table_id": "chiyoda2021-settlement-native-e3392527aaa3d0a0",
       "conversion_id": "chiyoda2021-settlement-native-e3392527aaa3d0a0",
-      "input_fingerprint": "e81f7e28ed704ababb5ab18234d29f072c47295d5c4ec9ed31a32d9f09c351eb",
+      "input_fingerprint": "eb6d3c39631608690cf7fb098a4e9e193f1071729a212941e981a9e5ccba5fe7",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/131016/2021/settlement/expenditure/chiyoda2021-settlement-native-e3392527aaa3d0a0.parquet",
@@ -203,7 +167,7 @@
     {
       "table_id": "chiyoda2021-settlement-native-973dedab1d542961",
       "conversion_id": "chiyoda2021-settlement-native-973dedab1d542961",
-      "input_fingerprint": "86c4d534b21f6f5aa9789a9a714215f66cabb19f29c43ce8808d816e345720f5",
+      "input_fingerprint": "d649e34919feb8dfffa27369a79b0714a631bdcad6faa4e33c2466a7d95f10bf",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/131016/2021/settlement/expenditure/chiyoda2021-settlement-native-973dedab1d542961.parquet",

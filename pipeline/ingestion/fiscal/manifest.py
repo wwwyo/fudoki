@@ -58,8 +58,12 @@ def code_path(value: str) -> Path:
     return path
 
 
+def options_schema(conversion: dict) -> str:
+    return str(Path(conversion['converter']).with_name('options.schema.json'))
+
+
 def dependencies(conversion: dict) -> list[str]:
-    pending = [conversion['converter'], conversion['options_schema'], *conversion['dependencies']]
+    pending = [conversion['converter'], options_schema(conversion), *conversion.get('dependencies', [])]
     found = set()
     while pending:
         relative = pending.pop()
@@ -79,7 +83,8 @@ def dependencies(conversion: dict) -> list[str]:
             elif isinstance(node, ast.ImportFrom) and node.level:
                 base = list(path.relative_to(INGESTION).parent.parts)
                 base = base[:len(base) - node.level + 1]
-                modules = ['ingestion.' + '.'.join([*base, *(node.module or '').split('.')]).rstrip('.')]
+                module = 'ingestion.' + '.'.join([*base, *node.module.split('.')] if node.module else base)
+                modules = [module, *[module + '.' + alias.name for alias in node.names]]
             elif isinstance(node, ast.Constant) and isinstance(node.value, str):
                 if node.value.startswith('ingestion.'):
                     modules = [node.value]
@@ -118,16 +123,6 @@ def validate(document: dict, *, path: Path | None = None, check_code: bool = Tru
         inputs = conversion['inputs']
         if len({item['sha256'] for item in inputs}) != len(inputs):
             raise ValueError('Duplicate conversion original')
-        for item in inputs:
-            if len({scope['account'] for scope in item['scope']}) != len(item['scope']):
-                raise ValueError('Duplicate account scope')
-            for scope in item['scope']:
-                ranges = scope.get('pages', [])
-                previous = 0
-                for first, last in ranges:
-                    if first <= previous or last < first:
-                        raise ValueError('PDF ranges must be ascending and non-overlapping')
-                    previous = last
         for table in conversion['expected_tables']:
             if table['table_id'] in expected:
                 raise ValueError('A table must have exactly one conversion owner')
@@ -136,12 +131,10 @@ def validate(document: dict, *, path: Path | None = None, check_code: bool = Tru
             allowed = ('fiscal/layouts/', f'fiscal/jurisdictions/{document["target"]["jurisdiction"]}/layouts/')
             if not conversion['converter'].startswith(allowed) or not conversion['converter'].endswith('/convert.py'):
                 raise ValueError('Converter must be a shared or target-local layout entry')
-            if conversion['options_schema'] != str(Path(conversion['converter']).with_name('options.schema.json')):
-                raise ValueError('Options schema must belong to the selected converter')
-            for dependency in [conversion['converter'], *conversion['dependencies']]:
+            for dependency in [conversion['converter'], *conversion.get('dependencies', [])]:
                 code_path(dependency)
-            options_schema = code_path(conversion['options_schema'])
-            jsonschema.Draft202012Validator(json.loads(options_schema.read_text())).validate(conversion['options'])
+            schema_path = code_path(options_schema(conversion))
+            jsonschema.Draft202012Validator(json.loads(schema_path.read_text())).validate(conversion['options'])
     seen: set[str] = set()
     for table in document['tables']:
         ident = table['table_id']
@@ -207,19 +200,25 @@ def resolved_inputs(document: dict, conversion: dict, selection: dict | None = N
         if requested['sha256'] not in origins:
             raise ValueError('Conversion original is not in the selected source')
         file, receipt = origins[requested['sha256']]
-        if receipt['sha256'] != requested['sha256'] or file['format'] != requested['format']:
-            raise ValueError('Original receipt/format differs from the plan')
-        available = {scope['account']: scope for scope in (file['scope'] or [])
-                     if scope['direction'] == document['direction']}
-        for scope in requested['scope']:
-            original_scope = available.get(scope['account'])
-            if original_scope is None:
-                raise ValueError('Account/direction is outside the selected scope')
+        if receipt['sha256'] != requested['sha256']:
+            raise ValueError('Original receipt differs from the plan')
+        scopes = [{key: value for key, value in scope.items() if key != 'direction'}
+                  for scope in (file['scope'] or []) if scope['direction'] == document['direction']]
+        if not scopes or len({scope['account'] for scope in scopes}) != len(scopes):
+            raise ValueError('Selected original needs unique account scopes for this direction')
+        for scope in scopes:
             if file['format'] == 'pdf':
-                for start, end in scope['pages']:
-                    if not any(r['start'] <= start and end <= r['end'] for r in original_scope['pages']):
-                        raise ValueError('PDF pages are outside the selected scope')
-        result.append({**requested, 'bucket': selected['archive']['bucket'], 'key': receipt['key'],
+                ranges = [[r['start'], r['end']] for r in scope['pages']]
+                previous = 0
+                for first, last in ranges:
+                    if first <= previous or last < first:
+                        raise ValueError('PDF ranges must be ascending and non-overlapping')
+                    previous = last
+                if not ranges:
+                    raise ValueError('Selected PDF scope needs pages')
+                scope['pages'] = ranges
+        result.append({'sha256': requested['sha256'], 'format': file['format'], 'scope': scopes,
+                       'bucket': selected['archive']['bucket'], 'key': receipt['key'],
                        'download_url': file['download_url'], 'pdf_type': file.get('pdf_type')})
     return result
 

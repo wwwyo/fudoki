@@ -43,7 +43,7 @@ bun run ingestion:cleanup --manifest "$TARGET"
 
 CSV用と既存の見開きPDF用の入口は `fiscal/layouts/csv/` と `fiscal/layouts/statement/`。他の書式は `convert(inputs, destination, options)` と同じフォルダの `options.schema.json` を定義し、受け取った原典から表IDとローカルParquetの対応を返す。既存表の移行用 `retained` は原典から再抽出するコードではない。移動した旧抽出器のCLIはローカル候補用に残す。
 
-管理JSONは `schema_version: 2` で、`expected_tables` は表IDだけを持つ。原典・変換設定・出力表の属性を管理し、dbt用の宣言やコード参照は含めない。`declaration`・`definition_files`・`legacy_path` を戻すとschema検査で拒否する。
+管理JSONは `schema_version: 2` で、`expected_tables` は表IDだけを持つ。`inputs` は原典SHAだけを持ち、形式・会計・ページ範囲はselectionから解決する。変換設定と保存表の属性を管理し、dbt用の宣言は含めない。`options.schema.json` は変換器と同じフォルダから読み、追加の動的依存ファイルがある場合だけ `dependencies` を指定する。`declaration`・`definition_files`・`legacy_path` を戻すとschema検査で拒否する。
 
 設計と失敗時の再実行は [保存設計](../docs/prd/ingestion-storage/design-doc.md)、旧表の移行範囲は [移行記録](../docs/prd/ingestion-storage/migration.md)、CSV・text PDF・scan PDFの作業は [ingestion手順](../.agents/skills/pipeline/references/ingestion.md) を参照する。
 
@@ -66,7 +66,7 @@ bun run pipeline:build --declarations "$DECLARATIONS" --rebuild
 
 `build_inputs.py` は宣言の団体・年度・方向・資料種類と、その範囲の原典または表のSHA集合への所属を照合し、ParquetとJSONを `.cache/inputs/<入力fingerprint>/` にコピーして固定する。`raw/` はdbtへの入力、`declarations/` は渡されたJSON、`catalog.json` は管理JSON・表・原典参照との対応を保持する。補正号・会計・個別表と宣言の1対1対応をこの入口で認定するものではない。
 
-既存表のdbt用partitionと意味は `dbt/inputs/<団体>/<年度>/<資料区分>/<方向>.json` が表IDごとに保持する。型は [bindings.schema.json](dbt/inputs/bindings.schema.json)、検査は `bun run --cwd pipeline dbt:inputs:check`。取り込みJSONには戻さない。F側の宣言・コードを変えても、取り込み表のfingerprintやParquetの再生成条件は変えない。初期予算の管理値 `initial` は既存dbtの `document_kind=budget` に対応する。dbt用宣言JSONでもこの既存値を使う。
+既存表のdbt用partitionは `dbt/inputs/<団体>/<年度>/<資料区分>/<方向>.json` が表IDごとに保持する。対応JSONは `schema_version: 1` で、表の項目は `table_id` と `raw_path` だけ。出典・意味は受け取った `sources.json`・`history.json` で扱う。型は [bindings.schema.json](dbt/inputs/bindings.schema.json)、検査は `bun run --cwd pipeline dbt:inputs:check`。取り込みJSONには戻さない。F側の宣言・コードを変えても、取り込み表のfingerprintやParquetの再生成条件は変えない。初期予算の管理値 `initial` は既存dbtの `document_kind=budget` に対応する。dbt用宣言JSONでもこの既存値を使う。
 
 対象を絞る場合は復元と構築の両方に同じ `--manifest <対象JSON>` を繰り返して渡す。ただしdbtモデルの選択は自動で絞らない。既存モデルに必要な補助表が欠けた場合は空表で補わず、入力とモデル範囲を確認する。
 

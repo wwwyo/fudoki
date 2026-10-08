@@ -12,17 +12,9 @@
     {
       "id": "raw-962f0d0cd7735a4a",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "0a7be92857672d8ffbf208e7b8ddc615a454f6bd8ff1f075e1a791c118014351",
-          "format": "csv",
-          "scope": [
-            {
-              "account": "一般会計"
-            }
-          ]
+          "sha256": "0a7be92857672d8ffbf208e7b8ddc615a454f6bd8ff1f075e1a791c118014351"
         }
       ],
       "options": {
@@ -44,23 +36,9 @@
     {
       "id": "raw-4fcc766d1754b23a",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "9b65776c2d53a9f36c06bf4ea769524d9dd017cdc796e0fba78e7b220b01d526",
-          "format": "csv",
-          "scope": [
-            {
-              "account": "介護保険特別会計"
-            },
-            {
-              "account": "国民健康保険特別会計"
-            },
-            {
-              "account": "後期高齢者医療特別会計"
-            }
-          ]
+          "sha256": "9b65776c2d53a9f36c06bf4ea769524d9dd017cdc796e0fba78e7b220b01d526"
         }
       ],
       "options": {
@@ -84,7 +62,7 @@
     {
       "table_id": "raw-962f0d0cd7735a4a",
       "conversion_id": "raw-962f0d0cd7735a4a",
-      "input_fingerprint": "9af0a4bc8c58b17fa5bd40c6f3401010db13c875947bcb2096df8323d724a87f",
+      "input_fingerprint": "8b83556b57f52ee86fd6620bd7882c1ee1f620a8c3ce86980e4c73b254044b15",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2022/initial/revenue/raw-962f0d0cd7735a4a.parquet",
@@ -165,7 +143,7 @@
     {
       "table_id": "raw-4fcc766d1754b23a",
       "conversion_id": "raw-4fcc766d1754b23a",
-      "input_fingerprint": "10a084257f6acbf22884b0be80a6fa7c92f9c0863514206df7e416c9124e9dd2",
+      "input_fingerprint": "9055e44bf645fdf0a617e918c31721df41bb1b2d2135257a650ac8ebabad5e0a",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2022/initial/revenue/raw-4fcc766d1754b23a.parquet",

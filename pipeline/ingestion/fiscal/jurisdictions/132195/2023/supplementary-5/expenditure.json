@@ -13,27 +13,9 @@
     {
       "id": "raw-1e746ca9695f50fa",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "adae6ca2a7fd1f6c3c8409d5fe33558f44e431fda13fcc4b9d31578f119c390b",
-          "format": "pdf",
-          "scope": [
-            {
-              "account": "一般会計",
-              "pages": [
-                [
-                  1,
-                  5
-                ],
-                [
-                  7,
-                  9
-                ]
-              ]
-            }
-          ]
+          "sha256": "adae6ca2a7fd1f6c3c8409d5fe33558f44e431fda13fcc4b9d31578f119c390b"
         }
       ],
       "options": {
@@ -55,27 +37,9 @@
     {
       "id": "supplementary-detail-faa4d2cb8197a7c8",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "adae6ca2a7fd1f6c3c8409d5fe33558f44e431fda13fcc4b9d31578f119c390b",
-          "format": "pdf",
-          "scope": [
-            {
-              "account": "一般会計",
-              "pages": [
-                [
-                  1,
-                  5
-                ],
-                [
-                  7,
-                  9
-                ]
-              ]
-            }
-          ]
+          "sha256": "adae6ca2a7fd1f6c3c8409d5fe33558f44e431fda13fcc4b9d31578f119c390b"
         }
       ],
       "options": {
@@ -99,7 +63,7 @@
     {
       "table_id": "raw-1e746ca9695f50fa",
       "conversion_id": "raw-1e746ca9695f50fa",
-      "input_fingerprint": "ecefac12c08629625a6e4c536996a379abae576813f3ef26f7d8d495f810a24f",
+      "input_fingerprint": "6fa894f7ecace609e1190eb63c5600f763619cca399aad505d44009a5451a93e",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132195/2023/supplementary-5/expenditure/raw-1e746ca9695f50fa.parquet",
@@ -192,7 +156,7 @@
     {
       "table_id": "supplementary-detail-faa4d2cb8197a7c8",
       "conversion_id": "supplementary-detail-faa4d2cb8197a7c8",
-      "input_fingerprint": "b40ec0588e70f8e2457df375abd8a2e57befddb1a076cd9225a5cfaf954eac10",
+      "input_fingerprint": "d7bec227e69dd6550504b2b103c0f7251c4c3f6193eb411188a53dcb211e9e1c",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132195/2023/supplementary-5/expenditure/supplementary-detail-faa4d2cb8197a7c8.parquet",

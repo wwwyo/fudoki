@@ -12,23 +12,9 @@
     {
       "id": "raw-4fcc766d1754b23a",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "84cecb682efb1b4aabf9e6235a512f10481181faee9934414204b90224c21757",
-          "format": "csv",
-          "scope": [
-            {
-              "account": "介護保険特別会計"
-            },
-            {
-              "account": "国民健康保険特別会計"
-            },
-            {
-              "account": "後期高齢者医療特別会計"
-            }
-          ]
+          "sha256": "84cecb682efb1b4aabf9e6235a512f10481181faee9934414204b90224c21757"
         }
       ],
       "options": {
@@ -50,17 +36,9 @@
     {
       "id": "raw-962f0d0cd7735a4a",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "d1f90d5c0dcc607ddd4582b14b9c96681e5089dfee2664bca05a95ba075d1cf0",
-          "format": "csv",
-          "scope": [
-            {
-              "account": "一般会計"
-            }
-          ]
+          "sha256": "d1f90d5c0dcc607ddd4582b14b9c96681e5089dfee2664bca05a95ba075d1cf0"
         }
       ],
       "options": {
@@ -84,7 +62,7 @@
     {
       "table_id": "raw-4fcc766d1754b23a",
       "conversion_id": "raw-4fcc766d1754b23a",
-      "input_fingerprint": "275d6e9d6c1ec563cb87f150009ffedfc2af8aef81f8c2c2c80fab4269079ad0",
+      "input_fingerprint": "87183f426954745c8d2bb91a0aa4a7ea2cee6a7f25b3773fd43eb95e3ee88c94",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2021/initial/expenditure/raw-4fcc766d1754b23a.parquet",
@@ -169,7 +147,7 @@
     {
       "table_id": "raw-962f0d0cd7735a4a",
       "conversion_id": "raw-962f0d0cd7735a4a",
-      "input_fingerprint": "b7410ecf2a64e39ed370f2662dbd5fb3a0f900adc3440fdc81151c666919fab2",
+      "input_fingerprint": "df0d49edf892873a31279c2ddb32f7c7c003c95010b32c9b69a1648b52040011",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2021/initial/expenditure/raw-962f0d0cd7735a4a.parquet",

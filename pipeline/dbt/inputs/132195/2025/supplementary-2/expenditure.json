@@ -10,147 +10,15 @@
   "tables": [
     {
       "table_id": "supplementary-detail-faa4d2cb8197a7c8",
-      "raw_path": "supplementary-detail/jurisdiction=132195/year=2025/document_kind=supplementary/edition=326e4253d67d5f556429d4e5185177d78dab7964e380c30963b02f8378a01b4b/direction=expenditure/resource=supplementary-expenditure-project-setsu/data.parquet",
-      "declaration": {
-        "amendment_number": 2,
-        "approval_date": "2025-11-26",
-        "approval_evidence": {
-          "bbox_json": "[547.2, 542.63236, 731.04, 554.63236]",
-          "page_number": 1,
-          "printed_text": "令和7年11月26日原案可決"
-        },
-        "approval_status": "cover-approved",
-        "baseline_status": "unconfirmed",
-        "edition_status": "published",
-        "effective_at": "2025-11-26",
-        "extractor": "extract_supplementary_expenditure.py@1",
-        "first_article_evidence": {
-          "amount_delta": 6317,
-          "bbox_json": "[160.56, 183.21972, 652.2029268292683, 195.21972]",
-          "page_number": 2,
-          "printed_text": "第1条歳入歳出予算の総額に、歳入歳出それぞれ6,317千円を追加"
-        },
-        "fund_label": "介護保険特別会計",
-        "grain": "printed project × expenditure setsu × department occurrence; explicit reserve exceptions",
-        "nonadditive_with": [
-          "expenditure-detail",
-          "expenditure-moku-changes-all"
-        ],
-        "observation_role": "authoritative-supplementary-detail",
-        "pages": [
-          1,
-          8
-        ],
-        "raw_form": "extracted",
-        "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20251126-164958.pdf",
-        "source_amount_unit": "千円",
-        "source_grain": "printed project × expenditure setsu × printed department occurrence; explicit printed reserve exceptions",
-        "source_key": "supplementary-detail:132195:2025:care:2",
-        "table_id": "supplementary-expenditure-project-setsu",
-        "totals": {
-          "all_moku_sum": 6317,
-          "explanation_setsu_sum": 6317,
-          "first_article": 6317,
-          "left_setsu_sum": 5844,
-          "printed_project_sum": 6317
-        }
-      }
+      "raw_path": "supplementary-detail/jurisdiction=132195/year=2025/document_kind=supplementary/edition=326e4253d67d5f556429d4e5185177d78dab7964e380c30963b02f8378a01b4b/direction=expenditure/resource=supplementary-expenditure-project-setsu/data.parquet"
     },
     {
       "table_id": "supplementary-detail-faa4d2cb8197a7c8-77bd4b62daa25a18",
-      "raw_path": "supplementary-detail/jurisdiction=132195/year=2025/document_kind=supplementary/edition=8e26a4d9b1ad042675fcec2f0baf3183bf7a8aca15d9cab9361c7baac033a650/direction=expenditure/resource=supplementary-expenditure-project-setsu/data.parquet",
-      "declaration": {
-        "amendment_number": 2,
-        "approval_date": "2025-11-26",
-        "approval_evidence": {
-          "bbox_json": "[547.2, 542.63236, 731.04, 554.63236]",
-          "page_number": 1,
-          "printed_text": "令和7年11月26日原案可決"
-        },
-        "approval_status": "cover-approved",
-        "baseline_status": "unconfirmed",
-        "edition_status": "published",
-        "effective_at": "2025-11-26",
-        "extractor": "extract_supplementary_expenditure.py@1",
-        "first_article_evidence": {
-          "amount_delta": 4000,
-          "bbox_json": "[160.56, 183.21972, 652.2029268292683, 195.21972]",
-          "page_number": 2,
-          "printed_text": "第1条歳入歳出予算の総額に、歳入歳出それぞれ4,000千円を追加"
-        },
-        "fund_label": "国民健康保険特別会計",
-        "grain": "printed project × expenditure setsu × department occurrence; explicit reserve exceptions",
-        "nonadditive_with": [
-          "expenditure-detail",
-          "expenditure-moku-changes-all"
-        ],
-        "observation_role": "authoritative-supplementary-detail",
-        "pages": [
-          1,
-          7
-        ],
-        "raw_form": "extracted",
-        "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20251126-164741.pdf",
-        "source_amount_unit": "千円",
-        "source_grain": "printed project × expenditure setsu × printed department occurrence; explicit printed reserve exceptions",
-        "source_key": "supplementary-detail:132195:2025:national-health:2",
-        "table_id": "supplementary-expenditure-project-setsu",
-        "totals": {
-          "all_moku_sum": 4000,
-          "explanation_setsu_sum": 4000,
-          "first_article": 4000,
-          "left_setsu_sum": 4000,
-          "printed_project_sum": 4000
-        }
-      }
+      "raw_path": "supplementary-detail/jurisdiction=132195/year=2025/document_kind=supplementary/edition=8e26a4d9b1ad042675fcec2f0baf3183bf7a8aca15d9cab9361c7baac033a650/direction=expenditure/resource=supplementary-expenditure-project-setsu/data.parquet"
     },
     {
       "table_id": "supplementary-detail-faa4d2cb8197a7c8-73b48db9930b012a",
-      "raw_path": "supplementary-detail/jurisdiction=132195/year=2025/document_kind=supplementary/edition=9277189d23e764818de172b619a61804fcebb94d12fed3d286d6ae8d207f2436/direction=expenditure/resource=supplementary-expenditure-project-setsu/data.parquet",
-      "declaration": {
-        "amendment_number": 2,
-        "approval_date": "2025-06-12",
-        "approval_evidence": {
-          "bbox_json": "[550.56, 542.63236, 727.56, 554.63236]",
-          "page_number": 1,
-          "printed_text": "令和7年6月12日原案可決"
-        },
-        "approval_status": "cover-approved",
-        "baseline_status": "unconfirmed",
-        "edition_status": "published",
-        "effective_at": "2025-06-12",
-        "extractor": "extract_supplementary_expenditure.py@1",
-        "first_article_evidence": {
-          "amount_delta": 104579,
-          "bbox_json": "[160.56, 183.21972, 674.2827906976745, 195.21972]",
-          "page_number": 2,
-          "printed_text": "第1条歳入歳出予算の総額に、歳入歳出それぞれ104,579千円を追加"
-        },
-        "fund_label": "一般会計",
-        "grain": "printed project × expenditure setsu × department occurrence; explicit reserve exceptions",
-        "nonadditive_with": [
-          "expenditure-detail",
-          "expenditure-moku-changes-all"
-        ],
-        "observation_role": "authoritative-supplementary-detail",
-        "pages": [
-          1,
-          10
-        ],
-        "raw_form": "extracted",
-        "request_url": "https://www.city.komae.tokyo.jp/index.cfm/46,136999,c,html/136999/20250611-100205.pdf",
-        "source_amount_unit": "千円",
-        "source_grain": "printed project × expenditure setsu × printed department occurrence; explicit printed reserve exceptions",
-        "source_key": "supplementary-detail:132195:2025:general:2",
-        "table_id": "supplementary-expenditure-project-setsu",
-        "totals": {
-          "all_moku_sum": 104579,
-          "explanation_setsu_sum": 104579,
-          "first_article": 104579,
-          "left_setsu_sum": 84579,
-          "printed_project_sum": 104579
-        }
-      }
+      "raw_path": "supplementary-detail/jurisdiction=132195/year=2025/document_kind=supplementary/edition=9277189d23e764818de172b619a61804fcebb94d12fed3d286d6ae8d207f2436/direction=expenditure/resource=supplementary-expenditure-project-setsu/data.parquet"
     }
   ]
 }

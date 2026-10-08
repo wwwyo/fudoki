@@ -13,23 +13,9 @@
     {
       "id": "tama-supplementary-native-f804150617e341f4",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "5764a9345e85236c4a3acad6861471f61f085a5273f31b0b83c1a0f93db084b7",
-          "format": "pdf",
-          "scope": [
-            {
-              "account": "一般会計",
-              "pages": [
-                [
-                  1,
-                  15
-                ]
-              ]
-            }
-          ]
+          "sha256": "5764a9345e85236c4a3acad6861471f61f085a5273f31b0b83c1a0f93db084b7"
         }
       ],
       "options": {
@@ -51,23 +37,9 @@
     {
       "id": "tama-supplementary-native-6458b7a0359ebbab",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "5764a9345e85236c4a3acad6861471f61f085a5273f31b0b83c1a0f93db084b7",
-          "format": "pdf",
-          "scope": [
-            {
-              "account": "一般会計",
-              "pages": [
-                [
-                  1,
-                  15
-                ]
-              ]
-            }
-          ]
+          "sha256": "5764a9345e85236c4a3acad6861471f61f085a5273f31b0b83c1a0f93db084b7"
         }
       ],
       "options": {
@@ -91,7 +63,7 @@
     {
       "table_id": "tama-supplementary-native-f804150617e341f4",
       "conversion_id": "tama-supplementary-native-f804150617e341f4",
-      "input_fingerprint": "16d6c6e5ee4c34879ec46f712f0f0577c49918ae125604d2fd1814c3f0668814",
+      "input_fingerprint": "f2aec6709ccfe2765c2e247e0f3bee0e2ac30c4637920b4470a2ed9ef61e6740",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2024/supplementary-11/expenditure/tama-supplementary-native-f804150617e341f4.parquet",
@@ -172,7 +144,7 @@
     {
       "table_id": "tama-supplementary-native-6458b7a0359ebbab",
       "conversion_id": "tama-supplementary-native-6458b7a0359ebbab",
-      "input_fingerprint": "4a6fe1efde6eea58bfa0c6c2dca6458b01f2220fba479dce2179a8c78b019983",
+      "input_fingerprint": "5629865b10d5abe06be6d9510b00e7b5f5de24fd08a4bf2eeab23076d869f65f",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2024/supplementary-11/expenditure/tama-supplementary-native-6458b7a0359ebbab.parquet",

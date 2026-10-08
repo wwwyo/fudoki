@@ -12,29 +12,9 @@
     {
       "id": "raw-2ae43f999552d835",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "82318db762d08b2057fc36899fb14a9765cafe6eb2c798cd48215862c58afed1",
-          "format": "csv",
-          "scope": [
-            {
-              "account": "一般会計"
-            },
-            {
-              "account": "介護サービス事業特別会計"
-            },
-            {
-              "account": "介護保険事業特別会計"
-            },
-            {
-              "account": "国民健康保険事業特別会計"
-            },
-            {
-              "account": "後期高齢者医療特別会計"
-            }
-          ]
+          "sha256": "82318db762d08b2057fc36899fb14a9765cafe6eb2c798cd48215862c58afed1"
         }
       ],
       "options": {
@@ -58,7 +38,7 @@
     {
       "table_id": "raw-2ae43f999552d835",
       "conversion_id": "raw-2ae43f999552d835",
-      "input_fingerprint": "197712a1a6ac9f70c918f00e673cdc082ff78bae226147d84cc5ded26df28313",
+      "input_fingerprint": "cdd6d4aaf00518aaf71a4a2e7d34b68693cab6d041d0f1495f258dad8149c374",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132047/2022/settlement/expenditure/raw-2ae43f999552d835.parquet",

@@ -78,6 +78,18 @@ Fの `inputs` は対象別JSONのParquetだけを復元し、`build --declaratio
 
 824表すべてについて、出力の保存先・SHA・サイズ・行数・列型・原典参照・実行条件が変更前と一致し、旧宣言とdbt用パスがF側へ欠落なく移ったことを照合した。変更した表の項目は取り込みfingerprintだけである。Parquetの書き換え・再抽出・R2の操作は行っていない。Cが使う旧入力一覧は変更していない。
 
-移行は `bun run --cwd pipeline ingestion:split-metadata --apply` で実行する。`--apply` を省略すると、計画だけを検査する。全対象のschema・既存fingerprint・F側保存先を事前確認し、対象ごとにF側のJSONを保存してから取り込みJSONを置換する。途中で止まった場合は同じコマンドを再実行する。旧内容と異なるF側JSONが既にあれば、上書きせず停止する。
+この取り込みJSONのschema_version 1から2への分離は完了し、専用コマンドは削除した。旧宣言は旧入力一覧に残っている。
 
 `dbt:inputs:check` で223件・824表の対応を検査した。fixtureではF側の宣言変更が構築入力fingerprintを変え、取り込みJSON・取り込みfingerprintを変えないこと、分離の再実行が変更を重ねないことを確認した。構造分離後もCの宣言出力接続・実データの全量構築・Gの移行は未完了である。
+
+
+## 重複した管理項目を除く
+
+同日に223件の管理項目を簡素化した。未公開の形式のため、取り込みJSONのschema_versionは2のままとした。入力は原典SHAだけにし、形式・会計・ページ範囲はselectionから解決する。全入力の旧scopeが解決後のscopeと一致することを確認してから削除した。変換器に隣接する `options.schema.json` のパスと、全件空だった `dependencies` も省いた。動的に読む追加依存がある場合は `dependencies` を指定できる。
+
+Fの223件の対応JSONはschema_version 1のまま、表IDとdbt用パスだけを残した。使われていない旧 `declaration`・`definition_files` の複製を削除した。出典・意味は上流から受け取る宣言JSONで扱う。Cの旧入力一覧・宣言コードは変更していない。
+
+旧scopeとselectionの一致、既存fingerprintを事前確認して管理JSONを更新した。互換性は維持せず、移行専用コードは残さない。Parquetの再抽出やR2操作は行っていない。
+
+
+824表の保存情報はfingerprint以外が変更前と一致し、F側の全表ID・パスも一致した。対応JSONは約6.45MBから約0.31MBになった。Python 97件・Bun 81件のテスト、全packageの型検査、223件・824表の取り込みとdbt対応の検査が成功した。専用のlint設定はない。実データの全量dbt構築は実行していない。

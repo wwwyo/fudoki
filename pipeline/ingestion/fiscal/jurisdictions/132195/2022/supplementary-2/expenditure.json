@@ -13,27 +13,9 @@
     {
       "id": "council-approved-detail-1ee044f589eb7095",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "df633f80a4d268727cd832738c3e318d63d287b4de214e5ba28897833179a064",
-          "format": "pdf",
-          "scope": [
-            {
-              "account": "介護保険特別会計",
-              "pages": [
-                [
-                  25,
-                  30
-                ],
-                [
-                  33,
-                  33
-                ]
-              ]
-            }
-          ]
+          "sha256": "df633f80a4d268727cd832738c3e318d63d287b4de214e5ba28897833179a064"
         }
       ],
       "options": {
@@ -55,27 +37,9 @@
     {
       "id": "held5-council-approved-detail-5fa254ac649bdc27",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "771842cf3b9ec3d0b799f2e5b3bb0ba9fb401aa55f4b4179e888195036c633f1",
-          "format": "pdf",
-          "scope": [
-            {
-              "account": "一般会計",
-              "pages": [
-                [
-                  4,
-                  11
-                ],
-                [
-                  15,
-                  30
-                ]
-              ]
-            }
-          ]
+          "sha256": "771842cf3b9ec3d0b799f2e5b3bb0ba9fb401aa55f4b4179e888195036c633f1"
         }
       ],
       "options": {
@@ -99,7 +63,7 @@
     {
       "table_id": "council-approved-detail-1ee044f589eb7095",
       "conversion_id": "council-approved-detail-1ee044f589eb7095",
-      "input_fingerprint": "26826e85a5b830184a23c81b14a8ca3e05f5440010ba22f9ab42a3cfbaad70d5",
+      "input_fingerprint": "98368df98f536f49a47331fe2a39efc8d344faf4cd5a419d75f02ea5becc0b66",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132195/2022/supplementary-2/expenditure/council-approved-detail-1ee044f589eb7095.parquet",
@@ -332,7 +296,7 @@
     {
       "table_id": "held5-council-approved-detail-5fa254ac649bdc27",
       "conversion_id": "held5-council-approved-detail-5fa254ac649bdc27",
-      "input_fingerprint": "20916b9afae06a7864092c8145cc0da6784f9e72d65d8f57ad1f00fbeeda9bc5",
+      "input_fingerprint": "f4bf4bcae646cbe11579120aec1ee9465756e15d1ed2244a473a186dd254138d",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132195/2022/supplementary-2/expenditure/held5-council-approved-detail-5fa254ac649bdc27.parquet",

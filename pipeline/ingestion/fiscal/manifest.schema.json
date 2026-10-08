@@ -143,89 +143,15 @@
       ]
     },
     "input": {
-      "oneOf": [
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "sha256": {
-              "$ref": "#/$defs/sha256"
-            },
-            "format": {
-              "const": "pdf"
-            },
-            "scope": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "account": {
-                    "type": "string",
-                    "minLength": 1
-                  },
-                  "pages": {
-                    "type": "array",
-                    "items": {
-                      "type": "array",
-                      "items": {
-                        "type": "integer",
-                        "minimum": 1
-                      },
-                      "minItems": 2,
-                      "maxItems": 2
-                    },
-                    "minItems": 1
-                  }
-                },
-                "required": [
-                  "account",
-                  "pages"
-                ]
-              },
-              "minItems": 1
-            }
-          },
-          "required": [
-            "sha256",
-            "format",
-            "scope"
-          ]
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "sha256": {
-              "$ref": "#/$defs/sha256"
-            },
-            "format": {
-              "const": "csv"
-            },
-            "scope": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "account": {
-                    "type": "string",
-                    "minLength": 1
-                  }
-                },
-                "required": [
-                  "account"
-                ]
-              },
-              "minItems": 1
-            }
-          },
-          "required": [
-            "sha256",
-            "format",
-            "scope"
-          ]
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sha256": {
+          "$ref": "#/$defs/sha256"
         }
+      },
+      "required": [
+        "sha256"
       ]
     },
     "expected_table": {
@@ -250,15 +176,13 @@
         "converter": {
           "$ref": "#/$defs/path"
         },
-        "options_schema": {
-          "$ref": "#/$defs/path"
-        },
         "dependencies": {
           "type": "array",
           "items": {
             "$ref": "#/$defs/path"
           },
-          "uniqueItems": true
+          "uniqueItems": true,
+          "minItems": 1
         },
         "inputs": {
           "type": "array",
@@ -281,8 +205,6 @@
       "required": [
         "id",
         "converter",
-        "options_schema",
-        "dependencies",
         "inputs",
         "options",
         "expected_tables"

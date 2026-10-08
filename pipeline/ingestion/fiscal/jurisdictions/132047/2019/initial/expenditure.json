@@ -12,32 +12,9 @@
     {
       "id": "raw-2ae43f999552d835",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "623f840033f29b3a972567a5910731286a6c0fec8d34830e4de00e839dd39bff",
-          "format": "csv",
-          "scope": [
-            {
-              "account": "一般会計"
-            },
-            {
-              "account": "下水道事業特別会計"
-            },
-            {
-              "account": "介護サービス事業特別会計"
-            },
-            {
-              "account": "介護保険事業特別会計"
-            },
-            {
-              "account": "国民健康保険事業特別会計"
-            },
-            {
-              "account": "後期高齢者医療特別会計"
-            }
-          ]
+          "sha256": "623f840033f29b3a972567a5910731286a6c0fec8d34830e4de00e839dd39bff"
         }
       ],
       "options": {
@@ -61,7 +38,7 @@
     {
       "table_id": "raw-2ae43f999552d835",
       "conversion_id": "raw-2ae43f999552d835",
-      "input_fingerprint": "9ffd948396034a4e9e1c5064ea14e555a19a8429aa513391408b316f9f6173d5",
+      "input_fingerprint": "6238c098665648139e244e0533a474519fed90ecd41a6a3b0b523e8d4487543d",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132047/2019/initial/expenditure/raw-2ae43f999552d835.parquet",

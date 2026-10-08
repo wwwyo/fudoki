@@ -13,27 +13,9 @@
     {
       "id": "chiyoda-supplementary-native-9ed82f0f95fb90ac",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "b45c09632c1e7dc8b98e22d3476e39569998e8574d35478e920fa9d8833c3b76",
-          "format": "pdf",
-          "scope": [
-            {
-              "account": "一般会計",
-              "pages": [
-                [
-                  9,
-                  9
-                ],
-                [
-                  14,
-                  19
-                ]
-              ]
-            }
-          ]
+          "sha256": "b45c09632c1e7dc8b98e22d3476e39569998e8574d35478e920fa9d8833c3b76"
         }
       ],
       "options": {
@@ -55,27 +37,9 @@
     {
       "id": "chiyoda-supplementary-native-319b5b97e399d95b",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "eefe74bb1a06d07261e6252af7cda0ceeedf550b7db84cd554e5eb902f67d16f",
-          "format": "pdf",
-          "scope": [
-            {
-              "account": "介護保険特別会計",
-              "pages": [
-                [
-                  59,
-                  59
-                ],
-                [
-                  72,
-                  75
-                ]
-              ]
-            }
-          ]
+          "sha256": "eefe74bb1a06d07261e6252af7cda0ceeedf550b7db84cd554e5eb902f67d16f"
         }
       ],
       "options": {
@@ -99,7 +63,7 @@
     {
       "table_id": "chiyoda-supplementary-native-9ed82f0f95fb90ac",
       "conversion_id": "chiyoda-supplementary-native-9ed82f0f95fb90ac",
-      "input_fingerprint": "1de89d286632b5260cdb52d019f68b61de3312827483f3fabf0b466c0ef0810e",
+      "input_fingerprint": "e17bfed76d3fbb3be6710f6058545ed4d481effe8b9119eb14cc01fd9d2801b2",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/131016/2024/supplementary-1/expenditure/chiyoda-supplementary-native-9ed82f0f95fb90ac.parquet",
@@ -172,7 +136,7 @@
     {
       "table_id": "chiyoda-supplementary-native-319b5b97e399d95b",
       "conversion_id": "chiyoda-supplementary-native-319b5b97e399d95b",
-      "input_fingerprint": "800034085e628d62bf8ed93371d4e029115b002db3c855c24393ee35284920ad",
+      "input_fingerprint": "c15ca703bcfce7bb2f7c82400a8cb95334d573de19e0d9a29259b0a9b4a3144e",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/131016/2024/supplementary-1/expenditure/chiyoda-supplementary-native-319b5b97e399d95b.parquet",

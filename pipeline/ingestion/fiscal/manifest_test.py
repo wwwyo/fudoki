@@ -47,9 +47,7 @@ class ManifestWorkflowTest(unittest.TestCase):
                               'scope': [{'account': '一般会計', 'direction': 'expenditure'}]})
             archived.append({'sha256': sha, 'key': f'fiscal/source-selection/131016/2024/initial-{index}.csv'})
             conversions.append({'id': ident, 'converter': 'fiscal/layouts/csv/convert.py',
-                'options_schema': 'fiscal/layouts/csv/options.schema.json',
-                'dependencies': ['lib/conversion.py', 'lib/parquet.py'],
-                'inputs': [{'format': 'csv', 'sha256': sha, 'scope': [{'account': '一般会計'}]}],
+                'inputs': [{'sha256': sha}],
                 'options': {'encoding': 'utf-8', 'table_id': ident},
                 'expected_tables': [{'table_id': ident}]})
         self.selection = {'target': self.target, 'selected_candidate_id': 'chosen',
@@ -125,10 +123,10 @@ class ManifestWorkflowTest(unittest.TestCase):
 
     def test_upstream_changes_account_mismatch_and_changed_bytes_stop_execution(self):
         altered = deepcopy(self.document)
-        altered['conversions'][0]['inputs'][0]['scope'][0]['account'] = '別会計'
-        manifest.write(self.path, altered)
+        altered['direction'] = 'revenue'
+        manifest.validate(altered)
         with self.assertRaises(ValueError):
-            convert(self.path, self.files, self.root / 'bad-account')
+            manifest.resolved_inputs(altered, altered['conversions'][0])
         manifest.write(self.path, self.document)
         self.selection['selected_candidate_id'] = 'other'
         self.ledger.write_text(json.dumps({'selections': [self.selection]}))
@@ -149,6 +147,24 @@ class ManifestWorkflowTest(unittest.TestCase):
         self.assertEqual(manifest.fingerprint(self.document, conversion), before)
         with (self.code/'lib/parquet.py').open('a') as stream:
             stream.write('\n# relevant code change\n')
+        self.assertNotEqual(manifest.fingerprint(self.document, conversion), before)
+
+    def test_relative_imports_and_explicit_dynamic_dependencies_invalidate_fingerprint(self):
+        conversion = self.document['conversions'][0]
+        layout = self.code/'fiscal/layouts/csv'
+        (layout/'__init__.py').write_text('')
+        (layout/'decoder.py').write_text('VALUE = 1\n')
+        code = layout/'convert.py'
+        code.write_text(code.read_text() + '\nfrom . import decoder\n')
+        before = manifest.fingerprint(self.document, conversion)
+        (layout/'decoder.py').write_text('VALUE = 2\n')
+        self.assertNotEqual(manifest.fingerprint(self.document, conversion), before)
+        extra = layout/'dictionary.json'
+        extra.write_text('{}')
+        conversion['dependencies'] = ['fiscal/layouts/csv/dictionary.json']
+        manifest.validate(self.document)
+        before = manifest.fingerprint(self.document, conversion)
+        extra.write_text('{"word":"new"}')
         self.assertNotEqual(manifest.fingerprint(self.document, conversion), before)
 
     def test_saved_table_keys_ownership_completeness_and_empty_confirmation(self):
@@ -198,8 +214,7 @@ class ManifestWorkflowTest(unittest.TestCase):
         local = {}
         sizes = {sha: Path(path).stat().st_size for sha, path in self.files.items()}
         for conversion, table in zip(document['conversions'], generated['tables'], strict=True):
-            conversion.update(converter='fiscal/layouts/retained/convert.py',
-                              options_schema='fiscal/layouts/retained/options.schema.json', dependencies=[])
+            conversion.update(converter='fiscal/layouts/retained/convert.py')
             conversion['options'] = {'objects': [{'table_id': table['table_id'],
                 'key': 'inputs/table/sha256/' + table['object']['sha256'],
                 'sha256': table['object']['sha256'], 'bytes': table['object']['bytes']}]}
@@ -267,9 +282,7 @@ class ManifestWorkflowTest(unittest.TestCase):
         import dbt_inputs
         from build_inputs import raw_path
         bindings = {'schema_version': 1, 'target': saved['target'], 'direction': saved['direction'],
-                    'tables': [{'table_id': table['table_id'], 'raw_path': raw_path(saved, owner, table),
-                                'declaration': {'definition_files': {'pipeline/dbt/models/example.sql':
-                                    {'bytes': 1, 'sha256': 'a'*64}}}}
+                    'tables': [{'table_id': table['table_id'], 'raw_path': 'statement/' + raw_path(saved, owner, table)}
                                for owner in saved['conversions'] for table in owner['expected_tables']]}
         before = self.path.read_bytes()
         dbt_inputs.write(bindings, saved)
@@ -299,8 +312,7 @@ class ManifestWorkflowTest(unittest.TestCase):
         bindings = {'schema_version': 1, 'target': document['target'], 'direction': document['direction'],
                     'tables': [{'table_id': table['table_id'], 'raw_path':
                         relative.replace('table=legal-setsu', 'table='+table['table_id']).replace(
-                            'edition='+sha, 'edition='+owner['inputs'][0]['sha256'])+'/data.parquet',
-                        'declaration': {}}
+                            'edition='+sha, 'edition='+owner['inputs'][0]['sha256'])+'/data.parquet'}
                         for owner in document['conversions'] for table in owner['expected_tables']]}
         entries = dbt_inputs.validate(bindings, document)
         binding = entries[expected['table_id']]
@@ -309,38 +321,17 @@ class ManifestWorkflowTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'scope'):
             dbt_inputs.validate(bindings, document)
 
-    def test_split_metadata_preserves_receipts_and_is_idempotent(self):
-        from build_inputs import raw_path
-        import dbt_inputs
-        from ingestion.fiscal.split_metadata import migrate
-        converted = convert(self.path, self.files, self.root/'candidate')
-        legacy = json.loads(Path(converted['candidate']).read_text())
-        legacy['schema_version'] = 1
-        for conversion in legacy['conversions']:
-            for table in conversion['expected_tables']:
-                table['legacy_path'] = raw_path(legacy, conversion, table).removesuffix('/data.parquet')
-                table['declaration'] = {'definition_files': {'pipeline/dbt/models/example.sql':
-                    {'bytes': 1, 'sha256': 'a'*64}}, 'approval_status': 'unconfirmed'}
-        fingerprints = manifest.fingerprints(legacy, runtimes={table['conversion_id']: table['runtime']
-                                                               for table in legacy['tables']})
-        for table in legacy['tables']:
-            table['input_fingerprint'] = fingerprints[table['conversion_id']]
-        self.path.write_text(json.dumps(legacy))
-        original_files = {path.name: manifest.sha_file(path) for path in (self.root/'candidate').glob('*.parquet')}
-        self.assertEqual(migrate([self.path], apply=True)['tables'], 2)
-        saved = manifest.read(self.path)
-        manifest.require_current(saved)
-        bindings = dbt_inputs.read(saved)
-        for previous, current in zip(legacy['tables'], saved['tables'], strict=True):
-            self.assertEqual({k:v for k,v in previous.items() if k != 'input_fingerprint'},
-                             {k:v for k,v in current.items() if k != 'input_fingerprint'})
-        for conversion in saved['conversions']:
-            for table in conversion['expected_tables']:
-                self.assertEqual(set(table), {'table_id'})
-                self.assertIn('definition_files', bindings[table['table_id']]['declaration'])
-        self.assertEqual(migrate([self.path], apply=True)['manifests'], 0)
-        self.assertEqual(original_files, {path.name: manifest.sha_file(path)
-                            for path in (self.root/'candidate').glob('*.parquet')})
+    def test_schema_rejects_redundant_input_fields_and_empty_dependencies(self):
+        for fields in ({'format': 'csv'}, {'scope': [{'account': '一般会計'}]}):
+            bad = deepcopy(self.document)
+            bad['conversions'][0]['inputs'][0].update(fields)
+            with self.assertRaises(jsonschema.ValidationError):
+                manifest.validate(bad)
+        for fields in ({'dependencies': []}, {'options_schema': 'fiscal/layouts/csv/options.schema.json'}):
+            bad = deepcopy(self.document)
+            bad['conversions'][0].update(fields)
+            with self.assertRaises(jsonschema.ValidationError):
+                manifest.validate(bad)
 
 
 if __name__ == '__main__':

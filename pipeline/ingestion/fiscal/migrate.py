@@ -4,45 +4,14 @@ from __future__ import annotations
 import argparse
 from collections import Counter, defaultdict
 from copy import deepcopy
-from functools import lru_cache
 import hashlib
 import json
-import re
 from pathlib import Path
 
 from ingestion.fiscal import manifest
 from ingestion.fiscal.run import table_receipt
 from ingestion.fiscal.storage import fetch, save, cleanup
 from ingestion.paths import PIPELINE
-
-
-@lru_cache(maxsize=1)
-def relocation_rules() -> tuple[re.Pattern, dict]:
-    mapping = json.loads(Path(__file__).with_name('legacy').joinpath('relocations.json').read_text())
-    replacements = {**mapping['files'], **mapping['modules']}
-    for old, new in mapping['files'].items():
-        # Only moved layout packages own directory aliases. Jurisdiction notes
-        # move into separate folders; their common parent must stay unchanged.
-        if (len(Path(old).parent.parts) > 3
-                and str(Path(old).parent) != 'pipeline/ingestion/fiscal/jurisdictions'):
-            replacements[str(Path(old).parent)] = str(Path(new).parent)
-    pattern = re.compile('(?:' + '|'.join(re.escape(old) for old in sorted(replacements, key=len, reverse=True))
-                         + r')(?![A-Za-z0-9_])')
-    return pattern, replacements
-
-
-def relocated_declaration(value: object) -> object:
-    """Move code references, preserving all fiscal values and original identities."""
-    pattern, replacements = relocation_rules()
-    def transform(item):
-        if isinstance(item, dict):
-            return {transform(key): transform(child) for key, child in item.items()}
-        if isinstance(item, list):
-            return [transform(child) for child in item]
-        if isinstance(item, str):
-            return pattern.sub(lambda match: replacements[match[0]], item)
-        return item
-    return transform(value)
 
 
 def selected_sources() -> dict[str, list[dict]]:
@@ -72,14 +41,13 @@ def table_id(entry: dict, scopes: list[dict]) -> str:
     return prefix + '-' + hashlib.sha256(role.encode()).hexdigest()[:16]
 
 
-def distinct_table_id(entry: dict, scopes: list[dict], conversions: list[dict]) -> str | None:
+def distinct_table_id(entry: dict, scopes: list[dict], owners: dict[str, set[str]]) -> str | None:
     """Keep assigned IDs, separating only explicitly different single accounts."""
     ident = table_id(entry, scopes)
-    owners = {conversion['id']: conversion for conversion in conversions}
     if ident not in owners:
         return ident
     accounts = {scope['account'] for scope in scopes}
-    previous = {scope['account'] for original in owners[ident]['inputs'] for scope in original['scope']}
+    previous = owners[ident]
     if (len(accounts) != 1 or len(previous) != 1 or accounts == previous
             or entry['source'].get('fund_label') not in accounts):
         return None
@@ -92,6 +60,7 @@ def plan(lock: dict) -> tuple[list[dict], dict]:
     index = selected_sources()
     documents = {}
     bindings = {}
+    assigned = defaultdict(dict)
     held = []
     for entry in lock['entries']:
         if entry['direction'] not in ('expenditure', 'revenue'):
@@ -122,19 +91,18 @@ def plan(lock: dict) -> tuple[list[dict], dict]:
         document = documents.setdefault(key, {'schema_version': 2, 'target': target,
                     'direction': entry['direction'], 'candidate_id': selection['selected_candidate_id'],
                     'status': 'planned', 'conversions': [], 'tables': []})
-        ident = distinct_table_id(entry, scopes, document['conversions'])
+        ident = distinct_table_id(entry, scopes, assigned[key])
         if ident is None:
             held.append({'path': entry['path'], 'reason': 'ambiguous_stable_table_identity'})
             continue
         document['conversions'].append({'id': ident, 'converter': 'fiscal/layouts/retained/convert.py',
-            'options_schema': 'fiscal/layouts/retained/options.schema.json', 'dependencies': [],
-            'inputs': [{'sha256': entry['originEdition'], 'format': file['format'], 'scope': scopes}],
+            'inputs': [{'sha256': entry['originEdition']}],
             'options': {'objects': [{'table_id': ident, **entry['table']}]},
             'expected_tables': [{'table_id': ident}]})
+        assigned[key][ident] = {scope['account'] for scope in scopes}
         binding = bindings.setdefault(key, {'schema_version': 1, 'target': target,
                                            'direction': entry['direction'], 'tables': []})
-        binding['tables'].append({'table_id': ident, 'raw_path': entry['path'] + '/data.parquet',
-                                 'declaration': relocated_declaration(entry['source'])})
+        binding['tables'].append({'table_id': ident, 'raw_path': entry['path'] + '/data.parquet'})
     result = sorted(documents.values(), key=lambda d: str(manifest.manifest_path(d['target'], d['direction'])))
     for document in result:
         manifest.validate(document)

@@ -1,4 +1,4 @@
-"""Keep dbt input paths and financial meanings outside ingestion manifests."""
+"""Bind saved ingestion tables to dbt input paths."""
 from __future__ import annotations
 
 import argparse

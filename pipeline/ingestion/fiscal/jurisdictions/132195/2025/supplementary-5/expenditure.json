@@ -13,27 +13,9 @@
     {
       "id": "supplementary-detail-faa4d2cb8197a7c8",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "fb3410da1de0c73cbaa51391c284b423422c2a9c8ccea23848022d39cf7501b0",
-          "format": "pdf",
-          "scope": [
-            {
-              "account": "一般会計",
-              "pages": [
-                [
-                  1,
-                  7
-                ],
-                [
-                  9,
-                  13
-                ]
-              ]
-            }
-          ]
+          "sha256": "fb3410da1de0c73cbaa51391c284b423422c2a9c8ccea23848022d39cf7501b0"
         }
       ],
       "options": {
@@ -57,7 +39,7 @@
     {
       "table_id": "supplementary-detail-faa4d2cb8197a7c8",
       "conversion_id": "supplementary-detail-faa4d2cb8197a7c8",
-      "input_fingerprint": "f571c20ab2b4251cba057926e527d0158a4c06c93b6d2d29d82baafb4c1ae3d4",
+      "input_fingerprint": "aa89ac48d7734978ac4a0053407006f199f9fd031a1917e1c9e552679c2ba198",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132195/2025/supplementary-5/expenditure/supplementary-detail-faa4d2cb8197a7c8.parquet",

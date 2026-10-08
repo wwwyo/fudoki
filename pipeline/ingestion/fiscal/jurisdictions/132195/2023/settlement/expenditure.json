@@ -12,59 +12,9 @@
     {
       "id": "raw-4e824ecd28e8eed4",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "ce231f9efe46850e20db1d6d6fd67f8793ceebf52d11f2984a5faaf9bd66bbbe",
-          "format": "pdf",
-          "scope": [
-            {
-              "account": "一般会計",
-              "pages": [
-                [
-                  52,
-                  116
-                ]
-              ]
-            },
-            {
-              "account": "介護保険特別会計",
-              "pages": [
-                [
-                  153,
-                  160
-                ]
-              ]
-            },
-            {
-              "account": "国民健康保険特別会計",
-              "pages": [
-                [
-                  122,
-                  132
-                ]
-              ]
-            },
-            {
-              "account": "後期高齢者医療特別会計",
-              "pages": [
-                [
-                  137,
-                  142
-                ]
-              ]
-            },
-            {
-              "account": "駐車場事業特別会計",
-              "pages": [
-                [
-                  164,
-                  165
-                ]
-              ]
-            }
-          ]
+          "sha256": "ce231f9efe46850e20db1d6d6fd67f8793ceebf52d11f2984a5faaf9bd66bbbe"
         }
       ],
       "options": {
@@ -88,7 +38,7 @@
     {
       "table_id": "raw-4e824ecd28e8eed4",
       "conversion_id": "raw-4e824ecd28e8eed4",
-      "input_fingerprint": "2d5d6bd447e03bee4a763e1b6af5f288a8a6a804e767a0b496db4fe5711e421a",
+      "input_fingerprint": "5722b4e111e38073eaab738ee6b8caa5f6734bbff37f642289c793777a67bc1d",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132195/2023/settlement/expenditure/raw-4e824ecd28e8eed4.parquet",

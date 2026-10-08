@@ -13,27 +13,9 @@
     {
       "id": "supplementary-detail-faa4d2cb8197a7c8",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "326e4253d67d5f556429d4e5185177d78dab7964e380c30963b02f8378a01b4b",
-          "format": "pdf",
-          "scope": [
-            {
-              "account": "介護保険特別会計",
-              "pages": [
-                [
-                  1,
-                  5
-                ],
-                [
-                  7,
-                  8
-                ]
-              ]
-            }
-          ]
+          "sha256": "326e4253d67d5f556429d4e5185177d78dab7964e380c30963b02f8378a01b4b"
         }
       ],
       "options": {
@@ -55,27 +37,9 @@
     {
       "id": "supplementary-detail-faa4d2cb8197a7c8-77bd4b62daa25a18",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "8e26a4d9b1ad042675fcec2f0baf3183bf7a8aca15d9cab9361c7baac033a650",
-          "format": "pdf",
-          "scope": [
-            {
-              "account": "国民健康保険特別会計",
-              "pages": [
-                [
-                  1,
-                  5
-                ],
-                [
-                  7,
-                  7
-                ]
-              ]
-            }
-          ]
+          "sha256": "8e26a4d9b1ad042675fcec2f0baf3183bf7a8aca15d9cab9361c7baac033a650"
         }
       ],
       "options": {
@@ -97,27 +61,9 @@
     {
       "id": "supplementary-detail-faa4d2cb8197a7c8-73b48db9930b012a",
       "converter": "fiscal/layouts/retained/convert.py",
-      "options_schema": "fiscal/layouts/retained/options.schema.json",
-      "dependencies": [],
       "inputs": [
         {
-          "sha256": "9277189d23e764818de172b619a61804fcebb94d12fed3d286d6ae8d207f2436",
-          "format": "pdf",
-          "scope": [
-            {
-              "account": "一般会計",
-              "pages": [
-                [
-                  1,
-                  6
-                ],
-                [
-                  8,
-                  10
-                ]
-              ]
-            }
-          ]
+          "sha256": "9277189d23e764818de172b619a61804fcebb94d12fed3d286d6ae8d207f2436"
         }
       ],
       "options": {
@@ -141,7 +87,7 @@
     {
       "table_id": "supplementary-detail-faa4d2cb8197a7c8",
       "conversion_id": "supplementary-detail-faa4d2cb8197a7c8",
-      "input_fingerprint": "88e902b7223df6328cbec6447ea0599e79b8c44001526bc84f7d8def9abe437a",
+      "input_fingerprint": "0a4ffd30932f35fab6953309bc8d9c066e3bbe3cabd1f90451f71454fe49a441",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132195/2025/supplementary-2/expenditure/supplementary-detail-faa4d2cb8197a7c8.parquet",
@@ -334,7 +280,7 @@
     {
       "table_id": "supplementary-detail-faa4d2cb8197a7c8-77bd4b62daa25a18",
       "conversion_id": "supplementary-detail-faa4d2cb8197a7c8-77bd4b62daa25a18",
-      "input_fingerprint": "660a40d5a6c46d380d688a70f9165340975acf0aa123442138db17a195633d2f",
+      "input_fingerprint": "cdfa00e1bee2aa7ac88e4c21407362e1f4a43b9b47b87aba3ecc2dd8d47b3cf9",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132195/2025/supplementary-2/expenditure/supplementary-detail-faa4d2cb8197a7c8-77bd4b62daa25a18.parquet",
@@ -527,7 +473,7 @@
     {
       "table_id": "supplementary-detail-faa4d2cb8197a7c8-73b48db9930b012a",
       "conversion_id": "supplementary-detail-faa4d2cb8197a7c8-73b48db9930b012a",
-      "input_fingerprint": "1ed68143c85b33af5dd9108be9874b974484da52ed6742cf3daa2ea177dfe224",
+      "input_fingerprint": "f84285e0340416bbb8564d50db3cdb2bc669952e390d2079d90c2f3658712bc9",
       "object": {
         "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132195/2025/supplementary-2/expenditure/supplementary-detail-faa4d2cb8197a7c8-73b48db9930b012a.parquet",
