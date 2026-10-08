@@ -2,6 +2,771 @@
   "jurisdiction": "132276",
   "name": "羽村市",
   "official_url": "https://www.city.hamura.tokyo.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "132276",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "r8-yosansyo",
+          "title": "令和8年度（2026年度）各会計予算書（一般会計・特別4会計）および公営企業会計当初予算（水道・下水道）",
+          "landing_url": "https://www.city.hamura.tokyo.jp/0000020481.html",
+          "inspected_at": "2026-10-07T16:00:12.000000+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20481/R8_01ippan_yosansyo.pdf",
+              "sha256": "71246f9922458d2b98beec96da7494a93933a3956f36ceac5dd2d8218a5500fa",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 68,
+                      "end": 371
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20481/R8_02kokuho_yosansyo.pdf",
+              "sha256": "81a9a0aaddf4f4db18026ba0b3cd8f89649d6a95d553a098c41cf68710524572",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 16,
+                      "end": 35
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20481/R8_03kouki_yosansyo.pdf",
+              "sha256": "401f29233247e00813365deb6b8929828a21bdbdf34656ff7092dd97810319ad",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 16,
+                      "end": 23
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20481/R8_04kaigo_yosansyo.pdf",
+              "sha256": "34ec51b2275ba09e3393d21878876a26bf6b97c5119673c75905655d149467d1",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 57
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20481/R8_05nishi_yosansyo.pdf",
+              "sha256": "811be6c8f592674216ce7a54c33148609aab9134d725ac5c69bfdeb5e6fb87e5",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "羽村市福生都市計画事業羽村駅西口土地区画整理事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 14,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20511/yosan_No.17.pdf",
+              "sha256": "08e9db9e8372d42528fd03e056455435b3b2acd61d0b156569bc2f9e4138dba8",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 5
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20511/yosan_No.18.pdf",
+              "sha256": "f33fa66a40d9f4567946313bc687826bf366c26d55e82f1a4f9fdbaaa06ff18b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度当初予算を全会計分選定。一般会計・国民健康保険事業会計・後期高齢者医療会計・介護保険事業会計・羽村市福生都市計画事業羽村駅西口土地区画整理事業会計は令和8年度予算ページ（0000020481.html）の各会計予算書PDF、水道事業会計・下水道事業会計は同ページからリンクされる公営企業会計予算ページ（0000020511.html）の当初予算PDF。一般会計・特別会計は歳入歳出予算事項別明細書の歳出部を範囲とし、偶数頁に款・項・目と本年度予算額・財源内訳、奇数頁に節・説明・金額（単位千円）が載る見開き形式。一般会計は物理68–371頁（印字62–365、後続の給与費明細書・債務負担行為調書・地方債調書を除外）、国保16–35頁・後期16–23頁・介護18–57頁・西口14–21頁（各冊後続の給与費明細書等を除外）。企業会計は予算実施計画の収益的支出（費用）と資本的支出を款・項・目・予定額（単位千円）で収録した4–5頁を範囲とし、同頁に収入明細も並ぶ。予算説明書（R8_yosansetumeisyo.pdf）目次で全会計7会計の掲載を照合し、他会計の欠落なし。歳入範囲は今回の選定対象外。予算説明書・予算の概要・わかりやすい最初の一歩等の解説資料は明細粒度を持たず選定しない。",
+      "selected_candidate_id": "r8-yosansyo",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r8-yosansyo",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132276/2026/initial-4.pdf",
+            "sha256": "71246f9922458d2b98beec96da7494a93933a3956f36ceac5dd2d8218a5500fa",
+            "final_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20481/R8_01ippan_yosansyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132276/2026/initial-6.pdf",
+            "sha256": "81a9a0aaddf4f4db18026ba0b3cd8f89649d6a95d553a098c41cf68710524572",
+            "final_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20481/R8_02kokuho_yosansyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132276/2026/initial-3.pdf",
+            "sha256": "401f29233247e00813365deb6b8929828a21bdbdf34656ff7092dd97810319ad",
+            "final_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20481/R8_03kouki_yosansyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132276/2026/initial-2.pdf",
+            "sha256": "34ec51b2275ba09e3393d21878876a26bf6b97c5119673c75905655d149467d1",
+            "final_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20481/R8_04kaigo_yosansyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132276/2026/initial-5.pdf",
+            "sha256": "811be6c8f592674216ce7a54c33148609aab9134d725ac5c69bfdeb5e6fb87e5",
+            "final_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20481/R8_05nishi_yosansyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132276/2026/initial-1.pdf",
+            "sha256": "08e9db9e8372d42528fd03e056455435b3b2acd61d0b156569bc2f9e4138dba8",
+            "final_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20511/yosan_No.17.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132276/2026/initial-7.pdf",
+            "sha256": "f33fa66a40d9f4567946313bc687826bf366c26d55e82f1a4f9fdbaaa06ff18b",
+            "final_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20511/yosan_No.18.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:00:56.962Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132276",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "r7-kessansyo",
+          "title": "令和7年度（2025年度）一般会計・特別会計歳入歳出決算書および水道・下水道事業会計決算書",
+          "landing_url": "https://www.city.hamura.tokyo.jp/0000001321.html",
+          "inspected_at": "2026-10-07T16:00:12.000000+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000001/1321/R7_kessansyo1.pdf",
+              "sha256": "0d1fd189cc9571587f98dd9ca12397e6e5459d0579803f827062a45336c0e1dd",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 72,
+                      "end": 363
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000001/1321/R7_kessansyo2.pdf",
+              "sha256": "071f0f31f92dc44303b93ab55920d00e5d8c83c12b5ce04ab81217594ee9b96e",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 24,
+                      "end": 39
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 60,
+                      "end": 65
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 88,
+                      "end": 119
+                    }
+                  ]
+                },
+                {
+                  "account": "羽村市福生都市計画事業羽村駅西口土地区画整理事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 138,
+                      "end": 143
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000021/21188/R7_kessansyo.pdf",
+              "sha256": "c2779e5b76d5d4fe4464b7b1b083a6d5bbbb20313b12cc0250bb63c8deac8c4f",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 34,
+                      "end": 35
+                    },
+                    {
+                      "start": 37,
+                      "end": 37
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000021/21112/R7_gesuikessansyo.pdf",
+              "sha256": "5d5b318f89e185b1970d1fb1e8dd47e406dcefe070eb15cb21ccf2c323845fe3",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 30,
+                      "end": 31
+                    },
+                    {
+                      "start": 33,
+                      "end": 33
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "最新公表決算は令和7年度（令和8年9月1日認定・提出）。一般会計・特別4会計は決算書ページ（0000001321.html）の歳入歳出決算書2冊、水道・下水道事業会計は上下水道事業ページの各決算概要ページ（0000021188.html・0000021112.html）掲載の決算書。一般会計・特別会計は歳入歳出決算事項別明細書の歳出部を範囲とし、偶数頁に款・項・目と予算現額（当初・補正・繰越・流用の内訳）および節の区分・金額、奇数頁に支出済額・翌年度繰越額・不用額・備考（単位円）が載る見開き形式で、左右両頁を対として確認済み。一般会計は物理72–363頁（印字68–359、後続の実質収支・財産に関する調書を除外）、特別会計は国保24–39・後期60–65・介護88–119・西口138–143頁。企業会計は附属明細書の収益費用明細書「支出」（款・項・目・節・金額・備考、単位円・消費税抜、決算額）と資本的収入支出明細書「支出」で、水道34–35頁と37頁、下水道30–31頁と33頁。損益計算書・貸借対照表・固定資産明細書・企業債明細書・注記表は歳出明細範囲に含めない。歳入範囲は対象外。",
+      "selected_candidate_id": "r7-kessansyo",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r7-kessansyo",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132276/2025/settlement-2.pdf",
+            "sha256": "0d1fd189cc9571587f98dd9ca12397e6e5459d0579803f827062a45336c0e1dd",
+            "final_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000001/1321/R7_kessansyo1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132276/2025/settlement-1.pdf",
+            "sha256": "071f0f31f92dc44303b93ab55920d00e5d8c83c12b5ce04ab81217594ee9b96e",
+            "final_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000001/1321/R7_kessansyo2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132276/2025/settlement-4.pdf",
+            "sha256": "c2779e5b76d5d4fe4464b7b1b083a6d5bbbb20313b12cc0250bb63c8deac8c4f",
+            "final_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000021/21188/R7_kessansyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132276/2025/settlement-3.pdf",
+            "sha256": "5d5b318f89e185b1970d1fb1e8dd47e406dcefe070eb15cb21ccf2c323845fe3",
+            "final_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000021/21112/R7_gesuikessansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:01:26.304Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132276",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "r8-hosei-01",
+          "title": "令和8年度 各会計補正予算書（第1号）：一般会計・特別4会計・下水道事業会計",
+          "landing_url": "https://www.city.hamura.tokyo.jp/0000020481.html",
+          "inspected_at": "2026-10-07T16:02:33.000000+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20481/08hosei01.pdf",
+              "sha256": "8627b4b33baebf067ba24de306efeb87814ebd1da25e23facf07670021ccda13",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20481/08kokuho01.pdf",
+              "sha256": "150e77c4375a170c6f5dae39bf218a2a9e1479249273052af69c0ee775bb1cf0",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 11
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20481/08kouki01.pdf",
+              "sha256": "d923da9358ebbfd6f225a89912d1213f8ba969693a2bbb282ab64713371c4fe7",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20481/08kaigo01.pdf",
+              "sha256": "1df1ebfdb3393c7c04eaf4ee6dd3d814589b7390ee862b0188d158d3f67974e2",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 17
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20481/08nisiguti01.pdf",
+              "sha256": "9cc2da2209ee6a0581157cf9989dc33aafc387c68385c9eec0d6328c8032254c",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "羽村市福生都市計画事業羽村駅西口土地区画整理事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 11
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20511/08gesui01.pdf",
+              "sha256": "ad8c8e25500c6ae7f3ea36a05a7c7cf3b46e259870850608984e80078668d4ad",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 6
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度予算ページ掲載の第1号補正予算書を選定。一般会計・特別4会計は歳入歳出予算補正事項別明細書の歳出部（款・項・目と補正前の額・補正額・財源内訳、見開きの節・説明・金額、単位千円）。下水道事業会計は実施計画明細書の収益的支出（款・項・目・節と既決予定額・補正予定額・計、単位千円）で6頁。水道事業会計の第1号（08suidou01.pdf）は債務負担行為限度額の補正のみで支出補正の款項目明細を持たず、歳出補正として要件を満たさないため候補に含めない。一般会計は給与費明細書（14頁以降）を範囲外とした。",
+      "selected_candidate_id": "r8-hosei-01",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r8-hosei-01",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132276/2026/supplementary-1-3.pdf",
+            "sha256": "8627b4b33baebf067ba24de306efeb87814ebd1da25e23facf07670021ccda13",
+            "final_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20481/08hosei01.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132276/2026/supplementary-1-1.pdf",
+            "sha256": "150e77c4375a170c6f5dae39bf218a2a9e1479249273052af69c0ee775bb1cf0",
+            "final_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20481/08kokuho01.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132276/2026/supplementary-1-6.pdf",
+            "sha256": "d923da9358ebbfd6f225a89912d1213f8ba969693a2bbb282ab64713371c4fe7",
+            "final_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20481/08kouki01.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132276/2026/supplementary-1-2.pdf",
+            "sha256": "1df1ebfdb3393c7c04eaf4ee6dd3d814589b7390ee862b0188d158d3f67974e2",
+            "final_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20481/08kaigo01.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132276/2026/supplementary-1-4.pdf",
+            "sha256": "9cc2da2209ee6a0581157cf9989dc33aafc387c68385c9eec0d6328c8032254c",
+            "final_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20481/08nisiguti01.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132276/2026/supplementary-1-5.pdf",
+            "sha256": "ad8c8e25500c6ae7f3ea36a05a7c7cf3b46e259870850608984e80078668d4ad",
+            "final_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20511/08gesui01.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:03:08.515Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132276",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "r8-hosei-02",
+          "title": "令和8年度 一般会計補正予算書（第2号）",
+          "landing_url": "https://www.city.hamura.tokyo.jp/0000020481.html",
+          "inspected_at": "2026-10-07T16:02:33.000000+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20481/08hosei02.pdf",
+              "sha256": "eb6e04e3e2744c102518426ed1af44e3635e7707929b06f32d4e01f72d5a90fe",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 14,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度予算ページ掲載の一般会計第2号補正予算書を選定。歳入歳出予算補正事項別明細書の歳出部（款・項・目と補正前の額・補正額・財源内訳、見開きの節・説明・金額、単位千円）を14–21頁とし、後続の給与費明細書（22頁以降）を除外。第2号の他会計補正予算書は公式掲載一覧にない。",
+      "selected_candidate_id": "r8-hosei-02",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r8-hosei-02",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132276/2026/supplementary-2.pdf",
+            "sha256": "eb6e04e3e2744c102518426ed1af44e3635e7707929b06f32d4e01f72d5a90fe",
+            "final_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20481/08hosei02.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:03:11.440Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132276",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "r8-hosei-03",
+          "title": "令和8年度 一般会計補正予算書（第3号）",
+          "landing_url": "https://www.city.hamura.tokyo.jp/0000020481.html",
+          "inspected_at": "2026-10-07T16:02:33.000000+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20481/08hosei03.pdf",
+              "sha256": "94f113c7e678d7e441bf3f73907e425da8ca1fbc20bf0fc621e4a008c3fbc476",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 16,
+                      "end": 31
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度予算ページ掲載の一般会計第3号補正予算書を選定。歳入歳出予算補正事項別明細書の歳出部（款・項・目と補正前の額・補正額・財源内訳、見開きの節・説明・金額、単位千円）を16–31頁とし、後続の給与費明細書（32頁以降）・債務負担行為・地方債調書を除外。第3号の他会計補正予算書は公式掲載一覧にない。",
+      "selected_candidate_id": "r8-hosei-03",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r8-hosei-03",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132276/2026/supplementary-3.pdf",
+            "sha256": "94f113c7e678d7e441bf3f73907e425da8ca1fbc20bf0fc621e4a008c3fbc476",
+            "final_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20481/08hosei03.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:03:14.462Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132276",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "r6-kessansyo",
+          "title": "令和6年度（2024年度）一般会計・特別会計歳入歳出決算書および水道・下水道事業会計決算書",
+          "landing_url": "https://www.city.hamura.tokyo.jp/0000001321.html",
+          "inspected_at": "2026-10-08T01:10:35.000000+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000001/1321/R6kessan-01.pdf",
+              "sha256": "62e02d51baff7156bcbaf9dfebf9509aea736f3d6b11f63ed275b9c05ed25f44",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 70,
+                      "end": 367
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000001/1321/R6kessan-02.pdf",
+              "sha256": "9a0e63093ebc6e8c7a079c05b7410c9b6bbc3bcb25787a56405d405a7a48ffa8",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 20,
+                      "end": 35
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 56,
+                      "end": 63
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 86,
+                      "end": 119
+                    }
+                  ]
+                },
+                {
+                  "account": "羽村市福生都市計画事業羽村駅西口土地区画整理事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 138,
+                      "end": 143
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20070/R6_kessansyo.pdf",
+              "sha256": "282b80a9f94861437f95f2fa1ce1a02933fa0a8842c8d60bf557ac6c00fd4022",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 34,
+                      "end": 35
+                    },
+                    {
+                      "start": 37,
+                      "end": 37
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20047/R6_gesuikessansyo.pdf",
+              "sha256": "ce3ebc43492e5083744c5193f80e9fae9123dfa360669f59989afd0ac57ed107",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 30,
+                      "end": 31
+                    },
+                    {
+                      "start": 33,
+                      "end": 33
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度決算（令和7年9月2日認定・提出、2025年公表）。2024年度の会計構成は一般会計・特別4会計（国民健康保険事業・後期高齢者医療・介護保険事業・羽村市福生都市計画事業羽村駅西口土地区画整理事業）・公営企業2会計（水道・下水道）で令和7年度と同じ。一般会計・特別会計は決算書一覧ページ（0000001321.html）の歳入歳出決算書2冊、水道・下水道事業会計は上下水道事業の執行状況の各決算概要ページ（0000020070.html・0000020047.html）掲載の決算書。一般会計・特別会計は歳入歳出決算事項別明細書の歳出部を範囲とし、偶数物理頁に款・項・目と予算現額（当初・補正・繰越・流用の内訳）および節の区分・金額、奇数頁に支出済額・翌年度繰越額・不用額・備考（単位円）が載る見開き形式で、左右両頁を対として描画確認済み。一般・特別会計の2冊は本文が文字コードを持たない描画（フォント・画像なし、テキスト抽出不可）のためpdf_type=scan。一般会計は物理70–367頁（印字68–365、後続の実質収支に関する調書・財産に関する調書を除外）、特別会計は国保20–35・後期56–63・介護86–119・西口138–143頁（各会計の歳入明細・決算書・調書を除外）。企業会計は附属明細書の収益費用明細書「支出」（款・項・目・節・金額、単位円・消費税抜、決算額）と資本的収入支出明細書「支出」で、水道34–35頁と37頁、下水道30–31頁と33頁。決算報告書・損益計算書・貸借対照表・キャッシュ・フロー計算書・固定資産明細書・企業債明細書・注記表は歳出明細範囲に含めない。歳入範囲は対象外。",
+      "selected_candidate_id": "r6-kessansyo",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r6-kessansyo",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132276/2024/settlement-2.pdf",
+            "sha256": "62e02d51baff7156bcbaf9dfebf9509aea736f3d6b11f63ed275b9c05ed25f44",
+            "final_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000001/1321/R6kessan-01.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132276/2024/settlement-3.pdf",
+            "sha256": "9a0e63093ebc6e8c7a079c05b7410c9b6bbc3bcb25787a56405d405a7a48ffa8",
+            "final_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000001/1321/R6kessan-02.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132276/2024/settlement-1.pdf",
+            "sha256": "282b80a9f94861437f95f2fa1ce1a02933fa0a8842c8d60bf557ac6c00fd4022",
+            "final_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20070/R6_kessansyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132276/2024/settlement-4.pdf",
+            "sha256": "ce3ebc43492e5083744c5193f80e9fae9123dfa360669f59989afd0ac57ed107",
+            "final_url": "https://www.city.hamura.tokyo.jp/cmsfiles/contents/0000020/20047/R6_gesuikessansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T01:11:16.796Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

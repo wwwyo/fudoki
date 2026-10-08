@@ -2,6 +2,639 @@
   "jurisdiction": "131211",
   "name": "足立区",
   "official_url": "https://www.city.adachi.tokyo.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "131211",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度足立区各会計予算・説明書（当初）",
+          "landing_url": "https://www.city.adachi.tokyo.jp/zaise/r1yosansyo.html",
+          "inspected_at": "2026-10-07T14:56:09+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.adachi.tokyo.jp/documents/45135/r8_yosan_setsumei.pdf",
+              "sha256": "15bea200ab90cae6596d262a181eb040df1b9f8ae2eb16f026dd036e9ce598e1",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 44,
+                      "end": 45
+                    },
+                    {
+                      "start": 99,
+                      "end": 181
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 218,
+                      "end": 219
+                    },
+                    {
+                      "start": 226,
+                      "end": 237
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 252,
+                      "end": 253
+                    },
+                    {
+                      "start": 263,
+                      "end": 273
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 292,
+                      "end": 293
+                    },
+                    {
+                      "start": 299,
+                      "end": 305
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書の公表ページ（/zaise/r1yosansyo.html）掲載の「令和8年度足立区各会計予算・説明書（当初）」1冊（物理318頁・文字PDF・印字頁=物理頁-6）を選定。議案第5〜8号と4会計の歳入歳出予算事項別明細書を収録し、目次（物理2-6頁）で会計・歳出の印字頁を確認。歳出は款・項・目名と本年度予算額（千円）・財源内訳を同一明細に持ち、続頁に節区分と事務事業の説明がある。歳出scopeは各会計の歳出予算款別財源別表（総括）と歳出予算明細：一般会計 物理44-45・99-181頁（印字38-39・93-175、第1款議会費〜第10款予備費、物理182頁〜給与費明細書）、国民健康保険特別会計 物理218-219・226-237頁（印字212-213・220-231、物理238頁〜給与費明細書）、介護保険特別会計 物理252-253・263-273頁（印字246-247・257-267、物理274頁〜給与費明細書）、後期高齢者医療特別会計 物理292-293・299-305頁（印字286-287・293-299、物理306頁〜給与費明細書）。会計は一般会計・国民健康保険特別会計・介護保険特別会計・後期高齢者医療特別会計の4会計のみで、目次の議案構成と補正予算一覧から他の特別会計・企業会計は存在しない。歳入は同一ファイル内にあるが今回は未確認のためscope外。CSV提供なし。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131211/2026/initial.pdf",
+            "sha256": "15bea200ab90cae6596d262a181eb040df1b9f8ae2eb16f026dd036e9ce598e1",
+            "final_url": "https://www.city.adachi.tokyo.jp/documents/45135/r8_yosan_setsumei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:56:23.456Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131211",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [],
+      "reason": "令和7年度（2025年度）各会計歳入歳出決算書・決算説明書は公式「各会計歳入歳出決算」ページ（/kaikei/kessan.html、更新日2025-10-30）に未掲載。同ページの詳細版は令和6年度が最新。令和7年度は「普通会計決算のあらまし」（/zaise/ku/kuse/zaise-k-r7futsu.html 掲載、PDF約28MB）のみ公表済みで、款項目・事業粒度の歳出明細を持たないため要件を満たさず未選定。詳細版が掲載され次第選定する。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "131211",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度足立区各会計歳入歳出決算説明書（歳出掲載分冊5〜14）",
+          "landing_url": "https://www.city.adachi.tokyo.jp/kaikei/kessan.html",
+          "inspected_at": "2026-10-07T14:56:09+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.adachi.tokyo.jp/documents/45137/5_setumeisyo.pdf",
+              "sha256": "4e565e182f27e639d56ad935f7e73d3e1a6c40d37ae02bc7ea5bf09917c39460",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 44
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.adachi.tokyo.jp/documents/45137/6_setumeisyo.pdf",
+              "sha256": "95c9eb05fce66cd9b054f47a6a5070451439f9a9ddef74f4b394f0f6fb2e61dd",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 44
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.adachi.tokyo.jp/documents/45137/7_setumeisyo.pdf",
+              "sha256": "e8fcc24c99b5dcbc322b65e6a3bc0fadd610347c8fa5a91fdcbf0513d1f63867",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 44
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.adachi.tokyo.jp/documents/45137/8_setumeisyo.pdf",
+              "sha256": "8b69ff35a4d97d785e645da2432ec34bc1ab39ac9e70313870ad8a7cda3ec549",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 44
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.adachi.tokyo.jp/documents/45137/9_setumeisyo.pdf",
+              "sha256": "54b1637061e9243672d0ff51913b6e474df0963b4e39fe5dc7224e753b1afe66",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 44
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.adachi.tokyo.jp/documents/45137/10_setumeisyo.pdf",
+              "sha256": "3030d34ff5186995f805cb78f4be54e116a9f9e13fd041083b0acdc116a3536f",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 44
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.adachi.tokyo.jp/documents/45137/11_setumeisyo.pdf",
+              "sha256": "59c98e1f1cb66b48c12b7db8428c44c3cd61bc972ada91032fdfd882f4532714",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.adachi.tokyo.jp/documents/45137/12_setumeisyo.pdf",
+              "sha256": "ae87d3c685876a800197b35f43bf01eba93ec1ea6276bda8bb3ff033d49c3994",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 7
+                    },
+                    {
+                      "start": 22,
+                      "end": 42
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.adachi.tokyo.jp/documents/45137/13_setumeisyo.pdf",
+              "sha256": "90e47d38c86b469347959af05f0d9c76ecbc7f53f2d2c5fb097814a5b2a61077",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 7
+                    },
+                    {
+                      "start": 20,
+                      "end": 38
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.adachi.tokyo.jp/documents/45137/14_setumeisyo.pdf",
+              "sha256": "68f76e902044d1ce1219a49d2f9c6d495d895d2ef347634d918dfd724517324c",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 7
+                    },
+                    {
+                      "start": 16,
+                      "end": 27
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "各会計歳入歳出決算ページ（/kaikei/kessan.html）掲載の「令和6年度各会計歳入歳出決算説明書」分冊1〜14のうち、歳出明細を持つ分冊5〜14（計10冊）を選定。全体目次（分冊1物理2-5頁）で印字頁を確認：一般会計歳出=印字186-455・節別一覧表456-462（分冊5-11。物理1頁の印字頁は順に186・230・274・318・362・406・450で、物理頁と印字頁は同じ番号ではない）、国民健康保険特別会計歳出=印字482-497・節別498-502（分冊12、物理頁=印字頁-460）、介護保険特別会計歳出=印字520-533・節別534-538（分冊13、物理頁=印字頁-500）、後期高齢者医療特別会計歳出=印字552-559・節別560-563（分冊14、物理頁=印字頁-536）。各会計の歳出款別予算決算対照表（特別会計は各分冊物理6-7頁）も歳出scopeに含める。歳出は「歳出事業別決算説明書」で、見開き左頁に款・項・目・節と事務事業名・予算現額・決算額（円）、右頁に翌年度繰越額・不用額・執行率と決算説明を持つ。表はベクタ描画で文字抽出不可（pdftotextは頁番号のみ）のためscan。法定の「各会計歳入歳出決算書」（44頁）は款・項総括のみで目・事業を持たず不採用。会計は一般会計・国民健康保険特別会計・介護保険特別会計・後期高齢者医療特別会計の4会計のみ（議案第88〜91号、目次に他の特別会計・企業会計なし）。歳入は同一分冊内にあるが今回は未確認のためscope外。決算附属書類1-7と決算概要参考資料は附則的な調書・概要で歳出明細の代替とならず候補外。CSV提供なし。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131211/2024/settlement-2.pdf",
+            "sha256": "4e565e182f27e639d56ad935f7e73d3e1a6c40d37ae02bc7ea5bf09917c39460",
+            "final_url": "https://www.city.adachi.tokyo.jp/documents/45137/5_setumeisyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131211/2024/settlement-8.pdf",
+            "sha256": "95c9eb05fce66cd9b054f47a6a5070451439f9a9ddef74f4b394f0f6fb2e61dd",
+            "final_url": "https://www.city.adachi.tokyo.jp/documents/45137/6_setumeisyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131211/2024/settlement-10.pdf",
+            "sha256": "e8fcc24c99b5dcbc322b65e6a3bc0fadd610347c8fa5a91fdcbf0513d1f63867",
+            "final_url": "https://www.city.adachi.tokyo.jp/documents/45137/7_setumeisyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131211/2024/settlement-6.pdf",
+            "sha256": "8b69ff35a4d97d785e645da2432ec34bc1ab39ac9e70313870ad8a7cda3ec549",
+            "final_url": "https://www.city.adachi.tokyo.jp/documents/45137/8_setumeisyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131211/2024/settlement-3.pdf",
+            "sha256": "54b1637061e9243672d0ff51913b6e474df0963b4e39fe5dc7224e753b1afe66",
+            "final_url": "https://www.city.adachi.tokyo.jp/documents/45137/9_setumeisyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131211/2024/settlement-1.pdf",
+            "sha256": "3030d34ff5186995f805cb78f4be54e116a9f9e13fd041083b0acdc116a3536f",
+            "final_url": "https://www.city.adachi.tokyo.jp/documents/45137/10_setumeisyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131211/2024/settlement-4.pdf",
+            "sha256": "59c98e1f1cb66b48c12b7db8428c44c3cd61bc972ada91032fdfd882f4532714",
+            "final_url": "https://www.city.adachi.tokyo.jp/documents/45137/11_setumeisyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131211/2024/settlement-9.pdf",
+            "sha256": "ae87d3c685876a800197b35f43bf01eba93ec1ea6276bda8bb3ff033d49c3994",
+            "final_url": "https://www.city.adachi.tokyo.jp/documents/45137/12_setumeisyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131211/2024/settlement-7.pdf",
+            "sha256": "90e47d38c86b469347959af05f0d9c76ecbc7f53f2d2c5fb097814a5b2a61077",
+            "final_url": "https://www.city.adachi.tokyo.jp/documents/45137/13_setumeisyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131211/2024/settlement-5.pdf",
+            "sha256": "68f76e902044d1ce1219a49d2f9c6d495d895d2ef347634d918dfd724517324c",
+            "final_url": "https://www.city.adachi.tokyo.jp/documents/45137/14_setumeisyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:57:01.683Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131211",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度足立区一般会計補正予算・説明書（一般会計1号）",
+          "landing_url": "https://www.city.adachi.tokyo.jp/zaise/r1yosansyo.html",
+          "inspected_at": "2026-10-07T16:39:20.959411+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.adachi.tokyo.jp/documents/45135/r8_1_yosan_setsumei.pdf",
+              "sha256": "2e94645713eddcdb3386bdf09e8c33a8ebf4adf7fdaddf4749059211c02ea52a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 13
+                    },
+                    {
+                      "start": 16,
+                      "end": 18
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書の公表ページ（/zaise/r1yosansyo.html）掲載の補正予算・説明書を選定。一般会計補正第1号（第52号議案）1冊（物理20頁・文字PDF・印字頁=物理頁-4）。歳出scopeは歳出予算款別財源別表（物理12-13頁・印字8-9）と歳出予算明細（物理16-18頁・印字12-14、第3款民生費・第5款環境衛生費のみが補正対象）。款・項・目名と補正前の額・補正額・計（千円）を同一明細に持ち、補正額の財源内訳・節区分・事業説明が続く。物理19頁は空白、20頁は印刷部数注記。歳入は同一ファイル内にあるが今回は未確認のためscope外。概要PDF（別掲載）は款別総括のみで明細を持たず不採用。CSV提供なし。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131211/2026/supplementary-1.pdf",
+            "sha256": "2e94645713eddcdb3386bdf09e8c33a8ebf4adf7fdaddf4749059211c02ea52a",
+            "final_url": "https://www.city.adachi.tokyo.jp/documents/45135/r8_1_yosan_setsumei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:39:34.115Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131211",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度足立区各会計補正予算・説明書（一般会計2号・介護保険特別会計1号）",
+          "landing_url": "https://www.city.adachi.tokyo.jp/zaise/r1yosansyo.html",
+          "inspected_at": "2026-10-07T16:39:20.959411+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.adachi.tokyo.jp/documents/45135/r8_2_yosan_setsumei.pdf",
+              "sha256": "85860377bca88a0ed4ce29b98d50bd25cc8ba223e3aa256c53795633d9317b94",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 19
+                    },
+                    {
+                      "start": 25,
+                      "end": 35
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 42,
+                      "end": 43
+                    },
+                    {
+                      "start": 47,
+                      "end": 49
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書の公表ページ（/zaise/r1yosansyo.html）掲載の補正予算・説明書を選定。一般会計補正第2号（第53号議案）と介護保険特別会計補正第1号（第54号議案）を収録する1冊（物理52頁・文字PDF・印字頁=物理頁-4）。歳出scope：一般会計は歳出予算款別財源別表（物理18-19頁・印字14-15）と歳出予算明細（物理25-35頁・印字21-31）、介護保険特別会計は款別財源別表（物理42-43頁・印字38-39）と歳出予算明細（物理47-49頁・印字43-45、物理50-51頁は空白）。款・項・目名と補正前の額・補正額・計（千円）を同一明細に持つ。見開きで物理頁と印字頁が2対1に対応する頁あり（物理48-49頁=印字44-45）。歳入は同一ファイル内にあるが今回は未確認のためscope外。概要PDF（別掲載）は款別総括のみで明細を持たず不採用。CSV提供なし。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131211/2026/supplementary-2.pdf",
+            "sha256": "85860377bca88a0ed4ce29b98d50bd25cc8ba223e3aa256c53795633d9317b94",
+            "final_url": "https://www.city.adachi.tokyo.jp/documents/45135/r8_2_yosan_setsumei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:39:37.068Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131211",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度足立区一般会計補正予算・説明書（一般会計3号）",
+          "landing_url": "https://www.city.adachi.tokyo.jp/zaise/r1yosansyo.html",
+          "inspected_at": "2026-10-07T16:39:20.959411+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.adachi.tokyo.jp/documents/45135/r8_3_yosan_setsumei.pdf",
+              "sha256": "0a2207594d4a35a35a73c39d47e4e0b23c9d1bd85499543b412ab38e01dbf349",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 13
+                    },
+                    {
+                      "start": 15,
+                      "end": 16
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書の公表ページ（/zaise/r1yosansyo.html）掲載の補正予算・説明書を選定。一般会計補正第3号（第77号議案）1冊（物理18頁・文字PDF・印字頁=物理頁-4）。歳出scopeは歳出予算款別財源別表（物理12-13頁・印字8-9）と歳出予算明細（物理15-16頁・印字11-12、第3款民生費・第4款産業経済費のみが補正対象）。款・項・目名と補正前の額・補正額・計（千円）を同一明細に持つ。物理17頁は空白、18頁は印刷部数注記。歳入は同一ファイル内にあるが今回は未確認のためscope外。概要PDF（別掲載）は款別総括のみで明細を持たず不採用。CSV提供なし。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131211/2026/supplementary-3.pdf",
+            "sha256": "0a2207594d4a35a35a73c39d47e4e0b23c9d1bd85499543b412ab38e01dbf349",
+            "final_url": "https://www.city.adachi.tokyo.jp/documents/45135/r8_3_yosan_setsumei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:39:39.769Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131211",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度足立区各会計補正予算・説明書（一般会計4号・国民健康保険特別会計1号・介護保険特別会計2号・後期高齢者医療特別会計1号）",
+          "landing_url": "https://www.city.adachi.tokyo.jp/zaise/r1yosansyo.html",
+          "inspected_at": "2026-10-07T16:39:20.959411+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.adachi.tokyo.jp/documents/45135/r8_4_yosan_setsumei.pdf",
+              "sha256": "ebe498d10e535f658607673f4d199ad967e05e1327ca639396f9a9954e40acf7",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 32,
+                      "end": 33
+                    },
+                    {
+                      "start": 41,
+                      "end": 57
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 68,
+                      "end": 69
+                    },
+                    {
+                      "start": 71,
+                      "end": 71
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 78,
+                      "end": 79
+                    },
+                    {
+                      "start": 82,
+                      "end": 85
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書の公表ページ（/zaise/r1yosansyo.html）掲載の補正予算・説明書を選定。一般会計補正第4号（第82号議案）・国民健康保険特別会計補正第1号（第83号議案）・介護保険特別会計補正第2号（第84号議案）・後期高齢者医療特別会計補正第1号（第85号議案）を収録する1冊（物理94頁・文字PDF・印字頁=物理頁-4）。歳出scope：一般会計は歳出予算款別財源別表（物理32-33頁・印字28-29）と歳出予算明細（物理41-57頁・印字37-53、物理58頁〜債務負担行為調書）、国民健康保険特別会計は款別財源別表（物理68-69頁・印字64-65）と歳出予算明細（物理71頁・印字67、物理72頁は調書）、介護保険特別会計は款別財源別表（物理78-79頁・印字74-75）と歳出予算明細（物理82-85頁・印字78-81、物理86頁〜調書）。款・項・目名と補正前の額・補正額・計（千円）を同一明細に持ち、財源内訳・節・事業説明が続く。後期高齢者医療特別会計補正第1号は債務負担行為の追加のみで歳出の補正明細を持たない（議案第85号・物理27-28頁と調書 物理90-91頁で確認）ため歳出scopeなし。歳入は同一ファイル内にあるが今回は未確認のためscope外。概要PDF（別掲載）は款別総括のみで明細を持たず不採用。CSV提供なし。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131211/2026/supplementary-4.pdf",
+            "sha256": "ebe498d10e535f658607673f4d199ad967e05e1327ca639396f9a9954e40acf7",
+            "final_url": "https://www.city.adachi.tokyo.jp/documents/45135/r8_4_yosan_setsumei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:39:42.881Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

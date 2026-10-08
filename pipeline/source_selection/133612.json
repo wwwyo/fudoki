@@ -2,6 +2,138 @@
   "jurisdiction": "133612",
   "name": "大島町",
   "official_url": "https://www.town.oshima.tokyo.jp/",
-  "selections": [],
-  "unresolved_candidates": []
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "133612",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "initial-2026-yosan-shiryo",
+          "title": "令和8年度当初予算資料（№1・2026年4月）",
+          "landing_url": "https://www.town.oshima.tokyo.jp/soshiki/seisaku/yosan12.html",
+          "inspected_at": "2026-10-07T16:27:08+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.oshima.tokyo.jp/uploaded/attachment/8390.pdf",
+              "sha256": "ee12416a0ecd6db13e7bb24389aba1474209363b5df0550aab6e2ffb26eb20a6",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "一部会計・一部歳出の部分選定。8390.pdf（令和8年度当初予算資料、全9頁、文字PDF、単位千円）の事業等一覧表（物理7-9頁）は款の区分（総務・民生・衛生・農林水産・商工・土木・教育費）ごとの事業名と事業費・財源内訳が同一明細で対応し、一覧表合計2,306,717千円と一般財源238,735千円が同資料の一般会計性質別歳出の令和8年度普通建設事業（2,306,717／一般財源238,735）と一致した。令和8年度当初予算資料に載る事業費列として部分選定する。合計一致は補助検査であり、金額段階や複数年費用の意味をそれだけで確定したものではない。原典列名「事業費」と掲載文脈を保持する。不足: 一般会計でも普通建設事業費以外（人件費・物件費・扶助費・公債費等、歳出の約76%）の事業・目別内訳はなく、款（目的別14区分、物理3頁）・性質別（4-5頁）の総額のみ。国民健康保険事業勘定・介護保険事業勘定・後期高齢者医療・泉津/野増/差木地財産区・水道事業・公共浄化槽整備推進事業の各会計は会計別総額1行のみで明細資料が未掲載。歳入は未確認。今回確認した掲載先は/soshiki/seisaku/yosan12.html等。他の予算明細資料の掲載リンクは確認できなかった。",
+      "selected_candidate_id": "initial-2026-yosan-shiryo",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "initial-2026-yosan-shiryo",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133612/2026/initial.pdf",
+            "sha256": "ee12416a0ecd6db13e7bb24389aba1474209363b5df0550aab6e2ffb26eb20a6",
+            "final_url": "https://www.town.oshima.tokyo.jp/uploaded/attachment/8390.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:28:02.741Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133612",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "settlement-2024-kessan-shiryo",
+          "title": "令和6年度各会計決算資料",
+          "landing_url": "https://www.town.oshima.tokyo.jp/soshiki/seisaku/yosan12.html",
+          "inspected_at": "2026-10-08T01:15:35.074800+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.oshima.tokyo.jp/uploaded/attachment/8121.pdf",
+              "sha256": "89a8d736c8f37d56b65df08cfa0e7f2be1f4b575645f8ca8856fe3d94d33bf14",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 11
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "一般会計の一部歳出のみの部分選定。8121.pdf（令和6年度各会計決算資料、全25頁、文字PDF、単位千円）の建設事業等一覧表（物理8-11頁、目次では7番）は款の区分ごとの事業名と事業費・財源内訳が同一明細で対応し、一覧表合計2,540,306千円が同資料の普通会計性質別決算の令和6年度普通建設事業費（2,540,306）と一致した。令和6年度各会計決算資料に載る事業費列として部分選定する。合計一致は補助検査であり、金額の意味をそれだけで確定したものではない。原典列名「事業費」と掲載文脈を保持する。令和6年度の会計構成は同資料「会計別決算額」より、一般会計＋特別会計（国民健康保険事業勘定・介護保険事業勘定・後期高齢者医療・泉津財産区・野増財産区・差木地財産区）＋公営企業（水道事業・公共浄化槽整備推進事業）で、8121.pdfは全会計を掲載するが各特別・企業会計は歳入/歳出/差引1行の総額のみ。不足: 一般会計は普通建設事業以外（人件費・物件費・扶助費・公債費等、歳出の約74%）の目・事業別内訳がなく、目的別款（物理5頁）・性質別（6頁）の総括額のみ（総括款項額は目/事業明細として代替しない）。特別会計各勘定・財産区・水道事業・公共浄化槽整備推進事業の歳出明細原典（款項目別決算書・費用明細・資本的支出明細）は未掲載。確認済みの掲載入口（2026-10-08実測）: 大島町財政状況の公表（/soshiki/seisaku/yosan12.html）には令和6年度は決算資料8121.pdfのみで、財政状況資料集・財務4表・注記・附属明細書は令和5年度分まで掲載（令和6年度分は未掲載）。議会事務局は定例会・臨時会の結果報告PDFと議会だより（議員別の一般質問等PDF、/book/list/の電子ブック）のみで、令和6年度決算の認定議案本文・決算書・決算審査資料の掲載を確認できず（令和7年第3回9月定例会結果8012.pdfで認定議案の存在を確認できるが本文なし）。会計室ページに資料なし、監査ページ（/life/4/36/105/）に決算審査意見等の掲載なし、行政評価・事業評価・主要施策成果説明書の掲載ページなし。水道環境課の経営比較分析表（1298.pdf）は平成27年度版のみで令和6年度分なし。東京都オープンデータカタログに大島町の令和6年度決算資料なし。総括級の資料しか確認できない範囲のため部分選定で止める。歳入は未確認。",
+      "selected_candidate_id": "settlement-2024-kessan-shiryo",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "settlement-2024-kessan-shiryo",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133612/2024/settlement.pdf",
+            "sha256": "89a8d736c8f37d56b65df08cfa0e7f2be1f4b575645f8ca8856fe3d94d33bf14",
+            "final_url": "https://www.town.oshima.tokyo.jp/uploaded/attachment/8121.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:28:05.835Z"
+      }
+    }
+  ],
+  "unresolved_candidates": [
+    {
+      "candidate": {
+        "id": "supplementary-r7-no4",
+        "title": "令和7年度3月補正予算資料（№4・2026年3月）",
+        "landing_url": "https://www.town.oshima.tokyo.jp/soshiki/seisaku/yosan12.html",
+        "inspected_at": "2026-10-07T16:27:08+00:00",
+        "files": [
+          {
+            "download_url": "https://www.town.oshima.tokyo.jp/uploaded/attachment/8387.pdf",
+            "sha256": "c3a97f12fc4e3b379a3b8d574e4c5d837ddfc6a27a38649813e25c6bba535ee4",
+            "format": "pdf",
+            "pdf_type": "text",
+            "scope": [
+              {
+                "account": "一般会計",
+                "direction": "expenditure",
+                "pages": [
+                  {
+                    "start": 7,
+                    "end": 10
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "missing": [
+        "amendment_number"
+      ],
+      "reason": "令和7年度予算資料№4・3月公表。普通建設事業の事業名と補正後の事業費を確認したが、PDF自体には法定補正号数がない。3月議会が一般会計補正第3号を扱ったことと公表資料№4の時期は符合するものの、資料との直接の対応は未確認のため号数を確定せず候補として保持。監督前にR2 supplementary-3.pdfへ保存済みだが、その保存は選定の根拠にせずreceiptはprivateの修正前台帳に保持。"
+    }
+  ]
 }

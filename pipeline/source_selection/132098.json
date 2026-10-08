@@ -1,7 +1,367 @@
 {
-  "jurisdiction": "132098",
-  "name": "町田市",
-  "official_url": "https://www.city.machida.tokyo.jp/",
-  "selections": [],
-  "unresolved_candidates": []
+ "jurisdiction": "132098",
+ "name": "町田市",
+ "official_url": "https://www.city.machida.tokyo.jp/",
+ "selections": [
+  {
+   "target": {
+    "jurisdiction": "132098",
+    "fiscal_year": 2026,
+    "document_kind": "initial"
+   },
+   "candidates": [
+    {
+     "id": "representative",
+     "title": "令和8年度（2026年度）予算書",
+     "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/tousyo_26/2026yosansyo.html",
+     "inspected_at": "2026-10-07T15:43:34.403149+00:00",
+     "files": [
+      {
+       "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/tousyo_26/2026yosansyo.files/R8_yosansyo_2.pdf",
+       "sha256": "f9e99acf44bde0c045f1d5a8ded72b318ee7a8461e01de0efaed231ee74e750e",
+       "format": "pdf",
+       "pdf_type": "text",
+       "scope": [
+        {
+         "account": "一般会計",
+         "direction": "expenditure",
+         "pages": [
+          {
+           "start": 25,
+           "end": 25
+          },
+          {
+           "start": 82,
+           "end": 169
+          }
+         ]
+        },
+        {
+         "account": "国民健康保険事業会計",
+         "direction": "expenditure",
+         "pages": [
+          {
+           "start": 195,
+           "end": 195
+          },
+          {
+           "start": 200,
+           "end": 204
+          }
+         ]
+        },
+        {
+         "account": "介護保険事業会計",
+         "direction": "expenditure",
+         "pages": [
+          {
+           "start": 221,
+           "end": 221
+          },
+          {
+           "start": 226,
+           "end": 230
+          }
+         ]
+        },
+        {
+         "account": "後期高齢者医療事業会計",
+         "direction": "expenditure",
+         "pages": [
+          {
+           "start": 247,
+           "end": 247
+          },
+          {
+           "start": 250,
+           "end": 252
+          }
+         ]
+        },
+        {
+         "account": "鶴川駅南土地区画整理事業会計",
+         "direction": "expenditure",
+         "pages": [
+          {
+           "start": 267,
+           "end": 267
+          },
+          {
+           "start": 270,
+           "end": 271
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "download_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/2026machidagesuiyosan.pdf",
+       "sha256": "ad69f98dd692de315210ae4d0c2a0088a3b91eae94d301825175be96b35bc616",
+       "format": "pdf",
+       "pdf_type": "text",
+       "scope": [
+        {
+         "account": "下水道事業会計",
+         "direction": "expenditure",
+         "pages": [
+          {
+           "start": 9,
+           "end": 9
+          },
+          {
+           "start": 11,
+           "end": 11
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "download_url": "https://machida-city-hospital-tokyo.jp/media/yosan_2026.pdf",
+       "sha256": "3ad24458201f1c6d7990f80eb0fc4aee52ac03c9dac476d75fd441d8191e9087",
+       "format": "pdf",
+       "pdf_type": "text",
+       "scope": [
+        {
+         "account": "病院事業会計",
+         "direction": "expenditure",
+         "pages": [
+          {
+           "start": 6,
+           "end": 7
+          },
+          {
+           "start": 22,
+           "end": 26
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "reason": "令和8年度予算書（一般会計＋国民健康保険事業・介護保険事業・後期高齢者医療事業・鶴川駅南土地区画整理事業の4特別会計）と、別掲載の企業会計予算書2冊（下水道事業会計・病院事業会計）の計3冊を選定。当初予算の最新は令和8年度で7会計を3冊に収録。一般・特別会計分：歳出は歳入歳出予算事項別明細書3.歳出に款・項・目＋節（経済分類）を同一明細で対応付け、本年度予算額（千円）・前年度予算額・財源内訳・節内訳を併記。歳出scope（総括＋明細）：一般 25,82-169 / 国保 195,200-204 / 介護 221,226-230 / 後期 247,250-252 / 鶴川 267,270-271。物理頁=印字頁。下水道事業会計予算書（48頁）：予算実施計画が収益的支出（款・項・目＋予定額・備考の事業説明、単位千円）を物理頁9、資本的支出を物理頁11に掲載。総則第3・4条（物理頁3-4）に款項級の収支要約あり。給与費明細書（13-18）は歳出明細と区別してscope外。病院事業会計予算書（29頁）：予算実施計画が収益的支出を物理頁6後半-7、資本的支出を物理頁7に款・項・目＋予定額（千円）で掲載。実施計画内訳が支出の節級内訳を物理頁22-26（26に資本的支出内訳）に掲載。消費税は税抜処理（注記28頁）。企業会計の金額列名は「予定額」で歳出予算額と同一視せず原典表記を保持。歳入範囲・補正は未確認。",
+   "selected_candidate_id": "representative",
+   "archive": {
+    "bucket": "fudoki-inputs",
+    "candidate_id": "representative",
+    "files": [
+     {
+      "key": "fiscal/source-selection/132098/2026/initial-3.pdf",
+      "sha256": "f9e99acf44bde0c045f1d5a8ded72b318ee7a8461e01de0efaed231ee74e750e",
+      "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/tousyo_26/2026yosansyo.files/R8_yosansyo_2.pdf"
+     },
+     {
+      "key": "fiscal/source-selection/132098/2026/initial-2.pdf",
+      "sha256": "ad69f98dd692de315210ae4d0c2a0088a3b91eae94d301825175be96b35bc616",
+      "final_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/2026machidagesuiyosan.pdf"
+     },
+     {
+      "key": "fiscal/source-selection/132098/2026/initial-1.pdf",
+      "sha256": "3ad24458201f1c6d7990f80eb0fc4aee52ac03c9dac476d75fd441d8191e9087",
+      "final_url": "https://machida-city-hospital-tokyo.jp/media/yosan_2026.pdf"
+     }
+    ],
+    "archived_at": "2026-10-07T15:45:19.687Z"
+   }
+  },
+  {
+   "target": {
+    "jurisdiction": "132098",
+    "fiscal_year": 2024,
+    "document_kind": "settlement"
+   },
+   "candidates": [
+    {
+     "id": "representative",
+     "title": "令和6年度（2024年度）決算書",
+     "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/cost/kesan/kessansho.html",
+     "inspected_at": "2026-10-08T01:08:51.391063+00:00",
+     "files": [
+      {
+       "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/cost/kesan/kessansho.files/2024_kessansyo.pdf",
+       "sha256": "bc81d4ddd0bdb97198d93761c2e40232674c9b1c4e4ffc90dd2e0ec0ab7517f5",
+       "format": "pdf",
+       "pdf_type": "text",
+       "scope": [
+        {
+         "account": "一般会計",
+         "direction": "expenditure",
+         "pages": [
+          {
+           "start": 80,
+           "end": 187
+          }
+         ]
+        },
+        {
+         "account": "国民健康保険事業会計",
+         "direction": "expenditure",
+         "pages": [
+          {
+           "start": 203,
+           "end": 208
+          }
+         ]
+        },
+        {
+         "account": "介護保険事業会計",
+         "direction": "expenditure",
+         "pages": [
+          {
+           "start": 227,
+           "end": 233
+          }
+         ]
+        },
+        {
+         "account": "後期高齢者医療事業会計",
+         "direction": "expenditure",
+         "pages": [
+          {
+           "start": 248,
+           "end": 249
+          }
+         ]
+        },
+        {
+         "account": "鶴川駅南土地区画整理事業会計",
+         "direction": "expenditure",
+         "pages": [
+          {
+           "start": 262,
+           "end": 263
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "download_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/2024machidagesuikessann.pdf",
+       "sha256": "f4ab2a37fe04c8dd1816cf7a9eac47ced147025ff6b5075b7b415cf25f364e10",
+       "format": "pdf",
+       "pdf_type": "text",
+       "scope": [
+        {
+         "account": "下水道事業会計",
+         "direction": "expenditure",
+         "pages": [
+          {
+           "start": 6,
+           "end": 7
+          },
+          {
+           "start": 40,
+           "end": 43
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "download_url": "https://machida-city-hospital-tokyo.jp/media/kesan2024.pdf",
+       "sha256": "0a99db4dc5a5088d687748a1f17f3b2c7df8e5dbeadfa97bfe08cfed7373f45d",
+       "format": "pdf",
+       "pdf_type": "text",
+       "scope": [
+        {
+         "account": "町田市病院事業会計",
+         "direction": "expenditure",
+         "pages": [
+          {
+           "start": 4,
+           "end": 7
+          },
+          {
+           "start": 19,
+           "end": 21
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "reason": "令和6年度歳入歳出決算書（一般会計＋4特別会計）、下水道事業会計決算書、病院事業会計決算書の計3冊を選定。一般・特別会計の最新決算は令和6年度（令和7年度決算書は決算状況ページ・歳入歳出決算書ページに掲載なし、ページ更新日2025-10-14）。歳出は歳入歳出決算事項別明細書の歳出節に款・項・目＋節を同一明細で対応付け、予算現額内訳（当初・補正・繰越・流用増減・計）と支出済額・翌年度繰越額・不用額を記載（単位：円）。歳出scope（明細書）：一般 80-187 / 国保 203-208 / 介護 227-233 / 後期 248-249 / 鶴川 262-263。物理頁=印字頁。下水道事業会計決算書（52頁）：決算報告書が収益的支出を物理頁6・資本的支出を物理頁7に款項級で、当初予算額・補正予算額・流用・繰越・合計と決算額・不用額（円、仮払消費税別記）。収益費用明細書が物理頁40-43に款・項・目・節＋金額（円）。物理頁24-28の工事概況（建設・改良・保存工事）は列名が工事費（単位：円・税込）で契約・総工事費を示し、複数年度繰越・債務負担行為事業を含むため当年度実支出と対応を確認できずscopeから除外。下水道の資本的支出は款項級決算額（物理頁7）までで、目級・事業別の当年度支出明細は不存在（不足）。病院事業会計令和6年度（2024年度）決算書（45頁、病院公式サイト掲載）：決算報告書の収益的支出が物理頁4-5・資本的支出が物理頁6-7（左右見開き、左=予算額内訳、右=合計/決算額/繰越額/不用額、款項級、円）。収益費用明細書が物理頁19-21に款・項・目・節＋金額（円）。消費税等の会計処理は税抜方式（注記、物理頁26）。物理頁35-39の工事・備品購入（建設改良工事・保存工事概況、器械備品・車両運搬具購入）は金額列が工事費・購入総額（検収日・複数年度工事を含む）で当年度実支出と対応を確認できずscopeから除外。病院の資本的支出も款項級決算額（物理頁6-7）までで、目級・事業別の当年度支出明細は不存在（不足）。2024年度時点の会計構成は一般会計・4特別会計・下水道事業会計・病院事業会計であり、全会計の歳出原典は選定済みだが、両企業会計の資本的支出は款項級集計のみで事業別明細が不足。歳入範囲は未確認。",
+   "selected_candidate_id": "representative",
+   "archive": {
+    "bucket": "fudoki-inputs",
+    "candidate_id": "representative",
+    "files": [
+     {
+      "key": "fiscal/source-selection/132098/2024/settlement-2.pdf",
+      "sha256": "bc81d4ddd0bdb97198d93761c2e40232674c9b1c4e4ffc90dd2e0ec0ab7517f5",
+      "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/cost/kesan/kessansho.files/2024_kessansyo.pdf"
+     },
+     {
+      "key": "fiscal/source-selection/132098/2024/settlement-3.pdf",
+      "sha256": "f4ab2a37fe04c8dd1816cf7a9eac47ced147025ff6b5075b7b415cf25f364e10",
+      "final_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/2024machidagesuikessann.pdf"
+     },
+     {
+      "key": "fiscal/source-selection/132098/2024/settlement-1.pdf",
+      "sha256": "0a99db4dc5a5088d687748a1f17f3b2c7df8e5dbeadfa97bfe08cfed7373f45d",
+      "final_url": "https://machida-city-hospital-tokyo.jp/media/kesan2024.pdf"
+     }
+    ],
+    "archived_at": "2026-10-08T01:05:46.091Z"
+   }
+  },
+  {
+   "target": {
+    "jurisdiction": "132098",
+    "fiscal_year": 2025,
+    "document_kind": "settlement"
+   },
+   "candidates": [
+    {
+     "id": "representative",
+     "title": "令和7年度（2025年度）町田市病院事業会計決算書",
+     "landing_url": "https://machida-city-hospital-tokyo.jp/hosp-guide/budget_and_results.html",
+     "inspected_at": "2026-10-07T15:43:34.403149+00:00",
+     "files": [
+      {
+       "download_url": "https://machida-city-hospital-tokyo.jp/media/kesan2025.pdf",
+       "sha256": "07f60402c04f17c9ca58b5c24f86f34d248da0fc3260631ae5177bfaa1c7c6f2",
+       "format": "pdf",
+       "pdf_type": "text",
+       "scope": [
+        {
+         "account": "病院事業会計",
+         "direction": "expenditure",
+         "pages": [
+          {
+           "start": 4,
+           "end": 7
+          },
+          {
+           "start": 19,
+           "end": 21
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "reason": "病院事業会計のみ令和7年度決算書が公表済み（病院公式サイト予算・決算ページ、46頁、text PDF）。一般会計・特別会計の令和7年度決算書と下水道事業会計の令和7年度決算書は未公表（市決算書ページ・下水道予算決算ページで確認）のため、病院だけを当該年度で選定。決算報告書が収益的支出を物理頁4-5・資本的支出を物理頁6-7に款項級で掲載（見開き：4・6頁が予算額内訳＝当初・補正・繰越・合計、5・7頁が決算額・不用額・備考、単位円、仮払消費税別記）。収益費用明細書が物理頁19-21に款・項・目・節＋金額（円）。建設改良・保存工事の概況と器械備品購入（物理頁35-39）は金額列が「金額（円）」＝契約・購入額で、建設改良工事は2024年度からの債務負担行為を含み着工〜竣工が年度をまたぐものがあるため当年度支出済額との対応を確認できず除外（令和6年度決算書の同形式頁と同じ判断）。事業費に関する事項（43頁）は目級集計の説明でscope外。歳入範囲は未確認。物理頁=印字頁。不足：資本的支出は款項級の決算額（物理頁6-7）までで、目級・事業別の当年度支出明細は不存在。一般会計・4特別会計・下水道事業会計の令和7年度決算は未公表のため選定なし。",
+   "selected_candidate_id": "representative",
+   "archive": {
+    "bucket": "fudoki-inputs",
+    "candidate_id": "representative",
+    "files": [
+     {
+      "key": "fiscal/source-selection/132098/2025/settlement.pdf",
+      "sha256": "07f60402c04f17c9ca58b5c24f86f34d248da0fc3260631ae5177bfaa1c7c6f2",
+      "final_url": "https://machida-city-hospital-tokyo.jp/media/kesan2025.pdf"
+     }
+    ],
+    "archived_at": "2026-10-07T15:45:29.049Z"
+   }
+  }
+ ],
+ "unresolved_candidates": []
 }

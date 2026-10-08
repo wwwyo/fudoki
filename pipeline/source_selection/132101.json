@@ -2,6 +2,1484 @@
   "jurisdiction": "132101",
   "name": "小金井市",
   "official_url": "https://www.city.koganei.lg.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "132101",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度一般会計・特別会計歳入歳出予算事項別明細書 下水道事業会計予算説明書（分割版5冊）",
+          "landing_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/yosanhensei/R8jikoubetsu.html",
+          "inspected_at": "2026-10-07T15:59:32.817326+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/yosanhensei/R8jikoubetsu.files/02_R8saisyutu.pdf",
+              "sha256": "41f3d67a60b7b7fc8239191d88737edd91b2c8262a2930c87e2713799ccadc6c",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 181
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/yosanhensei/R8jikoubetsu.files/03_R8kokuho.pdf",
+              "sha256": "9377b63b053226772d43a8e3946b2a22395fcfa98c5a05c08709043539ce860b",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 29
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/yosanhensei/R8jikoubetsu.files/04_R8kaigo.pdf",
+              "sha256": "4da95c69dde7c8d364a0748a6e4ab480348b4b82a4a63036de8b7eac07a82f8f",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 37
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/yosanhensei/R8jikoubetsu.files/05_R8kouki.pdf",
+              "sha256": "429b708bda9bcfbf9371859023d1abc86237e988dccfb0e67ee9659655fbe8c7",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/yosanhensei/R8jikoubetsu.files/06_R8gesui.pdf",
+              "sha256": "98ab0843ff7da43c370c7957196b9ad22646b41b70c43fbdfe41cc1826789cad",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 4
+                    },
+                    {
+                      "start": 12,
+                      "end": 16
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 4
+                    },
+                    {
+                      "start": 11,
+                      "end": 12
+                    },
+                    {
+                      "start": 15,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度（2026年度、最新当初予算）の歳出。公式「予算編成・明細書・説明資料」ページ掲載の分割版5冊を選定。一括版00_R8yosansyo.pdf（334頁）は03国保・04介護冊相当の文字層が分割版と不一致だったため、実物確認した分割版を選定（不一致は別版の可能性の手掛かりであり、内容改訂とは断定しない）。01歳入冊は今回の歳出対象外。02-05冊は見開き組版（物理1頁=印字2頁、単位=千円）。左頁=款・項・目名＋本年度予算額・前年度予算額・比較＋特定財源内訳（国都支出金・地方債・その他）、右頁=節区分＋金額＋説明（一般財源）。名称と金額は同じ明細の左右頁対応。CubePDF由来の文字層はToUnicode破損で文字化けするため画像で確認（pdf_type=scan）。税区分の記載は明細表上に確認できず。一般会計: 02冊物理1-181（印字80-441、「3 歳出」款1議会費〜款13予備費で歳出事項別明細が終了。物理182-188の給与費明細書・債務負担行為調書・地方債調書（印字442-455）は附属調書のため除外）。国民健康保険特別会計: 03冊物理10-29（印字14〜、歳出款1総務費〜款8予備費で明細終了。物理30-31の給与費明細書・給料及び職員手当の状況（印字56-57）は附属調書のため除外。物理3-9は歳入総括・歳入明細で範囲外）。介護保険特別会計: 04冊物理12-37（印字18〜、歳出款1総務費〜款8予備費で明細終了。物理38-40の給与費明細書・給料及び職員手当の状況・債務負担行為調書（印字70-75）は附属調書のため除外。物理3-11は歳入側で範囲外）。後期高齢者医療特別会計: 05冊物理8-15（印字10-25、歳出款1〜款6予備費で冊末まで、附属調書なし。物理3-7は歳入側で範囲外）。下水道事業会計（企業会計、単位=千円）: 06冊のうち予算実施計画（収益的収入及び支出=物理3・印字1、資本的収入及び支出=物理4左・印字2、いずれも収入と支出が同一印字頁に併記）と実施計画明細書（収益的収入=物理11・印字16-17と物理12左・印字18、収益的支出=物理12右・印字19〜物理14・印字23、資本的収入=物理15左・印字24、資本的支出=物理15右・印字25〜物理16・印字26-27。款・項・目・本年度予定額・前年度予定額・比較・節区分・金額・説明）を収録。除外: 物理4右の予定CF計算書（資本的収支と同一物理頁のため頁は保持）、物理5-6の給与費明細書・債務負担行為に関する調書、物理7-9の予定貸借対照表・予定損益計算書、物理10の注記と説明書扉、物理17の奥付。歳出方向は物理3-4・12-16、歳入方向は収支同頁の物理3-4・15と収入明細の物理11-12のみ。企業会計・独自特別会計は掲載一覧で下水道事業会計のみ確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132101/2026/initial-1.pdf",
+            "sha256": "41f3d67a60b7b7fc8239191d88737edd91b2c8262a2930c87e2713799ccadc6c",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/yosanhensei/R8jikoubetsu.files/02_R8saisyutu.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2026/initial-4.pdf",
+            "sha256": "9377b63b053226772d43a8e3946b2a22395fcfa98c5a05c08709043539ce860b",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/yosanhensei/R8jikoubetsu.files/03_R8kokuho.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2026/initial-3.pdf",
+            "sha256": "4da95c69dde7c8d364a0748a6e4ab480348b4b82a4a63036de8b7eac07a82f8f",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/yosanhensei/R8jikoubetsu.files/04_R8kaigo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2026/initial-2.pdf",
+            "sha256": "429b708bda9bcfbf9371859023d1abc86237e988dccfb0e67ee9659655fbe8c7",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/yosanhensei/R8jikoubetsu.files/05_R8kouki.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2026/initial-5.pdf",
+            "sha256": "98ab0843ff7da43c370c7957196b9ad22646b41b70c43fbdfe41cc1826789cad",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/yosanhensei/R8jikoubetsu.files/06_R8gesui.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T15:40:41.887Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132101",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度決算書 歳出事項別明細書・下水道事業決算書類（分割19冊）",
+          "landing_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.html",
+          "inspected_at": "2026-10-08T03:06:54.449996+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/006.pdf",
+              "sha256": "0b1af0ae74a6964525621308a1390afa66d735edfd2ca534de8cd64230522b3c",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 4
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/007.pdf",
+              "sha256": "afa69e1ef26553d8bf7ee4dacfa386c7d5cd37c57da2517579fe32e0b7ddf468",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 58
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/008.pdf",
+              "sha256": "92ee9177e55d79fbad3824f124db2080d50c3880c6509aaf5f5ea57f0f6a104e",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 69
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/009.pdf",
+              "sha256": "6ef99a9ffd61f3a1c673d7265782843d691ba1a4df46b50db0e239fe33560b9f",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 36
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/010.pdf",
+              "sha256": "4c0fc03fd2f5be5563f9450b929944b0c6f72ab3115875772f89796c8ca7baef",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/011.pdf",
+              "sha256": "6aa8bdbf6f935d50dd62204b0edfd5ba16cbe35423a3a2a30603ebcedc832ebb",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 2
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/012.pdf",
+              "sha256": "21ae69f707011445c58d9fe020455d2eee566d6ac5ddd826ef74ef0ab491c8bb",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 4
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/013.pdf",
+              "sha256": "fbb1dd63fcd2fbc8d16d4892b3ff7ac29898d4465161002f6f82009a490ffb52",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 22
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/014.pdf",
+              "sha256": "bb78211be53fe8448451110dfbdf22a16543319f2f275077f09f062bc3cb53b2",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 5
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/015.pdf",
+              "sha256": "1ca1e9ff6daedbb806493d70fc163599ef9de8c10733c70e9bb2cf259f75dee4",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 56
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/016.pdf",
+              "sha256": "41796e3329a77b87edabf00027a667f5e038550960021af8a7f970628b253990",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/017.pdf",
+              "sha256": "e7516eb665447bc4b0b530e9094ae476e59412c169d384f26e2fce953620ac21",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/018.pdf",
+              "sha256": "01447ab37f9ab61a44aec25408fa92656a3fb9b19761d9b32a1f673c7f0a9259",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/021.pdf",
+              "sha256": "4ec973ba37ab06ca09de6b61379e03c9bddde12f0d28a42c1ac0bbbdef2394d4",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 8
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/024.pdf",
+              "sha256": "9978297a1e0dbd21684c4c1a67207e7b89c01849f82d0a9f7f763991ee62a9ad",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/027.pdf",
+              "sha256": "092597a4cdecb2ab9bec5954037f660ad18e229674dd20e5501250c3bf1bc2b0",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 3
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/030.pdf",
+              "sha256": "35fd578c29ea3b94513e724559d9719c8a1d2190455de5d2595dfc913eb25faf",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 2
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 2
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/037.pdf",
+              "sha256": "dd751d842400b28c3abe4955ea4674b35c927f8cf8519f48ae6ddf7fc0de887d",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 2
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/038.pdf",
+              "sha256": "7c2107e75de46c5256e00caefc1f84ccdbdac878f10830d49e3fb1697f7edfdc",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度（2025年度）決算は公式「決算書」ページに掲載あり（最新公表済み決算）。歳出は「歳出事項別明細書」の款別分割13冊（款1議会費〜款13予備費、全冊見開きで左頁=款・項・目名＋予算現額（当初・補正・繰越・流用・計）＋節区分/金額、右頁=支出済額・翌年度繰越額・不用額・備考。名称と金額が同じ明細で対応、単位=円）と、国民健康保険特別会計（021.pdf、印字624〜）・介護保険特別会計（024.pdf）・後期高齢者医療特別会計（027.pdf）の歳出事項別明細書各1冊（同様式・同金額列）を選定。下水道事業会計は企業会計様式で、030決算報告書（(1)収益的収入及び支出・(2)資本的収入及び支出、区分・予算額・決算額・不用額等、単位=円・税込、いずれも収入と支出が同一印字頁に併記のため両方向とも物理1-2）、037収益費用明細書（款・項・目・節・金額・備考、単位=円・税込。印字772の物理1に収入表と支出表が同居し収支同頁、物理2・印字773は支出のみの続きのため歳入方向は物理1、歳出方向は物理1-2）、038資本的収支明細書（同款目節＋金額、単位=円・税込、収入と支出が同一印字頁に併記のため両方向とも物理1）を選定。006-018・030・037・038は文字層なしの画像PDF、021・024・027は文字化け文字層のためいずれも画像として確認（pdf_type=scan）。002歳入歳出決算書（16頁）は款・項級総括で目・節の明細を持たず対象外、001決算総括表・003実質収支・004款別決算概要表も総括級。歳入事項別明細書（005・020・023・026）・財産調書（028-029）・損益/剰余金/貸借対照表/報告書/CF/固定資産/企業債（031-036・039-040）は歳出明細の対象外。企業会計・独自特別会計は掲載一覧で下水道事業会計のみ確認。款別分冊006〜018の境界を全て確認したが重複頁はない。各冊は款の見出し行から始まり末尾はその款の歳出合計で完結し（006=款1議会費…015=款10教育費、016=款11公債費、017=款12諸支出金、018=款13予備費）、前冊末尾と次冊先頭が同一頁になる構成ではない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132101/2025/settlement-3.pdf",
+            "sha256": "0b1af0ae74a6964525621308a1390afa66d735edfd2ca534de8cd64230522b3c",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/006.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2025/settlement-15.pdf",
+            "sha256": "afa69e1ef26553d8bf7ee4dacfa386c7d5cd37c57da2517579fe32e0b7ddf468",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/007.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2025/settlement-13.pdf",
+            "sha256": "92ee9177e55d79fbad3824f124db2080d50c3880c6509aaf5f5ea57f0f6a104e",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/008.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2025/settlement-11.pdf",
+            "sha256": "6ef99a9ffd61f3a1c673d7265782843d691ba1a4df46b50db0e239fe33560b9f",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/009.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2025/settlement-8.pdf",
+            "sha256": "4c0fc03fd2f5be5563f9450b929944b0c6f72ab3115875772f89796c8ca7baef",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/010.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2025/settlement-10.pdf",
+            "sha256": "6aa8bdbf6f935d50dd62204b0edfd5ba16cbe35423a3a2a30603ebcedc832ebb",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/011.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2025/settlement-5.pdf",
+            "sha256": "21ae69f707011445c58d9fe020455d2eee566d6ac5ddd826ef74ef0ab491c8bb",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/012.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2025/settlement-19.pdf",
+            "sha256": "fbb1dd63fcd2fbc8d16d4892b3ff7ac29898d4465161002f6f82009a490ffb52",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/013.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2025/settlement-16.pdf",
+            "sha256": "bb78211be53fe8448451110dfbdf22a16543319f2f275077f09f062bc3cb53b2",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/014.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2025/settlement-4.pdf",
+            "sha256": "1ca1e9ff6daedbb806493d70fc163599ef9de8c10733c70e9bb2cf259f75dee4",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/015.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2025/settlement-7.pdf",
+            "sha256": "41796e3329a77b87edabf00027a667f5e038550960021af8a7f970628b253990",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/016.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2025/settlement-18.pdf",
+            "sha256": "e7516eb665447bc4b0b530e9094ae476e59412c169d384f26e2fce953620ac21",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/017.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2025/settlement-1.pdf",
+            "sha256": "01447ab37f9ab61a44aec25408fa92656a3fb9b19761d9b32a1f673c7f0a9259",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/018.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2025/settlement-9.pdf",
+            "sha256": "4ec973ba37ab06ca09de6b61379e03c9bddde12f0d28a42c1ac0bbbdef2394d4",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/021.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2025/settlement-14.pdf",
+            "sha256": "9978297a1e0dbd21684c4c1a67207e7b89c01849f82d0a9f7f763991ee62a9ad",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/024.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2025/settlement-2.pdf",
+            "sha256": "092597a4cdecb2ab9bec5954037f660ad18e229674dd20e5501250c3bf1bc2b0",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/027.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2025/settlement-6.pdf",
+            "sha256": "35fd578c29ea3b94513e724559d9719c8a1d2190455de5d2595dfc913eb25faf",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/030.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2025/settlement-17.pdf",
+            "sha256": "dd751d842400b28c3abe4955ea4674b35c927f8cf8519f48ae6ddf7fc0de887d",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/037.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2025/settlement-12.pdf",
+            "sha256": "7c2107e75de46c5256e00caefc1f84ccdbdac878f10830d49e3fb1697f7edfdc",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/7nenndokessann.files/038.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T15:41:34.417Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132101",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度一般会計補正予算（第1回）の概要",
+          "landing_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/ohseiyosan/hoseiyosan_08.html",
+          "inspected_at": "2026-10-07T16:40:35.832856+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/ohseiyosan/hoseiyosan_08.files/hoseiyosan_R8_1.pdf",
+              "sha256": "e66e6f6f90308972a8c940bba327cf804681dc1b25a89797935fa4760e147541",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 4
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度一般会計補正予算（第1回）。公式「補正予算」ページ（https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/ohseiyosan/hoseiyosan_08.html）掲載の「概要」PDF（4頁、単位=千円、文字PDF）を選定。款別の補正前の額・補正額（歳入款・歳出目的別款・性質別）と、「主な補正内容」として款名＋事業名（委託料・補助金・工事等）とその補正額・説明が同一明細で対応するため、款・一部事業粒度の補正資料として採用する。不足: 項・目の全明細を持たず「主な」項目の抜粋のみで全歳出を網羅しない。債務負担行為の限度額は補正額ではないため歳出範囲に含めない（同頁に歳出概要がある冊は頁を保持）。国民健康保険・介護保険・後期高齢者医療の特別会計と下水道事業会計の補正は同掲載先に掲載なし。事項別明細書相当の補正資料は掲載一覧に見当たらない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132101/2026/supplementary-1.pdf",
+            "sha256": "e66e6f6f90308972a8c940bba327cf804681dc1b25a89797935fa4760e147541",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/ohseiyosan/hoseiyosan_08.files/hoseiyosan_R8_1.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:40:50.844Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132101",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度一般会計補正予算（第2回）の概要",
+          "landing_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/ohseiyosan/hoseiyosan_08.html",
+          "inspected_at": "2026-10-07T16:40:35.832856+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/ohseiyosan/hoseiyosan_08.files/hoseiyosan_R8_2.pdf",
+              "sha256": "d624694fabcacb66b002728eb5a73bc7554fe1d0be154af110bdb1275aeb9a24",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "start": 5,
+                      "end": 5
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度一般会計補正予算（第2回）。公式「補正予算」ページ（https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/ohseiyosan/hoseiyosan_08.html）掲載の「概要」PDF（5頁、単位=千円、文字PDF）を選定。款別の補正前の額・補正額（歳入款・歳出目的別款・性質別）と、「主な補正内容」として款名＋事業名（委託料・補助金・工事等）とその補正額・説明が同一明細で対応するため、款・一部事業粒度の補正資料として採用する。不足: 項・目の全明細を持たず「主な」項目の抜粋のみで全歳出を網羅しない。債務負担行為の限度額は補正額ではないため歳出範囲に含めない（第2回は物理5頁に歳出概要と債務負担行為が同居）（同頁に歳出概要がある冊は頁を保持）。国民健康保険・介護保険・後期高齢者医療の特別会計と下水道事業会計の補正は同掲載先に掲載なし。事項別明細書相当の補正資料は掲載一覧に見当たらない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132101/2026/supplementary-2.pdf",
+            "sha256": "d624694fabcacb66b002728eb5a73bc7554fe1d0be154af110bdb1275aeb9a24",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/ohseiyosan/hoseiyosan_08.files/hoseiyosan_R8_2.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:40:53.706Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132101",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度一般会計補正予算（第3回）の概要",
+          "landing_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/ohseiyosan/hoseiyosan_08.html",
+          "inspected_at": "2026-10-07T16:40:35.832856+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/ohseiyosan/hoseiyosan_08.files/hoseiyosan_R8_3.pdf",
+              "sha256": "9ad09c261928ac94cd88e4f69a1dedf7ce7955069a2684ebc20b7dd4b31ee7e1",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 4
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度一般会計補正予算（第3回）。公式「補正予算」ページ（https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/ohseiyosan/hoseiyosan_08.html）掲載の「概要」PDF（4頁、単位=千円、文字PDF）を選定。款別の補正前の額・補正額（歳入款・歳出目的別款・性質別）と、「主な補正内容」として款名＋事業名（委託料・補助金・工事等）とその補正額・説明が同一明細で対応するため、款・一部事業粒度の補正資料として採用する。不足: 項・目の全明細を持たず「主な」項目の抜粋のみで全歳出を網羅しない。債務負担行為の限度額は補正額ではないため歳出範囲に含めない（同頁に歳出概要がある冊は頁を保持）。国民健康保険・介護保険・後期高齢者医療の特別会計と下水道事業会計の補正は同掲載先に掲載なし。事項別明細書相当の補正資料は掲載一覧に見当たらない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132101/2026/supplementary-3.pdf",
+            "sha256": "9ad09c261928ac94cd88e4f69a1dedf7ce7955069a2684ebc20b7dd4b31ee7e1",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/ohseiyosan/hoseiyosan_08.files/hoseiyosan_R8_3.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:40:56.540Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132101",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度一般会計補正予算（第4回）の概要",
+          "landing_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/ohseiyosan/hoseiyosan_08.html",
+          "inspected_at": "2026-10-07T16:40:35.832856+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/ohseiyosan/hoseiyosan_08.files/hoseiyosan_R8_4.pdf",
+              "sha256": "3e8cf1587082e857c2e6ab401b207ddb1c715d3bb43efa3c951a6b06224c6d1b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 4
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度一般会計補正予算（第4回）。公式「補正予算」ページ（https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/ohseiyosan/hoseiyosan_08.html）掲載の「概要」PDF（4頁、単位=千円、文字PDF）を選定。款別の補正前の額・補正額（歳入款・歳出目的別款・性質別）と、「主な補正内容」として款名＋事業名（委託料・補助金・工事等）とその補正額・説明が同一明細で対応するため、款・一部事業粒度の補正資料として採用する。不足: 項・目の全明細を持たず「主な」項目の抜粋のみで全歳出を網羅しない。債務負担行為の限度額は補正額ではないため歳出範囲に含めない（同頁に歳出概要がある冊は頁を保持）。国民健康保険・介護保険・後期高齢者医療の特別会計と下水道事業会計の補正は同掲載先に掲載なし。事項別明細書相当の補正資料は掲載一覧に見当たらない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132101/2026/supplementary-4.pdf",
+            "sha256": "3e8cf1587082e857c2e6ab401b207ddb1c715d3bb43efa3c951a6b06224c6d1b",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/ohseiyosan/hoseiyosan_08.files/hoseiyosan_R8_4.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:40:59.367Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132101",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度一般会計補正予算（第5回）の概要",
+          "landing_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/ohseiyosan/hoseiyosan_08.html",
+          "inspected_at": "2026-10-07T16:40:35.832856+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/ohseiyosan/hoseiyosan_08.files/hoseiyosan_R8_5.pdf",
+              "sha256": "b7454ac3b873e5e63add8b6c2f5a2e3fe2bd153123df05b91fa4af36bc73da54",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "start": 5,
+                      "end": 5
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度一般会計補正予算（第5回）。公式「補正予算」ページ（https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/ohseiyosan/hoseiyosan_08.html）掲載の「概要」PDF（6頁、単位=千円、文字PDF）を選定。款別の補正前の額・補正額（歳入款・歳出目的別款・性質別）と、「主な補正内容」として款名＋事業名（委託料・補助金・工事等）とその補正額・説明が同一明細で対応するため、款・一部事業粒度の補正資料として採用する。不足: 項・目の全明細を持たず「主な」項目の抜粋のみで全歳出を網羅しない。債務負担行為の限度額は補正額ではないため歳出範囲に含めない（第5回の債務負担行為は物理6頁のみのため範囲外）（同頁に歳出概要がある冊は頁を保持）。国民健康保険・介護保険・後期高齢者医療の特別会計と下水道事業会計の補正は同掲載先に掲載なし。事項別明細書相当の補正資料は掲載一覧に見当たらない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132101/2026/supplementary-5.pdf",
+            "sha256": "b7454ac3b873e5e63add8b6c2f5a2e3fe2bd153123df05b91fa4af36bc73da54",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/yosan/ohseiyosan/hoseiyosan_08.files/hoseiyosan_R8_5.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:41:02.296Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132101",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度決算書 歳出事項別明細書・下水道事業決算書類（分割19冊）",
+          "landing_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.html",
+          "inspected_at": "2026-10-08T03:06:54.449996+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2506-OCR.pdf",
+              "sha256": "7f7854adae1b755f200e16d46f5795b70b3d628d007159d647833cfc96ebaf5d",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 4
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2507-OCR.pdf",
+              "sha256": "a0929347062c150bf9fb97d661083ac4996b7fdee791a91494da2a00f0df20c2",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 57
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2508-OCR.pdf",
+              "sha256": "eafa3b624a5343b4d63be3dc6e31b01c59de75f301db7b3275a39dbfb8d785ed",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 68
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2509-OCR.pdf",
+              "sha256": "a402e0aeeb472ba1b799a21c90c707327d9fe83ee2a55f132a1b2d73bead511c",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 37
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2510-OCR.pdf",
+              "sha256": "4640e91ba561ba849e1278d6ab683329eb6e18ecbb2cdc657088fd006308462f",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2511-OCR.pdf",
+              "sha256": "3f51ba066f9c358153cb8804fc4eb10128aacd04a657770f033555a68981e0d5",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2512-OCR.pdf",
+              "sha256": "81907eb7fa60dd45d91d89dbfda81f0a8eb440cd976195e090ca9809b4db5fb5",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 4
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2513-OCR.pdf",
+              "sha256": "10a7b67520124a6e4109e4a869b72c8457707bd5a29a875145f7861e32e707a6",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 23
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2514-OCR.pdf",
+              "sha256": "770e954af3a0f9879b1a65b346fb370d51fa37700b105fb69fb337086fe0d7a8",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 5
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2515-OCR.pdf",
+              "sha256": "8c28cd2ad5811d70da785ba86db2fa87b77e96be1584bae957654c677f3be14f",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 57
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2516-OCR.pdf",
+              "sha256": "cd987376b35037a679866b415bf98f83e1655c13dcefd1ba2d18d39438780ce8",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2517-OCR.pdf",
+              "sha256": "64082dd58ce5cbe0071b1d2cec124ca2ec0141327d3e21b88fd0b6d098aa978f",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2518-OCR.pdf",
+              "sha256": "c479b24f289f0d63c02e869c704a2b478a655952231dbc295f5a63821bcf9940",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2521-OCR.pdf",
+              "sha256": "6e40820d2a722ee72fc3030feffb4578d307e8fe9696a94466447ddaf1f0be7d",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2524-OCR.pdf",
+              "sha256": "760da33937ef6165dbee885e3e6aa80d0e5ae335c3438e151b69685789828e31",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 17
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2527-OCR.pdf",
+              "sha256": "f006525b4817845ac864c69e5437ee908c68789b7bc664d9a416b1cacc7e7cfe",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 3
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2530-OCR.pdf",
+              "sha256": "ead881b39d88d02985e1ac1e5e6ce4803318e7a13915fd10b776806ffc8e528f",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 2
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 2
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2537-OCR.pdf",
+              "sha256": "b010ce81e0e4269af9c95741a96a1c8b285df7e331f0dd96122918b372eaffa1",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 2
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2538-OCR.pdf",
+              "sha256": "f838f24ea4acc991d249a47547168eaba3048bf558542058e99327726d4d9132",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度（2024年度）決算。公式「決算書」ページの令和6年度決算書一覧に掲載。歳出は「歳出事項別明細書」の款別分割13冊（2506議会費〜2518予備費、全冊見開きで左頁=款・項・目名＋予算現額（当初予算額・補正予算額・継続費及び繰越事業費繰越額・予備費支出及び流用増減・計）＋節区分/金額、右頁=支出済額・翌年度繰越額（継続費逓次繰越・繰越明許費事故繰越し）・不用額・備考。名称と支出済額が同じ明細の左右頁で対応、単位=円）と、国民健康保険特別会計（2521-OCR.pdf）、介護保険特別会計（2524-OCR.pdf）、後期高齢者医療特別会計（2527-OCR.pdf）の歳出事項別明細書各1冊（同様式・同金額列、単位=円）を選定。各冊は全頁が歳出明細で末尾に歳出合計まで含み、附属調書は別冊のため全頁をscopeとする。款境界の見開き頁（1物理頁=印字2頁）が次冊先頭と同一内容で重複するため、後冊の先頭頁をscopeから除外した（いずれもCropBox=MediaBox・回転0の全頁描画がピクセル一致で確認。重複頁は前冊側scopeに残るため内容は欠落しない）: 2507物理1=2506物理4（印字-98-/-99-、款1末尾〜款2先頭）、2509物理1=2508物理68（-346-/-347-、款3〜款4）、2510物理1=2509物理37（-418-/-419-、款4〜款5）、2511物理1=2510物理2（-420-/-421-、款5〜款6）、2513物理1=2512物理4（-430-/-431-、款7〜款8）、2514物理1=2513物理23（-474-/-475-、款8〜款9）、2515物理1=2514物理5（-482-/-483-、款9〜款10）、2518物理1=2515物理57（-594-/-595-、款10末尾〜款11・12・款13先頭）。2516・2517は全1頁の冊で、その唯一頁が2515物理57（印字-594-/-595-）と同一内容であり、除外するとscopeが空になるため頁を保持する。款11・款12の明細はこの見開きだけに存在するため、後工程で2516物理1・2517物理1由来の行は2515物理57の重複として除外が必要。下水道事業会計は企業会計様式で、2530決算報告書（(1)収益的収入及び支出・(2)資本的収入及び支出、区分・予算額（当初・補正・繰越等）・決算額・不用額等、単位=円・税込、収入と支出が同一物理頁に併記のため両方向とも物理1-2）、2537収益費用明細書（款・項・目・節・金額・備考、単位=円・税抜。物理1は収入表と支出表が同居する収支同頁、物理2は支出のみの続きのため歳入方向は物理1、歳出方向は物理1-2）、2538資本的収支明細書（同款目節＋金額、単位=円・税抜、収入と支出が同一頁に併記のため両方向とも物理1）を選定。全冊OCR済みだが文字層のToUnicodeが破損し文字化けするため画像として確認（pdf_type=scan）。2502歳入歳出決算書は款・項級総括で目の明細を持たず対象外、2501各会計決算総括表・2503実質収支・2504款別決算概要表・2519/2522/2525各特別会計款別決算概要表も総括級。歳入事項別明細書（2505・2520・2523・2526）・財産調書（2528-2529）・損益/剰余金/貸借対照表/事業報告書/CF/固定資産明細書/企業債明細書（2531-2536・2539-2540）は歳出明細の対象外。2024年度の会計構成は一般会計・国民健康保険特別会計・介護保険特別会計・後期高齢者医療特別会計・下水道事業会計で、掲載一覧に他の特別会計・独自会計の決算冊はなく全会計をカバー。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132101/2024/settlement-8.pdf",
+            "sha256": "7f7854adae1b755f200e16d46f5795b70b3d628d007159d647833cfc96ebaf5d",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2506-OCR.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2024/settlement-11.pdf",
+            "sha256": "a0929347062c150bf9fb97d661083ac4996b7fdee791a91494da2a00f0df20c2",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2507-OCR.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2024/settlement-17.pdf",
+            "sha256": "eafa3b624a5343b4d63be3dc6e31b01c59de75f301db7b3275a39dbfb8d785ed",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2508-OCR.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2024/settlement-12.pdf",
+            "sha256": "a402e0aeeb472ba1b799a21c90c707327d9fe83ee2a55f132a1b2d73bead511c",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2509-OCR.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2024/settlement-3.pdf",
+            "sha256": "4640e91ba561ba849e1278d6ab683329eb6e18ecbb2cdc657088fd006308462f",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2510-OCR.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2024/settlement-2.pdf",
+            "sha256": "3f51ba066f9c358153cb8804fc4eb10128aacd04a657770f033555a68981e0d5",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2511-OCR.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2024/settlement-9.pdf",
+            "sha256": "81907eb7fa60dd45d91d89dbfda81f0a8eb440cd976195e090ca9809b4db5fb5",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2512-OCR.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2024/settlement-1.pdf",
+            "sha256": "10a7b67520124a6e4109e4a869b72c8457707bd5a29a875145f7861e32e707a6",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2513-OCR.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2024/settlement-7.pdf",
+            "sha256": "770e954af3a0f9879b1a65b346fb370d51fa37700b105fb69fb337086fe0d7a8",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2514-OCR.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2024/settlement-10.pdf",
+            "sha256": "8c28cd2ad5811d70da785ba86db2fa87b77e96be1584bae957654c677f3be14f",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2515-OCR.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2024/settlement-15.pdf",
+            "sha256": "cd987376b35037a679866b415bf98f83e1655c13dcefd1ba2d18d39438780ce8",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2516-OCR.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2024/settlement-4.pdf",
+            "sha256": "64082dd58ce5cbe0071b1d2cec124ca2ec0141327d3e21b88fd0b6d098aa978f",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2517-OCR.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2024/settlement-14.pdf",
+            "sha256": "c479b24f289f0d63c02e869c704a2b478a655952231dbc295f5a63821bcf9940",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2518-OCR.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2024/settlement-5.pdf",
+            "sha256": "6e40820d2a722ee72fc3030feffb4578d307e8fe9696a94466447ddaf1f0be7d",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2521-OCR.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2024/settlement-6.pdf",
+            "sha256": "760da33937ef6165dbee885e3e6aa80d0e5ae335c3438e151b69685789828e31",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2524-OCR.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2024/settlement-18.pdf",
+            "sha256": "f006525b4817845ac864c69e5437ee908c68789b7bc664d9a416b1cacc7e7cfe",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2527-OCR.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2024/settlement-16.pdf",
+            "sha256": "ead881b39d88d02985e1ac1e5e6ce4803318e7a13915fd10b776806ffc8e528f",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2530-OCR.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2024/settlement-13.pdf",
+            "sha256": "b010ce81e0e4269af9c95741a96a1c8b285df7e331f0dd96122918b372eaffa1",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2537-OCR.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132101/2024/settlement-19.pdf",
+            "sha256": "f838f24ea4acc991d249a47547168eaba3048bf558542058e99327726d4d9132",
+            "final_url": "https://www.city.koganei.lg.jp/shisei/zaiseiyosan/keltsan202009/kessansho/reiwa6nenkessannsho.files/2538-OCR.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T00:57:01.421Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

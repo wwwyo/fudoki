@@ -2,6 +2,101 @@
   "jurisdiction": "133825",
   "name": "御蔵島村",
   "official_url": "https://www.vill.mikurasima.tokyo.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "133825",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "r8-tousho-shohizei-1p",
+          "title": "令和８年度予算（地方消費税交付金に係る社会保障施策に要する経費への充当について）",
+          "landing_url": "https://www.vill.mikurasima.tokyo.jp/section/gyosei/datazaisei.html",
+          "inspected_at": "2026-10-07T16:18:32.217538+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.mikurasima.tokyo.jp/data/zaisei/shohizei_yosan_2026.pdf",
+              "sha256": "6e31881bb22741b727cb497a32462d15bf4beae3a1737d89161550afdf77a0ca",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "財政データ頁が「令和８年度予算」として掲載する唯一の原典 shohizei_yosan_2026.pdf（物理1頁・文字PDF）は、地方消費税交付金の社会保障経費財源分の充当額表（款・項・事業・充当額・千円、民生費＞老人福祉費＞高齢者福祉事業 5,779千円の1行）のみ。金額は当該財源の充当額であり、事業の当初予算額として確認できないため未選定。財政事情（最新は令和6年5月1日版・物理8頁）は会計別の当初予算額・補正額・予算現額の総額まで、財政状況資料集は決算集計資料で当初予算明細を持たない。村HP（財政データ・行政データ・議会＝議会だよりのみ・広報）と東京都オープンデータカタログ（t133825は組織情報・議会だより・シンボル・戸籍証明枚数のみ）を照合した範囲では歳出明細級の当初予算書の掲載リンクを確認できなかった。会計構成（普通会計：一般会計・航路事業・産業センター運営事業／特別会計：国民健康保険事業（事業勘定・直診勘定）・介護保険事業（事業勘定・サービス事業）・後期高齢者医療事業・簡易水道事業・観光宿泊施設運営事業）の歳出明細を持つ原典が不足。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "133825",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "r6-kouei-kessan-jokyo-metro",
+          "title": "令和６年度 市町村公営企業決算状況調査の結果（東京都総務局行政部市町村課）",
+          "landing_url": "https://www.soumu.metro.tokyo.lg.jp/05gyousei/04kusichousonindex/04kusichousonzaisei/years/06nend",
+          "inspected_at": "2026-10-08T01:30:30.000000+00:00",
+          "files": [
+            {
+              "download_url": "https://www.soumu.metro.tokyo.lg.jp/documents/d/soumu/06koueikigyou",
+              "sha256": "5530a8abbbf7c9ab89462b8563191918de0c77c28c53f90f9f8d3d05c4d2252e",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "公営企業（法非適用）簡易水道事業",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 439,
+                      "end": 439
+                    },
+                    {
+                      "start": 441,
+                      "end": 441
+                    }
+                  ]
+                },
+                {
+                  "account": "公営企業（法非適用）観光施設事業",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 452,
+                      "end": 452
+                    },
+                    {
+                      "start": 454,
+                      "end": 454
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "部分選定。村HP・東京都オープンデータカタログでは歳出明細級の令和6年度決算原典を確認できず、東京都総務局『区市町村行財政 令和６年度』年度別資料集頁（landing_url）からリンクされた同局行政部市町村課『令和６年度 市町村公営企業決算状況調査の結果』（全578頁・文字PDF、令和7年12月刊）の法非適用企業部に御蔵島村列を持つ科目別明細を確認し、公営企業会計相当（村の特別会計 簡易水道事業・観光宿泊施設運営事業に対応する調査表の表題は『公営企業（法非適用）簡易水道事業』『同 観光施設事業』）をこの粒度で選定した。付表2の対象企業一覧で御蔵島村の調査対象はこの2企業のみ（介護サービス事業等の欄に御蔵島村行なし）。scopeは御蔵島村列を含む物理頁のみ：簡易水道は物理439頁（印字427、21表 費用構成表。職員給与費・支払利息・動力費・修繕費・委託料等の科目別費用、費用合計6,138千円）と物理441頁（印字429、26表 歳入歳出決算に関する調。収益的収支に加え資本的支出10,531千円・うち建設改良費9,366千円・単独事業費9,366千円、投資実績額12,131千円）。観光施設は物理452頁（印字440、21表 費用構成表。光熱水費・委託料等の科目別費用、費用合計45,659千円）と物理454頁（印字442、26表 歳入歳出決算。資本的支出・建設改良費・単独事業費いずれも61,743千円）。金額の意味・単位・税：21表は原典の科目別費用（法非適用企業の値を発生主義と推定しない）であり現金支出と同義ではない、26表は歳入歳出決算（収支ベース）で資本的支出・建設改良費を含む。単位は各表見出しのとおり千円（物理11頁の凡例：表示のない金額は千円）。税は同頁『2 法非適用企業』の方法により税込数値（法適用企業の税抜記述とは別扱いで、費用全体を税抜と推定しない）。対象外：同頁の他自治体列、事業種別行と『計』列の重複、参考の補助金・財源内訳、翌年度繰越列は範囲外。26表の収益的収入・資本的収入列は同じ物理頁に同居するが歳入の確認範囲は今回宣言しない。地方債・施設概況・繰入金・償還状況等の別表頁は歳出明細でないためscope外。不足：一般会計および他の特別会計（国民健康保険事業・介護保険事業・後期高齢者医療事業）と普通会計内の航路事業・産業センター運営事業の決算歳出明細はこの原典に含まれず、確認した公式掲載先にも見当たらないため引き続き不足。村HP掲載の shohizei_kessan_2024.pdf（地方消費税交付金充当額表1行）と zaiseijokyo_2024.pdf（款レベル集計）は明細要件を満たさず候補から外し、その旨をここに残す。全会計・全事業の収録とは主張しない。",
+      "selected_candidate_id": "r6-kouei-kessan-jokyo-metro",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r6-kouei-kessan-jokyo-metro",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133825/2024/settlement.pdf",
+            "sha256": "5530a8abbbf7c9ab89462b8563191918de0c77c28c53f90f9f8d3d05c4d2252e",
+            "final_url": "https://www.soumu.metro.tokyo.lg.jp/documents/d/soumu/06koueikigyou"
+          }
+        ],
+        "archived_at": "2026-10-08T01:30:31.972Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

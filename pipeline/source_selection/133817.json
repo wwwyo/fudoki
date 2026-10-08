@@ -2,6 +2,175 @@
   "jurisdiction": "133817",
   "name": "三宅村",
   "official_url": "https://www.vill.miyake.tokyo.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "r8-tousyo-yosan-gaiyou",
+          "title": "令和８年度三宅村当初予算の概要",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/index.html",
+          "inspected_at": "2026-10-07T16:29:57.310910+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/R8.TousyoYosanGaiyou.pdf",
+              "sha256": "a6740ac9c383bc5623301b40de86761094d40c0284a54ad0eecff7fa006a6b09",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "部分原典として選定。2頁の「6.投資的事業」表は区分（款相当の費目）・事業名・事業費が同一明細で対応し、事業費行の合計1,270,961千円が1頁「3.一般会計歳出予算の内訳」の投資的事業1,270,959千円と2千円差がある。不一致の原因は未確認で、端数や転記と推定して補正しない。令和8年度当初予算概要の「投資的事業」表に載る事業名・事業費(原典列名)の部分原典として選定する。合計の近似を金額の意味そのものの根拠にはしない（文字PDF、単位：千円）。不足：投資的事業以外の歳出（款・項・目または事業別の予算額明細）・歳入明細・特別会計4（国民健康保険事業勘定・同直営診療施設勘定・介護保険保険事業勘定・後期高齢者医療）・公営企業会計2（旅客自動車運送事業・簡易水道事業）の明細は、確認した掲載先（財政状況・財政データ・財政のあらまし各ページ、議会議決結果・議会だより、広報みやけ、みんなの掲示板、東京都オープンデータカタログ、東京都総務局資料集）では公開を確認できない。",
+      "selected_candidate_id": "r8-tousyo-yosan-gaiyou",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r8-tousyo-yosan-gaiyou",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133817/2026/initial.pdf",
+            "sha256": "a6740ac9c383bc5623301b40de86761094d40c0284a54ad0eecff7fa006a6b09",
+            "final_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/R8.TousyoYosanGaiyou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:30:12.076Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "r8-6-zaisei-aramashi",
+          "title": "三宅村財政のあらまし(令和8年6月分)",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/aramashi.html",
+          "inspected_at": "2026-10-07T16:23:40.400527+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/R8.6_ZaiseiNoAramashi.pdf",
+              "sha256": "eccb6c3af677127f69695a9a308c9b371f0c19533a2abd7813db5a78cbe30f9f",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        },
+        {
+          "id": "r8-dai3-gikai-kekka",
+          "title": "令和８年第３回三宅村議会定例会議決結果",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/kakuka/gikai/news/2026-0902-1736-10.html",
+          "inspected_at": "2026-10-07T16:23:40.400527+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/kakuka/gikai/news/files/R8.Dai3KaiGikaiKekka.pdf",
+              "sha256": "b871aaed65c5566492eefa9b3ce3747edba6a6ebffaa7282ff6c9ae9c45a988b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度決算は令和8年9月2日の第3回定例会議決結果で公営企業会計2件（旅客自動車運送事業・簡易水道事業）の認定が確認できる。一般会計・特別会計の令和7年度決算認定はこの議決結果には載っておらず、確認した掲載先では認定状況を裏付ける資料を確認していない。公開資料は「財政のあらまし」の各会計決算概要（歳出は款=目的別まで、主要事業名のみ）と財務書類・財政状況資料集（指標集、実物確認は令和5年度版まで）で、款・項・目粒度の歳出決算明細を持つ決算書等は上記確認済み掲載先では公開を確認できない。令和8年6月分あらましは令和7年度下半期の予算執行状況と公営企業決算見込（款別最終予算額・執行済額）を載せるが明細ではない。令和7年度決算の概要を載せるあらまし令和8年12月分は確認時点で未発行。なお前年度（令和6年度決算）は「三宅村財政のあらまし(令和7年12月分)」3頁の普通建設事業表を部分原典として別途選定済み（このファイルのFY2024 settlementレコード参照）。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "r8-dai3-gikai-kekka-hosei",
+          "title": "令和８年第３回三宅村議会定例会議決結果（補正予算議案の掲載のみ）",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/kakuka/gikai/news/2026-0902-1736-10.html",
+          "inspected_at": "2026-10-07T16:23:40.400527+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/kakuka/gikai/news/files/R8.Dai3KaiGikaiKekka.pdf",
+              "sha256": "b871aaed65c5566492eefa9b3ce3747edba6a6ebffaa7282ff6c9ae9c45a988b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "確認した掲載先（議会議決結果・財政のあらまし）で確認できた令和8年度の補正は、一般会計が専決処分の第2号・第3号承認と議案第4号まで、特別会計・公営企業会計は第1号。議決結果は議案名と可否のみ、財政のあらましは会計・号ごとの増減総額までで、款項目または事業名と補正増減額が同一明細に載る資料はこれらの掲載先では確認できないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "r7-12-zaisei-aramashi",
+          "title": "三宅村財政のあらまし(令和7年12月分)（令和6年度決算概要）",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/aramashi.html",
+          "inspected_at": "2026-10-08T01:13:23.726309+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/zaiseinoaramasiR7.12.pdf",
+              "sha256": "062949a829c54573e01d3fa392bca055e7a557dae7ba40693cab9db3188287b8",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "部分原典として選定。令和6年度決算は令和7年9月10日会期の第3回定例会で公営企業会計2件（旅客自動車運送事業・簡易水道事業）の認定が議会だより第55号で確認できる。一般会計・特別会計の令和6年度決算認定は同議会の議案一覧に不載で、確認した掲載先では認定状況を裏付ける資料を確認していない。「財政のあらまし令和7年12月分」(text PDF, 単位：千円, 税の扱いの記載なし)は令和6年度各会計決算の概要で、2頁の「歳出（目的別）」表は款相当の科目（議会費・総務費等13科目）と決算額が同一明細で対応し、「歳出（性質別）」表も性質別区分と決算額が対応する。3頁の「令和6年度に実施した主な普通建設事業と災害復旧事業」表は性質別（普通建設事業）・目的別（款相当）・事業名・事業費が同一明細で対応し、掲載基準は事業費10,000千円以上と原典に明記。掲載21事業の事業費合計945,794千円は2頁の性質別「普通建設事業費」決算額1,024,250千円を下回る。これは掲載基準による一部掲載との整合を確認する補助検査であり、金額の意味を確定しない。原典列名は事業費（千円）として保持し、対象年度は資料の令和6年度決算概要という位置付けと表題から確認する（災害復旧事業の行は掲載基準を満たすものがなく不載）。決算額は支出済額・収入済額を示す原典表題の値であり予算額ではない。不足：款・項・目粒度の歳出明細、事業費10,000千円未満の普通建設事業、災害復旧事業の明細、特別会計4（国民健康保険（事業勘定）・国民健康保険（直営診療施設勘定）・介護保険（保険事業勘定）・後期高齢者医療）と公営企業会計2（旅客自動車運送事業・簡易水道事業）の歳出明細（1頁には会計別の歳出決算額総額のみで明細なし）、歳入明細は、確認した掲載先（財政状況・財政データ・財政状況等一覧表・財政比較分析表・財政のあらまし各ページ、議会議決結果・議会だより第55号実物、企業課・企画財政課ページ、広報みやけ、みんなの掲示板、東京都オープンデータカタログ、東京都総務局資料集・令和6年度決算状況一覧表）では公開を確認できない。4頁は令和7年度上半期の予算執行状況と補正内容で令和6年度決算の歳出範囲外のためscope外。同じ決算概要を載せる別版・分冊は確認していない。 監督側の実物確認: 選定scopeは事業名×事業費を持つ物理3頁だけに限定。物理2頁の款相当・性質別集計は明細として採用せず、掲載対象年度と事業費の判断の補助に使う。年度・金額の根拠は資料の令和6年度決算概要という位置付けと表題「令和6年度に実施した主な普通建設事業と災害復旧事業」。合計との整合は補助検査であり、それだけで金額意味を確定しない。原典列名は事業費（千円）として保持する。3頁下半分の地方債残高・増減表は同頁に併記されるが歳出明細の対象ではない。",
+      "selected_candidate_id": "r7-12-zaisei-aramashi",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r7-12-zaisei-aramashi",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133817/2024/settlement.pdf",
+            "sha256": "062949a829c54573e01d3fa392bca055e7a557dae7ba40693cab9db3188287b8",
+            "final_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/zaiseinoaramasiR7.12.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T01:13:32.269Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

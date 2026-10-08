@@ -2,6 +2,266 @@
   "jurisdiction": "131067",
   "name": "台東区",
   "official_url": "https://www.city.taito.lg.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "131067",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度当初予算書",
+          "landing_url": "https://www.city.taito.lg.jp/kusei/zaisei/yosan/tousyo/tousyoyosansyo/r8tousho.html",
+          "inspected_at": "2026-10-07T14:35:32.732394+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.taito.lg.jp/kusei/zaisei/yosan/tousyo/tousyoyosansyo/r8tousho.files/r8yosan_ippan.pdf",
+              "sha256": "e7458a6c67522e8aead736c464915d8aaaa0807146690f5870b249a14be4e870",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 23,
+                      "end": 24
+                    },
+                    {
+                      "start": 146,
+                      "end": 389
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.taito.lg.jp/kusei/zaisei/yosan/tousyo/tousyoyosansyo/r8tousho.files/r8yosan_tokubetsu.pdf",
+              "sha256": "1f97e8a44fe7891b6c24014f2a3450b8d60a03fb70116bbba98025b60e6cab83",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 17,
+                      "end": 18
+                    },
+                    {
+                      "start": 44,
+                      "end": 83
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 105,
+                      "end": 106
+                    },
+                    {
+                      "start": 124,
+                      "end": 139
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 161,
+                      "end": 162
+                    },
+                    {
+                      "start": 192,
+                      "end": 234
+                    }
+                  ]
+                },
+                {
+                  "account": "老人保健施設会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 255,
+                      "end": 256
+                    },
+                    {
+                      "start": 266,
+                      "end": 273
+                    }
+                  ]
+                },
+                {
+                  "account": "病院施設会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 289,
+                      "end": 290
+                    },
+                    {
+                      "start": 304,
+                      "end": 311
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度当初予算書（一般会計予算 r8yosan_ippan.pdf・各特別会計予算 r8yosan_tokubetsu.pdf の2分冊、文字PDF）を選定。いずれも款・項・目名と本年度予算額（単位：千円）が同じ明細頁に対応し、目別頁に節区分も併記。一般会計は歳出総括が物理23–24頁（印字20–21）、歳出明細が物理146–389頁（印字143–386、款1議会費〜款10予備費、印字=物理-3）。各特別会計は1冊に5会計（国民健康保険事業会計・後期高齢者医療会計・介護保険会計・老人保健施設会計・病院施設会計、印字=物理-5）で、会計ごとに歳出総括2頁＋歳出明細を確認：国保17–18・44–83頁、後期105–106・124–139頁、介護161–162・192–234頁、老健255–256・266–273頁、病院289–290・304–311頁。台東区に企業会計はなく全会計6会計を網羅。歳入は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131067/2026/initial-2.pdf",
+            "sha256": "e7458a6c67522e8aead736c464915d8aaaa0807146690f5870b249a14be4e870",
+            "final_url": "https://www.city.taito.lg.jp/kusei/zaisei/yosan/tousyo/tousyoyosansyo/r8tousho.files/r8yosan_ippan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131067/2026/initial-1.pdf",
+            "sha256": "1f97e8a44fe7891b6c24014f2a3450b8d60a03fb70116bbba98025b60e6cab83",
+            "final_url": "https://www.city.taito.lg.jp/kusei/zaisei/yosan/tousyo/tousyoyosansyo/r8tousho.files/r8yosan_tokubetsu.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:35:46.315Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131067",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度東京都台東区各会計歳入歳出決算書及び決算の付属書類・基金運用状況報告書",
+          "landing_url": "https://www.city.taito.lg.jp/kusei/zaisei/kessan/r6kessan.html",
+          "inspected_at": "2026-10-07T14:35:32.732394+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.taito.lg.jp/kusei/zaisei/kessan/r6kessan.files/R6kessannsyo.pdf",
+              "sha256": "eb50f4f05d3082585a2f006a4d2ad7ecee4c9877d94ffaf19ec89626df6b3276",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 15,
+                      "end": 18
+                    },
+                    {
+                      "start": 172,
+                      "end": 396
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 27,
+                      "end": 28
+                    },
+                    {
+                      "start": 411,
+                      "end": 428
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 37,
+                      "end": 38
+                    },
+                    {
+                      "start": 441,
+                      "end": 448
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 47,
+                      "end": 48
+                    },
+                    {
+                      "start": 465,
+                      "end": 486
+                    }
+                  ]
+                },
+                {
+                  "account": "老人保健施設会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 57,
+                      "end": 58
+                    },
+                    {
+                      "start": 495,
+                      "end": 496
+                    }
+                  ]
+                },
+                {
+                  "account": "病院施設会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 67,
+                      "end": 68
+                    },
+                    {
+                      "start": 505,
+                      "end": 506
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度決算は決算一覧（kessan/index.html）未掲載で公表前のため、最新公表の令和6年度各会計歳入歳出決算書（R6kessannsyo.pdf、文字PDF）を選定。款・項・目と節・支出済額（単位：円）が見開き両頁で対応。会計ごとに決算書部の歳出款項別総括2–4頁＋事項別明細書の歳出部分を確認：一般会計15–18・172–396頁（172頁=歳出扉、款1議会費〜款10予備費）、国保27–28・411–428頁、後期37–38・441–448頁、介護47–48・465–486頁、老健57–58・495–496頁、病院67–68・505–506頁（明細書部は印字=物理-19、決算書部は印字=物理-7）。同ページの成果説明書（R6seikasetumeisyo.pdf）と決算参考資料（R6sankosiryo.pdf）は目別明細を持たないため対象外。歳入は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131067/2024/settlement.pdf",
+            "sha256": "eb50f4f05d3082585a2f006a4d2ad7ecee4c9877d94ffaf19ec89626df6b3276",
+            "final_url": "https://www.city.taito.lg.jp/kusei/zaisei/kessan/r6kessan.files/R6kessannsyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:35:52.016Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

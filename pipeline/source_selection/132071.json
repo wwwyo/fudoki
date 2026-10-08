@@ -10,9 +10,9 @@
         "document_kind": "settlement"
       },
       "candidates": [],
+      "reason": "公式の現行決算書索引は2020〜2024年度を掲載。2019年度の旧掲載ページと確認した旧PDFは404で、カタログの昭島市20件にも代替の財政資料は未発見。取得できる原典が未確定のため未選定。",
       "selected_candidate_id": null,
-      "archive": null,
-      "reason": "公式の現行決算書索引は2020〜2024年度を掲載。2019年度の旧掲載ページと確認した旧PDFは404で、カタログの昭島市20件にも代替の財政資料は未発見。取得できる原典が未確定のため未選定。"
+      "archive": null
     },
     {
       "target": {
@@ -226,29 +226,86 @@
                   ]
                 }
               ]
+            },
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/002/929/suidou-yosan-r2.pdf",
+              "sha256": "00dd0b98c10d59a1a0ab6a974e88f14eb2b381259854309d39ab6e05beeb95d8",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "start": 32,
+                      "end": 33
+                    },
+                    {
+                      "start": 41,
+                      "end": 41
+                    }
+                  ]
+                },
+                {
+                  "account": "水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "start": 34,
+                      "end": 40
+                    },
+                    {
+                      "start": 42,
+                      "end": 43
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
       ],
+      "reason": "公式掲載の予算書から必要な明細を持つr2.yosan.pdf（下水道事業会計）、zennpe-ji.pdf（一般会計・中神土地区画整理事業特別会計・介護保険特別会計・国民健康保険特別会計・後期高齢者医療特別会計）を選定。各冊の会計・歳入／歳出の範囲を確認し、同じ明細は重ねて取り込まない。 追加: suidou-yosan-r2.pdf（水道部掲載の令和2年度水道事業会計予算書、text）。収益的収支・資本的収支の実施計画（款項目）と内訳（款項目節、千円）を物理8-10頁・32-43頁で確認。",
       "selected_candidate_id": "representative",
       "archive": {
         "bucket": "fudoki-inputs",
         "candidate_id": "representative",
         "files": [
           {
-            "key": "fiscal/source-selection/132071/2020/initial-1.pdf",
+            "key": "fiscal/source-selection/132071/2020/initial-2.pdf",
             "sha256": "82713f7589a91bf35ad6928c127e5ccbc3d4417db7a821e407086898b7fefe1d",
             "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/001/760/r2.yosan.pdf"
           },
           {
-            "key": "fiscal/source-selection/132071/2020/initial-2.pdf",
+            "key": "fiscal/source-selection/132071/2020/initial-3.pdf",
             "sha256": "8803cd4c93a8f15af1716cbc283b7b9f0aac51124d4de20c9cfa5dc398137d46",
             "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/269/zennpe-ji.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132071/2020/initial-1.pdf",
+            "sha256": "00dd0b98c10d59a1a0ab6a974e88f14eb2b381259854309d39ab6e05beeb95d8",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/002/929/suidou-yosan-r2.pdf"
           }
         ],
-        "archived_at": "2026-10-07T09:23:04.253Z"
-      },
-      "reason": "公式掲載の予算書から必要な明細を持つr2.yosan.pdf（下水道事業会計）、zennpe-ji.pdf（一般会計・中神土地区画整理事業特別会計・介護保険特別会計・国民健康保険特別会計・後期高齢者医療特別会計）を選定。各冊の会計・歳入／歳出の範囲を確認し、同じ明細は重ねて取り込まない。"
+        "archived_at": "2026-10-07T14:18:00.498Z"
+      }
     },
     {
       "target": {
@@ -370,24 +427,122 @@
                   ]
                 }
               ]
+            },
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/001/761/r2_kessan.pdf",
+              "sha256": "87593e79778f1bdb07ec4c6952040c27769423d6bf7ad9d23f18b03f2b2a3638",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 22,
+                      "end": 23
+                    },
+                    {
+                      "start": 28,
+                      "end": 28
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 24,
+                      "end": 27
+                    },
+                    {
+                      "start": 29,
+                      "end": 30
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/002/929/suidou-kessan-r2.pdf",
+              "sha256": "2f829a2da1dae0cbb428d58e638f56c57e47600eeed83f0b77023d358c6b82a4",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 22,
+                      "end": 23
+                    },
+                    {
+                      "start": 30,
+                      "end": 30
+                    }
+                  ]
+                },
+                {
+                  "account": "水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 24,
+                      "end": 29
+                    },
+                    {
+                      "start": 31,
+                      "end": 33
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
       ],
+      "reason": "公式掲載の決算書全項PDF（r02kessannsho.pdf、sha256検証済み）を選定。一般会計の歳出に対応する範囲は物理121〜435頁。款・項・目の科目名と支出済額等を持つ歳入歳出決算事項別明細書で、単独1資料が対象を満たす。同一団体・年度・資料区分の保存先slotはこの全項PDFを全会計・歳入歳出で共有するため、会計別冊ファイルは併用しない。 追加: r2_kessan.pdf（下水道課掲載の下水道事業会計決算書）とsuidou-kessan-r2.pdf（水道部掲載の水道事業会計決算書）。決算書全項PDFは両企業会計を欠くことを目次で確認。明細書（収益費用明細書・資本的収入支出明細書、款項目節、円）の物理頁を確認。",
       "selected_candidate_id": "representative",
       "archive": {
         "bucket": "fudoki-inputs",
         "candidate_id": "representative",
         "files": [
           {
-            "key": "fiscal/source-selection/132071/2020/settlement.pdf",
+            "key": "fiscal/source-selection/132071/2020/settlement-3.pdf",
             "sha256": "fb59889adbcfca20993a394e0f7b5238644854c2dd4e006f6344a11c60e40d5d",
             "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/261/r02kessannsho.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132071/2020/settlement-2.pdf",
+            "sha256": "87593e79778f1bdb07ec4c6952040c27769423d6bf7ad9d23f18b03f2b2a3638",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/001/761/r2_kessan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132071/2020/settlement-1.pdf",
+            "sha256": "2f829a2da1dae0cbb428d58e638f56c57e47600eeed83f0b77023d358c6b82a4",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/002/929/suidou-kessan-r2.pdf"
           }
         ],
-        "archived_at": "2026-10-07T08:18:36.463Z"
-      },
-      "reason": "公式掲載の決算書全項PDF（r02kessannsho.pdf、sha256検証済み）を選定。一般会計の歳出に対応する範囲は物理121〜435頁。款・項・目の科目名と支出済額等を持つ歳入歳出決算事項別明細書で、単独1資料が対象を満たす。同一団体・年度・資料区分の保存先slotはこの全項PDFを全会計・歳入歳出で共有するため、会計別冊ファイルは併用しない。"
+        "archived_at": "2026-10-07T14:18:14.120Z"
+      }
     },
     {
       "target": {
@@ -549,24 +704,138 @@
                   ]
                 }
               ]
+            },
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/001/760/r3_yosan.pdf",
+              "sha256": "9c6f6a22cf13a0a7e9c8db0ca9968952fe93caa9e97436d80bb63b0dbd81b89f",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "start": 34,
+                      "end": 35
+                    },
+                    {
+                      "start": 40,
+                      "end": 41
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 11
+                    },
+                    {
+                      "start": 13,
+                      "end": 13
+                    },
+                    {
+                      "start": 36,
+                      "end": 39
+                    },
+                    {
+                      "start": 42,
+                      "end": 43
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/002/929/suidou-yosan-r3.pdf",
+              "sha256": "d33a24654bece0381a389f521368648555682e32c7c45e31efdde4acd12952ba",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "start": 34,
+                      "end": 35
+                    },
+                    {
+                      "start": 43,
+                      "end": 43
+                    }
+                  ]
+                },
+                {
+                  "account": "水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 11
+                    },
+                    {
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "start": 36,
+                      "end": 42
+                    },
+                    {
+                      "start": 44,
+                      "end": 47
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
       ],
+      "reason": "公式掲載の当初予算書全項PDF（00.r3zenbu.pdf、sha256検証済み）を選定。一般会計の歳出に対応する範囲は物理21頁、物理107〜422頁。款・項・目の実名称と本年度予算額（千円）を持つ事項別明細書。 追加: r3_yosan.pdf（下水道課掲載の令和3年度下水道事業会計予算書、文字化けCIDのためscan）、suidou-yosan-r3.pdf（令和3年度水道事業会計予算書、text）。全頁PDFには両会計を欠くことを表紙・目次で確認。",
       "selected_candidate_id": "representative",
       "archive": {
         "bucket": "fudoki-inputs",
         "candidate_id": "representative",
         "files": [
           {
-            "key": "fiscal/source-selection/132071/2021/initial.pdf",
+            "key": "fiscal/source-selection/132071/2021/initial-1.pdf",
             "sha256": "2b72f38de4c56260bc055075257a291be331acff420e35c52b734d09d6bacdb8",
             "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/268/00.r3zenbu.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132071/2021/initial-2.pdf",
+            "sha256": "9c6f6a22cf13a0a7e9c8db0ca9968952fe93caa9e97436d80bb63b0dbd81b89f",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/001/760/r3_yosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132071/2021/initial-3.pdf",
+            "sha256": "d33a24654bece0381a389f521368648555682e32c7c45e31efdde4acd12952ba",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/002/929/suidou-yosan-r3.pdf"
           }
         ],
-        "archived_at": "2026-10-07T08:18:40.631Z"
-      },
-      "reason": "公式掲載の当初予算書全項PDF（00.r3zenbu.pdf、sha256検証済み）を選定。一般会計の歳出に対応する範囲は物理21頁、物理107〜422頁。款・項・目の実名称と本年度予算額（千円）を持つ事項別明細書。"
+        "archived_at": "2026-10-07T14:18:25.077Z"
+      }
     },
     {
       "target": {
@@ -688,24 +957,122 @@
                   ]
                 }
               ]
+            },
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/001/761/r3_kessan.pdf",
+              "sha256": "16aa784837e013b0aa9cceebe0f5239878ae47815e55602c0a6e006b417f2bdf",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 22,
+                      "end": 23
+                    },
+                    {
+                      "start": 29,
+                      "end": 30
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 24,
+                      "end": 28
+                    },
+                    {
+                      "start": 31,
+                      "end": 32
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/002/929/suidou-kessan-r3.pdf",
+              "sha256": "334d130d6a7fd5c81b5e56185feb090d8c2be3c831d3ff4a763a72e0616b0fa2",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 22,
+                      "end": 23
+                    },
+                    {
+                      "start": 30,
+                      "end": 30
+                    }
+                  ]
+                },
+                {
+                  "account": "水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 24,
+                      "end": 29
+                    },
+                    {
+                      "start": 31,
+                      "end": 32
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
       ],
+      "reason": "公式掲載の決算書全項PDF（r3kessan0.pdf、sha256検証済み）を選定。一般会計の歳出に対応する範囲は物理122〜436頁。款・項・目の科目名と支出済額等を持つ歳入歳出決算事項別明細書で、単独1資料が対象を満たす。同一団体・年度・資料区分の保存先slotはこの全項PDFを全会計・歳入歳出で共有するため、会計別冊ファイルは併用しない。 追加: r3_kessan.pdf（下水道課掲載の下水道事業会計決算書）とsuidou-kessan-r3.pdf（水道部掲載の水道事業会計決算書）。決算書全項PDFは両企業会計を欠くことを目次で確認。明細書（収益費用明細書・資本的収入支出明細書、款項目節、円）の物理頁を確認。",
       "selected_candidate_id": "representative",
       "archive": {
         "bucket": "fudoki-inputs",
         "candidate_id": "representative",
         "files": [
           {
-            "key": "fiscal/source-selection/132071/2021/settlement.pdf",
+            "key": "fiscal/source-selection/132071/2021/settlement-3.pdf",
             "sha256": "7a0c44d3dd45e5d4b502567f5a497adabcdcb046a87f9541963f4480055e4413",
             "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/260/r3kessan0.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132071/2021/settlement-1.pdf",
+            "sha256": "16aa784837e013b0aa9cceebe0f5239878ae47815e55602c0a6e006b417f2bdf",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/001/761/r3_kessan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132071/2021/settlement-2.pdf",
+            "sha256": "334d130d6a7fd5c81b5e56185feb090d8c2be3c831d3ff4a763a72e0616b0fa2",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/002/929/suidou-kessan-r3.pdf"
           }
         ],
-        "archived_at": "2026-10-07T08:18:44.286Z"
-      },
-      "reason": "公式掲載の決算書全項PDF（r3kessan0.pdf、sha256検証済み）を選定。一般会計の歳出に対応する範囲は物理122〜436頁。款・項・目の科目名と支出済額等を持つ歳入歳出決算事項別明細書で、単独1資料が対象を満たす。同一団体・年度・資料区分の保存先slotはこの全項PDFを全会計・歳入歳出で共有するため、会計別冊ファイルは併用しない。"
+        "archived_at": "2026-10-07T14:18:34.823Z"
+      }
     },
     {
       "target": {
@@ -867,24 +1234,138 @@
                   ]
                 }
               ]
+            },
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/001/760/r4_yosan.pdf",
+              "sha256": "e0d950aebba665c3adb543415e6c359c94ce786af452686a4400a4ec94a0424d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "start": 34,
+                      "end": 35
+                    },
+                    {
+                      "start": 40,
+                      "end": 41
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 11
+                    },
+                    {
+                      "start": 13,
+                      "end": 13
+                    },
+                    {
+                      "start": 36,
+                      "end": 39
+                    },
+                    {
+                      "start": 42,
+                      "end": 43
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/002/929/suidou-yosan-r4.pdf",
+              "sha256": "186551316a0b474ac87e158b4bf294c632a3608f7ecc87778bba0905a9718e89",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "start": 34,
+                      "end": 35
+                    },
+                    {
+                      "start": 43,
+                      "end": 43
+                    }
+                  ]
+                },
+                {
+                  "account": "水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 11
+                    },
+                    {
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "start": 36,
+                      "end": 42
+                    },
+                    {
+                      "start": 44,
+                      "end": 45
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
       ],
+      "reason": "公式掲載の当初予算書全項PDF（00.r4zenbu.pdf、sha256検証済み）を選定。一般会計の歳出に対応する範囲は物理21頁、物理107〜422頁。款・項・目の実名称と本年度予算額（千円）を持つ事項別明細書。 追加: r4_yosan.pdf（令和4年度下水道事業会計予算書、text）、suidou-yosan-r4.pdf（令和4年度水道事業会計予算書、text）。全頁PDFには両会計を欠くことを表紙・目次で確認。",
       "selected_candidate_id": "representative",
       "archive": {
         "bucket": "fudoki-inputs",
         "candidate_id": "representative",
         "files": [
           {
-            "key": "fiscal/source-selection/132071/2022/initial.pdf",
+            "key": "fiscal/source-selection/132071/2022/initial-2.pdf",
             "sha256": "b7dc0fcf2a63b1c33b1c580cbf93250d7d71b053fc795cfd6079dfce23cec679",
             "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/267/00.r4zenbu.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132071/2022/initial-3.pdf",
+            "sha256": "e0d950aebba665c3adb543415e6c359c94ce786af452686a4400a4ec94a0424d",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/001/760/r4_yosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132071/2022/initial-1.pdf",
+            "sha256": "186551316a0b474ac87e158b4bf294c632a3608f7ecc87778bba0905a9718e89",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/002/929/suidou-yosan-r4.pdf"
           }
         ],
-        "archived_at": "2026-10-07T08:18:48.577Z"
-      },
-      "reason": "公式掲載の当初予算書全項PDF（00.r4zenbu.pdf、sha256検証済み）を選定。一般会計の歳出に対応する範囲は物理21頁、物理107〜422頁。款・項・目の実名称と本年度予算額（千円）を持つ事項別明細書。"
+        "archived_at": "2026-10-07T14:18:43.856Z"
+      }
     },
     {
       "target": {
@@ -1006,24 +1487,122 @@
                   ]
                 }
               ]
+            },
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/001/761/r4_kessan.pdf",
+              "sha256": "80df407677de2dc0c838f7d6ae4998fcd3c0336119763decf2ecd137e9ed3c82",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 22,
+                      "end": 23
+                    },
+                    {
+                      "start": 29,
+                      "end": 30
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 24,
+                      "end": 28
+                    },
+                    {
+                      "start": 31,
+                      "end": 32
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/002/929/suidou-kessan-r4.pdf",
+              "sha256": "c079a3f5e523b678023dcd6fde409e8890ce4c84f2c26f394e34e88eb1693f5f",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 22,
+                      "end": 23
+                    },
+                    {
+                      "start": 30,
+                      "end": 30
+                    }
+                  ]
+                },
+                {
+                  "account": "水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 24,
+                      "end": 29
+                    },
+                    {
+                      "start": 31,
+                      "end": 33
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
       ],
+      "reason": "公式掲載の決算書全項PDF（r4kessan0.pdf、sha256検証済み）を選定。一般会計の歳出に対応する範囲は物理64〜220頁。款・項・目の科目名と支出済額等を持つ歳入歳出決算事項別明細書で、単独1資料が対象を満たす。同一団体・年度・資料区分の保存先slotはこの全項PDFを全会計・歳入歳出で共有するため、会計別冊ファイルは併用しない。 追加: r4_kessan.pdf（下水道課掲載の下水道事業会計決算書）とsuidou-kessan-r4.pdf（水道部掲載の水道事業会計決算書）。決算書全項PDFは両企業会計を欠くことを目次で確認。明細書（収益費用明細書・資本的収入支出明細書、款項目節、円）の物理頁を確認。",
       "selected_candidate_id": "representative",
       "archive": {
         "bucket": "fudoki-inputs",
         "candidate_id": "representative",
         "files": [
           {
-            "key": "fiscal/source-selection/132071/2022/settlement.pdf",
+            "key": "fiscal/source-selection/132071/2022/settlement-1.pdf",
             "sha256": "19b9f62e009d35d220c39e7c780f9d6200b6ad26ba9bcffccdc3853089ec07bf",
             "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/259/r4kessan0.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132071/2022/settlement-2.pdf",
+            "sha256": "80df407677de2dc0c838f7d6ae4998fcd3c0336119763decf2ecd137e9ed3c82",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/001/761/r4_kessan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132071/2022/settlement-3.pdf",
+            "sha256": "c079a3f5e523b678023dcd6fde409e8890ce4c84f2c26f394e34e88eb1693f5f",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/002/929/suidou-kessan-r4.pdf"
           }
         ],
-        "archived_at": "2026-10-07T08:18:51.285Z"
-      },
-      "reason": "公式掲載の決算書全項PDF（r4kessan0.pdf、sha256検証済み）を選定。一般会計の歳出に対応する範囲は物理64〜220頁。款・項・目の科目名と支出済額等を持つ歳入歳出決算事項別明細書で、単独1資料が対象を満たす。同一団体・年度・資料区分の保存先slotはこの全項PDFを全会計・歳入歳出で共有するため、会計別冊ファイルは併用しない。"
+        "archived_at": "2026-10-07T14:18:52.577Z"
+      }
     },
     {
       "target": {
@@ -1157,24 +1736,220 @@
                   ]
                 }
               ]
+            },
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/001/760/r5_yosansyo.pdf",
+              "sha256": "e66a2407b9cd2df3b59730360f596fac4425d4d6b57ccee5b1f4a25f8835c9b0",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "start": 34,
+                      "end": 35
+                    },
+                    {
+                      "start": 41,
+                      "end": 41
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 11
+                    },
+                    {
+                      "start": 13,
+                      "end": 13
+                    },
+                    {
+                      "start": 36,
+                      "end": 40
+                    },
+                    {
+                      "start": 42,
+                      "end": 43
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/002/929/suidou-yosan-r5.pdf",
+              "sha256": "d10b02bb0dd92b400ee54a094e9c1275a69935827c784304e57df38bdc6ff802",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "start": 34,
+                      "end": 35
+                    },
+                    {
+                      "start": 43,
+                      "end": 43
+                    }
+                  ]
+                },
+                {
+                  "account": "水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 11
+                    },
+                    {
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "start": 36,
+                      "end": 42
+                    },
+                    {
+                      "start": 44,
+                      "end": 45
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/266/2-6.kuaku_kukaku.pdf",
+              "sha256": "04ac9bb34c27421e0de1e8488881804b0e2e2e02ed4e823226844753813de6aa",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "中神土地区画整理事業特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 15
+                    }
+                  ]
+                },
+                {
+                  "account": "中神土地区画整理事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 16,
+                      "end": 23
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/266/2-7.kukaku_kitagawa.pdf",
+              "sha256": "1801ed03cd2feb5e1726b33dd3af3df0154de3b228337ecd3ea51d420e156ff2",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "中神駅北側地域整備事業特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                },
+                {
+                  "account": "中神駅北側地域整備事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 14,
+                      "end": 17
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
       ],
+      "reason": "公式掲載の当初予算書全項PDF（1-1.zenbu.pdf、sha256検証済み）を選定。一般会計の歳出に対応する範囲は物理21頁、物理107〜424頁。款・項・目の実名称と本年度予算額（千円）を持つ事項別明細書。 追加: r5_yosansyo.pdf（令和5年度下水道事業会計予算書、text）、suidou-yosan-r5.pdf（令和5年度水道事業会計予算書、text）、2-6.kuaku_kukaku.pdf（中神土地区画整理事業特別会計、文字化けCIDのためscan）、2-7.kukaku_kitagawa.pdf（中神駅北側地域整備事業特別会計、scan）。1-1.zenbu.pdfの目次は一般会計・国保・介護・後期のみで中神2会計と企業2会計を欠くことを確認。",
       "selected_candidate_id": "representative",
       "archive": {
         "bucket": "fudoki-inputs",
         "candidate_id": "representative",
         "files": [
           {
-            "key": "fiscal/source-selection/132071/2023/initial.pdf",
+            "key": "fiscal/source-selection/132071/2023/initial-3.pdf",
             "sha256": "cab16e55b00018ad9e267341937275f76ebdcb68ec094d8284af112fa503ab1d",
             "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/266/1-1.zenbu.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132071/2023/initial-5.pdf",
+            "sha256": "e66a2407b9cd2df3b59730360f596fac4425d4d6b57ccee5b1f4a25f8835c9b0",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/001/760/r5_yosansyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132071/2023/initial-4.pdf",
+            "sha256": "d10b02bb0dd92b400ee54a094e9c1275a69935827c784304e57df38bdc6ff802",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/002/929/suidou-yosan-r5.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132071/2023/initial-1.pdf",
+            "sha256": "04ac9bb34c27421e0de1e8488881804b0e2e2e02ed4e823226844753813de6aa",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/266/2-6.kuaku_kukaku.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132071/2023/initial-2.pdf",
+            "sha256": "1801ed03cd2feb5e1726b33dd3af3df0154de3b228337ecd3ea51d420e156ff2",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/266/2-7.kukaku_kitagawa.pdf"
           }
         ],
-        "archived_at": "2026-10-07T08:18:54.598Z"
-      },
-      "reason": "公式掲載の当初予算書全項PDF（1-1.zenbu.pdf、sha256検証済み）を選定。一般会計の歳出に対応する範囲は物理21頁、物理107〜424頁。款・項・目の実名称と本年度予算額（千円）を持つ事項別明細書。"
+        "archived_at": "2026-10-07T14:19:06.892Z"
+      }
     },
     {
       "target": {
@@ -1294,26 +2069,144 @@
                       "end": 283
                     }
                   ]
+                },
+                {
+                  "account": "中神駅北側地域整備事業特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 314,
+                      "end": 316
+                    }
+                  ]
+                },
+                {
+                  "account": "中神駅北側地域整備事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 317,
+                      "end": 319
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/001/761/r5_kessan.pdf",
+              "sha256": "804d9876de4414589e3225f91d23c1d94f501e03c004886d3800a3f4bf2f31e0",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 22,
+                      "end": 23
+                    },
+                    {
+                      "start": 29,
+                      "end": 29
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 24,
+                      "end": 28
+                    },
+                    {
+                      "start": 30,
+                      "end": 31
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/002/929/suidou-kessan-r5.pdf",
+              "sha256": "f933221defbe34ca883967fff81748454c86db26c7385705977d4fd332176920",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 22,
+                      "end": 23
+                    },
+                    {
+                      "start": 30,
+                      "end": 30
+                    }
+                  ]
+                },
+                {
+                  "account": "水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 24,
+                      "end": 29
+                    },
+                    {
+                      "start": 31,
+                      "end": 33
+                    }
+                  ]
                 }
               ]
             }
           ]
         }
       ],
+      "reason": "公式掲載の決算書全項PDF（r5kessan0.pdf、sha256検証済み）を選定。一般会計の歳出に対応する範囲は物理63〜222頁。款・項・目の科目名と支出済額等を持つ歳入歳出決算事項別明細書で、単独1資料が対象を満たす。同一団体・年度・資料区分の保存先slotはこの全項PDFを全会計・歳入歳出で共有するため、会計別冊ファイルは併用しない。 追加: r5_kessan.pdf（下水道課掲載の下水道事業会計決算書）とsuidou-kessan-r5.pdf（水道部掲載の水道事業会計決算書）。決算書全項PDFは両企業会計を欠くことを目次で確認。明細書（収益費用明細書・資本的収入支出明細書、款項目節、円）の物理頁を確認。 修正: 全項PDFに中神駅北側地域整備事業特別会計（令和5年度新設）を収録済みのためscopeへ追加（明細書歳入314-316、明細書歳出317-319）。",
       "selected_candidate_id": "representative",
       "archive": {
         "bucket": "fudoki-inputs",
         "candidate_id": "representative",
         "files": [
           {
-            "key": "fiscal/source-selection/132071/2023/settlement.pdf",
+            "key": "fiscal/source-selection/132071/2023/settlement-1.pdf",
             "sha256": "1cd32bcc99312c05be3755a40a03bb6c99efea5358cdc7861ab67f8ec2dc3277",
             "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/258/r5kessan0.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132071/2023/settlement-2.pdf",
+            "sha256": "804d9876de4414589e3225f91d23c1d94f501e03c004886d3800a3f4bf2f31e0",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/001/761/r5_kessan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132071/2023/settlement-3.pdf",
+            "sha256": "f933221defbe34ca883967fff81748454c86db26c7385705977d4fd332176920",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/002/929/suidou-kessan-r5.pdf"
           }
         ],
-        "archived_at": "2026-10-07T08:18:57.012Z"
-      },
-      "reason": "公式掲載の決算書全項PDF（r5kessan0.pdf、sha256検証済み）を選定。一般会計の歳出に対応する範囲は物理63〜222頁。款・項・目の科目名と支出済額等を持つ歳入歳出決算事項別明細書で、単独1資料が対象を満たす。同一団体・年度・資料区分の保存先slotはこの全項PDFを全会計・歳入歳出で共有するため、会計別冊ファイルは併用しない。"
+        "archived_at": "2026-10-07T14:19:15.585Z"
+      }
     },
     {
       "target": {
@@ -1473,6 +2366,34 @@
                       "end": 569
                     }
                   ]
+                },
+                {
+                  "account": "中神駅北側地域整備事業特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 625,
+                      "end": 625
+                    },
+                    {
+                      "start": 628,
+                      "end": 631
+                    }
+                  ]
+                },
+                {
+                  "account": "中神駅北側地域整備事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 626,
+                      "end": 627
+                    },
+                    {
+                      "start": 632,
+                      "end": 637
+                    }
+                  ]
                 }
               ]
             },
@@ -1527,29 +2448,86 @@
                   ]
                 }
               ]
+            },
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/002/929/suidou-yosan-r6.pdf",
+              "sha256": "5f78c62980618dd597a8e6f10fe70820322c0170060b0e5c6a066f21812bfe1d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "start": 34,
+                      "end": 35
+                    },
+                    {
+                      "start": 43,
+                      "end": 43
+                    }
+                  ]
+                },
+                {
+                  "account": "水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 11
+                    },
+                    {
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "start": 36,
+                      "end": 42
+                    },
+                    {
+                      "start": 44,
+                      "end": 45
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
       ],
+      "reason": "公式掲載の予算書から必要な明細を持つ1-1.zenbu.pdf（一般会計・中神土地区画整理事業特別会計・介護保険特別会計・国民健康保険特別会計・後期高齢者医療特別会計）、r6_yosan.pdf（下水道事業会計）を選定。各冊の会計・歳入／歳出の範囲を確認し、同じ明細は重ねて取り込まない。 追加: 全頁PDFの目次に中神駅北側地域整備事業特別会計（印字617〜＝物理619-646）が含まれるため同ファイルのscopeへ追加（総括歳入625、総括歳出・財源内訳626-627、歳入明細628-631、歳出明細632-637）。suidou-yosan-r6.pdf（令和6年度水道事業会計予算書、text）を追加。",
       "selected_candidate_id": "representative",
       "archive": {
         "bucket": "fudoki-inputs",
         "candidate_id": "representative",
         "files": [
           {
-            "key": "fiscal/source-selection/132071/2024/initial-1.pdf",
+            "key": "fiscal/source-selection/132071/2024/initial-2.pdf",
             "sha256": "e9379e9b6d49619e42da7bf1e5f5db409651be5b11beb6b9ea7e866d927a06ea",
             "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/265/1-1.zenbu.pdf"
           },
           {
-            "key": "fiscal/source-selection/132071/2024/initial-2.pdf",
+            "key": "fiscal/source-selection/132071/2024/initial-3.pdf",
             "sha256": "f16fc38c9474a7307f8bc7cd940a262b5fa2bae4a25f3025b039653d6a865cb7",
             "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/001/760/r6_yosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132071/2024/initial-1.pdf",
+            "sha256": "5f78c62980618dd597a8e6f10fe70820322c0170060b0e5c6a066f21812bfe1d",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/002/929/suidou-yosan-r6.pdf"
           }
         ],
-        "archived_at": "2026-10-07T09:23:10.403Z"
-      },
-      "reason": "公式掲載の予算書から必要な明細を持つ1-1.zenbu.pdf（一般会計・中神土地区画整理事業特別会計・介護保険特別会計・国民健康保険特別会計・後期高齢者医療特別会計）、r6_yosan.pdf（下水道事業会計）を選定。各冊の会計・歳入／歳出の範囲を確認し、同じ明細は重ねて取り込まない。"
+        "archived_at": "2026-10-07T14:19:25.445Z"
+      }
     },
     {
       "target": {
@@ -1691,24 +2669,122 @@
                   ]
                 }
               ]
+            },
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/001/761/r6_kessan.pdf",
+              "sha256": "945d99669283b18bd97b1f04fe0ade6829a313db48f51904fa9eb1b281da4caa",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 22,
+                      "end": 23
+                    },
+                    {
+                      "start": 29,
+                      "end": 29
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 24,
+                      "end": 28
+                    },
+                    {
+                      "start": 30,
+                      "end": 31
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/002/929/suidou-kessan-r6.pdf",
+              "sha256": "dadc229ad8f8cac056626bba2f1b1bd9d75ac58734792c027a767547b6c1f977",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 22,
+                      "end": 23
+                    },
+                    {
+                      "start": 30,
+                      "end": 30
+                    }
+                  ]
+                },
+                {
+                  "account": "水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 24,
+                      "end": 29
+                    },
+                    {
+                      "start": 31,
+                      "end": 33
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
       ],
+      "reason": "公式掲載の決算書全項PDF（r6kessan0.pdf、sha256検証済み）を選定。一般会計の歳出に対応する範囲は物理121〜443頁。款・項・目の科目名と支出済額等を持つ歳入歳出決算事項別明細書で、単独1資料が対象を満たす。同一団体・年度・資料区分の保存先slotはこの全項PDFを全会計・歳入歳出で共有するため、会計別冊ファイルは併用しない。 追加: r6_kessan.pdf（下水道課掲載の下水道事業会計決算書）とsuidou-kessan-r6.pdf（水道部掲載の水道事業会計決算書）。決算書全項PDFは両企業会計を欠くことを目次で確認。明細書（収益費用明細書・資本的収入支出明細書、款項目節、円）の物理頁を確認。",
       "selected_candidate_id": "representative",
       "archive": {
         "bucket": "fudoki-inputs",
         "candidate_id": "representative",
         "files": [
           {
-            "key": "fiscal/source-selection/132071/2024/settlement.pdf",
+            "key": "fiscal/source-selection/132071/2024/settlement-1.pdf",
             "sha256": "20802834f53ef0a92ff9098bf05bd162cc603de55a998529f041008addcaaf71",
             "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/009/130/r6kessan0.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132071/2024/settlement-2.pdf",
+            "sha256": "945d99669283b18bd97b1f04fe0ade6829a313db48f51904fa9eb1b281da4caa",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/001/761/r6_kessan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132071/2024/settlement-3.pdf",
+            "sha256": "dadc229ad8f8cac056626bba2f1b1bd9d75ac58734792c027a767547b6c1f977",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/002/929/suidou-kessan-r6.pdf"
           }
         ],
-        "archived_at": "2026-10-07T08:19:02.990Z"
-      },
-      "reason": "公式掲載の決算書全項PDF（r6kessan0.pdf、sha256検証済み）を選定。一般会計の歳出に対応する範囲は物理121〜443頁。款・項・目の科目名と支出済額等を持つ歳入歳出決算事項別明細書で、単独1資料が対象を満たす。同一団体・年度・資料区分の保存先slotはこの全項PDFを全会計・歳入歳出で共有するため、会計別冊ファイルは併用しない。"
+        "archived_at": "2026-10-07T14:19:33.623Z"
+      }
     },
     {
       "target": {
@@ -1892,6 +2968,46 @@
                       "end": 492
                     }
                   ]
+                },
+                {
+                  "account": "水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 668,
+                      "end": 668
+                    },
+                    {
+                      "start": 670,
+                      "end": 670
+                    },
+                    {
+                      "start": 692,
+                      "end": 693
+                    },
+                    {
+                      "start": 701,
+                      "end": 701
+                    }
+                  ]
+                },
+                {
+                  "account": "水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 669,
+                      "end": 670
+                    },
+                    {
+                      "start": 694,
+                      "end": 700
+                    },
+                    {
+                      "start": 702,
+                      "end": 703
+                    }
+                  ]
                 }
               ]
             },
@@ -1930,10 +3046,47 @@
                   ]
                 }
               ]
+            },
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/264/2-6.kitagawa.pdf",
+              "sha256": "92ff755c6e1f447bd4c85f09d122d4962327594f4d6ee6b4df91a1fbb1005559",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "中神駅北側地域整備事業特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 15
+                    }
+                  ]
+                },
+                {
+                  "account": "中神駅北側地域整備事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 16,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
       ],
+      "reason": "公式掲載の予算書から必要な明細を持つ2-4.kouki.pdf（後期高齢者医療特別会計）、1-1.zenbu.pdf（一般会計・下水道事業会計・介護保険特別会計・国民健康保険特別会計）、2-5.kukaku.pdf（中神土地区画整理事業特別会計）を選定。各冊の会計・歳入／歳出の範囲を確認し、同じ明細は重ねて取り込まない。 追加: 全頁PDFに水道事業会計（物理661-709）・下水道事業会計（物理710-756）を収録済み。scopeに水道（収益収入668・資本収支670、内訳収入692-693・資本収入内訳701、収益支出内訳694-700・資本支出702-703）を追加。2-6.kitagawa.pdf（中神駅北側地域整備事業特別会計、scan）を追加。",
       "selected_candidate_id": "representative",
       "archive": {
         "bucket": "fudoki-inputs",
@@ -1950,14 +3103,93 @@
             "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/264/1-1.zenbu.pdf"
           },
           {
-            "key": "fiscal/source-selection/132071/2025/initial-3.pdf",
+            "key": "fiscal/source-selection/132071/2025/initial-4.pdf",
             "sha256": "fcaadac31db15c42641768bf4859f8d6281dcfef602d25ad0de21adaea09216f",
             "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/264/2-5.kukaku.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132071/2025/initial-3.pdf",
+            "sha256": "92ff755c6e1f447bd4c85f09d122d4962327594f4d6ee6b4df91a1fbb1005559",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/264/2-6.kitagawa.pdf"
           }
         ],
-        "archived_at": "2026-10-07T09:23:17.480Z"
+        "archived_at": "2026-10-07T14:19:44.640Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
       },
-      "reason": "公式掲載の予算書から必要な明細を持つ2-4.kouki.pdf（後期高齢者医療特別会計）、1-1.zenbu.pdf（一般会計・下水道事業会計・介護保険特別会計・国民健康保険特別会計）、2-5.kukaku.pdf（中神土地区画整理事業特別会計）を選定。各冊の会計・歳入／歳出の範囲を確認し、同じ明細は重ねて取り込まない。"
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度下水道事業会計決算書",
+          "landing_url": "https://www.city.akishima.lg.jp/kurashi/sumai/1001689/1001755/1001761.html",
+          "inspected_at": "2026-10-07T14:37:12.607100+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/001/761/r7-kessan.pdf",
+              "sha256": "7d2b4b818e99e43e95c02ef7c33c0022b93e1bab83335004924bd30894bcb280",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 22,
+                      "end": 23
+                    },
+                    {
+                      "start": 29,
+                      "end": 29
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 24,
+                      "end": 28
+                    },
+                    {
+                      "start": 30,
+                      "end": 31
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "下水道課掲載の令和7年度下水道事業会計決算書（r7-kessan.pdf、text PDF）を選定。款・項・目・節と金額（円、消費税抜き）を持つ収益費用明細書（収入:物理22-23頁、支出:24-28頁）・資本的収入支出明細書（収入:29頁、支出:30-31頁）と、収益的収入及び支出・資本的収入及び支出の決算額を持つ決算報告書（4-7頁）を実物で確認。令和6年度の同資料と同一構成。一般会計・特別会計の令和7年度決算書は決算書一覧に未掲載（最新は令和6年度）、水道事業会計の令和7年度決算書も水道部ページに未掲載（最新は令和6年度）のため両会計は不足として残す。掲載後に範囲を確認して追加選定が必要。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132071/2025/settlement.pdf",
+            "sha256": "7d2b4b818e99e43e95c02ef7c33c0022b93e1bab83335004924bd30894bcb280",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/001/761/r7-kessan.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:39:18.494Z"
+      }
     },
     {
       "target": {
@@ -2003,34 +3235,6 @@
                     {
                       "start": 20,
                       "end": 109
-                    }
-                  ]
-                },
-                {
-                  "account": "中神土地区画整理事業特別会計",
-                  "direction": "expenditure",
-                  "pages": [
-                    {
-                      "start": 607,
-                      "end": 607
-                    },
-                    {
-                      "start": 613,
-                      "end": 620
-                    }
-                  ]
-                },
-                {
-                  "account": "中神土地区画整理事業特別会計",
-                  "direction": "revenue",
-                  "pages": [
-                    {
-                      "start": 606,
-                      "end": 606
-                    },
-                    {
-                      "start": 609,
-                      "end": 612
                     }
                   ]
                 },
@@ -2171,10 +3375,83 @@
                   ]
                 }
               ]
+            },
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/011/521/2-5.kukaku.pdf",
+              "sha256": "8842d76dc1338560cde199365f597052a6caf3afe0c85d5be0afc8d09b6c5027",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "中神土地区画整理事業特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 15
+                    }
+                  ]
+                },
+                {
+                  "account": "中神土地区画整理事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 16,
+                      "end": 23
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/011/521/2-6.kitagawa.pdf",
+              "sha256": "d3fbc4734a8c70611d4fd9898c879b1982f3789781067cbaf4bb48f7cabff663",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "中神駅北側地域整備事業特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 15
+                    }
+                  ]
+                },
+                {
+                  "account": "中神駅北側地域整備事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 16,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
       ],
+      "reason": "公式掲載の予算書から、1-1.zenbu.pdf（一般会計・国民健康保険特別会計・介護保険特別会計・後期高齢者医療特別会計の4会計を収録。実物の目次・本文で中神土地区画整理事業特別会計を含まないことを確認）、r8_yosan.pdf（下水道事業会計）、別冊2-5.kukaku.pdf（中神土地区画整理事業特別会計）・2-6.kitagawa.pdf（中神駅北側地域整備事業特別会計、いずれも文字化けCIDのためscan）を選定。各冊の会計・歳入／歳出の範囲を確認し、同じ明細は重ねて取り込まない。水道事業会計の令和8年度予算書は水道部ページに令和7年度までしか掲載がなく（suidou-yosan-r8.pdfは404）未収録。",
       "selected_candidate_id": "representative",
       "archive": {
         "bucket": "fudoki-inputs",
@@ -2189,11 +3466,688 @@
             "key": "fiscal/source-selection/132071/2026/initial-2.pdf",
             "sha256": "6c8ee7620bef0040a10e356b013065cda0594495a419803b8eb6fc23717a660f",
             "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/001/760/r8_yosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132071/2026/initial-3.pdf",
+            "sha256": "8842d76dc1338560cde199365f597052a6caf3afe0c85d5be0afc8d09b6c5027",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/011/521/2-5.kukaku.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132071/2026/initial-4.pdf",
+            "sha256": "d3fbc4734a8c70611d4fd9898c879b1982f3789781067cbaf4bb48f7cabff663",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/011/521/2-6.kitagawa.pdf"
           }
         ],
-        "archived_at": "2026-10-07T09:23:24.699Z"
+        "archived_at": "2026-10-07T14:19:55.793Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2020,
+        "document_kind": "supplementary",
+        "amendment_number": 1
       },
-      "reason": "公式掲載の予算書から必要な明細を持つ1-1.zenbu.pdf（一般会計・中神土地区画整理事業特別会計・介護保険特別会計・国民健康保険特別会計・後期高齢者医療特別会計）、r8_yosan.pdf（下水道事業会計）を選定。各冊の会計・歳入／歳出の範囲を確認し、同じ明細は重ねて取り込まない。"
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和2年度ページに掲載されるのは「一般会計補正予算（第1号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2020,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和2年度ページに掲載されるのは「一般会計補正予算（第2号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2020,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和2年度ページに掲載されるのは「一般会計補正予算（第3号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2020,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和2年度ページに掲載されるのは「一般会計補正予算（第4号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2020,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和2年度ページに掲載されるのは「一般会計補正予算（第5号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2020,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和2年度ページに掲載されるのは「一般会計補正予算（第6号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2020,
+        "document_kind": "supplementary",
+        "amendment_number": 7
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和2年度ページに掲載されるのは「一般会計補正予算（第7号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2020,
+        "document_kind": "supplementary",
+        "amendment_number": 8
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和2年度ページに掲載されるのは「一般会計補正予算（第8号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2020,
+        "document_kind": "supplementary",
+        "amendment_number": 9
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和2年度ページに掲載されるのは「一般会計補正予算（第9号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2020,
+        "document_kind": "supplementary",
+        "amendment_number": 10
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和2年度ページに掲載されるのは「一般会計補正予算（第10号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2020,
+        "document_kind": "supplementary",
+        "amendment_number": 11
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和2年度ページに掲載されるのは「一般会計補正予算（第11号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2020,
+        "document_kind": "supplementary",
+        "amendment_number": 12
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和2年度ページに掲載されるのは「一般会計補正予算（第12号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2021,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和3年度ページに掲載されるのは「一般会計補正予算（第1号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2021,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和3年度ページに掲載されるのは「一般会計補正予算（第2号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2021,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和3年度ページに掲載されるのは「一般会計補正予算（第3号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2021,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和3年度ページに掲載されるのは「一般会計補正予算（第4号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2021,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和3年度ページに掲載されるのは「一般会計補正予算（第5号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2021,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和3年度ページに掲載されるのは「一般会計補正予算（第6号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2021,
+        "document_kind": "supplementary",
+        "amendment_number": 7
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和3年度ページに掲載されるのは「一般会計補正予算（第7号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2021,
+        "document_kind": "supplementary",
+        "amendment_number": 8
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和3年度ページに掲載されるのは「一般会計補正予算（第8号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2021,
+        "document_kind": "supplementary",
+        "amendment_number": 9
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和3年度ページに掲載されるのは「一般会計補正予算（第9号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2021,
+        "document_kind": "supplementary",
+        "amendment_number": 10
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和3年度ページに掲載されるのは「一般会計補正予算（第10号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2022,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和4年度ページに掲載されるのは「一般会計補正予算（第1号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2022,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和4年度ページに掲載されるのは「一般会計補正予算（第2号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2022,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和4年度ページに掲載されるのは「一般会計補正予算（第3号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2022,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和4年度ページに掲載されるのは「一般会計補正予算（第4号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2022,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和4年度ページに掲載されるのは「一般会計補正予算（第5号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2022,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和4年度ページに掲載されるのは「一般会計補正予算（第6号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2022,
+        "document_kind": "supplementary",
+        "amendment_number": 7
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和4年度ページに掲載されるのは「一般会計補正予算（第7号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和5年度ページに掲載されるのは「一般会計補正予算（第1号）概要」PDFのみ。本文を確認した（CID文字化けのため描画して目視確認）。内容は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内容内訳で、項・目の科目明細を持たない。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和5年度ページに掲載されるのは「一般会計補正予算（第2号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和5年度ページに掲載されるのは「一般会計補正予算（第3号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和5年度ページに掲載されるのは「一般会計補正予算（第4号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和5年度ページに掲載されるのは「一般会計補正予算（第5号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和5年度ページに掲載されるのは「一般会計補正予算（第6号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 7
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和5年度ページに掲載されるのは「一般会計補正予算（第7号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 8
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和5年度ページに掲載されるのは「一般会計補正予算（第8号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和6年度ページに掲載されるのは「一般会計補正予算（第1号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和6年度ページに掲載されるのは「一般会計補正予算（第2号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和6年度ページに掲載されるのは「一般会計補正予算（第3号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和6年度ページに掲載されるのは「一般会計補正予算（第4号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和6年度ページに掲載されるのは「一般会計補正予算（第5号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和6年度ページに掲載されるのは「一般会計補正予算（第6号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 7
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和6年度ページに掲載されるのは「一般会計補正予算（第7号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和7年度ページに掲載されるのは「一般会計補正予算（第1号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和7年度ページに掲載されるのは「一般会計補正予算（第2号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和7年度ページに掲載されるのは「一般会計補正予算（第3号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和7年度ページに掲載されるのは「一般会計補正予算（第4号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和7年度ページに掲載されるのは「一般会計補正予算（第5号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [],
+      "reason": "公式の補正予算一覧の令和7年度ページに掲載されるのは「一般会計補正予算（第6号）概要」PDFのみ。取得・sha256を記録したが本文は未確認。同一掲載系列で本文確認した令和5年度第1号・令和8年度第1号は款別集計表（歳入・目的別歳出・性質別歳出、千円）と款・事業名ごとの補正内訳のみで項・目の科目明細を持たなかった。掲載ページに目粒度の単独資料はなく、特別会計・下水道事業会計の補正資料も掲載がないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132071",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度一般会計補正予算（第1号）概要",
+          "landing_url": "https://www.city.akishima.lg.jp/shisei/gyozaisei/1005275/1012980.html",
+          "inspected_at": "2026-10-07T16:38:40.582505+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/012/980/r8ippanhosei1.pdf",
+              "sha256": "adcda40681ea8db361edbfe740025536e5825adfc097117ee1bdf7fda0449962",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "start": 5,
+                      "end": 5
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式の令和8年度補正予算ページに掲載される唯一の資料「一般会計補正予算（第1号）概要」PDF（全6頁、文字PDF）を選定。物理5頁の歳出予算（目的別内訳）は款の区分と事業名ごとの補正増減額（△を含む）が同じ明細で対応し、物理4頁の歳入予算も款と内容ごとの補正額を持つ。物理2〜3頁は款別集計表（歳入・目的別歳出・性質別歳出、千円）。項・目の科目明細は持たず、債務負担行為限度額・基金・市債の物理6頁は歳出明細でないため範囲外。掲載ページに一般会計以外（国民健康保険・介護保険・後期高齢者医療・中神土地区画整理事業・中神駅北側土地区画整理事業の各特別会計、下水道・水道事業会計）の補正資料の掲載はなく、それら会計の補正は不足。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132071/2026/supplementary-1.pdf",
+            "sha256": "adcda40681ea8db361edbfe740025536e5825adfc097117ee1bdf7fda0449962",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/012/980/r8ippanhosei1.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:38:48.792Z"
+      }
     }
   ],
   "unresolved_candidates": []

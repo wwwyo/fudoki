@@ -2,6 +2,215 @@
   "jurisdiction": "131202",
   "name": "練馬区",
   "official_url": "https://www.city.nerima.tokyo.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "131202",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度当初予算案 各会計別予算説明書（PDF形式）",
+          "landing_url": "https://www.city.nerima.tokyo.jp/kusei/zaisei/yosan/r08/r08tosho/R8yosansetumeisyopdf.html",
+          "inspected_at": "2026-10-07T14:50:51+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.nerima.tokyo.jp/kusei/zaisei/yosan/r08/r08tosho/R8yosansetumeisyopdf.files/R08ippansaisyutu.pdf",
+              "sha256": "21b97e720b77edc7f59e332fe7acbf265535c61ce3a0906fd30c7929e599ab93",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 213
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.nerima.tokyo.jp/kusei/zaisei/yosan/r08/r08tosho/R8yosansetumeisyopdf.files/R08kokuhosaisyutu.pdf",
+              "sha256": "ff2601e134630845f49d4aeaa0ac96a6edab6f2244a932cd80f1259b6c7b8692",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 12
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.nerima.tokyo.jp/kusei/zaisei/yosan/r08/r08tosho/R8yosansetumeisyopdf.files/R08kaigosaisyutu.pdf",
+              "sha256": "03e236db61fa57a931b0ab2573d33688dd858abbebaffe56dab91397cb006ce1",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.nerima.tokyo.jp/kusei/zaisei/yosan/r08/r08tosho/R8yosansetumeisyopdf.files/R08koukisaisyutu.pdf",
+              "sha256": "aa0513929bb1fcb3f3ebd09b2304a2edfcc6e2f95cd314f76c52e0ede709a96f",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 4
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度当初予算案・各会計別予算説明書。歳出は会計別に分割掲載され、一般会計歳出(R08ippansaisyutu.pdf,物理1-213頁=印字75-287)・国民健康保険事業会計歳出(R08kokuhosaisyutu.pdf,1-12=印字323-334)・介護保険会計歳出(R08kaigosaisyutu.pdf,1-7=印字363-369)・後期高齢者医療会計歳出(R08koukisaisyutu.pdf,1-4=印字386-389)を1候補に集約。明細は款・項・目が同一明細内の階層で本年度予算額・前年度・比較・財源内訳・節(区分+金額)・説明(事業名+金額+節参照)が対応、単位千円。各冊末尾の歳出合計(一般368,681,005/国保68,108,576/介護65,355,894/後期21,566,203千円)が公式「当初予算規模」表と一致し全会計4会計を網羅(公共駐車場会計は令和6年度から一般会計経理、企業会計・他の特別会計なし=令和6年度決算目次・審査意見書で照合)。全PDFがToUnicodeなしで文字抽出不可のため画像確認しpdf_type=scan。全体冊(R08tousyoyosansyo.pdf)・歳入冊・款別分割14冊・歳入歳出款別一覧表(款のみ)は対象外。東京都オープンデータカタログの練馬区予算データ(各会計予算規模・款別一覧・性質別内訳XLSX)は款・会計計のみの集計資料で目級明細なし。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131202/2026/initial-2.pdf",
+            "sha256": "21b97e720b77edc7f59e332fe7acbf265535c61ce3a0906fd30c7929e599ab93",
+            "final_url": "https://www.city.nerima.tokyo.jp/kusei/zaisei/yosan/r08/r08tosho/R8yosansetumeisyopdf.files/R08ippansaisyutu.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131202/2026/initial-4.pdf",
+            "sha256": "ff2601e134630845f49d4aeaa0ac96a6edab6f2244a932cd80f1259b6c7b8692",
+            "final_url": "https://www.city.nerima.tokyo.jp/kusei/zaisei/yosan/r08/r08tosho/R8yosansetumeisyopdf.files/R08kokuhosaisyutu.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131202/2026/initial-1.pdf",
+            "sha256": "03e236db61fa57a931b0ab2573d33688dd858abbebaffe56dab91397cb006ce1",
+            "final_url": "https://www.city.nerima.tokyo.jp/kusei/zaisei/yosan/r08/r08tosho/R8yosansetumeisyopdf.files/R08kaigosaisyutu.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131202/2026/initial-3.pdf",
+            "sha256": "aa0513929bb1fcb3f3ebd09b2304a2edfcc6e2f95cd314f76c52e0ede709a96f",
+            "final_url": "https://www.city.nerima.tokyo.jp/kusei/zaisei/yosan/r08/r08tosho/R8yosansetumeisyopdf.files/R08koukisaisyutu.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:51:51.776Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131202",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [],
+      "reason": "令和7年度決算書は未公表。公式の決算一覧(https://www.city.nerima.tokyo.jp/kusei/zaisei/kessan/index.html)は令和6年度が最新で令和7年度のエントリなし。令和6年度決算書ページ(更新日2025-11-11)が最新掲載のため、令和7年度決算は認定・公表前と判断。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "131202",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度決算書（PDF形式）",
+          "landing_url": "https://www.city.nerima.tokyo.jp/kusei/zaisei/kessan/r6/06kessansyo.html",
+          "inspected_at": "2026-10-07T14:50:51+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.nerima.tokyo.jp/kusei/zaisei/kessan/r6/06kessansyo.files/02_06jikoubetumeisaisyo.pdf",
+              "sha256": "90bbbc910a30d46de55c91ffc470aa94ca6b02f4456afa76e33221e5c3aaab3c",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 34,
+                      "end": 91
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 98,
+                      "end": 106
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 113,
+                      "end": 117
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 122,
+                      "end": 127
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度決算書(2025-11-11更新、最新の公表済み決算)。練馬区各会計歳入歳出決算事項別明細書(02_06jikoubetumeisaisyo.pdf,全128物理頁=印字23-273+空白1頁)を選定。1物理頁=印字2頁の見開きで物理頁=印字/2-9。歳出範囲: 一般会計=物理34-91頁(印字86-201、第1款議会費〜第14款予備費+歳出合計)、国民健康保険事業会計=物理98-106(印字214-231)、介護保険会計=物理113-117(印字244-253)、後期高齢者医療会計=物理122-127(印字262-273)。各歳出末尾の歳出合計(一般329,572,513,637/国保65,023,475,441/介護63,769,587,412/後期19,836,322,834円)は区報公表値と一致。明細は款・項・目が同一明細の階層で当初予算額・補正予算額・継続費繰越・流用増減・計(予算現額)・節(区分+金額)と支出済額・翌年度繰越額・不用額・備考が対応、単位円。全会計4会計を網羅(企業会計・独自特別会計なし、公共駐車場会計は当年度から一般会計経理=決算目次で全会計照合済み)。目次冊(00)・各会計歳入歳出決算書(01、款別総括)・実質収支調書(03)・財産調書(04)・基金運用状況報告(05)・歳入頁は歳出優先のため対象外。文字PDF。オープンデータの決算XLSX(一般会計目的別=款計、特別会計=会計計のみ)は目級明細なし。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131202/2024/settlement.pdf",
+            "sha256": "90bbbc910a30d46de55c91ffc470aa94ca6b02f4456afa76e33221e5c3aaab3c",
+            "final_url": "https://www.city.nerima.tokyo.jp/kusei/zaisei/kessan/r6/06kessansyo.files/02_06jikoubetumeisaisyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:51:55.974Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

@@ -2,6 +2,165 @@
   "jurisdiction": "131181",
   "name": "荒川区",
   "official_url": "https://www.city.arakawa.tokyo.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "131181",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度荒川区予算説明書（一般会計・国民健康保険事業特別会計・後期高齢者医療特別会計・介護保険事業特別会計）",
+          "landing_url": "https://www.city.arakawa.tokyo.jp/a002/zaisei/yosan/yosanangaiyo99.html",
+          "inspected_at": "2026-10-07T14:52:21+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.arakawa.tokyo.jp/documents/43359/8yosansetumeisyo.pdf",
+              "sha256": "66ea451ec498a663e892e0e5991abb418e0779a0112494449d37571200ca2735",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 74,
+                      "end": 207
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 286,
+                      "end": 327
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 348,
+                      "end": 363
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 386,
+                      "end": 417
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度（2026年度、最新当初）の歳出明細。同頁の令和8年度予算書（8yosansyo.pdf）は議案形式で款・項までの金額のみ（第1表は文字化けもあり）のため不採用。予算説明書（432頁A4）は各会計歳入歳出予算事項別明細書を収録し、歳出は款・項・目名と本年度予算額・前年度予算額・比較・財源内訳（特定/一般財源）が同一明細行にあり、単位は千円（目の節内訳と説明を伴う節・説明頁を含む）。印字=物理-4。歳出範囲: 一般会計 印字70-203=物理74-207（第1款議会費〜第11款予備費+予備費節説明、物理208=給与費明細書）、国保事業 印字282-323=物理286-327（第1款総務費〜第8款予備費、物理328=給与費明細書）、後期高齢者医療 印字344-359=物理348-363（第1款総務費〜第6款予備費、物理364=給与費明細書）、介護保険事業 印字382-413=物理386-417（第1款総務費〜第8款予備費、物理418=給与費明細書）。物理頁の先頭・末尾を画像で確認済み。本文頁の漢字は文字層が文字化けするためscan扱い（数値は抽出可、名称は画像読みが必要）。全会計は掲載一覧・目次照合で一般/国民健康保険事業/後期高齢者医療/介護保険事業の4会計のみ、企業会計・他特別会計なし。歳入・給与費明細書・債務負担行為調書の範囲は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131181/2026/initial.pdf",
+            "sha256": "66ea451ec498a663e892e0e5991abb418e0779a0112494449d37571200ca2735",
+            "final_url": "https://www.city.arakawa.tokyo.jp/documents/43359/8yosansetumeisyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:53:07.127Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131181",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度荒川区各会計歳入歳出決算書",
+          "landing_url": "https://www.city.arakawa.tokyo.jp/a045/zaisei/kessan/06kessann.html",
+          "inspected_at": "2026-10-07T14:52:21+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.arakawa.tokyo.jp/documents/37855/06-2kessansyo.pdf",
+              "sha256": "1301286b5257b82dc868e6d7cd38038abd9e3182fe1eb4a0ff1ee35bae36e382",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 76,
+                      "end": 142
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 155,
+                      "end": 167
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 179,
+                      "end": 185
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 202,
+                      "end": 213
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度（2024年度）決算。決算一覧・決算の概要で令和7年度分は未掲載（令和8年9月会議で認定審査中）のため令和6年度が最新公表。同頁の決算説明書（06setsumeisyo.pdf）は事業別の補助資料で、款項目+節+支出済額を持つ決算書だけで要件を満たすため取得せず。決算書は226物理頁・全頁300dpi画像スキャン（文字層なし）で、1物理頁=見開き2印字頁（物理150=印字296-297等、印字=2×物理-4/-3）。歳出決算事項別明細書は科目款・項・目名と予算現額（当初/補正/繰越・流用/計）・節（区分・金額）・支出済額・翌年度繰越額・不用額・備考が同一明細（見開き表）にあり、単位は円。歳出範囲: 一般会計 印字148-281=物理76-142（款1議会費〜款11予備費+歳出合計、直後に国保扉・総括）、国保事業 印字306-331=物理155-167（款1総務費〜款9予備費+歳出合計、物理168=後期扉）、後期高齢者医療 印字354-367=物理179-185（款1総務費〜款6予備費+歳出合計、物理186=介護扉）、介護保険事業 印字400-423=物理202-213（款1総務費〜款8予備費+歳出合計、物理215-=実質収支調書・財産調書）。各会計の歳入/歳出総括表（国保印字284-287等）・実質収支調書・財産調書は歳出明細でないため範囲外。冒頭の各会計歳入歳出決算書（款別、印字10-58）も集計資料で範囲外。全会計は4会計のみで企業会計・他特別会計なし。歳入範囲は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131181/2024/settlement.pdf",
+            "sha256": "1301286b5257b82dc868e6d7cd38038abd9e3182fe1eb4a0ff1ee35bae36e382",
+            "final_url": "https://www.city.arakawa.tokyo.jp/documents/37855/06-2kessansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:53:13.343Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

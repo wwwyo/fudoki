@@ -2,6 +2,316 @@
   "jurisdiction": "131032",
   "name": "港区",
   "official_url": "https://www.city.minato.tokyo.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "131032",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度港区各会計予算（予算書・予算説明書）",
+          "landing_url": "https://www.city.minato.tokyo.jp/zaisei/2026_yosan.html",
+          "inspected_at": "2026-10-07T14:26:43+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.minato.tokyo.jp/documents/175849/20260206155248.pdf",
+              "sha256": "30225621e8c45780e4d0376770f0b89d60a5c3043b1bdc7cffc85043827ce58b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 45,
+                      "end": 48
+                    },
+                    {
+                      "start": 51,
+                      "end": 114
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 49,
+                      "end": 50
+                    },
+                    {
+                      "start": 115,
+                      "end": 257
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 283,
+                      "end": 286
+                    },
+                    {
+                      "start": 289,
+                      "end": 296
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 287,
+                      "end": 288
+                    },
+                    {
+                      "start": 297,
+                      "end": 333
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 353,
+                      "end": 356
+                    },
+                    {
+                      "start": 359,
+                      "end": 364
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 357,
+                      "end": 358
+                    },
+                    {
+                      "start": 365,
+                      "end": 377
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 395,
+                      "end": 398
+                    },
+                    {
+                      "start": 401,
+                      "end": 408
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 399,
+                      "end": 400
+                    },
+                    {
+                      "start": 409,
+                      "end": 431
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度予算編成ページ掲載の「令和8年度港区各会計予算」1冊（物理452頁・文字PDF）に、議案4件（物理5-40頁、款項総括）と各会計予算説明書の歳入歳出予算事項別明細書を収録。説明書目次（物理47/285/355/397頁）で会計・歳入歳出の印字頁を確認し、印字頁=物理頁-42で対応付け。歳出は款・項・目名と本年度予算額（千円）・財源内訳を同一明細に持つ。給与費明細書・債務負担行為等の附属書類と議案総括表はscope外。会計は一般会計・国民健康保険事業会計・後期高齢者医療会計・介護保険会計の4会計で、ページ掲載と議案構成から他の特別会計・企業会計は存在しない。CSV提供なし。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131032/2026/initial.pdf",
+            "sha256": "30225621e8c45780e4d0376770f0b89d60a5c3043b1bdc7cffc85043827ce58b",
+            "final_url": "https://www.city.minato.tokyo.jp/documents/175849/20260206155248.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:27:59.827Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131032",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度港区各会計歳入歳出決算事項別明細書（4会計分）",
+          "landing_url": "https://www.city.minato.tokyo.jp/kaikeikanri/291020.html",
+          "inspected_at": "2026-10-07T14:26:43+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.minato.tokyo.jp/documents/77605/r6_2ippann.pdf",
+              "sha256": "dbc461f9232c5f815e55e0663bf8268cf6339f1fd5b25773e06d9b3cc17ea1f4",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 47
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 48,
+                      "end": 106
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.minato.tokyo.jp/documents/77605/r6_3kokuho.pdf",
+              "sha256": "8baaddb9e3359bfe1df6cb06b50d74b574d66d827ef30f7a1c52675a6b9623ab",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 11
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.minato.tokyo.jp/documents/77605/r6_4kouki.pdf",
+              "sha256": "bd254af6e84696116bbda2587b60519a0526dcc806d30a9b1d20a33d5cd76d7c",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 8
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 14
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.minato.tokyo.jp/documents/77605/r6_5kaigo.pdf",
+              "sha256": "3d28c25871a7ae58d49724a9138a28673e04f74f72ff3c6744e222537aaabc38",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 13
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 14,
+                      "end": 19
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "決算書一覧の最新は令和6年度（令和7年度は未掲載）。会計別の歳入歳出決算事項別明細書PDF4冊を選定（各会計歳入歳出決算書は款項総括のみで明細を持たず、明細書の方を採用）。各冊は歳入→歳出の順で、款・項・目の科目名と節に当初予算額・補正予算額・支出済額（円）等を同一明細に持つ。会計は予算と同じ4会計で決算書目次にも他の会計はない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131032/2024/settlement-4.pdf",
+            "sha256": "dbc461f9232c5f815e55e0663bf8268cf6339f1fd5b25773e06d9b3cc17ea1f4",
+            "final_url": "https://www.city.minato.tokyo.jp/documents/77605/r6_2ippann.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131032/2024/settlement-2.pdf",
+            "sha256": "8baaddb9e3359bfe1df6cb06b50d74b574d66d827ef30f7a1c52675a6b9623ab",
+            "final_url": "https://www.city.minato.tokyo.jp/documents/77605/r6_3kokuho.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131032/2024/settlement-3.pdf",
+            "sha256": "bd254af6e84696116bbda2587b60519a0526dcc806d30a9b1d20a33d5cd76d7c",
+            "final_url": "https://www.city.minato.tokyo.jp/documents/77605/r6_4kouki.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131032/2024/settlement-1.pdf",
+            "sha256": "3d28c25871a7ae58d49724a9138a28673e04f74f72ff3c6744e222537aaabc38",
+            "final_url": "https://www.city.minato.tokyo.jp/documents/77605/r6_5kaigo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:28:09.167Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

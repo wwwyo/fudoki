@@ -2,6 +2,930 @@
   "jurisdiction": "131041",
   "name": "新宿区",
   "official_url": "https://www.city.shinjuku.lg.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "131041",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度予算書（一般会計事項別明細書 歳出・1款議会費～5款福祉費 / 歳出・6款子ども家庭費～13款予備費 / 特別会計）",
+          "landing_url": "https://www.city.shinjuku.lg.jp/kusei/zaisei01_000001_00017.html",
+          "inspected_at": "2026-10-07T14:26:42.395132+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.shinjuku.lg.jp/content/000448146.pdf",
+              "sha256": "39efc10fc8763d3d753ceacdcf74d86f5c12dc50d8824ec461a37ada5ffb5bf9",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 86
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.shinjuku.lg.jp/content/000448147.pdf",
+              "sha256": "1e09fca40b505b4a231531e9148c494de962d8b74a2d5a8bacf6f787eafc2c9d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 96
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.shinjuku.lg.jp/content/000448149.pdf",
+              "sha256": "06d35c047a0717f17d0aa71888af148cb6647d9547005b081bb9c8a3819e875a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "start": 6,
+                      "end": 13
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 5
+                    },
+                    {
+                      "start": 14,
+                      "end": 27
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 51,
+                      "end": 51
+                    },
+                    {
+                      "start": 54,
+                      "end": 65
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 52,
+                      "end": 53
+                    },
+                    {
+                      "start": 66,
+                      "end": 83
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 107,
+                      "end": 107
+                    },
+                    {
+                      "start": 110,
+                      "end": 115
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 108,
+                      "end": 109
+                    },
+                    {
+                      "start": 116,
+                      "end": 121
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "款・項・目・節と本年度予算額（千円）を同一明細で持つ事項別明細書を選定。一般会計歳出は物理1-86頁（1款議会費〜5款福祉費）と物理1-96頁（6款子ども家庭費〜13款予備費）の2分冊。特別会計は1冊（141頁）に国民健康保険（表紙1・総括歳入3・総括歳出4-5・歳入明細6-13・歳出明細14-27）、介護保険（49・51・52-53・54-65・66-83）、後期高齢者医療（105・107・108-109・110-115・116-121）の3会計を収録。文字層あり（text）。新宿区の会計は各会計予算（000448144）表紙・議案一覧で一般会計＋3特別会計のみを確認し、企業会計・独自特別会計なし。一般会計の歳入・歳入歳出総括は別冊（000448145）、給与費明細書等は000448148、条例議案は000448144にあり今回は歳出選定のため未採用。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131041/2026/initial-3.pdf",
+            "sha256": "39efc10fc8763d3d753ceacdcf74d86f5c12dc50d8824ec461a37ada5ffb5bf9",
+            "final_url": "https://www.city.shinjuku.lg.jp/content/000448146.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131041/2026/initial-2.pdf",
+            "sha256": "1e09fca40b505b4a231531e9148c494de962d8b74a2d5a8bacf6f787eafc2c9d",
+            "final_url": "https://www.city.shinjuku.lg.jp/content/000448147.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131041/2026/initial-1.pdf",
+            "sha256": "06d35c047a0717f17d0aa71888af148cb6647d9547005b081bb9c8a3819e875a",
+            "final_url": "https://www.city.shinjuku.lg.jp/content/000448149.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:27:56.007Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131041",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度歳入歳出決算事項別明細書",
+          "landing_url": "https://www.city.shinjuku.lg.jp/kusei/kaikei01_001000_00007.html",
+          "inspected_at": "2026-10-07T14:26:42.395132+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.shinjuku.lg.jp/content/000465173.pdf",
+              "sha256": "ca3f8658f6dbe295978db484227ec1c7adbdc15eeb136f109fa406798511c1eb",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 2
+                    },
+                    {
+                      "start": 4,
+                      "end": 64
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "start": 65,
+                      "end": 147
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 148,
+                      "end": 148
+                    },
+                    {
+                      "start": 150,
+                      "end": 153
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 149,
+                      "end": 149
+                    },
+                    {
+                      "start": 154,
+                      "end": 160
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 161,
+                      "end": 161
+                    },
+                    {
+                      "start": 163,
+                      "end": 169
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 162,
+                      "end": 162
+                    },
+                    {
+                      "start": 170,
+                      "end": 177
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 178,
+                      "end": 178
+                    },
+                    {
+                      "start": 180,
+                      "end": 183
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 179,
+                      "end": 179
+                    },
+                    {
+                      "start": 184,
+                      "end": 186
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "款・項・目・節と支出済額（円）を同一明細で持つ歳入歳出決算事項別明細書1冊（186頁）に4会計を収録。一般会計: 総括歳入1-2・総括歳出3・歳入明細4-64・歳出明細65-147。国民健康保険特別会計: 148・149・150-153・154-160。介護保険特別会計: 161・162・163-169・170-177。後期高齢者医療特別会計: 178・179・180-183・184-186。文字層あり（text）。決算書一覧（kaikei01_001000_00007.html）掲載の最新公表決算は令和7年度。款別分割PDF・決算概要・対照表は集計または重複のため未採用。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131041/2025/settlement.pdf",
+            "sha256": "ca3f8658f6dbe295978db484227ec1c7adbdc15eeb136f109fa406798511c1eb",
+            "final_url": "https://www.city.shinjuku.lg.jp/content/000465173.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:27:59.679Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131041",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度歳入歳出決算事項別明細書",
+          "landing_url": "https://www.city.shinjuku.lg.jp/kusei/kaikei01_001000_00006.html",
+          "inspected_at": "2026-10-08T00:48:15.349854+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.shinjuku.lg.jp/content/000434896.pdf",
+              "sha256": "196c90b2156425b85d48e2b43cb628a8931b13186a43ebca5e69eccd8eebf17b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 2
+                    },
+                    {
+                      "start": 4,
+                      "end": 62
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "start": 63,
+                      "end": 144
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 145,
+                      "end": 145
+                    },
+                    {
+                      "start": 147,
+                      "end": 152
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 146,
+                      "end": 146
+                    },
+                    {
+                      "start": 153,
+                      "end": 160
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 161,
+                      "end": 161
+                    },
+                    {
+                      "start": 163,
+                      "end": 169
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 162,
+                      "end": 162
+                    },
+                    {
+                      "start": 170,
+                      "end": 177
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 178,
+                      "end": 178
+                    },
+                    {
+                      "start": 180,
+                      "end": 182
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 179,
+                      "end": 179
+                    },
+                    {
+                      "start": 183,
+                      "end": 185
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "款・項・目・節と支出済額（円）を同一明細で持つ歳入歳出決算事項別明細書1冊（185頁）に4会計を収録。一般会計: 総括歳入1-2・総括歳出3・歳入明細4-62・歳出明細63-144。国民健康保険特別会計: 145・146・147-152・153-160。介護保険特別会計: 161・162・163-169・170-177。後期高齢者医療特別会計: 178・179・180-182・183-185。文字層あり（text）。決算書一覧（kaikei01_001000_00006.html）掲載の令和6年度（2024年度）決算。令和6年度当時の会計構成は一般会計＋3特別会計で、公営企業会計は東京特別区のため都管掌（存在しない）。款別分割PDF・決算概要・対照表は集計または重複のため未採用。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131041/2024/settlement.pdf",
+            "sha256": "196c90b2156425b85d48e2b43cb628a8931b13186a43ebca5e69eccd8eebf17b",
+            "final_url": "https://www.city.shinjuku.lg.jp/content/000434896.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T00:48:57.981Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131041",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度補正予算（令和8年3月）一般会計・国民健康保険特別会計・介護保険特別会計（補正第1号）",
+          "landing_url": "https://www.city.shinjuku.lg.jp/kusei/zaisei01_000001_00017.html",
+          "inspected_at": "2026-10-07T16:54:46.904001+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.shinjuku.lg.jp/content/000451070.pdf",
+              "sha256": "7d41e3852cf9fcf7beab1aba7f7044f14fcf09f156398607e58370abce2d5ece",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 23,
+                      "end": 23
+                    },
+                    {
+                      "start": 26,
+                      "end": 33
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 24,
+                      "end": 25
+                    },
+                    {
+                      "start": 34,
+                      "end": 51
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 73,
+                      "end": 73
+                    },
+                    {
+                      "start": 76,
+                      "end": 79
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 74,
+                      "end": 75
+                    },
+                    {
+                      "start": 80,
+                      "end": 83
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 87,
+                      "end": 87
+                    },
+                    {
+                      "start": 90,
+                      "end": 93
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 88,
+                      "end": 89
+                    },
+                    {
+                      "start": 94,
+                      "end": 97
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "第37-39号議案＋各会計説明書を1冊に収録（物理99頁、text）。議案本文・第1-3表・債務負担行為（明細・現在高調書）はscope外。説明書の歳入歳出補正予算事項別明細書のみを収録範囲とし、歳入・歳出は別頁のため別範囲。一般会計: 総括（歳入）23、(歳出)総括・財源内訳24-25、(2)歳入26-33、(3)歳出34-51。国民健康保険: 73・74-75・76-79・80-83。介護保険: 87・88-89・90-93・94-97。第1号に後期高齢者医療特別会計の補正なし。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131041/2026/supplementary-1.pdf",
+            "sha256": "7d41e3852cf9fcf7beab1aba7f7044f14fcf09f156398607e58370abce2d5ece",
+            "final_url": "https://www.city.shinjuku.lg.jp/content/000451070.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:41:38.443Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131041",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度補正予算（令和8年6月）一般会計（補正第2号）",
+          "landing_url": "https://www.city.shinjuku.lg.jp/kusei/zaisei01_000001_00017.html",
+          "inspected_at": "2026-10-07T16:54:46.904001+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.shinjuku.lg.jp/content/000457207.pdf",
+              "sha256": "53bc096880b6e484cbfea6bb17b4219fe7c91edc226248b9546fa8fca47aa77c",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 11
+                    },
+                    {
+                      "start": 14,
+                      "end": 17
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 13
+                    },
+                    {
+                      "start": 18,
+                      "end": 23
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "一般会計のみ（第42号議案）。文字層は存在するがグリフ対応が崩れ科目名・金額を文字として読めないためscan（描画確認済み）。議案・特別区債補・特別区債現在高調書（物理24-25）はscope外。説明書の明細書のみ: 総括（歳入）11、(歳出)総括・財源内訳12-13、(2)歳入14-17、(3)歳出18-23。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131041/2026/supplementary-2.pdf",
+            "sha256": "53bc096880b6e484cbfea6bb17b4219fe7c91edc226248b9546fa8fca47aa77c",
+            "final_url": "https://www.city.shinjuku.lg.jp/content/000457207.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:41:41.025Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131041",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度補正予算（令和8年6月）一般会計（補正第3号）",
+          "landing_url": "https://www.city.shinjuku.lg.jp/kusei/zaisei01_000001_00017.html",
+          "inspected_at": "2026-10-07T16:54:46.904001+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.shinjuku.lg.jp/content/000457208.pdf",
+              "sha256": "68771fd03dea2b75319435cd8852a1fa55926b6e7b3593e9ba4668dd23f75903",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 11
+                    },
+                    {
+                      "start": 14,
+                      "end": 17
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 13
+                    },
+                    {
+                      "start": 18,
+                      "end": 29
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "一般会計のみ（第43号議案、text）。議案・給与費明細書（物理30-37）・債務負担行為（明細・現在高調書、物理38-51）はscope外。説明書の明細書のみ: 総括（歳入）11、(歳出)総括・財源内訳12-13、(2)歳入14-17、(3)歳出18-29。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131041/2026/supplementary-3.pdf",
+            "sha256": "68771fd03dea2b75319435cd8852a1fa55926b6e7b3593e9ba4668dd23f75903",
+            "final_url": "https://www.city.shinjuku.lg.jp/content/000457208.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:41:44.896Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131041",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度補正予算（令和8年9月）一般会計（補正第4号）",
+          "landing_url": "https://www.city.shinjuku.lg.jp/kusei/zaisei01_000001_00017.html",
+          "inspected_at": "2026-10-07T16:54:46.904001+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.shinjuku.lg.jp/content/000465275.pdf",
+              "sha256": "2a94fb1dcbb4e20a2306dff39b94ef599ae4178f419dd549b54da7cdb02d2c71",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "start": 15,
+                      "end": 18
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 13,
+                      "end": 14
+                    },
+                    {
+                      "start": 19,
+                      "end": 28
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "一般会計のみ（第4号）。スキャンPDF（文字層は頁番号のみ、描画で確認）。議案・給与費明細書（物理29頁〜）・債務負担行為現在高調書（〜物理50）はscope外。説明書の明細書のみ: 総括（歳入）12、(歳出)総括・財源内訳13-14、(2)歳入15-18、(3)歳出19-28（印字頁との対応は描画で確認）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131041/2026/supplementary-4.pdf",
+            "sha256": "2a94fb1dcbb4e20a2306dff39b94ef599ae4178f419dd549b54da7cdb02d2c71",
+            "final_url": "https://www.city.shinjuku.lg.jp/content/000465275.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:41:48.814Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131041",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度補正予算（令和8年9月）一般会計・介護保険特別会計・後期高齢者医療特別会計（補正第5号・介護第2号・後期第1号）",
+          "landing_url": "https://www.city.shinjuku.lg.jp/kusei/zaisei01_000001_00017.html",
+          "inspected_at": "2026-10-07T16:54:46.904001+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.shinjuku.lg.jp/content/000465276.pdf",
+              "sha256": "8e3494761ca328b09eafb626188e3eced9f72bb5b165d32c62f29283d0fa8251",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 22,
+                      "end": 22
+                    },
+                    {
+                      "start": 25,
+                      "end": 28
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 23,
+                      "end": 24
+                    },
+                    {
+                      "start": 29,
+                      "end": 44
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 66,
+                      "end": 66
+                    },
+                    {
+                      "start": 69,
+                      "end": 72
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 67,
+                      "end": 68
+                    },
+                    {
+                      "start": 73,
+                      "end": 74
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 80,
+                      "end": 80
+                    },
+                    {
+                      "start": 83,
+                      "end": 84
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 81,
+                      "end": 82
+                    },
+                    {
+                      "start": 85,
+                      "end": 86
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "一般会計補正第5号・介護保険特別会計補正第2号・後期高齢者医療特別会計補正第1号を1冊に収録（第64-66号議案+各説明書）。スキャンPDF（文字層は頁番号のみ、描画で確認）。議案・債務負担行為（明細・現在高調書）はscope外。説明書の明細書のみを対象。一般会計(説明書 物理20-60): 総括（歳入）22、(歳出)総括・財源内訳23-24、(2)歳入25-28、(3)歳出29-44、45頁〜債務負担行為。介護保険(説明書 物理64-74): 66・67-68・69-72・73-74。後期高齢者(説明書 物理78-86): 80・81-82・83-84・85-86。国民健康保険特別会計の補正はこの号になし。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131041/2026/supplementary-5.pdf",
+            "sha256": "8e3494761ca328b09eafb626188e3eced9f72bb5b165d32c62f29283d0fa8251",
+            "final_url": "https://www.city.shinjuku.lg.jp/content/000465276.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:41:52.989Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

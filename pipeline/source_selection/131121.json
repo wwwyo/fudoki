@@ -2,6 +2,238 @@
   "jurisdiction": "131121",
   "name": "世田谷区",
   "official_url": "https://www.city.setagaya.lg.jp/index.html",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度(2026年度)世田谷区予算・同説明書",
+          "landing_url": "https://www.city.setagaya.lg.jp/02022/31209.html",
+          "inspected_at": "2026-10-07T14:43:30+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/31209/5_r8tousyoyosan.pdf",
+              "sha256": "34e1899cd0350113bdb641df1df80ee449d693b5429e0ef49dc0276eaa108539",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 86
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/31209/7_r8tousyoyosan.pdf",
+              "sha256": "984222efa6dbbd5eedd4eabf41a6ec64ed881ad09a1e0c9d0c304f3f64f2f507",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 34
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/31209/8_r8tousyoyosan.pdf",
+              "sha256": "791ac6e4d37b72b5dd78728158d091db7bffebf17d36ac73cb93193cc31abe11",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 14,
+                      "end": 20
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/31209/9_r8tousyoyosan.pdf",
+              "sha256": "1046ac5664d964e61d0a5fb8272ba6452f156e07c223cf1de1e76775aed5ec34",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 26,
+                      "end": 47
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度当初予算。一般会計歳出予算冊(5_r8tousyoyosan.pdf、物理1-86頁=印字309-479、「3.歳出予算」扉+第1款議会費〜第12款予備費の明細)と特別会計3冊の歳出節を1候補に集約: 国民健康保険事業会計=7_物理18-34頁(印字589-621、歳出扉+明細、歳入は物理5-17・総括3-4・給与費35-43)、後期高齢者医療会計=8_物理14-20頁(印字667-679、歳入は5-13・給与費21-29)、介護保険事業会計=9_物理26-47頁(印字749-791、歳入は5-25・給与費48-56)。1物理頁=印字2頁の見開き。明細は款・項・目が同一明細内の階層で本年度予算額・前年度・比較・財源内訳・節(区分+金額)・説明(事業名+金額)が対応、単位千円。全会計(一般・国保・後期・介護)の歳出を網羅。学校給食費会計は令和7年度末廃止で当該年度は4会計(予算説明書目次で確認)。文字PDF。歳入冊(4_)・一般会計総括冊(3_)・説明書(1_,2_)・別冊・全頁版は歳出優先のため対象外。東京都オープンデータカタログに世田谷区の財政明細データセットなし。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2026/initial-2.pdf",
+            "sha256": "34e1899cd0350113bdb641df1df80ee449d693b5429e0ef49dc0276eaa108539",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/31209/5_r8tousyoyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131121/2026/initial-4.pdf",
+            "sha256": "984222efa6dbbd5eedd4eabf41a6ec64ed881ad09a1e0c9d0c304f3f64f2f507",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/31209/7_r8tousyoyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131121/2026/initial-3.pdf",
+            "sha256": "791ac6e4d37b72b5dd78728158d091db7bffebf17d36ac73cb93193cc31abe11",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/31209/8_r8tousyoyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131121/2026/initial-1.pdf",
+            "sha256": "1046ac5664d964e61d0a5fb8272ba6452f156e07c223cf1de1e76775aed5ec34",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/31209/9_r8tousyoyosan.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:45:42.426Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [],
+      "reason": "令和7年度決算書は未公表。公式の決算書一覧(https://www.city.setagaya.lg.jp/02003/6217.html、更新日2025-10-17)は令和6年度が最新で令和7年度のエントリなし。決算カテゴリ一覧(https://www.city.setagaya.lg.jp/kuseijouhou/zaisei/category/11944.html)にも令和7年度決算書なし。令和6年度決算は令和7年10月17日に区議会認定・同日掲載のため、令和7年度決算は認定前と判断。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "131121",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度各会計歳入歳出決算書および附属資料（事項別明細書）",
+          "landing_url": "https://www.city.setagaya.lg.jp/02003/28760.html",
+          "inspected_at": "2026-10-07T14:43:30+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/28760/004r6kessan.pdf",
+              "sha256": "3758063ece55a0b6be6a67912bc446a4d881fdec654a8f71ce471c5ebdfb2c7b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 121,
+                      "end": 237
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.setagaya.lg.jp/documents/28760/005r6kessan.pdf",
+              "sha256": "5446798e49e83ac53fd76f368ecb9299433f8eea59491d3d17b3538d51e16915",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 27,
+                      "end": 45
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 65,
+                      "end": 77
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 107,
+                      "end": 127
+                    }
+                  ]
+                },
+                {
+                  "account": "学校給食費会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 143,
+                      "end": 145
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度決算書(令和7年10月17日認定・掲載、最新の公表済み決算)。事項別明細書の一般会計冊(004r6kessan.pdf)と特別会計冊(005r6kessan.pdf)を選定。歳出範囲: 一般会計=物理121-237頁(印字193-309、歳出扉+第1款議会費〜第12款予備費・歳出合計・翌年度繰越額、歳入は物理6-118=印字78-190)、国民健康保険事業会計=物理27-45(印字337-355)、後期高齢者医療会計=物理65-77(印字375-387)、介護保険事業会計=物理107-127(印字417-437)、学校給食費会計=物理143-145(印字453-455)。各歳出は会計別の「歳出」扉頁+明細+翌年度繰越額尾頁。1物理頁=印字1頁。明細は款・項・目が同一明細の階層で予算現額(当初+補正+繰越・流用)と節(区分+金額)が左頁、支出済額・不用額・翌年度繰越額・備考が右頁に対応、単位円。全会計5会計(一般・国保・後期・介護・学校給食費)の歳出を網羅。表紙・目次・各会計決算総覧冊(003)・歳入歳出決算総括冊(002)・財産調書冊(006)・全頁版(000)は歳出明細の要件外のため対象外。文字PDF。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131121/2024/settlement-1.pdf",
+            "sha256": "3758063ece55a0b6be6a67912bc446a4d881fdec654a8f71ce471c5ebdfb2c7b",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/28760/004r6kessan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131121/2024/settlement-2.pdf",
+            "sha256": "5446798e49e83ac53fd76f368ecb9299433f8eea59491d3d17b3538d51e16915",
+            "final_url": "https://www.city.setagaya.lg.jp/documents/28760/005r6kessan.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:45:50.930Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

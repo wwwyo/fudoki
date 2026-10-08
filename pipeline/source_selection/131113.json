@@ -2,6 +2,434 @@
   "jurisdiction": "131113",
   "name": "大田区",
   "official_url": "https://www.city.ota.tokyo.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度大田区予算事項別明細書（一般会計・国民健康保険事業特別会計・後期高齢者医療特別会計・介護保険特別会計）",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r08yosan/r08-yosan.html",
+          "inspected_at": "2026-10-07T14:34:50+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r08yosan/r08-yosan.files/02_r8_jikoubetsu_ippan.pdf",
+              "sha256": "a9f49a590393fbd72608f7a6f2c1060034a95ffeae37a3c20a1bd5990de456df",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 31,
+                      "end": 125
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r08yosan/r08-yosan.files/03_r8_jikoubetsu_kokuminkenkouhoken.pdf",
+              "sha256": "caddaf75444cf0325770ef5b7cb940111b579137b1a7508ba240f7b4d712ae32",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 25
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r08yosan/r08-yosan.files/04_r8_jikoubetsu_koukikoureisyairyou.pdf",
+              "sha256": "ea2366a8cab5b864d8e51ad75dc6907ca65605e8af530d2a1ad1fe93dbd13402",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 14
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r08yosan/r08-yosan.files/05_r8_jikoubetsu_kaigohoken.pdf",
+              "sha256": "0392e792e6e0b027484a632c50227e828189244933c8dcbd2badf13653313821",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 19
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度（最新）当初予算の歳出明細。会計別4冊の予算事項別明細書PDFを選定（A3横・1物理頁=印字2頁・文字PDF）。明細は款・項・目が同一行の階層で本年度予算額・前年度比較・財源内訳・節区分(区分+金額)・説明付き、単位千円。一般会計歳出=02物理31-125（印字96-285、第1款議会費〜第12款予備費、歳入は5-30、給与費明細書126-、債務負担行為135-、区債現在高調書153）。国民健康保険事業特別会計歳出=03物理7-25（印字354-391、第1款総務費〜第6款予備費、歳入4-6、給与費明細書26-、債務負担行為33）。後期高齢者医療特別会計歳出=04物理6-14（印字418-435、第1款総務費〜第6款予備費、歳入4-5）。介護保険特別会計歳出=05物理7-19（印字448-473、第1款総務費〜第8款予備費、歳入4-6、給与費明細書20-）。全会計は一般+特別会計3の4会計: 各会計予算議案(01_r8_yosan.pdf)目次の第1-4号議案・掲載一覧と一致、企業会計・他の特別会計なし。都カタログの予算XLSXは款別・会計別集計のみで目粒度を満たさず不採用。歳入・給与費明細書等は対象外で未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2026/initial-2.pdf",
+            "sha256": "a9f49a590393fbd72608f7a6f2c1060034a95ffeae37a3c20a1bd5990de456df",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r08yosan/r08-yosan.files/02_r8_jikoubetsu_ippan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131113/2026/initial-3.pdf",
+            "sha256": "caddaf75444cf0325770ef5b7cb940111b579137b1a7508ba240f7b4d712ae32",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r08yosan/r08-yosan.files/03_r8_jikoubetsu_kokuminkenkouhoken.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131113/2026/initial-4.pdf",
+            "sha256": "ea2366a8cab5b864d8e51ad75dc6907ca65605e8af530d2a1ad1fe93dbd13402",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r08yosan/r08-yosan.files/04_r8_jikoubetsu_koukikoureisyairyou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131113/2026/initial-1.pdf",
+            "sha256": "0392e792e6e0b027484a632c50227e828189244933c8dcbd2badf13653313821",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r08yosan/r08-yosan.files/05_r8_jikoubetsu_kaigohoken.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:35:44.350Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度大田区各会計歳入歳出決算書・各会計歳入歳出決算事項別明細書",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/kessan/r06_kessan.html",
+          "inspected_at": "2026-10-07T14:34:50+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/kessan/r06_kessan.files/11.pdf",
+              "sha256": "be3694253cf57ac102d9a0c96d9e985c9154ea6843ef81ee52abb2a6783ec557",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 41,
+                      "end": 71
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 81,
+                      "end": 85
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 94,
+                      "end": 96
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 106,
+                      "end": 109
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度（最新公表分、令和7年度決算は未掲載: 決算一覧の最新がR6、r07_kessan.htmlは404）決算の歳出明細。11.pdfは各会計歳入歳出決算書+事項別明細書+実質収支・財産・基金調書の合冊134物理頁（1物理頁=印字2頁・文字PDF）。明細は款・項・目が同一行の階層で当初予算額・補正予算額・繰越・流用・予算現額計・翌年度繰越・支出済額・不用額・執行率・節区分(区分+金額)・備考付き、単位円。一般会計歳出=物理41-71（41は歳出見開き扉、印字72-131、第1款議会費〜第12款予備費+歳出合計、歳入は24-40、物理72は裏ページ）。国民健康保険事業特別会計歳出=81-85（印字150-157、第1款総務費〜第6款予備費+合計、歳入78-80）。後期高齢者医療特別会計歳出=94-96（印字174-177、第1款総務費〜第6款予備費+合計、歳入92-93）。介護保険特別会計歳出=106-109（印字196-201、第1款総務費〜第8款予備費+合計、歳入103-105）。冒頭の各会計歳入歳出決算書(物理3-16、第104-107号議案)は款科目総括で明細書に包含→対象外。実質収支調書(110-115)・財産調書(116-124)・基金調書(125-134)は歳出明細でない。全会計4会計は決算議案第104-107号と掲載一覧で一致。歳入範囲は対象外で未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2024/settlement.pdf",
+            "sha256": "be3694253cf57ac102d9a0c96d9e985c9154ea6843ef81ee52abb2a6783ec557",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/kessan/r06_kessan.files/11.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:35:49.573Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度大田区一般会計補正予算（第4次）・国民健康保険事業特別会計補正予算（第1次）・後期高齢者医療特別会計補正予算（第1次）・介護保険特別会計補正予算（第1次）及び各会計補正予算事項別明細書",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r08yosan/r8hosei.html",
+          "inspected_at": "2026-10-07T16:36:51.572345+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r08yosan/r8hosei.files/r08hosei_yosansyo04.pdf",
+              "sha256": "caab8da700970cb7d2ac4fe73a95f0768b90259c31448329948f56ad2b80b2c6",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 32,
+                      "end": 57
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 70,
+                      "end": 79
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 88,
+                      "end": 95
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 104,
+                      "end": 109
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度の最新補正（一般会計第4次・特別会計は各第1次、第3回区議会定例会議決、R8補正掲載頁の最終号）。r08hosei_yosansyo04.pdfは各会計補正予算議案(物理7-26、第82-85号議案)と補正予算事項別明細書の合冊109頁・A4・文字PDF。歳出明細は款・項・目が同一行で補正前の額・補正額・計・補正額の財源内訳(特定/一般財源)、対面頁に節区分(区分+金額)・説明付き、単位千円。一般会計歳出=物理32-57（印字30-55、第2款総務費〜第9款教育費の補正有り款のみ、歳入30-31、債務負担行為補正58-61）。国民健康保険事業特別会計歳出=70-79（歳入68-69、扉63、総括65-67）。後期高齢者医療特別会計歳出=88-95（歳入86-87、扉81、総括83-85）。介護保険特別会計歳出=104-109（歳入102-103、扉97、総括99-101）。全会計4会計は議案第82-85号と当初選定と一致。amendment_number=4は一般会計の補正次数で、特別会計は同冊収録の第1次。一般会計第1-3次（yosansyo01-03.pdf）は過去号のため未選定・実物未確認。各号の概要PDF(ippan0X、款別集計のみ)は目粒度を満たさず不採用。歳入・債務負担行為補正は対象外で未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2026/supplementary-4.pdf",
+            "sha256": "caab8da700970cb7d2ac4fe73a95f0768b90259c31448329948f56ad2b80b2c6",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r08yosan/r8hosei.files/r08hosei_yosansyo04.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:37:15.915Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度大田区一般会計補正予算（第1次）及び一般会計補正予算事項別明細書（第1次）",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r08yosan/r8hosei.html",
+          "inspected_at": "2026-10-07T16:44:32.261381+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r08yosan/r8hosei.files/r08hosei_yosansyo01.pdf",
+              "sha256": "b5d153c29fa7c9d5ffdbecad278fde963643e0bcb2eeef5064a90a2c2f88f285",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 29
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度一般会計補正予算（第1次、第44号議案）。R8補正掲載頁に列挙された既知候補で、補正予算議案と事項別明細書の合冊（A4・文字PDF、印字頁=物理頁-2）。歳出明細は款・項・目が同一行で補正前の額・補正額・計・補正額の財源内訳（特定/一般財源）、後続頁に節区分（区分+金額）・説明、単位千円。一般会計歳出=物理18-29（印字16-27、第2款総務費〜第5款産業経済費の補正有り款のみ）。歳入は物理16-17、債務負担行為補正30-31は対象外。本冊は一般会計のみで特別会計補正は含まない（特別会計の第1次は第4次合冊に収録済み）。概要PDF（r08hosei_ippan01.pdf）は款別集計のみで目粒度を満たさず不採用。歳入は対象外で未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2026/supplementary-1.pdf",
+            "sha256": "b5d153c29fa7c9d5ffdbecad278fde963643e0bcb2eeef5064a90a2c2f88f285",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r08yosan/r8hosei.files/r08hosei_yosansyo01.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:44:48.955Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度大田区一般会計補正予算（第2次）及び一般会計補正予算事項別明細書（第2次）",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r08yosan/r8hosei.html",
+          "inspected_at": "2026-10-07T16:44:32.261381+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r08yosan/r8hosei.files/r08hosei_yosansyo02.pdf",
+              "sha256": "fd075b64a9c2701264af1078b77d5bce0227897b31cfd47a351b9fdae176cb7a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 20,
+                      "end": 27
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度一般会計補正予算（第2次、第58号議案）。R8補正掲載頁に列挙された既知候補で、補正予算議案と事項別明細書の合冊（A4・文字PDF、印字頁=物理頁-2）。歳出明細は款・項・目が同一行で補正前の額・補正額・計・補正額の財源内訳（特定/一般財源）、後続頁に節区分（区分+金額）・説明、単位千円。一般会計歳出=物理20-27（印字18-25、第2款総務費〜第6款土木費の補正有り款のみ）。歳入は物理18-19、繰越明許費補正28、債務負担行為補正30-31は対象外。本冊は一般会計のみで特別会計補正は含まない（特別会計の第1次は第4次合冊に収録済み）。概要PDF（r08hosei_ippan02.pdf）は款別集計のみで目粒度を満たさず不採用。歳入は対象外で未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2026/supplementary-2.pdf",
+            "sha256": "fd075b64a9c2701264af1078b77d5bce0227897b31cfd47a351b9fdae176cb7a",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r08yosan/r8hosei.files/r08hosei_yosansyo02.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:44:51.938Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131113",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度大田区一般会計補正予算（第3次）及び一般会計補正予算事項別明細書（第3次）",
+          "landing_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r08yosan/r8hosei.html",
+          "inspected_at": "2026-10-07T16:44:32.261381+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r08yosan/r8hosei.files/r08hosei_yosansyo03.pdf",
+              "sha256": "28871c1ee526e819eaf4be67014b481b5ac3fcd4a295329900bb8afbef19deb1",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 20,
+                      "end": 39
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度一般会計補正予算（第3次、第76号議案）。R8補正掲載頁に列挙された既知候補で、補正予算議案と事項別明細書の合冊（A4・文字PDF、印字頁=物理頁-2）。歳出明細は款・項・目が同一行で補正前の額・補正額・計・補正額の財源内訳（特定/一般財源）、後続頁に節区分（区分+金額）・説明、単位千円。一般会計歳出=物理20-39（印字18-37、第3款福祉費〜第9款教育費の補正有り款のみ）。歳入は物理18-19、債務負担行為補正40-43は対象外。本冊は一般会計のみで特別会計補正は含まない（特別会計の第1次は第4次合冊に収録済み）。概要PDF（r08hosei_ippan03.pdf）は款別集計のみで目粒度を満たさず不採用。歳入は対象外で未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131113/2026/supplementary-3.pdf",
+            "sha256": "28871c1ee526e819eaf4be67014b481b5ac3fcd4a295329900bb8afbef19deb1",
+            "final_url": "https://www.city.ota.tokyo.jp/kuseijoho/suuji/yosan_kessan/yosan/r08yosan/r8hosei.files/r08hosei_yosansyo03.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:44:54.757Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

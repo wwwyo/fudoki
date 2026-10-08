@@ -2,6 +2,197 @@
   "jurisdiction": "131172",
   "name": "北区",
   "official_url": "https://www.city.kita.tokyo.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度東京都北区予算書説明書",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014488/1025576.html",
+          "inspected_at": "2026-10-07T14:56:26.172024+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/025/576/r8_tosho_yosansetumei.pdf",
+              "sha256": "650c33ed51edff5202f5c93f23383be6b72140474f89cf05803c3b03fb7c479e",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "start": 71,
+                      "end": 159
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 188,
+                      "end": 188
+                    },
+                    {
+                      "start": 201,
+                      "end": 221
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 231,
+                      "end": 231
+                    },
+                    {
+                      "start": 246,
+                      "end": 265
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 275,
+                      "end": 275
+                    },
+                    {
+                      "start": 285,
+                      "end": 292
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度（最新）当初予算の歳出明細。当初予算一覧（finance/1014484/1014488/）の令和8年度ページ（1025576）に掲載の「令和8年度東京都北区予算書説明書」1冊（物理297頁・A3横見開き=1物理頁に印字2頁・文字が輪郭線描画のみで文字層抽出不可のためscan）を選定。同ページ掲載の予算書（r8_tosho_yosan.pdf・27頁）は議案第39〜42号の本文と第1表歳入歳出予算（款・項の区分と金額）のみで目粒度を持たず不採用。説明書の各会計歳入歳出予算事項別明細書は款・項・目名と本年度予算額・前年度予算額・比較・財源内訳・節区分（区分+金額・説明）を見開き両頁で対応、単位千円。会計は一般会計・国民健康保険事業会計・介護保険会計・後期高齢者医療会計の4会計で予算書議案一覧・説明書目次・予算プレス資料の3者が一致、企業会計・他の特別会計の掲載なし。歳出は各会計の総括歳出（款別）と明細書歳出をscopeに記録：一般会計=物理6・71-159頁（印字8-9・138-315）、国保=物理188・201-221頁（印字372-373・398-439）、介護=物理231・246-265頁（印字458-459・488-527）、後期=物理275・285-292頁（印字546-547・566-581）。印字→物理は物理頁=印字頁を2で割った整数部+2で一致することを各境界の画像頁で確認。給与費明細書・債務負担行為調書・特別区債現在高調書はscope外。歳入は未確認。予算の概要・予算案主な事業（予算プレス資料）は概要資料のため対象外。東京都オープンデータカタログに北区の明細CSVなし。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2026/initial.pdf",
+            "sha256": "650c33ed51edff5202f5c93f23383be6b72140474f89cf05803c3b03fb7c479e",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/025/576/r8_tosho_yosansetumei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:56:51.789Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "東京都北区各会計歳入歳出決算書（令和6年度）",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014500.html",
+          "inspected_at": "2026-10-07T14:56:26.172024+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/500/kessann-syo6.pdf",
+              "sha256": "12b1e95c026d5c3f112cd7bc15adbbd759a61711dc88db83b28c22e81ecfe508",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 52,
+                      "end": 91
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 15,
+                      "end": 15
+                    },
+                    {
+                      "start": 98,
+                      "end": 101
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 19,
+                      "end": 19
+                    },
+                    {
+                      "start": 108,
+                      "end": 112
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 23,
+                      "end": 23
+                    },
+                    {
+                      "start": 117,
+                      "end": 118
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度決算は決算一覧ページ（finance/1014500、最終更新2025-10-06）に未掲載で公表前のため、最新公表の令和6年度「東京都北区各会計歳入歳出決算書」（kessann-syo6.pdf・物理174頁・A3横見開き=1物理頁に印字2頁・文字PDF）を選定。事項別明細書は款・項・目が同一明細で当初予算額・補正予算額・繰越額・流用増減・予算現額計・節区分+金額・支出済額・翌年度繰越額・不用額に対応、単位円。会計は一般会計・国民健康保険事業会計・介護保険会計・後期高齢者医療会計の4会計で目次と一致、企業会計・他の特別会計なし。会計ごとに歳入歳出決算書部の歳出款項表と事項別明細書部の歳出をscopeに記録：一般会計=物理10-11・52-91頁（印字16-19・100-179）、国保=物理15・98-101頁（印字26-27・192-199）、介護=物理19・108-112頁（印字34-35・212-221）、後期=物理23・117-118頁（印字42-43・230-233）。同ページの「各会計決算額及び一般会計款別決算額」（kessann-gaku6.pdf）は款別集計のみで目粒度を満たさず不採用。決算見える化ボードは一般会計のグラフのみで対象外。実質収支に関する調書・公有財産・基金等の付属書類はscope外。歳入は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2024/settlement.pdf",
+            "sha256": "12b1e95c026d5c3f112cd7bc15adbbd759a61711dc88db83b28c22e81ecfe508",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/500/kessann-syo6.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:56:58.287Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

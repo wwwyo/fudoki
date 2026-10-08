@@ -2,6 +2,506 @@
   "jurisdiction": "132021",
   "name": "立川市",
   "official_url": "https://www.city.tachikawa.lg.jp/index.html",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "132021",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "initial-r8-yosan-3vol",
+          "title": "令和8年度当初予算（一般会計・特別会計・下水道事業会計 3分冊）",
+          "landing_url": "https://www.city.tachikawa.lg.jp/shisei/yosan/1007100/1007125.html",
+          "inspected_at": "2026-10-07T15:32:54.321007+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.tachikawa.lg.jp/_res/projects/default_project/_page_/001/007/125/r8_ippan.pdf",
+              "sha256": "57d02763a1068295203a51b00d094d94f4c0cda03b60f0432d0b4ad5c2cc39e2",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "start": 79,
+                      "end": 404
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.tachikawa.lg.jp/_res/projects/default_project/_page_/001/007/125/r8_tokkai.pdf",
+              "sha256": "c6f426f7455ae90e66432b96ac85de90e03d206a6eedb086d0b8293159faa9c1",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "競輪事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "start": 21,
+                      "end": 34
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 48,
+                      "end": 48
+                    },
+                    {
+                      "start": 52,
+                      "end": 52
+                    },
+                    {
+                      "start": 59,
+                      "end": 70
+                    }
+                  ]
+                },
+                {
+                  "account": "駐車場事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 85,
+                      "end": 85
+                    },
+                    {
+                      "start": 88,
+                      "end": 88
+                    },
+                    {
+                      "start": 91,
+                      "end": 94
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 104,
+                      "end": 105
+                    },
+                    {
+                      "start": 109,
+                      "end": 109
+                    },
+                    {
+                      "start": 121,
+                      "end": 140
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 156,
+                      "end": 156
+                    },
+                    {
+                      "start": 160,
+                      "end": 160
+                    },
+                    {
+                      "start": 167,
+                      "end": 172
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.tachikawa.lg.jp/_res/projects/default_project/_page_/001/007/125/r8_gesui.pdf",
+              "sha256": "370e18a0db1342946d0ca27022060ecd4bb4fd1ecaf4fc20c511d9f07accec17",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 34,
+                      "end": 43
+                    },
+                    {
+                      "start": 46,
+                      "end": 49
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度当初予算の歳出を全会計で選定。公式当初予算ページ（https://www.city.tachikawa.lg.jp/shisei/yosan/1007100/1007125.html）に掲載の3分冊が全会計を網羅する。一般会計冊: 物理頁10-11=第1表歳出款項（千円）、物理頁18=総括歳出、物理頁79-404=歳出事項別明細書（款・項・目＋節と事業説明が見開き両頁で対応、千円）。特別会計冊は競輪事業・国民健康保険事業・駐車場事業・介護保険事業・後期高齢者医療事業の5会計を収録し、各会計について第1表歳出（競輪10,国保48,駐車場85,介護104-105,後期高齢者156）、総括歳出（14,52,88,109,160、歳入歳出同頁）、歳出明細（21-34,59-70,91-94,121-140,167-172、名称と金額が同一見開き、千円）を選定。下水道事業会計冊: 物理頁10-11=収益的・資本的収支予定表（支出含む、千円）、34-43=収益的支出明細（5,954,420千円）、46-49=資本的支出明細（3,190,691千円）、いずれも科目（項・目・節）と説明の名称・金額が見開きで対応。全PDF文字層あり（下水道冊はuni=noだが抽出可読）。付属の給与費明細書・債務負担行為調書等の歳出表でない付録は範囲外。",
+      "selected_candidate_id": "initial-r8-yosan-3vol",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "initial-r8-yosan-3vol",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132021/2026/initial-2.pdf",
+            "sha256": "57d02763a1068295203a51b00d094d94f4c0cda03b60f0432d0b4ad5c2cc39e2",
+            "final_url": "https://www.city.tachikawa.lg.jp/_res/projects/default_project/_page_/001/007/125/r8_ippan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132021/2026/initial-3.pdf",
+            "sha256": "c6f426f7455ae90e66432b96ac85de90e03d206a6eedb086d0b8293159faa9c1",
+            "final_url": "https://www.city.tachikawa.lg.jp/_res/projects/default_project/_page_/001/007/125/r8_tokkai.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132021/2026/initial-1.pdf",
+            "sha256": "370e18a0db1342946d0ca27022060ecd4bb4fd1ecaf4fc20c511d9f07accec17",
+            "final_url": "https://www.city.tachikawa.lg.jp/_res/projects/default_project/_page_/001/007/125/r8_gesui.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T15:33:12.032Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132021",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "settlement-r7-kessan-2vol",
+          "title": "令和7年度決算書（一般会計・特別会計 合冊 + 下水道事業会計）",
+          "landing_url": "https://www.city.tachikawa.lg.jp/shisei/yosan/1007100/1007116.html",
+          "inspected_at": "2026-10-07T15:32:54.321007+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.tachikawa.lg.jp/_res/projects/default_project/_page_/001/007/116/r7kessan.pdf.pdf",
+              "sha256": "71b7aa9ebd5359cc35dd8fc938d3eb9c2578b5de34c241c9e6bd92a8ee25fcc7",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 20,
+                      "end": 23
+                    },
+                    {
+                      "start": 82,
+                      "end": 443
+                    }
+                  ]
+                },
+                {
+                  "account": "競輪事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 448,
+                      "end": 449
+                    },
+                    {
+                      "start": 458,
+                      "end": 469
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 474,
+                      "end": 475
+                    },
+                    {
+                      "start": 486,
+                      "end": 497
+                    }
+                  ]
+                },
+                {
+                  "account": "駐車場事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 502,
+                      "end": 503
+                    },
+                    {
+                      "start": 508,
+                      "end": 511
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 518,
+                      "end": 521
+                    },
+                    {
+                      "start": 536,
+                      "end": 555
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 560,
+                      "end": 561
+                    },
+                    {
+                      "start": 570,
+                      "end": 575
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.tachikawa.lg.jp/_res/projects/default_project/_page_/001/007/116/r7kessan_gesui.pdf",
+              "sha256": "743cc0fdaaade193b31ec6cd0de7fe787cdee945fadbfcfe7151439b4a42cf20",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 9
+                    },
+                    {
+                      "start": 28,
+                      "end": 33
+                    },
+                    {
+                      "start": 36,
+                      "end": 39
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度決算（公表済み最新）の歳出を全会計で選定。公式決算ページ（https://www.city.tachikawa.lg.jp/shisei/yosan/1007100/1007116.html）掲載の2冊。合冊（621頁）は一般会計と特別会計5会計（競輪・国保・駐車場・介護・後期高齢者）を収録。各会計の歳出決算款項表（支出済額を含む見開き: 一般会計20-23,競輪448-449,国保474-475,駐車場502-503,介護518-521,後期高齢者560-561）と歳出決算事項別明細書（款・項・目・節＋事業説明が見開き両頁で対応、支出済額・翌年度繰越額・不用額、単位円: 一般会計82-443,競輪458-469,国保486-497,駐車場508-511,介護536-555,後期高齢者570-575）を選定。下水道事業会計冊（49頁）: 物理頁6-9=収益的・資本的収支決算報告書（支出含む、円）、28-33=収益的支出明細（円・税抜き）、36-39=資本的支出明細（円・税込み）。576頁以降の実質収支調書等は範囲外。全PDF文字層あり（下水道冊はuni=noだが抽出可読）。",
+      "selected_candidate_id": "settlement-r7-kessan-2vol",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "settlement-r7-kessan-2vol",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132021/2025/settlement-1.pdf",
+            "sha256": "71b7aa9ebd5359cc35dd8fc938d3eb9c2578b5de34c241c9e6bd92a8ee25fcc7",
+            "final_url": "https://www.city.tachikawa.lg.jp/_res/projects/default_project/_page_/001/007/116/r7kessan.pdf.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132021/2025/settlement-2.pdf",
+            "sha256": "743cc0fdaaade193b31ec6cd0de7fe787cdee945fadbfcfe7151439b4a42cf20",
+            "final_url": "https://www.city.tachikawa.lg.jp/_res/projects/default_project/_page_/001/007/116/r7kessan_gesui.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T15:33:18.154Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132021",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "settlement-r6-kessan-2vol",
+          "title": "令和6年度決算書（一般会計・特別会計 合冊 + 下水道事業会計）",
+          "landing_url": "https://www.city.tachikawa.lg.jp/shisei/yosan/1007100/1007116.html",
+          "inspected_at": "2026-10-08T00:56:38.807286+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.tachikawa.lg.jp/_res/projects/default_project/_page_/001/007/116/r6kessan.pdf",
+              "sha256": "a8a23ea445718fba2d2b267e601da38d17458d43c52a72ae80d08009d36411bd",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 20,
+                      "end": 23
+                    },
+                    {
+                      "start": 82,
+                      "end": 439
+                    }
+                  ]
+                },
+                {
+                  "account": "競輪事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 444,
+                      "end": 445
+                    },
+                    {
+                      "start": 454,
+                      "end": 465
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 470,
+                      "end": 471
+                    },
+                    {
+                      "start": 482,
+                      "end": 493
+                    }
+                  ]
+                },
+                {
+                  "account": "駐車場事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 498,
+                      "end": 499
+                    },
+                    {
+                      "start": 504,
+                      "end": 507
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 514,
+                      "end": 517
+                    },
+                    {
+                      "start": 532,
+                      "end": 551
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 556,
+                      "end": 557
+                    },
+                    {
+                      "start": 566,
+                      "end": 571
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.tachikawa.lg.jp/_res/projects/default_project/_page_/001/007/116/r6kessan_gesui.pdf",
+              "sha256": "bc9c1599d6b274e2cf80938567a469f1d4fe5f83f7b9db3bea601dddd6a9b91d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 9
+                    },
+                    {
+                      "start": 28,
+                      "end": 33
+                    },
+                    {
+                      "start": 36,
+                      "end": 39
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度決算（2024年度、2025年公表）の歳出を全会計で選定。公式決算ページ（https://www.city.tachikawa.lg.jp/shisei/yosan/1007100/1007116.html）掲載の2冊で、令和7年度選定済みと同一掲載先・同一構成。合冊（618頁）は一般会計と特別会計5会計（競輪・国保・駐車場・介護・後期高齢者）を収録し会計構成は令和7年度と同一。各会計の歳出決算款項表（支出済額を含む見開き: 一般会計20-23,競輪444-445,国保470-471,駐車場498-499,介護514-517,後期高齢者556-557）と歳出決算事項別明細書（款・項・目・節＋事業説明が見開き両頁で対応、支出済額・翌年度繰越額・不用額、単位円: 一般会計82-439,競輪454-465,国保482-493,駐車場504-507,介護532-551,後期高齢者566-571）を選定。下水道事業会計冊（49頁）: 物理頁6-9=収益的・資本的収支決算報告書（支出決算額含む、円）、28-33=収益的支出明細（円・税抜き）、36-39=資本的支出明細（円・税込み）。574頁以降の実質収支調書・財産調書は範囲外。合冊はフォントuni=noでpdftotextが文字化けするためscan扱い（目視で表題・列名・印字頁番号を確認、印字頁=物理頁-2）。下水道冊は文字層抽出可読でtext。",
+      "selected_candidate_id": "settlement-r6-kessan-2vol",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "settlement-r6-kessan-2vol",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132021/2024/settlement-1.pdf",
+            "sha256": "a8a23ea445718fba2d2b267e601da38d17458d43c52a72ae80d08009d36411bd",
+            "final_url": "https://www.city.tachikawa.lg.jp/_res/projects/default_project/_page_/001/007/116/r6kessan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132021/2024/settlement-2.pdf",
+            "sha256": "bc9c1599d6b274e2cf80938567a469f1d4fe5f83f7b9db3bea601dddd6a9b91d",
+            "final_url": "https://www.city.tachikawa.lg.jp/_res/projects/default_project/_page_/001/007/116/r6kessan_gesui.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T00:57:28.371Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }
