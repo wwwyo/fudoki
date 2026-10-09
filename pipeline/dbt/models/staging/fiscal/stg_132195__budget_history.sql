@@ -4,11 +4,11 @@ select cast(jurisdiction as varchar) as jurisdiction_code, cast(year as integer)
        dataset_id || ':' || source_row as fiscal_line_id,
        source_row, record_kind, fund_code, fund_label, kan_code, kou_code, moku_code, moku_label,
        initial_text, before_text, delta_text, after_text, reported_amount_text, executed_amount_text,
-       cast(replace(initial_text, ',', '') as bigint) as initial_amount,
-       cast(replace(before_text, ',', '') as bigint) as before_amount,
-       cast(replace(replace(delta_text, ',', ''), '△', '-') as bigint) as delta_amount,
-       cast(replace(after_text, ',', '') as bigint) as after_amount,
+       {{ staging_amount('initial_text') }} as initial_amount,
+       {{ staging_amount('before_text') }} as before_amount,
+       {{ staging_amount('delta_text') }} as delta_amount,
+       {{ staging_amount('after_text') }} as after_amount,
        page_number, bbox_json, printed_text
-       , cast(replace(reported_amount_text, ',', '') as bigint) as reported_amount
-       , cast(replace(executed_amount_text, ',', '') as bigint) as executed_amount
+       , {{ staging_amount('reported_amount_text') }} as reported_amount
+       , {{ staging_amount('executed_amount_text') }} as executed_amount
 from {{ source('raw_132195_history', 'data') }}

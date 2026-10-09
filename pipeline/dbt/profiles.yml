@@ -7,5 +7,7 @@ fudoki:
       type: duckdb
       path: ../.build/warehouse.duckdb
       threads: 1
+      plugins:
+        - module: staging
       settings:
         memory_limit: '4GB'

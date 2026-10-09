@@ -172,7 +172,7 @@
   {%- set variants = fiscal_amount_variants(code, direction, name) -%}
   {%- set values = [] -%}
   {%- for a in variants -%}
-    {%- do values.append('cast("' ~ a['source'] ~ '" as bigint)' if cast_bigint else '"' ~ a['source'] ~ '"') -%}
+    {%- do values.append(staging_amount('"' ~ a['source'] ~ '"') if cast_bigint else '"' ~ a['source'] ~ '"') -%}
   {%- endfor -%}
   {{ return(fiscal_amount_case_sql(variants, values, year_col)) }}
 {% endmacro %}
