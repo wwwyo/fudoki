@@ -1,6 +1,6 @@
 ---
 name: pipeline
-description: 風土記の原典選定（source_selection）、CSV・text PDF・scan PDFの取り込みと形式別検査、保存・採用、dbt構築、収録範囲監査を行うときに参照する。CSVの原典からParquetへの保持検査と、PDFの原典照合・再抽出の手順を扱う。
+description: 風土記の原典選定（source_selection）、CSV・text PDF・scan PDFの取り込みと形式別検査、保存・採用、staging定義・dbt構築、収録範囲監査を行うときに参照する。CSVの原典からParquetへの保持検査と、PDFの原典照合・再抽出の手順を扱う。
 user-invocable: false
 ---
 
@@ -19,7 +19,7 @@ user-invocable: false
 | PDFの抽出器変更・移設時に再現性を検査する | [references/reconstruction.md](references/reconstruction.md) |
 | 旧固定入力の保存・読み戻し（新しい保存はBを参照） | [references/input-storage.md](references/input-storage.md) |
 | F. 入力と各層を本体へ採用し、全量構築・再構築する | [references/dbt.md](references/dbt.md) |
-| ingestionのJSON・Parquetからstagingモデルを定義・検証する | [staging skill](../staging/SKILL.md) |
+| ingestionのJSON・Parquetからstagingモデルを定義・検証する | [references/staging.md](references/staging.md) |
 | G. 通常監査と検証報告で提供先・収録範囲を確認する | [references/coverage-audit.md](references/coverage-audit.md) |
 
 ## 関連 skill
