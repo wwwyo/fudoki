@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "normalization": "NFKC_REMOVE_WHITESPACE",
+  "rules": [
+    {
+      "id": "setsu-equipment-purchase-missing-character",
+      "observed_name": "備品入費",
+      "corrected_name": "備品購入費",
+      "reason": "多摩市2020年度決算書・印刷75頁で購の欠落を原典画像と確認した。"
+    },
+    {
+      "id": "setsu-redemption-wrong-character",
+      "observed_name": "價還金・利子及び割引料",
+      "corrected_name": "償還金・利子及び割引料",
+      "reason": "多摩市2020年度決算書・印刷75頁で償の誤認を原典画像と確認した。名称の折り返しを結合した後に適用する。"
+    },
+    {
+      "id": "setsu-mutual-aid-simplified-character",
+      "observed_name": "共济费",
+      "corrected_name": "共済費",
+      "reason": "昭島市2025年度予算書・物理109頁のRapidOCR比較で確認した表記差。"
+    }
+  ]
+}

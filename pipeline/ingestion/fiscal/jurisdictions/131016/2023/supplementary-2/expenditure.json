@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "131016",
+    "fiscal_year": 2023,
+    "document_kind": "supplementary",
+    "amendment_number": 2
+  },
+  "direction": "expenditure",
+  "conversions": [
+    {
+      "id": "chiyoda-supplementary-native-9ed82f0f95fb90ac",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "3f6fb21a1a68abd73063661c935db6544da91870e4a2e52f11c48c124afe60c5"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "chiyoda-supplementary-native-9ed82f0f95fb90ac",
+            "bytes": 10945,
+            "key": "inputs/table/sha256/6de9a24327aaf9389952475b0f90db89d7bb539a59ab02dd36c37b2e013be38e",
+            "sha256": "6de9a24327aaf9389952475b0f90db89d7bb539a59ab02dd36c37b2e013be38e"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "chiyoda-supplementary-native-9ed82f0f95fb90ac"
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "chiyoda-supplementary-native-9ed82f0f95fb90ac",
+      "conversion_id": "chiyoda-supplementary-native-9ed82f0f95fb90ac",
+      "input_fingerprint": "9640dd91fed99b3c5f0900deff3b7bc32b0cfcfeff3453bfcb9b9db2a5c9b4cb",
+      "object": {
+        "key": "fiscal/ingestion/131016/2023/supplementary-2/expenditure/chiyoda-supplementary-native-9ed82f0f95fb90ac.parquet",
+        "sha256": "6de9a24327aaf9389952475b0f90db89d7bb539a59ab02dd36c37b2e013be38e",
+        "bytes": 10945
+      },
+      "row_count": 38
+    }
+  ]
+}

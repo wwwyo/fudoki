@@ -1,6 +1,8 @@
 """採用した原典・表の識別子で、dbtへ取得元の宣言を渡す。"""
+
+from importlib import import_module as _ingestion_module
 import json
-from ingestion.fiscal.sources import all_sources
+from ingestion.fiscal.management.sources import all_sources
 from ingestion.inputs import read_lock, source_metadata_bytes
 from ingestion.paths import INPUT_LOCK
 
@@ -86,47 +88,47 @@ def declarations():
                 structure_json=json.dumps(dict(hierarchy=['kan','kou','moku'], dimensions=[],
                    funds=[dict(code='1', label='一般会計')], scope=dict(targets=['7-1-2','13-1-1'], granularity='moku',
                    expenditureSetsuStatus='unconfirmed')), ensure_ascii=False,sort_keys=True)))
-    from ingestion.fiscal.initial_detail_provider import register_initial_declarations
-    from ingestion.fiscal.council_approved_provider import register_council_declarations
+    from ingestion.fiscal.layouts.fiscal_general.initial_detail_provider import register_initial_declarations
+    register_council_declarations = _ingestion_module('ingestion.fiscal.jurisdictions.132195.layouts.council_approved_provider').register_council_declarations
     rows, history = register_council_declarations(rows, history, entries)
-    from ingestion.fiscal.native_council_provider import register_native_council_declarations
+    register_native_council_declarations = _ingestion_module('ingestion.fiscal.jurisdictions.132195.layouts.native_council_provider').register_native_council_declarations
     rows, history = register_native_council_declarations(rows, history, entries)
-    from ingestion.fiscal.held5_council_provider import register_held5_council_declarations
+    register_held5_council_declarations = _ingestion_module('ingestion.fiscal.jurisdictions.132195.layouts.held5_council_provider').register_held5_council_declarations
     rows, history = register_held5_council_declarations(rows, history, entries)
     rows, history = register_initial_declarations(rows, history, entries)
-    from ingestion.fiscal.tama_native_settlement.registration import register_native_settlement_declarations
+    register_native_settlement_declarations = _ingestion_module('ingestion.fiscal.jurisdictions.132241.layouts.tama_native_settlement.registration').register_native_settlement_declarations
     rows, history = register_native_settlement_declarations(rows, history, entries, INPUT_LOCK)
-    from ingestion.fiscal.chiyoda2025_native.registration import register_native_budget_declarations
+    register_native_budget_declarations = _ingestion_module('ingestion.fiscal.jurisdictions.131016.layouts.chiyoda2025_native.registration').register_native_budget_declarations
     rows, history = register_native_budget_declarations(rows, history, entries, INPUT_LOCK)
-    from ingestion.fiscal.chiyoda2021_settlement_native.registration import register_native_settlement2021_declarations
+    register_native_settlement2021_declarations = _ingestion_module('ingestion.fiscal.jurisdictions.131016.layouts.chiyoda2021_settlement_native.registration').register_native_settlement2021_declarations
     rows, history = register_native_settlement2021_declarations(rows, history, entries, INPUT_LOCK)
-    from ingestion.fiscal.akishima_initial445_registry import register_initial445_declarations
+    register_initial445_declarations = _ingestion_module('ingestion.fiscal.jurisdictions.132071.layouts.akishima_initial445_registry').register_initial445_declarations
     rows, history = register_initial445_declarations(rows, history, entries)
-    from ingestion.fiscal.akishima_settlement2024_registry import register_settlement2024_declarations
+    register_settlement2024_declarations = _ingestion_module('ingestion.fiscal.jurisdictions.132071.layouts.akishima_settlement2024_registry').register_settlement2024_declarations
     rows, history = register_settlement2024_declarations(rows, history, entries)
-    from ingestion.fiscal.akishima_settlement2020_2023_registry import register_settlement2020_2023_declarations
+    register_settlement2020_2023_declarations = _ingestion_module('ingestion.fiscal.jurisdictions.132071.layouts.akishima_settlement2020_2023_registry').register_settlement2020_2023_declarations
     rows, history = register_settlement2020_2023_declarations(rows, history, entries)
-    from ingestion.fiscal.akishima_supplementary_fy2025_01_registry import register_supplementary_fy2025_01_declarations
+    register_supplementary_fy2025_01_declarations = _ingestion_module('ingestion.fiscal.jurisdictions.132071.layouts.akishima_supplementary_fy2025_01_registry').register_supplementary_fy2025_01_declarations
     rows, history = register_supplementary_fy2025_01_declarations(rows, history, entries)
-    from ingestion.fiscal.tama_pre2020.registration import register_pre2020_declarations
+    register_pre2020_declarations = _ingestion_module('ingestion.fiscal.jurisdictions.132241.layouts.tama_pre2020.registration').register_pre2020_declarations
     rows, history = register_pre2020_declarations(rows, history, entries, INPUT_LOCK)
-    from ingestion.fiscal.akishima_settlement2019_registry import register_settlement2019_declarations
+    register_settlement2019_declarations = _ingestion_module('ingestion.fiscal.jurisdictions.132071.layouts.akishima_settlement2019_registry').register_settlement2019_declarations
     rows, history = register_settlement2019_declarations(rows, history, entries)
-    from ingestion.fiscal.komae_recovered_provider import register_komae_recovered_declarations
+    register_komae_recovered_declarations = _ingestion_module('ingestion.fiscal.jurisdictions.132195.layouts.komae_recovered_provider').register_komae_recovered_declarations
     rows, history = register_komae_recovered_declarations(rows, history, entries)
-    from ingestion.fiscal.mitaka_initial2026.registration import register_declarations as register_mitaka
+    register_mitaka = _ingestion_module('ingestion.fiscal.jurisdictions.132047.layouts.mitaka_initial2026.registration').register_declarations
     rows, history = register_mitaka(rows, history, entries, INPUT_LOCK)
-    from ingestion.fiscal.tama_ordinary_history.registration import register_ordinary_history_declarations
+    register_ordinary_history_declarations = _ingestion_module('ingestion.fiscal.jurisdictions.132241.layouts.tama_ordinary_history.registration').register_ordinary_history_declarations
     rows, history = register_ordinary_history_declarations(rows, history, entries, INPUT_LOCK)
-    from ingestion.fiscal.komae_supplementary_2020_1_provider import register_declarations as register_supplementary1
+    register_supplementary1 = _ingestion_module('ingestion.fiscal.jurisdictions.132195.layouts.komae_supplementary_2020_1_provider').register_declarations
     rows, history = register_supplementary1(rows, history, entries, INPUT_LOCK)
-    from ingestion.fiscal.tama_budget_detail import register_declarations as register_native_initial
+    register_native_initial = _ingestion_module('ingestion.fiscal.jurisdictions.132241.layouts.tama_budget_detail').register_declarations
     rows, history = register_native_initial(rows, history, entries, INPUT_LOCK)
-    from ingestion.fiscal.chiyoda_budget_changes import register_declarations as register_chiyoda_supplementary
+    register_chiyoda_supplementary = _ingestion_module('ingestion.fiscal.jurisdictions.131016.layouts.chiyoda_budget_changes').register_declarations
     rows, history = register_chiyoda_supplementary(rows, history, entries, INPUT_LOCK)
-    from ingestion.fiscal.tama_supplementary_registry import register_declarations as register_tama_supplementary
+    register_tama_supplementary = _ingestion_module('ingestion.fiscal.jurisdictions.132241.layouts.tama_supplementary_registry').register_declarations
     rows, history = register_tama_supplementary(rows, history, entries, INPUT_LOCK)
-    from ingestion.fiscal.mitaka_supplementary_registry import register_declarations as register_mitaka_supplementary
+    register_mitaka_supplementary = _ingestion_module('ingestion.fiscal.jurisdictions.132047.layouts.mitaka_supplementary_registry').register_declarations
     rows, history = register_mitaka_supplementary(rows, history, entries, INPUT_LOCK)
     return rows, history
 

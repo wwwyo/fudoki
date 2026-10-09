@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "131016",
+    "fiscal_year": 2023,
+    "document_kind": "initial"
+  },
+  "direction": "revenue",
+  "tables": [
+    {
+      "table_id": "raw-c095865441951563",
+      "raw_path": "jurisdiction=131016/year=2023/document_kind=budget/edition=ea074363ada65ef50780dd1957a06be9744e90e75b8f7bf858771011704650cb/direction=revenue/table=fund-care/data.parquet"
+    },
+    {
+      "table_id": "raw-e3938769d17e1933",
+      "raw_path": "jurisdiction=131016/year=2023/document_kind=budget/edition=ea074363ada65ef50780dd1957a06be9744e90e75b8f7bf858771011704650cb/direction=revenue/table=fund-elderly/data.parquet"
+    },
+    {
+      "table_id": "raw-4681c147fa9556b5",
+      "raw_path": "jurisdiction=131016/year=2023/document_kind=budget/edition=ea074363ada65ef50780dd1957a06be9744e90e75b8f7bf858771011704650cb/direction=revenue/table=fund-general/data.parquet"
+    },
+    {
+      "table_id": "raw-a7584fa57e52a19d",
+      "raw_path": "jurisdiction=131016/year=2023/document_kind=budget/edition=ea074363ada65ef50780dd1957a06be9744e90e75b8f7bf858771011704650cb/direction=revenue/table=fund-national-health/data.parquet"
+    }
+  ]
+}

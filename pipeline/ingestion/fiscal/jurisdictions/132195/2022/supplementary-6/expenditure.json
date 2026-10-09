@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132195",
+    "fiscal_year": 2022,
+    "document_kind": "supplementary",
+    "amendment_number": 6
+  },
+  "direction": "expenditure",
+  "conversions": [
+    {
+      "id": "council-approved-detail-e338aec4dc04b818",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "df633f80a4d268727cd832738c3e318d63d287b4de214e5ba28897833179a064"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "council-approved-detail-e338aec4dc04b818",
+            "bytes": 28565,
+            "key": "inputs/table/sha256/879e627ff2c42accb806798c964a81f0397a5c8655bed5ed11c3229a24c032af",
+            "sha256": "879e627ff2c42accb806798c964a81f0397a5c8655bed5ed11c3229a24c032af"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "council-approved-detail-e338aec4dc04b818"
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "council-approved-detail-e338aec4dc04b818",
+      "conversion_id": "council-approved-detail-e338aec4dc04b818",
+      "input_fingerprint": "b1e9a494904433348105ab53af5045c458170d0a6366ad3eaaabb20a5cc9bc0d",
+      "object": {
+        "key": "fiscal/ingestion/132195/2022/supplementary-6/expenditure/council-approved-detail-e338aec4dc04b818.parquet",
+        "sha256": "879e627ff2c42accb806798c964a81f0397a5c8655bed5ed11c3229a24c032af",
+        "bytes": 28565
+      },
+      "row_count": 21
+    }
+  ]
+}

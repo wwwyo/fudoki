@@ -1,8 +1,0 @@
-version: 2
-sources:
-  - name: raw_mitaka_initial2026
-    description: "FY2026 edition; mixed printed observations p3-187, no approval/phase inference"
-    tables:
-      - name: initial_observation
-        meta:
-          external_location: "read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/mitaka-initial2026/jurisdiction=132047/year=2026/document_kind=budget/edition=226190ff24132abd4e372f5977226d8cb61c4015f372a8d1ee90ba5416e0a3af/direction=observation/table=initial-observation/data.parquet', hive_partitioning=false)"

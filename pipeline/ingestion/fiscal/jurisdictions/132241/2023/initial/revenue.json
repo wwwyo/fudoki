@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132241",
+    "fiscal_year": 2023,
+    "document_kind": "initial"
+  },
+  "direction": "revenue",
+  "conversions": [
+    {
+      "id": "raw-4fcc766d1754b23a",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "60b60504fb0297c2b50f4b12b4b0e9bfb6d289ab0abf2724a51ec3a254c6d098"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "raw-4fcc766d1754b23a",
+            "bytes": 11016,
+            "key": "inputs/table/sha256/8aaaeb4a08ea075c4155b820158ddf7e48656ecc92e575e5741e55742c0fe73f",
+            "sha256": "8aaaeb4a08ea075c4155b820158ddf7e48656ecc92e575e5741e55742c0fe73f"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "raw-4fcc766d1754b23a"
+        }
+      ]
+    },
+    {
+      "id": "raw-962f0d0cd7735a4a",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "9df4468f195127ebb5f578b90e0cc1606d277ad6fad03cc5f677f806156be219"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "raw-962f0d0cd7735a4a",
+            "bytes": 18244,
+            "key": "inputs/table/sha256/066a989939792918a2ea993b4b5d18ea3aadcc3964541464beec0f21d3c70404",
+            "sha256": "066a989939792918a2ea993b4b5d18ea3aadcc3964541464beec0f21d3c70404"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "raw-962f0d0cd7735a4a"
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "raw-4fcc766d1754b23a",
+      "conversion_id": "raw-4fcc766d1754b23a",
+      "input_fingerprint": "c0afdc5a44ead0b41c946b20088fe762cde5eede878db5e91cbb86d93a1b6e5e",
+      "object": {
+        "key": "fiscal/ingestion/132241/2023/initial/revenue/raw-4fcc766d1754b23a.parquet",
+        "sha256": "8aaaeb4a08ea075c4155b820158ddf7e48656ecc92e575e5741e55742c0fe73f",
+        "bytes": 11016
+      },
+      "row_count": 98
+    },
+    {
+      "table_id": "raw-962f0d0cd7735a4a",
+      "conversion_id": "raw-962f0d0cd7735a4a",
+      "input_fingerprint": "6043f9b00597707e8e92ea25728c2ffff36329459ca8f1fb8bd3df4ed739b0f9",
+      "object": {
+        "key": "fiscal/ingestion/132241/2023/initial/revenue/raw-962f0d0cd7735a4a.parquet",
+        "sha256": "066a989939792918a2ea993b4b5d18ea3aadcc3964541464beec0f21d3c70404",
+        "bytes": 18244
+      },
+      "row_count": 469
+    }
+  ]
+}

@@ -53,7 +53,7 @@ seeds:
     description: |
       法定の科目マスタ。地方自治法施行規則 別記「歳入歳出予算の款項の区分及び目の区分」
       （第15条関係）の市町村の表（歳入・歳出）を原文の PDF から起こしたもの
-      （`pipeline/ingestion/fiscal/fetch_account_master.py` が生成。手で編集しない）。
+      （`pipeline/ingestion/fiscal/management/fetch_account_master.py` が生成。手で編集しない）。
       **なぜ要るか: 款のコードは団体ごとにずれている。** 法定の款11は災害復旧費だが、
       それを持たない三鷹市・狛江市はどちらも 11 が公債費で、以降が詰まっている。
       コードでは団体をまたいで比較できないので、このマスタと対応表（account_map）を介す。

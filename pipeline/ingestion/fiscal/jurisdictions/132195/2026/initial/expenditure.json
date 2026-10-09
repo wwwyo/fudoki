@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132195",
+    "fiscal_year": 2026,
+    "document_kind": "initial"
+  },
+  "direction": "expenditure",
+  "conversions": [
+    {
+      "id": "initial-detail-89fabc7b847286e7",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "1f10fd882a8862f5744b11036df19dda322fc76d7c090e6df1a7272a72ac58e9"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "initial-detail-89fabc7b847286e7",
+            "bytes": 38607,
+            "key": "inputs/table/sha256/0ff697304da0cf5e484985eeb9534c1eca8d9a41917092ada691b98655c5f008",
+            "sha256": "0ff697304da0cf5e484985eeb9534c1eca8d9a41917092ada691b98655c5f008"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "initial-detail-89fabc7b847286e7"
+        }
+      ]
+    },
+    {
+      "id": "initial-detail-467a65c49dfc0448",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "1f10fd882a8862f5744b11036df19dda322fc76d7c090e6df1a7272a72ac58e9"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "initial-detail-467a65c49dfc0448",
+            "bytes": 27156,
+            "key": "inputs/table/sha256/29eea2c815f238b0f849b934ff7012792e05ee26a700fa1f5a61f70ec60806b4",
+            "sha256": "29eea2c815f238b0f849b934ff7012792e05ee26a700fa1f5a61f70ec60806b4"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "initial-detail-467a65c49dfc0448"
+        }
+      ]
+    },
+    {
+      "id": "initial-detail-549ec0c254062afa",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "1f10fd882a8862f5744b11036df19dda322fc76d7c090e6df1a7272a72ac58e9"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "initial-detail-549ec0c254062afa",
+            "bytes": 41139,
+            "key": "inputs/table/sha256/193ec4d8a714a9d2ad4293e1d45e853a0be09101d5eef3fdf69b346b4962a2ae",
+            "sha256": "193ec4d8a714a9d2ad4293e1d45e853a0be09101d5eef3fdf69b346b4962a2ae"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "initial-detail-549ec0c254062afa"
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "initial-detail-89fabc7b847286e7",
+      "conversion_id": "initial-detail-89fabc7b847286e7",
+      "input_fingerprint": "4939d5fcdee34886c3be1094099406f2a677a188a81565be04a2c2af3a22d2a4",
+      "object": {
+        "key": "fiscal/ingestion/132195/2026/initial/expenditure/initial-detail-89fabc7b847286e7.parquet",
+        "sha256": "0ff697304da0cf5e484985eeb9534c1eca8d9a41917092ada691b98655c5f008",
+        "bytes": 38607
+      },
+      "row_count": 59
+    },
+    {
+      "table_id": "initial-detail-467a65c49dfc0448",
+      "conversion_id": "initial-detail-467a65c49dfc0448",
+      "input_fingerprint": "54e1dd733c55cd442d66c19bd4ee6bd0acbbf4e90b4c45dccb7724c8bf849641",
+      "object": {
+        "key": "fiscal/ingestion/132195/2026/initial/expenditure/initial-detail-467a65c49dfc0448.parquet",
+        "sha256": "29eea2c815f238b0f849b934ff7012792e05ee26a700fa1f5a61f70ec60806b4",
+        "bytes": 27156
+      },
+      "row_count": 26
+    },
+    {
+      "table_id": "initial-detail-549ec0c254062afa",
+      "conversion_id": "initial-detail-549ec0c254062afa",
+      "input_fingerprint": "d5f5a8011447c942fb299f5ed6870df68b0bbebfe16f84f00995f3ef266c6725",
+      "object": {
+        "key": "fiscal/ingestion/132195/2026/initial/expenditure/initial-detail-549ec0c254062afa.parquet",
+        "sha256": "193ec4d8a714a9d2ad4293e1d45e853a0be09101d5eef3fdf69b346b4962a2ae",
+        "bytes": 41139
+      },
+      "row_count": 81
+    }
+  ]
+}

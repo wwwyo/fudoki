@@ -41,7 +41,7 @@ import yaml
 
 from ingestion.paths import PACKAGES, RAW, INPUT_LOCK
 from ingestion.inputs import describe_inputs
-from ingestion.fiscal.sources import all_sources, load_project_names, load_revenue_accounts
+from ingestion.fiscal.management.sources import all_sources, load_project_names, load_revenue_accounts
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 # 変換の宣言。**金額の段階と単位はここが正本**（dbt のモデルが同じ宣言から組まれる）。

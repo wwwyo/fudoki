@@ -1,26 +1,17 @@
-"""原典を再取得し、保管と照合に成功した入力だけを固定する。"""
-import os
-import subprocess
-import sys
-import uuid
-from ingestion.paths import CACHE, PIPELINE
-from ingestion.inputs import migrate
+"""Restore the originals selected upstream; conversion never selects another URL."""
+import argparse
+import json
+from pathlib import Path
+from ingestion.fiscal.run import originals
 
 
 def main() -> None:
-    raw = CACHE / 'acquisition' / str(uuid.uuid4()) / 'raw'
-    environment = {**os.environ, 'FUDOKI_INPUT_DIR': str(raw), 'FUDOKI_STORE_ORIGIN_REMOTE': '1', 'FUDOKI_REFRESH_ORIGINS': '1'}
-    for module in ['fetch', 'extract_projects', 'extract_revenue_accounts', 'extract_statement', 'extract_budget_history']:
-        subprocess.run([sys.executable, '-m', f'ingestion.fiscal.{module}'], cwd=PIPELINE, env=environment, check=True)
-    subprocess.run([sys.executable, '-m', 'ingestion.fiscal.tama_budget_detail', '--acquire-registered'],
-                   cwd=PIPELINE, env=environment, check=True)
-    subprocess.run([sys.executable, '-m', 'ingestion.fiscal.chiyoda_budget_changes', '--acquire-registered'],
-                   cwd=PIPELINE, env=environment, check=True)
-    subprocess.run([sys.executable, '-m', 'ingestion.fiscal.tama_supplementary_registry', '--acquire-registered'],
-                   cwd=PIPELINE, env=environment, check=True)
-    subprocess.run([sys.executable, '-m', 'ingestion.fiscal.mitaka_supplementary_registry', '--acquire-registered'],
-                   cwd=PIPELINE, env=environment, check=True)
-    migrate(raw, remote=True)
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--manifest', type=Path, required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--remote', action='store_true')
+    args = parser.parse_args()
+    print(json.dumps(originals(args.manifest, args.output, remote=args.remote)))
 
 
 if __name__ == '__main__':

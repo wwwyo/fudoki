@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132195",
+    "fiscal_year": 2021,
+    "document_kind": "supplementary",
+    "amendment_number": 2
+  },
+  "direction": "expenditure",
+  "conversions": [
+    {
+      "id": "native-council-approved-detail-af8b095b5adc0659",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "93de78d2f7c6c047ee802f785945c06acba8ef8b692e97755d35ce554d494558"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "native-council-approved-detail-af8b095b5adc0659",
+            "bytes": 25886,
+            "key": "inputs/table/sha256/ccc727f357e56728dfabb3b3079af7342cd9c6aedf91ae81a1ffb6e390dca125",
+            "sha256": "ccc727f357e56728dfabb3b3079af7342cd9c6aedf91ae81a1ffb6e390dca125"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "native-council-approved-detail-af8b095b5adc0659"
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "native-council-approved-detail-af8b095b5adc0659",
+      "conversion_id": "native-council-approved-detail-af8b095b5adc0659",
+      "input_fingerprint": "7cf48fd99eec212363938de3f2791c56dfb0573c31eb9d8a60abc753c945af81",
+      "object": {
+        "key": "fiscal/ingestion/132195/2021/supplementary-2/expenditure/native-council-approved-detail-af8b095b5adc0659.parquet",
+        "sha256": "ccc727f357e56728dfabb3b3079af7342cd9c6aedf91ae81a1ffb6e390dca125",
+        "bytes": 25886
+      },
+      "row_count": 3
+    }
+  ]
+}

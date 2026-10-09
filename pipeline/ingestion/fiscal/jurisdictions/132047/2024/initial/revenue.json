@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132047",
+    "fiscal_year": 2024,
+    "document_kind": "initial"
+  },
+  "direction": "revenue",
+  "conversions": [
+    {
+      "id": "csv-9ae9636703f90430",
+      "converter": "fiscal/layouts/csv/convert.py",
+      "inputs": [
+        {
+          "sha256": "9ae9636703f90430eff0bcfc50e2812fe07a1fe180b7d9d993230d5a4f717910"
+        }
+      ],
+      "options": {
+        "encoding": "cp932",
+        "table_id": "csv-9ae9636703f90430"
+      },
+      "expected_tables": [
+        {
+          "table_id": "csv-9ae9636703f90430"
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "csv-9ae9636703f90430",
+      "conversion_id": "csv-9ae9636703f90430",
+      "input_fingerprint": "dd7c91662bbf3e3fad96f2115825d153c75d1b79ac4be9eadda0be995458c8e8",
+      "object": {
+        "key": "fiscal/ingestion/132047/2024/initial/revenue/csv-9ae9636703f90430.parquet",
+        "sha256": "4ccdc6253f16175df19e473cc53eaa3d00d96ee61eeb26cc1e1b5460d4dcc075",
+        "bytes": 30634
+      },
+      "row_count": 821
+    }
+  ]
+}

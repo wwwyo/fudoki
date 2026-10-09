@@ -1,0 +1,293 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "131016",
+    "fiscal_year": 2026,
+    "document_kind": "initial"
+  },
+  "direction": "expenditure",
+  "conversions": [
+    {
+      "id": "raw-2ae43f999552d835",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "raw-2ae43f999552d835",
+            "bytes": 21717,
+            "key": "inputs/table/sha256/4c004d4cbd21ef9bb9e02ccfd5a951788a9c9d73684d90f10e85ed297f1980a5",
+            "sha256": "4c004d4cbd21ef9bb9e02ccfd5a951788a9c9d73684d90f10e85ed297f1980a5"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "raw-2ae43f999552d835"
+        }
+      ]
+    },
+    {
+      "id": "raw-c095865441951563",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "raw-c095865441951563",
+            "bytes": 7121,
+            "key": "inputs/table/sha256/9a3fa0a54c7472d08deeb46e4eef5a0f755e9bb55921016b86359b8204eac234",
+            "sha256": "9a3fa0a54c7472d08deeb46e4eef5a0f755e9bb55921016b86359b8204eac234"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "raw-c095865441951563"
+        }
+      ]
+    },
+    {
+      "id": "raw-e3938769d17e1933",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "raw-e3938769d17e1933",
+            "bytes": 4374,
+            "key": "inputs/table/sha256/e34b45a2d65240da79ede8c94074a393afc9805ccba3402a71902fcb26c0fad5",
+            "sha256": "e34b45a2d65240da79ede8c94074a393afc9805ccba3402a71902fcb26c0fad5"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "raw-e3938769d17e1933"
+        }
+      ]
+    },
+    {
+      "id": "raw-a7584fa57e52a19d",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "raw-a7584fa57e52a19d",
+            "bytes": 5886,
+            "key": "inputs/table/sha256/ef657ac4f8621d7d62f3f6eed35c3435a4edf9b24d2d939d737bc0b80ec3ef34",
+            "sha256": "ef657ac4f8621d7d62f3f6eed35c3435a4edf9b24d2d939d737bc0b80ec3ef34"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "raw-a7584fa57e52a19d"
+        }
+      ]
+    },
+    {
+      "id": "statement-moku-setsu-9f563c2a5cc6247a",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "statement-moku-setsu-9f563c2a5cc6247a",
+            "bytes": 6469,
+            "key": "inputs/table/sha256/2633cfd19686059ecf7222a3036585edb1e453a0323c7ffc594ba784cccb6d92",
+            "sha256": "2633cfd19686059ecf7222a3036585edb1e453a0323c7ffc594ba784cccb6d92"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "statement-moku-setsu-9f563c2a5cc6247a"
+        }
+      ]
+    },
+    {
+      "id": "statement-moku-setsu-d1639a735856ae62",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "statement-moku-setsu-d1639a735856ae62",
+            "bytes": 4520,
+            "key": "inputs/table/sha256/0d6d2af331b0afb0801103e8c59e751933f12989d72a4e850e0a946bba737e91",
+            "sha256": "0d6d2af331b0afb0801103e8c59e751933f12989d72a4e850e0a946bba737e91"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "statement-moku-setsu-d1639a735856ae62"
+        }
+      ]
+    },
+    {
+      "id": "statement-moku-setsu-13fed814274b13db",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "statement-moku-setsu-13fed814274b13db",
+            "bytes": 11885,
+            "key": "inputs/table/sha256/e75ff4623415ee62ba0d23d06da6c30b3fa743245c9fb526398071a5a5d3ba60",
+            "sha256": "e75ff4623415ee62ba0d23d06da6c30b3fa743245c9fb526398071a5a5d3ba60"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "statement-moku-setsu-13fed814274b13db"
+        }
+      ]
+    },
+    {
+      "id": "statement-moku-setsu-4c33a13276569c8e",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "statement-moku-setsu-4c33a13276569c8e",
+            "bytes": 5604,
+            "key": "inputs/table/sha256/c96866d583796bfc353df1b3fef0282fb3d4f84ce9e1a1fa0eeee071700d8c38",
+            "sha256": "c96866d583796bfc353df1b3fef0282fb3d4f84ce9e1a1fa0eeee071700d8c38"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "statement-moku-setsu-4c33a13276569c8e"
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "raw-2ae43f999552d835",
+      "conversion_id": "raw-2ae43f999552d835",
+      "input_fingerprint": "72b1a34f9fcab2749c217ba6a2012e457dd93269ca236b474b572385e70fd5eb",
+      "object": {
+        "key": "fiscal/ingestion/131016/2026/initial/expenditure/raw-2ae43f999552d835.parquet",
+        "sha256": "4c004d4cbd21ef9bb9e02ccfd5a951788a9c9d73684d90f10e85ed297f1980a5",
+        "bytes": 21717
+      },
+      "row_count": 810
+    },
+    {
+      "table_id": "raw-c095865441951563",
+      "conversion_id": "raw-c095865441951563",
+      "input_fingerprint": "22e6786f87a0996fad5e8a07d7b2705dd80c344035bd6531cb35f18e963ab863",
+      "object": {
+        "key": "fiscal/ingestion/131016/2026/initial/expenditure/raw-c095865441951563.parquet",
+        "sha256": "9a3fa0a54c7472d08deeb46e4eef5a0f755e9bb55921016b86359b8204eac234",
+        "bytes": 7121
+      },
+      "row_count": 69
+    },
+    {
+      "table_id": "raw-e3938769d17e1933",
+      "conversion_id": "raw-e3938769d17e1933",
+      "input_fingerprint": "dd599f2004e38b493d4322080c6492b679a5c9a0845f440732eacff3f034e004",
+      "object": {
+        "key": "fiscal/ingestion/131016/2026/initial/expenditure/raw-e3938769d17e1933.parquet",
+        "sha256": "e34b45a2d65240da79ede8c94074a393afc9805ccba3402a71902fcb26c0fad5",
+        "bytes": 4374
+      },
+      "row_count": 11
+    },
+    {
+      "table_id": "raw-a7584fa57e52a19d",
+      "conversion_id": "raw-a7584fa57e52a19d",
+      "input_fingerprint": "0af149b5ee914ad5a7dbade2a2aa8fba7059096b19733cc470bfd2807c38502e",
+      "object": {
+        "key": "fiscal/ingestion/131016/2026/initial/expenditure/raw-a7584fa57e52a19d.parquet",
+        "sha256": "ef657ac4f8621d7d62f3f6eed35c3435a4edf9b24d2d939d737bc0b80ec3ef34",
+        "bytes": 5886
+      },
+      "row_count": 33
+    },
+    {
+      "table_id": "statement-moku-setsu-9f563c2a5cc6247a",
+      "conversion_id": "statement-moku-setsu-9f563c2a5cc6247a",
+      "input_fingerprint": "b1b0fec5069acc247c8ce9ce275844819b638718964f53b8f1c5a1f957c3af27",
+      "object": {
+        "key": "fiscal/ingestion/131016/2026/initial/expenditure/statement-moku-setsu-9f563c2a5cc6247a.parquet",
+        "sha256": "2633cfd19686059ecf7222a3036585edb1e453a0323c7ffc594ba784cccb6d92",
+        "bytes": 6469
+      },
+      "row_count": 66
+    },
+    {
+      "table_id": "statement-moku-setsu-d1639a735856ae62",
+      "conversion_id": "statement-moku-setsu-d1639a735856ae62",
+      "input_fingerprint": "41add53386fe568f0fa36c4361574e6885ed626d56e147f62c97d323fa04f23e",
+      "object": {
+        "key": "fiscal/ingestion/131016/2026/initial/expenditure/statement-moku-setsu-d1639a735856ae62.parquet",
+        "sha256": "0d6d2af331b0afb0801103e8c59e751933f12989d72a4e850e0a946bba737e91",
+        "bytes": 4520
+      },
+      "row_count": 17
+    },
+    {
+      "table_id": "statement-moku-setsu-13fed814274b13db",
+      "conversion_id": "statement-moku-setsu-13fed814274b13db",
+      "input_fingerprint": "d753abd1e165dedaeba7d1e292ee08b27934832d0682542f0556630a2e3c7ec6",
+      "object": {
+        "key": "fiscal/ingestion/131016/2026/initial/expenditure/statement-moku-setsu-13fed814274b13db.parquet",
+        "sha256": "e75ff4623415ee62ba0d23d06da6c30b3fa743245c9fb526398071a5a5d3ba60",
+        "bytes": 11885
+      },
+      "row_count": 550
+    },
+    {
+      "table_id": "statement-moku-setsu-4c33a13276569c8e",
+      "conversion_id": "statement-moku-setsu-4c33a13276569c8e",
+      "input_fingerprint": "1cbb4506f9abfa1df6f49005ab015c7b60d034757ca76081aee64d6ee60dd9da",
+      "object": {
+        "key": "fiscal/ingestion/131016/2026/initial/expenditure/statement-moku-setsu-4c33a13276569c8e.parquet",
+        "sha256": "c96866d583796bfc353df1b3fef0282fb3d4f84ce9e1a1fa0eeee071700d8c38",
+        "bytes": 5604
+      },
+      "row_count": 47
+    }
+  ]
+}

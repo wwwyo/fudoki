@@ -34,7 +34,7 @@ const stepDetails = {
     icon: FileText,
     description:
       '自治体が公開した予算・決算の CSV や PDF を対象にします。取得元と収録する年度を宣言し、その資料から読み取れる範囲を取り込みます。',
-    path: 'pipeline/ingestion/fiscal/sources.json',
+    path: 'pipeline/ingestion/fiscal/management/sources.json',
   },
   ingestion: {
     summary: '資料から表を取り出す',
@@ -317,8 +317,8 @@ const repositoryGuide = [
   {
     purpose: '取得する資料と、自治体ごとの違いを知る',
     paths: [
-      'pipeline/ingestion/fiscal/sources.json',
-      'pipeline/ingestion/fiscal/jurisdictions/',
+      'pipeline/ingestion/fiscal/management/sources.json',
+      'pipeline/ingestion/fiscal/jurisdictions/131016/',
     ],
     description: '取得元・年度・PDF の組版の宣言と、原典の癖や実測の記録。',
   },

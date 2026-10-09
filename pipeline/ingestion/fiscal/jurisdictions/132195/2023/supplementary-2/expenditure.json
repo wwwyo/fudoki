@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132195",
+    "fiscal_year": 2023,
+    "document_kind": "supplementary",
+    "amendment_number": 2
+  },
+  "direction": "expenditure",
+  "conversions": [
+    {
+      "id": "raw-1e746ca9695f50fa",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "9ebd2323ac32d09336c600108d4f1beb5a06e11034835fe49da07c0e4a356220"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "raw-1e746ca9695f50fa",
+            "bytes": 3565,
+            "key": "inputs/table/sha256/3bd78affb18897770f1946f814ce9c06a2f5a1c64e2d95fa817460d8b55ba18c",
+            "sha256": "3bd78affb18897770f1946f814ce9c06a2f5a1c64e2d95fa817460d8b55ba18c"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "raw-1e746ca9695f50fa"
+        }
+      ]
+    },
+    {
+      "id": "supplementary-detail-faa4d2cb8197a7c8",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "9ebd2323ac32d09336c600108d4f1beb5a06e11034835fe49da07c0e4a356220"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "supplementary-detail-faa4d2cb8197a7c8",
+            "bytes": 20799,
+            "key": "inputs/table/sha256/9487f048bb46df43e4d1eb85691ff666b5c3b4d022326e7c96a78639ecc72f44",
+            "sha256": "9487f048bb46df43e4d1eb85691ff666b5c3b4d022326e7c96a78639ecc72f44"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "supplementary-detail-faa4d2cb8197a7c8"
+        }
+      ]
+    },
+    {
+      "id": "supplementary-detail-faa4d2cb8197a7c8-0114bfb23504a27b",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "fd06106317559ea9f26e8aa92990d0574de099975249a8fdeba43da191566df0"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "supplementary-detail-faa4d2cb8197a7c8-0114bfb23504a27b",
+            "bytes": 13647,
+            "key": "inputs/table/sha256/d2947621136584c5cc26c46e4ecb0072ec2a05069ee0a40b83ead7bea48fa143",
+            "sha256": "d2947621136584c5cc26c46e4ecb0072ec2a05069ee0a40b83ead7bea48fa143"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "supplementary-detail-faa4d2cb8197a7c8-0114bfb23504a27b"
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "raw-1e746ca9695f50fa",
+      "conversion_id": "raw-1e746ca9695f50fa",
+      "input_fingerprint": "ab0ddb526ec70c2a2341648c2dee8c9ee50bda0b2d08bc7549ef4c2ceb197e18",
+      "object": {
+        "key": "fiscal/ingestion/132195/2023/supplementary-2/expenditure/raw-1e746ca9695f50fa.parquet",
+        "sha256": "3bd78affb18897770f1946f814ce9c06a2f5a1c64e2d95fa817460d8b55ba18c",
+        "bytes": 3565
+      },
+      "row_count": 9
+    },
+    {
+      "table_id": "supplementary-detail-faa4d2cb8197a7c8",
+      "conversion_id": "supplementary-detail-faa4d2cb8197a7c8",
+      "input_fingerprint": "6f7570cfdff568ca7780b1b2fb5d029200c19d57970a462fdbd5d6073dc6ea0a",
+      "object": {
+        "key": "fiscal/ingestion/132195/2023/supplementary-2/expenditure/supplementary-detail-faa4d2cb8197a7c8.parquet",
+        "sha256": "9487f048bb46df43e4d1eb85691ff666b5c3b4d022326e7c96a78639ecc72f44",
+        "bytes": 20799
+      },
+      "row_count": 25
+    },
+    {
+      "table_id": "supplementary-detail-faa4d2cb8197a7c8-0114bfb23504a27b",
+      "conversion_id": "supplementary-detail-faa4d2cb8197a7c8-0114bfb23504a27b",
+      "input_fingerprint": "001074baffd2261cc2395a26e438ac8310f7bf648d7aaace8b2f833f7c6e49e4",
+      "object": {
+        "key": "fiscal/ingestion/132195/2023/supplementary-2/expenditure/supplementary-detail-faa4d2cb8197a7c8-0114bfb23504a27b.parquet",
+        "sha256": "d2947621136584c5cc26c46e4ecb0072ec2a05069ee0a40b83ead7bea48fa143",
+        "bytes": 13647
+      },
+      "row_count": 1
+    }
+  ]
+}

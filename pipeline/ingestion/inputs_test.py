@@ -46,25 +46,24 @@ class FixedInputs(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'execution results'):
                 inputs.read_lock(self.lock)
 
-    def test_pinning_uploads_only_originals_and_tables_without_sidecars(self):
+    def test_legacy_adoption_is_local_only_and_never_uploads(self):
         raw = inputs.restore(self.lock)
         (raw / self.entry['path'] / 'inputs.lock.json').write_bytes(self.lock.read_bytes())
         canonical = self.root / 'ingestion/fiscal/sources.lock.json'
         with patch.object(inputs, 'LOCK', canonical), patch.object(inputs, 'remote_object') as remote:
-            result = inputs.migrate(raw, remote=True)
-        self.assertEqual(result, canonical)
-        self.assertCountEqual([(args[0]['key'], args[1]) for args, _ in remote.call_args_list],
-                              [(ref['key'], operation) for ref in [self.entry['table'], self.entry['origin']['object']] for operation in ['put', 'get']])
-        restored = inputs.restore(canonical)
+            result = inputs.migrate(raw)
+        remote.assert_not_called()
+        self.assertFalse(canonical.exists())
+        restored = inputs.restore(result)
         self.assertEqual(list(restored.rglob('provenance.json')), [])
-        self.assertEqual(inputs.read_lock(canonical)['entries'][0]['source'], self.entry['source'])
+        self.assertEqual(inputs.read_lock(result)['entries'][0]['source'], self.entry['source'])
 
     def test_failed_remote_transfer_does_not_replace_git_snapshot(self):
         raw = inputs.restore(self.lock)
         (raw / self.entry['path'] / 'inputs.lock.json').write_bytes(self.lock.read_bytes())
         before = self.lock.read_bytes()
-        with patch.object(inputs, 'LOCK', self.lock), patch.object(inputs, 'remote_object', side_effect=RuntimeError('transfer failed')), patch('ingestion.fiscal.sources.all_sources', return_value={}):
-            with self.assertRaisesRegex(RuntimeError, 'transfer failed'):
+        with patch.object(inputs, 'LOCK', self.lock), patch.object(inputs, 'remote_object', side_effect=RuntimeError('transfer failed')), patch('ingestion.fiscal.management.sources.all_sources', return_value={}):
+            with self.assertRaisesRegex(ValueError, 'Legacy remote adoption is retired'):
                 inputs.migrate(raw, remote=True)
         self.assertEqual(self.lock.read_bytes(), before)
         inputs.restore(self.lock)

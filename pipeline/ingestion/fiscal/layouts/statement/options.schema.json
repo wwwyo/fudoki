@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "source_key": {"type": "string", "pattern": "^[0-9]{6}:[0-9]{4}(?::[^\\s]+)?$"},
+    "table_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,95}$"}
+  },
+  "required": ["source_key", "table_id"]
+}

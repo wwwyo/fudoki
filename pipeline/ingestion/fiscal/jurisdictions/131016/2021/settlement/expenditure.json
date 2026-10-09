@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "131016",
+    "fiscal_year": 2021,
+    "document_kind": "settlement"
+  },
+  "direction": "expenditure",
+  "conversions": [
+    {
+      "id": "chiyoda2021-settlement-native-e3392527aaa3d0a0",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "8477b068a4d5a998da2614391a1e932fa7d1d5d1693cbcfed3723cb7e6f9dc6e"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "chiyoda2021-settlement-native-e3392527aaa3d0a0",
+            "bytes": 20069,
+            "key": "inputs/table/sha256/4fe15dd670278ae089d2ebd12a3a9140c219622bfdfa5c2d3ec7fbd735a3d103",
+            "sha256": "4fe15dd670278ae089d2ebd12a3a9140c219622bfdfa5c2d3ec7fbd735a3d103"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "chiyoda2021-settlement-native-e3392527aaa3d0a0"
+        }
+      ]
+    },
+    {
+      "id": "chiyoda2021-settlement-native-973dedab1d542961",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "8477b068a4d5a998da2614391a1e932fa7d1d5d1693cbcfed3723cb7e6f9dc6e"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "chiyoda2021-settlement-native-973dedab1d542961",
+            "bytes": 34236,
+            "key": "inputs/table/sha256/b3646dda9b4d04c66502419424a5c400ad63b382c5c89aa6d73622be279e934f",
+            "sha256": "b3646dda9b4d04c66502419424a5c400ad63b382c5c89aa6d73622be279e934f"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "chiyoda2021-settlement-native-973dedab1d542961"
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "chiyoda2021-settlement-native-e3392527aaa3d0a0",
+      "conversion_id": "chiyoda2021-settlement-native-e3392527aaa3d0a0",
+      "input_fingerprint": "29a974ca679195b7442820c083a68424a885461d3c527338768a82fe50511035",
+      "object": {
+        "key": "fiscal/ingestion/131016/2021/settlement/expenditure/chiyoda2021-settlement-native-e3392527aaa3d0a0.parquet",
+        "sha256": "4fe15dd670278ae089d2ebd12a3a9140c219622bfdfa5c2d3ec7fbd735a3d103",
+        "bytes": 20069
+      },
+      "row_count": 127
+    },
+    {
+      "table_id": "chiyoda2021-settlement-native-973dedab1d542961",
+      "conversion_id": "chiyoda2021-settlement-native-973dedab1d542961",
+      "input_fingerprint": "5310084f63a07da59c5c9fe6acf7e24d97f5d99d9c835ba192bd0fdb45550427",
+      "object": {
+        "key": "fiscal/ingestion/131016/2021/settlement/expenditure/chiyoda2021-settlement-native-973dedab1d542961.parquet",
+        "sha256": "b3646dda9b4d04c66502419424a5c400ad63b382c5c89aa6d73622be279e934f",
+        "bytes": 34236
+      },
+      "row_count": 562
+    }
+  ]
+}

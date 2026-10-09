@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132195",
+    "fiscal_year": 2024,
+    "document_kind": "supplementary",
+    "amendment_number": 4
+  },
+  "direction": "expenditure",
+  "conversions": [
+    {
+      "id": "council-approved-detail-6051c730b019f4b2",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "bf11f93d2618d53a3c6e4d118a04ee094ab9c8c5a0434892019dec3e09e8b3fe"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "council-approved-detail-6051c730b019f4b2",
+            "bytes": 23532,
+            "key": "inputs/table/sha256/fe6153f92813cf8036d8bbb53ccf4d4ebaa783994d38f52d9db6d6799c15ef31",
+            "sha256": "fe6153f92813cf8036d8bbb53ccf4d4ebaa783994d38f52d9db6d6799c15ef31"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "council-approved-detail-6051c730b019f4b2"
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "council-approved-detail-6051c730b019f4b2",
+      "conversion_id": "council-approved-detail-6051c730b019f4b2",
+      "input_fingerprint": "9e2599bb1b1f561ae77718acfe08f3b9da2b0457e80ff787b51abef29ac9eadb",
+      "object": {
+        "key": "fiscal/ingestion/132195/2024/supplementary-4/expenditure/council-approved-detail-6051c730b019f4b2.parquet",
+        "sha256": "fe6153f92813cf8036d8bbb53ccf4d4ebaa783994d38f52d9db6d6799c15ef31",
+        "bytes": 23532
+      },
+      "row_count": 9
+    }
+  ]
+}

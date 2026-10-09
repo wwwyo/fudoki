@@ -1,0 +1,315 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fudoki.local/schemas/ingestion-manifest-v1.json",
+  "title": "Fiscal ingestion conversion plan and saved tables",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "target": {
+      "$ref": "#/$defs/target"
+    },
+    "direction": {
+      "enum": [
+        "expenditure",
+        "revenue"
+      ]
+    },
+    "conversions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/conversion"
+      },
+      "minItems": 1
+    },
+    "tables": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/table"
+      },
+      "minItems": 0
+    }
+  },
+  "required": [
+    "schema_version",
+    "target",
+    "direction",
+    "conversions",
+    "tables"
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,95}$"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^(?:lib|fiscal)/(?!.*(?:\\.\\.|//|[\\\\%?#]))[a-zA-Z0-9_./-]+$"
+    },
+    "target": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "jurisdiction": {
+              "type": "string",
+              "pattern": "^[0-9]{6}$"
+            },
+            "fiscal_year": {
+              "type": "integer",
+              "minimum": 1900,
+              "maximum": 2100
+            },
+            "document_kind": {
+              "const": "initial"
+            }
+          },
+          "required": [
+            "jurisdiction",
+            "fiscal_year",
+            "document_kind"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "jurisdiction": {
+              "type": "string",
+              "pattern": "^[0-9]{6}$"
+            },
+            "fiscal_year": {
+              "type": "integer",
+              "minimum": 1900,
+              "maximum": 2100
+            },
+            "document_kind": {
+              "const": "supplementary"
+            },
+            "amendment_number": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "jurisdiction",
+            "fiscal_year",
+            "document_kind",
+            "amendment_number"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "jurisdiction": {
+              "type": "string",
+              "pattern": "^[0-9]{6}$"
+            },
+            "fiscal_year": {
+              "type": "integer",
+              "minimum": 1900,
+              "maximum": 2100
+            },
+            "document_kind": {
+              "const": "settlement"
+            }
+          },
+          "required": [
+            "jurisdiction",
+            "fiscal_year",
+            "document_kind"
+          ]
+        }
+      ]
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "required": [
+        "sha256"
+      ]
+    },
+    "expected_table": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "table_id": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "required": [
+        "table_id"
+      ]
+    },
+    "conversion": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "converter": {
+          "$ref": "#/$defs/path"
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/input"
+          },
+          "minItems": 1
+        },
+        "options": {
+          "type": "object"
+        },
+        "expected_tables": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/expected_table"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "id",
+        "converter",
+        "inputs",
+        "options",
+        "expected_tables"
+      ]
+    },
+    "column_names": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "supplement_scope": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "kind": { "const": "table" } },
+          "required": ["kind"]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": { "const": "columns" },
+            "columns": { "$ref": "#/$defs/column_names" }
+          },
+          "required": ["kind", "columns"]
+        }
+      ]
+    },
+    "supplement": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "text": { "type": "string", "minLength": 1 },
+        "scope": { "$ref": "#/$defs/supplement_scope" }
+      },
+      "required": ["text", "scope"]
+    },
+    "column_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "columns": { "$ref": "#/$defs/column_names" },
+        "header_path": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "grain_columns": { "$ref": "#/$defs/column_names" },
+        "semantic_role": {
+          "description": "Confirmed role within this source layout, distinct from canonical classification. project denotes a business or expense grouping; setsu denotes fiscal expenditure section.",
+          "enum": ["project", "setsu"]
+        }
+      },
+      "required": ["columns", "header_path", "grain_columns"]
+    },
+    "table_metadata": {
+      "description": "Confirmed original units, notes, column ownership and source-layout roles; no canonical mappings or aggregation rules.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "units": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/supplement" }
+        },
+        "notes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/supplement" }
+        },
+        "column_contexts": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/column_context" }
+        }
+      }
+    },
+    "table": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "table_id": {
+          "$ref": "#/$defs/id"
+        },
+        "conversion_id": {
+          "$ref": "#/$defs/id"
+        },
+        "input_fingerprint": {
+          "$ref": "#/$defs/sha256"
+        },
+        "object": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "type": "string",
+              "pattern": "^fiscal/ingestion/[0-9]{6}/[0-9]{4}/(?:initial|settlement|supplementary-[1-9][0-9]*)/(?:expenditure|revenue)/[a-z0-9][a-z0-9_-]{0,95}\\.parquet$"
+            },
+            "sha256": {
+              "$ref": "#/$defs/sha256"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "key",
+            "sha256",
+            "bytes"
+          ]
+        },
+        "row_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "metadata": {
+          "$ref": "#/$defs/table_metadata"
+        }
+      },
+      "required": [
+        "table_id",
+        "conversion_id",
+        "input_fingerprint",
+        "object",
+        "row_count"
+      ]
+    }
+  }
+}

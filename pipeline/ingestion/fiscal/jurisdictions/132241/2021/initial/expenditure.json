@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132241",
+    "fiscal_year": 2021,
+    "document_kind": "initial"
+  },
+  "direction": "expenditure",
+  "conversions": [
+    {
+      "id": "raw-4fcc766d1754b23a",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "84cecb682efb1b4aabf9e6235a512f10481181faee9934414204b90224c21757"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "raw-4fcc766d1754b23a",
+            "bytes": 12521,
+            "key": "inputs/table/sha256/edf908d5b9d5b32b265bf31af7c74caae6764e91afaead51c7a5a1af806d1cf5",
+            "sha256": "edf908d5b9d5b32b265bf31af7c74caae6764e91afaead51c7a5a1af806d1cf5"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "raw-4fcc766d1754b23a"
+        }
+      ]
+    },
+    {
+      "id": "raw-962f0d0cd7735a4a",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "d1f90d5c0dcc607ddd4582b14b9c96681e5089dfee2664bca05a95ba075d1cf0"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "raw-962f0d0cd7735a4a",
+            "bytes": 22059,
+            "key": "inputs/table/sha256/06677d27cb40183abfee5ba221384dc38991bf95d63e5405e8ad4d2c3375656f",
+            "sha256": "06677d27cb40183abfee5ba221384dc38991bf95d63e5405e8ad4d2c3375656f"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "raw-962f0d0cd7735a4a"
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "raw-4fcc766d1754b23a",
+      "conversion_id": "raw-4fcc766d1754b23a",
+      "input_fingerprint": "c4dbccd54b5d3ba2f98047b20ad3f2f66b43d3142794f51ca60992e98ed4b61f",
+      "object": {
+        "key": "fiscal/ingestion/132241/2021/initial/expenditure/raw-4fcc766d1754b23a.parquet",
+        "sha256": "edf908d5b9d5b32b265bf31af7c74caae6764e91afaead51c7a5a1af806d1cf5",
+        "bytes": 12521
+      },
+      "row_count": 190
+    },
+    {
+      "table_id": "raw-962f0d0cd7735a4a",
+      "conversion_id": "raw-962f0d0cd7735a4a",
+      "input_fingerprint": "43064c44641c65dd3e5b5746e82ea4baff1882522f7200241379bafdbe1d7f3a",
+      "object": {
+        "key": "fiscal/ingestion/132241/2021/initial/expenditure/raw-962f0d0cd7735a4a.parquet",
+        "sha256": "06677d27cb40183abfee5ba221384dc38991bf95d63e5405e8ad4d2c3375656f",
+        "bytes": 22059
+      },
+      "row_count": 1580
+    }
+  ]
+}

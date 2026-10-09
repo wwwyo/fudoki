@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132241",
+    "fiscal_year": 2024,
+    "document_kind": "initial"
+  },
+  "direction": "expenditure",
+  "conversions": [
+    {
+      "id": "raw-962f0d0cd7735a4a",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "085be12b1a0682d1d45bad5b97bc5390e8318f0933029b6bccd04beccccd458a"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "raw-962f0d0cd7735a4a",
+            "bytes": 22419,
+            "key": "inputs/table/sha256/cb564cf609a6f5c9a02c28c16737a126ce80559f0975d0fe766304dd6c429770",
+            "sha256": "cb564cf609a6f5c9a02c28c16737a126ce80559f0975d0fe766304dd6c429770"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "raw-962f0d0cd7735a4a"
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "raw-962f0d0cd7735a4a",
+      "conversion_id": "raw-962f0d0cd7735a4a",
+      "input_fingerprint": "14c745358c3d1891b294b865f8b49f663a306e64fd253420d16b8c284514c1df",
+      "object": {
+        "key": "fiscal/ingestion/132241/2024/initial/expenditure/raw-962f0d0cd7735a4a.parquet",
+        "sha256": "cb564cf609a6f5c9a02c28c16737a126ce80559f0975d0fe766304dd6c429770",
+        "bytes": 22419
+      },
+      "row_count": 1579
+    }
+  ]
+}

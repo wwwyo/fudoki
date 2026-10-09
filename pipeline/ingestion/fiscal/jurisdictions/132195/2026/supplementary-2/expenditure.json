@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132195",
+    "fiscal_year": 2026,
+    "document_kind": "supplementary",
+    "amendment_number": 2
+  },
+  "direction": "expenditure",
+  "conversions": [
+    {
+      "id": "supplementary-detail-faa4d2cb8197a7c8",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "4d2503d3083758a5d1971b80e11ef7f2460cd1fac5dbb8bceac53eafdc253703"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "supplementary-detail-faa4d2cb8197a7c8",
+            "bytes": 17402,
+            "key": "inputs/table/sha256/23306b8c05f3476aa513da3d30dd0ec81d8e0f17e523eadbb68287c801670d98",
+            "sha256": "23306b8c05f3476aa513da3d30dd0ec81d8e0f17e523eadbb68287c801670d98"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "supplementary-detail-faa4d2cb8197a7c8"
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "supplementary-detail-faa4d2cb8197a7c8",
+      "conversion_id": "supplementary-detail-faa4d2cb8197a7c8",
+      "input_fingerprint": "04b784e22ab14dabef433780c954c0c4e808325ba33ea7a317f6200f840bf351",
+      "object": {
+        "key": "fiscal/ingestion/132195/2026/supplementary-2/expenditure/supplementary-detail-faa4d2cb8197a7c8.parquet",
+        "sha256": "23306b8c05f3476aa513da3d30dd0ec81d8e0f17e523eadbb68287c801670d98",
+        "bytes": 17402
+      },
+      "row_count": 9
+    }
+  ]
+}

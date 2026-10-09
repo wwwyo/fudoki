@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132195",
+    "fiscal_year": 2020,
+    "document_kind": "supplementary",
+    "amendment_number": 1
+  },
+  "direction": "expenditure",
+  "conversions": [
+    {
+      "id": "komae-supplementary-2020-1-d4fea7826a4a4c2e",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "55b99cec58e42222cfdd93d59821ab92d25464f23f2fcead40d0e19a3f17492a"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "komae-supplementary-2020-1-d4fea7826a4a4c2e",
+            "bytes": 13068,
+            "key": "inputs/table/sha256/a3d334e638c43d472ccfa43a47d3ff67aacc21acad51a015846be98c3ba77c68",
+            "sha256": "a3d334e638c43d472ccfa43a47d3ff67aacc21acad51a015846be98c3ba77c68"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "komae-supplementary-2020-1-d4fea7826a4a4c2e"
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "komae-supplementary-2020-1-d4fea7826a4a4c2e",
+      "conversion_id": "komae-supplementary-2020-1-d4fea7826a4a4c2e",
+      "input_fingerprint": "41951a8f4fcdc18ebc83184b22db5f552c3df55fb9b90f7d3c8201db7c656555",
+      "object": {
+        "key": "fiscal/ingestion/132195/2020/supplementary-1/expenditure/komae-supplementary-2020-1-d4fea7826a4a4c2e.parquet",
+        "sha256": "a3d334e638c43d472ccfa43a47d3ff67aacc21acad51a015846be98c3ba77c68",
+        "bytes": 13068
+      },
+      "row_count": 291
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132241",
+    "fiscal_year": 2023,
+    "document_kind": "supplementary",
+    "amendment_number": 8
+  },
+  "direction": "expenditure",
+  "conversions": [
+    {
+      "id": "tama-supplementary-native-da9c6af53001f79c",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "3365fadeca62e98df7aef4de139b5fc24d836851aa7e571120e7c630bc77bdba"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-supplementary-native-da9c6af53001f79c",
+            "bytes": 37364,
+            "key": "inputs/table/sha256/95d712ffa70bd8ea84bd5f84785001c9c22ca18a32b006ee5cae01a8c34fa06d",
+            "sha256": "95d712ffa70bd8ea84bd5f84785001c9c22ca18a32b006ee5cae01a8c34fa06d"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-supplementary-native-da9c6af53001f79c"
+        }
+      ]
+    },
+    {
+      "id": "tama-supplementary-native-5388758445cd0d37",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "3365fadeca62e98df7aef4de139b5fc24d836851aa7e571120e7c630bc77bdba"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "tama-supplementary-native-5388758445cd0d37",
+            "bytes": 18453,
+            "key": "inputs/table/sha256/618b50ebc05f3c975e3b2286f7b9050fd6ebad05fddf1e237a8189788cefaac7",
+            "sha256": "618b50ebc05f3c975e3b2286f7b9050fd6ebad05fddf1e237a8189788cefaac7"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "tama-supplementary-native-5388758445cd0d37"
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "tama-supplementary-native-da9c6af53001f79c",
+      "conversion_id": "tama-supplementary-native-da9c6af53001f79c",
+      "input_fingerprint": "5f772872b64c4a3b974c8d7dde0e719375be6ed9ca2b4a144e5d0619d441a879",
+      "object": {
+        "key": "fiscal/ingestion/132241/2023/supplementary-8/expenditure/tama-supplementary-native-da9c6af53001f79c.parquet",
+        "sha256": "95d712ffa70bd8ea84bd5f84785001c9c22ca18a32b006ee5cae01a8c34fa06d",
+        "bytes": 37364
+      },
+      "row_count": 457
+    },
+    {
+      "table_id": "tama-supplementary-native-5388758445cd0d37",
+      "conversion_id": "tama-supplementary-native-5388758445cd0d37",
+      "input_fingerprint": "5a45eb71f073f38e54925598ba5a408de5ed17571fcb9460fb1d05db298f3271",
+      "object": {
+        "key": "fiscal/ingestion/132241/2023/supplementary-8/expenditure/tama-supplementary-native-5388758445cd0d37.parquet",
+        "sha256": "618b50ebc05f3c975e3b2286f7b9050fd6ebad05fddf1e237a8189788cefaac7",
+        "bytes": 18453
+      },
+      "row_count": 163
+    }
+  ]
+}

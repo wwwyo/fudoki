@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132195",
+    "fiscal_year": 2021,
+    "document_kind": "supplementary",
+    "amendment_number": 11
+  },
+  "direction": "expenditure",
+  "conversions": [
+    {
+      "id": "held5-council-approved-detail-13853b845bb6b462",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "93de78d2f7c6c047ee802f785945c06acba8ef8b692e97755d35ce554d494558"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "held5-council-approved-detail-13853b845bb6b462",
+            "bytes": 51627,
+            "key": "inputs/table/sha256/55b193f30fd201a1cf974b10519a5e95db59c94d06eef0afa9b6fa16fd0515a3",
+            "sha256": "55b193f30fd201a1cf974b10519a5e95db59c94d06eef0afa9b6fa16fd0515a3"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "held5-council-approved-detail-13853b845bb6b462"
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "held5-council-approved-detail-13853b845bb6b462",
+      "conversion_id": "held5-council-approved-detail-13853b845bb6b462",
+      "input_fingerprint": "fd7afbbdc1dcd0e526bb6e34c33495b07ccffb120347120b595394bc81a46b05",
+      "object": {
+        "key": "fiscal/ingestion/132195/2021/supplementary-11/expenditure/held5-council-approved-detail-13853b845bb6b462.parquet",
+        "sha256": "55b193f30fd201a1cf974b10519a5e95db59c94d06eef0afa9b6fa16fd0515a3",
+        "bytes": 51627
+      },
+      "row_count": 39
+    }
+  ]
+}

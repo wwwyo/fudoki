@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132047",
+    "fiscal_year": 2018,
+    "document_kind": "settlement"
+  },
+  "direction": "revenue",
+  "conversions": [
+    {
+      "id": "raw-2ae43f999552d835",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "fbc0b963bba349ec735af87949a77506bd1e5ab45669df84e595f8974b456462"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "raw-2ae43f999552d835",
+            "bytes": 28143,
+            "key": "inputs/table/sha256/d68687dbcc2f676cc428dff1bc874c64abbb256800fdb2ce55fd4b1e1b241a65",
+            "sha256": "d68687dbcc2f676cc428dff1bc874c64abbb256800fdb2ce55fd4b1e1b241a65"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "raw-2ae43f999552d835"
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "raw-2ae43f999552d835",
+      "conversion_id": "raw-2ae43f999552d835",
+      "input_fingerprint": "acd0ae45c3f6356d5aa738d215a366f835b09d4cee3ff62390b8b3fd046bb8ae",
+      "object": {
+        "key": "fiscal/ingestion/132047/2018/settlement/revenue/raw-2ae43f999552d835.parquet",
+        "sha256": "d68687dbcc2f676cc428dff1bc874c64abbb256800fdb2ce55fd4b1e1b241a65",
+        "bytes": 28143
+      },
+      "row_count": 768
+    }
+  ]
+}

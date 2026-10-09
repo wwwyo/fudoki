@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "report_pages": {"type": "array", "items": {"type": "integer", "minimum": 1}, "minItems": 4, "maxItems": 4},
+    "revenue_expense_pages": {"type": "array", "items": {"type": "integer", "minimum": 1}, "minItems": 1},
+    "capital_expense_pages": {"type": "array", "items": {"type": "integer", "minimum": 1}, "minItems": 1},
+    "table_prefix": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,60}$"}
+  },
+  "required": ["report_pages", "revenue_expense_pages", "capital_expense_pages", "table_prefix"]
+}

@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132195",
+    "fiscal_year": 2023,
+    "document_kind": "supplementary",
+    "amendment_number": 3
+  },
+  "direction": "expenditure",
+  "conversions": [
+    {
+      "id": "raw-1e746ca9695f50fa",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "e322f20a1bfc32099a3271dad9fa38d23c7c45d9f0ce1b7cc45eb8f258a6817f"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "raw-1e746ca9695f50fa",
+            "bytes": 4775,
+            "key": "inputs/table/sha256/7daeba5f8d6bbbd89ab81ab7870f2758d0dc05f48bdbef7b0f1e5699e03cfc46",
+            "sha256": "7daeba5f8d6bbbd89ab81ab7870f2758d0dc05f48bdbef7b0f1e5699e03cfc46"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "raw-1e746ca9695f50fa"
+        }
+      ]
+    },
+    {
+      "id": "supplementary-detail-faa4d2cb8197a7c8",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "e322f20a1bfc32099a3271dad9fa38d23c7c45d9f0ce1b7cc45eb8f258a6817f"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "supplementary-detail-faa4d2cb8197a7c8",
+            "bytes": 27319,
+            "key": "inputs/table/sha256/1fcfa5f31c3255269131af9f5afae86f53530a1a1a81005faad4fe2d277b7a2c",
+            "sha256": "1fcfa5f31c3255269131af9f5afae86f53530a1a1a81005faad4fe2d277b7a2c"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "supplementary-detail-faa4d2cb8197a7c8"
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "raw-1e746ca9695f50fa",
+      "conversion_id": "raw-1e746ca9695f50fa",
+      "input_fingerprint": "ce7c3a12b350df825fee2824412cd4228c544f073e60b572b275ab38db192bae",
+      "object": {
+        "key": "fiscal/ingestion/132195/2023/supplementary-3/expenditure/raw-1e746ca9695f50fa.parquet",
+        "sha256": "7daeba5f8d6bbbd89ab81ab7870f2758d0dc05f48bdbef7b0f1e5699e03cfc46",
+        "bytes": 4775
+      },
+      "row_count": 26
+    },
+    {
+      "table_id": "supplementary-detail-faa4d2cb8197a7c8",
+      "conversion_id": "supplementary-detail-faa4d2cb8197a7c8",
+      "input_fingerprint": "26540926afff4674eb2316e777dbfca2c917132f30233835a65e8e39e3d0a9ff",
+      "object": {
+        "key": "fiscal/ingestion/132195/2023/supplementary-3/expenditure/supplementary-detail-faa4d2cb8197a7c8.parquet",
+        "sha256": "1fcfa5f31c3255269131af9f5afae86f53530a1a1a81005faad4fe2d277b7a2c",
+        "bytes": 27319
+      },
+      "row_count": 56
+    }
+  ]
+}

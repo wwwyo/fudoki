@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132047",
+    "fiscal_year": 2022,
+    "document_kind": "supplementary",
+    "amendment_number": 5
+  },
+  "direction": "expenditure",
+  "conversions": [
+    {
+      "id": "mitaka-supplementary-native-5a7562694bcb12be",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "0ed96491ed87ab4dba84668cbe7a113b107b50fa2c325920cbfca208a1076d58"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "mitaka-supplementary-native-5a7562694bcb12be",
+            "bytes": 7197,
+            "key": "inputs/table/sha256/b6cde43957f42681df4965a744ab1144411b55a5d0c2a8b86077a80802a90e1d",
+            "sha256": "b6cde43957f42681df4965a744ab1144411b55a5d0c2a8b86077a80802a90e1d"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "mitaka-supplementary-native-5a7562694bcb12be"
+        }
+      ]
+    },
+    {
+      "id": "mitaka-supplementary-native-eba3fd56f98f363b",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "0ed96491ed87ab4dba84668cbe7a113b107b50fa2c325920cbfca208a1076d58"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "mitaka-supplementary-native-eba3fd56f98f363b",
+            "bytes": 10479,
+            "key": "inputs/table/sha256/0914e9f680a60577559be48f72a89af8f90a8fca5dff08b1edd7a73bde49b9d8",
+            "sha256": "0914e9f680a60577559be48f72a89af8f90a8fca5dff08b1edd7a73bde49b9d8"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "mitaka-supplementary-native-eba3fd56f98f363b"
+        }
+      ]
+    },
+    {
+      "id": "mitaka-supplementary-native-768964375aa97d19",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "0ed96491ed87ab4dba84668cbe7a113b107b50fa2c325920cbfca208a1076d58"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "mitaka-supplementary-native-768964375aa97d19",
+            "bytes": 5371,
+            "key": "inputs/table/sha256/c018ccfee052708e880dd786c9b9f11f3239c955801d370860d984f8830a9034",
+            "sha256": "c018ccfee052708e880dd786c9b9f11f3239c955801d370860d984f8830a9034"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "mitaka-supplementary-native-768964375aa97d19"
+        }
+      ]
+    },
+    {
+      "id": "mitaka-supplementary-native-38eb3d378fda892a",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "0ed96491ed87ab4dba84668cbe7a113b107b50fa2c325920cbfca208a1076d58"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "mitaka-supplementary-native-38eb3d378fda892a",
+            "bytes": 19643,
+            "key": "inputs/table/sha256/ca4df8068ff1083c71a959a76b79111788eae3cc381806a88bad886511b544b1",
+            "sha256": "ca4df8068ff1083c71a959a76b79111788eae3cc381806a88bad886511b544b1"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "mitaka-supplementary-native-38eb3d378fda892a"
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "mitaka-supplementary-native-5a7562694bcb12be",
+      "conversion_id": "mitaka-supplementary-native-5a7562694bcb12be",
+      "input_fingerprint": "61d57cc1277f01339353cb84748d503b685649dc1ec5bbd43552858a973494f1",
+      "object": {
+        "key": "fiscal/ingestion/132047/2022/supplementary-5/expenditure/mitaka-supplementary-native-5a7562694bcb12be.parquet",
+        "sha256": "b6cde43957f42681df4965a744ab1144411b55a5d0c2a8b86077a80802a90e1d",
+        "bytes": 7197
+      },
+      "row_count": 18
+    },
+    {
+      "table_id": "mitaka-supplementary-native-eba3fd56f98f363b",
+      "conversion_id": "mitaka-supplementary-native-eba3fd56f98f363b",
+      "input_fingerprint": "79c25aaee0b3781f5073b5afb5b60b2117c83a349d6bbe5e218d8ebb4c66b803",
+      "object": {
+        "key": "fiscal/ingestion/132047/2022/supplementary-5/expenditure/mitaka-supplementary-native-eba3fd56f98f363b.parquet",
+        "sha256": "0914e9f680a60577559be48f72a89af8f90a8fca5dff08b1edd7a73bde49b9d8",
+        "bytes": 10479
+      },
+      "row_count": 46
+    },
+    {
+      "table_id": "mitaka-supplementary-native-768964375aa97d19",
+      "conversion_id": "mitaka-supplementary-native-768964375aa97d19",
+      "input_fingerprint": "4bea915a6e42344046024f19638bf455399be234a78d664561e44f0749acd4d8",
+      "object": {
+        "key": "fiscal/ingestion/132047/2022/supplementary-5/expenditure/mitaka-supplementary-native-768964375aa97d19.parquet",
+        "sha256": "c018ccfee052708e880dd786c9b9f11f3239c955801d370860d984f8830a9034",
+        "bytes": 5371
+      },
+      "row_count": 3
+    },
+    {
+      "table_id": "mitaka-supplementary-native-38eb3d378fda892a",
+      "conversion_id": "mitaka-supplementary-native-38eb3d378fda892a",
+      "input_fingerprint": "1c42464edb1abf7d74cefabbd27be24562f9743f5eeaafb94918c81bf8c16484",
+      "object": {
+        "key": "fiscal/ingestion/132047/2022/supplementary-5/expenditure/mitaka-supplementary-native-38eb3d378fda892a.parquet",
+        "sha256": "ca4df8068ff1083c71a959a76b79111788eae3cc381806a88bad886511b544b1",
+        "bytes": 19643
+      },
+      "row_count": 152
+    }
+  ]
+}

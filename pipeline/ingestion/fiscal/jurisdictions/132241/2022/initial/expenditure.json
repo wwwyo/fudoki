@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132241",
+    "fiscal_year": 2022,
+    "document_kind": "initial"
+  },
+  "direction": "expenditure",
+  "conversions": [
+    {
+      "id": "raw-4fcc766d1754b23a",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "4ccb155bd86b154b5c5ebf1e64be52660355fc7aa4e9b731d17752046e569e9b"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "raw-4fcc766d1754b23a",
+            "bytes": 12324,
+            "key": "inputs/table/sha256/f7e38c9628c47c8117a68d28e5eae4f23481be0afbe066f4c0d6c3118bd0f4ae",
+            "sha256": "f7e38c9628c47c8117a68d28e5eae4f23481be0afbe066f4c0d6c3118bd0f4ae"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "raw-4fcc766d1754b23a"
+        }
+      ]
+    },
+    {
+      "id": "raw-962f0d0cd7735a4a",
+      "converter": "fiscal/layouts/retained/convert.py",
+      "inputs": [
+        {
+          "sha256": "e94593f2cce5bde405f4e953fe0b133133c719556e79287413eb0af8a95efd63"
+        }
+      ],
+      "options": {
+        "objects": [
+          {
+            "table_id": "raw-962f0d0cd7735a4a",
+            "bytes": 21323,
+            "key": "inputs/table/sha256/a91efc47975482deb2759ea8ca00d0685fd8e083e34643713bac2bce5659e716",
+            "sha256": "a91efc47975482deb2759ea8ca00d0685fd8e083e34643713bac2bce5659e716"
+          }
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "raw-962f0d0cd7735a4a"
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "raw-4fcc766d1754b23a",
+      "conversion_id": "raw-4fcc766d1754b23a",
+      "input_fingerprint": "fc742d420da725eaeac291a2dd39538794d4836bba19636f5f1c3c933471a5bc",
+      "object": {
+        "key": "fiscal/ingestion/132241/2022/initial/expenditure/raw-4fcc766d1754b23a.parquet",
+        "sha256": "f7e38c9628c47c8117a68d28e5eae4f23481be0afbe066f4c0d6c3118bd0f4ae",
+        "bytes": 12324
+      },
+      "row_count": 189
+    },
+    {
+      "table_id": "raw-962f0d0cd7735a4a",
+      "conversion_id": "raw-962f0d0cd7735a4a",
+      "input_fingerprint": "0d2515437ba3d4d7bcb42cdf06c2cd982dd6647914c8aa499286fcf44953a79b",
+      "object": {
+        "key": "fiscal/ingestion/132241/2022/initial/expenditure/raw-962f0d0cd7735a4a.parquet",
+        "sha256": "a91efc47975482deb2759ea8ca00d0685fd8e083e34643713bac2bce5659e716",
+        "bytes": 21323
+      },
+      "row_count": 1440
+    }
+  ]
+}

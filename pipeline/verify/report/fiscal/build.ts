@@ -553,8 +553,8 @@ function documentKindOf(
 /** 取得器と同じ原典台帳の取り込み宣言を読む。 */
 const sourceDefinitions = Bun.spawnSync([
   'uv', 'run', 'python', '-c',
-  'import json,sys; from pathlib import Path; from ingestion.fiscal.source_registry import load_registry,project_sources; print(json.dumps(project_sources(load_registry(Path(sys.argv[1]))), ensure_ascii=False))',
-  join(ROOT, 'ingestion/fiscal/sources.json'),
+  'import json,sys; from pathlib import Path; from ingestion.fiscal.management.source_registry import load_registry,project_sources; print(json.dumps(project_sources(load_registry(Path(sys.argv[1]))), ensure_ascii=False))',
+  join(ROOT, 'ingestion/fiscal/management/sources.json'),
 ], { cwd: ROOT, stdout: 'pipe', stderr: 'pipe' })
 if (sourceDefinitions.exitCode !== 0)
   throw new Error(`Source declarations: ${sourceDefinitions.stderr.toString()}`)
@@ -597,7 +597,7 @@ const PROJECT_NAME_YEARS: Map<string, Set<number>> = (() => {
 })()
 
 /**
- * 団体の名称。**`sources.json` には持たせない**（`pipeline/ingestion/fiscal/sources.py` が
+ * 団体の名称。**`sources.json` には持たせない**（`pipeline/ingestion/fiscal/management/sources.py` が
  * 明示的に禁止している — 以前は団体×年度ごとに反復宣言しており、狛江市だけで6回、
  * 誤記があっても検知されなかった）。正本は `packages/jurisdictions/jurisdictions.json`
  * （財政データ・調達から参照される、層に依存しない団体の同一性）。
@@ -684,7 +684,7 @@ function build(code: string, topology: Topology, checks: Check[]): ReportData {
   )
   if (entries.length === 0)
     throw new Error(
-      `取得元 ${code}:* が pipeline/ingestion/fiscal/sources.json に無い`
+      `取得元 ${code}:* が pipeline/ingestion/fiscal/management/sources.json に無い`
     )
   const src = entries[0]![1]
   const pick = (k: keyof typeof src) => src[k] ?? ''

@@ -1,97 +1,32 @@
-# F. 入力と各層を本体へ採用し、全量構築・再構築する
+# F. 自治体の取り込みJSONとParquetからdbtへ接続する
 
-## 入力と採用
+## 入力を確認する
 
-- C・Dの検査結果とEの保存・読み戻し結果、検査済み追加案を受け取る。個別の成功範囲と未確認事項を保持する。
-- 抽出・登録処理と宣言、rawの参照、staging・intermediate・marts・CSV、通常監査への接続を本体へ反映する。
-- 原典・表・source宣言を固定入力一覧へ追加し、既存入力の識別・値・順序を保持する。候補側の古い登録コードで既存追加分を落とさない。
-- 採用入力一覧はschemaVersion 3で、原典・表のハッシュとsource宣言を持つ。独立したprovenanceは保存しない。`inputs.py` の `read_lock()` が団体・年度・版・保存先の整合を検査し、復元で原典・表のハッシュを照合する。
-- 共有の `migrate --remote` は保存・読み戻しと入力一覧の置換を行う。資料別の追加では専用登録と統合を行っているため、部分的なrawをそのまま本体一覧へ置き換えない。保存の境界は [E](input-storage.md) を参照する。
+1. `ingestion/fiscal/jurisdictions/<団体>/<年度>/<資料区分>/<方向>.json` と、そこで参照されるParquetを受け取る。別の宣言ディレクトリやdbt用JSONの提出は要求しない。未検査のPDFを保存状態だけで検査済みと扱わない。
+2. `dbt:inputs:check` で `pipeline/dbt/inputs/` の表ID・配置対応を検査する。`ingestion:check` で対象・原典選定・scope・fingerprintを検査する。
+3. 原典の抽出やCの検査は再実行しない。単位・金額段階・階層・独立内訳などの確認済み出力情報と、対象に必要なモデルが揃っていることを確認する。不足を推定値・空表で補わない。削除範囲と未完了項目は [保存設計](../../../../docs/prd/ingestion-storage/design-doc.md) と [移行記録](../../../../docs/prd/ingestion-storage/migration.md) を参照する。
 
-## 全量構築を実行する
+## 入力を固定する
 
 ```bash
 bun run pipeline:inputs
-bun run pipeline:build
-bun run pipeline:build --rebuild
 ```
 
-- `pipeline:inputs` は固定入力一覧の原典・表を復元し、原典・表のSHAを検査する。復元先は `pipeline/.cache/inputs/<入力一覧のSHA>/raw/` である。
-- `pipeline:build` は復元済み固定入力から、ネットワークなしで登録情報生成・dbt全量build・marts CSV生成を実行する。資料によって別途復元する補助証拠もEで確認する。
-- `pipeline/.build/workspace/`・warehouse・dbt targetを作り直し、結果を `pipeline/.build/builds/<構築ID>/` に保存する。CSV一覧とSHAは `verification.json`、DBとbuildの対応は `warehouse.json` と `latest.json` に記録する。
-- 同じ構築IDが既にあれば実CSVと検証記録を照合し、再生成CSVのハッシュも比較する。初回成功だけでは再構築一致を検査済みにしない。実行結果の `determinismChecked` を確認する。
-- 直前の採用buildとCSVの変更を照合し、追加・変更された提供内容と既存CSVへの影響を確認する。scopedな実行の成功を全量buildの成功へ広げない。
+入力準備だけの確認は `pipeline/` で実行する。
 
-## 保存するものとGへの受け渡し
+```bash
+uv run python -m build_inputs prepare --manifest <対象JSON>
+```
 
-- 採用入力一覧・コード・宣言・判断はGit対象である。ローカルでの反映、Git追跡、コミット済みを区別する。
-- 現行の構築ID・入力とコードの識別、dbtの結果、CSV実ハッシュ、再構築結果、既存CSVとの比較を検査記録へ残す。値は実行結果から取り、skillへ最新件数を固定しない。
-- 全量build・再構築の成功は、現在採用した入力の構築・再現性を示す。Gで提供先と原典一覧・探索範囲を照合してから全対象の完了を判断する。
-- 実行手順は [pipeline/README.md](../../../../pipeline/README.md)、実装は `pipeline/build.ts`・`pipeline/identity.ts`・`pipeline/ingestion/inputs.py` を参照する。
+- `pipeline:inputs` は管理JSONから保存済みParquetを復元する。
+- `build_inputs prepare` はネットワークを使わず、管理JSON全体・解決済み原典情報・F側の配置対応・Parquetを `.cache/inputs/<入力fingerprint>/` に固定する。件数とファイルパスだけをcontextへ返す。表のSHA・サイズ、再利用するsnapshot、準備中の管理情報変更を検査する。
+- `bun run pipeline:build` で残ったモデルを構築する。旧宣言JSONを読むモデルと依存先は削除済みで、旧JSONの存在を要求して停止しない。単位・金額段階・階層は必要なモデルの設定で扱い、Cへdbt専用の別ファイルの出力を要求しない。旧構成の全CSVの再生成や公開全年度の収録完了とは区別する。
+- `--manifest` は入力範囲を指定する。dbtモデルの実行範囲は自動で絞らない。
+- 同じ構築IDのCSVハッシュを照合し、初回成功だけで再構築一致を検査済みと扱わない。
 
-## dbt build / seedで実測した注意点
+## 結果を確認して後段へ渡す
 
-- `pipeline/.build/warehouse.duckdb` は再生成できる実行用の表である。`pipeline:build` はwarehouseを作り直すが、dbtを直接実行すると旧seedテーブルが残る場合がある。seedの列変更後に列数不一致が出た場合は、旧スキーマを確認してwarehouseを作り直す。
-- dbt seedは対象テーブルを毎回CREATE OR REPLACEしない場面がある。通常の失敗ではまず実際のエラー・列名を見る。seedの列構成を変えていない回の第一容疑者にはしない。
-
-## 既存の整形・分類で実測した注意点
-
-- **⚠️ 仕様が「正準」と宣言する taxonomy の URL は 404。**
-  仕様の原文から起こして `pipeline/fdp/budget-taxonomy.json` に持つ（`bun run --cwd pipeline fetch:fdp-taxonomy`）。
-  「止まったら自分で維持する」が既定の運用だという最初の実例
-  - 現在の通常構築はmarts CSVを生成する。FDP descriptorの整形は任意の `pipeline:fdp` であり、taxonomy取得を全量buildの必須工程にしない。
-
-- **款だけでは COFOG が決まらない款が実在する。** 衛生費・土木費・教育費は項へ、
-  公債費・都市計画費は目へ下げて決着する
-
-- ⚠️ **判断の粒度が、機械可読な列より細かいことがある。** COFOG の割当を長く
-  division（2桁）だけで配っていたが、規則の `basis` には `04.5.1 道路交通` のような
-  class まで書いてあった。**判断は class まで降りているのに、読めるのは division まで**という
-  状態で、利用者が細かく集計するには文章から番号を切り出すしかなかった。
-  文章に書いたことは機械可読ではない
-
-- ⚠️ **粒度を上げると、まとめてあった規則が割れる。** 「教育総務費・小学校費・中学校費 → 09」は
-  division では1本で済むが、group では 09.8 / 09.1 / 09.2 に分かれる（初等教育と中等教育は
-  COFOG の group が違う）。**列を足すだけでは終わらず、規則の分割という判断が要る**
-
-- ⚠️ **名称が資料をまたぐと、汎用の規則が別団体にも当たり始める。** ある団体の科目名称を
-  PDF から解決した途端、法定語彙で書いた規則（民生費 → 10 など）がその団体の繰出金の行に先に当たり、
-  **会計間の繰出が「社会保護」として分類され、二重計上の注意書きが消えた**。
-  繰出の規則を科目の規則より前に置いて直したが、**団体スコープの無い規則は、
-  名称が増えた瞬間に適用範囲が広がる**ということ自体を憶えておく
-
-- **⚠️ 同じ団体の同じ資料でも、年度をまたぐと表記が割れる。** 多摩市はコードのゼロ埋めが
-  年度で変わり（R3 は `01`/`001`、R4 以降は `1`/`100`）、年度は `R4` という和暦の略記で入っている。
-  ⚠️ **割れるのは表記だけではない。** 多摩市の令和7年度は金額の列名が変わり（`予算額` →
-  `合計 / 予算額`）、**単位が千円から円になり**、歳出だけ年度の列が消えた。
-  ⚠️ **粒度を丸ごと下げずに、宣言ごとの `years` で表す。** `fiscal_amounts` と
-  `fiscal_source_year_columns` の各項目は任意の `years` を持て、**書かなければ全年度**である
-  （解決は `dbt/macros/fiscal_amount_scope.sql`）。(団体, direction, 年度) へ丸ごと下げると、
-  割れていない団体まで同じ宣言を年度の数だけ写経することになり、写経は片方だけ直る。
-  ⚠️ **絞れるということは、絞り忘れた年度を誰も見ない状態が作れるということでもある。**
-  だから覆えていない年度は `dbt/tests/amount_declarations_cover_years.sql` が、
-  年度の列を外した年度に列が本当に無いかは `source_year_column_scope_is_real.sql` が、
-  どちらも**原典の側を母集団にして**見る。
-  ⚠️ **年度で単位が割れると、descriptor の定数に単位を置けなくなる**
-  （狛江市が段階で割れたときと同じ形。配布物は `source_amount_unit` を行の列で持つ）。
-  **コードで年度をまたいで突き合わせることはできない**ので、横断はマスタへの対応を介す。
-  年度の列も、表記まで宣言しないと partition と比べられない
-  （宣言をやめれば検査は通るが、原典が持つ年度を誰も見ていない状態になる）
-
-- **⚠️ 原典が持たない階層がある。** 多摩市の会計は名称の列しか無くコードが存在しない。
-  宣言（`fiscal_levels_without_code`）が無いと、staging が名称をコードとして扱い、
-  「コードは数字」という検査に名称が引っかかる。**無いものを埋めない**
-
-- **「宣言が何件あるか」と「金額の段階が何種類あるか」は別。** 年度別宣言の数で行を展開すると、同じ原典行を重複させる。現在の `int_fiscal_amounts` は同じ財政明細と段階で金額を表すため、宣言の適用年度・文書種類と段階の異なりを分けて確認する。
-
-- **⚠️ 年度で列構成そのものが違うと、Parquet の glob が開けない。**
-  `union_by_name=true` で読むしかないが、そうすると**列名の書き間違いが黙って NULL になる**。
-  宣言する団体は `_sources.yml` にその旨と、塞いでいる検査を書くこと
-
-- **決算書は1行に複数の金額段階と単位を持つ場合がある。** 原典の全金額列を内部に保持し、段階ごとに単位を確認する。現在の公開決算明細は支出済額・収入済額一つを提供し、複数段階の金額をすべて公開CSVへ展開する旧FDPの扱いとは区別する（`pipeline/dbt/models/intermediate/fiscal/records/int_fiscal_amounts.sql`、`pipeline/dbt/models/marts/records/fiscal_settlement_expenditure_lines.sql`、`pipeline/README.md`）。
-
-- **⚠️ 款の体系が法定とまったく違う団体がある。** 2団体目に試した特別区は歳出を
-  組織別に再編しており（子ども費・保健福祉費・地域振興費…）、法定の款に一対一で対応しない。
-  **款コードでも款の名称でも横断できない**ので、対応先を空のまま `addition` として登録し、
-  横断は COFOG に担わせることになる。人件費を1つの款に集めている団体もある。
-  この科目体系の違いは、団体間比較の対応を確認するときに扱う
+- 直前の採用buildとの差分、対象範囲、dbtの結果、実CSVハッシュ、再構築一致、未確認事項を記録する。入力準備・構文検査・限定実行・全量構築を区別する。
+- 保存参照・コード・宣言・判断はGitで管理する。キャッシュ・catalog・DB・CSV・検査結果は再生成するローカル領域に置く。
+- 通常監査G・検証報告には旧入力一覧を使う経路が残る。新しいFの成功だけでGの移行・全公開資料の収録完了を宣言しない。[移行記録](../../../../docs/prd/ingestion-storage/migration.md) と [通常監査](coverage-audit.md) を確認する。
+- 実装は `pipeline/build_inputs.py`・`build.ts`・`identity.ts`。操作の詳細は [pipeline/README.md](../../../../pipeline/README.md)、構築・整形・分類の過去の実測は [dbtの注意点](../../../../docs/survey/dbt-transform-notes.md) を参照する。

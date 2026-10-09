@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import { expect, test } from 'bun:test'
-import { archiveGroup, archiveSelected, isMissingR2ObjectError, planArchives, type ArchiveTransport } from './archive'
+import { archiveGroup, archiveSelected, isMissingR2ObjectError, planArchives, planFiles, isArchived, type ArchiveTransport } from './archive'
 import { sourceSelectionsSchema, type SourceFile, type SourceSelection } from './schema'
 import { originObjectKey } from './storage'
 
@@ -46,7 +46,7 @@ test('unselected targets cause no transfer and uploaded receipts are trusted wit
 })
 
 test('a split document shares one file across its content sections and uploads each physical file once', async () => {
-  const fake = transport()
+  const fake = transport(['fiscal/source-selection/132047/2024/initial-1.pdf', 'fiscal/source-selection/132047/2024/initial-2.pdf'])
   const shared: SourceFile = { ...second, format: 'pdf', pdf_type: 'scan',
     scope: [{ account: '一般会計', direction: 'expenditure', pages: [{ start: 1, end: 3 }] },
       { account: '駐車場事業特別会計', direction: 'revenue', pages: [{ start: 8, end: 12 }] }] }
@@ -89,4 +89,74 @@ test('conflicting identities and metadata outside the slot stop before any trans
   await expect(archiveSelected(selection, wrong.api)).rejects.toThrow('escaped')
   expect(wrong.uploads).toHaveLength(0)
   expect(wrong.removed).toHaveLength(0)
+})
+
+function additiveReplacement() {
+  const thirdBody = new TextEncoder().encode('third retained part')
+  const newBody = new TextEncoder().encode('new text PDF')
+  const third: SourceFile = { ...pdf, download_url: 'https://example.com/third.pdf', sha256: hash(thirdBody) }
+  const added: SourceFile = { ...pdf, download_url: 'https://example.com/new.pdf', sha256: hash(newBody) }
+  const original = withFiles([pdf, second, third])
+  const previous: SourceSelection = { ...original, selected_candidate_id: 'one', archive: { bucket: 'fudoki-inputs', candidate_id: 'one',
+    archived_at: '2026-10-07T00:00:00Z', files: [pdf, second, third].map((file, index) => ({
+      key: originObjectKey(original.target, 'pdf', index + 1), sha256: file.sha256!, final_url: file.download_url })) } }
+  const replacement = withFiles([pdf, second, third, added])
+  return { previous, replacement, newBody, added }
+}
+
+test('additive replacement retains three exact keys and bytes and puts only the fourth original', async () => {
+  const { previous, replacement, newBody, added } = additiveReplacement()
+  const oldObjects = new Map<string, Uint8Array>(previous.archive!.files.map((item, i) => [item.key, [body, secondBody, new TextEncoder().encode('third retained part')][i]!]))
+  const oldBytes = structuredClone(oldObjects)
+  const fake = transport([...oldObjects.keys()])
+  const result = (await archiveGroup([replacement], { ...fake.api,
+    async download(url) { fake.downloads.push(url); return { body: newBody, final_url: url } },
+    async put(key, bytes, contentType) { fake.uploads.push({ key, body: bytes, contentType }); oldObjects.set(key, bytes) },
+  }, previous))[0]!
+  expect(fake.downloads).toEqual([added.download_url])
+  expect(fake.uploads.map(item => item.key)).toEqual(['fiscal/source-selection/132047/2024/initial-4.pdf'])
+  expect(fake.removed).toHaveLength(0)
+  for (const [key, bytes] of oldBytes) expect(oldObjects.get(key)).toEqual(bytes)
+  expect(result.archive!.files.slice(0, 3)).toEqual(previous.archive!.files)
+  expect(planFiles([result]).map(item => item.key)).toEqual(planFiles([replacement], previous).map(item => item.key))
+  expect(isArchived([result])).toBe(true)
+  expect(sourceSelectionsSchema.safeParse([result]).success).toBe(true)
+})
+
+test('replacement collision, changed original, invalid target and retained format stop without altering either selection', async () => {
+  for (const reason of ['collision', 'changed', 'target', 'format', 'upload']) {
+    const { previous, replacement, newBody } = additiveReplacement()
+    const other = structuredClone(selection)
+    const before = structuredClone({ previous, replacement, other })
+    const fake = transport(reason === 'collision' ? ['fiscal/source-selection/132047/2024/initial-4.pdf'] : [])
+    const candidate = structuredClone(replacement)
+    if (reason === 'target') candidate.target.fiscal_year++
+    if (reason === 'format') candidate.candidates[0]!.files[0] = csv
+    await expect(archiveGroup([candidate], { ...fake.api,
+      async download(url) { fake.downloads.push(url); return { body: reason === 'changed' ? body : newBody, final_url: url } },
+      async put() { throw new Error('upload failed') },
+    }, previous)).rejects.toThrow()
+    expect({ previous, replacement, other }).toEqual(before)
+    expect(fake.uploads).toHaveLength(0)
+    expect(fake.removed).toHaveLength(0)
+    if (reason !== 'changed' && reason !== 'upload') expect(fake.downloads).toHaveLength(0)
+  }
+})
+
+test('replacement next-part skips an unregistered fourth object and still refuses collisions and invalid numbers', async () => {
+  const { previous, replacement, newBody, added } = additiveReplacement()
+  const fourth = 'fiscal/source-selection/132047/2024/initial-4.pdf'
+  const fifth = 'fiscal/source-selection/132047/2024/initial-5.pdf'
+  const fake = transport([fourth])
+  const api = { ...fake.api, async download(url: string) { fake.downloads.push(url); return { body: newBody, final_url: url } } }
+  expect(planFiles([replacement], previous, 5).find(item => item.file.sha256 === added.sha256)!.key).toBe(fifth)
+  const result = (await archiveGroup([replacement], api, previous, 5))[0]!
+  expect(fake.uploads.map(item => item.key)).toEqual([fifth])
+  expect(fake.removed).toHaveLength(0)
+  expect(result.archive!.files.slice(0, 3)).toEqual(previous.archive!.files)
+  expect(isArchived([result])).toBe(true)
+  await expect(archiveGroup([replacement], { ...api, async list() { return [fourth, fifth] } }, previous, 5)).rejects.toThrow('refusing overwrite')
+  expect(fake.downloads).toHaveLength(1)
+  for (const value of [0, 3, 4.5, Number.MAX_SAFE_INTEGER + 1]) expect(() => planFiles([replacement], previous, value)).toThrow('next-part')
+  expect(() => planFiles([replacement], undefined, 5)).toThrow('next-part')
 })

@@ -464,7 +464,7 @@ export const BY_JURISDICTION: Record<string, PerJurisdiction> = {
         topic: '原典は PDF で、取り込みは組版からの抽出にあたる',
         category: 'sourceAndLicense',
         body:
-          '昭島市はオープンデータカタログを持たず、予算資料は市サイトの PDF しかない。配布物は事項別明細書（`2-1.ippan.pdf`、469頁）を `pipeline/ingestion/fiscal/extract_statement.py` が読んで起こしたもので、抽出は不可逆であり**原文へ戻して突き合わせる検査は成立しない**。\n\n' +
+          '昭島市はオープンデータカタログを持たず、予算資料は市サイトの PDF しかない。配布物は事項別明細書（`2-1.ippan.pdf`、469頁）を `pipeline/ingestion/fiscal/layouts/fiscal_general/extract_statement.py` が読んで起こしたもので、抽出は不可逆であり**原文へ戻して突き合わせる検査は成立しない**。\n\n' +
           '代わりに、様式が同じ数字を階層ごとに重複して印字していることを使って毎回突き合わせている。\n\n' +
           '- 説明欄の葉の合計が目の本年度予算額と一致すること（歳出 108/108 目、歳入 88/88 目）\n' +
           '- 節の区分欄の合計も同じ目の額と一致すること（別経路なので独立した証拠になる）\n' +

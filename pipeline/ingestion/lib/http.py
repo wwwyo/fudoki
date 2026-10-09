@@ -1,6 +1,6 @@
 """HTTP の取得とキャッシュ。**層に依存しない。**
 
-⚠️ **以前これは `pipeline/ingestion/fiscal/fetch.py`（CSV の取得器）にあった。**
+⚠️ **以前これは `pipeline/ingestion/fiscal/layouts/fiscal_general/fetch.py`（CSV の取得器）にあった。**
 PDF から事業名を起こす取得器がそこから import しており、
 **抽出器が CSV 取得器に依存する**という逆向きの依存になっていた。
 共通処理は層の外に置き、他の取得器もそこから参照する。
@@ -66,19 +66,17 @@ def http_get(url: str, *, refresh: bool = False) -> Fetched:
     「切り捨てを成功として扱わない」という取り込みの柱と逆を向く。
     ネットワークを叩くスクリプトはサンドボックスを外して回すこと（AGENTS.md）。
     """
+    if os.environ.get('FUDOKI_STORE_ORIGIN_REMOTE') == '1':
+        raise ValueError('Legacy original uploads are retired; use source_selection archive')
     refresh = refresh or os.environ.get('FUDOKI_REFRESH_ORIGINS') == '1'
     cached = _from_cache(url) if not refresh else None
     if cached is not None:
-        from ingestion.inputs import save_object, remote_object
+        from ingestion.inputs import save_object
         ref = save_object('origin', cached.body)
-        if os.environ.get('FUDOKI_STORE_ORIGIN_REMOTE') == '1':
-            remote_object(ref, 'put')
         return cached
     got = _http_get_once(url)
-    from ingestion.inputs import save_object, remote_object
+    from ingestion.inputs import save_object
     ref = save_object('origin', got.body)
-    if os.environ.get('FUDOKI_STORE_ORIGIN_REMOTE') == '1':
-        remote_object(ref, 'put')
     _to_cache(got)
     return got
 

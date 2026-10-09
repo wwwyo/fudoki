@@ -32,7 +32,7 @@ test('selection checks work with municipality files alone and reject a mismatche
   } finally { await rm(directory, { recursive: true, force: true }) }
 })
 
-test('upload receipts must map every file to its planned flat key', async () => {
+test('upload receipts preserve saved keys and reject duplicate, foreign-slot and wrong-format keys', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'fudoki-selection-keys-'))
   const files = ['a', 'b'].map(value => ({
     download_url: `https://example.com/${value}.csv`, sha256: value.repeat(64), format: 'csv' as const,
@@ -54,10 +54,16 @@ test('upload receipts must map every file to its planned flat key', async () => 
     await writeFile(path, JSON.stringify(ledger))
     expect((await checkSelections(directory))[0]!.selected).toBe(1)
     for (const indices of [[2, 1], [1, 7]]) {
+      const retained = structuredClone(ledger)
+      retained.selections[0]!.archive.files.forEach((file, index) => { file.key = `fiscal/source-selection/132241/2023/initial-${indices[index]}.csv` })
+      await writeFile(path, JSON.stringify(retained))
+      expect((await checkSelections(directory))[0]!.selected).toBe(1)
+    }
+    for (const key of ['fiscal/source-selection/132241/2023/initial-1.csv', 'fiscal/source-selection/132047/2023/initial-2.csv', 'fiscal/source-selection/132241/2023/initial-2.pdf']) {
       const invalid = structuredClone(ledger)
-      invalid.selections[0]!.archive.files.forEach((file, index) => { file.key = `fiscal/source-selection/132241/2023/initial-${indices[index]}.csv` })
+      invalid.selections[0]!.archive.files[1]!.key = key
       await writeFile(path, JSON.stringify(invalid))
-      await expect(checkSelections(directory)).rejects.toThrow('Archive key differs')
+      await expect(checkSelections(directory)).rejects.toThrow('Archive differs')
     }
   } finally { await rm(directory, { recursive: true, force: true }) }
 })

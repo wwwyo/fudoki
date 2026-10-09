@@ -1,2 +1,0 @@
-{{ config(materialized='table') }}
-select l.fiscal_line_id,l.dataset_id,{{ fiscal_budget_item_id('l.fiscal_line_id') }} as budget_item_id,l.source_row,a.value as amount,l.consolidation,l.counterpart_fund from {{ ref('int_fiscal_lines') }} l join {{ ref('int_fiscal_datasets') }} d using(dataset_id) join {{ ref('int_fiscal_amounts') }} a using(fiscal_line_id) where d.direction='revenue' and d.document_kind='budget' and a.phase='approved' order by fiscal_line_id
