@@ -30,10 +30,11 @@ export async function checkSelections(directory = import.meta.dir) {
 }
 
 if (import.meta.main) {
-  if (Bun.argv.slice(2).length) {
-    console.error('Usage: bun pipeline/source_selection/check.ts')
+  const [directory, ...extra] = Bun.argv.slice(2)
+  if (extra.length) {
+    console.error('Usage: bun pipeline/source_selection/check.ts [directory]')
     process.exitCode = 2
-  } else checkSelections().then(result => console.log(JSON.stringify(result, null, 2))).catch(error => {
+  } else checkSelections(directory).then(result => console.log(JSON.stringify(result, null, 2))).catch(error => {
     console.error(JSON.stringify({ error: String(error) }))
     process.exitCode = 1
   })
