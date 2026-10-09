@@ -1,0 +1,10 @@
+version: 2
+
+models:
+  - name: stg_131024__reserve_allocations
+    description: 中央区決算の予備費充用先。取り込み表と1対1、金額単位は円。支出済額とは別に扱う。
+    columns:
+      - name: source_row
+        data_tests: [not_null]
+      - name: allocated_amount
+        data_tests: [not_null]
