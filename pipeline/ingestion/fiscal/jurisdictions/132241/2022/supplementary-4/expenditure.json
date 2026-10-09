@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 1,
   "target": {
     "jurisdiction": "132241",
     "fiscal_year": 2022,
@@ -7,8 +7,6 @@
     "amendment_number": 4
   },
   "direction": "expenditure",
-  "candidate_id": "representative",
-  "status": "ready",
   "conversions": [
     {
       "id": "tama-supplementary-native-285dcd2bf85bd357",
@@ -111,326 +109,46 @@
     {
       "table_id": "tama-supplementary-native-285dcd2bf85bd357",
       "conversion_id": "tama-supplementary-native-285dcd2bf85bd357",
-      "input_fingerprint": "12b3ed7a6e5f070b20397ca406b9b37a1224e4600b36565fc17d8988b4c3f6f0",
+      "input_fingerprint": "eba5f9d63ca37d974453c0a6d5883f32a406ffc32a87f6da431042906da3a6b8",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2022/supplementary-4/expenditure/tama-supplementary-native-285dcd2bf85bd357.parquet",
         "sha256": "60155df386e24f2e7af0f578b346fe3e71c7f705fba8aefe6ae051830c7fa731",
         "bytes": 22830
       },
-      "row_count": 188,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "source_observation_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "record_kind",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "label",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "amount",
-          "type": "BIGINT"
-        },
-        {
-          "name": "amount_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "physical_page",
-          "type": "INTEGER"
-        },
-        {
-          "name": "bbox_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "words_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "context_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_grain",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_setsu_code",
-          "type": "VARCHAR"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "b7c983f60d4c4e83f94318d4bd8a8008e092e34dfa9e53688f373280e8d659f0",
-          "bytes": 1864392
-        }
-      ]
+      "row_count": 188
     },
     {
       "table_id": "tama-supplementary-native-81027e2a399f33ed",
       "conversion_id": "tama-supplementary-native-81027e2a399f33ed",
-      "input_fingerprint": "ea4324378ffe0e2252497d6896fa52fb8999722d7d042058964de5cfbbc3ba64",
+      "input_fingerprint": "41af54f2deca335c2ad9e5903e36ef315ceda46421c6fd12f5a307a8d383505e",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2022/supplementary-4/expenditure/tama-supplementary-native-81027e2a399f33ed.parquet",
         "sha256": "040fd6fbf98596324dbcf380b3da49756321a3a25aab6172f176062c479f3ce2",
         "bytes": 11881
       },
-      "row_count": 38,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "source_observation_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "record_kind",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "label",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "amount",
-          "type": "BIGINT"
-        },
-        {
-          "name": "amount_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "physical_page",
-          "type": "INTEGER"
-        },
-        {
-          "name": "bbox_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "words_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "context_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_grain",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_setsu_code",
-          "type": "VARCHAR"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "b7c983f60d4c4e83f94318d4bd8a8008e092e34dfa9e53688f373280e8d659f0",
-          "bytes": 1864392
-        }
-      ]
+      "row_count": 38
     },
     {
       "table_id": "tama-supplementary-native-5212a2e9a79106a6",
       "conversion_id": "tama-supplementary-native-5212a2e9a79106a6",
-      "input_fingerprint": "08926a78c42bd15ab9e93712a3794055fee13c5a484e60aed5c3965328981c47",
+      "input_fingerprint": "eecf8cc4ded4178f0d3e4b109430f48fba139ada3ff2c93ba55acad5b1297c72",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2022/supplementary-4/expenditure/tama-supplementary-native-5212a2e9a79106a6.parquet",
         "sha256": "f188ab22e6dbde63e1ae778c98ad390a33768c24e4c911f9c77d72939a6551f9",
         "bytes": 11228
       },
-      "row_count": 56,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "source_observation_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "record_kind",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "label",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "amount",
-          "type": "BIGINT"
-        },
-        {
-          "name": "amount_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "physical_page",
-          "type": "INTEGER"
-        },
-        {
-          "name": "bbox_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "words_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "context_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_grain",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_setsu_code",
-          "type": "VARCHAR"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "b7c983f60d4c4e83f94318d4bd8a8008e092e34dfa9e53688f373280e8d659f0",
-          "bytes": 1864392
-        }
-      ]
+      "row_count": 56
     },
     {
       "table_id": "tama-supplementary-native-d3753cd7a3360f8d",
       "conversion_id": "tama-supplementary-native-d3753cd7a3360f8d",
-      "input_fingerprint": "2ac1a376fd001d67c642706cdaf3a63caf44c28b4ffb64f47487ddbb92280dd5",
+      "input_fingerprint": "8501a99c00e44ed56c8b38ae3ec98c1d096478f4cd2498f61386cccd4db2b810",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2022/supplementary-4/expenditure/tama-supplementary-native-d3753cd7a3360f8d.parquet",
         "sha256": "1c127114d6b106320e6e902f2e7fd5caddf5f769bfe4a18d493c0b7f7d5abcb0",
         "bytes": 7385
       },
-      "row_count": 13,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "source_observation_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "record_kind",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "label",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "amount",
-          "type": "BIGINT"
-        },
-        {
-          "name": "amount_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "physical_page",
-          "type": "INTEGER"
-        },
-        {
-          "name": "bbox_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "words_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "context_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_grain",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_setsu_code",
-          "type": "VARCHAR"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "b7c983f60d4c4e83f94318d4bd8a8008e092e34dfa9e53688f373280e8d659f0",
-          "bytes": 1864392
-        }
-      ]
+      "row_count": 13
     }
   ]
 }

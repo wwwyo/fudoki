@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132047",
+    "fiscal_year": 2024,
+    "document_kind": "initial"
+  },
+  "direction": "expenditure",
+  "conversions": [
+    {
+      "id": "csv-f9dcbc7e87143769",
+      "converter": "fiscal/layouts/csv/convert.py",
+      "inputs": [
+        {
+          "sha256": "f9dcbc7e871437691e4979572aeafaae2da333aba1b27beba8eee72153a5f10e"
+        }
+      ],
+      "options": {
+        "encoding": "cp932",
+        "table_id": "csv-f9dcbc7e87143769"
+      },
+      "expected_tables": [
+        {
+          "table_id": "csv-f9dcbc7e87143769"
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "csv-f9dcbc7e87143769",
+      "conversion_id": "csv-f9dcbc7e87143769",
+      "input_fingerprint": "3ad5a8f8ad6610e13d0684c0bb3195d7b2a1271e5695d737b7330a02bb520c6c",
+      "object": {
+        "key": "fiscal/ingestion/132047/2024/initial/expenditure/csv-f9dcbc7e87143769.parquet",
+        "sha256": "9a7745d29e99b4ffdf0e64d7502c51a8a6cca77414906afc4cd10882479b6074",
+        "bytes": 95589
+      },
+      "row_count": 5613
+    }
+  ]
+}

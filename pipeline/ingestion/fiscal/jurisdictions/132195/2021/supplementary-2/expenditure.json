@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 1,
   "target": {
     "jurisdiction": "132195",
     "fiscal_year": 2021,
@@ -7,8 +7,6 @@
     "amendment_number": 2
   },
   "direction": "expenditure",
-  "candidate_id": "representative",
-  "status": "ready",
   "conversions": [
     {
       "id": "native-council-approved-detail-af8b095b5adc0659",
@@ -39,235 +37,13 @@
     {
       "table_id": "native-council-approved-detail-af8b095b5adc0659",
       "conversion_id": "native-council-approved-detail-af8b095b5adc0659",
-      "input_fingerprint": "47657698c9b1adfd01147ebfc0578e049585c9200aa1d72e30dbf471838892be",
+      "input_fingerprint": "7cf48fd99eec212363938de3f2791c56dfb0573c31eb9d8a60abc753c945af81",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132195/2021/supplementary-2/expenditure/native-council-approved-detail-af8b095b5adc0659.parquet",
         "sha256": "ccc727f357e56728dfabb3b3079af7342cd9c6aedf91ae81a1ffb6e390dca125",
         "bytes": 25886
       },
-      "row_count": 3,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "jurisdiction_code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "fiscal_year",
-          "type": "BIGINT"
-        },
-        {
-          "name": "fund_label",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "amendment_number",
-          "type": "BIGINT"
-        },
-        {
-          "name": "source_url",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "origin_sha256",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "origin_fetched_at",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "submitted_date",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "approval_status",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "edition_status",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "approval_date",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "approval_evidence_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "kan_code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "kou_code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "moku_code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "moku_label",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "control_moku_source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "control_moku_key",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "control_moku_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "project_source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "project_code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "project_label",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "project_printed_delta",
-          "type": "BIGINT"
-        },
-        {
-          "name": "project_evidence_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "department_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "setsu_code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "setsu_label",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "amount_delta",
-          "type": "BIGINT"
-        },
-        {
-          "name": "printed_amount_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_amount_unit",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "page_number",
-          "type": "BIGINT"
-        },
-        {
-          "name": "bbox_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_locations_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "left_setsu_evidence_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "unit_evidence_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "validation_status",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "validation_reasons_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_grain",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "observed_grain_validation_status",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "setsu_correspondence_status",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "council_resolution_date",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_submission_date",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "executive_disposition_date",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "effective_date",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "effective_date_basis",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "approval_url",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "resolution_id",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "original_cover_approval_status",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "approval_proof_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "setsu_name_match_basis",
-          "type": "VARCHAR"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "93de78d2f7c6c047ee802f785945c06acba8ef8b692e97755d35ce554d494558",
-          "bytes": 12132878
-        }
-      ]
+      "row_count": 3
     }
   ]
 }

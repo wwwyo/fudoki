@@ -1,0 +1,1050 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132071",
+    "fiscal_year": 2025,
+    "document_kind": "settlement"
+  },
+  "direction": "expenditure",
+  "conversions": [
+    {
+      "id": "akishima-enterprise-expenditure",
+      "converter": "fiscal/jurisdictions/132071/layouts/enterprise_statement/convert.py",
+      "inputs": [
+        {
+          "sha256": "7d2b4b818e99e43e95c02ef7c33c0022b93e1bab83335004924bd30894bcb280"
+        }
+      ],
+      "options": {
+        "table_prefix": "akishima-enterprise-expenditure",
+        "report_pages": [
+          4,
+          5,
+          6,
+          7
+        ],
+        "revenue_expense_pages": [
+          24,
+          25,
+          26,
+          27,
+          28
+        ],
+        "capital_expense_pages": [
+          30,
+          31
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "akishima-enterprise-expenditure-revenue-report"
+        },
+        {
+          "table_id": "akishima-enterprise-expenditure-capital-report"
+        },
+        {
+          "table_id": "akishima-enterprise-expenditure-revenue-detail"
+        },
+        {
+          "table_id": "akishima-enterprise-expenditure-capital-detail"
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "akishima-enterprise-expenditure-revenue-report",
+      "conversion_id": "akishima-enterprise-expenditure",
+      "input_fingerprint": "750e343a89e593e99f89c01044c5aef6efe442a89025216817795aa80ebeab87",
+      "object": {
+        "key": "fiscal/ingestion/132071/2025/settlement/expenditure/akishima-enterprise-expenditure-revenue-report.parquet",
+        "sha256": "52a6391b1a30a719e54fbd15915b6a4321b0c010b3b97e8cf3c8287d1e86975d",
+        "bytes": 7514
+      },
+      "row_count": 4,
+      "metadata": {
+        "units": [
+          {
+            "text": "円",
+            "scope": {
+              "kind": "columns",
+              "columns": [
+                "区分_款_当初予算額",
+                "区分_款_補正予算額",
+                "区分_款_予備費支出額",
+                "区分_款_流用増減額",
+                "区分_款_地方公営企業法第24条第3項の規定による支出額",
+                "区分_款_小計",
+                "区分_款_地方公営企業法第26条第２項の規定による繰越額",
+                "区分_款_合計",
+                "区分_款_決算額",
+                "区分_款_地方公営企業法第26条第2項の規定による繰越額",
+                "区分_款_不用額",
+                "区分_款_備考_金額",
+                "当初予算額",
+                "補正予算額",
+                "予備費支出額",
+                "流用増減額",
+                "地方公営企業法第24条第3項の規定による支出額",
+                "小計",
+                "地方公営企業法第26条第２項の規定による繰越額",
+                "合計",
+                "決算額",
+                "地方公営企業法第26条第2項の規定による繰越額",
+                "不用額",
+                "備考_金額"
+              ]
+            }
+          }
+        ],
+        "notes": [
+          {
+            "text": "（消費税込み 単位：円）。区分の項を一行とし、款の原典値を区分_款_補助列へ反復する。予算額の各欄と決算額・繰越額・不用額、備考うち仮払消費税は独立した原典の欄である。",
+            "scope": {
+              "kind": "table"
+            }
+          }
+        ],
+        "column_contexts": [
+          {
+            "columns": [
+              "区分_款_当初予算額"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_補正予算額"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_予備費支出額"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_流用増減額"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_地方公営企業法第24条第3項の規定による支出額"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_小計"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_地方公営企業法第26条第２項の規定による繰越額"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_合計"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_決算額"
+            ],
+            "header_path": [],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_地方公営企業法第26条第2項の規定による繰越額"
+            ],
+            "header_path": [],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_不用額"
+            ],
+            "header_path": [],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_備考_名称"
+            ],
+            "header_path": [
+              "備考"
+            ],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_備考_金額"
+            ],
+            "header_path": [
+              "備考"
+            ],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "当初予算額"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "補正予算額"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "予備費支出額"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "流用増減額"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "地方公営企業法第24条第3項の規定による支出額"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "小計"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "地方公営企業法第26条第２項の規定による繰越額"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "合計"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "決算額"
+            ],
+            "header_path": [],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "地方公営企業法第26条第2項の規定による繰越額"
+            ],
+            "header_path": [],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "不用額"
+            ],
+            "header_path": [],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "備考_名称"
+            ],
+            "header_path": [
+              "備考"
+            ],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "備考_金額"
+            ],
+            "header_path": [
+              "備考"
+            ],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "table_id": "akishima-enterprise-expenditure-capital-report",
+      "conversion_id": "akishima-enterprise-expenditure",
+      "input_fingerprint": "750e343a89e593e99f89c01044c5aef6efe442a89025216817795aa80ebeab87",
+      "object": {
+        "key": "fiscal/ingestion/132071/2025/settlement/expenditure/akishima-enterprise-expenditure-capital-report.parquet",
+        "sha256": "db1b1fa255448df9cbcdb1b5620b1e30053aad11a2d74f3280dc101617fbf1a8",
+        "bytes": 8201
+      },
+      "row_count": 4,
+      "metadata": {
+        "units": [
+          {
+            "text": "円",
+            "scope": {
+              "kind": "columns",
+              "columns": [
+                "区分_款_当初予算額",
+                "区分_款_補正予算額",
+                "区分_款_予備費支出額",
+                "区分_款_流用増減額",
+                "区分_款_小計",
+                "区分_款_地方公営企業法第26条の規定による前年度繰越額",
+                "区分_款_継続費逓次繰越額",
+                "区分_款_合計",
+                "区分_款_決算額",
+                "区分_款_地方公営企業法第26条の規定による繰越額",
+                "区分_款_翌年度繰越額_継続費逓次繰越額",
+                "区分_款_翌年度繰越額_合計",
+                "区分_款_不用額",
+                "区分_款_備考_金額",
+                "当初予算額",
+                "補正予算額",
+                "予備費支出額",
+                "流用増減額",
+                "小計",
+                "地方公営企業法第26条の規定による前年度繰越額",
+                "継続費逓次繰越額",
+                "合計",
+                "決算額",
+                "地方公営企業法第26条の規定による繰越額",
+                "翌年度繰越額_継続費逓次繰越額",
+                "翌年度繰越額_合計",
+                "不用額",
+                "備考_金額"
+              ]
+            }
+          }
+        ],
+        "notes": [
+          {
+            "text": "（消費税込み 単位：円）。区分の項を一行とし、款の原典値を区分_款_補助列へ反復する。予算額の各欄と決算額・繰越額・不用額、備考うち仮払消費税は独立した原典の欄である。",
+            "scope": {
+              "kind": "table"
+            }
+          }
+        ],
+        "column_contexts": [
+          {
+            "columns": [
+              "区分_款_当初予算額"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_補正予算額"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_予備費支出額"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_流用増減額"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_小計"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_地方公営企業法第26条の規定による前年度繰越額"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_継続費逓次繰越額"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_合計"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_決算額"
+            ],
+            "header_path": [],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_地方公営企業法第26条の規定による繰越額"
+            ],
+            "header_path": [],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_翌年度繰越額_継続費逓次繰越額"
+            ],
+            "header_path": [
+              "翌年度繰越額"
+            ],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_翌年度繰越額_合計"
+            ],
+            "header_path": [
+              "翌年度繰越額"
+            ],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_不用額"
+            ],
+            "header_path": [],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_備考_名称"
+            ],
+            "header_path": [
+              "備考"
+            ],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "区分_款_備考_金額"
+            ],
+            "header_path": [
+              "備考"
+            ],
+            "grain_columns": [
+              "区分_款"
+            ]
+          },
+          {
+            "columns": [
+              "当初予算額"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "補正予算額"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "予備費支出額"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "流用増減額"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "小計"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "地方公営企業法第26条の規定による前年度繰越額"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "継続費逓次繰越額"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "合計"
+            ],
+            "header_path": [
+              "予算額"
+            ],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "決算額"
+            ],
+            "header_path": [],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "地方公営企業法第26条の規定による繰越額"
+            ],
+            "header_path": [],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "翌年度繰越額_継続費逓次繰越額"
+            ],
+            "header_path": [
+              "翌年度繰越額"
+            ],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "翌年度繰越額_合計"
+            ],
+            "header_path": [
+              "翌年度繰越額"
+            ],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "不用額"
+            ],
+            "header_path": [],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "備考_名称"
+            ],
+            "header_path": [
+              "備考"
+            ],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          },
+          {
+            "columns": [
+              "備考_金額"
+            ],
+            "header_path": [
+              "備考"
+            ],
+            "grain_columns": [
+              "区分_款",
+              "区分_項"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "table_id": "akishima-enterprise-expenditure-revenue-detail",
+      "conversion_id": "akishima-enterprise-expenditure",
+      "input_fingerprint": "750e343a89e593e99f89c01044c5aef6efe442a89025216817795aa80ebeab87",
+      "object": {
+        "key": "fiscal/ingestion/132071/2025/settlement/expenditure/akishima-enterprise-expenditure-revenue-detail.parquet",
+        "sha256": "8f81e6d8ead18a2b6f896bcd8fef41e73e8f569bbc3d7ce5d13c8b52d8174a50",
+        "bytes": 5821
+      },
+      "row_count": 88,
+      "metadata": {
+        "units": [
+          {
+            "text": "円",
+            "scope": {
+              "kind": "columns",
+              "columns": [
+                "款_金額",
+                "項_金額",
+                "目_金額",
+                "金額（円）",
+                "備考_予算額",
+                "備考_金額"
+              ]
+            }
+          }
+        ],
+        "notes": [
+          {
+            "text": "（消費税抜き）。金額（円）は決算の節額。備考の予算額は同じ節の予算、備考のその他の金額は決算内訳。原典に備考内訳がある節はその末端を行にし、款・項・目・節額と備考予算額を所属する末端へ反復。原典の節は企業会計の区分であり一般会計の法定節へ変換していない。",
+            "scope": {
+              "kind": "table"
+            }
+          }
+        ],
+        "column_contexts": [
+          {
+            "columns": [
+              "款",
+              "款_金額"
+            ],
+            "header_path": [
+              "款",
+              "金額（円）"
+            ],
+            "grain_columns": [
+              "款"
+            ]
+          },
+          {
+            "columns": [
+              "項",
+              "項_金額"
+            ],
+            "header_path": [
+              "項",
+              "金額（円）"
+            ],
+            "grain_columns": [
+              "款",
+              "項"
+            ]
+          },
+          {
+            "columns": [
+              "目",
+              "目_金額"
+            ],
+            "header_path": [
+              "目",
+              "金額（円）"
+            ],
+            "grain_columns": [
+              "款",
+              "項",
+              "目"
+            ]
+          },
+          {
+            "columns": [
+              "節",
+              "金額（円）"
+            ],
+            "header_path": [
+              "節",
+              "金額（円）"
+            ],
+            "grain_columns": [
+              "款",
+              "項",
+              "目",
+              "節"
+            ]
+          },
+          {
+            "columns": [
+              "備考_予算額"
+            ],
+            "header_path": [
+              "備考",
+              "予算額"
+            ],
+            "grain_columns": [
+              "款",
+              "項",
+              "目",
+              "節"
+            ]
+          },
+          {
+            "columns": [
+              "備考_名称",
+              "備考_金額"
+            ],
+            "header_path": [
+              "備考"
+            ],
+            "grain_columns": [
+              "款",
+              "項",
+              "目",
+              "節",
+              "備考_名称"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "table_id": "akishima-enterprise-expenditure-capital-detail",
+      "conversion_id": "akishima-enterprise-expenditure",
+      "input_fingerprint": "750e343a89e593e99f89c01044c5aef6efe442a89025216817795aa80ebeab87",
+      "object": {
+        "key": "fiscal/ingestion/132071/2025/settlement/expenditure/akishima-enterprise-expenditure-capital-detail.parquet",
+        "sha256": "ec8307d05985f00aa82b83ab84b48ee06e198aced0211b129fe479afaf9645c4",
+        "bytes": 4256
+      },
+      "row_count": 24,
+      "metadata": {
+        "units": [
+          {
+            "text": "円",
+            "scope": {
+              "kind": "columns",
+              "columns": [
+                "款_金額",
+                "項_金額",
+                "目_金額",
+                "金額（円）",
+                "備考_予算額",
+                "備考_金額"
+              ]
+            }
+          }
+        ],
+        "notes": [
+          {
+            "text": "（消費税抜き）。金額（円）は決算の節額。備考の予算額は同じ節の予算、備考のその他の金額は決算内訳。原典に備考内訳がある節はその末端を行にし、款・項・目・節額と備考予算額を所属する末端へ反復。原典の節は企業会計の区分であり一般会計の法定節へ変換していない。",
+            "scope": {
+              "kind": "table"
+            }
+          }
+        ],
+        "column_contexts": [
+          {
+            "columns": [
+              "款",
+              "款_金額"
+            ],
+            "header_path": [
+              "款",
+              "金額（円）"
+            ],
+            "grain_columns": [
+              "款"
+            ]
+          },
+          {
+            "columns": [
+              "項",
+              "項_金額"
+            ],
+            "header_path": [
+              "項",
+              "金額（円）"
+            ],
+            "grain_columns": [
+              "款",
+              "項"
+            ]
+          },
+          {
+            "columns": [
+              "目",
+              "目_金額"
+            ],
+            "header_path": [
+              "目",
+              "金額（円）"
+            ],
+            "grain_columns": [
+              "款",
+              "項",
+              "目"
+            ]
+          },
+          {
+            "columns": [
+              "節",
+              "金額（円）"
+            ],
+            "header_path": [
+              "節",
+              "金額（円）"
+            ],
+            "grain_columns": [
+              "款",
+              "項",
+              "目",
+              "節"
+            ]
+          },
+          {
+            "columns": [
+              "備考_予算額"
+            ],
+            "header_path": [
+              "備考",
+              "予算額"
+            ],
+            "grain_columns": [
+              "款",
+              "項",
+              "目",
+              "節"
+            ]
+          },
+          {
+            "columns": [
+              "備考_名称",
+              "備考_金額"
+            ],
+            "header_path": [
+              "備考"
+            ],
+            "grain_columns": [
+              "款",
+              "項",
+              "目",
+              "節",
+              "備考_名称"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

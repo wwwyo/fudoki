@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "table_prefix": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]*$",
+      "description": "Prefix for the sole formal <prefix>-expenditure-detail table; summary and statutory sections remain local inspection observations."
+    }
+  },
+  "required": [
+    "table_prefix"
+  ]
+}

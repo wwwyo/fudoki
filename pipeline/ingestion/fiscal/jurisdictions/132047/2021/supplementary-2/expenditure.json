@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 1,
   "target": {
     "jurisdiction": "132047",
     "fiscal_year": 2021,
@@ -7,8 +7,6 @@
     "amendment_number": 2
   },
   "direction": "expenditure",
-  "candidate_id": "representative",
-  "status": "ready",
   "conversions": [
     {
       "id": "mitaka-supplementary-native-5ec47ebe7f2f835a",
@@ -207,650 +205,90 @@
     {
       "table_id": "mitaka-supplementary-native-5ec47ebe7f2f835a",
       "conversion_id": "mitaka-supplementary-native-5ec47ebe7f2f835a",
-      "input_fingerprint": "c415471a5b717121c2f79fc40faa4570bd8d8788920034670615b54961e704cb",
+      "input_fingerprint": "0105e87810fd84f1e4cf2fd9e13be0d27933377ecf6348373f722f8076337f09",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132047/2021/supplementary-2/expenditure/mitaka-supplementary-native-5ec47ebe7f2f835a.parquet",
         "sha256": "0fb16db45b4f427df63def28bc61b476a005d776655611ab84c6eef430cb4f7d",
         "bytes": 4542
       },
-      "row_count": 1,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "source_observation_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "record_kind",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "label",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "amount",
-          "type": "BIGINT"
-        },
-        {
-          "name": "amount_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "physical_page",
-          "type": "INTEGER"
-        },
-        {
-          "name": "bbox_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "words_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "context_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_grain",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_setsu_code",
-          "type": "VARCHAR"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "25388f4db5ab9136bcb942dfcab3af59b56442e10d9d52bedce1185bd716ca36",
-          "bytes": 221345
-        }
-      ]
+      "row_count": 1
     },
     {
       "table_id": "mitaka-supplementary-native-a21cfbea3a400a03",
       "conversion_id": "mitaka-supplementary-native-a21cfbea3a400a03",
-      "input_fingerprint": "f3dc39d9c4a7e08854386fdb7ce05e4bc89af8ab4cf6ad76bfbe09e2f85ae02d",
+      "input_fingerprint": "adef3b27de61960ca3f1c3c92b4b48a70758c7739b7e309ff60f3dd23c7cdb1a",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132047/2021/supplementary-2/expenditure/mitaka-supplementary-native-a21cfbea3a400a03.parquet",
         "sha256": "646ad009c74f25db8ef0e322c9a47108b0c31f4fb860c17496672c347d8d58ec",
         "bytes": 6291
       },
-      "row_count": 10,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "source_observation_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "record_kind",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "label",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "amount",
-          "type": "BIGINT"
-        },
-        {
-          "name": "amount_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "physical_page",
-          "type": "INTEGER"
-        },
-        {
-          "name": "bbox_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "words_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "context_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_grain",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_setsu_code",
-          "type": "VARCHAR"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "25388f4db5ab9136bcb942dfcab3af59b56442e10d9d52bedce1185bd716ca36",
-          "bytes": 221345
-        }
-      ]
+      "row_count": 10
     },
     {
       "table_id": "mitaka-supplementary-native-c117a1b65c961363",
       "conversion_id": "mitaka-supplementary-native-c117a1b65c961363",
-      "input_fingerprint": "e3fe4cbc16f7951220b82dc2e1a86f603886eda95deaf548d0a089ec016e131f",
+      "input_fingerprint": "277f8ecd7885d9064cbfea2ebe7311560370d69a5451e9e21edc5778a9d73ff4",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132047/2021/supplementary-2/expenditure/mitaka-supplementary-native-c117a1b65c961363.parquet",
         "sha256": "b1c368c92bc22a27670a836d0d62df635cfeaadfbc1702af88c0f777f98c2605",
         "bytes": 4753
       },
-      "row_count": 1,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "source_observation_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "record_kind",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "label",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "amount",
-          "type": "BIGINT"
-        },
-        {
-          "name": "amount_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "physical_page",
-          "type": "INTEGER"
-        },
-        {
-          "name": "bbox_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "words_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "context_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_grain",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_setsu_code",
-          "type": "VARCHAR"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "25388f4db5ab9136bcb942dfcab3af59b56442e10d9d52bedce1185bd716ca36",
-          "bytes": 221345
-        }
-      ]
+      "row_count": 1
     },
     {
       "table_id": "mitaka-supplementary-native-4e57c3e9cd31493b",
       "conversion_id": "mitaka-supplementary-native-4e57c3e9cd31493b",
-      "input_fingerprint": "dbaa6c106321b07dadf7e5e9eb4303ee80cccffd39d9b5d1445285578493352d",
+      "input_fingerprint": "c7084c2a0b4c31ab3d8822ec521958fc749e2ffe35e9ae2f3ea6cf0c998e1704",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132047/2021/supplementary-2/expenditure/mitaka-supplementary-native-4e57c3e9cd31493b.parquet",
         "sha256": "ba967079ff3489693c53321a34d27e50cb5b8e8038f7c9870afcbc79ca1cf855",
         "bytes": 6621
       },
-      "row_count": 20,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "source_observation_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "record_kind",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "label",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "amount",
-          "type": "BIGINT"
-        },
-        {
-          "name": "amount_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "physical_page",
-          "type": "INTEGER"
-        },
-        {
-          "name": "bbox_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "words_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "context_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_grain",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_setsu_code",
-          "type": "VARCHAR"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "25388f4db5ab9136bcb942dfcab3af59b56442e10d9d52bedce1185bd716ca36",
-          "bytes": 221345
-        }
-      ]
+      "row_count": 20
     },
     {
       "table_id": "mitaka-supplementary-native-5ec47ebe7f2f835a-73b48db9930b012a",
       "conversion_id": "mitaka-supplementary-native-5ec47ebe7f2f835a-73b48db9930b012a",
-      "input_fingerprint": "b6e39c0953f932ad2f593da3a45058e2598e9b9e99f4266fe09bf13beebf8cd5",
+      "input_fingerprint": "1e777c0a2eedd2e889df7e52b5919c99a75a22d48015dc35887f9dc79a1752ca",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132047/2021/supplementary-2/expenditure/mitaka-supplementary-native-5ec47ebe7f2f835a-73b48db9930b012a.parquet",
         "sha256": "5f9adf86ad8a0edcc4adb7729bc27d38bc0c6bdb4da25d2b600aa4c57f1cbe41",
         "bytes": 5405
       },
-      "row_count": 3,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "source_observation_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "record_kind",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "label",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "amount",
-          "type": "BIGINT"
-        },
-        {
-          "name": "amount_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "physical_page",
-          "type": "INTEGER"
-        },
-        {
-          "name": "bbox_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "words_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "context_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_grain",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_setsu_code",
-          "type": "VARCHAR"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "6d7b8ec795f414c98df662b8431405bda80c92a4ae63728ff36811966e867110",
-          "bytes": 230165
-        }
-      ]
+      "row_count": 3
     },
     {
       "table_id": "mitaka-supplementary-native-a21cfbea3a400a03-73b48db9930b012a",
       "conversion_id": "mitaka-supplementary-native-a21cfbea3a400a03-73b48db9930b012a",
-      "input_fingerprint": "7d24d3d010faa74f695ef0886beb5000c54a85a628dbf8f0495da7f9dbdb39d4",
+      "input_fingerprint": "8a43c9882bde9167ee527b9dd4b1b90c7bd84f30c05c98609230e6ae225e4651",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132047/2021/supplementary-2/expenditure/mitaka-supplementary-native-a21cfbea3a400a03-73b48db9930b012a.parquet",
         "sha256": "9686b1272560724aeb1d14b66f4f88e3164c72add24a19ca7e74b936afd56985",
         "bytes": 6511
       },
-      "row_count": 13,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "source_observation_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "record_kind",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "label",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "amount",
-          "type": "BIGINT"
-        },
-        {
-          "name": "amount_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "physical_page",
-          "type": "INTEGER"
-        },
-        {
-          "name": "bbox_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "words_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "context_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_grain",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_setsu_code",
-          "type": "VARCHAR"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "6d7b8ec795f414c98df662b8431405bda80c92a4ae63728ff36811966e867110",
-          "bytes": 230165
-        }
-      ]
+      "row_count": 13
     },
     {
       "table_id": "mitaka-supplementary-native-c117a1b65c961363-73b48db9930b012a",
       "conversion_id": "mitaka-supplementary-native-c117a1b65c961363-73b48db9930b012a",
-      "input_fingerprint": "08a4300ae0205e05e2492a68e5c56cc0c558e9582e5ea889dde9ca7bdc8fce54",
+      "input_fingerprint": "1ba75dd3ee72fe770c52a74205e447ac6ec044549cd292b59f95e51260f12178",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132047/2021/supplementary-2/expenditure/mitaka-supplementary-native-c117a1b65c961363-73b48db9930b012a.parquet",
         "sha256": "0ea969e88434965f445ac24d78b359ee94f118c3f775683f5833875d9c1da0d7",
         "bytes": 4579
       },
-      "row_count": 1,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "source_observation_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "record_kind",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "label",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "amount",
-          "type": "BIGINT"
-        },
-        {
-          "name": "amount_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "physical_page",
-          "type": "INTEGER"
-        },
-        {
-          "name": "bbox_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "words_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "context_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_grain",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_setsu_code",
-          "type": "VARCHAR"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "6d7b8ec795f414c98df662b8431405bda80c92a4ae63728ff36811966e867110",
-          "bytes": 230165
-        }
-      ]
+      "row_count": 1
     },
     {
       "table_id": "mitaka-supplementary-native-4e57c3e9cd31493b-73b48db9930b012a",
       "conversion_id": "mitaka-supplementary-native-4e57c3e9cd31493b-73b48db9930b012a",
-      "input_fingerprint": "1a7c4a87bf64c5cbb3ce8a66e5f0306be11a084e25c8ccd2cafa11fefe6ce7a0",
+      "input_fingerprint": "faab18fd078d79f630ce97492108735eecc5968c255a7cc35250ad30babf0edc",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132047/2021/supplementary-2/expenditure/mitaka-supplementary-native-4e57c3e9cd31493b-73b48db9930b012a.parquet",
         "sha256": "b002f6ef36454092d8a9d9720ef3e6ab15a38893994e2557392bf2a8491bc7fa",
         "bytes": 7657
       },
-      "row_count": 27,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "source_observation_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "record_kind",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "label",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "amount",
-          "type": "BIGINT"
-        },
-        {
-          "name": "amount_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "physical_page",
-          "type": "INTEGER"
-        },
-        {
-          "name": "bbox_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "words_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "context_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_grain",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_setsu_code",
-          "type": "VARCHAR"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "6d7b8ec795f414c98df662b8431405bda80c92a4ae63728ff36811966e867110",
-          "bytes": 230165
-        }
-      ]
+      "row_count": 27
     }
   ]
 }

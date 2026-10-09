@@ -63,7 +63,7 @@ def options_schema(conversion: dict) -> str:
 
 
 def dependencies(conversion: dict) -> list[str]:
-    pending = [conversion['converter'], options_schema(conversion), *conversion.get('dependencies', [])]
+    pending = [conversion['converter'], options_schema(conversion)]
     found = set()
     while pending:
         relative = pending.pop()
@@ -109,6 +109,27 @@ def validator() -> jsonschema.Draft202012Validator:
     return jsonschema.Draft202012Validator(schema)
 
 
+def validate_metadata(metadata: dict, columns: list[str] | None = None) -> None:
+    """Check original annotations against actual top-level Parquet columns."""
+    validator().evolve(schema={'$ref': '#/$defs/table_metadata'}).validate(metadata)
+    referenced = set()
+    for kind in ('units', 'notes'):
+        for item in metadata.get(kind, []):
+            if item['scope']['kind'] == 'columns':
+                referenced.update(item['scope']['columns'])
+    owned = set()
+    for context in metadata.get('column_contexts', []):
+        if owned.intersection(context['columns']):
+            raise ValueError('A column must have exactly one declared context')
+        owned.update(context['columns'])
+        referenced.update(context['columns'])
+        referenced.update(context['grain_columns'])
+    if columns is not None:
+        missing = referenced.difference(columns)
+        if missing:
+            raise ValueError(f'Metadata references missing Parquet columns: {sorted(missing)}')
+
+
 def validate(document: dict, *, path: Path | None = None, check_code: bool = True) -> dict:
     validator().validate(document)
     if path is not None:
@@ -131,8 +152,7 @@ def validate(document: dict, *, path: Path | None = None, check_code: bool = Tru
             allowed = ('fiscal/layouts/', f'fiscal/jurisdictions/{document["target"]["jurisdiction"]}/layouts/')
             if not conversion['converter'].startswith(allowed) or not conversion['converter'].endswith('/convert.py'):
                 raise ValueError('Converter must be a shared or target-local layout entry')
-            for dependency in [conversion['converter'], *conversion.get('dependencies', [])]:
-                code_path(dependency)
+            code_path(conversion['converter'])
             schema_path = code_path(options_schema(conversion))
             jsonschema.Draft202012Validator(json.loads(schema_path.read_text())).validate(conversion['options'])
     seen: set[str] = set()
@@ -143,19 +163,10 @@ def validate(document: dict, *, path: Path | None = None, check_code: bool = Tru
         seen.add(ident)
         if table['object']['key'] != object_key(document, ident):
             raise ValueError('Saved table key differs from its target/direction/table ID')
-        if len({column['name'] for column in table['schema']}) != len(table['schema']):
-            raise ValueError('Duplicate Parquet column')
-        if table['row_count'] == 0 and not table['empty_confirmed']:
-            raise ValueError('Zero-row saved table needs an explicit empty-table confirmation')
-        if 'origins' in table:
-            shas = [origin['sha256'] for origin in table['origins']]
-            wanted = {item['sha256'] for item in conversions[table['conversion_id']]['inputs']}
-            if len(set(shas)) != len(shas) or set(shas) != wanted:
-                raise ValueError('Saved original sizes differ from conversion inputs')
-    if document['status'] == 'ready' and seen != set(expected):
-        raise ValueError('Ready manifest must contain every expected table')
-    if document['status'] == 'planned' and document['tables']:
-        raise ValueError('A planned manifest cannot claim saved tables')
+        if 'metadata' in table:
+            validate_metadata(table['metadata'])
+    if seen and seen != set(expected):
+        raise ValueError('Saved manifest must contain every expected table')
     return document
 
 
@@ -170,13 +181,11 @@ def selection_for(document: dict) -> dict:
     if len(matches) != 1 or not matches[0].get('archive'):
         raise ValueError('Ingestion requires one selected, archived source target')
     selected = matches[0]
-    if selected['selected_candidate_id'] != document['candidate_id']:
-        raise ValueError('Selected candidate changed; update the conversion plan')
-    if len(selected['candidates']) != 1 or selected['candidates'][0]['id'] != document['candidate_id']:
+    if len(selected['candidates']) != 1 or selected['candidates'][0]['id'] != selected['selected_candidate_id']:
         raise ValueError('Selected source must contain exactly its chosen candidate')
     archive = selected['archive']
     files = selected['candidates'][0]['files']
-    if archive['bucket'] != BUCKET or archive['candidate_id'] != document['candidate_id'] or len(files) != len(archive['files']):
+    if archive['bucket'] != BUCKET or archive['candidate_id'] != selected['selected_candidate_id'] or len(files) != len(archive['files']):
         raise ValueError('Original archive differs from the selected candidate')
     shas = set()
     keys = set()
@@ -223,18 +232,7 @@ def resolved_inputs(document: dict, conversion: dict, selection: dict | None = N
     return result
 
 
-def runtime(conversion: dict) -> dict[str, str]:
-    import platform
-    import sys
-    import duckdb
-    result = {'python': sys.version, 'duckdb': duckdb.__version__}
-    if 'lib/vision_ocr.py' in dependencies(conversion):
-        result.update(os=platform.platform(), os_build=platform.version())
-    return result
-
-
-def fingerprints(document: dict, conversions: list[dict] | None = None,
-                 runtimes: dict[str, dict] | None = None) -> dict[str, str]:
+def fingerprints(document: dict, conversions: list[dict] | None = None) -> dict[str, str]:
     selected = selection_for(document)
     hashes = {}
     result = {}
@@ -245,28 +243,21 @@ def fingerprints(document: dict, conversions: list[dict] | None = None,
             if path not in hashes:
                 hashes[path] = sha_file(code_path(path))
         material = {'target': document['target'], 'direction': document['direction'],
-                    'candidate_id': document['candidate_id'], 'conversion': conversion,
+                    'conversion': conversion,
                     'origins': [{k: item[k] for k in ('sha256', 'format', 'scope', 'pdf_type')} for item in origins],
-                    'code': [{'path': path, 'sha256': hashes[path]} for path in files],
-                    'runtime': runtime(conversion) if runtimes is None else runtimes[conversion['id']]}
+                    'code': [{'path': path, 'sha256': hashes[path]} for path in files]}
         result[conversion['id']] = hashlib.sha256(canonical(material)).hexdigest()
     return result
 
 
-def fingerprint(document: dict, conversion: dict, *, used_runtime: dict | None = None) -> str:
-    return fingerprints(document, [conversion], None if used_runtime is None else {conversion['id']: used_runtime})[conversion['id']]
+def fingerprint(document: dict, conversion: dict) -> str:
+    return fingerprints(document, [conversion])[conversion['id']]
 
 
 def require_current(document: dict) -> None:
-    if document['status'] != 'ready':
+    if not document['tables']:
         raise ValueError('Manifest has no complete saved table set')
-    runtimes = {}
-    for table in document['tables']:
-        if 'runtime' in table:
-            previous = runtimes.setdefault(table['conversion_id'], table['runtime'])
-            if previous != table['runtime']:
-                raise ValueError('One conversion has inconsistent execution conditions')
-    values = fingerprints(document, runtimes=runtimes if len(runtimes) == len(document['conversions']) else None)
+    values = fingerprints(document)
     for table in document['tables']:
         if table['input_fingerprint'] != values[table['conversion_id']]:
             raise ValueError(f'Stale saved table: {table["table_id"]}')

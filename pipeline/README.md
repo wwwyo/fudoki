@@ -43,56 +43,33 @@ bun run ingestion:cleanup --manifest "$TARGET"
 
 CSV用と既存の見開きPDF用の入口は `fiscal/layouts/csv/` と `fiscal/layouts/statement/`。他の書式は `convert(inputs, destination, options)` と同じフォルダの `options.schema.json` を定義し、受け取った原典から表IDとローカルParquetの対応を返す。既存表の移行用 `retained` は原典から再抽出するコードではない。移動した旧抽出器のCLIはローカル候補用に残す。
 
-管理JSONは `schema_version: 2` で、`expected_tables` は表IDだけを持つ。`inputs` は原典SHAだけを持ち、形式・会計・ページ範囲はselectionから解決する。変換設定と保存表の属性を管理し、dbt用の宣言は含めない。`options.schema.json` は変換器と同じフォルダから読み、追加の動的依存ファイルがある場合だけ `dependencies` を指定する。`declaration`・`definition_files`・`legacy_path` を戻すとschema検査で拒否する。
+管理JSONは `schema_version: 1` で、`expected_tables` は表IDだけを持つ。`inputs` は原典SHAだけを持ち、形式・会計・ページ範囲はselectionから解決する。変換設定と保存表の属性を管理し、dbt用の宣言は含めない。列名・型はParquetから取得し、管理JSONには保存しない。`options.schema.json` は変換器と同じフォルダから読む。原典の選定候補はselectionから取得し、保存完了は全表の登録で判定する。`declaration`・`definition_files`・`legacy_path` を戻すとschema検査で拒否する。
+
+原典で確認した単位・注記・列の所属と粒度・原典内の役割の解釈は、保存表の任意項目 `tables[].metadata` に保持する。正本は [manifest.schema.json](ingestion/fiscal/manifest.schema.json)、具体例は [保存設計](../docs/prd/ingestion-storage/design-doc.md)。変換器は表IDの値としてパスだけ、または `{"path": path, "metadata": metadata}` を返す。管理側が実際のParquet列への参照を検査する。補足情報が未確認の既存表には推定で追加しない。集計方法・単位換算・共通分類は後段で扱う。
 
 設計と失敗時の再実行は [保存設計](../docs/prd/ingestion-storage/design-doc.md)、旧表の移行範囲は [移行記録](../docs/prd/ingestion-storage/migration.md)、CSV・text PDF・scan PDFの作業は [ingestion手順](../.agents/skills/pipeline/references/ingestion.md) を参照する。
 
-## 保存済みParquetと確定済み宣言から構築する
+## 自治体の取り込みJSONとParquetを後段へ渡す
 
-ツールは root の mise、依存は Bun と uv で管理する。Python は3.13。 repo rootから実行する。
-
-`DECLARATIONS` は受け取った確定済み宣言ディレクトリの絶対パスで、dbt用の `sources.json`（出典・意味）と `history.json`（予算履歴）の行配列を置く。履歴がなければ `[]` を渡す。`FUDOKI_INPUT_DECLARATIONS_DIR` でも指定できる。取り込み表の対象別JSONと、この宣言JSONは用途が異なる。 Cからこのディレクトリへの宣言出力の接続は未完了である。
+Fの入口は `ingestion/fiscal/jurisdictions/<団体>/<年度>/<資料区分>/<方向>.json`。別の `sources.json`・`history.json`、宣言ディレクトリ、Cの再実行は要求しない。
 
 ```bash
-mise install
-bun install --frozen-lockfile
-uv sync --frozen
 bun run pipeline:inputs
-bun run pipeline:build --declarations "$DECLARATIONS"
-bun run pipeline:build --declarations "$DECLARATIONS" --rebuild
 ```
 
-`pipeline:inputs` は対象別JSONに登録された現在のParquetをprivate R2から復元し、SHA・サイズを照合する。原典・OCR・Cの検査や旧補助証拠の復元は実行しない。必要な表が欠けた場合は停止し、自治体サイトの最新版で補わない。
+入力準備だけを確認する場合は `pipeline/` で実行する。
 
-`build_inputs.py` は宣言の団体・年度・方向・資料種類と、その範囲の原典または表のSHA集合への所属を照合し、ParquetとJSONを `.cache/inputs/<入力fingerprint>/` にコピーして固定する。`raw/` はdbtへの入力、`declarations/` は渡されたJSON、`catalog.json` は管理JSON・表・原典参照との対応を保持する。補正号・会計・個別表と宣言の1対1対応をこの入口で認定するものではない。
+```bash
+uv run python -m build_inputs prepare --manifest <対象JSON>
+```
 
-既存表のdbt用partitionは `dbt/inputs/<団体>/<年度>/<資料区分>/<方向>.json` が表IDごとに保持する。対応JSONは `schema_version: 1` で、表の項目は `table_id` と `raw_path` だけ。出典・意味は受け取った `sources.json`・`history.json` で扱う。型は [bindings.schema.json](dbt/inputs/bindings.schema.json)、検査は `bun run --cwd pipeline dbt:inputs:check`。取り込みJSONには戻さない。F側の宣言・コードを変えても、取り込み表のfingerprintやParquetの再生成条件は変えない。初期予算の管理値 `initial` は既存dbtの `document_kind=budget` に対応する。dbt用宣言JSONでもこの既存値を使う。
+`pipeline:inputs` は対象別JSONに登録されたParquetをprivate R2から復元する。`build_inputs prepare` はネットワークを使わず、管理JSON全体・selectionから解決した原典情報・F側の配置対応・Parquetを `.cache/inputs/<入力fingerprint>/` に固定する。表・原典・対象の対応は `catalog.json`、dbtへの表は `raw/` に保存する。表のSHA・サイズと準備中の参照変更を検査し、再利用時も照合する。catalogは再生成可能なローカル入力一覧であり、GitやR2へ保存する別の管理情報ではない。
 
-対象を絞る場合は復元と構築の両方に同じ `--manifest <対象JSON>` を繰り返して渡す。ただしdbtモデルの選択は自動で絞らない。既存モデルに必要な補助表が欠けた場合は空表で補わず、入力とモデル範囲を確認する。
+既存表のdbt用partitionは `dbt/inputs/<団体>/<年度>/<資料区分>/<方向>.json` が表IDごとに保持する。項目は `table_id` と `raw_path` だけ。型は [bindings.schema.json](dbt/inputs/bindings.schema.json)、検査は `bun run --cwd pipeline dbt:inputs:check`。管理値 `initial` は既存dbtの `document_kind=budget` に対応する。
 
-`build.ts` は固定した入力を使い、ネットワークなしで dbt の変換・検査と marts の CSV 生成を実行する。Cの宣言生成処理は呼ばない。結果は `.build/builds/b-<内部構築ID>/` に入る。毎回 `.build/workspace/` を作り直し、同じ構築 ID があれば CSV のハッシュを照合する。`--rebuild` でも同じ検査を行う。`.build/warehouse.duckdb` は検証画面用の再生成可能な DB である。構築IDには入力JSON・表の参照と宣言JSONの内容を含める。
+Fは `bun run pipeline:build` で構築する。旧 `sources.json`・`history.json` の直接読み取りと、その依存先の381モデル・5検査は削除した。旧JSONの存在を要求する構築前の停止処理も削除した。残った152モデルは既存のdbt設定・Parquet・共通マスタを使う。単位・金額段階・階層の解釈を一律にCの別ファイルへ要求しない。
 
-通常監査G・検証報告は旧入力一覧を参照する経路が残る。新しいFの結果をそのまま旧Gの全量検証済みと扱わない。Cの宣言出力先と実データでの全量構築は別途確認する。
-
-財政の表は `dbt/models/marts/records/`、団体別 CSV は `dbt/models/marts/csv/` で定義する。任意の FDP descriptor 整形は `bun run pipeline:fdp` で実行できる。公開 web・API・MCP・docs は一時的に HTTP 500 を返す。
-
-千代田区の当初予算は右頁の事業別説明と左頁の目×節別内訳が独立した分解になっている。
-左頁の観測は `statement-moku-setsu/` の固定入力から `fiscal_initial_expenditure_moku_setsu` と
-`131016/initial_expenditure_moku_setsu.csv` へ渡す。粒度は `independent-moku-setsu` で、
-原典の節コード・名称・金額・頁・bboxを保持する。`explanation_dataset_id` は同じ原典の
-事業別説明datasetへの参照で、事業×節の対応を表さない。両CSVの金額を足し合わせない。
-原典に節がない目を補完せず、原典に印字された範囲を保持する。
-
-2026-10-04のPDF拡張では新規45会計年度90方向表と上記16側表を固定入力へ追加した。
-従来106入力はそのバイト列・識別子を維持し、既存一般会計に `table=fund-general` を
-重複採用していない。新規表だけ dataset/明細IDに表IDを追加する。年度・会計・頁・公式URLと
-文字層の不備による未採用範囲は各団体の取り込みノートを参照する。全体buildの完了とは別である。
-
-提供モデルは決算・当初予算・変更・対応を分ける。決算明細は実績の `amount` 一つを持ち、歳出の COFOG コード・状態・根拠は明細・変更と同じ CSV に含める。歳出の分類は当面 COFOG のみとし、GFSM は提供しない。歳出の当初予算は確認できた対象を事業×歳出の節へ集約し、節の参照は `expenditure_setsu_id`（`fiscal_expenditure_setsu_master`）、節より下の内訳と原典行の対応は `details_json` に保持する。対応を確認できない行は原典行の粒度（`line_granularity = origin_line`、`expenditure_setsu_id = NULL`）で残す。原典の節コード・名称は取り込み・内部検証と `details_json` の内訳経路に残し、歳入の節は財源の内訳として保持する。規則ファイル・規則 ID は公開しない。原典の複数金額列は取り込み表と候補の `internal/fiscal/` に残し、公開する実績と混在させない。
-
-狛江市2023年度一般会計の商工業振興費・予備費は、当初2件・補正3件・決算との集合対応10件を収録している。第1〜7号の採用版と適用日を保持し、当初＋補正の小計と決算書の報告予算現額の差を内部検証報告に残す。目単位であり歳出の節への対応は未確認。繰越・充用・流用と他対象の変更は未収録なので、datasetの `coverage_json.budgetHistory` は `unconfirmed` とする。詳細は [補正予算の設計](../docs/prd/fiscal-budget-history/design-doc.md) を参照。
-
-歳出の節マスタ `fiscal_expenditure_setsu_master` と事業×歳出の節への集約は実装済みである。節マスタは `packages/fiscal/setsu-master.ts` の Git 定義（地方自治法施行規則 別記の現行28区分と改正前の旧体系・適用期間つき）から生成し、原典の節名称との対応は `pipeline/dbt/seeds/fiscal/expenditure_setsu_map.csv` に宣言する。集約の規則は `int_expenditure_setsu_lines`・`int_expenditure_setsu_groups` が正本であり、同じ経路・追加区分・節で分類（COFOG・連結判断）を共有する末端行だけをまとめる。契約と検査条件は [財政データの設計](../docs/prd/fiscal-records/design-doc.md) を参照。
+`--manifest <対象JSON>` は入力範囲だけを指定し、モデルの実行範囲は自動で絞らない。構築成功時は `.build/builds/<構築ID>/` にCSVを保存し、同じ構築IDの再実行ではハッシュを照合する。旧処理で生成した全202CSVが残ったモデルで再生成されるとは扱わない。原典・取り込みParquetを削除する操作ではなく、旧モデルと検査の廃止である。
 
 ## ローカルで原典との対応を確認する
 

@@ -1,13 +1,11 @@
 {
-  "schema_version": 2,
+  "schema_version": 1,
   "target": {
     "jurisdiction": "132241",
     "fiscal_year": 2023,
     "document_kind": "initial"
   },
   "direction": "revenue",
-  "candidate_id": "representative",
-  "status": "ready",
   "conversions": [
     {
       "id": "raw-4fcc766d1754b23a",
@@ -62,168 +60,24 @@
     {
       "table_id": "raw-4fcc766d1754b23a",
       "conversion_id": "raw-4fcc766d1754b23a",
-      "input_fingerprint": "63d5ed27f9c632ff73bbcbe741d860e71a173f9743c10a7e710275e6f2cf2df3",
+      "input_fingerprint": "c0afdc5a44ead0b41c946b20088fe762cde5eede878db5e91cbb86d93a1b6e5e",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2023/initial/revenue/raw-4fcc766d1754b23a.parquet",
         "sha256": "8aaaeb4a08ea075c4155b820158ddf7e48656ecc92e575e5741e55742c0fe73f",
         "bytes": 11016
       },
-      "row_count": 98,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "年度",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "会計名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "細節",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "細節名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "予算額",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_record",
-          "type": "VARCHAR"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "60b60504fb0297c2b50f4b12b4b0e9bfb6d289ab0abf2724a51ec3a254c6d098",
-          "bytes": 11676
-        }
-      ]
+      "row_count": 98
     },
     {
       "table_id": "raw-962f0d0cd7735a4a",
       "conversion_id": "raw-962f0d0cd7735a4a",
-      "input_fingerprint": "09e9f24ab5972b26d3e006d6b1eae7a93c59b2020ddedff9c7490471c7a3c2b9",
+      "input_fingerprint": "6043f9b00597707e8e92ea25728c2ffff36329459ca8f1fb8bd3df4ed739b0f9",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2023/initial/revenue/raw-962f0d0cd7735a4a.parquet",
         "sha256": "066a989939792918a2ea993b4b5d18ea3aadcc3964541464beec0f21d3c70404",
         "bytes": 18244
       },
-      "row_count": 469,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "年度",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "会計名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "細節",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "細節名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "予算額",
-          "type": "VARCHAR"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "9df4468f195127ebb5f578b90e0cc1606d277ad6fad03cc5f677f806156be219",
-          "bytes": 50176
-        }
-      ]
+      "row_count": 469
     }
   ]
 }

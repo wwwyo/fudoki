@@ -1,4 +1,4 @@
-import { mkdir, writeFile, readFile } from 'node:fs/promises'
+import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { loadJurisdictions } from '@fudoki/jurisdictions'
 import { cofogMaster } from '@fudoki/fiscal/cofog-master'
@@ -6,7 +6,7 @@ import { expenditureSetsuMaster } from '@fudoki/fiscal/setsu-master'
 import { BY_JURISDICTION } from './ingestion/fiscal/metadata'
 import { BUILD } from './runtime_paths'
 
-export async function writeDeclarations(inputDirectory: string) {
+export async function writeDeclarations() {
   const directory = join(BUILD, 'declarations')
   await mkdir(directory, { recursive: true })
   await writeFile(
@@ -46,14 +46,5 @@ export async function writeDeclarations(inputDirectory: string) {
     join(directory, 'jurisdiction_master.json'),
     JSON.stringify(jurisdictions)
   )
-  const sourcesBody = await readFile(join(inputDirectory, 'sources.json'), 'utf8')
-  const historyBody = await readFile(join(inputDirectory, 'history.json'), 'utf8')
-  const sources = JSON.parse(sourcesBody) as { jurisdiction_code: string }[]
-  for (const source of sources) {
-    if (!BY_JURISDICTION[source.jurisdiction_code])
-      throw new Error(`Missing public metadata: ${source.jurisdiction_code}`)
-  }
-  await writeFile(join(directory, 'sources.json'), sourcesBody)
-  await writeFile(join(directory, 'history.json'), historyBody)
   return directory
 }

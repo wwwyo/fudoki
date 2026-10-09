@@ -16,6 +16,15 @@ dependencies = [
     "xlrd==2.0.2",
 ]
 
+[project.optional-dependencies]
+paddle-ocr = [
+    "numpy==2.3.5",
+    "paddleocr==3.7.0",
+    "paddlepaddle==3.3.1",
+    "paddlex==3.7.2",
+    "pillow==12.3.0",
+]
+
 [build-system]
 requires = ["uv_build==0.12.19"]
 build-backend = "uv_build"

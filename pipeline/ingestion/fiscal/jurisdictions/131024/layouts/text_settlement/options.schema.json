@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "account": {"type": "string", "minLength": 1},
+    "detail_pages": {"type": "array", "items": {"type": "integer", "minimum": 1}, "minItems": 2, "maxItems": 2},
+    "table_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,95}$"},
+    "reserve_kan": {"type": "string", "pattern": "^[0-9]+$"},
+    "output_role": {"type": "string", "enum": ["detail", "reserve", "lending"]},
+    "personnel_breakdown": {"type": "boolean"},
+    "unexplained_section_detail": {"type": "boolean"},
+    "reserve_table_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,95}$"},
+    "lending_table_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,95}$"}
+  },
+  "required": ["account", "detail_pages", "table_id"]
+}

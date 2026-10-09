@@ -88,9 +88,8 @@ def plan(lock: dict) -> tuple[list[dict], dict]:
             continue
         target = selection['target']
         key = tuple([json.dumps(target, sort_keys=True), entry['direction']])
-        document = documents.setdefault(key, {'schema_version': 2, 'target': target,
-                    'direction': entry['direction'], 'candidate_id': selection['selected_candidate_id'],
-                    'status': 'planned', 'conversions': [], 'tables': []})
+        document = documents.setdefault(key, {'schema_version': 1, 'target': target,
+                    'direction': entry['direction'], 'conversions': [], 'tables': []})
         ident = distinct_table_id(entry, scopes, assigned[key])
         if ident is None:
             held.append({'path': entry['path'], 'reason': 'ambiguous_stable_table_identity'})
@@ -114,11 +113,11 @@ def plan(lock: dict) -> tuple[list[dict], dict]:
                     'dbt_bindings': list(bindings.values())}
 
 
-def import_tables(document: dict, *, remote: bool, origin_sizes: dict[str, int], extend_plans: bool = False) -> dict:
+def import_tables(document: dict, *, remote: bool, extend_plans: bool = False) -> dict:
     path = manifest.manifest_path(document['target'], document['direction'])
     if path.exists():
         existing = manifest.read(path)
-        if existing['status'] == 'ready' and existing['conversions'] == document['conversions']:
+        if existing['tables'] and existing['conversions'] == document['conversions']:
             manifest.require_current(existing)
             return {'status': 'already_saved', 'tables': len(existing['tables'])}
         if existing['conversions'] != document['conversions']:
@@ -132,12 +131,10 @@ def import_tables(document: dict, *, remote: bool, origin_sizes: dict[str, int],
         for reference in conversion['options']['objects']:
             source = fetch(reference, remote=remote)
             table = table_receipt(document, conversion, reference['table_id'], source,
-                                  input_fingerprint=before[conversion['id']],
-                                  origins=[{'sha256': item['sha256'], 'bytes': origin_sizes[item['sha256']]}
-                                           for item in conversion['inputs']])
+                                  input_fingerprint=before[conversion['id']])
             prepared.append((table, source))
     result = deepcopy(document)
-    result.update(status='ready', tables=[item[0] for item in prepared])
+    result['tables'] = [item[0] for item in prepared]
     manifest.validate(result)
     if before != manifest.fingerprints(document):
         raise ValueError('Input conditions changed during table import')
@@ -162,12 +159,6 @@ def main() -> None:
     documents, report = plan(lock)
     from dbt_inputs import path_for, write as write_bindings
     bindings = {path_for(binding): binding for binding in report['dbt_bindings']}
-    origin_sizes = {}
-    for entry in lock['entries']:
-        sha, size = entry['originEdition'], entry['origin']['object']['bytes']
-        if sha in origin_sizes and origin_sizes[sha] != size:
-            raise ValueError('Conflicting legacy original byte sizes')
-        origin_sizes[sha] = size
     args.report.parent.mkdir(parents=True, exist_ok=True)
     args.report.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
     saved = 0
@@ -178,7 +169,7 @@ def main() -> None:
         if args.write_plans and not path.exists():
             manifest.write(path, document)
         if args.remote:
-            result = import_tables(document, remote=True, origin_sizes=origin_sizes, extend_plans=args.extend_plans)
+            result = import_tables(document, remote=True, extend_plans=args.extend_plans)
             saved += result['tables']
             print(json.dumps({'manifest': str(path.relative_to(PIPELINE)), **result}), flush=True)
     print(json.dumps({key: value for key, value in report.items() if key not in ('held', 'dbt_bindings')}

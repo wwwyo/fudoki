@@ -1,13 +1,11 @@
 {
-  "schema_version": 2,
+  "schema_version": 1,
   "target": {
     "jurisdiction": "132047",
     "fiscal_year": 2019,
     "document_kind": "initial"
   },
   "direction": "revenue",
-  "candidate_id": "representative",
-  "status": "ready",
   "conversions": [
     {
       "id": "raw-2ae43f999552d835",
@@ -38,63 +36,13 @@
     {
       "table_id": "raw-2ae43f999552d835",
       "conversion_id": "raw-2ae43f999552d835",
-      "input_fingerprint": "5fcdf69881d4f16a72d87ba981be2541e8f0861988a46daae39d40ab47aef69f",
+      "input_fingerprint": "6c6cb075ce294ad151911ef24ca4243133d828f1460ba22f022d99dfe2cc4bbc",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132047/2019/initial/revenue/raw-2ae43f999552d835.parquet",
         "sha256": "68883337c4971e91ddb704d11cc68e7b1cc35e8609b6481ae579c3a4ea3a9348",
         "bytes": 26596
       },
-      "row_count": 761,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "01会計",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "02款",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "03項",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "04目",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "05節",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "06細節",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "07細々節",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "08予算額",
-          "type": "VARCHAR"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "4c963171f838340144527370ba01c1807bb3bb1427cda5ee1f6d12b4c3b9be05",
-          "bytes": 88418
-        }
-      ]
+      "row_count": 761
     }
   ]
 }

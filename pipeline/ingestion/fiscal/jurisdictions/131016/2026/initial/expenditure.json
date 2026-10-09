@@ -1,13 +1,11 @@
 {
-  "schema_version": 2,
+  "schema_version": 1,
   "target": {
     "jurisdiction": "131016",
     "fiscal_year": 2026,
     "document_kind": "initial"
   },
   "direction": "expenditure",
-  "candidate_id": "representative",
-  "status": "ready",
   "conversions": [
     {
       "id": "raw-2ae43f999552d835",
@@ -206,790 +204,90 @@
     {
       "table_id": "raw-2ae43f999552d835",
       "conversion_id": "raw-2ae43f999552d835",
-      "input_fingerprint": "beeb01704858741f18955cd75a187157b3ee7581072671636dfdd21f2623ed6b",
+      "input_fingerprint": "72b1a34f9fcab2749c217ba6a2012e457dd93269ca236b474b572385e70fd5eb",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/131016/2026/initial/expenditure/raw-2ae43f999552d835.parquet",
         "sha256": "4c004d4cbd21ef9bb9e02ccfd5a951788a9c9d73684d90f10e85ed297f1980a5",
         "bytes": 21717
       },
-      "row_count": 810,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "会計名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "事業名",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "内訳名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "本年度予算額",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "reconciled",
-          "type": "BOOLEAN"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
-          "bytes": 3444027
-        }
-      ]
+      "row_count": 810
     },
     {
       "table_id": "raw-c095865441951563",
       "conversion_id": "raw-c095865441951563",
-      "input_fingerprint": "b5b8f199193fd4235ce20c8af63eb9e454381f27d9845a7b6f8750e2533807b6",
+      "input_fingerprint": "22e6786f87a0996fad5e8a07d7b2705dd80c344035bd6531cb35f18e963ab863",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/131016/2026/initial/expenditure/raw-c095865441951563.parquet",
         "sha256": "9a3fa0a54c7472d08deeb46e4eef5a0f755e9bb55921016b86359b8204eac234",
         "bytes": 7121
       },
-      "row_count": 69,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "会計名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "事業名",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "内訳名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "本年度予算額",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "reconciled",
-          "type": "BOOLEAN"
-        },
-        {
-          "name": "source_page",
-          "type": "INTEGER"
-        },
-        {
-          "name": "source_bbox",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_table_id",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_amount_unit",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_fiscal_year",
-          "type": "INTEGER"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
-          "bytes": 3444027
-        }
-      ]
+      "row_count": 69
     },
     {
       "table_id": "raw-e3938769d17e1933",
       "conversion_id": "raw-e3938769d17e1933",
-      "input_fingerprint": "90846d1cf4211ccec0538cd8cf90071fb30aafb25ae70ebf6a743e37c4b8ac16",
+      "input_fingerprint": "dd599f2004e38b493d4322080c6492b679a5c9a0845f440732eacff3f034e004",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/131016/2026/initial/expenditure/raw-e3938769d17e1933.parquet",
         "sha256": "e34b45a2d65240da79ede8c94074a393afc9805ccba3402a71902fcb26c0fad5",
         "bytes": 4374
       },
-      "row_count": 11,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "会計名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "事業名",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "内訳名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "本年度予算額",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "reconciled",
-          "type": "BOOLEAN"
-        },
-        {
-          "name": "source_page",
-          "type": "INTEGER"
-        },
-        {
-          "name": "source_bbox",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_table_id",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_amount_unit",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_fiscal_year",
-          "type": "INTEGER"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
-          "bytes": 3444027
-        }
-      ]
+      "row_count": 11
     },
     {
       "table_id": "raw-a7584fa57e52a19d",
       "conversion_id": "raw-a7584fa57e52a19d",
-      "input_fingerprint": "77d62a43aa723ba58484451d87f08c8cce277e779ff6ae338390278fca6633df",
+      "input_fingerprint": "0af149b5ee914ad5a7dbade2a2aa8fba7059096b19733cc470bfd2807c38502e",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/131016/2026/initial/expenditure/raw-a7584fa57e52a19d.parquet",
         "sha256": "ef657ac4f8621d7d62f3f6eed35c3435a4edf9b24d2d939d737bc0b80ec3ef34",
         "bytes": 5886
       },
-      "row_count": 33,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "会計名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "事業名",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "内訳名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "本年度予算額",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "reconciled",
-          "type": "BOOLEAN"
-        },
-        {
-          "name": "source_page",
-          "type": "INTEGER"
-        },
-        {
-          "name": "source_bbox",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_table_id",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_amount_unit",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_fiscal_year",
-          "type": "INTEGER"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
-          "bytes": 3444027
-        }
-      ]
+      "row_count": 33
     },
     {
       "table_id": "statement-moku-setsu-9f563c2a5cc6247a",
       "conversion_id": "statement-moku-setsu-9f563c2a5cc6247a",
-      "input_fingerprint": "dee37533ecddcad90abf32fbb2103b35ac11c30a6c99790d772b0339f8aed86b",
+      "input_fingerprint": "b1b0fec5069acc247c8ce9ce275844819b638718964f53b8f1c5a1f957c3af27",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/131016/2026/initial/expenditure/statement-moku-setsu-9f563c2a5cc6247a.parquet",
         "sha256": "2633cfd19686059ecf7222a3036585edb1e453a0323c7ffc594ba784cccb6d92",
         "bytes": 6469
       },
-      "row_count": 66,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "会計名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "事業名",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "内訳名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "本年度予算額",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "reconciled",
-          "type": "BOOLEAN"
-        },
-        {
-          "name": "source_page",
-          "type": "INTEGER"
-        },
-        {
-          "name": "source_bbox",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_table_id",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_amount_unit",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_fiscal_year",
-          "type": "INTEGER"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
-          "bytes": 3444027
-        }
-      ]
+      "row_count": 66
     },
     {
       "table_id": "statement-moku-setsu-d1639a735856ae62",
       "conversion_id": "statement-moku-setsu-d1639a735856ae62",
-      "input_fingerprint": "2e0d689fe4539f586e1f94c13bfb0f182345f2dac0087da971b7a7e3fbd7dc62",
+      "input_fingerprint": "41add53386fe568f0fa36c4361574e6885ed626d56e147f62c97d323fa04f23e",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/131016/2026/initial/expenditure/statement-moku-setsu-d1639a735856ae62.parquet",
         "sha256": "0d6d2af331b0afb0801103e8c59e751933f12989d72a4e850e0a946bba737e91",
         "bytes": 4520
       },
-      "row_count": 17,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "会計名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "事業名",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "内訳名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "本年度予算額",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "reconciled",
-          "type": "BOOLEAN"
-        },
-        {
-          "name": "source_page",
-          "type": "INTEGER"
-        },
-        {
-          "name": "source_bbox",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_table_id",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_amount_unit",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_fiscal_year",
-          "type": "INTEGER"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
-          "bytes": 3444027
-        }
-      ]
+      "row_count": 17
     },
     {
       "table_id": "statement-moku-setsu-13fed814274b13db",
       "conversion_id": "statement-moku-setsu-13fed814274b13db",
-      "input_fingerprint": "a140de7697212812beae5fa6e26714ef608fd4eef5b16e08b3f13f42d047c053",
+      "input_fingerprint": "d753abd1e165dedaeba7d1e292ee08b27934832d0682542f0556630a2e3c7ec6",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/131016/2026/initial/expenditure/statement-moku-setsu-13fed814274b13db.parquet",
         "sha256": "e75ff4623415ee62ba0d23d06da6c30b3fa743245c9fb526398071a5a5d3ba60",
         "bytes": 11885
       },
-      "row_count": 550,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "会計名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "事業名",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "内訳名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "本年度予算額",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "reconciled",
-          "type": "BOOLEAN"
-        },
-        {
-          "name": "source_page",
-          "type": "INTEGER"
-        },
-        {
-          "name": "source_bbox",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_table_id",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_amount_unit",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_fiscal_year",
-          "type": "INTEGER"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
-          "bytes": 3444027
-        }
-      ]
+      "row_count": 550
     },
     {
       "table_id": "statement-moku-setsu-4c33a13276569c8e",
       "conversion_id": "statement-moku-setsu-4c33a13276569c8e",
-      "input_fingerprint": "bdb5ae3724d223da0d3a8bd4a28be7e53c0e37aa9382724c00c27149dd9adc91",
+      "input_fingerprint": "1cbb4506f9abfa1df6f49005ab015c7b60d034757ca76081aee64d6ee60dd9da",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/131016/2026/initial/expenditure/statement-moku-setsu-4c33a13276569c8e.parquet",
         "sha256": "c96866d583796bfc353df1b3fef0282fb3d4f84ce9e1a1fa0eeee071700d8c38",
         "bytes": 5604
       },
-      "row_count": 47,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "会計名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "事業名",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "内訳名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "本年度予算額",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "reconciled",
-          "type": "BOOLEAN"
-        },
-        {
-          "name": "source_page",
-          "type": "INTEGER"
-        },
-        {
-          "name": "source_bbox",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_table_id",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_amount_unit",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_fiscal_year",
-          "type": "INTEGER"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "bbb4dee3ef9bde7b2d7db4544e066d591347bb8d261fc18f0c20fd2b85695d49",
-          "bytes": 3444027
-        }
-      ]
+      "row_count": 47
     }
   ]
 }

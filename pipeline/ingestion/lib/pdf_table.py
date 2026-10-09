@@ -124,11 +124,11 @@ def tokens_from_bbox_layout(xml: str | bytes, *, origin_id: str,
     return tuple(result)
 
 
-def tokens_from_vision(result: dict, *, kind: str, region_ids: Sequence[str],
-                       unit: str = "pt") -> tuple[Token, ...]:
+def tokens_from_ocr(result: dict, *, kind: str, region_ids: Sequence[str],
+                    unit: str = "pt") -> tuple[Token, ...]:
     """Select exactly one observation level to avoid parent/child double counting."""
     if kind not in ("region", "word", "number") or unit not in ("pt", "px"):
-        raise ValueError("Choose one Vision kind and pt/px coordinates")
+        raise ValueError("Choose one OCR kind and pt/px coordinates")
     selected = set(region_ids)
     if not selected or len(selected) != len(region_ids):
         raise ValueError("Choose distinct region ids explicitly")
@@ -150,6 +150,12 @@ def tokens_from_vision(result: dict, *, kind: str, region_ids: Sequence[str],
                                         item["raw_text"], Box(*bbox) if bbox is not None else None,
                                         unit, kind, item.get("confidence"), item.get("parent_id")))
     return tuple(tokens)
+
+
+def tokens_from_vision(result: dict, *, kind: str, region_ids: Sequence[str],
+                       unit: str = "pt") -> tuple[Token, ...]:
+    """Retain the existing Apple Vision entry point."""
+    return tokens_from_ocr(result, kind=kind, region_ids=region_ids, unit=unit)
 
 
 @dataclass(frozen=True)

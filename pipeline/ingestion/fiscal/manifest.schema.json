@@ -1,12 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://fudoki.local/schemas/ingestion-manifest-v2.json",
+  "$id": "https://fudoki.local/schemas/ingestion-manifest-v1.json",
   "title": "Fiscal ingestion conversion plan and saved tables",
   "type": "object",
   "additionalProperties": false,
   "properties": {
     "schema_version": {
-      "const": 2
+      "const": 1
     },
     "target": {
       "$ref": "#/$defs/target"
@@ -15,16 +15,6 @@
       "enum": [
         "expenditure",
         "revenue"
-      ]
-    },
-    "candidate_id": {
-      "type": "string",
-      "minLength": 1
-    },
-    "status": {
-      "enum": [
-        "planned",
-        "ready"
       ]
     },
     "conversions": {
@@ -46,8 +36,6 @@
     "schema_version",
     "target",
     "direction",
-    "candidate_id",
-    "status",
     "conversions",
     "tables"
   ],
@@ -176,14 +164,6 @@
         "converter": {
           "$ref": "#/$defs/path"
         },
-        "dependencies": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/path"
-          },
-          "uniqueItems": true,
-          "minItems": 1
-        },
         "inputs": {
           "type": "array",
           "items": {
@@ -210,23 +190,75 @@
         "expected_tables"
       ]
     },
-    "column": {
+    "column_names": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "supplement_scope": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "kind": { "const": "table" } },
+          "required": ["kind"]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": { "const": "columns" },
+            "columns": { "$ref": "#/$defs/column_names" }
+          },
+          "required": ["kind", "columns"]
+        }
+      ]
+    },
+    "supplement": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "name": {
-          "type": "string",
-          "minLength": 1
+        "text": { "type": "string", "minLength": 1 },
+        "scope": { "$ref": "#/$defs/supplement_scope" }
+      },
+      "required": ["text", "scope"]
+    },
+    "column_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "columns": { "$ref": "#/$defs/column_names" },
+        "header_path": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
         },
-        "type": {
-          "type": "string",
-          "minLength": 1
+        "grain_columns": { "$ref": "#/$defs/column_names" },
+        "semantic_role": {
+          "description": "Confirmed role within this source layout, distinct from canonical classification. project denotes a business or expense grouping; setsu denotes fiscal expenditure section.",
+          "enum": ["project", "setsu"]
         }
       },
-      "required": [
-        "name",
-        "type"
-      ]
+      "required": ["columns", "header_path", "grain_columns"]
+    },
+    "table_metadata": {
+      "description": "Confirmed original units, notes, column ownership and source-layout roles; no canonical mappings or aggregation rules.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "units": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/supplement" }
+        },
+        "notes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/supplement" }
+        },
+        "column_contexts": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/column_context" }
+        }
+      }
     },
     "table": {
       "type": "object",
@@ -245,9 +277,6 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "bucket": {
-              "const": "fudoki-inputs"
-            },
             "key": {
               "type": "string",
               "pattern": "^fiscal/ingestion/[0-9]{6}/[0-9]{4}/(?:initial|settlement|supplementary-[1-9][0-9]*)/(?:expenditure|revenue)/[a-z0-9][a-z0-9_-]{0,95}\\.parquet$"
@@ -261,7 +290,6 @@
             }
           },
           "required": [
-            "bucket",
             "key",
             "sha256",
             "bytes"
@@ -269,64 +297,10 @@
         },
         "row_count": {
           "type": "integer",
-          "minimum": 0
+          "minimum": 1
         },
-        "empty_confirmed": {
-          "type": "boolean"
-        },
-        "schema": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/column"
-          },
-          "minItems": 1
-        },
-        "origins": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "sha256": {
-                "$ref": "#/$defs/sha256"
-              },
-              "bytes": {
-                "type": "integer",
-                "minimum": 1
-              }
-            },
-            "required": [
-              "sha256",
-              "bytes"
-            ]
-          }
-        },
-        "runtime": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "python": {
-              "type": "string",
-              "minLength": 1
-            },
-            "duckdb": {
-              "type": "string",
-              "minLength": 1
-            },
-            "os": {
-              "type": "string",
-              "minLength": 1
-            },
-            "os_build": {
-              "type": "string",
-              "minLength": 1
-            }
-          },
-          "required": [
-            "python",
-            "duckdb"
-          ]
+        "metadata": {
+          "$ref": "#/$defs/table_metadata"
         }
       },
       "required": [
@@ -334,11 +308,7 @@
         "conversion_id",
         "input_fingerprint",
         "object",
-        "row_count",
-        "empty_confirmed",
-        "schema",
-        "runtime",
-        "origins"
+        "row_count"
       ]
     }
   }

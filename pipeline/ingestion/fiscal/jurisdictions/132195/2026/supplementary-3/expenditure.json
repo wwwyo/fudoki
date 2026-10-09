@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 1,
   "target": {
     "jurisdiction": "132195",
     "fiscal_year": 2026,
@@ -7,8 +7,6 @@
     "amendment_number": 3
   },
   "direction": "expenditure",
-  "candidate_id": "representative",
-  "status": "ready",
   "conversions": [
     {
       "id": "supplementary-detail-faa4d2cb8197a7c8",
@@ -39,195 +37,13 @@
     {
       "table_id": "supplementary-detail-faa4d2cb8197a7c8",
       "conversion_id": "supplementary-detail-faa4d2cb8197a7c8",
-      "input_fingerprint": "146d9477e1e47620eb9c13a3d8e4206e8cc5656dcd5c928872e238f9058353e0",
+      "input_fingerprint": "dedb589ea409c0999ea3c92f24538d35253a1b8733650076a29f0f27e87cadd5",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132195/2026/supplementary-3/expenditure/supplementary-detail-faa4d2cb8197a7c8.parquet",
         "sha256": "57c091c998af0b750e40515b0411c97953154316a5d54cb6b5eaada14fe58736",
         "bytes": 23041
       },
-      "row_count": 25,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "jurisdiction_code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "fiscal_year",
-          "type": "BIGINT"
-        },
-        {
-          "name": "fund_label",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "amendment_number",
-          "type": "BIGINT"
-        },
-        {
-          "name": "source_url",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "origin_sha256",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "origin_fetched_at",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "submitted_date",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "approval_status",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "edition_status",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "approval_date",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "approval_evidence_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "kan_code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "kou_code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "moku_code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "moku_label",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "control_moku_source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "control_moku_key",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "control_moku_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "project_source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "project_code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "project_label",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "project_printed_delta",
-          "type": "BIGINT"
-        },
-        {
-          "name": "project_evidence_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "department_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "setsu_code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "setsu_label",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "amount_delta",
-          "type": "BIGINT"
-        },
-        {
-          "name": "printed_amount_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_amount_unit",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "page_number",
-          "type": "BIGINT"
-        },
-        {
-          "name": "bbox_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_locations_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "left_setsu_evidence_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "unit_evidence_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "validation_status",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "validation_reasons_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_grain",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "observed_grain_validation_status",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "setsu_correspondence_status",
-          "type": "VARCHAR"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "86852a436956203c47c392be09741c872445d80e2091c4c83d135fa605590daa",
-          "bytes": 578903
-        }
-      ]
+      "row_count": 25
     }
   ]
 }

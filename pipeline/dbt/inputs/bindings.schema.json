@@ -9,7 +9,7 @@
       "const": 1
     },
     "target": {
-      "$ref": "https://fudoki.local/schemas/ingestion-manifest-v2.json#/$defs/target"
+      "$ref": "https://fudoki.local/schemas/ingestion-manifest-v1.json#/$defs/target"
     },
     "direction": {
       "enum": [
@@ -25,7 +25,7 @@
         "additionalProperties": false,
         "properties": {
           "table_id": {
-            "$ref": "https://fudoki.local/schemas/ingestion-manifest-v2.json#/$defs/id"
+            "$ref": "https://fudoki.local/schemas/ingestion-manifest-v1.json#/$defs/id"
           },
           "raw_path": {
             "type": "string",

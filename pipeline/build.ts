@@ -24,15 +24,11 @@ const { values: options } = parseArgs({
   args: process.argv.slice(2),
   options: {
     rebuild: { type: 'boolean' },
-    declarations: { type: 'string' },
     manifest: { type: 'string', multiple: true },
   },
 })
-const declarationInput = options.declarations ?? process.env.FUDOKI_INPUT_DECLARATIONS_DIR
-if (!declarationInput)
-  throw new Error('Supply --declarations <directory> containing the confirmed sources.json and history.json')
 const preparation = Bun.spawn([
-  'uv', 'run', 'python', '-m', 'build_inputs', 'prepare', '--declarations', declarationInput,
+  'uv', 'run', 'python', '-m', 'build_inputs', 'prepare',
   ...(options.manifest ?? []).flatMap((path) => ['--manifest', path]),
 ], { cwd: PIPELINE, stdout: 'pipe', stderr: 'inherit' })
 const preparedBody = await new Response(preparation.stdout).text()
@@ -42,13 +38,12 @@ const prepared = JSON.parse(preparedBody) as {
   inputFingerprint: string
   catalog: string
   inputs: string
-  declarations: string
   tables: number
   manifests: number
 }
 const identity = await buildIdentity(prepared.inputFingerprint)
 const candidate = join(BUILD, 'builds', identity.buildId)
-const declarations = await writeDeclarations(prepared.declarations)
+const declarations = await writeDeclarations()
 await mkdir(join(BUILD, 'builds'), { recursive: true })
 let expected: Record<string, string> | null = null
 try {
@@ -89,10 +84,10 @@ await rm(join(BUILD, 'warehouse.json'), { force: true })
 try {
   await rm(working, { recursive: true, force: true })
   await mkdir(working, { recursive: true })
-  const sources = JSON.parse(
-    await readFile(join(declarations, 'sources.json'), 'utf8')
-  ) as { jurisdiction_code: string }[]
-  for (const code of new Set(sources.map((s) => s.jurisdiction_code))) {
+  const catalog = JSON.parse(await readFile(prepared.catalog, 'utf8')) as {
+    tables: { target: { jurisdiction: string } }[]
+  }
+  for (const code of new Set(catalog.tables.map((table) => table.target.jurisdiction))) {
     await mkdir(join(working, 'fiscal', code), { recursive: true })
     await mkdir(join(working, 'internal/fiscal', code), { recursive: true })
   }

@@ -1,0 +1,511 @@
+{
+  "name": "akishima-budget-spread",
+  "body_top": 108.769,
+  "body_bottom": 756.769,
+  "row_height": 18,
+  "printed_rows": 36,
+  "right_page_offset": 1000,
+  "regions": [
+    {
+      "id": "direction",
+      "page_side": 0,
+      "bbox": [
+        56,
+        0,
+        220,
+        29
+      ],
+      "expected": "３歳出",
+      "kind": "context",
+      "parent": null
+    },
+    {
+      "id": "kan",
+      "page_side": 0,
+      "bbox": [
+        56,
+        29,
+        220,
+        42
+      ],
+      "expected": null,
+      "kind": "context",
+      "parent": null
+    },
+    {
+      "id": "kou",
+      "page_side": 0,
+      "bbox": [
+        56,
+        42,
+        220,
+        55
+      ],
+      "expected": null,
+      "kind": "context",
+      "parent": null
+    },
+    {
+      "id": "moku",
+      "page_side": 0,
+      "bbox": [
+        56,
+        56,
+        125,
+        98
+      ],
+      "expected": "目",
+      "kind": "header",
+      "parent": null
+    },
+    {
+      "id": "current",
+      "page_side": 0,
+      "bbox": [
+        125,
+        56,
+        184,
+        98
+      ],
+      "expected": "本年度予算額",
+      "kind": "header",
+      "parent": null
+    },
+    {
+      "id": "previous",
+      "page_side": 0,
+      "bbox": [
+        184,
+        56,
+        243,
+        98
+      ],
+      "expected": "前年度予算額",
+      "kind": "header",
+      "parent": null
+    },
+    {
+      "id": "difference",
+      "page_side": 0,
+      "bbox": [
+        243,
+        56,
+        302,
+        98
+      ],
+      "expected": "比較",
+      "kind": "header",
+      "parent": null
+    },
+    {
+      "id": "funding",
+      "page_side": 0,
+      "bbox": [
+        302,
+        56,
+        538,
+        72
+      ],
+      "expected": "本年度予算額の財源内訳",
+      "kind": "header",
+      "parent": null
+    },
+    {
+      "id": "special",
+      "page_side": 0,
+      "bbox": [
+        302,
+        72,
+        479,
+        85
+      ],
+      "expected": "特定財源",
+      "kind": "header",
+      "parent": "funding"
+    },
+    {
+      "id": "national",
+      "page_side": 0,
+      "bbox": [
+        302,
+        85,
+        361,
+        98
+      ],
+      "expected": "国都支出金",
+      "kind": "header",
+      "parent": "special"
+    },
+    {
+      "id": "loan",
+      "page_side": 0,
+      "bbox": [
+        361,
+        85,
+        420,
+        98
+      ],
+      "expected": "地方債",
+      "kind": "header",
+      "parent": "special"
+    },
+    {
+      "id": "other",
+      "page_side": 0,
+      "bbox": [
+        420,
+        85,
+        479,
+        98
+      ],
+      "expected": "その他",
+      "kind": "header",
+      "parent": "special"
+    },
+    {
+      "id": "general",
+      "page_side": 0,
+      "bbox": [
+        479,
+        72,
+        538,
+        98
+      ],
+      "expected": "一般財源",
+      "kind": "header",
+      "parent": "funding"
+    },
+    {
+      "id": "current_unit",
+      "page_side": 0,
+      "bbox": [
+        125,
+        98,
+        184,
+        108.769
+      ],
+      "expected": "千円",
+      "kind": "unit",
+      "parent": "current"
+    },
+    {
+      "id": "previous_unit",
+      "page_side": 0,
+      "bbox": [
+        184,
+        98,
+        243,
+        108.769
+      ],
+      "expected": "千円",
+      "kind": "unit",
+      "parent": "previous"
+    },
+    {
+      "id": "difference_unit",
+      "page_side": 0,
+      "bbox": [
+        243,
+        98,
+        302,
+        108.769
+      ],
+      "expected": "千円",
+      "kind": "unit",
+      "parent": "difference"
+    },
+    {
+      "id": "national_unit",
+      "page_side": 0,
+      "bbox": [
+        302,
+        98,
+        361,
+        108.769
+      ],
+      "expected": "千円",
+      "kind": "unit",
+      "parent": "national"
+    },
+    {
+      "id": "loan_unit",
+      "page_side": 0,
+      "bbox": [
+        361,
+        98,
+        420,
+        108.769
+      ],
+      "expected": "千円",
+      "kind": "unit",
+      "parent": "loan"
+    },
+    {
+      "id": "other_unit",
+      "page_side": 0,
+      "bbox": [
+        420,
+        98,
+        479,
+        108.769
+      ],
+      "expected": "千円",
+      "kind": "unit",
+      "parent": "other"
+    },
+    {
+      "id": "general_unit",
+      "page_side": 0,
+      "bbox": [
+        479,
+        98,
+        538,
+        108.769
+      ],
+      "expected": "千円",
+      "kind": "unit",
+      "parent": "general"
+    },
+    {
+      "id": "setsu",
+      "page_side": 1,
+      "bbox": [
+        56,
+        56,
+        195,
+        73
+      ],
+      "expected": "節",
+      "kind": "header",
+      "parent": null
+    },
+    {
+      "id": "category",
+      "page_side": 1,
+      "bbox": [
+        56,
+        73,
+        132,
+        98
+      ],
+      "expected": "区分",
+      "kind": "header",
+      "parent": "setsu"
+    },
+    {
+      "id": "setsu_amount",
+      "page_side": 1,
+      "bbox": [
+        132,
+        73,
+        195,
+        98
+      ],
+      "expected": "金額",
+      "kind": "header",
+      "parent": "setsu"
+    },
+    {
+      "id": "explanation",
+      "page_side": 1,
+      "bbox": [
+        195,
+        56,
+        545,
+        98
+      ],
+      "expected": "説明",
+      "kind": "header",
+      "parent": null
+    },
+    {
+      "id": "setsu_amount_unit",
+      "page_side": 1,
+      "bbox": [
+        132,
+        98,
+        195,
+        108.769
+      ],
+      "expected": "千円",
+      "kind": "unit",
+      "parent": "setsu_amount"
+    },
+    {
+      "id": "explanation_unit",
+      "page_side": 1,
+      "bbox": [
+        195,
+        98,
+        545,
+        108.769
+      ],
+      "expected": "千円",
+      "kind": "unit",
+      "parent": "explanation"
+    },
+    {
+      "id": "left_printed_page",
+      "page_side": 0,
+      "bbox": [
+        260,
+        800,
+        340,
+        830
+      ],
+      "expected": null,
+      "kind": "printed_page",
+      "parent": null
+    },
+    {
+      "id": "right_printed_page",
+      "page_side": 1,
+      "bbox": [
+        260,
+        800,
+        340,
+        830
+      ],
+      "expected": null,
+      "kind": "printed_page",
+      "parent": null
+    },
+    {
+      "id": "repeated_kan",
+      "page_side": 1,
+      "bbox": [
+        430,
+        760,
+        510,
+        790
+      ],
+      "expected": null,
+      "kind": "repeated_heading",
+      "parent": null
+    }
+  ],
+  "columns": [
+    {
+      "key": "moku",
+      "page_side": 0,
+      "left": 56,
+      "right": 125,
+      "header": "moku",
+      "component": null
+    },
+    {
+      "key": "current",
+      "page_side": 0,
+      "left": 125,
+      "right": 184,
+      "header": "current",
+      "component": null
+    },
+    {
+      "key": "previous",
+      "page_side": 0,
+      "left": 184,
+      "right": 243,
+      "header": "previous",
+      "component": null
+    },
+    {
+      "key": "difference",
+      "page_side": 0,
+      "left": 243,
+      "right": 302,
+      "header": "difference",
+      "component": null
+    },
+    {
+      "key": "national",
+      "page_side": 0,
+      "left": 302,
+      "right": 361,
+      "header": "national",
+      "component": null
+    },
+    {
+      "key": "loan",
+      "page_side": 0,
+      "left": 361,
+      "right": 420,
+      "header": "loan",
+      "component": null
+    },
+    {
+      "key": "other",
+      "page_side": 0,
+      "left": 420,
+      "right": 479,
+      "header": "other",
+      "component": null
+    },
+    {
+      "key": "general",
+      "page_side": 0,
+      "left": 479,
+      "right": 538,
+      "header": "general",
+      "component": null
+    },
+    {
+      "key": "setsu_code",
+      "page_side": 1,
+      "left": 56,
+      "right": 72,
+      "header": "category",
+      "component": "code"
+    },
+    {
+      "key": "setsu_name",
+      "page_side": 1,
+      "left": 72,
+      "right": 132,
+      "header": "category",
+      "component": "name"
+    },
+    {
+      "key": "setsu_amount",
+      "page_side": 1,
+      "left": 132,
+      "right": 195,
+      "header": "setsu_amount",
+      "component": null
+    },
+    {
+      "key": "explanation_name",
+      "page_side": 1,
+      "left": 195,
+      "right": 470,
+      "header": "explanation",
+      "component": "name"
+    },
+    {
+      "key": "explanation_amount",
+      "page_side": 1,
+      "left": 470,
+      "right": 545,
+      "header": "explanation",
+      "component": "amount"
+    }
+  ],
+  "explanation_levels": [
+    {
+      "name": "project",
+      "name_left": 197,
+      "amount_right": 535
+    },
+    {
+      "name": "setsu",
+      "name_left": 215,
+      "amount_right": 526
+    },
+    {
+      "name": "detail",
+      "name_left": 233,
+      "amount_right": 508
+    }
+  ],
+  "geometry_tolerance": 1
+}

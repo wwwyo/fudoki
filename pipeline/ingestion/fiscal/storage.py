@@ -96,8 +96,18 @@ def cleanup(document: dict) -> int:
             if key not in wanted and key.endswith('.parquet') and '/' not in key[len(prefix):]:
                 if read(manifest_path(document['target'], document['direction'])) != document:
                     raise ValueError('Saved manifest changed; cleanup stopped')
-                subprocess.run(['cf', 'r2', 'objects', 'delete', key, '--bucket-name', BUCKET, '--quiet'],
+                subprocess.run(['cf', 'r2', 'objects', 'delete', key, '--bucket-name', BUCKET, '--force', '--quiet'],
                                check=True, stdout=subprocess.DEVNULL)
+                # cf can abort a non-interactive delete with exit 0; confirm absence before counting it.
+                remaining = json.loads(subprocess.check_output(
+                    ['cf', 'r2', 'objects', 'list', '--bucket-name', BUCKET, '--prefix', key, '--per-page', '1000']))
+                if not isinstance(remaining, list):
+                    raise ValueError('Unrecognized R2 listing response; deletion not confirmed')
+                remaining_keys = [item['key'] for item in remaining]
+                if remaining_keys != sorted(set(remaining_keys)) or any(not value.startswith(key) for value in remaining_keys):
+                    raise ValueError('Invalid R2 listing response; deletion not confirmed')
+                if key in remaining_keys:
+                    raise ValueError(f'R2 object remains after delete: {key}')
                 removed += 1
         after = keys[-1]
     return removed

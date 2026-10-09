@@ -1,13 +1,11 @@
 {
-  "schema_version": 2,
+  "schema_version": 1,
   "target": {
     "jurisdiction": "132241",
     "fiscal_year": 2023,
     "document_kind": "initial"
   },
   "direction": "expenditure",
-  "candidate_id": "representative",
-  "status": "ready",
   "conversions": [
     {
       "id": "raw-962f0d0cd7735a4a",
@@ -62,168 +60,24 @@
     {
       "table_id": "raw-962f0d0cd7735a4a",
       "conversion_id": "raw-962f0d0cd7735a4a",
-      "input_fingerprint": "d9ef7f5edbc09e7bb7871d0d0281097426fcc420444b65fcc380063912ed944f",
+      "input_fingerprint": "1d7f41625e2dcc8e2ed72d2fa634f5ee0f3c08e1b93d5189a31bba5a74c8545c",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2023/initial/expenditure/raw-962f0d0cd7735a4a.parquet",
         "sha256": "540aca631b9de613209c0fc7854a975cd28dbbeb1e2a924f766077b6a7fc5a44",
         "bytes": 21294
       },
-      "row_count": 1425,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "年度",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "会計名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "細目",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "細目名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "予算額",
-          "type": "VARCHAR"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "a9127d06f52ca2034ed4cb607260dfe3579b5aaeddf8c642ebd5821b25313ab4",
-          "bytes": 127675
-        }
-      ]
+      "row_count": 1425
     },
     {
       "table_id": "raw-4fcc766d1754b23a",
       "conversion_id": "raw-4fcc766d1754b23a",
-      "input_fingerprint": "fe80bd17a2f133e5d0737d880e3b15167440742e6bc057290f39562c1d7582e2",
+      "input_fingerprint": "b9e1f5496320ee3c2c64d21b4ad3ffc5b5d2bd7b4752e51540d60d4bc4240a6e",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2023/initial/expenditure/raw-4fcc766d1754b23a.parquet",
         "sha256": "6dccd26cdd6c64e2a505822166835fdf636481d72d953a96bf720642813bffd5",
         "bytes": 12395
       },
-      "row_count": 188,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "年度",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "会計名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "細目",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "細目名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "予算額",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_record",
-          "type": "VARCHAR"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "fe8bcf1d436cd196d7f8d860f5a6a32154a1370a4cc8961fec7d6b4296b26651",
-          "bytes": 21936
-        }
-      ]
+      "row_count": 188
     }
   ]
 }

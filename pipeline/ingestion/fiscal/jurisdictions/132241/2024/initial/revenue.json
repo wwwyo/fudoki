@@ -1,13 +1,11 @@
 {
-  "schema_version": 2,
+  "schema_version": 1,
   "target": {
     "jurisdiction": "132241",
     "fiscal_year": 2024,
     "document_kind": "initial"
   },
   "direction": "revenue",
-  "candidate_id": "representative",
-  "status": "ready",
   "conversions": [
     {
       "id": "raw-962f0d0cd7735a4a",
@@ -38,83 +36,13 @@
     {
       "table_id": "raw-962f0d0cd7735a4a",
       "conversion_id": "raw-962f0d0cd7735a4a",
-      "input_fingerprint": "9064d2a94c01c94fb476db2fa67db6e767ffc4030054ce4e063699b4310ae7e3",
+      "input_fingerprint": "06c5a894b35cc2d7a29ab4b979cbc5e4ca44224030e742504ad84c9c4caed3b7",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132241/2024/initial/revenue/raw-962f0d0cd7735a4a.parquet",
         "sha256": "10e71c09178b5c754e1a79515d30bffc7de0b4ea16560d2d19465dbbd4b7338b",
         "bytes": 19904
       },
-      "row_count": 526,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "年度",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "会計名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "款名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "項名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "目名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "節名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "細節",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "細節名称",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "予算額",
-          "type": "VARCHAR"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "3cb0dfed19aa46a773dce5040d377c0941dfa6a0466e8f9b73656618c270a571",
-          "bytes": 57060
-        }
-      ]
+      "row_count": 526
     }
   ]
 }

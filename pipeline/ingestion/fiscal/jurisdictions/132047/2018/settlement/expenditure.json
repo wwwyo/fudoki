@@ -1,13 +1,11 @@
 {
-  "schema_version": 2,
+  "schema_version": 1,
   "target": {
     "jurisdiction": "132047",
     "fiscal_year": 2018,
     "document_kind": "settlement"
   },
   "direction": "expenditure",
-  "candidate_id": "representative",
-  "status": "ready",
   "conversions": [
     {
       "id": "raw-2ae43f999552d835",
@@ -38,63 +36,13 @@
     {
       "table_id": "raw-2ae43f999552d835",
       "conversion_id": "raw-2ae43f999552d835",
-      "input_fingerprint": "91689396a18b675b9eea6c31a249c84b785be3ee75f1967b157802653dd98750",
+      "input_fingerprint": "e42ead7940943c978136052c2bafa914da4763118b0715070d3f5abaf8d96932",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132047/2018/settlement/expenditure/raw-2ae43f999552d835.parquet",
         "sha256": "13417c6c84376507df2dedc4d021a2571fa385e4f171432aaaeda14fe80b5b74",
         "bytes": 85315
       },
-      "row_count": 4875,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "01会計",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "02款",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "03項",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "04目",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "05事項",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "06節",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "07細々節",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "08決算額",
-          "type": "VARCHAR"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "dfc20db060d342c74b83112ff5f0a6ecc19f5f47fb09c659bddae7a2b5f8b8a6",
-          "bytes": 543729
-        }
-      ]
+      "row_count": 4875
     }
   ]
 }

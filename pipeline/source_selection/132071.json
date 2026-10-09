@@ -2797,7 +2797,7 @@
           "id": "representative",
           "title": "2025年度当初予算",
           "landing_url": "https://www.city.akishima.lg.jp/shisei/gyozaisei/1005263/1005264.html",
-          "inspected_at": "2026-10-07T09:22:12.123387+00:00",
+          "inspected_at": "2026-10-09T01:43:41.342253+00:00",
           "files": [
             {
               "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/264/2-4.kouki.pdf",
@@ -2841,20 +2841,6 @@
               "format": "pdf",
               "pdf_type": "scan",
               "scope": [
-                {
-                  "account": "一般会計",
-                  "direction": "expenditure",
-                  "pages": [
-                    {
-                      "start": 18,
-                      "end": 18
-                    },
-                    {
-                      "start": 108,
-                      "end": 449
-                    }
-                  ]
-                },
                 {
                   "account": "一般会計",
                   "direction": "revenue",
@@ -3082,11 +3068,37 @@
                   ]
                 }
               ]
+            },
+            {
+              "download_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/264/2-1.ippan.pdf",
+              "sha256": "4662197051b0ec0d9c50e1690c5804d0b31e17dd7d35b972fd272e03068507f8",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 18,
+                      "end": 19
+                    },
+                    {
+                      "start": 108,
+                      "end": 449
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
       ],
-      "reason": "公式掲載の予算書から必要な明細を持つ2-4.kouki.pdf（後期高齢者医療特別会計）、1-1.zenbu.pdf（一般会計・下水道事業会計・介護保険特別会計・国民健康保険特別会計）、2-5.kukaku.pdf（中神土地区画整理事業特別会計）を選定。各冊の会計・歳入／歳出の範囲を確認し、同じ明細は重ねて取り込まない。 追加: 全頁PDFに水道事業会計（物理661-709）・下水道事業会計（物理710-756）を収録済み。scopeに水道（収益収入668・資本収支670、内訳収入692-693・資本収入内訳701、収益支出内訳694-700・資本支出702-703）を追加。2-6.kitagawa.pdf（中神駅北側地域整備事業特別会計、scan）を追加。",
+      "reason": "公式掲載の予算書から必要な明細を持つ2-4.kouki.pdf（後期高齢者医療特別会計）、1-1.zenbu.pdf（一般会計・下水道事業会計・介護保険特別会計・国民健康保険特別会計）、2-5.kukaku.pdf（中神土地区画整理事業特別会計）を選定。各冊の会計・歳入／歳出の範囲を確認し、同じ明細は重ねて取り込まない。 追加: 全頁PDFに水道事業会計（物理661-709）・下水道事業会計（物理710-756）を収録済み。scopeに水道（収益収入668・資本収支670、内訳収入692-693・資本収入内訳701、収益支出内訳694-700・資本支出702-703）を追加。2-6.kitagawa.pdf（中神駅北側地域整備事業特別会計、scan）を追加。 一般会計歳出は文字PDF 2-1.ippan.pdf（SHA-256 4662197051b0ec0d9c50e1690c5804d0b31e17dd7d35b972fd272e03068507f8）へ選び直した。原典の款項表（物理10–11頁）、款・財源総括（18–19頁）、事項別全歳出明細（108–449頁）を確認し、合冊の一般会計歳出scopeだけを除いて重複取り込みを避ける。他会計・一般会計歳入・既存4原典は保持する。今回の取り込み完了範囲は一般会計歳出だけであり、全対象の収録完了を意味しない。",
       "selected_candidate_id": "representative",
       "archive": {
         "bucket": "fudoki-inputs",
@@ -3111,9 +3123,14 @@
             "key": "fiscal/source-selection/132071/2025/initial-3.pdf",
             "sha256": "92ff755c6e1f447bd4c85f09d122d4962327594f4d6ee6b4df91a1fbb1005559",
             "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/264/2-6.kitagawa.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132071/2025/initial-5.pdf",
+            "sha256": "4662197051b0ec0d9c50e1690c5804d0b31e17dd7d35b972fd272e03068507f8",
+            "final_url": "https://www.city.akishima.lg.jp/_res/projects/default_project/_page_/001/005/264/2-1.ippan.pdf"
           }
         ],
-        "archived_at": "2026-10-07T14:19:44.640Z"
+        "archived_at": "2026-10-09T01:50:06.786Z"
       }
     },
     {

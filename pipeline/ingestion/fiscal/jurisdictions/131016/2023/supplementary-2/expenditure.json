@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 1,
   "target": {
     "jurisdiction": "131016",
     "fiscal_year": 2023,
@@ -7,8 +7,6 @@
     "amendment_number": 2
   },
   "direction": "expenditure",
-  "candidate_id": "representative",
-  "status": "ready",
   "conversions": [
     {
       "id": "chiyoda-supplementary-native-9ed82f0f95fb90ac",
@@ -39,75 +37,13 @@
     {
       "table_id": "chiyoda-supplementary-native-9ed82f0f95fb90ac",
       "conversion_id": "chiyoda-supplementary-native-9ed82f0f95fb90ac",
-      "input_fingerprint": "618bbad4873cfb8bc505890d46c7e3b3f137a765be38d0dc9f27503d0182dda0",
+      "input_fingerprint": "9640dd91fed99b3c5f0900deff3b7bc32b0cfcfeff3453bfcb9b9db2a5c9b4cb",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/131016/2023/supplementary-2/expenditure/chiyoda-supplementary-native-9ed82f0f95fb90ac.parquet",
         "sha256": "6de9a24327aaf9389952475b0f90db89d7bb539a59ab02dd36c37b2e013be38e",
         "bytes": 10945
       },
-      "row_count": 38,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "record_kind",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "label",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "amount_before",
-          "type": "BIGINT"
-        },
-        {
-          "name": "amount_delta",
-          "type": "BIGINT"
-        },
-        {
-          "name": "amount_after",
-          "type": "BIGINT"
-        },
-        {
-          "name": "physical_page",
-          "type": "INTEGER"
-        },
-        {
-          "name": "bbox_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "printed_text",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "words_json",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "context_json",
-          "type": "VARCHAR"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "3f6fb21a1a68abd73063661c935db6544da91870e4a2e52f11c48c124afe60c5",
-          "bytes": 512640
-        }
-      ]
+      "row_count": 38
     }
   ]
 }

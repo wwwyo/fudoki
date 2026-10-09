@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 1,
   "target": {
     "jurisdiction": "132195",
     "fiscal_year": 2020,
@@ -7,8 +7,6 @@
     "amendment_number": 1
   },
   "direction": "expenditure",
-  "candidate_id": "representative",
-  "status": "ready",
   "conversions": [
     {
       "id": "komae-supplementary-2020-1-d4fea7826a4a4c2e",
@@ -39,115 +37,13 @@
     {
       "table_id": "komae-supplementary-2020-1-d4fea7826a4a4c2e",
       "conversion_id": "komae-supplementary-2020-1-d4fea7826a4a4c2e",
-      "input_fingerprint": "39227636ca06865ab43129eb742a284941dd0b4569a9b5c46c601b3650bd8069",
+      "input_fingerprint": "41951a8f4fcdc18ebc83184b22db5f552c3df55fb9b90f7d3c8201db7c656555",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132195/2020/supplementary-1/expenditure/komae-supplementary-2020-1-d4fea7826a4a4c2e.parquet",
         "sha256": "a3d334e638c43d472ccfa43a47d3ff67aacc21acad51a015846be98c3ba77c68",
         "bytes": 13068
       },
-      "row_count": 291,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "kind",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "direction",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "kan_code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "kou_code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "moku_code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "moku_label",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "setsu_code",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "setsu_label",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "setsu_level",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "setsu_x",
-          "type": "BIGINT"
-        },
-        {
-          "name": "block_id",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "before_amt",
-          "type": "BIGINT"
-        },
-        {
-          "name": "delta",
-          "type": "BIGINT"
-        },
-        {
-          "name": "total",
-          "type": "BIGINT"
-        },
-        {
-          "name": "natl",
-          "type": "BIGINT"
-        },
-        {
-          "name": "metro",
-          "type": "BIGINT"
-        },
-        {
-          "name": "bond",
-          "type": "BIGINT"
-        },
-        {
-          "name": "other",
-          "type": "BIGINT"
-        },
-        {
-          "name": "general",
-          "type": "BIGINT"
-        },
-        {
-          "name": "physical_page",
-          "type": "BIGINT"
-        },
-        {
-          "name": "raw_text",
-          "type": "VARCHAR"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "55b99cec58e42222cfdd93d59821ab92d25464f23f2fcead40d0e19a3f17492a",
-          "bytes": 471659
-        }
-      ]
+      "row_count": 291
     }
   ]
 }

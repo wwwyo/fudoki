@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "table_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,95}$"},
+    "detail_pages": {
+      "type": "array",
+      "items": {"type": "integer", "minimum": 1},
+      "minItems": 2,
+      "maxItems": 2
+    }
+  },
+  "required": ["table_id", "detail_pages"]
+}

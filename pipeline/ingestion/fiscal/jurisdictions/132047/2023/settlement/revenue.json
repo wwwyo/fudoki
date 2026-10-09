@@ -1,13 +1,11 @@
 {
-  "schema_version": 2,
+  "schema_version": 1,
   "target": {
     "jurisdiction": "132047",
     "fiscal_year": 2023,
     "document_kind": "settlement"
   },
   "direction": "revenue",
-  "candidate_id": "representative",
-  "status": "ready",
   "conversions": [
     {
       "id": "raw-2ae43f999552d835",
@@ -38,67 +36,13 @@
     {
       "table_id": "raw-2ae43f999552d835",
       "conversion_id": "raw-2ae43f999552d835",
-      "input_fingerprint": "a8b7aff144dd4c20556c2b4334dd1b6704ef47df8004c43df2eecb8a0c2ce480",
+      "input_fingerprint": "f571f8194c136714d1131b3d47681eada0f0277e036dee16d386e66b0fe9fc78",
       "object": {
-        "bucket": "fudoki-inputs",
         "key": "fiscal/ingestion/132047/2023/settlement/revenue/raw-2ae43f999552d835.parquet",
         "sha256": "78fa6d670629f20550538ea4db6e4892c593aea45f8e16ec249362a70dafda6d",
         "bytes": 52464
       },
-      "row_count": 797,
-      "schema": [
-        {
-          "name": "source_row",
-          "type": "BIGINT"
-        },
-        {
-          "name": "01会計",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "02款",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "03項",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "04目",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "05節",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "06細節",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "07細々節",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "08決算額",
-          "type": "VARCHAR"
-        },
-        {
-          "name": "source_record",
-          "type": "VARCHAR"
-        }
-      ],
-      "empty_confirmed": false,
-      "runtime": {
-        "python": "3.13.15 (main, Sep  1 2026, 14:05:45) [Clang 22.1.3 ]",
-        "duckdb": "1.5.5"
-      },
-      "origins": [
-        {
-          "sha256": "03077e5d913da98dcdc4356d0b3ec6e62c8eb7262a519b46870d0430b02ad799",
-          "bytes": 94913
-        }
-      ]
+      "row_count": 797
     }
   ]
 }
