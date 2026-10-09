@@ -9,8 +9,8 @@ import json
 from pathlib import Path
 
 from ingestion.fiscal import manifest
-from ingestion.fiscal.run import table_receipt
-from ingestion.fiscal.storage import fetch, save, cleanup
+from ingestion.fiscal.run import inspect_table, table_receipt
+from ingestion.fiscal.storage import fetch, save, cleanup, verify
 from ingestion.paths import PIPELINE
 
 
@@ -113,35 +113,72 @@ def plan(lock: dict) -> tuple[list[dict], dict]:
                     'dbt_bindings': list(bindings.values())}
 
 
-def import_tables(document: dict, *, remote: bool, extend_plans: bool = False) -> dict:
+def import_tables(document: dict, *, remote: bool, extend_plans: bool = False,
+                  bindings: dict | None = None) -> dict:
+    from dbt_inputs import check_write, path_for, write as write_bindings
     path = manifest.manifest_path(document['target'], document['direction'])
-    if path.exists():
-        existing = manifest.read(path)
+    original_bytes = path.read_bytes() if path.exists() else None
+    binding_path = path_for(document)
+    binding_bytes = binding_path.read_bytes() if binding_path.exists() else None
+    if bindings is not None:
+        check_write(bindings, document, extend=extend_plans)
+    retained = []
+    if original_bytes is not None:
+        existing = manifest.validate(json.loads(original_bytes), path=path)
         if existing['tables'] and existing['conversions'] == document['conversions']:
             manifest.require_current(existing)
+            if bindings is not None:
+                write_bindings(bindings, existing, extend=extend_plans)
             return {'status': 'already_saved', 'tables': len(existing['tables'])}
         if existing['conversions'] != document['conversions']:
             planned = {conversion['id']: conversion for conversion in document['conversions']}
             if not extend_plans or not all(planned.get(conversion['id']) == conversion
                                            for conversion in existing['conversions']):
                 raise ValueError('Existing manifest differs from migration plan; do not replace it implicitly')
+        if existing['tables']:
+            manifest.require_current(existing)
+            retained = deepcopy(existing['tables'])
     before = manifest.fingerprints(document)
+    retained_ids = {table['table_id'] for table in retained}
+    for table in retained:
+        source = fetch(table['object'], remote=remote)
+        verify(source, table['object'])
+        if inspect_table(source, table.get('metadata')) != table['row_count']:
+            raise ValueError('Retained table row count differs from its receipt')
     prepared = []
     for conversion in document['conversions']:
         for reference in conversion['options']['objects']:
+            if reference['table_id'] in retained_ids:
+                continue
             source = fetch(reference, remote=remote)
             table = table_receipt(document, conversion, reference['table_id'], source,
                                   input_fingerprint=before[conversion['id']])
             prepared.append((table, source))
     result = deepcopy(document)
-    result['tables'] = [item[0] for item in prepared]
+    receipts = {table['table_id']: table for table in retained + [item[0] for item in prepared]}
+    result['tables'] = [receipts[expected['table_id']] for conversion in document['conversions']
+                        for expected in conversion['expected_tables']]
     manifest.validate(result)
     if before != manifest.fingerprints(document):
         raise ValueError('Input conditions changed during table import')
     for table, source in prepared:
         save(result, table, source, remote=remote)
     manifest.require_current(result)
+    if ((path.read_bytes() if path.exists() else None) != original_bytes
+            or bindings is not None and (binding_path.read_bytes() if binding_path.exists() else None) != binding_bytes):
+        raise ValueError('Registrations changed during table import; do not overwrite them')
     manifest.write(path, result)
+    try:
+        if bindings is not None:
+            write_bindings(bindings, result, extend=extend_plans)
+    except Exception:
+        # Restore only our registration if binding publication fails; preserve concurrent edits.
+        if manifest.read(path) == result:
+            if original_bytes is None:
+                path.unlink()
+            else:
+                manifest.write(path, json.loads(original_bytes))
+        raise
     cleanup(result)
     return {'status': 'saved', 'tables': len(result['tables'])}
 
@@ -164,14 +201,19 @@ def main() -> None:
     saved = 0
     for document in documents:
         path = manifest.manifest_path(document['target'], document['direction'])
-        if args.write_plans or args.remote:
-            write_bindings(bindings[path_for(document)], document, extend=args.extend_plans)
-        if args.write_plans and not path.exists():
-            manifest.write(path, document)
+        binding = bindings[path_for(document)]
         if args.remote:
-            result = import_tables(document, remote=True, extend_plans=args.extend_plans)
+            result = import_tables(document, remote=True, extend_plans=args.extend_plans, bindings=binding)
             saved += result['tables']
             print(json.dumps({'manifest': str(path.relative_to(PIPELINE)), **result}), flush=True)
+        elif args.write_plans:
+            if path.exists() and manifest.read(path)['conversions'] != document['conversions']:
+                raise ValueError('Existing manifest differs; import additional tables with --remote before extending bindings')
+            from dbt_inputs import check_write
+            check_write(binding, document, extend=args.extend_plans)
+            if not path.exists():
+                manifest.write(path, document)
+            write_bindings(binding, document, extend=args.extend_plans)
     print(json.dumps({key: value for key, value in report.items() if key not in ('held', 'dbt_bindings')}
                      | {'saved_tables': saved, 'dbt_binding_manifests': len(bindings)}))
 

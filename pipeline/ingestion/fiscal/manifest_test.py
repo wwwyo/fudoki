@@ -295,28 +295,81 @@ class ManifestWorkflowTest(unittest.TestCase):
         conversion = previous['conversions'][0]
         reference = conversion['options']['objects'][0]
         previous['tables'] = [table_receipt(previous, conversion, reference['table_id'], local[reference['sha256']])]
+        previous['tables'][0]['metadata'] = {'notes': [{'text': '保存済み注記', 'scope': {'kind': 'table'}}]}
         manifest.write(self.path, previous)
+        from dbt_inputs import path_for, write as write_bindings, read as read_bindings
+        binding = {'schema_version': 1, 'target': self.target, 'direction': 'expenditure',
+                   'tables': [{'table_id': conversion['id'], 'raw_path':
+                     f"jurisdiction=131016/year=2024/document_kind=budget/edition={conversion['inputs'][0]['sha256']}/direction=expenditure/table={conversion['id']}/data.parquet"}
+                     for conversion in document['conversions']]}
+        old_binding = deepcopy(binding)
+        old_binding['tables'] = old_binding['tables'][:1]
+        write_bindings(old_binding, previous)
+        binding_before = path_for(previous).read_bytes()
         before = self.path.read_bytes()
         with patch('ingestion.fiscal.migrate.fetch', side_effect=lambda ref, **kwargs: local[ref['sha256']]), \
              patch('ingestion.fiscal.migrate.save') as save, patch('ingestion.fiscal.migrate.cleanup') as cleanup:
             with self.assertRaisesRegex(ValueError, 'differs'):
                 import_tables(document, remote=True)
             save.assert_not_called()
-            save.side_effect = [None, RuntimeError('upload failed')]
+            save.side_effect = RuntimeError('upload failed')
             with self.assertRaisesRegex(RuntimeError, 'upload failed'):
-                import_tables(document, remote=True, extend_plans=True)
+                import_tables(document, remote=True, extend_plans=True, bindings=binding)
+            self.assertEqual(path_for(previous).read_bytes(), binding_before)
             self.assertEqual(self.path.read_bytes(), before)
             cleanup.assert_not_called()
             save.side_effect = None
-            result = import_tables(document, remote=True, extend_plans=True)
+            save.reset_mock()
+            # A binding write error leaves both prior registrations usable.
+            with patch('dbt_inputs.write', side_effect=OSError('binding write failed')):
+                with self.assertRaisesRegex(OSError, 'binding write failed'):
+                    import_tables(document, remote=True, extend_plans=True, bindings=binding)
+            self.assertEqual(self.path.read_bytes(), before)
+            self.assertEqual(path_for(previous).read_bytes(), binding_before)
+            cleanup.assert_not_called()
+            save.reset_mock()
+            # Cleanup failure happens after both usable registrations are published.
+            cleanup.side_effect = RuntimeError('cleanup failed')
+            with self.assertRaisesRegex(RuntimeError, 'cleanup failed'):
+                import_tables(document, remote=True, extend_plans=True, bindings=binding)
+            save.assert_called_once()
+            self.assertEqual(save.call_args.args[1]['table_id'], 'two')
+            cleanup.side_effect = None
+            result = import_tables(document, remote=True, extend_plans=True, bindings=binding)
             self.assertEqual(result['tables'], 2)
+            self.assertEqual(set(read_bindings(manifest.read(self.path))), {'one', 'two'})
             saved = manifest.read(self.path)
             self.assertEqual(saved['conversions'][0], previous['conversions'][0])
+            self.assertEqual(saved['tables'][0], previous['tables'][0])
             manifest.require_current(saved)
             altered = deepcopy(document)
             altered['conversions'][0]['options']['objects'][0]['bytes'] += 1
             with self.assertRaisesRegex(ValueError, 'differs'):
                 import_tables(altered, remote=True, extend_plans=True)
+
+    def test_plan_only_extension_rejects_before_changing_bindings(self):
+        from dbt_inputs import path_for, write as write_bindings
+        from ingestion.fiscal.migrate import main
+        previous = deepcopy(self.document)
+        previous['conversions'] = previous['conversions'][:1]
+        manifest.write(self.path, previous)
+        binding = {'schema_version': 1, 'target': self.target, 'direction': 'expenditure',
+                   'tables': [{'table_id': conversion['id'], 'raw_path':
+                     f"jurisdiction=131016/year=2024/document_kind=budget/edition={conversion['inputs'][0]['sha256']}/direction=expenditure/table={conversion['id']}/data.parquet"}
+                     for conversion in self.document['conversions']]}
+        old_binding = deepcopy(binding)
+        old_binding['tables'] = old_binding['tables'][:1]
+        write_bindings(old_binding, previous)
+        before = self.path.read_bytes(), path_for(previous).read_bytes()
+        lock = self.root/'lock.json'
+        lock.write_text('{}')
+        report = {'dbt_bindings': [binding]}
+        with patch('ingestion.fiscal.migrate.plan', return_value=([self.document], report)), \
+             patch('sys.argv', ['migrate', '--lock', str(lock), '--report', str(self.root/'report.json'),
+                                '--write-plans', '--extend-plans']):
+            with self.assertRaisesRegex(ValueError, 'import additional tables'):
+                main()
+        self.assertEqual((self.path.read_bytes(), path_for(previous).read_bytes()), before)
 
     def retained_extension(self):
         generated = json.loads(Path(convert(self.path, self.files, self.root/'baseline')['candidate']).read_text())

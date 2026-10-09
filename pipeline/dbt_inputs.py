@@ -72,7 +72,7 @@ def read(document: dict, root: Path | None = None) -> dict[str, dict]:
     return validate(bindings, document)
 
 
-def write(bindings: dict, document: dict, root: Path | None = None, *, extend: bool = False) -> None:
+def check_write(bindings: dict, document: dict, root: Path | None = None, *, extend: bool = False) -> None:
     validate(bindings, document)
     path = path_for(document, root)
     try:
@@ -90,6 +90,11 @@ def write(bindings: dict, document: dict, root: Path | None = None, *, extend: b
                 or len(previous) != len(existing['tables'])
                 or not all(current.get(ident) == table for ident, table in previous.items())):
             raise ValueError('Existing dbt bindings differ; do not replace them implicitly')
+
+
+def write(bindings: dict, document: dict, root: Path | None = None, *, extend: bool = False) -> None:
+    check_write(bindings, document, root, extend=extend)
+    path = path_for(document, root)
     path.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.NamedTemporaryFile(mode='w', dir=path.parent, delete=False) as stream:
         temporary = Path(stream.name)
