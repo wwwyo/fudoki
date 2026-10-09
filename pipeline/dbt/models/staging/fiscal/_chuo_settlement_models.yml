@@ -5,6 +5,7 @@ models:
     description: 中央区決算の予備費充用先。取り込み表と1対1、金額単位は円。支出済額とは別に扱う。
     columns:
       - name: source_row
+        description: 表内の1始まり行番号。fiscal_year・origin_sha256・source_table_idとの組で行を識別する。
         data_tests: [not_null]
       - name: allocated_amount
         data_tests: [not_null]

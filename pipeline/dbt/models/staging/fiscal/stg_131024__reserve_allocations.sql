@@ -14,5 +14,5 @@ select
     "table" as source_table_id,
     file_row_number + 1 as source_row,
     "充用先_事業" as destination_project,
-    cast(replace(regexp_replace("充用先_金額", ' 円$', ''), ',', '') as bigint) as allocated_amount
+    cast(replace(regexp_replace("充用先_金額", ' ?円$', ''), ',', '') as bigint) as allocated_amount
 from allocations
