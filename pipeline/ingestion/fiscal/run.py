@@ -102,10 +102,10 @@ def convert(path: Path, local_files: dict[str, str], output: Path, *, remote: bo
             for table in retained:
                 if table['input_fingerprint'] != before[conversion['id']]:
                     raise ValueError('An untouched table is stale; include its conversion')
-                outputs[table['table_id']] = fetch(table['object'], remote=remote)
+                stored = fetch(table['object'], remote=remote)
                 if extend_plan is not None:
-                    verify(outputs[table['table_id']], table['object'])
-                count = inspect_table(outputs[table['table_id']], table.get('metadata'))
+                    verify(stored, table['object'])
+                count = inspect_table(stored, table.get('metadata'))
                 if extend_plan is not None and count != table['row_count']:
                     raise ValueError('Retained table row count differs from its receipt')
             tables.extend(retained)

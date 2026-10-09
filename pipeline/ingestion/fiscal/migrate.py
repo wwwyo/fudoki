@@ -80,9 +80,6 @@ def plan(lock: dict) -> tuple[list[dict], dict]:
         selection, file = item['selection'], item['file']
         scopes = [{key: value for key, value in scope.items() if key != 'direction'}
                   for scope in file['scope'] if scope['direction'] == entry['direction']]
-        for scope in scopes:
-            if 'pages' in scope:
-                scope['pages'] = [[r['start'], r['end']] for r in scope['pages']]
         if not scopes:
             held.append({'path': entry['path'], 'reason': 'selected_direction_unconfirmed'})
             continue

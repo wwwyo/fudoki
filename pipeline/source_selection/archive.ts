@@ -286,7 +286,9 @@ async function main(args: string[]) {
         await saveSelections(file.path, file.data)
       }
       archived++
-      uploadedFiles += planFiles(group, previous, nextPart).filter(item => !retainedReceipts(group, previous).has(item.file.sha256!)).length
+      const planned = planFiles(group, previous, nextPart)
+      const retained = retainedReceipts(group, previous)
+      uploadedFiles += planned.filter(item => !retained.has(item.file.sha256!)).length
       console.error(JSON.stringify({ archived, slot: originObjectSlot(group[0]!.target), files: planFiles(group, previous, nextPart).length, targets: group.length }))
     }
   }
