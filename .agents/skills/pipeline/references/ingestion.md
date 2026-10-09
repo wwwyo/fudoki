@@ -134,6 +134,8 @@ PDFの構築・修正はsubagent、検査と次の対応の判断は親agentが�
 
 年度・会計等を推定・定義せず、受け取った対象・scopeと変換結果を表IDで対応させて管理側へ渡す。変換器は `convert(inputs, destination, options)` と同じフォルダの `options.schema.json` を定義し、表IDとローカルParquetの対応を返す。変換器からGitの管理JSONやR2を更新しない。型と制約は [管理schema](../../../../pipeline/ingestion/fiscal/manifest.schema.json) と [実行時検査](../../../../pipeline/ingestion/fiscal/manifest.py) を正本とする。
 
+検算・結合用に変換器が出す補助の表（総括・節一覧の対応、検査用の集計など）は、後段へ渡す明細ではない。管理JSONの `tables`・`expected_tables` には提供する表だけを登録し、補助の表は候補dirや `observations/` などのローカルの検査出力に留める。
+
 ## 管理JSONを確認して変換する
 
 1. `pipeline/ingestion/fiscal/jurisdictions/<団体>/<年度>/<資料区分>/<方向>.json` に入力SHA、変換コード・設定、期待する表を定義する。形式・会計・ページ範囲はselectionから解決する。複数原典・複数変換・複数表は同じ対象のJSONへまとめる。
@@ -148,7 +150,7 @@ PDFの構築・修正はsubagent、検査と次の対応の判断は親agentが�
 2. 必要な全表をローカルで生成・検査する。異常の詳細はファイルに保存し、件数と対象だけを返す。
 3. 新しい候補dirを指定し、`ingestion:convert` に `--remote` を付ける。入力条件が変わっていないことを確認し、管理側の保存処理が対象の方向の領域へ全表を上書き保存する。新しい補助入力のR2保存は未実装であり、必要なら保存方法を先に実装する。
 4. 期待する表と処理済み・未処理範囲を確認し、全アップロード成功後に管理側が表の管理情報を更新する。局所再処理では、変更しない表の参照も保持する。未処理・欠落や未確認の0行を、表の廃止として扱わない。失敗時は後段へ進まず、同じ入力条件で必要な全表を再保存する。
-5. 対象かつ指定した方向のingestion領域だけを全ページ一覧取得し、現在の管理情報が参照しない直下のParquetを削除する。削除直前にも現在の参照を確認する。同じkeyの表は上書き済みなので別途削除しない。掃除に失敗したら `bun run ingestion:cleanup --manifest <対象JSON>` を実行する。別年度・別補正号・別方向を削除しない。
+5. 対象かつ指定した方向のingestion領域だけを全ページ一覧取得し、現在の管理情報が参照しない直下のParquetを削除する。削除直前にも現在の参照を確認する。同じkeyの表は上書き済みなので別途削除しない。掃除に失敗したら `bun run ingestion:cleanup --manifest <対象JSON>` を実行する。別年度・別補正号・別方向を削除しない。cf の非対話削除は中断しても終了コード0を返すことがあるため、削除後に対象keyが一覧へ残っていないことを確認してから件数を確定する（`pipeline/ingestion/fiscal/storage.py` の cleanup がこの確認を行う）。
 6. 現在の管理情報から表を読み、入力条件との一致とSHAを確認して後段へ渡す。保存途中に表を読み始めない。
 
 保存キー・管理情報の置き場は [設計書](../../../../docs/prd/ingestion-storage/design-doc.md)、旧経路の移行状況と検証範囲は [移行記録](../../../../docs/prd/ingestion-storage/migration.md) を参照する。局所再処理は `--conversion <ID>` を使い、変更しない表が現在の条件と一致していることを確認する。
