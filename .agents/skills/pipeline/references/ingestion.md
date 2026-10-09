@@ -134,6 +134,8 @@ PDFの構築・修正はsubagent、検査と次の対応の判断は親agentが�
 
 年度・会計等を推定・定義せず、受け取った対象・scopeと変換結果を表IDで対応させて管理側へ渡す。変換器は `convert(inputs, destination, options)` と同じフォルダの `options.schema.json` を定義し、表IDとローカルParquetの対応を返す。変換器からGitの管理JSONやR2を更新しない。型と制約は [管理schema](../../../../pipeline/ingestion/fiscal/manifest.schema.json) と [実行時検査](../../../../pipeline/ingestion/fiscal/manifest.py) を正本とする。
 
+検算・結合用に変換器が出す補助の表（総括・節一覧の対応、検査用の集計など）は、後段へ渡す明細ではない。管理JSONの `tables`・`expected_tables` には提供する表だけを登録し、補助の表は候補dirや `observations/` などのローカルの検査出力に留める。
+
 ## 管理JSONを確認して変換する
 
 1. `pipeline/ingestion/fiscal/jurisdictions/<団体>/<年度>/<資料区分>/<方向>.json` に入力SHA、変換コード・設定、期待する表を定義する。形式・会計・ページ範囲はselectionから解決する。複数原典・複数変換・複数表は同じ対象のJSONへまとめる。
