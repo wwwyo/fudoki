@@ -12,13 +12,13 @@ dependencies = [
     "dbt-duckdb==1.11.0",
     "duckdb==1.5.5",
     "jsonschema==4.26.0",
+    "numpy==2.3.5",
     "openpyxl==3.1.5",
     "xlrd==2.0.2",
 ]
 
 [project.optional-dependencies]
 paddle-ocr = [
-    "numpy==2.3.5",
     "paddleocr==3.7.0",
     "paddlepaddle==3.3.1",
     "paddlex==3.7.2",
@@ -30,5 +30,5 @@ requires = ["uv_build==0.12.19"]
 build-backend = "uv_build"
 
 [tool.uv.build-backend]
-module-name = ["ingestion", "fdp"]
+module-name = ["ingestion", "fdp", "staging"]
 module-root = ""

@@ -6,7 +6,7 @@ select cast(jurisdiction as varchar) as jurisdiction_code, cast(year as integer)
        "項" as kou_code, "項名称" as kou_label,
        "目" as moku_code, "目名称" as moku_label,
        "節" as setsu_code, "節名称" as setsu_label,
-       cast("本年度予算額" as bigint) as source_amount, source_amount_unit,
+       {{ staging_amount('"本年度予算額"') }} as source_amount, source_amount_unit,
        source_page, source_bbox, reconciled,
        jurisdiction_code || ':' || fiscal_year || ':expenditure:' || document_kind || ':' || edition || ':' || "table" as dataset_id,
        dataset_id || ':' || source_row as observation_id
