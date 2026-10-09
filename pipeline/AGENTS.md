@@ -25,6 +25,8 @@ script はこの package が所有する。実行は `bun run --cwd pipeline <na
 
 ## 技術スタック
 
+- **汎用層として作る**: 団体ごとの差は原典選定の宣言・書式設定に置き、取得・変換の処理を再利用できる形にする。「他自治体でも動く」をコードで示す。
+- **schema・宣言は最小形から始める**: フィールドは原則 nullable にし、必須化・union 型化・汎用 scope 枠のような拡張は実例が出てから足す。最初から過剰な提案を出すとユーザーに削らせる往復になる（2026-10、source_selection schema の scope/inspection を連続して削らせた観測）。
 - **取り込み**: Bは選定済みのCSV/PDFと対象情報を受け取り、ローカルParquetへ変換する。管理JSONはschema_version 2で入出力と変換だけを持ち、型は `ingestion/fiscal/manifest.schema.json`、対象間の制約は `manifest.py`。CLIとCIで `ingestion:check` を実行する。配置と保存の手順は [README](README.md)、判断は [保存設計](../docs/prd/ingestion-storage/design-doc.md) を参照する。
 - **コード配置**: 共通処理は `ingestion/lib/`、書式別の共通処理は `ingestion/fiscal/layouts/`、団体固有のコードと宣言は `ingestion/fiscal/jurisdictions/<団体>/layouts/`。年度・会計だけでコードを複製しない。既存の原典登録・収録監査は `fiscal/management/`。
 - **OCR**: 新しいBは `ingestion/lib/vision_ocr.py` を使う。選定理由は [ADR 0017](../docs/adr/0017-vision-for-coordinate-preserving-ocr.md)、実行と欠落セルの再読は `.agents/skills/pipeline/references/ingestion.md` を参照する。旧GLM等の抽出器は移行済みコードとして残し、今回の配置変更を精度の再検証と解釈しない。

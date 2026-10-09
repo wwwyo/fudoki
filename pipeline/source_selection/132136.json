@@ -2,6 +2,2819 @@
   "jurisdiction": "132136",
   "name": "東村山市",
   "official_url": "https://www.city.higashimurayama.tokyo.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "132136-2026-initial",
+          "title": "令和8年度 各会計予算書（歳出事項別明細書・支出明細）",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20251007.html",
+          "inspected_at": "2026-10-07T15:47:07.250+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/8yosan_an.pdf",
+              "sha256": "1e2ced9ec888c197e2d994b831c6c25186eb34b04766900379028bba0659a8a9",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 45,
+                      "end": 219
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/8kokuho_an.pdf",
+              "sha256": "71df39e10ef123a937354ed15397aa984e5cc272f6513d51f25c0d832318eb0f",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 22,
+                      "end": 45
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/8kaigo_an.pdf",
+              "sha256": "e51eae832ab32918a2952c1b192ff40555bb78d7e9413947f024a35b75534b7b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 22,
+                      "end": 45
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/8koukian.pdf",
+              "sha256": "31780cf459f3dd518c856a1938a35206b27ac1b64ad86ad62bb602ac622d4192",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 29
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/8gesuian.pdf",
+              "sha256": "a0bfa07b966e04f1c9971adbc72ef39d54486ba68ee1dd1d95c2a491be7918a5",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 31,
+                      "end": 35
+                    },
+                    {
+                      "start": 37,
+                      "end": 39
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "選定。令和8年度当初予算は予算頁(zaisei20251007)に会計別予算書PDFで掲載（印刷用一般重複・補正別ファイル・予算概要は集計資料のため対象外）。一般・国保・介護・後期高齢者の各予算書は歳入歳出予算事項別明細書を含み、款・項・目と節（事業コード・事業名・担当課つき）が同じ明細で対応、金額は本年度予算額・前年度予算額・財源内訳で単位千円。下水道事業会計予算書は予算実施計画明細書に款・項・目と節・備考があり、金額は本年度/前年度予定額・単位千円、収益的支出p31-35と資本的支出p37-39を歳出範囲とした。会計構成は掲載一覧の5会計（一般会計・国民健康保険事業・介護保険事業・後期高齢者医療の各特別会計と下水道事業会計）で全件照合済み。市立病院等の他企業会計・独自特別会計の掲載は同頁になし。",
+      "selected_candidate_id": "132136-2026-initial",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2026-initial",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2026/initial-1.pdf",
+            "sha256": "1e2ced9ec888c197e2d994b831c6c25186eb34b04766900379028bba0659a8a9",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/8yosan_an.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2026/initial-3.pdf",
+            "sha256": "71df39e10ef123a937354ed15397aa984e5cc272f6513d51f25c0d832318eb0f",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/8kokuho_an.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2026/initial-5.pdf",
+            "sha256": "e51eae832ab32918a2952c1b192ff40555bb78d7e9413947f024a35b75534b7b",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/8kaigo_an.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2026/initial-2.pdf",
+            "sha256": "31780cf459f3dd518c856a1938a35206b27ac1b64ad86ad62bb602ac622d4192",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/8koukian.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2026/initial-4.pdf",
+            "sha256": "a0bfa07b966e04f1c9971adbc72ef39d54486ba68ee1dd1d95c2a491be7918a5",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/8gesuian.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T15:48:05.494Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "132136-2025-settlement",
+          "title": "令和7年度 歳入歳出決算書（事項別明細書）・下水道事業会計決算書",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/kessan.html",
+          "inspected_at": "2026-10-07T15:47:07.250+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/files/R7kessansho.pdf",
+              "sha256": "b5f53e4eeb2cf4358c3544d6f8f16c7f91436bd34d5725443945a7763b1a1d05",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 124,
+                      "end": 392
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 404,
+                      "end": 420
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 434,
+                      "end": 448
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 458,
+                      "end": 466
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/files/R7kessansho_gesui.pdf",
+              "sha256": "258ae16a3fa0c1b70c433f979f8dd6f86f56bab99257582b186ff64b189a8317",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "start": 27,
+                      "end": 31
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "選定。令和7年度決算は決算頁(kessan.html)掲載の歳入歳出決算書(一般+3特別会計)と下水道事業会計決算書の2PDF。主冊の歳入歳出決算事項別明細書は見開きで左頁が予算現額（当初予算額・補正予算額・繰越・流用・計）と節の区分・金額、右頁が支出済額・翌年度繰越額・不用額・備考（事業コード・事業名・担当課）、款・項・目と同じ明細で対応、単位円。物理頁は印字頁+2。一般歳出p124-392・国保p404-420・介護p434-448・後期高齢者p458-466を歳出範囲とした（各会計の歳出決算書は款項集計のため明細書のみ範囲化）。下水道決算書は決算報告書の収益的支出p3・資本的支出p5（決算額・単位円税込）と収益費用明細書の支出p27-31（款項目節・円税抜）を歳出範囲とし、資本的支出の目別明細は主冊p5集計のみ存在。会計構成は掲載一覧と全件照合済み。",
+      "selected_candidate_id": "132136-2025-settlement",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2025-settlement",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2025/settlement-2.pdf",
+            "sha256": "b5f53e4eeb2cf4358c3544d6f8f16c7f91436bd34d5725443945a7763b1a1d05",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/files/R7kessansho.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2025/settlement-1.pdf",
+            "sha256": "258ae16a3fa0c1b70c433f979f8dd6f86f56bab99257582b186ff64b189a8317",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/files/R7kessansho_gesui.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T15:48:15.652Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "132136-2026-supplementary-1",
+          "title": "令和8年度 補正予算書（第1号）一般会計・国民健康保険事業特別会計・介護保険事業特別会計・後期高齢者医療特別会計",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20251007.html",
+          "inspected_at": "2026-10-07T16:39:15.518324+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/8yosan1gouhosei.pdf",
+              "sha256": "a0761a08f1cff4a7447fa728a6f9b0e981b281a1845d0d051b746e6802cbb4a0",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 17
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/r8kokuhohosei1.pdf",
+              "sha256": "7de4a96d34aef880707c56779fd050e368080791e9411b29bd5e0b48bbc852e1",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 23
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/r8kaigohosei1.pdf",
+              "sha256": "879c2ac86a43ddfbba1491f56533bd605b7db7266ee7f4b7c7a5c5fe8d2d1ff4",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/r8koukikoureihosei1.pdf",
+              "sha256": "5350b504fc096e347ea2748b742cd1e9f00d2c81bdc526315db9cec495b6ac19",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "R8予算掲載頁の補正欄から。各PDFとも「歳入歳出補正予算事項別明細書」に款・項・目と補正額（千円）が同一明細で載り要件を満たす。号数でまとめたが提出日は異なる（一般会計第1号=6/18、特別会計第1号=9/29）。一般会計の歳出明細は物理頁11-17（p18-は給与費明細・調書のため範囲外）。特別会計の歳出明細は各末尾区間（見開きで款項目頁と節・説明頁が交互）。不足: 下水道事業会計の補正予算書は掲載頁に無し。歳入明細は未確認・範囲外。",
+      "selected_candidate_id": "132136-2026-supplementary-1",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2026-supplementary-1",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2026/supplementary-1-4.pdf",
+            "sha256": "a0761a08f1cff4a7447fa728a6f9b0e981b281a1845d0d051b746e6802cbb4a0",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/8yosan1gouhosei.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2026/supplementary-1-2.pdf",
+            "sha256": "7de4a96d34aef880707c56779fd050e368080791e9411b29bd5e0b48bbc852e1",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/r8kokuhohosei1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2026/supplementary-1-3.pdf",
+            "sha256": "879c2ac86a43ddfbba1491f56533bd605b7db7266ee7f4b7c7a5c5fe8d2d1ff4",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/r8kaigohosei1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2026/supplementary-1-1.pdf",
+            "sha256": "5350b504fc096e347ea2748b742cd1e9f00d2c81bdc526315db9cec495b6ac19",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/r8koukikoureihosei1.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:39:32.004Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "132136-2026-supplementary-2",
+          "title": "令和8年度 一般会計補正予算書（第2号）",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20251007.html",
+          "inspected_at": "2026-10-07T16:39:15.518324+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/8yosan2gouhosei.pdf",
+              "sha256": "f053ee54f0c09647968e31f340d84664aaec8e6ac39e37dc50088d72a2e756de",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 12
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "同掲載頁の補正第2号。事項別明細書に款項目と補正額（減額、千円）が同一明細で載る。歳出明細は物理頁11-12（p13-は債務負担行為・地方債調書のため範囲外）。不足: 第2号の特別会計・下水道事業会計の補正予算書は掲載頁に無し。歳入明細は範囲外。",
+      "selected_candidate_id": "132136-2026-supplementary-2",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2026-supplementary-2",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2026/supplementary-2.pdf",
+            "sha256": "f053ee54f0c09647968e31f340d84664aaec8e6ac39e37dc50088d72a2e756de",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/8yosan2gouhosei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:39:34.580Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "132136-2026-supplementary-3",
+          "title": "令和8年度 一般会計補正予算書（第3号）",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20251007.html",
+          "inspected_at": "2026-10-07T16:39:15.518324+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/8yosan3gouhosei.pdf",
+              "sha256": "8cf86c5d2adac39c7bdeb029d21de3c289765033ac766bdc0951193cb494c9e8",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 13,
+                      "end": 30
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "同掲載頁の補正第3号。事項別明細書に款項目と補正額（千円）が同一明細で載る。歳出明細は物理頁13-30（p31は地方債調書のため範囲外）。不足: 第3号の特別会計・下水道事業会計の補正予算書は掲載頁に無し。歳入明細は範囲外。",
+      "selected_candidate_id": "132136-2026-supplementary-3",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2026-supplementary-3",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2026/supplementary-3.pdf",
+            "sha256": "8cf86c5d2adac39c7bdeb029d21de3c289765033ac766bdc0951193cb494c9e8",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/8yosan3gouhosei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:39:37.403Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "132136-2024-settlement",
+          "title": "令和6年度 歳入歳出決算書（事項別明細書）・下水道事業会計決算書",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/kessan.html",
+          "inspected_at": "2026-10-08T00:54:59.076809+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/files/R6kessan.pdf",
+              "sha256": "3e4177fc078d9185249fba08fb83222f7b3dcf3c184a9d7b2030dab4b95ef2d1",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 124,
+                      "end": 397
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 412,
+                      "end": 425
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 442,
+                      "end": 453
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 466,
+                      "end": 471
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/files/R6gesui-kessan.pdf",
+              "sha256": "a4a03e4c92893926fb7a4418bfb1f0a694cbb4b4a8d47b44905a38d76d903603",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "start": 27,
+                      "end": 31
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "選定。令和6年度決算は決算頁(kessan.html)の令和6年度欄に歳入歳出決算書と下水道事業会計決算書のPDFで掲載。R6kessan.pdf(487頁、印字頁=物理頁-2)の歳入歳出決算事項別明細書は見開きで左=款・項・目と節内訳・予算現額、右=支出済額・翌年度繰越額・不用額・備考(事業コード【xxxxx】・事業名・担当課つき)が同一明細で対応、単位円。歳出区間: 一般会計物理124-397(印字122-395、物理398-400は空白頁)、国民健康保険事業特別会計412-425(同426-428空白)、介護保険事業特別会計442-453(同454-456空白)、後期高齢者医療特別会計466-471(同472-474空白)。歳出決算書(印字17-24等)は款項集計、実質収支調書・財産調書(印字473以降)は附属のため範囲外。R6gesui-kessan.pdf(40頁)は決算報告書の収益的支出p3・資本的支出p5(決算額、円税込)と収益費用明細書の支出p27-31(款項目節、円税抜)を歳出範囲とした。資本的支出の目別明細は主冊p5集計のみで明細書なし(R7と同じ構成)。損益計算書・CF・BS・注記・固定資産明細書・企業債明細書は支出明細でないため範囲外。会計構成は令和6年度掲載一覧の5会計(一般・国保事業・介護保険事業・後期高齢者医療の各特別会計と下水道事業会計)で全会計照合済み。一般会計決算概要・主要施策成果・クロス表・財政状況資料集は集計資料のため対象外。 再点検: 事業報告書p19「建設工事の概況」は工事名・工事費総額（契約額、着工〜竣工）の記載で当年度支出実績と事業名の対応がなく、資本的支出の事業別・目別の当年度支出明細は本冊子に存在しない（主冊p5款項集計のみ）。よって資本的支出の事業明細は不足として記録する。",
+      "selected_candidate_id": "132136-2024-settlement",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2024-settlement",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2024/settlement-1.pdf",
+            "sha256": "3e4177fc078d9185249fba08fb83222f7b3dcf3c184a9d7b2030dab4b95ef2d1",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/files/R6kessan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2024/settlement-2.pdf",
+            "sha256": "a4a03e4c92893926fb7a4418bfb1f0a694cbb4b4a8d47b44905a38d76d903603",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/files/R6gesui-kessan.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T00:55:46.663Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2023,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "132136-2023-initial",
+          "title": "令和5年度 各会計予算書（歳出事項別明細書・支出明細）",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/yosan_r5.html",
+          "inspected_at": "2026-10-08T06:46:51+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_5yosan_all.pdf",
+              "sha256": "5ae08b8c8306372f7f48d4adfd044ba950f2cffcb84954e4023be467756b8f3d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 84,
+                      "end": 445
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_r5kokuhotoushoyosansho.pdf",
+              "sha256": "8dd3bbfeee7a44f7173f8476c3a48c923b8d12cdbc37453d225d34de3b2c3cb3",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 22,
+                      "end": 45
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_r5kaigotoushoyosansho.pdf",
+              "sha256": "10258dabe26c2b5c568b93961af8e8cf9ae98dc7bf2ec6a9bd4423f7789dbbd3",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 22,
+                      "end": 43
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_r5koukitoushoyosansho.pdf",
+              "sha256": "92e5bfe6c8feeb11bff2ed28d35efdea2fa7260550cadce473616dde086ab04c",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 29
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_r5gesuitoushoyosansho.pdf",
+              "sha256": "7a5a277ff2f3ac37af976c659f7431ffe90750e135f583091af745c8acec0e6c",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 35,
+                      "end": 39
+                    },
+                    {
+                      "start": 41,
+                      "end": 42
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "選定。令和5年度当初予算は予算頁(yosan_r5.html)に一般会計一括予算書と3特別会計・下水道事業会計の各予算書PDFで掲載（予算概要・編成方針・分割版歳入分冊・補正各号は対象外）。一般会計一括書(466頁)の３歳出は物理84-445：款項目と本年度・前年度・比較・財源内訳、見開き対頁に節・説明（事業コード・事業名・担当課）が同一明細で対応、単位千円、末尾14予備費(p445)、p447-給与費明細書のため範囲外。3特別会計書はToUnicodeなし文字化けPDFのため画像確認：国保(51頁)３歳出22-45末尾9予備費、介護(50頁)３歳出22-43末尾9予備費、後期(33頁)３歳出18-29末尾6予備費、いずれも款項目・本年度・前年度・比較と節・説明（事業コード・事業名・課）が同一明細で対応、単位千円。pdf_typeは画像確認のためscan。下水道事業会計書(42頁)は予算実施計画明細書の支出のみ：収益的支出明細35-39（１下水道事業費用、款項目節・本年度予定額・前年度・比較、千円）と資本的支出明細41-42（１資本的支出・建設改良費〜4予備費）；p33-34収益的収入・p40空白裏・p13-給与費明細等の財務諸表区間は範囲外、実施計画本文(p9-12款項目予定額集計)は明細でないため範囲外。会計構成は令和5年度掲載一覧の5会計で照合済み。",
+      "selected_candidate_id": "132136-2023-initial",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2023-initial",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2023/initial-2.pdf",
+            "sha256": "5ae08b8c8306372f7f48d4adfd044ba950f2cffcb84954e4023be467756b8f3d",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_5yosan_all.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2023/initial-4.pdf",
+            "sha256": "8dd3bbfeee7a44f7173f8476c3a48c923b8d12cdbc37453d225d34de3b2c3cb3",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_r5kokuhotoushoyosansho.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2023/initial-1.pdf",
+            "sha256": "10258dabe26c2b5c568b93961af8e8cf9ae98dc7bf2ec6a9bd4423f7789dbbd3",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_r5kaigotoushoyosansho.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2023/initial-5.pdf",
+            "sha256": "92e5bfe6c8feeb11bff2ed28d35efdea2fa7260550cadce473616dde086ab04c",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_r5koukitoushoyosansho.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2023/initial-3.pdf",
+            "sha256": "7a5a277ff2f3ac37af976c659f7431ffe90750e135f583091af745c8acec0e6c",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_r5gesuitoushoyosansho.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T07:03:06.197Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2024,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "132136-2024-initial",
+          "title": "令和6年度 各会計予算書（歳出事項別明細書・支出明細）",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20231003.html",
+          "inspected_at": "2026-10-08T06:46:51+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/0_6yosan_all.pdf",
+              "sha256": "d3ea081fc3a9364f2275d4fd30fed49792ae0e532f976414acb25a86ca86a066",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 88,
+                      "end": 447
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/6kokuho.pdf",
+              "sha256": "061256fa0588e2b87fc24032fe00f889a6ffd5e2342e5d2e0a74c63c8df60f9a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 22,
+                      "end": 45
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/6kaigo.pdf",
+              "sha256": "0e5c394241e9250aa32cc4a8b9df168be1eefc6fd36882ec3780babcfacb167b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 22,
+                      "end": 43
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/6kouki.pdf",
+              "sha256": "22bd60e5aa3b8186010b91b24a7113fa4f8a3940a957dcc680232bde5c1d463c",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 29
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/6gesui.pdf",
+              "sha256": "798d5948f482a6c53114d8d07e7e169df5fa8043e04fe9a60dbc8bf95695a789",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 33,
+                      "end": 38
+                    },
+                    {
+                      "start": 39,
+                      "end": 41
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "選定。令和6年度当初予算は予算頁(zaisei20231003.html)に一般会計一括予算書と3特別会計・下水道事業会計の各予算書PDFで掲載（予算概要・中長期見通し・分割版歳入分冊・補正各号は対象外）。一般会計一括書(470頁)の３歳出は物理88-447：款項目と本年度・前年度・比較・財源内訳、対頁に節・説明（事業コード・事業名・担当課）が同一明細で対応、単位千円、末尾14予備費(p447)、p449-給与費明細書のため範囲外。特別会計は国保(51頁)３歳出22-45末尾9予備費、介護(50頁)３歳出22-43末尾9予備費、後期(33頁)３歳出18-29末尾6予備費、いずれも款項目・本年度・前年度・比較と節・説明が同一明細で対応、単位千円。下水道事業会計書(41頁)は予算実施計画明細書の支出のみ：収益的支出明細33-38（１下水道事業費用、款項目節・本年度予定額・前年度・比較、千円）と資本的支出明細39-41（１資本的支出・建設改良費〜4予備費）；収益的収入・空白裏・給与費明細等の財務諸表区間は範囲外、実施計画本文(p9・p11款項目予定額集計)は明細でないため範囲外。会計構成は令和6年度掲載一覧の5会計で照合済み。",
+      "selected_candidate_id": "132136-2024-initial",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2024-initial",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2024/initial-5.pdf",
+            "sha256": "d3ea081fc3a9364f2275d4fd30fed49792ae0e532f976414acb25a86ca86a066",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/0_6yosan_all.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2024/initial-1.pdf",
+            "sha256": "061256fa0588e2b87fc24032fe00f889a6ffd5e2342e5d2e0a74c63c8df60f9a",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/6kokuho.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2024/initial-2.pdf",
+            "sha256": "0e5c394241e9250aa32cc4a8b9df168be1eefc6fd36882ec3780babcfacb167b",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/6kaigo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2024/initial-3.pdf",
+            "sha256": "22bd60e5aa3b8186010b91b24a7113fa4f8a3940a957dcc680232bde5c1d463c",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/6kouki.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2024/initial-4.pdf",
+            "sha256": "798d5948f482a6c53114d8d07e7e169df5fa8043e04fe9a60dbc8bf95695a789",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/6gesui.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T07:03:19.053Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2025,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "132136-2025-initial",
+          "title": "令和7年度 各会計予算書（歳出事項別明細書・支出明細）",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20241003.html",
+          "inspected_at": "2026-10-08T06:46:51+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/0_7yosan_all_an.pdf",
+              "sha256": "995c1d1fb6614e7c978ff82fcc98377f9ae03ae11b16c67b18f531993a83f784",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 47,
+                      "end": 220
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/7kokuhoan.pdf",
+              "sha256": "cd19589a61ba8ae255b8d50d346112c3ce1b50b131519be734a4ada5bd10468b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 22,
+                      "end": 45
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/7kaigoan_2.pdf",
+              "sha256": "036acbdcb7239795c772ecc3acefe656486b4c28e84e88e17bc0f85546362810",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 22,
+                      "end": 43
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/7koukian.pdf",
+              "sha256": "0736e631ecc6ca62db398b4bbc1b97c11280c07530d16acaa736ee2575cf99d5",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 29
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/7gesuian.pdf",
+              "sha256": "8f2f5bd4779a3028ba7b0f70cc312644e5357865e3e0eeacc3b3de8ad2c365b0",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 33,
+                      "end": 37
+                    },
+                    {
+                      "start": 40,
+                      "end": 42
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "選定。令和7年度当初予算は予算頁(zaisei20241003.html)に一般会計一括予算書と3特別会計・下水道事業会計の各予算書PDFで掲載（予算概要・印刷用重複・分割版歳入分冊・補正各号は対象外）。一般会計一括書(232頁)の歳出明細は物理47-220：1議会費(p47)〜14予備費(p220)、款項目と本年度・前年度・比較・財源内訳・節・説明（事業コード・事業名）が同一明細で対応、単位千円、p221-給与費明細書のため範囲外。特別会計は国保(52頁)３歳出22-45末尾9予備費、介護(51頁)３歳出22-43末尾9予備費、後期(33頁)３歳出18-29末尾6予備費、いずれも款項目・本年度・前年度・比較と節・説明が同一明細で対応、単位千円。下水道事業会計書(42頁)は予算実施計画明細書の支出のみ：収益的支出明細33-37（１下水道事業費用、款項目節・本年度予定額・前年度・比較、千円）と資本的支出明細40-42（１資本的支出・建設改良費〜4予備費）；p39収益的収入・p38空白裏・給与費明細等の財務諸表区間は範囲外、実施計画本文(p9・p11款項目予定額集計)は明細でないため範囲外。会計構成は令和7年度掲載一覧の5会計で照合済み。",
+      "selected_candidate_id": "132136-2025-initial",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2025-initial",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2025/initial-4.pdf",
+            "sha256": "995c1d1fb6614e7c978ff82fcc98377f9ae03ae11b16c67b18f531993a83f784",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/0_7yosan_all_an.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2025/initial-5.pdf",
+            "sha256": "cd19589a61ba8ae255b8d50d346112c3ce1b50b131519be734a4ada5bd10468b",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/7kokuhoan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2025/initial-1.pdf",
+            "sha256": "036acbdcb7239795c772ecc3acefe656486b4c28e84e88e17bc0f85546362810",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/7kaigoan_2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2025/initial-2.pdf",
+            "sha256": "0736e631ecc6ca62db398b4bbc1b97c11280c07530d16acaa736ee2575cf99d5",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/7koukian.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2025/initial-3.pdf",
+            "sha256": "8f2f5bd4779a3028ba7b0f70cc312644e5357865e3e0eeacc3b3de8ad2c365b0",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/7gesuian.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T07:03:33.160Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2023,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "132136-2023-settlement",
+          "title": "令和5年度 歳入歳出決算書・下水道事業会計決算書（歳出決算事項別明細書・支出明細）",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/kessan.html",
+          "inspected_at": "2026-10-08T06:46:51+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/files/r5kessannsho.pdf",
+              "sha256": "d00524119852755093419bae82298e67d32daf488ba987f510b49452a4d54f63",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 123,
+                      "end": 399
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 413,
+                      "end": 427
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 441,
+                      "end": 453
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 465,
+                      "end": 471
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/files/r5gesuikessannsho.pdf",
+              "sha256": "0e4f94d8063bd0638ca78c00e54117e09bb2a90a13c5f11f8b036823f3ebb84d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "start": 27,
+                      "end": 31
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "選定。令和5年度決算は決算頁(kessan.html)の令和5年度欄に歳入歳出決算書と下水道事業会計決算書のPDFで掲載。r5kessannsho.pdf(487頁)の歳入歳出決算事項別明細書は見開きで左=款項目と節内訳・予算現額（当初予算額・補正予算額・繰越・流用・計）、右=支出済額・翌年度繰越額・不用額・備考（事業コード【xxxxxx】・事業名・担当課つき）が同一明細で対応、単位円。歳出区間：一般会計物理123-399、国民健康保険事業特別会計413-427、介護保険事業特別会計441-453、後期高齢者医療特別会計465-471（各末尾の空白頁・実質収支調書・財産調書は範囲外）。r5gesuikessannsho.pdf(41頁、目次確認)は決算報告書の収益的支出p3・資本的支出p5（決算額、円税込）と収益費用明細書の支出p27-31（款項目節、円税抜）を歳出範囲とした。資本的支出の目別・事業別明細は主冊p5款項集計のみで明細書なし（事業報告書p17は資本的支出の概要、p22-23は契約額・企業債残高で当年度支出明細でないため不足として記録）。損益計算書・CF・BS・注記・固定資産明細書・企業債明細書は支出明細でないため範囲外。決算概要・主要事業・クロス表・施策成果概要は集計資料のため対象外。会計構成は令和5年度掲載一覧の5会計で照合済み。",
+      "selected_candidate_id": "132136-2023-settlement",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2023-settlement",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2023/settlement-2.pdf",
+            "sha256": "d00524119852755093419bae82298e67d32daf488ba987f510b49452a4d54f63",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/files/r5kessannsho.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2023/settlement-1.pdf",
+            "sha256": "0e4f94d8063bd0638ca78c00e54117e09bb2a90a13c5f11f8b036823f3ebb84d",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/files/r5gesuikessannsho.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T07:03:50.254Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "132136-2023-supplementary-1",
+          "title": "令和５年度 補正予算書（第1号）一般会計・国民健康保険事業特別会計・介護保険事業特別会計・後期高齢者医療特別会計・下水道事業会計",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/yosan_r5.html",
+          "inspected_at": "2026-10-08T09:05:14.348196+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_05hosei1.pdf",
+              "sha256": "94df15361a095dd790335337eec3fc611d5ed5b1c7fcc31c064cc754a43098d5",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_05kokuho1.pdf",
+              "sha256": "29003c9c978ddc77eda817e292efe7f43d78c4e030cf51fd5bcdd7481c20b987",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 16,
+                      "end": 17
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_05kaigo1.pdf",
+              "sha256": "aa3e326b6318306cce0edc91108a5944b8a845b85195da63ef125cc2a2abb42a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 16,
+                      "end": 17
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_05kouki1.pdf",
+              "sha256": "1cfc6d1c187e96d9d7e56a275c7d46427ff682920c82403c6dd6f91df67e363b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 19
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/05gesui1.pdf",
+              "sha256": "9fe96ff6e517b7bf3bf07d498d638d9c08611f7e428f1d9c33572b10382846bb",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 21,
+                      "end": 22
+                    },
+                    {
+                      "start": 24,
+                      "end": 25
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式掲載頁の補正欄から（https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/yosan_r5.html）。一般会計・特別会計は「歳入歳出補正予算事項別明細書」の歳出部分に款・項・目と補正前の額・補正額・計（単位：千円）・特定財源が対応し、節・説明（事業コード・事業名・担当課）が見開きで対応。下水道事業会計は「補正予算実施計画明細書」の収益的支出・資本的支出に款・項・目と既決予定額・補正予定額・計（千円）・節が対応（収入頁は範囲外）。選定会計: 一般会計・国民健康保険事業特別会計・介護保険事業特別会計・後期高齢者医療特別会計・下水道事業会計。歳入明細・給与費明細書・債務負担行為・地方債・繰越明許費・財務諸表は範囲外。",
+      "selected_candidate_id": "132136-2023-supplementary-1",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2023-supplementary-1",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2023/supplementary-1-3.pdf",
+            "sha256": "94df15361a095dd790335337eec3fc611d5ed5b1c7fcc31c064cc754a43098d5",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_05hosei1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2023/supplementary-1-2.pdf",
+            "sha256": "29003c9c978ddc77eda817e292efe7f43d78c4e030cf51fd5bcdd7481c20b987",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_05kokuho1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2023/supplementary-1-5.pdf",
+            "sha256": "aa3e326b6318306cce0edc91108a5944b8a845b85195da63ef125cc2a2abb42a",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_05kaigo1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2023/supplementary-1-1.pdf",
+            "sha256": "1cfc6d1c187e96d9d7e56a275c7d46427ff682920c82403c6dd6f91df67e363b",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_05kouki1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2023/supplementary-1-4.pdf",
+            "sha256": "9fe96ff6e517b7bf3bf07d498d638d9c08611f7e428f1d9c33572b10382846bb",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/05gesui1.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:05:58.132Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "132136-2023-supplementary-2",
+          "title": "令和５年度 補正予算書（第2号）一般会計・国民健康保険事業特別会計・介護保険事業特別会計・後期高齢者医療特別会計",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/yosan_r5.html",
+          "inspected_at": "2026-10-08T09:05:14.348196+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_05hosei2.pdf",
+              "sha256": "4aae48581c001b94fb3bb7b0d6da16bc4fd8621370d5d28e46a9c371e92d5198",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 20,
+                      "end": 33
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_05kokuho2.pdf",
+              "sha256": "ec3a7bfe362564c11e97761dbbbdf801bed64fe72986c5201cd2c3a805e09108",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_05kaigo2.pdf",
+              "sha256": "631bc20903037c779dba67418f39ffb2a1617817b9c4382ab04becd2d07f56a9",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 23
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/05kouki2.pdf",
+              "sha256": "8a83cec544368e97940a0ee39256fa2257bd6143488f78eae685de10a9af3984",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 20,
+                      "end": 27
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式掲載頁の補正欄から（https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/yosan_r5.html）。「歳入歳出補正予算事項別明細書」の歳出部分に款・項・目と補正前の額・補正額・計（単位：千円）・特定財源が対応し、節・説明（事業コード・事業名・担当課）が見開きで対応。掲載頁に第2号の資料がある会計のみ（一般会計・国民健康保険事業特別会計・介護保険事業特別会計・後期高齢者医療特別会計）。この号の他会計の補正予算書は掲載頁に無し。歳入明細・給与費明細書・債務負担行為・地方債・繰越明許費の各調書は範囲外。",
+      "selected_candidate_id": "132136-2023-supplementary-2",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2023-supplementary-2",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2023/supplementary-2-1.pdf",
+            "sha256": "4aae48581c001b94fb3bb7b0d6da16bc4fd8621370d5d28e46a9c371e92d5198",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_05hosei2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2023/supplementary-2-4.pdf",
+            "sha256": "ec3a7bfe362564c11e97761dbbbdf801bed64fe72986c5201cd2c3a805e09108",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_05kokuho2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2023/supplementary-2-2.pdf",
+            "sha256": "631bc20903037c779dba67418f39ffb2a1617817b9c4382ab04becd2d07f56a9",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_05kaigo2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2023/supplementary-2-3.pdf",
+            "sha256": "8a83cec544368e97940a0ee39256fa2257bd6143488f78eae685de10a9af3984",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/05kouki2.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:06:06.672Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "132136-2023-supplementary-3",
+          "title": "令和５年度 補正予算書（第3号）一般会計・国民健康保険事業特別会計・介護保険事業特別会計",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/yosan_r5.html",
+          "inspected_at": "2026-10-08T09:05:14.348196+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_05hosei3.pdf",
+              "sha256": "34bad8129bfd60b92edd4c507f74c8b84e822f290c40701bae132d4ece82fc33",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 20,
+                      "end": 33
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_05kokuho3.pdf",
+              "sha256": "8f1a226fbc4916b5993638fa0254de29a5e2091f5a487d8168430aaaecbc9135",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/05kaigo3.pdf",
+              "sha256": "056d78f63ada5074de7fac8729a19ea1a15465083074edf7fa74aa6f3efcbd64",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 20,
+                      "end": 29
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式掲載頁の補正欄から（https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/yosan_r5.html）。「歳入歳出補正予算事項別明細書」の歳出部分に款・項・目と補正前の額・補正額・計（単位：千円）・特定財源が対応し、節・説明（事業コード・事業名・担当課）が見開きで対応。掲載頁に第3号の資料がある会計のみ（一般会計・国民健康保険事業特別会計・介護保険事業特別会計）。この号の他会計の補正予算書は掲載頁に無し。歳入明細・給与費明細書・債務負担行為・地方債・繰越明許費の各調書は範囲外。",
+      "selected_candidate_id": "132136-2023-supplementary-3",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2023-supplementary-3",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2023/supplementary-3-2.pdf",
+            "sha256": "34bad8129bfd60b92edd4c507f74c8b84e822f290c40701bae132d4ece82fc33",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_05hosei3.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2023/supplementary-3-3.pdf",
+            "sha256": "8f1a226fbc4916b5993638fa0254de29a5e2091f5a487d8168430aaaecbc9135",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_05kokuho3.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2023/supplementary-3-1.pdf",
+            "sha256": "056d78f63ada5074de7fac8729a19ea1a15465083074edf7fa74aa6f3efcbd64",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/05kaigo3.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:06:12.683Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "132136-2023-supplementary-4",
+          "title": "令和５年度 補正予算書（第4号）一般会計・国民健康保険事業特別会計",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/yosan_r5.html",
+          "inspected_at": "2026-10-08T09:05:14.348196+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_05hosei4.pdf",
+              "sha256": "679afd0d6665d4b20f7c1673aeb6127b21aa3af1baec83fd234a92c61ae91713",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 26,
+                      "end": 73
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/05kokuho4.pdf",
+              "sha256": "dd696596491fd74b71b1308cf0754484c9cb1e2b21d35a0338c3fde1888aebc1",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 22,
+                      "end": 35
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式掲載頁の補正欄から（https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/yosan_r5.html）。「歳入歳出補正予算事項別明細書」の歳出部分に款・項・目と補正前の額・補正額・計（単位：千円）・特定財源が対応し、節・説明（事業コード・事業名・担当課）が見開きで対応。掲載頁に第4号の資料がある会計のみ（一般会計・国民健康保険事業特別会計）。この号の他会計の補正予算書は掲載頁に無し。歳入明細・給与費明細書・債務負担行為・地方債・繰越明許費の各調書は範囲外。",
+      "selected_candidate_id": "132136-2023-supplementary-4",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2023-supplementary-4",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2023/supplementary-4-1.pdf",
+            "sha256": "679afd0d6665d4b20f7c1673aeb6127b21aa3af1baec83fd234a92c61ae91713",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_05hosei4.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2023/supplementary-4-2.pdf",
+            "sha256": "dd696596491fd74b71b1308cf0754484c9cb1e2b21d35a0338c3fde1888aebc1",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/05kokuho4.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:06:18.514Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "132136-2023-supplementary-5",
+          "title": "令和５年度 補正予算書（第5号）一般会計",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/yosan_r5.html",
+          "inspected_at": "2026-10-08T09:05:14.348196+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_05hosei5.pdf",
+              "sha256": "6e8f4ce267df00dbcd18c228d46da48df704034541183db0b48d2b759c4dbf6a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 19
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式掲載頁の補正欄から（https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/yosan_r5.html）。「歳入歳出補正予算事項別明細書」の歳出部分に款・項・目と補正前の額・補正額・計（単位：千円）・特定財源が対応し、節・説明（事業コード・事業名・担当課）が見開きで対応。掲載頁に第5号の資料がある会計のみ（一般会計）。この号の他会計の補正予算書は掲載頁に無し。歳入明細・給与費明細書・債務負担行為・地方債・繰越明許費の各調書は範囲外。",
+      "selected_candidate_id": "132136-2023-supplementary-5",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2023-supplementary-5",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2023/supplementary-5.pdf",
+            "sha256": "6e8f4ce267df00dbcd18c228d46da48df704034541183db0b48d2b759c4dbf6a",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_05hosei5.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:06:22.440Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "132136-2023-supplementary-6",
+          "title": "令和５年度 補正予算書（第6号）一般会計",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/yosan_r5.html",
+          "inspected_at": "2026-10-08T09:05:14.348196+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_05hosei6.pdf",
+              "sha256": "3478d4a29c0552be391432b18b5d7ce03a39af72d00de61c0296e617b9363518",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 20,
+                      "end": 57
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式掲載頁の補正欄から（https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/yosan_r5.html）。「歳入歳出補正予算事項別明細書」の歳出部分に款・項・目と補正前の額・補正額・計（単位：千円）・特定財源が対応し、節・説明（事業コード・事業名・担当課）が見開きで対応。掲載頁に第6号の資料がある会計のみ（一般会計）。この号の他会計の補正予算書は掲載頁に無し。歳入明細・給与費明細書・債務負担行為・地方債・繰越明許費の各調書は範囲外。",
+      "selected_candidate_id": "132136-2023-supplementary-6",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2023-supplementary-6",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2023/supplementary-6.pdf",
+            "sha256": "3478d4a29c0552be391432b18b5d7ce03a39af72d00de61c0296e617b9363518",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/yosan_r5_05hosei6.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:06:26.073Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 7
+      },
+      "candidates": [
+        {
+          "id": "132136-2023-supplementary-7",
+          "title": "令和５年度 補正予算書（第7号）一般会計",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/yosan_r5.html",
+          "inspected_at": "2026-10-08T09:05:14.348196+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/05hosei7.pdf",
+              "sha256": "703a21588d19e430f53e35ef502de5953ac9904ca9b1b1cee186fe5869fa1082",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 20,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式掲載頁の補正欄から（https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/yosan_r5.html）。「歳入歳出補正予算事項別明細書」の歳出部分に款・項・目と補正前の額・補正額・計（単位：千円）・特定財源が対応し、節・説明（事業コード・事業名・担当課）が見開きで対応。掲載頁に第7号の資料がある会計のみ（一般会計）。この号の他会計の補正予算書は掲載頁に無し。歳入明細・給与費明細書・債務負担行為・地方債・繰越明許費の各調書は範囲外。",
+      "selected_candidate_id": "132136-2023-supplementary-7",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2023-supplementary-7",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2023/supplementary-7.pdf",
+            "sha256": "703a21588d19e430f53e35ef502de5953ac9904ca9b1b1cee186fe5869fa1082",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/05hosei7.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:06:29.275Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 8
+      },
+      "candidates": [
+        {
+          "id": "132136-2023-supplementary-8",
+          "title": "令和５年度 補正予算書（第8号）一般会計",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/yosan_r5.html",
+          "inspected_at": "2026-10-08T09:05:14.348196+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/05hosei8.pdf",
+              "sha256": "7e1ce9f7cfc2563280675334e92756a99d0ca7d97ca50732a597b9823f973a39",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 58,
+                      "end": 245
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式掲載頁の補正欄から（https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/yosan_r5.html）。「歳入歳出補正予算事項別明細書」の歳出部分に款・項・目と補正前の額・補正額・計（単位：千円）・特定財源が対応し、節・説明（事業コード・事業名・担当課）が見開きで対応。掲載頁に第8号の資料がある会計のみ（一般会計）。この号の他会計の補正予算書は掲載頁に無し。歳入明細・給与費明細書・債務負担行為・地方債・繰越明許費の各調書は範囲外。",
+      "selected_candidate_id": "132136-2023-supplementary-8",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2023-supplementary-8",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2023/supplementary-8.pdf",
+            "sha256": "7e1ce9f7cfc2563280675334e92756a99d0ca7d97ca50732a597b9823f973a39",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/05hosei8.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:06:33.482Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "132136-2024-supplementary-1",
+          "title": "令和６年度 補正予算書（第1号）一般会計・国民健康保険事業特別会計・介護保険事業特別会計・後期高齢者医療特別会計・下水道事業会計",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20231003.html",
+          "inspected_at": "2026-10-08T09:05:14.348196+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/06hosei1.pdf",
+              "sha256": "72c0201d6a9d55b178de7c16fce442a42d3a7336016b5aff8afcadb79d649a0d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 20,
+                      "end": 47
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/06kokuhohosei1.pdf",
+              "sha256": "17906ce31312862b73ca8f7acdbd10fc2f98be8faac54edab9e5d7f7f03d34b2",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/06kaigohosei1.pdf",
+              "sha256": "50b33b2a903974b2bb9785338c7bf57d56e4b72afdbc340248894509f6a6d002",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 19
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/06koukihosei1.pdf",
+              "sha256": "ea1b1da0d40f02a990facc59214531ad541dbf10435018ced630ba07c9cbffbf",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 19
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/06gesuihosei1.pdf",
+              "sha256": "0ed68cc1de974826d9c5b531358bba445bf09b53f2cc04a752bf8fd7a52c2d09",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 19,
+                      "end": 20
+                    },
+                    {
+                      "start": 22,
+                      "end": 22
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式掲載頁の補正欄から（https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20231003.html）。一般会計・特別会計は「歳入歳出補正予算事項別明細書」の歳出部分に款・項・目と補正前の額・補正額・計（単位：千円）・特定財源が対応し、節・説明（事業コード・事業名・担当課）が見開きで対応。下水道事業会計は「補正予算実施計画明細書」の収益的支出・資本的支出に款・項・目と既決予定額・補正予定額・計（千円）・節が対応（収入頁は範囲外）。選定会計: 一般会計・国民健康保険事業特別会計・介護保険事業特別会計・後期高齢者医療特別会計・下水道事業会計。歳入明細・給与費明細書・債務負担行為・地方債・繰越明許費・財務諸表は範囲外。",
+      "selected_candidate_id": "132136-2024-supplementary-1",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2024-supplementary-1",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2024/supplementary-1-4.pdf",
+            "sha256": "72c0201d6a9d55b178de7c16fce442a42d3a7336016b5aff8afcadb79d649a0d",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/06hosei1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2024/supplementary-1-2.pdf",
+            "sha256": "17906ce31312862b73ca8f7acdbd10fc2f98be8faac54edab9e5d7f7f03d34b2",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/06kokuhohosei1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2024/supplementary-1-3.pdf",
+            "sha256": "50b33b2a903974b2bb9785338c7bf57d56e4b72afdbc340248894509f6a6d002",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/06kaigohosei1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2024/supplementary-1-5.pdf",
+            "sha256": "ea1b1da0d40f02a990facc59214531ad541dbf10435018ced630ba07c9cbffbf",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/06koukihosei1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2024/supplementary-1-1.pdf",
+            "sha256": "0ed68cc1de974826d9c5b531358bba445bf09b53f2cc04a752bf8fd7a52c2d09",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/06gesuihosei1.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:06:45.485Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "132136-2024-supplementary-2",
+          "title": "令和６年度 補正予算書（第2号）一般会計・国民健康保険事業特別会計・介護保険事業特別会計・後期高齢者医療特別会計",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20231003.html",
+          "inspected_at": "2026-10-08T09:05:14.348196+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/zaiseihosei_r6_2.pdf",
+              "sha256": "80896e682b57c1c9c91dc8d4b08099de41aa841ee47418ed1d3a21ef753beabb",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 26,
+                      "end": 83
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/kokuhohosei_r6_2.pdf",
+              "sha256": "e896d3c12c26f83084efd901c0e174a7ed6d1f4283f4975c7baf13401fcbed73",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 25
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/kaigohosei_r6_2.pdf",
+              "sha256": "bb0f3dfb5344b62273184087a271f070977744344b32fc223886f0402b771a57",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 23
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/koukihosei_r6_2.pdf",
+              "sha256": "a1458f639b6d7edab53a50339f3f90d3fe73ce9fe17d6ec0db733bae98844e6f",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 19
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式掲載頁の補正欄から（https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20231003.html）。「歳入歳出補正予算事項別明細書」の歳出部分に款・項・目と補正前の額・補正額・計（単位：千円）・特定財源が対応し、節・説明（事業コード・事業名・担当課）が見開きで対応。掲載頁に第2号の資料がある会計のみ（一般会計・国民健康保険事業特別会計・介護保険事業特別会計・後期高齢者医療特別会計）。この号の他会計の補正予算書は掲載頁に無し。歳入明細・給与費明細書・債務負担行為・地方債・繰越明許費の各調書は範囲外。",
+      "selected_candidate_id": "132136-2024-supplementary-2",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2024-supplementary-2",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2024/supplementary-2-1.pdf",
+            "sha256": "80896e682b57c1c9c91dc8d4b08099de41aa841ee47418ed1d3a21ef753beabb",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/zaiseihosei_r6_2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2024/supplementary-2-4.pdf",
+            "sha256": "e896d3c12c26f83084efd901c0e174a7ed6d1f4283f4975c7baf13401fcbed73",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/kokuhohosei_r6_2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2024/supplementary-2-3.pdf",
+            "sha256": "bb0f3dfb5344b62273184087a271f070977744344b32fc223886f0402b771a57",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/kaigohosei_r6_2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2024/supplementary-2-2.pdf",
+            "sha256": "a1458f639b6d7edab53a50339f3f90d3fe73ce9fe17d6ec0db733bae98844e6f",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/koukihosei_r6_2.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:06:57.728Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "132136-2024-supplementary-3",
+          "title": "令和６年度 補正予算書（第3号）一般会計・国民健康保険事業特別会計・介護保険事業特別会計・後期高齢者医療特別会計",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20231003.html",
+          "inspected_at": "2026-10-08T09:05:14.348196+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/06hosei3.pdf",
+              "sha256": "67fd1b912c5da255cafad7bd876e3f6cae8aa6e05af3bf7724e5e9ec77bfd1a3",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/06kokuhohosei3.pdf",
+              "sha256": "54200afd5b5ac72054603e27cb88a9e4a9b4bb493f53645b317b47196ff8a52e",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 22,
+                      "end": 37
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/06kaigohosei3.pdf",
+              "sha256": "3c16f09c1f2982d670b3050c78906f8dfc9ba3ff6a21541210124290d612cd2a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 24,
+                      "end": 35
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/06koukihosei3.pdf",
+              "sha256": "db2f524b97e5b21a609793cc7135fac7ec813dcde15152f7775b8d04237a27f0",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 20,
+                      "end": 27
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式掲載頁の補正欄から（https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20231003.html）。「歳入歳出補正予算事項別明細書」の歳出部分に款・項・目と補正前の額・補正額・計（単位：千円）・特定財源が対応し、節・説明（事業コード・事業名・担当課）が見開きで対応。掲載頁に第3号の資料がある会計のみ（一般会計・国民健康保険事業特別会計・介護保険事業特別会計・後期高齢者医療特別会計）。この号の他会計の補正予算書は掲載頁に無し。歳入明細・給与費明細書・債務負担行為・地方債・繰越明許費の各調書は範囲外。 一般会計冊はDocuWorks製の文字抽出不可PDF（輪郭線描画・画像XObjectなし）のため物理頁を描画して歳出明細の範囲を確認。",
+      "selected_candidate_id": "132136-2024-supplementary-3",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2024-supplementary-3",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2024/supplementary-3-3.pdf",
+            "sha256": "67fd1b912c5da255cafad7bd876e3f6cae8aa6e05af3bf7724e5e9ec77bfd1a3",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/06hosei3.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2024/supplementary-3-2.pdf",
+            "sha256": "54200afd5b5ac72054603e27cb88a9e4a9b4bb493f53645b317b47196ff8a52e",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/06kokuhohosei3.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2024/supplementary-3-1.pdf",
+            "sha256": "3c16f09c1f2982d670b3050c78906f8dfc9ba3ff6a21541210124290d612cd2a",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/06kaigohosei3.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2024/supplementary-3-4.pdf",
+            "sha256": "db2f524b97e5b21a609793cc7135fac7ec813dcde15152f7775b8d04237a27f0",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/06koukihosei3.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:07:08.212Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "132136-2024-supplementary-4",
+          "title": "令和６年度 補正予算書（第4号）一般会計",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20231003.html",
+          "inspected_at": "2026-10-08T09:05:14.348196+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/zaiseihosei_r6_4.pdf",
+              "sha256": "ff03644d91ba44062f7a138466f72f7883009d7535e92892e07a25b8f341c1ac",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 27
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式掲載頁の補正欄から（https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20231003.html）。「歳入歳出補正予算事項別明細書」の歳出部分に款・項・目と補正前の額・補正額・計（単位：千円）・特定財源が対応し、節・説明（事業コード・事業名・担当課）が見開きで対応。掲載頁に第4号の資料がある会計のみ（一般会計）。この号の他会計の補正予算書は掲載頁に無し。歳入明細・給与費明細書・債務負担行為・地方債・繰越明許費の各調書は範囲外。",
+      "selected_candidate_id": "132136-2024-supplementary-4",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2024-supplementary-4",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2024/supplementary-4.pdf",
+            "sha256": "ff03644d91ba44062f7a138466f72f7883009d7535e92892e07a25b8f341c1ac",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/zaiseihosei_r6_4.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:07:12.403Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "132136-2024-supplementary-5",
+          "title": "令和６年度 補正予算書（第5号）一般会計",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20231003.html",
+          "inspected_at": "2026-10-08T09:05:14.348196+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/06hosei_5.pdf",
+              "sha256": "3e58b2798f782ad3423baff896e0039a36bffab0bca87c1ef1df3ede380c63bc",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 53
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式掲載頁の補正欄から（https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20231003.html）。「歳入歳出補正予算事項別明細書」の歳出部分に款・項・目と補正前の額・補正額・計（単位：千円）・特定財源が対応し、節・説明（事業コード・事業名・担当課）が見開きで対応。掲載頁に第5号の資料がある会計のみ（一般会計）。この号の他会計の補正予算書は掲載頁に無し。歳入明細・給与費明細書・債務負担行為・地方債・繰越明許費の各調書は範囲外。",
+      "selected_candidate_id": "132136-2024-supplementary-5",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2024-supplementary-5",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2024/supplementary-5.pdf",
+            "sha256": "3e58b2798f782ad3423baff896e0039a36bffab0bca87c1ef1df3ede380c63bc",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/06hosei_5.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:07:17.212Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "132136-2024-supplementary-6",
+          "title": "令和６年度 補正予算書（第6号）一般会計",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20231003.html",
+          "inspected_at": "2026-10-08T09:05:14.348196+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/06hosei_6.pdf",
+              "sha256": "b39c85de31b02e9254a2b206aab3df0cdd223f8ca0786585cd6aa150301b83e0",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 19
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式掲載頁の補正欄から（https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20231003.html）。「歳入歳出補正予算事項別明細書」の歳出部分に款・項・目と補正前の額・補正額・計（単位：千円）・特定財源が対応し、節・説明（事業コード・事業名・担当課）が見開きで対応。掲載頁に第6号の資料がある会計のみ（一般会計）。この号の他会計の補正予算書は掲載頁に無し。歳入明細・給与費明細書・債務負担行為・地方債・繰越明許費の各調書は範囲外。",
+      "selected_candidate_id": "132136-2024-supplementary-6",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2024-supplementary-6",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2024/supplementary-6.pdf",
+            "sha256": "b39c85de31b02e9254a2b206aab3df0cdd223f8ca0786585cd6aa150301b83e0",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/06hosei_6.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:07:21.168Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 7
+      },
+      "candidates": [
+        {
+          "id": "132136-2024-supplementary-7",
+          "title": "令和６年度 補正予算書（第7号）一般会計",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20231003.html",
+          "inspected_at": "2026-10-08T09:05:14.348196+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/zaiseihosei_r6_7.pdf",
+              "sha256": "f84d768f81e7a0793d90666feb9587002e0004299c7f3cc1e4d08ecfc59d30df",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 33,
+                      "end": 131
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式掲載頁の補正欄から（https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20231003.html）。「歳入歳出補正予算事項別明細書」の歳出部分に款・項・目と補正前の額・補正額・計（単位：千円）・特定財源が対応し、節・説明（事業コード・事業名・担当課）が見開きで対応。掲載頁に第7号の資料がある会計のみ（一般会計）。この号の他会計の補正予算書は掲載頁に無し。歳入明細・給与費明細書・債務負担行為・地方債・繰越明許費の各調書は範囲外。",
+      "selected_candidate_id": "132136-2024-supplementary-7",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2024-supplementary-7",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2024/supplementary-7.pdf",
+            "sha256": "f84d768f81e7a0793d90666feb9587002e0004299c7f3cc1e4d08ecfc59d30df",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/zaiseihosei_r6_7.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:07:24.375Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "132136-2025-supplementary-1",
+          "title": "令和７年度 補正予算書（第1号）一般会計・国民健康保険事業特別会計・介護保険事業特別会計・後期高齢者医療特別会計・下水道事業会計",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20241003.html",
+          "inspected_at": "2026-10-08T09:05:14.348196+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/07hosei1.pdf",
+              "sha256": "e36f24858ae8b8f2c599e2bb83b9b35d096b5fbd1da8a8ef3a2bbcdd163c1e46",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/r7kokuhohosei1.pdf",
+              "sha256": "4b575b5f03bd48c1d80f15fbdbaf15abcdf7ad1be1cf304caa31956677fdcff7",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 25
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/r7kaigohosei1.pdf",
+              "sha256": "1de909c9745370dbe86797577021191b2cb201b4949da2bd97465964b2477c04",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/r7koukikoureihosei1.pdf",
+              "sha256": "7f698a8629cb0d4e474f92fdadc25c645c8a9afa5c903a479ca0360345bb719a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/07gesuihosei1..pdf",
+              "sha256": "072dc52878c1609d1b6f423894cb0edc2bc5fa1884d39df9ab6c1ff43ff717e4",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 19,
+                      "end": 20
+                    },
+                    {
+                      "start": 22,
+                      "end": 22
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式掲載頁の補正欄から（https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20241003.html）。一般会計・特別会計は「歳入歳出補正予算事項別明細書」の歳出部分に款・項・目と補正前の額・補正額・計（単位：千円）・特定財源が対応し、節・説明（事業コード・事業名・担当課）が見開きで対応。下水道事業会計は「補正予算実施計画明細書」の収益的支出・資本的支出に款・項・目と既決予定額・補正予定額・計（千円）・節が対応（収入頁は範囲外）。選定会計: 一般会計・国民健康保険事業特別会計・介護保険事業特別会計・後期高齢者医療特別会計・下水道事業会計。歳入明細・給与費明細書・債務負担行為・地方債・繰越明許費・財務諸表は範囲外。",
+      "selected_candidate_id": "132136-2025-supplementary-1",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2025-supplementary-1",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2025/supplementary-1-5.pdf",
+            "sha256": "e36f24858ae8b8f2c599e2bb83b9b35d096b5fbd1da8a8ef3a2bbcdd163c1e46",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/07hosei1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2025/supplementary-1-3.pdf",
+            "sha256": "4b575b5f03bd48c1d80f15fbdbaf15abcdf7ad1be1cf304caa31956677fdcff7",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/r7kokuhohosei1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2025/supplementary-1-2.pdf",
+            "sha256": "1de909c9745370dbe86797577021191b2cb201b4949da2bd97465964b2477c04",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/r7kaigohosei1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2025/supplementary-1-4.pdf",
+            "sha256": "7f698a8629cb0d4e474f92fdadc25c645c8a9afa5c903a479ca0360345bb719a",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/r7koukikoureihosei1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2025/supplementary-1-1.pdf",
+            "sha256": "072dc52878c1609d1b6f423894cb0edc2bc5fa1884d39df9ab6c1ff43ff717e4",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/07gesuihosei1..pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:07:33.486Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "132136-2025-supplementary-2",
+          "title": "令和７年度 補正予算書（第2号）一般会計・国民健康保険事業特別会計・介護保険事業特別会計・後期高齢者医療特別会計",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20241003.html",
+          "inspected_at": "2026-10-08T09:05:14.348196+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/07hosei2.pdf",
+              "sha256": "d40175b044b364517f3f6f10f6a262cca6e49ddc52438214aefb137ae05b2652",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 10
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/r7kokuhohosei2.pdf",
+              "sha256": "09be096965416bd0e0f65e54d9c4753206d7b4d954fe38486fa577c14480c441",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 20,
+                      "end": 33
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/07kaigohosei2.pdf",
+              "sha256": "00be3884d1bb0f467f0abfba96aef14e7879df86530858f352bd22943eabaa9e",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 22,
+                      "end": 33
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/07koukihosei2.pdf",
+              "sha256": "602a57215ae000b66f8421cb8d7115df31a86b1285c8e4cfcc494ec2e18d21ad",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 20,
+                      "end": 29
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式掲載頁の補正欄から（https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20241003.html）。「歳入歳出補正予算事項別明細書」の歳出部分に款・項・目と補正前の額・補正額・計（単位：千円）・特定財源が対応し、節・説明（事業コード・事業名・担当課）が見開きで対応。掲載頁に第2号の資料がある会計のみ（一般会計・国民健康保険事業特別会計・介護保険事業特別会計・後期高齢者医療特別会計）。この号の他会計の補正予算書は掲載頁に無し。歳入明細・給与費明細書・債務負担行為・地方債・繰越明許費の各調書は範囲外。",
+      "selected_candidate_id": "132136-2025-supplementary-2",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2025-supplementary-2",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2025/supplementary-2-4.pdf",
+            "sha256": "d40175b044b364517f3f6f10f6a262cca6e49ddc52438214aefb137ae05b2652",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/07hosei2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2025/supplementary-2-2.pdf",
+            "sha256": "09be096965416bd0e0f65e54d9c4753206d7b4d954fe38486fa577c14480c441",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/r7kokuhohosei2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2025/supplementary-2-1.pdf",
+            "sha256": "00be3884d1bb0f467f0abfba96aef14e7879df86530858f352bd22943eabaa9e",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/07kaigohosei2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132136/2025/supplementary-2-3.pdf",
+            "sha256": "602a57215ae000b66f8421cb8d7115df31a86b1285c8e4cfcc494ec2e18d21ad",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/07koukihosei2.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:07:41.608Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "132136-2025-supplementary-3",
+          "title": "令和７年度 補正予算書（第3号）一般会計",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20241003.html",
+          "inspected_at": "2026-10-08T09:05:14.348196+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/r7hosei3.pdf",
+              "sha256": "30b4fa419b374a1f0ccbec7243e7d0f3c1894fbc87d707154ffa2a07f7cded11",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 15,
+                      "end": 32
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式掲載頁の補正欄から（https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20241003.html）。「歳入歳出補正予算事項別明細書」の歳出部分に款・項・目と補正前の額・補正額・計（単位：千円）・特定財源が対応し、節・説明（事業コード・事業名・担当課）が見開きで対応。掲載頁に第3号の資料がある会計のみ（一般会計）。この号の他会計の補正予算書は掲載頁に無し。歳入明細・給与費明細書・債務負担行為・地方債・繰越明許費の各調書は範囲外。",
+      "selected_candidate_id": "132136-2025-supplementary-3",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2025-supplementary-3",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2025/supplementary-3.pdf",
+            "sha256": "30b4fa419b374a1f0ccbec7243e7d0f3c1894fbc87d707154ffa2a07f7cded11",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/r7hosei3.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:07:47.906Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "132136-2025-supplementary-4",
+          "title": "令和７年度 補正予算書（第4号）一般会計",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20241003.html",
+          "inspected_at": "2026-10-08T09:05:14.348196+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/R7.4hosei.pdf",
+              "sha256": "4970369c6f767dbafeedf5b939a852399ee4234d2bc70c51746ea0aa46f6c92d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 33
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式掲載頁の補正欄から（https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20241003.html）。「歳入歳出補正予算事項別明細書」の歳出部分に款・項・目と補正前の額・補正額・計（単位：千円）・特定財源が対応し、節・説明（事業コード・事業名・担当課）が見開きで対応。掲載頁に第4号の資料がある会計のみ（一般会計）。この号の他会計の補正予算書は掲載頁に無し。歳入明細・給与費明細書・債務負担行為・地方債・繰越明許費の各調書は範囲外。",
+      "selected_candidate_id": "132136-2025-supplementary-4",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2025-supplementary-4",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2025/supplementary-4.pdf",
+            "sha256": "4970369c6f767dbafeedf5b939a852399ee4234d2bc70c51746ea0aa46f6c92d",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/R7.4hosei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:07:51.026Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "132136-2025-supplementary-5",
+          "title": "令和７年度 補正予算書（第5号）一般会計",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20241003.html",
+          "inspected_at": "2026-10-08T09:05:14.348196+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/7yosan5gouhosei.pdf",
+              "sha256": "e74b2b905f3ba2e57db83e78206e70433c107181906740891ba6225a305baf10",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 11
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式掲載頁の補正欄から（https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20241003.html）。「歳入歳出補正予算事項別明細書」の歳出部分に款・項・目と補正前の額・補正額・計（単位：千円）・特定財源が対応し、節・説明（事業コード・事業名・担当課）が見開きで対応。掲載頁に第5号の資料がある会計のみ（一般会計）。この号の他会計の補正予算書は掲載頁に無し。歳入明細・給与費明細書・債務負担行為・地方債・繰越明許費の各調書は範囲外。",
+      "selected_candidate_id": "132136-2025-supplementary-5",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2025-supplementary-5",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2025/supplementary-5.pdf",
+            "sha256": "e74b2b905f3ba2e57db83e78206e70433c107181906740891ba6225a305baf10",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/files/7yosan5gouhosei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:07:55.746Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132136",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "132136-2025-supplementary-6",
+          "title": "令和７年度 補正予算書（第6号）一般会計",
+          "landing_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20241003.html",
+          "inspected_at": "2026-10-08T09:05:14.348196+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/files/7yosan6gouhosei.pdf",
+              "sha256": "735f264a466e6e6cc418247f528120196e6c115b27f54f633434577a355e1170",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 31,
+                      "end": 124
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "公式掲載頁の補正欄から（https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/yosan/zaisei20241003.html）。「歳入歳出補正予算事項別明細書」の歳出部分に款・項・目と補正前の額・補正額・計（単位：千円）・特定財源が対応し、節・説明（事業コード・事業名・担当課）が見開きで対応。掲載頁に第6号の資料がある会計のみ（一般会計）。この号の他会計の補正予算書は掲載頁に無し。歳入明細・給与費明細書・債務負担行為・地方債・繰越明許費の各調書は範囲外。",
+      "selected_candidate_id": "132136-2025-supplementary-6",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "132136-2025-supplementary-6",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132136/2025/supplementary-6.pdf",
+            "sha256": "735f264a466e6e6cc418247f528120196e6c115b27f54f633434577a355e1170",
+            "final_url": "https://www.city.higashimurayama.tokyo.jp/shisei/gyozaisei/gyozaisei/files/7yosan6gouhosei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:07:59.490Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

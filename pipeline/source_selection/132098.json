@@ -2,6 +2,2856 @@
   "jurisdiction": "132098",
   "name": "町田市",
   "official_url": "https://www.city.machida.tokyo.jp/",
-  "selections": [],
-  "unresolved_candidates": []
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度（2026年度）予算書",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/tousyo_26/2026yosansyo.html",
+          "inspected_at": "2026-10-07T15:43:34.403149+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/tousyo_26/2026yosansyo.files/R8_yosansyo_2.pdf",
+              "sha256": "f9e99acf44bde0c045f1d5a8ded72b318ee7a8461e01de0efaed231ee74e750e",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 25,
+                      "end": 25
+                    },
+                    {
+                      "start": 82,
+                      "end": 169
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 195,
+                      "end": 195
+                    },
+                    {
+                      "start": 200,
+                      "end": 204
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 221,
+                      "end": 221
+                    },
+                    {
+                      "start": 226,
+                      "end": 230
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 247,
+                      "end": 247
+                    },
+                    {
+                      "start": 250,
+                      "end": 252
+                    }
+                  ]
+                },
+                {
+                  "account": "鶴川駅南土地区画整理事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 267,
+                      "end": 267
+                    },
+                    {
+                      "start": 270,
+                      "end": 271
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/2026machidagesuiyosan.pdf",
+              "sha256": "ad69f98dd692de315210ae4d0c2a0088a3b91eae94d301825175be96b35bc616",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "start": 11,
+                      "end": 11
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://machida-city-hospital-tokyo.jp/media/yosan_2026.pdf",
+              "sha256": "3ad24458201f1c6d7990f80eb0fc4aee52ac03c9dac476d75fd441d8191e9087",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "病院事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 7
+                    },
+                    {
+                      "start": 22,
+                      "end": 26
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度予算書（一般会計＋国民健康保険事業・介護保険事業・後期高齢者医療事業・鶴川駅南土地区画整理事業の4特別会計）と、別掲載の企業会計予算書2冊（下水道事業会計・病院事業会計）の計3冊を選定。当初予算の最新は令和8年度で7会計を3冊に収録。一般・特別会計分：歳出は歳入歳出予算事項別明細書3.歳出に款・項・目＋節（経済分類）を同一明細で対応付け、本年度予算額（千円）・前年度予算額・財源内訳・節内訳を併記。歳出scope（総括＋明細）：一般 25,82-169 / 国保 195,200-204 / 介護 221,226-230 / 後期 247,250-252 / 鶴川 267,270-271。物理頁=印字頁。下水道事業会計予算書（48頁）：予算実施計画が収益的支出（款・項・目＋予定額・備考の事業説明、単位千円）を物理頁9、資本的支出を物理頁11に掲載。総則第3・4条（物理頁3-4）に款項級の収支要約あり。給与費明細書（13-18）は歳出明細と区別してscope外。病院事業会計予算書（29頁）：予算実施計画が収益的支出を物理頁6後半-7、資本的支出を物理頁7に款・項・目＋予定額（千円）で掲載。実施計画内訳が支出の節級内訳を物理頁22-26（26に資本的支出内訳）に掲載。消費税は税抜処理（注記28頁）。企業会計の金額列名は「予定額」で歳出予算額と同一視せず原典表記を保持。歳入範囲・補正は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2026/initial-3.pdf",
+            "sha256": "f9e99acf44bde0c045f1d5a8ded72b318ee7a8461e01de0efaed231ee74e750e",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/tousyo_26/2026yosansyo.files/R8_yosansyo_2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2026/initial-2.pdf",
+            "sha256": "ad69f98dd692de315210ae4d0c2a0088a3b91eae94d301825175be96b35bc616",
+            "final_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/2026machidagesuiyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2026/initial-1.pdf",
+            "sha256": "3ad24458201f1c6d7990f80eb0fc4aee52ac03c9dac476d75fd441d8191e9087",
+            "final_url": "https://machida-city-hospital-tokyo.jp/media/yosan_2026.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T15:45:19.687Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度（2024年度）決算書",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/cost/kesan/kessansho.html",
+          "inspected_at": "2026-10-08T01:08:51.391063+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/cost/kesan/kessansho.files/2024_kessansyo.pdf",
+              "sha256": "bc81d4ddd0bdb97198d93761c2e40232674c9b1c4e4ffc90dd2e0ec0ab7517f5",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 80,
+                      "end": 187
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 203,
+                      "end": 208
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 227,
+                      "end": 233
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 248,
+                      "end": 249
+                    }
+                  ]
+                },
+                {
+                  "account": "鶴川駅南土地区画整理事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 262,
+                      "end": 263
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/2024machidagesuikessann.pdf",
+              "sha256": "f4ab2a37fe04c8dd1816cf7a9eac47ced147025ff6b5075b7b415cf25f364e10",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 7
+                    },
+                    {
+                      "start": 40,
+                      "end": 43
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://machida-city-hospital-tokyo.jp/media/kesan2024.pdf",
+              "sha256": "0a99db4dc5a5088d687748a1f17f3b2c7df8e5dbeadfa97bfe08cfed7373f45d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "町田市病院事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 19,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度歳入歳出決算書（一般会計＋4特別会計）、下水道事業会計決算書、病院事業会計決算書の計3冊を選定。一般・特別会計の最新決算は令和6年度（令和7年度決算書は決算状況ページ・歳入歳出決算書ページに掲載なし、ページ更新日2025-10-14）。歳出は歳入歳出決算事項別明細書の歳出節に款・項・目＋節を同一明細で対応付け、予算現額内訳（当初・補正・繰越・流用増減・計）と支出済額・翌年度繰越額・不用額を記載（単位：円）。歳出scope（明細書）：一般 80-187 / 国保 203-208 / 介護 227-233 / 後期 248-249 / 鶴川 262-263。物理頁=印字頁。下水道事業会計決算書（52頁）：決算報告書が収益的支出を物理頁6・資本的支出を物理頁7に款項級で、当初予算額・補正予算額・流用・繰越・合計と決算額・不用額（円、仮払消費税別記）。収益費用明細書が物理頁40-43に款・項・目・節＋金額（円）。物理頁24-28の工事概況（建設・改良・保存工事）は列名が工事費（単位：円・税込）で契約・総工事費を示し、複数年度繰越・債務負担行為事業を含むため当年度実支出と対応を確認できずscopeから除外。下水道の資本的支出は款項級決算額（物理頁7）までで、目級・事業別の当年度支出明細は不存在（不足）。病院事業会計令和6年度（2024年度）決算書（45頁、病院公式サイト掲載）：決算報告書の収益的支出が物理頁4-5・資本的支出が物理頁6-7（左右見開き、左=予算額内訳、右=合計/決算額/繰越額/不用額、款項級、円）。収益費用明細書が物理頁19-21に款・項・目・節＋金額（円）。消費税等の会計処理は税抜方式（注記、物理頁26）。物理頁35-39の工事・備品購入（建設改良工事・保存工事概況、器械備品・車両運搬具購入）は金額列が工事費・購入総額（検収日・複数年度工事を含む）で当年度実支出と対応を確認できずscopeから除外。病院の資本的支出も款項級決算額（物理頁6-7）までで、目級・事業別の当年度支出明細は不存在（不足）。2024年度時点の会計構成は一般会計・4特別会計・下水道事業会計・病院事業会計であり、全会計の歳出原典は選定済みだが、両企業会計の資本的支出は款項級集計のみで事業別明細が不足。歳入範囲は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2024/settlement-2.pdf",
+            "sha256": "bc81d4ddd0bdb97198d93761c2e40232674c9b1c4e4ffc90dd2e0ec0ab7517f5",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/cost/kesan/kessansho.files/2024_kessansyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2024/settlement-3.pdf",
+            "sha256": "f4ab2a37fe04c8dd1816cf7a9eac47ced147025ff6b5075b7b415cf25f364e10",
+            "final_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/2024machidagesuikessann.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2024/settlement-1.pdf",
+            "sha256": "0a99db4dc5a5088d687748a1f17f3b2c7df8e5dbeadfa97bfe08cfed7373f45d",
+            "final_url": "https://machida-city-hospital-tokyo.jp/media/kesan2024.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T01:05:46.091Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度（2025年度）町田市病院事業会計決算書",
+          "landing_url": "https://machida-city-hospital-tokyo.jp/hosp-guide/budget_and_results.html",
+          "inspected_at": "2026-10-07T15:43:34.403149+00:00",
+          "files": [
+            {
+              "download_url": "https://machida-city-hospital-tokyo.jp/media/kesan2025.pdf",
+              "sha256": "07f60402c04f17c9ca58b5c24f86f34d248da0fc3260631ae5177bfaa1c7c6f2",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "病院事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 19,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "病院事業会計のみ令和7年度決算書が公表済み（病院公式サイト予算・決算ページ、46頁、text PDF）。一般会計・特別会計の令和7年度決算書と下水道事業会計の令和7年度決算書は未公表（市決算書ページ・下水道予算決算ページで確認）のため、病院だけを当該年度で選定。決算報告書が収益的支出を物理頁4-5・資本的支出を物理頁6-7に款項級で掲載（見開き：4・6頁が予算額内訳＝当初・補正・繰越・合計、5・7頁が決算額・不用額・備考、単位円、仮払消費税別記）。収益費用明細書が物理頁19-21に款・項・目・節＋金額（円）。建設改良・保存工事の概況と器械備品購入（物理頁35-39）は金額列が「金額（円）」＝契約・購入額で、建設改良工事は2024年度からの債務負担行為を含み着工〜竣工が年度をまたぐものがあるため当年度支出済額との対応を確認できず除外（令和6年度決算書の同形式頁と同じ判断）。事業費に関する事項（43頁）は目級集計の説明でscope外。歳入範囲は未確認。物理頁=印字頁。不足：資本的支出は款項級の決算額（物理頁6-7）までで、目級・事業別の当年度支出明細は不存在。一般会計・4特別会計・下水道事業会計の令和7年度決算は未公表のため選定なし。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2025/settlement.pdf",
+            "sha256": "07f60402c04f17c9ca58b5c24f86f34d248da0fc3260631ae5177bfaa1c7c6f2",
+            "final_url": "https://machida-city-hospital-tokyo.jp/media/kesan2025.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T15:45:29.049Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2023,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度（2023年度）予算資料（予算概要説明書・下水道事業会計予算書・病院事業会計予算書）",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/tousyo_23/2023yosangaiyou.html",
+          "inspected_at": "2026-10-08T06:29:37.045202+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/tousyo_23/2023yosangaiyou.files/R5_4-1shisyutukamoku.pdf",
+              "sha256": "dd31ba063559e1afeb1225a2a08efc285e544b05986e4d28f80ec490552ad841",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 50
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/tousyo_23/2023yosangaiyou.files/R5_4-2shisyutukamoku.pdf",
+              "sha256": "e4800833c198822ac3b489ff4988611944e62522572523f67936a0ac2b7468c2",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 33
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 34,
+                      "end": 36
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 37,
+                      "end": 40
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 41,
+                      "end": 42
+                    }
+                  ]
+                },
+                {
+                  "account": "鶴川駅南土地区画整理事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 43,
+                      "end": 43
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/2023machidagesuiyosan.pdf",
+              "sha256": "5dff4f0c4da14e666e0b5f5ba0d97a9bc2445329dc699bb8c6e4ba5ff3e55383",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 11
+                    },
+                    {
+                      "start": 13,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://machida-city-hospital-tokyo.jp/media/yosan2023.pdf",
+              "sha256": "78283fbf6b31084e15721a283bb25e08229dec4c57e7524f761adf3f68241fc7",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "病院事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 7
+                    },
+                    {
+                      "start": 22,
+                      "end": 26
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度（2023年度）当初予算。公式の当該年度当初予算ページ（/shisei/gyouzaisei/siyosan/tousyo_23/index.html）には予算書の掲載が無く、予算概要説明書と予算編成方針のみ。概要説明書ページ（2023yosangaiyou.html）掲載の部別予算概要説明書(3)(4)＝事業別支出科目一覧を原典として選定。【一般会計】物理頁1「事業別支出科目一覧（一般会計）」以降、列見出し「款 項 目 事業名 所属名 金額（千円）」で、款・項・目の行と事業行（例 1-1-1 議会費／01 議員人件費 431,488千円）、さらに節行（議員報酬 239,045千円 等）が同一明細に並ぶ。物理頁1-50 と 次冊1-33 が連続して一般会計を覆う。【特別会計】同(4)に国民健康保険事業会計 34-36、介護保険事業会計 37-40、後期高齢者医療事業会計 41-42、鶴川駅南土地区画整理事業会計 43（いずれも同列・千円）。同ファイル44-47の下水道事業会計一覧は、同じ会計の予算書（別冊）を採用したためscope外として二重計上を避けた。【下水道事業会計】予算書（表紙「町田市下水道事業会計予算書」）の予算実施計画：収益的支出 物理頁11、資本的支出 物理頁13、款・項・目＋予定額（千円）＋備考。12頁は資本的収入でscope外。給与費明細書・債務負担行為調書・貸借対照表・注記等はscope外。【病院事業会計】予算書（表紙「町田市病院事業会計予算書」）の予算実施計画：物理頁6後半-7（6頁下部から収益的支出、7頁上部に特別損失・予備費、7頁下部に資本的支出）、款・項・目＋予定額（千円）。実施計画内訳が物理頁22-26（22頁は収入の続きから支出へ移り、26頁に資本的収入及び支出）、款・項・目・節＋予定額（千円）。キャッシュ・フロー・貸借対照表・注記はscope外。税：いずれも原典に税抜・税込の注記を確認できず未確認。歳入は未確認（今回scope対象外）。不足：事業別支出科目一覧には職員人件費・会計年度任用職員人件費・予備費の行が無い（対象頁を全文照合し0件を実物確認）。同ファイル内の別表「職員人件費の状況」は款・項・職員数・給料・職員手当・共済費・合計（単位千円）の款項級集計で目・事業粒度を持たないためscope外。2026年度当初予算は別レコードで選定済み（本年度は差し替えの手掛かりが無いため再検査せず）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2023/initial-3.pdf",
+            "sha256": "dd31ba063559e1afeb1225a2a08efc285e544b05986e4d28f80ec490552ad841",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/tousyo_23/2023yosangaiyou.files/R5_4-1shisyutukamoku.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2023/initial-4.pdf",
+            "sha256": "e4800833c198822ac3b489ff4988611944e62522572523f67936a0ac2b7468c2",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/tousyo_23/2023yosangaiyou.files/R5_4-2shisyutukamoku.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2023/initial-1.pdf",
+            "sha256": "5dff4f0c4da14e666e0b5f5ba0d97a9bc2445329dc699bb8c6e4ba5ff3e55383",
+            "final_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/2023machidagesuiyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2023/initial-2.pdf",
+            "sha256": "78283fbf6b31084e15721a283bb25e08229dec4c57e7524f761adf3f68241fc7",
+            "final_url": "https://machida-city-hospital-tokyo.jp/media/yosan2023.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T06:30:18.848Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2024,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度（2024年度）予算資料（予算概要説明書・下水道事業会計予算書・病院事業会計予算書）",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/tousyo_24/2024yosangaiyou.html",
+          "inspected_at": "2026-10-08T06:29:37.045202+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/tousyo_24/2024yosangaiyou.files/R6_3-2yosannogaiyou.pdf",
+              "sha256": "0ad072500477d4cf00120827299f6d7662a12dc76aec0c23cc5362330d7c58ee",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 77,
+                      "end": 159
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 160,
+                      "end": 162
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 163,
+                      "end": 166
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 167,
+                      "end": 168
+                    }
+                  ]
+                },
+                {
+                  "account": "鶴川駅南土地区画整理事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 169,
+                      "end": 169
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/2024machidagesuiyosan.pdf",
+              "sha256": "62936f02260175b5d38de078e4398a449406bd3f453cf27a7fd9fbde8e7ddbc8",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 11
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://machida-city-hospital-tokyo.jp/media/yosan2024.pdf",
+              "sha256": "0a1ab2ff720bf6c3b2b05ada0ff81dd7fd44982fc2e2cc8493d2bbf703845d0c",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "病院事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 7
+                    },
+                    {
+                      "start": 22,
+                      "end": 26
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度（2024年度）当初予算。公式の当該年度当初予算ページ（tousyo_24/index.html）には予算書の掲載が無く予算概要説明書・予算編成方針のみ。概要説明書ページ（2024yosangaiyou.html）掲載の部別予算概要説明書(2)（R6_3-2）に収録の事業別支出科目一覧を原典として選定（原典の注記に「305ページから事業別支出科目一覧を掲載」とある通り、当該PDF物理頁77から開始）。【一般会計】物理頁77「事業別支出科目一覧（一般会計）」以降、列見出し「款 項 目 事業名 所属名 金額（千円）」、款項目＋事業名＋事業額と節額が同一明細。物理頁77-159。【特別会計】国民健康保険事業会計 160-162、介護保険事業会計 163-166、後期高齢者医療事業会計 167-168、鶴川駅南土地区画整理事業会計 169（同列・千円）。同ファイル170-174の下水道事業会計一覧は同じ会計の予算書を採用したためscope外（175は印字頁番号のみ、176は職員人件費の状況、177は別節）。【下水道事業会計】予算書の予算実施計画：収益的支出 物理頁9、資本的支出 物理頁11、款・項・目＋予定額（千円）＋備考（8頁は収入、10頁は資本的収入）。【病院事業会計】予算書の予算実施計画 物理頁6後半-7（収益的支出→資本的支出）、実施計画内訳 物理頁22-26（26頁に資本的支出）、款・項・目・節＋予定額（千円）。税は原典に注記を確認できず未確認。歳入は未確認。不足：事業別支出科目一覧には職員人件費・会計年度任用職員人件費・予備費の行が無い（対象頁を全文照合し0件を実物確認）。同ファイル内の別表「職員人件費の状況」は款・項・職員数・給料・職員手当・共済費・合計（単位千円）の款項級集計で目・事業粒度を持たないためscope外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2024/initial-2.pdf",
+            "sha256": "0ad072500477d4cf00120827299f6d7662a12dc76aec0c23cc5362330d7c58ee",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/tousyo_24/2024yosangaiyou.files/R6_3-2yosannogaiyou.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2024/initial-3.pdf",
+            "sha256": "62936f02260175b5d38de078e4398a449406bd3f453cf27a7fd9fbde8e7ddbc8",
+            "final_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/2024machidagesuiyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2024/initial-1.pdf",
+            "sha256": "0a1ab2ff720bf6c3b2b05ada0ff81dd7fd44982fc2e2cc8493d2bbf703845d0c",
+            "final_url": "https://machida-city-hospital-tokyo.jp/media/yosan2024.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T06:30:29.460Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2025,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度（2025年度）予算資料（予算概要説明書・下水道事業会計予算書・病院事業会計予算書）",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/tousyo_25/2025yosangaiyou.html",
+          "inspected_at": "2026-10-08T06:29:37.045202+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/tousyo_25/2025yosangaiyou.files/R7-bubetuyosangaiyou-2.pdf",
+              "sha256": "72105d7a248da97af9cdc4d266b11678a5e7814ae2199283840d6392858e91f3",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 77,
+                      "end": 157
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 158,
+                      "end": 160
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 161,
+                      "end": 164
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 165,
+                      "end": 166
+                    }
+                  ]
+                },
+                {
+                  "account": "鶴川駅南土地区画整理事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 167,
+                      "end": 167
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/2025machidagesuiyosan.pdf",
+              "sha256": "62a1b7e74d99119dcb5c3ff6fef4d5ae81e37a3ba07a66aa70107f900ade9b29",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 11
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://machida-city-hospital-tokyo.jp/media/yosan2025.pdf",
+              "sha256": "ec402ebeaa74d18013a95ca763c9d2b11fd775b41992b612c9359986794ce7dc",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "病院事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 7
+                    },
+                    {
+                      "start": 22,
+                      "end": 26
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度（2025年度）当初予算。公式の当該年度当初予算ページ（tousyo_25/index.html）には予算書の掲載が無く予算概要説明書・予算編成方針のみ。概要説明書ページ（2025yosangaiyou.html）掲載の部別予算概要説明書(2)（R7-bubetuyosangaiyou-2）に収録の事業別支出科目一覧を原典として選定（物理頁77から開始）。【一般会計】物理頁77「事業別支出科目一覧（一般会計）」以降、列見出し「款 項 目 事業名 所属名 金額（千円）」、款項目＋事業名＋事業額と節額が同一明細。物理頁77-157。【特別会計】国民健康保険事業会計 158-160、介護保険事業会計 161-164、後期高齢者医療事業会計 165-166、鶴川駅南土地区画整理事業会計 167（同列・千円）。同ファイル168-171の下水道事業会計一覧は同じ会計の予算書を採用したためscope外（172は職員人件費の状況、174以降は債務負担行為一覧）。【下水道事業会計】予算書の予算実施計画：収益的支出 物理頁9、資本的支出 物理頁11、款・項・目＋予定額（千円）。【病院事業会計】予算書の予算実施計画 物理頁6後半-7、実施計画内訳 物理頁22-26（26頁に資本的支出）、款・項・目・節＋予定額（千円）。税は原典に注記を確認できず未確認。歳入は未確認。不足：事業別支出科目一覧には職員人件費・会計年度任用職員人件費・予備費の行が無い（対象頁を全文照合し0件を実物確認）。同ファイル内の別表「職員人件費の状況」は款・項・職員数・給料・職員手当・共済費・合計（単位千円）の款項級集計で目・事業粒度を持たないためscope外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2025/initial-2.pdf",
+            "sha256": "72105d7a248da97af9cdc4d266b11678a5e7814ae2199283840d6392858e91f3",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/tousyo_25/2025yosangaiyou.files/R7-bubetuyosangaiyou-2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2025/initial-1.pdf",
+            "sha256": "62a1b7e74d99119dcb5c3ff6fef4d5ae81e37a3ba07a66aa70107f900ade9b29",
+            "final_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/2025machidagesuiyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2025/initial-3.pdf",
+            "sha256": "ec402ebeaa74d18013a95ca763c9d2b11fd775b41992b612c9359986794ce7dc",
+            "final_url": "https://machida-city-hospital-tokyo.jp/media/yosan2025.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T06:30:39.416Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2023,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度（2023年度）決算書（一般・特別会計／下水道事業会計／町田市病院事業会計）",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/cost/kesan/kessansho.html",
+          "inspected_at": "2026-10-08T06:29:37.045202+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/cost/kesan/kessansho.files/2023_kessansho.pdf",
+              "sha256": "87cc00ed88eda922a15cc4e350e5581a218e7722dac1b157efae663aec97b785",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 79,
+                      "end": 184
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 200,
+                      "end": 206
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 225,
+                      "end": 232
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 246,
+                      "end": 248
+                    }
+                  ]
+                },
+                {
+                  "account": "鶴川駅南土地区画整理事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 260,
+                      "end": 260
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/2023machidagesuikessann.pdf",
+              "sha256": "08a4e58f494a84c999d6cb7c38107d21797ebae0c5779034bf5b0fa90858020f",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 7
+                    },
+                    {
+                      "start": 40,
+                      "end": 43
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://machida-city-hospital-tokyo.jp/media/kesan2023.pdf",
+              "sha256": "d523b3e39c4911640dd13f71cc0f267c71a179b90ca0b214181caa3740fbc110",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "町田市病院事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 19,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度（2023年度）決算。市決算書ページ（kessansho.html、更新日2025年10月14日）に掲載の令和5年度決算書276頁と、同ページから案内される下水道事業会計決算書・病院事業会計決算書を分冊として選定。物理頁＝印字頁（-1-…-276-）。【一般会計】歳入歳出決算事項別明細書の歳出：物理頁79（第1款 議会費）-184（歳出合計、当初予算額・補正予算額・繰越事業費及び予備費支出・流用増減・計＝予算現額、支出済額・翌年度繰越額・不用額、単位円）。【特別会計】国民健康保険事業会計 200-206、介護保険事業会計 225-232、後期高齢者医療事業会計 246-248、鶴川駅南土地区画整理事業会計 260（いずれも歳入歳出決算事項別明細書の歳出、単位円）。207・233・249・261 は各会計の別冊表紙、208・214・216・234・238・240・250・254・256 は空白頁で、範囲から除外した。款・項・目＋節（経済分類）が同一明細で対応し、金額列は円。【下水道事業会計】決算書52頁：決算報告書 物理頁6（収益的収入及び支出）・7（資本的収入及び支出）に款項級で当初予算額・補正予算額・流用・繰越・計と決算額・不用額（円、仮払消費税別記）、収益費用明細書 物理頁40-43に款・項・目・節＋金額（円）。工事概況等（24-28頁、税込工事費）は契約・総事業費であり当年度支出済額と対応せずscope外。資本的支出の目級・事業別当年度支出明細は存在せず不足。【町田市病院事業会計】決算書46頁：決算報告書 物理頁4-5（収益的）、6-7（資本的）の左右見開き（4・6頁＝予算額内訳、5・7頁＝決算額・不用額、単位円）、収益費用明細書 物理頁19-21（款・項・目・節＋金額、円）。工事・備品購入の概況頁は契約・購入額であり当年度支出済額と対応せずscope外。資本的支出は款項級の決算額までで目級・事業別明細は不足。税：下水道・病院の消費税等は税抜方式の注記あり（各注記頁）。歳入は未確認。令和6年度（2024）決算・令和7年度（2025）病院決算は既存レコードで選定済み（差し替え・別会計不足の具体的手掛かりが無いため再取得・再検査しない）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2023/settlement-2.pdf",
+            "sha256": "87cc00ed88eda922a15cc4e350e5581a218e7722dac1b157efae663aec97b785",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/cost/kesan/kessansho.files/2023_kessansho.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2023/settlement-1.pdf",
+            "sha256": "08a4e58f494a84c999d6cb7c38107d21797ebae0c5779034bf5b0fa90858020f",
+            "final_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/2023machidagesuikessann.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2023/settlement-3.pdf",
+            "sha256": "d523b3e39c4911640dd13f71cc0f267c71a179b90ca0b214181caa3740fbc110",
+            "final_url": "https://machida-city-hospital-tokyo.jp/media/kesan2023.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T06:30:46.962Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "hosei-2023-1",
+          "title": "令和5年度下水道事業会計補正予算書（専決第1号・第1号）・病院事業会計補正予算書（第1号）",
+          "landing_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.html",
+          "inspected_at": "2026-10-08T09:14:11.002268+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/202301machidagesuiyosan.pdf",
+              "sha256": "a39f3db02519d6d0733aac8bbd0113ad5fc0c3af3ff45629dec28cc84f1ac09a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/202309machidagesuiyosan.pdf",
+              "sha256": "b4876c8cab62c4b1d57efd86f6f22f5753e1493f3134466413e6c2e702d819cb",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 8
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://machida-city-hospital-tokyo.jp/media/yosan2023_001.pdf",
+              "sha256": "66230929d2b3b5a046103b7d7753a1efc7b751b3a63b6983828fd3ae21ad961b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "病院事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "start": 16,
+                      "end": 16
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度補正第1号。企業会計のみ部分選定。一般会計の第1号は未確認（5月補正（専決）landingに号数表記・PDF掲載なし、3月29日提出分landingも号数表記・PDFなし）。amendment_numberは企業会計の第1号で確定（下水道2冊の表題・本文の第1号／専決第1号、病院表題・本文の第1号）。下水道専決第1号（2024年1月19日専決、12頁）は実施計画の収益的支出のみ物理頁7（款項目＋既決予定額・補正予定額・計、千円、備考に支出内容）。下水道第1号（9月補正、16頁）は実施計画の収益的支出が物理頁8（同列、千円、例：特別損失32,570千円等）。資本的支出の補正がないため資本的支出表なし。病院第1号（18頁）は実施計画物理頁5（収益的収入及び支出＋資本的支出、款項目＋補正前の額・補正額・計、千円）・実施計画内訳物理頁16（款項目節＋予定額（補正額）・備考、千円、例：備品購入費△19,507千円）。実施計画頁は収入表と同居する。CF・BS・注記・給与費明細・企業債借入額内訳・予算本文の第1表（款項総額）は範囲外。税の注記は確認範囲になし。物理頁＝印字頁。一般・4特別会計の補正は未確認（不足）。同一頁に収入表が同居する頁を含むが、歳出の支出表のみを選定し、収入額・資金収支の合計を支出額に加算しない。",
+      "selected_candidate_id": "hosei-2023-1",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "hosei-2023-1",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2023/supplementary-1-2.pdf",
+            "sha256": "a39f3db02519d6d0733aac8bbd0113ad5fc0c3af3ff45629dec28cc84f1ac09a",
+            "final_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/202301machidagesuiyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2023/supplementary-1-3.pdf",
+            "sha256": "b4876c8cab62c4b1d57efd86f6f22f5753e1493f3134466413e6c2e702d819cb",
+            "final_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/202309machidagesuiyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2023/supplementary-1-1.pdf",
+            "sha256": "66230929d2b3b5a046103b7d7753a1efc7b751b3a63b6983828fd3ae21ad961b",
+            "final_url": "https://machida-city-hospital-tokyo.jp/media/yosan2023_001.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:14:48.182Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "hosei-2023-2",
+          "title": "令和5年度6月補正予算の概要（補正第2号）・下水道事業会計補正予算書（第2号）",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_23/hosei202306.html",
+          "inspected_at": "2026-10-08T09:14:11.002268+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_23/hosei202306.files/gaiyou0506-1.pdf",
+              "sha256": "378aae7934b86ca8aae6a677207c300cab98a743098c3cbffad3df0035369392",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 14,
+                      "end": 14
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/202303machidagesuiyosan.pdf",
+              "sha256": "4b9697a13bf9decfe570abd852f880654c3547ac3dec20772f9f71f4ac522d8e",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度6月補正（補正第2号、6月5日提出・可決）。号数はlanding本文の可決文・概要表題の第2号で確定。概要（14頁）は事業別支出科目一覧の物理頁14のみ選定（列：款項目事業名所属名金額（千円）、補正額、△は減額。例：生活援護費1,591,281千円）。会計別予算構成（補正前の額・補正額・計、千円）で特別会計の補正額0を確認、一般のみ。一般会計補正額1,705,367千円と一覧合計が対応。総括・歳入・目的別／性質別内訳（款級）・主な事業の件名頁・債務負担は範囲外。税の注記なし。物理頁＝印字頁。下水道第2号（3月補正、16頁、一般第2号と同番号だが別回の補正。企業会計は独自系列）は実施計画の収益的支出が物理頁8・資本的収支の支出が物理頁9（款項目＋既決・補正・計、千円）。CF等は範囲外。病院・4特別会計の第2号補正は掲載なし（不足）。同一頁に収入表が同居する頁を含むが、歳出の支出表のみを選定し、収入額・資金収支の合計を支出額に加算しない。",
+      "selected_candidate_id": "hosei-2023-2",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "hosei-2023-2",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2023/supplementary-2-1.pdf",
+            "sha256": "378aae7934b86ca8aae6a677207c300cab98a743098c3cbffad3df0035369392",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_23/hosei202306.files/gaiyou0506-1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2023/supplementary-2-2.pdf",
+            "sha256": "4b9697a13bf9decfe570abd852f880654c3547ac3dec20772f9f71f4ac522d8e",
+            "final_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/202303machidagesuiyosan.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:14:55.583Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "hosei-2023-3",
+          "title": "令和5年度6月補正予算の概要（補正第3号）",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_23/hosei202306.html",
+          "inspected_at": "2026-10-08T09:14:11.002268+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_23/hosei202306.files/gaiyou0506-2.pdf",
+              "sha256": "03c01e7e44f6a6833271980edcebbb88d33028156b6509b92da250490a2ee966",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 20,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度6月補正（補正第3号、6月5日提出・6月28日可決）。号数はlanding本文・概要表題の第3号で確定。概要（21頁）の事業別支出科目一覧（一般会計）物理頁20-21のみ選定（款項目事業名所属名金額（千円）、例：予防接種費1,259,486千円）。会計別構成で特別会計補正額0を確認。一般会計補正額2,821,766千円。総括・歳入・款級内訳・件名頁は範囲外。税の注記なし。物理頁＝印字頁。特別・企業会計の第3号補正は掲載なし（不足）。",
+      "selected_candidate_id": "hosei-2023-3",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "hosei-2023-3",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2023/supplementary-3.pdf",
+            "sha256": "03c01e7e44f6a6833271980edcebbb88d33028156b6509b92da250490a2ee966",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_23/hosei202306.files/gaiyou0506-2.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:14:58.886Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "hosei-2023-4",
+          "title": "令和5年度9月補正予算の概要（補正第4号）",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_23/hosei202309.html",
+          "inspected_at": "2026-10-08T09:14:11.002268+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_23/hosei202309.files/gaiyou0509.pdf",
+              "sha256": "3d49ce663ea3f024f896efc639b11525f309492c21c514d80ee470c3dfa11425",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 13,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度9月補正（補正第4号、8月29日提出・可決）。号数はlanding本文・概要表題の第4号で確定。概要（13頁）の一覧物理頁13のみ選定（一般会計、款項目事業名所属名金額（千円）、例：民間保育所運営費1,623千円）。会計別構成で特別会計補正額0を確認。一般会計補正額40,965千円。総括・歳入・款級内訳・件名頁は範囲外。税の注記なし。物理頁＝印字頁。特別・企業会計の第4号補正は掲載なし（不足）。",
+      "selected_candidate_id": "hosei-2023-4",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "hosei-2023-4",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2023/supplementary-4.pdf",
+            "sha256": "3d49ce663ea3f024f896efc639b11525f309492c21c514d80ee470c3dfa11425",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_23/hosei202309.files/gaiyou0509.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:15:03.589Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "hosei-2023-5",
+          "title": "令和5年度9月補正予算の概要（補正第5号）",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_23/hosei202309.html",
+          "inspected_at": "2026-10-08T09:14:11.002268+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_23/hosei202309.files/gaiyou0509_2.pdf",
+              "sha256": "b5dc123761570e264107d325d13e2059e302bc5c987d42c7adb2443b94818953",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 14,
+                      "end": 15
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 16,
+                      "end": 16
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 17,
+                      "end": 17
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 17,
+                      "end": 17
+                    }
+                  ]
+                },
+                {
+                  "account": "鶴川駅南土地区画整理事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 17,
+                      "end": 17
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度9月補正（補正第5号、8月29日提出・9月29日可決）。号数はlanding本文・概要表題の第5号で確定。概要（17頁）の一覧物理頁14-17を選定（款項目事業名所属名金額（千円）、例：財政調整基金積立金3,921,680千円）。一般会計補正額8,129,121千円、特別会計補正額1,970,886千円（決算確定に伴う繰越金・返還金等）。物理頁17は介護・後期・鶴川の3会計が同居するため各scopeに含め、二重計上に注意。総括・歳入・款級内訳・件名頁は範囲外。税の注記なし。物理頁＝印字頁。企業会計の第5号補正は掲載なし（不足）。",
+      "selected_candidate_id": "hosei-2023-5",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "hosei-2023-5",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2023/supplementary-5.pdf",
+            "sha256": "b5dc123761570e264107d325d13e2059e302bc5c987d42c7adb2443b94818953",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_23/hosei202309.files/gaiyou0509_2.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:15:07.658Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [],
+      "reason": "令和5年度9月補正（補正第6号、9月29日提出・可決）はlanding本文で可決を確認したが、詳細PDFの掲載なし（同landingの概要リンクは第4号・第5号のみ）。landing本文の補正額表は会計別総額のみで目・事業明細を持たないため未選定。号数の創作なし。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 7
+      },
+      "candidates": [
+        {
+          "id": "hosei-2023-7",
+          "title": "令和5年度11月補正予算の概要（補正第7号）",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_23/hosei202311.html",
+          "inspected_at": "2026-10-08T09:14:11.002268+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_23/hosei202311.files/gaiyou1110.pdf",
+              "sha256": "990bd8a54742bb1d93707a933b0bfa454baeae0944714234253cbc162f9a867d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 15,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度11月補正（補正第7号、11月10日提出・可決）。号数はlanding本文・概要表題の第7号で確定。概要（15頁）の一覧（一般会計）物理頁15のみ選定（款項目事業名所属名金額（千円）、例：保健事業・業務委託料11,338千円）。会計別構成で特別会計補正額0を確認。一般会計補正額59,403千円。物理頁12-14の件名頁は説明文のみで款項目を持たず範囲外。総括・歳入・款級内訳も範囲外。税の注記なし。物理頁＝印字頁。特別・企業会計の第7号補正は掲載なし（不足）。",
+      "selected_candidate_id": "hosei-2023-7",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "hosei-2023-7",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2023/supplementary-7.pdf",
+            "sha256": "990bd8a54742bb1d93707a933b0bfa454baeae0944714234253cbc162f9a867d",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_23/hosei202311.files/gaiyou1110.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:15:11.715Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 8
+      },
+      "candidates": [
+        {
+          "id": "hosei-2023-8",
+          "title": "令和5年度12月補正予算の概要（補正第8号）",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_23/hosei202312.html",
+          "inspected_at": "2026-10-08T09:14:11.002268+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_23/hosei202312.files/gaiyou1222-1.pdf",
+              "sha256": "680cb35c8905c10b441588dff9ff90f7b0a4b251657f1868ee250f81535ac27c",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 22
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 23,
+                      "end": 23
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 23,
+                      "end": 23
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 23,
+                      "end": 23
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度12月補正（補正第8号、11月29日提出・12月22日可決）。号数はlanding本文・概要表題の第8号で確定。概要（23頁）の一覧物理頁12-23を選定（款項目事業名所属名金額（千円）、例：職員給料△6,000千円等の人件費改定分）。一般会計補正額816,544千円。一般・国保（職員人件費2,801千円）・介護（2,448千円）・後期（3,200千円）の4会計を収録。物理頁23は国保・介護・後期が同居するため各scopeに含め、二重計上に注意。鶴川の補正なし。総括・歳入・款級内訳は範囲外。税の注記なし。物理頁＝印字頁。企業会計の第8号補正は掲載なし（不足）。",
+      "selected_candidate_id": "hosei-2023-8",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "hosei-2023-8",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2023/supplementary-8.pdf",
+            "sha256": "680cb35c8905c10b441588dff9ff90f7b0a4b251657f1868ee250f81535ac27c",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_23/hosei202312.files/gaiyou1222-1.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:15:15.657Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 9
+      },
+      "candidates": [],
+      "reason": "令和5年度12月補正（補正第9号、12月22日提出・可決）はlanding本文で可決を確認したが、詳細PDFの掲載なし（同landingの概要リンクは第8号のみ）。landing本文の補正額表は会計別総額のみで目・事業明細を持たないため未選定。号数の創作なし。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 10
+      },
+      "candidates": [
+        {
+          "id": "hosei-2023-10",
+          "title": "令和5年度3月補正予算資料 事業別支出科目一覧（補正第10号）",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_23/hosei202303.html",
+          "inspected_at": "2026-10-08T09:14:11.002268+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_23/hosei202303.files/jigyoubetsuichiran0503_2.pdf",
+              "sha256": "3cf8c36cb92d188e9bc96057c5a7a59603e4167f5fea1543cc0d8e0cc211d6e0",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 20
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 21,
+                      "end": 21
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 22,
+                      "end": 23
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 24,
+                      "end": 24
+                    }
+                  ]
+                },
+                {
+                  "account": "鶴川駅南土地区画整理事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 24,
+                      "end": 24
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度3月補正（補正第10号、2月22日提出・可決）。号数はlanding表題・表紙の第10号で確定。 standalone一覧（24頁）を選定（款項目事業名所属名金額（千円）、△は減額。例：情報システム使用料△188,160千円）。一般・国保・介護・後期・鶴川の5会計を収録。物理頁24は後期・鶴川が同居するため両scopeに含め、二重計上に注意。補正前・補正後の額なし（不足）。同landingのもう1件「令和4年度3月補正予算の概要」は2022年度文書で対象外。表紙・目次なし（表紙p1・p2白紙・p3開始）。税の注記なし。物理頁＝表紙からの連番。企業会計の第10号補正は掲載なし（不足）。",
+      "selected_candidate_id": "hosei-2023-10",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "hosei-2023-10",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2023/supplementary-10.pdf",
+            "sha256": "3cf8c36cb92d188e9bc96057c5a7a59603e4167f5fea1543cc0d8e0cc211d6e0",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_23/hosei202303.files/jigyoubetsuichiran0503_2.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:15:19.442Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "hosei-2024-1",
+          "title": "令和6年度6月補正予算の概要（補正第1号）・下水道事業会計補正予算書（第1号）・病院事業会計補正予算書（第1号）",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_24/hosei202406.html",
+          "inspected_at": "2026-10-08T09:14:11.002268+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_24/hosei202406.files/gaiyou0606_1.pdf",
+              "sha256": "f9dbe5126bebb936e22cd91ce012d288beb2b7adffd728d7db991205e0eea9b5",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 12
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/202409machidagesuiyosan.pdf",
+              "sha256": "8416ac45995f07794ebc7c95b78c10c0e82ae7121ddd60616517141e4ea6570e",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://machida-city-hospital-tokyo.jp/media/yosan2024_001.pdf",
+              "sha256": "eee9ce0b908955c62e3280e1fc73dbeb09ab71319742bd2215b88ee0642f3845",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "病院事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 15,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度6月補正（補正第1号、6月4日提出・6月28日可決）。号数はlanding本文・概要表題・各予算書本文の第1号で確定（企業会計は独自系列の同番号を同対象に束ね、号数の対応を本理由に保持）。概要（12頁）の一覧（一般会計）物理頁12のみ選定（款項目事業名所属名金額（千円）、例：中学校給食運営費△7,65x千円）。会計別構成で特別会計補正額0を確認。一般会計補正額944,555千円。下水道第1号（9月補正、16頁）は資本的収支の支出が物理頁9（款項目＋既決・補正・計、千円、例：資本的支出△88,756千円。物理頁8は白紙）。病院第1号（17頁）は実施計画物理頁4（収益的収入及び支出、款項目＋補正前の額・補正額・計、千円、例：給与費51,800千円）・内訳物理頁15（款項目節＋予定額（補正額）・備考、例：給料3,560千円）。実施計画頁は収入表と同居。総括・歳入・款級内訳・件名頁・CF等は範囲外。税の注記は確認範囲になし。物理頁＝印字頁。4特別会計の第1号補正は掲載なし（不足）。同一頁に収入表が同居する頁を含むが、歳出の支出表のみを選定し、収入額・資金収支の合計を支出額に加算しない。",
+      "selected_candidate_id": "hosei-2024-1",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "hosei-2024-1",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2024/supplementary-1-3.pdf",
+            "sha256": "f9dbe5126bebb936e22cd91ce012d288beb2b7adffd728d7db991205e0eea9b5",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_24/hosei202406.files/gaiyou0606_1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2024/supplementary-1-1.pdf",
+            "sha256": "8416ac45995f07794ebc7c95b78c10c0e82ae7121ddd60616517141e4ea6570e",
+            "final_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/202409machidagesuiyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2024/supplementary-1-2.pdf",
+            "sha256": "eee9ce0b908955c62e3280e1fc73dbeb09ab71319742bd2215b88ee0642f3845",
+            "final_url": "https://machida-city-hospital-tokyo.jp/media/yosan2024_001.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:15:27.462Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "hosei-2024-2",
+          "title": "令和6年度9月補正予算の概要（補正第2号）・下水道事業会計補正予算書（第2号）・病院事業会計補正予算書（第2号）",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_24/hosei202409.html",
+          "inspected_at": "2026-10-08T09:14:11.002268+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_24/hosei202409.files/gaiyou0609_2.pdf",
+              "sha256": "3c3fc4353cf46753183e42f3aa47ba1a03a2810bd5ea025491ea884a9cbc023a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 8
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/202403machidagesuiyosan.pdf",
+              "sha256": "5551961b06af29228e7a18909f0e7268b50f171c607129b13181d5564f9988f3",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://machida-city-hospital-tokyo.jp/media/yosan2024_002.pdf",
+              "sha256": "d4eb493c760cb5495c6672786180d683b0ffd011d9866083ea4ba2331fdc4d3f",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "病院事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "start": 11,
+                      "end": 11
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度9月補正（補正第2号、8月27日提出・可決。給食センターPFI契約変更等）。号数はlanding本文・概要表題・各予算書本文の第2号で確定（下水道第2号は3月補正で一般第2号と同番号別回。企業会計は独自系列）。概要（9頁）の一覧物理頁8のみ選定（款項目事業名所属名金額（千円）、例：中学公有財産購入費221,519千円）。物理頁9の債務負担行為一覧は当年度支出明細でないため範囲外。会計別構成で特別会計補正額0を確認。一般会計補正額234,123千円。下水道第2号（16頁）は収益的支出が物理頁8・資本的収支の支出が物理頁9（款項目＋既決・補正・計、千円）。病院第2号（14頁）は実施計画物理頁6（収益的＋資本的支出、例：資産購入費△222,492千円）・内訳物理頁11（款項目節＋予定額、例：備品購入費△222,492千円医療機器等購入費）。実施計画頁は収入表と同居。総括・歳入・款級内訳・件名頁・CF等は範囲外。税の注記は確認範囲になし。物理頁＝印字頁。4特別会計の第2号補正は掲載なし（不足）。同一頁に収入表が同居する頁を含むが、歳出の支出表のみを選定し、収入額・資金収支の合計を支出額に加算しない。",
+      "selected_candidate_id": "hosei-2024-2",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "hosei-2024-2",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2024/supplementary-2-1.pdf",
+            "sha256": "3c3fc4353cf46753183e42f3aa47ba1a03a2810bd5ea025491ea884a9cbc023a",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_24/hosei202409.files/gaiyou0609_2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2024/supplementary-2-2.pdf",
+            "sha256": "5551961b06af29228e7a18909f0e7268b50f171c607129b13181d5564f9988f3",
+            "final_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/202403machidagesuiyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2024/supplementary-2-3.pdf",
+            "sha256": "d4eb493c760cb5495c6672786180d683b0ffd011d9866083ea4ba2331fdc4d3f",
+            "final_url": "https://machida-city-hospital-tokyo.jp/media/yosan2024_002.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:15:34.626Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "hosei-2024-3",
+          "title": "令和6年度9月補正予算の概要（補正第3号）",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_24/hosei202409.html",
+          "inspected_at": "2026-10-08T09:14:11.002268+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_24/hosei202409.files/gaiyou0609_3.pdf",
+              "sha256": "c854b71d6bef4e06deca90f15f9e1f70928508689bb4faee38c3b945c5214197",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 11
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 12
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 12
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 13,
+                      "end": 13
+                    }
+                  ]
+                },
+                {
+                  "account": "鶴川駅南土地区画整理事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 13,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度9月補正（補正第3号、8月27日提出・9月30日可決。すくわくプログラム等）。号数はlanding本文・概要表題の第3号で確定。概要（14頁）の一覧物理頁10-13を選定（款項目事業名所属名金額（千円））。一般会計補正額7,547,414千円、特別会計補正額1,443,370千円（決算確定に伴う繰越金・返還金等）。物理頁12は国保・介護、13は後期・鶴川が同居するため各scopeに含め、二重計上に注意。物理頁14の債務負担行為一覧は範囲外。総括・歳入・款級内訳・件名頁も範囲外。税の注記なし。物理頁＝印字頁。企業会計の第3号補正は掲載なし（不足）。",
+      "selected_candidate_id": "hosei-2024-3",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "hosei-2024-3",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2024/supplementary-3.pdf",
+            "sha256": "c854b71d6bef4e06deca90f15f9e1f70928508689bb4faee38c3b945c5214197",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_24/hosei202409.files/gaiyou0609_3.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:15:38.103Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "hosei-2024-4",
+          "title": "令和6年度12月補正予算の概要（補正第4号）",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_24/202412hosei.html",
+          "inspected_at": "2026-10-08T09:14:11.002268+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_24/202412hosei.files/gaiyou0612.pdf",
+              "sha256": "cf236bcf9d5926df51d9c83a2629f9deba6f7e0311dcfdfbcec3786b185af60b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 11
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 12
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 12
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 12
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度12月補正（補正第4号、11月28日提出・12月23日可決。給食費無償化等）。号数はlanding本文・概要表題の第4号で確定。概要（13頁）の一覧物理頁10-12を選定（款項目事業名所属名金額（千円））。一般会計補正額2,576,846千円、特別会計補正額16,724千円（人件費・郵便料）。物理頁12は国保・介護・後期が同居するため各scopeに含め、二重計上に注意。物理頁13の債務負担行為一覧は範囲外。総括・歳入・款級内訳・件名頁も範囲外。税の注記なし。物理頁＝印字頁。企業会計の第4号補正は掲載なし（不足）。",
+      "selected_candidate_id": "hosei-2024-4",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "hosei-2024-4",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2024/supplementary-4.pdf",
+            "sha256": "cf236bcf9d5926df51d9c83a2629f9deba6f7e0311dcfdfbcec3786b185af60b",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_24/202412hosei.files/gaiyou0612.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:15:41.703Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "hosei-2025-1",
+          "title": "令和7年度6月補正予算の概要（補正第1号）・下水道事業会計補正予算書（専決第1号・第1号）",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_25/hosei202506.html",
+          "inspected_at": "2026-10-08T09:14:11.002268+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_25/hosei202506.files/gaiyou0706_1.pdf.pdf",
+              "sha256": "a104e922f800f9a543085e27179e8efacdcef457d7dc6620ed532b6730c6aa85",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 14,
+                      "end": 14
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/202509machidagesuiyosan.pdf",
+              "sha256": "cb8833b97a890d00cadb85e929dd9075800d73e7fe4ae42eb45a4bee04ebd599",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/202505machidagesuiyosan.pdf",
+              "sha256": "a295b42741bf473e7c79eafc4fe7b937b2ce4cfbd527e6d6a8fb77cdd3ed1b19",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 6
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度6月補正（補正第1号、6月2日提出・6月25日可決。保育料無償化等）。号数はlanding本文・概要表題・下水道本文の第1号で確定（下水道専決第1号は独自系列の同番号分として同対象に束ねる）。概要（15頁）の一覧は一般会計物理頁12-13・後期高齢者医療事業会計物理頁14（資格確認書郵送8,946千円、一般会計側に対応する繰出金あり）を選定。一般会計補正額3,021,429千円、後期補正額8,946千円。物理頁15の債務負担行為一覧は範囲外。下水道第1号（9月補正、16頁）は収益的支出＋資本的収支の支出が物理頁9（款項目＋既決・補正・計、千円、例：資本的支出△371,400千円）。下水道専決第1号（5月7日専決、12頁）は収益的支出が物理頁6（例：管渠費65,000千円）。病院第1号は収益的収入のみの補正で支出なし（yosan2025_001.pdf実物確認）のため本対象に含めず。総括・歳入・款級内訳・件名頁・CF等は範囲外。税の注記は確認範囲になし。物理頁＝印字頁。国保・介護・鶴川の第1号補正は掲載なし（不足）。同一頁に収入表が同居する頁を含むが、歳出の支出表のみを選定し、収入額・資金収支の合計を支出額に加算しない。",
+      "selected_candidate_id": "hosei-2025-1",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "hosei-2025-1",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2025/supplementary-1-1.pdf",
+            "sha256": "a104e922f800f9a543085e27179e8efacdcef457d7dc6620ed532b6730c6aa85",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_25/hosei202506.files/gaiyou0706_1.pdf.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2025/supplementary-1-3.pdf",
+            "sha256": "cb8833b97a890d00cadb85e929dd9075800d73e7fe4ae42eb45a4bee04ebd599",
+            "final_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/202509machidagesuiyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2025/supplementary-1-2.pdf",
+            "sha256": "a295b42741bf473e7c79eafc4fe7b937b2ce4cfbd527e6d6a8fb77cdd3ed1b19",
+            "final_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/202505machidagesuiyosan.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:15:49.088Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "hosei-2025-2",
+          "title": "令和7年度9月補正予算の概要（補正第2号）・下水道事業会計補正予算書（専決第2号・第2号）・病院事業会計補正予算書（第2号）",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_25/hosei202509.html",
+          "inspected_at": "2026-10-08T09:14:11.002268+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_25/hosei202509.files/gaiyou0709_2.pdf",
+              "sha256": "54f8505afc3f8e6d6cfb2d3eaf4a1e5141d2c1ad10516a5ba462ec5ab65bc796",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 8
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/202603machidagesuiyosan.pdf",
+              "sha256": "d3257eaf51ffa5d43f0c30ce5b078c81539aa09bd99a12364dff05807687c7ba",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/202511machidagesuiyosan.pdf",
+              "sha256": "52f89ac63a62e090865063b27915e616d316c4fd2bdaa6f3e5a828585153de1a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 6
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://machida-city-hospital-tokyo.jp/media/yosan2025_002.pdf",
+              "sha256": "d1cc2cbb96344402f50345c37c06c049695e1a4f28a656facfc29b49383b8d51",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "病院事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 9,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度9月補正（補正第2号、8月27日提出・可決。市民フォーラム共有床買取り）。号数はlanding本文・概要表題・各予算書本文の第2号で確定（下水道2冊は独自系列の同番号分。うち第2号は3月補正で一般第2号と同番号別回）。概要（9頁）の一覧物理頁8のみ選定（款項目事業名所属名金額（千円）、例：改修工事費140,328千円）。物理頁9の債務負担行為一覧は範囲外。会計別構成で特別会計補正額0を確認。一般会計補正額677,866千円。下水道第2号（16頁）は収益的支出が物理頁8・資本的収支の支出が物理頁9（款項目＋既決・補正・計、千円）。下水道専決第2号（11月11日専決、12頁）は収益的支出が物理頁6（例：管渠費45,560千円）。病院第2号（11頁）は実施計画物理頁4（収益的支出のみ、例：経費8,000千円）・内訳物理頁9（款項目節＋予定額、例：委託料1,886,998千円）。総括・歳入・款級内訳・CF等は範囲外。税の注記は確認範囲になし。物理頁＝印字頁。4特別会計の第2号補正は掲載なし（不足）。同一頁に収入表が同居する頁を含むが、歳出の支出表のみを選定し、収入額・資金収支の合計を支出額に加算しない。",
+      "selected_candidate_id": "hosei-2025-2",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "hosei-2025-2",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2025/supplementary-2-2.pdf",
+            "sha256": "54f8505afc3f8e6d6cfb2d3eaf4a1e5141d2c1ad10516a5ba462ec5ab65bc796",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_25/hosei202509.files/gaiyou0709_2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2025/supplementary-2-4.pdf",
+            "sha256": "d3257eaf51ffa5d43f0c30ce5b078c81539aa09bd99a12364dff05807687c7ba",
+            "final_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/202603machidagesuiyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2025/supplementary-2-1.pdf",
+            "sha256": "52f89ac63a62e090865063b27915e616d316c4fd2bdaa6f3e5a828585153de1a",
+            "final_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/202511machidagesuiyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2025/supplementary-2-3.pdf",
+            "sha256": "d1cc2cbb96344402f50345c37c06c049695e1a4f28a656facfc29b49383b8d51",
+            "final_url": "https://machida-city-hospital-tokyo.jp/media/yosan2025_002.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:15:59.488Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "hosei-2025-3",
+          "title": "令和7年度9月補正予算の概要（補正第3号）",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_25/hosei202509.html",
+          "inspected_at": "2026-10-08T09:14:11.002268+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_25/hosei202509.files/gaiyou0709_3.pdf",
+              "sha256": "91c6b01170726a56d937cc48d4170375ee883d1310c13609c24e20e9fbf8939d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 14
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 15,
+                      "end": 15
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 16,
+                      "end": 16
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度9月補正（補正第3号、8月27日提出・9月30日可決。バイオエネルギーセンター火災復旧・芹ヶ谷公園等）。号数はlanding本文・概要表題の第3号で確定。概要（18頁）の一覧は一般会計物理頁12-14・国保物理頁15・後期物理頁16を選定（款項目事業名所属名金額（千円）、例：国保の後期高齢者支援金等分納付金27,554千円）。一般会計補正額11,969,948千円、特別会計補正額992,637千円（決算確定に伴う繰越金・返還金等）。物理頁17-18の債務負担行為一覧（一般・国保）は範囲外。総括・歳入・款級内訳・件名頁も範囲外。税の注記なし。物理頁＝印字頁。病院第3号は資本的収入のみの補正で支出なし（yosan_2026-003.pdf実物確認）のため本対象に含めず。介護・鶴川・下水道の第3号補正は掲載なし（不足）。",
+      "selected_candidate_id": "hosei-2025-3",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "hosei-2025-3",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2025/supplementary-3.pdf",
+            "sha256": "91c6b01170726a56d937cc48d4170375ee883d1310c13609c24e20e9fbf8939d",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_25/hosei202509.files/gaiyou0709_3.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:16:04.104Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "hosei-2025-4",
+          "title": "令和7年度12月補正予算の概要（補正第4号）・病院事業会計補正予算書（第4号）",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_25/202512hosei.html",
+          "inspected_at": "2026-10-08T09:14:11.002268+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_25/202512hosei.files/gaiyou0712.pdf",
+              "sha256": "de7f18e0b0b9778f1e6bf9e8fa4e131052604c1db1fbc9efc4669be605547ee4",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 13,
+                      "end": 23
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 24,
+                      "end": 24
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 24,
+                      "end": 24
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://machida-city-hospital-tokyo.jp/media/yosan_2026-004.pdf",
+              "sha256": "c60c33cddab5be9ce06f2e6b61054d4e58fd2ef01f6c0fcdcbde4408fb5abc3a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "病院事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "start": 17,
+                      "end": 17
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度12月補正（補正第4号、11月28日提出・12月23日可決）。号数はlanding本文・概要表題・病院本文の第4号で確定。概要（25頁）の一覧は一般会計物理頁13-23・国保＋後期物理頁24（同居のため両scopeに含め、二重計上に注意）を選定（款項目事業名所属名金額（千円））。一般会計補正額3,099,548千円、特別会計補正額19,621千円（人件費・国保税還付金等）。物理頁25の債務負担行為一覧は範囲外。病院第4号（20頁）は実施計画物理頁6（収益的＋資本的支出、例：資産購入費△92,478千円）・内訳物理頁17（款項目節＋予定額、例：備品購入費△92,478千円医療機器等購入費）。実施計画頁は収入表と同居。総括・歳入・款級内訳・件名頁・CF等は範囲外。税の注記は確認範囲になし。物理頁＝印字頁。介護・鶴川・下水道の第4号補正は掲載なし（不足。なお同landingで第5号（12月23日提出・可決）も可決されたが詳細PDFなし、別対象に未選定として記録）。同一頁に収入表が同居する頁を含むが、歳出の支出表のみを選定し、収入額・資金収支の合計を支出額に加算しない。",
+      "selected_candidate_id": "hosei-2025-4",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "hosei-2025-4",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2025/supplementary-4-2.pdf",
+            "sha256": "de7f18e0b0b9778f1e6bf9e8fa4e131052604c1db1fbc9efc4669be605547ee4",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_25/202512hosei.files/gaiyou0712.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2025/supplementary-4-1.pdf",
+            "sha256": "c60c33cddab5be9ce06f2e6b61054d4e58fd2ef01f6c0fcdcbde4408fb5abc3a",
+            "final_url": "https://machida-city-hospital-tokyo.jp/media/yosan_2026-004.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:16:10.901Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [],
+      "reason": "令和7年度12月補正（補正第5号、12月23日提出・可決）はlanding本文で可決を確認したが、詳細PDFの掲載なし（同landingの概要リンクは第4号のみ）。landing本文の補正額表は会計別総額のみで目・事業明細を持たないため未選定。号数の創作なし。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "hosei-2025-6",
+          "title": "令和7年度1月補正予算の概要（補正第6号）",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_25/202501hosei.html",
+          "inspected_at": "2026-10-08T09:14:11.002268+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_25/202501hosei.files/gaiyou0701.pdf",
+              "sha256": "929057c6b68a758b6f281c48f213e8a537929e8b8ee3f9d26facd31e2135c093",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 11
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度1月補正（補正第6号、1月26日提出・可決。物価高騰対応重点支援）。号数はlanding本文・概要表題の第6号で確定。概要（12頁）の一覧（一般会計）物理頁11のみ選定（款項目事業名所属名金額（千円）、例：物価高騰対策事業補助金894,939千円）。会計別構成で特別会計補正額0を確認。一般会計補正額3,026,073千円。物理頁10の件名頁（債務負担行為の総事業費130,452千円の記載あり）は複数年総事業費で当年度支出と対応を確認できず範囲外。物理頁12の債務負担行為一覧も範囲外。総括・歳入・款級内訳も範囲外。税の注記なし。物理頁＝印字頁。特別・企業会計の第6号補正は掲載なし（不足）。",
+      "selected_candidate_id": "hosei-2025-6",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "hosei-2025-6",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2025/supplementary-6.pdf",
+            "sha256": "929057c6b68a758b6f281c48f213e8a537929e8b8ee3f9d26facd31e2135c093",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_25/202501hosei.files/gaiyou0701.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:16:14.695Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 7
+      },
+      "candidates": [
+        {
+          "id": "hosei-2025-7",
+          "title": "令和7年度3月補正予算資料 事業別支出科目一覧（補正第7号）",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_25/hosei202503.html",
+          "inspected_at": "2026-10-08T09:14:11.002268+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_25/hosei202503.files/hosei0703_02.pdf",
+              "sha256": "0c74edfb80f85d28bbc5be5bfc2c571bbe5cd52ebcf9a94ef4e9a16812a35b61",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 22
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 23,
+                      "end": 23
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 24,
+                      "end": 25
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 26,
+                      "end": 26
+                    }
+                  ]
+                },
+                {
+                  "account": "鶴川駅南土地区画整理事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 27,
+                      "end": 27
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度3月補正（補正第7号、3月9日提出・3月11日可決）。号数はlanding本文の可決文・一覧表紙の第7号で確定。standalone一覧（27頁、DocuWorks生成の輪郭線PDFで文字抽出不可のためscan。表紙・p3・p22-27を描画で実物確認）を選定。列は款項目事業名所属名金額（千円）、△は減額（例：議会費△23,297千円、鶴川の区画整理事業費△364,923千円）。一般（p3-22）・国保（p23）・介護（p24-25）・後期（p26）・鶴川（p27）の5会計を収録。一般会計補正額△2,188,127千円。補正前・補正後の額なし（不足）。同landingの概要（hosei0703_01.pdf）は一覧を含まず件名・債務負担のみのため本候補のfilesに含めず。税の注記は確認範囲になし。物理頁＝表紙からの連番（p1表紙・p2白紙・p27末尾）。企業会計の第7号補正は掲載なし（不足）。描画ファイルは担当dir render/R7jb_p*.png。",
+      "selected_candidate_id": "hosei-2025-7",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "hosei-2025-7",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2025/supplementary-7.pdf",
+            "sha256": "0c74edfb80f85d28bbc5be5bfc2c571bbe5cd52ebcf9a94ef4e9a16812a35b61",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_25/hosei202503.files/hosei0703_02.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:16:20.881Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "hosei-2026-1",
+          "title": "令和8年度6月補正予算書・概要（補正第1号）・下水道・病院事業会計補正予算書（第1号）",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_26/hosei202606.html",
+          "inspected_at": "2026-10-08T09:14:11.002268+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_26/hosei202606.files/yosansyo0806_1.pdf",
+              "sha256": "d77d207d25c11828103983cf2c53bc378211d981bb7538cb428ff15468bc17e2",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 21
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 36,
+                      "end": 36
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_26/hosei202606.files/gaiyou0806_1.pdf",
+              "sha256": "1113f99f9f187759a52d5c7df299e40bef3b8daeecb5b7d5545a44fce838c182",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 21,
+                      "end": 22
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 23,
+                      "end": 23
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/202606machidagesuiyosan.pdf",
+              "sha256": "9280f23a40f80430507267bae96ed75e776541a542ab73c21e768b639e00a872",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://machida-city-hospital-tokyo.jp/media/yosan_2026-001.pdf",
+              "sha256": "b3437760c414f053895e1efb2a635805284a68ab9d60ad938c29845e00ff4235",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "病院事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "start": 10,
+                      "end": 10
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度6月補正（補正第1号、6月1日提出・6月29日可決。当初骨格予算の政策的経費計上）。号数はlanding本文・各書表題・本文の第1号で確定（企業会計は独自系列の同番号を同対象に束ねる）。補正予算書（36頁）の事項別明細書3．歳出を選定：一般会計物理頁18-21（款項目＋補正前の額・補正額・計・節・説明、千円。物理頁22の給与費明細以降は範囲外）、後期高齢者医療事業会計物理頁36（3．歳出、例：一般管理費238,101千円。p34-35歳入・p35白紙）。概要（24頁）の一覧：一般物理頁21-22・後期物理頁23（款項目事業名所属名金額（千円））。一般会計補正額1,964,084千円、後期補正額9,572千円。下水道第1号（6月補正、12頁）は実施計画の収益的支出が物理頁7（款項目＋既決・補正・計、千円、例：管渠費71,264千円）。病院第1号（12頁）は実施計画物理頁5・内訳物理頁10（収益的＋資本的支出、例：病院事業費用924千円等。収入表と同居）。第1表（款項総額）・総括・歳入・給与費明細・債務負担・地方債調書・CF等は範囲外。税の注記は確認範囲になし。物理頁＝印字頁。国保・介護・鶴川の補正なし（概要p4の会計別構成で確認、不足ではなく対象外）。同一頁に収入表が同居する頁を含むが、歳出の支出表のみを選定し、収入額・資金収支の合計を支出額に加算しない。 同会計・同号の補正予算書と概要は補完資料として同じ候補に含めている。両資料に同じ事業・科目の額が再掲される場合は加算しない。全行の対応突合はこの選定工程では未実施。",
+      "selected_candidate_id": "hosei-2026-1",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "hosei-2026-1",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2026/supplementary-1-4.pdf",
+            "sha256": "d77d207d25c11828103983cf2c53bc378211d981bb7538cb428ff15468bc17e2",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_26/hosei202606.files/yosansyo0806_1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2026/supplementary-1-1.pdf",
+            "sha256": "1113f99f9f187759a52d5c7df299e40bef3b8daeecb5b7d5545a44fce838c182",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_26/hosei202606.files/gaiyou0806_1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2026/supplementary-1-2.pdf",
+            "sha256": "9280f23a40f80430507267bae96ed75e776541a542ab73c21e768b639e00a872",
+            "final_url": "https://www.city.machida.tokyo.jp/kurashi/suido/grsui/gesuidoujigyou/yosankessan.files/202606machidagesuiyosan.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2026/supplementary-1-3.pdf",
+            "sha256": "b3437760c414f053895e1efb2a635805284a68ab9d60ad938c29845e00ff4235",
+            "final_url": "https://machida-city-hospital-tokyo.jp/media/yosan_2026-001.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:16:31.413Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "hosei-2026-2",
+          "title": "令和8年度9月補正予算書・概要（補正第2号）",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_26/hosei202609.html",
+          "inspected_at": "2026-10-08T09:14:11.002268+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_26/hosei202609.files/yosansyo0809_2.pdf",
+              "sha256": "2e9240103c3c065aab28e5c437ff84962c37eca5d0a84dcfeecd1909da7c743b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 14,
+                      "end": 14
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_26/hosei202609.files/gaiyou0809_2.pdf",
+              "sha256": "7c2b2a49da6fdf1aa717f59db6bcc18702b6a5ff0c5cd476d8cf5b509a888ba1",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 8
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度9月補正（補正第2号、8月27日提出・可決。指定収集袋単価改定）。号数はlanding本文・各書表題の第2号で確定。補正予算書（14頁）の2．歳出物理頁14のみ選定（款項目＋補正前の額・補正額・計・節、千円、例：廃棄物減量再資源化等推進整備基金積立金△75,177千円。一般会計補正額は総額0の組替）。概要（8頁）の一覧（一般会計）物理頁8（款項目事業名所属名金額（千円））。第1表・総括・款級内訳は範囲外。税の注記なし。物理頁＝印字頁。特別・企業会計の第2号補正は掲載なし（不足ではなく掲載なし。概要p4で一般のみ増減なしを確認）。 同会計・同号の補正予算書と概要は補完資料として同じ候補に含めている。両資料に同じ事業・科目の額が再掲される場合は加算しない。全行の対応突合はこの選定工程では未実施。",
+      "selected_candidate_id": "hosei-2026-2",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "hosei-2026-2",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2026/supplementary-2-1.pdf",
+            "sha256": "2e9240103c3c065aab28e5c437ff84962c37eca5d0a84dcfeecd1909da7c743b",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_26/hosei202609.files/yosansyo0809_2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2026/supplementary-2-2.pdf",
+            "sha256": "7c2b2a49da6fdf1aa717f59db6bcc18702b6a5ff0c5cd476d8cf5b509a888ba1",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_26/hosei202609.files/gaiyou0809_2.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:16:37.460Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132098",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "hosei-2026-3",
+          "title": "令和8年度9月補正予算書・概要（補正第3号）",
+          "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_26/hosei202609.html",
+          "inspected_at": "2026-10-08T09:14:11.002268+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_26/hosei202609.files/yosansyo0809_3.pdf",
+              "sha256": "8574f8f7c3d97fc5fde5d89c455b95b43b629a0b0096c498428aa2614680a499",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 20,
+                      "end": 26
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 42,
+                      "end": 43
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 56,
+                      "end": 56
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 68,
+                      "end": 68
+                    }
+                  ]
+                },
+                {
+                  "account": "鶴川駅南土地区画整理事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 80,
+                      "end": 80
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_26/hosei202609.files/gaiyou0809_3.pdf",
+              "sha256": "687f773a51249e7e6d4425ac429ad6f8736febe039c57dfba6df1ded9506b5e4",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 14
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 15,
+                      "end": 15
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 16,
+                      "end": 16
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度9月補正（補正第3号、8月27日提出・9月30日可決）。号数はlanding本文・各書表題の第3号で確定。補正予算書（80頁）の3．歳出を選定：一般物理頁20-26（p27白紙・p28給与費明細で終了）、国保物理頁42-43（p44白紙）、介護物理頁56（p57は介護会計の扉）、後期物理頁68（p69は後期会計の扉）、鶴川物理頁80（最終頁。p78-79は2．歳入、p79白紙）。いずれも款項目＋補正前の額・補正額・計・節・説明、千円。概要（18頁）の一覧：一般物理頁11-14・国保物理頁15・後期物理頁16（款項目事業名所属名金額（千円）。概要に介護・鶴川の一覧なしは予算書で補完）。一般会計補正額4,423,195千円、特別会計補正額1,481,271千円。第1表・総括・歳入・給与費明細・債務負担（p17-18）・地方債調書・扉・白紙頁は範囲外。税の注記なし。物理頁＝印字頁。企業会計の第3号補正は掲載なし（不足。病院第3号相当の掲載なし）。概要p11の病院借入金利子924千円の記載は病院会計の補正原典を確認できないため未選定。 同会計・同号の補正予算書と概要は補完資料として同じ候補に含めている。両資料に同じ事業・科目の額が再掲される場合は加算しない。全行の対応突合はこの選定工程では未実施。",
+      "selected_candidate_id": "hosei-2026-3",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "hosei-2026-3",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132098/2026/supplementary-3-2.pdf",
+            "sha256": "8574f8f7c3d97fc5fde5d89c455b95b43b629a0b0096c498428aa2614680a499",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_26/hosei202609.files/yosansyo0809_3.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132098/2026/supplementary-3-1.pdf",
+            "sha256": "687f773a51249e7e6d4425ac429ad6f8736febe039c57dfba6df1ded9506b5e4",
+            "final_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_26/hosei202609.files/gaiyou0809_3.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:16:44.994Z"
+      }
+    }
+  ],
+  "unresolved_candidates": [
+    {
+      "candidate": {
+        "id": "hosei-2024-03",
+        "title": "令和6年度3月補正予算の概要・事業別支出科目一覧（号数表記なし）",
+        "landing_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_24/hosei202403.html",
+        "inspected_at": "2026-10-08T09:14:11.002268+00:00",
+        "files": [
+          {
+            "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_24/hosei202403.files/hosei0603_01.pdf",
+            "sha256": "8dda881217d73271f38c74a957c7c7c7ca8b49507d1c0de37ae80759191f16fb",
+            "format": "pdf",
+            "pdf_type": "text",
+            "scope": null
+          },
+          {
+            "download_url": "https://www.city.machida.tokyo.jp/shisei/gyouzaisei/siyosan/hosei_24/hosei202403.files/hosei0603_02.pdf",
+            "sha256": "1a3dc5a1eb12cce28ef15474ce4ee236c4a1a8e9fd3c0a53469027fa0f2e0e78",
+            "format": "pdf",
+            "pdf_type": "text",
+            "scope": null
+          }
+        ]
+      },
+      "missing": [
+        "amendment_number"
+      ],
+      "reason": "令和6年度3月補正（2月20日提出・可決）。landing・概要・一覧のいずれにも補正第N号の表記なし（時系列では第5号に相当するが月名・公開順だけでは推測しない）。概要（9頁）は会計別構成・件名（小中学校校舎等空調整備事業）・債務負担のみで一覧を含まず、一覧はstandalone（24頁、一般p3-19・国保p20-22前半・介護p22後半-23・後期＋鶴川p24。p22は国保・介護、p24は後期・鶴川が同居）。一般会計補正額△356,920千円、国保＋309,507千円、介護△235,120千円、後期＋70,657千円、鶴川△79,919千円、下水道△570,154千円、病院△318,575千円。号数確定後に選定対象へ移す。下水道・病院の3月補正分は現時点で独自系列の第2号として2024-2対象に束ね済み（号数確定後に見直し可）。"
+    }
+  ]
 }

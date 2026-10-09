@@ -2,6 +2,1713 @@
   "jurisdiction": "131199",
   "name": "板橋区",
   "official_url": "https://www.city.itabashi.tokyo.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度 東京都板橋区予算（冊子）",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/yosan/1059985/1061895.html",
+          "inspected_at": "2026-10-07T15:03:21+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/061/895/r8tousyoyosansyo.pdf",
+              "sha256": "2a45b29d4917d5e771ecb89210fb6ce6733de6e83f1f36b1623cb3738d500573",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 162,
+                      "end": 337
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 374,
+                      "end": 393
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 426,
+                      "end": 445
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 466,
+                      "end": 471
+                    }
+                  ]
+                },
+                {
+                  "account": "東武東上線連続立体化事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 484,
+                      "end": 487
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度当初予算冊子（全490頁、第1部予算議案＋第2部各会計予算説明書）。説明書の歳出予算事項別明細書は款・項・目と節区分・事業内訳（説明欄・財源内訳）を同一明細に持ち、金額は本年度予算額・前年度予算額・比較（千円）。全会計5つ（一般会計・国民健康保険事業特別会計・介護保険事業特別会計・後期高齢者医療事業特別会計・東武東上線連続立体化事業特別会計）の歳出のみ対象化。印字頁＋6＝物理頁で両端を実頁確認。歳出範囲: 一般会計 物理162-337（総括＋第1款議会費〜第11款予備費、338頁〜は給与費明細書）、国保 374-393（394〜給与費明細書）、介護 426-445（446〜給与費明細書）、後期 466-471（472空白・473東武扉）、東武 484-487（488〜債務負担行為調書）。議案（款・項のみ）・給与費明細書・調書・歳入は対象外。文字層は可読だが一部字体に誤割当（例: 財源→財瀞）。予算の概要PDFは款項目明細を持たず候補外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2026/initial.pdf",
+            "sha256": "2a45b29d4917d5e771ecb89210fb6ce6733de6e83f1f36b1623cb3738d500573",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/061/895/r8tousyoyosansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T15:03:46.532Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [],
+      "reason": "令和7年度決算書は公式の決算掲載ページ（kusei/zaisei/kessan/1007526.html 板橋区の決算書について、同1007520.html 決算資料について）に未掲載。両ページとも令和3〜6年度分のみで令和6年度が最新。掲載され次第選定する。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度 東京都板橋区各会計歳入歳出決算書・附属書類・東京都板橋区基金運用状況調書",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/kessan/1007526.html",
+          "inspected_at": "2026-10-07T15:03:21+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/007/526/kessansyo.r6.pdf",
+              "sha256": "d6f058873af9b102ca864338a57da7c5c95161d1a4d2e95104f4dc92380af935",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 248,
+                      "end": 457
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 490,
+                      "end": 521
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 554,
+                      "end": 579
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 598,
+                      "end": 609
+                    }
+                  ]
+                },
+                {
+                  "account": "東武東上線連続立体化事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 622,
+                      "end": 627
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度決算（最新公表分、全670頁）。附属書類の歳入歳出決算事項別明細書は款・項・目に当初予算額・補正予算額・繰越事業費繰越額・予備費充用及び予算流用増減・予算現額・支出済額・翌年度繰越額・不用額（円）を同一明細で持ち、事務事業の内訳（予算現額・決算額）付き。冒頭の各会計歳入歳出決算書は款・項・目の総括で明細書に包含されるため対象外。実質収支調書・財産調書・基金運用状況調書・歳入は対象外。全会計5つ（一般会計・国民健康保険事業特別会計・介護保険事業特別会計・後期高齢者医療事業特別会計・東武東上線連続立体化事業特別会計）の歳出のみ対象化。印字頁＋6＝物理頁で両端を画像確認。歳出範囲: 一般 物理248-457（印字242-451、458空白・459国保扉）、国保 490-521（印字484-515、522空白）、介護 554-579（印字548-573、580空白・581後期扉）、後期 598-609（印字592-603、610空白・611東武扉）、東武 622-627（印字616-621、628空白・629実質収支調書扉）。文字層はToUnicode欠落で文字化けするためscan扱い。決算資料（抜粋）・決算額一覧xlsxは明細粒度でなく候補外。歳入は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2024/settlement.pdf",
+            "sha256": "d6f058873af9b102ca864338a57da7c5c95161d1a4d2e95104f4dc92380af935",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/007/526/kessansyo.r6.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T15:03:50.944Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2027,
+        "document_kind": "initial"
+      },
+      "candidates": [],
+      "reason": "公式予算一覧（kusei/zaisei/yosan/index.html）の令和9年度の予算ページ（yosan/1066347/）は予算編成過程の公表【スケジュール】のみで、当初予算冊子は未掲載。掲載され次第選定する。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2023,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度 東京都板橋区予算（冊子）",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/yosan/1041624/1044308.html",
+          "inspected_at": "2026-10-08T05:52:09+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/044/308/r5_yosansyo.pdf",
+              "sha256": "58a243ae8f8de2676450c98ca7488dbcdf7c379c7543bf71dbba5bb5d059ea3a",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 152,
+                      "end": 325
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 362,
+                      "end": 383
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 416,
+                      "end": 437
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 458,
+                      "end": 465
+                    }
+                  ]
+                },
+                {
+                  "account": "東武東上線連続立体化事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 478,
+                      "end": 481
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度当初予算冊子（全484頁、第1部予算議案＋第2部各会計予算説明書）。説明書の歳出予算事項別明細書は款・項・目と節区分・事業内訳（説明欄・財源内訳）を同一明細に持ち、金額は本年度予算額・前年度予算額・比較（千円）。全会計5つ（一般会計・国民健康保険事業特別会計・介護保険事業特別会計・後期高齢者医療事業特別会計・東武東上線連続立体化事業特別会計）の歳出のみ対象化。印字頁＋6＝物理頁で両端を実頁確認（議案第1号は物理9＝印字3）。歳出範囲: 一般会計 物理152-325（総括印字146〜予備費印字319、326〜給与費明細書）、国保 362-383（総括印字356〜予備費印字377、384〜給与費明細書）、介護 416-437（総括印字410〜第3款諸支出金印字431、438〜給与費明細書）、後期 458-465（総括印字452〜予備費印字459、466空白・467東武扉・468空白・469歳入扉・470東武歳入総括印字464）、東武 478-481（総括印字472〜第1款印字475、482〜債務負担行為調書印字476）。議案（款・項のみ）・給与費明細書・調書・歳入は対象外。一般会計歳出合計237,250,000千円を総括表で目視確認。ベクタ文字PDFだが歳出明細の和文にToUnicode欠落があり文字抽出では名称が読めないためpdf_typeはscan（画像XObjectなし、画像読みが必要）。公式PDFとSHA一致を確認済み。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2023/initial.pdf",
+            "sha256": "58a243ae8f8de2676450c98ca7488dbcdf7c379c7543bf71dbba5bb5d059ea3a",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/044/308/r5_yosansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T05:53:33.827Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2024,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度 東京都板橋区予算（冊子）",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/yosan/1049183/1050373.html",
+          "inspected_at": "2026-10-08T05:52:09+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/050/373/r6yosansyo.pdf",
+              "sha256": "b14d9d94775c14160e454aab2fd738f95b881b9f036e3637733efed3cb670a8d",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 154,
+                      "end": 327
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 362,
+                      "end": 383
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 416,
+                      "end": 437
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 458,
+                      "end": 465
+                    }
+                  ]
+                },
+                {
+                  "account": "東武東上線連続立体化事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 478,
+                      "end": 481
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度当初予算冊子（全484頁、第1部予算議案＋第2部各会計予算説明書）。説明書の歳出予算事項別明細書は款・項・目と節区分・事業内訳（説明欄・財源内訳）を同一明細に持ち、金額は本年度予算額・前年度予算額・比較（千円）。全会計5つ（一般会計・国民健康保険事業特別会計・介護保険事業特別会計・後期高齢者医療事業特別会計・東武東上線連続立体化事業特別会計）の歳出のみ対象化。印字頁＋6＝物理頁で両端を実頁確認（議案第1号は物理9＝印字3）。歳出範囲: 一般会計 物理154-327（総括印字148〜予備費印字321、328〜給与費明細書印字322）、国保 362-383（総括印字356〜予備費印字377、384〜給与費明細書印字378）、介護 416-437（総括印字410〜第3款諸支出金印字431、438〜給与費明細書印字432）、後期 458-465（総括印字452〜予備費印字459を目視確認、466空白・467東武扉・468空白・469歳入扉・470東武歳入総括印字464）、東武 478-481（総括印字472〜第1款印字475、482〜債務負担行為調書）。議案（款・項のみ）・給与費明細書・調書・歳入は対象外。後期高齢総括表（歳出合計15,190,000千円）・東武総括表（777,000千円）を目視確認。ベクタ文字PDFだが歳出明細の和文にToUnicode欠落があり文字抽出では名称が読めないためpdf_typeはscan（画像XObjectなし、画像読みが必要）。公式PDFとSHA一致を確認済み。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2024/initial.pdf",
+            "sha256": "b14d9d94775c14160e454aab2fd738f95b881b9f036e3637733efed3cb670a8d",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/050/373/r6yosansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T05:53:40.996Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2025,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度 東京都板橋区予算（冊子）",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/yosan/1054671/1056064.html",
+          "inspected_at": "2026-10-08T05:52:09+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/056/064/r7yosansyo.pdf",
+              "sha256": "df61cd0b7839a53b384e9886dff936466e4db2f435b6af19565b290d87206bb7",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 160,
+                      "end": 333
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 370,
+                      "end": 391
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 424,
+                      "end": 445
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 466,
+                      "end": 473
+                    }
+                  ]
+                },
+                {
+                  "account": "東武東上線連続立体化事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 486,
+                      "end": 489
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度当初予算冊子（全492頁、第1部予算議案＋第2部各会計予算説明書）。説明書の歳出予算事項別明細書は款・項・目と節区分・事業内訳（説明欄・財源内訳）を同一明細に持ち、金額は本年度予算額・前年度予算額・比較（千円）。全会計5つ（一般会計・国民健康保険事業特別会計・介護保険事業特別会計・後期高齢者医療事業特別会計・東武東上線連続立体化事業特別会計）の歳出のみ対象化。印字頁＋6＝物理頁で両端を実頁確認（議案第1号は物理9＝印字3）。歳出範囲: 一般会計 物理160-333（総括印字154〜予備費印字327、334〜給与費明細書）、国保 370-391（総括印字364〜予備費印字385、392〜給与費明細書印字386）、介護 424-445（総括印字418〜第3款諸支出金印字439、446〜給与費明細書印字440）、後期 466-473（総括印字460〜予備費印字467を目視確認、474空白・475東武扉・476空白・477歳入扉・478東武歳入総括印字472）、東武 486-489（総括印字480〜第1款印字483の事業明細末尾を目視確認、490〜債務負担行為調書印字484）。議案（款・項のみ）・給与費明細書・調書・歳入は対象外。一般会計歳出合計275,300,000千円・国保歳出合計53,490,000千円を総括表で目視確認。ベクタ文字PDFだが歳出明細の和文にToUnicode欠落があり文字抽出では名称が読めないためpdf_typeはscan（画像XObjectなし、画像読みが必要）。公式PDFとSHA一致を確認済み。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2025/initial.pdf",
+            "sha256": "df61cd0b7839a53b384e9886dff936466e4db2f435b6af19565b290d87206bb7",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/056/064/r7yosansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T05:53:48.808Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2023,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度 東京都板橋区各会計歳入歳出決算書・附属書類・東京都板橋区基金運用状況調書",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/kessan/1007526.html",
+          "inspected_at": "2026-10-08T05:52:09+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/007/526/kessansyo.r5.pdf",
+              "sha256": "0c876a32711c64cd338d9080fb189296b0d0dddfb7cb51e45e73cf6ca6d5dbf7",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 240,
+                      "end": 449
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 482,
+                      "end": 517
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 546,
+                      "end": 575
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 590,
+                      "end": 605
+                    }
+                  ]
+                },
+                {
+                  "account": "東武東上線連続立体化事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 616,
+                      "end": 621
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度決算（全665頁）。附属書類の歳入歳出決算事項別明細書は款・項・目に当初予算額・補正予算額・繰越事業費繰越額・予備費充用及び予算流用増減・予算現額・支出済額・翌年度繰越額・不用額（円）を同一明細で持ち、事務事業の内訳（予算現額・決算額）付き。冒頭の各会計歳入歳出決算書は款・項・目の総括で明細書に包含されるため対象外。実質収支調書・財産調書・基金運用状況調書・歳入は対象外。全会計5つ（一般会計・国民健康保険事業特別会計・介護保険事業特別会計・後期高齢者医療事業特別会計・東武東上線連続立体化事業特別会計）の歳出のみ対象化。冊子頁＋6＝物理頁で両端を実頁確認。歳出範囲: 一般会計 物理240-449（1議会費冊子234〜予備費冊子443末尾を目視確認、450空白・451国保扉・452空白・453歳入扉・454国保歳入総括冊子448）、国保 482-517（1総務費冊子476を目視確認〜冊子511、518〜介護歳入冊子512）、介護 546-575（1保険給付費冊子540を目視確認〜冊子569、576〜後期歳入冊子570）、後期 590-605（1保険給付費冊子584を目視確認〜冊子599、606〜東武歳入冊子600）、東武 616-621（1連続立体化事業関連都市計画事業費冊子610を目視確認〜冊子615末尾、622空白・623調書扉・624空白・625実質収支扉）。ベクタ文字PDFだが明細の和文にToUnicode欠落があり文字抽出では名称が読めないためpdf_typeはscan（令和6年度決算の既存選定と同扱い、画像XObjectなし）。公式PDFとSHA一致を確認済み。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2023/settlement.pdf",
+            "sha256": "0c876a32711c64cd338d9080fb189296b0d0dddfb7cb51e45e73cf6ca6d5dbf7",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/007/526/kessansyo.r5.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T05:53:53.343Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度補正予算（第1号） 東京都板橋区補正予算（冊子）",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/yosan/1041624/1045353/1045354.html",
+          "inspected_at": "2026-10-08T08:30:55+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/045/354/r5_hosei_yosansyo.pdf",
+              "sha256": "dd6358bef47e837ce0e59bb2c531782fbd532c568826f3050ac37c3ab35649fa",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 24,
+                      "end": 27
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "議案第30号。一般会計のみ。歳出 総括20〜第4款衛生費22→給与費明細書24。 説明書の歳出補正予算事項別明細書は款・項・目と節区分・事業内訳（説明欄・財源内訳）を持ち、総括・款別表の金額列は補正前の額・補正額・計（千円）。議案の第1表（款・項のみ）・給与費明細書・繰越明許費調書・債務負担行為調書・特別区債調書・歳入は対象外。 歳出範囲（印字頁）: 一般会計 20-23（物理24-27）。号数は公式概要ページの題名と冊子表紙・議案号で確認。同PDFの補正概要版は款項目明細を持たず候補外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2023/supplementary-1.pdf",
+            "sha256": "dd6358bef47e837ce0e59bb2c531782fbd532c568826f3050ac37c3ab35649fa",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/045/354/r5_hosei_yosansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:32:00.256Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度補正予算（第2号） 東京都板橋区補正予算（冊子）",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/yosan/1041624/1045353/1046508.html",
+          "inspected_at": "2026-10-08T08:30:55+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/046/508/r5hoseiyosan2gou.pdf",
+              "sha256": "907a883b092cc87d449f31a7372cd65bd476834ed76616a5db293bee0bea83b4",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 24,
+                      "end": 27
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "議案第32号。一般会計のみ。歳出 総括20〜第3款福祉費22→給与費明細書24。 説明書の歳出補正予算事項別明細書は款・項・目と節区分・事業内訳（説明欄・財源内訳）を持ち、総括・款別表の金額列は補正前の額・補正額・計（千円）。議案の第1表（款・項のみ）・給与費明細書・繰越明許費調書・債務負担行為調書・特別区債調書・歳入は対象外。 歳出範囲（印字頁）: 一般会計 20-23（物理24-27）。号数は公式概要ページの題名と冊子表紙・議案号で確認。同PDFの補正概要版は款項目明細を持たず候補外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2023/supplementary-2.pdf",
+            "sha256": "907a883b092cc87d449f31a7372cd65bd476834ed76616a5db293bee0bea83b4",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/046/508/r5hoseiyosan2gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:32:05.911Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度補正予算（第3号） 東京都板橋区補正予算（冊子）",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/yosan/1041624/1045353/1046948.html",
+          "inspected_at": "2026-10-08T08:30:55+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/046/948/r5hosei3yosannsyo.pdf",
+              "sha256": "39a955d0400b95f6181b72b5ebb42a541e111f280794d97165184f614d0f86fb",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 28,
+                      "end": 39
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "議案第33号。一般会計のみ。歳出 総括24〜第8款教育費32、明細は最終印字35まで。印刷頁末尾を描画確認。 説明書の歳出補正予算事項別明細書は款・項・目と節区分・事業内訳（説明欄・財源内訳）を持ち、総括・款別表の金額列は補正前の額・補正額・計（千円）。議案の第1表（款・項のみ）・給与費明細書・繰越明許費調書・債務負担行為調書・特別区債調書・歳入は対象外。 歳出範囲（印字頁）: 一般会計 24-35（物理28-39）。号数は公式概要ページの題名と冊子表紙・議案号で確認。同PDFの補正概要版は款項目明細を持たず候補外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2023/supplementary-3.pdf",
+            "sha256": "39a955d0400b95f6181b72b5ebb42a541e111f280794d97165184f614d0f86fb",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/046/948/r5hosei3yosannsyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:32:11.209Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度補正予算（第4号） 東京都板橋区補正予算（冊子）",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/yosan/1041624/1045353/1048825.html",
+          "inspected_at": "2026-10-08T08:30:55+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/048/825/r5hosei4yosannsyo.pdf",
+              "sha256": "dfbe576a5f24a8734b389eb5f070489f0c79179f18c661eddf964ae9c398c053",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 30,
+                      "end": 51
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 66,
+                      "end": 69
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "議案第60号（一般）・第61号（介護第1号）。一般歳出 総括26〜第10款諸支出金46→給与費明細書48・債務負担行為調書52。介護歳出 総括62〜第3款諸支出金64、明細は最終印字65まで（両端描画確認）。 説明書の歳出補正予算事項別明細書は款・項・目と節区分・事業内訳（説明欄・財源内訳）を持ち、総括・款別表の金額列は補正前の額・補正額・計（千円）。議案の第1表（款・項のみ）・給与費明細書・繰越明許費調書・債務負担行為調書・特別区債調書・歳入は対象外。 歳出範囲（印字頁）: 一般会計 26-47（物理30-51）、 介護保険事業特別会計 62-65（物理66-69）。号数は公式概要ページの題名と冊子表紙・議案号で確認。同PDFの補正概要版は款項目明細を持たず候補外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2023/supplementary-4.pdf",
+            "sha256": "dfbe576a5f24a8734b389eb5f070489f0c79179f18c661eddf964ae9c398c053",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/048/825/r5hosei4yosannsyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:32:17.121Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度補正予算（第5号） 東京都板橋区補正予算（冊子）",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/yosan/1041624/1045353/1049921.html",
+          "inspected_at": "2026-10-08T08:30:55+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/049/921/r5hosei5yosansyo.pdf",
+              "sha256": "6ab33313beff0b0009dd8cf528d48f834e7ba2dd2d6df93cddf69895b6bbbaf9",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 24,
+                      "end": 29
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "議案第88号。一般会計のみ。歳出 総括20〜第8款教育費24、明細は最終印字25まで（末尾描画確認）。 説明書の歳出補正予算事項別明細書は款・項・目と節区分・事業内訳（説明欄・財源内訳）を持ち、総括・款別表の金額列は補正前の額・補正額・計（千円）。議案の第1表（款・項のみ）・給与費明細書・繰越明許費調書・債務負担行為調書・特別区債調書・歳入は対象外。 歳出範囲（印字頁）: 一般会計 20-25（物理24-29）。号数は公式概要ページの題名と冊子表紙・議案号で確認。同PDFの補正概要版は款項目明細を持たず候補外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2023/supplementary-5.pdf",
+            "sha256": "6ab33313beff0b0009dd8cf528d48f834e7ba2dd2d6df93cddf69895b6bbbaf9",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/049/921/r5hosei5yosansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:32:22.635Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度補正予算（第6号） 東京都板橋区補正予算（冊子）",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/yosan/1041624/1045353/1050395.html",
+          "inspected_at": "2026-10-08T08:30:55+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/050/395/r5hoseiyosansyo6.pdf",
+              "sha256": "36a06c8b5621d3ada184c5121c244bd9fb0e364f3be75afe3bf3260a0cd357f2",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 24,
+                      "end": 29
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "議案第6号。一般会計のみ。歳出 総括20〜第10款諸支出金22→繰越明許費調書26。 説明書の歳出補正予算事項別明細書は款・項・目と節区分・事業内訳（説明欄・財源内訳）を持ち、総括・款別表の金額列は補正前の額・補正額・計（千円）。議案の第1表（款・項のみ）・給与費明細書・繰越明許費調書・債務負担行為調書・特別区債調書・歳入は対象外。 歳出範囲（印字頁）: 一般会計 20-25（物理24-29）。号数は公式概要ページの題名と冊子表紙・議案号で確認。同PDFの補正概要版は款項目明細を持たず候補外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2023/supplementary-6.pdf",
+            "sha256": "36a06c8b5621d3ada184c5121c244bd9fb0e364f3be75afe3bf3260a0cd357f2",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/050/395/r5hoseiyosansyo6.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:32:30.353Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 7
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度補正予算（第7号） 東京都板橋区補正予算（冊子）",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/yosan/1041624/1045353/1051309.html",
+          "inspected_at": "2026-10-08T08:30:55+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/051/309/r5hosei7yosansyo.pdf",
+              "sha256": "597d8192fe0e6876cd8bf6cc59e346608147132b7642a5a2a0d052ed0188d3ef",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 128,
+                      "end": 275
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 300,
+                      "end": 317
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 340,
+                      "end": 357
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 376,
+                      "end": 383
+                    }
+                  ]
+                },
+                {
+                  "account": "東武東上線連続立体化事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 394,
+                      "end": 399
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "議案第7号（一般）・第8号（国保第1号）・第9号（介護第2号）・第10号（後期第1号）・第11号（東武第1号）の全会計補正。印字+6=物理。後期歳出は印字370-377（378-381は空白・東武扉・歳入扉で明細なし）、東武歳出は印字388-393（最終頁描画確認）。 説明書の歳出補正予算事項別明細書は款・項・目と節区分・事業内訳（説明欄・財源内訳）を持ち、総括・款別表の金額列は補正前の額・補正額・計（千円）。議案の第1表（款・項のみ）・給与費明細書・繰越明許費調書・債務負担行為調書・特別区債調書・歳入は対象外。 歳出範囲（印字頁）: 一般会計 122-269（物理128-275）、 国民健康保険事業特別会計 294-311（物理300-317）、 介護保険事業特別会計 334-351（物理340-357）、 後期高齢者医療事業特別会計 370-377（物理376-383）、 東武東上線連続立体化事業特別会計 388-393（物理394-399）。号数は公式概要ページの題名と冊子表紙・議案号で確認。同PDFの補正概要版は款項目明細を持たず候補外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2023/supplementary-7.pdf",
+            "sha256": "597d8192fe0e6876cd8bf6cc59e346608147132b7642a5a2a0d052ed0188d3ef",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/051/309/r5hosei7yosansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:32:40.551Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度補正予算（第1号） 東京都板橋区補正予算（冊子）",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/yosan/1049183/1052557/1052558.html",
+          "inspected_at": "2026-10-08T08:30:55+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/052/558/r6hosei1yosansyo.pdf",
+              "sha256": "6d1d9afdad08d776fb68504bc126e426caab07f5f49587d08e7aa230c640d01b",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 24,
+                      "end": 27
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "議案第40号。一般会計のみ。歳出 総括20〜第3款福祉費22→給与費明細書24。 説明書の歳出補正予算事項別明細書は款・項・目と節区分・事業内訳（説明欄・財源内訳）を持ち、総括・款別表の金額列は補正前の額・補正額・計（千円）。議案の第1表（款・項のみ）・給与費明細書・繰越明許費調書・債務負担行為調書・特別区債調書・歳入は対象外。 歳出範囲（印字頁）: 一般会計 20-23（物理24-27）。号数は公式概要ページの題名と冊子表紙・議案号で確認。同PDFの補正概要版は款項目明細を持たず候補外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2024/supplementary-1.pdf",
+            "sha256": "6d1d9afdad08d776fb68504bc126e426caab07f5f49587d08e7aa230c640d01b",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/052/558/r6hosei1yosansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:32:45.513Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度補正予算（第2号） 東京都板橋区補正予算（冊子）",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/yosan/1049183/1052557/1053194.html",
+          "inspected_at": "2026-10-08T08:30:55+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/053/194/r6hosei2yosansyo.pdf",
+              "sha256": "15c9ae5a1c57f6980ff68fa1a855a907e8abe7b5a3f39aee3f78ccbb35bb0eba",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 26,
+                      "end": 33
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "議案（号数は本文）。一般会計のみ。文字層が全域でToUnicode未対応のため目次・総括・明細を描画確認。歳出 総括22〜款明細29→債務負担行為30（両端描画確認）。 説明書の歳出補正予算事項別明細書は款・項・目と節区分・事業内訳（説明欄・財源内訳）を持ち、総括・款別表の金額列は補正前の額・補正額・計（千円）。議案の第1表（款・項のみ）・給与費明細書・繰越明許費調書・債務負担行為調書・特別区債調書・歳入は対象外。 歳出範囲（印字頁）: 一般会計 22-29（物理26-33）。号数は公式概要ページの題名と冊子表紙・議案号で確認。同PDFの補正概要版は款項目明細を持たず候補外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2024/supplementary-2.pdf",
+            "sha256": "15c9ae5a1c57f6980ff68fa1a855a907e8abe7b5a3f39aee3f78ccbb35bb0eba",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/053/194/r6hosei2yosansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:32:53.545Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度補正予算（第3号） 東京都板橋区補正予算（冊子）",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/yosan/1049183/1052557/1054873.html",
+          "inspected_at": "2026-10-08T08:30:55+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/054/873/r6hosei3yosansyo.pdf",
+              "sha256": "536189bb737c3d3cf6b3254800e91f0b90d7745f36ee0e5fff65ac565529f70a",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 30,
+                      "end": 47
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 58,
+                      "end": 61
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "議案第52号（一般）・第53号（介護第1号）。一般歳出 総括26〜第10款諸支出金42→債務負担行為調書44。介護歳出 総括54〜第3款諸支出金56、明細は最終印字57まで（両端描画確認）。 説明書の歳出補正予算事項別明細書は款・項・目と節区分・事業内訳（説明欄・財源内訳）を持ち、総括・款別表の金額列は補正前の額・補正額・計（千円）。議案の第1表（款・項のみ）・給与費明細書・繰越明許費調書・債務負担行為調書・特別区債調書・歳入は対象外。 歳出範囲（印字頁）: 一般会計 26-43（物理30-47）、 介護保険事業特別会計 54-57（物理58-61）。号数は公式概要ページの題名と冊子表紙・議案号で確認。同PDFの補正概要版は款項目明細を持たず候補外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2024/supplementary-3.pdf",
+            "sha256": "536189bb737c3d3cf6b3254800e91f0b90d7745f36ee0e5fff65ac565529f70a",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/054/873/r6hosei3yosansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:33:01.207Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度補正予算（第4号） 東京都板橋区補正予算（冊子）",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/yosan/1049183/1052557/1054874.html",
+          "inspected_at": "2026-10-08T08:30:55+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/054/874/r6hosei4yosansyo.pdf",
+              "sha256": "9d2133a61be3eca33baffcc7a2bca240f1f9e6cf5a88d536970b0d74c153b595",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 24,
+                      "end": 27
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "議案第86号。一般会計のみ。歳出 総括20〜第2款総務費22→給与費明細書24。 説明書の歳出補正予算事項別明細書は款・項・目と節区分・事業内訳（説明欄・財源内訳）を持ち、総括・款別表の金額列は補正前の額・補正額・計（千円）。議案の第1表（款・項のみ）・給与費明細書・繰越明許費調書・債務負担行為調書・特別区債調書・歳入は対象外。 歳出範囲（印字頁）: 一般会計 20-23（物理24-27）。号数は公式概要ページの題名と冊子表紙・議案号で確認。同PDFの補正概要版は款項目明細を持たず候補外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2024/supplementary-4.pdf",
+            "sha256": "9d2133a61be3eca33baffcc7a2bca240f1f9e6cf5a88d536970b0d74c153b595",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/054/874/r6hosei4yosansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:33:07.919Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度補正予算（第5号） 東京都板橋区補正予算（冊子）",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/yosan/1049183/1052557/1055601.html",
+          "inspected_at": "2026-10-08T08:30:55+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/055/601/r6hosei5yosansyo.pdf",
+              "sha256": "76e478aebb058212ec24ea726c1394717b13535885e9600b7482cb6321251760",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 24,
+                      "end": 27
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "議案第108号。一般会計のみ。歳出 総括20〜第3款福祉費22、明細は最終印字23まで（末尾描画確認）。 説明書の歳出補正予算事項別明細書は款・項・目と節区分・事業内訳（説明欄・財源内訳）を持ち、総括・款別表の金額列は補正前の額・補正額・計（千円）。議案の第1表（款・項のみ）・給与費明細書・繰越明許費調書・債務負担行為調書・特別区債調書・歳入は対象外。 歳出範囲（印字頁）: 一般会計 20-23（物理24-27）。号数は公式概要ページの題名と冊子表紙・議案号で確認。同PDFの補正概要版は款項目明細を持たず候補外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2024/supplementary-5.pdf",
+            "sha256": "76e478aebb058212ec24ea726c1394717b13535885e9600b7482cb6321251760",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/055/601/r6hosei5yosansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:33:15.040Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度補正予算（第6号） 東京都板橋区補正予算（冊子）",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/yosan/1049183/1052557/1056382.html",
+          "inspected_at": "2026-10-08T08:30:55+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/056/382/r6hosei6yosansyo.pdf",
+              "sha256": "ce8922f4165a3121c81f45b65a64fc70fc36980a3e6f53ac24479f616638728f",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 24,
+                      "end": 31
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "議案第6号。一般会計のみ。歳出 総括20〜第10款諸支出金26、明細は最終印字27まで（末尾描画確認）。 説明書の歳出補正予算事項別明細書は款・項・目と節区分・事業内訳（説明欄・財源内訳）を持ち、総括・款別表の金額列は補正前の額・補正額・計（千円）。議案の第1表（款・項のみ）・給与費明細書・繰越明許費調書・債務負担行為調書・特別区債調書・歳入は対象外。 歳出範囲（印字頁）: 一般会計 20-27（物理24-31）。号数は公式概要ページの題名と冊子表紙・議案号で確認。同PDFの補正概要版は款項目明細を持たず候補外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2024/supplementary-6.pdf",
+            "sha256": "ce8922f4165a3121c81f45b65a64fc70fc36980a3e6f53ac24479f616638728f",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/056/382/r6hosei6yosansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:33:21.769Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 7
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度補正予算（第7号） 東京都板橋区補正予算（冊子）",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/yosan/1049183/1052557/1056455.html",
+          "inspected_at": "2026-10-08T08:30:55+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/056/455/r6hosei7yosansyo.pdf",
+              "sha256": "d624674d8dc9e9fe007efc2feb58425d523c12b90c253336792bacf3223db239",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 138,
+                      "end": 283
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 310,
+                      "end": 327
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 348,
+                      "end": 365
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 384,
+                      "end": 391
+                    }
+                  ]
+                },
+                {
+                  "account": "東武東上線連続立体化事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 402,
+                      "end": 407
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "議案第7号（一般）・第8号（国保第1号）・第9号（介護第2号）・第10号（後期第1号）・第11号（東武第1号）の全会計補正。印字+6=物理。後期歳出は印字378-385（386-389は空白・東武扉・歳入扉）、東武歳出は印字396-401（両端描画確認）。 説明書の歳出補正予算事項別明細書は款・項・目と節区分・事業内訳（説明欄・財源内訳）を持ち、総括・款別表の金額列は補正前の額・補正額・計（千円）。議案の第1表（款・項のみ）・給与費明細書・繰越明許費調書・債務負担行為調書・特別区債調書・歳入は対象外。 歳出範囲（印字頁）: 一般会計 132-277（物理138-283）、 国民健康保険事業特別会計 304-321（物理310-327）、 介護保険事業特別会計 342-359（物理348-365）、 後期高齢者医療事業特別会計 378-385（物理384-391）、 東武東上線連続立体化事業特別会計 396-401（物理402-407）。号数は公式概要ページの題名と冊子表紙・議案号で確認。同PDFの補正概要版は款項目明細を持たず候補外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2024/supplementary-7.pdf",
+            "sha256": "d624674d8dc9e9fe007efc2feb58425d523c12b90c253336792bacf3223db239",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/056/455/r6hosei7yosansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:33:35.977Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度補正予算（第1号） 東京都板橋区補正予算（冊子）",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/yosan/1054671/1058421/1058430.html",
+          "inspected_at": "2026-10-08T08:30:55+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/058/430/r7hosei1yosansyo.pdf",
+              "sha256": "1f9c60cb0ec8647f535bcceb21d33d51784e3d5a807d9666d48c14e06cf45e79",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 26,
+                      "end": 33
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "議案第47号。一般会計のみ。歳出 総括22〜第8款教育費28、明細は最終印字29まで（末尾描画確認）。 説明書の歳出補正予算事項別明細書は款・項・目と節区分・事業内訳（説明欄・財源内訳）を持ち、総括・款別表の金額列は補正前の額・補正額・計（千円）。議案の第1表（款・項のみ）・給与費明細書・繰越明許費調書・債務負担行為調書・特別区債調書・歳入は対象外。 歳出範囲（印字頁）: 一般会計 22-29（物理26-33）。号数は公式概要ページの題名と冊子表紙・議案号で確認。同PDFの補正概要版は款項目明細を持たず候補外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2025/supplementary-1.pdf",
+            "sha256": "1f9c60cb0ec8647f535bcceb21d33d51784e3d5a807d9666d48c14e06cf45e79",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/058/430/r7hosei1yosansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:33:41.677Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度補正予算（第2号） 東京都板橋区補正予算（冊子）",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/yosan/1054671/1058421/1059584.html",
+          "inspected_at": "2026-10-08T08:30:55+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/059/584/r7hosei2yosansyo.pdf",
+              "sha256": "6eec0462d57baafbba974617180d02d93726616dc68d3c295393c10afa2cf781",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 30,
+                      "end": 45
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 60,
+                      "end": 63
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "議案第75号（一般）・第76号（介護第1号）。一般歳出 総括26〜第10款諸支出金40→給与費明細書42・債務負担行為調書45。介護歳出 総括56〜第3款諸支出金58、明細は最終印字59まで（両端描画確認）。 説明書の歳出補正予算事項別明細書は款・項・目と節区分・事業内訳（説明欄・財源内訳）を持ち、総括・款別表の金額列は補正前の額・補正額・計（千円）。議案の第1表（款・項のみ）・給与費明細書・繰越明許費調書・債務負担行為調書・特別区債調書・歳入は対象外。 歳出範囲（印字頁）: 一般会計 26-41（物理30-45）、 介護保険事業特別会計 56-59（物理60-63）。号数は公式概要ページの題名と冊子表紙・議案号で確認。同PDFの補正概要版は款項目明細を持たず候補外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2025/supplementary-2.pdf",
+            "sha256": "6eec0462d57baafbba974617180d02d93726616dc68d3c295393c10afa2cf781",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/059/584/r7hosei2yosansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:33:47.010Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度補正予算（第3号） 東京都板橋区補正予算（冊子）",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/yosan/1054671/1058421/1060763.html",
+          "inspected_at": "2026-10-08T08:30:55+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/060/763/r7hosei3yosansyo.pdf",
+              "sha256": "0297ff8954235da9d8b21e7876ca003ee23c61d50eb6e17b5a416ba7589a71ce",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 24,
+                      "end": 31
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "議案第116号。一般会計のみ。歳出 総括20〜第8款教育費26→給与費明細書28・繰越明許費調書32。 説明書の歳出補正予算事項別明細書は款・項・目と節区分・事業内訳（説明欄・財源内訳）を持ち、総括・款別表の金額列は補正前の額・補正額・計（千円）。議案の第1表（款・項のみ）・給与費明細書・繰越明許費調書・債務負担行為調書・特別区債調書・歳入は対象外。 歳出範囲（印字頁）: 一般会計 20-27（物理24-31）。号数は公式概要ページの題名と冊子表紙・議案号で確認。同PDFの補正概要版は款項目明細を持たず候補外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2025/supplementary-3.pdf",
+            "sha256": "0297ff8954235da9d8b21e7876ca003ee23c61d50eb6e17b5a416ba7589a71ce",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/060/763/r7hosei3yosansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:33:52.138Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度補正予算（第4号） 東京都板橋区補正予算（冊子）",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/yosan/1054671/1058421/1061909.html",
+          "inspected_at": "2026-10-08T08:30:55+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/061/909/r7hosei4yosansyo.pdf",
+              "sha256": "45ac16c30e162f7b82bd45d7984d1132bab72160c2e2a7cc845ac7606b53cd1c",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 24,
+                      "end": 31
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "議案第6号。一般会計のみ。歳出 総括20〜第8款教育費24→繰越明許費調書28。文字層可読。 説明書の歳出補正予算事項別明細書は款・項・目と節区分・事業内訳（説明欄・財源内訳）を持ち、総括・款別表の金額列は補正前の額・補正額・計（千円）。議案の第1表（款・項のみ）・給与費明細書・繰越明許費調書・債務負担行為調書・特別区債調書・歳入は対象外。 歳出範囲（印字頁）: 一般会計 20-27（物理24-31）。号数は公式概要ページの題名と冊子表紙・議案号で確認。同PDFの補正概要版は款項目明細を持たず候補外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2025/supplementary-4.pdf",
+            "sha256": "45ac16c30e162f7b82bd45d7984d1132bab72160c2e2a7cc845ac7606b53cd1c",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/061/909/r7hosei4yosansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:33:56.384Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度補正予算（第5号） 東京都板橋区補正予算（冊子）",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/yosan/1054671/1058421/1062054.html",
+          "inspected_at": "2026-10-08T08:30:55+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/062/054/r7hosei5yosansyo.pdf",
+              "sha256": "84adadf407963256c2add3c191296bde4428585d152bbf8fa0ca62e55e0075b7",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 138,
+                      "end": 287
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 312,
+                      "end": 327
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 350,
+                      "end": 367
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 384,
+                      "end": 389
+                    }
+                  ]
+                },
+                {
+                  "account": "東武東上線連続立体化事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 402,
+                      "end": 407
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "議案第7号（一般）・第8号（国保第1号）・第9号（介護第2号）・第10号（後期第1号）・第11号（東武第1号）の全会計補正。印字+6=物理。後期歳出は印字378-383（384-387は空白・東武扉・歳入扉）、東武歳出は印字396-401（両端描画確認）。 説明書の歳出補正予算事項別明細書は款・項・目と節区分・事業内訳（説明欄・財源内訳）を持ち、総括・款別表の金額列は補正前の額・補正額・計（千円）。議案の第1表（款・項のみ）・給与費明細書・繰越明許費調書・債務負担行為調書・特別区債調書・歳入は対象外。 歳出範囲（印字頁）: 一般会計 132-281（物理138-287）、 国民健康保険事業特別会計 306-321（物理312-327）、 介護保険事業特別会計 344-361（物理350-367）、 後期高齢者医療事業特別会計 378-383（物理384-389）、 東武東上線連続立体化事業特別会計 396-401（物理402-407）。号数は公式概要ページの題名と冊子表紙・議案号で確認。同PDFの補正概要版は款項目明細を持たず候補外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2025/supplementary-5.pdf",
+            "sha256": "84adadf407963256c2add3c191296bde4428585d152bbf8fa0ca62e55e0075b7",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/062/054/r7hosei5yosansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:34:13.488Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131199",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度補正予算（第1号） 東京都板橋区補正予算（冊子）",
+          "landing_url": "https://www.city.itabashi.tokyo.jp/kusei/zaisei/yosan/1059985/1064257/1064263.html",
+          "inspected_at": "2026-10-08T08:30:55+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/064/263/r8hosei1yosansyo.pdf",
+              "sha256": "f8c88dd0b8c7927a3320c14af521fd495c155fdad817a4aa82e18868d8eedf2e",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 28,
+                      "end": 35
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "議案第40号。一般会計のみ。歳出 総括24〜第8款教育費28→給与費明細書32・債務負担行為調書36（両端描画確認）。文字層可読。 説明書の歳出補正予算事項別明細書は款・項・目と節区分・事業内訳（説明欄・財源内訳）を持ち、総括・款別表の金額列は補正前の額・補正額・計（千円）。議案の第1表（款・項のみ）・給与費明細書・繰越明許費調書・債務負担行為調書・特別区債調書・歳入は対象外。 歳出範囲（印字頁）: 一般会計 24-31（物理28-35）。号数は公式概要ページの題名と冊子表紙・議案号で確認。同PDFの補正概要版は款項目明細を持たず候補外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131199/2026/supplementary-1.pdf",
+            "sha256": "f8c88dd0b8c7927a3320c14af521fd495c155fdad817a4aa82e18868d8eedf2e",
+            "final_url": "https://www.city.itabashi.tokyo.jp/_res/projects/default_project/_page_/001/064/263/r8hosei1yosansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:34:19.544Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

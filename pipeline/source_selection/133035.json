@@ -2,6 +2,1117 @@
   "jurisdiction": "133035",
   "name": "瑞穂町",
   "official_url": "https://www.town.mizuho.tokyo.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "133035",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度瑞穂町一般会計当初予算書（歳出3分冊）",
+          "landing_url": "https://www.town.mizuho.tokyo.jp/tyosei/003/012/001/p001153.html",
+          "inspected_at": "2026-10-07T16:25:30+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.mizuho.tokyo.jp/tyosei/003/012/001/p001153_d/fil/8yosan2.pdf",
+              "sha256": "ecd7da3a75ac2fdab32b65e6141414c1e83a3e33fd3817236bba24038313fb02",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 72
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.town.mizuho.tokyo.jp/tyosei/003/012/001/p001153_d/fil/8yosan3.pdf",
+              "sha256": "9ad56e69a7e4fef951e5ee99b608bc51b085403025292c56711845a9e290095d",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 43
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.town.mizuho.tokyo.jp/tyosei/003/012/001/p001153_d/fil/8yosan4.pdf",
+              "sha256": "b46dfe5b725710be7085cfcacfcb524e0308bb92e1559a31c61bf9824fe426f0",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 49
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度一般会計当初予算書は歳出が3分冊（8yosan2=議会費〜民生費 印字40–111頁、8yosan3=衛生費〜土木費 印字112–155頁、8yosan4=消防費〜予備費 印字155–203頁）。各頁は款・項・目（事業）名と本年度予算額・前年度額・比較・財源内訳・節別金額が同一明細に対応し、単位は千円。いずれも画像PDF。8yosan3末頁（印字155=物理44）は8yosan4物理1頁と重複するため8yosan3は物理1–43を範囲とする。8yosan4は印字204頁（物理50）以降が給与費明細書・債務負担行為調書・地方債調書のため、歳出事項別明細書の末頁（印字203=物理49）までを範囲とする。歳入冊（8yosan1.pdf）と説明資料（8siryou.pdf）は対象外。一般会計以外の当初予算（特別会計・下水道事業会計）は、確認した掲載先（令和8年度ページ・当初予算書一覧ページ）でリンクを確認できず、掲載の有無は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133035/2026/initial-3.pdf",
+            "sha256": "ecd7da3a75ac2fdab32b65e6141414c1e83a3e33fd3817236bba24038313fb02",
+            "final_url": "https://www.town.mizuho.tokyo.jp/tyosei/003/012/001/p001153_d/fil/8yosan2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/133035/2026/initial-1.pdf",
+            "sha256": "9ad56e69a7e4fef951e5ee99b608bc51b085403025292c56711845a9e290095d",
+            "final_url": "https://www.town.mizuho.tokyo.jp/tyosei/003/012/001/p001153_d/fil/8yosan3.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/133035/2026/initial-2.pdf",
+            "sha256": "b46dfe5b725710be7085cfcacfcb524e0308bb92e1559a31c61bf9824fe426f0",
+            "final_url": "https://www.town.mizuho.tokyo.jp/tyosei/003/012/001/p001153_d/fil/8yosan4.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:13:02.771Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133035",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度瑞穂町決算書（一般会計・特別会計）および令和7年度下水道事業会計決算書",
+          "landing_url": "https://www.town.mizuho.tokyo.jp/tyosei/002/012/p001152.html",
+          "inspected_at": "2026-10-07T16:25:30+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.mizuho.tokyo.jp/tyosei/002/012/p001152_d/fil/7kessansyo.pdf",
+              "sha256": "7fb07d743dd9412e0b23c31b3f995737b86f254a9d3ce4878c9bbb4885c8fa03",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 13
+                    },
+                    {
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "start": 41,
+                      "end": 126
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 10
+                    },
+                    {
+                      "start": 16,
+                      "end": 17
+                    },
+                    {
+                      "start": 19,
+                      "end": 40
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 133,
+                      "end": 134
+                    },
+                    {
+                      "start": 137,
+                      "end": 137
+                    },
+                    {
+                      "start": 143,
+                      "end": 148
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 132,
+                      "end": 132
+                    },
+                    {
+                      "start": 136,
+                      "end": 136
+                    },
+                    {
+                      "start": 138,
+                      "end": 142
+                    }
+                  ]
+                },
+                {
+                  "account": "福生都市計画瑞穂町箱根ケ崎駅西土地区画整理事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 155,
+                      "end": 155
+                    },
+                    {
+                      "start": 159,
+                      "end": 159
+                    },
+                    {
+                      "start": 162,
+                      "end": 163
+                    }
+                  ]
+                },
+                {
+                  "account": "福生都市計画瑞穂町箱根ケ崎駅西土地区画整理事業特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 154,
+                      "end": 154
+                    },
+                    {
+                      "start": 158,
+                      "end": 158
+                    },
+                    {
+                      "start": 160,
+                      "end": 161
+                    }
+                  ]
+                },
+                {
+                  "account": "瑞穂町介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 170,
+                      "end": 170
+                    },
+                    {
+                      "start": 173,
+                      "end": 173
+                    },
+                    {
+                      "start": 180,
+                      "end": 188
+                    }
+                  ]
+                },
+                {
+                  "account": "瑞穂町介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 168,
+                      "end": 169
+                    },
+                    {
+                      "start": 172,
+                      "end": 172
+                    },
+                    {
+                      "start": 174,
+                      "end": 179
+                    }
+                  ]
+                },
+                {
+                  "account": "瑞穂町後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 195,
+                      "end": 195
+                    },
+                    {
+                      "start": 199,
+                      "end": 199
+                    },
+                    {
+                      "start": 203,
+                      "end": 205
+                    }
+                  ]
+                },
+                {
+                  "account": "瑞穂町後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 194,
+                      "end": 194
+                    },
+                    {
+                      "start": 198,
+                      "end": 198
+                    },
+                    {
+                      "start": 200,
+                      "end": 202
+                    }
+                  ]
+                },
+                {
+                  "account": "瑞穂町殿ケ谷財産区特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 211,
+                      "end": 211
+                    },
+                    {
+                      "start": 215,
+                      "end": 215
+                    },
+                    {
+                      "start": 217,
+                      "end": 217
+                    }
+                  ]
+                },
+                {
+                  "account": "瑞穂町殿ケ谷財産区特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 210,
+                      "end": 210
+                    },
+                    {
+                      "start": 214,
+                      "end": 214
+                    },
+                    {
+                      "start": 216,
+                      "end": 216
+                    }
+                  ]
+                },
+                {
+                  "account": "瑞穂町石畑財産区特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 223,
+                      "end": 223
+                    },
+                    {
+                      "start": 227,
+                      "end": 227
+                    },
+                    {
+                      "start": 230,
+                      "end": 231
+                    }
+                  ]
+                },
+                {
+                  "account": "瑞穂町石畑財産区特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 222,
+                      "end": 222
+                    },
+                    {
+                      "start": 226,
+                      "end": 226
+                    },
+                    {
+                      "start": 228,
+                      "end": 229
+                    }
+                  ]
+                },
+                {
+                  "account": "瑞穂町箱根ケ崎財産区特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 237,
+                      "end": 237
+                    },
+                    {
+                      "start": 241,
+                      "end": 241
+                    },
+                    {
+                      "start": 243,
+                      "end": 244
+                    }
+                  ]
+                },
+                {
+                  "account": "瑞穂町箱根ケ崎財産区特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 236,
+                      "end": 236
+                    },
+                    {
+                      "start": 240,
+                      "end": 240
+                    },
+                    {
+                      "start": 242,
+                      "end": 242
+                    }
+                  ]
+                },
+                {
+                  "account": "瑞穂町長岡財産区特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 251,
+                      "end": 251
+                    },
+                    {
+                      "start": 255,
+                      "end": 255
+                    },
+                    {
+                      "start": 257,
+                      "end": 257
+                    }
+                  ]
+                },
+                {
+                  "account": "瑞穂町長岡財産区特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 250,
+                      "end": 250
+                    },
+                    {
+                      "start": 254,
+                      "end": 254
+                    },
+                    {
+                      "start": 256,
+                      "end": 256
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.town.mizuho.tokyo.jp/tyosei/003/006/p008541_d/fil/7gesui.pdf",
+              "sha256": "bb8e5148003d2edee12172ea4daea71dec7dbad079663dbd78441a60f63c8b9f",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 31,
+                      "end": 34
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 29,
+                      "end": 30
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "最新の公表済み決算は令和7年度。7kessansyo.pdf（270頁・文字PDF）は一般会計と8特別会計（国民健康保険・福生都市計画瑞穂町箱根ケ崎駅西土地区画整理事業・介護保険・後期高齢者医療・殿ケ谷財産区・石畑財産区・箱根ケ崎財産区・長岡財産区）を収録し、各会計とも歳入歳出決算書（款項）・決算総括表（款）・歳入歳出決算事項別明細書（款項目＋節、単位円）で名称と予算現額・支出済額が同一明細に対応。7gesui.pdf（39頁・画像PDF）は下水道事業会計で、収益費用明細書（印字27–30頁=物理31–34）が款項目・節・金額（円・税抜）の費用明細。資本的支出明細書は目次・本文ともに存在せず、固定資産明細書（印字31=物理35）は資産種類別の増減・残高の表で、支出決算額とは確認できないため範囲外。企業債明細書（印字32–35=物理36–39）は借入残高の明細で歳出明細ではなく範囲外。財産に関する調書・実質収支調書・損益計算書・CF計算書・貸借対照表・注記も範囲外。別冊の掲載なし。 監督側の確認: 固定資産明細書(物理35)の資産種類別当年度増加額は、資本的支出の決算額と確認できないため歳出scopeから除外。資本的支出明細の不足は保持し、資産増加や企業債残高を支出額へ読み替えない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133035/2025/settlement-1.pdf",
+            "sha256": "7fb07d743dd9412e0b23c31b3f995737b86f254a9d3ce4878c9bbb4885c8fa03",
+            "final_url": "https://www.town.mizuho.tokyo.jp/tyosei/002/012/p001152_d/fil/7kessansyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/133035/2025/settlement-2.pdf",
+            "sha256": "bb8e5148003d2edee12172ea4daea71dec7dbad079663dbd78441a60f63c8b9f",
+            "final_url": "https://www.town.mizuho.tokyo.jp/tyosei/003/006/p008541_d/fil/7gesui.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:13:10.902Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133035",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度瑞穂町決算書（一般会計・特別会計）および令和6年度下水道事業会計決算書",
+          "landing_url": "https://www.town.mizuho.tokyo.jp/tyosei/002/012/p001152.html",
+          "inspected_at": "2026-10-08T01:05:47.766017+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.mizuho.tokyo.jp/tyosei/002/012/p001152_d/fil/6kessansyo.pdf",
+              "sha256": "d8f144c44cb99a2e091a5da57df09e23157918ca3ce017a44d31969b06d8bb37",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 13,
+                      "end": 16
+                    },
+                    {
+                      "start": 21,
+                      "end": 22
+                    },
+                    {
+                      "start": 53,
+                      "end": 166
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 173,
+                      "end": 174
+                    },
+                    {
+                      "start": 181,
+                      "end": 182
+                    },
+                    {
+                      "start": 189,
+                      "end": 198
+                    }
+                  ]
+                },
+                {
+                  "account": "福生都市計画瑞穂町箱根ケ崎駅西土地区画整理事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 205,
+                      "end": 206
+                    },
+                    {
+                      "start": 211,
+                      "end": 212
+                    },
+                    {
+                      "start": 217,
+                      "end": 220
+                    }
+                  ]
+                },
+                {
+                  "account": "瑞穂町介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 227,
+                      "end": 228
+                    },
+                    {
+                      "start": 233,
+                      "end": 234
+                    },
+                    {
+                      "start": 243,
+                      "end": 256
+                    }
+                  ]
+                },
+                {
+                  "account": "瑞穂町後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 263,
+                      "end": 264
+                    },
+                    {
+                      "start": 269,
+                      "end": 270
+                    },
+                    {
+                      "start": 275,
+                      "end": 278
+                    }
+                  ]
+                },
+                {
+                  "account": "瑞穂町殿ケ谷財産区特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 285,
+                      "end": 286
+                    },
+                    {
+                      "start": 291,
+                      "end": 292
+                    },
+                    {
+                      "start": 295,
+                      "end": 296
+                    }
+                  ]
+                },
+                {
+                  "account": "瑞穂町石畑財産区特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 303,
+                      "end": 304
+                    },
+                    {
+                      "start": 309,
+                      "end": 310
+                    },
+                    {
+                      "start": 313,
+                      "end": 316
+                    }
+                  ]
+                },
+                {
+                  "account": "瑞穂町箱根ケ崎財産区特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 323,
+                      "end": 324
+                    },
+                    {
+                      "start": 329,
+                      "end": 330
+                    },
+                    {
+                      "start": 333,
+                      "end": 334
+                    }
+                  ]
+                },
+                {
+                  "account": "瑞穂町長岡財産区特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 341,
+                      "end": 342
+                    },
+                    {
+                      "start": 347,
+                      "end": 348
+                    },
+                    {
+                      "start": 351,
+                      "end": 352
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.town.mizuho.tokyo.jp/tyosei/003/006/p008541_d/fil/6gesui.pdf",
+              "sha256": "e21ca17bac9c109c660a002da99208aa05fd5d1c3759f779ebbe388b6117228a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 26,
+                      "end": 28
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度（2024年度）決算は令和7年度と同じ公式掲載先（決算書一覧 p001152・下水道決算書一覧 p008541）で公表。6kessansyo.pdf（363頁・文字PDF）は一般会計と8特別会計（国民健康保険・福生都市計画瑞穂町箱根ケ崎駅西土地区画整理事業・介護保険・後期高齢者医療・殿ケ谷財産区・石畑財産区・箱根ケ崎財産区・長岡財産区）を収録し、各会計とも歳入歳出決算書（款項）・歳入歳出決算総括表（款）・歳入歳出決算事項別明細書（款項目＋節）の構成で、名称と予算現額・支出済額（翌年度繰越額・不用額・備考あり）が同一明細に対応し、単位は円。物理頁は各会計とも歳出決算書・歳出総括表・歳出事項別明細の3区間を歳出範囲とし、差引残額・実質収支に関する調書・財産に関する調書（物理354–363）は範囲外。6gesui.pdf（35頁・文字PDF）は下水道事業会計で、収益費用明細書の支出（物理26–28、単位円・税抜）が款項目・節・金額の費用明細。資本的支出明細書は目次・本文ともに存在しない。事業報告書（物理17–23）を点検したが、建設・保存工事の概況（物理19–20、130万円超）は工事費（契約額・税込）の表で当年度支出決算額の明細ではなく、資本的支出は総括額（資本的支出2,012,811,158円・建設改良費1,886,252,034円・企業債償還金126,559,124円）のみで款項集計のため明細不足を記録する。固定資産明細書（物理29）は資産種類別の増減・残高表、企業債明細書（物理30–33）は借入残高の明細でいずれも支出決算額とは確認できないため範囲外。損益計算書・CF計算書・貸借対照表・注記・事業報告書も範囲外。歳入は同冊内に存在するが今回の対象は歳出のみで範囲は未確認。不足: 下水道の資本的支出の明細（目・事業別の当年度支出額）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133035/2024/settlement-1.pdf",
+            "sha256": "d8f144c44cb99a2e091a5da57df09e23157918ca3ce017a44d31969b06d8bb37",
+            "final_url": "https://www.town.mizuho.tokyo.jp/tyosei/002/012/p001152_d/fil/6kessansyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/133035/2024/settlement-2.pdf",
+            "sha256": "e21ca17bac9c109c660a002da99208aa05fd5d1c3759f779ebbe388b6117228a",
+            "final_url": "https://www.town.mizuho.tokyo.jp/tyosei/003/006/p008541_d/fil/6gesui.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T01:05:58.861Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133035",
+        "fiscal_year": 2025,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度瑞穂町一般会計予算書",
+          "landing_url": "https://www.town.mizuho.tokyo.jp/tyosei/003/012/001/index.html",
+          "inspected_at": "2026-10-08T07:58:39Z",
+          "files": [
+            {
+              "download_url": "https://www.town.mizuho.tokyo.jp/tyosei/003/012/001/p001153_d/fil/7yosan.pdf",
+              "sha256": "22eac7b82c2b4e4bd9b93c16790e3f82ac672f61d48474fb403e32eb81f916f0",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 11
+                    },
+                    {
+                      "start": 16,
+                      "end": 16
+                    },
+                    {
+                      "start": 42,
+                      "end": 208
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度一般会計当初予算書の単冊（222頁・画像PDF）。第1表歳出（物理9–11、款・項・金額、歳出合計17,123,000千円）、1総括歳出（物理16、款・本年度予算額・前年度・比較・財源内訳）、3歳出明細書（物理42–208、(款)1議会費169,797千円（前年度160,873千円）に始まり(款)12予備費25,876千円で終わる。目（事業）・本年度・前年度・比較・財源内訳（国都支出金・地方債・その他・一般財源）・節・説明が同一明細に対応し、単位は千円）。物理209以降は給与費明細書のため範囲外。歳入・第2表・第3表・説明書区分も範囲外。一般会計以外の当初予算（特別会計・下水道事業会計）は、確認した掲載先（一般会計当初予算書一覧001/index.html、各年度ページ017/018/019）にリンクがなく、掲載の有無は未確認のため不足として残す。当初予算書一覧には現在令和8年度分（p001153）のみ掲載され、7yosan.pdfは同p001153_d/fil/配下に残存する直接URLで取得した。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133035/2025/initial.pdf",
+            "sha256": "22eac7b82c2b4e4bd9b93c16790e3f82ac672f61d48474fb403e32eb81f916f0",
+            "final_url": "https://www.town.mizuho.tokyo.jp/tyosei/003/012/001/p001153_d/fil/7yosan.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:01:43.845Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133035",
+        "fiscal_year": 2024,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度瑞穂町一般会計予算書",
+          "landing_url": "https://www.town.mizuho.tokyo.jp/tyosei/003/012/001/index.html",
+          "inspected_at": "2026-10-08T07:58:39Z",
+          "files": [
+            {
+              "download_url": "https://www.town.mizuho.tokyo.jp/tyosei/003/012/001/p001153_d/fil/6yosan.pdf",
+              "sha256": "cd62b48eb5d8384202845f95438e345de8a87494bbe72987515dce66d265a875",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 7
+                    },
+                    {
+                      "start": 13,
+                      "end": 13
+                    },
+                    {
+                      "start": 48,
+                      "end": 191
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度一般会計当初予算書の単冊（208頁。フォント埋め込みはあるが本文の文字抽出ができず輪郭線描画のため画像読み取りが必要でscan扱い）。第1表歳出（物理6–7、款・項・金額、歳出合計15,869,000千円）、1総括歳出（物理13、款・本年度予算額・前年度・比較・財源内訳）、3歳出明細書（物理48–191、(款)1議会費1議会費160,873千円（前年度171,031千円）に始まり(款)12予備費25,381千円・節表で終わる。目・本年度・前年度・比較・財源内訳（国都支出金・地方債・その他・一般財源）・節・説明が同一明細に対応し、単位は千円）。物理192以降は給与費明細書のため範囲外。歳入・第2表・第3表も範囲外。一般会計以外の当初予算は上記2025年度と同一掲載先にリンクがなく不足として残す。6yosan.pdfはp001153_d/fil/配下に残存する直接URLで取得した。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133035/2024/initial.pdf",
+            "sha256": "cd62b48eb5d8384202845f95438e345de8a87494bbe72987515dce66d265a875",
+            "final_url": "https://www.town.mizuho.tokyo.jp/tyosei/003/012/001/p001153_d/fil/6yosan.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:01:52.942Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133035",
+        "fiscal_year": 2023,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度瑞穂町一般会計予算書",
+          "landing_url": "https://www.town.mizuho.tokyo.jp/tyosei/003/012/001/index.html",
+          "inspected_at": "2026-10-08T07:58:39Z",
+          "files": [
+            {
+              "download_url": "https://www.town.mizuho.tokyo.jp/tyosei/003/012/001/p001153_d/fil/5yosan.pdf",
+              "sha256": "d11c6ada687aca5ad9663bd1c98bb58f624530d4674c1751c349872dce33a364",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 7
+                    },
+                    {
+                      "start": 13,
+                      "end": 13
+                    },
+                    {
+                      "start": 46,
+                      "end": 191
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度一般会計当初予算書の単冊（206頁。一部頁は文字抽出できるが第1表・総括・明細後半が輪郭線描画で画像読み取りが必要なため範囲全体をscan扱い）。第1表歳出（物理6–7、款・項・金額、歳出合計14,638,000千円）、1総括歳出（物理13、款・本年度予算額・前年度・比較・財源内訳）、3歳出明細書（物理46–191、(款)1議会費に始まり(款)12予備費（節表は空表）で終わる。目・本年度・前年度・比較・財源内訳・節・説明が同一明細に対応し、単位は千円）。物理192以降は給与費明細書のため範囲外。歳入・第2表継続費・第3表も範囲外。一般会計以外の当初予算は上記2025年度と同一掲載先にリンクがなく不足として残す。5yosan.pdfはp001153_d/fil/配下に残存する直接URLで取得した。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133035/2023/initial.pdf",
+            "sha256": "d11c6ada687aca5ad9663bd1c98bb58f624530d4674c1751c349872dce33a364",
+            "final_url": "https://www.town.mizuho.tokyo.jp/tyosei/003/012/001/p001153_d/fil/5yosan.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:01:59.558Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133035",
+        "fiscal_year": 2023,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度瑞穂町決算書（一般会計・特別会計）および令和5年度下水道事業会計決算書",
+          "landing_url": "https://www.town.mizuho.tokyo.jp/tyosei/002/012/p001152.html",
+          "inspected_at": "2026-10-08T07:58:39Z",
+          "files": [
+            {
+              "download_url": "https://www.town.mizuho.tokyo.jp/tyosei/002/012/p001152_d/fil/5kessansyo.pdf",
+              "sha256": "043c4c1f3aaf7453f0e7d063e2041ca3a40c2e91e644eb4fec85c88c5d4f553d",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 13,
+                      "end": 16
+                    },
+                    {
+                      "start": 21,
+                      "end": 22
+                    },
+                    {
+                      "start": 53,
+                      "end": 166
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 172,
+                      "end": 174
+                    },
+                    {
+                      "start": 181,
+                      "end": 182
+                    },
+                    {
+                      "start": 189,
+                      "end": 198
+                    }
+                  ]
+                },
+                {
+                  "account": "福生都市計画瑞穂町箱根ケ崎駅西土地区画整理事業特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 204,
+                      "end": 206
+                    },
+                    {
+                      "start": 211,
+                      "end": 212
+                    },
+                    {
+                      "start": 215,
+                      "end": 218
+                    }
+                  ]
+                },
+                {
+                  "account": "瑞穂町介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 225,
+                      "end": 226
+                    },
+                    {
+                      "start": 231,
+                      "end": 232
+                    },
+                    {
+                      "start": 241,
+                      "end": 254
+                    }
+                  ]
+                },
+                {
+                  "account": "瑞穂町後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 261,
+                      "end": 262
+                    },
+                    {
+                      "start": 267,
+                      "end": 268
+                    },
+                    {
+                      "start": 273,
+                      "end": 276
+                    }
+                  ]
+                },
+                {
+                  "account": "瑞穂町殿ケ谷財産区特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 283,
+                      "end": 284
+                    },
+                    {
+                      "start": 289,
+                      "end": 290
+                    },
+                    {
+                      "start": 293,
+                      "end": 294
+                    }
+                  ]
+                },
+                {
+                  "account": "瑞穂町石畑財産区特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 301,
+                      "end": 302
+                    },
+                    {
+                      "start": 307,
+                      "end": 308
+                    },
+                    {
+                      "start": 311,
+                      "end": 314
+                    }
+                  ]
+                },
+                {
+                  "account": "瑞穂町箱根ケ崎財産区特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 321,
+                      "end": 322
+                    },
+                    {
+                      "start": 327,
+                      "end": 328
+                    },
+                    {
+                      "start": 331,
+                      "end": 332
+                    }
+                  ]
+                },
+                {
+                  "account": "瑞穂町長岡財産区特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 339,
+                      "end": 340
+                    },
+                    {
+                      "start": 345,
+                      "end": 346
+                    },
+                    {
+                      "start": 349,
+                      "end": 350
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.town.mizuho.tokyo.jp/tyosei/003/006/p008541_d/fil/5gesui.pdf",
+              "sha256": "82adbefd5797ccdd87f8131eff8e10f750788c0b47acffa2bf16bcf477a1254b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 26,
+                      "end": 28
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度決算。5kessansyo.pdf（362頁・画像スキャンPDF）は一般会計と8特別会計（国民健康保険・福生都市計画瑞穂町箱根ケ崎駅西土地区画整理事業・介護保険・後期高齢者医療・殿ケ谷財産区・石畑財産区・箱根ケ崎財産区・長岡財産区）を収録し、各会計の歳出決算書（款項：予算現額・支出済額・翌年度繰越額・不用額・比較）・歳出決算総括表（款：予算現額・支出済額・割合）・歳出事項別明細書（款項目＋節：予算現額内訳・支出済額・翌年度繰越・不用額・備考）で名称と予算現額・支出済額が同一明細に対応し、単位は円。物理頁は上記scopeのとおり（例：一般会計13–16・21–22・53–166、支出済額合計15,135,106,558円・差引385,991,820円）。歳入各区間・歳入歳出差引残額・実質収支調書・財産に関する調書（物理352–361）・白紙は範囲外。5gesui.pdf（33頁・文字PDF）は下水道事業会計で、収益費用明細書の支出（物理26–28、款項目・節・金額・備考、単位円・税抜、1下水道事業費用1,064,292,188円）を確認。資本的支出明細書は目次・本文ともに存在せず、決算報告書の資本的収支（物理8）は款項集計のため明細不足を保持する。事業報告書の工事概況（物理19、130万円超）・重要契約（物理22、500万円超・税込）は契約額ベースで支出決算額の明細に代替できないため範囲外。固定資産明細書（物理29）・企業債明細書（物理30–33）は残高の明細で範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133035/2023/settlement-1.pdf",
+            "sha256": "043c4c1f3aaf7453f0e7d063e2041ca3a40c2e91e644eb4fec85c88c5d4f553d",
+            "final_url": "https://www.town.mizuho.tokyo.jp/tyosei/002/012/p001152_d/fil/5kessansyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/133035/2023/settlement-2.pdf",
+            "sha256": "82adbefd5797ccdd87f8131eff8e10f750788c0b47acffa2bf16bcf477a1254b",
+            "final_url": "https://www.town.mizuho.tokyo.jp/tyosei/003/006/p008541_d/fil/5gesui.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:02:12.159Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

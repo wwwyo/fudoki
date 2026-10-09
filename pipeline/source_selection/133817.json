@@ -2,6 +2,715 @@
   "jurisdiction": "133817",
   "name": "三宅村",
   "official_url": "https://www.vill.miyake.tokyo.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "r8-tousyo-yosan-gaiyou",
+          "title": "令和８年度三宅村当初予算の概要",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/index.html",
+          "inspected_at": "2026-10-07T16:29:57.310910+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/R8.TousyoYosanGaiyou.pdf",
+              "sha256": "a6740ac9c383bc5623301b40de86761094d40c0284a54ad0eecff7fa006a6b09",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "部分原典として選定。2頁の「6.投資的事業」表は区分（款相当の費目）・事業名・事業費が同一明細で対応し、事業費行の合計1,270,961千円が1頁「3.一般会計歳出予算の内訳」の投資的事業1,270,959千円と2千円差がある。不一致の原因は未確認で、端数や転記と推定して補正しない。令和8年度当初予算概要の「投資的事業」表に載る事業名・事業費(原典列名)の部分原典として選定する。合計の近似を金額の意味そのものの根拠にはしない（文字PDF、単位：千円）。不足：投資的事業以外の歳出（款・項・目または事業別の予算額明細）・歳入明細・特別会計4（国民健康保険事業勘定・同直営診療施設勘定・介護保険保険事業勘定・後期高齢者医療）・公営企業会計2（旅客自動車運送事業・簡易水道事業）の明細は、確認した掲載先（財政状況・財政データ・財政のあらまし各ページ、議会議決結果・議会だより、広報みやけ、みんなの掲示板、東京都オープンデータカタログ、東京都総務局資料集）では公開を確認できない。",
+      "selected_candidate_id": "r8-tousyo-yosan-gaiyou",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r8-tousyo-yosan-gaiyou",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133817/2026/initial.pdf",
+            "sha256": "a6740ac9c383bc5623301b40de86761094d40c0284a54ad0eecff7fa006a6b09",
+            "final_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/R8.TousyoYosanGaiyou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:30:12.076Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "r8-6-zaisei-aramashi",
+          "title": "三宅村財政のあらまし(令和8年6月分)",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/aramashi.html",
+          "inspected_at": "2026-10-07T16:23:40.400527+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/R8.6_ZaiseiNoAramashi.pdf",
+              "sha256": "eccb6c3af677127f69695a9a308c9b371f0c19533a2abd7813db5a78cbe30f9f",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        },
+        {
+          "id": "r8-dai3-gikai-kekka",
+          "title": "令和８年第３回三宅村議会定例会議決結果",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/kakuka/gikai/news/2026-0902-1736-10.html",
+          "inspected_at": "2026-10-07T16:23:40.400527+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/kakuka/gikai/news/files/R8.Dai3KaiGikaiKekka.pdf",
+              "sha256": "b871aaed65c5566492eefa9b3ce3747edba6a6ebffaa7282ff6c9ae9c45a988b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度決算は令和8年9月2日の第3回定例会議決結果で公営企業会計2件（旅客自動車運送事業・簡易水道事業）の認定が確認できる。一般会計・特別会計の令和7年度決算認定はこの議決結果には載っておらず、確認した掲載先では認定状況を裏付ける資料を確認していない。公開資料は「財政のあらまし」の各会計決算概要（歳出は款=目的別まで、主要事業名のみ）と財務書類・財政状況資料集（指標集、実物確認は令和5年度版まで）で、款・項・目粒度の歳出決算明細を持つ決算書等は上記確認済み掲載先では公開を確認できない。令和8年6月分あらましは令和7年度下半期の予算執行状況と公営企業決算見込（款別最終予算額・執行済額）を載せるが明細ではない。令和7年度決算の概要を載せるあらまし令和8年12月分は確認時点で未発行。なお前年度（令和6年度決算）は「三宅村財政のあらまし(令和7年12月分)」3頁の普通建設事業表を部分原典として別途選定済み（このファイルのFY2024 settlementレコード参照）。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "r8-dai3-gikai-kekka-hosei",
+          "title": "令和８年第３回三宅村議会定例会議決結果（補正予算議案の掲載のみ）",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/kakuka/gikai/news/2026-0902-1736-10.html",
+          "inspected_at": "2026-10-07T16:23:40.400527+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/kakuka/gikai/news/files/R8.Dai3KaiGikaiKekka.pdf",
+              "sha256": "b871aaed65c5566492eefa9b3ce3747edba6a6ebffaa7282ff6c9ae9c45a988b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "確認した掲載先（議会議決結果・財政のあらまし）で確認できた令和8年度の補正は、一般会計が専決処分の第2号・第3号承認と議案第4号まで、特別会計・公営企業会計は第1号。議決結果は議案名と可否のみ、財政のあらましは会計・号ごとの増減総額までで、款項目または事業名と補正増減額が同一明細に載る資料はこれらの掲載先では確認できないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "r7-12-zaisei-aramashi",
+          "title": "三宅村財政のあらまし(令和7年12月分)（令和6年度決算概要）",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/aramashi.html",
+          "inspected_at": "2026-10-08T01:13:23.726309+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/zaiseinoaramasiR7.12.pdf",
+              "sha256": "062949a829c54573e01d3fa392bca055e7a557dae7ba40693cab9db3188287b8",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "部分原典として選定。令和6年度決算は令和7年9月10日会期の第3回定例会で公営企業会計2件（旅客自動車運送事業・簡易水道事業）の認定が議会だより第55号で確認できる。一般会計・特別会計の令和6年度決算認定は同議会の議案一覧に不載で、確認した掲載先では認定状況を裏付ける資料を確認していない。「財政のあらまし令和7年12月分」(text PDF, 単位：千円, 税の扱いの記載なし)は令和6年度各会計決算の概要で、2頁の「歳出（目的別）」表は款相当の科目（議会費・総務費等13科目）と決算額が同一明細で対応し、「歳出（性質別）」表も性質別区分と決算額が対応する。3頁の「令和6年度に実施した主な普通建設事業と災害復旧事業」表は性質別（普通建設事業）・目的別（款相当）・事業名・事業費が同一明細で対応し、掲載基準は事業費10,000千円以上と原典に明記。掲載21事業の事業費合計945,794千円は2頁の性質別「普通建設事業費」決算額1,024,250千円を下回る。これは掲載基準による一部掲載との整合を確認する補助検査であり、金額の意味を確定しない。原典列名は事業費（千円）として保持し、対象年度は資料の令和6年度決算概要という位置付けと表題から確認する（災害復旧事業の行は掲載基準を満たすものがなく不載）。決算額は支出済額・収入済額を示す原典表題の値であり予算額ではない。不足：款・項・目粒度の歳出明細、事業費10,000千円未満の普通建設事業、災害復旧事業の明細、特別会計4（国民健康保険（事業勘定）・国民健康保険（直営診療施設勘定）・介護保険（保険事業勘定）・後期高齢者医療）と公営企業会計2（旅客自動車運送事業・簡易水道事業）の歳出明細（1頁には会計別の歳出決算額総額のみで明細なし）、歳入明細は、確認した掲載先（財政状況・財政データ・財政状況等一覧表・財政比較分析表・財政のあらまし各ページ、議会議決結果・議会だより第55号実物、企業課・企画財政課ページ、広報みやけ、みんなの掲示板、東京都オープンデータカタログ、東京都総務局資料集・令和6年度決算状況一覧表）では公開を確認できない。4頁は令和7年度上半期の予算執行状況と補正内容で令和6年度決算の歳出範囲外のためscope外。同じ決算概要を載せる別版・分冊は確認していない。 監督側の実物確認: 選定scopeは事業名×事業費を持つ物理3頁だけに限定。物理2頁の款相当・性質別集計は明細として採用せず、掲載対象年度と事業費の判断の補助に使う。年度・金額の根拠は資料の令和6年度決算概要という位置付けと表題「令和6年度に実施した主な普通建設事業と災害復旧事業」。合計との整合は補助検査であり、それだけで金額意味を確定しない。原典列名は事業費（千円）として保持する。3頁下半分の地方債残高・増減表は同頁に併記されるが歳出明細の対象ではない。",
+      "selected_candidate_id": "r7-12-zaisei-aramashi",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r7-12-zaisei-aramashi",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133817/2024/settlement.pdf",
+            "sha256": "062949a829c54573e01d3fa392bca055e7a557dae7ba40693cab9db3188287b8",
+            "final_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/zaiseinoaramasiR7.12.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T01:13:32.269Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2025,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "r7-tousyo-yosan-gaiyou",
+          "title": "令和７年度三宅村当初予算の概要",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/index.html",
+          "inspected_at": "2026-10-08T07:17:06Z",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/yosanngaiyou.pdf",
+              "sha256": "66ae5e523bcebba53f6fb4d2982d49ea63c71cc09102ad93cf135c36ed4fb7bb",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 2,
+                      "end": 2
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "部分原典として選定。表題「令和7年度三宅村当初予算の概要」、1頁に令和7年度当初予算が3月定例議会で成立した旨の記載で対象年度を確認。2頁「6.投資的事業」表は区分（款相当の費目）・事業名・事業費が同一明細で対応し、36行の事業費合計732,500千円が1頁「3.一般会計歳出予算の内訳」の投資的事業738,528千円と6,028千円差がある。不一致の原因は未確認で、端数や転記と推定して補正しない。合計の近似を金額の意味そのものの根拠にはしない（文字PDF、単位：千円）。1頁の歳出内訳は性質別集計（人件費・物件費・投資的事業等）で款・項・目明細ではない。不足：投資的事業以外の歳出（款・項・目または事業別の予算額明細）・歳入明細・特別会計4（国民健康保険（事業勘定）・国民健康保険（直営診療施設勘定）・介護保険（保険事業勘定）・後期高齢者医療）・公営企業会計2（旅客自動車運送事業・簡易水道事業）の明細は、確認した掲載先（財政状況index・財政データ・財政のあらまし各号、議会議決結果、広報みやけ令和6年4月号実物）では公開を確認できない。会計別予算総額は1頁「1.会計別予算額」による（一般会計4,250,759千円、7会計合計6,101,657千円）。",
+      "selected_candidate_id": "r7-tousyo-yosan-gaiyou",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r7-tousyo-yosan-gaiyou",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133817/2025/initial.pdf",
+            "sha256": "66ae5e523bcebba53f6fb4d2982d49ea63c71cc09102ad93cf135c36ed4fb7bb",
+            "final_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/yosanngaiyou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T07:17:25.354Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2024,
+        "document_kind": "initial"
+      },
+      "candidates": [],
+      "reason": "未選定。財政状況index（https://www.vill.miyake.tokyo.jp/gyousei/zaisei/index.html）は令和8年度・令和7年度の当初予算概要のみ掲載し、令和6年度の概要はない。広報みやけ令和6年4月号（No.649）実物は施政方針で令和6年度当初予算を義務的経費中心の骨格予算と明記し、新規事業・投資的事業は後日の補正予算で編成する旨を記載し、会計別・款項目・事業別の予算額明細はない。令和6年12月分あらまし4頁の令和6年度上半期表に当初予算額の総額（一般会計3,220,704千円等）のみ。議決結果は議案名のみで明細なし（直前調査で確認済み）。款・項・目または事業名と当初予算額が同一明細で対応する資料は、確認した掲載先では公開を確認できない。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2023,
+        "document_kind": "initial"
+      },
+      "candidates": [],
+      "reason": "未選定。財政状況indexは令和8年度・令和7年度の当初予算概要のみ掲載し、令和5年度の概要はない。広報みやけ令和5年4月号（No.637）実物は施政方針で7会計別の予算総額（7会計合わせて59億5834万5千円）のみを記載し、款項目・事業別の予算額明細はない。当時の会計構成は同号の記載による（国民健康保険（事業勘定）・同（直営診療施設勘定）・介護保険（保険事業勘定）・簡易水道特別会計・後期高齢者医療・旅客自動車運送事業会計と一般会計の7会計。簡易水道は当時特別会計）。議決結果は議案名のみで明細なし（直前調査で確認済み）。款・項・目または事業名と当初予算額が同一明細で対応する資料は、確認した掲載先では公開を確認できない。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2023,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "r6-12-zaisei-aramashi",
+          "title": "三宅村財政のあらまし(令和6年12月分)（令和5年度決算概要）",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/aramashi.html",
+          "inspected_at": "2026-10-08T07:17:06Z",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/R6.12_armashi.pdf",
+              "sha256": "45362946b4a1284647438757438b9c98e936f647bc1d6b1e440cc8622a8100f3",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "部分原典として選定。1頁に令和5年度各会計決算の概要である旨の記載で対象年度を確認。「財政のあらまし令和6年12月分」（文字PDF、4頁、単位：千円、税の扱いの記載なし）の3頁「令和5年度に実施した主な普通建設事業と災害復旧事業」表は性質別・目的別（款相当）・事業名・事業費が同一明細で対応し、掲載基準は事業費10,000千円以上と原典に明記。普通建設事業21行の事業費合計791,075千円は2頁の性質別「普通建設事業費」決算額855,972千円を下回り、掲載基準による一部掲載との整合を確認する補助検査とする。災害復旧事業1行14,763千円は性質別「災害復旧事業費」14,763千円と一致する。合計の一致・大小だけを金額意味の根拠にしない。原典列名は事業費（千円）として保持する。2頁の歳出（目的別・款相当13科目）・歳出（性質別）集計は明細として採用せず補助に使う。1頁は会計別決算総額のみ。4頁は令和6年度上半期の予算執行状況で対象外。不足：款・項・目粒度の歳出明細、事業費10,000千円未満の普通建設事業、特別会計（国民健康保険（事業勘定）・同（直営診療施設勘定）・介護保険（保険事業勘定）・簡易水道・後期高齢者医療）と公営企業会計（旅客自動車運送事業）の歳出明細（1頁には会計別の歳出決算額総額のみで明細なし）は、確認した掲載先（財政状況・財政データ・財政のあらまし各号、議会議決結果、広報みやけ）では公開を確認できない。令和5年度時点の会計構成は1頁の表による（簡易水道は特別会計、公営企業会計は旅客自動車運送事業のみ）。",
+      "selected_candidate_id": "r6-12-zaisei-aramashi",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "r6-12-zaisei-aramashi",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133817/2023/settlement.pdf",
+            "sha256": "45362946b4a1284647438757438b9c98e936f647bc1d6b1e440cc8622a8100f3",
+            "final_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/R6.12_armashi.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T07:17:28.435Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "r5-12-zaisei-aramashi",
+          "title": "三宅村財政のあらまし(令和5年12月分)（令和5年度上半期の予算状況）",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/aramashi.html",
+          "inspected_at": "2026-10-08T09:22:48.223077+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/2023_12_05.pdf",
+              "sha256": "8cc44a588d98d593ba4366bb1275684e211dd583e3b3a9ce3e119e4c033e9e7a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "未選定。令和5年度一般会計の第1号補正（3月）は「財政のあらまし令和5年12月分」4頁の補正予算額の内容表で号数と補正額26,635千円（単位:千円）を確認（上半期一般会計補正計296,928千円、当初予算額4,273,224千円＋補正予算額296,928千円＝計4,570,152千円）。ただし同表の「主な内容」は事業名の列挙（新型コロナウイルスワクチン接種事業、むらおこし推進事業等）を説明文として記載するのみで、事業名と当該事業の補正額（増減額）が同一明細で対応する欄はなく、款・項・目別の補正明細もない。「財政のあらまし令和5年12月分」4頁の補正予算額の内容表（単位:千円）では、一般会計のほか国民健康保険（事業勘定）特別会計 第1号補正（9月）990千円、国民健康保険（直営診療施設勘定）特別会計 第1号補正（9月）18,020千円、介護保険（保険事業勘定）特別会計 第1号補正（9月）5,503千円、簡易水道特別会計 第1号補正（4月）16,507千円・第2号補正（9月）32,026千円、後期高齢者医療特別会計 第1号補正（9月）600千円が確認でき、旅客自動車運送事業会計は補正なしと記載。会計ごとに号数と月の対応が異なるため、この対象の号数は一般会計の号数に基づく。事業名×補正額の明細を持つ資料（補正予算書・事業別明細）は確認した掲載先（財政状況・財政データ・財政のあらまし各号、議会議決結果、広報みやけ、東京都オープンデータカタログ）では公開を確認できないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "r5-12-zaisei-aramashi",
+          "title": "三宅村財政のあらまし(令和5年12月分)（令和5年度上半期の予算状況）",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/aramashi.html",
+          "inspected_at": "2026-10-08T09:22:48.223077+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/2023_12_05.pdf",
+              "sha256": "8cc44a588d98d593ba4366bb1275684e211dd583e3b3a9ce3e119e4c033e9e7a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "未選定。令和5年度一般会計の第2号補正（5月）は「財政のあらまし令和5年12月分」4頁の補正予算額の内容表で号数と補正額16,186千円（単位:千円）を確認（上半期一般会計補正計296,928千円、当初予算額4,273,224千円＋補正予算額296,928千円＝計4,570,152千円）。ただし同表の「主な内容」は事業名の列挙（新型コロナウイルスワクチン接種事業、むらおこし推進事業等）を説明文として記載するのみで、事業名と当該事業の補正額（増減額）が同一明細で対応する欄はなく、款・項・目別の補正明細もない。「財政のあらまし令和5年12月分」4頁の補正予算額の内容表（単位:千円）では、一般会計のほか国民健康保険（事業勘定）特別会計 第1号補正（9月）990千円、国民健康保険（直営診療施設勘定）特別会計 第1号補正（9月）18,020千円、介護保険（保険事業勘定）特別会計 第1号補正（9月）5,503千円、簡易水道特別会計 第1号補正（4月）16,507千円・第2号補正（9月）32,026千円、後期高齢者医療特別会計 第1号補正（9月）600千円が確認でき、旅客自動車運送事業会計は補正なしと記載。会計ごとに号数と月の対応が異なるため、この対象の号数は一般会計の号数に基づく。事業名×補正額の明細を持つ資料（補正予算書・事業別明細）は確認した掲載先（財政状況・財政データ・財政のあらまし各号、議会議決結果、広報みやけ、東京都オープンデータカタログ）では公開を確認できないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "r5-12-zaisei-aramashi",
+          "title": "三宅村財政のあらまし(令和5年12月分)（令和5年度上半期の予算状況）",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/aramashi.html",
+          "inspected_at": "2026-10-08T09:22:48.223077+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/2023_12_05.pdf",
+              "sha256": "8cc44a588d98d593ba4366bb1275684e211dd583e3b3a9ce3e119e4c033e9e7a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "未選定。令和5年度一般会計の第3号補正（6月）は「財政のあらまし令和5年12月分」4頁の補正予算額の内容表で号数と補正額14,628千円（単位:千円）を確認（上半期一般会計補正計296,928千円、当初予算額4,273,224千円＋補正予算額296,928千円＝計4,570,152千円）。ただし同表の「主な内容」は事業名の列挙（新型コロナウイルスワクチン接種事業、むらおこし推進事業等）を説明文として記載するのみで、事業名と当該事業の補正額（増減額）が同一明細で対応する欄はなく、款・項・目別の補正明細もない。「財政のあらまし令和5年12月分」4頁の補正予算額の内容表（単位:千円）では、一般会計のほか国民健康保険（事業勘定）特別会計 第1号補正（9月）990千円、国民健康保険（直営診療施設勘定）特別会計 第1号補正（9月）18,020千円、介護保険（保険事業勘定）特別会計 第1号補正（9月）5,503千円、簡易水道特別会計 第1号補正（4月）16,507千円・第2号補正（9月）32,026千円、後期高齢者医療特別会計 第1号補正（9月）600千円が確認でき、旅客自動車運送事業会計は補正なしと記載。会計ごとに号数と月の対応が異なるため、この対象の号数は一般会計の号数に基づく。事業名×補正額の明細を持つ資料（補正予算書・事業別明細）は確認した掲載先（財政状況・財政データ・財政のあらまし各号、議会議決結果、広報みやけ、東京都オープンデータカタログ）では公開を確認できないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "r5-12-zaisei-aramashi",
+          "title": "三宅村財政のあらまし(令和5年12月分)（令和5年度上半期の予算状況）",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/aramashi.html",
+          "inspected_at": "2026-10-08T09:22:48.223077+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/2023_12_05.pdf",
+              "sha256": "8cc44a588d98d593ba4366bb1275684e211dd583e3b3a9ce3e119e4c033e9e7a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "未選定。令和5年度一般会計の第4号補正（9月）は「財政のあらまし令和5年12月分」4頁の補正予算額の内容表で号数と補正額239,479千円（単位:千円）を確認（上半期一般会計補正計296,928千円、当初予算額4,273,224千円＋補正予算額296,928千円＝計4,570,152千円）。ただし同表の「主な内容」は事業名の列挙（新型コロナウイルスワクチン接種事業、むらおこし推進事業等）を説明文として記載するのみで、事業名と当該事業の補正額（増減額）が同一明細で対応する欄はなく、款・項・目別の補正明細もない。「財政のあらまし令和5年12月分」4頁の補正予算額の内容表（単位:千円）では、一般会計のほか国民健康保険（事業勘定）特別会計 第1号補正（9月）990千円、国民健康保険（直営診療施設勘定）特別会計 第1号補正（9月）18,020千円、介護保険（保険事業勘定）特別会計 第1号補正（9月）5,503千円、簡易水道特別会計 第1号補正（4月）16,507千円・第2号補正（9月）32,026千円、後期高齢者医療特別会計 第1号補正（9月）600千円が確認でき、旅客自動車運送事業会計は補正なしと記載。会計ごとに号数と月の対応が異なるため、この対象の号数は一般会計の号数に基づく。事業名×補正額の明細を持つ資料（補正予算書・事業別明細）は確認した掲載先（財政状況・財政データ・財政のあらまし各号、議会議決結果、広報みやけ、東京都オープンデータカタログ）では公開を確認できないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "r6-12-zaisei-aramashi-hosei",
+          "title": "三宅村財政のあらまし(令和6年12月分)（令和6年度上半期の予算状況）",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/aramashi.html",
+          "inspected_at": "2026-10-08T09:22:48.223077+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/R6.12_armashi.pdf",
+              "sha256": "45362946b4a1284647438757438b9c98e936f647bc1d6b1e440cc8622a8100f3",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "未選定。令和6年度一般会計の第1号補正（3月）は「財政のあらまし令和6年12月分」4頁の補正予算額の内容表で号数と補正額1,159,078千円（単位:千円）を確認（上半期一般会計補正計1,310,746千円、当初予算額3,220,704千円＋補正予算額1,310,746千円＝計4,531,450千円）。ただし同表の「主な内容」は事業名の列挙（むらおこし推進事業、特定有人国境離島事業等）を説明文として記載するのみで、事業名と当該事業の補正額（増減額）が同一明細で対応する欄はなく、款・項・目別の補正明細もない。「財政のあらまし令和6年12月分」4頁の補正予算額の内容表（単位:千円）では、国民健康保険（事業勘定）特別会計 第1号補正（6月）1,980千円、国民健康保険（直営診療施設勘定）特別会計 第1号補正（9月）5,393千円、介護保険（保険事業勘定）特別会計 第1号補正（9月）10,830千円、後期高齢者医療特別会計 第1号補正（6月）1,320千円・第2号補正（9月）801千円、簡易水道事業会計 第1号補正（9月）86,319千円が確認でき、旅客自動車運送事業会計は補正なしと記載。会計ごとに号数と月の対応が異なるため、この対象の号数は一般会計の号数に基づく。事業名×補正額の明細を持つ資料は確認した掲載先（財政状況・財政データ・財政のあらまし各号、議会議決結果、広報みやけ、東京都オープンデータカタログ）では公開を確認できないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "r6-12-zaisei-aramashi-hosei",
+          "title": "三宅村財政のあらまし(令和6年12月分)（令和6年度上半期の予算状況）",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/aramashi.html",
+          "inspected_at": "2026-10-08T09:22:48.223077+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/R6.12_armashi.pdf",
+              "sha256": "45362946b4a1284647438757438b9c98e936f647bc1d6b1e440cc8622a8100f3",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "未選定。令和6年度一般会計の第2号補正（6月）は「財政のあらまし令和6年12月分」4頁の補正予算額の内容表で号数と補正額19,428千円（単位:千円）を確認（上半期一般会計補正計1,310,746千円、当初予算額3,220,704千円＋補正予算額1,310,746千円＝計4,531,450千円）。ただし同表の「主な内容」は事業名の列挙（むらおこし推進事業、特定有人国境離島事業等）を説明文として記載するのみで、事業名と当該事業の補正額（増減額）が同一明細で対応する欄はなく、款・項・目別の補正明細もない。「財政のあらまし令和6年12月分」4頁の補正予算額の内容表（単位:千円）では、国民健康保険（事業勘定）特別会計 第1号補正（6月）1,980千円、国民健康保険（直営診療施設勘定）特別会計 第1号補正（9月）5,393千円、介護保険（保険事業勘定）特別会計 第1号補正（9月）10,830千円、後期高齢者医療特別会計 第1号補正（6月）1,320千円・第2号補正（9月）801千円、簡易水道事業会計 第1号補正（9月）86,319千円が確認でき、旅客自動車運送事業会計は補正なしと記載。会計ごとに号数と月の対応が異なるため、この対象の号数は一般会計の号数に基づく。事業名×補正額の明細を持つ資料は確認した掲載先（財政状況・財政データ・財政のあらまし各号、議会議決結果、広報みやけ、東京都オープンデータカタログ）では公開を確認できないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "r6-12-zaisei-aramashi-hosei",
+          "title": "三宅村財政のあらまし(令和6年12月分)（令和6年度上半期の予算状況）",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/aramashi.html",
+          "inspected_at": "2026-10-08T09:22:48.223077+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/R6.12_armashi.pdf",
+              "sha256": "45362946b4a1284647438757438b9c98e936f647bc1d6b1e440cc8622a8100f3",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "未選定。令和6年度一般会計の第3号補正（9月）は「財政のあらまし令和6年12月分」4頁の補正予算額の内容表で号数と補正額125,310千円（単位:千円）を確認（上半期一般会計補正計1,310,746千円、当初予算額3,220,704千円＋補正予算額1,310,746千円＝計4,531,450千円）。ただし同表の「主な内容」は事業名の列挙（むらおこし推進事業、特定有人国境離島事業等）を説明文として記載するのみで、事業名と当該事業の補正額（増減額）が同一明細で対応する欄はなく、款・項・目別の補正明細もない。「財政のあらまし令和6年12月分」4頁の補正予算額の内容表（単位:千円）では、国民健康保険（事業勘定）特別会計 第1号補正（6月）1,980千円、国民健康保険（直営診療施設勘定）特別会計 第1号補正（9月）5,393千円、介護保険（保険事業勘定）特別会計 第1号補正（9月）10,830千円、後期高齢者医療特別会計 第1号補正（6月）1,320千円・第2号補正（9月）801千円、簡易水道事業会計 第1号補正（9月）86,319千円が確認でき、旅客自動車運送事業会計は補正なしと記載。会計ごとに号数と月の対応が異なるため、この対象の号数は一般会計の号数に基づく。事業名×補正額の明細を持つ資料は確認した掲載先（財政状況・財政データ・財政のあらまし各号、議会議決結果、広報みやけ、東京都オープンデータカタログ）では公開を確認できないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "r6-12-zaisei-aramashi-hosei",
+          "title": "三宅村財政のあらまし(令和6年12月分)（令和6年度上半期の予算状況）",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/aramashi.html",
+          "inspected_at": "2026-10-08T09:22:48.223077+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/R6.12_armashi.pdf",
+              "sha256": "45362946b4a1284647438757438b9c98e936f647bc1d6b1e440cc8622a8100f3",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "未選定。令和6年度一般会計の第4号補正（10月）は「財政のあらまし令和6年12月分」4頁の補正予算額の内容表で号数と補正額6,930千円（単位:千円）を確認（上半期一般会計補正計1,310,746千円、当初予算額3,220,704千円＋補正予算額1,310,746千円＝計4,531,450千円）。ただし同表の「主な内容」は事業名の列挙（むらおこし推進事業、特定有人国境離島事業等）を説明文として記載するのみで、事業名と当該事業の補正額（増減額）が同一明細で対応する欄はなく、款・項・目別の補正明細もない。「財政のあらまし令和6年12月分」4頁の補正予算額の内容表（単位:千円）では、国民健康保険（事業勘定）特別会計 第1号補正（6月）1,980千円、国民健康保険（直営診療施設勘定）特別会計 第1号補正（9月）5,393千円、介護保険（保険事業勘定）特別会計 第1号補正（9月）10,830千円、後期高齢者医療特別会計 第1号補正（6月）1,320千円・第2号補正（9月）801千円、簡易水道事業会計 第1号補正（9月）86,319千円が確認でき、旅客自動車運送事業会計は補正なしと記載。会計ごとに号数と月の対応が異なるため、この対象の号数は一般会計の号数に基づく。事業名×補正額の明細を持つ資料は確認した掲載先（財政状況・財政データ・財政のあらまし各号、議会議決結果、広報みやけ、東京都オープンデータカタログ）では公開を確認できないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "r7-12-zaisei-aramashi-hosei",
+          "title": "三宅村財政のあらまし(令和7年12月分)（令和7年度上半期の予算状況）",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/aramashi.html",
+          "inspected_at": "2026-10-08T09:22:48.223077+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/zaiseinoaramasiR7.12.pdf",
+              "sha256": "062949a829c54573e01d3fa392bca055e7a557dae7ba40693cab9db3188287b8",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "未選定。令和7年度一般会計の第1号補正（3月）は「財政のあらまし令和7年12月分」4頁の補正予算額の内容表で号数と補正額34,172千円（単位:千円）を確認（上半期一般会計補正計240,382千円、当初予算額4,250,759千円＋補正予算額240,382千円＝計4,491,141千円）。ただし同表の「主な内容」は事業名の列挙（人件費、価格高騰重点支援給付金、むらおこし推進事業等）を説明文として記載するのみで、事業名と当該事業の補正額（増減額）が同一明細で対応する欄はなく、款・項・目別の補正明細もない。「財政のあらまし令和7年12月分」4頁の補正予算額の内容表（単位:千円）では、国民健康保険（事業勘定）特別会計 第1号補正（3月）137千円・第2号補正（9月）3,234千円、国民健康保険（直営診療施設勘定）特別会計 第1号補正（3月）2,914千円・第2号補正（9月）246千円、介護保険（保険事業勘定）特別会計 第1号補正（3月）134千円・第2号補正（9月）5,447千円、後期高齢者医療特別会計 第1号補正（9月）3,319千円、旅客自動車運送事業会計 第1号補正（3月）1,123千円、簡易水道事業会計 第1号補正（3月）541千円・第2号補正（9月）37,719千円が確認できる。会計ごとに号数と月の対応が異なるため、この対象の号数は一般会計の号数に基づく。事業名×補正額の明細を持つ資料は確認した掲載先（財政状況・財政データ・財政のあらまし各号、議会議決結果、広報みやけ、東京都オープンデータカタログ）では公開を確認できないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "r7-12-zaisei-aramashi-hosei",
+          "title": "三宅村財政のあらまし(令和7年12月分)（令和7年度上半期の予算状況）",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/aramashi.html",
+          "inspected_at": "2026-10-08T09:22:48.223077+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/zaiseinoaramasiR7.12.pdf",
+              "sha256": "062949a829c54573e01d3fa392bca055e7a557dae7ba40693cab9db3188287b8",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "未選定。令和7年度一般会計の第2号補正（6月）は「財政のあらまし令和7年12月分」4頁の補正予算額の内容表で号数と補正額21,834千円（単位:千円）を確認（上半期一般会計補正計240,382千円、当初予算額4,250,759千円＋補正予算額240,382千円＝計4,491,141千円）。ただし同表の「主な内容」は事業名の列挙（人件費、価格高騰重点支援給付金、むらおこし推進事業等）を説明文として記載するのみで、事業名と当該事業の補正額（増減額）が同一明細で対応する欄はなく、款・項・目別の補正明細もない。「財政のあらまし令和7年12月分」4頁の補正予算額の内容表（単位:千円）では、国民健康保険（事業勘定）特別会計 第1号補正（3月）137千円・第2号補正（9月）3,234千円、国民健康保険（直営診療施設勘定）特別会計 第1号補正（3月）2,914千円・第2号補正（9月）246千円、介護保険（保険事業勘定）特別会計 第1号補正（3月）134千円・第2号補正（9月）5,447千円、後期高齢者医療特別会計 第1号補正（9月）3,319千円、旅客自動車運送事業会計 第1号補正（3月）1,123千円、簡易水道事業会計 第1号補正（3月）541千円・第2号補正（9月）37,719千円が確認できる。会計ごとに号数と月の対応が異なるため、この対象の号数は一般会計の号数に基づく。事業名×補正額の明細を持つ資料は確認した掲載先（財政状況・財政データ・財政のあらまし各号、議会議決結果、広報みやけ、東京都オープンデータカタログ）では公開を確認できないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "r7-12-zaisei-aramashi-hosei",
+          "title": "三宅村財政のあらまし(令和7年12月分)（令和7年度上半期の予算状況）",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/aramashi.html",
+          "inspected_at": "2026-10-08T09:22:48.223077+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/zaiseinoaramasiR7.12.pdf",
+              "sha256": "062949a829c54573e01d3fa392bca055e7a557dae7ba40693cab9db3188287b8",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "未選定。令和7年度一般会計の第3号補正（9月）は「財政のあらまし令和7年12月分」4頁の補正予算額の内容表で号数と補正額173,145千円（単位:千円）を確認（上半期一般会計補正計240,382千円、当初予算額4,250,759千円＋補正予算額240,382千円＝計4,491,141千円）。ただし同表の「主な内容」は事業名の列挙（人件費、価格高騰重点支援給付金、むらおこし推進事業等）を説明文として記載するのみで、事業名と当該事業の補正額（増減額）が同一明細で対応する欄はなく、款・項・目別の補正明細もない。「財政のあらまし令和7年12月分」4頁の補正予算額の内容表（単位:千円）では、国民健康保険（事業勘定）特別会計 第1号補正（3月）137千円・第2号補正（9月）3,234千円、国民健康保険（直営診療施設勘定）特別会計 第1号補正（3月）2,914千円・第2号補正（9月）246千円、介護保険（保険事業勘定）特別会計 第1号補正（3月）134千円・第2号補正（9月）5,447千円、後期高齢者医療特別会計 第1号補正（9月）3,319千円、旅客自動車運送事業会計 第1号補正（3月）1,123千円、簡易水道事業会計 第1号補正（3月）541千円・第2号補正（9月）37,719千円が確認できる。会計ごとに号数と月の対応が異なるため、この対象の号数は一般会計の号数に基づく。事業名×補正額の明細を持つ資料は確認した掲載先（財政状況・財政データ・財政のあらまし各号、議会議決結果、広報みやけ、東京都オープンデータカタログ）では公開を確認できないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "r7-12-zaisei-aramashi-hosei",
+          "title": "三宅村財政のあらまし(令和7年12月分)（令和7年度上半期の予算状況）",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/aramashi.html",
+          "inspected_at": "2026-10-08T09:22:48.223077+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/gyousei/zaisei/files/zaiseinoaramasiR7.12.pdf",
+              "sha256": "062949a829c54573e01d3fa392bca055e7a557dae7ba40693cab9db3188287b8",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "未選定。令和7年度一般会計の第4号補正（9月）は「財政のあらまし令和7年12月分」4頁の補正予算額の内容表で号数と補正額11,231千円（単位:千円）を確認（上半期一般会計補正計240,382千円、当初予算額4,250,759千円＋補正予算額240,382千円＝計4,491,141千円）。ただし同表の「主な内容」は事業名の列挙（人件費、価格高騰重点支援給付金、むらおこし推進事業等）を説明文として記載するのみで、事業名と当該事業の補正額（増減額）が同一明細で対応する欄はなく、款・項・目別の補正明細もない。「財政のあらまし令和7年12月分」4頁の補正予算額の内容表（単位:千円）では、国民健康保険（事業勘定）特別会計 第1号補正（3月）137千円・第2号補正（9月）3,234千円、国民健康保険（直営診療施設勘定）特別会計 第1号補正（3月）2,914千円・第2号補正（9月）246千円、介護保険（保険事業勘定）特別会計 第1号補正（3月）134千円・第2号補正（9月）5,447千円、後期高齢者医療特別会計 第1号補正（9月）3,319千円、旅客自動車運送事業会計 第1号補正（3月）1,123千円、簡易水道事業会計 第1号補正（3月）541千円・第2号補正（9月）37,719千円が確認できる。会計ごとに号数と月の対応が異なるため、この対象の号数は一般会計の号数に基づく。事業名×補正額の明細を持つ資料は確認した掲載先（財政状況・財政データ・財政のあらまし各号、議会議決結果、広報みやけ、東京都オープンデータカタログ）では公開を確認できないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "r8-dai3-gikai-kekka-hosei",
+          "title": "令和８年第３回三宅村議会定例会議決結果（補正予算議案の掲載のみ）",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/kakuka/gikai/news/2026-0902-1736-10.html",
+          "inspected_at": "2026-10-08T09:22:48.223077+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/kakuka/gikai/news/files/R8.Dai3KaiGikaiKekka.pdf",
+              "sha256": "b871aaed65c5566492eefa9b3ce3747edba6a6ebffaa7282ff6c9ae9c45a988b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "確認した掲載先（議会議決結果・財政のあらまし）で確認できた令和8年度の補正のうち、特別会計・公営企業会計は第1号補正が確認できる（一般会計の第1号は議決結果・あらましの記載からは確認できず、この対象の号数は特別会計・公営企業会計の第1号に基づく）。議決結果は議案名と可否のみ、財政のあらましは会計・号ごとの増減総額までで、款項目または事業名と補正増減額が同一明細に載る資料は確認できないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "r8-dai3-gikai-kekka-hosei",
+          "title": "令和８年第３回三宅村議会定例会議決結果（補正予算議案の掲載のみ）",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/kakuka/gikai/news/2026-0902-1736-10.html",
+          "inspected_at": "2026-10-08T09:22:48.223077+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/kakuka/gikai/news/files/R8.Dai3KaiGikaiKekka.pdf",
+              "sha256": "b871aaed65c5566492eefa9b3ce3747edba6a6ebffaa7282ff6c9ae9c45a988b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "確認した掲載先（議会議決結果・財政のあらまし）で確認できた令和8年度の補正のうち、一般会計は専決処分の第2号補正の承認が確認できる。議決結果は議案名と可否のみ、財政のあらましは会計・号ごとの増減総額までで、款項目または事業名と補正増減額が同一明細に載る資料は確認できないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "133817",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "r8-dai3-gikai-kekka-hosei",
+          "title": "令和８年第３回三宅村議会定例会議決結果（補正予算議案の掲載のみ）",
+          "landing_url": "https://www.vill.miyake.tokyo.jp/kakuka/gikai/news/2026-0902-1736-10.html",
+          "inspected_at": "2026-10-08T09:22:48.223077+00:00",
+          "files": [
+            {
+              "download_url": "https://www.vill.miyake.tokyo.jp/kakuka/gikai/news/files/R8.Dai3KaiGikaiKekka.pdf",
+              "sha256": "b871aaed65c5566492eefa9b3ce3747edba6a6ebffaa7282ff6c9ae9c45a988b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "確認した掲載先（議会議決結果・財政のあらまし）で確認できた令和8年度の補正のうち、一般会計は専決処分の第3号補正の承認が確認できる。議決結果は議案名と可否のみ、財政のあらましは会計・号ごとの増減総額までで、款項目または事業名と補正増減額が同一明細に載る資料は確認できないため未選定。",
+      "selected_candidate_id": null,
+      "archive": null
+    }
+  ],
   "unresolved_candidates": []
 }

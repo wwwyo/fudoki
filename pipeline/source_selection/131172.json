@@ -2,6 +2,2564 @@
   "jurisdiction": "131172",
   "name": "北区",
   "official_url": "https://www.city.kita.tokyo.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度東京都北区予算書説明書",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014488/1025576.html",
+          "inspected_at": "2026-10-07T14:56:26.172024+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/025/576/r8_tosho_yosansetumei.pdf",
+              "sha256": "650c33ed51edff5202f5c93f23383be6b72140474f89cf05803c3b03fb7c479e",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "start": 71,
+                      "end": 159
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 188,
+                      "end": 188
+                    },
+                    {
+                      "start": 201,
+                      "end": 221
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 231,
+                      "end": 231
+                    },
+                    {
+                      "start": 246,
+                      "end": 265
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 275,
+                      "end": 275
+                    },
+                    {
+                      "start": 285,
+                      "end": 292
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度（最新）当初予算の歳出明細。当初予算一覧（finance/1014484/1014488/）の令和8年度ページ（1025576）に掲載の「令和8年度東京都北区予算書説明書」1冊（物理297頁・A3横見開き=1物理頁に印字2頁・文字が輪郭線描画のみで文字層抽出不可のためscan）を選定。同ページ掲載の予算書（r8_tosho_yosan.pdf・27頁）は議案第39〜42号の本文と第1表歳入歳出予算（款・項の区分と金額）のみで目粒度を持たず不採用。説明書の各会計歳入歳出予算事項別明細書は款・項・目名と本年度予算額・前年度予算額・比較・財源内訳・節区分（区分+金額・説明）を見開き両頁で対応、単位千円。会計は一般会計・国民健康保険事業会計・介護保険会計・後期高齢者医療会計の4会計で予算書議案一覧・説明書目次・予算プレス資料の3者が一致、企業会計・他の特別会計の掲載なし。歳出は各会計の総括歳出（款別）と明細書歳出をscopeに記録：一般会計=物理6・71-159頁（印字8-9・138-315）、国保=物理188・201-221頁（印字372-373・398-439）、介護=物理231・246-265頁（印字458-459・488-527）、後期=物理275・285-292頁（印字546-547・566-581）。印字→物理は物理頁=印字頁を2で割った整数部+2で一致することを各境界の画像頁で確認。給与費明細書・債務負担行為調書・特別区債現在高調書はscope外。歳入は未確認。予算の概要・予算案主な事業（予算プレス資料）は概要資料のため対象外。東京都オープンデータカタログに北区の明細CSVなし。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2026/initial.pdf",
+            "sha256": "650c33ed51edff5202f5c93f23383be6b72140474f89cf05803c3b03fb7c479e",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/025/576/r8_tosho_yosansetumei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:56:51.789Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "東京都北区各会計歳入歳出決算書（令和6年度）",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014500.html",
+          "inspected_at": "2026-10-07T14:56:26.172024+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/500/kessann-syo6.pdf",
+              "sha256": "12b1e95c026d5c3f112cd7bc15adbbd759a61711dc88db83b28c22e81ecfe508",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 52,
+                      "end": 91
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 15,
+                      "end": 15
+                    },
+                    {
+                      "start": 98,
+                      "end": 101
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 19,
+                      "end": 19
+                    },
+                    {
+                      "start": 108,
+                      "end": 112
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 23,
+                      "end": 23
+                    },
+                    {
+                      "start": 117,
+                      "end": 118
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度決算は決算一覧ページ（finance/1014500、最終更新2025-10-06）に未掲載で公表前のため、最新公表の令和6年度「東京都北区各会計歳入歳出決算書」（kessann-syo6.pdf・物理174頁・A3横見開き=1物理頁に印字2頁・文字PDF）を選定。事項別明細書は款・項・目が同一明細で当初予算額・補正予算額・繰越額・流用増減・予算現額計・節区分+金額・支出済額・翌年度繰越額・不用額に対応、単位円。会計は一般会計・国民健康保険事業会計・介護保険会計・後期高齢者医療会計の4会計で目次と一致、企業会計・他の特別会計なし。会計ごとに歳入歳出決算書部の歳出款項表と事項別明細書部の歳出をscopeに記録：一般会計=物理10-11・52-91頁（印字16-19・100-179）、国保=物理15・98-101頁（印字26-27・192-199）、介護=物理19・108-112頁（印字34-35・212-221）、後期=物理23・117-118頁（印字42-43・230-233）。同ページの「各会計決算額及び一般会計款別決算額」（kessann-gaku6.pdf）は款別集計のみで目粒度を満たさず不採用。決算見える化ボードは一般会計のグラフのみで対象外。実質収支に関する調書・公有財産・基金等の付属書類はscope外。歳入は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2024/settlement.pdf",
+            "sha256": "12b1e95c026d5c3f112cd7bc15adbbd759a61711dc88db83b28c22e81ecfe508",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/500/kessann-syo6.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:56:58.287Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2025,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度東京都北区予算書説明書",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014488/1019379.html",
+          "inspected_at": "2026-10-08T03:53:10.089137+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/019/379/r7_tosho_yosansetumei.pdf",
+              "sha256": "1cb8e6641b37e36c04ee6c35d57ffe840c96153a65df8da8b0e766bfc21cff93",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "start": 70,
+                      "end": 158
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 188,
+                      "end": 188
+                    },
+                    {
+                      "start": 201,
+                      "end": 220
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 230,
+                      "end": 230
+                    },
+                    {
+                      "start": 245,
+                      "end": 264
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 274,
+                      "end": 274
+                    },
+                    {
+                      "start": 284,
+                      "end": 291
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度当初予算の歳出明細。当初予算一覧の令和7年度ページ（1019379）掲載の予算書説明書1冊（物理296頁・A4横見開き=1物理頁に印字2頁・フォント・画像なし輪郭線描画のみで文字層抽出不可のためscan）を選定。会計は一般会計・国民健康保険事業会計・介護保険会計・後期高齢者医療会計の4会計で全体目次・各会計目次が一致、企業会計・他の特別会計の掲載なし。一般会計=物理6（総括歳出 印字8-9）・70-158（明細 印字136-313、給与費明細書は印字314から）、国保=物理188（総括 印字372-373）・201-220（明細 印字398-437）、介護=物理230（総括 印字456-457）・245-264（明細 印字486-525）、後期=物理274（総括 印字544-545）・284-291（明細 印字564-579）。明細先頭（議会費・総務費）・末尾（予備費→給与費明細書）を描画確認。目次頁は物理2-4・186-187・228-229・272-273。歳出は各会計の歳入歳出予算事項別明細書の総括歳出（款別・本年度予算額/前年度予算額/比較/財源内訳）と歳出明細（款・項・目名が同一明細で本年度予算額・前年度予算額・比較・財源内訳・節区分（区分+金額・説明）に対応）をscopeに記録、単位千円。見開きは1物理頁=印字2頁で物理頁=印字÷2+2を境界頁で確認。給与費明細書・債務負担行為調書・特別区債現在高調書はscope外。歳入は未確認。予算書は議案本文と第1表（款・項のみ）で目粒度を持たず不採用。予算の概要・予算案主な事業（プレス資料）は概要資料のため対象外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2025/initial.pdf",
+            "sha256": "1cb8e6641b37e36c04ee6c35d57ffe840c96153a65df8da8b0e766bfc21cff93",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/019/379/r7_tosho_yosansetumei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:53:32.084Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2024,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度東京都北区予算書説明書",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014488/1014489.html",
+          "inspected_at": "2026-10-08T03:53:10.089137+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/489/r6_tosho_yosansetumei.pdf",
+              "sha256": "6673c0e424b2d8e3d087d4f1cfd1e29db648462cbfce6f5ff7c593c53e484595",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "start": 68,
+                      "end": 156
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 187,
+                      "end": 187
+                    },
+                    {
+                      "start": 200,
+                      "end": 221
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 231,
+                      "end": 231
+                    },
+                    {
+                      "start": 245,
+                      "end": 264
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 274,
+                      "end": 274
+                    },
+                    {
+                      "start": 284,
+                      "end": 291
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度当初予算の歳出明細。当初予算一覧の令和6年度ページ（1014489）掲載の予算書説明書1冊（物理296頁・A4横見開き=1物理頁に印字2頁・文字PDF）を選定。会計は一般会計・国民健康保険事業会計・介護保険会計・後期高齢者医療会計の4会計で全体目次・各会計目次が一致、企業会計・他の特別会計の掲載なし。一般会計=物理6（総括歳出 印字8-9）・68-156（明細 印字132-309、給与費明細書は印字310から）、国保=物理187（総括 印字370-371）・200-221（明細 印字396-439）、介護=物理231（総括 印字458-459）・245-264（明細 印字486-525）、後期=物理274（総括 印字544-545）・284-291（明細 印字564-579）。明細先頭・末尾と総括頁を文字抽出で確認。歳出は各会計の歳入歳出予算事項別明細書の総括歳出（款別・本年度予算額/前年度予算額/比較/財源内訳）と歳出明細（款・項・目名が同一明細で本年度予算額・前年度予算額・比較・財源内訳・節区分（区分+金額・説明）に対応）をscopeに記録、単位千円。見開きは1物理頁=印字2頁で物理頁=印字÷2+2を境界頁で確認。給与費明細書・債務負担行為調書・特別区債現在高調書はscope外。歳入は未確認。予算書は議案本文と第1表（款・項のみ）で目粒度を持たず不採用。予算の概要・予算案主な事業（プレス資料）は概要資料のため対象外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2024/initial.pdf",
+            "sha256": "6673c0e424b2d8e3d087d4f1cfd1e29db648462cbfce6f5ff7c593c53e484595",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/489/r6_tosho_yosansetumei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:53:39.025Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2023,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度東京都北区予算書説明書",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014488/1014490.html",
+          "inspected_at": "2026-10-08T03:53:10.089137+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/490/r5_tosho_yosansetumei.pdf",
+              "sha256": "d67dc081624ec55a742275f629937d7782c40f409e6bb7b3c932a71c665aad08",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "start": 68,
+                      "end": 154
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 185,
+                      "end": 185
+                    },
+                    {
+                      "start": 198,
+                      "end": 219
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 229,
+                      "end": 229
+                    },
+                    {
+                      "start": 243,
+                      "end": 262
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 272,
+                      "end": 272
+                    },
+                    {
+                      "start": 282,
+                      "end": 289
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度当初予算の歳出明細。当初予算一覧の令和5年度ページ（1014490）掲載の予算書説明書1冊（物理295頁・A4横見開き=1物理頁に印字2頁・フォント・画像なし輪郭線描画のみで文字層抽出不可のためscan）を選定。会計は一般会計・国民健康保険事業会計・介護保険会計・後期高齢者医療会計の4会計で全体目次・各会計目次が一致、企業会計・他の特別会計の掲載なし。一般会計=物理6（総括歳出 印字8-9）・68-154（明細 印字132-305、給与費明細書は印字306から）、国保=物理185（総括 印字366-367）・198-219（明細 印字392-435）、介護=物理229（総括 印字454-455）・243-262（明細 印字482-521）、後期=物理272（総括 印字540-541）・282-289（明細 印字560-575）。明細先頭・末尾・総括頁を描画確認。歳出は各会計の歳入歳出予算事項別明細書の総括歳出（款別・本年度予算額/前年度予算額/比較/財源内訳）と歳出明細（款・項・目名が同一明細で本年度予算額・前年度予算額・比較・財源内訳・節区分（区分+金額・説明）に対応）をscopeに記録、単位千円。見開きは1物理頁=印字2頁で物理頁=印字÷2+2を境界頁で確認。給与費明細書・債務負担行為調書・特別区債現在高調書はscope外。歳入は未確認。予算書は議案本文と第1表（款・項のみ）で目粒度を持たず不採用。予算の概要・予算案主な事業（プレス資料）は概要資料のため対象外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2023/initial.pdf",
+            "sha256": "d67dc081624ec55a742275f629937d7782c40f409e6bb7b3c932a71c665aad08",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/490/r5_tosho_yosansetumei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:54:01.109Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "東京都北区各会計歳入歳出決算書（令和7年度）",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014500.html",
+          "inspected_at": "2026-10-08T03:53:10.089137+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/500/kessansyo07.pdf",
+              "sha256": "e212e8b9a9b2700433c3f0b6045c73736b34475681e8c68259f9dc043e48f512",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 53,
+                      "end": 94
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 15,
+                      "end": 15
+                    },
+                    {
+                      "start": 99,
+                      "end": 102
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 19,
+                      "end": 19
+                    },
+                    {
+                      "start": 109,
+                      "end": 113
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 23,
+                      "end": 23
+                    },
+                    {
+                      "start": 118,
+                      "end": 119
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度決算の歳出明細。決算一覧（finance/1014500）に令和7年度各会計歳入歳出決算書が掲載（物理175頁・A3横見開き=1物理頁に印字2頁・文字PDF）。会計は一般会計・国民健康保険事業会計・介護保険会計・後期高齢者医療会計の4会計で目次と一致、企業会計・他の特別会計なし。一般会計=物理10-11（歳出款項 印字16-19、歳出合計で終了確認）・53-94（明細 印字102-184、物理94の右頁=印字185は国民健康保険事業会計明細書表紙と同居するため共有頁）、国保=物理15（款項 印字26-27）・99-102（明細 印字194-201）、介護=物理19（款項 印字34-35）・109-113（明細 印字214-223）、後期=物理23（款項 印字42-43）・118-119（明細 印字232-235、物理120は実質収支調書表紙）。決算書部と明細書部は表紙・区切り頁を挟み会計順に連続。歳出は各会計の歳入歳出決算書部の歳出款項表（款・項に予算現額・支出済額・翌年度繰越額・不用額）と事項別明細書部の歳出（款・項・目名が同一明細で当初予算額・補正予算額・繰越額・流用増減・予算現額計・節区分+金額・支出済額・翌年度繰越額・不用額に対応）をscopeに記録、単位円。見開きは1物理頁=印字2頁で物理頁=印字÷2+2を境界頁で確認。実質収支に関する調書・財産に関する調書等の付属書類はscope外。歳入は未確認。各会計決算額及び一般会計款別決算額は款別集計のみで目粒度を満たさず不採用。決算見える化ボード（PowerBI）は可視化のみで対象外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2025/settlement.pdf",
+            "sha256": "e212e8b9a9b2700433c3f0b6045c73736b34475681e8c68259f9dc043e48f512",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/500/kessansyo07.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:54:05.858Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2023,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "東京都北区各会計歳入歳出決算書（令和5年度）",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014500.html",
+          "inspected_at": "2026-10-08T03:53:10.089137+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/500/r5kessansyo.pdf",
+              "sha256": "612a0b3c6423405b7ef0d77d9c104f44c3af191d3643d3879eaa6d1f3682f8cc",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 52,
+                      "end": 91
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 15,
+                      "end": 15
+                    },
+                    {
+                      "start": 98,
+                      "end": 102
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 19,
+                      "end": 19
+                    },
+                    {
+                      "start": 109,
+                      "end": 113
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 23,
+                      "end": 23
+                    },
+                    {
+                      "start": 118,
+                      "end": 119
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度決算の歳出明細。決算一覧（finance/1014500）掲載の令和5年度各会計歳入歳出決算書（物理176頁・A3横見開き=1物理頁に印字2頁・文字PDF）を選定。会計は一般会計・国民健康保険事業会計・介護保険会計・後期高齢者医療会計の4会計で目次と一致、企業会計・他の特別会計なし。一般会計=物理10-11（歳出款項 印字16-19、歳出合計で終了確認）・52-91（明細 印字100-179、物理92=印字180-181は国保明細書表紙）、国保=物理15（款項 印字26-27、歳出合計あり）・98-102（明細 印字192-201、歳出合計確認）、介護=物理19（款項 印字34-35）・109-113（明細 印字214-223、物理114は後期表紙）、後期=物理23（款項 印字42-43）・118-119（明細 印字232-235、物理120は実質収支調書表紙）。歳出は各会計の歳入歳出決算書部の歳出款項表（款・項に予算現額・支出済額・翌年度繰越額・不用額）と事項別明細書部の歳出（款・項・目名が同一明細で当初予算額・補正予算額・繰越額・流用増減・予算現額計・節区分+金額・支出済額・翌年度繰越額・不用額に対応）をscopeに記録、単位円。見開きは1物理頁=印字2頁で物理頁=印字÷2+2を境界頁で確認。実質収支に関する調書・財産に関する調書等の付属書類はscope外。歳入は未確認。各会計決算額及び一般会計款別決算額は款別集計のみで目粒度を満たさず不採用。決算見える化ボード（PowerBI）は可視化のみで対象外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2023/settlement.pdf",
+            "sha256": "612a0b3c6423405b7ef0d77d9c104f44c3af191d3643d3879eaa6d1f3682f8cc",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/500/r5kessansyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:54:10.970Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度東京都北区補正予算説明書（一般会計（第1号））",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r5_hoseiyosan_1.pdf",
+              "sha256": "0aa11f5e0ecdf79344071fbdca7d6df893daefae59850eac02e6b66b1653b992",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 11
+                    },
+                    {
+                      "start": 15,
+                      "end": 16
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。一般会計のみ。総括歳出=物理11（印字16-17）。明細=物理15-16（印字24-27、先頭=福祉費、末尾=福祉費・児童福祉費）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2023/supplementary-1.pdf",
+            "sha256": "0aa11f5e0ecdf79344071fbdca7d6df893daefae59850eac02e6b66b1653b992",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r5_hoseiyosan_1.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:40:16.711Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度東京都北区補正予算説明書（一般会計（第2号））",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r5_hoseiyosan_2.pdf",
+              "sha256": "9ee3670094aac741269755cbc052b2f16d51a6e2fd8bc964a46b24eb599c717a",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 13,
+                      "end": 13
+                    },
+                    {
+                      "start": 23,
+                      "end": 40
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。一般会計のみ。第53号議案。総括歳出=物理13（印字20-21）。明細=物理23-40（印字40-75、先頭=総務費、末尾=教育費・認定こども園費）。物理41以降は債務負担行為調書でscope外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2023/supplementary-2.pdf",
+            "sha256": "9ee3670094aac741269755cbc052b2f16d51a6e2fd8bc964a46b24eb599c717a",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r5_hoseiyosan_2.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:40:22.307Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度東京都北区補正予算説明書（一般会計（第3号）外）",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r5_hoseiyosan_3.pdf",
+              "sha256": "e95c5fbf94a857f1d128149bf112c040090fc56c35fbed3ddc51a3573a0bba8b",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 27,
+                      "end": 27
+                    },
+                    {
+                      "start": 38,
+                      "end": 62
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 75,
+                      "end": 75
+                    },
+                    {
+                      "start": 77,
+                      "end": 78
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 82,
+                      "end": 82
+                    },
+                    {
+                      "start": 87,
+                      "end": 90
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 98,
+                      "end": 98
+                    },
+                    {
+                      "start": 101,
+                      "end": 101
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。議案第73〜76号。一般会計（第3号）＋国民健康保険事業会計・介護保険会計・後期高齢者医療会計（各第1号）。一般：総括歳出=物理27（印字48-49）、明細=物理38-62（印字70-119、先頭=総務費、末尾=教育費・認定こども園費、物理63以降は給与費明細書でscope外）。国保：総括歳出=物理75（印字144-145）、明細=物理77-78（印字148-151、先頭=納付金、末尾=諸支出金）。介護：総括歳出=物理82（印字158-159）、明細=物理87-90（印字168-175、先頭=総務費、末尾=諸支出金・繰出金）。後期：総括歳出=物理98（印字190-191）、明細=物理101（印字196-197、諸支出金・繰出金、単独頁、物理102は奥付）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2023/supplementary-3.pdf",
+            "sha256": "e95c5fbf94a857f1d128149bf112c040090fc56c35fbed3ddc51a3573a0bba8b",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r5_hoseiyosan_3.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:40:28.619Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度東京都北区補正予算説明書（一般会計（第4号））",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r5_hoseiyosan_4.pdf",
+              "sha256": "81b725d53f4ff4def93b3d17c6885a2f94bbe2b626c8d7855878f4bd5b4b4a8a",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "start": 15,
+                      "end": 16
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。一般会計のみ。第107号議案。総括歳出=物理12（印字18-19）。明細=物理15-16（印字24-27、先頭=福祉費・児童福祉費、末尾=土木費・道路橋梁費）。物理17以降は債務負担行為調書でscope外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2023/supplementary-4.pdf",
+            "sha256": "81b725d53f4ff4def93b3d17c6885a2f94bbe2b626c8d7855878f4bd5b4b4a8a",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r5_hoseiyosan_4.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:40:33.862Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度東京都北区補正予算説明書（一般会計（第5号））",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r5_hoseiyosan_5.pdf",
+              "sha256": "aa23ef023c428cd958a6f5d9e181b8c6a6fc79e3d56df4781b47603b67d94e71",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "start": 15,
+                      "end": 23
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。一般会計のみ。総括歳出=物理12（印字18-19）。明細=物理15-23（印字24-41、先頭=福祉費・社会福祉費、末尾=教育費・認定こども園費）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2023/supplementary-5.pdf",
+            "sha256": "aa23ef023c428cd958a6f5d9e181b8c6a6fc79e3d56df4781b47603b67d94e71",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r5_hoseiyosan_5.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:40:39.655Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度東京都北区補正予算説明書（一般会計（第6号））",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r5_hoseiyosan_6.pdf",
+              "sha256": "f82221d1aaba49bd434686322f6a5bbdf8851b103c502458cf00372149fd8376",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "start": 15,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。一般会計のみ。総括歳出=物理12（印字18-19）。明細=物理15（印字24-25、福祉費・社会福祉費のみ、物理16は繰越明許費調書でscope外）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2023/supplementary-6.pdf",
+            "sha256": "f82221d1aaba49bd434686322f6a5bbdf8851b103c502458cf00372149fd8376",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r5_hoseiyosan_6.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:40:48.547Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 7
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度東京都北区補正予算説明書（一般会計（第7号）外）",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r5_hoseiyosan_7.pdf",
+              "sha256": "652f1c6187444bb42df56cfeb65ed52ef93c23a359da536e3c0cac08044ca2a1",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 30,
+                      "end": 30
+                    },
+                    {
+                      "start": 67,
+                      "end": 110
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 122,
+                      "end": 122
+                    },
+                    {
+                      "start": 132,
+                      "end": 143
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 150,
+                      "end": 150
+                    },
+                    {
+                      "start": 159,
+                      "end": 164
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 170,
+                      "end": 170
+                    },
+                    {
+                      "start": 176,
+                      "end": 179
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。一般会計（第7号）＋国民健康保険事業会計・介護保険会計・後期高齢者医療会計（各第2号）。一般：総括歳出=物理30（印字54-55、減額△あり）、明細=物理67-110（印字128-215、先頭=議会費、末尾=諸支出金・財政積立金）。国保：総括歳出=物理122（印字238-239）、明細=物理132-143（印字258-281、先頭=総務費、末尾=予備費）。介護：総括歳出=物理150（印字294-295）、明細=物理159-164（印字312-323、先頭=総務費、末尾=諸支出金・償還金）。後期：総括歳出=物理170（印字334-335）、明細=物理176-179（印字346-353、先頭=総務費、末尾=葬祭費）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2023/supplementary-7.pdf",
+            "sha256": "652f1c6187444bb42df56cfeb65ed52ef93c23a359da536e3c0cac08044ca2a1",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r5_hoseiyosan_7.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:40:58.230Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度東京都北区補正予算説明書（一般会計（第1号））",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r6_hoseiyosan_1.pdf",
+              "sha256": "f87788823cecdf699840817998e9d874f1a13d579ceac3975c83a61b67e95121",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 11
+                    },
+                    {
+                      "start": 14,
+                      "end": 14
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。一般会計のみ。総括歳出=物理11（印字16-17）。明細=物理14（印字22-23、福祉費・社会福祉費のみ）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2024/supplementary-1.pdf",
+            "sha256": "f87788823cecdf699840817998e9d874f1a13d579ceac3975c83a61b67e95121",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r6_hoseiyosan_1.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:41:02.012Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度東京都北区補正予算説明書（一般会計（第2号））",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r6_hoseiyosan_2.pdf",
+              "sha256": "d5e9e9379c98eeb1ba9428c937e46d7154c0412043733ff1ba5ccc20c4158071",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "start": 19,
+                      "end": 29
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。一般会計のみ。総括歳出=物理12（印字18-19、減額△あり）。明細=物理19-29（印字32-53、先頭=総務費・総務管理費、末尾=諸支出金・財政積立金）。物理30以降は給与費明細書・債務負担行為調書でscope外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2024/supplementary-2.pdf",
+            "sha256": "d5e9e9379c98eeb1ba9428c937e46d7154c0412043733ff1ba5ccc20c4158071",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r6_hoseiyosan_2.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:41:07.722Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度東京都北区補正予算説明書（一般会計（第3号）外）",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r6_hoseiyosan_3.pdf",
+              "sha256": "681c96c6b50733f1ac10d6fd5354f2e551f1d709b44b32a4cccd2953e84a7929",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 28,
+                      "end": 28
+                    },
+                    {
+                      "start": 38,
+                      "end": 71
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 85,
+                      "end": 85
+                    },
+                    {
+                      "start": 88,
+                      "end": 90
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 97,
+                      "end": 97
+                    },
+                    {
+                      "start": 102,
+                      "end": 110
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 118,
+                      "end": 118
+                    },
+                    {
+                      "start": 123,
+                      "end": 124
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。一般会計（第3号）＋国民健康保険事業会計・介護保険会計・後期高齢者医療会計（各第1号）。一般：総括歳出=物理28（印字50-51）、明細=物理38-71（印字70-137、先頭=議会費、末尾=諸支出金）。国保：総括歳出=物理85（印字164-165）、明細=物理88-90（印字170-175、先頭=総務費、末尾=諸支出金・償還金）。介護：総括歳出=物理97（印字188-189）、明細=物理102-110（印字198-215、先頭=総務費、末尾=諸支出金・償還金）。後期：総括歳出=物理118（印字230-231）、明細=物理123-124（印字240-243、先頭=総務費、末尾=諸支出金・繰出金、物理125以降は給与費明細書でscope外）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2024/supplementary-3.pdf",
+            "sha256": "681c96c6b50733f1ac10d6fd5354f2e551f1d709b44b32a4cccd2953e84a7929",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r6_hoseiyosan_3.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:41:13.813Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度東京都北区補正予算説明書（一般会計（第4号））",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r6_hoseiyosan_4.pdf",
+              "sha256": "6fdb90ed8ea4ddf2d5bbe60ba4e03b866ac5a3c30d806dc3f0ba493e9e38a774",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "未選定。補正予算一覧掲載の一般会計（第4号）は債務負担行為の補正のみ：第1表が債務負担行為補正で歳入歳出予算補正なし、説明書は債務負担行為調書（児童相談所等複合施設建設工事の変更分、単位千円）のみで事項別明細書を持たない。全文テキスト確認済み（物理11頁、ベクトル表なし）で隠れた明細なし。債務負担の限度額・期間は当年度支出済額と推定しない。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度東京都北区補正予算説明書（一般会計（第5号））",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r6_hoseiyosan_5.pdf",
+              "sha256": "03df8d0230c1d036dccfb68630d6cb0c736f1dcd189313803b258437b16d3665",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 11
+                    },
+                    {
+                      "start": 13,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。一般会計のみ。総括歳出=物理11（印字16-17）。明細=物理13（印字20-21、総務費・選挙費（衆議院議員選挙）のみ、物理14以降は給与費明細書でscope外）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2024/supplementary-5.pdf",
+            "sha256": "03df8d0230c1d036dccfb68630d6cb0c736f1dcd189313803b258437b16d3665",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r6_hoseiyosan_5.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:41:17.990Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度東京都北区補正予算説明書（一般会計（第6号））",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r6_hoseiyosan_6.pdf",
+              "sha256": "90b927c7353acd94c037f571744d1e28889f1c59062c4db6545daac0cb56111a",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "start": 15,
+                      "end": 19
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。一般会計のみ。総括歳出=物理12（印字18-19）。明細=物理15-19（印字24-33、先頭=総務費、末尾=教育費・中学校費、物理20以降は債務負担行為調書でscope外）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2024/supplementary-6.pdf",
+            "sha256": "90b927c7353acd94c037f571744d1e28889f1c59062c4db6545daac0cb56111a",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r6_hoseiyosan_6.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:41:23.002Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 7
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度東京都北区補正予算説明書（一般会計（第7号）外）",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r6_hoseiyosan_7.pdf",
+              "sha256": "bc810e728038dda4f5a7cda5ee1e8a6d22deafa9afde49057b2cea7c5b15a9b3",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 24,
+                      "end": 24
+                    },
+                    {
+                      "start": 27,
+                      "end": 39
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 46,
+                      "end": 46
+                    },
+                    {
+                      "start": 48,
+                      "end": 48
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 55,
+                      "end": 55
+                    },
+                    {
+                      "start": 61,
+                      "end": 68
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 75,
+                      "end": 75
+                    },
+                    {
+                      "start": 77,
+                      "end": 77
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。一般会計（第7号）＋国民健康保険事業会計・介護保険会計・後期高齢者医療会計（各第2号）。一般：総括歳出=物理24（印字42-43）、明細=物理27-39（印字48-73、先頭=総務費・徴税費、末尾=教育費・認定こども園費）。国保：総括歳出=物理46（印字86-87）、明細=物理48（印字90-91、総務費のみ）。介護：総括歳出=物理55（印字104-105）、明細=物理61-68（印字116-131、先頭=保険給付費（財源更正）、末尾=地域支援事業費・包括的支援事業）。後期：総括歳出=物理75（印字144-145）、明細=物理77（印字148-149、総務費のみ）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2024/supplementary-7.pdf",
+            "sha256": "bc810e728038dda4f5a7cda5ee1e8a6d22deafa9afde49057b2cea7c5b15a9b3",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r6_hoseiyosan_7.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:41:28.401Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 8
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度東京都北区補正予算説明書（一般会計（第8号））",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r6_hoseiyosan_8.pdf",
+              "sha256": "4ace1fbfa764d38e587b3ab9bdb34ddc3f332d12f05b8f364cc413ad782b7bfa",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 11
+                    },
+                    {
+                      "start": 14,
+                      "end": 20
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。一般会計のみ。総括歳出=物理11（印字16-17）。明細=物理14-20（印字22-35、先頭=福祉費・高齢者福祉費、末尾=教育費・認定こども園費）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2024/supplementary-8.pdf",
+            "sha256": "4ace1fbfa764d38e587b3ab9bdb34ddc3f332d12f05b8f364cc413ad782b7bfa",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r6_hoseiyosan_8.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:41:32.767Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度東京都北区補正予算説明書（一般会計（第1号））",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r7_hoseiyosan_1.pdf",
+              "sha256": "dd56c558d69fcfa5e4e9d79b9d29e3df05b1a3716658706177af0c22ba1db286",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "start": 14,
+                      "end": 14
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。一般会計のみ。総括歳出=物理12（印字18-19）。明細=物理14（印字22-23、総務費・地域振興費のみ、物理15以降は債務負担行為調書でscope外）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2025/supplementary-1.pdf",
+            "sha256": "dd56c558d69fcfa5e4e9d79b9d29e3df05b1a3716658706177af0c22ba1db286",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r7_hoseiyosan_1.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:41:41.339Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度東京都北区補正予算説明書（一般会計（第2号）外）",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r7_hoseiyosan_2.pdf",
+              "sha256": "1665c7023f8ae10c11cb64475bfb47adf90532593600b12ac91dbd5d95bdaf7e",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 22,
+                      "end": 22
+                    },
+                    {
+                      "start": 32,
+                      "end": 46
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 57,
+                      "end": 57
+                    },
+                    {
+                      "start": 59,
+                      "end": 59
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 63,
+                      "end": 63
+                    },
+                    {
+                      "start": 65,
+                      "end": 65
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。一般会計（第2号）＋国民健康保険事業会計（第1号）・後期高齢者医療会計（第1号）。介護保険会計の補正掲載なし。一般：総括歳出=物理22（印字38-39、減額△あり）、明細=物理32-46（印字58-87、先頭=総務費、末尾=教育費・認定こども園費）。国保：総括歳出=物理57（印字108-109）、明細=物理59（印字112-113、総務費のみ）。後期：総括歳出=物理63（印字120-121）、明細=物理65（印字124-125、総務費・徴収費のみ）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2025/supplementary-2.pdf",
+            "sha256": "1665c7023f8ae10c11cb64475bfb47adf90532593600b12ac91dbd5d95bdaf7e",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r7_hoseiyosan_2.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:41:47.063Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度東京都北区補正予算説明書（一般会計（第3号））",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r7_hoseiyosan_3.pdf",
+              "sha256": "fc7c1593fac1b5cd10b805a1f291f9a75348abe70d08a9de84b1f843e71bfbd6",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 11
+                    },
+                    {
+                      "start": 14,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。一般会計のみ。総括歳出=物理11（印字16-17）。明細=物理14-15（印字22-25、先頭=福祉費・児童福祉費、末尾=産業経済費・商工費）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2025/supplementary-3.pdf",
+            "sha256": "fc7c1593fac1b5cd10b805a1f291f9a75348abe70d08a9de84b1f843e71bfbd6",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r7_hoseiyosan_3.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:41:51.683Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度東京都北区補正予算説明書（一般会計（第4号）外）",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r7_hoseiyosan_4.pdf",
+              "sha256": "71ffa075443284c81aec766e3db887fd95c5c778696ca1996beec06fc6dc913c",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 29,
+                      "end": 29
+                    },
+                    {
+                      "start": 43,
+                      "end": 71
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 88,
+                      "end": 88
+                    },
+                    {
+                      "start": 90,
+                      "end": 93
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 97,
+                      "end": 97
+                    },
+                    {
+                      "start": 102,
+                      "end": 110
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 118,
+                      "end": 118
+                    },
+                    {
+                      "start": 122,
+                      "end": 123
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。一般会計（第4号）＋国民健康保険事業会計（第2号）・介護保険会計（第1号）・後期高齢者医療会計（第2号）。会計ごとの補正号が異なる旨を保持。一般：総括歳出=物理29（印字52-53）、明細=物理43-71（印字80-137、先頭=総務費、末尾=教育費・社会教育費）。国保：総括歳出=物理88（印字170-171）、明細=物理90-93（印字174-181、先頭=総務費、末尾=諸支出金・償還金）。介護：総括歳出=物理97（印字188-189）、明細=物理102-110（印字198-215、先頭=総務費、末尾=諸支出金・繰出金）。後期：総括歳出=物理118（印字230-231）、明細=物理122-123（印字238-241、先頭=総務費、末尾=諸支出金・繰出金、物理124以降は給与費明細書でscope外）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2025/supplementary-4.pdf",
+            "sha256": "71ffa075443284c81aec766e3db887fd95c5c778696ca1996beec06fc6dc913c",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r7_hoseiyosan_4.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:41:59.454Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度東京都北区補正予算説明書（一般会計（第5号））",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r7_hoseiyosan_5.pdf",
+              "sha256": "8e41660fd03951c2c63af4c412c88a611ccf9b433300be63bf95bb136ae756fc",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 13,
+                      "end": 13
+                    },
+                    {
+                      "start": 17,
+                      "end": 22
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。一般会計のみ。総括歳出=物理13（印字20-21）。明細=物理17-22（印字28-39、先頭=総務費・総務管理費、末尾=教育費・中学校費、物理23以降は繰越明許費調書でscope外）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2025/supplementary-5.pdf",
+            "sha256": "8e41660fd03951c2c63af4c412c88a611ccf9b433300be63bf95bb136ae756fc",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r7_hoseiyosan_5.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:42:04.116Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度東京都北区補正予算説明書（一般会計（第6号）外）",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r7_hoseiyosan_6.pdf",
+              "sha256": "eff69e6dab4fef77c5dd2d0e376f51874be7b0cf8e20ba600b8199b0843a0c5b",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 25,
+                      "end": 25
+                    },
+                    {
+                      "start": 29,
+                      "end": 51
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 59,
+                      "end": 59
+                    },
+                    {
+                      "start": 61,
+                      "end": 61
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 68,
+                      "end": 68
+                    },
+                    {
+                      "start": 74,
+                      "end": 82
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 89,
+                      "end": 89
+                    },
+                    {
+                      "start": 91,
+                      "end": 91
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。一般会計（第6号）＋国民健康保険事業会計（第3号）・介護保険会計（第2号）・後期高齢者医療会計（第3号）。会計ごとの補正号が異なる旨を保持。一般：総括歳出=物理25（印字44-45）、明細=物理29-51（印字52-97、先頭=議会費、末尾=教育費・社会教育費）。国保：総括歳出=物理59（印字112-113）、明細=物理61（印字116-117、総務費のみ）。介護：総括歳出=物理68（印字130-131）、明細=物理74-82（印字142-159、先頭=総務費、末尾=地域支援事業費・包括的支援事業）。後期：総括歳出=物理89（印字172-173）、明細=物理91（印字176-177、総務費のみ）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2025/supplementary-6.pdf",
+            "sha256": "eff69e6dab4fef77c5dd2d0e376f51874be7b0cf8e20ba600b8199b0843a0c5b",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r7_hoseiyosan_6.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:42:09.067Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 7
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度東京都北区補正予算説明書（一般会計（第7号））",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r7_hoseiyosan_7.pdf",
+              "sha256": "f053eec2cf3ccf0e006cec1acd60e95f453ee9fd8325047b2188b2e428c6009e",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "start": 17,
+                      "end": 24
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。一般会計のみ。総括歳出=物理12（印字18-19）。明細=物理17-24（印字28-43、先頭=総務費、末尾=教育費・認定こども園費、物理25以降は繰越明許費調書でscope外）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2025/supplementary-7.pdf",
+            "sha256": "f053eec2cf3ccf0e006cec1acd60e95f453ee9fd8325047b2188b2e428c6009e",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r7_hoseiyosan_7.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:42:12.723Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度東京都北区補正予算説明書（一般会計（第1号））",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r8_hoseiyosan_1.pdf",
+              "sha256": "0c11596cbf73d569378dfafb5777397657ab8e0362370df8f881e7ce8a8a42d2",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 13,
+                      "end": 13
+                    },
+                    {
+                      "start": 21,
+                      "end": 34
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。一般会計のみ。総括歳出=物理13（印字20-21、減額△あり）。明細=物理21-34（印字36-63、先頭=総務費、末尾=諸支出金・財政積立金、物理35は債務負担行為調書でscope外）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2026/supplementary-1.pdf",
+            "sha256": "0c11596cbf73d569378dfafb5777397657ab8e0362370df8f881e7ce8a8a42d2",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r8_hoseiyosan_1.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:42:17.127Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度東京都北区補正予算説明書（一般会計（第2号））",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r8_hoseiyosan_2.pdf",
+              "sha256": "248b06948dc959ee50cbe8a50b3900cde1dac3fff466b059631e60cb0c27f31d",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 11
+                    },
+                    {
+                      "start": 15,
+                      "end": 20
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。一般会計のみ。総括歳出=物理11（印字16-17）。明細=物理15-20（印字24-35、先頭=福祉費・高齢者福祉費、末尾=教育費・認定こども園費）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2026/supplementary-2.pdf",
+            "sha256": "248b06948dc959ee50cbe8a50b3900cde1dac3fff466b059631e60cb0c27f31d",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r8_hoseiyosan_2.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:42:21.155Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度東京都北区補正予算説明書（一般会計（第3号））",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r8_hoseiyosan_3.pdf",
+              "sha256": "20a5012a3ca8ab806adedf615a4e47e6560d63d3e1fe8cb4cd4bd161a4f56b90",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "start": 14,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。一般会計のみ。総括歳出=物理12（印字18-19）。明細=物理14-15（印字22-25、先頭=教育費・小学校費、末尾=予備費、物理16は債務負担行為調書でscope外）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2026/supplementary-3.pdf",
+            "sha256": "20a5012a3ca8ab806adedf615a4e47e6560d63d3e1fe8cb4cd4bd161a4f56b90",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r8_hoseiyosan_3.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:42:25.027Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度東京都北区補正予算説明書（一般会計（第4号）外）",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T08:37:55.304131+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r8_hoseiyosan_4.pdf",
+              "sha256": "cc8402609a17ce0b8e1775f78fc19556875169da4b27318ae92071f01b44bffe",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 29,
+                      "end": 29
+                    },
+                    {
+                      "start": 40,
+                      "end": 72
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 91,
+                      "end": 91
+                    },
+                    {
+                      "start": 93,
+                      "end": 95
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 99,
+                      "end": 99
+                    },
+                    {
+                      "start": 106,
+                      "end": 115
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 122,
+                      "end": 122
+                    },
+                    {
+                      "start": 125,
+                      "end": 126
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。一般会計（第4号）＋国民健康保険事業会計・介護保険会計・後期高齢者医療会計（各第1号）。一般：総括歳出=物理29（印字52-53）、明細=物理40-72（印字74-139、先頭=議会費、末尾=諸支出金）。国保：総括歳出=物理91（印字176-177）、明細=物理93-95（印字180-185、先頭=納付金、末尾=諸支出金・償還金）。介護：総括歳出=物理99（印字192-193）、明細=物理106-115（印字206-225、先頭=総務費、末尾=諸支出金・繰出金）。後期：総括歳出=物理122（印字238-239）、明細=物理125-126（印字244-247、諸支出金・償還金＋繰出金、物理127は奥付）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2026/supplementary-4.pdf",
+            "sha256": "cc8402609a17ce0b8e1775f78fc19556875169da4b27318ae92071f01b44bffe",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r8_hoseiyosan_4.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T08:42:31.271Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 9
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度東京都北区補正予算説明書（一般会計（第9号）外）",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T09:11:16.372384+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r6_hoseiyosan_9.pdf",
+              "sha256": "2e329eb270a5a5032710d96bfd73abb090a5aa9552cd93c3e78b97f04232231b",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 29,
+                      "end": 29
+                    },
+                    {
+                      "start": 68,
+                      "end": 113
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 124,
+                      "end": 124
+                    },
+                    {
+                      "start": 133,
+                      "end": 144
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 151,
+                      "end": 151
+                    },
+                    {
+                      "start": 160,
+                      "end": 170
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 177,
+                      "end": 177
+                    },
+                    {
+                      "start": 183,
+                      "end": 187
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。議案第17〜20号。一般会計（第9号）＋国民健康保険事業会計・介護保険会計・後期高齢者医療会計（各第3号）。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。一般：総括歳出=物理29（印字52-53、減額△あり）、明細=物理68-113（印字130-221、先頭=議会費、末尾=諸支出金・財政積立金）。国保：総括歳出=物理124（印字242-243）、明細=物理133-144（印字260-283、先頭=総務費、末尾=予備費）。介護：総括歳出=物理151（印字296-297）、明細=物理160-170（印字314-335、先頭=総務費、末尾=諸支出金・繰出金）。後期：総括歳出=物理177（印字348-349）、明細=物理183-187（印字360-369、先頭=総務費、末尾=葬祭費、物理188は給与費明細書でscope外）。歳入・給与費明細書・債務負担/繰越明許/特別区債の調書類はscope外。歳入は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2024/supplementary-9.pdf",
+            "sha256": "2e329eb270a5a5032710d96bfd73abb090a5aa9552cd93c3e78b97f04232231b",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r6_hoseiyosan_9.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:12:13.913Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131172",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 8
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度東京都北区補正予算説明書（一般会計（第8号）外）",
+          "landing_url": "https://www.city.kita.lg.jp/city-information/finance/1014484/1014487.html",
+          "inspected_at": "2026-10-08T09:11:16.372384+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r7_hoseiyosan_8.pdf",
+              "sha256": "2e938f90432f7f607fb233efc0d154da6ea6458932857445ca6fe1f8019a967b",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 29,
+                      "end": 29
+                    },
+                    {
+                      "start": 73,
+                      "end": 118
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 130,
+                      "end": 130
+                    },
+                    {
+                      "start": 138,
+                      "end": 150
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 157,
+                      "end": 157
+                    },
+                    {
+                      "start": 167,
+                      "end": 181
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 188,
+                      "end": 188
+                    },
+                    {
+                      "start": 194,
+                      "end": 198
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算一覧（finance/1014484/1014487）掲載の補正予算説明書PDF1冊を選定。議案第35〜38号。一般会計（第8号）＋国民健康保険事業会計（第4号）・介護保険会計（第3号）・後期高齢者医療会計（第4号）。表紙の会計別補正号数表記と各説明書目次の「（第N号）事項別明細書」表記・一覧ラベル対応で号数を確定。歳出は各会計の総括（歳出）（款別に補正前の額・補正額・計・財源内訳、単位千円）と歳出明細（款・項・目が同一明細で補正前の額・補正額・計・補正額の財源内訳・節（区分＋金額）・説明（事業名）に対応、単位千円）をscopeに記録。明細表は輪郭線描画で文字層抽出不可のためpdf_type=scan。中間頁は目次の款-印字対応で範囲記録。一般：総括歳出=物理29（印字52-53、大幅減額△あり）、明細=物理73-118（印字140-231、先頭=総務費、末尾=諸支出金・財政積立金）。国保：総括歳出=物理130（印字254-255）、明細=物理138-150（印字270-295、先頭=総務費、末尾=予備費）。介護：総括歳出=物理157（印字308-309）、明細=物理167-181（印字328-357、先頭=総務費、末尾=諸支出金・繰出金）。後期：総括歳出=物理188（印字370-371）、明細=物理194-198（印字382-391、先頭=総務費、末尾=諸支出金・還付加算金、物理199は奥付）。歳入・給与費明細書・繰越明許/特別区債の調書類はscope外。歳入は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131172/2025/supplementary-8.pdf",
+            "sha256": "2e938f90432f7f607fb233efc0d154da6ea6458932857445ca6fe1f8019a967b",
+            "final_url": "https://www.city.kita.lg.jp/_res/projects/default_project/_page_/001/014/487/r7_hoseiyosan_8.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:12:18.935Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

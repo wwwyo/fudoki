@@ -2,6 +2,3542 @@
   "jurisdiction": "133051",
   "name": "日の出町",
   "official_url": "https://www.town.hinode.tokyo.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度日の出町一般会計予算書 / 令和8年度日の出町下水道事業会計予算書",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T03:04:01.367231+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R8_yosansyo.pdf",
+              "sha256": "79e0eded42bbaff4f433cf8130ce0f6ba630970715ccdd0c0ed8b7b956c9bb44",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 9
+                    },
+                    {
+                      "start": 17,
+                      "end": 18
+                    },
+                    {
+                      "start": 20,
+                      "end": 41
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 12
+                    },
+                    {
+                      "start": 19,
+                      "end": 19
+                    },
+                    {
+                      "start": 42,
+                      "end": 144
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R8_tousho1.pdf",
+              "sha256": "b0bba9b4b63e9a6d5c9a23a06e968375ce25f3d5492260d950a0a4d20dbae948",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 7
+                    },
+                    {
+                      "start": 21,
+                      "end": 21
+                    },
+                    {
+                      "start": 25,
+                      "end": 25
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 7
+                    },
+                    {
+                      "start": 22,
+                      "end": 24
+                    },
+                    {
+                      "start": 26,
+                      "end": 26
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "町公式サイトの財政>予算>予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に掲載された最新の当初予算。令和8年度（2026年度）一般会計予算書1冊。Excel出力の文字PDF・単位千円。歳出は第1表歳入歳出予算の款項表(物理10-12頁)・総括(19頁)・歳入歳出予算事項別明細書の歳出(42-144頁、議会費〜公債費・予備費)で、款・項・目と本年度予算額・節区分の金額が同一明細に対応。歳入は第1表(6-9頁)・総括(17-18頁)・歳入明細(20-41頁)。特別会計（国民健康保険・介護保険・後期高齢者医療等）の当初予算書は予算書一覧および予算の概要頁に掲載がなく未掲載として不足を記録。公営企業会計は日の出町下水道事業会計予算・決算ページ（https://www.town.hinode.tokyo.jp/0000003502.html）の令和8年度日の出町下水道事業会計予算書（R8_tousho1.pdf・26頁・文字PDF・単位千円）を追加。予算実施計画（物理6頁:収益的収支・7頁:資本的収支）は款・項・目と予定額が同一明細、予算実施計画説明書（21頁:収益的収入・22-24頁:収益的支出・25頁:資本的収入・26頁:資本的支出）は款・項・目と本年度予算額・節区分の事業名・金額が同一明細に対応。議案（2-4頁）・給与費明細書（9-11頁）・債務負担行為調書（12頁）・予定貸借対照表・損益計算書・キャッシュフロー計算書・注記（8,13-19頁）は歳出明細に含めない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2026/initial-1.pdf",
+            "sha256": "79e0eded42bbaff4f433cf8130ce0f6ba630970715ccdd0c0ed8b7b956c9bb44",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R8_yosansyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/133051/2026/initial-2.pdf",
+            "sha256": "b0bba9b4b63e9a6d5c9a23a06e968375ce25f3d5492260d950a0a4d20dbae948",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R8_tousho1.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:05:56.200Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度日の出町各会計歳入歳出決算書 / 令和7年度日の出町下水道事業会計決算書",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000000022.html",
+          "inspected_at": "2026-10-08T03:04:01.367231+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000000/22/R07kessann.pdf",
+              "sha256": "9ca52e6a7b7f195d3c73568bcf5965f7069e707f1a21b102ccf65eda8d7b7a3c",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 13
+                    },
+                    {
+                      "start": 24,
+                      "end": 49
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 14,
+                      "end": 17
+                    },
+                    {
+                      "start": 50,
+                      "end": 151
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 166,
+                      "end": 171
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 156,
+                      "end": 159
+                    },
+                    {
+                      "start": 172,
+                      "end": 179
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 194,
+                      "end": 199
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 184,
+                      "end": 187
+                    },
+                    {
+                      "start": 200,
+                      "end": 211
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 224,
+                      "end": 227
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 216,
+                      "end": 217
+                    },
+                    {
+                      "start": 228,
+                      "end": 231
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R7.pdf",
+              "sha256": "ffdd271d619e248e80075a530287b36d675271a3c33f7db1ee68c5158c1b6b95",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 5
+                    },
+                    {
+                      "start": 21,
+                      "end": 21
+                    },
+                    {
+                      "start": 23,
+                      "end": 23
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 5
+                    },
+                    {
+                      "start": 22,
+                      "end": 22
+                    },
+                    {
+                      "start": 23,
+                      "end": 23
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "町公式サイトの財政>決算>日の出町の決算書（https://www.town.hinode.tokyo.jp/0000000022.html）の最新公表分。令和7年度（2025年度）各会計歳入歳出決算書1冊・240頁・文字PDF・単位円。収録会計は一般会計・国民健康保険特別会計・介護保険特別会計・後期高齢者医療特別会計の4会計（会計別総括表で確認）。歳出事項別明細書は款・項・目と当初予算額・補正予算額・繰越・予備費流用の予算現額と節区分の金額が左頁、支出済額・翌年度繰越額・不用額・備考が右頁の見開き構成で同一明細に対応。一般会計歳出明細は物理50-151頁（議会費〜公債費・予備費、繰越明許・事故繰越を含む）、国保172-179頁、介護200-211頁、後期高齢者228-231頁。財産に関する調書(233頁以降)は歳出明細に含めない。 公営企業会計は日の出町下水道事業会計予算・決算ページ（https://www.town.hinode.tokyo.jp/0000003502.html）の令和7年度日の出町下水道事業会計決算書（R7.pdf・28頁・文字PDF）を追加。決算報告書（物理4頁:収益的収支・5頁:資本的収支）は款・項と当初予算額・補正予算額・決算額が同一明細（単位:円・税込）。収益費用明細書（21頁収入・22頁支出）は款項目節と金額が同一明細（単位:円・税抜）。資本的収支明細書（23頁）は建設改良費・企業債償還金の節別支出額（単位:円・税込）。損益計算書・剰余金計算書・貸借対照表・注記・事業報告書・キャッシュ・フロー計算書（6-20頁）と固定資産明細書・企業債明細書（24-28頁）は支出明細として含めない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2025/settlement-1.pdf",
+            "sha256": "9ca52e6a7b7f195d3c73568bcf5965f7069e707f1a21b102ccf65eda8d7b7a3c",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000000/22/R07kessann.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/133051/2025/settlement-2.pdf",
+            "sha256": "ffdd271d619e248e80075a530287b36d675271a3c33f7db1ee68c5158c1b6b95",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R7.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:06:03.669Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度日の出町一般会計補正予算書（第1号） / 令和8年度日の出町下水道事業会計補正予算書（第1号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T10:15:00+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R8_1.pdf",
+              "sha256": "adf7ff890b8f99307bc29f75baed9df62e55bdf0099ec4a884b054152dee7a3d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "start": 10,
+                      "end": 11
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 6
+                    },
+                    {
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 18
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R8_hosei1.pdf",
+              "sha256": "8ffda695594e86bfca9e5ca00f1d8ac7e5466bddf7e4a651a89cd2f7a4a52b74",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "start": 12,
+                      "end": 12
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "当初予算と同じ予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に掲載された令和8年度一般会計補正予算書（第1号）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。一般会計と下水道事業会計は会計別の補正号数（一般会計第1号／下水道事業会計第1号）を同じ対象に収録。号数の対応付けは提出日・議案番号の推測によらず、両掲載先のリンク名「令和8年度…補正予算書（第1号）」と各冊表紙題名の一致による（一般第1号は議案第43号・R8.6.1提出、下水道第1号は議案第44号・同日提出で別冊）。下水道事業会計予算・決算ページ（https://www.town.hinode.tokyo.jp/0000003502.html）に掲載されたR8_hosei1.pdf（SHA 8ffda695594e86bfca9e5ca00f1d8ac7e5466bddf7e4a651a89cd2f7a4a52b74）。単位千円。下水道第1号は収益的収入・支出と資本的収入を補正（資本的支出の補正なし、議案第3条は収入のみ）。実施計画は物理5頁（収益的収入・支出＋資本的収入、款・項・目と既決予定額・補正予定額・計、例：総係費1,650千円・他会計出資金1,650千円）、説明書は物理12頁（収益的収入・支出、節区分の説明：消費税還付金150千円・委託料1,650千円）・13頁（資本的収入、一般会計出資金1,650千円）で同一明細に対応（文字抽出で確認、pdf_type=text）。金額は補正予定額（増減額）であり補正後の予算額に読み替えない。予定CF計算書・貸借対照表等（円表示）は歳出明細に含めない。特別会計（国保・介護・後期高齢者）の補正予算書は確認した2掲載先になく未掲載のため、本対象は一般会計＋下水道事業会計の部分選定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2026/supplementary-1-2.pdf",
+            "sha256": "adf7ff890b8f99307bc29f75baed9df62e55bdf0099ec4a884b054152dee7a3d",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R8_1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/133051/2026/supplementary-1-1.pdf",
+            "sha256": "8ffda695594e86bfca9e5ca00f1d8ac7e5466bddf7e4a651a89cd2f7a4a52b74",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R8_hosei1.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T10:12:29.328Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度日の出町一般会計補正予算書（第2号） / 令和8年度日の出町下水道事業会計補正予算書（第2号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T10:15:00+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R8_2.pdf",
+              "sha256": "35bfe689088836420cf5164274212238835e93e97324c7b04afdd7943961b190",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "start": 9,
+                      "end": 9
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "start": 10,
+                      "end": 11
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R8_hosei2.pdf",
+              "sha256": "31ee8b85be7899d412b13d1d6013f0efce70bd8d897f523cd384e8229c103203",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "start": 13,
+                      "end": 13
+                    },
+                    {
+                      "start": 15,
+                      "end": 15
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "start": 14,
+                      "end": 14
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "当初予算と同じ予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に掲載された令和8年度一般会計補正予算書（第2号）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。一般会計と下水道事業会計は会計別の補正号数（一般会計第2号／下水道事業会計第2号）を同じ対象に収録。号数の対応付けは提出日・議案番号の推測によらず、両掲載先のリンク名「令和8年度…補正予算書（第2号）」と各冊表紙題名の一致による（一般第2号は議案第47号・R8.6.15提出、下水道第2号は議案第61号・R8.8.31提出で実施日が別）。下水道事業会計予算・決算ページ（https://www.town.hinode.tokyo.jp/0000003502.html）に掲載されたR8_hosei2.pdf（SHA 31ee8b85be7899d412b13d1d6013f0efce70bd8d897f523cd384e8229c103203）。単位千円。下水道第2号は収益的収入・支出と資本的収入を補正（資本的支出の補正なし、議案第3条は収入のみ。第4条企業債限度額・第5条職員給与費の補正は歳出明細に含めない）。実施計画は物理5頁（収益的収入・支出＋資本的収入、款・項・目と既決予定額・補正予定額・計、例：管渠費△24,481千円・企業債11,000千円）、説明書は物理13頁（収益的収入）・14頁（収益的支出）・15頁（資本的収入）で節区分の事業名・金額が同一明細に対応（文字抽出で確認、pdf_type=text）。金額は補正予定額（増減額）であり補正後の予算額に読み替えない。予定CF計算書・貸借対照表等（円表示）は歳出明細に含めない。特別会計（国保・介護・後期高齢者）の補正予算書は確認した2掲載先になく未掲載のため、本対象は一般会計＋下水道事業会計の部分選定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2026/supplementary-2-2.pdf",
+            "sha256": "35bfe689088836420cf5164274212238835e93e97324c7b04afdd7943961b190",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R8_2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/133051/2026/supplementary-2-1.pdf",
+            "sha256": "31ee8b85be7899d412b13d1d6013f0efce70bd8d897f523cd384e8229c103203",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R8_hosei2.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T10:12:34.270Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度日の出町一般会計補正予算書（第3号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-07T16:12:11.974068+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R8_3.pdf",
+              "sha256": "055f29fa5a1e908896f2e052b0bb78a75a3168e8a9c33c321d85d0cfdac5777d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "start": 8,
+                      "end": 8
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "start": 9,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "当初予算と同じ予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に掲載された令和8年度一般会計補正予算書（第3号）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。一般会計のみ（特別会計の補正予算書は同掲載先にない）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2026/supplementary-3.pdf",
+            "sha256": "055f29fa5a1e908896f2e052b0bb78a75a3168e8a9c33c321d85d0cfdac5777d",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R8_3.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:12:27.254Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度日の出町一般会計補正予算書（第4号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-07T16:12:11.974068+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R8_4.pdf",
+              "sha256": "f32d0c14a12a286ab96d8a87d8689ce4e57ca4cfafeecbfd5f09d6fe5ec90488",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "start": 8,
+                      "end": 8
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "start": 9,
+                      "end": 10
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "当初予算と同じ予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に掲載された令和8年度一般会計補正予算書（第4号）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。一般会計のみ（特別会計の補正予算書は同掲載先にない）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2026/supplementary-4.pdf",
+            "sha256": "f32d0c14a12a286ab96d8a87d8689ce4e57ca4cfafeecbfd5f09d6fe5ec90488",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R8_4.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:12:30.051Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度日の出町一般会計補正予算書（第5号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-07T16:12:11.974068+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R8_5.pdf",
+              "sha256": "1ea60d042de613bd505306ef139986b09bb4065a471b670ac7ab82b9dafd6ed2",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 5
+                    },
+                    {
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "start": 11,
+                      "end": 16
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 7
+                    },
+                    {
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "start": 17,
+                      "end": 35
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "当初予算と同じ予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に掲載された令和8年度一般会計補正予算書（第5号）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。一般会計のみ（特別会計の補正予算書は同掲載先にない）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2026/supplementary-5.pdf",
+            "sha256": "1ea60d042de613bd505306ef139986b09bb4065a471b670ac7ab82b9dafd6ed2",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R8_5.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:12:36.192Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度日の出町一般会計補正予算書（第6号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-07T16:12:11.974068+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R8_6.pdf",
+              "sha256": "9888b2bd2119966110802fc57c13ba8b7f970b519c4885e1294e00ace7466668",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "start": 9,
+                      "end": 9
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "start": 10,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "当初予算と同じ予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に掲載された令和8年度一般会計補正予算書（第6号）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。一般会計のみ（特別会計の補正予算書は同掲載先にない）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2026/supplementary-6.pdf",
+            "sha256": "9888b2bd2119966110802fc57c13ba8b7f970b519c4885e1294e00ace7466668",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R8_6.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:12:40.603Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度日の出町各会計歳入歳出決算書 / 令和6年度日の出町下水道事業会計決算書",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000000022.html",
+          "inspected_at": "2026-10-08T01:09:01.010424+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000000/22/R06kessann.pdf",
+              "sha256": "b0f1a1daabcd3c44c1bcb68528b57c073192869f0a3dbfa26f47803c87741be7",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 13
+                    },
+                    {
+                      "start": 24,
+                      "end": 49
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 14,
+                      "end": 17
+                    },
+                    {
+                      "start": 50,
+                      "end": 151
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 166,
+                      "end": 171
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 156,
+                      "end": 159
+                    },
+                    {
+                      "start": 172,
+                      "end": 179
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 194,
+                      "end": 199
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 184,
+                      "end": 187
+                    },
+                    {
+                      "start": 200,
+                      "end": 211
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 224,
+                      "end": 227
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 216,
+                      "end": 217
+                    },
+                    {
+                      "start": 228,
+                      "end": 231
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R6kessan.pdf",
+              "sha256": "cb715a7fe73498c3bb7a8c11df92cf7046f298182a0852b5f5982ea395fa21cb",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 8
+                    },
+                    {
+                      "start": 26,
+                      "end": 26
+                    },
+                    {
+                      "start": 28,
+                      "end": 28
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 8
+                    },
+                    {
+                      "start": 27,
+                      "end": 28
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "2024年度（令和6年度）決算。一般会計・国保・介護・後期高齢者は町公式サイトの財政>決算>日の出町の決算書（0000000022.html）の令和6年度日の出町各会計歳入歳出決算書（R06kessann.pdf・240頁・文字PDF・単位円）。会計別総括表（物理4-5頁）で当年度の会計構成はこの4会計と確認。歳出事項別明細書は左頁に款・項・目と当初・補正・繰越・流用の予算現額・節区分金額、右頁に支出済額・翌年度繰越額・不用額・備考の見開き構成で同一明細。一般会計歳出明細は物理50-151頁（実質収支に関する調書152頁は除外）、国保172-179頁（款項表156-159）、介護200-211頁（款項表184-187）、後期高齢者228-231頁（款項表216-217）。財産に関する調書（233頁以降）は歳出明細に含めない。公営企業会計は令和6年度決算の健全化判断比率（0000000065.html）で下水道事業会計の存在を確認し、日の出町下水道事業会計予算・決算ページ（0000003502.html）の令和6年度日の出町下水道事業会計決算書（R6kessan.pdf・33頁・文字PDF）を選定。決算報告書（物理7頁:収益的収入及び支出・8頁:資本的収入及び支出）は款・項と決算額を同一明細で確認（単位:円・税込、うち仮受/仮払消費税の注記あり）。収益費用明細書（26頁収入・27頁支出）は款項目節と金額が同一明細（単位:円・税抜）。資本的収支明細書（28頁）は建設改良費・企業債償還金の節別支出額（単位:円・税込）。損益計算書・剰余金計算書・貸借対照表・注記・事業報告書・キャッシュ・フロー計算書（9-25頁）と固定資産明細書・企業債明細書（29-33頁）は支出明細として含めない。これで令和6年度の全会計（一般会計・3特別会計・下水道事業会計）の歳出明細をカバーする。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2024/settlement-1.pdf",
+            "sha256": "b0f1a1daabcd3c44c1bcb68528b57c073192869f0a3dbfa26f47803c87741be7",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000000/22/R06kessann.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/133051/2024/settlement-2.pdf",
+            "sha256": "cb715a7fe73498c3bb7a8c11df92cf7046f298182a0852b5f5982ea395fa21cb",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R6kessan.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T01:09:25.339Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2025,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度日の出町一般会計予算書 / 令和7年度日の出町下水道事業会計予算書",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T07:12:57+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R7_yosansyo.pdf",
+              "sha256": "36fad543fcc2126f7c9b4f818a5299e4cbf264425620a85e4ece114ec75ff06f",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 9
+                    },
+                    {
+                      "start": 17,
+                      "end": 18
+                    },
+                    {
+                      "start": 20,
+                      "end": 40
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 12
+                    },
+                    {
+                      "start": 19,
+                      "end": 19
+                    },
+                    {
+                      "start": 41,
+                      "end": 145
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R7_yosan.pdf",
+              "sha256": "c938347d3c910f52332a226c7af5b3b9dfea291ce160b01dc9fd6c4d50103fca",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 10
+                    },
+                    {
+                      "start": 27,
+                      "end": 27
+                    },
+                    {
+                      "start": 31,
+                      "end": 31
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 10
+                    },
+                    {
+                      "start": 28,
+                      "end": 30
+                    },
+                    {
+                      "start": 32,
+                      "end": 32
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書一覧（0000001754.html）の令和7年度一般会計予算書（R7_yosansyo.pdf・158頁・文字PDF・単位千円）と下水道会計予算・決算頁（0000003502.html）の令和7年度下水道事業会計予算書（R7_yosan.pdf・33頁・Excel生成文字PDF・単位千円）。一般会計歳出は第1表款項（物理10-12頁）・総括（19頁）・事項別明細書（41-145頁、議会費〜予備費）で款・項・目と本年度予算額・節区分の金額が同一明細に対応、歳入は第1表（6-9頁）・総括（17-18頁）・明細（20-40頁）。下水道は予算実施計画（9頁収益的・10頁資本的、款項目と予定額）・実施計画説明書（27頁収益的収入・28-30頁収益的支出・31頁資本的収入・32頁資本的支出、款項目と本年度予算額・節区分の金額が同一明細）を確認。議案・給与費明細書・財務諸表・注記は歳出明細に含めない。特別会計（国保・介護・後期高齢者医療）の当初予算書は予算書一覧・予算の概要頁に掲載がなく未掲載として不足を記録。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2025/initial-1.pdf",
+            "sha256": "36fad543fcc2126f7c9b4f818a5299e4cbf264425620a85e4ece114ec75ff06f",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R7_yosansyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/133051/2025/initial-2.pdf",
+            "sha256": "c938347d3c910f52332a226c7af5b3b9dfea291ce160b01dc9fd6c4d50103fca",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R7_yosan.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T07:13:51.547Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2024,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度日の出町一般会計予算書 / 令和6年度日の出町下水道事業会計予算書",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T07:12:57+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R6_yosansyo.pdf",
+              "sha256": "df516811e989832619acc83f31e43e5a244389a2f3501a7b6f1276516f15cf2c",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 9
+                    },
+                    {
+                      "start": 16,
+                      "end": 17
+                    },
+                    {
+                      "start": 19,
+                      "end": 39
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 12
+                    },
+                    {
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "start": 40,
+                      "end": 144
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R6_yosansho.pdf",
+              "sha256": "4c4a70caa8317d32dd8855520ae2e01aaa3ccd84914563d72d378e83f74547ce",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 10
+                    },
+                    {
+                      "start": 27,
+                      "end": 27
+                    },
+                    {
+                      "start": 31,
+                      "end": 31
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 10
+                    },
+                    {
+                      "start": 28,
+                      "end": 30
+                    },
+                    {
+                      "start": 32,
+                      "end": 32
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書一覧の令和6年度一般会計予算書（R6_yosansyo.pdf・158頁・文字PDF・単位千円）と下水道会計予算・決算頁の令和6年度下水道事業会計予算書（R6_yosansho.pdf・33頁・単位千円）。一般会計歳出は第1表款項（物理10-12頁）・総括（18頁）・事項別明細書（40-144頁、議会費〜予備費）で款・項・目と本年度予算額・節区分の金額が同一明細に対応、歳入は第1表（6-9頁）・総括（16-17頁）・明細（19-39頁）。下水道冊子はPrint To PDF生成で漢字のToUnicodeがなく科目名の文字抽出が不可（金額数値は抽出可）のためpdf_typeはscanとし、予算実施計画（9頁収益的・10頁資本的、款項目と予定額）・実施計画説明書（27頁収益的収入・28-30頁収益的支出・31頁資本的収入・32頁資本的支出、款項目と本年度予算額・節区分の金額が同一明細）を描画で目視確認。議案・財務諸表・注記は歳出明細に含めない。特別会計の当初予算書は同掲載先になく不足を記録。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2024/initial-2.pdf",
+            "sha256": "df516811e989832619acc83f31e43e5a244389a2f3501a7b6f1276516f15cf2c",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R6_yosansyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/133051/2024/initial-1.pdf",
+            "sha256": "4c4a70caa8317d32dd8855520ae2e01aaa3ccd84914563d72d378e83f74547ce",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R6_yosansho.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T07:14:02.244Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2023,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度日の出町一般会計予算書 / 令和5年度日の出町下水道事業会計予算書",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T07:12:57+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R5_yosansyo.pdf",
+              "sha256": "350cc4166d1ca3d9c07d5ba77c35eea91b16bdb9c3be9cbe93b0982c0c37073a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 9
+                    },
+                    {
+                      "start": 17,
+                      "end": 18
+                    },
+                    {
+                      "start": 20,
+                      "end": 39
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 12
+                    },
+                    {
+                      "start": 19,
+                      "end": 19
+                    },
+                    {
+                      "start": 40,
+                      "end": 134
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R5_yosannsho.pdf",
+              "sha256": "bf50149a7778cfcdd1b208c140256d44a21045c1038810211422688af4d360a8",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 10
+                    },
+                    {
+                      "start": 23,
+                      "end": 23
+                    },
+                    {
+                      "start": 26,
+                      "end": 26
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 10
+                    },
+                    {
+                      "start": 24,
+                      "end": 25
+                    },
+                    {
+                      "start": 27,
+                      "end": 27
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書一覧の令和5年度一般会計予算書（R5_yosansyo.pdf・147頁・文字PDF・単位千円）と下水道会計予算・決算頁の令和5年度下水道事業会計予算書（R5_yosannsho.pdf・27頁・単位千円）。一般会計歳出は第1表款項（物理10-12頁）・総括（19頁）・事項別明細書（40-134頁、議会費〜予備費）で款・項・目と本年度予算額・節区分の金額が同一明細に対応、歳入は第1表（6-9頁）・総括（17-18頁）・明細（20-39頁、町債明細は39頁に同居）。下水道冊子はPrint To PDF生成で漢字のToUnicodeがなく科目名の文字抽出が不可（金額数値は抽出可）のためpdf_typeはscanとし、予算実施計画（9頁収益的・10頁資本的、款項目と予定額）・実施計画説明書（23頁収益的収入・24-25頁収益的支出・26頁資本的収入・27頁資本的支出、款項目と本年度予算額・節区分の金額が同一明細、初年度のため前年度予算額は0）を描画で目視確認。議案・財務諸表・注記は歳出明細に含めない。特別会計の当初予算書は同掲載先になく不足を記録。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2023/initial-1.pdf",
+            "sha256": "350cc4166d1ca3d9c07d5ba77c35eea91b16bdb9c3be9cbe93b0982c0c37073a",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R5_yosansyo.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/133051/2023/initial-2.pdf",
+            "sha256": "bf50149a7778cfcdd1b208c140256d44a21045c1038810211422688af4d360a8",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R5_yosannsho.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T07:14:11.227Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2023,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度日の出町各会計歳入歳出決算書 / 令和5年度日の出町下水道事業会計決算書",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000000022.html",
+          "inspected_at": "2026-10-08T07:12:57+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000000/22/R05kessann.pdf",
+              "sha256": "e2531add8a9396d1e9890ec02fa56239c159608c0abfc7dbba3efa4bb98ea6e4",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 16
+                    },
+                    {
+                      "start": 29,
+                      "end": 56
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 17,
+                      "end": 20
+                    },
+                    {
+                      "start": 57,
+                      "end": 156
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町国民健康保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 161,
+                      "end": 162
+                    },
+                    {
+                      "start": 175,
+                      "end": 180
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 163,
+                      "end": 166
+                    },
+                    {
+                      "start": 181,
+                      "end": 190
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町介護保険特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 195,
+                      "end": 196
+                    },
+                    {
+                      "start": 207,
+                      "end": 212
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 197,
+                      "end": 198
+                    },
+                    {
+                      "start": 213,
+                      "end": 224
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町後期高齢者医療特別会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 229,
+                      "end": 230
+                    },
+                    {
+                      "start": 241,
+                      "end": 244
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 231,
+                      "end": 232
+                    },
+                    {
+                      "start": 245,
+                      "end": 248
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R5kessan.pdf",
+              "sha256": "cc2a3d92bc8f06321b48304ad2aabe1b634d5369afade9d7982f5ff3d79ee207",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "start": 25,
+                      "end": 26
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "start": 25,
+                      "end": 26
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "決算書一覧（0000000022.html）の令和5年度各会計歳入歳出決算書（R05kessann.pdf・260頁・文字PDF・単位円）と下水道会計予算・決算頁の令和5年度下水道事業会計決算書（R5kessan.pdf・31頁・文字PDF）。会計別総括表（物理5頁）で当年度の会計構成は一般会計・国保・介護・後期高齢者の4会計と確認。一般会計歳出明細は物理57-156頁（議会費〜予備費、見開き左頁=予算現額・節区分、右頁=支出済額・翌年度繰越額・不用額・備考で同一明細）、国保181-190頁、介護213-224頁、後期高齢者245-248頁。款項表は一般歳出17-20・国保163-166・介護197-198・後期231-232頁。空白頁（21-23・167-169・199-201・233-235）・実質収支調書・財産調書は範囲外。下水道は決算報告書（7頁収益的・9頁資本的、款項と決算額、単位円・税込、8頁は白紙）・収益費用明細書（25頁、款項目節、単位円・税抜）・資本的収支明細書（26頁、単位円・税込）を確認。損益計算書・貸借対照表・注記・事業報告書・固定資産明細書・企業債明細書は支出明細としない。これで令和5年度の全会計（一般・3特別会計・下水道）の歳出明細をカバーする。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2023/settlement-2.pdf",
+            "sha256": "e2531add8a9396d1e9890ec02fa56239c159608c0abfc7dbba3efa4bb98ea6e4",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000000/22/R05kessann.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/133051/2023/settlement-1.pdf",
+            "sha256": "cc2a3d92bc8f06321b48304ad2aabe1b634d5369afade9d7982f5ff3d79ee207",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R5kessan.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T07:14:23.313Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度日の出町一般会計補正予算書（第1号） / 令和5年度日の出町下水道事業会計補正予算書（第1号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T09:41:23+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R5_1.pdf",
+              "sha256": "f2a1da529279cde4affbddf8c68b9e7d0e5e5b91fc378bb1433d2ca01c0d13ac",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 6,
+                      "end": 8
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "start": 9,
+                      "end": 10
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R5_hosei1.pdf",
+              "sha256": "1833432e11c2599b776cf41e39c9c1289d20210e0a61c426f98d520e7cb3d7fc",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 7
+                    },
+                    {
+                      "start": 16,
+                      "end": 17
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 6,
+                      "end": 7
+                    },
+                    {
+                      "start": 16,
+                      "end": 17
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に「令和5年度日の出町一般会計補正予算書（第1号）」として掲載されたR5_1.pdf（表紙題名と一致）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。第2表（債務負担行為補正）・第3表（繰越明許費・地方債補正）・給与費明細書・債務負担調書・地方債現在高調書は歳出明細に含めない。一般会計と下水道事業会計は会計別の補正号数（一般会計第1号／下水道事業会計第1号）を同じ対象に収録。下水道事業会計予算・決算ページ（https://www.town.hinode.tokyo.jp/0000003502.html）に「令和5年度日の出町下水道事業会計補正予算書（第1号）」として掲載されたR5_hosei1.pdf（表紙題名と一致）。単位千円。下水道第1号（議案第46号）は収益的収入・支出と資本的収入・支出の両方を補正。実施計画は物理6頁（収益的）・7頁（資本的）、説明書は16頁（収益的）・17頁（資本的）で款・項・目と既決予定額・補正予定額・計、節区分の事業名・金額が同一明細に対応（描画で目視確認）。漢字が輪郭線描画で文字抽出不可のためpdf_typeはscan。特別会計（国保・介護・後期高齢者）の補正予算書は確認した2掲載先（予算書一覧https://www.town.hinode.tokyo.jp/0000001754.html・下水道ページhttps://www.town.hinode.tokyo.jp/0000003502.html）になく未掲載のため、本対象は一般会計＋下水道事業会計の部分選定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2023/supplementary-1-2.pdf",
+            "sha256": "f2a1da529279cde4affbddf8c68b9e7d0e5e5b91fc378bb1433d2ca01c0d13ac",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R5_1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/133051/2023/supplementary-1-1.pdf",
+            "sha256": "1833432e11c2599b776cf41e39c9c1289d20210e0a61c426f98d520e7cb3d7fc",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R5_hosei1.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:42:20.743Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度日の出町一般会計補正予算書（第2号） / 令和5年度日の出町下水道事業会計補正予算書（第2号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T09:41:23+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R5_2.pdf",
+              "sha256": "0e266ecfb47406867f73d84c8f630099ec6e1c4d1783ff58dce3308c0d307499",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 7,
+                      "end": 9
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 5
+                    },
+                    {
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "start": 10,
+                      "end": 14
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R5_hosei2.pdf",
+              "sha256": "d537a8ebae631752cee001f11dd52fde4a39b081d252a142ee88875d3b6f2c77",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "start": 15,
+                      "end": 15
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "start": 15,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に「令和5年度日の出町一般会計補正予算書（第2号）」として掲載されたR5_2.pdf（表紙題名と一致）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。第2表（債務負担行為補正）・第3表（繰越明許費・地方債補正）・給与費明細書・債務負担調書・地方債現在高調書は歳出明細に含めない。一般会計と下水道事業会計は会計別の補正号数（一般会計第2号／下水道事業会計第2号）を同じ対象に収録。下水道事業会計予算・決算ページ（https://www.town.hinode.tokyo.jp/0000003502.html）に「令和5年度日の出町下水道事業会計補正予算書（第2号）」として掲載されたR5_hosei2.pdf（表紙題名と一致）。単位千円。下水道第2号（議案第56号、R5.9.29提出）は収益的収入・支出のみの補正で資本的補正なし。実施計画は物理7頁、説明書は15頁（いずれも収益的収入・支出、款・項・目と既決予定額・補正予定額・計、節区分の事業名・金額が同一明細に対応、描画で目視確認）。漢字が輪郭線描画のためpdf_typeはscan。特別会計（国保・介護・後期高齢者）の補正予算書は確認した2掲載先（予算書一覧https://www.town.hinode.tokyo.jp/0000001754.html・下水道ページhttps://www.town.hinode.tokyo.jp/0000003502.html）になく未掲載のため、本対象は一般会計＋下水道事業会計の部分選定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2023/supplementary-2-1.pdf",
+            "sha256": "0e266ecfb47406867f73d84c8f630099ec6e1c4d1783ff58dce3308c0d307499",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R5_2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/133051/2023/supplementary-2-2.pdf",
+            "sha256": "d537a8ebae631752cee001f11dd52fde4a39b081d252a142ee88875d3b6f2c77",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R5_hosei2.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:42:26.587Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度日の出町一般会計補正予算書（第3号） / 令和5年度日の出町下水道事業会計補正予算書（第3号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T09:41:23+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R5_3.pdf",
+              "sha256": "7cefd22cfe993e6c5bcedb71211138673e0895219f81e47db926aaaf08f7ca6b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 5
+                    },
+                    {
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "start": 11,
+                      "end": 16
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 6,
+                      "end": 7
+                    },
+                    {
+                      "start": 9,
+                      "end": 10
+                    },
+                    {
+                      "start": 17,
+                      "end": 36
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R5_hosei3.pdf",
+              "sha256": "efc5100716fdefd71c0c23c91946ab39762ee379229c8f7df42ba89b89b76a62",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 8
+                    },
+                    {
+                      "start": 16,
+                      "end": 17
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 8
+                    },
+                    {
+                      "start": 16,
+                      "end": 17
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に「令和5年度日の出町一般会計補正予算書（第3号）」として掲載されたR5_3.pdf（表紙題名と一致）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。第2表（債務負担行為補正）・第3表（繰越明許費・地方債補正）・給与費明細書・債務負担調書・地方債現在高調書は歳出明細に含めない。一般会計と下水道事業会計は会計別の補正号数（一般会計第3号／下水道事業会計第3号）を同じ対象に収録。下水道事業会計予算・決算ページ（https://www.town.hinode.tokyo.jp/0000003502.html）に「令和5年度日の出町下水道事業会計補正予算書（第3号）」として掲載されたR5_hosei3.pdf（表紙題名と一致）。単位千円。下水道第3号（議案第72号）は収益的収入・支出と資本的収入・支出の両方を補正。実施計画は物理7頁（収益的）・8頁（資本的）、説明書は16頁（収益的）・17頁（資本的）で款・項・目と既決予定額・補正予定額・計、節区分の事業名・金額が同一明細に対応（描画で目視確認）。漢字が輪郭線描画のためpdf_typeはscan。特別会計（国保・介護・後期高齢者）の補正予算書は確認した2掲載先（予算書一覧https://www.town.hinode.tokyo.jp/0000001754.html・下水道ページhttps://www.town.hinode.tokyo.jp/0000003502.html）になく未掲載のため、本対象は一般会計＋下水道事業会計の部分選定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2023/supplementary-3-1.pdf",
+            "sha256": "7cefd22cfe993e6c5bcedb71211138673e0895219f81e47db926aaaf08f7ca6b",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R5_3.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/133051/2023/supplementary-3-2.pdf",
+            "sha256": "efc5100716fdefd71c0c23c91946ab39762ee379229c8f7df42ba89b89b76a62",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R5_hosei3.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:42:32.456Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度日の出町一般会計補正予算書（第4号） / 令和5年度日の出町下水道事業会計補正予算書（第4号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T09:41:23+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R5_4.pdf",
+              "sha256": "09c34a833912a5a4c8582444085ce6da092ff12e12879f3f9053d0aacdeb9a12",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 5
+                    },
+                    {
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "start": 12,
+                      "end": 16
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 17,
+                      "end": 40
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R5_hosei4.pdf",
+              "sha256": "67583a98302a6a620dc0e7ed8717d16433cacc2987ff8f7c8acb88e07aa83d04",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "start": 15,
+                      "end": 15
+                    },
+                    {
+                      "start": 17,
+                      "end": 17
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "start": 16,
+                      "end": 17
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に「令和5年度日の出町一般会計補正予算書（第4号）」として掲載されたR5_4.pdf（表紙題名と一致）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。第2表（債務負担行為補正）・第3表（繰越明許費・地方債補正）・給与費明細書・債務負担調書・地方債現在高調書は歳出明細に含めない。一般会計と下水道事業会計は会計別の補正号数（一般会計第4号／下水道事業会計第4号）を同じ対象に収録。下水道事業会計予算・決算ページ（https://www.town.hinode.tokyo.jp/0000003502.html）に「令和5年度日の出町下水道事業会計補正予算書（第4号）」として掲載されたR5_hosei4.pdf（表紙題名と一致）。単位千円。下水道第4号（議案第19号）は収益的収入・支出と資本的収入・支出の両方を補正。実施計画は物理7頁（収益的・資本的を同頁）、説明書は15頁（収益的収入）・16頁（収益的支出）・17頁（資本的収入・支出）で款・項・目と既決予定額・補正予定額・計、節区分の事業名・金額が同一明細に対応（描画で目視確認）。漢字が輪郭線描画のためpdf_typeはscan。特別会計（国保・介護・後期高齢者）の補正予算書は確認した2掲載先（予算書一覧https://www.town.hinode.tokyo.jp/0000001754.html・下水道ページhttps://www.town.hinode.tokyo.jp/0000003502.html）になく未掲載のため、本対象は一般会計＋下水道事業会計の部分選定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2023/supplementary-4-1.pdf",
+            "sha256": "09c34a833912a5a4c8582444085ce6da092ff12e12879f3f9053d0aacdeb9a12",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R5_4.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/133051/2023/supplementary-4-2.pdf",
+            "sha256": "67583a98302a6a620dc0e7ed8717d16433cacc2987ff8f7c8acb88e07aa83d04",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R5_hosei4.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:42:38.533Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度日の出町一般会計補正予算書（第5号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T09:41:23+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R5_5.pdf",
+              "sha256": "27d21dd5cc0be9278b84b813f7fdc091914b12726c99854d1849fd2800d5dcfd",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 6
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 5
+                    },
+                    {
+                      "start": 7,
+                      "end": 8
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に「令和5年度日の出町一般会計補正予算書（第5号）」として掲載されたR5_5.pdf（表紙題名と一致）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。第2表（債務負担行為補正）・第3表（繰越明許費・地方債補正）・給与費明細書・債務負担調書・地方債現在高調書は歳出明細に含めない。下水道事業会計の第5号は確認した下水道ページ（https://www.town.hinode.tokyo.jp/0000003502.html）に掲載なし。特別会計（国保・介護・後期高齢者）の補正予算書は確認した予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）になく未掲載として不足を記録。本対象は一般会計のみの部分選定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2023/supplementary-5.pdf",
+            "sha256": "27d21dd5cc0be9278b84b813f7fdc091914b12726c99854d1849fd2800d5dcfd",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R5_5.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:42:41.753Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度日の出町一般会計補正予算書（第6号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T09:41:23+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R5_6.pdf",
+              "sha256": "a4511eb4bf0daf1231ef226bb3dbb6bd0dd74409ce3b23dbf709afe064a0dbb3",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 5
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 4
+                    },
+                    {
+                      "start": 6,
+                      "end": 6
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に「令和5年度日の出町一般会計補正予算書（第6号）」として掲載されたR5_6.pdf（表紙題名と一致）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。第2表（債務負担行為補正）・第3表（繰越明許費・地方債補正）・給与費明細書・債務負担調書・地方債現在高調書は歳出明細に含めない。下水道事業会計の第6号は確認した下水道ページ（https://www.town.hinode.tokyo.jp/0000003502.html）に掲載なし。特別会計（国保・介護・後期高齢者）の補正予算書は確認した予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）になく未掲載として不足を記録。本対象は一般会計のみの部分選定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2023/supplementary-6.pdf",
+            "sha256": "a4511eb4bf0daf1231ef226bb3dbb6bd0dd74409ce3b23dbf709afe064a0dbb3",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R5_6.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:42:46.569Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 7
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度日の出町一般会計補正予算書（第7号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T09:41:23+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R5_7.pdf",
+              "sha256": "da8642519677916b5be5c0d14fe44d32dabca6fc80c82cad512c14c9c6743124",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "start": 14,
+                      "end": 26
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    },
+                    {
+                      "start": 27,
+                      "end": 63
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に「令和5年度日の出町一般会計補正予算書（第7号）」として掲載されたR5_7.pdf（表紙題名と一致）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。第2表（債務負担行為補正）・第3表（繰越明許費・地方債補正）・給与費明細書・債務負担調書・地方債現在高調書は歳出明細に含めない。下水道事業会計の第7号は確認した下水道ページ（https://www.town.hinode.tokyo.jp/0000003502.html）に掲載なし。特別会計（国保・介護・後期高齢者）の補正予算書は確認した予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）になく未掲載として不足を記録。本対象は一般会計のみの部分選定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2023/supplementary-7.pdf",
+            "sha256": "da8642519677916b5be5c0d14fe44d32dabca6fc80c82cad512c14c9c6743124",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R5_7.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:42:50.491Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度日の出町一般会計補正予算書（第1号） / 令和6年度日の出町下水道事業会計補正予算書（第1号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T09:41:23+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R6_1.pdf",
+              "sha256": "eab7b0f85fb84ddb7986ee9893937a4d02112a9d8fc0f704dc1dda435593446d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "start": 8,
+                      "end": 8
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 9,
+                      "end": 12
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R6_2.pdf",
+              "sha256": "7a2d28a933146d374bfc0ed9751a85165787bd09a8ddf2c6a5118e24843c0223",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "start": 19,
+                      "end": 19
+                    },
+                    {
+                      "start": 21,
+                      "end": 21
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "start": 19,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に「令和6年度日の出町一般会計補正予算書（第1号）」として掲載されたR6_1.pdf（表紙題名と一致）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。第2表（債務負担行為補正）・第3表（繰越明許費・地方債補正）・給与費明細書・債務負担調書・地方債現在高調書は歳出明細に含めない。一般会計と下水道事業会計は会計別の補正号数（一般会計第1号／下水道事業会計第1号）を同じ対象に収録。下水道事業会計予算・決算ページ（https://www.town.hinode.tokyo.jp/0000003502.html）に「令和6年度日の出町下水道事業会計補正予算書（第1号）」として掲載されたR6_2.pdf（表紙題名と一致）。単位千円。下水道第1号（表紙題名で号数確認）は収益的収入・支出と資本的収入・支出の両方を補正。実施計画は物理7頁、説明書は19頁（収益的収入・支出）・20頁（収益的支出続き）・21頁（資本的収入・支出）で款・項・目と既決予定額・補正予定額・計、節区分の事業名・金額が同一明細に対応（描画で目視確認）。漢字が輪郭線描画のためpdf_typeはscan。特別会計（国保・介護・後期高齢者）の補正予算書は確認した2掲載先（予算書一覧https://www.town.hinode.tokyo.jp/0000001754.html・下水道ページhttps://www.town.hinode.tokyo.jp/0000003502.html）になく未掲載のため、本対象は一般会計＋下水道事業会計の部分選定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2024/supplementary-1-2.pdf",
+            "sha256": "eab7b0f85fb84ddb7986ee9893937a4d02112a9d8fc0f704dc1dda435593446d",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R6_1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/133051/2024/supplementary-1-1.pdf",
+            "sha256": "7a2d28a933146d374bfc0ed9751a85165787bd09a8ddf2c6a5118e24843c0223",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R6_2.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:42:56.125Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度日の出町一般会計補正予算書（第2号） / 令和6年度日の出町下水道事業会計補正予算書（第2号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T09:41:23+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R6_2.pdf",
+              "sha256": "903efd7889024c26ec9d10b14f0a08408d7a1aec58f537c29c43d52cd6e84fc2",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "start": 8,
+                      "end": 8
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 7
+                    },
+                    {
+                      "start": 9,
+                      "end": 10
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R6_hosei2.pdf",
+              "sha256": "adf05e5ab61c77992e8b756f4771f32638c54cefcb59fe07fbc4d1cc536c8eb9",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "start": 19,
+                      "end": 20
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "start": 19,
+                      "end": 20
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に「令和6年度日の出町一般会計補正予算書（第2号）」として掲載されたR6_2.pdf（表紙題名と一致）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。第2表（債務負担行為補正）・第3表（繰越明許費・地方債補正）・給与費明細書・債務負担調書・地方債現在高調書は歳出明細に含めない。一般会計と下水道事業会計は会計別の補正号数（一般会計第2号／下水道事業会計第2号）を同じ対象に収録。下水道事業会計予算・決算ページ（https://www.town.hinode.tokyo.jp/0000003502.html）に「令和6年度日の出町下水道事業会計補正予算書（第2号）」として掲載されたR6_hosei2.pdf（表紙題名と一致）。単位千円。下水道第2号（議案第16号）は収益的収入・支出と資本的収入・支出の両方を補正。実施計画は物理7頁、説明書は19頁（収益的収入・支出）・20頁（資本的収入・支出）で款・項・目と既決予定額・補正予定額・計、節区分の事業名・金額が同一明細に対応（文字抽出で確認）。特別会計（国保・介護・後期高齢者）の補正予算書は確認した2掲載先（予算書一覧https://www.town.hinode.tokyo.jp/0000001754.html・下水道ページhttps://www.town.hinode.tokyo.jp/0000003502.html）になく未掲載のため、本対象は一般会計＋下水道事業会計の部分選定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2024/supplementary-2-1.pdf",
+            "sha256": "903efd7889024c26ec9d10b14f0a08408d7a1aec58f537c29c43d52cd6e84fc2",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R6_2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/133051/2024/supplementary-2-2.pdf",
+            "sha256": "adf05e5ab61c77992e8b756f4771f32638c54cefcb59fe07fbc4d1cc536c8eb9",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R6_hosei2.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:43:01.664Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度日の出町一般会計補正予算書（第3号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T09:41:23+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R6_3.pdf",
+              "sha256": "b5127e34f308d93d86b095d308ef4728963afcdcb4400a7a5811e921dccd66dd",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 5
+                    },
+                    {
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "start": 11,
+                      "end": 16
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 6,
+                      "end": 7
+                    },
+                    {
+                      "start": 9,
+                      "end": 10
+                    },
+                    {
+                      "start": 17,
+                      "end": 38
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に「令和6年度日の出町一般会計補正予算書（第3号）」として掲載されたR6_3.pdf（表紙題名と一致）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。第2表（債務負担行為補正）・第3表（繰越明許費・地方債補正）・給与費明細書・債務負担調書・地方債現在高調書は歳出明細に含めない。下水道事業会計の第3号（R6_3.pdf、2頁スキャン、専決第1号・R7.3.21）は企業債の利率変更（2.0％以内→2.1％以内）のみで事業別の歳出補正明細がなく、選定対象に含めない。特別会計（国保・介護・後期高齢者）の補正予算書は確認した予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）になく未掲載として不足を記録。本対象は一般会計のみの部分選定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2024/supplementary-3.pdf",
+            "sha256": "b5127e34f308d93d86b095d308ef4728963afcdcb4400a7a5811e921dccd66dd",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R6_3.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:43:05.313Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度日の出町一般会計補正予算書（第4号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T09:41:23+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R6_4.pdf",
+              "sha256": "93d244fb11f6ec9fc0145c8cae50d141a5f85129e610dbba9da3a23ce7c939cf",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 6
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に「令和6年度日の出町一般会計補正予算書（第4号）」として掲載されたR6_4.pdf（表紙題名と一致）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。第2表（債務負担行為補正）・第3表（繰越明許費・地方債補正）・給与費明細書・債務負担調書・地方債現在高調書は歳出明細に含めない。下水道事業会計の第4号は確認した下水道ページ（https://www.town.hinode.tokyo.jp/0000003502.html）に掲載なし。特別会計（国保・介護・後期高齢者）の補正予算書は確認した予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）になく未掲載として不足を記録。本対象は一般会計のみの部分選定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2024/supplementary-4.pdf",
+            "sha256": "93d244fb11f6ec9fc0145c8cae50d141a5f85129e610dbba9da3a23ce7c939cf",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R6_4.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:43:08.668Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度日の出町一般会計補正予算書（第5号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T09:41:23+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R6_5.pdf",
+              "sha256": "011136d12e1a8b358143c242c51e84a279c55fa31394a31dbbc898b31f9713e7",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "start": 11,
+                      "end": 13
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 5
+                    },
+                    {
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "start": 9,
+                      "end": 10
+                    },
+                    {
+                      "start": 14,
+                      "end": 38
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に「令和6年度日の出町一般会計補正予算書（第5号）」として掲載されたR6_5.pdf（表紙題名と一致）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。第2表（債務負担行為補正）・第3表（繰越明許費・地方債補正）・給与費明細書・債務負担調書・地方債現在高調書は歳出明細に含めない。下水道事業会計の第5号は確認した下水道ページ（https://www.town.hinode.tokyo.jp/0000003502.html）に掲載なし。特別会計（国保・介護・後期高齢者）の補正予算書は確認した予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）になく未掲載として不足を記録。本対象は一般会計のみの部分選定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2024/supplementary-5.pdf",
+            "sha256": "011136d12e1a8b358143c242c51e84a279c55fa31394a31dbbc898b31f9713e7",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R6_5.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:43:11.774Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度日の出町一般会計補正予算書（第6号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T09:41:23+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R6_6.pdf",
+              "sha256": "4ceb2f20dd975ed7732ea44232c13075a1f4f1c2fb5c8e8d6e59488fe790d135",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "start": 9,
+                      "end": 9
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 5
+                    },
+                    {
+                      "start": 7,
+                      "end": 8
+                    },
+                    {
+                      "start": 10,
+                      "end": 12
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に「令和6年度日の出町一般会計補正予算書（第6号）」として掲載されたR6_6.pdf（表紙題名と一致）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。第2表（債務負担行為補正）・第3表（繰越明許費・地方債補正）・給与費明細書・債務負担調書・地方債現在高調書は歳出明細に含めない。下水道事業会計の第6号は確認した下水道ページ（https://www.town.hinode.tokyo.jp/0000003502.html）に掲載なし。特別会計（国保・介護・後期高齢者）の補正予算書は確認した予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）になく未掲載として不足を記録。本対象は一般会計のみの部分選定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2024/supplementary-6.pdf",
+            "sha256": "4ceb2f20dd975ed7732ea44232c13075a1f4f1c2fb5c8e8d6e59488fe790d135",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R6_6.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:43:14.946Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 7
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度日の出町一般会計補正予算書（第7号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T09:41:23+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R6_7.pdf",
+              "sha256": "e729ba1c3ecc49ee8023830a6ac9787d5e6ba01e49351d1138511462896a3215",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    },
+                    {
+                      "start": 15,
+                      "end": 27
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "start": 28,
+                      "end": 66
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に「令和6年度日の出町一般会計補正予算書（第7号）」として掲載されたR6_7.pdf（表紙題名と一致）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。第2表（債務負担行為補正）・第3表（繰越明許費・地方債補正）・給与費明細書・債務負担調書・地方債現在高調書は歳出明細に含めない。下水道事業会計の第7号は確認した下水道ページ（https://www.town.hinode.tokyo.jp/0000003502.html）に掲載なし。特別会計（国保・介護・後期高齢者）の補正予算書は確認した予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）になく未掲載として不足を記録。本対象は一般会計のみの部分選定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2024/supplementary-7.pdf",
+            "sha256": "e729ba1c3ecc49ee8023830a6ac9787d5e6ba01e49351d1138511462896a3215",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R6_7.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:43:18.600Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度日の出町一般会計補正予算書（第1号） / 令和7年度日の出町下水道事業会計補正予算書（第1号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T09:41:23+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R7_1.pdf",
+              "sha256": "eb17d3c37e53b3f3124a22797450df5fbaa259bef8969b258c7b9d7d0343b619",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "start": 9,
+                      "end": 9
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 5
+                    },
+                    {
+                      "start": 7,
+                      "end": 8
+                    },
+                    {
+                      "start": 10,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R7hosei1gou.pdf",
+              "sha256": "d5cd48d5d0e0157b261eb0e60573743f534f53f6ba5fbb9c03bfde9f5fa7b2b0",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "start": 17,
+                      "end": 18
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "start": 17,
+                      "end": 18
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に「令和7年度日の出町一般会計補正予算書（第1号）」として掲載されたR7_1.pdf（表紙題名と一致）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。第2表（債務負担行為補正）・第3表（繰越明許費・地方債補正）・給与費明細書・債務負担調書・地方債現在高調書は歳出明細に含めない。一般会計と下水道事業会計は会計別の補正号数（一般会計第1号／下水道事業会計第1号）を同じ対象に収録。下水道事業会計予算・決算ページ（https://www.town.hinode.tokyo.jp/0000003502.html）に「令和7年度日の出町下水道事業会計補正予算書（第1号）」として掲載されたR7hosei1gou.pdf（表紙題名と一致）。単位千円。下水道第1号（議案第49号）は収益的収入・支出と資本的収入・支出の両方を補正。実施計画は物理7頁、説明書は17頁（収益的収入・支出）・18頁（資本的収入・支出）で款・項・目と既決予定額・補正予定額・計、節区分の事業名・金額が同一明細に対応（文字抽出で確認）。特別会計（国保・介護・後期高齢者）の補正予算書は確認した2掲載先（予算書一覧https://www.town.hinode.tokyo.jp/0000001754.html・下水道ページhttps://www.town.hinode.tokyo.jp/0000003502.html）になく未掲載のため、本対象は一般会計＋下水道事業会計の部分選定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2025/supplementary-1-2.pdf",
+            "sha256": "eb17d3c37e53b3f3124a22797450df5fbaa259bef8969b258c7b9d7d0343b619",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R7_1.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/133051/2025/supplementary-1-1.pdf",
+            "sha256": "d5cd48d5d0e0157b261eb0e60573743f534f53f6ba5fbb9c03bfde9f5fa7b2b0",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/R7hosei1gou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:43:24.188Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度日の出町一般会計補正予算書（第2号） / 令和7年度日の出町下水道事業会計補正予算書（第2号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T09:41:23+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R7-2.pdf",
+              "sha256": "cf821d7468ae6deb026c07ff235a16dc0d4c18770129106c81aa5d4c988f1fa7",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 5
+                    },
+                    {
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "start": 11,
+                      "end": 16
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 6,
+                      "end": 7
+                    },
+                    {
+                      "start": 9,
+                      "end": 10
+                    },
+                    {
+                      "start": 17,
+                      "end": 36
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/hoseiR7_2.pdf",
+              "sha256": "33100fd5e67bc230c57de99b6a1f964951c3317c85eaf0da0dbe7af81a7d0424",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 12,
+                      "end": 12
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 12,
+                      "end": 12
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に「令和7年度日の出町一般会計補正予算書（第2号）」として掲載されたR7-2.pdf（表紙題名と一致）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。第2表（債務負担行為補正）・第3表（繰越明許費・地方債補正）・給与費明細書・債務負担調書・地方債現在高調書は歳出明細に含めない。一般会計と下水道事業会計は会計別の補正号数（一般会計第2号／下水道事業会計第2号）を同じ対象に収録。下水道事業会計予算・決算ページ（https://www.town.hinode.tokyo.jp/0000003502.html）に「令和7年度日の出町下水道事業会計補正予算書（第2号）」として掲載されたhoseiR7_2.pdf（表紙題名と一致）。単位千円。下水道第2号（議案第76号）は収益的収入・支出のみの補正で資本的補正なし。実施計画は物理4頁、説明書は12頁（いずれも収益的収入・支出、款・項・目と既決予定額・補正予定額・計、節区分の事業名・金額が同一明細に対応、文字抽出で確認）。特別会計（国保・介護・後期高齢者）の補正予算書は確認した2掲載先（予算書一覧https://www.town.hinode.tokyo.jp/0000001754.html・下水道ページhttps://www.town.hinode.tokyo.jp/0000003502.html）になく未掲載のため、本対象は一般会計＋下水道事業会計の部分選定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2025/supplementary-2-2.pdf",
+            "sha256": "cf821d7468ae6deb026c07ff235a16dc0d4c18770129106c81aa5d4c988f1fa7",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R7-2.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/133051/2025/supplementary-2-1.pdf",
+            "sha256": "33100fd5e67bc230c57de99b6a1f964951c3317c85eaf0da0dbe7af81a7d0424",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/hoseiR7_2.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:43:30.170Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度日の出町一般会計補正予算書（第3号） / 令和7年度日の出町下水道事業会計補正予算書（第3号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T09:41:23+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R7-3.pdf",
+              "sha256": "d4f6fc6cede560c5cb65d041bd88f9985a0818367d94ffe7819cb5455caa38e0",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 5
+                    },
+                    {
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "start": 12,
+                      "end": 16
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 6,
+                      "end": 7
+                    },
+                    {
+                      "start": 10,
+                      "end": 11
+                    },
+                    {
+                      "start": 17,
+                      "end": 41
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/hoseiR7_3.pdf",
+              "sha256": "2e91da1d600f8af9dccc092f69180137bc48f2b1c654d33a051c2f7aa948b676",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 6
+                    },
+                    {
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "start": 16,
+                      "end": 16
+                    }
+                  ]
+                },
+                {
+                  "account": "日の出町下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 6
+                    },
+                    {
+                      "start": 15,
+                      "end": 15
+                    },
+                    {
+                      "start": 17,
+                      "end": 17
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に「令和7年度日の出町一般会計補正予算書（第3号）」として掲載されたR7-3.pdf（表紙題名と一致）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。第2表（債務負担行為補正）・第3表（繰越明許費・地方債補正）・給与費明細書・債務負担調書・地方債現在高調書は歳出明細に含めない。一般会計と下水道事業会計は会計別の補正号数（一般会計第3号／下水道事業会計第3号）を同じ対象に収録。下水道事業会計予算・決算ページ（https://www.town.hinode.tokyo.jp/0000003502.html）に「令和7年度日の出町下水道事業会計補正予算書（第3号）」として掲載されたhoseiR7_3.pdf（表紙題名と一致）。単位千円。下水道第3号（議案第15号）は収益的収入・支出と資本的収入・支出の両方を補正。実施計画は物理5頁（収益的）・6頁（資本的）、説明書は14頁（収益的収入）・15頁（収益的支出）・16頁（資本的収入）・17頁（資本的支出）で款・項・目と既決予定額・補正予定額・計、節区分の事業名・金額が同一明細に対応（文字抽出で確認）。特別会計（国保・介護・後期高齢者）の補正予算書は確認した2掲載先（予算書一覧https://www.town.hinode.tokyo.jp/0000001754.html・下水道ページhttps://www.town.hinode.tokyo.jp/0000003502.html）になく未掲載のため、本対象は一般会計＋下水道事業会計の部分選定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2025/supplementary-3-2.pdf",
+            "sha256": "d4f6fc6cede560c5cb65d041bd88f9985a0818367d94ffe7819cb5455caa38e0",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R7-3.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/133051/2025/supplementary-3-1.pdf",
+            "sha256": "2e91da1d600f8af9dccc092f69180137bc48f2b1c654d33a051c2f7aa948b676",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000003/3502/hoseiR7_3.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:43:35.726Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度日の出町一般会計補正予算書（第4号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T09:41:23+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R7_4.pdf",
+              "sha256": "6c10fe266ed7c2d00c550844503b280f12447f1f6ab1f7b99f0f8fb868c799b7",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "start": 10,
+                      "end": 10
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 6
+                    },
+                    {
+                      "start": 8,
+                      "end": 9
+                    },
+                    {
+                      "start": 11,
+                      "end": 16
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に「令和7年度日の出町一般会計補正予算書（第4号）」として掲載されたR7_4.pdf（表紙題名と一致）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。第2表（債務負担行為補正）・第3表（繰越明許費・地方債補正）・給与費明細書・債務負担調書・地方債現在高調書は歳出明細に含めない。下水道事業会計の第4号は確認した下水道ページ（https://www.town.hinode.tokyo.jp/0000003502.html）に掲載なし。特別会計（国保・介護・後期高齢者）の補正予算書は確認した予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）になく未掲載として不足を記録。本対象は一般会計のみの部分選定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2025/supplementary-4.pdf",
+            "sha256": "6c10fe266ed7c2d00c550844503b280f12447f1f6ab1f7b99f0f8fb868c799b7",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R7_4.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:43:38.557Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度日の出町一般会計補正予算書（第5号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T09:41:23+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R7_5.pdf",
+              "sha256": "b73ee36dc67b31c95bb9243691aab8522fd81d99a1868422015dc48624236cc8",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 3,
+                      "end": 6
+                    },
+                    {
+                      "start": 8,
+                      "end": 8
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に「令和7年度日の出町一般会計補正予算書（第5号）」として掲載されたR7_5.pdf（表紙題名と一致）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。第2表（債務負担行為補正）・第3表（繰越明許費・地方債補正）・給与費明細書・債務負担調書・地方債現在高調書は歳出明細に含めない。下水道事業会計の第5号は確認した下水道ページ（https://www.town.hinode.tokyo.jp/0000003502.html）に掲載なし。特別会計（国保・介護・後期高齢者）の補正予算書は確認した予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）になく未掲載として不足を記録。本対象は一般会計のみの部分選定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2025/supplementary-5.pdf",
+            "sha256": "b73ee36dc67b31c95bb9243691aab8522fd81d99a1868422015dc48624236cc8",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R7_5.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:43:42.289Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "133051",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度日の出町一般会計補正予算書（第6号）",
+          "landing_url": "https://www.town.hinode.tokyo.jp/0000001754.html",
+          "inspected_at": "2026-10-08T09:41:23+00:00",
+          "files": [
+            {
+              "download_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R7_6.pdf",
+              "sha256": "090dc57913eecaa45560f63b17ca5af15cb9ff0001170248f7a7447db4fe00e7",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "revenue",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "start": 14,
+                      "end": 26
+                    }
+                  ]
+                },
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "start": 12,
+                      "end": 13
+                    },
+                    {
+                      "start": 27,
+                      "end": 67
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）に「令和7年度日の出町一般会計補正予算書（第6号）」として掲載されたR7_6.pdf（表紙題名と一致）。文字PDF・単位千円。第1表歳入歳出予算補正の款項表と歳入歳出補正予算事項別明細書を持ち、明細書では款・項・目と補正前の額・補正額・計および節区分の事業名・金額が同一明細に対応することを必要頁で確認。第2表（債務負担行為補正）・第3表（繰越明許費・地方債補正）・給与費明細書・債務負担調書・地方債現在高調書は歳出明細に含めない。下水道事業会計の第6号は確認した下水道ページ（https://www.town.hinode.tokyo.jp/0000003502.html）に掲載なし。特別会計（国保・介護・後期高齢者）の補正予算書は確認した予算書一覧（https://www.town.hinode.tokyo.jp/0000001754.html）になく未掲載として不足を記録。本対象は一般会計のみの部分選定。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/133051/2025/supplementary-6.pdf",
+            "sha256": "090dc57913eecaa45560f63b17ca5af15cb9ff0001170248f7a7447db4fe00e7",
+            "final_url": "https://www.town.hinode.tokyo.jp/cmsfiles/contents/0000001/1754/R7_6.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:43:45.850Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }

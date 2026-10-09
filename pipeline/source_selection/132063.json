@@ -2,6 +2,2675 @@
   "jurisdiction": "132063",
   "name": "府中市",
   "official_url": "https://www.city.fuchu.tokyo.jp/",
-  "selections": [],
-  "unresolved_candidates": []
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "132063",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度府中市各会計予算書・予算説明書（歳出事項説明書等）",
+          "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/R8yosansyo.html",
+          "inspected_at": "2026-10-07T15:31:16+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/R8yosansyo.files/fuc26b07fin07finance.pdf",
+              "sha256": "454309225d490e1d76ee895bfe0018b2d4ffd868393865c5af267ad2610f195a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 60
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/R8yosansyo.files/fuc26b07fin11finance.pdf",
+              "sha256": "dcfb8b997ed10c8fa7e3a06e1566cbd1753a0a2db7e1531718398f082ea3e271",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/R8yosansyo.files/fuc26b07fin12finance.pdf",
+              "sha256": "5deb9aecedba22c675888f8653c9f61a7c4ac5d65ff4cfed80b1d9d30e88dc45",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/R8yosansyo.files/fuc26b07fin13finance.pdf",
+              "sha256": "3cc2ff9f68a516addaa18270c40332e3ec50f5aff4973758b6824c9469fd625d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/R8yosansyo.files/fuc26b07fin14finance.pdf",
+              "sha256": "6a75782a59b2339be1f82fc2ff9cf13276b7c6c371b4bec1132bc7f34d7b892a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "公共用地特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/R8yosansyo.files/fuc26b07fin15finance.pdf",
+              "sha256": "beaf21cd55cb06d9d7316ea8b40a04070be677a0e09f5e75d5e134a168a82c4c",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "競走事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 25,
+                      "end": 30
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/R8yosansyo.files/fuc26b07fin16finance.pdf",
+              "sha256": "bd875d8011670eb264df9fb6c59d6dde65a3ce7bea334b0404aed81f25bc04e0",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 28,
+                      "end": 31
+                    },
+                    {
+                      "start": 33,
+                      "end": 34
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度予算ページ掲載の会計別PDF7冊（全て文字PDF）から歳出部分のみ選定。一般会計は歳出事項説明書（fin07）が全編歳出で款・項・目・節と事業説明を持ち物理1-60頁、金額は予算額・単位千円。特別会計4冊（fin11-14）は歳出事項説明書の歳出節のみ、款・項・目と予算額（千円）：国民健康保険9-13頁、後期高齢者医療8-9頁、介護保険10-15頁、公共用地9頁。公営企業会計2冊（fin15-16）は予定執行計画書の支出節、款・項・目と予定額（千円）：競走事業は収益的支出25-29頁・資本的支出30頁、下水道事業は収益的支出28-31頁・資本的支出33-34頁（32頁の収入節は除外）。一般会計予算書（fin05）・歳入説明書（fin06）は款項止まりまたは歳入のみのため歳出選定対象外。東京都オープンデータカタログに事業粒度の歳出CSVなし（統計総括のみ）のためPDF選定。全会計の歳出を網羅。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132063/2026/initial-2.pdf",
+            "sha256": "454309225d490e1d76ee895bfe0018b2d4ffd868393865c5af267ad2610f195a",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/R8yosansyo.files/fuc26b07fin07finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2026/initial-7.pdf",
+            "sha256": "dcfb8b997ed10c8fa7e3a06e1566cbd1753a0a2db7e1531718398f082ea3e271",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/R8yosansyo.files/fuc26b07fin11finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2026/initial-3.pdf",
+            "sha256": "5deb9aecedba22c675888f8653c9f61a7c4ac5d65ff4cfed80b1d9d30e88dc45",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/R8yosansyo.files/fuc26b07fin12finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2026/initial-1.pdf",
+            "sha256": "3cc2ff9f68a516addaa18270c40332e3ec50f5aff4973758b6824c9469fd625d",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/R8yosansyo.files/fuc26b07fin13finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2026/initial-4.pdf",
+            "sha256": "6a75782a59b2339be1f82fc2ff9cf13276b7c6c371b4bec1132bc7f34d7b892a",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/R8yosansyo.files/fuc26b07fin14finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2026/initial-6.pdf",
+            "sha256": "beaf21cd55cb06d9d7316ea8b40a04070be677a0e09f5e75d5e134a168a82c4c",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/R8yosansyo.files/fuc26b07fin15finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2026/initial-5.pdf",
+            "sha256": "bd875d8011670eb264df9fb6c59d6dde65a3ce7bea334b0404aed81f25bc04e0",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/R8yosansyo.files/fuc26b07fin16finance.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T15:32:54.759Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132063",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度府中市決算書（一般会計・特別会計及び公営企業会計）",
+          "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/kessan/kessansho/7kessansho.html",
+          "inspected_at": "2026-10-07T15:31:16+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/kessan/kessansho/7kessansho.files/fuc26b07gaf04g_account_f_statement.pdf",
+              "sha256": "67a4b3b89621b108c7e2c2555a0e2b6d18ccc75b1242e722022d0fa0b1556366",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 90,
+                      "end": 221
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/kessan/kessansho/7kessansho.files/fuc26b07sap04s_account_public_e_fs.pdf",
+              "sha256": "d0a90af39bf310b985c4172345ef890781c912ffa15ce70a874e9cc4c0a54d71",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 22,
+                      "end": 33
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 50,
+                      "end": 55
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 76,
+                      "end": 87
+                    }
+                  ]
+                },
+                {
+                  "account": "公共用地特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 104,
+                      "end": 105
+                    }
+                  ]
+                },
+                {
+                  "account": "競走事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 142,
+                      "end": 151
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 196,
+                      "end": 203
+                    },
+                    {
+                      "start": 206,
+                      "end": 209
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度決算ページ掲載の2冊（全て文字PDF）。一般会計決算書は事項別明細書の歳出部分が物理90-221頁（印字84-215頁、見開きで左頁に款・項・目・節名、右頁に支出済額・不用額、単位円）。特別会計及び公営企業会計決算書（物理212頁）は会計別に歳出決算事項別明細を持ち、支出済額（円）の明細：国民健康保険22-33頁、後期高齢者医療50-55頁、介護保険76-87頁、公共用地104-105頁。公営企業は収益的支出・資本的支出の支出済額（円）：競走事業142-151頁、下水道事業196-203頁・206-209頁（収入節194-195・204-205頁は除外）。歳入明細・決算書本文・調書はscope外。全会計の歳出支出済額を網羅。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132063/2025/settlement-1.pdf",
+            "sha256": "67a4b3b89621b108c7e2c2555a0e2b6d18ccc75b1242e722022d0fa0b1556366",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/kessan/kessansho/7kessansho.files/fuc26b07gaf04g_account_f_statement.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2025/settlement-2.pdf",
+            "sha256": "d0a90af39bf310b985c4172345ef890781c912ffa15ce70a874e9cc4c0a54d71",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/kessan/kessansho/7kessansho.files/fuc26b07sap04s_account_public_e_fs.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T15:33:00.863Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132063",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度府中市決算書（一般会計・特別会計及び公営企業会計）",
+          "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/kessan/kessansho/6kessansho.html",
+          "inspected_at": "2026-10-08T00:54:01.422402+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/kessan/kessansho/6kessansho.files/fuc25b07gaf03g_account_f_statement.pdf",
+              "sha256": "6016f9762ffdd0472cb92ce08256e52ea30ffafaf199aea0b1f80d16d4831bd7",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 90,
+                      "end": 223
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/kessan/kessansho/6kessansho.files/fuc25b07sap03s_account_public_e_fs.pdf",
+              "sha256": "6be311f16918ee56342d639571cee1be3e0c654536ac9643ab00a430c4d38e54",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 22,
+                      "end": 33
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 50,
+                      "end": 55
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 74,
+                      "end": 85
+                    }
+                  ]
+                },
+                {
+                  "account": "公共用地特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 100,
+                      "end": 101
+                    }
+                  ]
+                },
+                {
+                  "account": "競走事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 138,
+                      "end": 147
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 192,
+                      "end": 197
+                    },
+                    {
+                      "start": 200,
+                      "end": 203
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度決算ページ掲載の2冊（全て文字PDF）。一般会計歳入歳出決算書及び決算関係調書（物理312頁）は歳出決算事項別明細書が物理90-223頁（印字84-217頁、印字+6=物理、見開きで左頁に款・項・目・節名、右頁に支出済額・不用額、単位円）。特別会計歳入歳出・公営企業会計決算書（物理206頁、印字+4=物理）は会計別に歳出決算事項別明細を持ち、支出済額（円）の明細：国民健康保険22-33頁、後期高齢者医療50-55頁、介護保険74-85頁、公共用地100-101頁。公営企業は収益的支出・資本的支出の支出済額（円）：競走事業138-147頁（収益的支出138-145・資本的支出146-147）、下水道事業は収益的支出192-197頁・資本的支出200-203頁（収益的収入190-191・資本的収入198-199頁は除外）。キャッシュ・フロー計算書・貸借対照表・注記・企業債調書等はscope外。歳入明細・決算書本文・実質収支調書等はscope外。全会計の歳出支出済額を網羅。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132063/2024/settlement-1.pdf",
+            "sha256": "6016f9762ffdd0472cb92ce08256e52ea30ffafaf199aea0b1f80d16d4831bd7",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/kessan/kessansho/6kessansho.files/fuc25b07gaf03g_account_f_statement.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2024/settlement-2.pdf",
+            "sha256": "6be311f16918ee56342d639571cee1be3e0c654536ac9643ab00a430c4d38e54",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/kessan/kessansho/6kessansho.files/fuc25b07sap03s_account_public_e_fs.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T00:55:25.137Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132063",
+        "fiscal_year": 2025,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度府中市一般会計・特別会計・公営企業会計予算書（当初予算）",
+          "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.html",
+          "inspected_at": "2026-10-08T06:28:22+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin03finance.pdf",
+              "sha256": "223ea9e52a108c9c091896c585d1eab004ece6bb203d57e6eaa05d5de26e3dd1",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 61
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin08finance.pdf",
+              "sha256": "91dc0aee64b129f8f7a9b1b46e4af013400d9245e62aafa14a6817d8085d54de",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin09finance.pdf",
+              "sha256": "9437ccca231376963dbf1f368e24b8431bc306a75368e29568e19a18e8619401",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin10finance.pdf",
+              "sha256": "0a36bb41c3b0cca4dd007de1df4ec5610aae189fe1ece2481d4c9cb9ab3da88b",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "公共用地特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin11finance.pdf",
+              "sha256": "26fe2907f53c7ad9bd10a2e9acd5e4564a578eca02898c580f6fa28f464aadd4",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "競走事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 25,
+                      "end": 29
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin12finance.pdf",
+              "sha256": "a6c58ac4a83c015ee81118cabe6e2d6109a841018e432fd12852ffc15a487c82",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 27,
+                      "end": 30
+                    },
+                    {
+                      "start": 32,
+                      "end": 33
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin07finance.pdf",
+              "sha256": "a4b93fcd551f2aeb7710b2199efd37e52832b247511af98d3882c78b843711de",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度（FY2025）当初予算の公式掲載ページ（令和7年度一般会計・特別会計・公営企業会計予算書）から選定。全ファイル文字PDF（文字抽出可）。一般会計は予算説明書（歳出事項説明書, fin03）が全61頁で歳出のみ（p1【歳出】議会費〜p61 予備費、合計121,910,000千円＝ordinanceの歳入歳出予算総額と一致）、款・項・目・節と事業説明（施策番号）、金額列は本年度予算額（単位：千円、ページ表題に（単位：千円））。同ページの一般会計予算書（fin01）は本文が「款項の区分及び当該区分ごとの金額」による第1表で款・項止まりのため歳出明細として選定せず。特別会計・公営企業は「予算書及び予算説明書」のうち歳入歳出予算事項別明細書の【歳出】節のみ選定（p1-4の款項止まり予算書、歳入節、給与費明細書、債務負担行為調書・地方債調書は除外）。金額列は本年度予算額・単位千円、税の別記なし：後期高齢者医療特別会計 fin08 物理8-9頁、介護保険特別会計 fin09 物理10-15頁（16-21頁は給与費明細書）、公共用地特別会計 fin10 物理9頁（7-8頁は歳入、10頁は空白、11頁は地方債調書）。公営企業2会計は当初予算実施計画明細書の金額列は予定額・単位千円：競走事業会計 fin11 物理25-29頁（25-28頁【収益的支出】、29頁【資本的支出】、23-24頁【収益的収入】と2-7頁の款項集計は除外）、下水道事業会計 fin12 物理27-30頁・32-33頁（25-26頁【収益的収入】、31頁【資本的収入】は除外）。国民健康保険特別会計 fin07 物理9-13頁（親による独立画像確認で追加、担当dir/parent-boundaries.json）: p6-8は【歳入】（p8に歳入合計23,547,186千円）、p9【歳出】（款・項・目＋節金額＋説明欄の事業名・施策番号、金額列は本年度予算額・単位千円）、p13が予備費2,000千円と歳出合計23,547,186千円の明細末尾、p14は給与費明細書で範囲外。当該頁は文字抽出0字・画像XObject無し（輪郭線描画）のため pdf_type=scan。これで7会計すべての歳出を網羅（会計不足なし）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132063/2025/initial-2.pdf",
+            "sha256": "223ea9e52a108c9c091896c585d1eab004ece6bb203d57e6eaa05d5de26e3dd1",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin03finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2025/initial-4.pdf",
+            "sha256": "91dc0aee64b129f8f7a9b1b46e4af013400d9245e62aafa14a6817d8085d54de",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin08finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2025/initial-5.pdf",
+            "sha256": "9437ccca231376963dbf1f368e24b8431bc306a75368e29568e19a18e8619401",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin09finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2025/initial-1.pdf",
+            "sha256": "0a36bb41c3b0cca4dd007de1df4ec5610aae189fe1ece2481d4c9cb9ab3da88b",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin10finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2025/initial-3.pdf",
+            "sha256": "26fe2907f53c7ad9bd10a2e9acd5e4564a578eca02898c580f6fa28f464aadd4",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin11finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2025/initial-7.pdf",
+            "sha256": "a6c58ac4a83c015ee81118cabe6e2d6109a841018e432fd12852ffc15a487c82",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin12finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2025/initial-6.pdf",
+            "sha256": "a4b93fcd551f2aeb7710b2199efd37e52832b247511af98d3882c78b843711de",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin07finance.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T06:43:19.149Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132063",
+        "fiscal_year": 2024,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度府中市一般会計・特別会計・公営企業会計予算書（当初予算）",
+          "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.html",
+          "inspected_at": "2026-10-08T06:53:48.396035+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin03finance.pdf",
+              "sha256": "574f8276f1497e50444a9c07a50248cbd8086426299fea145198f1bf66b3c734",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 62
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin07finance.pdf",
+              "sha256": "c4f7498d29834d47cc9bda22b08483b47f8a52867089ef08971013d2f390017d",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin08finance.pdf",
+              "sha256": "56ff00fcf86e7ed26dfcbca41181894d860cad1680f15213c05243667f28411e",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin09finance.pdf",
+              "sha256": "13fa623b909ca2fce0163ccd65f87f2ebad3774aa3807f39647bc1fcdd88f2fe",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 14
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin10finance.pdf",
+              "sha256": "8af773e7cebde58e8b79887041992f20c164b62f7dab4251af10195e7edcbd01",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "公共用地特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin11finance.pdf",
+              "sha256": "4529b4a04a59e1546e58d2fd8837b6eaf2a4e57beac35a43a96657af093f3f08",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "競走事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "start": 23,
+                      "end": 26
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin12finance.pdf",
+              "sha256": "ae1994115ca19d017cf21100b264b01242194e905697544d0d2a1fe984cd1c27",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 28,
+                      "end": 30
+                    },
+                    {
+                      "start": 32,
+                      "end": 33
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度（FY2024）当初予算の公式掲載ページ（令和6年度一般会計・特別会計・公営企業会計予算書）から7会計の歳出を選定。既存の一般会計（fin03、文字PDF、物理1-62頁、歳出のみ、本年度予算額・千円）に加え、輪郭線描画PDF6冊を画像で確認して追記（全冊SHA一致・pdf_type=scan・金額は本年度予算額または予定額・単位千円・税の別記なし）。国民健康保険特別会計fin07物理9-13頁：p1表紙「府中市国民健康保険特別会計予算書」、p8歳入末尾（40繰入金から50諸収入、歳入合計24,276,181千円）、p9【歳出】5総務費から10保険給付費（款・項・目＋節金額＋説明欄の事業名・施策番号）、p13が30公債費から40予備費と歳出合計24,276,181千円の明細末尾、p14給与費明細書は範囲外。後期高齢者医療特別会計fin08物理8-9頁：p7歳入末尾（25諸収入、歳入合計6,664,313千円）、p8【歳出】5総務費から10後期高齢者医療広域連合納付金、p9が15保健事業費から25予備費と歳出合計6,664,313千円の末尾、p10給与費明細書は範囲外。介護保険特別会計fin09物理10-14頁：p9歳入末尾（60諸収入、歳入合計19,375,086千円）、p10【歳出】5総務費、p14が20地域支援事業費から50予備費と歳出合計19,375,086千円の末尾、p15給与費明細書は範囲外（FY2025の10-15頁という推測は実物で訂正）。公共用地特別会計fin10物理9頁：p8歳入末尾（30諸収入から35市債、歳入合計1,662,178千円）、p9【歳出】5公共用地取得費1,662,178千円（款・項・目＋節＋経費内訳、単頁）、p10債務負担行為調書は範囲外。競走事業会計fin11物理7頁・23-26頁：p4表紙「府中市競走事業会計予算説明書」、p2-3総則に収益的支出83,990,959千円・資本的支出3,382,948千円、p5収益的収入・p6収益的支出実施計画（款項集計）は明細との重複のため除外、p7【資本的支出】1資本的支出3,382,948千円（建設改良費182,948千円＋利益剰余金繰出金3,200,000千円、款・項・目、予定額・千円）、p23【収益的支出】1競走事業費用からp26合計83,990,959千円の目別明細（款・項・目＋説明、予定額・千円）、資本的支出の目別明細書はなくp26が最終頁（原典の不足、実施計画p7で補う）、注記・キャッシュフロー・貸借対照表は範囲外。下水道事業会計fin12物理28-30頁・32-33頁：p27収益的収入末尾（合計4,938,763千円）は除外、p28【収益的支出】1下水道事業費用からp30合計4,808,194千円の目別明細、p31資本的収入は除外、p32【資本的支出】1資本的支出からp33合計1,792,022千円の目別明細（款・項・目＋説明、予定額・千円）。一般会計予算書fin01は款・項止まりのため不選定。7会計の歳出を網羅。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132063/2024/initial-4.pdf",
+            "sha256": "574f8276f1497e50444a9c07a50248cbd8086426299fea145198f1bf66b3c734",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin03finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2024/initial-7.pdf",
+            "sha256": "c4f7498d29834d47cc9bda22b08483b47f8a52867089ef08971013d2f390017d",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin07finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2024/initial-3.pdf",
+            "sha256": "56ff00fcf86e7ed26dfcbca41181894d860cad1680f15213c05243667f28411e",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin08finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2024/initial-1.pdf",
+            "sha256": "13fa623b909ca2fce0163ccd65f87f2ebad3774aa3807f39647bc1fcdd88f2fe",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin09finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2024/initial-5.pdf",
+            "sha256": "8af773e7cebde58e8b79887041992f20c164b62f7dab4251af10195e7edcbd01",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin10finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2024/initial-2.pdf",
+            "sha256": "4529b4a04a59e1546e58d2fd8837b6eaf2a4e57beac35a43a96657af093f3f08",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin11finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2024/initial-6.pdf",
+            "sha256": "ae1994115ca19d017cf21100b264b01242194e905697544d0d2a1fe984cd1c27",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin12finance.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T06:55:09.686Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132063",
+        "fiscal_year": 2023,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度府中市一般会計・特別会計・公営企業会計予算書（当初予算）",
+          "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.html",
+          "inspected_at": "2026-10-08T06:53:48.396035+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin03finance.pdf",
+              "sha256": "3f0418648fb2477c7df92af8636e1a8ae1a03dd8bdca6fe397e020872fff3b1d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 61
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin07finance.pdf",
+              "sha256": "fa76ec8e3f068473d70888d6cbdc09d3be8ee3e011e05bb1ea10beac02aa55aa",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin08finance.pdf",
+              "sha256": "9955a195982a3b0a747b420d8e7305314cdeb345c67c582cbfcc934e1b42ac53",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin09finance.pdf",
+              "sha256": "047f33363a5e3594376d825459c119520c74013131f2e96dedbb20b7021c01f1",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 14
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin10finance.pdf",
+              "sha256": "08f41cbdabc169217c211ef571bdd6ae0470311613c318a5ce10b5984707495a",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "公共用地特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin11finance.pdf",
+              "sha256": "b88cc51320b1280f98bbc6e16001d41e092d368bd3d2bb48bd5b04dd31a87ea4",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "競走事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 27,
+                      "end": 30
+                    },
+                    {
+                      "start": 32,
+                      "end": 32
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin12finance.pdf",
+              "sha256": "f5a55bccb16ba1c790bb98c2ecedc409e4788f5c546e702e4c9dd8b3b6ee49c3",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 27,
+                      "end": 29
+                    },
+                    {
+                      "start": 31,
+                      "end": 32
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度（FY2023）当初予算の公式掲載ページ（令和5年度一般会計・特別会計・公営企業会計予算書）から7会計の歳出を選定。既存の一般会計（fin03、文字PDF、物理1-61頁、歳出のみ、本年度予算額・千円）に加え、輪郭線描画PDF6冊を画像で確認して追記（全冊SHA一致・pdf_type=scan・金額は本年度予算額または予定額・単位千円・税の別記なし）。国民健康保険特別会計fin07物理9-13頁：p8歳入末尾（40繰入金から50諸収入、歳入合計24,728,083千円）、p9【歳出】5総務費から10保険給付費、p13が30公債費から40予備費と歳出合計24,728,083千円の末尾、p14給与費明細書は範囲外。後期高齢者医療特別会計fin08物理8-9頁：p7歳入末尾（25諸収入、歳入合計6,316,870千円）、p8【歳出】5総務費から10後期高齢者医療広域連合納付金、p9が15保健事業費から25予備費と歳出合計6,316,870千円の末尾、p10給与費明細書は範囲外。介護保険特別会計fin09物理10-14頁：p10【歳出】5総務費、p14が20地域支援事業費から50予備費と歳出合計20,229,587千円の末尾、p15給与費明細書は範囲外。公共用地特別会計fin10物理9頁（全10頁）：p8歳入（23繰入金から30諸収入、歳入合計920,565千円）、p9【歳出】5公共用地取得費920,565千円（単頁）、p10債務負担行為調書は範囲外。競走事業会計fin11物理27-30頁・32頁：p5収益的収入・p6収益的支出実施計画・p7資本的収入・p8資本的支出実施計画（款項集計）は明細との重複のため除外、p25-26収益的収入明細・p31資本的収入は除外、p27【収益的支出】1競走事業費用からp30合計85,473,812千円の目別明細、p32【資本的支出】1資本的支出合計3,861,308千円の目別明細（款・項・目＋説明、予定額・千円）。下水道事業会計fin12物理27-29頁・31-32頁：p25-26収益的収入明細（合計5,073,567千円）は除外、p27【収益的支出】1下水道事業費用からp29合計4,787,432千円の目別明細、p30資本的収入は除外、p31【資本的支出】1資本的支出からp32合計1,546,956千円の目別明細（款・項・目＋説明、予定額・千円）。一般会計予算書fin01は款・項止まりのため不選定。7会計の歳出を網羅。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132063/2023/initial-3.pdf",
+            "sha256": "3f0418648fb2477c7df92af8636e1a8ae1a03dd8bdca6fe397e020872fff3b1d",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin03finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2023/initial-7.pdf",
+            "sha256": "fa76ec8e3f068473d70888d6cbdc09d3be8ee3e011e05bb1ea10beac02aa55aa",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin07finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2023/initial-4.pdf",
+            "sha256": "9955a195982a3b0a747b420d8e7305314cdeb345c67c582cbfcc934e1b42ac53",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin08finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2023/initial-1.pdf",
+            "sha256": "047f33363a5e3594376d825459c119520c74013131f2e96dedbb20b7021c01f1",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin09finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2023/initial-2.pdf",
+            "sha256": "08f41cbdabc169217c211ef571bdd6ae0470311613c318a5ce10b5984707495a",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin10finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2023/initial-5.pdf",
+            "sha256": "b88cc51320b1280f98bbc6e16001d41e092d368bd3d2bb48bd5b04dd31a87ea4",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin11finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2023/initial-6.pdf",
+            "sha256": "f5a55bccb16ba1c790bb98c2ecedc409e4788f5c546e702e4c9dd8b3b6ee49c3",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin12finance.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T06:55:28.687Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132063",
+        "fiscal_year": 2023,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度府中市決算書（一般会計・特別会計及び公営企業会計）",
+          "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/kessan/kessansho/5kessansho.html",
+          "inspected_at": "2026-10-08T06:28:22+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/kessan/kessansho/5kessansho.files/fuc24b07gaf02g_account_f_statement.pdf",
+              "sha256": "8f3b44d0e4eacb6cee64f510ebc5987bc6d31cfd78132993a7eeb9815f7f9ee6",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 88,
+                      "end": 219
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/kessan/kessansho/5kessansho.files/fuc24b07sap02s_account_public_e_fs.pdf",
+              "sha256": "2130c49aa1786f6ec9c03cb308c660616e0d158a83570a705e43309043c2572f",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 22,
+                      "end": 33
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 50,
+                      "end": 55
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 74,
+                      "end": 85
+                    }
+                  ]
+                },
+                {
+                  "account": "公共用地特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 100,
+                      "end": 101
+                    }
+                  ]
+                },
+                {
+                  "account": "競走事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 138,
+                      "end": 145
+                    },
+                    {
+                      "start": 148,
+                      "end": 149
+                    }
+                  ]
+                },
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 194,
+                      "end": 199
+                    },
+                    {
+                      "start": 202,
+                      "end": 205
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度（FY2023）決算ページ掲載の2冊（全て文字PDF、フォント有り・画像XObject無し）。一般会計歳入歳出決算書及び決算関係調書（物理308頁）は p1-6 表紙・目次、p7-20 歳入歳出決算書（款・項止まり）、p21 明細書表紙、p22-87 歳入決算事項別明細、歳出決算事項別明細は物理88-219頁（p88【歳出】5議会費 から 10総務費、p218-219 が60諸支出金 から 65予備費 の見開き最終頁、p220 実質収支に関する調書から除外）。見開きで左頁に款・項・目と当初予算額・補正予算額・予算現額・節、右頁に支出済額・不用額・翌年度繰越額・施策番号、列単位は円（当該範囲に千円表記なし、税の別記なし）。特別会計及び公営企業会計決算書（物理208頁、p3 目次）は会計別の歳入歳出決算事項別明細書のうち【歳出】のみ選定（各会計の決算書本文は款項止まり、歳入明細・給与費明細書・実質収支調書・財産調書・債務調書等は除外）：国民健康保険 物理22-33頁（p13明細書表紙・p14-21歳入、p34実質収支調書）、後期高齢者医療 物理50-55頁（p43表紙・p44-49歳入、p56実質収支調書）、介護保険 物理74-85頁（p65表紙・p66-73歳入、p86実質収支調書）、公共用地 物理100-101頁（p95表紙・p96-99歳入、p102実質収支調書）。公営企業は決算事項別明細の収益的支出・資本的支出のみ選定（支出済額・単位円）：競走事業 物理138-145頁【収益的支出】・148-149頁【資本的支出】（p103-110決算書本文、p111-118損益計算書、p119-121収益費用明細書、p122-133財務諸表・注記、p134-137【収益的収入】、p146-147【資本的収入】は除外）、下水道事業 物理194-199頁【収益的支出】・202-205頁【資本的支出】（p151-158決算書本文、p159-176損益計算書・貸借対照表、p177-183収益費用明細書、p184-189企業債調書、p190-193【収益的収入】、p200-201【資本的収入】は除外、p206以降は空白頁）。全7会計の歳出支出済額を網羅。工事契約額・複数年総事業費・固定資産増加額・財源充当額は支出済額として扱っていない。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132063/2023/settlement-2.pdf",
+            "sha256": "8f3b44d0e4eacb6cee64f510ebc5987bc6d31cfd78132993a7eeb9815f7f9ee6",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/kessan/kessansho/5kessansho.files/fuc24b07gaf02g_account_f_statement.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2023/settlement-1.pdf",
+            "sha256": "2130c49aa1786f6ec9c03cb308c660616e0d158a83570a705e43309043c2572f",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/kessan/kessansho/5kessansho.files/fuc24b07sap02s_account_public_e_fs.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T06:31:56.019Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132063",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度府中市一般会計補正予算書（第1号）及び説明書（4月専決処分）",
+          "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.html",
+          "inspected_at": "2026-10-08T09:06:38.102484+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin20finance.pdf",
+              "sha256": "898283d52384f7ed506f274639136a39c5fd87efc8843afef0be8b3177a4a595",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算書及び説明書の歳入歳出補正予算事項別明細書【歳出】を範囲に選定。款・項・目と節、説明欄の事業名・施策番号、金額列=補正前の額・補正額・計（補正率％）、単位は各頁表記の（単位：千円）。第1表歳入歳出予算補正（款・項のみ）・歳入明細・繰越明許費・債務負担行為・地方債調書・給与費明細書は範囲外。号数は各原典の表紙・本文の「補正予算書（第N号）」表記で確認。一般会計補正予算書（第1号）、歳出明細は物理7頁。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132063/2023/supplementary-1.pdf",
+            "sha256": "898283d52384f7ed506f274639136a39c5fd87efc8843afef0be8b3177a4a595",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin20finance.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:07:20.088Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132063",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度府中市一般会計補正予算書（第2号）及び説明書（6月補正）",
+          "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.html",
+          "inspected_at": "2026-10-08T09:06:38.102484+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin21finance.pdf",
+              "sha256": "c8f86809446ca9a2cb4d250a184a33e48fc0cc51bd39613c2a3cb93d50013c96",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算書及び説明書の歳入歳出補正予算事項別明細書【歳出】を範囲に選定。款・項・目と節、説明欄の事業名・施策番号、金額列=補正前の額・補正額・計（補正率％）、単位は各頁表記の（単位：千円）。第1表歳入歳出予算補正（款・項のみ）・歳入明細・繰越明許費・債務負担行為・地方債調書・給与費明細書は範囲外。号数は各原典の表紙・本文の「補正予算書（第N号）」表記で確認。一般会計補正予算書（第2号）、歳出明細は物理7頁。表紙・条例は輪郭線で文字抽出不可、明細書部分は文字PDF。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132063/2023/supplementary-2.pdf",
+            "sha256": "c8f86809446ca9a2cb4d250a184a33e48fc0cc51bd39613c2a3cb93d50013c96",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin21finance.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:07:23.473Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132063",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度府中市一般会計補正予算書（第3号）及び説明書（6月補正）",
+          "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.html",
+          "inspected_at": "2026-10-08T09:06:38.102484+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin22finance.pdf",
+              "sha256": "f5525c5866032b39db327f3e1ebc9380e7905b43d400f9417d9cf06cd548fcc4",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算書及び説明書の歳入歳出補正予算事項別明細書【歳出】を範囲に選定。款・項・目と節、説明欄の事業名・施策番号、金額列=補正前の額・補正額・計（補正率％）、単位は各頁表記の（単位：千円）。第1表歳入歳出予算補正（款・項のみ）・歳入明細・繰越明許費・債務負担行為・地方債調書・給与費明細書は範囲外。号数は各原典の表紙・本文の「補正予算書（第N号）」表記で確認。一般会計補正予算書（第3号）、歳出明細は物理7頁。表紙・条例は輪郭線で文字抽出不可、明細書部分は文字PDF。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132063/2023/supplementary-3.pdf",
+            "sha256": "f5525c5866032b39db327f3e1ebc9380e7905b43d400f9417d9cf06cd548fcc4",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin22finance.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:07:26.473Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132063",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度府中市一般会計補正予算書（第4号）・介護保険特別会計補正予算書（第1号）及び説明書（9月補正）",
+          "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.html",
+          "inspected_at": "2026-10-08T09:06:38.102484+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin23finance.pdf",
+              "sha256": "05b6fa02b921f4249a85ddf31da60d9b7141a1888065ce644212506c2be2a2ed",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 16
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin24finance.pdf",
+              "sha256": "975a3aa4fe0adceff40b3ce047b5d1bca6942cdcea4845e42dded3b13f19a2e3",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算書及び説明書の歳入歳出補正予算事項別明細書【歳出】を範囲に選定。款・項・目と節、説明欄の事業名・施策番号、金額列=補正前の額・補正額・計（補正率％）、単位は各頁表記の（単位：千円）。第1表歳入歳出予算補正（款・項のみ）・歳入明細・繰越明許費・債務負担行為・地方債調書・給与費明細書は範囲外。号数は各原典の表紙・本文の「補正予算書（第N号）」表記で確認。一般会計第4号は歳出明細 物理11-16頁（11頁【歳出】10総務費〜16頁歳出合計121,910,000→123,408,220千円に対し補正前額120,684,955→123,408,220千円確認）。介護保険特別会計第1号は歳出明細 物理7頁（歳出合計20,229,587千円の補正）。両PDFともフォント・画像なしの輪郭線描画で文字抽出不可のためscan。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132063/2023/supplementary-4-1.pdf",
+            "sha256": "05b6fa02b921f4249a85ddf31da60d9b7141a1888065ce644212506c2be2a2ed",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin23finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2023/supplementary-4-2.pdf",
+            "sha256": "975a3aa4fe0adceff40b3ce047b5d1bca6942cdcea4845e42dded3b13f19a2e3",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin24finance.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:07:35.298Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132063",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度府中市一般会計補正予算書（第5号）・下水道事業会計補正予算書（第1号）及び説明書（12月補正）",
+          "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.html",
+          "inspected_at": "2026-10-08T09:06:38.102484+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin26finance.pdf",
+              "sha256": "eaf1e2ab7cbb76602f45b4870c79a98012b2da34b5d59671ad0bb4493cb2583f",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 8
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin25finance.pdf",
+              "sha256": "443b35a631fedc30ccf246275f3d51570106a0088f2746cff92cdd16890784c2",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算書及び説明書の歳入歳出補正予算事項別明細書【歳出】を範囲に選定。款・項・目と節、説明欄の事業名・施策番号、金額列=補正前の額・補正額・計（補正率％）、単位は各頁表記の（単位：千円）。第1表歳入歳出予算補正（款・項のみ）・歳入明細・繰越明許費・債務負担行為・地方債調書・給与費明細書は範囲外。号数は各原典の表紙・本文の「補正予算書（第N号）」表記で確認。 補正予算書及び説明書の補正予算実施計画明細書を範囲に選定。款・項・目と説明、金額列=補正前の額・補正額・計（補正率％）、単位は各頁表記の（単位：千円）。実施計画（既決予定額・補正予定額の総括）は明細書と重複するため除外、収益的収入・資本的収入・給与費明細書・キャッシュフロー・損益・貸借対照表・注記は範囲外。号数は表紙・総則の「補正予算書（第N号）」表記で確認。一般会計第5号は歳出明細 物理8頁。下水道事業会計第1号（説明書のみ掲載）は収益的支出明細 物理7頁のみ、資本的収支の補正なし（輪郭線描画のためscan）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132063/2023/supplementary-5-2.pdf",
+            "sha256": "eaf1e2ab7cbb76602f45b4870c79a98012b2da34b5d59671ad0bb4493cb2583f",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin26finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2023/supplementary-5-1.pdf",
+            "sha256": "443b35a631fedc30ccf246275f3d51570106a0088f2746cff92cdd16890784c2",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc23b07fin25finance.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:07:42.179Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132063",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度府中市一般会計補正予算書（第6号）及び説明書（1月専決処分）",
+          "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.html",
+          "inspected_at": "2026-10-08T09:06:38.102484+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc24b07fin13finance.pdf",
+              "sha256": "7670cae0fe192fc2699e4941fa7221153e6266f9bb4075b8296e314b0915acc3",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 8
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算書及び説明書の歳入歳出補正予算事項別明細書【歳出】を範囲に選定。款・項・目と節、説明欄の事業名・施策番号、金額列=補正前の額・補正額・計（補正率％）、単位は各頁表記の（単位：千円）。第1表歳入歳出予算補正（款・項のみ）・歳入明細・繰越明許費・債務負担行為・地方債調書・給与費明細書は範囲外。号数は各原典の表紙・本文の「補正予算書（第N号）」表記で確認。一般会計補正予算書（第6号）、歳出明細は物理8頁（第2表繰越明許費・第3表債務負担行為・第4表地方債は別途掲載、範囲外）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132063/2023/supplementary-6.pdf",
+            "sha256": "7670cae0fe192fc2699e4941fa7221153e6266f9bb4075b8296e314b0915acc3",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc24b07fin13finance.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:07:46.557Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132063",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 7
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度府中市一般会計補正予算書（第7号）ほか3月補正 6会計分",
+          "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.html",
+          "inspected_at": "2026-10-08T09:06:38.102484+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc24b07fin14finance.pdf",
+              "sha256": "7286cb55629600db505fe372f4e5cab60de919a66a6876d1f9c2dbc1cd33b47a",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 28,
+                      "end": 42
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc24b07fin15finance.pdf",
+              "sha256": "547c979c83ff3f170d736fd834b5e3cf0219c01d9a557febbb3b8e0cd02cb880",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc24b07fin16finance.pdf",
+              "sha256": "8035f6d572ce6cbfcd304c798a3efd633369f0dd2263984286bc52f82d14f804",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc24b07fin17finance.pdf",
+              "sha256": "b310b0b6d54efb17453b33460b2698f13945780eba21d816a7e1140b8b43c53a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "公共用地特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc24b07fin18finance.pdf",
+              "sha256": "4dc1142f89c69b1daa919d0a4a99329741066c6bab99e9afab2b4c5b5319b890",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "競走事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 20
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc24b07fin19finance.pdf",
+              "sha256": "804a8cc9f0ffccffb4ba0799aae2f9a7d1675888b1c961320dd4bf7c3504fee7",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 19,
+                      "end": 19
+                    },
+                    {
+                      "start": 21,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算書及び説明書の歳入歳出補正予算事項別明細書【歳出】を範囲に選定。款・項・目と節、説明欄の事業名・施策番号、金額列=補正前の額・補正額・計（補正率％）、単位は各頁表記の（単位：千円）。第1表歳入歳出予算補正（款・項のみ）・歳入明細・繰越明許費・債務負担行為・地方債調書・給与費明細書は範囲外。号数は各原典の表紙・本文の「補正予算書（第N号）」表記で確認。 補正予算書及び説明書の補正予算実施計画明細書を範囲に選定。款・項・目と説明、金額列=補正前の額・補正額・計（補正率％）、単位は各頁表記の（単位：千円）。実施計画（既決予定額・補正予定額の総括）は明細書と重複するため除外、収益的収入・資本的収入・給与費明細書・キャッシュフロー・損益・貸借対照表・注記は範囲外。号数は表紙・総則の「補正予算書（第N号）」表記で確認。同じ3月補正だが会計ごとの号数が異なる: 一般会計第7号（歳出明細 物理28-42頁、明細部のみ輪郭線でscan、歳出合計126,078,725→129,739,111千円）、国民健康保険特別会計第1号（歳出 物理8-9頁、歳出合計24,728,083→24,436,775千円）、後期高齢者医療特別会計第1号（歳出 物理8-9頁、歳出合計6,316,870→6,286,248千円）、公共用地特別会計第1号（歳出 物理7頁、歳出合計920,565→704,130千円）、競走事業会計第1号（収益的支出 物理18-19頁・資本的支出 物理20頁、収益的支出合計85,473,812→81,619,058千円／資本的支出合計3,861,308→3,841,258千円）、下水道事業会計第2号（収益的支出 物理19頁・資本的支出 物理21頁、20頁は資本的収入、収益的支出合計4,787,432→4,849,883千円／資本的支出合計1,546,956→1,476,828千円）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132063/2023/supplementary-7-3.pdf",
+            "sha256": "7286cb55629600db505fe372f4e5cab60de919a66a6876d1f9c2dbc1cd33b47a",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc24b07fin14finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2023/supplementary-7-2.pdf",
+            "sha256": "547c979c83ff3f170d736fd834b5e3cf0219c01d9a557febbb3b8e0cd02cb880",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc24b07fin15finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2023/supplementary-7-4.pdf",
+            "sha256": "8035f6d572ce6cbfcd304c798a3efd633369f0dd2263984286bc52f82d14f804",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc24b07fin16finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2023/supplementary-7-6.pdf",
+            "sha256": "b310b0b6d54efb17453b33460b2698f13945780eba21d816a7e1140b8b43c53a",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc24b07fin17finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2023/supplementary-7-1.pdf",
+            "sha256": "4dc1142f89c69b1daa919d0a4a99329741066c6bab99e9afab2b4c5b5319b890",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc24b07fin18finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2023/supplementary-7-5.pdf",
+            "sha256": "804a8cc9f0ffccffb4ba0799aae2f9a7d1675888b1c961320dd4bf7c3504fee7",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/5yosansyo.files/fuc24b07fin19finance.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:08:06.414Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132063",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度府中市一般会計補正予算書（第1号）及び説明書（6月補正）＋国民健康保険特別会計補正予算書（第1号）及び説明書（12月補正）",
+          "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.html",
+          "inspected_at": "2026-10-08T09:06:38.102484+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin21finance.pdf",
+              "sha256": "03bcb6e970b6db75a198a971c3f4ebd1d93ecbf7e9eb364dfc2e2dca2b97e642",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin25finance.pdf",
+              "sha256": "174dcc746177da39a74ec1dc9043672f54717727be9cb00f397643f76ec2608a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 5,
+                      "end": 5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算書及び説明書の歳入歳出補正予算事項別明細書【歳出】を範囲に選定。款・項・目と節、説明欄の事業名・施策番号、金額列=補正前の額・補正額・計（補正率％）、単位は各頁表記の（単位：千円）。第1表歳入歳出予算補正（款・項のみ）・歳入明細・繰越明許費・債務負担行為・地方債調書・給与費明細書は範囲外。号数は各原典の表紙・本文の「補正予算書（第N号）」表記で確認。一般会計補正予算書（第1号、6月補正）、歳出明細は物理7頁。国民健康保険特別会計補正予算書（第1号、12月補正、歳出予算の補正のみ）を必要冊として同対象にまとめる。両者は別の実施日・別の議案であり同じ補正機会ではない（一般第1号=6月補正、国保第1号=12月補正）。台帳の号数は一般会計の原典号数（第1号）に合わせ、会計別の原典号数は本reasonに保持する。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132063/2024/supplementary-1-1.pdf",
+            "sha256": "03bcb6e970b6db75a198a971c3f4ebd1d93ecbf7e9eb364dfc2e2dca2b97e642",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin21finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2024/supplementary-1-2.pdf",
+            "sha256": "174dcc746177da39a74ec1dc9043672f54717727be9cb00f397643f76ec2608a",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin25finance.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:20:32.959Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132063",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度府中市一般会計補正予算書（第2号）・介護保険特別会計補正予算書（第1号）及び説明書（9月補正）",
+          "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.html",
+          "inspected_at": "2026-10-08T09:06:38.102484+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin22finance.pdf",
+              "sha256": "f3ed63d63fb19df07f849921a8f0c433fb9134797051f534d0b007700175b164",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 10,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin23finance.pdf",
+              "sha256": "3d97c491d098bd540504b26179506f66bb56eddaa3e9f60f0ea6fb7ba5f2fd82",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算書及び説明書の歳入歳出補正予算事項別明細書【歳出】を範囲に選定。款・項・目と節、説明欄の事業名・施策番号、金額列=補正前の額・補正額・計（補正率％）、単位は各頁表記の（単位：千円）。第1表歳入歳出予算補正（款・項のみ）・歳入明細・繰越明許費・債務負担行為・地方債調書・給与費明細書は範囲外。号数は各原典の表紙・本文の「補正予算書（第N号）」表記で確認。一般会計第2号は歳出明細 物理10-15頁（歳出合計127,884,340→130,316,721千円）。介護保険特別会計第1号は歳出明細 物理7頁。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132063/2024/supplementary-2-2.pdf",
+            "sha256": "f3ed63d63fb19df07f849921a8f0c433fb9134797051f534d0b007700175b164",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin22finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2024/supplementary-2-1.pdf",
+            "sha256": "3d97c491d098bd540504b26179506f66bb56eddaa3e9f60f0ea6fb7ba5f2fd82",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin23finance.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:08:23.953Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132063",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度府中市一般会計補正予算書（第3号）及び説明書（10月専決処分）",
+          "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.html",
+          "inspected_at": "2026-10-08T09:06:38.102484+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin24finance.pdf",
+              "sha256": "ccba0471a7e1ac4235d15e5b6939e8d6246ec6049493473d037ac11f39076f84",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算書及び説明書の歳入歳出補正予算事項別明細書【歳出】を範囲に選定。款・項・目と節、説明欄の事業名・施策番号、金額列=補正前の額・補正額・計（補正率％）、単位は各頁表記の（単位：千円）。第1表歳入歳出予算補正（款・項のみ）・歳入明細・繰越明許費・債務負担行為・地方債調書・給与費明細書は範囲外。号数は各原典の表紙・本文の「補正予算書（第N号）」表記で確認。一般会計補正予算書（第3号）、歳出明細は物理7頁（8-9頁は給与費明細書で範囲外）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132063/2024/supplementary-3.pdf",
+            "sha256": "ccba0471a7e1ac4235d15e5b6939e8d6246ec6049493473d037ac11f39076f84",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin24finance.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:08:27.930Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132063",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度府中市一般会計補正予算書（第4号）及び説明書（12月専決処分）",
+          "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.html",
+          "inspected_at": "2026-10-08T09:06:38.102484+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin26finance.pdf",
+              "sha256": "849ad69c5591d1b2d76b95cadcb961c554727f20c632bcad42ff24e81179d8a2",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 8
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算書及び説明書の歳入歳出補正予算事項別明細書【歳出】を範囲に選定。款・項・目と節、説明欄の事業名・施策番号、金額列=補正前の額・補正額・計（補正率％）、単位は各頁表記の（単位：千円）。第1表歳入歳出予算補正（款・項のみ）・歳入明細・繰越明許費・債務負担行為・地方債調書・給与費明細書は範囲外。号数は各原典の表紙・本文の「補正予算書（第N号）」表記で確認。一般会計補正予算書（第4号、12月専決処分）、歳出明細は物理8頁（第2表繰越明許費は範囲外）。12月の国民健康保険特別会計補正（第1号）とは別の専決処分であり同じ補正機会ではない。台帳の号数は一般会計の原典号数（第4号）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132063/2024/supplementary-4.pdf",
+            "sha256": "849ad69c5591d1b2d76b95cadcb961c554727f20c632bcad42ff24e81179d8a2",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin26finance.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:20:36.302Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132063",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度3月補正 7会計分（一般会計第5号・国民健康保険特別会計第2号・後期高齢者医療特別会計第1号・介護保険特別会計第2号・公共用地特別会計第1号・競走事業会計第1号・下水道事業会計第1号）",
+          "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.html",
+          "inspected_at": "2026-10-08T09:06:38.102484+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin27finance.pdf",
+              "sha256": "ee4268ac7023b29cc1878e2ab3b026009d932962e882aada3120f17125bc82ba",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 26,
+                      "end": 41
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin28finance.pdf",
+              "sha256": "08f09534df2b1a67bcf0bf3c062d6f3df76b532dba9393a6069763a4524432b4",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin29finance.pdf",
+              "sha256": "4e0f5b24261662882367f1f97145a66c27bae1970b4292e40ad3d8e266456c31",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 8
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin30finance.pdf",
+              "sha256": "19081c11d7ea41838be261d79316484c83251ed52ad8bc571516a661a83c608b",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin31finance.pdf",
+              "sha256": "762f189274e5230ee83b17f34a4aac372fbe2b8bf43308c83e1b15e4d639c0cd",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "公共用地特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 8
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin32finance.pdf",
+              "sha256": "b0c64f5e320cc39a972a0fe44133cf108749265f492ec3b8c1ab66cb013fc9c5",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "競走事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 18,
+                      "end": 20
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin33finance.pdf",
+              "sha256": "f4779be35bde4b5ecf017f86f366584ca644a11c9bc6c7999bb5ab1bb81cf3be",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 19,
+                      "end": 19
+                    },
+                    {
+                      "start": 21,
+                      "end": 21
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算書及び説明書の歳入歳出補正予算事項別明細書【歳出】を範囲に選定。款・項・目と節、説明欄の事業名・施策番号、金額列=補正前の額・補正額・計（補正率％）、単位は各頁表記の（単位：千円）。第1表歳入歳出予算補正（款・項のみ）・歳入明細・繰越明許費・債務負担行為・地方債調書・給与費明細書は範囲外。号数は各原典の表紙・本文の「補正予算書（第N号）」表記で確認。 補正予算書及び説明書の補正予算実施計画明細書を範囲に選定。款・項・目と説明、金額列=補正前の額・補正額・計（補正率％）、単位は各頁表記の（単位：千円）。実施計画（既決予定額・補正予定額の総括）は明細書と重複するため除外、収益的収入・資本的収入・給与費明細書・キャッシュフロー・損益・貸借対照表・注記は範囲外。号数は表紙・総則の「補正予算書（第N号）」表記で確認。同じ3月補正だが会計ごとの号数が異なる（一般会計第5号、国保第2号、後期・公共用地・競走・下水道は第1号、介護第2号）。全PDF輪郭線描画で文字抽出不可のため描画確認しscan。一般会計は歳出明細 物理26-41頁（26頁【歳出】5議会費〜41頁歳出合計131,428,621→136,266,649千円）、国保 物理8-9頁（歳出合計24,261,059千円の補正）、後期 物理8頁（歳出合計6,782,842千円の補正）、介護 物理7頁（歳出合計20,646,329千円の補正）、公共用地 物理8頁（歳出合計1,655,098千円の補正）、競走 収益的支出 物理18-19頁・資本的支出 物理20頁（収益的支出合計83,990,959→85,910,678千円／資本的支出3,382,948→3,768,200千円）、下水道 収益的支出 物理19頁・資本的支出 物理21頁（20頁は資本的収入、収益的支出合計4,808,194→4,819,304千円／資本的支出1,792,022→1,645,873千円）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132063/2024/supplementary-5-6.pdf",
+            "sha256": "ee4268ac7023b29cc1878e2ab3b026009d932962e882aada3120f17125bc82ba",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin27finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2024/supplementary-5-1.pdf",
+            "sha256": "08f09534df2b1a67bcf0bf3c062d6f3df76b532dba9393a6069763a4524432b4",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin28finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2024/supplementary-5-3.pdf",
+            "sha256": "4e0f5b24261662882367f1f97145a66c27bae1970b4292e40ad3d8e266456c31",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin29finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2024/supplementary-5-2.pdf",
+            "sha256": "19081c11d7ea41838be261d79316484c83251ed52ad8bc571516a661a83c608b",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin30finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2024/supplementary-5-4.pdf",
+            "sha256": "762f189274e5230ee83b17f34a4aac372fbe2b8bf43308c83e1b15e4d639c0cd",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin31finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2024/supplementary-5-5.pdf",
+            "sha256": "b0c64f5e320cc39a972a0fe44133cf108749265f492ec3b8c1ab66cb013fc9c5",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin32finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2024/supplementary-5-7.pdf",
+            "sha256": "f4779be35bde4b5ecf017f86f366584ca644a11c9bc6c7999bb5ab1bb81cf3be",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/6yosansyo.files/fuc24b07fin33finance.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:20:57.626Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132063",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度9月補正 4会計分（一般会計第1号・介護保険特別会計第1号・競走事業会計第1号・下水道事業会計第1号）",
+          "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.html",
+          "inspected_at": "2026-10-08T09:06:38.102484+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin13finance.pdf",
+              "sha256": "6c042676e729e92e9ea432046936600036c75faa82269d29c6b9da584cb50ac6",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 16
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin14finance.pdf",
+              "sha256": "1c6c37607b7f7c6e980f2c3b2a4a7727bb662a9e959f6fd714a854a8c07badab",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin15finance.pdf",
+              "sha256": "42e3478e8f0002364a34cb7a638606c9e2aa2574dc8844f61e76db99c770f993",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "競走事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin16finance.pdf",
+              "sha256": "aabe725419da80605dc5f42c0923b41610420760e839afa76661cd4f4a6686d7",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 17,
+                      "end": 17
+                    },
+                    {
+                      "start": 19,
+                      "end": 19
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算書及び説明書の歳入歳出補正予算事項別明細書【歳出】を範囲に選定。款・項・目と節、説明欄の事業名・施策番号、金額列=補正前の額・補正額・計（補正率％）、単位は各頁表記の（単位：千円）。第1表歳入歳出予算補正（款・項のみ）・歳入明細・繰越明許費・債務負担行為・地方債調書・給与費明細書は範囲外。号数は各原典の表紙・本文の「補正予算書（第N号）」表記で確認。 補正予算書及び説明書の補正予算実施計画明細書を範囲に選定。款・項・目と説明、金額列=補正前の額・補正額・計（補正率％）、単位は各頁表記の（単位：千円）。実施計画（既決予定額・補正予定額の総括）は明細書と重複するため除外、収益的収入・資本的収入・給与費明細書・キャッシュフロー・損益・貸借対照表・注記は範囲外。号数は表紙・総則の「補正予算書（第N号）」表記で確認。全PDF輪郭線描画で文字抽出不可のため描画確認しscan。一般会計第1号は歳出明細 物理11-16頁（歳出合計121,910,000→124,813,703千円）、介護保険特別会計第1号は歳出明細 物理7頁（歳出合計19,896,209→20,523,004千円）、競走事業会計第1号は収益的支出明細 物理9頁のみ（合計84,180,251→84,814,028千円、資本的収支の補正なし）、下水道事業会計第1号は収益的支出 物理17頁・資本的支出 物理19頁（18頁は資本的収入、収益的支出合計4,794,112→4,882,942千円／資本的支出1,635,586→1,702,778千円）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132063/2025/supplementary-1-3.pdf",
+            "sha256": "6c042676e729e92e9ea432046936600036c75faa82269d29c6b9da584cb50ac6",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin13finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2025/supplementary-1-1.pdf",
+            "sha256": "1c6c37607b7f7c6e980f2c3b2a4a7727bb662a9e959f6fd714a854a8c07badab",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin14finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2025/supplementary-1-2.pdf",
+            "sha256": "42e3478e8f0002364a34cb7a638606c9e2aa2574dc8844f61e76db99c770f993",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin15finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2025/supplementary-1-4.pdf",
+            "sha256": "aabe725419da80605dc5f42c0923b41610420760e839afa76661cd4f4a6686d7",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin16finance.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:09:12.671Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132063",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度12月補正 2会計分（一般会計第2号・競走事業会計第2号）＋国民健康保険特別会計補正予算書（第2号）及び説明書（3月専決処分）",
+          "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.html",
+          "inspected_at": "2026-10-08T09:06:38.102484+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin17finance.pdf",
+              "sha256": "bf1a09a55fcb7e69a0e294711e5fba84d9b6a3b1a1a55a96439322a4d61ab1b8",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin18finance.pdf",
+              "sha256": "2eff136cbdb114c8875003663eef92caf2d137c1148f2d84e7b3ed7bded45620",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "競走事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 11,
+                      "end": 11
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc26b07fin25finance.pdf",
+              "sha256": "76762cbf80371cb9626bc6ad5d0a745687225c935b46e8cedb079cab3fcb5a7c",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算書及び説明書の歳入歳出補正予算事項別明細書【歳出】を範囲に選定。款・項・目と節、説明欄の事業名・施策番号、金額列=補正前の額・補正額・計（補正率％）、単位は各頁表記の（単位：千円）。第1表歳入歳出予算補正（款・項のみ）・歳入明細・繰越明許費・債務負担行為・地方債調書・給与費明細書は範囲外。号数は各原典の表紙・本文の「補正予算書（第N号）」表記で確認。 補正予算書及び説明書の補正予算実施計画明細書を範囲に選定。款・項・目と説明、金額列=補正前の額・補正額・計（補正率％）、単位は各頁表記の（単位：千円）。実施計画（既決予定額・補正予定額の総括）は明細書と重複するため除外、収益的収入・資本的収入・給与費明細書・キャッシュフロー・損益・貸借対照表・注記は範囲外。号数は表紙・総則の「補正予算書（第N号）」表記で確認。一般会計第2号は歳出明細 物理7頁（歳出合計124,813,703→124,918,314千円）。競走事業会計第2号は収益的支出明細 物理11頁のみ（合計84,814,028→91,626,492千円、資本的収支の補正なし）。国民健康保険特別会計補正予算書（第2号、3月専決処分、歳出明細は物理7頁）を必要冊として同対象にまとめる。3月の一般会計補正（第5号）とは別の専決処分であり、12月の一般会計第2号・競走第2号とも同じ補正機会ではない。台帳の号数は一般会計の原典号数（第2号）に合わせ、会計別の原典号数は本reasonに保持する。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132063/2025/supplementary-2-3.pdf",
+            "sha256": "bf1a09a55fcb7e69a0e294711e5fba84d9b6a3b1a1a55a96439322a4d61ab1b8",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin17finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2025/supplementary-2-1.pdf",
+            "sha256": "2eff136cbdb114c8875003663eef92caf2d137c1148f2d84e7b3ed7bded45620",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc25b07fin18finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2025/supplementary-2-2.pdf",
+            "sha256": "76762cbf80371cb9626bc6ad5d0a745687225c935b46e8cedb079cab3fcb5a7c",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc26b07fin25finance.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:21:04.933Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132063",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度府中市一般会計補正予算書（第3号）及び説明書（12月専決処分）",
+          "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.html",
+          "inspected_at": "2026-10-08T09:06:38.102484+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc26b07fin01finance.pdf",
+              "sha256": "6c234dee2a1cbc017b38722febced7ac8dd7a0d900c45953a80085e53e985556",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 8
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算書及び説明書の歳入歳出補正予算事項別明細書【歳出】を範囲に選定。款・項・目と節、説明欄の事業名・施策番号、金額列=補正前の額・補正額・計（補正率％）、単位は各頁表記の（単位：千円）。第1表歳入歳出予算補正（款・項のみ）・歳入明細・繰越明許費・債務負担行為・地方債調書・給与費明細書は範囲外。号数は各原典の表紙・本文の「補正予算書（第N号）」表記で確認。一般会計補正予算書（第3号）、歳出明細は物理8頁（第2表繰越明許費は範囲外）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132063/2025/supplementary-3.pdf",
+            "sha256": "6c234dee2a1cbc017b38722febced7ac8dd7a0d900c45953a80085e53e985556",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc26b07fin01finance.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:09:29.397Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132063",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度府中市一般会計補正予算書（第4号）及び説明書（1月専決処分）",
+          "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.html",
+          "inspected_at": "2026-10-08T09:06:38.102484+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc26b07fin02finance.pdf",
+              "sha256": "4ba51f95f13155be7422ada09e83935a5ec810a099ee5f8363de5f6e87e8d5f0",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算書及び説明書の歳入歳出補正予算事項別明細書【歳出】を範囲に選定。款・項・目と節、説明欄の事業名・施策番号、金額列=補正前の額・補正額・計（補正率％）、単位は各頁表記の（単位：千円）。第1表歳入歳出予算補正（款・項のみ）・歳入明細・繰越明許費・債務負担行為・地方債調書・給与費明細書は範囲外。号数は各原典の表紙・本文の「補正予算書（第N号）」表記で確認。一般会計補正予算書（第4号）、歳出明細は物理7頁（8-9頁は給与費明細書で範囲外）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132063/2025/supplementary-4.pdf",
+            "sha256": "4ba51f95f13155be7422ada09e83935a5ec810a099ee5f8363de5f6e87e8d5f0",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc26b07fin02finance.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:09:33.248Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132063",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度3月補正 7会計分（一般会計第5号・国民健康保険特別会計第1号・後期高齢者医療特別会計第1号・介護保険特別会計第2号・公共用地特別会計第1号・競走事業会計第3号・下水道事業会計第2号）",
+          "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.html",
+          "inspected_at": "2026-10-08T09:06:38.102484+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc26b07fin18finance.pdf",
+              "sha256": "65176aac47a8a153ab061264e8d4b235bf077bb0b67a766eabeff9630d208ca3",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 26,
+                      "end": 41
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc26b07fin23finance.pdf",
+              "sha256": "61c2398cfd04caf2b7bc826367806e336bde20e910006b50bd8cce70989e0b4c",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc26b07fin22finance.pdf",
+              "sha256": "a0655fc0a105648b9b83978b7970b9c2f716edb030b8bed39d0c7adb95baa2cb",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "後期高齢者医療特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 8,
+                      "end": 8
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc26b07fin20finance.pdf",
+              "sha256": "bd203d7c613723a4962fc60745f130e838cb9fa5a1603db380edfff54b58cd29",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "介護保険特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc26b07fin24finance.pdf",
+              "sha256": "a21b6fbfea63e7e689314410c0447a4280c96db7ae170f12ba4856b6df3c87f2",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "公共用地特別会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 9,
+                      "end": 9
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc26b07fin21finance.pdf",
+              "sha256": "ec00c7ea325de6f2532176488802f9e74f006d757872cee8ca863cc82a303db9",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "競走事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 19,
+                      "end": 20
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc26b07fin19finance.pdf",
+              "sha256": "a4f89f7aab47c9cad0bb78e2cd012d5ae4086ccd96d2f53d63faa2618d5f0bb8",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "下水道事業会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 16,
+                      "end": 16
+                    },
+                    {
+                      "start": 18,
+                      "end": 18
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算書及び説明書の歳入歳出補正予算事項別明細書【歳出】を範囲に選定。款・項・目と節、説明欄の事業名・施策番号、金額列=補正前の額・補正額・計（補正率％）、単位は各頁表記の（単位：千円）。第1表歳入歳出予算補正（款・項のみ）・歳入明細・繰越明許費・債務負担行為・地方債調書・給与費明細書は範囲外。号数は各原典の表紙・本文の「補正予算書（第N号）」表記で確認。 補正予算書及び説明書の補正予算実施計画明細書を範囲に選定。款・項・目と説明、金額列=補正前の額・補正額・計（補正率％）、単位は各頁表記の（単位：千円）。実施計画（既決予定額・補正予定額の総括）は明細書と重複するため除外、収益的収入・資本的収入・給与費明細書・キャッシュフロー・損益・貸借対照表・注記は範囲外。号数は表紙・総則の「補正予算書（第N号）」表記で確認。同じ3月補正だが会計ごとの号数が異なる（一般会計第5号、国保第1号、後期第1号、介護第2号、公共用地第1号、競走第3号、下水道第2号）。一般会計は歳出明細 物理26-41頁（歳出合計125,903,215→140,882,583千円）、国保 物理8-9頁（歳出合計23,547,186→23,929,394千円）、後期 物理8頁、介護 物理7頁、公共用地 物理9頁（歳出合計1,489,820→1,199,524千円、第2表地方債・事業位置図は範囲外）、競走 収益的支出・資本的支出 物理19-20頁（収益的支出合計91,626,492→91,632,910千円／資本的支出2,807,151→3,092,727千円）、下水道 収益的支出 物理16頁・資本的支出 物理18頁（17頁は資本的収入、収益的支出合計4,882,942→4,918,972千円／資本的支出1,702,778→1,437,618千円）。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/132063/2025/supplementary-5-2.pdf",
+            "sha256": "65176aac47a8a153ab061264e8d4b235bf077bb0b67a766eabeff9630d208ca3",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc26b07fin18finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2025/supplementary-5-1.pdf",
+            "sha256": "61c2398cfd04caf2b7bc826367806e336bde20e910006b50bd8cce70989e0b4c",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc26b07fin23finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2025/supplementary-5-3.pdf",
+            "sha256": "a0655fc0a105648b9b83978b7970b9c2f716edb030b8bed39d0c7adb95baa2cb",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc26b07fin22finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2025/supplementary-5-6.pdf",
+            "sha256": "bd203d7c613723a4962fc60745f130e838cb9fa5a1603db380edfff54b58cd29",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc26b07fin20finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2025/supplementary-5-4.pdf",
+            "sha256": "a21b6fbfea63e7e689314410c0447a4280c96db7ae170f12ba4856b6df3c87f2",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc26b07fin24finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2025/supplementary-5-7.pdf",
+            "sha256": "ec00c7ea325de6f2532176488802f9e74f006d757872cee8ca863cc82a303db9",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc26b07fin21finance.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/132063/2025/supplementary-5-5.pdf",
+            "sha256": "a4f89f7aab47c9cad0bb78e2cd012d5ae4086ccd96d2f53d63faa2618d5f0bb8",
+            "final_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/yosansyo/fuc26b07fin18finance.files/fuc26b07fin19finance.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T09:09:48.699Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "132063",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "fuchu-r8-suppl-1-gaiyou",
+          "title": "令和8年度府中市補正予算第1号の概要",
+          "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/hosei/reiwa8hoseiyosanngaiyou.html",
+          "inspected_at": "2026-10-08T09:06:38.102484+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/hosei/reiwa8hoseiyosanngaiyou.files/R8.01hoseigaiyou.pdf",
+              "sha256": "90444b9ccffc642fe73d798581fb894b907f36e66864f5150891048e698a5522",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": null
+            }
+          ]
+        }
+      ],
+      "reason": "補正予算第1号の概要PDFを確認したが、掲載は会計別の補正前・補正・補正後予算額（千円）と歳入款別・歳出款別・歳出性質別の合計のみで、目・事業単位の補正額がない。款・項総額のみのため不採用。補正予算書本体（事項別明細）は予算書一覧ページ・概要ページともに掲載を確認できず。",
+      "selected_candidate_id": null,
+      "archive": null
+    }
+  ],
+  "unresolved_candidates": [
+    {
+      "candidate": {
+        "id": "fuchu-r8-suppl-sep-gaiyou",
+        "title": "令和8年度府中市9月補正予算の概要",
+        "landing_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/hosei/reiwa8hoseiyosanngaiyou.html",
+        "inspected_at": "2026-10-08T09:06:38.102484+00:00",
+        "files": [
+          {
+            "download_url": "https://www.city.fuchu.tokyo.jp/gyosei/zaise/yosan/hosei/reiwa8hoseiyosanngaiyou.files/R8.9hoseigaiyou.pdf",
+            "sha256": "c371c7c5ed3b891ad6bfb1e55fb3ebf67cec730674d847bbe77385a3d99fc6c5",
+            "format": "pdf",
+            "pdf_type": "text",
+            "scope": null
+          }
+        ]
+      },
+      "missing": [
+        "amendment_number"
+      ],
+      "reason": "令和8年度9月補正予算の概要PDF（文字PDF）。「主な事業一覧」に款・項・目番号・事業名称・補正額（千円）があり一般会計分の部分選定は可能だが、原典・掲載ページのいずれにも補正号数の明記がなく、議案との対応も確認できないため補正対象の号数を確定できない。介護保険特別会計・下水道事業会計の補正額は会計別総額のみで事業別明細なし。"
+    }
+  ]
 }

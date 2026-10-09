@@ -2,6 +2,1673 @@
   "jurisdiction": "131083",
   "name": "江東区",
   "official_url": "https://www.city.koto.lg.jp/",
-  "selections": [],
+  "selections": [
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2026,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度江東区予算説明書（一般会計・特別会計）",
+          "landing_url": "https://www.city.koto.lg.jp/011102/8nendotosyoyosangiketu.html",
+          "inspected_at": "2026-10-07T14:48:08.490487+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/8toutsyoyosansetumeisyoippankaikei.pdf",
+              "sha256": "29ebd70b44520516134211661eb8c55e9974e16eab1149bb2c9ce9acbee8d66a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 145,
+                      "end": 526
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/8toutsyoyosansetumeisyotokubetukaikei.pdf",
+              "sha256": "d1857e5aded11c978c08ef444cc6c986d0cacd7829992ba593b6f49564c3c609",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 53,
+                      "end": 94
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 145,
+                      "end": 182
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 219,
+                      "end": 236
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度当初予算説明書の歳出明細（款・項・目が同一明細行、目にコード・名称・本年度予算額・千円、節別内訳と説明（事業内容）列付き。テキスト抽出可能だが各文字が二重描画）。一般会計冊: 歳出 印字139-520=物理145-526（第1款議会費140〜第10款予備費518、物理527〜は給与費明細書）。特別会計冊（国保・介護・後期を1冊に収録、印字=物理-6）: 国保歳出 印字47-88=物理53-94、介護歳出 印字139-176=物理145-182、後期歳出 印字213-230=物理219-236（いずれも末頁は給与費明細書の手前まで）。全会計は一般・国民健康保険・介護保険・後期高齢者医療の4会計（当初予算掲載一覧と冊子目次で照合、企業会計・他の特別会計の掲載なし）。歳入・給与費明細書・債務負担行為の範囲は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2026/initial-1.pdf",
+            "sha256": "29ebd70b44520516134211661eb8c55e9974e16eab1149bb2c9ce9acbee8d66a",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/8toutsyoyosansetumeisyoippankaikei.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131083/2026/initial-2.pdf",
+            "sha256": "d1857e5aded11c978c08ef444cc6c986d0cacd7829992ba593b6f49564c3c609",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/8toutsyoyosansetumeisyotokubetukaikei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:48:24.065Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2024,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度江東区各会計歳入歳出決算書・決算事項別明細書",
+          "landing_url": "https://www.city.koto.lg.jp/510100/sainyuusaisyutukessansyo6.html",
+          "inspected_at": "2026-10-07T15:03:13.580403+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/510100/documents/20251021113431.pdf",
+              "sha256": "eb1e83d3a3d62b08c35f2541011d19a1236a6bc7d2d685fdfe10625c79f0ece2",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 16,
+                      "end": 18
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 26,
+                      "end": 27
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 34,
+                      "end": 35
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 41,
+                      "end": 41
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koto.lg.jp/510100/documents/20251021152823.pdf",
+              "sha256": "734c41222d2704fd0b570a91c8bb7de8552795e51b3444e8c5e7b3a2f130dba3",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 85,
+                      "end": 196
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koto.lg.jp/510100/documents/20260114171302.pdf",
+              "sha256": "c984d993f874af2f50f6512c0b93316b8bd918a9a62f71a6a58f9796c7744263",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "国民健康保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 31,
+                      "end": 53
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 85,
+                      "end": 107
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 133,
+                      "end": 145
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度決算（令和7年度決算は一覧ページ「現在、情報はありません」で未公表のためR6が最新）。歳出の支出済額は決算書（43頁）に款・項粒度で支出済額・翌年度繰越額・不用額・予算現額との比較つき（円）: 一般歳出 印字5-7=物理16-18、国保歳出 印字13-14=物理26-27、介護歳出 印字19-20=物理34-35、後期歳出 印字24=物理41。決算事項別明細書は款・項・目・節の明細を見開き1表で持つ（円）: 左頁（偶数印字頁）は款・項・目名称＋予算現額（当初予算額・補正予算額・継続費及び繰越事業費繰越額・予備費支出及び流用増減額・計）と節の区分・金額（予算現額の節別内訳）、右頁（奇数印字頁）は同一行の支出済額・翌年度繰越額（継続費逓次繰越・繰越明許費・事故繰越し）・不用額・備考（繰越明許費の議決情報）。目・節粒度の支出済額はこの右頁に存在する（一般 印字111・国保 251・介護 303・後期 349の右頁で列見出しと行対応を確認）。歳出末の最終見開き（印字218-219・270-271・322-323・358-359）の右頁は歳出合計行の支出済額を持ち決算書の会計別合計と一致（一般 261,954,790,490・国保 46,425,688,509・介護 39,161,165,053・後期 12,751,736,946）。明細書の歳出範囲は先頭が「(3)歳出」区切り頁: 一般 印字109-220=物理85-196（物理196は白紙）、国保 印字249-271=物理31-53、介護 印字301-323=物理85-107、後期 印字347-359=物理133-145。3冊とも文字層なし輪郭線/CID文字化けで画像読み取りが必要（scan）。全会計は4会計（掲載一覧と各冊表紙・認定で照合、企業会計・他の特別会計なし）。歳入・実質収支調書・財産調書は範囲外で未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2024/settlement-3.pdf",
+            "sha256": "eb1e83d3a3d62b08c35f2541011d19a1236a6bc7d2d685fdfe10625c79f0ece2",
+            "final_url": "https://www.city.koto.lg.jp/510100/documents/20251021113431.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131083/2024/settlement-1.pdf",
+            "sha256": "734c41222d2704fd0b570a91c8bb7de8552795e51b3444e8c5e7b3a2f130dba3",
+            "final_url": "https://www.city.koto.lg.jp/510100/documents/20251021152823.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131083/2024/settlement-2.pdf",
+            "sha256": "c984d993f874af2f50f6512c0b93316b8bd918a9a62f71a6a58f9796c7744263",
+            "final_url": "https://www.city.koto.lg.jp/510100/documents/20260114171302.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T14:48:33.827Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度江東区予算説明書（一般会計補正予算第1号）",
+          "landing_url": "https://www.city.koto.lg.jp/011102/8nenndohoseiyosan1gou.html",
+          "inspected_at": "2026-10-07T16:37:22.333452+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/8hosei1gouyosansetumeisyo.pdf",
+              "sha256": "4d21addb1d3bf16476747b24a09e438d8f159560cb23f2ea7eef0b227fcf7d4e",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 24,
+                      "end": 43
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和8年度一般会計補正予算（第1号）の議決後予算説明書（令和8年6月印刷、59頁）。歳出事項別明細は款・項・目と補正前の額・補正額・計・補正額の財源内訳（特定財源/一般財源）・節（区分・金額）が同一明細行に対応し、後半に事業説明（事業名・補正後額）が続く。単位は千円（総括頁 物理8 の見出しで確認）。歳出範囲: 区切り頁「(3)歳出」印字19=物理23、明細+説明 印字20-39=物理24-43（印字40=物理44は白紙、物理45から給与費明細書）。本文は MSPMincho（ToUnicodeなし）で文字抽出が頁番号のみとなり画像読み取りが必要（scan）。表紙に介護保険会計・後期高齢者医療会計補正予算（第1号）の表記があるが、目次・本文（印字53頁まで全会計分なし）に該当区間はなく、介護・後期の第1号歳出明細は本資料に存在しない（掲載一覧にも別資料なし、介護は第2号概要に同封）。歳入・給与費明細書・債務負担行為・総括の範囲は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2026/supplementary-1.pdf",
+            "sha256": "4d21addb1d3bf16476747b24a09e438d8f159560cb23f2ea7eef0b227fcf7d4e",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/8hosei1gouyosansetumeisyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:37:37.753Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2026,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和8年度一般会計補正予算（第2号）（案）・介護保険会計補正予算（第1号）（案）の概要",
+          "landing_url": "https://www.city.koto.lg.jp/011102/r8hosei2-1yosannannnogaiyou.html",
+          "inspected_at": "2026-10-07T16:37:22.333452+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/8hosei2gougaiyou.pdf",
+              "sha256": "884d3e6c8aef01105b10d86320b830d97e92373a10d758da56b1c56f63ba277d",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "一般会計補正予算（第2号）・介護保険会計補正予算（第1号）の案段階の概要1頁（議決後の予算説明書は掲載一覧に未掲載、2026-10-07確認）。各事業名と補正額（万円、表示単位未満四捨五入）が同一明細に対応し、一部事業は一般会計・介護保険会計の内訳併記あり。会計別総額（一般会計157億5,900万円・介護保険会計10億6,900万円）は款・項・目別内訳を持たないため款項目粒度は一般会計第2号分もこの概要では確認できない（事業粒度のみ）。介護保険会計分は同資料内の第1号（一般会計第2号とは号数が異なる）として収録。国民健康保険会計・後期高齢者医療会計の補正第2号相当は掲載一覧に候補なし。歳入は記載なし。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2026/supplementary-2.pdf",
+            "sha256": "884d3e6c8aef01105b10d86320b830d97e92373a10d758da56b1c56f63ba277d",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/8hosei2gougaiyou.pdf"
+          }
+        ],
+        "archived_at": "2026-10-07T16:37:40.972Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2025,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度江東区予算説明書（一般会計・特別会計）",
+          "landing_url": "https://www.city.koto.lg.jp/011102/7nendotosyoyosangiketu.html",
+          "inspected_at": "2026-10-08T03:42:26.851702+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/7toutsyoyosansetumeisyoippankaikei.pdf",
+              "sha256": "5d3b25227cf411f301c6ea445f39afdf3c4693a9f3509d7b4be42528e73bf99a",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 141,
+                      "end": 520
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/7toutsyoyosansetumeisyotokubetukaikei.pdf",
+              "sha256": "36e7d914f4778b237fcea6334e6b84a5832f42cb4477f1081dc2a0b24b97f593",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 51,
+                      "end": 92
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 143,
+                      "end": 180
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 217,
+                      "end": 234
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和7年度当初予算（議決後）の予算説明書。歳出明細は款・項・目が同一明細行に本年度予算額（千円、特定財源/一般財源の財源内訳）と節区分・金額・事業説明列を持つ（物理52で確認）。文字PDFだが各文字が二重描画。一般会計冊（569頁）: 歳出 印字135-514=物理141-520（物理520は印字514の白紙、物理521から給与費明細書）。特別会計冊（247頁、印字=物理-6、国保・介護・後期を1冊に収録）: 国保歳出 印字45-86=物理51-92、介護歳出 印字137-174=物理143-180、後期歳出 印字211-228=物理217-234（各末頁は白紙の印字頁を含み、次頁から給与費明細書）。全会計は一般・国民健康保険・介護保険・後期高齢者医療の4会計（当初予算掲載一覧と冊子目次で照合、企業会計・他の特別会計の掲載なし）。目次頁に後期の別版目次（総括213/歳出235/給与費明細書253）が併記される印刷上の重複あり、実頁の印字番号で現行版（歳出211-228）を確認。歳入・給与費明細書・債務負担行為の範囲は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2025/initial-2.pdf",
+            "sha256": "5d3b25227cf411f301c6ea445f39afdf3c4693a9f3509d7b4be42528e73bf99a",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/7toutsyoyosansetumeisyoippankaikei.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131083/2025/initial-1.pdf",
+            "sha256": "36e7d914f4778b237fcea6334e6b84a5832f42cb4477f1081dc2a0b24b97f593",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/7toutsyoyosansetumeisyotokubetukaikei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:42:48.301Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2024,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度江東区予算説明書（一般会計・特別会計）",
+          "landing_url": "https://www.city.koto.lg.jp/011102/6nendotousyoyosangiketu.html",
+          "inspected_at": "2026-10-08T03:42:26.851702+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/6toutsyoyosansetumeisyoippankaikei.pdf",
+              "sha256": "3f3ed6f83b373560a5fbdce0ca874b22ce7df66d0968ec8b6b6cef5418279fc4",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 142,
+                      "end": 513
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/6toutsyoyosansetumeisyotokubetukaikei.pdf",
+              "sha256": "e5c3cfa2d976b0ec8afe9e731ffff437bb66d42dcd6684b7850be255aa01b3ca",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 50,
+                      "end": 91
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 142,
+                      "end": 179
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 216,
+                      "end": 233
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和6年度当初予算（議決後）の予算説明書。歳出明細は款・項・目が同一明細行に本年度予算額（千円、財源内訳）と節区分・金額・事業説明列を持つ。文字PDFだが各文字が二重描画。一般会計冊（560頁、印字=物理-5）: 歳出 印字137-508=物理142-513（物理513は印字508の白紙、物理514から給与費明細書）。特別会計冊（246頁、印字=物理-5）: 国保歳出 印字45-86=物理50-91、介護歳出 印字137-174=物理142-179、後期歳出 印字211-228=物理216-233（各末頁は白紙の印字頁を含み、次頁から給与費明細書）。全会計は4会計（掲載一覧と冊子目次で照合、企業会計・他の特別会計の掲載なし）。歳入・給与費明細書・債務負担行為の範囲は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2024/initial-1.pdf",
+            "sha256": "3f3ed6f83b373560a5fbdce0ca874b22ce7df66d0968ec8b6b6cef5418279fc4",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/6toutsyoyosansetumeisyoippankaikei.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131083/2024/initial-2.pdf",
+            "sha256": "e5c3cfa2d976b0ec8afe9e731ffff437bb66d42dcd6684b7850be255aa01b3ca",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/6toutsyoyosansetumeisyotokubetukaikei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:42:54.360Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2023,
+        "document_kind": "initial"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度江東区予算説明書（一般会計・特別会計）",
+          "landing_url": "https://www.city.koto.lg.jp/011102/r5nendotousyoyosan.html",
+          "inspected_at": "2026-10-08T03:42:26.851702+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/5toutsyoyosansetumeisyoippankaikei.pdf",
+              "sha256": "4efda367f4883c409ff1f1b3990c836b78246f95ff6399013a5c0a69289cf183",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 138,
+                      "end": 505
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/5toutsyoyosansetumeisyotokubetukaikei.pdf",
+              "sha256": "17fd376818c06744c7afa97f6960ba877e20a070f09c9700a1a19dca295361e9",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 50,
+                      "end": 91
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 142,
+                      "end": 179
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 216,
+                      "end": 233
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度当初予算（議決後）の予算説明書。歳出明細は款・項・目が同一明細行に本年度予算額（千円、財源内訳）と節区分・金額・事業説明列を持つ。文字PDFだが各文字が二重描画。一般会計冊（549頁、印字=物理-5）: 歳出 印字133-500=物理138-505（物理505は印字500の白紙、物理506から給与費明細書）。特別会計冊（245頁、印字=物理-5）: 国保歳出 印字45-86=物理50-91、介護歳出 印字137-174=物理142-179、後期歳出 印字211-228=物理216-233（各末頁は白紙の印字頁を含み、次頁から給与費明細書）。全会計は4会計（掲載一覧と冊子目次で照合、企業会計・他の特別会計の掲載なし）。歳入・給与費明細書・債務負担行為の範囲は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2023/initial-2.pdf",
+            "sha256": "4efda367f4883c409ff1f1b3990c836b78246f95ff6399013a5c0a69289cf183",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/5toutsyoyosansetumeisyoippankaikei.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131083/2023/initial-1.pdf",
+            "sha256": "17fd376818c06744c7afa97f6960ba877e20a070f09c9700a1a19dca295361e9",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/5toutsyoyosansetumeisyotokubetukaikei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:42:59.959Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2023,
+        "document_kind": "settlement"
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度江東区決算実績報告書（一般会計・特別会計）",
+          "landing_url": "https://www.city.koto.lg.jp/011102/kuse/yosanzaise/kessan/5672/kessanngaiyou5.html",
+          "inspected_at": "2026-10-08T03:42:26.851702+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/kuse/yosanzaise/kessan/5672/documents/r5kessanjisseki-ippankaikei.pdf",
+              "sha256": "4690fc381cc95b3ba26ce3b0c29fc3d44dcb7c89d9d7bfd368081c34e1c72c3e",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 137,
+                      "end": 488
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/kuse/yosanzaise/kessan/5672/documents/r5kessanjisseki-tokubetukaikei.pdf",
+              "sha256": "0c82296d4b7f3bf919e9afb0dd4ba31b1323d45c7fae05f6c858cd458854ad37",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "国民健康保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 41,
+                      "end": 66
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 101,
+                      "end": 130
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 155,
+                      "end": 169
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "令和5年度決算実績報告書（令和6年9月印刷）。R5決算の掲載一覧には各会計歳入歳出決算書・決算事項別明細書のページがなく（R6相当の /510100/sainyuusaisyutukessansyo5.html は404）、実績報告書が目粒度の歳出明細を持つ唯一の確認できた資料。歳出明細は款・項・目が同一明細行に決算額・予算現額・翌年度繰越額・不用額（円）を持ち、続く頁に決算額の概要と事業別予算現額・節内訳が対応する（物理138・42・102・156で列見出し確認）。文字PDFだが各文字が二重描画。一般会計冊（507頁、印字=物理-6）: 歳出 印字131-482=物理137-488（物理488は印字482の白紙、物理489から付表扉 印字483）。特別会計冊（173頁、印字=物理-6）: 国保歳出 印字35-60=物理41-66（物理67は介護会計扉 印字61）、介護歳出 印字95-124=物理101-130（物理131は後期会計扉 印字125）、後期歳出 印字149-163=物理155-169（物理170以降は白紙・奥付）。全会計は4会計（各冊目次・会計扉で照合、企業会計・他の特別会計の掲載なし）。同掲載の決算カード（kessan5.pdf、112KB）は款・項粒度の一覧表のみで目粒度を持たないため不採用。歳入・款項別決算総括・付表の範囲は未確認。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2023/settlement-2.pdf",
+            "sha256": "4690fc381cc95b3ba26ce3b0c29fc3d44dcb7c89d9d7bfd368081c34e1c72c3e",
+            "final_url": "https://www.city.koto.lg.jp/011102/kuse/yosanzaise/kessan/5672/documents/r5kessanjisseki-ippankaikei.pdf"
+          },
+          {
+            "key": "fiscal/source-selection/131083/2023/settlement-1.pdf",
+            "sha256": "0c82296d4b7f3bf919e9afb0dd4ba31b1323d45c7fae05f6c858cd458854ad37",
+            "final_url": "https://www.city.koto.lg.jp/011102/kuse/yosanzaise/kessan/5672/documents/r5kessanjisseki-tokubetukaikei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:43:06.383Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2025,
+        "document_kind": "settlement"
+      },
+      "candidates": [],
+      "reason": "令和7年度決算は未公表。決算一覧 https://www.city.koto.lg.jp/kuse/yosanzaise/kessan/r7/index.html は2026-10-08時点で「現在、情報はありません」と表示され、掲載資料なし。R6決算（FY2024、選定・保存済み）が最新公表決算。公開を確認できないという記録であり、非公開を義務づける根拠の断定ではない。",
+      "selected_candidate_id": null,
+      "archive": null
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度江東区予算説明書（一般会計補正予算第1号）",
+          "landing_url": "https://www.city.koto.lg.jp/011102/5nendohoseiyosan1gou.html",
+          "inspected_at": "2026-10-08T03:48:10.571835+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/5hosei1gouyosansetumeisyo.pdf",
+              "sha256": "86eea377099594ea8c3cebcec786b2867172e10e43d5ed52b63cd84dc048560a",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 13,
+                      "end": 16
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "歳出明細は款・項・目が同一明細行に補正前の額・補正額・計・補正額の財源内訳（特定財源/一般財源等）・節（区分・金額）を持つ（単位:千円）。画像のみのPDF（文字・フォント・画像XObjectなしの輪郭線描画、文字抽出は頁番号のみ）のため画像読み取りが必要（scan）。歳出範囲: 区切り頁(3)歳出 印字9=物理13、明細 印字10-12=物理14-16（物理17から給与費明細書 印字13、物理26頁の26頁本）。画像で目次・区切り・明細の列見出しを確認。歳入・給与費明細書は範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2023/supplementary-1.pdf",
+            "sha256": "86eea377099594ea8c3cebcec786b2867172e10e43d5ed52b63cd84dc048560a",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/5hosei1gouyosansetumeisyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:48:18.042Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度江東区予算説明書（一般会計補正予算第2号）",
+          "landing_url": "https://www.city.koto.lg.jp/011102/5nenndohoseiyosan2gougiketugo.html",
+          "inspected_at": "2026-10-08T03:48:10.571835+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/5hosei2gouyosansetumeisyo.pdf",
+              "sha256": "fc419f78357de80b59759c8e9b6c5eb8a0daeaddacb7dbcd8dece42137785635",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 19,
+                      "end": 36
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "歳出明細は款・項・目が同一明細行に補正前の額・補正額・計・補正額の財源内訳（特定財源/一般財源等）・節（区分・金額）を持つ（単位:千円）。画像のみのPDF（文字・フォント・画像XObjectなしの輪郭線描画、文字抽出は頁番号のみ）のため画像読み取りが必要（scan）。歳出範囲: 区切り頁(3)歳出 印字15=物理19、明細 印字16-32=物理20-36（物理36は印字32の白紙、物理37から給与費明細書 印字33、50頁本）。画像で目次・区切りを確認。歳入・給与費明細書・債務負担行為は範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2023/supplementary-2.pdf",
+            "sha256": "fc419f78357de80b59759c8e9b6c5eb8a0daeaddacb7dbcd8dece42137785635",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/5hosei2gouyosansetumeisyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:48:21.235Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度江東区予算説明書（一般会計補正予算第3号）",
+          "landing_url": "https://www.city.koto.lg.jp/011102/5nendohosei3gou.html",
+          "inspected_at": "2026-10-08T03:48:10.571835+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/5hosei3gouyosansetumeisyo.pdf",
+              "sha256": "99a4a26a39d3587f662a07de7e4363947583c9392acede035872cdda81a74433",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 13,
+                      "end": 16
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "歳出明細は款・項・目が同一明細行に補正前の額・補正額・計・補正額の財源内訳（特定財源/一般財源等）・節（区分・金額）を持つ（単位:千円）。画像のみのPDF（文字・フォント・画像XObjectなしの輪郭線描画、文字抽出は頁番号のみ）のため画像読み取りが必要（scan）。歳出範囲: 区切り頁(3)歳出 印字9=物理13、明細 印字10-12=物理14-16（物理17から給与費明細書 印字13、26頁本）。画像で目次・区切りを確認。歳入・給与費明細書は範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2023/supplementary-3.pdf",
+            "sha256": "99a4a26a39d3587f662a07de7e4363947583c9392acede035872cdda81a74433",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/5hosei3gouyosansetumeisyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:48:24.108Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度江東区予算説明書（一般会計補正予算第4号）",
+          "landing_url": "https://www.city.koto.lg.jp/011102/5nenndohoseiyosan4gou.html",
+          "inspected_at": "2026-10-08T03:48:10.571835+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/hosei4gousetumeisyo.pdf",
+              "sha256": "882e785554f1d0b9b2e243f0b64281ac95aa81a67b475b5cfc45d750a36754c9",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 27,
+                      "end": 70
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "歳出明細は款・項・目が同一明細行に補正前の額・補正額・計・補正額の財源内訳（特定財源/一般財源等）・節（区分・金額）を持つ（単位:千円）。文字PDFだが各文字が二重描画。歳出範囲: 区切り頁(3)歳出 印字23=物理27、明細 印字24-66=物理28-70（物理71から債務負担行為 印字67、81頁本）。歳入・債務負担行為は範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2023/supplementary-4.pdf",
+            "sha256": "882e785554f1d0b9b2e243f0b64281ac95aa81a67b475b5cfc45d750a36754c9",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/hosei4gousetumeisyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:48:26.931Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度江東区予算説明書（一般会計補正予算第5号）",
+          "landing_url": "https://www.city.koto.lg.jp/011102/5nendohosei5gou.html",
+          "inspected_at": "2026-10-08T03:48:10.571835+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/5hosei5gousetumeisyo.pdf",
+              "sha256": "efe629f48d13abffdfc3747e038b16cfd54895eb8180ffb7edb85bc6e808f3da",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 13,
+                      "end": 15
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "歳出明細は款・項・目が同一明細行に補正前の額・補正額・計・補正額の財源内訳（特定財源/一般財源等）・節（区分・金額）を持つ（単位:千円）。画像のみのPDF（文字・フォント・画像XObjectなしの輪郭線描画、文字抽出は頁番号のみ）のため画像読み取りが必要（scan）。歳出範囲: 区切り頁(3)歳出 印字9=物理13、明細 印字10-11=物理14-15（物理16白紙、物理17から債務負担行為 印字13、22頁本）。歳入・債務負担行為は範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2023/supplementary-5.pdf",
+            "sha256": "efe629f48d13abffdfc3747e038b16cfd54895eb8180ffb7edb85bc6e808f3da",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/5hosei5gousetumeisyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:48:30.181Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2023,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和5年度江東区予算説明書（一般会計補正予算第6号・国民健康保険会計補正予算第1号・介護保険会計補正予算第1号・後期高齢者医療会計補正予算第1号）",
+          "landing_url": "https://www.city.koto.lg.jp/011102/5hoseiyosann6gou.html",
+          "inspected_at": "2026-10-08T03:48:10.571835+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/r5hoseiyosansetumeisho-ippankaikei-tokubetukaikei.pdf",
+              "sha256": "aa5f1d987b24efbaf61139d94df1647b386d053cd3e7eaccd41a939b918e62c0",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 84,
+                      "end": 165
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 218,
+                      "end": 243
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 280,
+                      "end": 309
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 336,
+                      "end": 347
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "歳出明細は款・項・目が同一明細行に補正前の額・補正額・計・補正額の財源内訳（特定財源/一般財源等）・節（区分・金額）を持つ（単位:千円）。文字PDFだが各文字が二重描画。全会計を1冊に収録（356頁、印字=物理-5）。歳出範囲: 一般（第6号）印字79-160=物理84-165（物理166から給与費明細書）、国民健康保険（第1号）印字213-238=物理218-243（物理244から給与費明細書）、介護保険（第1号）印字275-304=物理280-309（物理310から給与費明細書）、後期高齢者医療（第1号）印字331-342=物理336-347（物理348から給与費明細書）。特別会計3会計はそれぞれ第1号補正として同資料内に収録。歳入・給与費明細書・債務負担行為は範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2023/supplementary-6.pdf",
+            "sha256": "aa5f1d987b24efbaf61139d94df1647b386d053cd3e7eaccd41a939b918e62c0",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/r5hoseiyosansetumeisho-ippankaikei-tokubetukaikei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:48:37.250Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度江東区予算説明書（一般会計補正予算第1号）",
+          "landing_url": "https://www.city.koto.lg.jp/011102/6nendohoseiyosan1gou.html",
+          "inspected_at": "2026-10-08T03:48:10.571835+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/6hosei1gousetumeisyo.pdf",
+              "sha256": "6463638910a0f165cd07b8a5c8ad4ab303afc74b212232d32803fe9e710e8188",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 13,
+                      "end": 16
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "歳出明細は款・項・目が同一明細行に補正前の額・補正額・計・補正額の財源内訳（特定財源/一般財源等）・節（区分・金額）を持つ（単位:千円）。画像のみのPDF（文字・フォント・画像XObjectなしの輪郭線描画、文字抽出は頁番号のみ）のため画像読み取りが必要（scan）。歳出範囲: 区切り頁(3)歳出 印字9=物理13、明細 印字10-12=物理14-16（物理17から給与費明細書 印字13、26頁本）。歳入・給与費明細書は範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2024/supplementary-1.pdf",
+            "sha256": "6463638910a0f165cd07b8a5c8ad4ab303afc74b212232d32803fe9e710e8188",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/6hosei1gousetumeisyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:48:39.851Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度江東区予算説明書（一般会計補正予算第2号）",
+          "landing_url": "https://www.city.koto.lg.jp/011102/6nenndohoseiyosan2gou.html",
+          "inspected_at": "2026-10-08T03:48:10.571835+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/6hosei2gouyosansetumeisyo.pdf",
+              "sha256": "e9ed0e7688ce3550947af64167327315708b415da68b178e551a9de2815291bf",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 19,
+                      "end": 44
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "歳出明細は款・項・目が同一明細行に補正前の額・補正額・計・補正額の財源内訳（特定財源/一般財源等）・節（区分・金額）を持つ（単位:千円）。画像のみのPDF（文字・フォント・画像XObjectなしの輪郭線描画、文字抽出は頁番号のみ）のため画像読み取りが必要（scan）。歳出範囲: 区切り頁(3)歳出 印字15=物理19、明細 印字16-40=物理20-44（物理45から給与費明細書 印字41、54頁本）。歳入・給与費明細書は範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2024/supplementary-2.pdf",
+            "sha256": "e9ed0e7688ce3550947af64167327315708b415da68b178e551a9de2815291bf",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/6hosei2gouyosansetumeisyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:48:42.695Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度江東区予算説明書（一般会計補正予算第3号）",
+          "landing_url": "https://www.city.koto.lg.jp/011102/6nenndohoseiyosan3gou.html",
+          "inspected_at": "2026-10-08T03:48:10.571835+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/4hosei3gousetumeisyo.pdf",
+              "sha256": "7271c78e03958088a053c0a5a60335068847ff31d849ddab900cc7a29d7c63e2",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 27,
+                      "end": 54
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "歳出明細は款・項・目が同一明細行に補正前の額・補正額・計・補正額の財源内訳（特定財源/一般財源等）・節（区分・金額）を持つ（単位:千円）。文字PDFだが各文字が二重描画。歳出範囲: 区切り頁(3)歳出 印字23=物理27、明細 印字24-50=物理28-54（物理55から債務負担行為 印字51、65頁本）。歳入・債務負担行為は範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2024/supplementary-3.pdf",
+            "sha256": "7271c78e03958088a053c0a5a60335068847ff31d849ddab900cc7a29d7c63e2",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/4hosei3gousetumeisyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:48:45.717Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度江東区予算説明書（一般会計補正予算第4号）",
+          "landing_url": "https://www.city.koto.lg.jp/011102/6nenndohoseiyosan4gou.html",
+          "inspected_at": "2026-10-08T03:48:10.571835+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/6hosei4gousetumeisyo.pdf",
+              "sha256": "b61a370e5e6b35ac338259781eaf3293bceea5c0ba01eecc2b10d2d8ca6f0a58",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 15,
+                      "end": 25
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "歳出明細は款・項・目が同一明細行に補正前の額・補正額・計・補正額の財源内訳（特定財源/一般財源等）・節（区分・金額）を持つ（単位:千円）。画像のみのPDF（文字・フォント・画像XObjectなしの輪郭線描画、文字抽出は頁番号のみ）のため画像読み取りが必要（scan）。歳出範囲: 区切り頁(3)歳出 印字11=物理15、明細 印字12-21=物理16-25（物理26白紙、物理27は奥付、28頁本）。歳入は範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2024/supplementary-4.pdf",
+            "sha256": "b61a370e5e6b35ac338259781eaf3293bceea5c0ba01eecc2b10d2d8ca6f0a58",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/6hosei4gousetumeisyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:48:48.807Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度江東区予算説明書（一般会計補正予算第5号）",
+          "landing_url": "https://www.city.koto.lg.jp/011102/6nenndohoseiyosan5gou.html",
+          "inspected_at": "2026-10-08T03:48:10.571835+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/6hosei5gousetumeisyo.pdf",
+              "sha256": "a0f4fc5a5f4b850c3f520c42e447d25daa3425a51ce9a60df248836326d08827",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 13,
+                      "end": 16
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "歳出明細は款・項・目が同一明細行に補正前の額・補正額・計・補正額の財源内訳（特定財源/一般財源等）・節（区分・金額）を持つ（単位:千円）。画像のみのPDF（文字・フォント・画像XObjectなしの輪郭線描画、文字抽出は頁番号のみ）のため画像読み取りが必要（scan）。歳出範囲: 区切り頁(3)歳出 印字9=物理13、明細 印字10-12=物理14-16（物理17から給与費明細書 印字13、26頁本）。歳入・給与費明細書は範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2024/supplementary-5.pdf",
+            "sha256": "a0f4fc5a5f4b850c3f520c42e447d25daa3425a51ce9a60df248836326d08827",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/6hosei5gousetumeisyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:48:52.271Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2024,
+        "document_kind": "supplementary",
+        "amendment_number": 6
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和6年度江東区予算説明書（一般会計補正予算第6号・国民健康保険会計補正予算第1号・介護保険会計補正予算第1号・後期高齢者医療会計補正予算第1号）",
+          "landing_url": "https://www.city.koto.lg.jp/011102/6hoseiyosann6gou.html",
+          "inspected_at": "2026-10-08T03:48:10.571835+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/r6hoseiyosansetumeisho-ippankaikei-tokubetukaikei.pdf",
+              "sha256": "693519929a7f0d0beb9ea436c8f62bfa6c6ef056e446b02358544db9b222e00c",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 91,
+                      "end": 176
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 233,
+                      "end": 260
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 297,
+                      "end": 322
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 351,
+                      "end": 362
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "歳出明細は款・項・目が同一明細行に補正前の額・補正額・計・補正額の財源内訳（特定財源/一般財源等）・節（区分・金額）を持つ（単位:千円）。文字PDFだが各文字が二重描画。全会計を1冊に収録（371頁、印字=物理-6）。歳出範囲: 一般（第6号）印字85-170=物理91-176（物理177から給与費明細書）、国民健康保険（第1号）印字227-254=物理233-260（物理261から給与費明細書）、介護保険（第1号）印字291-316=物理297-322（物理323から給与費明細書）、後期高齢者医療（第1号）印字345-356=物理351-362（物理363から給与費明細書）。歳入・給与費明細書・債務負担行為は範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2024/supplementary-6.pdf",
+            "sha256": "693519929a7f0d0beb9ea436c8f62bfa6c6ef056e446b02358544db9b222e00c",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/r6hoseiyosansetumeisho-ippankaikei-tokubetukaikei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:48:55.504Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 1
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度江東区予算説明書（一般会計補正予算第1号）",
+          "landing_url": "https://www.city.koto.lg.jp/011102/7nenndohoseiyosan1gou.html",
+          "inspected_at": "2026-10-08T03:48:10.571835+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/7hosei1gouyosansetumeisyo.pdf",
+              "sha256": "0282d507ed54ca247a799aba23096df2e261302731f6246be9d592e725bfdaf2",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 25,
+                      "end": 44
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "歳出明細は款・項・目が同一明細行に補正前の額・補正額・計・補正額の財源内訳（特定財源/一般財源等）・節（区分・金額）を持つ（単位:千円）。画像のみのPDF（文字・フォント・画像XObjectなしの輪郭線描画、文字抽出は頁番号のみ）のため画像読み取りが必要（scan）。歳出範囲: 区切り頁(3)歳出 印字21=物理25、明細 印字22-40=物理26-44（物理45から給与費明細書 印字41、62頁本）。歳入・給与費明細書・債務負担行為は範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2025/supplementary-1.pdf",
+            "sha256": "0282d507ed54ca247a799aba23096df2e261302731f6246be9d592e725bfdaf2",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/7hosei1gouyosansetumeisyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:48:58.755Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 2
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度江東区予算説明書（一般会計補正予算第2号）",
+          "landing_url": "https://www.city.koto.lg.jp/011102/7nenndohoseiyosan2gou3gou.html",
+          "inspected_at": "2026-10-08T03:48:10.571835+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/4hosei2gousetumeisyo.pdf",
+              "sha256": "5a593ea2bca9f5241402aa4297386234e9bc4f2e6205c370a0d17f829ba82dfe",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 22,
+                      "end": 43
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "歳出明細は款・項・目が同一明細行に補正前の額・補正額・計・補正額の財源内訳（特定財源/一般財源等）・節（区分・金額）を持つ（単位:千円）。文字PDFだが各文字が二重描画。歳出範囲: 区切り頁(3)歳出 印字19=物理22、明細 印字20-40=物理23-43（物理44から債務負担行為 印字41、50頁本）。歳入・債務負担行為は範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2025/supplementary-2.pdf",
+            "sha256": "5a593ea2bca9f5241402aa4297386234e9bc4f2e6205c370a0d17f829ba82dfe",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/4hosei2gousetumeisyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:49:01.697Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 3
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度江東区予算説明書（一般会計補正予算第3号）",
+          "landing_url": "https://www.city.koto.lg.jp/011102/7nenndohoseiyosan2gou3gou.html",
+          "inspected_at": "2026-10-08T03:48:10.571835+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/7hosei3gouyosansetumeisyo.pdf",
+              "sha256": "1d6b93f78afef9f8172fabcecb146cb89b5f4bd5a033c7cc79cebc7ee5a9b1d8",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 15,
+                      "end": 23
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "歳出明細は款・項・目が同一明細行に補正前の額・補正額・計・補正額の財源内訳（特定財源/一般財源等）・節（区分・金額）を持つ（単位:千円）。画像のみのPDF（文字・フォント・画像XObjectなしの輪郭線描画、文字抽出は頁番号のみ）のため画像読み取りが必要（scan）。歳出範囲: 区切り頁(3)歳出 印字11=物理15、明細 印字12-19=物理16-23（物理24白紙、物理25は奥付、26頁本）。歳入は範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2025/supplementary-3.pdf",
+            "sha256": "1d6b93f78afef9f8172fabcecb146cb89b5f4bd5a033c7cc79cebc7ee5a9b1d8",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/7hosei3gouyosansetumeisyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:49:06.558Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 4
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度江東区予算説明書（一般会計補正予算第4号）",
+          "landing_url": "https://www.city.koto.lg.jp/011102/7nenndohoseiyosan4gou.html",
+          "inspected_at": "2026-10-08T03:48:10.571835+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/7hosei4gouyosansetumeisyo.pdf",
+              "sha256": "7a0eb453376ad9066ac7192e649c2c53e8cad619517ec0f722e59ffefdada59a",
+              "format": "pdf",
+              "pdf_type": "scan",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 17,
+                      "end": 24
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "歳出明細は款・項・目が同一明細行に補正前の額・補正額・計・補正額の財源内訳（特定財源/一般財源等）・節（区分・金額）を持つ（単位:千円）。画像のみのPDF（文字・フォント・画像XObjectなしの輪郭線描画、文字抽出は頁番号のみ）のため画像読み取りが必要（scan）。歳出範囲: 区切り頁(3)歳出 印字13=物理17、明細 印字14-20=物理18-24（物理25から給与費明細書 印字21、34頁本）。歳入・給与費明細書は範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2025/supplementary-4.pdf",
+            "sha256": "7a0eb453376ad9066ac7192e649c2c53e8cad619517ec0f722e59ffefdada59a",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/7hosei4gouyosansetumeisyo.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:49:09.513Z"
+      }
+    },
+    {
+      "target": {
+        "jurisdiction": "131083",
+        "fiscal_year": 2025,
+        "document_kind": "supplementary",
+        "amendment_number": 5
+      },
+      "candidates": [
+        {
+          "id": "representative",
+          "title": "令和7年度江東区予算説明書（一般会計補正予算第5号・国民健康保険会計補正予算第1号・介護保険会計補正予算第1号・後期高齢者医療会計補正予算第1号）",
+          "landing_url": "https://www.city.koto.lg.jp/011102/7nenndohoseiyosan5gou.html",
+          "inspected_at": "2026-10-08T03:48:10.571835+00:00",
+          "files": [
+            {
+              "download_url": "https://www.city.koto.lg.jp/011102/documents/r7hoseiyosansetumeisho-ippankaikei-tokubetukaikei.pdf",
+              "sha256": "e07a91aec21138a106843219d3030c056a43a82857681cdce955a817f8e51fea",
+              "format": "pdf",
+              "pdf_type": "text",
+              "scope": [
+                {
+                  "account": "一般会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 93,
+                      "end": 178
+                    }
+                  ]
+                },
+                {
+                  "account": "国民健康保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 225,
+                      "end": 246
+                    }
+                  ]
+                },
+                {
+                  "account": "介護保険会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 285,
+                      "end": 314
+                    }
+                  ]
+                },
+                {
+                  "account": "後期高齢者医療会計",
+                  "direction": "expenditure",
+                  "pages": [
+                    {
+                      "start": 345,
+                      "end": 358
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "reason": "歳出明細は款・項・目が同一明細行に補正前の額・補正額・計・補正額の財源内訳（特定財源/一般財源等）・節（区分・金額）を持つ（単位:千円）。文字PDFだが各文字が二重描画。全会計を1冊に収録（367頁、印字=物理-6）。歳出範囲: 一般（第5号）印字87-172=物理93-178（物理179から給与費明細書）、国民健康保険（第1号）印字219-240=物理225-246（物理247から給与費明細書）、介護保険（第1号）印字279-308=物理285-314（物理315から給与費明細書）、後期高齢者医療（第1号）印字339-352=物理345-358（物理359から給与費明細書）。歳入・給与費明細書・債務負担行為は範囲外。",
+      "selected_candidate_id": "representative",
+      "archive": {
+        "bucket": "fudoki-inputs",
+        "candidate_id": "representative",
+        "files": [
+          {
+            "key": "fiscal/source-selection/131083/2025/supplementary-5.pdf",
+            "sha256": "e07a91aec21138a106843219d3030c056a43a82857681cdce955a817f8e51fea",
+            "final_url": "https://www.city.koto.lg.jp/011102/documents/r7hoseiyosansetumeisho-ippankaikei-tokubetukaikei.pdf"
+          }
+        ],
+        "archived_at": "2026-10-08T03:49:12.758Z"
+      }
+    }
+  ],
   "unresolved_candidates": []
 }
