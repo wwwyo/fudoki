@@ -51,7 +51,7 @@ CSV用と既存の見開きPDF用の入口は `fiscal/layouts/csv/` と `fiscal/
 
 ## 自治体の取り込みJSONとParquetを後段へ渡す
 
-Fの入口は `ingestion/fiscal/jurisdictions/<団体>/<年度>/<資料区分>/<方向>.json`。別の `sources.json`・`history.json`、宣言ディレクトリ、Cの再実行は要求しない。
+Cの入口は `ingestion/fiscal/jurisdictions/<団体>/<年度>/<資料区分>/<方向>.json`。別の `sources.json`・`history.json`、宣言ディレクトリ、Bの検査の再実行は要求しない。
 
 ```bash
 bun run pipeline:inputs
@@ -63,11 +63,11 @@ bun run pipeline:inputs
 uv run python -m build_inputs prepare --manifest <対象JSON>
 ```
 
-`pipeline:inputs` は対象別JSONに登録されたParquetをprivate R2から復元する。`build_inputs prepare` はネットワークを使わず、管理JSON全体・selectionから解決した原典情報・F側の配置対応・Parquetを `.cache/inputs/<入力fingerprint>/` に固定する。表・原典・対象の対応は `catalog.json`、dbtへの表は `raw/` に保存する。表のSHA・サイズと準備中の参照変更を検査し、再利用時も照合する。catalogは再生成可能なローカル入力一覧であり、GitやR2へ保存する別の管理情報ではない。
+`pipeline:inputs` は対象別JSONに登録されたParquetをprivate R2から復元する。`build_inputs prepare` はネットワークを使わず、管理JSON全体・selectionから解決した原典情報・C側の配置対応・Parquetを `.cache/inputs/<入力fingerprint>/` に固定する。表・原典・対象の対応は `catalog.json`、dbtへの表は `raw/` に保存する。表のSHA・サイズと準備中の参照変更を検査し、再利用時も照合する。catalogは再生成可能なローカル入力一覧であり、GitやR2へ保存する別の管理情報ではない。
 
 既存表のdbt用partitionは `dbt/inputs/<団体>/<年度>/<資料区分>/<方向>.json` が表IDごとに保持する。項目は `table_id` と `raw_path` だけ。型は [bindings.schema.json](dbt/inputs/bindings.schema.json)、検査は `bun run --cwd pipeline dbt:inputs:check`。管理値 `initial` は既存dbtの `document_kind=budget` に対応する。
 
-Fは `bun run pipeline:build` で構築する。旧 `sources.json`・`history.json` の直接読み取りと、その依存先の381モデル・5検査は削除した。旧JSONの存在を要求する構築前の停止処理も削除した。残った152モデルは既存のdbt設定・Parquet・共通マスタを使う。単位・金額段階・階層の解釈を一律にCの別ファイルへ要求しない。
+Cは `bun run pipeline:build` で構築する。旧 `sources.json`・`history.json` の直接読み取りと、その依存先の381モデル・5検査は削除した。旧JSONの存在を要求する構築前の停止処理も削除した。残った152モデルは既存のdbt設定・Parquet・共通マスタを使う。単位・金額段階・階層の解釈を一律にBの別ファイルへ要求しない。
 
 `--manifest <対象JSON>` は入力範囲だけを指定し、モデルの実行範囲は自動で絞らない。構築成功時は `.build/builds/<構築ID>/` にCSVを保存し、同じ構築IDの再実行ではハッシュを照合する。旧処理で生成した全202CSVが残ったモデルで再生成されるとは扱わない。原典・取り込みParquetを削除する操作ではなく、旧モデルと検査の廃止である。
 
@@ -109,7 +109,7 @@ CI の全量 job は `FUDOKI_FIXED_INPUTS_READY=true` と非公開入力の読�
 | 保存対象 | 置き場と更新方法 |
 | --- | --- |
 | `sources.json` | Git。既存の取り込み宣言と固定入力・収録監査が参照する原典情報。構造は [sources.schema.json](ingestion/fiscal/management/sources.schema.json) を参照する。 |
-| `sources.lock.json`、原典別の宣言・ハッシュ一覧 | Git。採用した版と取り込み表、コード・訂正の対応を固定する入力。旧検査・監査の互換入力であり、新しいFの入力採用には使わない。コードを変更した場合は、参照する宣言のハッシュも更新し、原典・表・財政値を変えていないか差分を確認する。 |
+| `sources.lock.json`、原典別の宣言・ハッシュ一覧 | Git。採用した版と取り込み表、コード・訂正の対応を固定する入力。旧検査・監査の互換入力であり、新しいCの入力採用には使わない。コードを変更した場合は、参照する宣言のハッシュも更新し、原典・表・財政値を変えていないか差分を確認する。 |
 | 転記・セル台帳の JSON | 原典の画像から確認した訂正や、採用済みの明細と原典位置を結ぶ宣言は Git。原典だけから同じ判断を自動生成できるとは扱わない。宣言が参照するPDF・画像・文字観測のバイト列は非公開 R2。 |
 | dbt、CSV、検証報告、実行時の比較結果 | 再生成する検査結果は `.build/`、試作・未採用の比較結果は `.agent/`。生成した全量DB・CSVや作業記録をGitへ追加しない。構築・再構築・`pipeline:report`・`coverage:fiscal --json` の結果と対象headをPRのQA欄で記録する。 |
 
