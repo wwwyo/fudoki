@@ -1,0 +1,15 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "type":"object","additionalProperties":false,
+  "properties":{
+    "layout":{"type":"string","minLength":1},
+    "layout_sha256":{"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "supplemental_native":{"type":"array","items":{"type":"object","additionalProperties":false,
+      "properties":{"path":{"type":"string","minLength":1},"sha256":{"type":"string","pattern":"^[a-f0-9]{64}$"},"regions":{"type":"array","minItems":1,"items":{"type":"string"},"uniqueItems":true}},
+      "required":["path","sha256","regions"]}},
+    "native":{"type":"object","additionalProperties":false,
+      "properties":{"path":{"type":"string","minLength":1},"sha256":{"type":"string","pattern":"^[a-f0-9]{64}$"}},
+      "required":["path","sha256"]}
+  },
+  "required":["layout","layout_sha256","native"]
+}

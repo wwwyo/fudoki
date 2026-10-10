@@ -17,7 +17,7 @@ user-invocable: false
 | B. ingestion：保存済みCSV・text PDF・scan PDFから取り込みParquetを作る | [references/ingestion.md](references/ingestion.md) |
 | CSVの保持検査、PDFの階層別合計・不一致の整理と修正ループ、後段検査との境界 | [references/candidate-validation.md](references/candidate-validation.md) |
 | PDFの抽出器変更・移設時に再現性を検査する | [references/reconstruction.md](references/reconstruction.md) |
-| 旧固定入力の保存・読み戻し（新しい保存はBを参照） | [references/input-storage.md](references/input-storage.md) |
+| 既存入力の復元・検査（旧検査・監査の読取互換。新規保存はBを参照） | [references/input-storage.md](references/input-storage.md) |
 | F. 入力と各層を本体へ採用し、全量構築・再構築する | [references/dbt.md](references/dbt.md) |
 | G. 通常監査と検証報告で提供先・収録範囲を確認する | [references/coverage-audit.md](references/coverage-audit.md) |
 

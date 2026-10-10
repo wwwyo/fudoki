@@ -86,10 +86,24 @@ def validate(facts,source,controls=None,*,table_id="general-expenditure-detail",
             record('summary_parent_y',key,summary_page,'款_総括_上端',round(s['y'],1),round(r['款_総括_上端'],1))
     for s in facts['annotations']:
         key=tuple(s['path']);rp=rparents[key];r=rp['row'];prefix=rp['prefix'];text=norm(r.get(prefix+'_備考')) or ''
-        record('annotation',key,s['page'],'備考',s['name']+s['amount'],s['name']+s['amount'] if norm(s['name']+s['amount']) in text else text)
+        full=s.get('name_block') or s['name']
+        expected=full+s['amount']
+        record('annotation',key,s['page'],'備考',expected,expected if expected in text else text)
+        record('annotation_tail',key,s['page'],'備考',expected,text[len(text)-len(expected):] if text else text,
+               status='一致' if text.endswith(expected) else '不一致')
         note='備考_注記' if '前年度繰越事業費不用額' in s['name'] else '備考_流用注記'
-        record('annotation_name',key,s['page'],note+'名称',s['name'],r.get(prefix+'_'+note+'名称'))
-        record('annotation_amount',key,s['page'],note+'金額',s['amount'],r.get(prefix+'_'+note+'金額'))
+        if full.endswith('流用') or s['name'].endswith('流用'):
+            names=[s['name']]+([full] if full!=s['name'] else [])
+            actual=r.get(prefix+'_'+note+'名称')
+            record('annotation_name',key,s['page'],note+'名称','|'.join(names),actual,status='一致' if norm(actual) in {norm(v) for v in names} else '不一致')
+            record('annotation_amount',key,s['page'],note+'金額',s['amount'],r.get(prefix+'_'+note+'金額'))
+        else:
+            # Notes without a 流用 title (e.g. 予備費充用額 or a destination …へ)
+            # stay literal in the parent 備考; the dedicated columns are for
+            # 流用-titled notes only and must remain NULL rather than backfilled.
+            reason='流用title以外の注記は親_備考に原典保持し専用列対象外'
+            record('annotation_name',key,s['page'],note+'名称',None,r.get(prefix+'_'+note+'名称'),reason=reason)
+            record('annotation_amount',key,s['page'],note+'金額',None,r.get(prefix+'_'+note+'金額'),reason=reason)
     # Raw-to-original hierarchy sums, each printed parent counted exactly once.
     for key,p in parents.items():
         kids=[k for k in parents if len(k)==len(key)+1 and k[:-1]==key]

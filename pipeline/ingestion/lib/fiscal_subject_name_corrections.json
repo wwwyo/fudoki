@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "normalization": "NFKC_REMOVE_WHITESPACE",
+  "rules": [
+    {
+      "id": "subject-collection-character",
+      "observed_name": "徵収費",
+      "corrected_name": "徴収費",
+      "reason": "多摩市2020決算・後期高齢者医療特別会計の原典物理8/16頁を親AIが原解像度cropと明朝字形で確認し、原典の徴（壬）とPaddleOCRの徵（一王）を区別した。全名称に適用する。人間確認ではない。"
+    },
+    {
+      "id": "subject-health-examination-character",
+      "observed_name": "健康診查費",
+      "corrected_name": "健康診査費",
+      "reason": "同会計の原典物理16頁の目名称を親AIが画像照合し、原典の査とPaddleOCRの查を区別した。全名称に適用する。人間確認ではない。"
+    },
+    {
+      "id": "subject-care-collection-character",
+      "observed_name": "賦課徵収費",
+      "corrected_name": "賦課徴収費",
+      "reason": "多摩市FY2020決算・介護保険特別会計、原典SHA 2ccc7571acb6d5310ad2ed814e58e45fec8ceaa322f1e36389b74ac24ba53a1b、物理[20]頁。構築AIと独立原典検査AI(ctx_4d5457f8707b)が原典字形を確認（2026-10-09、local-correction-crop-index.json SHA a051c7fe6819d6e9c36b4fa04cc5559ddd5ddbf591ba7db1b307c294a270a7fc）。Paddle PP-OCRv6 small、300dpi/detect1280max/CPU10/batch6の誤読に対し、確認済み番号付き科目欄のprefixを分離した全論理名称exactだけに適用。未知名称・部分文字列・連鎖置換に適用しない。人間確認ではない。"
+    },
+    {
+      "id": "subject-care-certification-review-character",
+      "observed_name": "介護認定審查会費",
+      "corrected_name": "介護認定審査会費",
+      "reason": "多摩市FY2020決算・介護保険特別会計、原典SHA 2ccc7571acb6d5310ad2ed814e58e45fec8ceaa322f1e36389b74ac24ba53a1b、物理[8, 22]頁。構築AIと独立原典検査AI(ctx_4d5457f8707b)が原典字形を確認（2026-10-09、local-correction-crop-index.json SHA a051c7fe6819d6e9c36b4fa04cc5559ddd5ddbf591ba7db1b307c294a270a7fc）。Paddle PP-OCRv6 small、300dpi/detect1280max/CPU10/batch6の誤読に対し、確認済み番号付き科目欄のprefixを分離した全論理名称exactだけに適用。未知名称・部分文字列・連鎖置換に適用しない。人間確認ではない。"
+    },
+    {
+      "id": "subject-care-certification-survey-character",
+      "observed_name": "介護認定調查費",
+      "corrected_name": "介護認定調査費",
+      "reason": "多摩市FY2020決算・介護保険特別会計、原典SHA 2ccc7571acb6d5310ad2ed814e58e45fec8ceaa322f1e36389b74ac24ba53a1b、物理[22]頁。構築AIと独立原典検査AI(ctx_4d5457f8707b)が原典字形を確認（2026-10-09、local-correction-crop-index.json SHA a051c7fe6819d6e9c36b4fa04cc5559ddd5ddbf591ba7db1b307c294a270a7fc）。Paddle PP-OCRv6 small、300dpi/detect1280max/CPU10/batch6の誤読に対し、確認済み番号付き科目欄のprefixを分離した全論理名称exactだけに適用。未知名称・部分文字列・連鎖置換に適用しない。人間確認ではない。"
+    },
+    {
+      "id": "subject-care-review-payment-character",
+      "observed_name": "審查支払手数料",
+      "corrected_name": "審査支払手数料",
+      "reason": "多摩市FY2020決算・介護保険特別会計、原典SHA 2ccc7571acb6d5310ad2ed814e58e45fec8ceaa322f1e36389b74ac24ba53a1b、物理[22]頁。構築AIと独立原典検査AI(ctx_4d5457f8707b)が原典字形を確認（2026-10-09、local-correction-crop-index.json SHA a051c7fe6819d6e9c36b4fa04cc5559ddd5ddbf591ba7db1b307c294a270a7fc）。Paddle PP-OCRv6 small、300dpi/detect1280max/CPU10/batch6の誤読に対し、確認済み番号付き科目欄のprefixを分離した全論理名称exactだけに適用。未知名称・部分文字列・連鎖置換に適用しない。人間確認ではない。"
+    },
+    {
+      "id": "subject-care-combined-service-missing-long-vowel",
+      "observed_name": "高額医療合算介護サビス等費",
+      "corrected_name": "高額医療合算介護サービス等費",
+      "reason": "多摩市FY2020決算・介護保険特別会計、原典SHA 2ccc7571acb6d5310ad2ed814e58e45fec8ceaa322f1e36389b74ac24ba53a1b、物理[24]頁。構築AIと独立原典検査AI(ctx_4d5457f8707b)が原典字形を確認（2026-10-09、local-correction-crop-index.json SHA a051c7fe6819d6e9c36b4fa04cc5559ddd5ddbf591ba7db1b307c294a270a7fc）。Paddle PP-OCRv6 small、300dpi/detect1280max/CPU10/batch6の誤読に対し、確認済み番号付き科目欄のprefixを分離した全論理名称exactだけに適用。未知名称・部分文字列・連鎖置換に適用しない。人間確認ではない。"
+    },
+    {
+      "id": "subject-care-combined-service-long-vowel",
+      "observed_name": "高額医療合算介護サ一ビス等費",
+      "corrected_name": "高額医療合算介護サービス等費",
+      "reason": "多摩市FY2020決算・介護保険特別会計、原典SHA 2ccc7571acb6d5310ad2ed814e58e45fec8ceaa322f1e36389b74ac24ba53a1b、物理[24]頁。構築AIと独立原典検査AI(ctx_4d5457f8707b)が原典字形を確認（2026-10-09、local-correction-crop-index.json SHA a051c7fe6819d6e9c36b4fa04cc5559ddd5ddbf591ba7db1b307c294a270a7fc）。Paddle PP-OCRv6 small、300dpi/detect1280max/CPU10/batch6の誤読に対し、確認済み番号付き科目欄のprefixを分離した全論理名称exactだけに適用。未知名称・部分文字列・連鎖置換に適用しない。人間確認ではない。"
+    },
+    {
+      "id": "subject-care-comprehensive-support-middle-dot",
+      "observed_name": "包括的支援事業·任意事業費",
+      "corrected_name": "包括的支援事業・任意事業費",
+      "reason": "多摩市FY2020決算・介護保険特別会計、原典SHA 2ccc7571acb6d5310ad2ed814e58e45fec8ceaa322f1e36389b74ac24ba53a1b、物理[24]頁。構築AIと独立原典検査AI(ctx_4d5457f8707b)が原典字形を確認（2026-10-09、local-correction-crop-index.json SHA a051c7fe6819d6e9c36b4fa04cc5559ddd5ddbf591ba7db1b307c294a270a7fc）。Paddle PP-OCRv6 small、300dpi/detect1280max/CPU10/batch6の誤読に対し、確認済み番号付き科目欄のprefixを分離した全論理名称exactだけに適用。未知名称・部分文字列・連鎖置換に適用しない。人間確認ではない。"
+    },
+    {
+      "id": "subject-care-prevention-support-middle-dot",
+      "observed_name": "介護予防·生活支援サービス事業費",
+      "corrected_name": "介護予防・生活支援サービス事業費",
+      "reason": "多摩市FY2020決算・介護保険特別会計、原典SHA 2ccc7571acb6d5310ad2ed814e58e45fec8ceaa322f1e36389b74ac24ba53a1b、物理[26]頁。構築AIと独立原典検査AI(ctx_4d5457f8707b)が原典字形を確認（2026-10-09、local-correction-crop-index.json SHA a051c7fe6819d6e9c36b4fa04cc5559ddd5ddbf591ba7db1b307c294a270a7fc）。Paddle PP-OCRv6 small、300dpi/detect1280max/CPU10/batch6の誤読に対し、確認済み番号付き科目欄のprefixを分離した全論理名称exactだけに適用。未知名称・部分文字列・連鎖置換に適用しない。人間確認ではない。"
+    }
+  ]
+}

@@ -9,7 +9,10 @@
     "reserve_kan": {"type": "string", "pattern": "^[0-9]+$"},
     "output_role": {"type": "string", "enum": ["detail", "reserve", "lending"]},
     "personnel_breakdown": {"type": "boolean"},
+    "nonfinancial_breakdown": {"type": "boolean"},
     "unexplained_section_detail": {"type": "boolean"},
+    "remark_column": {"type": "boolean"},
+    "remark_min_x": {"type": "number"},
     "reserve_table_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,95}$"},
     "lending_table_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,95}$"}
   },

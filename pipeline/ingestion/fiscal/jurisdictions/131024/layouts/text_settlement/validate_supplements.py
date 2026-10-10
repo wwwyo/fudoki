@@ -5,6 +5,7 @@ import collections
 import hashlib
 import json
 import re
+import unicodedata
 from pathlib import Path
 from inspect_origin import FIELDS, number
 from validate_candidate import normalized, read_raw
@@ -24,7 +25,11 @@ def validate(directory: Path, observations: Path, output: Path,
     def controls(rows):
         for i, row in enumerate(rows):
             for position, tier in enumerate(('款','項','目')):
-                path = {key: str(row[key+'_番号']) for key in ('款','項','目')[:position+1]}
+                # The NHI reserve block prints 第５項 with a fullwidth digit;
+                # membership lookup normalizes width while the verbatim field
+                # comparison still requires the printed form.
+                path = {key: unicodedata.normalize('NFKC', str(row[key+'_番号']))
+                        for key in ('款','項','目')[:position+1]}
                 source = next((c for c in origin['controls'] if c['level']==tier and c['path']==path), None)
                 if source is None:
                     issues.append({'kind':'unknown fiscal ancestor','row':i,'path':path})

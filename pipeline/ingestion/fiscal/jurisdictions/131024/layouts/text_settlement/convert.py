@@ -25,6 +25,65 @@ INNER_HEADERS = [
     ['区分', '件数', '給付額'],
 ]
 
+# Measured original table regions. Values come from glyphs, never these bounds.
+# Duplicate leaf headings retain their printed upper headings in the column key.
+AUXILIARY_TABLES = [
+    (96, 0, 342, 360, 462, '議員の報酬等', ['区分', '人数'], [62, 150, 285], (), True),
+    (96, 0, 468, 486, 517, '定例会・臨時会運営', ['区分', '回数'], [62, 150, 330], (), True),
+    (96, 0, 541, 576, 681, '開会回数', ['委員会区分', '委員会名', '回数'], [58.64, 130.61, 264.70, 309.69], ('回',), False),
+    (105, 0, 519, 537, 585, '選挙管理委員会運営事業', ['区分', '人数'], [65, 150, 300], (), True),
+    (106, 0, 599, 617, 665, '監査事務', ['区分', '人数'], [65, 150, 300], (), True),
+    (107, 0, 323, 355, 369, '戸籍数及び戸籍人口', ['戸籍数', '戸籍人口'], [45.21, 175.56, 305.90], ('戸籍', '人'), False),
+    (107, 0, 397, 429, 459, '住民基本台帳による世帯と人口', ['区分', '京橋', '日本橋', '月島', '計'], [45.21, 121.72, 198.23, 274.73, 351.24, 427.75], ('世帯', '人'), False),
+    (110, 0, 351, 366, 525, '区民館の管理運営', ['施設名', '利用件数'], [45.21, 135.89, 189.72], ('件',), False),
+    (110, 0, 351, 366, 525, '区民館の管理運営', ['施設名', '利用件数'], [189.72, 280.40, 334.24], ('件',), False),
+    (110, 1, 709, 724, 740, '中央会館「銀座ブロッサム」の管理運営', ['区分', 'ホール', '結婚式場', '集会室'], [682.31, 765.90, 832.49, 899.08, 965.66], ('件',), False),
+    (123, 1, 531, 546, 616, '巡回型ホームヘルプサービス', ['区分', '派遣世帯（延）', '派遣回数（延）'], [688.68, 787.86, 855.86, 923.87], ('世帯', '回'), False),
+    (128, 1, 111, 161, 465, '保育園の園児数及び職員数', ['保育所名', '園児数_3歳未満', '園児数_3歳以上', '園児数_計', '職員数_保育士', '職員数_技術・技能', '職員数_計'], [695.77, 777.94, 834.61, 891.29, 947.96, 1004.63, 1061.30, 1117.97], ('人',), False),
+    (131, 0, 145, 178, 348, '利用状況', ['児童館名', '乳幼児', '小学生', '中学生', '高校生', '保護者', '計'], [51.37, 164.71, 218.55, 272.38, 326.22, 380.06, 433.90, 487.73], ('人',), False),
+    (134, 0, 545, 565, 700, '一般健康診査', ['健康診査等内訳', '対象者', '人数'], [42.63, 161.64, 323.15, 377.13], ('人',), False),
+    (136, 1, 217, 277, 353, '内科・小児科診療', ['区分', '昼間診療_初療受診者数', '昼間診療_入院者数', '昼間診療_実施回数', '準夜間診療_初療受診者数', '準夜間診療_実施回数', '土曜準夜間診療_初療受診者数', '土曜準夜間診療_実施回数'], [686.48, 794.43, 845.41, 896.39, 947.38, 998.36, 1049.34, 1100.32, 1151.30], ('人', '回'), False),
+    (136, 1, 389, 407, 462, '歯科診療（休日）', ['区分', '受診者数', '実施回数'], [686.48, 802.43, 856.41, 910.39], ('人', '回'), False),
+    (136, 1, 497, 534, 589, '調剤（休日，土曜準夜間）', ['区分', '昼間調剤_初療調剤数', '昼間調剤_実施回数', '準夜間調剤_初療調剤数', '準夜間調剤_実施回数', '土曜準夜間調剤_初療調剤数', '土曜準夜間調剤_実施回数'], [686.48, 812.43, 864.41, 916.39, 968.37, 1020.35, 1072.33, 1124.31], ('人', '回'), False),
+    (137, 0, 115, 143, 157, '認定状況', ['特級', '1級', '2級', '3級', '級外', '計'], [41.92, 79.91, 117.89, 155.88, 193.86, 231.85, 269.84], ('人',), False),
+    (147, 0, 188, 203, 407, '道路維持補修', ['施工', '工種', '実績'], [53.96, 96.46, 331.65, 410.62], (), False),
+    (148, 0, 461, 476, 579, '掘削道路復旧工事', ['施工', '工種', '実績'], [53.25, 95.76, 330.95, 409.91], (), False),
+    (148, 0, 624, 639, 691, '特定道路舗装工事', ['工種', '助成基準', '件数', '規模'], [53.25, 197.39, 268.23, 339.07, 409.91], ('％', '件', '㎡'), False),
+    (153, 0, 384, 402, 451, '教育委員会運営', ['区分', '人数'], [65, 150, 325], (), True),
+    (154, 0, 169, 203, 216, '区立小学校の学級数・児童数及び教員数', ['学校数', '学級数', '児童数', '教員数'], [63.17, 145.34, 227.52, 309.69, 391.87], ('校', '学級', '人'), False),
+    (155, 1, 89, 121, 134, '宇佐美学園の学級数・児童数及び教員数', ['学級数', '児童数', '教員数'], [698.98, 783.99, 869.00, 954.00], ('学級', '人'), False),
+    (155, 1, 201, 233, 246, '区立中学校の学級数・生徒数及び教員数', ['学校数', '学級数', '生徒数', '教員数'], [698.98, 783.99, 869.00, 954.00, 1039.01], ('校', '学級', '人'), False),
+    (156, 0, 361, 393, 406, '区立幼稚園の学級数・園児数及び教員数', ['園数', '学級数', '園児数', '教員数'], [63.88, 146.05, 228.23, 310.40, 392.57], ('園', '学級', '人'), False),
+    (159, 0, 173, 203, 288, '区立図書館の現況', ['区分', '個人貸出者数', '購入図書数', '蔵書数'], [53.32, 135.29, 217.26, 299.23, 381.20], ('人', '冊'), False),
+    (180, 0, 218.3, 234.5, 343.8, '療養の給付', ['区分', '件数'], [58.1, 165.9, 211.4], ('件',), False),
+    (180, 0, 453.4, 469.5, 534.8, '療養費の支給', ['区分', '件数'], [58.1, 165.9, 211.4], ('件',), False),
+    (184, 0, 204.5, 221.8, 308.0, '特定健康診査等', ['内訳', '対象者', '人数'], [57.7, 202.4, 362.3, 407.8], ('人',), False),
+]
+
+# Independently confirmed original prose lines whose text lacks the keyword or
+# count pattern, including unnumbered headings and name wrap lines. Positions
+# are measured from the original; glyphs and fiscal subjects are read from the
+# words there, never from these bounds.
+PROSE_LINES = [
+    (100, 0, 472.58), (109, 0, 528.33), (111, 0, 200.39), (128, 0, 376.69),
+    (129, 1, 353.94), (134, 0, 287.77), (136, 0, 753.53), (140, 0, 644.09),
+    (141, 0, 283.64), (141, 0, 332.14), (141, 0, 429.14), (141, 0, 531.64),
+    (143, 0, 172.10), (147, 0, 536.67), (147, 0, 583.17), (147, 0, 683.68),
+    (147, 0, 730.18), (148, 0, 113.96), (148, 0, 160.46), (148, 0, 224.96),
+    (148, 0, 271.47), (148, 0, 335.97), (148, 0, 400.47), (148, 1, 270.95),
+    (148, 1, 306.95), (148, 1, 342.95), (155, 1, 486.62), (158, 0, 343.51),
+    (227, 0, 335.20),
+]
+
+# Independently confirmed original office/department headings printed directly
+# under a moku heading. Each starts a scope that runs in original reading order
+# until the next office or moku heading; inside a moku the same business
+# number/name may repeat, so the scalar is repeated by origin position, not by
+# business. Positions are measured; glyphs are read from the words there.
+OFFICE_HEADINGS = [
+    (134, 0, 287.77), (138, 0, 127.39), (139, 0, 288.86), (139, 1, 182.37),
+]
+
 
 def text(words):
     return ' '.join(w['text'] for w in sorted(words, key=lambda w: w['x']) if w['text'])
@@ -175,7 +234,68 @@ def inner_header(row):
     return headers
 
 
-def grid_table(words, header, headers, lines, page):
+def table_cells(words, headers, bounds, lines, page, top, bottom, start, end, *, unruled_rows=False):
+    cells, locations, kept = {}, {}, []
+    for item, (lower, upper) in zip(headers, bounds, strict=True):
+        selected = []
+        for word in words:
+            x, y = (word['x'] + word['xe']) / 2, (word['y'] + word['ye']) / 2
+            if not (lower < x < upper and start < y < end):
+                continue
+            rules = sorted({ry for x1, x2, ry in lines if x1 - .2 <= x <= x2 + .2})
+            before = [ry for ry in rules if ry < y]
+            after = [ry for ry in rules if ry > y]
+            cell_top = max(before) if before else (top if unruled_rows else start)
+            cell_bottom = min(after) if after else (bottom if unruled_rows else end)
+            if cell_top < bottom - .3 and cell_bottom > top + .3 and (not unruled_rows or rules or top < y < bottom):
+                selected.append(word)
+        key = item.get('column', '内表_' + item['name'])
+        cells[key] = '\n'.join(text(row) for row in rows(selected))
+        locations[key] = coordinates(selected, page) if selected else None
+        kept.extend(selected)
+    return cells, locations, kept
+
+
+def grid_table(words, header, headers, lines, page, *, column_bounds=None, body_rows=None,
+               shared_units=(), unit_columns=()):
+    if column_bounds is not None:
+        words = [word for word in words if not (word['text'] in shared_units
+                 and any(column_bounds[index][0] < (word['x'] + word['xe']) / 2 < column_bounds[index][1]
+                         for index in unit_columns))]
+        horizontal, vertical = lines
+        start, end = body_rows[0][0], body_rows[-1][1]
+        result = []
+        for top, bottom in body_rows:
+            cells, locations, kept = table_cells(words, headers, column_bounds, horizontal, page,
+                                                  top, bottom, start, end, unruled_rows=True)
+            if horizontal:
+                groups = [[0]]
+                center = (top + bottom) / 2
+                for index in range(1, len(headers)):
+                    boundary = column_bounds[index][0]
+                    if any(abs(x - boundary) < .2 and first <= center <= last for x, first, last in vertical):
+                        groups.append([index])
+                    else:
+                        groups[-1].append(index)
+                for group in groups:
+                    if len(group) == 1:
+                        continue
+                    final = group[-1]
+                    merged, merged_locations, _ = table_cells(words, [headers[final]],
+                        [(column_bounds[group[0]][0], column_bounds[final][1])], horizontal, page,
+                        top, bottom, start, end, unruled_rows=True)
+                    for index in group[:-1]:
+                        key = headers[index]['column']
+                        cells[key], locations[key] = '', None
+                    cells.update(merged)
+                    locations.update(merged_locations)
+            if kept:
+                result.append({'cells': cells, 'cell_locations': locations,
+                               'location': coordinates(kept, page),
+                               'row_bounds': {'原典物理頁': page, '原典xMin': column_bounds[0][0],
+                                              '原典xMax': column_bounds[-1][1],
+                                              '原典yMin': top, '原典yMax': bottom}})
+        return result, end
     # This profile prints shared units above the first data glyphs inside the
     # first ruled body cell. They describe columns, not that first leaf alone.
     if headers[-1]['name'] == '給付額':
@@ -228,24 +348,8 @@ def grid_table(words, header, headers, lines, page):
         cuts = sorted({top, bottom, *(y for x1, x2, y in horizontal
                        if x1 - .2 <= quantity_center <= x2 + .2 and top + .3 < y < bottom - .3)})
         for row_top, row_bottom in zip(cuts, cuts[1:]):
-            cells = {}
-            cell_locations = {}
-            kept = []
-            for item, (lower, upper) in zip(headers, column_bounds, strict=True):
-                selected = []
-                for w in words:
-                    wx = (w['x'] + w['xe']) / 2
-                    wy = (w['y'] + w['ye']) / 2
-                    if not (lower < wx < upper and header_bottom < wy < end):
-                        continue
-                    cell_lines = sorted(set(y for x1, x2, y in horizontal if x1 - .2 <= wx <= x2 + .2))
-                    cell_top = max((y for y in cell_lines if y < wy), default=header_bottom)
-                    cell_bottom = min((y for y in cell_lines if y > wy), default=end)
-                    if cell_top < row_bottom - .3 and cell_bottom > row_top + .3:
-                        selected.append(w)
-                cells['内表_' + item['name']] = '\n'.join(text(r) for r in rows(selected))
-                cell_locations['内表_' + item['name']] = coordinates(selected, page) if selected else None
-                kept.extend(selected)
+            cells, cell_locations, kept = table_cells(words, headers, column_bounds, horizontal, page,
+                                                       row_top, row_bottom, header_bottom, end)
             result.append({'cells': cells, 'location': coordinates(kept, page),
                            'money_location': coordinates([number], page), 'cell_locations': cell_locations,
                            'row_bounds': {'原典物理頁': page, '原典xMin': left, '原典xMax': right,
@@ -334,8 +438,165 @@ def unexplained_sections(pages, parent, following, last):
     return records
 
 
+def reading_position(location):
+    return location['原典物理頁'], int(location['原典xMin'] >= 650), location['原典yMin']
+
+
+def nonfinancial_facts(pages, nodes, source, destination, grids, handled, all_parents):
+    controls, observations, regions, office_headings = [], [], [], []
+    ordered = sorted(nodes, key=lambda node: reading_position(node['location']))
+    mokus = [p for p in all_parents if p['level'] == '目']
+
+    def owner_at(page, pane, y):
+        key = (page, pane, y)
+        available = [node for node in ordered if reading_position(node['location']) <= key]
+        if not available:
+            raise ValueError(f'Nonfinancial original fact has no source heading: page={page}, y={y}')
+        return available[-1]
+
+    def governing_moku(page, pane, y):
+        governing = [p for p in mokus
+                     if (p['原典物理頁'], 0, p['原典yMin']) < (page, pane, y)]
+        if not governing:
+            raise ValueError(f'Measured prose has no fiscal subject: page={page}, y={y}')
+        moku = max(governing, key=lambda p: (p['原典物理頁'], p['原典yMin']))
+        return tuple(moku['parents'].get(level + '_番号') for level in ('款', '項', '目'))
+
+    def measured_owner(page, pane, y):
+        # The fiscal subject is the original moku in force at the measured
+        # position, never the nearest preceding amount under another moku.
+        wanted = governing_moku(page, pane, y)
+        candidates = [node for node in ordered
+                      if tuple(node['context'].get(level + '_番号')
+                               for level in ('款', '項', '目')) == wanted]
+        before = [node for node in candidates if reading_position(node['location']) <= (page, pane, y)]
+        if before:
+            return before[-1], None
+        if candidates:
+            # The line precedes every business of its moku, like an office or
+            # department heading: it belongs to the moku's own context, not
+            # to the coming first business.
+            return None, wanted
+        raise ValueError(f'Measured prose has no business under its fiscal subject: page={page}, y={y}')
+
+    for page, pane, header_y, data_y, end, title, fields, xs, units, unruled in AUXILIARY_TABLES:
+        if page not in pages:
+            continue
+        words = [word for word in pages[page] if int(word['x'] >= 650) == pane]
+        body = [word for word in words if data_y - 7 < word['y'] < end
+                and xs[0] < (word['x'] + word['xe']) / 2 < xs[-1]]
+        if page not in grids:
+            grids[page] = grid_lines(source, destination, page)
+        horizontal = [] if unruled else grids[page][0]
+        anchors = [word for word in body if xs[-2] < (word['x'] + word['xe']) / 2 < xs[-1]
+                   and re.search(r'[0-9]|－', word['text']) and word['y'] >= data_y - 1]
+        body_rows = []
+        for line in rows(anchors):
+            center = (min(word['y'] for word in line) + max(word['ye'] for word in line)) / 2
+            x = (line[0]['x'] + line[0]['xe']) / 2
+            rules = sorted({y for x1, x2, y in horizontal if x1 - .2 <= x <= x2 + .2})
+            before, after = [y for y in rules if y < center], [y for y in rules if y > center]
+            top = max(before) if before else min(word['y'] for word in line) - .5
+            bottom = min(after) if after else max(word['ye'] for word in line) + .5
+            interval = (max(top, data_y - 7), min(bottom, end))
+            if interval not in body_rows:
+                body_rows.append(interval)
+        if not body_rows:
+            raise ValueError(f'No original quantity rows in measured table: page={page}, title={title}')
+        headers = [{'name': field, 'column': '数量表_' + title + '_' + field} for field in fields]
+        items, _ = grid_table(body, [], headers, (horizontal, grids[page][1]), page,
+                              column_bounds=list(zip(xs, xs[1:])), body_rows=body_rows, shared_units=units,
+                              unit_columns=[index for index, field in enumerate(fields)
+                                            if field not in ('区分', '施設名', '保育所名', '児童館名',
+                                                             '健康診査等内訳', '対象者', '委員会区分',
+                                                             '委員会名', '施工', '工種')])
+        owner = owner_at(page, pane, data_y)
+        heading_words = [word for word in words if header_y - 1 <= word['y'] < data_y - 7
+                         and xs[0] < (word['x'] + word['xe']) / 2 < xs[-1]]
+        heading = '\n'.join(text(row) for row in rows(heading_words)) or None
+        records = []
+        date = None
+        for item in items:
+            if any(compact(value) == '計' for value in item['cells'].values()):
+                controls.append({**node_context(owner), **item['cells'], **item['location']})
+                match = re.search(r'（[^）]*）', '\n'.join(item['cells'].values()))
+                if match:
+                    date = match[0]
+                continue
+            record = {**node_context(owner), **item['cells'], '数量表_見出し': heading,
+                      '数量表_現在日': None, **item['row_bounds']}
+            for column, location in item['cell_locations'].items():
+                if location:
+                    record.update({column + '_' + key: value for key, value in location.items()})
+            records.append(record)
+            observations.append(item)
+        if date is None and heading:
+            match = re.search(r'（[^）]*[0-9][^）]*）', heading)
+            date = match[0] if match else None
+        for record in records:
+            record['数量表_現在日'] = date
+        owner['annual_rows'].extend(records)
+        owner['has_children'] = True
+        regions.append((page, pane, header_y - 1, end, xs[0], xs[-1]))
+
+    # These are original prose rows within the current printed monetary heading,
+    # not allocation or a join to the independent legal section column.
+    for page, words in pages.items():
+        statement = any('当初予算額' in word['text'] for word in words)
+        for pane in range(1 if statement else 2):
+            for line in rows([word for word in words if int(word['x'] >= 650) == pane
+                              and 60 < word['y'] < 790]):
+                value = text(line)
+                joined = compact(value)
+                measured = any(p == page and pn == pane
+                               and abs(min(w['y'] for w in line) - y) < 2.5
+                               for p, pn, y in PROSE_LINES)
+                office = any(p == page and pn == pane
+                             and abs(min(w['y'] for w in line) - y) < 2.5
+                             for p, pn, y in OFFICE_HEADINGS)
+                if not (measured or office):
+                    if money(line) or joined.startswith(('計', '（款）', '（項）', '（目）', '令和', '平成')):
+                        continue
+                    if not (re.match(r'^(所在地|場所|規模|完成|完了|工事延長|区域|区間|［備考］|※|（)', joined)
+                            or re.search(r'[0-9][^円]*?(人|件|回|園|事業所|事業主|クラブ|世帯|基|㎡|ｍ|km|番|号|箇所|公園|児童遊園)', joined)):
+                        continue
+                location = coordinates(line, page)
+                if office:
+                    # An office/department heading is a native moku-level
+                    # scalar whose scope runs in reading order to the next
+                    # office or moku heading: assembly repeats it on the finest
+                    # rows inside that scope by origin position.
+                    office_headings.append({'moku_path': governing_moku(page, pane, location['原典yMin']),
+                                            'pos': (page, pane, location['原典yMin']),
+                                            'text': value, 'location': location})
+                    continue
+                center = (location['原典yMin'] + location['原典yMax']) / 2
+                if any(pg == page and half == pane and top <= center <= bottom
+                       for pg, half, top, bottom, *_ in [*regions, *handled]):
+                    continue
+                if measured:
+                    owner, moku_path = measured_owner(page, pane, location['原典yMin'])
+                    if owner is None:
+                        # A measured line preceding every business of its moku
+                        # is handled by the same office-heading mechanism.
+                        office_headings.append({'moku_path': moku_path,
+                                                'pos': (page, pane, location['原典yMin']),
+                                                'text': value, 'location': location})
+                        continue
+                else:
+                    owner = owner_at(page, pane, location['原典yMin'])
+                if '給与費' in compact(owner['name']) and re.fullmatch(r'.+\s*[0-9]+\s*人\s*(（[^）]*）)?', value):
+                    continue
+                # A prose line is annotation, not a decomposition of the
+                # printed amount: the monetary parent row stays a leaf and
+                # is preserved once while the line repeats its context.
+                owner['annual_rows'].append({**node_context(owner), '補足_本文': value, **location})
+    return controls, observations, office_headings
+
+
 def assemble(pages, first, last, *, source, destination, reserve_kan='11', personnel_breakdown=False,
-             unexplained_section_detail=False):
+             unexplained_section_detail=False, nonfinancial_breakdown=False, remark_column=False,
+             remark_min_x=1024):
     parents = {}
     nodes = []
     current = {}
@@ -354,7 +615,9 @@ def assemble(pages, first, last, *, source, destination, reserve_kan='11', perso
     annual = None
     awaiting_header = False
     pending = []
+    pending_department = []
     reserve_pending = []
+    handled = []
 
     for page in range(first, last + 1):
         words = pages[page]
@@ -384,8 +647,12 @@ def assemble(pages, first, last, *, source, destination, reserve_kan='11', perso
                             annual = None
                             awaiting_header = False
                         pending = []
+                        pending_department = []
                         continue
                 if '目' not in parents:
+                    if parents.get('款', {}).get('番号') == reserve_kan:
+                        handled.append((page, int(offset != 0),
+                                        min(w['y'] for w in row), max(w['ye'] for w in row)))
                     continue
                 if min(w['y'] for w in row) < skip_until:
                     continue
@@ -394,6 +661,10 @@ def assemble(pages, first, last, *, source, destination, reserve_kan='11', perso
                 if parents['款']['番号'] == reserve_kan:
                     # Reserve appropriations are a distinct explanation, not
                     # executed business detail under the zero-expense reserve.
+                    # The main prose pass must not borrow these lines either;
+                    # they are already retained in the reserve transfer table.
+                    handled.append((page, int(offset != 0),
+                                    min(w['y'] for w in row), max(w['ye'] for w in row)))
                     payment = money(row)
                     if not payment:
                         reserve_pending.append(value)
@@ -403,9 +674,9 @@ def assemble(pages, first, last, *, source, destination, reserve_kan='11', perso
                         reserve_total = payment['value']
                         reserve_pending = []
                         continue
-                    if reserve_pending and re.match(r'^第\s*[0-9]+\s*[款項目]', reserve_pending[0]):
+                    if reserve_pending and re.match(r'^第\s*[0-9０-９]+\s*[款項目]', reserve_pending[0]):
                         title = '\n'.join([*reserve_pending, title])
-                    match = re.match(r'^第\s*([0-9]+)\s*([款項目])\s*(.*)$', title, re.DOTALL)
+                    match = re.match(r'^第\s*([0-9０-９]+)\s*([款項目])\s*(.*)$', title, re.DOTALL)
                     if match:
                         lev = match[2]
                         if lev in ('款', '項'):
@@ -430,6 +701,31 @@ def assemble(pages, first, last, *, source, destination, reserve_kan='11', perso
                     if not current:
                         raise ValueError(f'Monetary inner table without owner on page {page}')
                     is_lending = [h['name'] for h in headers] == ['区分', '件数', '金額']
+                    handled_top = min(word['y'] for word in row)
+                    title_rows = []
+                    if is_lending:
+                        # The ［備考］ caption is retained in the lending status
+                        # table itself, not in the preceding business detail.
+                        captions = [min(w['y'] for w in r) for r in pending
+                                    if '［備考］' in compact(text(r))]
+                        if captions:
+                            handled_top = min(handled_top, *captions)
+                    else:
+                        # A measured original caption line directly above a
+                        # monetary inner table is that table's title or
+                        # eligibility note: hold it as scalar on the table's
+                        # own rows, never as normal-benefit prose.
+                        title_rows = [r for r in pending
+                                      if any(p == page and pn == int(offset != 0)
+                                             and abs(min(w['y'] for w in r) - y) < 2.5
+                                             for p, pn, y in PROSE_LINES)]
+                        if title_rows:
+                            handled_top = min(handled_top,
+                                              min(min(w['y'] for w in r) for r in title_rows))
+                    handled.append((page, int(offset != 0), handled_top, skip_until))
+                    title = '\n'.join(text(r) for r in title_rows) or None
+                    title_location = (coordinates([w for r in title_rows for w in r], page)
+                                      if title_rows else None)
                     amount_column = '内表_' + headers[-1]['name']
                     if is_lending:
                         owner = current.get(1, current[max(current)])
@@ -440,9 +736,16 @@ def assemble(pages, first, last, *, source, destination, reserve_kan='11', perso
                         inner_cells.append({'cells': item['cells'], 'location': item['location'],
                                             'cell_locations': item.get('cell_locations'),
                                             'row_bounds': item.get('row_bounds'),
-                                            'money_location': item['money_location']})
+                                            'money_location': item['money_location'],
+                                            'title': title})
                         record = {**node_context(owner), **item['cells'], **item['location'],
                                   **{amount_column + '_' + k: v for k, v in item['money_location'].items()}}
+                        if title:
+                            # The caption's own measured position travels with
+                            # the inner table's finest rows as a native title.
+                            record['内表_表題'] = title
+                            record.update({'内表_表題_' + k: v
+                                           for k, v in title_location.items()})
                         non_amount = ''.join(compact(v) for k, v in item['cells'].items() if k != amount_column)
                         if '計' in non_amount and not any(c for c in non_amount.replace('計', '') if not c.isdigit() and c not in ',－件人'):
                             inner_controls.append(record)
@@ -469,6 +772,7 @@ def assemble(pages, first, last, *, source, destination, reserve_kan='11', perso
                         owner = current[max(current)]
                         owner['has_children'] = True
                         annual = {'headers': headers, 'owner': owner}
+                        annual['source_start'] = (page, int(offset != 0), min(word['y'] for word in row))
                         annual_names.update(h['name'] for h in headers)
                         awaiting_header = False
                     continue
@@ -481,6 +785,9 @@ def assemble(pages, first, last, *, source, destination, reserve_kan='11', perso
                                   **coordinates(row, page)}
                         if compact(name) == '計':
                             annual_controls.append(record)
+                            start_page, half, top = annual['source_start']
+                            if start_page == page:
+                                handled.append((page, half, top, max(word['ye'] for word in row)))
                             annual = None
                         else:
                             annual['owner']['annual_rows'].append(record)
@@ -493,7 +800,7 @@ def assemble(pages, first, last, *, source, destination, reserve_kan='11', perso
                     if personnel_breakdown and current:
                         owner = current[max(current)]
                         if '給与費' in compact(owner['name']):
-                            count = re.fullmatch(r'(.+職\s*員)\s*([0-9]+)\s*人', value)
+                            count = re.fullmatch(r'(.+?)\s*([0-9]+)\s*人', value)
                             if count:
                                 owner['has_children'] = True
                                 owner['annual_rows'].append({**node_context(owner), '職員_区分': count[1].rstrip(),
@@ -509,10 +816,21 @@ def assemble(pages, first, last, *, source, destination, reserve_kan='11', perso
                                                            **coordinates(row, page)})
                                 pending = []
                                 continue
-                    if current and value.startswith('［') and min(w['x'] for w in row) > offset + 395:
+                            dated = re.fullmatch(r'(?!計)(.+?)\s*([0-9]+)\s*人\s*(（[^）]*）)', value)
+                            if dated:
+                                owner['has_children'] = True
+                                owner['annual_rows'].append({**node_context(owner), '職員_区分': dated[1].rstrip(),
+                                                             '職員_人数': dated[2] + ' 人',
+                                                             '職員_現在日': dated[3], **coordinates(row, page)})
+                                pending = []
+                                continue
+                    if value.startswith('［') and min(w['x'] for w in row) > offset + 395:
                         project = current.get(0)
                         if project:
                             project['department'] = (project['department'] or '') + '\n' + value
+                        else:
+                            pending_department.append({'page': page,
+                                                       'y': min(w['y'] for w in row), 'value': value})
                         continue
                     if (current and current[max(current)]['number']
                             and current[max(current)]['number'].startswith('(')
@@ -552,6 +870,7 @@ def assemble(pages, first, last, *, source, destination, reserve_kan='11', perso
                 number = marker[1] if marker else None
                 department = text([w for w in row if w['x'] > payment['circle']['xe'] and ('［' in w['text'] or '］' in w['text'] or w['x'] < offset + 650)]) or None
                 name = marker[2] if marker else name_text
+                name_x = payment['name_words'][0]['x'] - offset if payment['name_words'] else None
                 if number and not number.startswith('(') and names[0]['x'] - offset < 52:
                     rank = 0
                 elif number and number.startswith('('):
@@ -561,6 +880,18 @@ def assemble(pages, first, last, *, source, destination, reserve_kan='11', perso
                     rank = 3 if right < 220 else (2 if right < 290 else 1)
                     if names and names[0]['x'] - offset >= 55:
                         rank = max(rank, 2)
+                    if name_x is not None and current:
+                        deepest = current[max(current)]
+                        dn = deepest.get('name_x')
+                        # Indent is relative: a row printed deeper than the open
+                        # detail is its child, and a row at the same indent is a
+                        # sibling at that same level regardless of the absolute
+                        # amount column thresholds above.
+                        if dn is not None:
+                            if name_x > dn + 6:
+                                rank = max(rank, deepest['rank'] + 1)
+                            elif rank < deepest['rank'] and name_x >= dn - 4:
+                                rank = deepest['rank']
                 for depth in list(current):
                     if depth >= rank:
                         current.pop(depth)
@@ -570,11 +901,25 @@ def assemble(pages, first, last, *, source, destination, reserve_kan='11', perso
                 if parent_node:
                     parent_node['has_children'] = True
                 node = {'rank': rank, 'number': number, 'name': name, 'amount': payment['value'],
-                        'department': department, 'location': coordinates([*row, *names], page), 'parent': parent_node,
+                        'department': department, 'name_x': name_x,
+                        'location': coordinates([*row, *names], page), 'parent': parent_node,
                         'context': context(parents), 'has_children': False, 'annual_rows': []}
+                if pending_department and rank == 0:
+                    # A department mark can print one line above the business
+                    # row it belongs to (same ruled band); it is not a section
+                    # department and never crosses a page or a subject heading.
+                    near = [d for d in pending_department
+                            if d['page'] == page and node['location']['原典yMin'] - 25 < d['y'] < node['location']['原典yMax'] + 10]
+                    if near:
+                        node['department'] = '\n'.join([*[d['value'] for d in near],
+                                                        *([department] if department else [])])
+                    pending_department = []
                 nodes.append(node)
                 current[rank] = node
                 pending = []
+    quantity_controls, quantity_cells, office_headings = (
+        nonfinancial_facts(pages, nodes, source, destination, grids, handled, all_parents)
+        if nonfinancial_breakdown else ([], [], []))
     records = []
     for node in nodes:
         records.extend(node['annual_rows'])
@@ -592,6 +937,68 @@ def assemble(pages, first, last, *, source, destination, reserve_kan='11', perso
                     records.extend(sections)
                     continue
             records.append({**parent['parents'], **{k: parent[k] for k in coordinates_keys()}})
+    # An office/department heading is handed to its rows at construction time:
+    # every finest row inside its reading-order scope — from the heading to the
+    # next office or moku heading within the same moku — carries the scalar and
+    # the heading's own origin position, so no downstream pass has to re-derive
+    # the correspondence and repeated business names cannot misplace it.
+    for record in records:
+        path = tuple(record.get(level + '_番号') for level in ('款', '項', '目'))
+        pos = (record.get('原典物理頁'), int((record.get('原典xMin') or 0) >= 650),
+               record.get('原典yMin'))
+        applicable = [h for h in office_headings
+                      if h['moku_path'] == path and h['pos'] <= pos]
+        if applicable:
+            heading = max(applicable, key=lambda h: h['pos'])
+            record.update({'目_機関部署見出し': heading['text'],
+                           **{'目_機関部署見出し_' + k: v
+                              for k, v in heading['location'].items()}})
+    if remark_column:
+        # The printed remark column (備考, x>1024) is an independent scalar of
+        # the fiscal row whose ruled band contains the line: row boundaries are
+        # the horizontal rules spanning the whole fiscal table, while inner
+        # quantity tables rule only their own fragments and never reach both
+        # edges. Each remark line must resolve to exactly one printed row.
+        remarks = {}
+        entities = [(p['level'], p, p) for p in all_parents]
+        entities += [(LEVELS[n['rank']], n['location'], n) for n in nodes]
+        for page, words in pages.items():
+            marks = [w for w in words if w['x'] > remark_min_x and 60 < w['y'] < 790]
+            lines = [line for line in rows(marks) if compact(text(line)) not in ('備', '考', '備考')]
+            if not lines:
+                continue
+            if page not in grids:
+                grids[page] = grid_lines(source, destination, page)
+            coverage = defaultdict(list)
+            for x1, x2, y in grids[page][0]:
+                coverage[round(y, 1)].append((x1, x2))
+            edges = sorted(y for y, seg in coverage.items()
+                           if min(x1 for x1, _ in seg) < 45 and max(x2 for _, x2 in seg) > 480)
+            for line in lines:
+                center = (min(w['y'] for w in line) + max(w['ye'] for w in line)) / 2
+                hits = []
+                for level, loc, entity in entities:
+                    if loc['原典物理頁'] != page:
+                        continue
+                    middle = (loc['原典yMin'] + loc['原典yMax']) / 2
+                    lower = max((y for y in edges if y < middle), default=60)
+                    upper = min((y for y in edges if y > middle), default=790)
+                    if lower < center < upper:
+                        hits.append((level, loc, entity))
+                if len(hits) != 1:
+                    raise ValueError(f'Remark line has {len(hits)} owning rows: page={page}, {text(line)}')
+                level, loc, _ = hits[0]
+                key = (level, page, round(loc['原典yMin'], 1))
+                remarks.setdefault(key, []).append(text(line))
+        for record in [*records, *reserve, *lending]:
+            for level in ['款', '項', '目', *LEVELS]:
+                page = record.get(level + '_原典物理頁')
+                top = record.get(level + '_原典yMin')
+                if page is None or top is None:
+                    continue
+                found = remarks.get((level, page, round(top, 1)))
+                if found:
+                    record[level + '_備考'] = '\n'.join(found)
     for record in records:
         for key in sorted(annual_names):
             record.setdefault('施工概要_' + key, None)
@@ -603,6 +1010,9 @@ def assemble(pages, first, last, *, source, destination, reserve_kan='11', perso
         'coordinate_system': 'Poppler bbox-layout, upright top-left origin, pt; physical pages'}
     if personnel_breakdown:
         observations['personnel_totals'] = personnel_controls
+    if nonfinancial_breakdown:
+        observations['quantity_totals'] = quantity_controls
+        observations['quantity_cells'] = quantity_cells
     return records, reserve, lending, observations
 
 
@@ -618,9 +1028,15 @@ def metadata(columns, *, reserve=False, lending=False):
               'notes': [{'text': '事業説明と法定節一覧は独立の分解であり、同じ高さの節を事業に対応付けない。名称内の字間はPopplerの単語を空白で連結し、折り返しは改行で保持。XML構文を壊す印字外の制御文字だけを解析用コピーから除去し、原XMLを観測として保持。',
                          'scope': {'kind': 'table'}}], 'column_contexts': []}
     for level in ('款', '項', '目'):
-        group = [c for c in columns if c.startswith(level + '_')]
+        group = [c for c in columns if c.startswith(level + '_')
+                 and not c.startswith('目_機関部署見出し')]
         result['column_contexts'].append({'columns': group, 'header_path': ['科目', level],
                                          'grain_columns': [level + '_番号', level + '_原典物理頁', level + '_原典yMin']})
+    office = [c for c in columns if c.startswith('目_機関部署見出し')]
+    if office:
+        result['column_contexts'].append({'columns': office, 'header_path': ['科目', '目', '機関部署見出し'],
+                                         'grain_columns': ['目_機関部署見出し_' + k for k in coordinates_keys()]})
+        result['notes'].append({'text': '目の直下に印字される機関・部署の見出しはその目自身のscalarであり、特定の事業・内訳の補足ではない。原印字の文字と位置を、原典見出しの開始から次の機関または目見出しまでの最細行へ反復し、支出の分解や事業への付与とは扱わない。', 'scope': {'kind': 'table'}})
     for level in LEVELS:
         group = [c for c in columns if c.startswith(level + '_')]
         if group:
@@ -641,7 +1057,13 @@ def metadata(columns, *, reserve=False, lending=False):
                 money_columns.extend(group)
                 result['column_contexts'].append({'columns': group, 'header_path': ['事業説明', '内表', label],
                                                  'grain_columns': [prefix + '_' + key for key in coordinates_keys()]})
-        result['column_contexts'].append({'columns': [c for c in inner if c not in money_columns],
+        title_columns = [c for c in inner if c == '内表_表題' or c.startswith('内表_表題_')]
+        if title_columns:
+            result['column_contexts'].append({'columns': title_columns,
+                                             'header_path': ['事業説明', '内表', '表題'],
+                                             'grain_columns': ['内表_表題_' + k for k in coordinates_keys()]})
+            result['notes'].append({'text': '金額内表の直上に印字された表題・資格区分の行は、その内表自身の表題であり通常給付側や事業の補足ではない。原印字の文字と位置を内表_表題としてその内表の最細行へ保持する。', 'scope': {'kind': 'table'}})
+        result['column_contexts'].append({'columns': [c for c in inner if c not in money_columns + title_columns],
                                          'header_path': ['事業説明', '内表'],
                                          'grain_columns': ['原典物理頁', '原典yMin', '原典yMax']})
         result['notes'].append({'text': '金額を持つ内表は罫線のセル範囲で文字・複数行・結合セルの所属を復元。印字された数量・対象者数・月額・施工数などを原見出しに対応するscalar補助列で保持。金額セルが期別など複数の最細行に縦結合される場合、印字共通金額と同一金額bboxを各行へ反復し、期別配分額とは解釈しない。集計では原典頁・親経路・金額列・金額bboxで同一原典セルを識別し、反復値の一致確認後に一度だけ数える。SUM(DISTINCT 金額)は用いない。内表の計行は検算用観測に保持。', 'scope': {'kind': 'table'}})
@@ -654,6 +1076,48 @@ def metadata(columns, *, reserve=False, lending=False):
         result['column_contexts'].append({'columns': personnel, 'header_path': ['事業説明', '職員の給与費'],
                                          'grain_columns': ['原典物理頁', '原典yMin']})
         result['notes'].append({'text': '職員人数の最細区分行は給与費の事業親に属する独立した人数内訳。共通の給与費額と事業の原典位置を各人数行に反復するが、人数区分ごとの支出配分額は印字されていないため明細金額を付与しない。現在日は人数の計行から保持。給与費額を集計する際は同一親経路・原典位置の反復値の一致を確認して一度だけ数える。人数の計行は検算用観測に保持。', 'scope': {'kind': 'table'}})
+    quantity = [column for column in columns if column.startswith('数量表_')]
+    if quantity:
+        declared = set()
+        for _, _, _, _, _, title, fields, _, _, _ in AUXILIARY_TABLES:
+            for field in fields:
+                prefix = '数量表_' + title + '_' + field
+                group = [column for column in quantity if column == prefix or column.startswith(prefix + '_原典')]
+                if not group or prefix in declared:
+                    continue
+                declared.add(prefix)
+                result['column_contexts'].append({'columns': group,
+                    'header_path': ['事業説明', title, *field.split('_')],
+                    'grain_columns': [prefix + '_' + key for key in coordinates_keys()
+                                      if prefix + '_' + key in columns]})
+                unit = None
+                if ('園児数_' in field or '職員数_' in field or field in ('人数', '戸籍人口', '児童数', '教員数', '生徒数',
+                        '園児数', '個人貸出者数', '乳幼児', '小学生', '中学生', '高校生', '保護者')
+                        or field.endswith(('受診者数', '入院者数', '調剤数'))
+                        or title in ('利用状況', '認定状況') and field != '児童館名'):
+                    unit = '人'
+                elif field.endswith(('回数', '回数（延）')):
+                    unit = '回'
+                elif field in ('利用件数', '件数'):
+                    unit = '件'
+                elif field == '派遣世帯（延）':
+                    unit = '世帯'
+                elif field in ('購入図書数', '蔵書数'):
+                    unit = '冊'
+                elif field in ('学校数', '園数', '学級数', '戸籍数', '助成基準', '規模'):
+                    unit = {'学校数': '校', '園数': '園', '学級数': '学級', '戸籍数': '戸籍',
+                            '助成基準': '％', '規模': '㎡'}[field]
+                if unit:
+                    result['units'].append({'text': unit, 'scope': {'kind': 'columns', 'columns': [prefix]}})
+        general = [column for column in ('数量表_見出し', '数量表_現在日') if column in columns]
+        result['column_contexts'].append({'columns': general, 'header_path': ['事業説明', '数量表'],
+                                         'grain_columns': ['原典物理頁', '原典yMin', '原典yMax']})
+        result['notes'].append({'text': '数量表は原典の最細区分行・欄・結合セル・印字位置を保持する独立した非金額の内訳。共通の給与費・事業費などは所属する親の印字金額と位置を反復し、数量行へ配賦した明細金額は付与しない。複数段見出しや重複した計・受診者数等は原見出しの経路で区別。計行はローカル検算用観測。住民基本台帳の京橋・日本橋・月島・計の欄は、区分が世帯数の行は世帯、人口の行は人。道路工種実績の単位は印字された数量セル内の㎡・ｍ・個を保持。回数の括弧内の延日数は同じ原典セルの原文として保持。',
+                                 'scope': {'kind': 'table'}})
+    if '補足_本文' in columns:
+        result['column_contexts'].append({'columns': ['補足_本文'], 'header_path': ['事業説明', '補足'],
+                                         'grain_columns': ['原典物理頁', '原典yMin', '原典yMax']})
+        result['notes'].append({'text': '所在地・完成予定・件数等の原典補足は印字行の文字と位置をscalarで保持。所属する事業・内訳の共通印字金額と位置は反復し、補足行に支出配分額を付与しない。', 'scope': {'kind': 'table'}})
     section = [c for c in columns if c.startswith('節_')]
     if section:
         result['column_contexts'].append({'columns': section, 'header_path': ['節'],
@@ -698,7 +1162,10 @@ def convert(inputs, destination, options):
     records, reserve, lending, observations = assemble(pages, first, last, source=source['path'], destination=destination,
                                                       reserve_kan=options.get('reserve_kan', '11'),
                                                       personnel_breakdown=options.get('personnel_breakdown', False),
-                                                      unexplained_section_detail=options.get('unexplained_section_detail', False))
+                                                      unexplained_section_detail=options.get('unexplained_section_detail', False),
+                                                      nonfinancial_breakdown=options.get('nonfinancial_breakdown', False),
+                                                      remark_column=options.get('remark_column', False),
+                                                      remark_min_x=options.get('remark_min_x', 1024))
     (destination / 'builder-observations.json').write_text(json.dumps(observations, ensure_ascii=False, indent=2) + '\n')
     result = {}
     available = {'detail': (records, False, False), 'reserve': (reserve, True, False),

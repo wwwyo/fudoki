@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["part", "table_id"],
+  "additionalProperties": false,
+  "properties": {
+    "table_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "part": {
+      "type": "string",
+      "enum": ["summary", "detail"],
+      "description": "summary: 款項表（scope先頭range）。detail: 歳出明細（scope後続range）"
+    },
+    "account": {
+      "type": "string",
+      "description": "会計名（既定: 一般会計）。備考から会計標を除くために使う"
+    }
+  }
+}

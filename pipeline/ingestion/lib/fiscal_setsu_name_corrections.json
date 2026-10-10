@@ -19,6 +19,18 @@
       "observed_name": "共济费",
       "corrected_name": "共済費",
       "reason": "昭島市2025年度予算書・物理109頁のRapidOCR比較で確認した表記差。"
+    },
+    {
+      "id": "setsu-contribution-middle-dot",
+      "observed_name": "負担金·補助及び交付金",
+      "corrected_name": "負担金・補助及び交付金",
+      "reason": "多摩市2020決算・後期高齢者医療特別会計の原典物理17/19頁で、PaddleOCRの中点·を原典画像の・と親AIが照合した。折り返しと節番号の分離後、名称全体を照合する。人間確認ではない。"
+    },
+    {
+      "id": "setsu-redemption-middle-dot",
+      "observed_name": "償還金·利子及び割引料",
+      "corrected_name": "償還金・利子及び割引料",
+      "reason": "同会計の原典物理19頁で、PaddleOCRの中点·を原典画像の・と親AIが照合した。全名称の一致だけに適用し、数値や部分文字列は置換しない。人間確認ではない。"
     }
   ]
 }

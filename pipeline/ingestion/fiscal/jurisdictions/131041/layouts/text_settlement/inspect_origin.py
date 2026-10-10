@@ -7,6 +7,29 @@ SHA='ca3f8658f6dbe295978db484227ec1c7adbdc15eeb136f109fa406798511c1eb'
 AMOUNTS=['initial','amendment','prior','transfer','total','executed','carry','unused']
 def compact(s): return re.sub(r'\s+', '', s)
 def numeric(s): return bool(re.fullmatch(r'[△▲−-]?[0-9][0-9,]*',compact(s)))
+def unify_rows(pages):
+    """PDFKit can report one printed line with split tops or split bottoms across
+    column selections (e.g. summary rows whose remarks wrap to a second line).
+    Merge cells that share a top or a bottom edge and re-anchor every member to
+    the tightest observed top so each printed row has one y coordinate."""
+    for page in pages:
+        cells=[s for col in page['columns'].values() for s in col]
+        parent={}
+        def find(s):
+            root=id(s)
+            while parent[root]!=root:root=parent[root]
+            return root
+        def union(a,b):
+            ra,rb=find(a),find(b)
+            if ra!=rb:parent[ra]=rb
+        for s in cells:parent[id(s)]=id(s)
+        for i,a in enumerate(cells):
+            for b in cells[i+1:]:
+                if abs(a['y']-b['y'])<2 or abs(a['bottom']-b['bottom'])<2:union(a,b)
+        tops={}
+        for s in cells:
+            r=find(s);tops[r]=max(tops.get(r,s['y']),s['y'])
+        for s in cells:s['y']=tops[find(s)]
 def line(cells,y,tolerance=2):
     return ''.join(s['text'] for s in sorted(cells,key=lambda s:s['x']) if abs(s['y']-y)<tolerance).strip()
 def money(cells,y):
@@ -18,11 +41,12 @@ def name(cells,y,end):
     selected=sorted((s for s in cells if y-2<=s['y']<end-2),key=lambda s:(s['y'],s['x']))
     return compact(''.join(s['text'] for s in selected))
 def observe(pages, *, summary_page=3, kan_boundary=30, kou_boundary=48):
+    unify_rows(pages)
     parents=[]; setsu=[]; remarks=[]; summary=[]; annotations=[]; detail_totals=[]; current=[None,None,None]
     for page in pages:
         n=page['page']; cols=page['columns']
         if n==summary_page:
-            anchors=[s['y'] for s in cols['initial'] if s['y']>225 and numeric(s['text'])]
+            anchors=sorted({s['y'] for s in cols['initial'] if s['y']>225 and numeric(s['text'])})
             for i,y in enumerate(anchors):
                 # Summary names can be centred over two lines, starting above numeric baseline.
                 low=(anchors[i-1]+y)/2 if i else y-15
@@ -32,9 +56,9 @@ def observe(pages, *, summary_page=3, kan_boundary=30, kou_boundary=48):
                 label_without_number=re.sub(r'\d+','',label)
                 summary.append({'page':n,'y':y,'number':match[1] if match else None,'name':label_without_number if match else label,'amounts':{k:money(cols[k],y) for k in ['initial','amendment','prior','transfer','total','executed','carry_continuing','carry_authorized','carry_accident','unused']}})
             continue
-        panchors=sorted(s['y'] for s in cols['initial'] if s['y']>150 and numeric(s['text']))
-        sanchors=sorted(s['y'] for s in cols['setsu_total'] if s['y']>150 and numeric(s['text']))
-        ranchors=sorted(s['y'] for s in cols['remarks_amount'] if s['y']>150 and numeric(s['text']))
+        panchors=sorted({s['y'] for s in cols['initial'] if s['y']>150 and numeric(s['text'])})
+        sanchors=sorted({s['y'] for s in cols['setsu_total'] if s['y']>150 and numeric(s['text'])})
+        ranchors=sorted({s['y'] for s in cols['remarks_amount'] if s['y']>150 and numeric(s['text'])})
         events=[]
         for i,y in enumerate(panchors):
             first=sorted((s for s in cols['hierarchy'] if abs(s['y']-y)<2),key=lambda s:s['x'])
@@ -71,7 +95,17 @@ def observe(pages, *, summary_page=3, kan_boundary=30, kou_boundary=48):
         for y in ranchors:
             if y in covered:continue
             label=line(cols['remarks'],y)
-            events.append((y,'annotation',{'page':n,'y':y,'name':compact(label),'amount':money(cols['remarks_amount'],y)}))
+            # Wrapped annotation text continues above the amount line; extend the
+            # name over contiguous lines, stopping at another numbered remark,
+            # another amount line, or a separate citation entry (…議決).
+            block=[s for s in cols['remarks'] if abs(s['y']-y)<2]
+            for s in sorted((s for s in cols['remarks'] if 150<s['y']<y-2),key=lambda s:-s['y']):
+                if min(c['y'] for c in block)-s['y']>15: break
+                if re.match(r'^\d{3}(?:\s|$)',s['text'].strip()) or s['text'].strip().endswith('議決'): break
+                if any(abs(s['y']-r)<2 for r in ranchors): break
+                block.append(s)
+            full=''.join(s['text'] for s in sorted(block,key=lambda s:(s['y'],s['x'])))
+            events.append((y,'annotation',{'page':n,'y':y,'name':compact(label),'name_block':compact(full),'amount':money(cols['remarks_amount'],y)}))
         for y,kind,item in sorted(events,key=lambda e:(e[0],0 if e[1]=='parent' else 1)):
             if kind=='parent':
                 level=item['level'];current[level]=item

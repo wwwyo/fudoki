@@ -1,30 +1,30 @@
-# E. 固定予定の保存物を非公開R2へ保存し、読み戻す
+# E. 既存入力の復元・検査（旧検査・監査の互換経路）
 
-この文書は移行中の旧固定入力経路を扱う。新しい対象別JSON・固定keyへの保存は [ingestion](ingestion.md#現在版の保存・差し替え) を使う。新しいCSVにこの経路の読み戻しや旧入力一覧への更新を必須として適用しない。
+旧検査・監査は、schemaVersion 3の `pipeline/ingestion/fiscal/sources.lock.json` を参照する。この文書は、その一覧が指す既存入力の復元と同一性検査を説明する。新規保存はBの対象別JSONと `ingestion:convert` に一本化し、[取り込みと保存](ingestion.md#現在版の保存・差し替え) を使う。
 
-## 入力と作業
+## 残っている参照と検査
 
-- 固定予定の原典・取り込み表と、専用抽出・復元に必要な補助証拠を揃える。資料ごとの保存対象を実装・証拠一覧から確認する。
-- 原典は `inputs/origin/sha256/<SHA>`、表は `inputs/table/sha256/<SHA>` の非公開R2オブジェクトとして保存する。Cloudflareの操作は `cf` を使う。
-- 保存後は取得し直したバイト列のSHAとサイズを固定予定の参照と照合する。アップロード成功だけで読み戻しの一致を認定しない。
-- `pipeline/ingestion/inputs.py` の `remote_object()` は既存オブジェクトを検査し、明示的な404以外で存在確認できなかった場合は停止する。既存の不一致を上書きして解消しない。
+- 旧入力一覧は、原典・ParquetのSHA・サイズ・保存先と、旧検査・監査が読む原典宣言を保持する。独立した `provenance.json` は生成・復元しない。
+- `inputs/origin/sha256/<SHA>` と `inputs/table/sha256/<SHA>` は、旧一覧が参照する既存の非公開R2オブジェクトのkeyである。新しいBの保存先ではない。旧一覧の `read_lock()` はこのkey形式を要求するため、新keyへ参照文字列を替えるだけでは移行できない。
+- `pipeline/ingestion/inputs.py` の `read_lock()` が旧一覧の構造・対象・保存参照を検査し、`verify_object()` が実バイト列のSHA・サイズを照合する。`source_metadata()` は固定Parquetを読み、行数・列型等を取得する。検査結果は必要時に再生成し、原典宣言へ写して正しさの証明と扱わない。
+- `locked_objects()` は、旧一覧と既存の専用処理が参照する補助証拠を列挙する。原典画像・凍結OCR観測等の必要な補助入力を、provenanceの別ファイルがないことを理由に捨てない。
+- ローカルオブジェクトキャッシュは `pipeline/.cache/objects/`。復元時も実ファイルのSHA・サイズを照合する。キャッシュの存在だけではR2から取得し直した証拠にはならない。
 
-## 入力一覧と宣言で管理する
+## 旧入力を読む検査の準備
 
-- 独立した `provenance.json` は生成・採用・復元・バックアップしない。`sources.lock.json` はschemaVersion 3で、採用した原典とParquetのSHA・サイズ・保存先、source宣言を管理する。
-- URL・頁・会計・粒度・単位・承認に関する宣言はsource情報、抽出手順・設定はコードと宣言、訂正値と原典位置は訂正宣言に置く。検査結果をsource宣言へ写して正しさの証明と扱わない。
-- 表の行数・列型は固定Parquetから読み直す。検査結果は必要時に再生成する。コード・設定の版への参照は固定入力と対応づける。
-- 原典と表はR2、入力一覧・コード・宣言・判断はGitで管理する。原典画像・凍結OCR観測等、再抽出に必要な補助入力は独立した保存対象であり、provenance出力の廃止を理由に捨てない。
-- ローカルオブジェクトキャッシュは `pipeline/.cache/objects/` にある。そこにあることだけではR2保存・読み戻しが済んだとは言えない。
+旧一覧に依存する検査を実行する場合だけ、`pipeline/` から既存一覧を指定して復元する。
 
-## 保存するものとFへの受け渡し
+```bash
+mise exec -- uv run --frozen python -m ingestion.inputs restore --lock ingestion/fiscal/sources.lock.json
+mise exec -- uv run --frozen python -m ingestion.inputs describe --lock ingestion/fiscal/sources.lock.json
+```
 
-- 保存対象のキー・SHA・サイズと、取得し直した結果の照合を作業別の検査記録へ残す。親側で独立に取得した場合は、担当側の記録と区別する。
-- 必要な原典・表・補助証拠の読み戻し不一致や欠落があれば保存・抽出を見直す。一致は保存・取得の証拠で、原典の意味の正しさや提供先の完成を証明しない。
-- Fへ固定予定の入力一覧・宣言・検査した範囲を渡す。
+ローカルに必要な既存オブジェクトがなければ、復元の `restore` に `--remote` を付ける。`restore()` は既存参照を `remote_object(..., 'get')` で取得し、SHA・サイズを照合する。復元・検査は旧一覧の採用更新や新規保存を行わない。取得・復元の一致はバイト列の同一性であり、原典の意味や財政値の正しさの判定とは分ける。
 
-## 既存のコマンドの境界
+## 現行の保存・後段との境界
 
-- 復元は `bun run pipeline:inputs`、保存・読み戻しの実装は `pipeline/ingestion/inputs.py` の `remote_object()`・`locked_objects()`・`verify_object()` にある。
-- `migrate --remote` はR2保存・読み戻しに加えて採用入力一覧を置き換える。既存入力を含まない候補だけのrawへ適用して、保存だけのつもりで本体を更新しない。
-- 固定入力の復元と採用は [pipeline/README.md](../../../../pipeline/README.md) と [F](dbt.md) を参照する。Eだけを実行する共通CLIは未確立で、専用処理と共有の保存関数を組み合わせている。
+新規の取り込み表は `ingestion/fiscal/jurisdictions/<団体>/<年度>/<資料区分>/<方向>.json` と `ingestion:convert` で管理・保存する。原典はsource_selectionの保存参照を使う。旧keyへのアップロードと旧入力一覧への採用更新を、新しいBの手順に含めない。
+
+現在の `bun run pipeline:inputs` とFの入力準備は、対象別JSONと保存済みParquetを読む。旧一覧をFへ新しい入力として渡す手順ではない。現行入口は [pipeline/README.md](../../../../pipeline/README.md)、後段は [F](dbt.md) を参照する。
+
+旧検査・通常監査Gの入口変更と、既存Parquetの保存先移行は別の作業である。旧一覧を参照するconsumerが残る間は、そのconsumerに必要な既存keyの保持と復元を続ける。移行・削除の確認範囲は [移行記録](../../../../docs/prd/ingestion-storage/migration.md) を参照する。
