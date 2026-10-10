@@ -84,6 +84,42 @@ def observe(pdf: Path, sha: str, output: Path, pages_range=(96, 163), reserve_pa
                     tokens = [w['text'] for w in row if lo <= w['x0'] and w['x1'] <= hi + .8]
                     values[field] = ''.join(tokens)
                 if not all(values.values()):
+                    # Page 180's 款2 cell prints its label and its amounts on
+                    # separate baselines inside one ruled row (91.9-127.2).
+                    # Merge following baselines only while they stay inside the
+                    # same ruled row and carry no row label, marker, or legal
+                    # section code of their own.
+                    from inspect_cells import segments
+                    svg = output / f'controls-{index}.svg'
+                    subprocess.run(['pdftocairo', '-f', str(index), '-l', str(index),
+                                    '-svg', str(pdf), str(svg)], check=True)
+                    rules = sorted({round(y, 1) for y, lo, hi in segments(svg)[1]
+                                    if lo - .5 < 300 < hi + .5})
+                    bottom = next((r for r in rules if r > line['y'] + 2), None)
+                    position = next(i for i, entry in enumerate(lines) if entry is line)
+                    for extra in lines[position + 1:]:
+                        if bottom is None or extra['y'] >= bottom or all(values.values()):
+                            break
+                        if (any(w['x0'] < 130 for w in extra['words'])
+                                or any(re.search(r'（[款項目節]）', w['text']) for w in extra['words'])
+                                or any(650 < w['x0'] < 700 and re.fullmatch(r'\d+', w['text'])
+                                       for w in extra['words'])):
+                            break
+                        filled = sum(1 for value in values.values() if value)
+                        row = sorted(row + [w for w in extra['words'] if w['x0'] >= 130
+                                            and re.fullmatch(r'(?:△)?\d[\d,]*(?:\.\d+)?', w['text'])],
+                                     key=lambda w: w['x0'])
+                        values = {
+                            field: ''.join(w['text'] for w in row if lo <= w['x0'] and w['x1'] <= hi + .8)
+                            for field, (lo, hi) in zip(FIELDS, BOUNDS)
+                        }
+                        if sum(1 for value in values.values() if value) == filled:
+                            break
+                    if all(values.values()):
+                        anomalies.append({'page': index, 'y': line['y'],
+                                          'kind': 'separate baselines inside one ruled cell',
+                                          'resolved': True, 'values': values})
+                if not all(values.values()):
                     anomalies.append({'page': index, 'y': line['y'], 'kind': 'missing control cell', 'values': values})
                 name = ''.join(w['text'] for w in sorted(words, key=lambda w: (w['y0'], w['x0']))
                                if 55 <= w['x0'] < 130 and abs(w['y0'] - line['y']) < 16)

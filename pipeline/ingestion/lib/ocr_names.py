@@ -68,3 +68,29 @@ def correct_name(raw_name: str, dictionary: NameDictionary) -> dict:
         "dictionary_sha256": dictionary.sha256,
         "normalization": "NFKC_REMOVE_WHITESPACE",
     }
+
+
+def correct_name_preserving_layout(raw_name: str, dictionary: NameDictionary) -> dict:
+    """Match a whole logical name and preserve spacing when glyphs align.
+
+    The caller owns separation of printed numbers from a confirmed name field.
+    Length-changing rules return the declared complete name; they do not guess
+    insertion positions inside the original wrapped label.
+    """
+    result = correct_name(raw_name, dictionary)
+    if result['rule_id'] is None:
+        return {**result, 'layout_policy': 'unchanged'}
+    corrected = _key(result['corrected_name'])
+    characters = [char for char in raw_name if not char.isspace()]
+    if (len(characters) != len(corrected)
+            or any(len(unicodedata.normalize('NFKC', char)) != 1 for char in characters)):
+        return {**result, 'layout_policy': 'declared-name-length-change'}
+    replacements = iter(corrected)
+    output = []
+    for char in raw_name:
+        if char.isspace():
+            output.append(char)
+        else:
+            replacement = next(replacements)
+            output.append(char if unicodedata.normalize('NFKC', char) == replacement else replacement)
+    return {**result, 'corrected_name': ''.join(output), 'layout_policy': 'preserve-whitespace-and-unchanged-glyphs'}

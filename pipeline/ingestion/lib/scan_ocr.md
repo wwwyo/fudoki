@@ -16,7 +16,7 @@ apple = recognize_pdf(Path("settlement.pdf"), pages=[1, 2], backend="vision")
 
 Paddleは文字を探す検出工程だけ長辺1280pxへ縮小する。見つけた文字の認識には、元の画像から切り出した画像を使う。MacのPDF描画は実験と同じCoreGraphics・300dpiを既定とする。
 
-見出しなどの再読領域は、原典の配置を確認した書式設定から明示的に渡す。モジュールが見出しや欠落セルを自動で発見するわけではない。`retry_regions` を省略した場合は縮小検出のみになる。
+見出しなどの再読領域は、原典の配置を確認した書式設定から明示的に渡す。モジュールが見出しや欠落セルを自動で発見するわけではない。`retry_regions` を省略すると、縮小検出と原解像度認識だけを行い、追加のcrop再読は行わない。
 
 ```python
 result = recognize_pdf(
@@ -41,3 +41,9 @@ Paddleの任意依存は `mise exec -- uv sync --extra paddle-ocr --frozen` で�
 Paddleのモデル指定・常駐engine・CLIは [paddle_ocr.md](paddle_ocr.md)、Appleの設定・語彙・CLIは [vision_ocr.md](vision_ocr.md) を参照する。複数画像を処理する場合は `PaddleOcr` のcontext内でengineを使い回す。PDF入口は同じengineで全指定頁と再読を処理する。
 
 両エンジンの有効な観測は `pages[].regions[].observations[]` に返る。`pdf_table.tokens_from_ocr(result, kind="region", region_ids=["full-page"], unit="pt")` で表の組み立てへ渡せる。画像入力では `unit="px"` を指定する。原文・金額の補正は行わず、名称辞書の適用や原典照合は呼び出し側で行う。
+
+## OCR後の名称に共通訂正辞書を使う
+
+PaddleとAppleのどちらでも、名称の補正には共通の `ingestion.lib.ocr_names` を使う。呼び出し側が折り返しを結合し、番号欄を確認して番号と名称を分けた後、名称全体を辞書と照合する。[節名称辞書](fiscal_setsu_name_corrections.json) と [科目名辞書](fiscal_subject_name_corrections.json) に、原典画像で確認した誤読パターンを蓄積し、条件が合う別PDFでも再利用する。
+
+辞書にない名称や複数の解釈がある名称だけ、意味の照合や必要な領域の再読へ進む。原典が使っている旧字を新字へ一括変換しない。未訂正のOCR文字・観測ID・位置を保持し、補正前後とrule ID・辞書SHAを候補に記録して原典照合へ渡す。認識用の [ocr_vocabulary.json](ocr_vocabulary.json) はAppleの `customWords` 用で、Paddleの事後訂正にはこの語彙だけを追加しても効果はない。

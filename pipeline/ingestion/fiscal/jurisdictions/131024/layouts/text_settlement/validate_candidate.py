@@ -52,6 +52,9 @@ def validate(raw: Path, observation_path: Path, output: Path) -> dict:
     represented = {}
     hierarchy_nodes, descendants = {}, collections.defaultdict(dict)
     leaf_total = collections.defaultdict(dict)
+    auxiliary_parents = {}
+    auxiliary_ancestors = set()
+    financial_ancestors = set()
     source_name_checks, source_amount_checks = 0, 0
     annual_matches = set()
     annual_table_rows = collections.defaultdict(list)
@@ -87,10 +90,16 @@ def validate(raw: Path, observation_path: Path, output: Path) -> dict:
         i,row = matches[0];personnel_matches.add(i)
         key = (printed['page'],tuple(printed['path'][k] for k in ('款','項','目')))
         personnel_groups[key].append(row)
-        total = next(p for p in observation['personnel_rows'] if p['is_total'] and p['page']==printed['page']
-                     and p['path']==printed['path'])
-        date = re.search(r'（[^）]+）',total['value'])[0]
-        for field,expected in [('区分',printed['name']),('人数',printed['value']),('現在日',date)]:
+        total = next((p for p in observation['personnel_rows'] if p['is_total'] and p['page']==printed['page']
+                     and p['path']==printed['path']), None)
+        if total is not None:
+            count, date = printed['value'], re.search(r'（[^）]+）',total['value'])[0]
+        else:
+            # Some accounts print count and current date inside a single row
+            # (e.g. 事務職員 12人（8．3．31）) with no 計 sibling.
+            count = re.sub(r'（[^）]+）$','',printed['value'])
+            date = re.search(r'（[^）]+）',printed['value'])[0]
+        for field,expected in [('区分',printed['name']),('人数',count),('現在日',date)]:
             if normalized(row.get('職員_'+field) or '') != normalized(expected):
                 issues.append({'kind':'personnel scalar preservation','row':i,'field':field,'origin':expected,'raw':row.get('職員_'+field)})
     for i,row in enumerate(rows):
@@ -197,7 +206,16 @@ def validate(raw: Path, observation_path: Path, output: Path) -> dict:
             if name is None:
                 continue
             words = source_words(row, tier)
-            compact = normalized(''.join(w['text'] for w in sorted(words, key=lambda w: (w['y0'], w['x0']))))
+            # A single visual line may carry slightly different encoded
+            # baselines (p181 name-wrap runs differ by ~0.08pt). Cluster into
+            # baselines first so the reading order is not scrambled.
+            text_lines = []
+            for word in sorted(words, key=lambda w: w['y0']):
+                if not text_lines or word['y0'] - text_lines[-1][0]['y0'] > 2:
+                    text_lines.append([])
+                text_lines[-1].append(word)
+            compact = normalized(''.join(w['text'] for line in text_lines
+                                       for w in sorted(line, key=lambda w: w['x0'])))
             fragments = [normalized(fragment) for fragment in name.splitlines() if normalized(fragment)]
             cursor = 0
             for fragment in fragments:
@@ -209,9 +227,12 @@ def validate(raw: Path, observation_path: Path, output: Path) -> dict:
                 issues.append({'kind': 'detail name not in source region', 'row': row_index, 'tier': tier,
                                'name': name, 'page': row.get(tier + '_原典物理頁'), 'source': compact})
             department = row.get(tier + '_所属')
+            # Office marks may stack on baselines above and below the name
+            # (p184 dual-office 特定健康診査等 prints ［保険年金課］ above the
+            # heading baseline), so the window must extend upward too.
             department_words = [w for w in pages[row[tier+'_原典物理頁']]['words']
                                 if row[tier+'_原典xMax']-140 < w['x0'] < row[tier+'_原典xMax']+1
-                                and row[tier+'_原典yMin']-2 < w['y0'] < row[tier+'_原典yMax']+15]
+                                and row[tier+'_原典yMin']-15 < w['y0'] < row[tier+'_原典yMax']+15]
             department_lines = []
             for word in sorted(department_words,key=lambda w:(w['y0'],w['x0'])):
                 if not department_lines or word['y0']-department_lines[-1][0]['y0'] > 3:
@@ -239,7 +260,26 @@ def validate(raw: Path, observation_path: Path, output: Path) -> dict:
             if chain:
                 descendants[chain[-1]][node_key] = node
             chain.append(node_key)
-        if row.get('施工概要_区分') is not None:
+        financial_detail = (row.get('明細金額') is not None or row.get(inner_column) is not None
+                            or row.get('施工概要_区分') is not None or row.get('職員_区分') is not None)
+        auxiliary = not financial_detail and (row.get('補足_本文') is not None or any(
+            name.startswith('数量表_') and not name.endswith(('物理頁','xMin','xMax','yMin','yMax'))
+            and value is not None for name,value in row.items()))
+        if financial_detail:
+            financial_ancestors.update(chain)
+        if auxiliary:
+            if row.get('明細金額') is not None:
+                issues.append({'kind':'invented auxiliary spending allocation','row':row_index})
+            elif not chain:
+                # A moku-level original heading is not a monetary leaf. Its
+                # propagation to finest facts is checked by the context audit.
+                pass
+            elif hierarchy_nodes[chain[-1]]['amount'] is None:
+                issues.append({'kind':'auxiliary parent without printed amount','row':row_index})
+            else:
+                auxiliary_parents[chain[-1]] = path
+                auxiliary_ancestors.update(chain[:-1])
+        elif row.get('施工概要_区分') is not None:
             amount = row.get(annual_current)
             if amount is not None and normalized(amount).removesuffix('円') not in ('－', '—', '-'):
                 leaf_total[path][('annual', row.get('原典物理頁'), row.get('原典xMin'), row.get('原典yMin'))] = number(amount)
@@ -277,6 +317,9 @@ def validate(raw: Path, observation_path: Path, output: Path) -> dict:
             leaf_total[path][('item', path)] = number(row['目_支出済額'])
         else:
             issues.append({'kind': 'leaf without amount', 'row': row_index, 'path': path})
+    for node_key,path in auxiliary_parents.items():
+        if node_key not in financial_ancestors and node_key not in auxiliary_ancestors:
+            leaf_total[path][('auxiliary parent',node_key)] = number(hierarchy_nodes[node_key]['amount'])
     for key, origin in origin_controls.items():
         if key not in represented:
             issues.append({'kind': 'missing fiscal control', 'path': key, 'page': origin['page']})

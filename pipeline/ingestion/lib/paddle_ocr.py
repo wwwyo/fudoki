@@ -198,14 +198,98 @@ def _observations(native: list[dict], crop: list[int], page: dict, attempt_id: s
     return result
 
 
-def _run(command: list[str], timeout: float, **kwargs) -> subprocess.CompletedProcess:
+def _run(command: list[str], timeout: float, *, operation: str = "PDF renderer", **kwargs) -> subprocess.CompletedProcess:
     try:
         result = subprocess.run(command, capture_output=True, text=True, timeout=timeout, **kwargs)
     except (OSError, subprocess.TimeoutExpired) as exc:
-        raise PaddleOcrError(f"Cannot render PDF: {exc}") from exc
+        action = "render PDF" if operation == "PDF renderer" else f"run {operation}"
+        raise PaddleOcrError(f"Cannot {action}: {exc}") from exc
     if result.returncode:
-        raise PaddleOcrError(f"PDF renderer failed: {result.stderr.strip()}")
+        raise PaddleOcrError(f"{operation} failed: {result.stderr.strip()}")
     return result
+
+
+def _renderer_cache_root(helper: Path) -> Path:
+    pipeline = helper.resolve().parents[2]
+    if pipeline.name == "pipeline" and (pipeline / "pyproject.toml").is_file():
+        root = pipeline / ".cache/pdf-render"
+        try:
+            root.mkdir(parents=True, exist_ok=True)
+            if os.access(root, os.W_OK):
+                return root
+        except PermissionError:
+            pass
+        except OSError as exc:
+            import errno
+            if exc.errno != errno.EROFS:
+                raise
+    root = Path(os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache") / "fudoki/pdf-render"
+    root.mkdir(parents=True, exist_ok=True)
+    return root
+
+
+def _compiled_renderer(helper: Path, helper_sha: str, timeout: float) -> tuple[Path, dict]:
+    import fcntl
+
+    deadline = time.monotonic() + timeout
+
+    def remaining() -> float:
+        seconds = deadline - time.monotonic()
+        if seconds <= 0:
+            raise PaddleOcrError("Swift renderer compilation/cache wait timed out")
+        return seconds
+
+    def query(*arguments: str) -> str:
+        return _run(["xcrun", *arguments], remaining(), operation="Swift renderer toolchain").stdout.strip()
+
+    flags = ["-Onone"]
+    build = {"schema_version": 1, "source_sha256": helper_sha,
+             "compiler_path": query("--find", "swiftc"), "compiler_version": query("swiftc", "--version"),
+             "sdk_path": query("--sdk", "macosx", "--show-sdk-path"),
+             "sdk_version": query("--sdk", "macosx", "--show-sdk-version"),
+             "os": {"system": platform.system(), "release": platform.release(),
+                    "version": platform.version(), "macos_version": platform.mac_ver()[0]},
+             "architecture": platform.machine(), "compile_flags": flags,
+             "toolchain_environment": {name: os.environ.get(name) for name in ("DEVELOPER_DIR", "SDKROOT", "TOOLCHAINS")}}
+    key = hashlib.sha256(json.dumps(build, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+    root = _renderer_cache_root(helper)
+    entry = root / key
+    binary, manifest = entry / "pdf-render", entry / "build.json"
+    with (root / f"{key}.lock").open("a") as lock:
+        while True:
+            try:
+                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                break
+            except BlockingIOError:
+                time.sleep(min(0.05, remaining()))
+        if _sha(helper) != helper_sha:
+            raise PaddleOcrError("PDF renderer implementation changed before compilation/cache lookup")
+        metadata = None
+        try:
+            cached = json.loads(manifest.read_text())
+            if (isinstance(cached, dict) and cached.get("build") == build
+                    and binary.is_file() and os.access(binary, os.X_OK)
+                    and _sha(binary) == cached.get("binary_sha256")):
+                metadata = cached
+        except (FileNotFoundError, json.JSONDecodeError, UnicodeDecodeError):
+            pass
+        cache_hit = metadata is not None
+        if not cache_hit:
+            with tempfile.TemporaryDirectory(prefix=f"{key}.build-", dir=root) as temporary:
+                temporary = Path(temporary)
+                compiled = temporary / "pdf-render"
+                _run([build["compiler_path"], *flags, "-sdk", build["sdk_path"], str(helper), "-o", str(compiled)],
+                     remaining(), operation="Swift renderer compilation")
+                if _sha(helper) != helper_sha:
+                    raise PaddleOcrError("PDF renderer implementation changed during compilation")
+                metadata = {"build": build, "binary_sha256": _sha(compiled)}
+                staged_manifest = temporary / "build.json"
+                staged_manifest.write_text(json.dumps(metadata, sort_keys=True) + "\n")
+                entry.mkdir(exist_ok=True)
+                # Readers share this lock; interrupted publication is rebuilt on the next call.
+                os.replace(compiled, binary)
+                os.replace(staged_manifest, manifest)
+    return binary, {**metadata, "cache_key": key, "cache_hit": cache_hit, "binary_path": str(binary)}
 
 
 def _render_pdf(path: Path, pages: Sequence[int], config: PaddleConfig, directory: Path) -> dict:
@@ -213,14 +297,24 @@ def _render_pdf(path: Path, pages: Sequence[int], config: PaddleConfig, director
         if platform.system() != "Darwin":
             raise PaddleOcrError("CoreGraphics requires macOS; select poppler explicitly on other platforms")
         helper = Path(__file__).with_name("pdf_render.swift")
-        helper_sha = _sha(helper)
-        request = {"input_path": str(path), "pages": pages, "output_directory": str(directory),
-                   "dpi": config.dpi, "max_pixels": config.max_pixels}
-        result = json.loads(_run(["xcrun", "swift", str(helper)], config.render_timeout_seconds,
-                                 input=json.dumps(request)).stdout)
-        if _sha(helper) != helper_sha:
-            raise PaddleOcrError("PDF renderer implementation changed during rendering")
+        try:
+            helper_sha = _sha(helper)
+            binary, compiled = _compiled_renderer(helper, helper_sha, config.render_timeout_seconds)
+            if _sha(helper) != helper_sha:
+                raise PaddleOcrError("PDF renderer implementation changed before rendering")
+            if _sha(binary) != compiled["binary_sha256"]:
+                raise PaddleOcrError("Compiled PDF renderer binary changed before rendering")
+            request = {"input_path": str(path), "pages": pages, "output_directory": str(directory),
+                       "dpi": config.dpi, "max_pixels": config.max_pixels}
+            result = json.loads(_run([str(binary)], config.render_timeout_seconds, input=json.dumps(request)).stdout)
+            if _sha(helper) != helper_sha:
+                raise PaddleOcrError("PDF renderer implementation changed during rendering")
+            if _sha(binary) != compiled["binary_sha256"]:
+                raise PaddleOcrError("Compiled PDF renderer binary changed during rendering")
+        except (OSError, ValueError) as exc:
+            raise PaddleOcrError(f"Cannot prepare/run compiled PDF renderer: {exc}") from exc
         result["backend_sha256"] = helper_sha
+        result["compiled_renderer"] = compiled
         return result
     version = _run(["pdftoppm", "-v"], config.render_timeout_seconds)
     records = []

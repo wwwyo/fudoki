@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132063",
+    "fiscal_year": 2025,
+    "document_kind": "settlement"
+  },
+  "direction": "expenditure",
+  "conversions": [
+    {
+      "id": "kouki-settlement",
+      "converter": "fiscal/jurisdictions/132063/layouts/fuchu_settlement/convert.py",
+      "inputs": [
+        {
+          "sha256": "d0a90af39bf310b985c4172345ef890781c912ffa15ce70a874e9cc4c0a54d71"
+        }
+      ],
+      "options": {
+        "table_id": "kouki-setsu",
+        "account": "後期高齢者医療特別会計"
+      },
+      "expected_tables": [
+        {
+          "table_id": "kouki-setsu"
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "kouki-setsu",
+      "conversion_id": "kouki-settlement",
+      "input_fingerprint": "4abb28339c69fa070272ba4023fe5d39de42e46782c4f137495b72fc31b2f9af",
+      "object": {
+        "key": "fiscal/ingestion/132063/2025/settlement/expenditure/kouki-setsu.parquet",
+        "sha256": "322f4e96786b1aa58c35765a9e367b43333872adb64bb9f613caa1eddea46ba9",
+        "bytes": 11736
+      },
+      "row_count": 27,
+      "metadata": {
+        "units": [
+          {
+            "text": "円",
+            "scope": {
+              "kind": "columns",
+              "columns": [
+                "款_計",
+                "款_当初予算額",
+                "款_補正予算額",
+                "款_継続費及び繰越事業費繰越額",
+                "款_予備費支出及び流用増減",
+                "款_支出済額",
+                "款_翌年度繰越額",
+                "款_不用額",
+                "項_計",
+                "項_当初予算額",
+                "項_補正予算額",
+                "項_継続費及び繰越事業費繰越額",
+                "項_予備費支出及び流用増減",
+                "項_支出済額",
+                "項_翌年度繰越額",
+                "項_不用額",
+                "目_計",
+                "目_当初予算額",
+                "目_補正予算額",
+                "目_継続費及び繰越事業費繰越額",
+                "目_予備費支出及び流用増減",
+                "目_支出済額",
+                "目_翌年度繰越額",
+                "目_不用額",
+                "節_金額",
+                "節_支出済額",
+                "節_翌年度繰越額",
+                "節_不用額"
+              ]
+            }
+          }
+        ],
+        "notes": [
+          {
+            "text": "法定節が行。節を持たない25款5項5目予備費は目行。款・項・目の金額・執行額は所属contextとして各行へ反復。右頁備考の経費内訳ブロック（見出し・項目・合計）は事業別の分解で節対応未確認のため行化せず、属する目の目_備考へ印字行の改行のまま保持。末尾の施策番号は目_施策番号へカンマ結合で保持し、目_備考の行内にも残る。歳出合計統制行は行化せずlocal観測。執行率は原典の百分率表記を保持。継続費繰越・予備費流用欄は対象範囲で印字なしのため全行NULL。物理頁は左頁、bboxは左頁の行bounds。",
+            "scope": {
+              "kind": "table"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

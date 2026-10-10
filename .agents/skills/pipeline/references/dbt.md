@@ -1,8 +1,8 @@
-# F. 自治体の取り込みJSONとParquetからdbtへ接続する
+# F. dbt側で保存済み取り込みJSONとParquetを読み、構築する
 
 ## 入力を確認する
 
-1. `ingestion/fiscal/jurisdictions/<団体>/<年度>/<資料区分>/<方向>.json` と、そこで参照されるParquetを受け取る。別の宣言ディレクトリやdbt用JSONの提出は要求しない。未検査のPDFを保存状態だけで検査済みと扱わない。
+1. `ingestion/fiscal/jurisdictions/<団体>/<年度>/<資料区分>/<方向>.json` を読み、そこで参照される保存済みParquetをdbt側で読み込む。別の宣言ディレクトリやdbt用JSONの提出は要求しない。未検査のPDFを保存状態だけで検査済みと扱わない。
 2. `dbt:inputs:check` で `pipeline/dbt/inputs/` の表ID・配置対応を検査する。`ingestion:check` で対象・原典選定・scope・fingerprintを検査する。
 3. 原典の抽出やCの検査は再実行しない。単位・金額段階・階層・独立内訳などの確認済み出力情報と、対象に必要なモデルが揃っていることを確認する。stagingの定義・限定検証は [staging手順](staging.md) を使う。不足を推定値・空表で補わない。削除範囲と未完了項目は [保存設計](../../../../docs/prd/ingestion-storage/design-doc.md) と [移行記録](../../../../docs/prd/ingestion-storage/migration.md) を参照する。
 
@@ -24,7 +24,7 @@ uv run python -m build_inputs prepare --manifest <対象JSON>
 - `--manifest` は入力範囲を指定する。dbtモデルの実行範囲は自動で絞らない。
 - 同じ構築IDのCSVハッシュを照合し、初回成功だけで再構築一致を検査済みと扱わない。
 
-## 結果を確認して後段へ渡す
+## 構築結果を確認する
 
 - 直前の採用buildとの差分、対象範囲、dbtの結果、実CSVハッシュ、再構築一致、未確認事項を記録する。入力準備・構文検査・限定実行・全量構築を区別する。
 - 保存参照・コード・宣言・判断はGitで管理する。キャッシュ・catalog・DB・CSV・検査結果は再生成するローカル領域に置く。

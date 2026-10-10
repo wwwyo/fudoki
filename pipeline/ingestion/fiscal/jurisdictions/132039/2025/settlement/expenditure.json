@@ -1,0 +1,961 @@
+{
+  "conversions": [
+    {
+      "converter": "fiscal/jurisdictions/132039/layouts/text_settlement/convert.py",
+      "expected_tables": [
+        {
+          "table_id": "kouki-expenditure-detail"
+        }
+      ],
+      "id": "kouki-settlement",
+      "inputs": [
+        {
+          "sha256": "a2feb715ccf0d41a7f3c6bae762d2d19b0225c2b586f9170c74cd6fa13a9af2c"
+        }
+      ],
+      "options": {
+        "account": "後期高齢者医療会計",
+        "detail_pages": [
+          [
+            1,
+            3
+          ]
+        ],
+        "table_id": "kouki-expenditure-detail"
+      }
+    },
+    {
+      "id": "water-settlement",
+      "converter": "fiscal/jurisdictions/132039/layouts/enterprise_statement/convert.py",
+      "expected_tables": [
+        {
+          "table_id": "suieki_shishutsu"
+        },
+        {
+          "table_id": "shihon_shishutsu"
+        },
+        {
+          "table_id": "shuueki_hiyou_meisai"
+        },
+        {
+          "table_id": "shuueki_hiyou_meisai_details"
+        },
+        {
+          "table_id": "shihon_shushi_meisai"
+        },
+        {
+          "table_id": "shihon_shushi_meisai_details"
+        },
+        {
+          "table_id": "statement_notes"
+        }
+      ],
+      "inputs": [
+        {
+          "sha256": "84743fdd8cf408d7c7f9cbe4e92cdea0708cabfe2407421286eb91db93e783b0"
+        }
+      ],
+      "options": {
+        "layout": "ingestion/fiscal/jurisdictions/132039/layouts/enterprise_statement/settlement-84743fdd.json",
+        "layout_sha256": "85da60158a30c5cf5ce22d5b1de59e6150f5f963e70c76fb81acdacd39b769ce",
+        "native": {
+          "path": "ingestion/fiscal/observations/scan-2025-devin-max-2026-10-09/132039/water/ocr/native-001/native.json",
+          "sha256": "41956f0115d9bac0835fa38959ce1ef96a4ed6a534fd99cf83a5f782d466b2b8"
+        },
+        "supplemental_native": [
+          {
+            "path": "ingestion/fiscal/observations/scan-2025-devin-max-2026-10-09/132039/water/ocr/crop-001/page-42.json",
+            "sha256": "8f5ef01c298292596815ed377755aff10b7b1d483b7dab2dc908cb4067d8139e",
+            "regions": [
+              "shihon-shushi-r26-kingaku"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "direction": "expenditure",
+  "schema_version": 1,
+  "tables": [
+    {
+      "table_id": "kouki-expenditure-detail",
+      "conversion_id": "kouki-settlement",
+      "input_fingerprint": "37ddaf07796523dfe35643a0c1423805e0bb4f2575b623a4cda5963e1280d79d",
+      "object": {
+        "key": "fiscal/ingestion/132039/2025/settlement/expenditure/kouki-expenditure-detail.parquet",
+        "sha256": "59e9c7369bb6d0ee05eaa16ca53ad6402a7186fb25ebab6597a94e805f985a69",
+        "bytes": 12791
+      },
+      "row_count": 19,
+      "metadata": {
+        "units": [
+          {
+            "text": "円",
+            "scope": {
+              "kind": "columns",
+              "columns": [
+                "款_当初予算額",
+                "款_補正予算額",
+                "款_継続費及び繰越事業費繰越額",
+                "款_予備費支出及び流用増減",
+                "款_計",
+                "款_支出済額",
+                "款_翌年度繰越額",
+                "款_不用額",
+                "項_当初予算額",
+                "項_補正予算額",
+                "項_継続費及び繰越事業費繰越額",
+                "項_予備費支出及び流用増減",
+                "項_計",
+                "項_支出済額",
+                "項_翌年度繰越額",
+                "項_不用額",
+                "目_当初予算額",
+                "目_補正予算額",
+                "目_継続費及び繰越事業費繰越額",
+                "目_予備費支出及び流用増減",
+                "目_計",
+                "目_支出済額",
+                "目_翌年度繰越額",
+                "目_不用額",
+                "金額",
+                "支出済額",
+                "翌年度繰越額",
+                "不用額"
+              ]
+            }
+          }
+        ],
+        "notes": [
+          {
+            "text": "武蔵野市後期高齢者医療会計の決算事項別明細書（歳出）。款・項・目の印字欄を所属する葉へ反復。最細は法定節（節がない予備費目は目）。節一覧と備考は同じ目の独立した分解であり相互の対応を推定していない。目_備考は目の備考欄の原文（□事業・○経費・積算）。金額は円の原表記（△は減額符号）。歳出合計はlocal観測に残しraw行にしない。",
+            "scope": {
+              "kind": "table"
+            }
+          }
+        ],
+        "column_contexts": [
+          {
+            "columns": [
+              "款_番号",
+              "款_名称",
+              "款_当初予算額",
+              "款_補正予算額",
+              "款_継続費及び繰越事業費繰越額",
+              "款_予備費支出及び流用増減",
+              "款_計",
+              "款_支出済額",
+              "款_翌年度繰越額",
+              "款_不用額"
+            ],
+            "header_path": [
+              "科目",
+              "款"
+            ],
+            "grain_columns": [
+              "款_番号"
+            ]
+          },
+          {
+            "columns": [
+              "項_番号",
+              "項_名称",
+              "項_当初予算額",
+              "項_補正予算額",
+              "項_継続費及び繰越事業費繰越額",
+              "項_予備費支出及び流用増減",
+              "項_計",
+              "項_支出済額",
+              "項_翌年度繰越額",
+              "項_不用額"
+            ],
+            "header_path": [
+              "科目",
+              "項"
+            ],
+            "grain_columns": [
+              "款_番号",
+              "項_番号"
+            ]
+          },
+          {
+            "columns": [
+              "目_番号",
+              "目_名称",
+              "目_当初予算額",
+              "目_補正予算額",
+              "目_継続費及び繰越事業費繰越額",
+              "目_予備費支出及び流用増減",
+              "目_計",
+              "目_支出済額",
+              "目_翌年度繰越額",
+              "目_不用額"
+            ],
+            "header_path": [
+              "科目",
+              "目"
+            ],
+            "grain_columns": [
+              "款_番号",
+              "項_番号",
+              "目_番号"
+            ]
+          },
+          {
+            "columns": [
+              "区分_番号",
+              "区分_名称",
+              "金額",
+              "支出済額",
+              "翌年度繰越額",
+              "不用額"
+            ],
+            "header_path": [
+              "節",
+              "区分",
+              "金額"
+            ],
+            "semantic_role": "setsu",
+            "grain_columns": [
+              "款_番号",
+              "項_番号",
+              "目_番号",
+              "区分_番号"
+            ]
+          },
+          {
+            "columns": [
+              "目_備考"
+            ],
+            "header_path": [
+              "備考"
+            ],
+            "grain_columns": [
+              "款_番号",
+              "項_番号",
+              "目_番号"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "table_id": "shuueki_hiyou_meisai",
+      "conversion_id": "water-settlement",
+      "input_fingerprint": "90631e6d722e06978cbd085077081b5961b399bf9cd4c07eb39dc27fc9a962ea",
+      "object": {
+        "key": "fiscal/ingestion/132039/2025/settlement/expenditure/shuueki_hiyou_meisai.parquet",
+        "sha256": "45f9bc1b9c9bebab94560dcd0a7c29b0660bf14accc0015e798291b14db6ae1f",
+        "bytes": 7153
+      },
+      "row_count": 112,
+      "metadata": {
+        "units": [
+          {
+            "text": "円・税抜",
+            "scope": {
+              "kind": "columns",
+              "columns": [
+                "金額",
+                "款_金額",
+                "項_金額",
+                "目_金額"
+              ]
+            }
+          }
+        ],
+        "notes": [
+          {
+            "text": "収益費用明細書の支出側。物理39-41頁の連続表。印字空欄の款・項・目セルは罫線の結合による継続で、継承値は款/項/目列、印字のままの値は印字名称列に入れる。",
+            "scope": {
+              "kind": "table"
+            }
+          },
+          {
+            "text": "企業会計の収益費用明細書に印字された款・項・目・節。普通会計の法定節の解釈や分類を付加しない。",
+            "scope": {
+              "kind": "table"
+            }
+          }
+        ],
+        "column_contexts": [
+          {
+            "columns": [
+              "款",
+              "款_金額"
+            ],
+            "header_path": [
+              "款"
+            ],
+            "grain_columns": [
+              "款"
+            ]
+          },
+          {
+            "columns": [
+              "項",
+              "項_金額"
+            ],
+            "header_path": [
+              "項"
+            ],
+            "grain_columns": [
+              "款",
+              "項"
+            ]
+          },
+          {
+            "columns": [
+              "目",
+              "目_金額"
+            ],
+            "header_path": [
+              "目"
+            ],
+            "grain_columns": [
+              "款",
+              "項",
+              "目"
+            ]
+          },
+          {
+            "columns": [
+              "節",
+              "金額"
+            ],
+            "header_path": [
+              "節",
+              "金額"
+            ],
+            "grain_columns": [
+              "款",
+              "項",
+              "目",
+              "節"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "table_id": "shuueki_hiyou_meisai_details",
+      "conversion_id": "water-settlement",
+      "input_fingerprint": "90631e6d722e06978cbd085077081b5961b399bf9cd4c07eb39dc27fc9a962ea",
+      "object": {
+        "key": "fiscal/ingestion/132039/2025/settlement/expenditure/shuueki_hiyou_meisai_details.parquet",
+        "sha256": "5917d714eb64ab226d540a489322f540a41788ebb30e0af3462c87d0969f7539",
+        "bytes": 8123
+      },
+      "row_count": 95,
+      "metadata": {
+        "units": [
+          {
+            "text": "円・税抜",
+            "scope": {
+              "kind": "columns",
+              "columns": [
+                "金額",
+                "款_金額",
+                "項_金額",
+                "目_金額"
+              ]
+            }
+          }
+        ],
+        "notes": [
+          {
+            "text": "節末端行に款・項・目の継承経路と各親の印字小計を展開したもの。階層は罫線の結合と継続頁の空欄から復元。",
+            "scope": {
+              "kind": "table"
+            }
+          }
+        ],
+        "column_contexts": []
+      }
+    },
+    {
+      "table_id": "shihon_shushi_meisai",
+      "conversion_id": "water-settlement",
+      "input_fingerprint": "90631e6d722e06978cbd085077081b5961b399bf9cd4c07eb39dc27fc9a962ea",
+      "object": {
+        "key": "fiscal/ingestion/132039/2025/settlement/expenditure/shihon_shushi_meisai.parquet",
+        "sha256": "cdce7dabf1672c07fc6ff79e3778bcc5b14acfacc370b3a5f12a7edceae19bb4",
+        "bytes": 4717
+      },
+      "row_count": 28,
+      "metadata": {
+        "units": [
+          {
+            "text": "円・税抜",
+            "scope": {
+              "kind": "columns",
+              "columns": [
+                "金額",
+                "款_金額",
+                "項_金額",
+                "目_金額"
+              ]
+            }
+          }
+        ],
+        "notes": [
+          {
+            "text": "資本的収入支出明細書の支出側（物理42頁下部）。継承と印字の分離は収益費用明細と同じ。",
+            "scope": {
+              "kind": "table"
+            }
+          }
+        ],
+        "column_contexts": [
+          {
+            "columns": [
+              "款",
+              "款_金額"
+            ],
+            "header_path": [
+              "款"
+            ],
+            "grain_columns": [
+              "款"
+            ]
+          },
+          {
+            "columns": [
+              "項",
+              "項_金額"
+            ],
+            "header_path": [
+              "項"
+            ],
+            "grain_columns": [
+              "款",
+              "項"
+            ]
+          },
+          {
+            "columns": [
+              "目",
+              "目_金額"
+            ],
+            "header_path": [
+              "目"
+            ],
+            "grain_columns": [
+              "款",
+              "項",
+              "目"
+            ]
+          },
+          {
+            "columns": [
+              "節",
+              "金額"
+            ],
+            "header_path": [
+              "節",
+              "金額"
+            ],
+            "grain_columns": [
+              "款",
+              "項",
+              "目",
+              "節"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "table_id": "shihon_shushi_meisai_details",
+      "conversion_id": "water-settlement",
+      "input_fingerprint": "90631e6d722e06978cbd085077081b5961b399bf9cd4c07eb39dc27fc9a962ea",
+      "object": {
+        "key": "fiscal/ingestion/132039/2025/settlement/expenditure/shihon_shushi_meisai_details.parquet",
+        "sha256": "dbb8e4ecc1b553e373e78f21f57710b155e4bc5f2423303bc7050925437782ae",
+        "bytes": 5640
+      },
+      "row_count": 18,
+      "metadata": {
+        "units": [
+          {
+            "text": "円・税抜",
+            "scope": {
+              "kind": "columns",
+              "columns": [
+                "金額",
+                "款_金額",
+                "項_金額",
+                "目_金額"
+              ]
+            }
+          }
+        ],
+        "notes": [
+          {
+            "text": "節末端行に款・項・目の継承経路と各親の印字小計を展開したもの。",
+            "scope": {
+              "kind": "table"
+            }
+          }
+        ],
+        "column_contexts": []
+      }
+    },
+    {
+      "table_id": "suieki_shishutsu",
+      "conversion_id": "water-settlement",
+      "input_fingerprint": "90631e6d722e06978cbd085077081b5961b399bf9cd4c07eb39dc27fc9a962ea",
+      "object": {
+        "key": "fiscal/ingestion/132039/2025/settlement/expenditure/suieki_shishutsu.parquet",
+        "sha256": "187d6f30ef76849061cfa64fb8f2a6564032c021745600fb440233bde4fa3d7d",
+        "bytes": 6999
+      },
+      "row_count": 5,
+      "metadata": {
+        "units": [
+          {
+            "text": "円・税込",
+            "scope": {
+              "kind": "columns",
+              "columns": [
+                "当初予算額",
+                "補正予算額",
+                "予備費支出額",
+                "流用増減額",
+                "地方公営企業法第24条第3項の規定による支出額",
+                "小計",
+                "地方公営企業法第26条第2項の規定による繰越額_予算",
+                "合計_予算",
+                "決算額",
+                "地方公営企業法第26条第2項の規定による繰越額_決算",
+                "不用額"
+              ]
+            }
+          }
+        ],
+        "notes": [
+          {
+            "text": "収益的収入及び支出の支出側。同一印字名を持つ二つの繰越列（予算側=額欄内／決算側=独立欄）は別列のまま。",
+            "scope": {
+              "kind": "table"
+            }
+          },
+          {
+            "text": "第1款の款行と第1項〜第4項。計行なし。区分・金額は印字のまま。",
+            "scope": {
+              "kind": "table"
+            }
+          }
+        ],
+        "column_contexts": [
+          {
+            "columns": [
+              "区分"
+            ],
+            "header_path": [
+              "区分"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "当初予算額"
+            ],
+            "header_path": [
+              "予算額",
+              "当初予算額"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "補正予算額"
+            ],
+            "header_path": [
+              "予算額",
+              "補正予算額"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "予備費支出額"
+            ],
+            "header_path": [
+              "予算額",
+              "予備費支出額"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "流用増減額"
+            ],
+            "header_path": [
+              "予算額",
+              "流用増減額"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "地方公営企業法第24条第3項の規定による支出額"
+            ],
+            "header_path": [
+              "予算額",
+              "地方公営企業法第24条第3項の規定による支出額"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "小計"
+            ],
+            "header_path": [
+              "予算額",
+              "小計"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "地方公営企業法第26条第2項の規定による繰越額_予算"
+            ],
+            "header_path": [
+              "予算額",
+              "地方公営企業法第26条第2項の規定による繰越額"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "合計_予算"
+            ],
+            "header_path": [
+              "予算額",
+              "合計"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "決算額"
+            ],
+            "header_path": [
+              "決算額"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "地方公営企業法第26条第2項の規定による繰越額_決算"
+            ],
+            "header_path": [
+              "地方公営企業法第26条第2項の規定による繰越額"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "不用額"
+            ],
+            "header_path": [
+              "不用額"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "備考"
+            ],
+            "header_path": [
+              "備考"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "table_id": "shihon_shishutsu",
+      "conversion_id": "water-settlement",
+      "input_fingerprint": "90631e6d722e06978cbd085077081b5961b399bf9cd4c07eb39dc27fc9a962ea",
+      "object": {
+        "key": "fiscal/ingestion/132039/2025/settlement/expenditure/shihon_shishutsu.parquet",
+        "sha256": "fb4039051fc902f85abdce1296302c5aede9d867b1c02187ac2fa6931d6fdeba",
+        "bytes": 6169
+      },
+      "row_count": 4,
+      "metadata": {
+        "units": [
+          {
+            "text": "円・税込",
+            "scope": {
+              "kind": "columns",
+              "columns": [
+                "当初予算額",
+                "補正予算額",
+                "予備費支出額",
+                "流用増減額",
+                "小計",
+                "地方公営企業法第26条の規定による繰越額_予算",
+                "継続費逓次繰越額_予算",
+                "合計_予算",
+                "決算額",
+                "地方公営企業法第26条の規定による繰越額_翌年度",
+                "継続費逓次繰越額_翌年度",
+                "合計_翌年度",
+                "不用額"
+              ]
+            }
+          }
+        ],
+        "notes": [
+          {
+            "text": "資本的収入及び支出の支出側。予算側繰越列と翌年度繰越額欄の同名列（法26条・継続費逓次・合計）は別列のまま。",
+            "scope": {
+              "kind": "table"
+            }
+          },
+          {
+            "text": "第1款の款行と第1項〜第3項。計行なし。",
+            "scope": {
+              "kind": "table"
+            }
+          }
+        ],
+        "column_contexts": [
+          {
+            "columns": [
+              "区分"
+            ],
+            "header_path": [
+              "区分"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "当初予算額"
+            ],
+            "header_path": [
+              "予算額",
+              "当初予算額"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "補正予算額"
+            ],
+            "header_path": [
+              "予算額",
+              "補正予算額"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "予備費支出額"
+            ],
+            "header_path": [
+              "予算額",
+              "予備費支出額"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "流用増減額"
+            ],
+            "header_path": [
+              "予算額",
+              "流用増減額"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "小計"
+            ],
+            "header_path": [
+              "予算額",
+              "小計"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "地方公営企業法第26条の規定による繰越額_予算"
+            ],
+            "header_path": [
+              "予算額",
+              "地方公営企業法第26条の規定による繰越額"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "継続費逓次繰越額_予算"
+            ],
+            "header_path": [
+              "予算額",
+              "継続費逓次繰越額"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "合計_予算"
+            ],
+            "header_path": [
+              "合計"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "決算額"
+            ],
+            "header_path": [
+              "決算額"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "地方公営企業法第26条の規定による繰越額_翌年度"
+            ],
+            "header_path": [
+              "翌年度繰越額",
+              "地方公営企業法第26条の規定による繰越額"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "継続費逓次繰越額_翌年度"
+            ],
+            "header_path": [
+              "翌年度繰越額",
+              "継続費逓次繰越額"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "合計_翌年度"
+            ],
+            "header_path": [
+              "翌年度繰越額",
+              "合計"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "不用額"
+            ],
+            "header_path": [
+              "不用額"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          },
+          {
+            "columns": [
+              "備考"
+            ],
+            "header_path": [
+              "備考"
+            ],
+            "grain_columns": [
+              "区分"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "table_id": "statement_notes",
+      "conversion_id": "water-settlement",
+      "input_fingerprint": "90631e6d722e06978cbd085077081b5961b399bf9cd4c07eb39dc27fc9a962ea",
+      "object": {
+        "key": "fiscal/ingestion/132039/2025/settlement/expenditure/statement_notes.parquet",
+        "sha256": "10033e5339ebf78caf8d307c1c7ec813775c3a70a928e4c0a3a753c92d79fa37",
+        "bytes": 1883
+      },
+      "row_count": 33,
+      "metadata": {
+        "units": [],
+        "notes": [
+          {
+            "text": "節標題・収支区分ラベル・単位注記・印字頁番号・p8資本不足の※脚注など、表に入らない印字領域。注記内の金額は明細の金額列へ移さない。",
+            "scope": {
+              "kind": "table"
+            }
+          }
+        ],
+        "column_contexts": []
+      }
+    }
+  ],
+  "target": {
+    "document_kind": "settlement",
+    "fiscal_year": 2025,
+    "jurisdiction": "132039"
+  }
+}

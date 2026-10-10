@@ -1,0 +1,1284 @@
+{
+  "schema_version": 1,
+  "target": {
+    "jurisdiction": "132012",
+    "fiscal_year": 2025,
+    "document_kind": "settlement"
+  },
+  "direction": "expenditure",
+  "conversions": [
+    {
+      "converter": "fiscal/jurisdictions/132012/layouts/text_settlement_report/convert.py",
+      "expected_tables": [
+        {
+          "table_id": "general-detail"
+        },
+        {
+          "table_id": "general-funding"
+        },
+        {
+          "table_id": "general-annex"
+        }
+      ],
+      "id": "general-settlement",
+      "inputs": [
+        {
+          "sha256": "4fce3f1c0fa18d24c537870bbf1abf37a9e954fc7efddb83254a5c6addf0ad02"
+        }
+      ],
+      "options": {
+        "account": "一般会計",
+        "annex_table_id": "general-annex",
+        "detail_table_id": "general-detail",
+        "funding_table_id": "general-funding"
+      }
+    },
+    {
+      "id": "kaigo-settlement-detail",
+      "converter": "fiscal/jurisdictions/132012/layouts/text_settlement_report/convert.py",
+      "inputs": [
+        {
+          "sha256": "4fce3f1c0fa18d24c537870bbf1abf37a9e954fc7efddb83254a5c6addf0ad02"
+        }
+      ],
+      "options": {
+        "account": "介護保険特別会計",
+        "scope_label": "物理504-505・510-527頁",
+        "fund_columns": [
+          "保険料",
+          "国庫支出金",
+          "都支出金",
+          "一般会計繰入金",
+          "その他"
+        ],
+        "stat_titles": [
+          "保険給付費の状況"
+        ],
+        "detail_table_id": "kaigo-detail",
+        "emit": [
+          "detail"
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "kaigo-detail"
+        }
+      ]
+    },
+    {
+      "id": "kaigo-settlement-funding",
+      "converter": "fiscal/jurisdictions/132012/layouts/text_settlement_report/convert.py",
+      "inputs": [
+        {
+          "sha256": "4fce3f1c0fa18d24c537870bbf1abf37a9e954fc7efddb83254a5c6addf0ad02"
+        }
+      ],
+      "options": {
+        "account": "介護保険特別会計",
+        "scope_label": "物理504-505・510-527頁",
+        "fund_columns": [
+          "保険料",
+          "国庫支出金",
+          "都支出金",
+          "一般会計繰入金",
+          "その他"
+        ],
+        "stat_titles": [
+          "保険給付費の状況"
+        ],
+        "funding_table_id": "kaigo-funding",
+        "emit": [
+          "funding"
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "kaigo-funding"
+        }
+      ]
+    },
+    {
+      "id": "kaigo-settlement-annex",
+      "converter": "fiscal/jurisdictions/132012/layouts/text_settlement_report/convert.py",
+      "inputs": [
+        {
+          "sha256": "4fce3f1c0fa18d24c537870bbf1abf37a9e954fc7efddb83254a5c6addf0ad02"
+        }
+      ],
+      "options": {
+        "account": "介護保険特別会計",
+        "scope_label": "物理504-505・510-527頁",
+        "fund_columns": [
+          "保険料",
+          "国庫支出金",
+          "都支出金",
+          "一般会計繰入金",
+          "その他"
+        ],
+        "stat_titles": [
+          "保険給付費の状況"
+        ],
+        "annex_table_id": "kaigo-annex",
+        "emit": [
+          "annex"
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "kaigo-annex"
+        }
+      ]
+    },
+    {
+      "id": "kariire-settlement-detail",
+      "converter": "fiscal/jurisdictions/132012/layouts/text_settlement_report/convert.py",
+      "inputs": [
+        {
+          "sha256": "4fce3f1c0fa18d24c537870bbf1abf37a9e954fc7efddb83254a5c6addf0ad02"
+        }
+      ],
+      "options": {
+        "account": "借入金管理特別会計",
+        "scope_label": "物理544-547・549頁",
+        "detail_table_id": "kariire-detail",
+        "emit": [
+          "detail"
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "kariire-detail"
+        }
+      ]
+    },
+    {
+      "id": "kariire-settlement-funding",
+      "converter": "fiscal/jurisdictions/132012/layouts/text_settlement_report/convert.py",
+      "inputs": [
+        {
+          "sha256": "4fce3f1c0fa18d24c537870bbf1abf37a9e954fc7efddb83254a5c6addf0ad02"
+        }
+      ],
+      "options": {
+        "account": "借入金管理特別会計",
+        "scope_label": "物理544-547・549頁",
+        "funding_table_id": "kariire-funding",
+        "emit": [
+          "funding"
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "kariire-funding"
+        }
+      ]
+    },
+    {
+      "id": "kariire-settlement-annex",
+      "converter": "fiscal/jurisdictions/132012/layouts/text_settlement_report/convert.py",
+      "inputs": [
+        {
+          "sha256": "4fce3f1c0fa18d24c537870bbf1abf37a9e954fc7efddb83254a5c6addf0ad02"
+        }
+      ],
+      "options": {
+        "account": "借入金管理特別会計",
+        "scope_label": "物理544-547・549頁",
+        "annex_table_id": "kariire-annex",
+        "emit": [
+          "annex"
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "kariire-annex"
+        }
+      ]
+    },
+    {
+      "id": "kouki-settlement-detail",
+      "converter": "fiscal/jurisdictions/132012/layouts/text_settlement_report/convert.py",
+      "inputs": [
+        {
+          "sha256": "4fce3f1c0fa18d24c537870bbf1abf37a9e954fc7efddb83254a5c6addf0ad02"
+        }
+      ],
+      "options": {
+        "account": "後期高齢者医療特別会計",
+        "scope_label": "物理488-489・493-503頁",
+        "fund_columns": [
+          "保険料",
+          "国庫支出金",
+          "都支出金",
+          "一般会計繰入金",
+          "その他"
+        ],
+        "detail_table_id": "kouki-detail",
+        "emit": [
+          "detail"
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "kouki-detail"
+        }
+      ]
+    },
+    {
+      "id": "kouki-settlement-funding",
+      "converter": "fiscal/jurisdictions/132012/layouts/text_settlement_report/convert.py",
+      "inputs": [
+        {
+          "sha256": "4fce3f1c0fa18d24c537870bbf1abf37a9e954fc7efddb83254a5c6addf0ad02"
+        }
+      ],
+      "options": {
+        "account": "後期高齢者医療特別会計",
+        "scope_label": "物理488-489・493-503頁",
+        "fund_columns": [
+          "保険料",
+          "国庫支出金",
+          "都支出金",
+          "一般会計繰入金",
+          "その他"
+        ],
+        "funding_table_id": "kouki-funding",
+        "emit": [
+          "funding"
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "kouki-funding"
+        }
+      ]
+    },
+    {
+      "id": "kouki-settlement-annex",
+      "converter": "fiscal/jurisdictions/132012/layouts/text_settlement_report/convert.py",
+      "inputs": [
+        {
+          "sha256": "4fce3f1c0fa18d24c537870bbf1abf37a9e954fc7efddb83254a5c6addf0ad02"
+        }
+      ],
+      "options": {
+        "account": "後期高齢者医療特別会計",
+        "scope_label": "物理488-489・493-503頁",
+        "fund_columns": [
+          "保険料",
+          "国庫支出金",
+          "都支出金",
+          "一般会計繰入金",
+          "その他"
+        ],
+        "annex_table_id": "kouki-annex",
+        "emit": [
+          "annex"
+        ]
+      },
+      "expected_tables": [
+        {
+          "table_id": "kouki-annex"
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "table_id": "general-detail",
+      "conversion_id": "general-settlement",
+      "input_fingerprint": "5eae822b172edb8d8fbd60ea585659a743aa2d7d0e6b140c1aac8f400ff851a6",
+      "object": {
+        "key": "fiscal/ingestion/132012/2025/settlement/expenditure/general-detail.parquet",
+        "sha256": "6db5af21b258fd012e10cca640b0be1368791a23c9713ec8f3eb64ef0d2c29f4",
+        "bytes": 150183
+      },
+      "row_count": 1723,
+      "metadata": {
+        "units": [
+          {
+            "text": "円",
+            "scope": {
+              "kind": "columns",
+              "columns": [
+                "款_決算額",
+                "款_国庫支出金",
+                "款_都支出金",
+                "款_市債",
+                "款_その他",
+                "款_一般財源",
+                "目_予算現額",
+                "目_当年度決算額",
+                "目_前年度決算額",
+                "事業_予算現額",
+                "事業_当年度決算額",
+                "事業_前年度決算額",
+                "内訳_金額",
+                "細目_金額"
+              ]
+            }
+          }
+        ],
+        "notes": [
+          {
+            "text": "「主要な施策の成果・事務報告書」の歳出部（物理148-464頁）。行は最細の印字金額明細: 事業が（n）内訳項目＋アイウ細目を持てば細目行、内訳項目のみなら内訳行、内訳のない事業は事業行が葉。款・項・目・事業・内訳の名称・印字金額・位置を葉行へ反復する。項は独立した金額行を持たず、見出し行の金額3列は目の値。款_決算額等7列は款の先頭頁の集計行（単位 円、執行率は％）。事業の財源内訳は別表 funding、内表・歳出合計・決算総括・給与費決算明細は別表 annex。本資料は主要施策の抜粋であり、目→事業・款→目の合計検算は原則不成立。（予算現額）・<前年度決算額>は括弧・不等号を含む印字通りの文字列。",
+            "scope": {
+              "kind": "table"
+            }
+          }
+        ],
+        "column_contexts": [
+          {
+            "columns": [
+              "款_番号",
+              "款_名称",
+              "款_決算額",
+              "款_国庫支出金",
+              "款_都支出金",
+              "款_市債",
+              "款_その他",
+              "款_一般財源",
+              "款_執行率",
+              "款_物理頁",
+              "款_上端",
+              "款_下端"
+            ],
+            "header_path": [
+              "科目",
+              "款"
+            ],
+            "grain_columns": [
+              "款_物理頁",
+              "款_上端"
+            ]
+          },
+          {
+            "columns": [
+              "項_番号",
+              "項_名称",
+              "項_物理頁",
+              "項_上端",
+              "項_下端"
+            ],
+            "header_path": [
+              "科目",
+              "項"
+            ],
+            "grain_columns": [
+              "項_物理頁",
+              "項_上端"
+            ]
+          },
+          {
+            "columns": [
+              "目_番号",
+              "目_名称",
+              "目_予算現額",
+              "目_当年度決算額",
+              "目_前年度決算額",
+              "目_物理頁",
+              "目_上端",
+              "目_下端"
+            ],
+            "header_path": [
+              "科目",
+              "目"
+            ],
+            "grain_columns": [
+              "目_物理頁",
+              "目_上端"
+            ]
+          },
+          {
+            "columns": [
+              "事業_番号",
+              "事業_名称",
+              "事業_担当課",
+              "事業_予算現額",
+              "事業_当年度決算額",
+              "事業_前年度決算額",
+              "事業_説明",
+              "事業_物理頁",
+              "事業_上端",
+              "事業_下端"
+            ],
+            "header_path": [
+              "事業",
+              "事業"
+            ],
+            "grain_columns": [
+              "事業_物理頁",
+              "事業_上端"
+            ]
+          },
+          {
+            "columns": [
+              "内訳_番号",
+              "内訳_名称",
+              "内訳_金額",
+              "内訳_物理頁",
+              "内訳_上端",
+              "内訳_下端",
+              "細目_番号",
+              "細目_名称",
+              "細目_数量",
+              "細目_金額",
+              "細目_物理頁",
+              "細目_上端",
+              "細目_下端"
+            ],
+            "header_path": [
+              "内訳",
+              "細目"
+            ],
+            "grain_columns": [
+              "細目_物理頁",
+              "細目_上端"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "table_id": "general-funding",
+      "conversion_id": "general-settlement",
+      "input_fingerprint": "5eae822b172edb8d8fbd60ea585659a743aa2d7d0e6b140c1aac8f400ff851a6",
+      "object": {
+        "key": "fiscal/ingestion/132012/2025/settlement/expenditure/general-funding.parquet",
+        "sha256": "acabf049040f089d8465aaa75f6c25ba1f22f91e7483ef197ef88c49171ceed1",
+        "bytes": 22857
+      },
+      "row_count": 1069,
+      "metadata": {
+        "units": [
+          {
+            "text": "円",
+            "scope": {
+              "kind": "columns",
+              "columns": [
+                "財源_金額"
+              ]
+            }
+          }
+        ],
+        "notes": [
+          {
+            "text": "事業ブロック右欄の財源内訳。事業の当年度決算額の独立した印字分解であり、detail表の葉金額とは別の軸。ラベルが行またぎの場合は改行で保持。",
+            "scope": {
+              "kind": "table"
+            }
+          }
+        ],
+        "column_contexts": [
+          {
+            "columns": [
+              "款_番号",
+              "項_番号",
+              "目_番号",
+              "事業_番号",
+              "事業_物理頁",
+              "事業_上端",
+              "財源_名称"
+            ],
+            "header_path": [
+              "事業",
+              "財源内訳"
+            ],
+            "grain_columns": [
+              "事業_物理頁",
+              "事業_上端",
+              "財源_上端"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "table_id": "general-annex",
+      "conversion_id": "general-settlement",
+      "input_fingerprint": "5eae822b172edb8d8fbd60ea585659a743aa2d7d0e6b140c1aac8f400ff851a6",
+      "object": {
+        "key": "fiscal/ingestion/132012/2025/settlement/expenditure/general-annex.parquet",
+        "sha256": "26767ca7e0cd50f48b12b5d012cc21d87aa0bbc084e4ab4492f4b94064128b55",
+        "bytes": 326027
+      },
+      "row_count": 8385,
+      "metadata": {
+        "notes": [
+          {
+            "text": "歳出明細以外の全印字行（頁見出し・款集計行・説明以外の注記・内表・歳出合計・決算総括・給与費決算明細・頁脚）。1印字行=1行で原文保持。款_〜事業_列は行が属する見出しの原典座標。",
+            "scope": {
+              "kind": "table"
+            }
+          }
+        ],
+        "column_contexts": [
+          {
+            "columns": [
+              "本文",
+              "物理頁",
+              "上端",
+              "下端",
+              "左端",
+              "右端"
+            ],
+            "header_path": [
+              "印字行"
+            ],
+            "grain_columns": [
+              "物理頁",
+              "上端"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "table_id": "kaigo-detail",
+      "conversion_id": "kaigo-settlement-detail",
+      "input_fingerprint": "aadcc3d75649b51f8e717fd0d46c472a2e6d84f504e10547be8efbc39674c5fc",
+      "object": {
+        "key": "fiscal/ingestion/132012/2025/settlement/expenditure/kaigo-detail.parquet",
+        "sha256": "6c7327a2ee40c7204023863d03004a52460b6c51a2656d4aafc32560238239fc",
+        "bytes": 17835
+      },
+      "row_count": 78,
+      "metadata": {
+        "units": [
+          {
+            "text": "円",
+            "scope": {
+              "kind": "columns",
+              "columns": [
+                "款_決算額",
+                "款_保険料",
+                "款_国庫支出金",
+                "款_都支出金",
+                "款_一般会計繰入金",
+                "款_その他",
+                "目_予算現額",
+                "目_当年度決算額",
+                "目_前年度決算額",
+                "事業_予算現額",
+                "事業_当年度決算額",
+                "事業_前年度決算額",
+                "内訳_金額",
+                "細目_金額"
+              ]
+            }
+          }
+        ],
+        "notes": [
+          {
+            "text": "「主要な施策の成果・事務報告書」の歳出部（物理504-505・510-527頁）。行は最細の印字金額明細: 事業が（n）内訳項目＋アイウ細目を持てば細目行、内訳項目のみなら内訳行、内訳のない事業は事業行が葉。款・項・目・事業・内訳の名称・印字金額・位置を葉行へ反復する。項は独立した金額行を持たず、見出し行の金額3列は目の値。款_決算額等7列は款の先頭頁の集計行（単位 円、執行率は％）。事業の財源内訳は別表 funding、内表・歳出合計・決算総括・給与費決算明細は別表 annex。本資料は主要施策の抜粋であり、目→事業・款→目の合計検算は原則不成立。（予算現額）・<前年度決算額>は括弧・不等号を含む印字通りの文字列。款の資金分解5列は原典款見出しの印字どおり（保険料・国庫支出金・都支出金・一般会計繰入金・その他）で、一般会計の分解（国庫支出金・都支出金・市債・その他・一般財源）とは列名が異なる。決算額・執行率と合わせた7列が款集計行に対応する。宣言された統計表（保険給付費の状況）の (n) 行は表断片として annex へ送り、属する事業行を葉とする。",
+            "scope": {
+              "kind": "table"
+            }
+          }
+        ],
+        "column_contexts": [
+          {
+            "columns": [
+              "款_番号",
+              "款_名称",
+              "款_決算額",
+              "款_保険料",
+              "款_国庫支出金",
+              "款_都支出金",
+              "款_一般会計繰入金",
+              "款_その他",
+              "款_執行率",
+              "款_物理頁",
+              "款_上端",
+              "款_下端"
+            ],
+            "header_path": [
+              "科目",
+              "款"
+            ],
+            "grain_columns": [
+              "款_物理頁",
+              "款_上端"
+            ]
+          },
+          {
+            "columns": [
+              "項_番号",
+              "項_名称",
+              "項_物理頁",
+              "項_上端",
+              "項_下端"
+            ],
+            "header_path": [
+              "科目",
+              "項"
+            ],
+            "grain_columns": [
+              "項_物理頁",
+              "項_上端"
+            ]
+          },
+          {
+            "columns": [
+              "目_番号",
+              "目_名称",
+              "目_予算現額",
+              "目_当年度決算額",
+              "目_前年度決算額",
+              "目_物理頁",
+              "目_上端",
+              "目_下端"
+            ],
+            "header_path": [
+              "科目",
+              "目"
+            ],
+            "grain_columns": [
+              "目_物理頁",
+              "目_上端"
+            ]
+          },
+          {
+            "columns": [
+              "事業_番号",
+              "事業_名称",
+              "事業_担当課",
+              "事業_予算現額",
+              "事業_当年度決算額",
+              "事業_前年度決算額",
+              "事業_説明",
+              "事業_物理頁",
+              "事業_上端",
+              "事業_下端"
+            ],
+            "header_path": [
+              "事業",
+              "事業"
+            ],
+            "grain_columns": [
+              "事業_物理頁",
+              "事業_上端"
+            ]
+          },
+          {
+            "columns": [
+              "内訳_番号",
+              "内訳_名称",
+              "内訳_金額",
+              "内訳_物理頁",
+              "内訳_上端",
+              "内訳_下端",
+              "細目_番号",
+              "細目_名称",
+              "細目_数量",
+              "細目_金額",
+              "細目_物理頁",
+              "細目_上端",
+              "細目_下端"
+            ],
+            "header_path": [
+              "内訳",
+              "細目"
+            ],
+            "grain_columns": [
+              "細目_物理頁",
+              "細目_上端"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "table_id": "kaigo-funding",
+      "conversion_id": "kaigo-settlement-funding",
+      "input_fingerprint": "2e310058516ffa47efec040f9eb697e4dbf7f98ca9e3bc0ebaa3917653666d96",
+      "object": {
+        "key": "fiscal/ingestion/132012/2025/settlement/expenditure/kaigo-funding.parquet",
+        "sha256": "b7cd9af9c274acab3a107fa0c22bd7cf61c89343f5441cc349ba70df903a86b4",
+        "bytes": 3228
+      },
+      "row_count": 44,
+      "metadata": {
+        "units": [
+          {
+            "text": "円",
+            "scope": {
+              "kind": "columns",
+              "columns": [
+                "財源_金額"
+              ]
+            }
+          }
+        ],
+        "notes": [
+          {
+            "text": "事業ブロック右欄の財源内訳。事業の当年度決算額の独立した印字分解であり、detail表の葉金額とは別の軸。ラベルが行またぎの場合は改行で保持。",
+            "scope": {
+              "kind": "table"
+            }
+          }
+        ],
+        "column_contexts": [
+          {
+            "columns": [
+              "款_番号",
+              "項_番号",
+              "目_番号",
+              "事業_番号",
+              "事業_物理頁",
+              "事業_上端",
+              "財源_名称"
+            ],
+            "header_path": [
+              "事業",
+              "財源内訳"
+            ],
+            "grain_columns": [
+              "事業_物理頁",
+              "事業_上端",
+              "財源_上端"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "table_id": "kaigo-annex",
+      "conversion_id": "kaigo-settlement-annex",
+      "input_fingerprint": "9eae28906cbb15280de82513fbc20ab05c680cc48034a296e0811e9ce3ee1664",
+      "object": {
+        "key": "fiscal/ingestion/132012/2025/settlement/expenditure/kaigo-annex.parquet",
+        "sha256": "bdd440d70b50b64211cf7f37288525c7c1700881292e00dadd828d5cae596f27",
+        "bytes": 30188
+      },
+      "row_count": 717,
+      "metadata": {
+        "notes": [
+          {
+            "text": "歳出明細以外の全印字行（頁見出し・款集計行・説明以外の注記・内表・歳出合計・決算総括・給与費決算明細・頁脚）。1印字行=1行で原文保持。款_〜事業_列は行が属する見出しの原典座標。",
+            "scope": {
+              "kind": "table"
+            }
+          }
+        ],
+        "column_contexts": [
+          {
+            "columns": [
+              "本文",
+              "物理頁",
+              "上端",
+              "下端",
+              "左端",
+              "右端"
+            ],
+            "header_path": [
+              "印字行"
+            ],
+            "grain_columns": [
+              "物理頁",
+              "上端"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "table_id": "kariire-detail",
+      "conversion_id": "kariire-settlement-detail",
+      "input_fingerprint": "6700b0338ec75b5487e770270625f23c3cf0c883a05ace0b64bcf30f4e14601d",
+      "object": {
+        "key": "fiscal/ingestion/132012/2025/settlement/expenditure/kariire-detail.parquet",
+        "sha256": "45237071fab4ba328113e00577ca243ce8c298bc3e85db72128f36b3dd9d6a77",
+        "bytes": 7154
+      },
+      "row_count": 9,
+      "metadata": {
+        "units": [
+          {
+            "text": "円",
+            "scope": {
+              "kind": "columns",
+              "columns": [
+                "款_決算額",
+                "款_国庫支出金",
+                "款_都支出金",
+                "款_市債",
+                "款_その他",
+                "款_一般財源",
+                "目_予算現額",
+                "目_当年度決算額",
+                "目_前年度決算額",
+                "事業_予算現額",
+                "事業_当年度決算額",
+                "事業_前年度決算額",
+                "内訳_金額",
+                "細目_金額"
+              ]
+            }
+          }
+        ],
+        "notes": [
+          {
+            "text": "「主要な施策の成果・事務報告書」の歳出部（物理544-547・549頁）。行は最細の印字金額明細: 事業が（n）内訳項目＋アイウ細目を持てば細目行、内訳項目のみなら内訳行、内訳のない事業は事業行が葉。款・項・目・事業・内訳の名称・印字金額・位置を葉行へ反復する。項は独立した金額行を持たず、見出し行の金額3列は目の値。款_決算額等7列は款の先頭頁の集計行（単位 円、執行率は％）。事業の財源内訳は別表 funding、内表・歳出合計・決算総括・給与費決算明細は別表 annex。本資料は主要施策の抜粋であり、目→事業・款→目の合計検算は原則不成立。（予算現額）・<前年度決算額>は括弧・不等号を含む印字通りの文字列。",
+            "scope": {
+              "kind": "table"
+            }
+          }
+        ],
+        "column_contexts": [
+          {
+            "columns": [
+              "款_番号",
+              "款_名称",
+              "款_決算額",
+              "款_国庫支出金",
+              "款_都支出金",
+              "款_市債",
+              "款_その他",
+              "款_一般財源",
+              "款_執行率",
+              "款_物理頁",
+              "款_上端",
+              "款_下端"
+            ],
+            "header_path": [
+              "科目",
+              "款"
+            ],
+            "grain_columns": [
+              "款_物理頁",
+              "款_上端"
+            ]
+          },
+          {
+            "columns": [
+              "項_番号",
+              "項_名称",
+              "項_物理頁",
+              "項_上端",
+              "項_下端"
+            ],
+            "header_path": [
+              "科目",
+              "項"
+            ],
+            "grain_columns": [
+              "項_物理頁",
+              "項_上端"
+            ]
+          },
+          {
+            "columns": [
+              "目_番号",
+              "目_名称",
+              "目_予算現額",
+              "目_当年度決算額",
+              "目_前年度決算額",
+              "目_物理頁",
+              "目_上端",
+              "目_下端"
+            ],
+            "header_path": [
+              "科目",
+              "目"
+            ],
+            "grain_columns": [
+              "目_物理頁",
+              "目_上端"
+            ]
+          },
+          {
+            "columns": [
+              "事業_番号",
+              "事業_名称",
+              "事業_担当課",
+              "事業_予算現額",
+              "事業_当年度決算額",
+              "事業_前年度決算額",
+              "事業_説明",
+              "事業_物理頁",
+              "事業_上端",
+              "事業_下端"
+            ],
+            "header_path": [
+              "事業",
+              "事業"
+            ],
+            "grain_columns": [
+              "事業_物理頁",
+              "事業_上端"
+            ]
+          },
+          {
+            "columns": [
+              "内訳_番号",
+              "内訳_名称",
+              "内訳_金額",
+              "内訳_物理頁",
+              "内訳_上端",
+              "内訳_下端",
+              "細目_番号",
+              "細目_名称",
+              "細目_数量",
+              "細目_金額",
+              "細目_物理頁",
+              "細目_上端",
+              "細目_下端"
+            ],
+            "header_path": [
+              "内訳",
+              "細目"
+            ],
+            "grain_columns": [
+              "細目_物理頁",
+              "細目_上端"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "table_id": "kariire-funding",
+      "conversion_id": "kariire-settlement-funding",
+      "input_fingerprint": "1d459e178c43cd049adbaa79c9a2c8365a4f3e21d4171599dc84abfcdb9c9eb7",
+      "object": {
+        "key": "fiscal/ingestion/132012/2025/settlement/expenditure/kariire-funding.parquet",
+        "sha256": "881e0be450283711b237344ec7ecef6e2b2586b5919eb7863d5b45fb58ca69ca",
+        "bytes": 1642
+      },
+      "row_count": 2,
+      "metadata": {
+        "units": [
+          {
+            "text": "円",
+            "scope": {
+              "kind": "columns",
+              "columns": [
+                "財源_金額"
+              ]
+            }
+          }
+        ],
+        "notes": [
+          {
+            "text": "事業ブロック右欄の財源内訳。事業の当年度決算額の独立した印字分解であり、detail表の葉金額とは別の軸。ラベルが行またぎの場合は改行で保持。",
+            "scope": {
+              "kind": "table"
+            }
+          }
+        ],
+        "column_contexts": [
+          {
+            "columns": [
+              "款_番号",
+              "項_番号",
+              "目_番号",
+              "事業_番号",
+              "事業_物理頁",
+              "事業_上端",
+              "財源_名称"
+            ],
+            "header_path": [
+              "事業",
+              "財源内訳"
+            ],
+            "grain_columns": [
+              "事業_物理頁",
+              "事業_上端",
+              "財源_上端"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "table_id": "kariire-annex",
+      "conversion_id": "kariire-settlement-annex",
+      "input_fingerprint": "08d85261b598a0302eb15c73662e18e26f00b6c3f92b096ad071f3a7e811afa1",
+      "object": {
+        "key": "fiscal/ingestion/132012/2025/settlement/expenditure/kariire-annex.parquet",
+        "sha256": "b1ca012234b357b2344c077c644b9a86d61129ef9ed19a8c859724ff6e867e2a",
+        "bytes": 8386
+      },
+      "row_count": 166,
+      "metadata": {
+        "notes": [
+          {
+            "text": "歳出明細以外の全印字行（頁見出し・款集計行・説明以外の注記・内表・歳出合計・決算総括・給与費決算明細・頁脚）。1印字行=1行で原文保持。款_〜事業_列は行が属する見出しの原典座標。",
+            "scope": {
+              "kind": "table"
+            }
+          }
+        ],
+        "column_contexts": [
+          {
+            "columns": [
+              "本文",
+              "物理頁",
+              "上端",
+              "下端",
+              "左端",
+              "右端"
+            ],
+            "header_path": [
+              "印字行"
+            ],
+            "grain_columns": [
+              "物理頁",
+              "上端"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "table_id": "kouki-detail",
+      "conversion_id": "kouki-settlement-detail",
+      "input_fingerprint": "119be86456b6f9742e45b4d8fb1cf7e874d60eeaada7dc8f9e5eec3d3a89ba67",
+      "object": {
+        "key": "fiscal/ingestion/132012/2025/settlement/expenditure/kouki-detail.parquet",
+        "sha256": "6ef84b1a98cf89b0c39e6b31b95f63fdea480bb859317b32d9d116cf2cb4649a",
+        "bytes": 12448
+      },
+      "row_count": 18,
+      "metadata": {
+        "units": [
+          {
+            "text": "円",
+            "scope": {
+              "kind": "columns",
+              "columns": [
+                "款_決算額",
+                "款_保険料",
+                "款_国庫支出金",
+                "款_都支出金",
+                "款_一般会計繰入金",
+                "款_その他",
+                "目_予算現額",
+                "目_当年度決算額",
+                "目_前年度決算額",
+                "事業_予算現額",
+                "事業_当年度決算額",
+                "事業_前年度決算額",
+                "内訳_金額",
+                "細目_金額"
+              ]
+            }
+          }
+        ],
+        "notes": [
+          {
+            "text": "「主要な施策の成果・事務報告書」の歳出部（物理488-489・493-503頁）。行は最細の印字金額明細: 事業が（n）内訳項目＋アイウ細目を持てば細目行、内訳項目のみなら内訳行、内訳のない事業は事業行が葉。款・項・目・事業・内訳の名称・印字金額・位置を葉行へ反復する。項は独立した金額行を持たず、見出し行の金額3列は目の値。款_決算額等7列は款の先頭頁の集計行（単位 円、執行率は％）。事業の財源内訳は別表 funding、内表・歳出合計・決算総括・給与費決算明細は別表 annex。本資料は主要施策の抜粋であり、目→事業・款→目の合計検算は原則不成立。（予算現額）・<前年度決算額>は括弧・不等号を含む印字通りの文字列。款の資金分解5列は原典款見出しの印字どおり（保険料・国庫支出金・都支出金・一般会計繰入金・その他）で、一般会計の分解（国庫支出金・都支出金・市債・その他・一般財源）とは列名が異なる。決算額・執行率と合わせた7列が款集計行に対応する。",
+            "scope": {
+              "kind": "table"
+            }
+          }
+        ],
+        "column_contexts": [
+          {
+            "columns": [
+              "款_番号",
+              "款_名称",
+              "款_決算額",
+              "款_保険料",
+              "款_国庫支出金",
+              "款_都支出金",
+              "款_一般会計繰入金",
+              "款_その他",
+              "款_執行率",
+              "款_物理頁",
+              "款_上端",
+              "款_下端"
+            ],
+            "header_path": [
+              "科目",
+              "款"
+            ],
+            "grain_columns": [
+              "款_物理頁",
+              "款_上端"
+            ]
+          },
+          {
+            "columns": [
+              "項_番号",
+              "項_名称",
+              "項_物理頁",
+              "項_上端",
+              "項_下端"
+            ],
+            "header_path": [
+              "科目",
+              "項"
+            ],
+            "grain_columns": [
+              "項_物理頁",
+              "項_上端"
+            ]
+          },
+          {
+            "columns": [
+              "目_番号",
+              "目_名称",
+              "目_予算現額",
+              "目_当年度決算額",
+              "目_前年度決算額",
+              "目_物理頁",
+              "目_上端",
+              "目_下端"
+            ],
+            "header_path": [
+              "科目",
+              "目"
+            ],
+            "grain_columns": [
+              "目_物理頁",
+              "目_上端"
+            ]
+          },
+          {
+            "columns": [
+              "事業_番号",
+              "事業_名称",
+              "事業_担当課",
+              "事業_予算現額",
+              "事業_当年度決算額",
+              "事業_前年度決算額",
+              "事業_説明",
+              "事業_物理頁",
+              "事業_上端",
+              "事業_下端"
+            ],
+            "header_path": [
+              "事業",
+              "事業"
+            ],
+            "grain_columns": [
+              "事業_物理頁",
+              "事業_上端"
+            ]
+          },
+          {
+            "columns": [
+              "内訳_番号",
+              "内訳_名称",
+              "内訳_金額",
+              "内訳_物理頁",
+              "内訳_上端",
+              "内訳_下端",
+              "細目_番号",
+              "細目_名称",
+              "細目_数量",
+              "細目_金額",
+              "細目_物理頁",
+              "細目_上端",
+              "細目_下端"
+            ],
+            "header_path": [
+              "内訳",
+              "細目"
+            ],
+            "grain_columns": [
+              "細目_物理頁",
+              "細目_上端"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "table_id": "kouki-funding",
+      "conversion_id": "kouki-settlement-funding",
+      "input_fingerprint": "a2f9acbb832a1a5551cbab73564722a26ab389732fbfc4e35b988923b532ee5a",
+      "object": {
+        "key": "fiscal/ingestion/132012/2025/settlement/expenditure/kouki-funding.parquet",
+        "sha256": "4f0c9b109813b40813dc0c5f82b8a05e36500e23693ceef075f6c9967ae7db3f",
+        "bytes": 3076
+      },
+      "row_count": 26,
+      "metadata": {
+        "units": [
+          {
+            "text": "円",
+            "scope": {
+              "kind": "columns",
+              "columns": [
+                "財源_金額"
+              ]
+            }
+          }
+        ],
+        "notes": [
+          {
+            "text": "事業ブロック右欄の財源内訳。事業の当年度決算額の独立した印字分解であり、detail表の葉金額とは別の軸。ラベルが行またぎの場合は改行で保持。",
+            "scope": {
+              "kind": "table"
+            }
+          }
+        ],
+        "column_contexts": [
+          {
+            "columns": [
+              "款_番号",
+              "項_番号",
+              "目_番号",
+              "事業_番号",
+              "事業_物理頁",
+              "事業_上端",
+              "財源_名称"
+            ],
+            "header_path": [
+              "事業",
+              "財源内訳"
+            ],
+            "grain_columns": [
+              "事業_物理頁",
+              "事業_上端",
+              "財源_上端"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "table_id": "kouki-annex",
+      "conversion_id": "kouki-settlement-annex",
+      "input_fingerprint": "78328b15fdbbfb15b21b2c7d062a644e6230e24b138f4baf40fe92785fa479e2",
+      "object": {
+        "key": "fiscal/ingestion/132012/2025/settlement/expenditure/kouki-annex.parquet",
+        "sha256": "db97418df33d19152899580ce5a25bd0a9122ce15d5c832cbcbb356a27d7f627",
+        "bytes": 16175
+      },
+      "row_count": 354,
+      "metadata": {
+        "notes": [
+          {
+            "text": "歳出明細以外の全印字行（頁見出し・款集計行・説明以外の注記・内表・歳出合計・決算総括・給与費決算明細・頁脚）。1印字行=1行で原文保持。款_〜事業_列は行が属する見出しの原典座標。",
+            "scope": {
+              "kind": "table"
+            }
+          }
+        ],
+        "column_contexts": [
+          {
+            "columns": [
+              "本文",
+              "物理頁",
+              "上端",
+              "下端",
+              "左端",
+              "右端"
+            ],
+            "header_path": [
+              "印字行"
+            ],
+            "grain_columns": [
+              "物理頁",
+              "上端"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

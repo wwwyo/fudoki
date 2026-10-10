@@ -1,0 +1,310 @@
+{
+  "schema_version": 1,
+  "review_history": [
+    {
+      "candidate": "candidate-004",
+      "withdrawn_correction_id": "name-cell-09",
+      "physical_page": 5,
+      "before_text": "多摩市後期高齡者医療特別会計",
+      "withdrawn_after_text": "多摩市後期高齢者医療特別会計",
+      "retained_original_text": "多摩市後期高齡者医療特別会計",
+      "reason": "親AIが原解像度の表紙cropを再確認し、原典自体が旧字の齡であると確かめた。初期referenceの齢が誤りで、nativeの齡は正しい。候補004は誤訂正があるため棄却し保持、reference-v3で基準を修正。金額基準は変更しない。",
+      "reviewer": "parent AI",
+      "human_reviewed": false,
+      "date": "2026-10-09",
+      "parent_validation_ref": "pipeline/ingestion/fiscal/observations/scan-account-2026-10-09/validation-004.json",
+      "reference_ref": "pipeline/ingestion/fiscal/observations/scan-account-2026-10-09/parent-origin/reference-v3.json"
+    },
+    {
+      "candidate": "candidate-007",
+      "date": "2026-10-09",
+      "reason": "8局所名称訂正を共有辞書へ移した。確認根拠・旧native bindingはarchived_local_correctionsに保持するが、新しい候補の訂正入力として適用しない。健康診査費は名称cropを外した基礎OCRの查を共有科目名辞書で訂正する。表紙の原典旧字齡は対象外。"
+    }
+  ],
+  "archived_local_corrections": [
+    {
+      "id": "name-cell-01",
+      "origin_sha256": "d2b80d66ed9f720741a1c9bc5a9f75f0c74b47d8e8208867277403b8bbd7c98f",
+      "table_id": "parents",
+      "row_id": "spread-16-17:band-12",
+      "field": "項",
+      "physical_page": 16,
+      "printed_page": "196",
+      "observation_ids": [
+        "p16:full-page:a2:result0:r0"
+      ],
+      "observation_boxes_pt": [
+        [
+          107.72379032258064,
+          424.2393844400114,
+          142.27217741935485,
+          432.63778854374465
+        ]
+      ],
+      "before_text": "2 徵収費",
+      "confirmed_original_text": "2 徴収費",
+      "reason": "原解像度の当該名称セルのcrop再読後も残った字形誤読。原典印字を親AIが画像照合して確認した。金額からの推定・名称辞書の適用ではない。",
+      "confirmation": {
+        "reviewer": "parent AI",
+        "human_reviewed": false,
+        "date": "2026-10-09",
+        "basis": "parent validation-003 plus independent source image review; physical page/cell fixed",
+        "retry_observations_path": "pipeline/.cache/scan-account-2026-10-09/ocr-39eb2cd3d98cfb1dcae0b5b9dc23996b53b34379a9e26767f93d75394614a025.json",
+        "retry_observations_sha256": "bf018d8cc7043807a1277f0aad5b03ad0646a57b3e875117811093c4cafcd9cc"
+      }
+    },
+    {
+      "id": "name-cell-02",
+      "origin_sha256": "d2b80d66ed9f720741a1c9bc5a9f75f0c74b47d8e8208867277403b8bbd7c98f",
+      "table_id": "parents",
+      "row_id": "spread-16-17:band-13",
+      "field": "目",
+      "physical_page": 16,
+      "printed_page": "196",
+      "observation_ids": [
+        "p16:full-page:a3:result0:r0"
+      ],
+      "observation_boxes_pt": [
+        [
+          166.5040322580645,
+          443.435736677116,
+          201.77217741935485,
+          452.7939583927045
+        ]
+      ],
+      "before_text": "1 徵収費",
+      "confirmed_original_text": "1 徴収費",
+      "reason": "原解像度の当該名称セルのcrop再読後も残った字形誤読。原典印字を親AIが画像照合して確認した。金額からの推定・名称辞書の適用ではない。",
+      "confirmation": {
+        "reviewer": "parent AI",
+        "human_reviewed": false,
+        "date": "2026-10-09",
+        "basis": "parent validation-003 plus independent source image review; physical page/cell fixed",
+        "retry_observations_path": "pipeline/.cache/scan-account-2026-10-09/ocr-39eb2cd3d98cfb1dcae0b5b9dc23996b53b34379a9e26767f93d75394614a025.json",
+        "retry_observations_sha256": "bf018d8cc7043807a1277f0aad5b03ad0646a57b3e875117811093c4cafcd9cc"
+      }
+    },
+    {
+      "id": "name-cell-03",
+      "origin_sha256": "d2b80d66ed9f720741a1c9bc5a9f75f0c74b47d8e8208867277403b8bbd7c98f",
+      "table_id": "summary",
+      "row_id": "summary-8-9:band-2",
+      "field": "項",
+      "physical_page": 8,
+      "printed_page": "188",
+      "observation_ids": [
+        "p8:full-page:a1:result0:r0"
+      ],
+      "observation_boxes_pt": [
+        [
+          226.72379032258064,
+          184.52493587916786,
+          268.7096774193548,
+          194.60302080364775
+        ]
+      ],
+      "before_text": "2徵収費",
+      "confirmed_original_text": "2徴収費",
+      "reason": "原解像度の当該名称セルのcrop再読後も残った字形誤読。原典印字を親AIが画像照合して確認した。金額からの推定・名称辞書の適用ではない。",
+      "confirmation": {
+        "reviewer": "parent AI",
+        "human_reviewed": false,
+        "date": "2026-10-09",
+        "basis": "parent validation-003 plus independent source image review; physical page/cell fixed",
+        "retry_observations_path": "pipeline/.cache/scan-account-2026-10-09/ocr-39eb2cd3d98cfb1dcae0b5b9dc23996b53b34379a9e26767f93d75394614a025.json",
+        "retry_observations_sha256": "bf018d8cc7043807a1277f0aad5b03ad0646a57b3e875117811093c4cafcd9cc"
+      }
+    },
+    {
+      "id": "name-cell-04",
+      "origin_sha256": "d2b80d66ed9f720741a1c9bc5a9f75f0c74b47d8e8208867277403b8bbd7c98f",
+      "table_id": "details",
+      "row_id": "spread-16-17:band-11",
+      "field": "区分",
+      "physical_page": 17,
+      "printed_page": "197",
+      "observation_ids": [
+        "p17:full-page:a2:result0:r0",
+        "p17:full-page:a2:result0:r1"
+      ],
+      "observation_boxes_pt": [
+        [
+          59.020161290322584,
+          394.2450840695355,
+          125.23790322580645,
+          403.60330578512395
+        ],
+        [
+          71.49596774193549,
+          403.84326018808775,
+          117.08064516129032,
+          413.6813907096039
+        ]
+      ],
+      "before_text": "19負担金·補助\n及び交付金",
+      "confirmed_original_text": "19負担金・補助\n及び交付金",
+      "reason": "原解像度の当該名称セルのcrop再読後も残った字形誤読。原典印字を親AIが画像照合して確認した。金額からの推定・名称辞書の適用ではない。",
+      "confirmation": {
+        "reviewer": "parent AI",
+        "human_reviewed": false,
+        "date": "2026-10-09",
+        "basis": "parent validation-003 plus independent source image review; physical page/cell fixed",
+        "retry_observations_path": "pipeline/.cache/scan-account-2026-10-09/ocr-39eb2cd3d98cfb1dcae0b5b9dc23996b53b34379a9e26767f93d75394614a025.json",
+        "retry_observations_sha256": "bf018d8cc7043807a1277f0aad5b03ad0646a57b3e875117811093c4cafcd9cc"
+      }
+    },
+    {
+      "id": "name-cell-05",
+      "origin_sha256": "d2b80d66ed9f720741a1c9bc5a9f75f0c74b47d8e8208867277403b8bbd7c98f",
+      "table_id": "details",
+      "row_id": "spread-16-17:band-21",
+      "field": "区分",
+      "physical_page": 17,
+      "printed_page": "197",
+      "observation_ids": [
+        "p17:full-page:a3:result0:r0",
+        "p17:full-page:a3:result0:r1"
+      ],
+      "observation_boxes_pt": [
+        [
+          59.020161290322584,
+          600.8458250213736,
+          125.47782258064517,
+          609.9640923339983
+        ],
+        [
+          72.45564516129032,
+          610.444001139926,
+          117.08064516129032,
+          620.0421772584782
+        ]
+      ],
+      "before_text": "19負担金·補助\n及び交付金",
+      "confirmed_original_text": "19負担金・補助\n及び交付金",
+      "reason": "原解像度の当該名称セルのcrop再読後も残った字形誤読。原典印字を親AIが画像照合して確認した。金額からの推定・名称辞書の適用ではない。",
+      "confirmation": {
+        "reviewer": "parent AI",
+        "human_reviewed": false,
+        "date": "2026-10-09",
+        "basis": "parent validation-003 plus independent source image review; physical page/cell fixed",
+        "retry_observations_path": "pipeline/.cache/scan-account-2026-10-09/ocr-39eb2cd3d98cfb1dcae0b5b9dc23996b53b34379a9e26767f93d75394614a025.json",
+        "retry_observations_sha256": "bf018d8cc7043807a1277f0aad5b03ad0646a57b3e875117811093c4cafcd9cc"
+      }
+    },
+    {
+      "id": "name-cell-06",
+      "origin_sha256": "d2b80d66ed9f720741a1c9bc5a9f75f0c74b47d8e8208867277403b8bbd7c98f",
+      "table_id": "details",
+      "row_id": "spread-18-19:band-0",
+      "field": "区分",
+      "physical_page": 19,
+      "printed_page": "199",
+      "observation_ids": [
+        "p19:full-page:a2:result0:r0",
+        "p19:full-page:a2:result0:r1"
+      ],
+      "observation_boxes_pt": [
+        [
+          60.21975806451613,
+          177.80621259618124,
+          126.4375,
+          187.16443431176972
+        ],
+        [
+          73.65524193548387,
+          188.12425192362497,
+          118.04032258064517,
+          197.00256483328585
+        ]
+      ],
+      "before_text": "19負担金·補助\n及び交付金",
+      "confirmed_original_text": "19負担金・補助\n及び交付金",
+      "reason": "原解像度の当該名称セルのcrop再読後も残った字形誤読。原典印字を親AIが画像照合して確認した。金額からの推定・名称辞書の適用ではない。",
+      "confirmation": {
+        "reviewer": "parent AI",
+        "human_reviewed": false,
+        "date": "2026-10-09",
+        "basis": "parent validation-003 plus independent source image review; physical page/cell fixed",
+        "retry_observations_path": "pipeline/.cache/scan-account-2026-10-09/ocr-39eb2cd3d98cfb1dcae0b5b9dc23996b53b34379a9e26767f93d75394614a025.json",
+        "retry_observations_sha256": "bf018d8cc7043807a1277f0aad5b03ad0646a57b3e875117811093c4cafcd9cc"
+      }
+    },
+    {
+      "id": "name-cell-07",
+      "origin_sha256": "d2b80d66ed9f720741a1c9bc5a9f75f0c74b47d8e8208867277403b8bbd7c98f",
+      "table_id": "details",
+      "row_id": "spread-18-19:band-5",
+      "field": "区分",
+      "physical_page": 19,
+      "printed_page": "199",
+      "observation_ids": [
+        "p19:full-page:a3:result0:r0",
+        "p19:full-page:a3:result0:r1"
+      ],
+      "observation_boxes_pt": [
+        [
+          60.21975806451613,
+          285.78569392989453,
+          125.95766129032258,
+          295.62382445141066
+        ],
+        [
+          74.1350806451613,
+          296.10373325733826,
+          117.56048387096774,
+          305.4619549729268
+        ]
+      ],
+      "before_text": "19負担金·補助\n及び交付金",
+      "confirmed_original_text": "19負担金・補助\n及び交付金",
+      "reason": "原解像度の当該名称セルのcrop再読後も残った字形誤読。原典印字を親AIが画像照合して確認した。金額からの推定・名称辞書の適用ではない。",
+      "confirmation": {
+        "reviewer": "parent AI",
+        "human_reviewed": false,
+        "date": "2026-10-09",
+        "basis": "parent validation-003 plus independent source image review; physical page/cell fixed",
+        "retry_observations_path": "pipeline/.cache/scan-account-2026-10-09/ocr-39eb2cd3d98cfb1dcae0b5b9dc23996b53b34379a9e26767f93d75394614a025.json",
+        "retry_observations_sha256": "bf018d8cc7043807a1277f0aad5b03ad0646a57b3e875117811093c4cafcd9cc"
+      }
+    },
+    {
+      "id": "name-cell-08",
+      "origin_sha256": "d2b80d66ed9f720741a1c9bc5a9f75f0c74b47d8e8208867277403b8bbd7c98f",
+      "table_id": "details",
+      "row_id": "spread-18-19:band-9",
+      "field": "区分",
+      "physical_page": 19,
+      "printed_page": "199",
+      "observation_ids": [
+        "p19:full-page:a4:result0:r0",
+        "p19:full-page:a4:result0:r1"
+      ],
+      "observation_boxes_pt": [
+        [
+          60.69959677419355,
+          375.0487318324309,
+          125.47782258064517,
+          383.44713593616416
+        ],
+        [
+          73.89516129032258,
+          384.6469079509832,
+          117.56048387096774,
+          394.0051296665717
+        ]
+      ],
+      "before_text": "23償還金·利子\n及び割引料",
+      "confirmed_original_text": "23償還金・利子\n及び割引料",
+      "reason": "原解像度の当該名称セルのcrop再読後も残った字形誤読。原典印字を親AIが画像照合して確認した。金額からの推定・名称辞書の適用ではない。",
+      "confirmation": {
+        "reviewer": "parent AI",
+        "human_reviewed": false,
+        "date": "2026-10-09",
+        "basis": "parent validation-003 plus independent source image review; physical page/cell fixed",
+        "retry_observations_path": "pipeline/.cache/scan-account-2026-10-09/ocr-39eb2cd3d98cfb1dcae0b5b9dc23996b53b34379a9e26767f93d75394614a025.json",
+        "retry_observations_sha256": "bf018d8cc7043807a1277f0aad5b03ad0646a57b3e875117811093c4cafcd9cc"
+      }
+    }
+  ],
+  "corrections": []
+}

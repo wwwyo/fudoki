@@ -69,7 +69,7 @@ result = recognize_pdf(
 {"schema_version": 1, "words": ["備品購入費", "償還金", "共済費"]}
 ```
 
-同梱辞書の初期内容は、今回の実スキャンで確認した正しい名称18語。誤読と正解の対応表ではなく、認識時の語彙の補助であり、指定語への変換を保証しない。法定節マスタや事後の名称訂正辞書とは独立して管理する。
+同梱辞書は、実スキャンで確認した正しい節名称・科目名を収録する。誤読と正解の対応表ではなく、認識時の語彙の補助であり、指定語への変換を保証しない。法定節マスタや事後の名称訂正辞書とは独立して管理する。
 
 別のPDFの用途では `VisionConfig(language_correction=True, vocabulary_path="path/to/vocabulary.json")` で辞書を差し替えられる。相対パスは実行時のcwdが基準。`custom_words=("追加の事業名",)` を指定すれば、ファイルの語彙に追加して渡す。同じ文字列は重複排除する。語彙を使わず補正だけをonにする比較では、`words: []` の辞書ファイルを指定する。
 
@@ -96,9 +96,11 @@ name = correct_name("備品入費", dictionary)
 # rule_id、reason、dictionary_sha256も返る。
 ```
 
-同梱辞書は今回原典で確認した歳出の節名称の誤読3件だけ。自治体固有の事業名への適用は別の辞書を宣言する。辞書は `schema_version: 1`、`normalization: "NFKC_REMOVE_WHITESPACE"`、`rules`（id・observed_name・corrected_name・reason）のJSONで定義する。
+同梱の [節名称辞書](fiscal_setsu_name_corrections.json) と [科目名辞書](fiscal_subject_name_corrections.json) は、原典画像で確認した名称全体の誤読を収録する。自治体固有の事業名への適用は別の辞書を宣言する。辞書は `schema_version: 1`、`normalization: "NFKC_REMOVE_WHITESPACE"`、`rules`（id・observed_name・corrected_name・reason）のJSONで定義する。
 
 照合時だけNFKCと空白除去を使い、名称全体の一致だけを訂正する。部分置換・あいまい一致・連鎖置換はしない。未一致の名称はそのまま返す。訂正候補と根拠を別フィールドへ残し、`raw_name`・OCRの `raw_text`・金額は上書きしない。数値だけの辞書キーと、同じ正規化キーの重複定義は拒否する。
+
+`correct_name_preserving_layout` は同じ照合に加えて、訂正前後の文字数が対応するとき空白・改行・未変更の字形を保つ。文字の追加・削除が必要な規則では、辞書の名称全体を返し、その方針を `layout_policy` に記録する。AppleとPaddleの両方に使える後処理であり、各OCRの認識結果そのものは変えない。
 
 ## 再利用できる範囲
 
