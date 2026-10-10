@@ -76,7 +76,7 @@ write_parquet(path, records,
     columns=(ParquetColumn("name"), ParquetColumn("amount")))
 ```
 
-例は保存APIだけを示す。実際の取り込み表には原典ID・頁・元の座標・セル状態・階層との対応も明示して渡す。`TableResult.unassigned` と未訂正の観測を捨てず、別の観測表などとして保存してCへ渡す。Parquet保存関数は渡された列だけを保存し、これらの対応を自動生成しない。
+例は保存APIだけを示す。実際の取り込み表には原典ID・頁・元の座標・セル状態・階層との対応も明示して渡す。`TableResult.unassigned` と未訂正の観測を捨てず、別の観測表などとして保存し、検査に使う。Parquet保存関数は渡された列だけを保存し、これらの対応を自動生成しない。
 
 対応する型はVARCHAR・BIGINT・INTEGER・DOUBLE・BOOLEAN。各行は全列を明示し、NULLもNoneとして渡す。型の暗黙変換・余分な列の削除は拒否する。保存は一時ファイルから新規作成し、既存ファイルの上書きと失敗時の部分出力を避ける。
 

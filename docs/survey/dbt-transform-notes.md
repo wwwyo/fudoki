@@ -61,7 +61,7 @@
   `union_by_name=true` で読むしかないが、そうすると**列名の書き間違いが黙って NULL になる**。
   宣言する団体は `_sources.yml` にその旨と、塞いでいる検査を書くこと
 
-- **決算書は1行に複数の金額段階と単位を持つ場合がある。** 原典の全金額列を内部に保持し、段階ごとに単位を確認する。現在の公開決算明細は支出済額・収入済額一つを提供し、複数段階の金額をすべて公開CSVへ展開する旧FDPの扱いとは区別する（`pipeline/dbt/models/intermediate/fiscal/records/int_fiscal_amounts.sql`、`pipeline/dbt/models/marts/records/fiscal_settlement_expenditure_lines.sql`、`pipeline/README.md`）。
+- **決算書は1行に複数の金額段階と単位を持つ場合がある。** 原典の全金額列を内部に保持し、段階ごとに単位を確認する。現在の公開決算明細は支出済額・収入済額一つを提供し、複数段階の金額をすべて公開CSVへ展開する旧FDPの扱いとは区別する（`pipeline/dbt/models/intermediate/fiscal/records/int_fiscal_amounts.sql`、`pipeline/dbt/models/marts/records/fiscal_settlement_expenditure_lines.sql`）。
 
 - **⚠️ 款の体系が法定とまったく違う団体がある。** 2団体目に試した特別区は歳出を
   組織別に再編しており（子ども費・保健福祉費・地域振興費…）、法定の款に一対一で対応しない。
