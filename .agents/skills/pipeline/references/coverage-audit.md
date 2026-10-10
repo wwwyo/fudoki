@@ -11,6 +11,8 @@ bun run --cwd pipeline coverage:fiscal --json --require-complete
 bun run pipeline:report
 ```
 
+旧 `sources.lock.json` を読む監査・検証報告の前に、`pipeline/` で `uv run python -m ingestion.inputs restore --lock ingestion/fiscal/sources.lock.json`（ローカルにない場合は `--remote`）を実行し、既存入力を復元・照合する。
+
 ## 完了判定と終了コード
 
 - `coverage_audit.py` の `checked_datasets()` は現在の構築IDとDB・最新buildの対応、CSV集合と実ハッシュを照合する。過去のbuildを現在の入力の証拠にしない。
