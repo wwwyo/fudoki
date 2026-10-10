@@ -1,6 +1,6 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { dirname, join, resolve, relative } from 'node:path'
-import { REPO } from '../paths'
+import { REPO } from '../runtime_paths'
 
 async function files(directory: string): Promise<string[]> {
   const out: string[] = []

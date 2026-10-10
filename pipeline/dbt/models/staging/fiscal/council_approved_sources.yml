@@ -1,8 +1,0 @@
-version: 2
-sources:
-  - name: raw_132195_council_approved_detail
-    description: 六つの番号付き承認済み原典のみ。事業×印字節を保存し、介護2号予備費の法定節コードはNULL。native/manual復元候補は含まない。
-    meta:
-      external_location: "read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/council-approved-detail/jurisdiction=132195/year=*/document_kind=supplementary/edition=*/direction=expenditure/table=supplementary-expenditure-project-setsu-council-original-*/data.parquet', hive_partitioning=false)"
-    tables:
-      - name: data

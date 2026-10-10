@@ -12,7 +12,6 @@ import jsonschema
 
 from ingestion.fiscal import manifest
 from ingestion.fiscal.run import convert
-from ingestion.fiscal.migrate import import_tables
 from ingestion.fiscal.run import table_receipt
 
 
@@ -274,116 +273,11 @@ class ManifestWorkflowTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Stale saved table'):
             manifest.require_current(candidate)
 
-    def test_import_extension_preserves_saved_registry_until_full_upload_and_refuses_redefinitions(self):
-        candidate = convert(self.path, self.files, self.root/'candidate')
-        generated = json.loads(Path(candidate['candidate']).read_text())
-        real_code = Path(__file__).with_name('layouts') / 'retained'
-        retained = self.code / 'fiscal/layouts/retained'
-        retained.mkdir(parents=True)
-        for name in ('convert.py', 'options.schema.json'):
-            shutil.copyfile(real_code/name, retained/name)
-        document = deepcopy(self.document)
-        local = {}
-        for conversion, table in zip(document['conversions'], generated['tables'], strict=True):
-            conversion.update(converter='fiscal/layouts/retained/convert.py')
-            conversion['options'] = {'objects': [{'table_id': table['table_id'],
-                'key': 'inputs/table/sha256/' + table['object']['sha256'],
-                'sha256': table['object']['sha256'], 'bytes': table['object']['bytes']}]}
-            local[table['object']['sha256']] = self.root/'candidate'/f'{table["table_id"]}.parquet'
-        previous = deepcopy(document)
-        previous['conversions'] = previous['conversions'][:1]
-        conversion = previous['conversions'][0]
-        reference = conversion['options']['objects'][0]
-        previous['tables'] = [table_receipt(previous, conversion, reference['table_id'], local[reference['sha256']])]
-        previous['tables'][0]['metadata'] = {'notes': [{'text': '保存済み注記', 'scope': {'kind': 'table'}}]}
-        manifest.write(self.path, previous)
-        from dbt_inputs import path_for, write as write_bindings, read as read_bindings
-        binding = {'schema_version': 1, 'target': self.target, 'direction': 'expenditure',
-                   'tables': [{'table_id': conversion['id'], 'raw_path':
-                     f"jurisdiction=131016/year=2024/document_kind=budget/edition={conversion['inputs'][0]['sha256']}/direction=expenditure/table={conversion['id']}/data.parquet"}
-                     for conversion in document['conversions']]}
-        old_binding = deepcopy(binding)
-        old_binding['tables'] = old_binding['tables'][:1]
-        write_bindings(old_binding, previous)
-        binding_before = path_for(previous).read_bytes()
-        before = self.path.read_bytes()
-        with patch('ingestion.fiscal.migrate.fetch', side_effect=lambda ref, **kwargs: local[ref['sha256']]), \
-             patch('ingestion.fiscal.migrate.save') as save, patch('ingestion.fiscal.migrate.cleanup') as cleanup:
-            with self.assertRaisesRegex(ValueError, 'differs'):
-                import_tables(document, remote=True)
-            save.assert_not_called()
-            save.side_effect = RuntimeError('upload failed')
-            with self.assertRaisesRegex(RuntimeError, 'upload failed'):
-                import_tables(document, remote=True, extend_plans=True, bindings=binding)
-            self.assertEqual(path_for(previous).read_bytes(), binding_before)
-            self.assertEqual(self.path.read_bytes(), before)
-            cleanup.assert_not_called()
-            save.side_effect = None
-            save.reset_mock()
-            # A binding write error leaves both prior registrations usable.
-            with patch('dbt_inputs.write', side_effect=OSError('binding write failed')):
-                with self.assertRaisesRegex(OSError, 'binding write failed'):
-                    import_tables(document, remote=True, extend_plans=True, bindings=binding)
-            self.assertEqual(self.path.read_bytes(), before)
-            self.assertEqual(path_for(previous).read_bytes(), binding_before)
-            cleanup.assert_not_called()
-            save.reset_mock()
-            # Cleanup failure happens after both usable registrations are published.
-            cleanup.side_effect = RuntimeError('cleanup failed')
-            with self.assertRaisesRegex(RuntimeError, 'cleanup failed'):
-                import_tables(document, remote=True, extend_plans=True, bindings=binding)
-            save.assert_called_once()
-            self.assertEqual(save.call_args.args[1]['table_id'], 'two')
-            cleanup.side_effect = None
-            result = import_tables(document, remote=True, extend_plans=True, bindings=binding)
-            self.assertEqual(result['tables'], 2)
-            self.assertEqual(set(read_bindings(manifest.read(self.path))), {'one', 'two'})
-            saved = manifest.read(self.path)
-            self.assertEqual(saved['conversions'][0], previous['conversions'][0])
-            self.assertEqual(saved['tables'][0], previous['tables'][0])
-            manifest.require_current(saved)
-            altered = deepcopy(document)
-            altered['conversions'][0]['options']['objects'][0]['bytes'] += 1
-            with self.assertRaisesRegex(ValueError, 'differs'):
-                import_tables(altered, remote=True, extend_plans=True)
-
-    def test_plan_only_extension_rejects_before_changing_bindings(self):
-        from dbt_inputs import path_for, write as write_bindings
-        from ingestion.fiscal.migrate import main
-        previous = deepcopy(self.document)
-        previous['conversions'] = previous['conversions'][:1]
-        manifest.write(self.path, previous)
-        binding = {'schema_version': 1, 'target': self.target, 'direction': 'expenditure',
-                   'tables': [{'table_id': conversion['id'], 'raw_path':
-                     f"jurisdiction=131016/year=2024/document_kind=budget/edition={conversion['inputs'][0]['sha256']}/direction=expenditure/table={conversion['id']}/data.parquet"}
-                     for conversion in self.document['conversions']]}
-        old_binding = deepcopy(binding)
-        old_binding['tables'] = old_binding['tables'][:1]
-        write_bindings(old_binding, previous)
-        before = self.path.read_bytes(), path_for(previous).read_bytes()
-        lock = self.root/'lock.json'
-        lock.write_text('{}')
-        report = {'dbt_bindings': [binding]}
-        with patch('ingestion.fiscal.migrate.plan', return_value=([self.document], report)), \
-             patch('sys.argv', ['migrate', '--lock', str(lock), '--report', str(self.root/'report.json'),
-                                '--write-plans', '--extend-plans']):
-            with self.assertRaisesRegex(ValueError, 'import additional tables'):
-                main()
-        self.assertEqual((self.path.read_bytes(), path_for(previous).read_bytes()), before)
-
     def retained_extension(self):
         generated = json.loads(Path(convert(self.path, self.files, self.root/'baseline')['candidate']).read_text())
-        real_code = Path(__file__).with_name('layouts') / 'retained'
-        retained = self.code / 'fiscal/layouts/retained'
-        retained.mkdir(parents=True)
-        for name in ('convert.py', 'options.schema.json'):
-            shutil.copyfile(real_code/name, retained/name)
         saved = deepcopy(self.document)
         local = {t['object']['sha256']: self.root/'baseline'/f'{t["table_id"]}.parquet' for t in generated['tables']}
         for conversion, table in zip(saved['conversions'], generated['tables'], strict=True):
-            conversion['converter'] = 'fiscal/layouts/retained/convert.py'
-            conversion['options'] = {'objects': [{'table_id': table['table_id'], 'key': 'inputs/table/sha256/' + table['object']['sha256'],
-                                                  'sha256': table['object']['sha256'], 'bytes': table['object']['bytes']}]}
             saved['tables'].append(table_receipt(saved, conversion, table['table_id'], local[table['object']['sha256']]))
         saved['tables'][0]['metadata'] = {'notes': [{'text': '既存の原典注記', 'scope': {'kind': 'table'}}]}
         manifest.write(self.path, saved)
@@ -460,7 +354,7 @@ class ManifestWorkflowTest(unittest.TestCase):
         changes = (
             lambda p: p.update(target={**p['target'], 'fiscal_year': 2025}),
             lambda p: p.update(direction='revenue'),
-            lambda p: p['conversions'][0]['options']['objects'][0].update(bytes=1),
+            lambda p: p['conversions'][0]['options'].update(encoding='shift_jis'),
             lambda p: p['tables'].extend(saved['tables']),
             lambda p: p['conversions'][-1].update(id='one'),
             lambda p: p['conversions'][-1]['expected_tables'][0].update(table_id='one'),
@@ -481,73 +375,6 @@ class ManifestWorkflowTest(unittest.TestCase):
                     convert(self.path, new_files, self.root/'invalid-choice', extend_plan=plan_path, conversion_ids=ids)
             fetch.assert_not_called()
             save.assert_not_called()
-
-    def test_dbt_input_preparation_reads_jurisdiction_json_and_parquet_without_legacy_lock(self):
-        from build_inputs import prepare
-        result = convert(self.path, self.files, self.root/'candidate')
-        saved = json.loads(Path(result['candidate']).read_text())
-        saved['tables'][0]['metadata'] = {
-            'column_contexts': [{'columns': ['金額'], 'header_path': [], 'grain_columns': ['名称']}]}
-        manifest.write(self.path, saved)
-        local = {table['object']['sha256']: self.root/'candidate'/f'{table["table_id"]}.parquet'
-                 for table in saved['tables']}
-        with patch('build_inputs.fetch', side_effect=lambda ref: local[ref['sha256']]):
-            snapshot = prepare([self.path], cache=self.root/'snapshots')
-            repeated = prepare([self.path], cache=self.root/'snapshots')
-        self.assertEqual(snapshot, repeated)
-        raw = Path(snapshot['inputs'])
-        files = sorted(raw.rglob('data.parquet'))
-        self.assertEqual(len(files), 2)
-        self.assertEqual({manifest.sha_file(path) for path in files}, set(local))
-        catalog = json.loads(Path(snapshot['catalog']).read_text())
-        self.assertEqual(catalog['manifests'][0]['document'], saved)
-        self.assertEqual(catalog['tables'][0]['table']['metadata'], saved['tables'][0]['metadata'])
-        self.assertEqual({item['inputs'][0]['scope'][0]['account'] for item in catalog['tables']},
-                         {'一般会計'})
-        self.assertNotIn('declarations', snapshot)
-        self.assertFalse((Path(snapshot['catalog']).parent/'declarations').exists())
-        with duckdb.connect() as db:
-            rows = db.execute('''select "名称", "金額", jurisdiction, year, document_kind, direction
-                from read_parquet(?, hive_partitioning=true) order by "名称"''',
-                [str(raw/'jurisdiction=*/year=*/document_kind=*/edition=*/direction=*/table=*/data.parquet')]).fetchall()
-        self.assertEqual(rows, [('事業A', '1,000', 131016, 2024, 'budget', 'expenditure'),
-                                ('事業B', '0', 131016, 2024, 'budget', 'expenditure')])
-        import dbt_inputs
-        from build_inputs import raw_path
-        bindings = {'schema_version': 1, 'target': saved['target'], 'direction': saved['direction'],
-                    'tables': [{'table_id': table['table_id'], 'raw_path': 'statement/' + raw_path(saved, owner, table)}
-                               for owner in saved['conversions'] for table in owner['expected_tables']]}
-        before = self.path.read_bytes()
-        dbt_inputs.write(bindings, saved)
-        with patch('build_inputs.fetch', side_effect=lambda ref: local[ref['sha256']]):
-            changed = prepare([self.path], cache=self.root/'snapshots')
-        self.assertNotEqual(changed['inputFingerprint'], snapshot['inputFingerprint'])
-        self.assertEqual(self.path.read_bytes(), before)
-        manifest.require_current(manifest.read(self.path))
-        next(Path(changed['inputs']).rglob('data.parquet')).write_bytes(b'corrupted')
-        with self.assertRaisesRegex(ValueError, 'hash/size'):
-            prepare([self.path], cache=self.root/'snapshots')
-
-    def test_dbt_legacy_partition_is_preserved_and_wrong_scope_rejected(self):
-        from build_inputs import raw_path
-        import dbt_inputs
-        document = manifest.read(self.path)
-        conversion = document['conversions'][0]
-        expected = deepcopy(conversion['expected_tables'][0])
-        sha = conversion['inputs'][0]['sha256']
-        relative = (f'statement-moku-setsu/jurisdiction=131016/year=2024/'
-                    f'document_kind=budget/edition={sha}/direction=expenditure/table=legal-setsu')
-        bindings = {'schema_version': 1, 'target': document['target'], 'direction': document['direction'],
-                    'tables': [{'table_id': table['table_id'], 'raw_path':
-                        relative.replace('table=legal-setsu', 'table='+table['table_id']).replace(
-                            'edition='+sha, 'edition='+owner['inputs'][0]['sha256'])+'/data.parquet'}
-                        for owner in document['conversions'] for table in owner['expected_tables']]}
-        entries = dbt_inputs.validate(bindings, document)
-        binding = entries[expected['table_id']]
-        self.assertEqual(raw_path(document, conversion, expected, binding), binding['raw_path'])
-        bindings['tables'][0]['raw_path'] = binding['raw_path'].replace('year=2024', 'year=2023')
-        with self.assertRaisesRegex(ValueError, 'scope'):
-            dbt_inputs.validate(bindings, document)
 
     def test_schema_rejects_removed_input_and_conversion_fields(self):
         for fields in ({'format': 'csv'}, {'scope': [{'account': '一般会計'}]}):

@@ -1,8 +1,0 @@
-version: 2
-sources:
-  - name: raw_132195_supplementary_2020_1
-    description: Komae FY2020 general supplementary no.1 direction-split tables (private candidate namespace)
-    meta:
-      external_location: "(select * exclude(filename), regexp_extract(filename, '/direction=([^/]+)', 1) as direction_p from read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/komae-supplementary-2020-1/jurisdiction=132195/year=2020/document_kind=supplementary/edition=55b99cec58e42222cfdd93d59821ab92d25464f23f2fcead40d0e19a3f17492a/direction=*/resource=*/data.parquet', hive_partitioning=false, filename=true, union_by_name=true))"
-    tables:
-      - name: data

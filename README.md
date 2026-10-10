@@ -17,7 +17,7 @@
 
 原典の値・単位・階層を保ち、団体間で列・金額単位・分類を揃え、提供用データの金額・粒度・出典を検査する。配布・検索の保存先や公開方式は、パイプライン完成後に検討する。
 
-取得元の宣言は [`sources.toml`](pipeline/ingestion/fiscal/management/sources.toml)、入力一覧は `pipeline/ingestion/fiscal/sources.lock.json`（正規 lock の採用は未完了）、団体別の実測は [`jurisdictions/`](pipeline/ingestion/fiscal/jurisdictions/131016/) にある。証跡は独立ファイルにせず、出典・意味は入力一覧と原典宣言が持つ。原典と取り込み済み Parquet の保管用 R2 は、固定入力の復元に使う。
+原典の選定は [`source_selection/`](pipeline/source_selection/)、取り込みの宣言は団体別の [`jurisdictions/`](pipeline/ingestion/fiscal/jurisdictions/) にある。原典と取り込み済み Parquet は非公開 R2 に保存する。dbt のモデルは新しい取り込み表から作り直している。
 
 ## 開発
 
@@ -28,12 +28,10 @@ mise install
 bun install --frozen-lockfile
 uv sync --frozen
 
-bun run pipeline:inputs       # Git の入力一覧から R2 の固定入力を復元・照合
-bun run pipeline:build        # 現行 build を実行（dbt に加え後段処理も含む）
-bun run dev                   # 報告を生成し、ローカル検証画面を 127.0.0.1:5174 で起動
+bun run --cwd pipeline ingestion:check   # 取り込みの宣言・選定・fingerprint を検査
 ```
 
-`pipeline:build` は dbt の変換・検査と marts の CSV 生成までを実行する。結果は `pipeline/.build/builds/b-<内部構築ID>/` に入り、同じ構築 ID の再実行では CSV のハッシュを照合する。公開 web・API・MCP・docs は一時的に HTTP 500 を返す。
+公開 web・API・MCP・docs は一時的に HTTP 500 を返す。
 
 パイプラインの工程と実行手順は [pipeline skill](.agents/skills/pipeline/SKILL.md) を参照。
 
@@ -71,8 +69,7 @@ COFOG は歳出明細と同じ CSV に含め、原典由来の金額と分類な
 - [docs/adr/](docs/adr/): 設計上の決定の記録
 - [pipeline skill](.agents/skills/pipeline/SKILL.md): 原典選定・取り込み・dbt構築の手順
 - [apps/web/README.md](apps/web/README.md): ダッシュボードの構成
-- [pipeline/dbt/models/](pipeline/dbt/models/): staging（原典別の整形）→ intermediate（統合・分類）→ marts（提供用データ）。配布処理は `pipeline/fdp/` に分け、原典の保存と判断の整合性はテストで縛っている
-- [pipeline/ingestion/fiscal/management/sources.toml](pipeline/ingestion/fiscal/management/sources.toml): 取得元の定義。団体を足すときはここから
+- [pipeline/source_selection/](pipeline/source_selection/): 団体ごとの原典の選定。団体を足すときはここから
 
 名前は『風土記』から。
 713年の官命により、諸国へ地名の由来や産物を**同じ様式で報告させて集めた**地誌で、各自治体から同じ形式でデータを集めるという本 PJ の構造がそのまま重なる。
