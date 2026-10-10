@@ -1,6 +1,6 @@
 # E. 既存入力の復元・検査（旧検査・監査の互換経路）
 
-旧検査・監査は、schemaVersion 3の `pipeline/ingestion/fiscal/sources.lock.json` を参照する。この文書は、その一覧が指す既存入力の復元と同一性検査を説明する。新規保存はBの対象別JSONと `ingestion:convert` に一本化し、[取り込みと保存](ingestion.md#現在版の保存・差し替え) を使う。
+旧検査・監査は、schemaVersion 3の `pipeline/ingestion/fiscal/sources.lock.json` を参照する。この文書は、その一覧が指す既存入力の復元と同一性検査を説明する。新規保存はBの対象別JSONと `ingestion:convert` に一本化し、[取り込みと保存](ingestion.md#現在版の保存差し替え) を使う。
 
 ## 残っている参照と検査
 

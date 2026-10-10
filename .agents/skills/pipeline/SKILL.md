@@ -6,7 +6,7 @@ user-invocable: false
 
 # pipeline
 
-全体の流れを確認するときは [形式別のフロー](references/workflow.md) を読み、作業する工程の reference へ進む。途中から続けるときは、その工程へ渡された入力と検査記録を確認する。CSVは変換時の全セル保持検査で取り込みを完了し、候補検査・再抽出を独立した必須工程にしない。PDFはsubagentが構築・修正し、親agentが階層ごとの合計検査、不一致の整理、再検査と完了判断を行う。不一致が繰り返す場合は親agentが構築・検査の前提を見直す。共通実装と書式別の停止条件は未完了である。
+全体の流れを確認するときは [形式別のフロー](references/workflow.md) を読み、作業する工程の reference へ進む。CSVは変換時の全セル保持検査で取り込みを完了する。PDFは階層ごとの合計検査→不一致の修正→再検査で確かめる。
 
 ## Routing table
 
@@ -27,4 +27,3 @@ user-invocable: false
 ## 関連 skill
 
 - 全体設計・データ層の境界は repo root の `AGENTS.md`、実行手順は `pipeline/README.md` を参照する。
-- PDFの構築を行うときは上記の分担に従ってsubagentへ依頼する。手順の確認・skillの編集だけでは構築担当を起動しない。独立したOrcaワーカーを監督する場合は共有の `orchestration` skill、Orcaの状態操作は共有の `orca-cli` skillを参照する。
