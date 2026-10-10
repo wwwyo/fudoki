@@ -1,6 +1,6 @@
 ---
 name: pipeline
-description: 風土記の原典選定（source_selection）、CSV・text PDF・scan PDFの取り込みと形式別検査、保存・採用、staging定義・dbt構築、収録範囲監査を行うときに参照する。CSVの原典からParquetへの保持検査と、PDFの原典照合・再抽出の手順を扱う。
+description: 風土記の原典選定（source_selection）、CSV・text PDF・scan PDFの取り込みと形式別検査、保存・採用、staging定義・dbt構築、収録範囲監査を行うときに参照する。CSVの全セル保持検査と、PDFの階層別合計検査・修正の手順を扱う。
 user-invocable: false
 ---
 
@@ -16,10 +16,7 @@ user-invocable: false
 | --- | --- |
 | 全体の流れ・工程間の受け渡しを確認する | [references/workflow.md](references/workflow.md) |
 | A. source_selection — 原典の情報を埋め、1資料を選定・保存する。選べなければ理由を残す | [references/source-selection.md](references/source-selection.md) |
-| B. ingestion：保存済みCSV・text PDF・scan PDFから取り込みParquetを作る | [references/ingestion.md](references/ingestion.md) |
-| CSVの保持検査、PDFの階層別合計・不一致の整理と修正ループ、後段検査との境界 | [references/candidate-validation.md](references/candidate-validation.md) |
-| PDFの抽出器変更・移設時に再現性を検査する | [references/reconstruction.md](references/reconstruction.md) |
-| 既存入力の復元・検査（旧検査・監査の読取互換。新規保存はBを参照） | [references/input-storage.md](references/input-storage.md) |
+| B. ingestion：保存済みCSV・text PDF・scan PDFから取り込みParquetを作り、形式別に検査する | [references/ingestion.md](references/ingestion.md) |
 | F. 入力と各層を本体へ採用し、全量構築・再構築する | [references/dbt.md](references/dbt.md) |
 | ingestionのJSON・Parquetからstagingモデルを定義・検証する | [references/staging.md](references/staging.md) |
 | G. 通常監査と検証報告で提供先・収録範囲を確認する | [references/coverage-audit.md](references/coverage-audit.md) |
