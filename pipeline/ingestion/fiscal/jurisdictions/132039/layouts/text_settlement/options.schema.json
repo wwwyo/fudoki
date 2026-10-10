@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "table_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,95}$"
+    },
+    "account": {
+      "const": "後期高齢者医療会計"
+    },
+    "detail_pages": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {"type": "integer", "minimum": 1},
+        "minItems": 2,
+        "maxItems": 2
+      },
+      "minItems": 1
+    }
+  },
+  "required": ["table_id", "account", "detail_pages"]
+}

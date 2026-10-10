@@ -706,11 +706,15 @@ def convert_detail(source, destination, options, selected):
         ensure_ascii=False, default=str, indent=1))
 
     prefix = options.get('table_prefix', 'general-expenditure')
+    emit = options.get('emit') or ('details', 'notes')
+    setsu_reference = options.get('notes_setsu_reference', 'general-expenditure-details')
     results = {}
     for kind, rows, leaf_cols in (
             ('details', detail_records, [f'節_{c}' for c in SETSU_COLS]),
             ('notes', notes_records,
              [f'{lvl}_{c}' for lvl, cols in DESC_COLS.items() for c in cols])):
+        if kind not in emit:
+            continue
         columns = lineage + leaf_cols
         for record in rows:
             for c in columns:
@@ -725,11 +729,13 @@ def convert_detail(source, destination, options, selected):
                                   context=ConversionContext(source['sha256'],
                                                             table_id, __file__))
         results[table_id] = {'path': Path(output.path),
-                             'metadata': detail_metadata(columns, kind)}
+                             'metadata': detail_metadata(columns, kind, prefix,
+                                                          setsu_reference)}
     return results
 
 
-def detail_metadata(columns, kind):
+def detail_metadata(columns, kind, prefix='general-expenditure',
+                    setsu_reference='general-expenditure-details'):
     amounts = [c for c in columns
                if any(c.endswith('_' + k) for k in BUDGET + ['支出済額', '翌年度繰越額', '不用額'])
                or c.endswith('_金額') or c == '金額']
@@ -742,13 +748,13 @@ def detail_metadata(columns, kind):
         contexts.append({'columns': [c for c in columns if c.startswith('節_')],
                          'header_path': ['節'], 'semantic_role': 'setsu',
                          'grain_columns': ['節_番号', '節_物理頁', '節_上端']})
-        note = ('左頁グリッドの法定最細行=節行（節_*列が印字値）。節を印字しない目は'
-                'その科目行自体が葉（節_*列NULL）。款・項・目_*列は行が属する科目行の印字値'
-                '（denorm、再掲行は同一値）。右頁備考結合セルのうち説明階層を構成しない行'
-                '（流用注記・予備費支出先一覧等）は目_備考に原文改行で保持。'
-                '説明分解は別表 general-expenditure-notes にあり、この表とは同一支出の別軸で'
-                '合算しない。金額は原典の桁区切り・△符号を保持。'
-                '歳出合計行・款（N）項（N）再掲見出し・会計標は観測に留め行にしない。')
+        note = (f'左頁グリッドの法定最細行=節行（節_*列が印字値）。節を印字しない目は'
+                f'その科目行自体が葉（節_*列NULL）。款・項・目_*列は行が属する科目行の印字値'
+                f'（denorm、再掲行は同一値）。右頁備考結合セルのうち説明階層を構成しない行'
+                f'（流用注記・予備費支出先一覧等）は目_備考に原文改行で保持。'
+                f'説明分解は別表 {prefix}-notes にあり、この表とは同一支出の別軸で'
+                f'合算しない。金額は原典の桁区切り・△符号を保持。'
+                f'歳出合計行・款（N）項（N）再掲見出し・会計標は観測に留め行にしない。')
     else:
         contexts.append({'columns': [c for c in columns if c.startswith('説明1_')],
                          'header_path': ['備考', '事業説明', '1'], 'semantic_role': 'project',
@@ -765,7 +771,7 @@ def detail_metadata(columns, kind):
                 'その見出し自体を葉とする（金額0印字の事業・葉なし節見出し等）。'
                 '説明内節見出し(説明2)と表グリッド節行の対応付けはraw列に実体化せず'
                 '検査用観測に留める。説明3・説明4は同じ支出の別分解軸であり'
-                '節表 general-expenditure-details とは合算しない。'
+                f'節表 {setsu_reference} とは合算しない。'
                 '事業名の【所管】は名称の一部。金額は原典の桁区切り・△符号を保持。'
                 '物理頁は各要素が印字された実頁（左頁・右頁それぞれ）。')
     return {'units': [{'text': '円', 'scope': {'kind': 'columns', 'columns': amounts}}],
@@ -789,7 +795,9 @@ def convert_summary(source, destination, options, selected):
     all_pages = observe(source['path'], pages[0], pages[-1], obs_dir / 'summary-bbox.html')
     records = []
     footers = []
+    control_rows = []
     totals = 0
+    exclude_total = options.get('exclude_total_row', False)
     cur_kan = (None, None)  # current 款 heading for 項 lineage
     for index in range(0, len(pages), 2):
         left_page, right_page = pages[index], pages[index + 1]
@@ -850,9 +858,14 @@ def convert_summary(source, destination, options, selected):
                     hits = [c for lo, hi, c in SUMMARY_BOUNDS if lo <= w['xMin'] < hi]
                     if len(hits) == 1:
                         record[hits[0]] = ((record[hits[0]] or '') + w['text'])
+            if is_total and exclude_total:
+                # Printed expenditure control row: keep as an observation, not a raw row.
+                control_rows.append(record)
+                continue
             records.append(record)
     obs_dir.joinpath('summary-checks.json').write_text(json.dumps(
-        {'rows': len(records), 'totals': totals, 'footers': footers},
+        {'rows': len(records), 'totals': totals, 'footers': footers,
+         'control_rows': control_rows},
         ensure_ascii=False, indent=1))
     if totals != 1:
         raise ValueError(f'Expected one printed expenditure total, got {totals}')
@@ -867,10 +880,13 @@ def convert_summary(source, destination, options, selected):
         'units': [{'text': '円', 'scope': {'kind': 'columns',
                    'columns': ['予算現額', '支出済額', '翌年度繰越額', '不用額',
                                '予算現額と支出済額との比較']}}],
-        'notes': [{'text': '歳出決算款項表。款・項の印字行と歳出合計（番号なし・名称「歳出合計」の制御行）。'
-                           '項行には印字順序で一意に決まる款のlineage（款_番号・款_名称）を付与。'
-                           '左頁の款項名称・予算現額と右頁の支出済額・翌年度繰越額・不用額・比較を同じ見開き行へ対応。'
-                           '比較列は明細書にない独立した印字列。',
+        'notes': [{'text': ('歳出決算款項表。款・項の印字行と歳出合計（番号なし・名称「歳出合計」の制御行）。'
+                            if not exclude_total else
+                            '歳出決算款項表。款・項の印字行。歳出合計（番号なし・名称「歳出合計」の制御行）'
+                            'はraw行に含めずobservations/summary-checks.jsonのcontrol_rowsに記録。')
+                           + '項行には印字順序で一意に決まる款のlineage（款_番号・款_名称）を付与。'
+                             '左頁の款項名称・予算現額と右頁の支出済額・翌年度繰越額・不用額・比較を同じ見開き行へ対応。'
+                             '比較列は明細書にない独立した印字列。',
                     'scope': {'kind': 'table'}}],
         'column_contexts': [
             {'columns': ['款_番号', '款_名称'], 'header_path': ['款'],
@@ -895,12 +911,16 @@ def convert(inputs, destination, options):
     if len(ranges) != 1:
         raise ValueError(f'Expected one scope entry for {account}')
     pages = sorted(p for first, last in ranges[0]['pages'] for p in range(first, last + 1))
+    # First pages range is the 款項表 (summary), the rest are the 明細書 (detail).
+    first = ranges[0]['pages'][0]
+    first_start, first_end = (first['start'], first['end']) if isinstance(first, dict) else (first[0], first[1])
+    summary_pages = set(range(first_start, first_end + 1))
     destination = Path(destination)
     destination.mkdir(parents=True, exist_ok=True)
     if part == 'detail':
-        selected = [p for p in pages if p >= 82]
+        selected = [p for p in pages if p not in summary_pages]
     elif part == 'summary':
-        selected = [p for p in pages if p < 82]
+        selected = [p for p in pages if p in summary_pages]
     else:
         raise ValueError(f'Unknown part: {part}')
     if not selected:

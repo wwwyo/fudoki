@@ -1,0 +1,8 @@
+{"$schema": "https://json-schema.org/draft/2020-12/schema",
+ "type": "object",
+ "additionalProperties": false,
+ "properties": {
+  "table_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,95}$"},
+  "account": {"type": "string"}
+ },
+ "required": ["table_id", "account"]}

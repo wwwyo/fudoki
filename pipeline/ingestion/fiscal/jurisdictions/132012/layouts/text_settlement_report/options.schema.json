@@ -6,7 +6,16 @@
     "detail_table_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,95}$"},
     "funding_table_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,95}$"},
     "annex_table_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,95}$"},
-    "account": {"type": "string"}
+    "account": {"type": "string"},
+    "scope_label": {"type": "string"},
+    "fund_columns": {"type": "array", "items": {"type": "string"}, "minItems": 5, "maxItems": 5},
+    "stat_titles": {"type": "array", "items": {"type": "string"}},
+    "emit": {
+      "type": "array",
+      "items": {"enum": ["detail", "funding", "annex"]},
+      "minItems": 1,
+      "uniqueItems": true
+    }
   },
-  "required": ["detail_table_id", "funding_table_id", "annex_table_id"]
+  "required": []
 }

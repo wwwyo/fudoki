@@ -13,6 +13,7 @@ import json
 import re
 import subprocess
 import xml.etree.ElementTree as ET
+from collections import deque
 from pathlib import Path
 
 from ingestion.lib.conversion import ConversionContext, write_conversion
@@ -27,14 +28,17 @@ NUM = re.compile(r'^[△\-]?[0-9]{1,3}(?:,[0-9]{3})*$|^[0-9]+$|^－$')
 PAREN = re.compile(r'^[（(][0-9,]+[)）]$')
 PREV = re.compile(r'^[<＜][0-9,]+[>＞]?$|^[>＞]$')
 PREV_TEXT = re.compile(r'^[<＜][0-9,]+[>＞]$')
+KOU_HEADING = re.compile(r'^([0-9]{1,2})項$')
 MARKER_ITEM = re.compile(r'^[（(]([0-9]{1,2})[)）]')
 MARKER_SUB = re.compile(r'^[ア-ン]$')
+_MARKER_LEAD = re.compile(r'^[（(](?:[0-9]{1,2}|[ア-ン])[)）]')
 COUNT_WORD = re.compile(r'^[0-9,]+[^\d,]+$')        # 「3人」「276件」など
 UNIT_SUFFIX = re.compile(r'(円|件|人|回|日|部|％|%|千円|万円|名|台|か所|箇所|世帯|戸|枚|本|席|時間|年度|年)$')
 AMOUNT_BAND = (225, 402)     # 内訳・細目の金額の右端帯（右寄せ）
 KAN_KEYS = ['決算額', '国庫支出金', '都支出金', '市債', 'その他', '一般財源', '執行率']
+DEFAULT_FUNDS = ['国庫支出金', '都支出金', '市債', 'その他', '一般財源']
 DEPT_SUFFIX = re.compile(r'(課|部|室|局|館|所|係|会|場|園|校|庁|院|センター|棟|大学|組合|本部|事務所|ホール)$')
-FUND_LABEL = re.compile(r'(金|料|債|財源|収入|税|費|寄附|積立|充当|繰入|分担|負担|使用|手数|広告|利子|交付|補助|助成|還付)')
+FUND_LABEL = re.compile(r'(金|料|債|財源|収入|税|費|寄附|積立|充当|繰入|分担|負担|使用|手数|広告|利子|交付|補助|助成|還付|雑入)')
 FUND_DENY = re.compile(r'(額|計|状況|区分|件数|人数|割合|率|年度|収支|差額|対象)$')
 LEAF_DENY = re.compile(r'(計|合計|差額|人数|件数|年度|平均|率|構成比|割合|回数|面積|日数|対象者数|利用者数)$')
 AMOUNT_FULL = re.compile(r'^[△\-]?[0-9]{1,3}(?:,[0-9]{3})+$|^[0-9]{5,}$')
@@ -80,6 +84,24 @@ DETAIL_COLUMNS = [
     '内訳_番号', '内訳_名称', '内訳_金額', '内訳_物理頁', '内訳_上端', '内訳_下端',
     '細目_番号', '細目_名称', '細目_数量', '細目_金額', '細目_物理頁', '細目_上端', '細目_下端',
 ]
+
+
+def detail_columns(funds):
+    """明細表の列。funds は款見出しの資金分解5名。既定は一般会計と同一の並び。"""
+    fund_cols = ['款_' + n for n in funds]
+    if fund_cols == ['款_国庫支出金', '款_都支出金', '款_市債', '款_その他', '款_一般財源']:
+        return [c for c in DETAIL_COLUMNS]
+    out = []
+    skip = {'款_国庫支出金', '款_都支出金', '款_市債', '款_その他', '款_一般財源'}
+    inserted = False
+    for c in DETAIL_COLUMNS:
+        if c in skip:
+            if not inserted:
+                out.extend(fund_cols)
+                inserted = True
+            continue
+        out.append(c)
+    return out
 FUNDING_COLUMNS = [
     '款_番号', '項_番号', '目_番号', '事業_番号', '事業_物理頁', '事業_上端',
     '財源_名称', '財源_金額', '財源_物理頁', '財源_上端', '財源_下端',
@@ -184,6 +206,34 @@ def kan_values(words):
     return dict(zip(KAN_KEYS, cells))
 
 
+def parse_kou_heading(words, page):
+    """項-only見出し行: N項 名称 (予算現額) 決算額 [<前年決算額>]。目を持たない会計用。"""
+    if not words:
+        return None
+    m = KOU_HEADING.match(words[0]['text'])
+    if not m or words[0]['xMin'] > 80:
+        return None
+    try:
+        iparen = next(i for i in range(2, len(words)) if PAREN.match(words[i]['text']))
+    except StopIteration:
+        return None
+    if iparen + 1 >= len(words):
+        return None
+    rest = words[iparen + 1:]
+    if not rest or not is_amount(rest[0]['text']):
+        return None
+    prev_words = rest[1:]
+    if prev_words and not PREV_TEXT.match(squashed(prev_words)):
+        return None
+    name = text_of(words[1:iparen])
+    if not name:
+        return None
+    return {'番号': m.group(1), '名称': name,
+            '予算現額': words[iparen]['text'], '当年度決算額': rest[0]['text'],
+            '前年度決算額': squashed(prev_words) or None,
+            **position(page, words)}
+
+
 def parse_moku_heading(words, page):
     """項・目の見出し行: N 項名  N 目名  (予算現額)  決算額  [<前年決算額>]。"""
     if not words or not is_amount(words[0]['text']) or words[0]['xMin'] > 80:
@@ -262,7 +312,7 @@ def parse_moku_amounts(words):
 
 def parse_jigyo_heading(words, page):
     """事業の見出し行: [番号] 名称  担当課  (予算現額)  決算額。"""
-    paren = [w for w in words if PAREN.match(w['text']) and 400 <= w['xMin'] < 505]
+    paren = [w for w in words if PAREN.match(w['text']) and 399 <= w['xMin'] < 505]
     decided = [w for w in words if is_amount(w['text']) and 470 <= w['xMin'] and w['xMax'] <= 585]
     if len(paren) != 1 or len(decided) != 1:
         return None
@@ -307,26 +357,85 @@ def parse_jigyo_continuation(words):
             'annex': [w for w in others if w['xMin'] >= RIGHT_X]}
 
 
+RANGE_MARK = re.compile(r'^[〜～−–—]$')
+KAN_TITLE_MARK = re.compile(r'事務報告書')
+KAN_NUMBER = re.compile(r'^[0-9]{1,2}$')
+
+
+def parse_kan_heading_fragment(words, page):
+    """款見出しの先頭行: 番号+名称（款名が長く次の行へ折り返す会計用）。
+
+    左欄の先頭語が款番号（1-2桁の数字）で、行内に金額がなく、残語に項見出し・
+    marker・括弧金額・前年度額・本文（事務報告書）を含まない行だけを保留する。
+    事業見出し（(予算現額)を含む）・項/目見出し（先頭が「N項」）・款集計の
+    金額行（桁区切り金額を持つ）はこの形にならない。款番号+名称+本文が1行で
+    揃う款見出しは従来の単行分支岐が扱うため対象外。
+    """
+    head = [w for w in words if w['xMin'] < RIGHT_X]
+    if not head or not KAN_NUMBER.match(head[0]['text']) or head[0]['xMin'] > 110:
+        return None
+    if KAN_TITLE_MARK.search(squashed(words)) or len(head) < 2:
+        return None
+    if any(is_amount(w['text']) for w in words[1:]):
+        return None
+    if any(KOU_HEADING.match(w['text']) for w in head[1:]):
+        return None
+    if any(MARKER_ITEM.match(w['text']) or MARKER_SUB.match(w['text'])
+           or PAREN.match(w['text']) or PREV.match(w['text']) for w in head[1:]):
+        return None
+    name = ''.join(w['text'] for w in head[1:])
+    if not name:
+        return None
+    return {'番号': head[0]['text'], '名称': name, 'held': [(page, words)],
+            'title': False, **position(page, head)}
+
+
+def kan_name_fragment(words):
+    """款見出しの名称断片。左欄の款名列（xMax 250 以下）に印字され、
+    金額・括弧金額・前年度額・marker・項見出し・本文を含まない行だけを断片とする。
+    款集計のラベル行（決算額・資金分解・執行率）は左欄全域に広がるため対象外。
+    """
+    head = [w for w in words if w['xMin'] < RIGHT_X]
+    if not head or any(w['xMax'] > 250 for w in head):
+        return None
+    if KAN_TITLE_MARK.search(squashed(words)):
+        return None
+    if any(KOU_HEADING.match(w['text']) or MARKER_ITEM.match(w['text'])
+           or MARKER_SUB.match(w['text']) or PAREN.match(w['text'])
+           or PREV.match(w['text']) or is_amount(w['text']) for w in head):
+        return None
+    return ' '.join(w['text'] for w in head) or None
+
+
 class Builder:
     def __init__(self):
         self.detail = []
         self.funding = []
         self.annex = []
-        self.obs_kan, self.obs_moku, self.obs_jigyo, self.obs_total = [], [], [], []
+        self.obs_kan, self.obs_kou, self.obs_moku, self.obs_jigyo, self.obs_total = [], [], [], [], []
+        self.kan_amount_cells = []
         self.kan = self.kou = self.moku = self.jigyo = None
         self.item = None          # open （n）内訳項目
         self.pending_sub = None   # 金額行待ちの細目
         self.pending_funding = None
         self.pending_moku = None  # 金額行待ちの項・目見出し
+        self.pending_kan = None   # 款見出しの保留行（番号+名称・続き行に本文が折り返す会計）
+        self.kan_rejected = set()   # 款見出しとして成立しなかった保留行（再捕捉しない）
         self.after_total = False
+        self.detail_cols = None   # 明細表の列（funds 解決後に設定）
         self.in_table = False     # 内表（実績・収支・区分表）領域内か
+        self.in_named_table = False  # 表題付き内表の領域内か。marker行を annex へ送る
+        self.declared_stats = False  # options stat_titles ありのときのみ表題機構を使う
         self.pending_leaf = None  # 「名称行+金額行」wrap型leafの名称行待ち
+        self.right_extra = []  # marker/sub行の中段付随fundラベル。次right_lineへ渡す
 
     def path_cols(self, allowed=None):
         out = {}
         if self.kan:
             out['款_番号'] = self.kan['番号']
-        if self.kou:
+        # 款直轄事業 (_kodirect) の配下では項を継承しない。
+        kodirect = self.jigyo is not None and self.jigyo.get('_kodirect')
+        if self.kou and not kodirect:
             out['項_番号'] = self.kou['番号']
         if self.moku:
             out['目_番号'] = self.moku['番号']
@@ -337,11 +446,12 @@ class Builder:
         return out
 
     def emit_leaf(self, sub=None):
-        row = {k: None for k in DETAIL_COLUMNS}
+        row = {k: None for k in (self.detail_cols or DETAIL_COLUMNS)}
         if self.kan:
             row.update({'款_' + k: v for k, v in self.kan.items()})
-        if self.kou:
-            row.update({'項_' + k: v for k, v in self.kou.items()})
+        kodirect = self.jigyo is not None and self.jigyo.get('_kodirect')
+        if self.kou and not kodirect:
+            row.update({'項_' + k: v for k, v in self.kou.items() if not k.startswith('_')})
         if self.moku:
             row.update({'目_' + k: v for k, v in self.moku.items()})
         if self.jigyo:
@@ -382,6 +492,7 @@ class Builder:
             self.pending_leaf = None
         self.flush_funding()
         self.in_table = False
+        self.in_named_table = False
         if self.jigyo and not self.jigyo.get('_leaf'):
             self.emit_leaf()            # 内訳なし事業自身が葉
         self.jigyo = None
@@ -412,6 +523,46 @@ class Builder:
                     '財源_下端': max(max(w['yMax'] for w in label_words), amount_word['yMax'])})
         self.funding.append(row)
 
+    def table_viable(self, words):
+        """表領域内の行を通常経路へ通すか。keep対象から外す判定用。
+        (n)/アイウで始まる行は marker 側の判断へ委ね、pending を完成させる
+        金額行も通す。それ以外（かな断片・グリッド行）は表内に保つ。"""
+        first = words[0]['text']
+        if _MARKER_LEAD.match(first):
+            return True
+        if (len(words) == 1 and AMOUNT_FULL.match(first)
+                and (self.pending_leaf is not None or self.pending_sub is not None
+                     or (self.item is not None and self.item.get('金額') is None))):
+            return True
+        return False
+
+    def split_trailing(self, body):
+        """marker/sub行末尾の付随トークンを分離する。(PREV・fundラベル・in-band金額)
+        末尾が PREV または fundラベル1語で、その直前が in-band 金額のときだけ分離する。
+        それ以外は旧経路と同一（末尾が in-band 金額なら金額、そうでなければ付随なし）。"""
+        rest = list(body)
+        if len(rest) == 1 and PREV_TEXT.match(rest[-1]['text']):
+            return [], None, rest[0], []
+        if (len(rest) >= 2
+                and (PREV_TEXT.match(rest[-1]['text'])
+                     or (len(rest[-1]['text']) >= 2 and FUND_LABEL.search(rest[-1]['text'])
+                         and not FUND_DENY.search(rest[-1]['text'])))
+                and AMOUNT_FULL.match(rest[-2]['text'])
+                and AMOUNT_BAND[0] <= rest[-2]['xMax'] <= AMOUNT_BAND[1] + 8):
+            tail = rest.pop()
+            prev = tail if PREV_TEXT.match(tail['text']) else None
+            funds = [] if prev is not None else [tail]
+            return rest[:-1], rest[-1]['text'], prev, funds
+        amount = None
+        if rest and AMOUNT_FULL.match(rest[-1]['text']) \
+                and AMOUNT_BAND[0] <= rest[-1]['xMax'] <= AMOUNT_BAND[1] + 8:
+            amount = rest.pop()['text']
+        return rest, amount, None, []
+
+    def pop_right_extra(self):
+        extra, self.right_extra = self.right_extra, []
+        return extra
+
     def left_line(self, words, page):
         """左欄(x<405)の1行を振り分ける。行を消費したら True。"""
         if not words:
@@ -433,16 +584,26 @@ class Builder:
         marker = MARKER_ITEM.match(first['text'])
         if marker and first['xMin'] < 110 and self.jigyo is not None \
                 and not re.search(r'^・|[、。]$', first['text'][marker.end():]):
+            body = words[1:]
+            body, amount, prev, funds = self.split_trailing(body)
+            # 表題付き内表内の金額なし (n) 行は統計表の断片として annex へ送り、表状態を保つ。
+            # 金額あり行は従来どおり内訳として消費する (一般会計の正規 (n) と区別するため)。
+            # 未宣言（一般会計）では named が立たないため出力不変。
+            if amount is None and self.in_named_table and self.declared_stats:
+                return False
             self.in_table = False
             self.close_item()
-            body = words[1:]
-            amount = None
-            if body and AMOUNT_FULL.match(body[-1]['text']) and AMOUNT_BAND[0] <= body[-1]['xMax'] <= AMOUNT_BAND[1] + 8:
-                amount = body.pop()['text']
             parent = num_or_none(self.jigyo['当年度決算額'])
             if amount is not None and parent is not None \
                     and num_or_none(amount) > parent:
                 return False
+            if prev is not None:
+                if self.jigyo['前年度決算額'] is None:
+                    self.jigyo['前年度決算額'] = prev['text']
+                else:
+                    self.emit_annex(page, [prev])
+            if funds:
+                self.right_extra.extend(funds)
             head = first['text'][marker.end():] or None
             name = ' '.join(t for t in [head, text_of(body)] if t)
             self.item = {'番号': marker.group(0), '名称': name or None,
@@ -451,16 +612,23 @@ class Builder:
         sub = MARKER_SUB.match(first['text'])
         if (sub and first['xMin'] < 120 and self.item is not None
                 and len(words) > 1 and len(words[1]['text']) >= 2):
-            self.in_table = False
-            self.flush_sub()
             body = words[1:]
-            amount = count = None
-            if body and AMOUNT_FULL.match(body[-1]['text']) and AMOUNT_BAND[0] <= body[-1]['xMax'] <= AMOUNT_BAND[1] + 8 \
-                    and self.leaf_within_parent(num_or_none(body[-1]['text'])):
-                amount = body.pop()['text']
+            body, amount, prev, funds = self.split_trailing(body)
+            count = None
+            if amount is not None and not self.leaf_within_parent(num_or_none(amount)):
+                body, amount, prev, funds = list(words[1:]), None, None, []
+            if prev is not None:
+                if self.jigyo['前年度決算額'] is None:
+                    self.jigyo['前年度決算額'] = prev['text']
+                else:
+                    self.emit_annex(page, [prev])
+            if funds:
+                self.right_extra.extend(funds)
             if body and (COUNT_WORD.match(body[-1]['text'])
                          or re.match(r'^\d{1,4}$', body[-1]['text'])):
                 count = body.pop()['text']
+            self.in_table = False
+            self.flush_sub()
             self.pending_sub = {'番号': first['text'], '名称': text_of(body),
                                 '数量': count, '金額': amount, 'words': words,
                                 **position(page, words)}
@@ -472,10 +640,17 @@ class Builder:
         # 短い行（縦書きラベル・区分名・節タイトルの折り返し等）は領域内とみなす
         if self.in_table:
             txt = squashed(words)
+            # 宣言統計表の領域内では、構造化の可能性がない短行だけ表内に保つ
+            # （かな断片での早期終了を防ぐ）。wrap候補・金額行・番号なし候補は
+            # 通常経路へ通す。未宣言（一般会計）は従来どおりで出力不変。
+            if (self.in_named_table and self.declared_stats and len(txt) <= 40
+                    and not self.table_viable(words)):
+                return False
             if (table_like(words)
                     or (len(re.findall(r'[ぁ-ん]', txt)) < 2 and len(txt) <= 40)):
                 return False
             self.in_table = False
+            self.in_named_table = False
         # 金額だけの行: 継続中の細目または内訳項目の金額を閉じる
         if (len(words) == 1 and AMOUNT_FULL.match(first['text'])
                 and AMOUNT_BAND[0] <= first['xMax'] <= AMOUNT_BAND[1] + 8):
@@ -605,27 +780,105 @@ def convert(inputs, destination, options):
             or source['pdf_type'] != 'text'):
         raise ValueError('This measured layout is Hachioji text settlement expenditure only')
     account = options.get('account', '一般会計')
-    selected = [p for scope in source['scope'] if scope['account'] == account
-                for first, last in scope['pages'] for p in range(first, last + 1)]
-    if not selected or sorted(selected) != list(range(selected[0], selected[-1] + 1)):
-        raise ValueError(f'Measured scope for {account} must be one contiguous page range')
+    funds = options.get('fund_columns') or [n for n in DEFAULT_FUNDS]
+    if len(funds) != 5 or any(not isinstance(n, str) or not n for n in funds):
+        raise ValueError('fund_columns must be 5 printed fund names')
+    stat_titles = options.get('stat_titles') or []
+    if any(not isinstance(t, str) or not t for t in stat_titles):
+        raise ValueError('stat_titles must be non-empty strings')
+    kan_keys = ['決算額'] + funds + ['執行率']
+    selected = sorted({p for scope in source['scope'] if scope['account'] == account
+                for first, last in scope['pages'] for p in range(first, last + 1)})
+    if not selected:
+        raise ValueError(f'Measured scope for {account} is empty')
+    runs = []
+    start = prev = selected[0]
+    for p in selected[1:]:
+        if p == prev + 1:
+            prev = p
+        else:
+            runs.append((start, prev))
+            start = prev = p
+    runs.append((start, prev))
     destination = Path(destination)
     observations = destination / 'hachioji-observations'
     observations.mkdir(parents=True, exist_ok=True)
-    pages = observe(source['path'], selected[0], selected[-1], observations / 'pages-bbox.html')
+    pages = []
+    for first, last in runs:
+        # 連続1区間では従来と同一の観測path・同一出力にする。非連続ではgap頁をskipする。
+        name = 'pages-bbox.html' if len(runs) == 1 else f'pages-bbox-{first}-{last}.html'
+        pages.extend(observe(source['path'], first, last, observations / name))
 
     b = Builder()
+    b.detail_cols = detail_columns(funds)
+    b.declared_stats = bool(stat_titles)
     label_state = None          # None | 'kan'（款見出し済み・集計行待ち）| 'total'
     for page, words in pages:
         b.flush_funding()
-        for line in lines(words):
+        # 行は1行ずつ処理する。款見出しの保留を解除するとき、保留行を元の順序で
+        # Stream の先頭へ戻して通常経路を通し直す（不発時の出力は従来と同一）。
+        stream = deque((page, line) for line in lines(words))
+        while stream:
+            page, line = stream.popleft()
             y = line[0]['yMin']
             flat = squashed(line)
             if y > FOOTER_TOP:
                 b.emit_annex(page, line)
                 continue
-            # 款の見出しブロック（頁上部の書名行 → 7分割ラベル行 → 金額行）
-            if '事務報告書' in flat and y < 140 and line[0]['xMin'] < 70:
+            # 宣言された統計表の表題: wrap候補に吸われても表状態を立てる。
+            # 一般会計のoptionsには宣言がないため既存出力に影響しない。
+            if b.jigyo is not None and any(t in flat for t in stat_titles):
+                b.in_table = True
+                b.in_named_table = True
+            # 款見出しが複数行に折り返す会計（款名が長く番号+名称と本文が別行になる場合）。
+            # 先頭行を保留し、本文（事務報告書）・名称断片を経て款見出しとして確定する。
+            # 款見出しとして確定できないと判明した行は、保留行もまとめて元の順序の
+            # まま通常経路へ戻すため、不発時の出力は従来と完全に同一になる。款名の
+            # 印字結合結果だけをrawへ載せ、観測列は増やさない。
+            if b.pending_kan is not None:
+                pk = b.pending_kan
+                if KAN_TITLE_MARK.search(flat):
+                    if not pk['title']:
+                        pk['title'] = True
+                        head = [w for w in line if w['xMin'] < 115 and not is_amount(w['text'])]
+                        if head:
+                            pk['名称'] = pk['名称'] + ''.join(w['text'] for w in head)
+                    pk['held'].append((page, line))
+                    continue
+                if pk['title'] and (frag := kan_name_fragment(line)) is not None:
+                    pk['名称'] = pk['名称'] + frag
+                    pk['held'].append((page, line))
+                    continue
+                if pk['title'] and len(pk['held']) > 1:
+                    # 名称断片が終わり、款見出しとして確定する。確定後はこの行を
+                    # 通常経路へ通す（款集計のラベル行・金額行は既存の状態機械が扱う）。
+                    b.close_jigyo()
+                    for held_page, held_line in pk['held']:
+                        b.emit_annex(held_page, held_line)
+                    b.kan = {'番号': pk['番号'], '名称': pk['名称'],
+                             **{k: None for k in kan_keys},
+                             '物理頁': pk['物理頁'], '上端': pk['上端'], '下端': pk['下端']}
+                    b.kou = b.moku = None
+                    b.kan_amount_cells = []
+                    label_state = 'kan'
+                    b.pending_kan = None
+                else:
+                    # 款見出しとして成立しなかった。保留行とこの行を元の順序で
+                    # 通常経路へ戻す。戻した保留行は再捕捉しない。
+                    items = pk['held'] + [(page, line)]
+                    b.pending_kan = None
+                    for held_page, held_line in pk['held']:
+                        b.kan_rejected.add(id(held_line))
+                    for item in reversed(items):
+                        stream.appendleft(item)
+                    continue
+            if (fragment := parse_kan_heading_fragment(line, page)) is not None \
+                    and id(line) not in b.kan_rejected:
+                b.pending_kan = fragment
+                continue
+            # 款の見出しブロック（頁上部の書名行 → 7分割ラベル行 → 金額行）。
+            # 頁途中に款が開く会計もあるためy位置では限定しない（一般会計の頁途中該当は0件）。
+            if '事務報告書' in flat and line[0]['xMin'] < 70:
                 b.close_jigyo()
                 head = [w for w in line if w['xMin'] < 115]
                 if head and is_amount(head[0]['text']):
@@ -635,8 +888,9 @@ def convert(inputs, destination, options):
                             break
                         name += w['text']
                     b.kan = {'番号': head[0]['text'], '名称': name or text_of(head[1:]),
-                             **{k: None for k in KAN_KEYS}, **position(page, head)}
+                             **{k: None for k in kan_keys}, **position(page, head)}
                     b.kou = b.moku = None
+                    b.kan_amount_cells = []
                     label_state = 'kan'
                 b.emit_annex(page, line)
                 continue
@@ -645,10 +899,19 @@ def convert(inputs, destination, options):
                 b.emit_annex(page, line)
                 continue
             if label_state == 'kan_amounts':
-                b.kan.update(kan_values(line))
-                b.obs_kan.append({'page': page, '番号': b.kan['番号'], '名称': b.kan['名称'],
-                                  **kan_values(line), **position(page, line)})
-                label_state = None
+                # 款集計の金額行: 7セルを右端 (xMax) 順に固定順序へ割り当てる。
+                # 頁途中の款見出しではy jitterで行が割れるためxMax順で復元する。
+                # 単一行では従来の印字順と同一になる。
+                b.kan_amount_cells.extend((w['xMax'], w['text']) for w in line)
+                if len(b.kan_amount_cells) > 7:
+                    raise ValueError(f'款集計の金額セルが7超: {[t for _, t in b.kan_amount_cells]}')
+                if len(b.kan_amount_cells) == 7:
+                    vals = dict(zip(kan_keys, [t for _, t in sorted(b.kan_amount_cells)]))
+                    b.kan.update(vals)
+                    b.obs_kan.append({'page': page, '番号': b.kan['番号'], '名称': b.kan['名称'],
+                                      **vals, **position(page, line)})
+                    b.kan_amount_cells = []
+                    label_state = None
                 b.emit_annex(page, line)
                 continue
             if '歳出合計' in flat and len(line) <= 6 and y < 140:
@@ -658,6 +921,14 @@ def convert(inputs, destination, options):
                 label_state = 'total_labels'
                 b.emit_annex(page, line)
                 continue
+            # 給与費決算明細書の開始: 開いている事業を閉じる。以降の行は通常経路で
+            # 処理する (歳出合計後の給与域と同一の見出しなし状態になるため annex へ送られる)。
+            # 状態リセットのみで行自体は消費しないため、一般会計の出力は変わらない。
+            if '給与費決算明細書' in flat and y < 140:
+                b.close_jigyo()
+                b.kan = b.kou = b.moku = None
+                b.kan_amount_cells = []
+                label_state = None
             if label_state == 'total_labels':
                 if '執行率' in flat:
                     b.emit_annex(page, line)
@@ -704,9 +975,31 @@ def convert(inputs, destination, options):
                 pending['words'] = line
                 b.pending_moku = pending
                 continue
+            kou = parse_kou_heading(line, page)
+            if kou:
+                b.close_jigyo()
+                b.kou = {'番号': kou['番号'], '名称': kou['名称'], '物理頁': kou['物理頁'],
+                         '上端': kou['上端'], '下端': kou['下端'],
+                         '_予算現額': kou['予算現額'], '_当年度決算額': kou['当年度決算額'],
+                         '_前年度決算額': kou['前年度決算額']}
+                b.moku = None
+                b.obs_kou.append({'page': page, '款': b.kan and b.kan['番号'],
+                                   '項': kou['番号'], '名称': kou['名称'],
+                                   '予算現額': kou['予算現額'],
+                                   '当年度決算額': kou['当年度決算額'],
+                                   '前年度決算額': kou['前年度決算額']})
+                continue
             jigyo = parse_jigyo_heading(line, page)
             if jigyo:
                 b.close_jigyo()
+                # 款直轄事業: 事業決算が現項決算を上回り (containment違反)、
+                # かつ款決算と一致するときのみ項を継承しない。決算どうしで比べる。
+                if (b.kou is not None and b.kan is not None and b.kan.get('決算額') is not None
+                        and (nd := num_or_none(jigyo['当年度決算額'])) is not None
+                        and (td := num_or_none(b.kou.get('_当年度決算額'))) is not None
+                        and (kd := num_or_none(b.kan['決算額'])) is not None
+                        and nd > td and nd == kd):
+                    jigyo['_kodirect'] = True
                 b.jigyo = jigyo
                 b.obs_jigyo.append({'page': page, '款': b.kan and b.kan['番号'],
                                     '項': b.kou and b.kou['番号'], '目': b.moku and b.moku['番号'],
@@ -725,7 +1018,7 @@ def convert(inputs, destination, options):
                 continue
             left = [w for w in line if w['xMin'] < RIGHT_X]
             if b.left_line(left, page):
-                b.right_line([w for w in line if w['xMin'] >= RIGHT_X], page)
+                b.right_line(b.pop_right_extra() + [w for w in line if w['xMin'] >= RIGHT_X], page)
                 continue
             if (left and segments(left) == 1 and b.jigyo is not None
                     and b.item is None and not b.in_table
@@ -736,11 +1029,13 @@ def convert(inputs, destination, options):
                 b.emit_annex(page, left)
                 if table_start(left):
                     b.in_table = True
+                    if b.declared_stats and len(squashed(left)) <= 40 and TABLE_TITLE_TAIL.search(squashed(left)):
+                        b.in_named_table = True
             b.right_line([w for w in line if w['xMin'] >= RIGHT_X], page)
     b.close_jigyo()
 
     (observations / 'observations.json').write_text(json.dumps(
-        {'款集計': b.obs_kan, '目見出し': b.obs_moku, '事業見出し': b.obs_jigyo,
+        {'款集計': b.obs_kan, '項見出し': b.obs_kou, '目見出し': b.obs_moku, '事業見出し': b.obs_jigyo,
          '歳出合計': b.obs_total}, ensure_ascii=False, indent=2) + '\n')
 
     def cols(names):
@@ -750,47 +1045,62 @@ def convert(inputs, destination, options):
 
     outputs = {}
     context = lambda tid: ConversionContext(source['sha256'], tid, __file__)
-    outputs[options['detail_table_id']] = {
-        'path': Path(write_conversion(destination / (options['detail_table_id'] + '.parquet'),
-                     b.detail, columns=cols(DETAIL_COLUMNS),
-                     context=context(options['detail_table_id'])).path),
-        'metadata': detail_metadata()}
-    outputs[options['funding_table_id']] = {
-        'path': Path(write_conversion(destination / (options['funding_table_id'] + '.parquet'),
-                     b.funding, columns=cols(FUNDING_COLUMNS),
-                     context=context(options['funding_table_id'])).path),
-        'metadata': {'units': [{'text': '円', 'scope': {'kind': 'columns',
-                     'columns': ['財源_金額']}}],
-                     'notes': [{'text': '事業ブロック右欄の財源内訳。事業の当年度決算額の独立した印字分解であり、'
-                                'detail表の葉金額とは別の軸。ラベルが行またぎの場合は改行で保持。',
-                                'scope': {'kind': 'table'}}],
-                     'column_contexts': [{'columns': FUNDING_COLUMNS[:7],
-                                          'header_path': ['事業', '財源内訳'],
-                                          'grain_columns': ['事業_物理頁', '事業_上端', '財源_上端']}]}}
-    outputs[options['annex_table_id']] = {
-        'path': Path(write_conversion(destination / (options['annex_table_id'] + '.parquet'),
+    # 単表emitのopt-in分離 (131156先例と同型)。省略時は全3表で従来どおり。
+    emit = options.get('emit') or ('detail', 'funding', 'annex')
+    if any(k not in ('detail', 'funding', 'annex') for k in emit):
+        raise ValueError(f'Unknown emit kinds: {emit}')
+    if 'detail' in emit:
+        if not options.get('detail_table_id'):
+            raise ValueError('emit detail requires detail_table_id')
+        outputs[options['detail_table_id']] = {
+            'path': Path(write_conversion(destination / (options['detail_table_id'] + '.parquet'),
+                         b.detail, columns=cols(b.detail_cols),
+                         context=context(options['detail_table_id'])).path),
+            'metadata': detail_metadata(b.detail_cols, funds, options.get('scope_label'),
+                                        options.get('stat_titles'))}
+    if 'funding' in emit:
+        if not options.get('funding_table_id'):
+            raise ValueError('emit funding requires funding_table_id')
+        outputs[options['funding_table_id']] = {
+            'path': Path(write_conversion(destination / (options['funding_table_id'] + '.parquet'),
+                         b.funding, columns=cols(FUNDING_COLUMNS),
+                         context=context(options['funding_table_id'])).path),
+            'metadata': {'units': [{'text': '円', 'scope': {'kind': 'columns',
+                             'columns': ['財源_金額']}}],
+                         'notes': [{'text': '事業ブロック右欄の財源内訳。事業の当年度決算額の独立した印字分解であり、'
+                                    'detail表の葉金額とは別の軸。ラベルが行またぎの場合は改行で保持。',
+                                    'scope': {'kind': 'table'}}],
+                         'column_contexts': [{'columns': FUNDING_COLUMNS[:7],
+                                              'header_path': ['事業', '財源内訳'],
+                                              'grain_columns': ['事業_物理頁', '事業_上端', '財源_上端']}]}}
+    if 'annex' in emit:
+        if not options.get('annex_table_id'):
+            raise ValueError('emit annex requires annex_table_id')
+        outputs[options['annex_table_id']] = {
+            'path': Path(write_conversion(destination / (options['annex_table_id'] + '.parquet'),
                      b.annex, columns=cols(ANNEX_COLUMNS),
                      context=context(options['annex_table_id'])).path),
-        'metadata': {'notes': [{'text': '歳出明細以外の全印字行（頁見出し・款集計行・説明以外の注記・'
-                                '内表・歳出合計・決算総括・給与費決算明細・頁脚）。1印字行=1行で原文保持。'
-                                '款_〜事業_列は行が属する見出しの原典座標。', 'scope': {'kind': 'table'}}],
-                     'column_contexts': [{'columns': ['本文', '物理頁', '上端', '下端', '左端', '右端'],
-                                          'header_path': ['印字行'],
-                                          'grain_columns': ['物理頁', '上端']}]}}
+            'metadata': {'notes': [{'text': '歳出明細以外の全印字行（頁見出し・款集計行・説明以外の注記・'
+                                    '内表・歳出合計・決算総括・給与費決算明細・頁脚）。1印字行=1行で原文保持。'
+                                    '款_〜事業_列は行が属する見出しの原典座標。', 'scope': {'kind': 'table'}}],
+                         'column_contexts': [{'columns': ['本文', '物理頁', '上端', '下端', '左端', '右端'],
+                                              'header_path': ['印字行'],
+                                              'grain_columns': ['物理頁', '上端']}]}}
     return outputs
 
 
-def detail_metadata():
-    amounts = [c for c in DETAIL_COLUMNS if c.endswith(('決算額', '予算現額', '前年度決算額',
-               '金額')) or c in ('款_国庫支出金', '款_都支出金', '款_市債', '款_その他', '款_一般財源')]
-    contexts = [{'columns': [c for c in DETAIL_COLUMNS if c.startswith(level + '_')],
+def detail_metadata(columns, funds, scope_label=None, stat_titles=None):
+    amounts = [c for c in columns if c.endswith(('決算額', '予算現額', '前年度決算額',
+               '金額')) or c in ('款_国庫支出金', '款_都支出金', '款_市債', '款_その他', '款_一般財源',
+               '款_保険料', '款_一般会計繰入金')]
+    contexts = [{'columns': [c for c in columns if c.startswith(level + '_')],
                  'header_path': ['科目', level] if level != '事業' else ['事業', level],
                  'grain_columns': [level + '_物理頁', level + '_上端']}
                 for level in ('款', '項', '目', '事業')]
-    contexts.append({'columns': [c for c in DETAIL_COLUMNS if c.startswith(('内訳_', '細目_'))],
+    contexts.append({'columns': [c for c in columns if c.startswith(('内訳_', '細目_'))],
                      'header_path': ['内訳', '細目'],
                      'grain_columns': ['細目_物理頁', '細目_上端']})
-    note = ('「主要な施策の成果・事務報告書」の歳出部（物理148-464頁）。'
+    note = ('「主要な施策の成果・事務報告書」の歳出部（' + (scope_label or '物理148-464頁') + '）。'
             '行は最細の印字金額明細: 事業が（n）内訳項目＋アイウ細目を持てば細目行、'
             '内訳項目のみなら内訳行、内訳のない事業は事業行が葉。'
             '款・項・目・事業・内訳の名称・印字金額・位置を葉行へ反復する。'
@@ -799,6 +1109,13 @@ def detail_metadata():
             '事業の財源内訳は別表 funding、内表・歳出合計・決算総括・給与費決算明細は別表 annex。'
             '本資料は主要施策の抜粋であり、目→事業・款→目の合計検算は原則不成立。'
             '（予算現額）・<前年度決算額>は括弧・不等号を含む印字通りの文字列。')
+    if funds != DEFAULT_FUNDS:
+        note += ('款の資金分解5列は原典款見出しの印字どおり（' + '・'.join(funds) + '）で、'
+                 '一般会計の分解（国庫支出金・都支出金・市債・その他・一般財源）とは列名が異なる。'
+                 '決算額・執行率と合わせた7列が款集計行に対応する。')
+    if stat_titles:
+        note += ('宣言された統計表（' + '・'.join(stat_titles) + '）の (n) 行は表断片として '
+                 'annex へ送り、属する事業行を葉とする。')
     return {'units': [{'text': '円', 'scope': {'kind': 'columns', 'columns': amounts}}],
             'notes': [{'text': note, 'scope': {'kind': 'table'}}],
             'column_contexts': contexts}

@@ -112,6 +112,16 @@ REPAIR_WORDS = [
     ('貸等', '費等'), ('サービス貨', 'サービス費'),
     # 0021 国民健康保険: 療養昔の支給 → 療養費 (render-verified p14).
     ('療養昔', '療養費'),
+    # 0021v2 国民健康保険: 国民健廉保険 → 国民健康保険 (render-verified p14,
+    # 既存 健巌/健痕→健康 と同族)。s1・care圏に健廉の出現なし。
+    ('健廉', '健康'),
+    # 0021v2 行折返し分離 分 の ノ刀 系誤読 (render-verified p16)。文字層では
+    # ‘ と ノ刀 が別wordのため pair 規則のみ (bare ノ刀 規則は見送り:
+    # 全ドキュメントにbare出現なし、p3歳入圏の対も ‘付き)。
+    ('‘ノ刀', '分'),
+    # 0021v2 役務喘 → 役務費 (render-verified p17、既存 需用喘→需用費 と同族)。
+    # s1・care圏に喘の出現なし(需用喘は既存規則で処理)。
+    ('役務喘', '役務費'),
     # 卜 is genuinely printed in 卜訪問看護 (render-verified): keep it.
 ]
 REPAIR_HITS = {}
@@ -208,11 +218,22 @@ def repair_name(value, dept_parens=True):
     return repair_width(repair_brackets(repair_text(value), dept_parens)) if value else value
 
 
+# A printed '0' amount merges with the 備考 ○ marker the same way ('oo' at
+# x≈974-990); its center falls right of the 不用額 band edge, so it needs the
+# same split. Fire only for marker-family tokens (comma amounts untouched).
+BOUNDARY_MARKER = re.compile(r'[0-9oO○〇●]*[oO○〇●][0-9oO○〇●]*')
+
+
 def split_boundary_token(word):
     """Poppler merges a rightmost amount digit with the ○ marker of the 備考
     column (e.g. printed '1' + '○' extracted as '10' at x≈975-990). Split any
-    all-digit token straddling x=982 into per-character words."""
-    if not NUMBER.fullmatch(word['text']) or not (word['xMin'] < 982 < word['xMax']):
+    all-digit token straddling x=982 into per-character words. A printed '0'
+    amount merges the same way ('oo'); split marker-family tokens too so the
+    amount-side fragment normalizes via DIGIT_FIX and the note-side fragment
+    stays a heading marker."""
+    if not (word['xMin'] < 982 < word['xMax']):
+        return [word]
+    if not (NUMBER.fullmatch(word['text']) or BOUNDARY_MARKER.fullmatch(word['text'])):
         return [word]
     span = word['xMax'] - word['xMin']
     per = span / len(word['text'])
