@@ -6,7 +6,7 @@ import os
 import shutil
 import subprocess
 import tempfile
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 from ingestion.fiscal.manifest import BUCKET, object_key, sha_file
 from ingestion.paths import CACHE
@@ -19,8 +19,14 @@ def verify(path: Path, reference: dict) -> None:
         raise ValueError('Stored object hash/size differs')
 
 
+def safe_relative(value: str) -> str:
+    path = PurePosixPath(value)
+    if path.is_absolute() or '..' in path.parts or '\\' in value or not value or not path.parts or value != str(path) or any(ord(c) < 32 for c in value):
+        raise ValueError(f'Unsafe input path: {value}')
+    return str(path)
+
+
 def fetch(reference: dict, *, remote: bool = False) -> Path:
-    from ingestion.inputs import safe_relative
     if reference.get('bucket', BUCKET) != BUCKET:
         raise ValueError('Only the private input bucket is supported')
     path = OBJECTS / safe_relative(reference['key'])

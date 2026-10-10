@@ -154,7 +154,7 @@ _Avoid_: ログ
 
 ```
 .
-├── pipeline/         # source_selection、ingestion/fiscal、dbt、任意の FDP 整形、verify/report と verify/view
+├── pipeline/         # source_selection、ingestion/fiscal、dbt（マスタと正規化macro）
 ├── packages/         # fiscal の純粋な型・名称、jurisdictions
 ├── apps/             # web、api、docs の一時的な 500 応答
 ├── docs/             # 設計・調査文書
@@ -172,9 +172,7 @@ mise install
 bun install
 uv sync
 
-bun run pipeline:inputs  # sources.lock.json の固定入力を R2 から復元
-bun run pipeline:build   # オフラインで dbt・marts の CSV を生成
-bun run dev              # ローカル専用の検証画面（5174）
+bun run --cwd pipeline ingestion:check   # 取り込みの宣言・選定・fingerprint を検査
 ```
 
 依存は exact ピン留めで、更新するときは cooldown を明示する。

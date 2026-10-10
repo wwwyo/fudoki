@@ -1,9 +1,0 @@
-version: 2
-
-sources:
-  - name: raw_131024_settlement
-    meta:
-      external_location: "read_parquet('{{ env_var('FUDOKI_INPUT_DIR') }}/jurisdiction=131024/year=*/document_kind=settlement/edition=*/direction=expenditure/table={name}/data.parquet', hive_partitioning=true, file_row_number=true)"
-    tables:
-      - name: chuo-general-reserve-transfers
-      - name: chuo-care-reserve-transfers

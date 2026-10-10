@@ -155,7 +155,7 @@ PDFは原典の内部で重複して印字された数字どうしの一致で�
 2. `pipeline/` から `bun run ingestion:check --manifest <対象JSON>` を実行する。型・正規配置・選定との対応・表IDの所有者が不正なら修正してから進む。
 3. 原典のSHAからローカルパスへの対応JSONを渡す。原典の復元が必要なら `bun run ingestion:originals --manifest <対象JSON> --output <入力パスJSON> --remote` を使う。
 4. `bun run ingestion:convert --manifest <対象JSON> --inputs <入力パスJSON> --output <新しい候補dir>` を実行する。件数とファイルパスだけをcontextへ返し、表・OCR・検査の詳細はファイルへ保存する。
-5. CSVは自動保持検査の結果を確認して保存へ進む。PDFは候補Parquetと未確認事項を原典照合へ渡す。R2へ保存する場合は次の手順へ進む。既存表の移行用 `retained` は再抽出器でもCSV保持検査でもない。
+5. CSVは自動保持検査の結果を確認して保存へ進む。PDFは候補Parquetと未確認事項を原典照合へ渡す。R2へ保存する場合は次の手順へ進む。
 
 ## 現在版の保存・差し替え
 
