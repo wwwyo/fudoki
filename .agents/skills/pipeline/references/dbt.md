@@ -30,3 +30,4 @@ uv run python -m build_inputs prepare --manifest <対象JSON>
 - 保存参照・コード・宣言・判断はGitで管理する。キャッシュ・catalog・DB・CSV・検査結果は再生成するローカル領域に置く。
 - 通常監査G・検証報告には旧入力一覧を使う経路が残る。新しいFの成功だけでGの移行・全公開資料の収録完了を宣言しない。[移行記録](../../../../docs/prd/ingestion-storage/migration.md) と [通常監査](coverage-audit.md) を確認する。
 - 実装は `pipeline/build_inputs.py`・`build.ts`・`identity.ts`。操作の詳細は [pipeline/README.md](../../../../pipeline/README.md)、構築・整形・分類の過去の実測は [dbtの注意点](../../../../docs/survey/dbt-transform-notes.md) を参照する。
+- raw → staging → intermediate → marts → CSVの値と単位、原典行の対応、欠落・二重収録、集約を確認する。stagingの行数一致だけで全値一致としない。単位・金額段階の根拠は原典から取り、宣言どうしの一致だけで済ませない。
