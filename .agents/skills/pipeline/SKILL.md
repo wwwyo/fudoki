@@ -10,6 +10,8 @@ user-invocable: false
 
 ## Routing table
 
+取り込みの責務は、原典から表を構築・検査し、Parquetと管理情報を保存するところまで。保存済みParquetの読み込み・入力準備・後段の構築はdbt側の責務として [references/dbt.md](references/dbt.md) に分ける。
+
 | やること | 読む reference |
 | --- | --- |
 | 全体の流れ・工程間の受け渡しを確認する | [references/workflow.md](references/workflow.md) |
