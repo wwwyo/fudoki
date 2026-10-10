@@ -473,7 +473,7 @@ def parse_breakdown(cell, anomalies):
     annotation_zone = False
 
     def close_deeper(level):
-        while len(stack) > level:
+        while stack and stack[-1]['level'] >= level:
             stack.pop()
 
     rows = cell['rows']
@@ -562,7 +562,7 @@ def parse_breakdown(cell, anomalies):
             if leading['text'] != number_token:
                 anomalies.append({'page': page, 'y': row[0]['yMin'],
                                   'issue': 'number glyph variant', 'text': leading['text']})
-            parent = stack[level - 1] if level and len(stack) >= level else (stack[-1] if stack else None)
+            parent = stack[-1] if level and stack else None
             if level and parent is None:
                 anomalies.append({'page': page, 'y': row[0]['yMin'],
                                   'issue': 'item without printed parent'})
@@ -646,11 +646,11 @@ def parse_breakdown(cell, anomalies):
         if is_pair_item:
             # An unmarked name starting in the heading column is a 事業 whose
             # ○ marker was lost to the text layer (e.g. merged into digits).
-            level = 0 if leading['xMin'] < 998 else (min(len(stack), 2) if stack else 1)
+            level = 0 if leading['xMin'] < 998 else (min(stack[-1]['level'] + 1, 2) if stack else 1)
             if level != 0 and stack and len(stack) <= 2 and leading['xMin'] < stack[-1]['名称_x'] - 4:
                 level = 1
             close_deeper(level)
-            parent = stack[level - 1] if level and len(stack) >= level else (stack[-1] if stack else None)
+            parent = stack[-1] if level and stack else None
             item = {'level': level, '番号': None, '名称': name_full,
                     '名称_x': leading['xMin'], '金額': value,
                     'parent': parent,
@@ -816,14 +816,15 @@ def build(pages):
                 setsu = [a for a in anchors if a[2] == 'setsu'
                        and stream['rows'] and a[4] is not record
                        and a[5].get('目') is context.get('目')]
+                def band_end(a):
+                    return next((b[1] for b in anchors if b[0] == a[0] and b[1] > a[1]), BODY_BOTTOM + 30)
                 band = [a for a in setsu
-                        if all(a[1] - 1 <= r[1][0]['yMin'] for r in stream['rows'])
-                        and all(r[1][0]['yMin'] < (next((b[1] for b in anchors if (b[0], b[1]) > (a[0], a[1]) and b[2] != 'setsu'), BODY_BOTTOM + 30))
-                                for r in stream['rows'])]
+                        if all(r[0] == a[0] and a[1] - 1 <= r[1][0]['yMin'] < band_end(a)
+                               for r in stream['rows'])]
                 target = band[0][4] if len(band) == 1 else record
                 addition = '\n'.join(remarks)
                 target['備考'] = addition if target['備考'] is None else target['備考'] + '\n' + addition
-                if band:
+                if len(band) == 1:
                     anomalies.append({'issue': 'setsu-scoped remark', 'page': stream['page'],
                                       'setsu': band[0][3]})
 

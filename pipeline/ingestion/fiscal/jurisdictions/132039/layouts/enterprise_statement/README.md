@@ -29,7 +29,7 @@ repo rootから、未使用出力dirを指定する。
 mise exec -- uv run --frozen --extra paddle-ocr --directory pipeline python \
   -m ingestion.fiscal.jurisdictions.132039.layouts.enterprise_statement.convert \
   --request ingestion/fiscal/observations/scan-2025-devin-max-2026-10-09/132039/water/request-NNN.json \
-  --output ingestion/fiscal/observations/scan-2025-devin-max-2026-10-09/132039/water/candidate-NEW
+  --output ingestion/fiscal/observations/scan-2025-devin-max-2026-10-09/132039/water/candidate-NEW  # 出力は配下の enterprise-statement-<layout SHA先頭12桁>/
 ```
 
 `request-NNN.json` はローカル変換契約用であり正式管理JSONではない。原典・native・追加crop native・設定のSHAを検査する。候補は上書きせず、訂正も別番号候補で再構築する。`conversion.json` は表SHA・schema・metadata・金額列、`observations.json` は全セルbinding・未割当・除外ID・未観測・適用訂正を保持する。元nativeの文字・ID・座標は書き換えない。

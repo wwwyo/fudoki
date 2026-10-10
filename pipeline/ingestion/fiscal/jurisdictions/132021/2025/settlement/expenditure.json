@@ -181,7 +181,7 @@
     {
       "table_id": "general-expenditure-details",
       "conversion_id": "general-settlement-detail",
-      "input_fingerprint": "568ef02a277aedda4d26731dc0e75cf06aee4937c2902fdccf2f9c1a50014f16",
+      "input_fingerprint": "61a966844bcb29da08bc2d1fa7060d1e9f434dbd31b576979b323aa164761a92",
       "object": {
         "key": "fiscal/ingestion/132021/2025/settlement/expenditure/general-expenditure-details.parquet",
         "sha256": "338a1a12f745dbad29ad30025c45040746fcc1330ef762cce23b93b395e4e70d",
@@ -349,7 +349,7 @@
     {
       "table_id": "general-expenditure-notes",
       "conversion_id": "general-settlement-detail",
-      "input_fingerprint": "568ef02a277aedda4d26731dc0e75cf06aee4937c2902fdccf2f9c1a50014f16",
+      "input_fingerprint": "61a966844bcb29da08bc2d1fa7060d1e9f434dbd31b576979b323aa164761a92",
       "object": {
         "key": "fiscal/ingestion/132021/2025/settlement/expenditure/general-expenditure-notes.parquet",
         "sha256": "f512a437c0db55130f83a528eea8a6d956376db28525a190d00d5b2bdfa6b1a6",
@@ -570,7 +570,7 @@
     {
       "table_id": "general-summary",
       "conversion_id": "general-settlement-summary",
-      "input_fingerprint": "86053b3ba5cde50e1f4e80b3567bc072e63d578c5a710324478d05c64135b9a1",
+      "input_fingerprint": "5a72724a8c0b88da2067cb71a80f6bfde576eda906e35d899096369b8aee3836",
       "object": {
         "key": "fiscal/ingestion/132021/2025/settlement/expenditure/general-summary.parquet",
         "sha256": "e46e54f68aa864ccc06b2520e47153c9db0f0022ea9de5fe8916c3e06fb6ff18",
@@ -632,7 +632,7 @@
     {
       "table_id": "kouki-expenditure-details",
       "conversion_id": "kouki-settlement-details",
-      "input_fingerprint": "7011d0974f9d51d195714b699f7ff58d1ef212d184c2dfcc927b27f5c0042600",
+      "input_fingerprint": "6fc3cd239cbf4cca84e415160e6e8dbcb79d83bed1d4f8b89f27e905ae31d2a4",
       "object": {
         "key": "fiscal/ingestion/132021/2025/settlement/expenditure/kouki-expenditure-details.parquet",
         "sha256": "e4b58323edddfc666729ed1a2c8e5b6d46cb6a381a9648be2a1ff5248a26b87f",
@@ -800,7 +800,7 @@
     {
       "table_id": "kouki-expenditure-notes",
       "conversion_id": "kouki-settlement-notes",
-      "input_fingerprint": "1f716b9b46c825917af8d84eaaacbbfe211ef80ee62bc8c04cc7c306e56d2a70",
+      "input_fingerprint": "9b40cdaa85cd691c5165b252d253f6d8394e8b3ed309670bba2f2911bfe609ca",
       "object": {
         "key": "fiscal/ingestion/132021/2025/settlement/expenditure/kouki-expenditure-notes.parquet",
         "sha256": "bcd1ffb93d7ae27b53291e8b60b1864d3fb0eac53e064b29745a1b26794d3e7a",
@@ -848,7 +848,7 @@
         ],
         "notes": [
           {
-            "text": "右頁備考結合セル内の事業説明の最細行（説明1=事業、説明2=セル内節見出し、説明3=細目、説明4=内訳行）。説明階層の見出し行で下位印字の無いものはその見出し自体を葉とする（金額0印字の事業・葉なし節見出し等）。説明内節見出し(説明2)と表グリッド節行の対応付けはraw列に実体化せず検査用観測に留める。説明3・説明4は同じ支出の別分解軸であり節表 general-expenditure-details とは合算しない。事業名の【所管】は名称の一部。金額は原典の桁区切り・△符号を保持。物理頁は各要素が印字された実頁（左頁・右頁それぞれ）。",
+            "text": "右頁備考結合セル内の事業説明の最細行（説明1=事業、説明2=セル内節見出し、説明3=細目、説明4=内訳行）。説明階層の見出し行で下位印字の無いものはその見出し自体を葉とする（金額0印字の事業・葉なし節見出し等）。説明内節見出し(説明2)と表グリッド節行の対応付けはraw列に実体化せず検査用観測に留める。説明3・説明4は同じ支出の別分解軸であり節表 kouki-expenditure-details とは合算しない。事業名の【所管】は名称の一部。金額は原典の桁区切り・△符号を保持。物理頁は各要素が印字された実頁（左頁・右頁それぞれ）。",
             "scope": {
               "kind": "table"
             }
@@ -1021,7 +1021,7 @@
     {
       "table_id": "kouki-summary",
       "conversion_id": "kouki-settlement-summary",
-      "input_fingerprint": "7e45f012901d4c8b83f4e653e2e0159e0d978362c7cff441d53c650fe5576a58",
+      "input_fingerprint": "e5d8aea55da88305e12addf39f421622d3eeba57dd7f4b1cfc66175e53e44c28",
       "object": {
         "key": "fiscal/ingestion/132021/2025/settlement/expenditure/kouki-summary.parquet",
         "sha256": "9ea19d1316967e26b906cc236bca39bd914c9ba13d450b34a9b6431f91242347",
@@ -1083,7 +1083,7 @@
     {
       "table_id": "chushajo-summary",
       "conversion_id": "chushajo-settlement-summary",
-      "input_fingerprint": "f994ef28d5f6dc86e44c7f7bfe52ee2e7d0a3f6fd68fa8a20398a28e1abcf287",
+      "input_fingerprint": "cb11f46f7fc4b48382636b3e729b2251f518260bbe29d5644162097718396252",
       "object": {
         "key": "fiscal/ingestion/132021/2025/settlement/expenditure/chushajo-summary.parquet",
         "sha256": "51ed46b8500084ed72a80318ef990614f4e370d4008a84d2abe2360d33ebe854",
@@ -1145,7 +1145,7 @@
     {
       "table_id": "chushajo-expenditure-details",
       "conversion_id": "chushajo-settlement-details",
-      "input_fingerprint": "340e110c7248cc62eaae3f0a571cc8949ad11ebaf123108e9654b550fd3fb831",
+      "input_fingerprint": "8f1d4bd56fd50bccc097c53880458463e2688f332081b4c4364ea42041105fd7",
       "object": {
         "key": "fiscal/ingestion/132021/2025/settlement/expenditure/chushajo-expenditure-details.parquet",
         "sha256": "6204e7f8904ea0fe5c0f3c5769dd16b24fd868ba15a1075b06306f21fce83af1",
@@ -1313,7 +1313,7 @@
     {
       "table_id": "chushajo-expenditure-notes",
       "conversion_id": "chushajo-settlement-notes",
-      "input_fingerprint": "bba9a827be727c4dc34502dfc586d1b10eb0a72f6a5c918cfad37295c18f52d8",
+      "input_fingerprint": "0653073eac704c214325f6a98c3fca6603c1a5e8dee718bce45966d478c91a66",
       "object": {
         "key": "fiscal/ingestion/132021/2025/settlement/expenditure/chushajo-expenditure-notes.parquet",
         "sha256": "668f2c1c7eca1e7a822676f187973cf27e716294ca2cd9e4e23d4a100d4b2262",
