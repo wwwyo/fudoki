@@ -27,22 +27,15 @@
     "dev:api": "bun run --cwd apps/api dev",
     "dev:web": "bun run --cwd apps/web dev",
     "test": "bun test apps/availability.test.ts && bun run --filter '@fudoki/*' test",
-    "test:e2e": "bun run typecheck:e2e && E2E_TELEMETRY_DISABLED=1 mise x -- bun run e2e run",
     "typecheck": "tsc --noEmit",
     "typecheck:all": "bun run typecheck && bun run --filter '@fudoki/*' typecheck",
-    "typecheck:e2e": "tsc --noEmit -p tsconfig.e2e.json",
     "pipeline:ingestion": "bun run --cwd pipeline ingestion:convert"
   },
   "dependencies": {
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@ai-sdk/openai-compatible": "3.0.62",
-    "@e2e-dev/web": "0.11.2",
     "@types/bun": "catalog:",
-    "ai": "7.0.127",
-    "e2e": "0.16.0",
-    "playwright": "1.63.0",
     "typescript": "catalog:"
   }
 }
