@@ -35,7 +35,7 @@ bun run dev                   # 報告を生成し、ローカル検証画面を
 
 `pipeline:build` は dbt の変換・検査と marts の CSV 生成までを実行する。結果は `pipeline/.build/builds/b-<内部構築ID>/` に入り、同じ構築 ID の再実行では CSV のハッシュを照合する。公開 web・API・MCP・docs は一時的に HTTP 500 を返す。
 
-固定入力の復元・検証画面・現在の実装上の制約は [pipeline/README.md](pipeline/README.md) を参照。
+パイプラインの工程と実行手順は [pipeline skill](.agents/skills/pipeline/SKILL.md) を参照。
 
 ## 用語
 
@@ -69,7 +69,7 @@ COFOG は歳出明細と同じ CSV に含め、原典由来の金額と分類な
 
 - [AGENTS.md](AGENTS.md): プロジェクトの identity・構造・セットアップ
 - [docs/adr/](docs/adr/): 設計上の決定の記録
-- [pipeline/README.md](pipeline/README.md): 固定入力からの構築と検査
+- [pipeline skill](.agents/skills/pipeline/SKILL.md): 原典選定・取り込み・dbt構築の手順
 - [apps/web/README.md](apps/web/README.md): ダッシュボードの構成
 - [pipeline/dbt/models/](pipeline/dbt/models/): staging（原典別の整形）→ intermediate（統合・分類）→ marts（提供用データ）。配布処理は `pipeline/fdp/` に分け、原典の保存と判断の整合性はテストで縛っている
 - [pipeline/ingestion/fiscal/management/sources.toml](pipeline/ingestion/fiscal/management/sources.toml): 取得元の定義。団体を足すときはここから

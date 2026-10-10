@@ -1,6 +1,6 @@
 # pipeline
 
-原典から提供用データを作る層。実行手順は [README.md](README.md)、原典調査・取り込み・PDF抽出・dbt構築のハマりどころは `.agents/skills/pipeline/` を参照する。
+原典から提供用データを作る層。実行手順と、原典調査・取り込み・PDF抽出・dbt構築のハマりどころは `.agents/skills/pipeline/` を参照する。
 
 ## Scripts
 
@@ -27,7 +27,7 @@ script はこの package が所有する。実行は `bun run --cwd pipeline <na
 
 - **汎用層として作る**: 団体ごとの差は原典選定の宣言・書式設定に置き、取得・変換の処理を再利用できる形にする。「他自治体でも動く」をコードで示す。
 - **schema・宣言は最小形から始める**: フィールドは原則 nullable にし、必須化・union 型化・汎用 scope 枠のような拡張は実例が出てから足す。最初から過剰な提案を出すとユーザーに削らせる往復になる（2026-10、source_selection schema の scope/inspection を連続して削らせた観測）。
-- **取り込み**: Bは選定済みのCSV/PDFと対象情報を受け取り、ローカルParquetへ変換する。管理JSONはschema_version 1で入出力と変換だけを持ち、型は `ingestion/fiscal/manifest.schema.json`、対象間の制約は `manifest.py`。CLIとCIで `ingestion:check` を実行する。配置と保存の手順は [README](README.md)、判断は [保存設計](../docs/prd/ingestion-storage/design-doc.md) を参照する。
+- **取り込み**: Bは選定済みのCSV/PDFと対象情報を受け取り、ローカルParquetへ変換する。管理JSONはschema_version 1で入出力と変換だけを持ち、型は `ingestion/fiscal/manifest.schema.json`、対象間の制約は `manifest.py`。CLIとCIで `ingestion:check` を実行する。配置と保存の手順は [ingestion手順](../.agents/skills/pipeline/references/ingestion.md)、判断は [保存設計](../docs/prd/ingestion-storage/design-doc.md) を参照する。
 - **コード配置**: 共通処理は `ingestion/lib/`、書式別の共通処理は `ingestion/fiscal/layouts/`、団体固有のコードと宣言は `ingestion/fiscal/jurisdictions/<団体>/layouts/`。年度・会計だけでコードを複製しない。既存の原典登録・収録監査は `fiscal/management/`。
 - **OCR**: 新しいBの共通入口は `ingestion/lib/scan_ocr.py`。既定はPaddleOCR smallの縮小検出・原解像度認識で、再読領域は書式設定から渡す。Apple Visionも `backend="vision"` と既存の `vision_ocr.py` で使える。設定と検証範囲は [OCRの説明](ingestion/lib/scan_ocr.md)、実行と欠落セルの再読は `.agents/skills/pipeline/references/ingestion.md` を参照する。旧GLM等の抽出器は移行済みコードとして残し、配置変更を精度の再検証と解釈しない。
 - **変換・検査**: dbt-duckdb。staging は原典の行と1対1、intermediate は構造・単位・科目・分類の統一、marts は提供する列と粒度を確定する。
@@ -49,7 +49,7 @@ script はこの package が所有する。実行は `bun run --cwd pipeline <na
 
 **Python の版は 3.13 に固定してある。** dbt-duckdb 1.11.0 が classifiers で 3.14 を宣言していないため（`requires-python` は `>=3.10` なので入りはするが、テストされていない組み合わせになる）。
 
-`inputs` は自治体の対象別JSONから保存済みParquetを復元する。Fの `build_inputs.py prepare` は管理JSON全体・解決済み原典情報・F側の配置対応とParquetを固定する。別の宣言ディレクトリ、`sources.json`・`history.json` の提出は要求しない。dbt用の配置は `dbt/inputs/` に分離し、`dbt_inputs.py` と `dbt:inputs:check` で検査する。旧宣言JSONを読む381モデル・5検査は依存先を含めて削除した。残るモデルは既存のdbt設定・Parquet・共通マスタを使う。旧処理の全CSVを再生成するモデル集合ではないため、構文確認・限定構築・全量構築を区別して報告する。
+`inputs` は自治体の対象別JSONから保存済みParquetを復元する。Cの `build_inputs.py prepare` は管理JSON全体・解決済み原典情報・C側の配置対応とParquetを固定する。別の宣言ディレクトリ、`sources.json`・`history.json` の提出は要求しない。dbt用の配置は `dbt/inputs/` に分離し、`dbt_inputs.py` と `dbt:inputs:check` で検査する。旧宣言JSONを読む381モデル・5検査は依存先を含めて削除した。残るモデルは既存のdbt設定・Parquet・共通マスタを使う。旧処理の全CSVを再生成するモデル集合ではないため、構文確認・限定構築・全量構築を区別して報告する。
 
 **系統（lineage）は dbt の `manifest.json` から取る。** 手で書かない。
 段とノードを手作りすると、パイプラインを変えても図が変わらない状態を作る（実際に作った）。

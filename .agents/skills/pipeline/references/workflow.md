@@ -17,7 +17,7 @@
 - 変換と保存の入口は `ingestion:convert`。ローカル実行は候補Parquet・候補manifest・形式別の検査結果を返し、`--remote` は全表の保存成功後に対象別JSONを更新する。手順は [ingestion](ingestion.md#管理jsonを確認して変換する)。
 - `ingestion:check` は管理情報・選定・scope・fingerprintの検査で、財政値の正しさを認定しない。
 - 原典はsource_selection、表は対象・方向別のingestion領域に保存し、保存先と原典参照は対象別JSONに置く。独立したprovenanceファイルは作らない。
-- F（dbt）は対象別JSONと保存済みParquetを読む。検証報告・通常監査Gには旧 `sources.lock.json` を使う経路が残る（[移行記録](../../../../docs/prd/ingestion-storage/migration.md)）。
+- C（dbt）は対象別JSONと保存済みParquetを読む。検証報告・通常監査Dには旧 `sources.lock.json` を使う経路が残る（[移行記録](../../../../docs/prd/ingestion-storage/migration.md)）。
 
 ## 後段で確認すること
 
