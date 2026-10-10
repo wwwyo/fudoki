@@ -1,6 +1,6 @@
 ---
 name: pipeline
-description: 風土記の原典選定（source_selection）、CSV・text PDF・scan PDFの取り込みと形式別検査、保存・採用、staging定義・dbt構築、収録範囲監査を行うときに参照する。CSVの原典からParquetへの保持検査と、PDFの原典照合・再抽出の手順を扱う。
+description: 風土記の原典選定（source_selection）、CSV・text PDF・scan PDFの取り込みと形式別検査、保存・採用、staging定義・dbt構築、収録範囲監査を行うときに参照する。CSVの全セル保持検査と、PDFの階層別合計検査・修正の手順を扱う。
 user-invocable: false
 ---
 
