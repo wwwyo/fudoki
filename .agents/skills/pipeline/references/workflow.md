@@ -17,8 +17,8 @@
 - 変換と保存の入口は `ingestion:convert`。ローカル実行は候補Parquet・候補manifest・形式別の検査結果を返し、`--remote` は全表の保存成功後に対象別JSONを更新する。手順は [ingestion](ingestion.md#管理jsonを確認して変換する)。
 - `ingestion:check` は管理情報・選定・scope・fingerprintの検査で、財政値の正しさを認定しない。
 - 原典はsource_selection、表は対象・方向別のingestion領域に保存し、保存先と原典参照は対象別JSONに置く。独立したprovenanceファイルは作らない。
-- C（dbt）は対象別JSONと保存済みParquetを読む。検証報告・通常監査Dには旧 `sources.lock.json` を使う経路が残る（[移行記録](../../../../docs/prd/ingestion-storage/migration.md)）。
+- C（dbt）は対象別JSONと保存済みParquetを読む。検証報告（`pipeline:report`）と入力識別子には旧 `sources.lock.json` を使う経路が残る（[移行記録](../../../../docs/prd/ingestion-storage/migration.md)）。
 
 ## 後段で確認すること
 
-年度・会計・単位・金額段階の解釈、staging、単位換算・分類・集約は [dbt](dbt.md) で確認する。取り込みの保存成功と後段の構築成功、採用分の構築成功と全公開資料の収録完了（[通常監査](coverage-audit.md)）を分ける。
+年度・会計・単位・金額段階の解釈、staging、単位換算・分類・集約は [dbt](dbt.md) で確認する。取り込みの保存成功と後段の構築成功を分ける。収録漏れは、source_selection の選定済みscopeと取り込みの宣言（`<方向>.json`）の有無を突き合わせて確認する。

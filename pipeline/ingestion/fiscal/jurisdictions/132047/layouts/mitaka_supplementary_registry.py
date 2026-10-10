@@ -43,7 +43,6 @@ DEFINITION_PATHS = (
     'pipeline/ingestion/acquire.py',
     'pipeline/ingestion/inputs.py',
     'pipeline/ingestion/paths.py',
-    'pipeline/ingestion/fiscal/management/coverage_audit.py',
     'pipeline/ingestion/fiscal/jurisdictions/131016/layouts/chiyoda_budget_changes.py',
     'pipeline/ingestion/fiscal/jurisdictions/132241/layouts/native_settlement_coverage.py',
     'pipeline/ingestion/fiscal/jurisdictions/132071/layouts/settlement2019_coverage.py',

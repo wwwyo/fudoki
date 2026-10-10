@@ -5,6 +5,7 @@ from importlib import import_module as _ingestion_module
 
 from collections import Counter, defaultdict
 import json
+import unicodedata
 from pathlib import Path
 
 from ingestion.inputs import OBJECTS, digest, read_lock, safe_relative, source_metadata_bytes
@@ -168,7 +169,8 @@ def output_coverage(connection, candidate: Path, hashes: dict, lock_path: Path,
 
 
 def _verify_outputs(connection, candidate, hashes, selected, raw_by_dataset, metadata) -> None:
-    from ingestion.fiscal.management.coverage_audit import label
+    def label(value: str) -> str:
+        return ''.join(unicodedata.normalize('NFKC', value).split())
     reconcile = _ingestion_module('ingestion.fiscal.jurisdictions.132241.layouts.tama_budget_detail').reconcile
     provided_datasets = {r['dataset_id']:r for r in records(connection,'select * from fiscal_datasets')}
     for identity, original in metadata.items():

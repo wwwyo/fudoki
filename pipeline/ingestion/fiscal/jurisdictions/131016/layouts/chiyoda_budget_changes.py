@@ -460,7 +460,6 @@ def main(argv=None, *, raw_root=None):
             REPO/'pipeline/ingestion/declarations.py', REPO/'pipeline/ingestion/acquire.py',
             REPO/'pipeline/ingestion/fiscal/jurisdictions/131016/layouts/chiyoda_supplementary_native_coverage.py',
             REPO/'pipeline/ingestion/fiscal/management/canonical_sources.py',
-            REPO/'pipeline/ingestion/fiscal/management/coverage_audit.py',
             REPO/'pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_initial_native_coverage.py',
             REPO/'pipeline/ingestion/fiscal/jurisdictions/132241/layouts/native_settlement_coverage.py',
             REPO/'pipeline/ingestion/fiscal/jurisdictions/132071/layouts/settlement2019_coverage.py',
