@@ -38,7 +38,6 @@ DEFINITION_PATHS = (
     'pipeline/ingestion/fiscal/jurisdictions/132241/layouts/tama_initial_native_coverage.py',
     'pipeline/ingestion/fiscal/jurisdictions/132241/layouts/native_settlement_coverage.py',
     'pipeline/ingestion/fiscal/jurisdictions/132071/layouts/settlement2019_coverage.py',
-    'pipeline/ingestion/fiscal/management/coverage_audit.py',
     'pipeline/dbt/models/staging/fiscal/_tama_supplementary_native_sources.yml',
     'pipeline/dbt/models/staging/fiscal/stg_132241__supplementary_native.sql',
     'pipeline/dbt/models/intermediate/fiscal/records/int_132241__supplementary_native.sql',

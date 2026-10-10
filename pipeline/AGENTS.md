@@ -10,7 +10,7 @@ script はこの package が所有する。実行は `bun run --cwd pipeline <na
 |---|---|
 | 固定入力・構築 | `inputs` / `inputs:migrate` / `acquire` / `build` / `fdp` |
 | 観測・調査 | `survey:structure` / `eval:extraction` |
-| 原典対象の管理 | `sources:plan` / `coverage:fiscal` |
+| 原典対象の管理 | `sources:plan` |
 | 取り込み・保存 | `ingestion:schema` / `ingestion:check` / `ingestion:originals` / `ingestion:convert` / `ingestion:restore` / `ingestion:cleanup` / `ingestion:migrate` |
 | 旧候補の生成・調査 | `extract:*` / `fetch:*` / `pdf:layer` |
 | 検査 | `test`（bun）/ `test:python`（unittest） |

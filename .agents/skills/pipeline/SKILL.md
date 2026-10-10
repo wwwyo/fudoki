@@ -18,7 +18,6 @@ user-invocable: false
 | A. source_selection — 原典の情報を埋め、1資料を選定・保存する。選べなければ理由を残す | [references/source-selection.md](references/source-selection.md) |
 | B. ingestion：保存済みCSV・text PDF・scan PDFから取り込みParquetを作り、形式別に検査する | [references/ingestion.md](references/ingestion.md) |
 | C. dbt：stagingを定義し、入力と各層を本体へ採用して全量構築・再構築する | [references/dbt.md](references/dbt.md) |
-| D. 通常監査と検証報告で提供先・収録範囲を確認する | [references/coverage-audit.md](references/coverage-audit.md) |
 
 ## 関連 skill
 
