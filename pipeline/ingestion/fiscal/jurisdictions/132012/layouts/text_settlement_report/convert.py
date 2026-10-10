@@ -868,12 +868,12 @@ def convert(inputs, destination, options):
                     items = pk['held'] + [(page, line)]
                     b.pending_kan = None
                     for held_page, held_line in pk['held']:
-                        b.kan_rejected.add(id(held_line))
+                        b.kan_rejected.add((held_page, held_line[0]['yMin'], held_line[0]['xMin']))
                     for item in reversed(items):
                         stream.appendleft(item)
                     continue
             if (fragment := parse_kan_heading_fragment(line, page)) is not None \
-                    and id(line) not in b.kan_rejected:
+                    and (page, line[0]['yMin'], line[0]['xMin']) not in b.kan_rejected:
                 b.pending_kan = fragment
                 continue
             # 款の見出しブロック（頁上部の書名行 → 7分割ラベル行 → 金額行）。

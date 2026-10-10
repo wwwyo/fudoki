@@ -707,7 +707,7 @@ def convert_detail(source, destination, options, selected):
 
     prefix = options.get('table_prefix', 'general-expenditure')
     emit = options.get('emit') or ('details', 'notes')
-    setsu_reference = options.get('notes_setsu_reference', 'general-expenditure-details')
+    setsu_reference = options.get('notes_setsu_reference', f'{prefix}-details')
     results = {}
     for kind, rows, leaf_cols in (
             ('details', detail_records, [f'節_{c}' for c in SETSU_COLS]),

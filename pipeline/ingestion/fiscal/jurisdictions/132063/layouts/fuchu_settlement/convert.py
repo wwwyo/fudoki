@@ -623,8 +623,9 @@ def _emit_row(owner, setsu, kan, kou, moku, by_id, executed_moku, remarks, polic
                             [setsu["number"], setsu["name"], setsu["金額"],
                              own_exec["spent"], own_exec["carried"],
                              own_exec["unused"], own_exec["brief"]])))
-    xs = [w["xMin"] for w in owner.get("bbox", [])] or [0.0]
-    xe = [w["xMax"] for w in owner.get("bbox", [])] or [0.0]
+    boxes = owner.get("bbox") or owner.get("words") or []
+    xs = [w["xMin"] for w in boxes] or [0.0]
+    xe = [w["xMax"] for w in boxes] or [0.0]
     row.update({"unit": "円", "物理頁": owner["page"],
                 "bbox": f"{min(xs):.1f},{owner['top']:.1f},{max(xe):.1f},"
                         f"{owner.get('bottom', owner['top']):.1f}"})

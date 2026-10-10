@@ -46,6 +46,7 @@ NAMES = DETAIL_COLUMNS
 # Printed setsu subtotals wrap the amount in （ ）; OCR keeps the closing mark on
 # the amount token while the opening mark may split off or drop. Leaf/project
 # amounts never carry the closing mark.
+HEADER_ZONE_BOTTOM = 130.0  # build_layout.py と同じ見出し帯の下端
 MONEY_TOKEN = re.compile(r'[+\-△▲]?\s*\d[\d,\s]*\s*[）)]?\Z')
 KNOWN_CLASSIFICATIONS = (
     'bound-source-cell',
@@ -349,6 +350,9 @@ class Reader:
                            'reason': binding.get('reason')}
         restoration = self.restorations.get(key)
         if restoration is not None:
+            if (restoration['page'] != page or [t.id for t in tokens] !=
+                    [restoration['native_ref_id'] + '|' + i for i in restoration['observation_ids']]):
+                raise ValueError(f'Logical restoration observation binding differs for {key}')
             if restoration['native_joined'] != re.sub(r'\s+', '', observed or ''):
                 raise ValueError(f'Logical restoration before-text differs for {key}')
             if '\n'.join(restoration['native_lines']) != observed:
@@ -700,7 +704,7 @@ def convert(inputs: list[dict], destination: Path, options: dict) -> dict:
         elif kind != 'region':
             classification = 'marginalia-child-observation'
             detail = 'word/number sub-token of a marginalia region'
-        elif y is not None and (y < 156 or y > 548):
+        elif y is not None and (box['bottom'] <= HEADER_ZONE_BOTTOM or y > 548):
             classification = 'page-title-header-unit-or-footer'
             detail = 'printed furniture'
         else:
@@ -771,6 +775,12 @@ def convert(inputs: list[dict], destination: Path, options: dict) -> dict:
         'header_correspondence': declarations.get('header_correspondence', []),
         'corrections_policy': 'no bulk NFKC/width normalization; no dictionary promotion for unproven glyphs; scoped declarations only',
     }
+    if {c['alias'] for c in reader.corrected} != set(reader.corrections):
+        raise ValueError('Unused source correction')
+    if {v['alias'] for v in reader.crop_bindings.values()} - reader.used:
+        raise ValueError('Unused declared crop binding')
+    if set(reader.restorations) - set(reader.bindings):
+        raise ValueError('Unused logical name restoration')
     validate_metadata(table_metadata, list(NAMES))
     destination = Path(destination)
     if destination.exists():
