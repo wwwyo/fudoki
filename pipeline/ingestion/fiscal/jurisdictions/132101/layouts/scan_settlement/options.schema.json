@@ -1,0 +1,125 @@
+{
+  "$defs": {
+    "native_ref": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "image"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "physical_page",
+              "image_path"
+            ]
+          }
+        }
+      ],
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "image_path": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "pdf",
+            "image"
+          ]
+        },
+        "page_scope": {
+          "enum": [
+            "full",
+            "crop"
+          ]
+        },
+        "path": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "physical_page": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "regions": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha"
+        }
+      },
+      "required": [
+        "id",
+        "path",
+        "sha256",
+        "kind",
+        "page_scope",
+        "regions"
+      ],
+      "type": "object"
+    },
+    "sha": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "corrections_path": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "corrections_sha256": {
+      "$ref": "#/$defs/sha"
+    },
+    "declarations_path": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "declarations_sha256": {
+      "$ref": "#/$defs/sha"
+    },
+    "layout_path": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "layout_sha256": {
+      "$ref": "#/$defs/sha"
+    },
+    "native_refs": {
+      "items": {
+        "$ref": "#/$defs/native_ref"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "table_id": {
+      "pattern": "^[a-z0-9][a-z0-9_-]*$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "layout_path",
+    "layout_sha256",
+    "corrections_path",
+    "corrections_sha256",
+    "declarations_path",
+    "declarations_sha256",
+    "native_refs"
+  ],
+  "title": "132101 settlement-3 frozen observation reconstruction options",
+  "type": "object"
+}

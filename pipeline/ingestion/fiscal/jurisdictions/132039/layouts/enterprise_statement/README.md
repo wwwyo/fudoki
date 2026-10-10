@@ -2,6 +2,8 @@
 
 `convert(inputs, destination, options)` は保存済みPDF、凍結native OCR、書式設定を受け取り、新しいローカルParquetと原典で確認したmetadataを返す。共通 `scan_ocr`、`pdf_table`、`conversion` と `fiscal/layouts/statement/text_spread` を利用する。R2、選定、正式管理JSON、dbtは変更しない。
 
+正式経路では `2025/settlement/expenditure.json` の `water-settlement` から `ingestion:convert` で呼ぶ。保存した7表は独立検査で受容した candidate-006 とバイト一致する。凍結native（`observations/scan-2025-devin-max-2026-10-09/132039/water/ocr/`）はgitignore配下のローカル入力で、R2への補助入力の保存は未実装のため、このnativeを持たない環境では再変換できない。
+
 年度・会計ごとのコード複製を行わず、支出の行帯・列境界、見開き対応、罫線の階層、継続頁、原典限定訂正を設定で渡す。別原典への適用には、その原典画像による設定と独立検査が必要。
 
 ## 今回の固定範囲

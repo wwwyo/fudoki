@@ -2279,8 +2279,7 @@
           ],
           "grain_columns": [
             "区分"
-          ],
-          "phase": "予算側繰越"
+          ]
         },
         {
           "columns": [
@@ -2292,8 +2291,7 @@
           ],
           "grain_columns": [
             "区分"
-          ],
-          "phase": "予算側合計"
+          ]
         },
         {
           "columns": [
@@ -2315,8 +2313,7 @@
           ],
           "grain_columns": [
             "区分"
-          ],
-          "phase": "決算側繰越"
+          ]
         },
         {
           "columns": [
@@ -2339,25 +2336,6 @@
           "grain_columns": [
             "区分"
           ]
-        },
-        {
-          "columns": [
-            "印字区分",
-            "款",
-            "項",
-            "physical_page",
-            "right_page",
-            "printed_page",
-            "source_row",
-            "cell_refs",
-            "hierarchy_refs"
-          ],
-          "header_path": null,
-          "grain_columns": [
-            "区分"
-          ],
-          "role": "derived",
-          "note": "印字区分ラベル・継承した款/項・頁・行番号・原典binding参照"
         }
       ]
     },
@@ -2481,8 +2459,7 @@
           ],
           "grain_columns": [
             "区分"
-          ],
-          "phase": "予算側繰越"
+          ]
         },
         {
           "columns": [
@@ -2494,8 +2471,7 @@
           ],
           "grain_columns": [
             "区分"
-          ],
-          "phase": "予算側繰越"
+          ]
         },
         {
           "columns": [
@@ -2506,8 +2482,7 @@
           ],
           "grain_columns": [
             "区分"
-          ],
-          "phase": "予算側合計"
+          ]
         },
         {
           "columns": [
@@ -2530,8 +2505,7 @@
           ],
           "grain_columns": [
             "区分"
-          ],
-          "phase": "翌年度繰越"
+          ]
         },
         {
           "columns": [
@@ -2543,8 +2517,7 @@
           ],
           "grain_columns": [
             "区分"
-          ],
-          "phase": "翌年度繰越"
+          ]
         },
         {
           "columns": [
@@ -2556,8 +2529,7 @@
           ],
           "grain_columns": [
             "区分"
-          ],
-          "phase": "翌年度繰越"
+          ]
         },
         {
           "columns": [
@@ -2580,25 +2552,6 @@
           "grain_columns": [
             "区分"
           ]
-        },
-        {
-          "columns": [
-            "印字区分",
-            "款",
-            "項",
-            "physical_page",
-            "right_page",
-            "printed_page",
-            "source_row",
-            "cell_refs",
-            "hierarchy_refs"
-          ],
-          "header_path": null,
-          "grain_columns": [
-            "区分"
-          ],
-          "role": "derived",
-          "note": "印字区分ラベル・継承した款/項・頁・行番号・原典binding参照"
         }
       ]
     },
@@ -2686,25 +2639,6 @@
             "目",
             "節"
           ]
-        },
-        {
-          "columns": [
-            "印字区分",
-            "印字名称",
-            "physical_page",
-            "printed_page",
-            "source_row",
-            "cell_refs"
-          ],
-          "header_path": null,
-          "grain_columns": [
-            "款",
-            "項",
-            "目",
-            "節"
-          ],
-          "role": "derived",
-          "note": "その行帯に印字された区分と名称の原文、頁・行番号、原典binding参照"
         }
       ]
     },
@@ -2731,28 +2665,7 @@
           }
         }
       ],
-      "column_contexts": [
-        {
-          "columns": [
-            "印字区分",
-            "印字名称",
-            "physical_page",
-            "printed_page",
-            "source_row",
-            "cell_refs",
-            "hierarchy_refs"
-          ],
-          "header_path": null,
-          "grain_columns": [
-            "款",
-            "項",
-            "目",
-            "節"
-          ],
-          "role": "derived",
-          "note": "その行帯に印字された区分と名称の原文、頁・行番号、原典binding参照"
-        }
-      ]
+      "column_contexts": []
     },
     "shihon_shushi_meisai": {
       "units": [
@@ -2832,25 +2745,6 @@
             "目",
             "節"
           ]
-        },
-        {
-          "columns": [
-            "印字区分",
-            "印字名称",
-            "physical_page",
-            "printed_page",
-            "source_row",
-            "cell_refs"
-          ],
-          "header_path": null,
-          "grain_columns": [
-            "款",
-            "項",
-            "目",
-            "節"
-          ],
-          "role": "derived",
-          "note": "その行帯に印字された区分と名称の原文、頁・行番号、原典binding参照"
         }
       ]
     },
@@ -2877,28 +2771,7 @@
           }
         }
       ],
-      "column_contexts": [
-        {
-          "columns": [
-            "印字区分",
-            "印字名称",
-            "physical_page",
-            "printed_page",
-            "source_row",
-            "cell_refs",
-            "hierarchy_refs"
-          ],
-          "header_path": null,
-          "grain_columns": [
-            "款",
-            "項",
-            "目",
-            "節"
-          ],
-          "role": "derived",
-          "note": "その行帯に印字された区分と名称の原文、頁・行番号、原典binding参照"
-        }
-      ]
+      "column_contexts": []
     },
     "statement_notes": {
       "units": [],

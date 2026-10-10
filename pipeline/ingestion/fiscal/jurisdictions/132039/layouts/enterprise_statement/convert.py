@@ -300,7 +300,7 @@ def convert(inputs: list[dict], destination: Path, options: dict) -> dict:
         raise ValueError('Native page coverage differs')
     tables, observations = build(native, tokens, layout, native_bindings)
     observations['native_bindings'] = native_bindings
-    destination.mkdir(parents=True, exist_ok=False)
+    destination.mkdir(parents=True, exist_ok=True)
     (destination / 'observations.json').write_text(json.dumps(observations, ensure_ascii=False, indent=2) + '\n')
     results = {}
     summary = {}
