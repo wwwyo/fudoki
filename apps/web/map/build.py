@@ -1,4 +1,8 @@
-"""東京都62団体の境界データを組む。`bun run --cwd apps/web fetch:boundaries`
+"""東京都の団体の境界データを組む。`bun run --cwd apps/web fetch:boundaries`
+
+母集団は団体マスタの東京都（JIS の都道府県コード `13`）の団体だけ。マスタには
+都外の団体が入り得る（例: 神戸市 281000）ので、絞らずに `N03_13` と突き合わせると
+「見つからない」で止まる。
 
 ホームページの地図（自治体クリック→その団体のパイプラインへ）に使う表示用データ。
 正本ではなく表示用の派生物なので `apps/web/public/tokyo.geojson` に置く
@@ -155,7 +159,12 @@ def _extract_geojson(zip_bytes: bytes) -> dict:
 
 
 def main() -> None:
-    jurisdictions = json.loads(JURISDICTIONS.read_text(encoding="utf-8"))["jurisdictions"]
+    master = json.loads(JURISDICTIONS.read_text(encoding="utf-8"))["jurisdictions"]
+    # 地図は東京都の1枚だけを描く。母集団はマスタから都道府県コード 13 で絞る
+    # （マスタに都外の団体が増えても、この地図の母集団は変わらない）。
+    jurisdictions = {code: entry for code, entry in master.items() if code.startswith("13")}
+    if not jurisdictions:
+        raise RuntimeError("団体マスタに東京都（13…）の団体が無い")
     # N03_007 は全国地方公共団体コード**から検査数字（末尾1桁）を除いた5桁**
     # （JIS X 0402 の行政区域コード）。fudoki の正本キーは6桁なので、
     # 5桁プレフィクスで対応を取る。62件が5桁の時点で重複しないことは
@@ -190,7 +199,7 @@ def main() -> None:
     missing = set(jurisdictions) - set(grouped)
     if missing:
         raise RuntimeError(
-            f"62団体のうち {len(missing)} 団体が N03 に見つからない: {sorted(missing)}。"
+            f"東京都 {len(jurisdictions)} 団体のうち {len(missing)} 団体が N03 に見つからない: {sorted(missing)}。"
             "母集団が欠けたまま出力しない"
         )
 
