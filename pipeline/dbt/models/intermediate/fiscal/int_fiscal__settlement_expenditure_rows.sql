@@ -8,7 +8,7 @@ with recursive subject_axes as (
     where level_header = '款'
     group by source_table_key
 ) , mapped_nodes as (
-    select n.*, t.jurisdiction_code, t.fiscal_year, t.document_kind, t.account_name, t.origin_id,
+    select n.*, t.jurisdiction_code, t.fiscal_year, t.document_kind, t.account_name, t.division, t.origin_id,
         case when s.subject_axis is null
              then error('No subject axis (no 款 nodes): ' || n.source_table_key)
              when n.level_header in ('款', '項', '目') and n.axis_header <> s.subject_axis

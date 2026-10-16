@@ -27,6 +27,7 @@ UNIT = re.compile(r'単位\s*[:：]?\s*(百万円|千円|円)')  # printed 単�
 # A header cell that is only the unit of the column below it (`円`, `（千円）`): the unit of the amounts,
 # not a level of their heading.
 UNIT_CELL = re.compile(r'^[(（]?(百万円|千円|円)[)）]?$')
+FOLIO = re.compile(r'[-－―][0-9]+[-－―]')  # a page number printed as `-6-`
 
 
 def normalize(text: str) -> str:
@@ -71,6 +72,8 @@ class Band:
     left_rules: list[tuple[float, float]] = field(default_factory=list)  # (top, bottom) of each rule drawn on its left edge
     unit_mark: str | None = None  # a header cell that only names the unit (`円`), kept apart from the heading
     axis_header: str | None = None  # a declared printed axis spanning a spread's split header
+    excluded: dict | None = None  # a declared column whose printed digits are not taken in (kind and reason)
+    staircase: bool = False  # the layout setting `header.staircase`: a level's cell runs right until its own rule starts
 
     @property
     def center(self) -> float:
@@ -181,8 +184,13 @@ def reading(words: list[Word]) -> str:
     return ''.join(w.text for row in rows for w in sorted(row, key=lambda w: w.x0))
 
 
-def _frames(page: Page, spread: dict | None = None) -> list[tuple[float, float, float, float, list[float]]]:
-    """Frames as (x0, x1, top, bottom, band edges) from rules that bound a table."""
+def _frames(page: Page, spread: dict | None = None,
+            staircase: bool = False) -> list[tuple[float, float, float, float, list[float]]]:
+    """Frames as (x0, x1, top, bottom, band edges) from rules that bound a table.
+
+    `staircase` (the layout setting `header.staircase`): the 款・項 cells run down the page with no closing
+    rule, so the frame ends at the lowest rule its sides reach that crosses most of its columns or is drawn
+    where the sides end (281000)."""
     horizontals = [r for r in page.rules if not r.vertical]
     # A column edge drawn in pieces (the header cell and the rows that have a cell of their own) is one rule.
     drawn: dict[float, float] = defaultdict(float)
@@ -229,7 +237,16 @@ def _frames(page: Page, spread: dict | None = None) -> list[tuple[float, float, 
             spanning = [h for h in horizontals if sum(1 for m in middle if _covers(h, m)) >= max(2, .6 * len(middle))]
         if len(spanning) < 2:
             continue
-        result.append((frame[0], frame[-1], min(h.y0 for h in spanning), max(h.y0 for h in spanning), frame))
+        bottom = max(h.y0 for h in spanning)
+        if staircase:
+            # The rows of a staircase draw their rules from the deeper columns only: the frame ends at the lowest
+            # rule its own sides reach that crosses most of its columns, or that is drawn where the sides end.
+            end = min(max((r.y1 for r in page.rules if r.vertical and abs(r.x0 - x) <= 3), default=bottom)
+                      for x in (frame[0], frame[-1]))
+            bottom = max([h.y0 for h in horizontals if bottom < h.y0 <= end + 2 and h.x0 < frame[-1] and h.x1 > frame[0]
+                          and (abs(h.y0 - end) <= 2 or sum(1 for m in middle if _covers(h, m)) >= max(2, .6 * len(middle)))]
+                         or [bottom])
+        result.append((frame[0], frame[-1], min(h.y0 for h in spanning), bottom, frame))
     # A column that draws no row rules at all (the 支出済額 column printed between two ruled halves of one wide
     # page) splits a table in two. Two frames that start and end on the same rules, one column apart, with the
     # figures of that column printed between them, are one.
@@ -266,6 +283,22 @@ def _header_bottom(page: Page, frame) -> float:
     return full[1] if len(full) > 1 else top
 
 
+def level_cells(cells: list[tuple[tuple, str]], edges: list[float]) -> list[tuple[tuple, str]]:
+    """A header cell printing the levels together (`款 項 目`) over as many columns as it names gives each
+    column its own level: in a staircase the rules between the narrow code columns start below the header.
+    The columns name the levels in order, so a scan's reading that drops one of the spaced characters
+    (`款目`) still gives 款・項・目 to its three columns."""
+    result = []
+    for key, value in cells:
+        inner = [(left, right) for left, right in zip(edges, edges[1:]) if key[0] - 1 <= left and right <= key[1] + 1]
+        if (value.startswith('款') and set(value) <= set('款項目') and len(set(value)) == len(value)
+                and len(inner) in (2, 3) and len(value) <= len(inner)):
+            result.extend(((left, right, key[2], key[3]), level) for (left, right), level in zip(inner, '款項目'))
+        else:
+            result.append((key, value))
+    return result
+
+
 def page_bands(page: Page, spread: dict | None = None,
                header: dict | None = None) -> tuple[list[Band], list[Word]]:
     """Bands of every frame on one physical page, and the words outside frames."""
@@ -278,7 +311,8 @@ def page_bands(page: Page, spread: dict | None = None,
     used: set[int] = set()
     bands = []
     whole = list(enumerate(page.words))
-    for frame in _frames(page, spread):
+    staircase = bool((header or {}).get('staircase'))
+    for frame in _frames(page, spread, staircase):
         x0, x1, top, bottom, edges = frame
         header_bottom = _header_bottom(page, frame)
         title_ignored = bool((header or {}).get('ignore_frame_title'))
@@ -297,6 +331,8 @@ def page_bands(page: Page, spread: dict | None = None,
                 continue  # the title of the page: it names no column, only the whole frame
             cells[left, right, upper, lower].append(word)
         header_cells = sorted(((key, normalize(reading(ws))) for key, ws in cells.items()), key=lambda c: c[0][2])
+        if staircase:
+            header_cells = level_cells(header_cells, edges)
         covering_of = lambda middle: [(key, text) for key, text in header_cells if key[0] - 1 <= middle <= key[1] + 1 and text]
         # Only a rule between two 款・項・目 columns splits a body word of digits (`１１` = 項1・目1);
         # amounts stay whole even when a rule crosses them.
@@ -315,10 +351,10 @@ def page_bands(page: Page, spread: dict | None = None,
             band = Band(left, right, page.number, tuple(text for _, text in covering), rows, header_bottom, bottom,
                         spans=[(key[0], key[1], text) for key, text in covering], top=top,
                         left_rules=[(r.y0, r.y1) for r in verticals if abs(r.x0 - left) <= 3],
-                        unit_mark=UNIT_CELL.match(marks[-1]).group(1) if marks else None)
+                        unit_mark=UNIT_CELL.match(marks[-1]).group(1) if marks else None, staircase=staircase)
             for index, word in body:
-                if index in skip:
-                    continue
+                if index in skip or (staircase and FOLIO.fullmatch(normalize(word.text))):
+                    continue  # a staircase frame runs to the foot of the page, over its folio (`-6-`)
                 sx, cy = word.x0 + min(2, (word.x1 - word.x0) / 2), (word.y0 + word.y1) / 2
                 if re.match(r'^[△▲]|.*,[0-9]{3}', word.text) and is_amount(word.text):
                     # A grouped or signed amount belongs to the column that holds most of it: its sign or
@@ -430,6 +466,9 @@ def logical_pages(pages: list[Page], *, columns: dict | None = None, spread: dic
             setting = (columns or {}).get('／'.join(band.header), {})
             band.kind = setting.get('kind', band.kind)
             band.axis_header = setting.get('axis_header')
+            band.excluded = setting.get('excluded')
+            if band.excluded:
+                band.kind = None  # not read: its words are no items and its digits a declared exclusion
     result: list[Logical] = []
     observed = {page.number: page for page, _, _ in per_page}
     for page, bands, outside in per_page:

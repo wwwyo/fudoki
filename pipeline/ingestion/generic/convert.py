@@ -51,12 +51,21 @@ RATIO_HEADER = re.compile(r'割合|比率|構成比|率$')
 ZERO_MARK = re.compile(r'^0+$')
 
 
-def scope_pages(source: dict, account: str) -> list[int]:
-    """The physical pages the selection declares for the account (and the manifest's direction)."""
+def scope_pages(source: dict, account: str, within: list | None = None) -> list[int]:
+    """The physical pages the selection declares for the account (and the manifest's direction).
+
+    `within` (the conversion's `pages`): the part of the scope this table reads, when one original prints
+    several divisions' tables of the account one after another (281000: three committees in one volume)."""
     scopes = [scope for scope in source['scope'] if scope['account'] == account]
     if len(scopes) != 1:
         raise ValueError(f'The selected original needs exactly one scope for {account}')
-    return [page for first, last in scopes[0]['pages'] for page in range(first, last + 1)]
+    pages = [page for first, last in scopes[0]['pages'] for page in range(first, last + 1)]
+    if within is None:
+        return pages
+    chosen = [page for first, last in within for page in range(first, last + 1)]
+    if not chosen or not set(chosen) <= set(pages):
+        raise ValueError(f'The conversion pages {within} are not within the scope of {account}')
+    return chosen
 
 
 def printed(glyphs: list) -> str:
@@ -156,6 +165,7 @@ def excluded_regions(built, logicals, codes, observed) -> list[dict]:
 
     - the account codes in a laid note's label (`02-01-02-15-11-01から流用`): 本文;
     - a ratio column (見出しが割合・率): 数量表, the whole column of that page;
+    - a column the layout file declares excluded (`columns.<見出し>.excluded`): its kind and reason, the whole column;
     - a footnote mark (`※1`): 本文;
     - a number of zeros printed before a name (`00 一般会計繰出金`): the bullet of a remark drawn as digits, which
       the builder takes off the name (item numbers start from 1): 本文;
@@ -167,6 +177,9 @@ def excluded_regions(built, logicals, codes, observed) -> list[dict]:
                                reason='注記の文言に印字された流用元・流用先の科目コード。金額は注記金額として取り込み済み。')
     for logical in logicals:
         for band in logical.bands:
+            if band.excluded:  # a column the layout file declares not taken in, with its kind and reason
+                regions.append({**band.excluded, 'pages': [[band.page, band.page]],
+                                'x_range': [band.x0 - band.offset, band.x1 - band.offset]})
             if band.kind == 'label' and RATIO_HEADER.search(''.join(band.header)) and band.x0 - band.offset < band.x1 - band.offset:
                 regions.append({'kind': '数量表', 'reason': '比率の欄（見出しが割合・率）。金額の欄ではない。',
                                 'pages': [[band.page, band.page]], 'x_range': [band.x0 - band.offset, band.x1 - band.offset]})
@@ -287,7 +300,7 @@ def build_table(source: dict, options: dict, *, stop: bool = True) -> Table:
     if source.get('format') != 'pdf' or source.get('pdf_type') != 'text':
         raise ValueError('The generic builder reads text PDFs only')
     account = options['account']
-    pages = scope_pages(source, account)
+    pages = scope_pages(source, account, options.get('pages'))
     layout = load_layout(source['target'], source.get('direction', 'expenditure'))
     if layout and account in layout.get('accounts', {}):
         # An account's own settings replace the document's, key by key: accounts of one
@@ -298,14 +311,36 @@ def build_table(source: dict, options: dict, *, stop: bool = True) -> Table:
         document_kind=source['target']['document_kind'], account=account, stop=stop,
         partial=bool(options.get('partial')), direction=source.get('direction'),
         layout=(layout or {}).get('breakdown'), columns=(layout or {}).get('columns'),
-        spread=(layout or {}).get('spread'), header=(layout or {}).get('header'))
+        spread=(layout or {}).get('spread'), header=(layout or {}).get('header'),
+        text_layer=(layout or {}).get('text_layer'))
     kept, nodes, amounts, unresolved, codes = split_notes(built)
+    built.notes.extend({'kind': 'name correction', 'text': text} for text in correct_names(built.nodes, options.get('name_corrections')))
     all_nodes = [*built.nodes, *nodes]
-    all_amounts, headings = canonical_headings([*kept, *amounts], all_nodes, source['target']['document_kind'])
+    all_amounts, headings = canonical_headings([*kept, *amounts], all_nodes, source['target']['document_kind'],
+                                               (layout or {}).get('header'))
     fine_sections(all_nodes)
     plain = [name for hints in ((layout or {}).get('breakdown') or {}).values() for name in hints.get('plain_names', ())]
     return Table(all_nodes, all_amounts, unresolved, excluded_regions(built, logicals, codes, observed),
                  built, report, observed, logicals, headings, plain)
+
+
+def correct_names(nodes: list[dict], rules: list[dict] | None) -> list[str]:
+    """Names the text layer or OCR misread, put back to what the original prints (`name_corrections` of the
+    conversion's options, each checked on the rendered page). A rule names the page, the code and the name as
+    read (and its top `y` in points when the same misread repeats on the page); it must find exactly that one
+    node, or the conversion stops. A breakdown item's misread number
+    (`corrected_code`) is put right with it: the item's place in the tree never depended on it."""
+    notes = []
+    for rule in rules or ():
+        found = [n for n in nodes if n['physical_page'] == rule['page'] and n['name_text'] == rule['observed_name']
+                 and n['code_text'] == rule.get('code') and ('y' not in rule or abs(n['y0'] - rule['y']) <= 3)]
+        if len(found) != 1:
+            raise ValueError(f'A name correction must find one node: {rule["id"]} ({len(found)})')
+        found[0]['name_text'] = rule['corrected_name']
+        if rule.get('corrected_code'):
+            found[0]['code_text'] = rule['corrected_code']
+        notes.append(f'{rule.get("code") or ""}{rule["observed_name"]}→{rule.get("corrected_code") or rule.get("code") or ""}{rule["corrected_name"]}')
+    return notes
 
 
 def fine_sections(nodes: list[dict]) -> None:
@@ -318,7 +353,8 @@ def fine_sections(nodes: list[dict]) -> None:
             node['depth'] -= 1
 
 
-def canonical_headings(amounts: list[dict], nodes: list[dict], document_kind: str) -> tuple[list[dict], dict]:
+def canonical_headings(amounts: list[dict], nodes: list[dict], document_kind: str,
+                       header: dict | None = None) -> tuple[list[dict], dict]:
     """The amounts with a heading path the shared dictionary does not know, brought to the heading they print
     (`ingestion/generic/headers.py`). Returns the amounts and what was changed, `{(printed, kept): count}`."""
     known = {label for kind, label in phase_dictionary() if kind in ('', document_kind)}
@@ -326,7 +362,8 @@ def canonical_headings(amounts: list[dict], nodes: list[dict], document_kind: st
     level = {n['node_key']: n['level_header'] for n in nodes}
     changed: Counter = Counter()
     for amount in amounts:
-        path = canonical(amount['header_path'], axis.get(amount['node_key']), known)
+        path = canonical(amount['header_path'], axis.get(amount['node_key']), known,
+                         bool((header or {}).get('kind_by_characters')))
         if path == '金額' and axis.get(amount['node_key']) == '科目' and level.get(amount['node_key']):
             # A 款・項・目 row that prints its total in the 節 金額 column: the column of that level (`科目／款`).
             path = f"科目／{level[amount['node_key']]}"
@@ -373,6 +410,9 @@ def receipt_notes(table: Table) -> list[str]:
     if table.headings:
         moved = '・'.join(f'{printed}→{kept}' for printed, kept in sorted(table.headings))
         notes.append(f'共有辞書に無い金額の見出し {len(table.headings)} 種（{sum(table.headings.values())} 件）を、印字された語から辞書の見出しに寄せた: {moved}。')
+    corrected = [n['text'] for n in table.built.notes if n.get('kind') == 'name correction']
+    if corrected:
+        notes.append(f'原画で確かめた名称の誤読 {len(corrected)} 件を、管理 JSON の name_corrections で印字に直した: {"・".join(corrected)}。')
     if table.report.skipped_pages:
         notes.append(f'選定の scope が共有していた別の方向（歳入）の頁 {len(table.report.skipped_pages)} 頁は読んでいない。')
     return notes

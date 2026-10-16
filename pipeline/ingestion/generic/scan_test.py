@@ -156,7 +156,7 @@ class CorrectionTest(unittest.TestCase):
         correction = scan.amount_dictionary([{'id': 'bad-unit', 'page': 1, 'observation_id': '10',
             'observed_amount': '门', 'corrected_amount': '0', 'reason': 'wrong target'}])
         with patch.object(scan.pdf_rules, 'detect', return_value=rules), \
-                patch.object(scan, 'short_rows', side_effect=lambda pdf, rules: rules):
+                patch.object(scan, 'short_rows', side_effect=lambda pdf, rules, *_: rules):
             found = scan.pages(observation, Path('x.pdf'))
             self.assertIn('千', [w.text for w in found[0].words])
             self.assertIn('C', [w.text for w in found[0].words])
@@ -271,6 +271,24 @@ class AgreedHeadersTest(unittest.TestCase):
                                            Word('1,000', 60, 130, 95, 140)], rules)
         pages = agreed_headers([page(1, '計'), page(2, '計'), page(3, '言十')])
         self.assertEqual([sorted(w.text for w in p.words if w.y0 < 120) for p in pages], [['目', '計']] * 3)
+
+
+    def test_declared_readings_stop_rather_than_overwrite_a_read_amount(self):
+        from ingestion.generic.scan import add_code_readings, read_headers
+        page = Page(1, 200, 400, [Word('額', 60, 20, 66, 26), Word('1,000', 60, 130, 95, 140)], [])
+        headed = read_headers([page], [{'id': 'h', 'pages': [1], 'box': [50, 15, 100, 30], 'text': '予算現額'}])
+        self.assertEqual(sorted(w.text for w in headed[0].words), ['1,000', '予算現額'])
+        with self.assertRaises(ValueError):
+            read_headers([page], [{'id': 'h', 'pages': [1], 'box': [50, 125, 100, 145], 'text': '計'}])
+        with self.assertRaises(ValueError):
+            read_headers([page], [{'id': 'h', 'pages': [2], 'box': [50, 15, 100, 30], 'text': '計'}])
+        amount = r'△?(0|[1-9][0-9]{0,2}(,[0-9]{3})*)'
+        filled = add_code_readings([page], [{'id': 'z', 'page': 1, 'box': [100, 130, 105, 140], 'amount': '0'}], 'amount', amount)
+        self.assertIn('0', [w.text for w in filled[0].words])
+        with self.assertRaises(ValueError):
+            add_code_readings([page], [{'id': 'z', 'page': 1, 'box': [90, 130, 105, 140], 'amount': '0'}], 'amount', amount)
+        with self.assertRaises(ValueError):
+            add_code_readings([page], [{'id': 'z', 'page': 1, 'box': [100, 130, 105, 140], 'amount': '1000'}], 'amount', amount)
 
 
 if __name__ == '__main__':

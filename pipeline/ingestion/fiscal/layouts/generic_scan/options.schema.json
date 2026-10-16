@@ -99,8 +99,230 @@
         ]
       }
     },
+    "pages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "array",
+        "prefixItems": [
+          {
+            "type": "integer",
+            "minimum": 1
+          },
+          {
+            "type": "integer",
+            "minimum": 1
+          }
+        ],
+        "minItems": 2,
+        "maxItems": 2
+      },
+      "description": "The part of the account's scope this table reads ([first, last] physical pages): one original printing several divisions' tables of the account."
+    },
+    "division": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The division (所属) whose share of the account the original prints: its 款・項・目 carry that division's amounts, and the tables of one account's divisions add up to the account (ADR 0030)."
+    },
     "name_corrections": {
-      "description": "原画で確認した科目名のOCR誤読の訂正。頁・観測ID（行または単語）・誤読した字・印字された字に結び付け、同じ長さの字の置き換えだけを許す。原観測は変えない。",
+      "description": "原画で確認した名称の誤読の訂正。観測ID（行または単語）に結び付けて誤読した字を同じ長さの印字された字に置き換える形（observation_id。原観測は変えない）と、文字層の変換と同じく頁・番号・読んだ名称で1つのノードに結び付けて名称を直す形がある。",
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "page": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "observation_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "observed_name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "corrected_name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "id",
+              "page",
+              "observation_id",
+              "observed_name",
+              "corrected_name",
+              "reason"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "page": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "code": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "observed_name": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "minLength": 1
+              },
+              "corrected_name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 10
+              },
+              "corrected_code": {
+                "type": "string",
+                "pattern": "^[0-9]+$"
+              },
+              "y": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "id",
+              "page",
+              "code",
+              "observed_name",
+              "corrected_name",
+              "reason"
+            ]
+          }
+        ]
+      }
+    },
+    "code_readings": {
+      "description": "OCR が読まなかった科目番号。原画で確かめた印字の位置（PDF の pt）と番号を宣言し、組み立ての前に語として足す。数字の語と重なれば止める。その行の名前も読めなかったときは `name` と `name_box` で補う。",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "box": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 4,
+            "maxItems": 4
+          },
+          "code": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 10
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name_box": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 4,
+            "maxItems": 4
+          }
+        },
+        "required": [
+          "id",
+          "page",
+          "box",
+          "code",
+          "reason"
+        ],
+        "dependentRequired": {
+          "name": [
+            "name_box"
+          ]
+        }
+      }
+    },
+    "unit_readings": {
+      "description": "OCR が読み違えた単位の印字（款の行の欄の上の「円」を m と読む等）。原画で確かめた位置（PDF の pt）と読んだ1字を宣言し、単位の円に戻す。箱に1字が無ければ止める。",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "box": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 4,
+            "maxItems": 4
+          },
+          "observed": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 10
+          }
+        },
+        "required": [
+          "id",
+          "page",
+          "box",
+          "observed",
+          "reason"
+        ]
+      }
+    },
+    "dropped_readings": {
+      "description": "同じ印字を重ねて読んだ OCR の読み（重なる墨の読み直し）。原画で確かめ、頁・観測ID・読んだ文字で1つの読みに結び付けて除く。見つからなければ止める。",
       "type": "array",
       "items": {
         "type": "object",
@@ -118,25 +340,110 @@
             "type": "string",
             "minLength": 1
           },
-          "observed_name": {
-            "type": "string",
-            "minLength": 1
-          },
-          "corrected_name": {
+          "observed": {
             "type": "string",
             "minLength": 1
           },
           "reason": {
             "type": "string",
-            "minLength": 1
+            "minLength": 10
           }
         },
         "required": [
           "id",
           "page",
           "observation_id",
-          "observed_name",
-          "corrected_name",
+          "observed",
+          "reason"
+        ]
+      }
+    },
+    "header_readings": {
+      "description": "OCR が読み違えた・読めなかった見出しの升の印字（字間の空いた「予　算　現　額」を「額」だけ読む等）。原画で確かめた升の位置（PDF の pt）と印字を、同じ組版の頁の一覧で宣言する。升に中心がある語を宣言の印字に置き換える。範囲外の頁や、金額の読みを含む升なら止める。",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "pages": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "box": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 4,
+            "maxItems": 4
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 10
+          }
+        },
+        "required": [
+          "id",
+          "pages",
+          "box",
+          "text",
+          "reason"
+        ]
+      }
+    },
+    "amount_readings": {
+      "description": "OCR が読み落とした金額の印字（細い字体の単独の0等）。原画で確かめた位置（PDF の pt）と印字を宣言して補う。同じ頁の同じ印字は箱を並べる。箱に数字の読みがあれば止める。",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "boxes": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 4,
+              "maxItems": 4
+            }
+          },
+          "amount": {
+            "type": "string",
+            "pattern": "^△?(0|[1-9][0-9]{0,2}(,[0-9]{3})*)$"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 10
+          }
+        },
+        "required": [
+          "id",
+          "page",
+          "boxes",
+          "amount",
           "reason"
         ]
       }

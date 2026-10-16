@@ -176,7 +176,8 @@ def prepare(warehouse: Path, candidate: Path | None = None, *, remote: bool = Fa
                                             entry['parent']['name'], entry['printed'], entry['children_sum']))
                 tables.append((source_key, declared['name'].removesuffix('_nodes'), target['jurisdiction'],
                                target['fiscal_year'], target['document_kind'], spec['direction'],
-                               table['table_id'], table['account'], origin_id, json.dumps(table['notes'], ensure_ascii=False),
+                               table['table_id'], table['account'], table.get('division'), origin_id,
+                               json.dumps(table['notes'], ensure_ascii=False),
                                table['nodes']['row_count'], table['amounts']['row_count']))
         for csv_source in csv_sources:
             for declared in csv_source['tables']:
@@ -202,8 +203,8 @@ def prepare(warehouse: Path, candidate: Path | None = None, *, remote: bool = Fa
                                    target['fiscal_year'], target['document_kind'], spec['direction'],
                                    table['table_id'], origin_id, table['row_count'],
                                    spec['amount_column'], spec['amount_unit']))
-        con.execute('create or replace table ingestion.tables (source_table_key varchar, relation_prefix varchar, jurisdiction_code varchar, fiscal_year integer, document_kind varchar, direction varchar, table_id varchar, account_name varchar, origin_id varchar, notes varchar, nodes_row_count bigint, amounts_row_count bigint)')
-        con.executemany('insert into ingestion.tables values (?,?,?,?,?,?,?,?,?,?,?,?)', tables)
+        con.execute('create or replace table ingestion.tables (source_table_key varchar, relation_prefix varchar, jurisdiction_code varchar, fiscal_year integer, document_kind varchar, direction varchar, table_id varchar, account_name varchar, division varchar, origin_id varchar, notes varchar, nodes_row_count bigint, amounts_row_count bigint)')
+        con.executemany('insert into ingestion.tables values (?,?,?,?,?,?,?,?,?,?,?,?,?)', tables)
         con.execute('create or replace table ingestion.csv_tables (source_table_key varchar, relation_prefix varchar, jurisdiction_code varchar, fiscal_year integer, document_kind varchar, direction varchar, table_id varchar, origin_id varchar, row_count bigint, amount_column varchar, amount_unit varchar)')
         if csv_tables:
             con.executemany('insert into ingestion.csv_tables values (?,?,?,?,?,?,?,?,?,?,?)', csv_tables)

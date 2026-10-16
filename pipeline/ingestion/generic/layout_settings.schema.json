@@ -27,7 +27,17 @@
         "additionalProperties": false,
         "properties": {
           "kind": {"enum": ["amount", "label"]},
-          "axis_header": {"type": "string", "minLength": 1}
+          "axis_header": {"type": "string", "minLength": 1},
+          "excluded": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kind", "reason"],
+            "description": "The column is not taken in: the builder reads none of it, and its printed digits are a coverage exclusion of the whole column on every page, with a kind of the shared vocabulary and the reason.",
+            "properties": {
+              "kind": {"type": "string", "minLength": 1},
+              "reason": {"type": "string", "minLength": 10}
+            }
+          }
         }
       }
     },
@@ -43,7 +53,10 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "ignore_frame_title": {"type": "boolean"}
+        "ignore_frame_title": {"type": "boolean"},
+        "staircase": {"const": true, "description": "The subject columns are a staircase: one header cell 款 項 目 over narrow code columns, and the 款・項 cells run down the page with no closing rule."},
+        "agree_all_frames": {"const": true, "description": "Scan: every frame of a spread (not only the widest) takes the header reading most pages share, frame by frame from the left."},
+        "kind_by_characters": {"const": true, "description": "A stacked kind under its group whose two printed lines the text layer or OCR read across (翌年度繰越額／継逓繰続費次越) is the known kind its characters spell, not the group (headers.canonical)."}
       }
     },
     "source_inconsistencies": {
@@ -70,6 +83,14 @@
           "difference": {"type": "integer"},
           "basis": {"type": "string", "minLength": 10}
         }
+      }
+    },
+    "text_layer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "form_clips": {"const": true, "description": "Text drawn inside a form has its clip in the form's space: an object whose own bounds meet it is visible."},
+        "image_rules": {"const": true, "description": "A page that draws no vector rule has its ruled grid in a background image: the rules are read from the render, as a scan's are."}
       }
     },
     "breakdown": {
@@ -109,7 +130,8 @@
           "amount_brackets": {"type": "boolean"},
           "indent_chars": {"type": "integer", "minimum": 1},
           "single_part_notes": {"type": "boolean"},
-          "notes": {"type": "array", "items": {"type": "string", "minLength": 1}}
+          "notes": {"type": "array", "items": {"type": "string", "minLength": 1}},
+          "name_column": {"const": true, "description": "Names are set in a column of their own a space right of the numbers: a name wrapped around a line printing only its number starts up to a character past it."}
         }
       }
     }

@@ -27,6 +27,7 @@ from ingestion.lib.ocr_names import AmountDictionary, AmountRule, correct_amount
 MINUS = re.compile(r'^[AΔ▲−-]\s*(?=[0-9])')
 NUMBER = re.compile(r'△?[0-9][0-9,.]*')
 AMOUNT = re.compile(r'△?[0-9]{1,3}([,.][0-9]{3})+|△?[0-9]{4,}')
+GROUPED = re.compile(r'△?[0-9]{1,3}([,.][0-9]{3})+')
 # Pieces closer than this share of the line height belong to one word.
 JOIN_GAP = .6
 HEADER_NAMES = Path(__file__).with_name('scan_header_corrections.json')
@@ -84,6 +85,20 @@ def _split(word: Word, cuts: list[float]) -> list[Word]:
         return [word]
     pieces, start, used = [], word.x0, 0
     width = (word.x1 - word.x0) / len(word.text)
+    if _amount(word.text) and (GROUPED.fullmatch(re.sub(r'\s+', '', word.text))
+                               or all(x - word.x0 < width for x in inside)):
+        # An amount is set flush right in its cell: a rule within its first character's width crosses
+        # the OCR box's padding, not a digit (`1,981,045,000` over a rule 2pt from its left, 281000). Nor does
+        # a rule cut digits grouped by threes: two cells' prints run together never group so
+        # as read (`17,585,227,000` boxed 3pt past its cell's right rule, 281000; `0532,413,000` and
+        # `130,577,0001,156,707,000` are cut).
+        return [word]
+    if (NUMBER.fullmatch(_text(word.text)) and len(_text(word.text)) >= 3
+            and all(word.x1 - x < width for x in inside)):
+        # Nor does a rule within a character of a number's end: the box runs past its cell's right rule
+        # (`448` of `134,271 448`, `296` 3pt past it, 281000), and no whole digit fits in that sliver. The box
+        # still ends at the rule, as a cut keeping every character gives it (`422` 1pt past it, 132152).
+        return [word] if _amount(word.text) else [Word(word.text, word.x0, word.y0, min(inside), word.y1)]
     for x in [*inside, word.x1]:
         end = len(word.text) if x == word.x1 else max(used, min(len(word.text), round((x - word.x0) / width)))
         if end > used:
@@ -103,7 +118,11 @@ def _cell_words(pieces: list[Word], cuts: list[float]) -> list[Word]:
         if words:
             last = words[-1]
             height = max(last.y1 - last.y0, piece.y1 - piece.y0)
-            same_cell = not any(last.x0 < x <= piece.x0 for x in cuts)
+            # Digits a rule's padding separates: the first piece's box overhangs the rule by under 2pt, so it starts
+            # in the cell the layout places it in (`551` `111,000`, 281000).
+            digits = bool(NUMBER.fullmatch(_text(last.text)) and NUMBER.fullmatch(_text(piece.text)))
+            pad = min(2, (last.x1 - last.x0) / 2) if digits else 0
+            same_cell = not any(last.x0 + pad < x <= piece.x0 for x in cuts)
             # "2" "款" "1" "項" join; a name and its amount stay apart even when they nearly touch.
             amount_with_text = _amount(last.text) != _amount(piece.text) and not (
                 NUMBER.fullmatch(_text(last.text)) and NUMBER.fullmatch(_text(piece.text)))
@@ -115,7 +134,7 @@ def _cell_words(pieces: list[Word], cuts: list[float]) -> list[Word]:
     return [Word(_text(w.text), w.x0, w.y0, w.x1, w.y1) for w in words if w.text.strip()]
 
 
-def short_rows(pdf: Path, detected: pdf_rules.PageRules) -> pdf_rules.PageRules:
+def short_rows(pdf: Path, detected: pdf_rules.PageRules, staircase: bool = False) -> pdf_rules.PageRules:
     """A continuous horizontal stroke joining two observed vertical rules closes their cell.
 
     The page-wide detector deliberately omits short strokes. Here both ends must meet
@@ -140,8 +159,24 @@ def short_rows(pdf: Path, detected: pdf_rules.PageRules) -> pdf_rules.PageRules:
     found = pdf_rules._merge(runs, 1 / scale)
     extra = [r for r in found if not any(abs(old.position - r.position) <= 1
              and old.start <= r.start + 1 and r.end <= old.end + 1 for old in detected.horizontal)]
-    return replace(detected, horizontal=tuple(sorted([*detected.horizontal, *extra],
-                    key=lambda r: (r.position, r.start))))
+    horizontal = sorted([*detected.horizontal, *extra], key=lambda r: (r.position, r.start))
+    # Likewise, in a staircase (the layout setting `header.staircase`), a short vertical stroke joining two
+    # horizontal rules at the place of a vertical rule the page draws elsewhere closes a cell: the deepest
+    # level column on a page's last row (281000).
+    columns = []
+    for x in sorted({round(r.position, 1) for r in vertical}) if staircase else ():
+        across = [r for r in horizontal if r.start - 1 <= x <= r.end + 1]
+        for upper, lower in zip(across, across[1:]):
+            top, bottom = upper.position, lower.position
+            if bottom - top < 2:
+                continue
+            if any(abs(r.position - x) <= 1 and r.start <= top + 1 and bottom - 1 <= r.end for r in vertical):
+                continue
+            px, y0, y1 = round(x * scale), round(top * scale) + 1, round(bottom * scale)
+            if y1 > y0 and np.any(np.all(image[y0:y1, max(0, px - 1):px + 2] < pdf_rules.DARK, axis=0)):
+                columns.append(pdf_rules.Rule(x, top, bottom, vertical[0].thickness))
+    return replace(detected, horizontal=tuple(horizontal),
+                   vertical=tuple(sorted([*detected.vertical, *columns], key=lambda r: (r.position, r.start))))
 
 
 def page(observation_page: dict, pdf: Path, corrections: AmountDictionary | None = None,
@@ -216,19 +251,23 @@ def page(observation_page: dict, pdf: Path, corrections: AmountDictionary | None
     return Page(number, detected.width, detected.height, words, rules)
 
 
-def _header(page: Page) -> tuple[list[float], float, float, list[Word]] | None:
-    """The widest frame's band edges, its top and header bottom, and the header words."""
+def _header(page: Page, every: bool = False) -> list[tuple[list[float], float, float, list[Word]]]:
+    """Each frame's band edges, its top and header bottom, and the header words: the widest frame,
+    or every frame left to right (`header.agree_all_frames`)."""
     frames = _frames(page)
     if not frames:
-        return None
-    frame = max(frames, key=lambda f: f[1] - f[0])
-    x0, x1, top, _, edges = frame
-    bottom = _header_bottom(page, frame)
-    words = [w for w in page.words if x0 < (w.x0 + w.x1) / 2 < x1 and top < (w.y0 + w.y1) / 2 < bottom]
-    return edges, top, bottom, words
+        return []
+    chosen = sorted(frames, key=lambda f: f[0]) if every else [max(frames, key=lambda f: f[1] - f[0])]
+    result = []
+    for frame in chosen:
+        x0, x1, top, _, edges = frame
+        bottom = _header_bottom(page, frame)
+        words = [w for w in page.words if x0 < (w.x0 + w.x1) / 2 < x1 and top < (w.y0 + w.y1) / 2 < bottom]
+        result.append((edges, top, bottom, words))
+    return result
 
 
-def agreed_headers(pages: list[Page]) -> list[Page]:
+def agreed_headers(pages: list[Page], every: bool = False) -> list[Page]:
     """Give pages printed on one frame the header most of them read, column by column.
 
     Every page of a scanned statement repeats the same header, but OCR reads it differently
@@ -236,40 +275,62 @@ def agreed_headers(pages: list[Page]) -> list[Page]:
     path over the document, so a misread splits one column into several. Pages whose frames
     have the same band widths share one reading: for each band, the text most pages read
     (ties to the longer), with the words of a page that read it, moved onto each page.
+    The widest frame is agreed; `every` (`header.agree_all_frames`) agrees each frame of a
+    spread, matched by its place from the left.
     """
-    headers = [_header(p) for p in pages]
-    groups: dict[tuple, list[int]] = {}
-    for index, header in enumerate(headers):
-        if header:
-            widths = tuple(round((b - a) / 3) for a, b in zip(header[0], header[0][1:]))
-            groups.setdefault(widths, []).append(index)
     replaced = {i: list(p.words) for i, p in enumerate(pages)}
-    for members in groups.values():
-        if len(members) < 2:
-            continue
-        columns = len(headers[members[0]][0]) - 1
-        chosen: list[tuple[int, int]] = []  # (band, page index whose reading wins)
-        for band in range(columns):
-            readings = {}
+    framed = [_header(p, every) for p in pages]
+    for place in range(max((len(f) for f in framed), default=0)):
+        headers = [f[place] if place < len(f) else None for f in framed]
+        groups: dict[tuple, list[int]] = {}
+        for index, header in enumerate(headers):
+            if header:
+                widths = (len(framed[index]), tuple(round((b - a) / 3) for a, b in zip(header[0], header[0][1:])))
+                groups.setdefault(widths, []).append(index)
+        for members in groups.values():
+            if len(members) < 2:
+                continue
+            columns = len(headers[members[0]][0]) - 1
+            chosen: list[tuple[int, int]] = []  # (band, page index whose reading wins)
+            for band in range(columns):
+                readings = {}
+                for index in members:
+                    edges, _, _, words = headers[index]
+                    inside = sorted((w for w in words if edges[band] < (w.x0 + w.x1) / 2 < edges[band + 1]),
+                                    key=lambda w: (round(w.y0 / 4), w.x0))
+                    readings[index] = normalize(''.join(w.text for w in inside))
+                counts = Counter(readings.values())
+                best = max(counts, key=lambda text: (counts[text], len(text)))
+                chosen.append((band, next(i for i in members if readings[i] == best)))
             for index in members:
-                edges, _, _, words = headers[index]
-                inside = sorted((w for w in words if edges[band] < (w.x0 + w.x1) / 2 < edges[band + 1]),
-                                key=lambda w: (round(w.y0 / 4), w.x0))
-                readings[index] = normalize(''.join(w.text for w in inside))
-            counts = Counter(readings.values())
-            best = max(counts, key=lambda text: (counts[text], len(text)))
-            chosen.append((band, next(i for i in members if readings[i] == best)))
-        for index in members:
-            edges, top, _, words = headers[index]
-            header_ids = {id(w) for w in words}
-            moved = []
-            for band, source in chosen:
-                source_edges, source_top, _, source_words = headers[source]
-                dx, dy = edges[band] - source_edges[band], top - source_top
-                moved += [Word(w.text, w.x0 + dx, w.y0 + dy, w.x1 + dx, w.y1 + dy) for w in source_words
-                          if source_edges[band] < (w.x0 + w.x1) / 2 < source_edges[band + 1]]
-            replaced[index] = [w for w in pages[index].words if id(w) not in header_ids] + moved
+                edges, top, _, words = headers[index]
+                header_ids = {id(w) for w in words}
+                moved = []
+                for band, source in chosen:
+                    source_edges, source_top, _, source_words = headers[source]
+                    dx, dy = edges[band] - source_edges[band], top - source_top
+                    moved += [Word(w.text, w.x0 + dx, w.y0 + dy, w.x1 + dx, w.y1 + dy) for w in source_words
+                              if source_edges[band] < (w.x0 + w.x1) / 2 < source_edges[band + 1]]
+                replaced[index] = [w for w in replaced[index] if id(w) not in header_ids] + moved
     return [Page(p.number, p.width, p.height, replaced[i], p.rules) for i, p in enumerate(pages)]
+
+
+def read_headers(observed: list[Page], readings: list[dict] | None) -> list[Page]:
+    """Header cells OCR misread or left unread, as the conversion's options declare them from the rendered
+    page (`header_readings`: pages, the cell's box in PDF points, the printed text). The words centred in
+    the box give way to the declared text. A page outside the scope, or a box holding a read amount, stops
+    the conversion: the declaration is for a header, never for the body."""
+    words = {p.number: list(p.words) for p in observed}
+    for reading in readings or ():
+        x0, y0, x1, y1 = reading['box']
+        for number in reading['pages']:
+            if number not in words:
+                raise ValueError(f'A header reading needs a scoped page: {reading["id"]}')
+            inside = [w for w in words[number] if x0 <= (w.x0 + w.x1) / 2 <= x1 and y0 <= (w.y0 + w.y1) / 2 <= y1]
+            if any(GROUPED.search(w.text.replace(' ', '')) for w in inside):
+                raise ValueError(f'A header reading covers a read amount: {reading["id"]}')
+            words[number] = [w for w in words[number] if not any(w is i for i in inside)] + [Word(reading['text'], x0, y0, x1, y1)]
+    return [Page(p.number, p.width, p.height, words[p.number], p.rules) for p in observed]
 
 
 def apply_name_corrections(observation: dict, rules: list[dict] | None) -> dict:
@@ -304,15 +365,22 @@ def apply_name_corrections(observation: dict, rules: list[dict] | None) -> dict:
 
 def pages(observation: dict, pdf: Path, corrections: AmountDictionary | None = None,
           columns: dict | None = None, rules: dict | None = None, *, spread: dict | None = None,
-          header: dict | None = None, code_corrections: list[dict] | None = None) -> list[Page]:
+          header: dict | None = None, code_corrections: list[dict] | None = None,
+          header_readings: list[dict] | None = None) -> list[Page]:
+    every = bool((header or {}).get('agree_all_frames'))
+
+    def agreed(found):
+        return agreed_headers(read_headers(found, header_readings), every)
+
     @cache
     def detected(number):
-        return short_rows(pdf, (rules or {}).get(number) or pdf_rules.detect(pdf, number))
+        return short_rows(pdf, (rules or {}).get(number) or pdf_rules.detect(pdf, number),
+                          bool((header or {}).get('staircase')))
 
     code_rules, shrunk = [], []
     if code_corrections:
         from ingestion.generic.tree import groups
-        plain = agreed_headers([page(p, pdf, detected=detected(p['page_number'])) for p in observation['pages']])
+        plain = agreed([page(p, pdf, detected=detected(p['page_number'])) for p in observation['pages']])
         # The code of a 款・項・目 or of a 節 sits in a label column; a number in an amount column is not a code.
         subjects = [b for l in _layout(plain, columns, spread=spread, header=header)
                     for g in groups(l) for b in g.bands if g.subject or b.kind == 'label']
@@ -338,7 +406,7 @@ def pages(observation: dict, pdf: Path, corrections: AmountDictionary | None = N
                 shrunk.append(rule)  # the extra characters were a ruling or a stroke, not part of the number
     if corrections:
         from ingestion.generic.layout import page_bands
-        plain = agreed_headers([page(p, pdf, detected=detected(p['page_number'])) for p in observation['pages']])
+        plain = agreed([page(p, pdf, detected=detected(p['page_number'])) for p in observation['pages']])
         units = unit_glyphs(plain, columns, spread=spread, header=header)
         bands = {p.number: page_bands(p, spread, header)[0] for p in plain}
         boxes = {(p['page_number'], o['id']): o['bbox_pdf_pt'] for p in observation['pages']
@@ -374,7 +442,7 @@ def pages(observation: dict, pdf: Path, corrections: AmountDictionary | None = N
     unused = {r.id for r in corrections.rules} - used if corrections else set()
     if unused:
         raise ValueError(f'Amount corrections matched no observation: {sorted(unused)}')
-    found = agreed_headers(found)
+    found = agreed(found)
     units = unit_glyphs(found, columns, spread=spread, header=header)
     return [Page(p.number, p.width, p.height,
                  [Word('円', w.x0, w.y0, w.x1, w.y1) if w.text == '门' and (p.number, (w.x0, w.y0, w.x1, w.y1)) in units else w
@@ -489,6 +557,76 @@ def code_holes(logical_pages_: list) -> list[dict]:
     return list({(h['page'], tuple(round(v, 1) for v in h['box'])): h for h in holes}.values())
 
 
+def drop_readings(observation: dict, rules: list[dict] | None) -> dict:
+    """OCR readings that read again the marks another reading already covers (two overlapping ink re-reads,
+    `13億用料及` over `13使用料及`), as the conversion's options declare them from the rendered page
+    (`dropped_readings`: page, observation id and the text read). The reading and its words are left out; one
+    not found as declared stops the conversion."""
+    if not rules:
+        return observation
+    drop = {(r['page'], r['observation_id']): r for r in rules}
+    found = set()
+    pages_ = []
+    for p in observation['pages']:
+        regions = []
+        for region in p['regions']:
+            kept = []
+            for o in region['observations']:
+                rule = drop.get((p['page_number'], o['id']))
+                if rule is not None:
+                    if o['raw_text'] != rule['observed']:
+                        raise ValueError(f'A dropped reading differs from the observation: {rule["id"]}')
+                    found.add((p['page_number'], o['id']))
+                    continue
+                if (p['page_number'], o.get('parent_id')) in drop:
+                    continue
+                kept.append(o)
+            regions.append({**region, 'observations': kept})
+        pages_.append({**p, 'regions': regions})
+    if missing := sorted(r['id'] for key, r in drop.items() if key not in found):
+        raise ValueError(f'Dropped readings matched no observation: {missing}')
+    return {**observation, 'pages': pages_}
+
+
+def add_code_readings(observed: list[Page], readings: list[dict] | None, key: str = 'code',
+                      printed: str = r'[0-9]+') -> list[Page]:
+    """Subject codes (`code_readings`) or amounts (`amount_readings`, key `amount`) OCR left unread, as the
+    conversion's options declare them from the rendered page (page, box in PDF points, the printed text).
+    A box that already holds a digit is not a missing reading, and the conversion stops. A code reading may
+    carry the subject's name OCR left unread on that line (`name`, `name_box`); its box must hold no reading."""
+    words = {p.number: list(p.words) for p in observed}
+    for reading in readings or ():
+        x0, y0, x1, y1 = reading['box']
+        if reading['page'] not in words or not re.fullmatch(printed, reading[key]):
+            raise ValueError(f'A {key} reading needs a scoped page and a number: {reading["id"]}')
+        if any(re.search(r'[0-9]', w.text) and w.x0 < x1 and x0 < w.x1 and w.y0 < y1 and y0 < w.y1
+               for w in words[reading['page']]):
+            raise ValueError(f'A {key} reading overlaps a read digit: {reading["id"]} {reading["box"]}')
+        words[reading['page']].append(Word(reading[key], x0, y0, x1, y1))
+        if reading.get('name'):
+            n0, m0, n1, m1 = reading['name_box']
+            if any(w.x0 < n1 and n0 < w.x1 and w.y0 < m1 and m0 < w.y1 for w in words[reading['page']]):
+                raise ValueError(f'A name reading overlaps a reading: {reading["id"]}')
+            words[reading['page']].append(Word(reading['name'], n0, m0, n1, m1))
+    return [Page(p.number, p.width, p.height, words[p.number], p.rules) for p in observed]
+
+
+def read_units(observed: list[Page], readings: list[dict] | None) -> list[Page]:
+    """Unit marks OCR misread, as the conversion's options declare them from the rendered page
+    (`unit_readings`: page, box in PDF points, the one glyph read). The glyph becomes the unit 円, which is
+    no amount; one glyph must sit in the box, or the conversion stops."""
+    words = {p.number: list(p.words) for p in observed}
+    for reading in readings or ():
+        x0, y0, x1, y1 = reading['box']
+        found = [i for i, w in enumerate(words.get(reading['page'], ())) if w.text == reading['observed']
+                 and x0 <= (w.x0 + w.x1) / 2 <= x1 and y0 <= (w.y0 + w.y1) / 2 <= y1]
+        if len(reading['observed']) != 1 or any(c.isdigit() for c in reading['observed']) or len(found) != 1:
+            raise ValueError(f'A unit reading needs one non-digit glyph in its box: {reading["id"]}')
+        w = words[reading['page']][found[0]]
+        words[reading['page']][found[0]] = Word('円', w.x0, w.y0, w.x1, w.y1)
+    return [Page(p.number, p.width, p.height, words[p.number], p.rules) for p in observed]
+
+
 def recover_codes(observed: list[Page], pdf: Path, columns: dict | None = None,
                   *, spread: dict | None = None, header: dict | None = None) -> tuple[list[Page], list[dict]]:
     """Read a thin vertical 1 only inside a sequence hole. No whole-page ink check or inferred number.
@@ -588,21 +726,30 @@ def pinned(source: dict, selected_pages: list[int]) -> dict:
 def build_table(source: dict, options: dict, *, stop: bool = True, rules: dict | None = None):
     """The scan entry of the same builder and finalization as text; the converter never runs OCR or VLM."""
     from ingestion.generic.build import choose_pattern, page_titles
-    from ingestion.generic.convert import Table, canonical_headings, excluded_regions, fine_sections, scope_pages, split_notes
+    from ingestion.generic.convert import Table, canonical_headings, correct_names, excluded_regions, fine_sections, scope_pages, split_notes
     from ingestion.generic.layout_settings import load
     from ingestion.generic.repair import Report
     from ingestion.generic.units import check as check_units
     if source.get('format') != 'pdf' or source.get('pdf_type') != 'scan':
         raise ValueError('The scan builder requires a scan PDF')
-    selected = scope_pages(source, options['account'])
-    observation = pinned(source, selected)
+    selected = scope_pages(source, options['account'], options.get('pages'))
+    observation = drop_readings(pinned(source, selected), options.get('dropped_readings'))
     settings = load(source['target'], source.get('direction') or 'expenditure')
     columns = (settings or {}).get('columns')
     spread = (settings or {}).get('spread')
     header = (settings or {}).get('header')
-    observation = apply_name_corrections(observation, options.get('name_corrections'))
+    # A name correction binds to an observation (`observation_id`: characters OCR misread) or, as the text
+    # builder's, to a node by page, code and the name read (convert.correct_names).
+    by_observation = [r for r in options.get('name_corrections', ()) if 'observation_id' in r]
+    by_node = [r for r in options.get('name_corrections', ()) if 'observation_id' not in r]
+    observation = apply_name_corrections(observation, by_observation)
     printed = pages(observation, Path(source['path']), amount_dictionary(options.get('amount_corrections', [])), columns, rules,
-                    spread=spread, header=header, code_corrections=options.get('code_corrections'))
+                    spread=spread, header=header, code_corrections=options.get('code_corrections'),
+                    header_readings=options.get('header_readings'))
+    printed = add_code_readings(printed, options.get('code_readings'))
+    printed = add_code_readings(printed, [{**r, 'box': box} for r in options.get('amount_readings', ()) for box in r['boxes']],
+                                'amount', r'△?(0|[1-9][0-9]{0,2}(,[0-9]{3})*)')
+    printed = read_units(printed, options.get('unit_readings'))
     printed, recovered = recover_codes(printed, Path(source['path']), columns, spread=spread, header=header)
     report = Report()
     direction = source.get('direction')
@@ -618,8 +765,9 @@ def build_table(source: dict, options: dict, *, stop: bool = True, rules: dict |
     if report.unit['stopped'] and stop:
         raise ValueError(f'Unit check failed: {report.unit}')
     kept, notes, amounts, unresolved, codes = split_notes(built)
+    built.notes.extend({'kind': 'name correction', 'text': text} for text in correct_names(built.nodes, by_node))
     nodes = [*built.nodes, *notes]
-    amounts, headings = canonical_headings([*kept, *amounts], nodes, kind)
+    amounts, headings = canonical_headings([*kept, *amounts], nodes, kind, header)
     fine_sections(nodes)
     return Table(nodes, amounts, unresolved, excluded_regions(built, logical, codes, observed),
                  built, report, observed, logical, headings)

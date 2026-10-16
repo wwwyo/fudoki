@@ -73,6 +73,156 @@
       "observed_name": "予一備費支出及び流用増減",
       "corrected_name": "予備費支出及び流用増減",
       "reason": "二段に積んだ見出し（予／備費）の間の罫線をOCRが一と読んだ。原典の予備費支出及び流用増減の印字を確認した。"
+    },
+    {
+      "id": "flow-delta-a",
+      "observed_name": "予備費支出及び流用増A減",
+      "corrected_name": "予備費支出及び流用増減",
+      "reason": "神戸市2025決算の局別の決算説明書のscan（281000）で、OCRが見出しを読み違えた。原典の描画で印字を確認した。△をAと読んだ。"
+    },
+    {
+      "id": "flow-delta-ko",
+      "observed_name": "予備費支出及び流用増亼減",
+      "corrected_name": "予備費支出及び流用増減",
+      "reason": "神戸市2025決算の局別の決算説明書のscan（281000）で、OCRが見出しを読み違えた。原典の描画で印字を確認した。△を亼と読んだ。"
+    },
+    {
+      "id": "reserve-duplicated",
+      "observed_name": "予備費支出備費支卜及び流用増減",
+      "corrected_name": "予備費支出及び流用増減",
+      "reason": "神戸市2025決算の局別の決算説明書のscan（281000）で、OCRが見出しを読み違えた。原典の描画で印字を確認した。予備費支出の一部を重ねて読み、出を卜と読んだ。"
+    },
+    {
+      "id": "carryover-amount-frame",
+      "observed_name": "継続費及び繰越事業費繰越頟",
+      "corrected_name": "継続費及び繰越事業費繰越額",
+      "reason": "神戸市2025決算の局別の決算説明書のscan（281000）で、OCRが見出しを読み違えた。原典の描画で印字を確認した。額を頟と読んだ。"
+    },
+    {
+      "id": "phased-carryover-mixed",
+      "observed_name": "継続費本続買逓次繰越五次繰起",
+      "corrected_name": "継続費逓次繰越",
+      "reason": "神戸市2025決算の局別の決算説明書のscan（281000）で、OCRが見出しを読み違えた。原典の描画で印字を確認した。2行の見出しを横に読み混ぜた。"
+    },
+    {
+      "id": "phased-carryover-short",
+      "observed_name": "逓次繰越",
+      "corrected_name": "継続費逓次繰越",
+      "reason": "神戸市2025決算の局別の決算説明書のscan（281000）で、OCRが見出しを読み違えた。原典の描画で印字を確認した。2行の見出しの1行目（継続費）を落とした。"
+    },
+    {
+      "id": "explicit-carryover",
+      "observed_name": "萌許袋",
+      "corrected_name": "繰越明許費",
+      "reason": "神戸市2025決算の局別の決算説明書のscan（281000）で、OCRが見出しを読み違えた。原典の描画で印字を確認した。繰越を落とし、明許費を萌許袋と読んだ。"
+    },
+    {
+      "id": "initial-budget-ryo",
+      "observed_name": "当初了算額",
+      "corrected_name": "当初予算額",
+      "reason": "神戸市2025決算の局別の決算説明書のscan（281000）で、OCRが見出しを読み違えた。原典の描画で印字を確認した。予を了と読んだ。"
+    },
+    {
+      "id": "carryover-funding-repeated",
+      "observed_name": "継続費及び繰越事業費繰越事業費繰越財源繰越財源繰越財源充当額t三質",
+      "corrected_name": "継続費及び繰越事業費繰越財源充当額",
+      "reason": "神戸市2025決算の局別の決算説明書のscan（281000）で、OCRが見出しを読み違えた。原典の描画で印字を確認した。行を重ねて読み、隣の字を混ぜた。"
+    },
+    {
+      "id": "total-fu",
+      "observed_name": "訃",
+      "corrected_name": "計",
+      "reason": "神戸市2025決算の局別の決算説明書のscan（281000）で、OCRが見出しを読み違えた。原典の描画で印字を確認した。計を訃と読んだ。"
+    },
+    {
+      "id": "budget-heading-kan",
+      "observed_name": "予算顴",
+      "corrected_name": "予算現額",
+      "reason": "神戸市2025決算の局別の決算説明書のscan（281000）で、OCRが見出しを読み違えた。原典の描画で印字を確認した。額を顴と読み、現を落とした。"
+    },
+    {
+      "id": "initial-budget-frame",
+      "observed_name": "当初予算頟",
+      "corrected_name": "当初予算額",
+      "reason": "神戸市2025決算の局別の決算説明書のscan（281000）で、OCRが見出しを読み違えた。原典の描画で印字を確認した。額を頟と読んだ。"
+    },
+    {
+      "id": "carryover-amount-mei",
+      "observed_name": "迷続費及び",
+      "corrected_name": "継続費及び繰越事業費繰越額",
+      "reason": "神戸市2025決算の局別の決算説明書のscan（281000）で、OCRが見出しを読み違えた。原典の描画で印字を確認した。継を迷と読み、3行の見出しの2・3行目を落とした。"
+    },
+    {
+      "id": "setsu-amount-yen",
+      "observed_name": "金額円",
+      "corrected_name": "金額",
+      "reason": "神戸市2025決算の局別の決算説明書のscan（281000）で、OCRが見出しを読み違えた。原典の描画で印字を確認した。見出しの下の単位の円を見出しに含めた。"
+    },
+    {
+      "id": "accident-carryover-ra",
+      "observed_name": "辣越し",
+      "corrected_name": "事故繰越し",
+      "reason": "神戸市2025決算の局別の決算説明書のscan（281000）で、OCRが見出しを読み違えた。原典の描画で印字を確認した。2行の見出しの1行目（事故）を落とし、繰を辣と読んだ。"
+    },
+    {
+      "id": "supplementary-budget-ko",
+      "observed_name": "補正孑算額",
+      "corrected_name": "補正予算額",
+      "reason": "神戸市2025決算の局別の決算説明書のscan（281000）で、OCRが見出しを読み違えた。原典の描画で印字を確認した。予を孑と読んだ。"
+    },
+    {
+      "id": "reserve-shi",
+      "observed_name": "予備費出及び流用增減",
+      "corrected_name": "予備費支出及び流用増減",
+      "reason": "神戸市2025決算の局別の決算説明書のscan（281000）で、OCRが見出しを読み違えた。原典の描画で印字を確認した。支を落とし、増を增と読んだ。"
+    },
+    {
+      "id": "reserve-pi",
+      "observed_name": "予備費支出及ぴ流用增減",
+      "corrected_name": "予備費支出及び流用増減",
+      "reason": "神戸市2025決算の局別の決算説明書のscan（281000）で、OCRが見出しを読み違えた。原典の描画で印字を確認した。びをぴ、増を增と読んだ。"
+    },
+    {
+      "id": "carryover-source-tou",
+      "observed_name": "継続費及び繰越事業費繰越財源充額",
+      "corrected_name": "継続費及び繰越事業費繰越財源充当額",
+      "reason": "神戸市2025決算の局別の決算説明書のscan（281000）で、OCRが見出しを読み違えた。原典の描画で印字を確認した。当を落とした。"
+    },
+    {
+      "id": "carryover-source-jutou",
+      "observed_name": "継続費及び繰越事業費繰越財源額",
+      "corrected_name": "継続費及び繰越事業費繰越財源充当額",
+      "reason": "神戸市2025決算の局別の決算説明書のscan（281000）で、OCRが見出しを読み違えた。原典の描画で印字を確認した。充当を落とした。"
+    },
+    {
+      "id": "carryover-source-kurikoshi",
+      "observed_name": "継続費及び𣕧越事茉費繰越財源充当額",
+      "corrected_name": "継続費及び繰越事業費繰越財源充当額",
+      "reason": "神戸市2025決算の局別の決算説明書のscan（281000）で、OCRが見出しを読み違えた。原典の描画で印字を確認した。繰を𣕧、業を茉と読んだ。"
+    },
+    {
+      "id": "supplementary-ryo",
+      "observed_name": "補正了算額",
+      "corrected_name": "補正予算額",
+      "reason": "神戸市2025決算の局別の決算説明書のscan（281000）で、OCRが見出しを読み違えた。原典の描画で印字を確認した。予を了と読んだ。"
+    },
+    {
+      "id": "next-year-carryover-frame",
+      "observed_name": "翌年度繰越頟",
+      "corrected_name": "翌年度繰越額",
+      "reason": "神戸市2025決算の局別の決算説明書のscan（281000）で、OCRが見出しを読み違えた。原典の描画で印字を確認した。額を頟と読んだ。"
+    },
+    {
+      "id": "reserve-zeng",
+      "observed_name": "予備費支出及び流用增減",
+      "corrected_name": "予備費支出及び流用増減",
+      "reason": "神戸市2025決算の局別の決算説明書のscan（281000）で、OCRが見出しを読み違えた。原典の描画で印字を確認した。増を增と読んだ。"
+    },
+    {
+      "id": "reserve-ko-oyobi",
+      "observed_name": "子備費支出及び及流用增減",
+      "corrected_name": "予備費支出及び流用増減",
+      "reason": "神戸市2025決算の局別の決算説明書のscan（281000）で、OCRが見出しを読み違えた。原典の描画で印字を確認した。予を子と読み、及を重ね、増を增と読んだ。"
     }
   ]
 }

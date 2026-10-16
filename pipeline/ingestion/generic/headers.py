@@ -6,7 +6,7 @@ stacked kinds the text layer joined: `翌年度繰越額継続費逓次繰越繰
 `shared/fiscal_amount_map.csv`. A path that fails it is brought to the heading it prints, by rules that
 read the printed words only:
 
-1. the symbols a heading carries (`(A)`, `(B)-(C)`, `(逓)`) are not part of the heading;
+1. the symbols a heading carries (`(A)`, `(B)-(C)`, `(逓)`, the minus mark of `流用増△減`) are not part of the heading;
 2. the longest suffix of two or more segments the dictionary knows (`予算現額／節／金額` → `節／金額`), or,
    for a bare `金額` column, the axis of the item it belongs to (`節／金額`);
 3. the headings a cell prints joined together (`継続費逓次繰越繰越明許費事故繰越し`) are one column of those
@@ -18,7 +18,10 @@ read the printed words only:
    with its characters in the order of the cells (`不額／用`, `翌年度越額／繰／越／繰明／許／費`): when the
    characters of the whole path, taken together, are exactly the characters of one known heading or of two,
    the path is that heading (`不用額`, `翌年度繰越額／繰越明許費`). The match is on the characters as a set
-   with their counts; it is tried last, and only for a path that none of the rules above reads.
+   with their counts; it is tried last, and only for a path that none of the rules above reads. Where the
+   layout setting `header.kind_by_characters` is set, before a path falls back to its first segments
+   (rule 4), its last segment alone is matched so: a stacked kind whose two lines were read across
+   (`翌年度繰越額／継逓繰続費次越`) is that kind, not its group.
 
 A path that the dictionary already knows (or whose last segment it knows) is never touched.
 """
@@ -33,7 +36,7 @@ SEPARATOR = '／'
 
 
 def clean(segment: str) -> str:
-    return SYMBOL.sub('', segment).strip()
+    return SYMBOL.sub('', segment).replace('△', '').replace('▲', '').strip()
 
 
 def parse(text: str, known: set[str]) -> list[str] | None:
@@ -85,7 +88,7 @@ def by_characters(path: str, known: frozenset[str]) -> str | None:
     return f'{a}{SEPARATOR}{b}'
 
 
-def canonical(path: str, axis: str | None, known: set[str]) -> str:
+def canonical(path: str, axis: str | None, known: set[str], kind_by_characters: bool = False) -> str:
     segments = path.split(SEPARATOR)
     if path in known or segments[-1] in known:
         return path
@@ -110,6 +113,12 @@ def canonical(path: str, axis: str | None, known: set[str]) -> str:
             return SEPARATOR.join([*segments[:index], parts[0]])
     if segments[-1].endswith('比較') and '比較' in known:
         return '比較'
+    # A stacked kind under its group, its two printed lines read across (`翌年度繰越額／継逓繰続費次越`, 281000):
+    # the last segment's characters are one known heading, which a fall back to the group would lose.
+    # Only where the layout setting `header.kind_by_characters` says the document prints its kinds so.
+    found = by_characters(segments[-1], frozenset(known)) if kind_by_characters and len(segments) > 1 else None
+    if found is not None and SEPARATOR not in found:
+        return found
     for end in range(len(segments) - 1, 0, -1):
         prefix = SEPARATOR.join(segments[:end])
         if prefix in known:

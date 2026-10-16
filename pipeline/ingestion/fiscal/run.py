@@ -172,7 +172,9 @@ def node_receipt(document: dict, conversion: dict, table_id: str, tables: node_t
     # A direct converter never counted anything while migrating a wide table: no migration note.
     receipt = {'table_id': table_id, 'conversion_id': conversion['id'],
                'input_fingerprint': input_fingerprint or manifest.fingerprint(document, conversion),
-               'account': account, 'notes': [*(notes or []), *([node_tables.MIGRATION_NOTE] if migrated else [])],
+               'account': account, **({'division': conversion['options']['division']}
+                                      if conversion['options'].get('division') else {}),
+               'notes': [*(notes or []), *([node_tables.MIGRATION_NOTE] if migrated else [])],
                'unread_amount_count': tables.unread_amount_count,
                'unresolved_parent_count': tables.unresolved_parent_count}
     for kind, path in paths.items():

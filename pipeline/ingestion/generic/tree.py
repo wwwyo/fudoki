@@ -436,6 +436,9 @@ def entries_of(group: Group, margins: set[int] | None = None, amount_brackets: b
         if code is not None and len(name) > 1 and re.match(r'[０-９]{3,}', raw_text):
             code, name = None, line_text  # `２０３０ビジョン…`: three or more full-width digits begin a name, not an item number (a one-character name stays `161`/`人`)
         script = re.match(r'([0-9]+)(?=[０-９])', raw_text)
+        if script and label and re.fullmatch(r'[0-9]+[０-９]+', label[0].text) and (
+                len(label) == 1 or label[1].x0 - label[0].x1 >= 2):
+            script = None  # `1０` `需用費`: a number printed in two widths, a word of its own (281000)
         if script and margins is not None and margins & set(_margins(label)):
             # `11３歳児健康診査事業`: half-width digits are the number and the full-width ones start the name.
             code, name = script.group(1), normalize(raw_text[len(script.group(1)):])
@@ -547,10 +550,13 @@ def items(group: Group, header: str, margins: set[int] | None = None,
                 break
             consumed += len(glyph.text)
         ordered = sorted(ix)
+        # `name_column`: names are set in a column of their own a space right of the numbers, so a name
+        # wrapped above or below a line printing only its number starts up to a character past it (281000).
+        slack = 3 + (label[0].y1 - label[0].y0 if settings.get('name_column') else 0)
         for position, i in enumerate(ordered):
             if entries[i][2] is not None or not entries[i][0]:
                 continue
-            if not start - 3 <= entries[i][0][0].x0 <= name_start + 3:
+            if not start - 3 <= entries[i][0][0].x0 <= name_start + slack:
                 return False
             # A name goes on a second line because it did not fit with the amount: the line before runs up
             # to where the amount is printed. A short line over an indented line with an amount is two items.
@@ -563,6 +569,22 @@ def items(group: Group, header: str, margins: set[int] | None = None,
     single = {i: tuple(ix) for ix in cells.values()
               if sum(entries[i][2] is not None for i in ix) == 1 and len(ix) > 1
               and sum(bool(entries[i][1]) for i in ix) <= 1 and wraps(0, ix) for i in ix}
+    if settings.get('name_column'):
+        # A name wrapped above and below a line printing only its number, set tighter than the rows: a line
+        # without a number whose middle is within a line height of a number's line is that number's name,
+        # even where no row rule bounds the cell (281000's image-ruled pages draw none between 節).
+        middle = lambda i: sum((g.y0 + g.y1) / 2 for g in entries[i][0]) / len(entries[i][0])
+        numbered = [i for i, entry in enumerate(entries) if entry[2] is not None and entry[0]]
+        attached: dict[int, list[int]] = defaultdict(list)
+        for i, (label, money, code, _) in enumerate(entries):
+            if code is not None or not label or money or i in single or not numbered:
+                continue
+            nearest = min(numbered, key=lambda n: abs(middle(n) - middle(i)))
+            if abs(middle(nearest) - middle(i)) <= label[0].y1 - label[0].y0:
+                attached[nearest].append(i)
+        for number, lines_ in attached.items():
+            members = tuple(sorted({*single.get(number, (number,)), *lines_}))
+            single.update({i: members for i in members})
     done: set[int] = set()
     for index, (label, money, code, name) in enumerate(entries):
         if index in done:
@@ -873,8 +895,17 @@ def subject_items(group: Group) -> list[Item]:
     below its code); a cell without a code continues the previous item.
     """
     deepest = group.bands[-1]
-    band_index = lambda g: next((i for i, b in enumerate(group.bands)
-                                 if b.x0 <= g.x0 + min(2, (g.x1 - g.x0) / 2) <= b.x1), len(group.bands) - 1)
+
+    def band_index(g: Glyph) -> int:
+        index = next((i for i, b in enumerate(group.bands)
+                      if b.x0 <= g.x0 + min(2, (g.x1 - g.x0) / 2) <= b.x1), len(group.bands) - 1)
+        # In a staircase a level's cell runs right over the deeper columns until their rule starts below it
+        # (281000: the 項 code printed right of the 目 rule, on a row above where that rule begins).
+        y = (g.y0 + g.y1) / 2
+        while index > 0 and group.bands[index].staircase and not any(
+                top - 1 <= y <= bottom + 1 for top, bottom in group.bands[index].left_rules):
+            index -= 1
+        return index
     centre = lambda piece: sum((g.y0 + g.y1) / 2 for g in piece) / len(piece)
     cells: dict[tuple, list[list[Glyph]]] = defaultdict(list)
     order: list[tuple] = []
@@ -1726,13 +1757,21 @@ def build(logicals: list[Logical], judge=None, pattern: str = 'bands', detail: s
         axis_items = [i for _, ordered, found in all_items for g in ordered if not g.subject and g.axis == axis
                       for i in found[id(g)] if i.role == 'node']
         # Codes are set a whole step apart at every level, however wide the number (a name's start is not).
-        start = lambda i: i.lines[0][0].x0
+        # The number's line places the item: a name wrapped above it (`使用料及` / `13` / `賃借料`) starts
+        # in the name column.
+        first = lambda i: next((line[0] for line in i.lines if line and line[0].text[:1].isdigit()), i.lines[0][0])
+        start = lambda i: first(i).x0
         origin = min((start(i) - i.group.x0 for i in axis_items), default=0)
+        # A character is the axis's usual line height: OCR that read only the top half of a line
+        # (`4土` 2.4pt high among 6pt lines, 281000) must not make its step that small.
+        heights = sorted(first(i).y1 - first(i).y0 for i in axis_items)
+        usual = heights[len(heights) // 2] if heights else 0
         for item in axis_items:
             if item.level is None:
                 # A level is a whole step: an item set half a character right of its siblings (`98 …（再配当用）`
                 # among `14 …`) is one of them, so only a shift of more than 60% of a step is a deeper level.
-                steps = (start(item) - item.group.x0 - origin) / (chars * (item.lines[0][0].y1 - item.lines[0][0].y0))
+                height = max(first(item).y1 - first(item).y0, usual)
+                steps = (start(item) - item.group.x0 - origin) / (chars * height)
                 item.level = floor(steps + .4)
     # Subject levels by indentation, learned over the document (pattern indent).
     starts = sorted(i.indent for _, ordered, found in all_items for g in ordered if g.subject and g.mode == 'indent'

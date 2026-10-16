@@ -200,6 +200,11 @@ def refresh_manifest(path: Path, *, remote: bool, dry_run: bool, work: Path) -> 
                                            for kind, reference in manifest.table_references(table).items()}
                        for table in document['tables']}
         originals = run.original_files(document, remote=remote, conversion_ids=set(stale))
+        # The conversion below reads pinned OCR observations from the cache only.
+        for conversion in document['conversions']:
+            if conversion['id'] in stale:
+                for item in conversion.get('ocr_inputs', []):
+                    storage.fetch_ocr(document, item, remote=remote)
     except Exception as error:
         return finish(ERROR, stage='restore', reason=f'{type(error).__name__}: {error}')
     output = work / name

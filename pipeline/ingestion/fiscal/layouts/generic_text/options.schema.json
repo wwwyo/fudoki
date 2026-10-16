@@ -5,7 +5,31 @@
   "properties": {
     "account": {"type": "string", "minLength": 1},
     "table_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,95}$"},
-    "partial": {"const": true, "description": "The original is one volume of an account printed in several originals: its 款 are some of the account's, so the sum and digit checks of the unit are reported, not enforced."}
+    "partial": {"const": true, "description": "The original is one volume of an account printed in several originals: its 款 are some of the account's, so the sum and digit checks of the unit are reported, not enforced."},
+    "pages": {
+      "type": "array", "minItems": 1,
+      "items": {"type": "array", "prefixItems": [{"type": "integer", "minimum": 1}, {"type": "integer", "minimum": 1}], "minItems": 2, "maxItems": 2},
+      "description": "The part of the account's scope this table reads ([first, last] physical pages): one original printing several divisions' tables of the account."
+    },
+    "division": {"type": "string", "minLength": 1, "description": "The division (所属) whose share of the account the original prints: its 款・項・目 carry that division's amounts, and the tables of one account's divisions add up to the account (ADR 0030)."},
+    "name_corrections": {
+      "description": "文字層・OCR の名称の誤読の訂正。原画で確かめた印字に直す。頁・番号・読んだ名称で1つのノードに結び付け、見つからなければ止める。",
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "page", "code", "observed_name", "corrected_name", "reason"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "page": {"type": "integer", "minimum": 1},
+          "code": {"type": ["string", "null"]},
+          "observed_name": {"type": ["string", "null"], "minLength": 1},
+          "corrected_name": {"type": "string", "minLength": 1},
+          "corrected_code": {"type": "string", "pattern": "^[0-9]+$"},
+          "y": {"type": "number", "minimum": 0},
+          "reason": {"type": "string", "minLength": 10}
+        }
+      }
+    }
   },
   "required": ["account", "table_id"]
 }

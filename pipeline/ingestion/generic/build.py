@@ -15,7 +15,7 @@ import json
 from pathlib import Path
 
 from ingestion.generic.layout import logical_pages, normalize
-from ingestion.generic.observe import observe
+from ingestion.generic.observe import Page, Rule, observe
 from ingestion.generic.repair import repair
 from ingestion.generic.units import check as check_units, resolve as resolve_units
 from ingestion.generic.tree import DETAIL_PATTERNS, SUBJECT_PATTERNS, Built, build
@@ -76,10 +76,21 @@ def page_titles(pages) -> dict[int, str | None]:
     return result
 
 
+def image_rules(pdf: Path, page: Page, staircase: bool = False) -> Page:
+    """A text page whose ruled grid is a background image (281000): its rules read from the render, as a scan's are."""
+    from ingestion.generic.scan import short_rows
+    from ingestion.lib import pdf_rules
+    detected = short_rows(pdf, pdf_rules.detect(pdf, page.number), staircase)
+    rules = [Rule(r.position, r.start, r.position, r.end) for r in detected.vertical]
+    rules += [Rule(r.start, r.position, r.end, r.position) for r in detected.horizontal]
+    return Page(page.number, page.width, page.height, page.words, rules)
+
+
 def run_pages(pdf: Path, pages: list[int], cache: Path | None = None, judge=None,
               document_kind: str = 'settlement', account: str | None = None, stop: bool = True,
               partial: bool = False, direction: str | None = None, layout: dict | None = None,
-              columns: dict | None = None, spread: dict | None = None, header: dict | None = None):
+              columns: dict | None = None, spread: dict | None = None, header: dict | None = None,
+              text_layer: dict | None = None):
     """Build one table and keep what the converter needs next to it: the repaired pages (their
     words are the digit-coverage scope), the logical pages (their amount bands) and the unit check.
 
@@ -88,13 +99,18 @@ def run_pages(pdf: Path, pages: list[int], cache: Path | None = None, judge=None
     Stops when the unit check fails (款 sum ≠ printed total, or a general account's digits);
     `stop=False` returns the check in `report.unit` instead, for a measurement that goes on."""
     printed = observe(pdf, pages, cache)
+    if (text_layer or {}).get('image_rules'):
+        staircase = bool((header or {}).get('staircase'))
+        printed = [image_rules(pdf, page, staircase) if not page.rules else page for page in printed]
     titles = page_titles(printed) if direction else {}  # before the repair: it drops what is outside the frame
-    observed, report = repair(pdf, printed)
+    observed, report = repair(pdf, printed, bool((text_layer or {}).get('form_clips')))
     if direction:
         report.skipped_pages = [number for number, title in titles.items() if title not in (None, direction)]
         observed = [page for page in observed if page.number not in report.skipped_pages]
     logicals = logical_pages(observed, columns=columns, spread=spread, header=header)
-    built, choice = choose_pattern(logicals, document_kind, judge, layout)
+    # A staircase declares how the levels are marked: each level's band (see `layout.level_cells`).
+    built, choice = choose_pattern(logicals, document_kind, judge, layout,
+                                   ('bands',) if (header or {}).get('staircase') else SUBJECT_PATTERNS)
     report.pattern = choice
     unit = check_units(built, document_kind, account, partial)
     if unit['stopped'] and stop:
@@ -134,11 +150,12 @@ def closure(built: Built, document_kind: str) -> dict:
             'score': (agree - 2 * disagree, named - (subject - named), total_agree - 2 * total_disagree)}
 
 
-def choose_pattern(logicals, document_kind: str = 'settlement', judge=None, layout: dict | None = None) -> tuple[Built, dict]:
+def choose_pattern(logicals, document_kind: str = 'settlement', judge=None, layout: dict | None = None,
+                   patterns: tuple[str, ...] = SUBJECT_PATTERNS) -> tuple[Built, dict]:
     """Decide the unit, build the tree with every subject pattern and keep the one that closes best."""
     unit_sources = resolve_units(logicals, document_kind)
     trials = {}
-    for pattern in SUBJECT_PATTERNS:
+    for pattern in patterns:
         built = build(logicals, judge, pattern, layout=layout)
         trials[pattern] = (built, closure(built, document_kind))
     # A pattern that finds no subject column is not a reading of this document.

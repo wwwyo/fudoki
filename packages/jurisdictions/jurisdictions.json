@@ -1,5 +1,5 @@
 {
-  "note": "全国地方公共団体コードをキーにした団体の同一性。**層に依存しない。**予算・調達はこのキーで束ねる。tokyoCatalogDatasets は東京都カタログでの公開データセット数（母集団の目安）。",
+  "note": "全国地方公共団体コードをキーにした団体の同一性。**層に依存しない。**予算・調達はこのキーで束ねる。tokyoCatalogDatasets は東京都カタログでの公開データセット数（母集団の目安）で、都外の団体は持たない。",
   "generatedAt": "2026-08-10",
   "jurisdictions": {
     "131016": {
@@ -311,6 +311,10 @@
       "name": "小笠原村",
       "ocdId": "ocd-division/country:jp/prefecture:13/city:134210",
       "tokyoCatalogDatasets": 10
+    },
+    "281000": {
+      "name": "神戸市",
+      "ocdId": "ocd-division/country:jp/prefecture:28/city:281000"
     }
   }
 }
