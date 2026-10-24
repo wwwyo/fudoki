@@ -16,6 +16,7 @@
   - How to apply: 頁の PDF で落ちた出典は `text_origins` に足して md にする。md は頁の PDF の変換と同じ見出し（`# <key>`・`## Contents`・`### Page 1`）を付けて送ると取り込まれる（`index.py` の `text_item`、Worker の `stripHeader` が見出しを除く）。それでも落ちた調布市の1頁は本文を NFKC にそろえると通ったので、その出典だけ `nfkc_origins` に宣言した。
 - **`text_origins` に足すと、その出典の pdf の item を1件ずつ消す**: 削除は 429・timeout が続き、3,928件に約7時間かかった（2026-10-21）。消し損ねは「余分」になり、次の実行で消し直す。
 - **全件の一覧は1回10分〜1時間半かかる**: `items list` は50件ずつなので、4万件で800回あまり呼ぶ。`index.py` は既定で変わった出典の item だけを `--metadata-filter`（`origin_sha256`）で、待ちは `--status queued`・`running` で絞って一覧する。状態の数だけなら `cf ai-search stats <id> --namespace default` がすぐ返る。cf 1.0.0-beta.18 で `--name`・`--id` は `--namespace`・`--instance-id` に変わった（古い引数は usage を出して失敗する）。
+- **登録の前にディスクの空きを確保する**: `evaluation:index` は取り出した出典の PDF を `pipeline/.cache/evaluation-search/origins/` に残す（sha256 を確かめて再利用し、壊れていれば R2 から取り直す）ので、1,033出典で数 GB になる。空き381MB で全件の登録が ENOSPC で止まった（2026-10-21）。終わったらこの dir を消してよく、次回は取り直す。登録は一度で終わらず何回かに分かれるので、各回の後に `stats` で状態を見る。
 - **登録済み**: `operations.ts` の末尾に入れてあり、REST・OpenAPI・MCP の tool に出る。外すのは切り戻し（再デプロイが要る。まず `evaluation_search` を `off` にする）。
 - **ローカルの `cf dev` で AI Search を呼ぶ**（2026-10-14 に確かめた）:
   - AI Search の binding は simulation が無く、そのままだと検索が `Binding EVALUATION_SEARCH needs to be run remotely` で失敗し 503 になる。`cloudflare.config.ts` の `bindings.aiSearch({...})` に `dev: { remote: true }` を一時的に足す（コミットしない。D1・DO・rate limit はローカルのまま）。remote proxy の接続に Cloudflare の認証とネットワークが要る（sandbox の外）。検索は本番の索引を読むので、回数は数十回までにする。1回5〜7秒かかり、8秒の打ち切りに近い（remote proxy 越し）。

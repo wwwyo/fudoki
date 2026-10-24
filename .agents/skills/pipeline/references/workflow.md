@@ -23,7 +23,7 @@
 
 OCR（8コアを使い切り80分以上）・全表の変換・`ingestion:refresh --remote` は重い。`refresh` は stale な表を `convert` と同じ処理で作り直すので、`convert` と同じ扱いにする。`ingestion:convert`・`ingestion:refresh`・`ingestion:ocr` は起動時に `ingestion/lib/heavy_lock.py` で判定する（待たずに即終了）。
 - `ocr` は排他。ほかの OCR も、`convert`/`refresh` も走っていないときだけ起動できる（逆に `convert`/`refresh` は OCR が走っていても起動できる）。
-- `convert`/`refresh` は合わせて2本まで（`MAX_CONCURRENT`）。ほかの重い実行が走っているときは、カーネルのメモリ圧力（`kern.memorystatus_vm_pressure_level`）が 1（normal）のときだけ起動できる。1本だけのときは圧力を見ない。閾値は `MAX_PRESSURE_LEVEL` の1箇所。swap の使用量は圧力が引いても残り、macOS の「空き」はカーネルの判断と一致しないので、どちらも判断に使わない。サンドボックスでは sysctl が読めないため、ほかの実行があると「メモリ圧力: unreadable」で断られる — 重い実行はサンドボックスの外から起動する。
+- `convert`/`refresh` は合わせて2本まで（`MAX_CONCURRENT`）。ほかの重い実行が走っているときは、カーネルのメモリ圧力（`kern.memorystatus_vm_pressure_level`）が 1（normal）のときだけ起動できる。1本だけのときは圧力を見ない。閾値は `MAX_PRESSURE_LEVEL` の1箇所。swap の使用量は圧力が引いても残り、macOS の「空き」はカーネルの判断と一致しないので、どちらも判断に使わない。サンドボックスでは sysctl が読めないため、ほかの実行があると「メモリ圧力: unreadable」で断られる — 重い実行はサンドボックスの外から起動する。サンドボックスと外側では `TMPDIR` が別の値になるので、`$TMPDIR` に退避したファイルは外側の実行から見えない（2026-10-22 実測）。退避と受け渡しは worktree 内の相対パスに置く。測定の生データ・比較 script も worktree 内の `.agent/`（gitignore）へ置く — `.cache/` やサンドボックスの scratchpad に置いた観測は worktree を消すと残らず、ADR に書いた計測を後から検算できない（ADR 0033 の所要時間は生データを失った）。
 - 同じ管理 JSON を書く実行は、種類を問わず同時に1本だけ（`same target`）。ほかの実行が同じ管理 JSON の保存済み表と指紋を上書きして、登録と R2 の実体が食い違うため。`refresh` を `--manifest` なしで流すと全管理 JSON を押さえる。
 - 断られると保持者の PID・command・cwd と理由（`OCR exclusion` / `concurrency limit` / `same target` / `memory pressure`）を出して終了するので、出力の完了を待ってからやり直す。
 - ロックは `flock` で、経路は `FUDOKI_HEAVY_LOCK`、無ければ `$XDG_STATE_HOME/fudoki/heavy.lock`、どちらも無ければ `~/.local/state/fudoki/heavy.lock`（環境変数は実行時に読む）。OCR は `heavy.lock`、`convert`/`refresh` は同じ場所の `heavy.lock.slot.<0|1>`、対象ごとに `heavy.lock.target.<ハッシュ>` を持つ。プロセスが死ねばカーネルが解放する。
@@ -36,4 +36,4 @@ OCR（8コアを使い切り80分以上）・全表の変換・`ingestion:refres
 
 網羅の照合は同じ出典・物理頁を読む全表を集めて行い、木の検査は各表に行う。非採用の表・ブロックの頁・矩形は観測用の読み分けから実行時に生成し、種類と理由だけを人が宣言する。金額帯の未網羅は停止したままにする。詳細は [取り込みの手順](ingestion.md)。
 
-流用・充用・不用額などの金額の注記は、原文・金額・単位・位置をノードと金額の表に保持する。種類は `pipeline/shared/fiscal_annotation_map.csv` で解き、金額の段階は付けない。木の親子合計と歳出のintermediateへ足さず、stagingには残す。基準額は印字された月額セルと同じ括弧内の「1回…円」の金額に限定する。判断は [ADR 0023](../../../../docs/adr/0024-monetary-annotations-without-phase.md)。
+流用・充用・不用額などの金額の注記は、原文・金額・単位・位置をノードと金額の表に保持する。種類は `pipeline/shared/fiscal_annotation_map.csv` で解き、金額の段階は付けない。木の親子合計と歳出のintermediateへ足さず、stagingには残す。基準額は印字された月額セルと同じ括弧内の「1回…円」の金額に限定する。判断は [ADR 0024](../../../../docs/adr/0024-monetary-annotations-without-phase.md)。

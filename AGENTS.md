@@ -176,7 +176,7 @@ docs/ は共有文書として Git で管理し、判断の記録はコードと
 
 ## セットアップ
 
-ツールは mise で管理している。
+ツールは mise で管理している。mise は cwd の `mise.toml` で版を選ぶので、`cf` など mise で管理する tool は repo の中から実行する（scratchpad から叩くと別の版になり、引数や PATH が違って落ちる）。
 
 ```bash
 mise install

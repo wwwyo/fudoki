@@ -11,7 +11,7 @@
 **公開 web は `https://fudoki.dev/` で配信する。** これは派生物であって正本ではない。公開 web の絶対 URL（`canonical` / `og:image`）はこのドメインを指す。
 
 - 置き場は Cloudflare。
-- 配信は Cloudflare Workers（`web/deploy/cloudflare.config.ts`、domain は `fudoki.dev`）。現在は `web/worker.ts` が入口の1枚を返す。main に入ると `.github/workflows/deploy-web.yml` が自動でデプロイする（手元からは `bun run --cwd apps/web deploy`）。web を変える PR は `.github/workflows/preview-web.yml` が Worker Previews で `pr-<番号>.fudoki.dev` に出す（PR を閉じたら消す。fork の PR は出さない。preview は Cloudflare Access の「fudoki previews」で Cloudflare アカウントのログインだけを通す。検索エンジンも Access で止まるので noindex は付けない）
+- 配信は Cloudflare Workers（`web/deploy/cloudflare.config.ts`、domain は `fudoki.dev`）。現在は `web/worker.ts` が入口の1枚を返す。main に入ると `.github/workflows/deploy-web.yml` が自動でデプロイする（手元からは `bun run --cwd apps/web deploy`）。web を変える PR は `.github/workflows/preview-web.yml` が Worker Previews で `pr-<番号>.fudoki.dev` に出す（PR を閉じたら消す。fork の PR は出さない。preview は Cloudflare Access の「fudoki previews」で Cloudflare アカウントのログインだけを通す。Access の宛先はホスト名のパターンでなく Worker 単位の `preview_worker` にする — Deployment URL は `abc123-pr-12.fudoki.dev` のように前置きが付き、ホスト名のパターンでは当たらない。検索エンジンも Access で止まるので noindex は付けない）
 - build/deploy は公開 app のコードだけを扱い、dbt・出典の全量生成は実行しない
 - api・docs は main に入ると GitHub Actions がデプロイする（`.github/workflows/deploy-api.yml`・`deploy-docs.yml`、パスで対象を分ける）。認証は repo の secret `CLOUDFLARE_API_TOKEN`・`CLOUDFLARE_ACCOUNT_ID`。手元の `deploy:*` は手動で出し直すときだけ使う。D1 の migration とデータの投入は自動では行わない
 - 公開 app は `pipeline/` を import しない（`pipeline/verify/boundaries.ts` が検査する）
