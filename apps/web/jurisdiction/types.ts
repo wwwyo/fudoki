@@ -68,6 +68,7 @@ export const reiwa = (year: number) => (year >= 2019 ? `令和${year - 2018 === 
 
 /** 1億円以上は億円、それ未満は万円。3桁ごとに区切る。円の細かい数字は出典の頁で確かめてもらう */
 export function formatYen(yen: number): string {
+  if (yen === 0) return '0円'
   if (yen >= 1e8) return `${(yen / 1e8).toLocaleString('ja-JP', { maximumFractionDigits: yen >= 1e10 ? 0 : 1 })}億円`
   return `${Math.round(yen / 1e4).toLocaleString('ja-JP')}万円`
 }
